@@ -867,6 +867,160 @@ async def get_practice_stats(user: User = Depends(get_current_user)):
         "current_streak": streak
     }
 
+# ============ DAILY RITUALS ============
+
+ACHIEVEMENT_DEFINITIONS = [
+    {"id": "first_practice", "name": "First Steps", "description": "Complete your first practice", "icon": "footprints", "requirement": {"type": "sessions", "count": 1}},
+    {"id": "week_warrior", "name": "Week Warrior", "description": "Maintain a 7-day practice streak", "icon": "flame", "requirement": {"type": "streak", "count": 7}},
+    {"id": "moon_cycle", "name": "Moon Cycle", "description": "Practice for 28 consecutive days", "icon": "moon", "requirement": {"type": "streak", "count": 28}},
+    {"id": "centurion", "name": "Centurion", "description": "Complete 100 practice sessions", "icon": "trophy", "requirement": {"type": "sessions", "count": 100}},
+    {"id": "time_keeper", "name": "Time Keeper", "description": "Accumulate 100 minutes of practice", "icon": "clock", "requirement": {"type": "minutes", "count": 100}},
+    {"id": "hour_master", "name": "Hour Master", "description": "Accumulate 10 hours (600 min) of practice", "icon": "hourglass", "requirement": {"type": "minutes", "count": 600}},
+    {"id": "oracle_seeker", "name": "Oracle Seeker", "description": "Receive 10 oracle readings", "icon": "eye", "requirement": {"type": "oracle_readings", "count": 10}},
+    {"id": "breath_master", "name": "Breath Master", "description": "Complete 20 breathwork sessions", "icon": "wind", "requirement": {"type": "breathwork", "count": 20}},
+    {"id": "yogi", "name": "Yogi", "description": "Complete 50 yoga sessions", "icon": "leaf", "requirement": {"type": "yoga", "count": 50}},
+    {"id": "five_elements", "name": "Five Elements", "description": "Practice with all five elements", "icon": "sparkles", "requirement": {"type": "elements", "count": 5}},
+]
+
+class RitualCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    practices: List[dict]  # [{"type": "yoga", "id": "1", "duration": 5}, ...]
+    total_duration: int
+
+class RitualUpdate(BaseModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    practices: Optional[List[dict]] = None
+    total_duration: Optional[int] = None
+
+@api_router.post("/rituals")
+async def create_ritual(data: RitualCreate, user: User = Depends(get_current_user)):
+    """Create a custom daily ritual."""
+    ritual = {
+        "ritual_id": f"ritual_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "name": data.name,
+        "description": data.description,
+        "practices": data.practices,
+        "total_duration": data.total_duration,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.rituals.insert_one(ritual)
+    ritual.pop("_id", None)
+    return ritual
+
+@api_router.get("/rituals")
+async def get_rituals(user: User = Depends(get_current_user)):
+    """Get user's custom rituals."""
+    rituals = await db.rituals.find({"user_id": user.user_id}, {"_id": 0}).to_list(100)
+    return rituals
+
+@api_router.get("/rituals/{ritual_id}")
+async def get_ritual(ritual_id: str, user: User = Depends(get_current_user)):
+    """Get a specific ritual."""
+    ritual = await db.rituals.find_one({"ritual_id": ritual_id, "user_id": user.user_id}, {"_id": 0})
+    if not ritual:
+        raise HTTPException(status_code=404, detail="Ritual not found")
+    return ritual
+
+@api_router.put("/rituals/{ritual_id}")
+async def update_ritual(ritual_id: str, data: RitualUpdate, user: User = Depends(get_current_user)):
+    """Update a ritual."""
+    update_data = {k: v for k, v in data.model_dump().items() if v is not None}
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.rituals.update_one(
+        {"ritual_id": ritual_id, "user_id": user.user_id},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Ritual not found")
+    
+    return await get_ritual(ritual_id, user)
+
+@api_router.delete("/rituals/{ritual_id}")
+async def delete_ritual(ritual_id: str, user: User = Depends(get_current_user)):
+    """Delete a ritual."""
+    result = await db.rituals.delete_one({"ritual_id": ritual_id, "user_id": user.user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Ritual not found")
+    return {"message": "Ritual deleted"}
+
+# ============ ACHIEVEMENTS ============
+
+@api_router.get("/achievements")
+async def get_achievements(user: User = Depends(get_current_user)):
+    """Get user's achievements with unlock status."""
+    # Get user stats
+    history = await db.practice_history.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
+    oracle_readings = await db.oracle_readings.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
+    
+    total_sessions = len(history)
+    total_minutes = sum(h.get("duration_minutes", 0) for h in history)
+    
+    # Count by type
+    by_type = {}
+    elements_practiced = set()
+    for h in history:
+        ptype = h.get("practice_type", "unknown")
+        by_type[ptype] = by_type.get(ptype, 0) + 1
+        # Track elements (would need to enhance practice logging to include element)
+    
+    # Calculate streak
+    if history:
+        dates = sorted(set(h.get("completed_at", "")[:10] for h in history if h.get("completed_at")), reverse=True)
+        streak = 0
+        for i, date in enumerate(dates):
+            expected = (datetime.now(timezone.utc) - timedelta(days=i)).strftime("%Y-%m-%d")
+            if date == expected or (i == 0 and date == (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")):
+                streak += 1
+            else:
+                break
+    else:
+        streak = 0
+    
+    # Check each achievement
+    achievements = []
+    for ach in ACHIEVEMENT_DEFINITIONS:
+        req = ach["requirement"]
+        unlocked = False
+        progress = 0
+        
+        if req["type"] == "sessions":
+            progress = total_sessions
+            unlocked = total_sessions >= req["count"]
+        elif req["type"] == "streak":
+            progress = streak
+            unlocked = streak >= req["count"]
+        elif req["type"] == "minutes":
+            progress = total_minutes
+            unlocked = total_minutes >= req["count"]
+        elif req["type"] == "oracle_readings":
+            progress = len(oracle_readings)
+            unlocked = len(oracle_readings) >= req["count"]
+        elif req["type"] == "breathwork":
+            progress = by_type.get("breathwork", 0)
+            unlocked = by_type.get("breathwork", 0) >= req["count"]
+        elif req["type"] == "yoga":
+            progress = by_type.get("yoga", 0)
+            unlocked = by_type.get("yoga", 0) >= req["count"]
+        elif req["type"] == "elements":
+            progress = len(elements_practiced)
+            unlocked = len(elements_practiced) >= req["count"]
+        
+        achievements.append({
+            **ach,
+            "unlocked": unlocked,
+            "progress": progress,
+            "target": req["count"]
+        })
+    
+    return achievements
+
 # ============ ROOT & HEALTH ============
 
 @api_router.get("/")
