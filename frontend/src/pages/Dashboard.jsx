@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Leaf, Eye, Wind, Moon, Sparkles, Heart, Waves, Mountain,
-  LogOut, Menu, X, ChevronRight, Sun, User
+  LogOut, Menu, X, ChevronRight, Sun, User, Star
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -25,6 +25,7 @@ const Dashboard = ({ user, api }) => {
     { icon: Sun, label: "Mudras", path: "/mudras", element: "fire" },
     { icon: Waves, label: "Somatic", path: "/somatic", element: "water" },
     { icon: Mountain, label: "Grounding", path: "/grounding", element: "earth" },
+    { icon: Star, label: "Favorites", path: "/favorites", element: "fire" },
   ];
 
   const elementColors = {
