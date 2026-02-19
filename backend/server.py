@@ -693,6 +693,172 @@ async def get_daily_guidance(user: User = Depends(get_current_user)):
         "element_focus": current_month["element"]
     }
 
+# ============ FAVORITES / BOOKMARKS ============
+
+class FavoriteCreate(BaseModel):
+    item_type: str  # "pose", "crystal", "mantra", "mudra", "breathwork", "somatic", "grounding"
+    item_id: str
+
+@api_router.post("/favorites")
+async def add_favorite(data: FavoriteCreate, user: User = Depends(get_current_user)):
+    """Add an item to user's favorites."""
+    existing = await db.favorites.find_one({
+        "user_id": user.user_id,
+        "item_type": data.item_type,
+        "item_id": data.item_id
+    })
+    
+    if existing:
+        return {"message": "Already in favorites", "favorite_id": existing.get("favorite_id")}
+    
+    favorite = {
+        "favorite_id": f"fav_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "item_type": data.item_type,
+        "item_id": data.item_id,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.favorites.insert_one(favorite)
+    favorite.pop("_id", None)
+    return favorite
+
+@api_router.delete("/favorites/{item_type}/{item_id}")
+async def remove_favorite(item_type: str, item_id: str, user: User = Depends(get_current_user)):
+    """Remove an item from user's favorites."""
+    result = await db.favorites.delete_one({
+        "user_id": user.user_id,
+        "item_type": item_type,
+        "item_id": item_id
+    })
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Favorite not found")
+    
+    return {"message": "Removed from favorites"}
+
+@api_router.get("/favorites")
+async def get_favorites(user: User = Depends(get_current_user), item_type: Optional[str] = None):
+    """Get user's favorites, optionally filtered by type."""
+    query = {"user_id": user.user_id}
+    if item_type:
+        query["item_type"] = item_type
+    
+    favorites = await db.favorites.find(query, {"_id": 0}).to_list(500)
+    
+    # Enrich with actual item data
+    enriched = []
+    for fav in favorites:
+        item_data = None
+        if fav["item_type"] == "pose":
+            item_data = next((p for p in YOGA_POSES if p["id"] == fav["item_id"]), None)
+        elif fav["item_type"] == "crystal":
+            item_data = next((c for c in CRYSTALS if c["id"] == fav["item_id"]), None)
+        elif fav["item_type"] == "mantra":
+            item_data = next((m for m in MANTRAS if m["id"] == fav["item_id"]), None)
+        elif fav["item_type"] == "mudra":
+            item_data = next((m for m in MUDRAS if m["id"] == fav["item_id"]), None)
+        elif fav["item_type"] == "breathwork":
+            item_data = next((b for b in BREATHWORK_SESSIONS if b["id"] == fav["item_id"]), None)
+        elif fav["item_type"] == "somatic":
+            item_data = next((s for s in SOMATIC_PRACTICES if s["id"] == fav["item_id"]), None)
+        elif fav["item_type"] == "grounding":
+            item_data = next((g for g in GROUNDING_EXERCISES if g["id"] == fav["item_id"]), None)
+        
+        if item_data:
+            enriched.append({**fav, "item": item_data})
+    
+    return enriched
+
+@api_router.get("/favorites/check/{item_type}/{item_id}")
+async def check_favorite(item_type: str, item_id: str, user: User = Depends(get_current_user)):
+    """Check if an item is in user's favorites."""
+    existing = await db.favorites.find_one({
+        "user_id": user.user_id,
+        "item_type": item_type,
+        "item_id": item_id
+    }, {"_id": 0})
+    
+    return {"is_favorite": existing is not None}
+
+# ============ PRACTICE HISTORY ============
+
+class PracticeLogCreate(BaseModel):
+    practice_type: str  # "yoga", "breathwork", "meditation", "oracle"
+    practice_id: Optional[str] = None
+    duration_minutes: int
+    notes: Optional[str] = None
+
+@api_router.post("/practice-history")
+async def log_practice(data: PracticeLogCreate, user: User = Depends(get_current_user)):
+    """Log a completed practice."""
+    log_entry = {
+        "log_id": f"log_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "practice_type": data.practice_type,
+        "practice_id": data.practice_id,
+        "duration_minutes": data.duration_minutes,
+        "notes": data.notes,
+        "completed_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.practice_history.insert_one(log_entry)
+    log_entry.pop("_id", None)
+    return log_entry
+
+@api_router.get("/practice-history")
+async def get_practice_history(
+    user: User = Depends(get_current_user),
+    practice_type: Optional[str] = None,
+    limit: int = 50
+):
+    """Get user's practice history."""
+    query = {"user_id": user.user_id}
+    if practice_type:
+        query["practice_type"] = practice_type
+    
+    history = await db.practice_history.find(query, {"_id": 0}).sort("completed_at", -1).to_list(limit)
+    return history
+
+@api_router.get("/practice-history/stats")
+async def get_practice_stats(user: User = Depends(get_current_user)):
+    """Get user's practice statistics."""
+    # Get all practice history for this user
+    history = await db.practice_history.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
+    
+    total_sessions = len(history)
+    total_minutes = sum(h.get("duration_minutes", 0) for h in history)
+    
+    # Count by type
+    by_type = {}
+    for h in history:
+        ptype = h.get("practice_type", "unknown")
+        if ptype not in by_type:
+            by_type[ptype] = {"count": 0, "minutes": 0}
+        by_type[ptype]["count"] += 1
+        by_type[ptype]["minutes"] += h.get("duration_minutes", 0)
+    
+    # Get streak (consecutive days)
+    if history:
+        dates = sorted(set(h.get("completed_at", "")[:10] for h in history if h.get("completed_at")), reverse=True)
+        streak = 0
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        for i, date in enumerate(dates):
+            expected = (datetime.now(timezone.utc) - timedelta(days=i)).strftime("%Y-%m-%d")
+            if date == expected or (i == 0 and date == (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")):
+                streak += 1
+            else:
+                break
+    else:
+        streak = 0
+    
+    return {
+        "total_sessions": total_sessions,
+        "total_minutes": total_minutes,
+        "by_type": by_type,
+        "current_streak": streak
+    }
+
 # ============ ROOT & HEALTH ============
 
 @api_router.get("/")
