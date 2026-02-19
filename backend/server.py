@@ -528,14 +528,18 @@ async def get_crystal(crystal_id: str):
 # ============ MANTRAS ROUTES ============
 
 MANTRAS = [
-    {"id": "1", "name": "Om", "sanskrit": "ॐ", "translation": "The sound of the universe, the primordial vibration", "element": "Spirit", "chakra": "Crown", "benefits": ["Universal connection", "Calms mind", "Raises vibration"]},
-    {"id": "2", "name": "Om Mani Padme Hum", "sanskrit": "ॐ मणि पद्मे हूँ", "translation": "The jewel is in the lotus", "element": "Spirit", "chakra": "Heart", "benefits": ["Compassion", "Purification", "Wisdom"]},
-    {"id": "3", "name": "Lokah Samastah Sukhino Bhavantu", "sanskrit": "लोकाः समस्ताः सुखिनो भवन्तु", "translation": "May all beings everywhere be happy and free", "element": "Water", "chakra": "Heart", "benefits": ["Universal love", "Peace", "Interconnection"]},
-    {"id": "4", "name": "So Hum", "sanskrit": "सो ऽहम्", "translation": "I am that (the universe)", "element": "Air", "chakra": "Third Eye", "benefits": ["Self-realization", "Breath awareness", "Unity"]},
-    {"id": "5", "name": "Sat Nam", "sanskrit": None, "translation": "Truth is my identity", "element": "Spirit", "chakra": "Throat", "benefits": ["Authenticity", "Truth", "Identity"]},
-    {"id": "6", "name": "Om Namah Shivaya", "sanskrit": "ॐ नमः शिवाय", "translation": "I bow to Shiva (the transformer)", "element": "Fire", "chakra": "Third Eye", "benefits": ["Transformation", "Inner peace", "Destruction of ego"]},
-    {"id": "7", "name": "Gayatri Mantra", "sanskrit": "ॐ भूर्भुवः स्वः", "translation": "We meditate on the glory of the Creator", "element": "Fire", "chakra": "Solar Plexus", "benefits": ["Illumination", "Wisdom", "Vitality"]},
-    {"id": "8", "name": "Ham Sa", "sanskrit": "हंस", "translation": "I am the divine swan", "element": "Air", "chakra": "Throat", "benefits": ["Discrimination", "Purity", "Grace"]},
+    {"id": "1", "name": "Om", "sanskrit": "ॐ", "translation": "The sound of the universe, the primordial vibration", "element": "Spirit", "chakra": "Crown", "benefits": ["Universal connection", "Calms mind", "Raises vibration"], "audio_url": "https://upload.wikimedia.org/wikipedia/commons/7/77/Om.ogg", "duration_seconds": 10, "repetitions": 108},
+    {"id": "2", "name": "Om Mani Padme Hum", "sanskrit": "ॐ मणि पद्मे हूँ", "translation": "The jewel is in the lotus", "element": "Spirit", "chakra": "Heart", "benefits": ["Compassion", "Purification", "Wisdom"], "audio_url": None, "duration_seconds": 15, "repetitions": 108},
+    {"id": "3", "name": "Lokah Samastah Sukhino Bhavantu", "sanskrit": "लोकाः समस्ताः सुखिनो भवन्तु", "translation": "May all beings everywhere be happy and free", "element": "Water", "chakra": "Heart", "benefits": ["Universal love", "Peace", "Interconnection"], "audio_url": None, "duration_seconds": 20, "repetitions": 27},
+    {"id": "4", "name": "So Hum", "sanskrit": "सो ऽहम्", "translation": "I am that (the universe)", "element": "Air", "chakra": "Third Eye", "benefits": ["Self-realization", "Breath awareness", "Unity"], "audio_url": None, "duration_seconds": 8, "repetitions": 108},
+    {"id": "5", "name": "Sat Nam", "sanskrit": "सत् नाम्", "translation": "Truth is my identity", "element": "Spirit", "chakra": "Throat", "benefits": ["Authenticity", "Truth", "Identity"], "audio_url": None, "duration_seconds": 6, "repetitions": 108},
+    {"id": "6", "name": "Om Namah Shivaya", "sanskrit": "ॐ नमः शिवाय", "translation": "I bow to Shiva (the transformer)", "element": "Fire", "chakra": "Third Eye", "benefits": ["Transformation", "Inner peace", "Destruction of ego"], "audio_url": None, "duration_seconds": 12, "repetitions": 108},
+    {"id": "7", "name": "Gayatri Mantra", "sanskrit": "ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं", "translation": "We meditate on the glory of the Creator who illuminates all", "element": "Fire", "chakra": "Solar Plexus", "benefits": ["Illumination", "Wisdom", "Vitality"], "audio_url": None, "duration_seconds": 25, "repetitions": 108},
+    {"id": "8", "name": "Ham Sa", "sanskrit": "हंस", "translation": "I am the divine swan", "element": "Air", "chakra": "Throat", "benefits": ["Discrimination", "Purity", "Grace"], "audio_url": None, "duration_seconds": 6, "repetitions": 108},
+    {"id": "9", "name": "Om Gam Ganapataye Namaha", "sanskrit": "ॐ गं गणपतये नमः", "translation": "Salutations to Ganesha, remover of obstacles", "element": "Earth", "chakra": "Root", "benefits": ["Removes obstacles", "New beginnings", "Success"], "audio_url": None, "duration_seconds": 15, "repetitions": 108},
+    {"id": "10", "name": "Ra Ma Da Sa", "sanskrit": None, "translation": "Sun, Moon, Earth, Infinity - healing mantra", "element": "Water", "chakra": "Heart", "benefits": ["Healing", "Balance", "Connection to elements"], "audio_url": None, "duration_seconds": 20, "repetitions": 11},
+    {"id": "11", "name": "Aham Brahmasmi", "sanskrit": "अहं ब्रह्मास्मि", "translation": "I am the universe, I am Brahman", "element": "Spirit", "chakra": "Crown", "benefits": ["Self-realization", "Unity consciousness", "Expansion"], "audio_url": None, "duration_seconds": 10, "repetitions": 21},
+    {"id": "12", "name": "Om Shanti Shanti Shanti", "sanskrit": "ॐ शान्तिः शान्तिः शान्तिः", "translation": "Peace in body, mind, and spirit", "element": "Water", "chakra": "All", "benefits": ["Deep peace", "Calms mind", "Harmony"], "audio_url": None, "duration_seconds": 12, "repetitions": 3},
 ]
 
 @api_router.get("/mantras")
@@ -549,14 +553,18 @@ async def get_mantras(element: Optional[str] = None):
 # ============ MUDRAS ROUTES ============
 
 MUDRAS = [
-    {"id": "1", "name": "Gyan Mudra", "sanskrit_name": "Jnana Mudra", "element": "Air", "description": "Touch thumb to index finger, other fingers extended. The gesture of knowledge and wisdom.", "benefits": ["Mental clarity", "Concentration", "Wisdom"]},
-    {"id": "2", "name": "Anjali Mudra", "sanskrit_name": "Namaste", "element": "Spirit", "description": "Palms pressed together at heart. The gesture of greeting and honoring the divine in all.", "benefits": ["Heart opening", "Gratitude", "Connection"]},
-    {"id": "3", "name": "Dhyana Mudra", "sanskrit_name": "Meditation Mudra", "element": "Water", "description": "Hands in lap, right over left, thumbs touching. Deep meditation gesture.", "benefits": ["Deep meditation", "Inner peace", "Concentration"]},
-    {"id": "4", "name": "Prithvi Mudra", "sanskrit_name": "Earth Mudra", "element": "Earth", "description": "Thumb touches ring finger. Connects to earth element and stability.", "benefits": ["Grounding", "Stability", "Physical strength"]},
-    {"id": "5", "name": "Varuna Mudra", "sanskrit_name": "Water Mudra", "element": "Water", "description": "Thumb touches little finger. Balances water element in body.", "benefits": ["Emotional balance", "Hydration", "Flexibility"]},
-    {"id": "6", "name": "Agni Mudra", "sanskrit_name": "Fire Mudra", "element": "Fire", "description": "Fold ring finger to palm, thumb pressing on it. Increases internal fire.", "benefits": ["Metabolism", "Digestion", "Transformation"]},
-    {"id": "7", "name": "Vayu Mudra", "sanskrit_name": "Air Mudra", "element": "Air", "description": "Fold index finger to palm, thumb pressing on it. Balances air element.", "benefits": ["Calms anxiety", "Reduces gas", "Mental clarity"]},
-    {"id": "8", "name": "Shuni Mudra", "sanskrit_name": "Saturn Mudra", "element": "Earth", "description": "Thumb touches middle finger. Patience and discipline.", "benefits": ["Patience", "Discipline", "Responsibility"]},
+    {"id": "1", "name": "Gyan Mudra", "sanskrit_name": "Jnana Mudra", "element": "Air", "description": "Touch thumb to index finger, other fingers extended. The gesture of knowledge and wisdom.", "benefits": ["Mental clarity", "Concentration", "Wisdom"], "image_url": None},
+    {"id": "2", "name": "Anjali Mudra", "sanskrit_name": "Namaste", "element": "Spirit", "description": "Palms pressed together at heart. The gesture of greeting and honoring the divine in all.", "benefits": ["Heart opening", "Gratitude", "Connection"], "image_url": None},
+    {"id": "3", "name": "Dhyana Mudra", "sanskrit_name": "Meditation Mudra", "element": "Water", "description": "Hands in lap, right over left, thumbs touching. Deep meditation gesture.", "benefits": ["Deep meditation", "Inner peace", "Concentration"], "image_url": None},
+    {"id": "4", "name": "Prithvi Mudra", "sanskrit_name": "Earth Mudra", "element": "Earth", "description": "Thumb touches ring finger. Connects to earth element and stability.", "benefits": ["Grounding", "Stability", "Physical strength"], "image_url": None},
+    {"id": "5", "name": "Varuna Mudra", "sanskrit_name": "Water Mudra", "element": "Water", "description": "Thumb touches little finger. Balances water element in body.", "benefits": ["Emotional balance", "Hydration", "Flexibility"], "image_url": None},
+    {"id": "6", "name": "Agni Mudra", "sanskrit_name": "Fire Mudra", "element": "Fire", "description": "Fold ring finger to palm, thumb pressing on it. Increases internal fire.", "benefits": ["Metabolism", "Digestion", "Transformation"], "image_url": None},
+    {"id": "7", "name": "Vayu Mudra", "sanskrit_name": "Air Mudra", "element": "Air", "description": "Fold index finger to palm, thumb pressing on it. Balances air element.", "benefits": ["Calms anxiety", "Reduces gas", "Mental clarity"], "image_url": None},
+    {"id": "8", "name": "Shuni Mudra", "sanskrit_name": "Saturn Mudra", "element": "Earth", "description": "Thumb touches middle finger. Patience and discipline.", "benefits": ["Patience", "Discipline", "Responsibility"], "image_url": None},
+    {"id": "9", "name": "Surya Mudra", "sanskrit_name": "Sun Mudra", "element": "Fire", "description": "Bend ring finger to touch base of thumb, thumb presses on ring finger.", "benefits": ["Increases fire element", "Weight management", "Warmth"], "image_url": None},
+    {"id": "10", "name": "Prana Mudra", "sanskrit_name": "Life Force Mudra", "element": "Spirit", "description": "Touch tips of ring and little finger to thumb tip.", "benefits": ["Increases vitality", "Reduces fatigue", "Awakens dormant energy"], "image_url": None},
+    {"id": "11", "name": "Apana Mudra", "sanskrit_name": "Downward Energy Mudra", "element": "Earth", "description": "Touch tips of middle and ring finger to thumb tip.", "benefits": ["Detoxification", "Elimination", "Grounding"], "image_url": None},
+    {"id": "12", "name": "Chin Mudra", "sanskrit_name": "Consciousness Mudra", "element": "Air", "description": "Like Gyan mudra but palms face down. Grounds consciousness.", "benefits": ["Grounded awareness", "Meditation", "Mental stability"], "image_url": None},
 ]
 
 @api_router.get("/mudras")
