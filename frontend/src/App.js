@@ -15,6 +15,7 @@ import MantrasLibrary from "./pages/MantrasLibrary";
 import MudrasLibrary from "./pages/MudrasLibrary";
 import SomaticMovement from "./pages/SomaticMovement";
 import GroundingPractices from "./pages/GroundingPractices";
+import Favorites from "./pages/Favorites";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
