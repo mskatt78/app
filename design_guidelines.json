@@ -1,0 +1,144 @@
+{
+  "design_system": {
+    "identity": {
+      "name": "Shamanic Elemental Yoga",
+      "tone": "Sacred, Grounded, Mystical, Intimate, Ancient",
+      "archetype": "The Magician / The Sage",
+      "visual_mood": "Cosmic Earth: Deep forest greens, night sky blacks, sacred geometry, gold leaf, crystal refraction."
+    },
+    "typography": {
+      "font_family": {
+        "headings": ["Cormorant Garamond", "serif"],
+        "body": ["Manrope", "sans-serif"],
+        "accent": ["Cinzel", "serif"]
+      },
+      "import_url": "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Manrope:wght@300;400;500;600;700&display=swap",
+      "scale": {
+        "display": "text-6xl md:text-8xl tracking-tight leading-none font-light italic",
+        "h1": "text-5xl md:text-6xl tracking-tight font-normal",
+        "h2": "text-4xl md:text-5xl tracking-tight font-light",
+        "h3": "text-3xl tracking-normal font-medium",
+        "body_lg": "text-lg md:text-xl leading-relaxed font-light text-muted-foreground",
+        "body": "text-base leading-relaxed text-muted-foreground",
+        "caption": "text-xs tracking-[0.2em] uppercase font-bold text-accent"
+      }
+    },
+    "colors": {
+      "palette": {
+        "background": {
+          "default": "#0F1210",
+          "paper": "#161A17",
+          "card": "#1C211E"
+        },
+        "primary": {
+          "default": "#D4AF37",
+          "hover": "#E5C158",
+          "foreground": "#0F1210"
+        },
+        "secondary": {
+          "default": "#4A6C6F",
+          "foreground": "#FFFFFF"
+        },
+        "accent": {
+          "default": "#9B6B9E",
+          "foreground": "#FFFFFF"
+        },
+        "text": {
+          "primary": "#EAECEB",
+          "secondary": "#A0A8A4",
+          "muted": "#5C6660"
+        },
+        "status": {
+          "success": "#6B9A7E",
+          "warning": "#D4AF37",
+          "error": "#9A5B5B"
+        }
+      },
+      "gradients": {
+        "mystic": "linear-gradient(135deg, #0F1210 0%, #1C211E 100%)",
+        "gold_glow": "linear-gradient(to right, #D4AF37, #F2D06B)",
+        "night_sky": "radial-gradient(circle at center, #1C211E 0%, #0F1210 100%)",
+        "chakra": "linear-gradient(90deg, #9A5B5B, #D4AF37, #6B9A7E, #4A6C6F, #9B6B9E)"
+      }
+    },
+    "spacing": {
+      "container": "max-w-7xl mx-auto px-6 md:px-12",
+      "section_padding": "py-24 md:py-32",
+      "card_padding": "p-8 md:p-10",
+      "grid_gap": "gap-8 md:gap-12"
+    },
+    "ui_components": {
+      "buttons": {
+        "primary": "bg-primary text-primary-foreground rounded-full px-8 py-4 font-serif italic text-lg hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(212,175,55,0.3)]",
+        "secondary": "border border-primary/30 text-primary bg-transparent rounded-full px-8 py-4 hover:bg-primary/10 transition-colors duration-300",
+        "ghost": "text-muted-foreground hover:text-primary transition-colors font-medium tracking-wide uppercase text-xs"
+      },
+      "cards": {
+        "glass": "bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl hover:border-white/20 transition-all duration-500",
+        "solid": "bg-card border border-border/5 rounded-xl shadow-lg"
+      },
+      "inputs": {
+        "default": "bg-white/5 border-white/10 text-foreground placeholder:text-muted-foreground/50 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300"
+      }
+    },
+    "visual_enhancers": {
+      "radius": "rounded-2xl",
+      "shadows": {
+        "glow": "0 0 40px -10px rgba(212, 175, 55, 0.3)",
+        "deep": "0 20px 40px -20px rgba(0, 0, 0, 0.8)"
+      },
+      "textures": {
+        "noise": "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E\")",
+        "grain": "opacity-20 mix-blend-overlay pointer-events-none fixed inset-0 z-50"
+      },
+      "motion": {
+        "hover_lift": "hover:-translate-y-1 transition-transform duration-300 ease-out",
+        "fade_in": "animate-in fade-in duration-700 ease-out",
+        "slide_up": "animate-in slide-in-from-bottom-8 duration-700 ease-out"
+      }
+    }
+  },
+  "layout_strategies": {
+    "landing_page": {
+      "hero": "Full screen immersive. Video or parallax image background. Minimal text. 'Enter the Temple' CTA.",
+      "features": "Zig-zag layout with overlapping images and text. Generous whitespace.",
+      "grid": "Bento grid for 'Elements' or 'Practices'. Asymmetrical spans."
+    },
+    "dashboard": {
+      "layout": "Sidebar navigation (collapsible). Top bar with greeting and current moon phase. Main content area with widgets.",
+      "widgets": "Card-based. Glassmorphism style. Dark background with subtle inner glow."
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1738084843875-48f8118c87af?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2ODl8MHwxfHNlYXJjaHwyfHxteXN0aWNhbCUyMHlvZ2ElMjB3b21hbiUyMG5hdHVyZSUyMHN1bnNldCUyMHNpbGhvdWV0dGV8ZW58MHx8fHwxNzcxNTA0MTc1fDA&ixlib=rb-4.1.0&q=85",
+      "yoga_pose": "https://images.pexels.com/photos/13849280/pexels-photo-13849280.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "oracle_cards": "https://images.unsplash.com/photo-1706560324313-8401f367163a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NjZ8MHwxfHNlYXJjaHwxfHx0YXJvdCUyMGNhcmRzJTIwc3ByZWFkJTIwbXlzdGljYWwlMjB0YWJsZSUyMGNhbmRsZXxlbnwwfHx8fDE3NzE1MDQxNzh8MA&ixlib=rb-4.1.0&q=85",
+      "crystals": "https://images.unsplash.com/photo-1763021225760-1f9101fd3b38?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzV8MHwxfHNlYXJjaHwyfHxjcnlzdGFscyUyMGFtZXRoeXN0JTIwcXVhcnR6JTIwZGFyayUyMG15c3RpY2FsJTIwYmFja2dyb3VuZHxlbnwwfHx8fDE3NzE1MDQxNzd8MA&ixlib=rb-4.1.0&q=85",
+      "astrology": "https://images.unsplash.com/photo-1769921824705-ff05243792de?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwxfHxuZWJ1bGElMjBzdGFycyUyMGdhbGF4eSUyMGRlZXAlMjBzcGFjZSUyMGNvbG9yZnVsfGVufDB8fHx8MTc3MTUwNDE3OHww&ixlib=rb-4.1.0&q=85"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px. Gold or Muted White color."
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. SETUP: Install fonts immediately using the import_url in index.css.",
+    "2. THEME: Apply the dark theme variables to tailwind.config.js. Force 'dark' class on the html element or body.",
+    "3. ANIMATION: Install 'framer-motion' and 'lucide-react'. Use framer-motion for all entry animations.",
+    "4. COMPONENTS: Do not use default Shadcn styles. Override them with the 'glass' and 'solid' card styles defined above.",
+    "5. LAYOUT: Avoid centering everything. Use left-aligned text for body, center only for hero statements.",
+    "6. MICRO-INTERACTIONS: Add hover states to every interactive element. Buttons should scale up slightly.",
+    "7. IMAGES: Use the provided image URLs. Do not use placeholders.",
+    "8. ACCESSIBILITY: Ensure text contrast. If placing text over images, use a dark gradient overlay.",
+    "9. GLOW EFFECTS: Use the 'glow' shadow defined in visual_enhancers for key elements like the 'Get Started' button or active cards."
+  ],
+  "universal_guidelines": [
+    "Avoid 'AI Slop' aesthetics (generic gradients, inter font everywhere).",
+    "Use 2-3x more spacing than typical.",
+    "Every interaction needs a micro-animation.",
+    "Use data-testid attributes for all interactive elements.",
+    "Use sonner for toasts.",
+    "Do not use transparent backgrounds without blur."
+  ]
+}
