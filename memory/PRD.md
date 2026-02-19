@@ -33,23 +33,27 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - Grounding exercises
 - User favorites/bookmarks
 - Practice history tracking
+- Daily ritual builder
+- Achievement badges
 
 ## What's Been Implemented (Jan 2026)
 - [x] Landing page with shamanic design
 - [x] Google OAuth authentication
 - [x] Dashboard with daily guidance
-- [x] Yoga library (60 poses, 5 elements) - EXPANDED
+- [x] Yoga library (60 poses, 5 elements)
 - [x] Oracle readings with Claude AI interpretation
 - [x] Breathwork sessions with interactive timer
 - [x] 13-month astrology calendar
 - [x] Crystal guide (12 crystals)
-- [x] Mantras library (8 mantras)
-- [x] Mudras library (8 mudras)
+- [x] Mantras library (12 mantras with chanting timer) - ENHANCED
+- [x] Mudras library (12 mudras)
 - [x] Somatic movement practices (6 practices)
 - [x] Grounding exercises (5 exercises)
-- [x] User favorites system - NEW
-- [x] Practice history tracking - NEW
-- [x] Favorites page with stats - NEW
+- [x] User favorites system
+- [x] Practice history tracking
+- [x] Favorites page with stats
+- [x] Daily Ritual Builder - NEW
+- [x] Achievement Badges System (10 achievements) - NEW
 
 ## Prioritized Backlog
 ### P0 - Done
@@ -57,14 +61,16 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - Expanded yoga library (60 poses)
 - Favorites & bookmarks
 - Practice history & stats
+- Ritual builder with timer
+- Achievement badges
 
 ### P1 - Future Enhancements
-- Audio for mantras
-- Guided meditation timer
-- Daily ritual builder (combine practices)
+- Audio recordings for mantras (external audio files)
+- Push notifications for daily practice reminders
+- Export practice journal
 
 ### P2 - Nice to Have
 - Custom yoga sequences
-- Journal/reflection feature
 - Community features
-- Progress achievements/badges
+- Share rituals with friends
+- Premium content/subscription
