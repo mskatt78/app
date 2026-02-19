@@ -214,6 +214,22 @@ function AppRouter() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/rituals"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <RitualBuilder user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/achievements"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Achievements user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
