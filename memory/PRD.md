@@ -31,12 +31,14 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - Mantras and mudras libraries
 - Somatic movement practices
 - Grounding exercises
+- User favorites/bookmarks
+- Practice history tracking
 
 ## What's Been Implemented (Jan 2026)
 - [x] Landing page with shamanic design
 - [x] Google OAuth authentication
 - [x] Dashboard with daily guidance
-- [x] Yoga library (12 poses, 5 elements)
+- [x] Yoga library (60 poses, 5 elements) - EXPANDED
 - [x] Oracle readings with Claude AI interpretation
 - [x] Breathwork sessions with interactive timer
 - [x] 13-month astrology calendar
@@ -45,19 +47,24 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - [x] Mudras library (8 mudras)
 - [x] Somatic movement practices (6 practices)
 - [x] Grounding exercises (5 exercises)
+- [x] User favorites system - NEW
+- [x] Practice history tracking - NEW
+- [x] Favorites page with stats - NEW
 
 ## Prioritized Backlog
 ### P0 - Done
 - All core features implemented
+- Expanded yoga library (60 poses)
+- Favorites & bookmarks
+- Practice history & stats
 
 ### P1 - Future Enhancements
 - Audio for mantras
 - Guided meditation timer
-- User favorites/bookmarks
-- Practice history tracking
+- Daily ritual builder (combine practices)
 
 ### P2 - Nice to Have
 - Custom yoga sequences
 - Journal/reflection feature
 - Community features
-- Progress tracking
+- Progress achievements/badges
