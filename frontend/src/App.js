@@ -204,6 +204,14 @@ function AppRouter() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/favorites"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Favorites user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
