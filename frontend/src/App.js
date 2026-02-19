@@ -1,52 +1,219 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Toaster } from "./components/ui/sonner";
+
+// Pages
+import LandingPage from "./pages/LandingPage";
+import Dashboard from "./pages/Dashboard";
+import YogaLibrary from "./pages/YogaLibrary";
+import OracleReadings from "./pages/OracleReadings";
+import Breathwork from "./pages/Breathwork";
+import AstrologyCalendar from "./pages/AstrologyCalendar";
+import CrystalGuide from "./pages/CrystalGuide";
+import MantrasLibrary from "./pages/MantrasLibrary";
+import MudrasLibrary from "./pages/MudrasLibrary";
+import SomaticMovement from "./pages/SomaticMovement";
+import GroundingPractices from "./pages/GroundingPractices";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
+// Create axios instance with credentials
+const api = axios.create({
+  baseURL: API,
+  withCredentials: true,
+});
+
+// Auth Callback Component
+// REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
+const AuthCallback = () => {
+  const navigate = useNavigate();
+  const hasProcessed = useRef(false);
 
   useEffect(() => {
-    helloWorldApi();
-  }, []);
+    if (hasProcessed.current) return;
+    hasProcessed.current = true;
+
+    const processAuth = async () => {
+      const hash = window.location.hash;
+      const sessionIdMatch = hash.match(/session_id=([^&]+)/);
+      
+      if (sessionIdMatch) {
+        const sessionId = sessionIdMatch[1];
+        try {
+          const response = await api.post("/auth/session", { session_id: sessionId });
+          window.history.replaceState(null, "", window.location.pathname);
+          navigate("/dashboard", { state: { user: response.data }, replace: true });
+        } catch (error) {
+          console.error("Auth failed:", error);
+          navigate("/", { replace: true });
+        }
+      } else {
+        navigate("/", { replace: true });
+      }
+    };
+
+    processAuth();
+  }, [navigate]);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-muted-foreground font-serif italic">Connecting to the spirits...</p>
+      </div>
     </div>
   );
 };
 
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isAuthenticated, setIsAuthenticated] = useState(location.state?.user ? true : null);
+  const [user, setUser] = useState(location.state?.user || null);
+
+  useEffect(() => {
+    if (location.state?.user) {
+      setUser(location.state.user);
+      setIsAuthenticated(true);
+      return;
+    }
+
+    const checkAuth = async () => {
+      try {
+        const response = await api.get("/auth/me");
+        setUser(response.data);
+        setIsAuthenticated(true);
+      } catch (error) {
+        setIsAuthenticated(false);
+        navigate("/", { replace: true });
+      }
+    };
+
+    checkAuth();
+  }, [navigate, location.state]);
+
+  if (isAuthenticated === null) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground font-serif italic">Entering the sacred space...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) return null;
+
+  return children({ user, api });
+};
+
+// App Router
+function AppRouter() {
+  const location = useLocation();
+
+  // Check URL fragment for session_id synchronously
+  if (location.hash?.includes("session_id=")) {
+    return <AuthCallback />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage api={api} />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Dashboard user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/yoga"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <YogaLibrary user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/oracle"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <OracleReadings user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/breathwork"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Breathwork user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/astrology"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <AstrologyCalendar user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/crystals"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <CrystalGuide user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/mantras"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <MantrasLibrary user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/mudras"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <MudrasLibrary user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/somatic"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <SomaticMovement user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/grounding"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <GroundingPractices user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+}
+
 function App() {
   return (
-    <div className="App">
+    <div className="App grain-overlay">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <AppRouter />
       </BrowserRouter>
+      <Toaster position="bottom-right" />
     </div>
   );
 }

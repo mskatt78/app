@@ -1,15 +1,16 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException, Response, Request, Depends
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List
+from pydantic import BaseModel, Field
+from typing import List, Optional
 import uuid
-from datetime import datetime, timezone
-
+from datetime import datetime, timezone, timedelta
+import httpx
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -19,63 +20,11 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
+# Create the main app
 app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
-
-
-# Define Models
-class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-
-class StatusCheckCreate(BaseModel):
-    client_name: str
-
-# Add your routes to the router instead of directly to app
-@api_router.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.model_dump()
-    status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
-    doc = status_obj.model_dump()
-    doc['timestamp'] = doc['timestamp'].isoformat()
-    
-    _ = await db.status_checks.insert_one(doc)
-    return status_obj
-
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
-    status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
-    for check in status_checks:
-        if isinstance(check['timestamp'], str):
-            check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
-    return status_checks
-
-# Include the router in the main app
-app.include_router(api_router)
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Configure logging
 logging.basicConfig(
@@ -83,6 +32,630 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# ============ MODELS ============
+
+class User(BaseModel):
+    user_id: str
+    email: str
+    name: str
+    picture: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class SessionCreate(BaseModel):
+    session_id: str
+
+class OracleReadingRequest(BaseModel):
+    question: Optional[str] = None
+    spread_type: str = "single"  # single, three_card, celtic_cross
+
+class OracleReading(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
+    question: Optional[str] = None
+    spread_type: str
+    cards: List[dict]
+    interpretation: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class YogaPose(BaseModel):
+    id: str
+    name: str
+    sanskrit_name: str
+    element: str
+    description: str
+    benefits: List[str]
+    chakras: List[str]
+    image_url: Optional[str] = None
+    duration_minutes: int = 3
+
+class BreathworkSession(BaseModel):
+    id: str
+    name: str
+    element: str
+    description: str
+    duration_minutes: int
+    pattern: dict  # {"inhale": 4, "hold": 4, "exhale": 4, "hold_empty": 0}
+    benefits: List[str]
+
+class Crystal(BaseModel):
+    id: str
+    name: str
+    element: str
+    chakras: List[str]
+    properties: List[str]
+    description: str
+    image_url: Optional[str] = None
+
+class Mantra(BaseModel):
+    id: str
+    name: str
+    sanskrit: Optional[str] = None
+    translation: str
+    element: str
+    chakra: Optional[str] = None
+    benefits: List[str]
+    audio_url: Optional[str] = None
+
+class Mudra(BaseModel):
+    id: str
+    name: str
+    sanskrit_name: Optional[str] = None
+    element: str
+    description: str
+    benefits: List[str]
+    image_url: Optional[str] = None
+
+class AstrologyMonth(BaseModel):
+    id: str
+    month_number: int
+    name: str
+    symbol: str
+    element: str
+    dates: str
+    description: str
+    themes: List[str]
+    crystals: List[str]
+    practices: List[str]
+
+# ============ AUTH HELPERS ============
+
+async def get_current_user(request: Request) -> User:
+    """Get current user from session token (cookie or header)."""
+    session_token = request.cookies.get("session_token")
+    if not session_token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            session_token = auth_header.split(" ")[1]
+    
+    if not session_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    session_doc = await db.user_sessions.find_one({"session_token": session_token}, {"_id": 0})
+    if not session_doc:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    
+    expires_at = session_doc["expires_at"]
+    if isinstance(expires_at, str):
+        expires_at = datetime.fromisoformat(expires_at)
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    if expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=401, detail="Session expired")
+    
+    user_doc = await db.users.find_one({"user_id": session_doc["user_id"]}, {"_id": 0})
+    if not user_doc:
+        raise HTTPException(status_code=401, detail="User not found")
+    
+    return User(**user_doc)
+
+# ============ AUTH ROUTES ============
+
+@api_router.post("/auth/session")
+async def create_session(data: SessionCreate, response: Response):
+    """Exchange session_id from Emergent Auth for a session token."""
+    try:
+        async with httpx.AsyncClient() as client:
+            auth_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": data.session_id}
+            )
+            if auth_response.status_code != 200:
+                raise HTTPException(status_code=401, detail="Invalid session ID")
+            
+            auth_data = auth_response.json()
+        
+        user_id = f"user_{uuid.uuid4().hex[:12]}"
+        existing_user = await db.users.find_one({"email": auth_data["email"]}, {"_id": 0})
+        
+        if existing_user:
+            user_id = existing_user["user_id"]
+            await db.users.update_one(
+                {"email": auth_data["email"]},
+                {"$set": {
+                    "name": auth_data["name"],
+                    "picture": auth_data.get("picture"),
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }}
+            )
+        else:
+            await db.users.insert_one({
+                "user_id": user_id,
+                "email": auth_data["email"],
+                "name": auth_data["name"],
+                "picture": auth_data.get("picture"),
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
+        
+        session_token = auth_data["session_token"]
+        expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+        
+        await db.user_sessions.delete_many({"user_id": user_id})
+        await db.user_sessions.insert_one({
+            "user_id": user_id,
+            "session_token": session_token,
+            "expires_at": expires_at.isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        response.set_cookie(
+            key="session_token",
+            value=session_token,
+            httponly=True,
+            secure=True,
+            samesite="none",
+            path="/",
+            max_age=7 * 24 * 60 * 60
+        )
+        
+        user_doc = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+        return user_doc
+        
+    except httpx.RequestError as e:
+        logger.error(f"Auth request failed: {e}")
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+
+@api_router.get("/auth/me")
+async def get_me(user: User = Depends(get_current_user)):
+    """Get current authenticated user."""
+    return user.model_dump()
+
+@api_router.post("/auth/logout")
+async def logout(request: Request, response: Response):
+    """Logout and clear session."""
+    session_token = request.cookies.get("session_token")
+    if session_token:
+        await db.user_sessions.delete_one({"session_token": session_token})
+    
+    response.delete_cookie(key="session_token", path="/")
+    return {"message": "Logged out successfully"}
+
+# ============ ORACLE ROUTES ============
+
+ORACLE_CARDS = [
+    {"id": "1", "name": "The Medicine Wheel", "element": "Spirit", "meaning": "Cycles, wholeness, sacred directions", "reversed_meaning": "Disconnection from nature's rhythms"},
+    {"id": "2", "name": "The Drum", "element": "Earth", "meaning": "Heartbeat of Mother Earth, grounding", "reversed_meaning": "Loss of rhythm in life"},
+    {"id": "3", "name": "Eagle Spirit", "element": "Air", "meaning": "Vision, freedom, divine perspective", "reversed_meaning": "Lack of clarity or direction"},
+    {"id": "4", "name": "Bear Medicine", "element": "Earth", "meaning": "Introspection, healing, strength", "reversed_meaning": "Avoidance of necessary rest"},
+    {"id": "5", "name": "Wolf Pack", "element": "Water", "meaning": "Community, loyalty, intuition", "reversed_meaning": "Isolation, trust issues"},
+    {"id": "6", "name": "Serpent Wisdom", "element": "Fire", "meaning": "Transformation, kundalini, rebirth", "reversed_meaning": "Resistance to change"},
+    {"id": "7", "name": "Owl Vision", "element": "Air", "meaning": "Truth, shadow work, night magic", "reversed_meaning": "Deception or self-delusion"},
+    {"id": "8", "name": "Deer Spirit", "element": "Earth", "meaning": "Gentleness, grace, heart opening", "reversed_meaning": "Being too passive"},
+    {"id": "9", "name": "Raven Messenger", "element": "Spirit", "meaning": "Magic, creation, transformation", "reversed_meaning": "Misuse of gifts"},
+    {"id": "10", "name": "Butterfly Emergence", "element": "Air", "meaning": "Metamorphosis, joy, lightness", "reversed_meaning": "Stuck in cocoon phase"},
+    {"id": "11", "name": "Thunder Being", "element": "Fire", "meaning": "Power, purification, awakening", "reversed_meaning": "Destructive anger"},
+    {"id": "12", "name": "Moon Mother", "element": "Water", "meaning": "Intuition, cycles, feminine energy", "reversed_meaning": "Ignoring intuition"},
+    {"id": "13", "name": "Sun Father", "element": "Fire", "meaning": "Vitality, clarity, masculine energy", "reversed_meaning": "Burnout, ego inflation"},
+    {"id": "14", "name": "Turtle Island", "element": "Earth", "meaning": "Patience, grounding, Mother Earth", "reversed_meaning": "Moving too fast"},
+    {"id": "15", "name": "Hummingbird Joy", "element": "Air", "meaning": "Presence, sweetness, adaptability", "reversed_meaning": "Scattered energy"},
+    {"id": "16", "name": "Coyote Trickster", "element": "Fire", "meaning": "Humor, lessons, sacred foolishness", "reversed_meaning": "Taking life too seriously"},
+    {"id": "17", "name": "Whale Dreamer", "element": "Water", "meaning": "Deep wisdom, ancient memories", "reversed_meaning": "Lost in the depths"},
+    {"id": "18", "name": "Spider Weaver", "element": "Spirit", "meaning": "Creativity, fate, web of life", "reversed_meaning": "Feeling trapped"},
+    {"id": "19", "name": "Jaguar Power", "element": "Earth", "meaning": "Courage, shadow integration, power", "reversed_meaning": "Fear of own power"},
+    {"id": "20", "name": "Dragonfly Dreams", "element": "Water", "meaning": "Illusion, change, emotional depth", "reversed_meaning": "Surface living"},
+    {"id": "21", "name": "Phoenix Rising", "element": "Fire", "meaning": "Rebirth, renewal, immortality", "reversed_meaning": "Clinging to the old"},
+    {"id": "22", "name": "Star Nations", "element": "Spirit", "meaning": "Cosmic connection, star ancestors", "reversed_meaning": "Feeling ungrounded"},
+]
+
+@api_router.get("/oracle/cards")
+async def get_oracle_cards():
+    """Get all oracle cards."""
+    return ORACLE_CARDS
+
+@api_router.post("/oracle/reading")
+async def create_oracle_reading(
+    data: OracleReadingRequest,
+    user: User = Depends(get_current_user)
+):
+    """Create a new oracle reading with AI interpretation."""
+    import random
+    
+    num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
+    selected_cards = random.sample(ORACLE_CARDS, min(num_cards, len(ORACLE_CARDS)))
+    
+    for card in selected_cards:
+        card["is_reversed"] = random.choice([True, False])
+        card["position"] = selected_cards.index(card) + 1
+    
+    # Generate AI interpretation using Claude
+    interpretation = await generate_oracle_interpretation(selected_cards, data.question, data.spread_type)
+    
+    reading = {
+        "id": str(uuid.uuid4()),
+        "user_id": user.user_id,
+        "question": data.question,
+        "spread_type": data.spread_type,
+        "cards": selected_cards,
+        "interpretation": interpretation,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.oracle_readings.insert_one(reading)
+    reading.pop("_id", None)
+    return reading
+
+@api_router.get("/oracle/readings")
+async def get_oracle_readings(user: User = Depends(get_current_user)):
+    """Get user's oracle reading history."""
+    readings = await db.oracle_readings.find(
+        {"user_id": user.user_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    return readings
+
+async def generate_oracle_interpretation(cards: List[dict], question: Optional[str], spread_type: str) -> str:
+    """Generate AI interpretation using Claude."""
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            return generate_fallback_interpretation(cards, question)
+        
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"oracle_{uuid.uuid4().hex[:8]}",
+            system_message="""You are a wise shamanic oracle reader with deep knowledge of indigenous wisdom traditions, 
+            animal medicine, and elemental energies. Provide insightful, compassionate, and spiritually meaningful 
+            interpretations. Speak with the voice of ancient wisdom while being relevant to modern seekers. 
+            Keep interpretations between 150-300 words. Include practical guidance."""
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+        
+        cards_info = "\n".join([
+            f"Card {i+1}: {c['name']} ({c['element']}) - {'Reversed' if c.get('is_reversed') else 'Upright'}"
+            for i, c in enumerate(cards)
+        ])
+        
+        prompt = f"""Please provide a shamanic oracle reading interpretation.
+
+Spread Type: {spread_type}
+{"Question: " + question if question else "General guidance reading"}
+
+Cards drawn:
+{cards_info}
+
+Card meanings for reference:
+{chr(10).join([f"- {c['name']}: {c['reversed_meaning'] if c.get('is_reversed') else c['meaning']}" for c in cards])}
+
+Provide a meaningful interpretation weaving together the cards' messages, incorporating shamanic wisdom, 
+elemental energies, and practical spiritual guidance for the seeker."""
+
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        return response
+        
+    except Exception as e:
+        logger.error(f"AI interpretation failed: {e}")
+        return generate_fallback_interpretation(cards, question)
+
+def generate_fallback_interpretation(cards: List[dict], question: Optional[str]) -> str:
+    """Generate a basic interpretation without AI."""
+    elements = [c["element"] for c in cards]
+    dominant_element = max(set(elements), key=elements.count)
+    
+    intro = f"The spirits have spoken through these sacred cards. "
+    if question:
+        intro += f"Regarding your question about {question[:50]}... "
+    
+    card_readings = []
+    for card in cards:
+        meaning = card["reversed_meaning"] if card.get("is_reversed") else card["meaning"]
+        position = "reversed" if card.get("is_reversed") else "upright"
+        card_readings.append(f"{card['name']} appears {position}, bringing the medicine of {meaning.lower()}.")
+    
+    element_message = {
+        "Earth": "Ground yourself in the wisdom of Mother Earth. Patience and stability are your allies.",
+        "Water": "Flow with your emotions and trust your intuition. The waters of wisdom run deep.",
+        "Fire": "Embrace transformation and let your inner fire illuminate your path.",
+        "Air": "Seek clarity through breath and contemplation. New perspectives await.",
+        "Spirit": "Connect with the great mystery. Your ancestors walk beside you."
+    }
+    
+    return f"{intro}\n\n{' '.join(card_readings)}\n\n{element_message.get(dominant_element, '')}"
+
+# ============ YOGA ROUTES ============
+
+YOGA_POSES = [
+    {"id": "1", "name": "Mountain Pose", "sanskrit_name": "Tadasana", "element": "Earth", "description": "Stand tall like a mountain, rooted and stable. This foundational pose connects you to the earth element and your own inner strength.", "benefits": ["Improves posture", "Strengthens legs", "Grounds energy"], "chakras": ["Root"], "duration_minutes": 3},
+    {"id": "2", "name": "Tree Pose", "sanskrit_name": "Vrksasana", "element": "Earth", "description": "Like a sacred tree, roots deep and branches reaching skyward. Balance between earth and sky.", "benefits": ["Improves balance", "Strengthens ankles", "Opens hips"], "chakras": ["Root", "Heart"], "duration_minutes": 3},
+    {"id": "3", "name": "Warrior I", "sanskrit_name": "Virabhadrasana I", "element": "Fire", "description": "Embody the warrior spirit with fierce determination and open heart.", "benefits": ["Builds strength", "Opens chest", "Increases stamina"], "chakras": ["Solar Plexus", "Heart"], "duration_minutes": 5},
+    {"id": "4", "name": "Warrior II", "sanskrit_name": "Virabhadrasana II", "element": "Fire", "description": "Stand in your power, gaze fixed on your intention, arms extended in all directions.", "benefits": ["Strengthens legs", "Opens hips", "Builds focus"], "chakras": ["Solar Plexus", "Sacral"], "duration_minutes": 5},
+    {"id": "5", "name": "Downward Dog", "sanskrit_name": "Adho Mukha Svanasana", "element": "Air", "description": "Create an inverted V, connecting earth and sky. Let gravity release tension.", "benefits": ["Stretches spine", "Calms mind", "Energizes body"], "chakras": ["Third Eye", "Crown"], "duration_minutes": 5},
+    {"id": "6", "name": "Child's Pose", "sanskrit_name": "Balasana", "element": "Water", "description": "Return to the womb of the Earth Mother. Surrender and receive comfort.", "benefits": ["Releases back tension", "Calms nervous system", "Promotes introspection"], "chakras": ["Third Eye"], "duration_minutes": 5},
+    {"id": "7", "name": "Cobra Pose", "sanskrit_name": "Bhujangasana", "element": "Fire", "description": "Rise like the sacred serpent, awakening kundalini energy up the spine.", "benefits": ["Opens heart", "Strengthens spine", "Awakens energy"], "chakras": ["Heart", "Throat"], "duration_minutes": 3},
+    {"id": "8", "name": "Seated Forward Fold", "sanskrit_name": "Paschimottanasana", "element": "Water", "description": "Bow forward in surrender, releasing into the flow of letting go.", "benefits": ["Calms mind", "Stretches hamstrings", "Massages organs"], "chakras": ["Sacral", "Solar Plexus"], "duration_minutes": 5},
+    {"id": "9", "name": "Bridge Pose", "sanskrit_name": "Setu Bandhasana", "element": "Earth", "description": "Create a bridge between earth and sky, opening the heart to receive.", "benefits": ["Opens chest", "Strengthens glutes", "Reduces anxiety"], "chakras": ["Heart", "Throat"], "duration_minutes": 5},
+    {"id": "10", "name": "Corpse Pose", "sanskrit_name": "Savasana", "element": "Spirit", "description": "Complete surrender. Die to the old, be reborn in stillness.", "benefits": ["Deep relaxation", "Integrates practice", "Reduces stress"], "chakras": ["All"], "duration_minutes": 10},
+    {"id": "11", "name": "Eagle Pose", "sanskrit_name": "Garudasana", "element": "Air", "description": "Wrap and squeeze like the sacred eagle, then release and soar.", "benefits": ["Improves focus", "Stretches shoulders", "Strengthens legs"], "chakras": ["Third Eye", "Root"], "duration_minutes": 3},
+    {"id": "12", "name": "Crow Pose", "sanskrit_name": "Bakasana", "element": "Air", "description": "Take flight like the crow messenger, balancing earth and sky.", "benefits": ["Builds arm strength", "Improves balance", "Builds confidence"], "chakras": ["Solar Plexus", "Root"], "duration_minutes": 3},
+]
+
+@api_router.get("/yoga/poses")
+async def get_yoga_poses(element: Optional[str] = None):
+    """Get yoga poses, optionally filtered by element."""
+    poses = YOGA_POSES
+    if element:
+        poses = [p for p in poses if p["element"].lower() == element.lower()]
+    return poses
+
+@api_router.get("/yoga/poses/{pose_id}")
+async def get_yoga_pose(pose_id: str):
+    """Get a specific yoga pose."""
+    pose = next((p for p in YOGA_POSES if p["id"] == pose_id), None)
+    if not pose:
+        raise HTTPException(status_code=404, detail="Pose not found")
+    return pose
+
+# ============ BREATHWORK ROUTES ============
+
+BREATHWORK_SESSIONS = [
+    {"id": "1", "name": "Earth Grounding Breath", "element": "Earth", "description": "Connect deeply with Mother Earth through slow, rhythmic breathing.", "duration_minutes": 10, "pattern": {"inhale": 4, "hold": 4, "exhale": 6, "hold_empty": 2}, "benefits": ["Grounding", "Reduces anxiety", "Connects to earth energy"]},
+    {"id": "2", "name": "Fire Breath (Kapalabhati)", "element": "Fire", "description": "Ignite your inner fire with rapid, powerful exhalations.", "duration_minutes": 5, "pattern": {"inhale": 1, "hold": 0, "exhale": 1, "hold_empty": 0}, "benefits": ["Energizes", "Detoxifies", "Awakens kundalini"]},
+    {"id": "3", "name": "Ocean Breath (Ujjayi)", "element": "Water", "description": "Create the sound of ocean waves, flowing with liquid grace.", "duration_minutes": 15, "pattern": {"inhale": 4, "hold": 0, "exhale": 6, "hold_empty": 0}, "benefits": ["Calms mind", "Warms body", "Promotes flow"]},
+    {"id": "4", "name": "Wind Clearing Breath", "element": "Air", "description": "Clear stagnant energy with alternate nostril breathing.", "duration_minutes": 10, "pattern": {"inhale": 4, "hold": 4, "exhale": 4, "hold_empty": 0}, "benefits": ["Balances hemispheres", "Clears mind", "Purifies nadis"]},
+    {"id": "5", "name": "Spirit Journey Breath", "element": "Spirit", "description": "Deep rhythmic breathing for shamanic journeying and vision.", "duration_minutes": 20, "pattern": {"inhale": 3, "hold": 0, "exhale": 3, "hold_empty": 0}, "benefits": ["Altered states", "Spiritual connection", "Deep release"]},
+    {"id": "6", "name": "4-7-8 Relaxation", "element": "Water", "description": "Ancient technique for deep relaxation and sleep preparation.", "duration_minutes": 10, "pattern": {"inhale": 4, "hold": 7, "exhale": 8, "hold_empty": 0}, "benefits": ["Promotes sleep", "Reduces stress", "Calms nervous system"]},
+]
+
+@api_router.get("/breathwork/sessions")
+async def get_breathwork_sessions(element: Optional[str] = None):
+    """Get breathwork sessions, optionally filtered by element."""
+    sessions = BREATHWORK_SESSIONS
+    if element:
+        sessions = [s for s in sessions if s["element"].lower() == element.lower()]
+    return sessions
+
+@api_router.get("/breathwork/sessions/{session_id}")
+async def get_breathwork_session(session_id: str):
+    """Get a specific breathwork session."""
+    session = next((s for s in BREATHWORK_SESSIONS if s["id"] == session_id), None)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+    return session
+
+# ============ CRYSTALS ROUTES ============
+
+CRYSTALS = [
+    {"id": "1", "name": "Clear Quartz", "element": "Spirit", "chakras": ["Crown", "All"], "properties": ["Amplification", "Clarity", "Programming"], "description": "The master healer and energy amplifier. Clear quartz is like a blank canvas that can be programmed with any intention."},
+    {"id": "2", "name": "Amethyst", "element": "Air", "chakras": ["Third Eye", "Crown"], "properties": ["Intuition", "Protection", "Spiritual Growth"], "description": "The stone of spiritual wisdom and psychic abilities. Opens the third eye and connects to higher realms."},
+    {"id": "3", "name": "Rose Quartz", "element": "Water", "chakras": ["Heart"], "properties": ["Love", "Compassion", "Emotional Healing"], "description": "The stone of unconditional love. Opens the heart chakra to give and receive love."},
+    {"id": "4", "name": "Black Tourmaline", "element": "Earth", "chakras": ["Root"], "properties": ["Protection", "Grounding", "EMF Shield"], "description": "The ultimate protection stone. Creates a shield against negative energies and grounds to the earth."},
+    {"id": "5", "name": "Citrine", "element": "Fire", "chakras": ["Solar Plexus", "Sacral"], "properties": ["Abundance", "Joy", "Manifestation"], "description": "The merchant's stone of abundance and personal power. Attracts prosperity and success."},
+    {"id": "6", "name": "Selenite", "element": "Spirit", "chakras": ["Crown", "Third Eye"], "properties": ["Cleansing", "Connection", "Clarity"], "description": "Named after the moon goddess Selene. Cleanses and charges other crystals."},
+    {"id": "7", "name": "Obsidian", "element": "Fire", "chakras": ["Root"], "properties": ["Shadow Work", "Protection", "Truth"], "description": "Volcanic glass for deep shadow work and facing inner truths."},
+    {"id": "8", "name": "Turquoise", "element": "Water", "chakras": ["Throat", "Heart"], "properties": ["Communication", "Protection", "Healing"], "description": "Sacred stone of many indigenous traditions. Bridges earth and sky."},
+    {"id": "9", "name": "Labradorite", "element": "Air", "chakras": ["Third Eye", "Throat"], "properties": ["Magic", "Protection", "Transformation"], "description": "Stone of magic and transformation with iridescent flash."},
+    {"id": "10", "name": "Carnelian", "element": "Fire", "chakras": ["Sacral", "Root"], "properties": ["Creativity", "Courage", "Vitality"], "description": "Ignites creative fire and passion for life."},
+    {"id": "11", "name": "Moonstone", "element": "Water", "chakras": ["Crown", "Third Eye", "Sacral"], "properties": ["Intuition", "Cycles", "Divine Feminine"], "description": "Stone of the divine feminine and lunar cycles."},
+    {"id": "12", "name": "Smoky Quartz", "element": "Earth", "chakras": ["Root"], "properties": ["Grounding", "Transmutation", "Protection"], "description": "Transmutes negative energy into positive. Deep grounding."},
+]
+
+@api_router.get("/crystals")
+async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = None):
+    """Get crystals, optionally filtered by element or chakra."""
+    crystals = CRYSTALS
+    if element:
+        crystals = [c for c in crystals if c["element"].lower() == element.lower()]
+    if chakra:
+        crystals = [c for c in crystals if any(chakra.lower() in ch.lower() for ch in c["chakras"])]
+    return crystals
+
+@api_router.get("/crystals/{crystal_id}")
+async def get_crystal(crystal_id: str):
+    """Get a specific crystal."""
+    crystal = next((c for c in CRYSTALS if c["id"] == crystal_id), None)
+    if not crystal:
+        raise HTTPException(status_code=404, detail="Crystal not found")
+    return crystal
+
+# ============ MANTRAS ROUTES ============
+
+MANTRAS = [
+    {"id": "1", "name": "Om", "sanskrit": "ॐ", "translation": "The sound of the universe, the primordial vibration", "element": "Spirit", "chakra": "Crown", "benefits": ["Universal connection", "Calms mind", "Raises vibration"]},
+    {"id": "2", "name": "Om Mani Padme Hum", "sanskrit": "ॐ मणि पद्मे हूँ", "translation": "The jewel is in the lotus", "element": "Spirit", "chakra": "Heart", "benefits": ["Compassion", "Purification", "Wisdom"]},
+    {"id": "3", "name": "Lokah Samastah Sukhino Bhavantu", "sanskrit": "लोकाः समस्ताः सुखिनो भवन्तु", "translation": "May all beings everywhere be happy and free", "element": "Water", "chakra": "Heart", "benefits": ["Universal love", "Peace", "Interconnection"]},
+    {"id": "4", "name": "So Hum", "sanskrit": "सो ऽहम्", "translation": "I am that (the universe)", "element": "Air", "chakra": "Third Eye", "benefits": ["Self-realization", "Breath awareness", "Unity"]},
+    {"id": "5", "name": "Sat Nam", "sanskrit": None, "translation": "Truth is my identity", "element": "Spirit", "chakra": "Throat", "benefits": ["Authenticity", "Truth", "Identity"]},
+    {"id": "6", "name": "Om Namah Shivaya", "sanskrit": "ॐ नमः शिवाय", "translation": "I bow to Shiva (the transformer)", "element": "Fire", "chakra": "Third Eye", "benefits": ["Transformation", "Inner peace", "Destruction of ego"]},
+    {"id": "7", "name": "Gayatri Mantra", "sanskrit": "ॐ भूर्भुवः स्वः", "translation": "We meditate on the glory of the Creator", "element": "Fire", "chakra": "Solar Plexus", "benefits": ["Illumination", "Wisdom", "Vitality"]},
+    {"id": "8", "name": "Ham Sa", "sanskrit": "हंस", "translation": "I am the divine swan", "element": "Air", "chakra": "Throat", "benefits": ["Discrimination", "Purity", "Grace"]},
+]
+
+@api_router.get("/mantras")
+async def get_mantras(element: Optional[str] = None):
+    """Get mantras, optionally filtered by element."""
+    mantras = MANTRAS
+    if element:
+        mantras = [m for m in mantras if m["element"].lower() == element.lower()]
+    return mantras
+
+# ============ MUDRAS ROUTES ============
+
+MUDRAS = [
+    {"id": "1", "name": "Gyan Mudra", "sanskrit_name": "Jnana Mudra", "element": "Air", "description": "Touch thumb to index finger, other fingers extended. The gesture of knowledge and wisdom.", "benefits": ["Mental clarity", "Concentration", "Wisdom"]},
+    {"id": "2", "name": "Anjali Mudra", "sanskrit_name": "Namaste", "element": "Spirit", "description": "Palms pressed together at heart. The gesture of greeting and honoring the divine in all.", "benefits": ["Heart opening", "Gratitude", "Connection"]},
+    {"id": "3", "name": "Dhyana Mudra", "sanskrit_name": "Meditation Mudra", "element": "Water", "description": "Hands in lap, right over left, thumbs touching. Deep meditation gesture.", "benefits": ["Deep meditation", "Inner peace", "Concentration"]},
+    {"id": "4", "name": "Prithvi Mudra", "sanskrit_name": "Earth Mudra", "element": "Earth", "description": "Thumb touches ring finger. Connects to earth element and stability.", "benefits": ["Grounding", "Stability", "Physical strength"]},
+    {"id": "5", "name": "Varuna Mudra", "sanskrit_name": "Water Mudra", "element": "Water", "description": "Thumb touches little finger. Balances water element in body.", "benefits": ["Emotional balance", "Hydration", "Flexibility"]},
+    {"id": "6", "name": "Agni Mudra", "sanskrit_name": "Fire Mudra", "element": "Fire", "description": "Fold ring finger to palm, thumb pressing on it. Increases internal fire.", "benefits": ["Metabolism", "Digestion", "Transformation"]},
+    {"id": "7", "name": "Vayu Mudra", "sanskrit_name": "Air Mudra", "element": "Air", "description": "Fold index finger to palm, thumb pressing on it. Balances air element.", "benefits": ["Calms anxiety", "Reduces gas", "Mental clarity"]},
+    {"id": "8", "name": "Shuni Mudra", "sanskrit_name": "Saturn Mudra", "element": "Earth", "description": "Thumb touches middle finger. Patience and discipline.", "benefits": ["Patience", "Discipline", "Responsibility"]},
+]
+
+@api_router.get("/mudras")
+async def get_mudras(element: Optional[str] = None):
+    """Get mudras, optionally filtered by element."""
+    mudras = MUDRAS
+    if element:
+        mudras = [m for m in mudras if m["element"].lower() == element.lower()]
+    return mudras
+
+# ============ 13-MONTH ASTROLOGY ROUTES ============
+
+THIRTEEN_MONTH_CALENDAR = [
+    {"id": "1", "month_number": 1, "name": "Wolf Moon", "symbol": "Wolf", "element": "Earth", "dates": "Dec 21 - Jan 17", "description": "Time of the wolf pack, community, and inner guidance. The longest nights invite deep introspection.", "themes": ["Community", "Intuition", "Survival", "Inner guidance"], "crystals": ["Black Tourmaline", "Smoky Quartz"], "practices": ["Shadow work", "Pack meditation", "Night journeys"]},
+    {"id": "2", "month_number": 2, "name": "Storm Moon", "symbol": "Thunder", "element": "Fire", "dates": "Jan 18 - Feb 14", "description": "Purification through storm energy. Lightning illuminates truth and clears stagnation.", "themes": ["Purification", "Truth", "Awakening", "Release"], "crystals": ["Clear Quartz", "Labradorite"], "practices": ["Thunder meditation", "Energy clearing", "Storm dance"]},
+    {"id": "3", "month_number": 3, "name": "Crow Moon", "symbol": "Crow", "element": "Air", "dates": "Feb 15 - Mar 14", "description": "The crow brings messages from the spirit world. Magic stirs as winter breaks.", "themes": ["Magic", "Messages", "Transformation", "Creation"], "crystals": ["Amethyst", "Obsidian"], "practices": ["Divination", "Dream work", "Crow meditation"]},
+    {"id": "4", "month_number": 4, "name": "Seed Moon", "symbol": "Seed", "element": "Earth", "dates": "Mar 15 - Apr 11", "description": "Spring equinox energy. Time to plant seeds of intention in fertile ground.", "themes": ["New beginnings", "Planting", "Fertility", "Hope"], "crystals": ["Green Aventurine", "Moss Agate"], "practices": ["Intention setting", "Earth ceremonies", "Seed meditation"]},
+    {"id": "5", "month_number": 5, "name": "Hare Moon", "symbol": "Hare", "element": "Water", "dates": "Apr 12 - May 9", "description": "The hare's fertility and playfulness. Joy returns with spring's full bloom.", "themes": ["Fertility", "Joy", "Playfulness", "Abundance"], "crystals": ["Rose Quartz", "Moonstone"], "practices": ["Fertility rituals", "Dance", "Joy ceremonies"]},
+    {"id": "6", "month_number": 6, "name": "Dyad Moon", "symbol": "Twins", "element": "Air", "dates": "May 10 - Jun 6", "description": "The sacred twins - light and shadow, masculine and feminine united.", "themes": ["Duality", "Balance", "Partnership", "Integration"], "crystals": ["Citrine", "Tiger's Eye"], "practices": ["Shadow integration", "Partner work", "Balance rituals"]},
+    {"id": "7", "month_number": 7, "name": "Mead Moon", "symbol": "Bee", "element": "Fire", "dates": "Jun 7 - Jul 4", "description": "Summer solstice energy. The bee's honey sweetens life's celebrations.", "themes": ["Celebration", "Sweetness", "Community", "Abundance"], "crystals": ["Sunstone", "Carnelian"], "practices": ["Solstice ceremony", "Honey rituals", "Fire celebration"]},
+    {"id": "8", "month_number": 8, "name": "Wort Moon", "symbol": "Herb", "element": "Earth", "dates": "Jul 5 - Aug 1", "description": "Peak of plant medicine. Herbs are most potent for healing and magic.", "themes": ["Healing", "Plant medicine", "Green magic", "Harvesting"], "crystals": ["Green Jade", "Peridot"], "practices": ["Herb gathering", "Plant communication", "Green healing"]},
+    {"id": "9", "month_number": 9, "name": "Barley Moon", "symbol": "Grain", "element": "Earth", "dates": "Aug 2 - Aug 29", "description": "First harvest. Gratitude for abundance and preparing for darker times.", "themes": ["Harvest", "Gratitude", "Sacrifice", "Abundance"], "crystals": ["Amber", "Citrine"], "practices": ["Harvest ceremony", "Gratitude rituals", "Bread making"]},
+    {"id": "10", "month_number": 10, "name": "Wine Moon", "symbol": "Grape", "element": "Water", "dates": "Aug 30 - Sep 26", "description": "The vine's gift of transformation. What was bitter becomes sweet.", "themes": ["Transformation", "Intoxication", "Ecstasy", "Release"], "crystals": ["Amethyst", "Lepidolite"], "practices": ["Ecstatic dance", "Transformation rituals", "Release ceremonies"]},
+    {"id": "11", "month_number": 11, "name": "Blood Moon", "symbol": "Stag", "element": "Fire", "dates": "Sep 27 - Oct 24", "description": "The stag's sacrifice. Honoring ancestors and the cycle of life and death.", "themes": ["Ancestors", "Sacrifice", "Death/Rebirth", "Honor"], "crystals": ["Obsidian", "Garnet"], "practices": ["Ancestor work", "Blood mysteries", "Hunt meditation"]},
+    {"id": "12", "month_number": 12, "name": "Snow Moon", "symbol": "Bear", "element": "Water", "dates": "Oct 25 - Nov 21", "description": "The bear retreats to dream. Time for introspection and dream journeys.", "themes": ["Dreaming", "Introspection", "Rest", "Inner journey"], "crystals": ["Blue Lace Agate", "Howlite"], "practices": ["Dream incubation", "Bear meditation", "Deep rest"]},
+    {"id": "13", "month_number": 13, "name": "Oak Moon", "symbol": "Oak", "element": "Spirit", "dates": "Nov 22 - Dec 20", "description": "The oak stands firm through winter's dark. Wisdom of the ancestors in the world tree.", "themes": ["Wisdom", "Ancestors", "World tree", "Endurance"], "crystals": ["Petrified Wood", "Smoky Quartz"], "practices": ["Tree meditation", "Ancestor ceremonies", "Winter preparation"]},
+]
+
+@api_router.get("/astrology/months")
+async def get_astrology_months():
+    """Get all 13 lunar months."""
+    return THIRTEEN_MONTH_CALENDAR
+
+@api_router.get("/astrology/months/{month_id}")
+async def get_astrology_month(month_id: str):
+    """Get a specific lunar month."""
+    month = next((m for m in THIRTEEN_MONTH_CALENDAR if m["id"] == month_id), None)
+    if not month:
+        raise HTTPException(status_code=404, detail="Month not found")
+    return month
+
+@api_router.get("/astrology/current")
+async def get_current_month():
+    """Get the current lunar month based on today's date."""
+    today = datetime.now()
+    month_day = today.strftime("%b %d")
+    
+    # Simple date matching (would be more complex in production)
+    month_ranges = [
+        (12, 21, 1, 17, "1"),
+        (1, 18, 2, 14, "2"),
+        (2, 15, 3, 14, "3"),
+        (3, 15, 4, 11, "4"),
+        (4, 12, 5, 9, "5"),
+        (5, 10, 6, 6, "6"),
+        (6, 7, 7, 4, "7"),
+        (7, 5, 8, 1, "8"),
+        (8, 2, 8, 29, "9"),
+        (8, 30, 9, 26, "10"),
+        (9, 27, 10, 24, "11"),
+        (10, 25, 11, 21, "12"),
+        (11, 22, 12, 20, "13"),
+    ]
+    
+    current_month = today.month
+    current_day = today.day
+    
+    for start_month, start_day, end_month, end_day, month_id in month_ranges:
+        if start_month <= end_month:
+            if (current_month == start_month and current_day >= start_day) or \
+               (current_month == end_month and current_day <= end_day) or \
+               (start_month < current_month < end_month):
+                return next(m for m in THIRTEEN_MONTH_CALENDAR if m["id"] == month_id)
+        else:
+            if (current_month == start_month and current_day >= start_day) or \
+               (current_month == end_month and current_day <= end_day) or \
+               current_month > start_month or current_month < end_month:
+                return next(m for m in THIRTEEN_MONTH_CALENDAR if m["id"] == month_id)
+    
+    return THIRTEEN_MONTH_CALENDAR[0]
+
+# ============ SOMATIC & GROUNDING ROUTES ============
+
+SOMATIC_PRACTICES = [
+    {"id": "1", "name": "Earth Connection", "element": "Earth", "description": "Stand barefoot on earth. Feel roots growing from your feet deep into the ground. Sense the heartbeat of Mother Earth rising through you.", "duration_minutes": 10, "benefits": ["Grounding", "Stability", "Earth connection"]},
+    {"id": "2", "name": "Shake & Release", "element": "Fire", "description": "Like animals shake off stress, let your body tremor and shake freely. Release stuck energy and trauma through movement.", "duration_minutes": 15, "benefits": ["Trauma release", "Energy clearing", "Nervous system reset"]},
+    {"id": "3", "name": "Water Flow", "element": "Water", "description": "Move like water - fluid, formless, following gravity. Let your body find its natural rhythm and flow.", "duration_minutes": 20, "benefits": ["Flexibility", "Emotional release", "Fluidity"]},
+    {"id": "4", "name": "Wind Dance", "element": "Air", "description": "Dance as if moved by wind. Let breath guide movement. Be light, expansive, free.", "duration_minutes": 15, "benefits": ["Freedom", "Breath expansion", "Lightness"]},
+    {"id": "5", "name": "Fire Stomp", "element": "Fire", "description": "Powerful stomping and arm movements. Awaken your inner warrior and burn through blocks.", "duration_minutes": 10, "benefits": ["Power", "Anger release", "Energy activation"]},
+    {"id": "6", "name": "Spiral Movement", "element": "Spirit", "description": "Move in spirals - the sacred geometry of life. DNA, galaxies, and shells all spiral.", "duration_minutes": 15, "benefits": ["Integration", "Sacred geometry", "Wholeness"]},
+]
+
+GROUNDING_EXERCISES = [
+    {"id": "1", "name": "5-4-3-2-1 Senses", "element": "Earth", "description": "Name 5 things you see, 4 you hear, 3 you feel, 2 you smell, 1 you taste. Return fully to the present moment.", "duration_minutes": 5, "benefits": ["Presence", "Anxiety relief", "Body awareness"]},
+    {"id": "2", "name": "Root Visualization", "element": "Earth", "description": "Visualize roots growing from your base down into the earth's core. Feel anchored and supported.", "duration_minutes": 10, "benefits": ["Grounding", "Security", "Stability"]},
+    {"id": "3", "name": "Stone Holding", "element": "Earth", "description": "Hold a stone in each hand. Feel its weight, temperature, texture. Let earth energy flow through you.", "duration_minutes": 10, "benefits": ["Earth connection", "Calming", "Presence"]},
+    {"id": "4", "name": "Barefoot Walking", "element": "Earth", "description": "Walk slowly barefoot on earth, grass, or sand. Feel every sensation. Connect with the living earth.", "duration_minutes": 15, "benefits": ["Earth connection", "Mindfulness", "Energy exchange"]},
+    {"id": "5", "name": "Tree Embrace", "element": "Earth", "description": "Stand with back against a tree. Feel its strength and age. Breathe with its rhythm.", "duration_minutes": 15, "benefits": ["Tree connection", "Support", "Ancient wisdom"]},
+]
+
+@api_router.get("/somatic/practices")
+async def get_somatic_practices(element: Optional[str] = None):
+    """Get somatic movement practices."""
+    practices = SOMATIC_PRACTICES
+    if element:
+        practices = [p for p in practices if p["element"].lower() == element.lower()]
+    return practices
+
+@api_router.get("/grounding/exercises")
+async def get_grounding_exercises():
+    """Get grounding exercises."""
+    return GROUNDING_EXERCISES
+
+# ============ DASHBOARD / USER DATA ============
+
+@api_router.get("/dashboard/daily")
+async def get_daily_guidance(user: User = Depends(get_current_user)):
+    """Get personalized daily guidance."""
+    import random
+    
+    current_month = await get_current_month()
+    daily_pose = random.choice(YOGA_POSES)
+    daily_crystal = random.choice(CRYSTALS)
+    daily_mantra = random.choice(MANTRAS)
+    daily_breathwork = random.choice(BREATHWORK_SESSIONS)
+    
+    return {
+        "greeting": f"Blessed day, {user.name.split()[0]}",
+        "current_moon": current_month,
+        "daily_pose": daily_pose,
+        "daily_crystal": daily_crystal,
+        "daily_mantra": daily_mantra,
+        "daily_breathwork": daily_breathwork,
+        "element_focus": current_month["element"]
+    }
+
+# ============ ROOT & HEALTH ============
+
+@api_router.get("/")
+async def root():
+    return {"message": "Shamanic Elemental Yoga API", "status": "active"}
+
+@api_router.get("/health")
+async def health_check():
+    return {"status": "healthy", "timestamp": datetime.now(timezone.utc).isoformat()}
+
+# Include the router in the main app
+app.include_router(api_router)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_credentials=True,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
