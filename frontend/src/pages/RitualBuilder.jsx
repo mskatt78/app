@@ -556,19 +556,29 @@ const RitualBuilder = ({ user, api }) => {
                     transition={{ delay: index * 0.05 }}
                     className="p-6 rounded-2xl bg-card/50 border border-white/5 hover:border-primary/20 transition-all"
                   >
-                    <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center justify-between mb-4">
                       <div>
                         <h3 className="text-xl font-serif">{ritual.name}</h3>
                         <p className="text-sm text-muted-foreground">{ritual.description}</p>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteRitual(ritual.ritual_id)}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => shareRitual(ritual.ritual_id)}
+                          className="text-muted-foreground hover:text-primary"
+                        >
+                          <Share2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => deleteRitual(ritual.ritual_id)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-4">
