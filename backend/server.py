@@ -950,6 +950,180 @@ async def delete_ritual(ritual_id: str, user: User = Depends(get_current_user)):
         raise HTTPException(status_code=404, detail="Ritual not found")
     return {"message": "Ritual deleted"}
 
+# ============ RITUAL SHARING ============
+
+@api_router.post("/rituals/{ritual_id}/share")
+async def share_ritual(ritual_id: str, user: User = Depends(get_current_user)):
+    """Generate a shareable link for a ritual."""
+    ritual = await db.rituals.find_one({"ritual_id": ritual_id, "user_id": user.user_id}, {"_id": 0})
+    if not ritual:
+        raise HTTPException(status_code=404, detail="Ritual not found")
+    
+    # Create or get existing share code
+    share_code = f"share_{uuid.uuid4().hex[:8]}"
+    
+    # Store shared ritual
+    shared = {
+        "share_code": share_code,
+        "ritual_id": ritual_id,
+        "original_user_id": user.user_id,
+        "ritual_data": {
+            "name": ritual["name"],
+            "description": ritual.get("description"),
+            "practices": ritual["practices"],
+            "total_duration": ritual["total_duration"],
+        },
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "copy_count": 0
+    }
+    
+    await db.shared_rituals.insert_one(shared)
+    shared.pop("_id", None)
+    
+    return {"share_code": share_code, "share_url": f"/rituals/shared/{share_code}"}
+
+@api_router.get("/rituals/shared/{share_code}")
+async def get_shared_ritual(share_code: str):
+    """Get a shared ritual by share code (no auth required)."""
+    shared = await db.shared_rituals.find_one({"share_code": share_code}, {"_id": 0})
+    if not shared:
+        raise HTTPException(status_code=404, detail="Shared ritual not found")
+    return shared
+
+@api_router.post("/rituals/shared/{share_code}/copy")
+async def copy_shared_ritual(share_code: str, user: User = Depends(get_current_user)):
+    """Copy a shared ritual to user's own rituals."""
+    shared = await db.shared_rituals.find_one({"share_code": share_code}, {"_id": 0})
+    if not shared:
+        raise HTTPException(status_code=404, detail="Shared ritual not found")
+    
+    # Create new ritual for the user
+    ritual_data = shared["ritual_data"]
+    new_ritual = {
+        "ritual_id": f"ritual_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "name": f"{ritual_data['name']} (copied)",
+        "description": ritual_data.get("description"),
+        "practices": ritual_data["practices"],
+        "total_duration": ritual_data["total_duration"],
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "copied_from": share_code
+    }
+    
+    await db.rituals.insert_one(new_ritual)
+    
+    # Increment copy count
+    await db.shared_rituals.update_one(
+        {"share_code": share_code},
+        {"$inc": {"copy_count": 1}}
+    )
+    
+    new_ritual.pop("_id", None)
+    return new_ritual
+
+# ============ DAILY REMINDERS ============
+
+class ReminderSettings(BaseModel):
+    enabled: bool = True
+    time: str = "08:00"  # HH:MM format
+    days: List[str] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+    ritual_id: Optional[str] = None
+    message: Optional[str] = None
+
+@api_router.get("/settings/reminders")
+async def get_reminder_settings(user: User = Depends(get_current_user)):
+    """Get user's reminder settings."""
+    settings = await db.reminder_settings.find_one({"user_id": user.user_id}, {"_id": 0})
+    if not settings:
+        return {
+            "user_id": user.user_id,
+            "enabled": False,
+            "time": "08:00",
+            "days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+            "ritual_id": None,
+            "message": "Time for your sacred practice"
+        }
+    return settings
+
+@api_router.put("/settings/reminders")
+async def update_reminder_settings(data: ReminderSettings, user: User = Depends(get_current_user)):
+    """Update user's reminder settings."""
+    settings = {
+        "user_id": user.user_id,
+        "enabled": data.enabled,
+        "time": data.time,
+        "days": data.days,
+        "ritual_id": data.ritual_id,
+        "message": data.message or "Time for your sacred practice",
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.reminder_settings.update_one(
+        {"user_id": user.user_id},
+        {"$set": settings},
+        upsert=True
+    )
+    
+    return settings
+
+# ============ JOURNAL / REFLECTIONS ============
+
+class JournalEntryCreate(BaseModel):
+    title: Optional[str] = None
+    content: str
+    mood: Optional[str] = None  # "peaceful", "energized", "grateful", "reflective", "challenged"
+    practices_completed: Optional[List[str]] = None
+    tags: Optional[List[str]] = None
+
+@api_router.post("/journal")
+async def create_journal_entry(data: JournalEntryCreate, user: User = Depends(get_current_user)):
+    """Create a new journal entry."""
+    entry = {
+        "entry_id": f"journal_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "title": data.title,
+        "content": data.content,
+        "mood": data.mood,
+        "practices_completed": data.practices_completed or [],
+        "tags": data.tags or [],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.journal.insert_one(entry)
+    entry.pop("_id", None)
+    return entry
+
+@api_router.get("/journal")
+async def get_journal_entries(
+    user: User = Depends(get_current_user),
+    limit: int = 50,
+    mood: Optional[str] = None
+):
+    """Get user's journal entries."""
+    query = {"user_id": user.user_id}
+    if mood:
+        query["mood"] = mood
+    
+    entries = await db.journal.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
+    return entries
+
+@api_router.get("/journal/{entry_id}")
+async def get_journal_entry(entry_id: str, user: User = Depends(get_current_user)):
+    """Get a specific journal entry."""
+    entry = await db.journal.find_one({"entry_id": entry_id, "user_id": user.user_id}, {"_id": 0})
+    if not entry:
+        raise HTTPException(status_code=404, detail="Journal entry not found")
+    return entry
+
+@api_router.delete("/journal/{entry_id}")
+async def delete_journal_entry(entry_id: str, user: User = Depends(get_current_user)):
+    """Delete a journal entry."""
+    result = await db.journal.delete_one({"entry_id": entry_id, "user_id": user.user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Journal entry not found")
+    return {"message": "Entry deleted"}
+
 # ============ ACHIEVEMENTS ============
 
 @api_router.get("/achievements")
