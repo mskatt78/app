@@ -232,6 +232,22 @@ function AppRouter() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/journal"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Journal user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Settings user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
