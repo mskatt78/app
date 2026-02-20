@@ -18,6 +18,8 @@ import GroundingPractices from "./pages/GroundingPractices";
 import Favorites from "./pages/Favorites";
 import RitualBuilder from "./pages/RitualBuilder";
 import Achievements from "./pages/Achievements";
+import Journal from "./pages/Journal";
+import Settings from "./pages/Settings";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
