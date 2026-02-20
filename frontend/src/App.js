@@ -20,6 +20,9 @@ import RitualBuilder from "./pages/RitualBuilder";
 import Achievements from "./pages/Achievements";
 import Journal from "./pages/Journal";
 import Settings from "./pages/Settings";
+import Mindfulness from "./pages/Mindfulness";
+import Meditations from "./pages/Meditations";
+import Numerology from "./pages/Numerology";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
