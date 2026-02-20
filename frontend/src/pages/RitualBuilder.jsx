@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Plus, Trash2, Play, Pause, RotateCcw, Save, Clock,
-  Leaf, Wind, Music, Hand, GripVertical, ChevronDown, Check
+  Leaf, Wind, Music, Hand, GripVertical, ChevronDown, Check, Share2, Copy, Link
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -23,6 +23,9 @@ const RitualBuilder = ({ user, api }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [stepProgress, setStepProgress] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
+  const [sharingRitualId, setSharingRitualId] = useState(null);
 
   // Available practices to add
   const [practices, setPractices] = useState({
