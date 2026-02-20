@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Leaf, Eye, Wind, Moon, Sparkles, Heart, Waves, Mountain,
-  LogOut, Menu, X, ChevronRight, Sun, User, Star, Clock, Trophy, BookOpen, Settings
+  LogOut, Menu, X, ChevronRight, Sun, User, Star, Clock, Trophy, BookOpen, Settings,
+  Brain, Compass, Hash
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -19,7 +20,10 @@ const Dashboard = ({ user, api }) => {
     { icon: Leaf, label: "Yoga", path: "/yoga", element: "earth" },
     { icon: Eye, label: "Oracle", path: "/oracle", element: "spirit" },
     { icon: Wind, label: "Breathwork", path: "/breathwork", element: "air" },
+    { icon: Brain, label: "Mindfulness", path: "/mindfulness", element: "air" },
+    { icon: Compass, label: "Meditations", path: "/meditations", element: "spirit" },
     { icon: Moon, label: "Astrology", path: "/astrology", element: "water" },
+    { icon: Hash, label: "Numerology", path: "/numerology", element: "fire" },
     { icon: Sparkles, label: "Crystals", path: "/crystals", element: "spirit" },
     { icon: Heart, label: "Mantras", path: "/mantras", element: "fire" },
     { icon: Sun, label: "Mudras", path: "/mudras", element: "fire" },

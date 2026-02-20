@@ -251,6 +251,30 @@ function AppRouter() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/mindfulness"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Mindfulness user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/meditations"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Meditations user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/numerology"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Numerology user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }
