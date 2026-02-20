@@ -620,6 +620,42 @@ const RitualBuilder = ({ user, api }) => {
           </div>
         )}
       </main>
+
+      {/* Share Dialog */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent className="bg-card border-white/10 max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-serif flex items-center gap-2">
+              <Share2 className="w-5 h-5 text-primary" />
+              Share Ritual
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            <p className="text-muted-foreground">
+              Share this ritual with friends! They can copy it to their own account.
+            </p>
+            
+            <div className="flex gap-2">
+              <Input
+                value={shareUrl}
+                readOnly
+                className="bg-card/50 border-white/10 flex-1"
+              />
+              <Button onClick={copyShareUrl} className="bg-primary">
+                <Copy className="w-4 h-4" />
+              </Button>
+            </div>
+
+            <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
+              <p className="text-sm text-muted-foreground">
+                <Link className="w-4 h-4 inline mr-1" />
+                Anyone with this link can view and copy this ritual to their practice.
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
