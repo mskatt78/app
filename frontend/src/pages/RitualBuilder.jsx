@@ -177,6 +177,24 @@ const RitualBuilder = ({ user, api }) => {
     }
   };
 
+  const shareRitual = async (ritualId) => {
+    setSharingRitualId(ritualId);
+    try {
+      const response = await api.post(`/rituals/${ritualId}/share`);
+      const fullUrl = `${window.location.origin}/rituals/shared/${response.data.share_code}`;
+      setShareUrl(fullUrl);
+      setShareDialogOpen(true);
+    } catch (error) {
+      console.error("Failed to share ritual:", error);
+      toast.error("Could not create share link");
+    }
+  };
+
+  const copyShareUrl = () => {
+    navigator.clipboard.writeText(shareUrl);
+    toast.success("Link copied to clipboard!");
+  };
+
   const startRitual = (ritual) => {
     setActiveRitual(ritual);
     setCurrentStep(0);
