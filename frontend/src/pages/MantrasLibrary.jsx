@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowLeft, Heart, Filter, Music, Play, Pause, Volume2, RotateCcw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Heart, Filter, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Progress } from "../components/ui/progress";
+import { Slider } from "../components/ui/slider";
 import { toast } from "sonner";
 
 const MantrasLibrary = ({ user, api }) => {
@@ -22,15 +23,25 @@ const MantrasLibrary = ({ user, api }) => {
   const [currentRep, setCurrentRep] = useState(0);
   const [chantProgress, setChantProgress] = useState(0);
   const intervalRef = useRef(null);
+  
+  // Audio state
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.7);
+  const [isMuted, setIsMuted] = useState(false);
+  const [audioProgress, setAudioProgress] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const [isLooping, setIsLooping] = useState(true);
+  const [audioError, setAudioError] = useState(false);
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
   const elementColors = {
-    Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-    Water: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-    Fire: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
-    Air: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20" },
-    Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+    Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", gradient: "from-emerald-500/20" },
+    Water: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", gradient: "from-blue-500/20" },
+    Fire: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20", gradient: "from-orange-500/20" },
+    Air: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20", gradient: "from-cyan-500/20" },
+    Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", gradient: "from-purple-500/20" },
   };
 
   useEffect(() => {
@@ -38,6 +49,10 @@ const MantrasLibrary = ({ user, api }) => {
     fetchFavorites();
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
     };
   }, []);
 
@@ -48,6 +63,54 @@ const MantrasLibrary = ({ user, api }) => {
       setFilteredMantras(mantras.filter(m => m.element === selectedElement));
     }
   }, [selectedElement, mantras]);
+
+  // Audio setup when mantra is selected
+  useEffect(() => {
+    if (selectedMantra?.audio_url) {
+      setupAudio(selectedMantra.audio_url);
+    }
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, [selectedMantra]);
+
+  const setupAudio = (url) => {
+    setAudioError(false);
+    setAudioProgress(0);
+    setIsPlaying(false);
+    
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    
+    const audio = new Audio(url);
+    audio.volume = volume;
+    audio.loop = isLooping;
+    
+    audio.addEventListener('loadedmetadata', () => {
+      setAudioDuration(audio.duration);
+    });
+    
+    audio.addEventListener('timeupdate', () => {
+      setAudioProgress((audio.currentTime / audio.duration) * 100);
+    });
+    
+    audio.addEventListener('ended', () => {
+      if (!isLooping) {
+        setIsPlaying(false);
+        setCurrentRep(prev => prev + 1);
+      }
+    });
+    
+    audio.addEventListener('error', () => {
+      setAudioError(true);
+      toast.error("Could not load audio. Using timer mode instead.");
+    });
+    
+    audioRef.current = audio;
+  };
 
   const fetchMantras = async () => {
     try {
@@ -92,6 +155,58 @@ const MantrasLibrary = ({ user, api }) => {
     }
   };
 
+  // Audio controls
+  const toggleAudio = () => {
+    if (!audioRef.current) return;
+    
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().catch(() => {
+        setAudioError(true);
+        toast.error("Could not play audio");
+      });
+      setIsPlaying(true);
+    }
+  };
+
+  const handleVolumeChange = (value) => {
+    const newVolume = value[0];
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+    }
+    setIsMuted(newVolume === 0);
+  };
+
+  const toggleMute = () => {
+    if (audioRef.current) {
+      if (isMuted) {
+        audioRef.current.volume = volume || 0.7;
+        setIsMuted(false);
+      } else {
+        audioRef.current.volume = 0;
+        setIsMuted(true);
+      }
+    }
+  };
+
+  const toggleLoop = () => {
+    setIsLooping(!isLooping);
+    if (audioRef.current) {
+      audioRef.current.loop = !isLooping;
+    }
+  };
+
+  const skipToNext = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      setCurrentRep(prev => prev + 1);
+    }
+  };
+
+  // Timer-based chanting (fallback when no audio)
   const startChanting = () => {
     if (!selectedMantra) return;
     setIsChanting(true);
@@ -133,6 +248,12 @@ const MantrasLibrary = ({ user, api }) => {
     stopChanting();
     setCurrentRep(0);
     setChantProgress(0);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsPlaying(false);
+      setAudioProgress(0);
+    }
   };
 
   const logPractice = async () => {
@@ -147,6 +268,20 @@ const MantrasLibrary = ({ user, api }) => {
       });
     } catch (error) {
       console.error("Failed to log practice:", error);
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleDialogClose = () => {
+    setSelectedMantra(null);
+    resetChanting();
+    if (audioRef.current) {
+      audioRef.current.pause();
     }
   };
 
@@ -195,6 +330,7 @@ const MantrasLibrary = ({ user, api }) => {
             {filteredMantras.map((mantra, index) => {
               const colors = elementColors[mantra.element] || elementColors.Spirit;
               const isFavorite = favorites.has(mantra.id);
+              const hasAudio = !!mantra.audio_url;
               
               return (
                 <motion.div
@@ -207,6 +343,16 @@ const MantrasLibrary = ({ user, api }) => {
                   onClick={() => setSelectedMantra(mantra)}
                   data-testid={`mantra-card-${mantra.id}`}
                 >
+                  {/* Audio Badge */}
+                  {hasAudio && (
+                    <div className="absolute top-4 left-4">
+                      <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-primary/20 text-primary text-xs">
+                        <Volume2 className="w-3 h-3" />
+                        Audio
+                      </span>
+                    </div>
+                  )}
+                  
                   {/* Favorite Button */}
                   <button
                     onClick={(e) => toggleFavorite(mantra.id, e)}
@@ -216,7 +362,7 @@ const MantrasLibrary = ({ user, api }) => {
                     <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
                   </button>
 
-                  <div className="flex items-start justify-between mb-4 pr-10">
+                  <div className="flex items-start justify-between mb-4 pr-10 pt-6">
                     <div className={`p-3 rounded-xl ${colors.bg}`}>
                       <Music className={`w-6 h-6 ${colors.text}`} />
                     </div>
@@ -234,7 +380,7 @@ const MantrasLibrary = ({ user, api }) => {
                   {mantra.sanskrit && (
                     <p className="text-2xl text-primary/80 mb-3 font-serif">{mantra.sanskrit}</p>
                   )}
-                  <p className="text-sm text-muted-foreground italic mb-3">"{mantra.translation}"</p>
+                  <p className="text-sm text-muted-foreground italic mb-3 line-clamp-2">"{mantra.translation}"</p>
                   
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span>{mantra.duration_seconds}s per rep</span>
@@ -247,9 +393,9 @@ const MantrasLibrary = ({ user, api }) => {
         )}
       </main>
 
-      {/* Mantra Detail Dialog with Chanting */}
-      <Dialog open={!!selectedMantra} onOpenChange={() => { setSelectedMantra(null); resetChanting(); }}>
-        <DialogContent className="bg-card border-white/10 max-w-lg">
+      {/* Mantra Detail Dialog with Audio Player */}
+      <Dialog open={!!selectedMantra} onOpenChange={handleDialogClose}>
+        <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto">
           {selectedMantra && (
             <>
               <DialogHeader>
@@ -274,9 +420,14 @@ const MantrasLibrary = ({ user, api }) => {
               <div className="space-y-6 mt-4">
                 {/* Sanskrit Display */}
                 {selectedMantra.sanskrit && (
-                  <div className="text-center py-6 rounded-xl bg-white/5">
-                    <p className="text-4xl text-primary font-serif">{selectedMantra.sanskrit}</p>
-                  </div>
+                  <motion.div 
+                    className="text-center py-8 rounded-xl bg-white/5 relative overflow-hidden"
+                    animate={isPlaying ? { scale: [1, 1.02, 1] } : {}}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <div className={`absolute inset-0 bg-gradient-to-b ${elementColors[selectedMantra.element]?.gradient} to-transparent opacity-30`} />
+                    <p className="text-5xl text-primary font-serif relative z-10">{selectedMantra.sanskrit}</p>
+                  </motion.div>
                 )}
 
                 {/* Translation */}
@@ -285,42 +436,123 @@ const MantrasLibrary = ({ user, api }) => {
                   <p className="text-lg italic text-foreground/90">"{selectedMantra.translation}"</p>
                 </div>
 
-                {/* Chanting Practice */}
-                <div className="p-6 rounded-xl bg-primary/10 border border-primary/20">
-                  <h4 className="text-sm uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
-                    <Volume2 className="w-4 h-4" />
-                    Chanting Practice
-                  </h4>
-                  
-                  <div className="text-center mb-4">
-                    <p className="text-4xl font-serif text-primary">{currentRep}</p>
-                    <p className="text-sm text-muted-foreground">of {selectedMantra.repetitions} repetitions</p>
+                {/* Audio Player Section */}
+                {selectedMantra.audio_url && !audioError ? (
+                  <div className="p-6 rounded-xl bg-primary/10 border border-primary/20">
+                    <h4 className="text-sm uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
+                      <Volume2 className="w-4 h-4" />
+                      Audio Player
+                    </h4>
+                    
+                    {/* Repetition Counter */}
+                    <div className="text-center mb-4">
+                      <p className="text-4xl font-serif text-primary">{currentRep}</p>
+                      <p className="text-sm text-muted-foreground">repetitions completed</p>
+                    </div>
+
+                    {/* Audio Progress */}
+                    <div className="mb-4">
+                      <Progress value={audioProgress} className="h-2" />
+                      <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                        <span>{formatTime((audioProgress / 100) * audioDuration)}</span>
+                        <span>{formatTime(audioDuration)}</span>
+                      </div>
+                    </div>
+
+                    {/* Audio Controls */}
+                    <div className="flex items-center justify-center gap-4 mb-4">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={toggleLoop}
+                        className={`rounded-full ${isLooping ? 'text-primary bg-primary/20' : 'text-muted-foreground'}`}
+                        title={isLooping ? "Loop On" : "Loop Off"}
+                      >
+                        <Repeat className="w-5 h-5" />
+                      </Button>
+                      
+                      <Button
+                        size="lg"
+                        onClick={toggleAudio}
+                        className={`rounded-full w-16 h-16 ${isPlaying ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary'}`}
+                        data-testid="audio-play-btn"
+                      >
+                        {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-1" />}
+                      </Button>
+                      
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={skipToNext}
+                        className="rounded-full text-muted-foreground hover:text-primary"
+                        title="Skip to next rep"
+                      >
+                        <SkipForward className="w-5 h-5" />
+                      </Button>
+                    </div>
+
+                    {/* Volume Control */}
+                    <div className="flex items-center gap-3">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={toggleMute}
+                        className="text-muted-foreground hover:text-primary"
+                      >
+                        {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                      </Button>
+                      <Slider
+                        value={[isMuted ? 0 : volume]}
+                        onValueChange={handleVolumeChange}
+                        max={1}
+                        step={0.01}
+                        className="flex-1"
+                      />
+                    </div>
+
+                    <p className="text-xs text-muted-foreground text-center mt-4">
+                      {isLooping ? "Audio will loop continuously. Count your repetitions mentally." : "Audio will play once per repetition."}
+                    </p>
                   </div>
+                ) : (
+                  /* Timer-based Chanting Practice (fallback) */
+                  <div className="p-6 rounded-xl bg-primary/10 border border-primary/20">
+                    <h4 className="text-sm uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
+                      <Volume2 className="w-4 h-4" />
+                      Chanting Timer
+                    </h4>
+                    
+                    <div className="text-center mb-4">
+                      <p className="text-4xl font-serif text-primary">{currentRep}</p>
+                      <p className="text-sm text-muted-foreground">of {selectedMantra.repetitions} repetitions</p>
+                    </div>
 
-                  <Progress value={chantProgress} className="h-2 mb-4" />
+                    <Progress value={chantProgress} className="h-2 mb-4" />
 
-                  <div className="flex items-center justify-center gap-4">
-                    <Button
-                      size="lg"
-                      onClick={isChanting ? stopChanting : startChanting}
-                      className={`rounded-full w-14 h-14 ${isChanting ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary'}`}
-                    >
-                      {isChanting ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={resetChanting}
-                      className="rounded-full border-white/10"
-                    >
-                      <RotateCcw className="w-5 h-5" />
-                    </Button>
+                    <div className="flex items-center justify-center gap-4">
+                      <Button
+                        size="lg"
+                        onClick={isChanting ? stopChanting : startChanting}
+                        className={`rounded-full w-14 h-14 ${isChanting ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary'}`}
+                        data-testid="chant-play-btn"
+                      >
+                        {isChanting ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={resetChanting}
+                        className="rounded-full border-white/10"
+                      >
+                        <RotateCcw className="w-5 h-5" />
+                      </Button>
+                    </div>
+
+                    <p className="text-xs text-muted-foreground text-center mt-4">
+                      Chant along with each cycle. {selectedMantra.duration_seconds} seconds per repetition.
+                    </p>
                   </div>
-
-                  <p className="text-xs text-muted-foreground text-center mt-4">
-                    Chant along with each cycle. {selectedMantra.duration_seconds} seconds per repetition.
-                  </p>
-                </div>
+                )}
 
                 {/* Benefits */}
                 <div>
@@ -332,6 +564,16 @@ const MantrasLibrary = ({ user, api }) => {
                       </span>
                     ))}
                   </div>
+                </div>
+
+                {/* Practice Tip */}
+                <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                  <p className="text-sm text-muted-foreground">
+                    <strong className="text-primary">Practice Tip:</strong> Find a comfortable seated position. 
+                    Close your eyes and focus on the sound and vibration of the mantra. 
+                    Let each repetition deepen your connection to the {selectedMantra.element.toLowerCase()} element
+                    and your {selectedMantra.chakra} chakra.
+                  </p>
                 </div>
               </div>
             </>
