@@ -280,7 +280,7 @@ const Dashboard = ({ user, api }) => {
                       transition={{ delay: 0.1 }}
                       className="p-6 rounded-2xl bg-card/50 border border-white/5 hover:border-emerald-500/20 
                                 transition-all duration-500 cursor-pointer group"
-                      onClick={() => navigate('/yoga')}
+                      onClick={() => navigate(`/yoga?pose=${dailyData.daily_pose.id}`)}
                     >
                       <div className="flex items-start gap-4">
                         <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 
 const YogaLibrary = ({ user, api }) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [poses, setPoses] = useState([]);
   const [filteredPoses, setFilteredPoses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -52,6 +53,17 @@ const YogaLibrary = ({ user, api }) => {
     
     setFilteredPoses(filtered);
   }, [selectedElement, poses, showFavoritesOnly, favorites]);
+
+  // Open specific pose from URL parameter
+  useEffect(() => {
+    const poseId = searchParams.get('pose');
+    if (poseId && poses.length > 0) {
+      const pose = poses.find(p => p.id === poseId);
+      if (pose) {
+        setSelectedPose(pose);
+      }
+    }
+  }, [searchParams, poses]);
 
   const fetchPoses = async () => {
     try {
