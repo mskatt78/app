@@ -23,6 +23,7 @@ import Settings from "./pages/Settings";
 import Mindfulness from "./pages/Mindfulness";
 import Meditations from "./pages/Meditations";
 import Numerology from "./pages/Numerology";
+import AdminCMS from "./pages/AdminCMS";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -272,6 +273,14 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             {({ user, api }) => <Numerology user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <AdminCMS user={user} api={api} />}
           </ProtectedRoute>
         }
       />

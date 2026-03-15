@@ -375,169 +375,221 @@ def generate_fallback_interpretation(cards: List[dict], question: Optional[str])
 
 # ============ YOGA ROUTES ============
 
-# Import comprehensive yoga poses from data module
-from data.yoga_poses import YOGA_POSES
-
+# Yoga poses are now stored in MongoDB
 @api_router.get("/yoga/poses")
-async def get_yoga_poses(element: Optional[str] = None):
-    """Get yoga poses, optionally filtered by element."""
-    poses = YOGA_POSES
+async def get_yoga_poses(element: Optional[str] = None, difficulty: Optional[str] = None):
+    """Get yoga poses from database, optionally filtered by element or difficulty."""
+    query = {}
     if element:
-        poses = [p for p in poses if p["element"].lower() == element.lower()]
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    if difficulty:
+        query["difficulty"] = {"$regex": f"^{difficulty}$", "$options": "i"}
+    
+    poses = await db.yoga_poses.find(query, {"_id": 0}).to_list(length=100)
     return poses
 
 @api_router.get("/yoga/poses/{pose_id}")
 async def get_yoga_pose(pose_id: str):
-    """Get a specific yoga pose."""
-    pose = next((p for p in YOGA_POSES if p["id"] == pose_id), None)
+    """Get a specific yoga pose from database."""
+    pose = await db.yoga_poses.find_one({"id": pose_id}, {"_id": 0})
     if not pose:
         raise HTTPException(status_code=404, detail="Pose not found")
     return pose
 
 # ============ BREATHWORK ROUTES ============
 
-BREATHWORK_SESSIONS = [
-    {
-        "id": "1", 
-        "name": "Earth Grounding Breath", 
-        "element": "Earth", 
-        "description": "Connect deeply with Mother Earth through slow, rhythmic breathing. This practice calms the nervous system and anchors your energy.", 
-        "duration_minutes": 10, 
-        "pattern": {"inhale": 4, "hold": 4, "exhale": 6, "hold_empty": 2}, 
-        "benefits": ["Grounding", "Reduces anxiety", "Connects to earth energy", "Stabilizes emotions", "Calms the mind"],
-        "frequency": "432 Hz - Earth's resonance frequency",
-        "best_time": "Morning or evening, ideally outdoors or near plants",
-        "instructions": "Sit with feet flat on the ground. Visualize roots growing from your feet into the earth. Inhale stability, exhale tension."
-    },
-    {
-        "id": "2", 
-        "name": "Fire Breath (Kapalabhati)", 
-        "element": "Fire", 
-        "description": "Ignite your inner fire with rapid, powerful exhalations. This energizing breath cleanses the lungs and awakens dormant energy.", 
-        "duration_minutes": 5, 
-        "pattern": {"inhale": 1, "hold": 0, "exhale": 1, "hold_empty": 0}, 
-        "benefits": ["Energizes", "Detoxifies", "Awakens kundalini", "Clears sinuses", "Improves focus"],
-        "frequency": "528 Hz - Transformation and DNA repair",
-        "best_time": "Morning on empty stomach, not before bed",
-        "instructions": "Sit tall. Quick, forceful exhales through the nose with passive inhales. Start with 30 breaths, rest, repeat 3 rounds."
-    },
-    {
-        "id": "3", 
-        "name": "Ocean Breath (Ujjayi)", 
-        "element": "Water", 
-        "description": "Create the sound of ocean waves, flowing with liquid grace. This warming breath is perfect for yoga practice and meditation.", 
-        "duration_minutes": 15, 
-        "pattern": {"inhale": 4, "hold": 0, "exhale": 6, "hold_empty": 0}, 
-        "benefits": ["Calms mind", "Warms body", "Promotes flow", "Improves concentration", "Regulates blood pressure"],
-        "frequency": "639 Hz - Connection and relationships",
-        "best_time": "During yoga practice or meditation, any time of day",
-        "instructions": "Slightly constrict the back of your throat. Breathe through your nose creating a soft oceanic sound. Keep the breath smooth and even."
-    },
-    {
-        "id": "4", 
-        "name": "Wind Clearing Breath", 
-        "element": "Air", 
-        "description": "Clear stagnant energy with alternate nostril breathing (Nadi Shodhana). Balances the left and right hemispheres of the brain.", 
-        "duration_minutes": 10, 
-        "pattern": {"inhale": 4, "hold": 4, "exhale": 4, "hold_empty": 0}, 
-        "benefits": ["Balances hemispheres", "Clears mind", "Purifies nadis", "Reduces stress", "Enhances focus"],
-        "frequency": "741 Hz - Awakening intuition and solving problems",
-        "best_time": "Before meditation or important mental work",
-        "instructions": "Use right thumb to close right nostril. Inhale left. Close left with ring finger, exhale right. Inhale right, exhale left. This is one round."
-    },
-    {
-        "id": "5", 
-        "name": "Spirit Journey Breath", 
-        "element": "Spirit", 
-        "description": "Deep rhythmic breathing for shamanic journeying and vision. This powerful practice can induce altered states of consciousness.", 
-        "duration_minutes": 20, 
-        "pattern": {"inhale": 3, "hold": 0, "exhale": 3, "hold_empty": 0}, 
-        "benefits": ["Altered states", "Spiritual connection", "Deep release", "Vision and insight", "Emotional healing"],
-        "frequency": "963 Hz - Connection to higher self and universe",
-        "best_time": "In a safe, quiet space with intention set",
-        "instructions": "Lie down comfortably. Breathe deeply and continuously with no pause between inhale and exhale. Allow emotions to surface and release."
-    },
-    {
-        "id": "6", 
-        "name": "4-7-8 Relaxation", 
-        "element": "Water", 
-        "description": "Ancient technique for deep relaxation and sleep preparation. This pattern activates the parasympathetic nervous system.", 
-        "duration_minutes": 10, 
-        "pattern": {"inhale": 4, "hold": 7, "exhale": 8, "hold_empty": 0}, 
-        "benefits": ["Promotes sleep", "Reduces stress", "Calms nervous system", "Lowers heart rate", "Reduces anxiety"],
-        "frequency": "396 Hz - Liberating guilt and fear",
-        "best_time": "Before sleep or during stressful moments",
-        "instructions": "Exhale completely. Inhale through nose for 4 counts. Hold for 7 counts. Exhale through mouth for 8 counts. Repeat 4 cycles."
-    },
-]
-
 @api_router.get("/breathwork/sessions")
 async def get_breathwork_sessions(element: Optional[str] = None):
-    """Get breathwork sessions, optionally filtered by element."""
-    sessions = BREATHWORK_SESSIONS
+    """Get breathwork sessions from database, optionally filtered by element."""
+    query = {}
     if element:
-        sessions = [s for s in sessions if s["element"].lower() == element.lower()]
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    sessions = await db.breathwork_sessions.find(query, {"_id": 0}).to_list(length=20)
     return sessions
 
 @api_router.get("/breathwork/sessions/{session_id}")
 async def get_breathwork_session(session_id: str):
-    """Get a specific breathwork session."""
-    session = next((s for s in BREATHWORK_SESSIONS if s["id"] == session_id), None)
+    """Get a specific breathwork session from database."""
+    session = await db.breathwork_sessions.find_one({"id": session_id}, {"_id": 0})
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
     return session
 
 # ============ CRYSTALS ROUTES ============
 
-CRYSTALS = [
-    {"id": "1", "name": "Clear Quartz", "element": "Spirit", "chakras": ["Crown", "All"], "properties": ["Amplification", "Clarity", "Programming"], "description": "The master healer and energy amplifier. Clear quartz is like a blank canvas that can be programmed with any intention."},
-    {"id": "2", "name": "Amethyst", "element": "Air", "chakras": ["Third Eye", "Crown"], "properties": ["Intuition", "Protection", "Spiritual Growth"], "description": "The stone of spiritual wisdom and psychic abilities. Opens the third eye and connects to higher realms."},
-    {"id": "3", "name": "Rose Quartz", "element": "Water", "chakras": ["Heart"], "properties": ["Love", "Compassion", "Emotional Healing"], "description": "The stone of unconditional love. Opens the heart chakra to give and receive love."},
-    {"id": "4", "name": "Black Tourmaline", "element": "Earth", "chakras": ["Root"], "properties": ["Protection", "Grounding", "EMF Shield"], "description": "The ultimate protection stone. Creates a shield against negative energies and grounds to the earth."},
-    {"id": "5", "name": "Citrine", "element": "Fire", "chakras": ["Solar Plexus", "Sacral"], "properties": ["Abundance", "Joy", "Manifestation"], "description": "The merchant's stone of abundance and personal power. Attracts prosperity and success."},
-    {"id": "6", "name": "Selenite", "element": "Spirit", "chakras": ["Crown", "Third Eye"], "properties": ["Cleansing", "Connection", "Clarity"], "description": "Named after the moon goddess Selene. Cleanses and charges other crystals."},
-    {"id": "7", "name": "Obsidian", "element": "Fire", "chakras": ["Root"], "properties": ["Shadow Work", "Protection", "Truth"], "description": "Volcanic glass for deep shadow work and facing inner truths."},
-    {"id": "8", "name": "Turquoise", "element": "Water", "chakras": ["Throat", "Heart"], "properties": ["Communication", "Protection", "Healing"], "description": "Sacred stone of many indigenous traditions. Bridges earth and sky."},
-    {"id": "9", "name": "Labradorite", "element": "Air", "chakras": ["Third Eye", "Throat"], "properties": ["Magic", "Protection", "Transformation"], "description": "Stone of magic and transformation with iridescent flash."},
-    {"id": "10", "name": "Carnelian", "element": "Fire", "chakras": ["Sacral", "Root"], "properties": ["Creativity", "Courage", "Vitality"], "description": "Ignites creative fire and passion for life."},
-    {"id": "11", "name": "Moonstone", "element": "Water", "chakras": ["Crown", "Third Eye", "Sacral"], "properties": ["Intuition", "Cycles", "Divine Feminine"], "description": "Stone of the divine feminine and lunar cycles."},
-    {"id": "12", "name": "Smoky Quartz", "element": "Earth", "chakras": ["Root"], "properties": ["Grounding", "Transmutation", "Protection"], "description": "Transmutes negative energy into positive. Deep grounding."},
-]
-
 @api_router.get("/crystals")
 async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = None):
-    """Get crystals, optionally filtered by element or chakra."""
-    crystals = CRYSTALS
+    """Get crystals from database, optionally filtered by element or chakra."""
+    query = {}
     if element:
-        crystals = [c for c in crystals if c["element"].lower() == element.lower()]
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     if chakra:
-        crystals = [c for c in crystals if any(chakra.lower() in ch.lower() for ch in c["chakras"])]
+        query["chakras"] = {"$regex": chakra, "$options": "i"}
+    
+    crystals = await db.crystals.find(query, {"_id": 0}).to_list(length=50)
     return crystals
 
 @api_router.get("/crystals/{crystal_id}")
 async def get_crystal(crystal_id: str):
-    """Get a specific crystal."""
-    crystal = next((c for c in CRYSTALS if c["id"] == crystal_id), None)
+    """Get a specific crystal from database."""
+    crystal = await db.crystals.find_one({"id": crystal_id}, {"_id": 0})
     if not crystal:
         raise HTTPException(status_code=404, detail="Crystal not found")
     return crystal
 
 # ============ MANTRAS ROUTES ============
 
-MANTRAS = [
-    {"id": "1", "name": "Om", "sanskrit": "ॐ", "translation": "The sound of the universe, the primordial vibration", "element": "Spirit", "chakra": "Crown", "benefits": ["Universal connection", "Calms mind", "Raises vibration"], "audio_url": "https://upload.wikimedia.org/wikipedia/commons/7/77/Om.ogg", "duration_seconds": 10, "repetitions": 108},
-    {"id": "2", "name": "Om Mani Padme Hum", "sanskrit": "ॐ मणि पद्मे हूँ", "translation": "The jewel is in the lotus", "element": "Spirit", "chakra": "Heart", "benefits": ["Compassion", "Purification", "Wisdom"], "audio_url": None, "duration_seconds": 15, "repetitions": 108},
-    {"id": "3", "name": "Lokah Samastah Sukhino Bhavantu", "sanskrit": "लोकाः समस्ताः सुखिनो भवन्तु", "translation": "May all beings everywhere be happy and free", "element": "Water", "chakra": "Heart", "benefits": ["Universal love", "Peace", "Interconnection"], "audio_url": None, "duration_seconds": 20, "repetitions": 27},
-    {"id": "4", "name": "So Hum", "sanskrit": "सो ऽहम्", "translation": "I am that (the universe)", "element": "Air", "chakra": "Third Eye", "benefits": ["Self-realization", "Breath awareness", "Unity"], "audio_url": None, "duration_seconds": 8, "repetitions": 108},
-    {"id": "5", "name": "Sat Nam", "sanskrit": "सत् नाम्", "translation": "Truth is my identity", "element": "Spirit", "chakra": "Throat", "benefits": ["Authenticity", "Truth", "Identity"], "audio_url": None, "duration_seconds": 6, "repetitions": 108},
-    {"id": "6", "name": "Om Namah Shivaya", "sanskrit": "ॐ नमः शिवाय", "translation": "I bow to Shiva (the transformer)", "element": "Fire", "chakra": "Third Eye", "benefits": ["Transformation", "Inner peace", "Destruction of ego"], "audio_url": None, "duration_seconds": 12, "repetitions": 108},
-    {"id": "7", "name": "Gayatri Mantra", "sanskrit": "ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं", "translation": "We meditate on the glory of the Creator who illuminates all", "element": "Fire", "chakra": "Solar Plexus", "benefits": ["Illumination", "Wisdom", "Vitality"], "audio_url": None, "duration_seconds": 25, "repetitions": 108},
-    {"id": "8", "name": "Ham Sa", "sanskrit": "हंस", "translation": "I am the divine swan", "element": "Air", "chakra": "Throat", "benefits": ["Discrimination", "Purity", "Grace"], "audio_url": None, "duration_seconds": 6, "repetitions": 108},
-    {"id": "9", "name": "Om Gam Ganapataye Namaha", "sanskrit": "ॐ गं गणपतये नमः", "translation": "Salutations to Ganesha, remover of obstacles", "element": "Earth", "chakra": "Root", "benefits": ["Removes obstacles", "New beginnings", "Success"], "audio_url": None, "duration_seconds": 15, "repetitions": 108},
-    {"id": "10", "name": "Ra Ma Da Sa", "sanskrit": None, "translation": "Sun, Moon, Earth, Infinity - healing mantra", "element": "Water", "chakra": "Heart", "benefits": ["Healing", "Balance", "Connection to elements"], "audio_url": None, "duration_seconds": 20, "repetitions": 11},
-    {"id": "11", "name": "Aham Brahmasmi", "sanskrit": "अहं ब्रह्मास्मि", "translation": "I am the universe, I am Brahman", "element": "Spirit", "chakra": "Crown", "benefits": ["Self-realization", "Unity consciousness", "Expansion"], "audio_url": None, "duration_seconds": 10, "repetitions": 21},
-    {"id": "12", "name": "Om Shanti Shanti Shanti", "sanskrit": "ॐ शान्तिः शान्तिः शान्तिः", "translation": "Peace in body, mind, and spirit", "element": "Water", "chakra": "All", "benefits": ["Deep peace", "Calms mind", "Harmony"], "audio_url": None, "duration_seconds": 12, "repetitions": 3},
-]
+@api_router.get("/mantras")
+async def get_mantras(element: Optional[str] = None):
+    """Get mantras from database, optionally filtered by element."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    mantras = await db.mantras.find(query, {"_id": 0}).to_list(length=50)
+    return mantras
+
+# ============ MUDRAS ROUTES ============
+
+@api_router.get("/mudras")
+async def get_mudras(element: Optional[str] = None):
+    """Get mudras from database, optionally filtered by element."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    mudras = await db.mudras.find(query, {"_id": 0}).to_list(length=50)
+    return mudras
+
+# ============ 13-MONTH ASTROLOGY ROUTES ============
+
+@api_router.get("/astrology/months")
+async def get_astrology_months():
+    """Get all 13 lunar months from database."""
+    months = await db.astrology_months.find({}, {"_id": 0}).sort("month_number", 1).to_list(length=20)
+    return months
+
+@api_router.get("/astrology/months/{month_id}")
+async def get_astrology_month(month_id: str):
+    """Get a specific lunar month from database."""
+    month = await db.astrology_months.find_one({"id": month_id}, {"_id": 0})
+    if not month:
+        raise HTTPException(status_code=404, detail="Month not found")
+    return month
+
+@api_router.get("/astrology/current")
+async def get_current_month():
+    """Get the current lunar month based on today's date."""
+    today = datetime.now()
+    
+    month_ranges = [
+        (12, 21, 1, 17, "1"),
+        (1, 18, 2, 14, "2"),
+        (2, 15, 3, 14, "3"),
+        (3, 15, 4, 11, "4"),
+        (4, 12, 5, 9, "5"),
+        (5, 10, 6, 6, "6"),
+        (6, 7, 7, 4, "7"),
+        (7, 5, 8, 1, "8"),
+        (8, 2, 8, 29, "9"),
+        (8, 30, 9, 26, "10"),
+        (9, 27, 10, 24, "11"),
+        (10, 25, 11, 21, "12"),
+        (11, 22, 12, 20, "13"),
+    ]
+    
+    current_month = today.month
+    current_day = today.day
+    
+    for start_month, start_day, end_month, end_day, month_id in month_ranges:
+        if start_month <= end_month:
+            if (current_month == start_month and current_day >= start_day) or \
+               (current_month == end_month and current_day <= end_day) or \
+               (start_month < current_month < end_month):
+                month = await db.astrology_months.find_one({"id": month_id}, {"_id": 0})
+                return month
+        else:
+            if (current_month == start_month and current_day >= start_day) or \
+               (current_month == end_month and current_day <= end_day) or \
+               current_month > start_month or current_month < end_month:
+                month = await db.astrology_months.find_one({"id": month_id}, {"_id": 0})
+                return month
+    
+    first_month = await db.astrology_months.find_one({"id": "1"}, {"_id": 0})
+    return first_month
+
+# ============ MINDFULNESS PRACTICES ============
+
+@api_router.get("/mindfulness")
+async def get_mindfulness_practices(category: Optional[str] = None, element: Optional[str] = None):
+    """Get mindfulness practices from database."""
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    practices = await db.mindfulness_practices.find(query, {"_id": 0}).to_list(length=50)
+    return practices
+
+# ============ GUIDED MEDITATIONS ============
+
+@api_router.get("/meditations")
+async def get_meditations(category: Optional[str] = None, element: Optional[str] = None):
+    """Get guided meditations from database."""
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    meditations = await db.meditations.find(query, {"_id": 0}).to_list(length=50)
+    return meditations
+
+@api_router.get("/meditations/{meditation_id}")
+async def get_meditation(meditation_id: str):
+    """Get a specific meditation from database."""
+    meditation = await db.meditations.find_one({"id": meditation_id}, {"_id": 0})
+    if not meditation:
+        raise HTTPException(status_code=404, detail="Meditation not found")
+    return meditation
+
+# ============ SOMATIC PRACTICES ============
+
+@api_router.get("/somatic")
+async def get_somatic_practices(element: Optional[str] = None):
+    """Get somatic practices from database."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=50)
+    return practices
+
+# ============ GROUNDING EXERCISES ============
+
+@api_router.get("/grounding")
+async def get_grounding_exercises(element: Optional[str] = None):
+    """Get grounding exercises from database."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    exercises = await db.grounding_exercises.find(query, {"_id": 0}).to_list(length=50)
+    return exercises
+
+# ============ ORACLE CARDS ============
+
+@api_router.get("/oracle/cards")
+async def get_oracle_cards(element: Optional[str] = None):
+    """Get oracle cards from database."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    cards = await db.oracle_cards.find(query, {"_id": 0}).to_list(length=50)
+    return cards
 
 @api_router.get("/mantras")
 async def get_mantras(element: Optional[str] = None):
@@ -996,10 +1048,17 @@ async def get_daily_guidance(user: User = Depends(get_current_user)):
     import random
     
     current_month = await get_current_month()
-    daily_pose = random.choice(YOGA_POSES)
-    daily_crystal = random.choice(CRYSTALS)
-    daily_mantra = random.choice(MANTRAS)
-    daily_breathwork = random.choice(BREATHWORK_SESSIONS)
+    
+    # Fetch data from MongoDB
+    yoga_poses = await db.yoga_poses.find({}, {"_id": 0}).to_list(length=100)
+    crystals = await db.crystals.find({}, {"_id": 0}).to_list(length=50)
+    mantras = await db.mantras.find({}, {"_id": 0}).to_list(length=50)
+    breathwork_sessions = await db.breathwork_sessions.find({}, {"_id": 0}).to_list(length=20)
+    
+    daily_pose = random.choice(yoga_poses) if yoga_poses else None
+    daily_crystal = random.choice(crystals) if crystals else None
+    daily_mantra = random.choice(mantras) if mantras else None
+    daily_breathwork = random.choice(breathwork_sessions) if breathwork_sessions else None
     
     return {
         "greeting": f"Blessed day, {user.name.split()[0]}",
@@ -1008,7 +1067,7 @@ async def get_daily_guidance(user: User = Depends(get_current_user)):
         "daily_crystal": daily_crystal,
         "daily_mantra": daily_mantra,
         "daily_breathwork": daily_breathwork,
-        "element_focus": current_month["element"]
+        "element_focus": current_month["element"] if current_month else "Spirit"
     }
 
 # ============ FAVORITES / BOOKMARKS ============
@@ -1064,24 +1123,24 @@ async def get_favorites(user: User = Depends(get_current_user), item_type: Optio
     
     favorites = await db.favorites.find(query, {"_id": 0}).to_list(500)
     
-    # Enrich with actual item data
+    # Enrich with actual item data from MongoDB
     enriched = []
     for fav in favorites:
         item_data = None
         if fav["item_type"] == "pose":
-            item_data = next((p for p in YOGA_POSES if p["id"] == fav["item_id"]), None)
+            item_data = await db.yoga_poses.find_one({"id": fav["item_id"]}, {"_id": 0})
         elif fav["item_type"] == "crystal":
-            item_data = next((c for c in CRYSTALS if c["id"] == fav["item_id"]), None)
+            item_data = await db.crystals.find_one({"id": fav["item_id"]}, {"_id": 0})
         elif fav["item_type"] == "mantra":
-            item_data = next((m for m in MANTRAS if m["id"] == fav["item_id"]), None)
+            item_data = await db.mantras.find_one({"id": fav["item_id"]}, {"_id": 0})
         elif fav["item_type"] == "mudra":
-            item_data = next((m for m in MUDRAS if m["id"] == fav["item_id"]), None)
+            item_data = await db.mudras.find_one({"id": fav["item_id"]}, {"_id": 0})
         elif fav["item_type"] == "breathwork":
-            item_data = next((b for b in BREATHWORK_SESSIONS if b["id"] == fav["item_id"]), None)
+            item_data = await db.breathwork_sessions.find_one({"id": fav["item_id"]}, {"_id": 0})
         elif fav["item_type"] == "somatic":
-            item_data = next((s for s in SOMATIC_PRACTICES if s["id"] == fav["item_id"]), None)
+            item_data = await db.somatic_practices.find_one({"id": fav["item_id"]}, {"_id": 0})
         elif fav["item_type"] == "grounding":
-            item_data = next((g for g in GROUNDING_EXERCISES if g["id"] == fav["item_id"]), None)
+            item_data = await db.grounding_exercises.find_one({"id": fav["item_id"]}, {"_id": 0})
         
         if item_data:
             enriched.append({**fav, "item": item_data})
@@ -1504,6 +1563,341 @@ async def get_achievements(user: User = Depends(get_current_user)):
         })
     
     return achievements
+
+# ============ ADMIN CMS ROUTES ============
+# These routes allow authorized users to manage content
+
+# Models for creating/updating content
+class YogaPoseCreate(BaseModel):
+    name: str
+    sanskrit_name: str
+    element: str
+    description: str
+    image_url: Optional[str] = None
+    instructions: List[str] = []
+    benefits: List[str] = []
+    chakras: List[str] = []
+    duration_minutes: int = 3
+    difficulty: str = "Beginner"
+    contraindications: List[str] = []
+
+class MudraCreate(BaseModel):
+    name: str
+    sanskrit_name: Optional[str] = None
+    element: str
+    description: str
+    instructions: Optional[str] = None
+    benefits: List[str] = []
+    image_url: Optional[str] = None
+
+class BreathworkCreate(BaseModel):
+    name: str
+    element: str
+    description: str
+    duration_minutes: int
+    pattern: dict  # {"inhale": 4, "hold": 4, "exhale": 4, "hold_empty": 0}
+    benefits: List[str] = []
+    frequency: Optional[str] = None
+    best_time: Optional[str] = None
+    instructions: Optional[str] = None
+
+class CrystalCreate(BaseModel):
+    name: str
+    element: str
+    chakras: List[str] = []
+    properties: List[str] = []
+    description: str
+    image_url: Optional[str] = None
+
+class MantraCreate(BaseModel):
+    name: str
+    sanskrit: Optional[str] = None
+    translation: str
+    element: str
+    chakra: Optional[str] = None
+    benefits: List[str] = []
+    audio_url: Optional[str] = None
+    duration_seconds: int = 10
+    repetitions: int = 108
+
+class WorkshopCreate(BaseModel):
+    title: str
+    description: str
+    instructor: str
+    date: str
+    duration_minutes: int
+    location: str
+    max_participants: int = 20
+    price: float = 0
+    image_url: Optional[str] = None
+    topics: List[str] = []
+    requirements: List[str] = []
+
+class EventCreate(BaseModel):
+    title: str
+    description: str
+    date: str
+    time: str
+    location: str
+    event_type: str  # workshop, retreat, ceremony, gathering
+    price: float = 0
+    image_url: Optional[str] = None
+    capacity: int = 50
+
+class CourseCreate(BaseModel):
+    title: str
+    description: str
+    instructor: str
+    duration_weeks: int
+    modules: List[dict] = []
+    price: float = 0
+    image_url: Optional[str] = None
+    level: str = "Beginner"
+
+# ---- YOGA POSES CRUD ----
+@api_router.post("/admin/yoga/poses")
+async def create_yoga_pose(pose: YogaPoseCreate, current_user: User = Depends(get_current_user)):
+    """Create a new yoga pose."""
+    pose_dict = pose.model_dump()
+    pose_dict["id"] = str(uuid.uuid4())[:8]
+    pose_dict["created_by"] = current_user.user_id
+    pose_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.yoga_poses.insert_one(pose_dict)
+    pose_dict.pop("_id", None)
+    return pose_dict
+
+@api_router.put("/admin/yoga/poses/{pose_id}")
+async def update_yoga_pose(pose_id: str, pose: YogaPoseCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing yoga pose."""
+    existing = await db.yoga_poses.find_one({"id": pose_id})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Pose not found")
+    
+    pose_dict = pose.model_dump()
+    pose_dict["updated_at"] = datetime.now(timezone.utc).isoformat()
+    pose_dict["updated_by"] = current_user.user_id
+    
+    await db.yoga_poses.update_one({"id": pose_id}, {"$set": pose_dict})
+    return {"message": "Pose updated successfully", "id": pose_id}
+
+@api_router.delete("/admin/yoga/poses/{pose_id}")
+async def delete_yoga_pose(pose_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a yoga pose."""
+    result = await db.yoga_poses.delete_one({"id": pose_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Pose not found")
+    return {"message": "Pose deleted successfully"}
+
+# ---- MUDRAS CRUD ----
+@api_router.post("/admin/mudras")
+async def create_mudra(mudra: MudraCreate, current_user: User = Depends(get_current_user)):
+    """Create a new mudra."""
+    mudra_dict = mudra.model_dump()
+    mudra_dict["id"] = str(uuid.uuid4())[:8]
+    mudra_dict["created_by"] = current_user.user_id
+    
+    await db.mudras.insert_one(mudra_dict)
+    return {"message": "Mudra created successfully", "id": mudra_dict["id"]}
+
+@api_router.put("/admin/mudras/{mudra_id}")
+async def update_mudra(mudra_id: str, mudra: MudraCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing mudra."""
+    result = await db.mudras.update_one({"id": mudra_id}, {"$set": mudra.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Mudra not found")
+    return {"message": "Mudra updated successfully"}
+
+@api_router.delete("/admin/mudras/{mudra_id}")
+async def delete_mudra(mudra_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a mudra."""
+    result = await db.mudras.delete_one({"id": mudra_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Mudra not found")
+    return {"message": "Mudra deleted successfully"}
+
+# ---- BREATHWORK CRUD ----
+@api_router.post("/admin/breathwork")
+async def create_breathwork(session: BreathworkCreate, current_user: User = Depends(get_current_user)):
+    """Create a new breathwork session."""
+    session_dict = session.model_dump()
+    session_dict["id"] = str(uuid.uuid4())[:8]
+    session_dict["created_by"] = current_user.user_id
+    
+    await db.breathwork_sessions.insert_one(session_dict)
+    return {"message": "Breathwork session created successfully", "id": session_dict["id"]}
+
+@api_router.put("/admin/breathwork/{session_id}")
+async def update_breathwork(session_id: str, session: BreathworkCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing breathwork session."""
+    result = await db.breathwork_sessions.update_one({"id": session_id}, {"$set": session.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Breathwork session not found")
+    return {"message": "Breathwork session updated successfully"}
+
+@api_router.delete("/admin/breathwork/{session_id}")
+async def delete_breathwork(session_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a breathwork session."""
+    result = await db.breathwork_sessions.delete_one({"id": session_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Breathwork session not found")
+    return {"message": "Breathwork session deleted successfully"}
+
+# ---- CRYSTALS CRUD ----
+@api_router.post("/admin/crystals")
+async def create_crystal(crystal: CrystalCreate, current_user: User = Depends(get_current_user)):
+    """Create a new crystal."""
+    crystal_dict = crystal.model_dump()
+    crystal_dict["id"] = str(uuid.uuid4())[:8]
+    crystal_dict["created_by"] = current_user.user_id
+    
+    await db.crystals.insert_one(crystal_dict)
+    return {"message": "Crystal created successfully", "id": crystal_dict["id"]}
+
+@api_router.put("/admin/crystals/{crystal_id}")
+async def update_crystal(crystal_id: str, crystal: CrystalCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing crystal."""
+    result = await db.crystals.update_one({"id": crystal_id}, {"$set": crystal.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Crystal not found")
+    return {"message": "Crystal updated successfully"}
+
+@api_router.delete("/admin/crystals/{crystal_id}")
+async def delete_crystal(crystal_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a crystal."""
+    result = await db.crystals.delete_one({"id": crystal_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Crystal not found")
+    return {"message": "Crystal deleted successfully"}
+
+# ---- MANTRAS CRUD ----
+@api_router.post("/admin/mantras")
+async def create_mantra(mantra: MantraCreate, current_user: User = Depends(get_current_user)):
+    """Create a new mantra."""
+    mantra_dict = mantra.model_dump()
+    mantra_dict["id"] = str(uuid.uuid4())[:8]
+    mantra_dict["created_by"] = current_user.user_id
+    
+    await db.mantras.insert_one(mantra_dict)
+    return {"message": "Mantra created successfully", "id": mantra_dict["id"]}
+
+@api_router.put("/admin/mantras/{mantra_id}")
+async def update_mantra(mantra_id: str, mantra: MantraCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing mantra."""
+    result = await db.mantras.update_one({"id": mantra_id}, {"$set": mantra.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Mantra not found")
+    return {"message": "Mantra updated successfully"}
+
+@api_router.delete("/admin/mantras/{mantra_id}")
+async def delete_mantra(mantra_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a mantra."""
+    result = await db.mantras.delete_one({"id": mantra_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Mantra not found")
+    return {"message": "Mantra deleted successfully"}
+
+# ---- WORKSHOPS CRUD ----
+@api_router.get("/workshops")
+async def get_workshops():
+    """Get all workshops."""
+    workshops = await db.workshops.find({}, {"_id": 0}).to_list(length=50)
+    return workshops
+
+@api_router.post("/admin/workshops")
+async def create_workshop(workshop: WorkshopCreate, current_user: User = Depends(get_current_user)):
+    """Create a new workshop."""
+    workshop_dict = workshop.model_dump()
+    workshop_dict["id"] = str(uuid.uuid4())[:8]
+    workshop_dict["created_by"] = current_user.user_id
+    workshop_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.workshops.insert_one(workshop_dict)
+    return {"message": "Workshop created successfully", "id": workshop_dict["id"]}
+
+@api_router.put("/admin/workshops/{workshop_id}")
+async def update_workshop(workshop_id: str, workshop: WorkshopCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing workshop."""
+    result = await db.workshops.update_one({"id": workshop_id}, {"$set": workshop.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Workshop not found")
+    return {"message": "Workshop updated successfully"}
+
+@api_router.delete("/admin/workshops/{workshop_id}")
+async def delete_workshop(workshop_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a workshop."""
+    result = await db.workshops.delete_one({"id": workshop_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Workshop not found")
+    return {"message": "Workshop deleted successfully"}
+
+# ---- EVENTS CRUD ----
+@api_router.get("/events")
+async def get_events():
+    """Get all events."""
+    events = await db.events.find({}, {"_id": 0}).to_list(length=50)
+    return events
+
+@api_router.post("/admin/events")
+async def create_event(event: EventCreate, current_user: User = Depends(get_current_user)):
+    """Create a new event."""
+    event_dict = event.model_dump()
+    event_dict["id"] = str(uuid.uuid4())[:8]
+    event_dict["created_by"] = current_user.user_id
+    event_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.events.insert_one(event_dict)
+    return {"message": "Event created successfully", "id": event_dict["id"]}
+
+@api_router.put("/admin/events/{event_id}")
+async def update_event(event_id: str, event: EventCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing event."""
+    result = await db.events.update_one({"id": event_id}, {"$set": event.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return {"message": "Event updated successfully"}
+
+@api_router.delete("/admin/events/{event_id}")
+async def delete_event(event_id: str, current_user: User = Depends(get_current_user)):
+    """Delete an event."""
+    result = await db.events.delete_one({"id": event_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return {"message": "Event deleted successfully"}
+
+# ---- COURSES CRUD ----
+@api_router.get("/courses")
+async def get_courses():
+    """Get all courses."""
+    courses = await db.courses.find({}, {"_id": 0}).to_list(length=50)
+    return courses
+
+@api_router.post("/admin/courses")
+async def create_course(course: CourseCreate, current_user: User = Depends(get_current_user)):
+    """Create a new course."""
+    course_dict = course.model_dump()
+    course_dict["id"] = str(uuid.uuid4())[:8]
+    course_dict["created_by"] = current_user.user_id
+    course_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    await db.courses.insert_one(course_dict)
+    return {"message": "Course created successfully", "id": course_dict["id"]}
+
+@api_router.put("/admin/courses/{course_id}")
+async def update_course(course_id: str, course: CourseCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing course."""
+    result = await db.courses.update_one({"id": course_id}, {"$set": course.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Course not found")
+    return {"message": "Course updated successfully"}
+
+@api_router.delete("/admin/courses/{course_id}")
+async def delete_course(course_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a course."""
+    result = await db.courses.delete_one({"id": course_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Course not found")
+    return {"message": "Course deleted successfully"}
 
 # ============ ROOT & HEALTH ============
 
