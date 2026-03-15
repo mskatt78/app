@@ -27,7 +27,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Great Mother Earth, I honor your stability and abundance. Ground me in your wisdom, connect me to my ancestors, and help me manifest my intentions into physical reality. Aho.",
         "best_time": "During new moon, winter, or when needing grounding",
-        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5ee9d8a0cb084c662bbb08b32f053b13c5a7de7c7f2370ef91f2111b020de8af.png"
     },
     {
         "id": "2",
@@ -54,7 +54,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Sacred waters of life, I honor your flow and wisdom. Help me release what no longer serves, trust my intuition, and move with grace through life's changes. So mote it be.",
         "best_time": "During full moon, autumn, or when processing emotions",
-        "image_url": "https://images.unsplash.com/photo-1509773896068-7fd415d91e2e?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/3c731376069fd1b01b73d7d8cac37726ffaac9e5a54ec79085b6f93596a31bc8.png"
     },
     {
         "id": "3",
@@ -81,7 +81,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Sacred flame of transformation, I honor your power and light. Burn away what limits me, ignite my passion, and guide me to take courageous action. Blessed be the fire.",
         "best_time": "During waxing moon, summer, or when needing courage",
-        "image_url": "https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/b7b2a71dfa180c210c7ddee3b2351f6389606e30ee1dfe81842ebbf8da872cf4.png"
     },
     {
         "id": "4",
@@ -108,7 +108,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Winds of the four directions, I honor your breath and wisdom. Clear my mind, carry my prayers, and bring inspiration on the breeze. May my words carry truth. Aho.",
         "best_time": "During dawn, spring, or when seeking clarity",
-        "image_url": "https://images.unsplash.com/photo-1501862700950-18382cd41497?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/c5ecdbf5fc5ec0b012390dc138da1b78fb4a6de6662613d25e158c20311d8a79.png"
     },
     {
         "id": "5",
@@ -135,7 +135,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Beloved ancestors, guides, and spirits who walk with me, I honor your presence. Thank you for your protection and wisdom. Help me heal our lineage and walk my sacred path. I remember you.",
         "best_time": "During Samhain/Day of Dead, dark moon, or when seeking guidance",
-        "image_url": "https://images.unsplash.com/photo-1574236170880-fbb485ffab8e?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/2a6a3c9fcf908f960a19146b7a74fdf14b9c00af9801c8069a049d942d96676e.png"
     },
     {
         "id": "6",
@@ -163,7 +163,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Sacred hoop of life, I stand at the center of all directions. East, bring new beginnings. South, bring transformation. West, bring healing. North, bring wisdom. Great Spirit above and Mother Earth below, make me whole. All my relations.",
         "best_time": "Solstices, equinoxes, or major life ceremonies",
-        "image_url": "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/6dc586eb610e26e57ac17a0cc8c036ca211ff7c5d40d4b0a2ef006c72b303c06.png"
     }
 ]
 
@@ -576,7 +576,7 @@ SHAMANIC_PRACTICES = [
             "Avoid harsh situations while integrating",
             "Welcome emotions that arise as parts resettle"
         ],
-        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5ee9d8a0cb084c662bbb08b32f053b13c5a7de7c7f2370ef91f2111b020de8af.png"
     },
     {
         "id": "3",
@@ -637,7 +637,7 @@ SHAMANIC_PRACTICES = [
             "Jealousy - may be revealing desires",
             "Selfishness - may be teaching self-care"
         ],
-        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5ee9d8a0cb084c662bbb08b32f053b13c5a7de7c7f2370ef91f2111b020de8af.png"
     },
     {
         "id": "5",
@@ -699,7 +699,7 @@ SHAMANIC_PRACTICES = [
             "After significant loss",
             "When feeling called to transform"
         ],
-        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5ee9d8a0cb084c662bbb08b32f053b13c5a7de7c7f2370ef91f2111b020de8af.png"
     },
     {
         "id": "7",
@@ -730,7 +730,7 @@ SHAMANIC_PRACTICES = [
             "Cold spots in body",
             "Feeling drained after certain places or people"
         ],
-        "image_url": "https://images.unsplash.com/photo-1532274402911-5a369e4c4bb5?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/6dc586eb610e26e57ac17a0cc8c036ca211ff7c5d40d4b0a2ef006c72b303c06.png"
     },
     {
         "id": "8",

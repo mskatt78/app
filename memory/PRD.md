@@ -9,7 +9,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - Google social login (Emergent-managed)
 - Custom + AI-generated content
 - Shamanic design theme
-- AI-generated images for yoga poses (sacred, authentic aesthetic)
+- AI-generated images for all content (yoga poses, mudras, shamanic practices)
 
 ## Architecture
 - **Frontend**: React with Tailwind CSS, Framer Motion, Shadcn UI
@@ -17,201 +17,117 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - **Database**: MongoDB with collections for all content types
 - **AI**: Claude Sonnet 4.5 via Emergent Integrations for oracle readings
 - **Auth**: Emergent Google OAuth
-- **Images**: AI-generated using Imagen 4.0 for yoga poses
+- **Images**: AI-generated using Imagen 4.0 for all content
 
 ## What's Been Implemented
 
-### Phase 5: AI Image Generation for Yoga Poses (Dec 15, 2025)
-- [x] **All 60 Yoga Poses** - Unique AI-generated images:
-  - Sacred geometry backgrounds
-  - Element-appropriate colors (Earth=browns/greens, Fire=oranges/golds, Water=blues/silver, Air=whites/sky blues, Spirit=purples/cosmic)
-  - Authentic yoga pose representation
-  - Photorealistic spiritual photography style
-  - All images stored on Emergent's static image CDN
+### Phase 5: Complete AI Image Generation (Dec 15, 2025)
+- [x] **All 60 Yoga Poses** - Unique AI-generated images with sacred geometry, element-appropriate colors
+- [x] **All 12 Mudras** - Hand gesture images with element-specific styling
+- [x] **All 8 Shamanic Practices** - Visionary spiritual art for each practice
+- [x] **All 6 Earth Altars** - Sacred altar arrangements for each element
+- [x] **All 10 Elemental Practices** - Element-specific spiritual imagery
+- [x] **All 6 Creative Processes** - Artistic shamanic process visualization
+- [x] **All 6 Heart Practices** - Heart chakra and emotional healing imagery
+- [x] **Image Upload Feature** - Admin CMS supports direct image uploads
+  - Backend endpoint: `/api/upload/image`
+  - Supports JPG, PNG, GIF, WebP (max 5MB)
+  - Integrated into all Admin CMS forms
+
+**Total AI Images Generated: 108 unique images**
 
 ### Phase 4: Practice Log, Achievements & Shamanic Content (Dec 15, 2025)
-- [x] **Practice Log System** - Full activity tracking:
-  - Log yoga, breathwork, meditation, oracle, mantra, mudra, grounding, somatic, elemental practices
-  - Detailed statistics with weekly activity chart
-  - Elemental balance visualization
-  - Recent practice history display
-  - Practice streak tracking
-
-- [x] **Enhanced Achievements System** - 24 achievements with badges:
-  - Category-based filtering
-  - Progress tracking with visual progress bars
-  - Unlockable content rewards
-  - Badge colors per achievement
-  - Stats overview (unlocked, streak, hours practiced)
-
+- [x] **Practice Log System** - Full activity tracking
+- [x] **Enhanced Achievements System** - 24 achievements with badges
 - [x] **New Shamanic Content Sections**:
-  - **Earth Altars** (6 altars) - Sacred space creation guides for each element
-  - **Creative Processes** (6 processes) - Shamanic art and creative expression
-  - **Heart Practices** (6 practices) - Heart-opening ceremonies and exercises
-  - **Shamanic Practices** (8 practices) - Deep journeys and ceremonial work
-  - **Elemental Practices** (10 practices) - Element-specific connection exercises
-
-- [x] **Admin CMS Extended** - Now manages all shamanic content:
-  - Earth Altars CRUD
-  - Creative Processes CRUD
-  - Heart Practices CRUD
-  - Shamanic Practices CRUD
-  - Elemental Practices CRUD
-
-- [x] **Refined Locked/Unlocked UI** - Enhanced visual experience:
-  - Blur blend effect on locked content
-  - Animated lock indicators with gradient backgrounds
-  - Sparkle badge for unlocked premium content
-  - Click-to-view achievements from locked items
-  - New "Deeper Journeys" section on Dashboard
-  - Progress section with Practice Log, Achievements, Favorites quick access
+  - Earth Altars (6), Creative Processes (6), Heart Practices (6)
+  - Shamanic Practices (8), Elemental Practices (10)
+- [x] **Admin CMS Extended** - Full CRUD for all content types
+- [x] **Refined Locked/Unlocked UI**
 
 ### Phase 3: Mantra Audio (March 15, 2026)
 - [x] **Audio Player Implementation** - Full audio playback for mantras
 
 ### Phase 2: MongoDB Migration & CMS (March 15, 2026)
-- [x] **Data Migration to MongoDB** - All content migrated to MongoDB collections
-- [x] **Admin CMS Built** - Full content management system at `/admin`
+- [x] **Data Migration to MongoDB**
+- [x] **Admin CMS Built**
 
 ### Phase 1: Content Enhancement (March 15, 2026)
-- [x] **Yoga Poses Enhanced** - All 60 poses with AI images, 8-step instructions, 6 benefits
-- [x] **Mudras Library Enhanced** - All 12 mudras with images and instructions
-- [x] **Breathwork Enhanced** - All 6 sessions with frequency (Hz) and best time
+- [x] **Yoga Poses Enhanced** - 60 poses with AI images, instructions, benefits
+- [x] **Mudras Library Enhanced** - 12 mudras with AI images
+- [x] **Breathwork Enhanced** - 6 sessions
 
 ### Previously Implemented (Jan 2026)
-- [x] Landing page with shamanic design
-- [x] Google OAuth authentication
-- [x] Dashboard with daily guidance
+- [x] Landing page, Google OAuth, Dashboard
 - [x] Yoga library (60 poses, 5 elements) with Favorites
-- [x] Oracle readings with Claude AI interpretation
-- [x] Breathwork sessions with interactive timer
+- [x] Oracle readings with Claude AI
+- [x] Breathwork sessions with timer
 - [x] 13-month astrology calendar
-- [x] Crystal guide (12 crystals)
-- [x] Mantras library (12 mantras)
-- [x] Mudras library (12 mudras)
-- [x] Somatic movement practices (6 practices)
-- [x] Grounding exercises (5 exercises)
-- [x] User favorites system
-- [x] Daily Ritual Builder with timer
-- [x] Achievement Badges System
-- [x] Shareable Rituals
-- [x] Sacred Journal
-- [x] Settings page
+- [x] Crystal guide, Mantras, Mudras libraries
+- [x] Somatic movement, Grounding exercises
+- [x] Daily Ritual Builder, Achievements, Sacred Journal
 
 ## API Endpoints
 
-### Public Endpoints (No Auth Required)
-- `GET /api/yoga/poses` - List yoga poses
-- `GET /api/mudras` - List mudras
-- `GET /api/breathwork/sessions` - List breathwork sessions
-- `GET /api/crystals` - List crystals
-- `GET /api/mantras` - List mantras
-- `GET /api/astrology/months` - List 13 lunar months
-- `GET /api/astrology/current` - Get current lunar month
-- `GET /api/elemental-practices` - List elemental practices
-- `GET /api/earth-altars` - List earth altars
-- `GET /api/creative-processes` - List creative processes
-- `GET /api/heart-practices` - List heart practices
-- `GET /api/shamanic-practices` - List shamanic practices
+### Public Endpoints
+- `GET /api/yoga/poses`, `/api/mudras`, `/api/breathwork/sessions`
+- `GET /api/crystals`, `/api/mantras`
+- `GET /api/astrology/months`, `/api/astrology/current`
+- `GET /api/elemental-practices`, `/api/earth-altars`
+- `GET /api/creative-processes`, `/api/heart-practices`, `/api/shamanic-practices`
 
-### Protected Endpoints (Require Auth)
-- `GET /api/dashboard/daily` - Daily guidance data
-- `GET /api/favorites` - User's favorites
-- `GET /api/achievements` - User achievements with progress and unlocks
-- `POST /api/practice-history` - Log a practice
-- `GET /api/practice-history` - User's practice history
-- `GET /api/practice-history/stats` - Basic practice statistics
-- `GET /api/practice-history/detailed-stats` - Detailed stats with weekly data
+### Protected Endpoints
+- `GET /api/dashboard/daily`, `/api/favorites`, `/api/achievements`
+- `POST /api/practice-history`, `GET /api/practice-history`
+- `POST /api/upload/image` - Image upload endpoint
 - Admin CRUD endpoints for all content types
 
 ## Database Collections
-- `users` - User accounts
-- `user_sessions` - Auth sessions
-- `favorites` - User favorites
-- `oracle_readings` - Saved readings
-- `rituals` - User rituals
-- `practice_history` - User practice logs
-- `achievement_definitions` - 24 achievement definitions
-- `yoga_poses` - 60 poses with AI-generated images
-- `mudras` - 12 mudras
-- `breathwork_sessions` - 6 sessions
-- `crystals` - 12 crystals
-- `mantras` - 12 mantras
-- `astrology_months` - 13 months
-- `oracle_cards` - 22 cards
-- `somatic_practices` - 6 practices
-- `grounding_exercises` - 5 exercises
-- `mindfulness_practices` - 8 practices
-- `meditations` - 6 meditations
-- `earth_altars` - 6 altars
-- `creative_processes` - 6 processes
-- `heart_practices` - 6 practices
-- `shamanic_practices` - 8 practices
-- `elemental_practices` - 10 practices
+All collections now have unique AI-generated images:
+- `yoga_poses` (60), `mudras` (12), `breathwork_sessions` (6)
+- `crystals` (12), `mantras` (12), `astrology_months` (13)
+- `earth_altars` (6), `creative_processes` (6), `heart_practices` (6)
+- `shamanic_practices` (8), `elemental_practices` (10)
+- `users`, `favorites`, `practice_history`, `achievement_definitions`
 
 ## Prioritized Backlog
 
 ### P1 - Pending User Verification
-- [ ] Test "Pose of the Day" click-through from Dashboard (code fix applied, needs verification)
-- [ ] Decide on image upload feature for Admin CMS (paused for AI generation)
+- [ ] Test "Pose of the Day" click-through from Dashboard
 
 ### P2 - Nice to Have (Future Features)
-- [ ] AI images for Mudras, Shamanic Practices, and other content types
+- [ ] AI images for remaining content (crystals, breathwork, somatic)
 - [ ] Audio guides for meditation and shamanic journeys
 - [ ] Push notifications for daily practice reminders
-- [ ] Community features / social feed for sharing practices
-- [ ] Premium subscription tier with exclusive content
-- [ ] More mantra audio files
-- [ ] Journey recording feature (record and playback experiences)
-- [ ] Guided audio meditations with voice-over
+- [ ] Community features / social feed
+- [ ] Premium subscription tier
 - [ ] Offline mode for saved practices
-- [ ] Calendar integration for scheduling rituals
-- [ ] Progress sharing to social media
 
 ## 3rd Party Integrations
-- **Claude Sonnet 4.5** (Text Generation) — uses Emergent LLM Key
-- **Emergent-managed Google Auth** — no User Key required
-- **Imagen 4.0** (Image Generation) — via Emergent for AI yoga pose images
-
-## Testing Status
-- Backend: 100% pass rate (all tests)
-- Frontend: 100% features verified
-- AI Images: All 60 yoga poses have unique AI-generated images
-- Test files: 
-  - `/app/backend/tests/test_admin_cms.py`
-  - `/app/backend/tests/test_mantras_audio.py`
-  - `/app/backend/tests/test_shamanic_content.py`
+- **Claude Sonnet 4.5** — Emergent LLM Key
+- **Emergent-managed Google Auth** — no User Key
+- **Imagen 4.0** — AI image generation
 
 ## Files Structure
 ```
 /app/backend/
-├── server.py           # Main FastAPI app with all endpoints
-├── seed_database.py    # MongoDB seeding script
-├── .env               # Environment variables
-├── requirements.txt   # Python dependencies
-├── tests/             # Test files
+├── server.py           # FastAPI with upload endpoint
+├── seed_database.py    # MongoDB seeding
+├── uploads/            # Uploaded images directory
 └── data/
-    ├── __init__.py
-    ├── yoga_poses.py   # 60 yoga poses with AI image URLs
-    ├── all_content.py  # Core content data
-    └── shamanic_content.py  # New shamanic content data
+    ├── yoga_poses.py   # 60 poses with AI URLs
+    ├── all_content.py  # Mudras, etc. with AI URLs
+    └── shamanic_content.py  # Shamanic content with AI URLs
 
 /app/frontend/src/
-├── App.js              # Routes
 ├── pages/
-│   ├── AdminCMS.jsx    # Admin CMS interface
-│   ├── YogaLibrary.jsx # Enhanced yoga library
-│   ├── MudrasLibrary.jsx # Enhanced mudras
-│   ├── Breathwork.jsx  # Enhanced breathwork
-│   ├── MantrasLibrary.jsx # Mantras with audio player
-│   ├── Dashboard.jsx   # Main dashboard
-│   ├── PracticeLog.jsx # Practice history & stats
-│   ├── Achievements.jsx # Achievement badges
-│   ├── ElementalPractices.jsx # Elemental practices
-│   ├── EarthAltars.jsx # Earth altars
-│   ├── CreativeProcesses.jsx # Creative processes
-│   ├── HeartPractices.jsx # Heart practices
-│   ├── ShamanicPractices.jsx # Shamanic practices
-│   └── ...             # Other pages
-└── components/ui/      # Shadcn components
+│   ├── AdminCMS.jsx    # With ImageUploadField component
+│   ├── YogaLibrary.jsx
+│   └── [all shamanic pages]
+└── components/ui/
 ```
+
+## Testing Status
+- All 108 AI images verified via API
+- Image upload endpoint functional
+- All content types returning correct AI-generated URLs
