@@ -9,7 +9,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - Google social login (Emergent-managed)
 - Custom + AI-generated content
 - Shamanic design theme
-- Realistic stock photos from Unsplash for images
+- AI-generated images for yoga poses (sacred, authentic aesthetic)
 
 ## Architecture
 - **Frontend**: React with Tailwind CSS, Framer Motion, Shadcn UI
@@ -17,8 +17,17 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - **Database**: MongoDB with collections for all content types
 - **AI**: Claude Sonnet 4.5 via Emergent Integrations for oracle readings
 - **Auth**: Emergent Google OAuth
+- **Images**: AI-generated using Imagen 4.0 for yoga poses
 
 ## What's Been Implemented
+
+### Phase 5: AI Image Generation for Yoga Poses (Dec 15, 2025)
+- [x] **All 60 Yoga Poses** - Unique AI-generated images:
+  - Sacred geometry backgrounds
+  - Element-appropriate colors (Earth=browns/greens, Fire=oranges/golds, Water=blues/silver, Air=whites/sky blues, Spirit=purples/cosmic)
+  - Authentic yoga pose representation
+  - Photorealistic spiritual photography style
+  - All images stored on Emergent's static image CDN
 
 ### Phase 4: Practice Log, Achievements & Shamanic Content (Dec 15, 2025)
 - [x] **Practice Log System** - Full activity tracking:
@@ -65,7 +74,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - [x] **Admin CMS Built** - Full content management system at `/admin`
 
 ### Phase 1: Content Enhancement (March 15, 2026)
-- [x] **Yoga Poses Enhanced** - All 60 poses with images, 8-step instructions, 6 benefits
+- [x] **Yoga Poses Enhanced** - All 60 poses with AI images, 8-step instructions, 6 benefits
 - [x] **Mudras Library Enhanced** - All 12 mudras with images and instructions
 - [x] **Breathwork Enhanced** - All 6 sessions with frequency (Hz) and best time
 
@@ -123,7 +132,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - `rituals` - User rituals
 - `practice_history` - User practice logs
 - `achievement_definitions` - 24 achievement definitions
-- `yoga_poses` - 60 poses
+- `yoga_poses` - 60 poses with AI-generated images
 - `mudras` - 12 mudras
 - `breathwork_sessions` - 6 sessions
 - `crystals` - 12 crystals
@@ -142,7 +151,12 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 
 ## Prioritized Backlog
 
+### P1 - Pending User Verification
+- [ ] Test "Pose of the Day" click-through from Dashboard (code fix applied, needs verification)
+- [ ] Decide on image upload feature for Admin CMS (paused for AI generation)
+
 ### P2 - Nice to Have (Future Features)
+- [ ] AI images for Mudras, Shamanic Practices, and other content types
 - [ ] Audio guides for meditation and shamanic journeys
 - [ ] Push notifications for daily practice reminders
 - [ ] Community features / social feed for sharing practices
@@ -157,10 +171,12 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 ## 3rd Party Integrations
 - **Claude Sonnet 4.5** (Text Generation) — uses Emergent LLM Key
 - **Emergent-managed Google Auth** — no User Key required
+- **Imagen 4.0** (Image Generation) — via Emergent for AI yoga pose images
 
 ## Testing Status
 - Backend: 100% pass rate (all tests)
 - Frontend: 100% features verified
+- AI Images: All 60 yoga poses have unique AI-generated images
 - Test files: 
   - `/app/backend/tests/test_admin_cms.py`
   - `/app/backend/tests/test_mantras_audio.py`
@@ -176,7 +192,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 ├── tests/             # Test files
 └── data/
     ├── __init__.py
-    ├── yoga_poses.py   # 60 yoga poses data
+    ├── yoga_poses.py   # 60 yoga poses with AI image URLs
     ├── all_content.py  # Core content data
     └── shamanic_content.py  # New shamanic content data
 

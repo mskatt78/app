@@ -69,7 +69,7 @@ YOGA_POSES = [
         "sanskrit_name": "Setu Bandhasana",
         "element": "Earth",
         "description": "Create a bridge between earth and sky, opening the heart to receive.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/cc7ea0a4c3addccb5e6643a3c5a951a3067e635835099c3730aab991961f2bfc.png",
         "instructions": [
             "Lie on your back with knees bent and feet flat on the floor, hip-width apart",
             "Place your arms alongside your body with palms facing down",
@@ -219,7 +219,7 @@ YOGA_POSES = [
         "sanskrit_name": "Uttanasana",
         "element": "Earth",
         "description": "Fold forward, letting the crown descend toward Mother Earth in humble surrender.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/cd3efb5ae3e709ccc54b1ea5dda893a8368b141fcf30f27d1e11e6f27384dc35.png",
         "instructions": [
             "Stand in Mountain Pose with hands on your hips",
             "Exhale and hinge forward from your hips, not your waist",
@@ -611,7 +611,7 @@ YOGA_POSES = [
         "sanskrit_name": "Salabhasana",
         "element": "Fire",
         "description": "Lift like the sacred locust, back strong and heart lifted.",
-        "image_url": "https://images.unsplash.com/photo-1599901860904-17e6ed7083a0?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/aab151f425eb9eb4896d3edac8c53108f3d72630cf2d6bed65d2f0dd2f55ce12.png",
         "instructions": [
             "Lie face down with arms alongside your body, palms facing up",
             "Rest your forehead on the mat and keep legs together",
@@ -641,7 +641,7 @@ YOGA_POSES = [
         "sanskrit_name": "Dhanurasana",
         "element": "Fire",
         "description": "Become the bow of transformation, tension creating potential energy.",
-        "image_url": "https://images.unsplash.com/photo-1549576490-b0b4831ef60a?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/2095e58bf29dd8985b5705f50786075bbf81a6392bdf87dbc872a9847d53ffb7.png",
         "instructions": [
             "Lie face down with arms alongside your body",
             "Bend your knees and bring heels close to your buttocks",
@@ -673,7 +673,7 @@ YOGA_POSES = [
         "sanskrit_name": "Balasana",
         "element": "Water",
         "description": "Return to the womb of the Earth Mother. Surrender and receive comfort.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/4fe555d5684cc6c978e242731429ef7d8729eea719d2421abdbdcb671499feef.png",
         "instructions": [
             "Kneel on the floor with big toes touching and knees hip-width apart (or wider)",
             "Sit back on your heels",
@@ -793,7 +793,7 @@ YOGA_POSES = [
         "sanskrit_name": "Ananda Balasana",
         "element": "Water",
         "description": "Return to childlike joy, releasing tension and embracing playfulness.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/c3d31fbdfffb7649b8cd64f3859d598d7633f704558591c426b616d650f326f2.png",
         "instructions": [
             "Lie on your back and draw knees toward your chest",
             "Grab the outsides of your feet with your hands",
@@ -853,7 +853,7 @@ YOGA_POSES = [
         "sanskrit_name": "Viparita Karani",
         "element": "Water",
         "description": "Reverse the flow, letting blood return to heart and mind clear.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/ca7169a279f64a8e5c057d6f0bdf4f9022b20c9e5ce091af573b970989d218de.png",
         "instructions": [
             "Sit sideways with right hip against a wall",
             "Swing your legs up the wall as you lower your back to the floor",
@@ -883,7 +883,7 @@ YOGA_POSES = [
         "sanskrit_name": "Matsyasana",
         "element": "Water",
         "description": "Float like a sacred fish, heart open to the cosmic ocean.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/c02131c2e45ab15684319600a10170ec572da06a568507a478255aa7c3f28ee3.png",
         "instructions": [
             "Lie on your back with legs extended and arms alongside body",
             "Slide hands under buttocks, palms facing down",
@@ -913,7 +913,7 @@ YOGA_POSES = [
         "sanskrit_name": "Mandukasana",
         "element": "Water",
         "description": "Open like the sacred frog, connecting to water medicine and transformation.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/ebfcc834a378482ab9a4169cfee869fbfd28a9f26c7a819f550c9812e70b7f4e.png",
         "instructions": [
             "Start on hands and knees in tabletop position",
             "Slowly widen knees as far as comfortable, keeping them in line with hips",
@@ -943,7 +943,7 @@ YOGA_POSES = [
         "sanskrit_name": "Marjaryasana-Bitilasana",
         "element": "Water",
         "description": "Flow between arching and rounding, spine moving like waves.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/a76a367a297a5f96471f9bb859170ff4e82472e82afcfe3aed104aceab385ea0.png",
         "instructions": [
             "Start on hands and knees, wrists under shoulders, knees under hips",
             "COW: Inhale, drop belly toward mat, lift tailbone and gaze upward",
@@ -973,7 +973,7 @@ YOGA_POSES = [
         "sanskrit_name": "Parsva Balasana",
         "element": "Water",
         "description": "Thread through and release the shoulders, letting tension flow away.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/9102bb219aa55b7e9929bffa6154b9b675862868ce4e956f3810283ef1278ef4.png",
         "instructions": [
             "Start on hands and knees in tabletop position",
             "On an exhale, slide right arm under body, palm facing up",
@@ -1003,7 +1003,7 @@ YOGA_POSES = [
         "sanskrit_name": "Eka Pada Rajakapotasana",
         "element": "Water",
         "description": "Surrender forward over the hip, releasing deep emotional holdings.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/e3750fed5a952bfed87985dd01f80ff4c80fed9c649282df0db9fb6293d78363.png",
         "instructions": [
             "From Pigeon Pose with right leg forward, walk hands back toward hips",
             "Keep hips square and level",
@@ -1095,7 +1095,7 @@ YOGA_POSES = [
         "sanskrit_name": "Utthita Parsvakonasana",
         "element": "Air",
         "description": "Extend from earth to sky, creating one long line of energy.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/66f3b9b7516369e93baf05a4fd78a32cc6215bd426e4c54a3c44530fa3e3e7d2.png",
         "instructions": [
             "From Warrior II with right leg forward, place right forearm on right thigh",
             "Or place right hand on floor inside or outside right foot",
@@ -1185,7 +1185,7 @@ YOGA_POSES = [
         "sanskrit_name": "Urdhva Dhanurasana",
         "element": "Air",
         "description": "Become the wheel of life, heart lifted toward the heavens.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/30c5594facf3913a9d04e96fa633b43799a5497976b544d03e98ef67b84173dc.png",
         "instructions": [
             "Lie on your back with knees bent, feet flat on floor hip-width apart",
             "Place hands beside ears, fingers pointing toward shoulders",
@@ -1215,7 +1215,7 @@ YOGA_POSES = [
         "sanskrit_name": "Sirsasana",
         "element": "Air",
         "description": "Invert your world, crown connecting to earth while feet reach for sky.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/fff3f68f4a83b1ccf14a7154cbfb78332f3fc14b3800554539c0d4969b79bdab.png",
         "instructions": [
             "Kneel and interlace fingers, placing forearms on mat in triangle shape",
             "Place crown of head on mat, cradled by hands",
@@ -1245,7 +1245,7 @@ YOGA_POSES = [
         "sanskrit_name": "Sarvangasana",
         "element": "Air",
         "description": "The queen of poses, inverting perspective and calming the spirit.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/1d0ab1feedc6cf9dcdba177547fc5f1a795f1301df58b622c296ae8850bf6260.png",
         "instructions": [
             "Lie on your back with arms alongside body, palms down",
             "Lift legs to 90 degrees, then lift hips off floor",
@@ -1275,7 +1275,7 @@ YOGA_POSES = [
         "sanskrit_name": "Halasana",
         "element": "Air",
         "description": "Fold over like a plow preparing sacred earth for new growth.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/d0b8232ff37ccc26f57f72bf71b278129f628ef6449241a286ab4edf0823a971.png",
         "instructions": [
             "From Shoulder Stand, slowly lower legs over your head",
             "Bring toes to the floor behind your head",
@@ -1305,7 +1305,7 @@ YOGA_POSES = [
         "sanskrit_name": "Camatkarasana",
         "element": "Air",
         "description": "Flip open into ecstatic expression, heart spiraling toward the sky.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5586a830f0f553260e1e6a32476c4b14b66f0f8a1dbd938f1e6969bb07fba3c0.png",
         "instructions": [
             "From Downward Dog, lift right leg high",
             "Bend right knee and open hip, stacking right hip over left",
@@ -1335,7 +1335,7 @@ YOGA_POSES = [
         "sanskrit_name": "Parivrtta Trikonasana",
         "element": "Air",
         "description": "Twist the triangle, wringing out stagnation and inviting fresh energy.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/e7c9310a042d7f104468e2a6c2d3433d005285f5c74dbf42a1c6659b3587a2eb.png",
         "instructions": [
             "From Mountain Pose, step left foot back 3-4 feet",
             "Square hips toward front foot",
@@ -1365,7 +1365,7 @@ YOGA_POSES = [
         "sanskrit_name": "Svarga Dvijasana",
         "element": "Air",
         "description": "Unfold into the exotic bird, expressing your fullest wingspan.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/d5d809dc3e62010228c2874edf8e47c2da8154d2fd66009e14a40867744da348.png",
         "instructions": [
             "From Extended Side Angle with right leg forward, bind hands behind back",
             "Right arm wraps under right thigh, left arm behind back to clasp hands",
@@ -1487,7 +1487,7 @@ YOGA_POSES = [
         "sanskrit_name": "Virasana",
         "element": "Spirit",
         "description": "Sit like the inner hero, grounded in courage and open to truth.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/63e37052e9f6f60143688ad113beb1e5aac90463b35d25da5b04e919b5cdd4d3.png",
         "instructions": [
             "Kneel on the floor with thighs perpendicular to floor",
             "Bring knees together and separate feet wider than hip-width",
@@ -1517,7 +1517,7 @@ YOGA_POSES = [
         "sanskrit_name": "Dandasana",
         "element": "Spirit",
         "description": "Sit with spine like a sacred staff, energy flowing freely.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/7c83618c95824015b2f20b6bbd40063d08e0d7edadac20d1f558082e3fc7df57.png",
         "instructions": [
             "Sit on the floor with legs extended straight in front",
             "Flex your feet, pressing through your heels",
@@ -1547,7 +1547,7 @@ YOGA_POSES = [
         "sanskrit_name": "Agnistambhasana",
         "element": "Spirit",
         "description": "Stack the legs like sacred fire logs, opening deep into the hips.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/173c8f82c81401ffdb39a814a781d1e127372e860871fc561b63da6f76dbb906.png",
         "instructions": [
             "Sit on the floor or a folded blanket",
             "Place left shin parallel to front edge of mat",
@@ -1607,7 +1607,7 @@ YOGA_POSES = [
         "sanskrit_name": "Anjali Mudra",
         "element": "Spirit",
         "description": "Hands at heart in sacred gesture, honoring the divine in all.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/194a1dda6d2926ba537c3b97612bc05b99989960f37b0fbfa04fd74bac41b81b.png",
         "instructions": [
             "Stand or sit comfortably with spine tall",
             "Bring palms together at heart center",
@@ -1637,7 +1637,7 @@ YOGA_POSES = [
         "sanskrit_name": "Urdhva Prasarita Eka Padasana",
         "element": "Spirit",
         "description": "Split between earth and heaven, one leg rooted, one reaching for stars.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/0b03154829d63164b2b274c65e30f99c33ac5fa2eff678e5f00a494b705ceec2.png",
         "instructions": [
             "From Standing Forward Fold, shift weight into left foot",
             "Begin to lift right leg toward ceiling",
@@ -1667,7 +1667,7 @@ YOGA_POSES = [
         "sanskrit_name": "Salamba Sirsasana",
         "element": "Spirit",
         "description": "The king of poses, crown to earth, seeing the world anew.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5fec0f2ec5188c4da972bd19ff3f33fb17aae87141a74db5dbbcb382030cb986.png",
         "instructions": [
             "Kneel with forearms on floor, interlacing fingers",
             "Place crown of head on mat, cradled by hands",
@@ -1697,7 +1697,7 @@ YOGA_POSES = [
         "sanskrit_name": "Tittibhasana",
         "element": "Spirit",
         "description": "Lift and glow like the sacred firefly, light emerging from darkness.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/00c4af08ec12bcb657ec834851afef2cf039a6d994b9b9358994229c15c18188.png",
         "instructions": [
             "Squat with feet slightly less than shoulder-width apart",
             "Tilt pelvis forward and thread shoulders under thighs",
@@ -1727,7 +1727,7 @@ YOGA_POSES = [
         "sanskrit_name": "Astavakrasana",
         "element": "Spirit",
         "description": "Twist into eight angles, honoring the sage who transcended limitation.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/6acc77214a4b8954051451e032cad678afb3b7d13e3751a65cdc0e3d48e06c58.png",
         "instructions": [
             "Sit with legs extended, bend right knee",
             "Thread right arm under right knee, placing hand on floor",
@@ -1757,7 +1757,7 @@ YOGA_POSES = [
         "sanskrit_name": "Pindasana",
         "element": "Spirit",
         "description": "Curl into the cosmic embryo, returning to the void of creation.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/25bb854e27ccc95c6a9062d0b6b7b96cfc670a67f0d4df266bc1c6d2a37b04f2.png",
         "instructions": [
             "Lie on your back and hug knees to chest",
             "Wrap arms around your shins or hold opposite elbows",
@@ -1787,7 +1787,7 @@ YOGA_POSES = [
         "sanskrit_name": "Vajrasana",
         "element": "Spirit",
         "description": "Sit firm like the thunderbolt, channeling diamond clarity.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/2f132b601f58f742ab3179ad51e9c41c02d29d46dad9e72a3b16aaa743976f02.png",
         "instructions": [
             "Kneel on the floor with knees together",
             "Sit back on your heels, tops of feet flat on floor",
