@@ -375,77 +375,8 @@ def generate_fallback_interpretation(cards: List[dict], question: Optional[str])
 
 # ============ YOGA ROUTES ============
 
-YOGA_POSES = [
-    # EARTH ELEMENT POSES - Grounding, Stability, Root Connection
-    {"id": "1", "name": "Mountain Pose", "sanskrit_name": "Tadasana", "element": "Earth", "description": "Stand tall like a mountain, rooted and stable. This foundational pose connects you to the earth element and your own inner strength.", "benefits": ["Improves posture", "Strengthens legs", "Grounds energy"], "chakras": ["Root"], "duration_minutes": 3},
-    {"id": "2", "name": "Tree Pose", "sanskrit_name": "Vrksasana", "element": "Earth", "description": "Like a sacred tree, roots deep and branches reaching skyward. Balance between earth and sky.", "benefits": ["Improves balance", "Strengthens ankles", "Opens hips"], "chakras": ["Root", "Heart"], "duration_minutes": 3},
-    {"id": "3", "name": "Bridge Pose", "sanskrit_name": "Setu Bandhasana", "element": "Earth", "description": "Create a bridge between earth and sky, opening the heart to receive.", "benefits": ["Opens chest", "Strengthens glutes", "Reduces anxiety"], "chakras": ["Heart", "Throat"], "duration_minutes": 5},
-    {"id": "4", "name": "Garland Pose", "sanskrit_name": "Malasana", "element": "Earth", "description": "Deep squat connecting to primal earth energy. Opens the hips and grounds the spirit.", "benefits": ["Opens hips", "Strengthens ankles", "Aids digestion"], "chakras": ["Root", "Sacral"], "duration_minutes": 3},
-    {"id": "5", "name": "Extended Triangle", "sanskrit_name": "Utthita Trikonasana", "element": "Earth", "description": "Form the sacred triangle, connecting three points of power between earth and cosmos.", "benefits": ["Stretches legs", "Opens chest", "Improves balance"], "chakras": ["Root", "Sacral"], "duration_minutes": 5},
-    {"id": "6", "name": "Wide-Legged Forward Fold", "sanskrit_name": "Prasarita Padottanasana", "element": "Earth", "description": "Bow to the earth with legs wide, letting gravity draw you into surrender.", "benefits": ["Stretches hamstrings", "Calms mind", "Strengthens legs"], "chakras": ["Root", "Third Eye"], "duration_minutes": 5},
-    {"id": "7", "name": "Chair Pose", "sanskrit_name": "Utkatasana", "element": "Earth", "description": "Sit into an invisible throne, building inner fire while staying rooted.", "benefits": ["Strengthens thighs", "Builds stamina", "Tones core"], "chakras": ["Root", "Solar Plexus"], "duration_minutes": 3},
-    {"id": "8", "name": "Standing Forward Fold", "sanskrit_name": "Uttanasana", "element": "Earth", "description": "Fold forward, letting the crown descend toward Mother Earth in humble surrender.", "benefits": ["Calms nervous system", "Stretches spine", "Relieves tension"], "chakras": ["Root", "Crown"], "duration_minutes": 5},
-    {"id": "9", "name": "Goddess Pose", "sanskrit_name": "Utkata Konasana", "element": "Earth", "description": "Embody the fierce divine feminine, rooted in power and open in heart.", "benefits": ["Strengthens legs", "Opens hips", "Builds heat"], "chakras": ["Root", "Sacral"], "duration_minutes": 3},
-    {"id": "10", "name": "Half Moon Pose", "sanskrit_name": "Ardha Chandrasana", "element": "Earth", "description": "Balance on one leg like the half moon, grounded yet reaching toward the stars.", "benefits": ["Improves balance", "Strengthens core", "Opens hips"], "chakras": ["Root", "Sacral"], "duration_minutes": 3},
-    
-    # FIRE ELEMENT POSES - Transformation, Power, Energy
-    {"id": "11", "name": "Warrior I", "sanskrit_name": "Virabhadrasana I", "element": "Fire", "description": "Embody the warrior spirit with fierce determination and open heart.", "benefits": ["Builds strength", "Opens chest", "Increases stamina"], "chakras": ["Solar Plexus", "Heart"], "duration_minutes": 5},
-    {"id": "12", "name": "Warrior II", "sanskrit_name": "Virabhadrasana II", "element": "Fire", "description": "Stand in your power, gaze fixed on your intention, arms extended in all directions.", "benefits": ["Strengthens legs", "Opens hips", "Builds focus"], "chakras": ["Solar Plexus", "Sacral"], "duration_minutes": 5},
-    {"id": "13", "name": "Warrior III", "sanskrit_name": "Virabhadrasana III", "element": "Fire", "description": "Fly like an arrow toward your destiny, balanced and powerful.", "benefits": ["Improves balance", "Strengthens core", "Builds focus"], "chakras": ["Solar Plexus"], "duration_minutes": 3},
-    {"id": "14", "name": "Cobra Pose", "sanskrit_name": "Bhujangasana", "element": "Fire", "description": "Rise like the sacred serpent, awakening kundalini energy up the spine.", "benefits": ["Opens heart", "Strengthens spine", "Awakens energy"], "chakras": ["Heart", "Throat"], "duration_minutes": 3},
-    {"id": "15", "name": "Upward Facing Dog", "sanskrit_name": "Urdhva Mukha Svanasana", "element": "Fire", "description": "Lift your heart to the sun, chest proud and spine awakened.", "benefits": ["Opens chest", "Strengthens arms", "Energizes body"], "chakras": ["Heart", "Throat"], "duration_minutes": 3},
-    {"id": "16", "name": "Boat Pose", "sanskrit_name": "Navasana", "element": "Fire", "description": "Balance on your sit bones like a vessel of light, core engaged and spirit strong.", "benefits": ["Strengthens core", "Improves balance", "Builds determination"], "chakras": ["Solar Plexus"], "duration_minutes": 3},
-    {"id": "17", "name": "Plank Pose", "sanskrit_name": "Phalakasana", "element": "Fire", "description": "Hold strong like a sacred plank, building inner fire and resolve.", "benefits": ["Strengthens core", "Tones arms", "Builds endurance"], "chakras": ["Solar Plexus"], "duration_minutes": 3},
-    {"id": "18", "name": "Side Plank", "sanskrit_name": "Vasisthasana", "element": "Fire", "description": "Balance on one arm, body aligned like a blade of light.", "benefits": ["Strengthens arms", "Improves balance", "Tones obliques"], "chakras": ["Solar Plexus", "Heart"], "duration_minutes": 3},
-    {"id": "19", "name": "Reverse Warrior", "sanskrit_name": "Viparita Virabhadrasana", "element": "Fire", "description": "Arch back in triumphant glory, heart open to the heavens.", "benefits": ["Stretches side body", "Opens chest", "Builds strength"], "chakras": ["Solar Plexus", "Heart"], "duration_minutes": 3},
-    {"id": "20", "name": "Crow Pose", "sanskrit_name": "Bakasana", "element": "Fire", "description": "Take flight like the crow messenger, balancing strength and lightness.", "benefits": ["Builds arm strength", "Improves balance", "Builds confidence"], "chakras": ["Solar Plexus", "Root"], "duration_minutes": 3},
-    {"id": "21", "name": "Locust Pose", "sanskrit_name": "Salabhasana", "element": "Fire", "description": "Lift like the sacred locust, back strong and heart lifted.", "benefits": ["Strengthens back", "Opens chest", "Improves posture"], "chakras": ["Solar Plexus", "Heart"], "duration_minutes": 3},
-    {"id": "22", "name": "Bow Pose", "sanskrit_name": "Dhanurasana", "element": "Fire", "description": "Become the bow of transformation, tension creating potential energy.", "benefits": ["Opens chest", "Strengthens back", "Energizes body"], "chakras": ["Heart", "Solar Plexus"], "duration_minutes": 3},
-    
-    # WATER ELEMENT POSES - Flow, Surrender, Emotion
-    {"id": "23", "name": "Child's Pose", "sanskrit_name": "Balasana", "element": "Water", "description": "Return to the womb of the Earth Mother. Surrender and receive comfort.", "benefits": ["Releases back tension", "Calms nervous system", "Promotes introspection"], "chakras": ["Third Eye"], "duration_minutes": 5},
-    {"id": "24", "name": "Seated Forward Fold", "sanskrit_name": "Paschimottanasana", "element": "Water", "description": "Bow forward in surrender, releasing into the flow of letting go.", "benefits": ["Calms mind", "Stretches hamstrings", "Massages organs"], "chakras": ["Sacral", "Solar Plexus"], "duration_minutes": 5},
-    {"id": "25", "name": "Pigeon Pose", "sanskrit_name": "Kapotasana", "element": "Water", "description": "Open the hips where emotions are stored, releasing what no longer serves.", "benefits": ["Opens hips", "Releases emotions", "Stretches thighs"], "chakras": ["Sacral", "Root"], "duration_minutes": 5},
-    {"id": "26", "name": "Reclined Bound Angle", "sanskrit_name": "Supta Baddha Konasana", "element": "Water", "description": "Lie back and open like a flower, receiving the flow of life.", "benefits": ["Opens hips", "Calms mind", "Releases tension"], "chakras": ["Sacral", "Heart"], "duration_minutes": 5},
-    {"id": "27", "name": "Happy Baby Pose", "sanskrit_name": "Ananda Balasana", "element": "Water", "description": "Return to childlike joy, releasing tension and embracing playfulness.", "benefits": ["Releases lower back", "Opens hips", "Calms mind"], "chakras": ["Sacral", "Root"], "duration_minutes": 3},
-    {"id": "28", "name": "Supine Twist", "sanskrit_name": "Supta Matsyendrasana", "element": "Water", "description": "Twist and release like water finding its natural course.", "benefits": ["Releases spine", "Aids digestion", "Calms nervous system"], "chakras": ["Sacral", "Solar Plexus"], "duration_minutes": 5},
-    {"id": "29", "name": "Legs Up the Wall", "sanskrit_name": "Viparita Karani", "element": "Water", "description": "Reverse the flow, letting blood return to heart and mind clear.", "benefits": ["Reduces anxiety", "Improves circulation", "Calms mind"], "chakras": ["Crown", "Third Eye"], "duration_minutes": 10},
-    {"id": "30", "name": "Fish Pose", "sanskrit_name": "Matsyasana", "element": "Water", "description": "Float like a sacred fish, heart open to the cosmic ocean.", "benefits": ["Opens chest", "Stretches throat", "Relieves tension"], "chakras": ["Heart", "Throat"], "duration_minutes": 3},
-    {"id": "31", "name": "Frog Pose", "sanskrit_name": "Mandukasana", "element": "Water", "description": "Open like the sacred frog, connecting to water medicine and transformation.", "benefits": ["Opens hips", "Stretches groin", "Releases emotions"], "chakras": ["Sacral", "Root"], "duration_minutes": 5},
-    {"id": "32", "name": "Cat-Cow Flow", "sanskrit_name": "Marjaryasana-Bitilasana", "element": "Water", "description": "Flow between arching and rounding, spine moving like waves.", "benefits": ["Warms spine", "Releases tension", "Improves flexibility"], "chakras": ["All Spine"], "duration_minutes": 5},
-    {"id": "33", "name": "Thread the Needle", "sanskrit_name": "Parsva Balasana", "element": "Water", "description": "Thread through and release the shoulders, letting tension flow away.", "benefits": ["Releases shoulders", "Stretches spine", "Calms mind"], "chakras": ["Heart", "Throat"], "duration_minutes": 3},
-    {"id": "34", "name": "Sleeping Swan", "sanskrit_name": "Eka Pada Rajakapotasana", "element": "Water", "description": "Surrender forward over the hip, releasing deep emotional holdings.", "benefits": ["Deep hip opener", "Emotional release", "Calms mind"], "chakras": ["Sacral", "Heart"], "duration_minutes": 5},
-    
-    # AIR ELEMENT POSES - Breath, Lightness, Freedom
-    {"id": "35", "name": "Downward Dog", "sanskrit_name": "Adho Mukha Svanasana", "element": "Air", "description": "Create an inverted V, connecting earth and sky. Let gravity release tension.", "benefits": ["Stretches spine", "Calms mind", "Energizes body"], "chakras": ["Third Eye", "Crown"], "duration_minutes": 5},
-    {"id": "36", "name": "Eagle Pose", "sanskrit_name": "Garudasana", "element": "Air", "description": "Wrap and squeeze like the sacred eagle, then release and soar.", "benefits": ["Improves focus", "Stretches shoulders", "Strengthens legs"], "chakras": ["Third Eye", "Root"], "duration_minutes": 3},
-    {"id": "37", "name": "Extended Side Angle", "sanskrit_name": "Utthita Parsvakonasana", "element": "Air", "description": "Extend from earth to sky, creating one long line of energy.", "benefits": ["Stretches side body", "Strengthens legs", "Opens chest"], "chakras": ["Heart", "Solar Plexus"], "duration_minutes": 5},
-    {"id": "38", "name": "Camel Pose", "sanskrit_name": "Ustrasana", "element": "Air", "description": "Arch back into the infinite sky, heart wide open and vulnerable.", "benefits": ["Opens heart", "Stretches front body", "Builds courage"], "chakras": ["Heart", "Throat"], "duration_minutes": 3},
-    {"id": "39", "name": "Dancer Pose", "sanskrit_name": "Natarajasana", "element": "Air", "description": "Dance like Shiva, balancing destruction and creation in graceful poise.", "benefits": ["Improves balance", "Opens shoulders", "Builds focus"], "chakras": ["Heart", "Crown"], "duration_minutes": 3},
-    {"id": "40", "name": "Wheel Pose", "sanskrit_name": "Urdhva Dhanurasana", "element": "Air", "description": "Become the wheel of life, heart lifted toward the heavens.", "benefits": ["Opens entire front body", "Energizes", "Builds strength"], "chakras": ["Heart", "All"], "duration_minutes": 3},
-    {"id": "41", "name": "Headstand", "sanskrit_name": "Sirsasana", "element": "Air", "description": "Invert your world, crown connecting to earth while feet reach for sky.", "benefits": ["Improves focus", "Builds core strength", "Calms mind"], "chakras": ["Crown", "Third Eye"], "duration_minutes": 5},
-    {"id": "42", "name": "Shoulder Stand", "sanskrit_name": "Sarvangasana", "element": "Air", "description": "The queen of poses, inverting perspective and calming the spirit.", "benefits": ["Calms nervous system", "Improves circulation", "Balances hormones"], "chakras": ["Throat", "Third Eye"], "duration_minutes": 5},
-    {"id": "43", "name": "Plow Pose", "sanskrit_name": "Halasana", "element": "Air", "description": "Fold over like a plow preparing sacred earth for new growth.", "benefits": ["Stretches spine", "Calms mind", "Stimulates thyroid"], "chakras": ["Throat", "Third Eye"], "duration_minutes": 3},
-    {"id": "44", "name": "Wild Thing", "sanskrit_name": "Camatkarasana", "element": "Air", "description": "Flip open into ecstatic expression, heart spiraling toward the sky.", "benefits": ["Opens chest", "Builds arm strength", "Energizes"], "chakras": ["Heart", "Throat"], "duration_minutes": 3},
-    {"id": "45", "name": "Revolved Triangle", "sanskrit_name": "Parivrtta Trikonasana", "element": "Air", "description": "Twist the triangle, wringing out stagnation and inviting fresh energy.", "benefits": ["Detoxifies", "Improves balance", "Stretches spine"], "chakras": ["Solar Plexus", "Heart"], "duration_minutes": 3},
-    {"id": "46", "name": "Bird of Paradise", "sanskrit_name": "Svarga Dvijasana", "element": "Air", "description": "Unfold into the exotic bird, expressing your fullest wingspan.", "benefits": ["Opens hips", "Builds balance", "Stretches hamstrings"], "chakras": ["Heart", "Sacral"], "duration_minutes": 3},
-    
-    # SPIRIT ELEMENT POSES - Meditation, Connection, Transcendence
-    {"id": "47", "name": "Corpse Pose", "sanskrit_name": "Savasana", "element": "Spirit", "description": "Complete surrender. Die to the old, be reborn in stillness.", "benefits": ["Deep relaxation", "Integrates practice", "Reduces stress"], "chakras": ["All"], "duration_minutes": 10},
-    {"id": "48", "name": "Easy Pose", "sanskrit_name": "Sukhasana", "element": "Spirit", "description": "Sit in sacred simplicity, spine tall and heart open to receive.", "benefits": ["Calms mind", "Opens hips", "Promotes meditation"], "chakras": ["All"], "duration_minutes": 10},
-    {"id": "49", "name": "Lotus Pose", "sanskrit_name": "Padmasana", "element": "Spirit", "description": "Bloom like the sacred lotus, rooted in mud yet reaching for light.", "benefits": ["Deep meditation", "Opens hips", "Calms mind"], "chakras": ["Crown", "Root"], "duration_minutes": 10},
-    {"id": "50", "name": "Hero Pose", "sanskrit_name": "Virasana", "element": "Spirit", "description": "Sit like the inner hero, grounded in courage and open to truth.", "benefits": ["Stretches thighs", "Improves posture", "Calms mind"], "chakras": ["Root", "Heart"], "duration_minutes": 5},
-    {"id": "51", "name": "Staff Pose", "sanskrit_name": "Dandasana", "element": "Spirit", "description": "Sit with spine like a sacred staff, energy flowing freely.", "benefits": ["Improves posture", "Strengthens back", "Grounds energy"], "chakras": ["Root", "Crown"], "duration_minutes": 3},
-    {"id": "52", "name": "Fire Log Pose", "sanskrit_name": "Agnistambhasana", "element": "Spirit", "description": "Stack the legs like sacred fire logs, opening deep into the hips.", "benefits": ["Opens hips", "Calms mind", "Releases tension"], "chakras": ["Root", "Sacral"], "duration_minutes": 5},
-    {"id": "53", "name": "Seated Meditation", "sanskrit_name": "Dhyana", "element": "Spirit", "description": "Enter the sacred silence, witnessing the infinite within.", "benefits": ["Calms mind", "Reduces stress", "Connects to source"], "chakras": ["All"], "duration_minutes": 15},
-    {"id": "54", "name": "Prayer Pose", "sanskrit_name": "Anjali Mudra", "element": "Spirit", "description": "Hands at heart in sacred gesture, honoring the divine in all.", "benefits": ["Centers energy", "Calms mind", "Opens heart"], "chakras": ["Heart"], "duration_minutes": 3},
-    {"id": "55", "name": "Standing Split", "sanskrit_name": "Urdhva Prasarita Eka Padasana", "element": "Spirit", "description": "Split between earth and heaven, one leg rooted, one reaching for stars.", "benefits": ["Stretches hamstrings", "Improves balance", "Calms mind"], "chakras": ["Root", "Crown"], "duration_minutes": 3},
-    {"id": "56", "name": "Supported Headstand", "sanskrit_name": "Salamba Sirsasana", "element": "Spirit", "description": "The king of poses, crown to earth, seeing the world anew.", "benefits": ["Reverses perspective", "Builds focus", "Calms mind"], "chakras": ["Crown"], "duration_minutes": 5},
-    {"id": "57", "name": "Firefly Pose", "sanskrit_name": "Tittibhasana", "element": "Spirit", "description": "Lift and glow like the sacred firefly, light emerging from darkness.", "benefits": ["Builds arm strength", "Opens hips", "Builds confidence"], "chakras": ["Solar Plexus", "Sacral"], "duration_minutes": 3},
-    {"id": "58", "name": "Eight Angle Pose", "sanskrit_name": "Astavakrasana", "element": "Spirit", "description": "Twist into eight angles, honoring the sage who transcended limitation.", "benefits": ["Builds arm strength", "Improves balance", "Detoxifies"], "chakras": ["Solar Plexus"], "duration_minutes": 3},
-    {"id": "59", "name": "Embryo Pose", "sanskrit_name": "Pindasana", "element": "Spirit", "description": "Curl into the cosmic embryo, returning to the void of creation.", "benefits": ["Deep relaxation", "Calms nervous system", "Promotes introspection"], "chakras": ["Third Eye", "Crown"], "duration_minutes": 5},
-    {"id": "60", "name": "Thunderbolt Pose", "sanskrit_name": "Vajrasana", "element": "Spirit", "description": "Sit firm like the thunderbolt, channeling diamond clarity.", "benefits": ["Aids digestion", "Calms mind", "Strengthens legs"], "chakras": ["Root", "Solar Plexus"], "duration_minutes": 5},
-]
+# Import comprehensive yoga poses from data module
+from data.yoga_poses import YOGA_POSES
 
 @api_router.get("/yoga/poses")
 async def get_yoga_poses(element: Optional[str] = None):
@@ -466,12 +397,78 @@ async def get_yoga_pose(pose_id: str):
 # ============ BREATHWORK ROUTES ============
 
 BREATHWORK_SESSIONS = [
-    {"id": "1", "name": "Earth Grounding Breath", "element": "Earth", "description": "Connect deeply with Mother Earth through slow, rhythmic breathing.", "duration_minutes": 10, "pattern": {"inhale": 4, "hold": 4, "exhale": 6, "hold_empty": 2}, "benefits": ["Grounding", "Reduces anxiety", "Connects to earth energy"]},
-    {"id": "2", "name": "Fire Breath (Kapalabhati)", "element": "Fire", "description": "Ignite your inner fire with rapid, powerful exhalations.", "duration_minutes": 5, "pattern": {"inhale": 1, "hold": 0, "exhale": 1, "hold_empty": 0}, "benefits": ["Energizes", "Detoxifies", "Awakens kundalini"]},
-    {"id": "3", "name": "Ocean Breath (Ujjayi)", "element": "Water", "description": "Create the sound of ocean waves, flowing with liquid grace.", "duration_minutes": 15, "pattern": {"inhale": 4, "hold": 0, "exhale": 6, "hold_empty": 0}, "benefits": ["Calms mind", "Warms body", "Promotes flow"]},
-    {"id": "4", "name": "Wind Clearing Breath", "element": "Air", "description": "Clear stagnant energy with alternate nostril breathing.", "duration_minutes": 10, "pattern": {"inhale": 4, "hold": 4, "exhale": 4, "hold_empty": 0}, "benefits": ["Balances hemispheres", "Clears mind", "Purifies nadis"]},
-    {"id": "5", "name": "Spirit Journey Breath", "element": "Spirit", "description": "Deep rhythmic breathing for shamanic journeying and vision.", "duration_minutes": 20, "pattern": {"inhale": 3, "hold": 0, "exhale": 3, "hold_empty": 0}, "benefits": ["Altered states", "Spiritual connection", "Deep release"]},
-    {"id": "6", "name": "4-7-8 Relaxation", "element": "Water", "description": "Ancient technique for deep relaxation and sleep preparation.", "duration_minutes": 10, "pattern": {"inhale": 4, "hold": 7, "exhale": 8, "hold_empty": 0}, "benefits": ["Promotes sleep", "Reduces stress", "Calms nervous system"]},
+    {
+        "id": "1", 
+        "name": "Earth Grounding Breath", 
+        "element": "Earth", 
+        "description": "Connect deeply with Mother Earth through slow, rhythmic breathing. This practice calms the nervous system and anchors your energy.", 
+        "duration_minutes": 10, 
+        "pattern": {"inhale": 4, "hold": 4, "exhale": 6, "hold_empty": 2}, 
+        "benefits": ["Grounding", "Reduces anxiety", "Connects to earth energy", "Stabilizes emotions", "Calms the mind"],
+        "frequency": "432 Hz - Earth's resonance frequency",
+        "best_time": "Morning or evening, ideally outdoors or near plants",
+        "instructions": "Sit with feet flat on the ground. Visualize roots growing from your feet into the earth. Inhale stability, exhale tension."
+    },
+    {
+        "id": "2", 
+        "name": "Fire Breath (Kapalabhati)", 
+        "element": "Fire", 
+        "description": "Ignite your inner fire with rapid, powerful exhalations. This energizing breath cleanses the lungs and awakens dormant energy.", 
+        "duration_minutes": 5, 
+        "pattern": {"inhale": 1, "hold": 0, "exhale": 1, "hold_empty": 0}, 
+        "benefits": ["Energizes", "Detoxifies", "Awakens kundalini", "Clears sinuses", "Improves focus"],
+        "frequency": "528 Hz - Transformation and DNA repair",
+        "best_time": "Morning on empty stomach, not before bed",
+        "instructions": "Sit tall. Quick, forceful exhales through the nose with passive inhales. Start with 30 breaths, rest, repeat 3 rounds."
+    },
+    {
+        "id": "3", 
+        "name": "Ocean Breath (Ujjayi)", 
+        "element": "Water", 
+        "description": "Create the sound of ocean waves, flowing with liquid grace. This warming breath is perfect for yoga practice and meditation.", 
+        "duration_minutes": 15, 
+        "pattern": {"inhale": 4, "hold": 0, "exhale": 6, "hold_empty": 0}, 
+        "benefits": ["Calms mind", "Warms body", "Promotes flow", "Improves concentration", "Regulates blood pressure"],
+        "frequency": "639 Hz - Connection and relationships",
+        "best_time": "During yoga practice or meditation, any time of day",
+        "instructions": "Slightly constrict the back of your throat. Breathe through your nose creating a soft oceanic sound. Keep the breath smooth and even."
+    },
+    {
+        "id": "4", 
+        "name": "Wind Clearing Breath", 
+        "element": "Air", 
+        "description": "Clear stagnant energy with alternate nostril breathing (Nadi Shodhana). Balances the left and right hemispheres of the brain.", 
+        "duration_minutes": 10, 
+        "pattern": {"inhale": 4, "hold": 4, "exhale": 4, "hold_empty": 0}, 
+        "benefits": ["Balances hemispheres", "Clears mind", "Purifies nadis", "Reduces stress", "Enhances focus"],
+        "frequency": "741 Hz - Awakening intuition and solving problems",
+        "best_time": "Before meditation or important mental work",
+        "instructions": "Use right thumb to close right nostril. Inhale left. Close left with ring finger, exhale right. Inhale right, exhale left. This is one round."
+    },
+    {
+        "id": "5", 
+        "name": "Spirit Journey Breath", 
+        "element": "Spirit", 
+        "description": "Deep rhythmic breathing for shamanic journeying and vision. This powerful practice can induce altered states of consciousness.", 
+        "duration_minutes": 20, 
+        "pattern": {"inhale": 3, "hold": 0, "exhale": 3, "hold_empty": 0}, 
+        "benefits": ["Altered states", "Spiritual connection", "Deep release", "Vision and insight", "Emotional healing"],
+        "frequency": "963 Hz - Connection to higher self and universe",
+        "best_time": "In a safe, quiet space with intention set",
+        "instructions": "Lie down comfortably. Breathe deeply and continuously with no pause between inhale and exhale. Allow emotions to surface and release."
+    },
+    {
+        "id": "6", 
+        "name": "4-7-8 Relaxation", 
+        "element": "Water", 
+        "description": "Ancient technique for deep relaxation and sleep preparation. This pattern activates the parasympathetic nervous system.", 
+        "duration_minutes": 10, 
+        "pattern": {"inhale": 4, "hold": 7, "exhale": 8, "hold_empty": 0}, 
+        "benefits": ["Promotes sleep", "Reduces stress", "Calms nervous system", "Lowers heart rate", "Reduces anxiety"],
+        "frequency": "396 Hz - Liberating guilt and fear",
+        "best_time": "Before sleep or during stressful moments",
+        "instructions": "Exhale completely. Inhale through nose for 4 counts. Hold for 7 counts. Exhale through mouth for 8 counts. Repeat 4 cycles."
+    },
 ]
 
 @api_router.get("/breathwork/sessions")
@@ -553,18 +550,126 @@ async def get_mantras(element: Optional[str] = None):
 # ============ MUDRAS ROUTES ============
 
 MUDRAS = [
-    {"id": "1", "name": "Gyan Mudra", "sanskrit_name": "Jnana Mudra", "element": "Air", "description": "Touch thumb to index finger, other fingers extended. The gesture of knowledge and wisdom.", "benefits": ["Mental clarity", "Concentration", "Wisdom"], "image_url": None},
-    {"id": "2", "name": "Anjali Mudra", "sanskrit_name": "Namaste", "element": "Spirit", "description": "Palms pressed together at heart. The gesture of greeting and honoring the divine in all.", "benefits": ["Heart opening", "Gratitude", "Connection"], "image_url": None},
-    {"id": "3", "name": "Dhyana Mudra", "sanskrit_name": "Meditation Mudra", "element": "Water", "description": "Hands in lap, right over left, thumbs touching. Deep meditation gesture.", "benefits": ["Deep meditation", "Inner peace", "Concentration"], "image_url": None},
-    {"id": "4", "name": "Prithvi Mudra", "sanskrit_name": "Earth Mudra", "element": "Earth", "description": "Thumb touches ring finger. Connects to earth element and stability.", "benefits": ["Grounding", "Stability", "Physical strength"], "image_url": None},
-    {"id": "5", "name": "Varuna Mudra", "sanskrit_name": "Water Mudra", "element": "Water", "description": "Thumb touches little finger. Balances water element in body.", "benefits": ["Emotional balance", "Hydration", "Flexibility"], "image_url": None},
-    {"id": "6", "name": "Agni Mudra", "sanskrit_name": "Fire Mudra", "element": "Fire", "description": "Fold ring finger to palm, thumb pressing on it. Increases internal fire.", "benefits": ["Metabolism", "Digestion", "Transformation"], "image_url": None},
-    {"id": "7", "name": "Vayu Mudra", "sanskrit_name": "Air Mudra", "element": "Air", "description": "Fold index finger to palm, thumb pressing on it. Balances air element.", "benefits": ["Calms anxiety", "Reduces gas", "Mental clarity"], "image_url": None},
-    {"id": "8", "name": "Shuni Mudra", "sanskrit_name": "Saturn Mudra", "element": "Earth", "description": "Thumb touches middle finger. Patience and discipline.", "benefits": ["Patience", "Discipline", "Responsibility"], "image_url": None},
-    {"id": "9", "name": "Surya Mudra", "sanskrit_name": "Sun Mudra", "element": "Fire", "description": "Bend ring finger to touch base of thumb, thumb presses on ring finger.", "benefits": ["Increases fire element", "Weight management", "Warmth"], "image_url": None},
-    {"id": "10", "name": "Prana Mudra", "sanskrit_name": "Life Force Mudra", "element": "Spirit", "description": "Touch tips of ring and little finger to thumb tip.", "benefits": ["Increases vitality", "Reduces fatigue", "Awakens dormant energy"], "image_url": None},
-    {"id": "11", "name": "Apana Mudra", "sanskrit_name": "Downward Energy Mudra", "element": "Earth", "description": "Touch tips of middle and ring finger to thumb tip.", "benefits": ["Detoxification", "Elimination", "Grounding"], "image_url": None},
-    {"id": "12", "name": "Chin Mudra", "sanskrit_name": "Consciousness Mudra", "element": "Air", "description": "Like Gyan mudra but palms face down. Grounds consciousness.", "benefits": ["Grounded awareness", "Meditation", "Mental stability"], "image_url": None},
+    {
+        "id": "1", 
+        "name": "Gyan Mudra", 
+        "sanskrit_name": "Jnana Mudra", 
+        "element": "Air", 
+        "description": "Touch thumb to index finger, other fingers extended. The gesture of knowledge and wisdom.",
+        "instructions": "Sit comfortably. Touch the tip of your thumb to the tip of your index finger, forming a circle. Keep the other three fingers extended but relaxed. Rest hands on knees with palms facing up or down.",
+        "benefits": ["Mental clarity", "Concentration", "Wisdom", "Calms the mind", "Improves memory"], 
+        "image_url": "https://images.unsplash.com/photo-1607824972522-2821fba071f5?w=800"
+    },
+    {
+        "id": "2", 
+        "name": "Anjali Mudra", 
+        "sanskrit_name": "Namaste", 
+        "element": "Spirit", 
+        "description": "Palms pressed together at heart. The gesture of greeting and honoring the divine in all.",
+        "instructions": "Bring your palms together at heart center. Press thumbs gently into your sternum. Keep fingers pointing upward and spread slightly. Bow your head and close your eyes.",
+        "benefits": ["Heart opening", "Gratitude", "Connection", "Centers the mind", "Promotes humility"], 
+        "image_url": "https://images.unsplash.com/photo-1667821658191-00f13347bdfe?w=800"
+    },
+    {
+        "id": "3", 
+        "name": "Dhyana Mudra", 
+        "sanskrit_name": "Meditation Mudra", 
+        "element": "Water", 
+        "description": "Hands in lap, right over left, thumbs touching. Deep meditation gesture.",
+        "instructions": "Sit in a comfortable meditation posture. Place your left hand in your lap, palm facing up. Rest your right hand on top, also palm up. Touch thumb tips together forming a triangle.",
+        "benefits": ["Deep meditation", "Inner peace", "Concentration", "Spiritual awakening", "Calms emotions"], 
+        "image_url": "https://images.unsplash.com/photo-1612197315436-e9ecf682b264?w=800"
+    },
+    {
+        "id": "4", 
+        "name": "Prithvi Mudra", 
+        "sanskrit_name": "Earth Mudra", 
+        "element": "Earth", 
+        "description": "Thumb touches ring finger. Connects to earth element and stability.",
+        "instructions": "Touch the tip of your ring finger to the tip of your thumb. Keep the other three fingers extended and relaxed. Practice with both hands resting on your thighs.",
+        "benefits": ["Grounding", "Stability", "Physical strength", "Increases earth element", "Promotes healing"], 
+        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
+    },
+    {
+        "id": "5", 
+        "name": "Varuna Mudra", 
+        "sanskrit_name": "Water Mudra", 
+        "element": "Water", 
+        "description": "Thumb touches little finger. Balances water element in body.",
+        "instructions": "Touch the tip of your little finger (pinky) to the tip of your thumb. Keep the other three fingers extended and comfortable. Practice while seated in meditation.",
+        "benefits": ["Emotional balance", "Hydration", "Flexibility", "Improves skin health", "Balances fluids"], 
+        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
+    },
+    {
+        "id": "6", 
+        "name": "Agni Mudra", 
+        "sanskrit_name": "Fire Mudra", 
+        "element": "Fire", 
+        "description": "Fold ring finger to palm, thumb pressing on it. Increases internal fire.",
+        "instructions": "Bend your ring finger to touch the base of your thumb. Press gently with your thumb on the second phalange of your ring finger. Keep other fingers straight.",
+        "benefits": ["Metabolism", "Digestion", "Transformation", "Reduces body fat", "Increases body heat"], 
+        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
+    },
+    {
+        "id": "7", 
+        "name": "Vayu Mudra", 
+        "sanskrit_name": "Air Mudra", 
+        "element": "Air", 
+        "description": "Fold index finger to palm, thumb pressing on it. Balances air element.",
+        "instructions": "Bend your index finger to touch the base of your thumb. Press gently with your thumb on the second phalange of the index finger. Other fingers remain extended.",
+        "benefits": ["Calms anxiety", "Reduces gas", "Mental clarity", "Relieves joint pain", "Balances Vata"], 
+        "image_url": "https://images.unsplash.com/photo-1607824972522-2821fba071f5?w=800"
+    },
+    {
+        "id": "8", 
+        "name": "Shuni Mudra", 
+        "sanskrit_name": "Saturn Mudra", 
+        "element": "Earth", 
+        "description": "Thumb touches middle finger. Patience and discipline.",
+        "instructions": "Touch the tip of your middle finger to the tip of your thumb. Keep the other fingers extended but relaxed. Practice on both hands while sitting comfortably.",
+        "benefits": ["Patience", "Discipline", "Responsibility", "Improves hearing", "Promotes understanding"], 
+        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
+    },
+    {
+        "id": "9", 
+        "name": "Surya Mudra", 
+        "sanskrit_name": "Sun Mudra", 
+        "element": "Fire", 
+        "description": "Bend ring finger to touch base of thumb, thumb presses on ring finger.",
+        "instructions": "Bend your ring finger to touch the mount of your thumb (base). Press gently with your thumb on the ring finger. Keep other fingers straight and relaxed.",
+        "benefits": ["Increases fire element", "Weight management", "Warmth", "Improves thyroid function", "Boosts energy"], 
+        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
+    },
+    {
+        "id": "10", 
+        "name": "Prana Mudra", 
+        "sanskrit_name": "Life Force Mudra", 
+        "element": "Spirit", 
+        "description": "Touch tips of ring and little finger to thumb tip.",
+        "instructions": "Touch the tips of your ring finger and little finger to the tip of your thumb simultaneously. Keep the index and middle fingers extended. Practice on both hands.",
+        "benefits": ["Increases vitality", "Reduces fatigue", "Awakens dormant energy", "Improves immunity", "Enhances vision"], 
+        "image_url": "https://images.unsplash.com/photo-1612197315436-e9ecf682b264?w=800"
+    },
+    {
+        "id": "11", 
+        "name": "Apana Mudra", 
+        "sanskrit_name": "Downward Energy Mudra", 
+        "element": "Earth", 
+        "description": "Touch tips of middle and ring finger to thumb tip.",
+        "instructions": "Touch the tips of your middle finger and ring finger to the tip of your thumb. Keep the index finger and little finger extended. Practice while seated.",
+        "benefits": ["Detoxification", "Elimination", "Grounding", "Regulates menstruation", "Supports heart health"], 
+        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
+    },
+    {
+        "id": "12", 
+        "name": "Chin Mudra", 
+        "sanskrit_name": "Consciousness Mudra", 
+        "element": "Air", 
+        "description": "Like Gyan mudra but palms face down. Grounds consciousness.",
+        "instructions": "Same hand position as Gyan Mudra - touch thumb tip to index finger tip. The difference is the palms face downward on your knees instead of upward. This creates a grounding effect.",
+        "benefits": ["Grounded awareness", "Meditation", "Mental stability", "Promotes introspection", "Balances energy"], 
+        "image_url": "https://images.unsplash.com/photo-1607824972522-2821fba071f5?w=800"
+    },
 ]
 
 @api_router.get("/mudras")

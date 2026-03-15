@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowLeft, Leaf, Clock, Heart, Filter, HeartOff, Star } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent } from "../components/ui/dialog";
 import { toast } from "sonner";
 
 const YogaLibrary = ({ user, api }) => {
@@ -16,15 +16,22 @@ const YogaLibrary = ({ user, api }) => {
   const [selectedPose, setSelectedPose] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [imageErrors, setImageErrors] = useState(new Set());
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
   const elementColors = {
-    Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-    Water: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-    Fire: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
-    Air: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20" },
-    Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+    Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", gradient: "from-emerald-500/20 to-emerald-900/40" },
+    Water: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", gradient: "from-blue-500/20 to-blue-900/40" },
+    Fire: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20", gradient: "from-orange-500/20 to-orange-900/40" },
+    Air: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20", gradient: "from-cyan-500/20 to-cyan-900/40" },
+    Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", gradient: "from-purple-500/20 to-purple-900/40" },
+  };
+
+  const difficultyColors = {
+    Beginner: "bg-green-500/20 text-green-400",
+    Intermediate: "bg-yellow-500/20 text-yellow-400",
+    Advanced: "bg-red-500/20 text-red-400",
   };
 
   useEffect(() => {
@@ -94,6 +101,21 @@ const YogaLibrary = ({ user, api }) => {
   const getPoseCountByElement = (element) => {
     if (element === "all") return poses.length;
     return poses.filter(p => p.element === element).length;
+  };
+
+  const handleImageError = (poseId) => {
+    setImageErrors(prev => new Set([...prev, poseId]));
+  };
+
+  const getPlaceholderImage = (element) => {
+    const placeholders = {
+      Earth: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+      Water: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800",
+      Fire: "https://images.unsplash.com/photo-1573384666979-2b1e160d2d08?w=800",
+      Air: "https://images.unsplash.com/photo-1557897467-d59fb33eb834?w=800",
+      Spirit: "https://images.unsplash.com/photo-1767611067414-b11b40fd0612?w=800",
+    };
+    return placeholders[element] || placeholders.Earth;
   };
 
   return (
@@ -186,6 +208,7 @@ const YogaLibrary = ({ user, api }) => {
             {filteredPoses.map((pose, index) => {
               const colors = elementColors[pose.element] || elementColors.Earth;
               const isFavorite = favorites.has(pose.id);
+              const hasImageError = imageErrors.has(pose.id);
               
               return (
                 <motion.div
@@ -193,41 +216,60 @@ const YogaLibrary = ({ user, api }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.02 }}
-                  className={`p-6 rounded-2xl border backdrop-blur-xl cursor-pointer relative group
+                  className={`rounded-2xl border backdrop-blur-xl cursor-pointer relative group overflow-hidden
                              ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
                   onClick={() => setSelectedPose(pose)}
                   data-testid={`pose-card-${pose.id}`}
                 >
-                  {/* Favorite Button */}
-                  <button
-                    onClick={(e) => toggleFavorite(pose.id, e)}
-                    className={`absolute top-4 right-4 p-2 rounded-full transition-all
-                               ${isFavorite ? 'bg-primary/20 text-primary' : 'bg-white/5 text-muted-foreground opacity-0 group-hover:opacity-100'}`}
-                    data-testid={`favorite-btn-${pose.id}`}
-                  >
-                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
-                  </button>
-                  
-                  <div className="flex items-start justify-between mb-4 pr-10">
-                    <div className={`p-3 rounded-xl ${colors.bg}`}>
-                      <Leaf className={`w-6 h-6 ${colors.text}`} />
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
+                  {/* Image */}
+                  <div className="relative h-40 overflow-hidden">
+                    <img
+                      src={hasImageError ? getPlaceholderImage(pose.element) : (pose.image_url || getPlaceholderImage(pose.element))}
+                      alt={pose.name}
+                      className="w-full h-full object-cover"
+                      onError={() => handleImageError(pose.id)}
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t ${colors.gradient}`} />
+                    
+                    {/* Favorite Button */}
+                    <button
+                      onClick={(e) => toggleFavorite(pose.id, e)}
+                      className={`absolute top-3 right-3 p-2 rounded-full transition-all backdrop-blur-sm
+                                 ${isFavorite ? 'bg-primary/40 text-primary' : 'bg-black/30 text-white opacity-0 group-hover:opacity-100'}`}
+                      data-testid={`favorite-btn-${pose.id}`}
+                    >
+                      <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+                    </button>
+                    
+                    {/* Element Badge */}
+                    <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs backdrop-blur-sm ${colors.bg} ${colors.text} border ${colors.border}`}>
                       {pose.element}
                     </span>
+                    
+                    {/* Difficulty Badge */}
+                    {pose.difficulty && (
+                      <span className={`absolute bottom-3 left-3 px-2 py-1 rounded-full text-xs ${difficultyColors[pose.difficulty] || difficultyColors.Beginner}`}>
+                        {pose.difficulty}
+                      </span>
+                    )}
                   </div>
                   
-                  <h3 className="text-xl font-serif mb-1">{pose.name}</h3>
-                  <p className="text-sm text-muted-foreground italic mb-4">{pose.sanskrit_name}</p>
-                  
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      <span>{pose.duration_minutes} min</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Heart className="w-4 h-4" />
-                      <span>{pose.chakras?.[0]}</span>
+                  {/* Content */}
+                  <div className="p-5">
+                    <h3 className="text-lg font-serif mb-1">{pose.name}</h3>
+                    <p className="text-sm text-muted-foreground italic mb-3">{pose.sanskrit_name}</p>
+                    
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{pose.description}</p>
+                    
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4" />
+                        <span>{pose.duration_minutes} min</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-primary">
+                        <span>View Details</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -238,66 +280,163 @@ const YogaLibrary = ({ user, api }) => {
       </main>
 
       {/* Pose Detail Dialog */}
-      <Dialog open={!!selectedPose} onOpenChange={() => setSelectedPose(null)}>
-        <DialogContent className="bg-card border-white/10 max-w-lg max-h-[80vh] overflow-y-auto">
-          {selectedPose && (
-            <>
-              <DialogHeader>
-                <div className="flex items-center justify-between">
-                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs mb-2 w-fit
-                                 ${elementColors[selectedPose.element]?.bg} ${elementColors[selectedPose.element]?.text}`}>
-                    {selectedPose.element}
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={(e) => {
-                      toggleFavorite(selectedPose.id, e);
-                    }}
-                    className={favorites.has(selectedPose.id) ? "text-primary" : "text-muted-foreground"}
-                  >
-                    <Heart className={`w-4 h-4 mr-1 ${favorites.has(selectedPose.id) ? 'fill-current' : ''}`} />
-                    {favorites.has(selectedPose.id) ? "Saved" : "Save"}
-                  </Button>
-                </div>
-                <DialogTitle className="text-2xl font-serif">{selectedPose.name}</DialogTitle>
-                <p className="text-muted-foreground italic">{selectedPose.sanskrit_name}</p>
-              </DialogHeader>
-
-              <div className="space-y-6 mt-4">
-                <p className="text-muted-foreground leading-relaxed">{selectedPose.description}</p>
-
-                <div>
-                  <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Benefits</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedPose.benefits?.map((benefit) => (
-                      <span key={benefit} className="px-3 py-1 rounded-full bg-white/5 text-sm">
-                        {benefit}
+      <AnimatePresence>
+        {selectedPose && (
+          <Dialog open={!!selectedPose} onOpenChange={() => setSelectedPose(null)}>
+            <DialogContent className="bg-card border-white/10 max-w-2xl max-h-[90vh] overflow-y-auto p-0">
+              {/* Hero Image */}
+              <div className="relative h-64">
+                <img
+                  src={imageErrors.has(selectedPose.id) ? getPlaceholderImage(selectedPose.element) : (selectedPose.image_url || getPlaceholderImage(selectedPose.element))}
+                  alt={selectedPose.name}
+                  className="w-full h-full object-cover"
+                  onError={() => handleImageError(selectedPose.id)}
+                />
+                <div className={`absolute inset-0 bg-gradient-to-t ${elementColors[selectedPose.element]?.gradient || 'from-black/60 to-transparent'}`} />
+                
+                {/* Close Button */}
+                <button
+                  onClick={() => setSelectedPose(null)}
+                  className="absolute top-4 right-4 p-2 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-colors"
+                >
+                  <X className="w-5 h-5 text-white" />
+                </button>
+                
+                {/* Favorite Button */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => toggleFavorite(selectedPose.id, e)}
+                  className={`absolute top-4 left-4 backdrop-blur-sm ${favorites.has(selectedPose.id) ? "text-primary bg-primary/20" : "text-white bg-black/30"}`}
+                >
+                  <Heart className={`w-4 h-4 mr-1 ${favorites.has(selectedPose.id) ? 'fill-current' : ''}`} />
+                  {favorites.has(selectedPose.id) ? "Saved" : "Save"}
+                </Button>
+                
+                {/* Title Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`px-3 py-1 rounded-full text-xs ${elementColors[selectedPose.element]?.bg} ${elementColors[selectedPose.element]?.text} border ${elementColors[selectedPose.element]?.border}`}>
+                      {selectedPose.element}
+                    </span>
+                    {selectedPose.difficulty && (
+                      <span className={`px-2 py-1 rounded-full text-xs ${difficultyColors[selectedPose.difficulty] || difficultyColors.Beginner}`}>
+                        {selectedPose.difficulty}
                       </span>
-                    ))}
+                    )}
                   </div>
-                </div>
-
-                <div>
-                  <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Chakras</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedPose.chakras?.map((chakra) => (
-                      <span key={chakra} className="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">
-                        {chakra}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="w-4 h-4" />
-                  <span>Hold for {selectedPose.duration_minutes} minutes</span>
+                  <h2 className="text-3xl font-serif text-white">{selectedPose.name}</h2>
+                  <p className="text-lg text-white/70 italic">{selectedPose.sanskrit_name}</p>
                 </div>
               </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+
+              <div className="p-6 space-y-8">
+                {/* Description */}
+                <p className="text-muted-foreground leading-relaxed text-lg">{selectedPose.description}</p>
+
+                {/* Duration & Chakras */}
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5">
+                    <Clock className="w-5 h-5 text-primary" />
+                    <span>Hold for {selectedPose.duration_minutes} minutes</span>
+                  </div>
+                  {selectedPose.chakras?.map((chakra) => (
+                    <span key={chakra} className="px-4 py-2 rounded-xl bg-primary/10 text-primary text-sm">
+                      {chakra} Chakra
+                    </span>
+                  ))}
+                </div>
+
+                {/* Step-by-Step Instructions */}
+                {selectedPose.instructions && selectedPose.instructions.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-serif mb-4 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm">1</span>
+                      How to Get Into This Pose
+                    </h3>
+                    <div className="space-y-3 pl-10">
+                      {selectedPose.instructions.map((instruction, idx) => (
+                        <motion.div
+                          key={idx}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.05 }}
+                          className="flex items-start gap-3"
+                        >
+                          <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center text-xs text-muted-foreground flex-shrink-0 mt-0.5">
+                            {idx + 1}
+                          </div>
+                          <p className="text-muted-foreground leading-relaxed">{instruction}</p>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Benefits */}
+                {selectedPose.benefits && selectedPose.benefits.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-serif mb-4 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center text-green-400">
+                        <Check className="w-4 h-4" />
+                      </span>
+                      Benefits
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pl-10">
+                      {selectedPose.benefits.map((benefit, idx) => (
+                        <motion.div
+                          key={benefit}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.03 }}
+                          className="flex items-center gap-2 p-3 rounded-xl bg-green-500/5 border border-green-500/10"
+                        >
+                          <Check className="w-4 h-4 text-green-400 flex-shrink-0" />
+                          <span className="text-sm">{benefit}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Contraindications */}
+                {selectedPose.contraindications && selectedPose.contraindications.length > 0 && (
+                  <div>
+                    <h3 className="text-lg font-serif mb-4 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400">
+                        <AlertTriangle className="w-4 h-4" />
+                      </span>
+                      Cautions & Contraindications
+                    </h3>
+                    <div className="flex flex-wrap gap-2 pl-10">
+                      {selectedPose.contraindications.map((item) => (
+                        <span key={item} className="px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-300 text-sm border border-orange-500/20">
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Practice Tip */}
+                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
+                  <p className="text-sm text-muted-foreground">
+                    <strong className="text-primary">Practice Tip:</strong> Connect with your breath throughout this pose. 
+                    Inhale to create space, exhale to deepen. Listen to your body and modify as needed.
+                    This pose works with the <strong className="text-primary">{selectedPose.element}</strong> element to {
+                      selectedPose.element === "Earth" ? "ground and stabilize your energy" :
+                      selectedPose.element === "Water" ? "enhance flow and emotional release" :
+                      selectedPose.element === "Fire" ? "ignite your inner power and transformation" :
+                      selectedPose.element === "Air" ? "expand awareness and create lightness" :
+                      "connect with your higher self and spiritual essence"
+                    }.
+                  </p>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

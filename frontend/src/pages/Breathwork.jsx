@@ -269,6 +269,21 @@ const Breathwork = ({ user, api }) => {
               <span>Exhale: {activeSession.pattern.exhale}s</span>
               {activeSession.pattern.hold_empty > 0 && <span>Hold Empty: {activeSession.pattern.hold_empty}s</span>}
             </div>
+            
+            {/* Frequency & Instructions */}
+            {(activeSession.frequency || activeSession.instructions) && (
+              <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10 max-w-md text-center">
+                {activeSession.frequency && (
+                  <p className="text-sm text-primary mb-2">{activeSession.frequency}</p>
+                )}
+                {activeSession.instructions && (
+                  <p className="text-xs text-muted-foreground">{activeSession.instructions}</p>
+                )}
+                {activeSession.best_time && (
+                  <p className="text-xs text-muted-foreground mt-2 opacity-70">Best time: {activeSession.best_time}</p>
+                )}
+              </div>
+            )}
           </motion.div>
         ) : loading ? (
           <div className="flex items-center justify-center h-64">
@@ -317,6 +332,13 @@ const Breathwork = ({ user, api }) => {
                       </span>
                     ))}
                   </div>
+                  
+                  {/* Frequency Badge */}
+                  {session.frequency && (
+                    <div className="mt-3 text-xs text-muted-foreground flex items-center gap-1">
+                      <span className="text-primary">Frequency:</span> {session.frequency.split(' - ')[0]}
+                    </div>
+                  )}
                 </motion.div>
               );
             })}
