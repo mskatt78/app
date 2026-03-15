@@ -9,7 +9,7 @@ YOGA_POSES = [
         "sanskrit_name": "Tadasana",
         "element": "Earth",
         "description": "Stand tall like a mountain, rooted and stable. This foundational pose connects you to the earth element and your own inner strength.",
-        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
+        "image_url": "https://images.unsplash.com/photo-1767611136362-16bee81a9b82?w=800",
         "instructions": [
             "Stand with your feet hip-width apart or together, with your weight evenly distributed",
             "Press down through all four corners of your feet - big toe mound, pinky toe mound, inner heel, outer heel",
@@ -39,7 +39,7 @@ YOGA_POSES = [
         "sanskrit_name": "Vrksasana",
         "element": "Earth",
         "description": "Like a sacred tree, roots deep and branches reaching skyward. Balance between earth and sky.",
-        "image_url": "https://images.unsplash.com/photo-1767611136075-8008827aed2e?w=800",
+        "image_url": "https://images.unsplash.com/photo-1597785902926-0dd71fb266a2?w=800",
         "instructions": [
             "Begin in Mountain Pose with feet firmly planted",
             "Shift your weight onto your left foot, grounding down through all four corners",
@@ -69,7 +69,7 @@ YOGA_POSES = [
         "sanskrit_name": "Setu Bandhasana",
         "element": "Earth",
         "description": "Create a bridge between earth and sky, opening the heart to receive.",
-        "image_url": "https://images.unsplash.com/photo-1767611124716-23fa405eae44?w=800",
+        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
         "instructions": [
             "Lie on your back with knees bent and feet flat on the floor, hip-width apart",
             "Place your arms alongside your body with palms facing down",
@@ -99,7 +99,7 @@ YOGA_POSES = [
         "sanskrit_name": "Malasana",
         "element": "Earth",
         "description": "Deep squat connecting to primal earth energy. Opens the hips and grounds the spirit.",
-        "image_url": "https://images.unsplash.com/photo-1767611118992-b300c4fb4bee?w=800",
+        "image_url": "https://images.unsplash.com/photo-1758274526081-57641f58db06?w=800",
         "instructions": [
             "Stand with your feet slightly wider than hip-width apart, toes pointing outward",
             "Bend your knees deeply and lower your hips toward the floor into a squat",
@@ -129,7 +129,7 @@ YOGA_POSES = [
         "sanskrit_name": "Utthita Trikonasana",
         "element": "Earth",
         "description": "Form the sacred triangle, connecting three points of power between earth and cosmos.",
-        "image_url": "https://images.unsplash.com/photo-1761034114072-9ec9c3d2fbb2?w=800",
+        "image_url": "https://images.unsplash.com/photo-1561577732-b27fe3178489?w=800",
         "instructions": [
             "Stand with feet about 3-4 feet apart, right foot pointing forward, left foot turned in slightly",
             "Extend your arms out to the sides at shoulder height, palms facing down",
@@ -159,7 +159,7 @@ YOGA_POSES = [
         "sanskrit_name": "Prasarita Padottanasana",
         "element": "Earth",
         "description": "Bow to the earth with legs wide, letting gravity draw you into surrender.",
-        "image_url": "https://images.unsplash.com/photo-1730672961077-45090d35fa83?w=800",
+        "image_url": "https://images.unsplash.com/photo-1758599880425-7862af0a4b50?w=800",
         "instructions": [
             "Stand with feet 3-4 feet apart, parallel to each other",
             "Place your hands on your hips and inhale, lengthening your spine",
@@ -189,7 +189,7 @@ YOGA_POSES = [
         "sanskrit_name": "Utkatasana",
         "element": "Earth",
         "description": "Sit into an invisible throne, building inner fire while staying rooted.",
-        "image_url": "https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=800",
+        "image_url": "https://images.unsplash.com/photo-1767611115570-92e679b820ed?w=800",
         "instructions": [
             "Stand with feet together or hip-width apart in Mountain Pose",
             "Inhale and raise your arms overhead, palms facing each other or together",
@@ -219,7 +219,7 @@ YOGA_POSES = [
         "sanskrit_name": "Uttanasana",
         "element": "Earth",
         "description": "Fold forward, letting the crown descend toward Mother Earth in humble surrender.",
-        "image_url": "https://images.unsplash.com/photo-1720788073785-c71095920eeb?w=800",
+        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
         "instructions": [
             "Stand in Mountain Pose with hands on your hips",
             "Exhale and hinge forward from your hips, not your waist",
@@ -249,7 +249,7 @@ YOGA_POSES = [
         "sanskrit_name": "Utkata Konasana",
         "element": "Earth",
         "description": "Embody the fierce divine feminine, rooted in power and open in heart.",
-        "image_url": "https://images.unsplash.com/photo-1647244949200-5877a6695c17?w=800",
+        "image_url": "https://images.unsplash.com/photo-1767611095450-c0cfa81df6e8?w=800",
         "instructions": [
             "Stand with feet wide apart (about 4 feet), toes turned out 45 degrees",
             "Bend your knees deeply, lowering hips toward knee level",
@@ -279,7 +279,7 @@ YOGA_POSES = [
         "sanskrit_name": "Ardha Chandrasana",
         "element": "Earth",
         "description": "Balance on one leg like the half moon, grounded yet reaching toward the stars.",
-        "image_url": "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=800",
+        "image_url": "https://images.unsplash.com/photo-1767611121194-3cb554c9a9ec?w=800",
         "instructions": [
             "From Triangle Pose on the right side, bend your right knee",
             "Place your right fingertips on the floor about 12 inches in front of your right foot",
@@ -311,7 +311,7 @@ YOGA_POSES = [
         "sanskrit_name": "Virabhadrasana I",
         "element": "Fire",
         "description": "Embody the warrior spirit with fierce determination and open heart.",
-        "image_url": "https://images.unsplash.com/photo-1766069565396-b63c9254bbf0?w=800",
+        "image_url": "https://images.unsplash.com/photo-1767611097425-87ceea79a3f0?w=800",
         "instructions": [
             "From Mountain Pose, step your left foot back 3-4 feet",
             "Turn your left foot out 45-60 degrees, keeping right foot forward",
@@ -341,7 +341,7 @@ YOGA_POSES = [
         "sanskrit_name": "Virabhadrasana II",
         "element": "Fire",
         "description": "Stand in your power, gaze fixed on your intention, arms extended in all directions.",
-        "image_url": "https://images.unsplash.com/photo-1658279445014-dcc466ac1192?w=800",
+        "image_url": "https://images.unsplash.com/photo-1767611116147-592ffdb14e80?w=800",
         "instructions": [
             "Stand with feet 3-4 feet apart, right foot forward, left foot parallel to back edge of mat",
             "Extend arms out to sides at shoulder height, palms facing down",
