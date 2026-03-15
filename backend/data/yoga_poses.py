@@ -249,7 +249,7 @@ YOGA_POSES = [
         "sanskrit_name": "Utkata Konasana",
         "element": "Earth",
         "description": "Embody the fierce divine feminine, rooted in power and open in heart.",
-        "image_url": "https://images.unsplash.com/photo-1767611095450-c0cfa81df6e8?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/c7e5317db921a63481bec886dc80abdcc623f2f8165a68ef9b9ec30dddba8e41.png",
         "instructions": [
             "Stand with feet wide apart (about 4 feet), toes turned out 45 degrees",
             "Bend your knees deeply, lowering hips toward knee level",
@@ -431,7 +431,7 @@ YOGA_POSES = [
         "sanskrit_name": "Urdhva Mukha Svanasana",
         "element": "Fire",
         "description": "Lift your heart to the sun, chest proud and spine awakened.",
-        "image_url": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/09e491330f6f14f89745281be40988b65def9b42f801d1a5538fc0e8676a2577.png",
         "instructions": [
             "Lie face down with legs extended, tops of feet on the mat",
             "Place hands beside your lower ribs, fingers pointing forward",
@@ -551,7 +551,7 @@ YOGA_POSES = [
         "sanskrit_name": "Viparita Virabhadrasana",
         "element": "Fire",
         "description": "Arch back in triumphant glory, heart open to the heavens.",
-        "image_url": "https://images.unsplash.com/photo-1552196563-55cd4e45efb3?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/62746099e310fe75d7a38bcd26d09edc2f72045268b1a6653bfde236fc603711.png",
         "instructions": [
             "From Warrior II with right leg forward, flip your right palm to face up",
             "On an inhale, reach your right arm up and back, arching your spine",
@@ -763,7 +763,7 @@ YOGA_POSES = [
         "sanskrit_name": "Supta Baddha Konasana",
         "element": "Water",
         "description": "Lie back and open like a flower, receiving the flow of life.",
-        "image_url": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5928f49f42928c6dc104075bbf8c899fdc7f397ef41a441d0e54ffb0258c85ab.png",
         "instructions": [
             "Lie on your back with knees bent, feet flat on the floor",
             "Let knees fall open to the sides, bringing soles of feet together",
@@ -823,7 +823,7 @@ YOGA_POSES = [
         "sanskrit_name": "Supta Matsyendrasana",
         "element": "Water",
         "description": "Twist and release like water finding its natural course.",
-        "image_url": "https://images.unsplash.com/photo-1510894347713-fc3ed6fdf539?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/890d798ce6485cffecf1a4f1c8f7c57a391fa4b4cfd4397b1f51bface5cd13e5.png",
         "instructions": [
             "Lie on your back with arms extended out to the sides, palms down",
             "Draw your right knee into your chest",
@@ -1035,7 +1035,7 @@ YOGA_POSES = [
         "sanskrit_name": "Adho Mukha Svanasana",
         "element": "Air",
         "description": "Create an inverted V, connecting earth and sky. Let gravity release tension.",
-        "image_url": "https://images.unsplash.com/photo-1557897467-d59fb33eb834?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/01c770343bec76631056cecd750df42e3931875e5ef2ebefe9c5cd52133fe153.png",
         "instructions": [
             "Start on hands and knees, hands shoulder-width apart, knees hip-width",
             "Spread fingers wide, pressing through entire palm",
@@ -1427,7 +1427,7 @@ YOGA_POSES = [
         "sanskrit_name": "Sukhasana",
         "element": "Spirit",
         "description": "Sit in sacred simplicity, spine tall and heart open to receive.",
-        "image_url": "https://images.unsplash.com/photo-1767611067414-b11b40fd0612?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/7c075ea8bd1f826bd1316182ce7777403f05cc96828b6c3d7a4d47ae66951cf2.png",
         "instructions": [
             "Sit on the floor or on a cushion to elevate hips",
             "Cross your legs, placing each foot beneath the opposite knee",
@@ -1577,7 +1577,7 @@ YOGA_POSES = [
         "sanskrit_name": "Dhyana",
         "element": "Spirit",
         "description": "Enter the sacred silence, witnessing the infinite within.",
-        "image_url": "https://images.unsplash.com/photo-1767611067414-b11b40fd0612?w=800",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/1c7c6f62704277e2710296f34e0379f900cf00a6e46b0508078c5420f2ce2dd8.png",
         "instructions": [
             "Sit in a comfortable cross-legged position or on a chair",
             "Ensure your spine is tall and aligned",
