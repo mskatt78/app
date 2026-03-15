@@ -20,47 +20,39 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 
 ## What's Been Implemented
 
-### Phase 1: Content Enhancement (March 15, 2026)
-- [x] **Yoga Poses Enhanced** - All 60 poses with images, 8-step instructions, 6 benefits, difficulty, contraindications
-- [x] **Mudras Library Enhanced** - All 12 mudras with images and instructions
-- [x] **Breathwork Enhanced** - All 6 sessions with frequency (Hz) and best time
+### Phase 4: Practice Log, Achievements & Shamanic Content (Dec 15, 2025)
+- [x] **Practice Log System** - Full activity tracking:
+  - Log yoga, breathwork, meditation, oracle, mantra, mudra, grounding, somatic, elemental practices
+  - Detailed statistics with weekly activity chart
+  - Elemental balance visualization
+  - Recent practice history display
+  - Practice streak tracking
 
-### Phase 2: MongoDB Migration & CMS (March 15, 2026)
-- [x] **Data Migration to MongoDB** - All content migrated from hardcoded arrays to MongoDB collections:
-  - `yoga_poses` (60 documents)
-  - `mudras` (12 documents)
-  - `breathwork_sessions` (6 documents)
-  - `crystals` (12 documents)
-  - `mantras` (12 documents)
-  - `astrology_months` (13 documents)
-  - `oracle_cards` (22 documents)
-  - `somatic_practices` (6 documents)
-  - `grounding_exercises` (5 documents)
-  - `mindfulness_practices` (8 documents)
-  - `meditations` (6 documents)
+- [x] **Enhanced Achievements System** - 24 achievements with badges:
+  - Category-based filtering
+  - Progress tracking with visual progress bars
+  - Unlockable content rewards
+  - Badge colors per achievement
+  - Stats overview (unlocked, streak, hours practiced)
 
-- [x] **Admin CMS Built** - Full content management system at `/admin`:
-  - CRUD operations for all content types
-  - Tabs: Yoga, Mudras, Breathwork, Crystals, Mantras, Workshops, Events, Courses
-  - Form-based creation/editing with validation
-  - List view with edit/delete actions
-
-- [x] **New Content Types Added**:
-  - Workshops (create/edit/delete)
-  - Events (create/edit/delete)  
-  - Courses (create/edit/delete)
+- [x] **New Shamanic Content Sections**:
+  - **Earth Altars** (6 altars) - Sacred space creation guides for each element
+  - **Creative Processes** (6 processes) - Shamanic art and creative expression
+  - **Heart Practices** (6 practices) - Heart-opening ceremonies and exercises
+  - **Shamanic Practices** (8 practices) - Deep journeys and ceremonial work
+  - **Elemental Practices** (10 practices) - Element-specific connection exercises
 
 ### Phase 3: Mantra Audio (March 15, 2026)
-- [x] **Audio Player Implementation** - Full audio playback for mantras:
-  - Play/Pause button with visual feedback
-  - Volume slider with mute toggle
-  - Loop toggle (on by default)
-  - Skip to next repetition button
-  - Progress bar with time display
-  - Repetition counter
-  - "Audio" badge on mantra cards with audio
-  - Timer-based fallback for mantras without audio
-- [x] **Working Audio**: Om mantra has Wikipedia Commons audio (https://upload.wikimedia.org/wikipedia/commons/3/31/Om.ogg)
+- [x] **Audio Player Implementation** - Full audio playback for mantras
+
+### Phase 2: MongoDB Migration & CMS (March 15, 2026)
+- [x] **Data Migration to MongoDB** - All content migrated to MongoDB collections
+- [x] **Admin CMS Built** - Full content management system at `/admin`
+
+### Phase 1: Content Enhancement (March 15, 2026)
+- [x] **Yoga Poses Enhanced** - All 60 poses with images, 8-step instructions, 6 benefits
+- [x] **Mudras Library Enhanced** - All 12 mudras with images and instructions
+- [x] **Breathwork Enhanced** - All 6 sessions with frequency (Hz) and best time
 
 ### Previously Implemented (Jan 2026)
 - [x] Landing page with shamanic design
@@ -84,26 +76,29 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 
 ## API Endpoints
 
-### Public Endpoints
-- `GET /api/yoga/poses` - List yoga poses (with element/difficulty filter)
-- `GET /api/yoga/poses/{id}` - Get specific pose
-- `GET /api/mudras` - List mudras (with element filter)
+### Public Endpoints (No Auth Required)
+- `GET /api/yoga/poses` - List yoga poses
+- `GET /api/mudras` - List mudras
 - `GET /api/breathwork/sessions` - List breathwork sessions
 - `GET /api/crystals` - List crystals
-- `GET /api/mantras` - List mantras (with audio_url)
+- `GET /api/mantras` - List mantras
 - `GET /api/astrology/months` - List 13 lunar months
 - `GET /api/astrology/current` - Get current lunar month
-- `GET /api/workshops` - List workshops
-- `GET /api/events` - List events
-- `GET /api/courses` - List courses
+- `GET /api/elemental-practices` - List elemental practices
+- `GET /api/earth-altars` - List earth altars
+- `GET /api/creative-processes` - List creative processes
+- `GET /api/heart-practices` - List heart practices
+- `GET /api/shamanic-practices` - List shamanic practices
 
 ### Protected Endpoints (Require Auth)
 - `GET /api/dashboard/daily` - Daily guidance data
 - `GET /api/favorites` - User's favorites
-- `POST /api/admin/yoga/poses` - Create yoga pose
-- `PUT /api/admin/yoga/poses/{id}` - Update yoga pose
-- `DELETE /api/admin/yoga/poses/{id}` - Delete yoga pose
-- Similar CRUD for: mudras, breathwork, crystals, mantras, workshops, events, courses
+- `GET /api/achievements` - User achievements with progress and unlocks
+- `POST /api/practice-history` - Log a practice
+- `GET /api/practice-history` - User's practice history
+- `GET /api/practice-history/stats` - Basic practice statistics
+- `GET /api/practice-history/detailed-stats` - Detailed stats with weekly data
+- Admin CRUD endpoints for all content types
 
 ## Database Collections
 - `users` - User accounts
@@ -111,29 +106,37 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - `favorites` - User favorites
 - `oracle_readings` - Saved readings
 - `rituals` - User rituals
-- `achievements` - User achievements
+- `practice_history` - User practice logs
+- `achievement_definitions` - 24 achievement definitions
 - `yoga_poses` - 60 poses
 - `mudras` - 12 mudras
 - `breathwork_sessions` - 6 sessions
 - `crystals` - 12 crystals
-- `mantras` - 12 mantras (with audio_url)
+- `mantras` - 12 mantras
 - `astrology_months` - 13 months
 - `oracle_cards` - 22 cards
 - `somatic_practices` - 6 practices
 - `grounding_exercises` - 5 exercises
 - `mindfulness_practices` - 8 practices
 - `meditations` - 6 meditations
-- `workshops` - User-created workshops
-- `events` - User-created events
-- `courses` - User-created courses
+- `earth_altars` - 6 altars
+- `creative_processes` - 6 processes
+- `heart_practices` - 6 practices
+- `shamanic_practices` - 8 practices
+- `elemental_practices` - 10 practices
 
 ## Prioritized Backlog
+
+### P1 - Next Priority
+- [ ] Extend Admin CMS to manage new shamanic content
+- [ ] Refine UI/UX for locked/unlocked content display
 
 ### P2 - Nice to Have
 - [ ] Push notifications
 - [ ] Community features / social feed
 - [ ] Premium subscription tier
 - [ ] More mantra audio files
+- [ ] Journey recording feature
 
 ## 3rd Party Integrations
 - **Claude Sonnet 4.5** (Text Generation) — uses Emergent LLM Key
@@ -145,6 +148,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - Test files: 
   - `/app/backend/tests/test_admin_cms.py`
   - `/app/backend/tests/test_mantras_audio.py`
+  - `/app/backend/tests/test_shamanic_content.py`
 
 ## Files Structure
 ```
@@ -157,7 +161,8 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 └── data/
     ├── __init__.py
     ├── yoga_poses.py   # 60 yoga poses data
-    └── all_content.py  # All other content data
+    ├── all_content.py  # Core content data
+    └── shamanic_content.py  # New shamanic content data
 
 /app/frontend/src/
 ├── App.js              # Routes
@@ -168,6 +173,13 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 │   ├── Breathwork.jsx  # Enhanced breathwork
 │   ├── MantrasLibrary.jsx # Mantras with audio player
 │   ├── Dashboard.jsx   # Main dashboard
+│   ├── PracticeLog.jsx # Practice history & stats
+│   ├── Achievements.jsx # Achievement badges
+│   ├── ElementalPractices.jsx # Elemental practices
+│   ├── EarthAltars.jsx # Earth altars
+│   ├── CreativeProcesses.jsx # Creative processes
+│   ├── HeartPractices.jsx # Heart practices
+│   ├── ShamanicPractices.jsx # Shamanic practices
 │   └── ...             # Other pages
 └── components/ui/      # Shadcn components
 ```
