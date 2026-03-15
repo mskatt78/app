@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Plus, Pencil, Trash2, Save, X, 
   Sparkles, Wind, Droplets, Flame, Mountain, 
-  Calendar, Users, BookOpen, Video
+  Calendar, Users, BookOpen, Video, Heart, Feather, Zap, Palette
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -24,18 +24,29 @@ const AdminCMS = ({ user, api }) => {
   const [formData, setFormData] = useState({});
 
   const tabs = [
-    { id: "yoga", label: "Yoga Poses", icon: Sparkles },
+    { id: "yoga", label: "Yoga", icon: Sparkles },
     { id: "mudras", label: "Mudras", icon: Sparkles },
     { id: "breathwork", label: "Breathwork", icon: Wind },
     { id: "crystals", label: "Crystals", icon: Mountain },
     { id: "mantras", label: "Mantras", icon: Sparkles },
+    // Shamanic content
+    { id: "earth-altars", label: "Altars", icon: Mountain },
+    { id: "elemental-practices", label: "Elemental", icon: Zap },
+    { id: "heart-practices", label: "Heart", icon: Heart },
+    { id: "creative-processes", label: "Creative", icon: Palette },
+    { id: "shamanic-practices", label: "Shamanic", icon: Feather },
+    // Events & courses
     { id: "workshops", label: "Workshops", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
     { id: "courses", label: "Courses", icon: BookOpen },
   ];
 
-  const elements = ["Earth", "Water", "Fire", "Air", "Spirit"];
+  const elements = ["Earth", "Water", "Fire", "Air", "Spirit", "All"];
   const difficulties = ["Beginner", "Intermediate", "Advanced"];
+  const heartCategories = ["self_love", "compassion", "forgiveness", "gratitude", "connection", "healing"];
+  const creativeCategories = ["visual", "writing", "movement", "nature", "meditation"];
+  const shamanicCategories = ["journey", "power_animal", "ancestral", "divination", "ceremony", "shadow"];
+  const elementalCategories = ["grounding", "emotional", "energy", "communication", "spiritual", "integration", "nature_connection", "purification", "divination", "energy_work"];
 
   useEffect(() => {
     fetchItems();
@@ -51,6 +62,12 @@ const AdminCMS = ({ user, api }) => {
       workshops: isAdmin ? "/admin/workshops" : "/workshops",
       events: isAdmin ? "/admin/events" : "/events",
       courses: isAdmin ? "/admin/courses" : "/courses",
+      // Shamanic content
+      "earth-altars": isAdmin ? "/admin/earth-altars" : "/earth-altars",
+      "elemental-practices": isAdmin ? "/admin/elemental-practices" : "/elemental-practices",
+      "heart-practices": isAdmin ? "/admin/heart-practices" : "/heart-practices",
+      "creative-processes": isAdmin ? "/admin/creative-processes" : "/creative-processes",
+      "shamanic-practices": isAdmin ? "/admin/shamanic-practices" : "/shamanic-practices",
     };
     return endpoints[tab] || "/yoga/poses";
   };
@@ -104,6 +121,30 @@ const AdminCMS = ({ user, api }) => {
       courses: {
         title: "", description: "", instructor: "", duration_weeks: 4,
         modules: [], price: 0, image_url: "", level: "Beginner"
+      },
+      // Shamanic content defaults
+      "earth-altars": {
+        name: "", element: "Earth", description: "", purpose: "",
+        items: [], setup_ritual: [], activation_prayer: "", best_time: "", image_url: ""
+      },
+      "elemental-practices": {
+        name: "", element: "Earth", category: "grounding", description: "",
+        duration_minutes: 20, difficulty: "Beginner", benefits: [],
+        instructions: [], best_time: "", moon_phase: "", caution: "", image_url: ""
+      },
+      "heart-practices": {
+        name: "", category: "self_love", description: "", tradition: "",
+        benefits: [], steps: [], affirmation: "", duration_minutes: 20, image_url: ""
+      },
+      "creative-processes": {
+        name: "", category: "visual", description: "", tradition: "",
+        materials: [], process_steps: [], spiritual_purpose: "",
+        duration_minutes: 30, image_url: ""
+      },
+      "shamanic-practices": {
+        name: "", category: "journey", description: "", tradition: "",
+        preparation: "", journey_steps: [], safety_notes: "", closing_prayer: "",
+        duration_minutes: 30, requires_unlock: false, image_url: ""
       }
     };
     return defaults[tab] || {};
@@ -338,6 +379,158 @@ const AdminCMS = ({ user, api }) => {
                 value={formData.image_url || ""}
                 onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
               />
+            </div>
+          </div>
+        );
+
+      // SHAMANIC CONTENT FORMS
+      case "earth-altars":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm text-muted-foreground">Name</label>
+                <Input value={formData.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} placeholder="Earth Element Altar" />
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">Element</label>
+                <Select value={formData.element || "Earth"} onValueChange={(v) => setFormData(prev => ({ ...prev, element: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{elements.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Description</label><Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Purpose</label><Input value={formData.purpose || ""} onChange={(e) => setFormData(prev => ({ ...prev, purpose: e.target.value }))} /></div>
+            <div><label className="text-sm text-muted-foreground">Setup Ritual Steps (one per line)</label><Textarea value={(formData.setup_ritual || []).join("\n")} onChange={(e) => handleArrayInput("setup_ritual", e.target.value)} rows={4} /></div>
+            <div><label className="text-sm text-muted-foreground">Activation Prayer</label><Textarea value={formData.activation_prayer || ""} onChange={(e) => setFormData(prev => ({ ...prev, activation_prayer: e.target.value }))} rows={2} /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Best Time</label><Input value={formData.best_time || ""} onChange={(e) => setFormData(prev => ({ ...prev, best_time: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Image URL</label><Input value={formData.image_url || ""} onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))} /></div>
+            </div>
+          </div>
+        );
+
+      case "elemental-practices":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Name</label><Input value={formData.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} /></div>
+              <div>
+                <label className="text-sm text-muted-foreground">Element</label>
+                <Select value={formData.element || "Earth"} onValueChange={(v) => setFormData(prev => ({ ...prev, element: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{elements.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="text-sm text-muted-foreground">Category</label>
+                <Select value={formData.category || "grounding"} onValueChange={(v) => setFormData(prev => ({ ...prev, category: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{elementalCategories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">Difficulty</label>
+                <Select value={formData.difficulty || "Beginner"} onValueChange={(v) => setFormData(prev => ({ ...prev, difficulty: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{difficulties.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div><label className="text-sm text-muted-foreground">Duration (min)</label><Input type="number" value={formData.duration_minutes || 20} onChange={(e) => setFormData(prev => ({ ...prev, duration_minutes: parseInt(e.target.value) }))} /></div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Description</label><Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Instructions (one per line)</label><Textarea value={(formData.instructions || []).join("\n")} onChange={(e) => handleArrayInput("instructions", e.target.value)} rows={4} /></div>
+            <div><label className="text-sm text-muted-foreground">Benefits (one per line)</label><Textarea value={(formData.benefits || []).join("\n")} onChange={(e) => handleArrayInput("benefits", e.target.value)} rows={3} /></div>
+            <div className="grid grid-cols-3 gap-4">
+              <div><label className="text-sm text-muted-foreground">Best Time</label><Input value={formData.best_time || ""} onChange={(e) => setFormData(prev => ({ ...prev, best_time: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Moon Phase</label><Input value={formData.moon_phase || ""} onChange={(e) => setFormData(prev => ({ ...prev, moon_phase: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Image URL</label><Input value={formData.image_url || ""} onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))} /></div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Caution/Warning</label><Input value={formData.caution || ""} onChange={(e) => setFormData(prev => ({ ...prev, caution: e.target.value }))} /></div>
+          </div>
+        );
+
+      case "heart-practices":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Name</label><Input value={formData.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} /></div>
+              <div>
+                <label className="text-sm text-muted-foreground">Category</label>
+                <Select value={formData.category || "self_love"} onValueChange={(v) => setFormData(prev => ({ ...prev, category: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{heartCategories.map(c => <SelectItem key={c} value={c}>{c.replace('_', ' ')}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Tradition</label><Input value={formData.tradition || ""} onChange={(e) => setFormData(prev => ({ ...prev, tradition: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Duration (min)</label><Input type="number" value={formData.duration_minutes || 20} onChange={(e) => setFormData(prev => ({ ...prev, duration_minutes: parseInt(e.target.value) }))} /></div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Description</label><Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Practice Steps (one per line)</label><Textarea value={(formData.steps || []).join("\n")} onChange={(e) => handleArrayInput("steps", e.target.value)} rows={4} /></div>
+            <div><label className="text-sm text-muted-foreground">Benefits (one per line)</label><Textarea value={(formData.benefits || []).join("\n")} onChange={(e) => handleArrayInput("benefits", e.target.value)} rows={3} /></div>
+            <div><label className="text-sm text-muted-foreground">Heart Affirmation</label><Textarea value={formData.affirmation || ""} onChange={(e) => setFormData(prev => ({ ...prev, affirmation: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Image URL</label><Input value={formData.image_url || ""} onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))} /></div>
+          </div>
+        );
+
+      case "creative-processes":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Name</label><Input value={formData.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} /></div>
+              <div>
+                <label className="text-sm text-muted-foreground">Category</label>
+                <Select value={formData.category || "visual"} onValueChange={(v) => setFormData(prev => ({ ...prev, category: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{creativeCategories.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Tradition</label><Input value={formData.tradition || ""} onChange={(e) => setFormData(prev => ({ ...prev, tradition: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Duration (min)</label><Input type="number" value={formData.duration_minutes || 30} onChange={(e) => setFormData(prev => ({ ...prev, duration_minutes: parseInt(e.target.value) }))} /></div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Description</label><Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Materials Needed (one per line)</label><Textarea value={(formData.materials || []).join("\n")} onChange={(e) => handleArrayInput("materials", e.target.value)} rows={3} /></div>
+            <div><label className="text-sm text-muted-foreground">Process Steps (one per line)</label><Textarea value={(formData.process_steps || []).join("\n")} onChange={(e) => handleArrayInput("process_steps", e.target.value)} rows={4} /></div>
+            <div><label className="text-sm text-muted-foreground">Spiritual Purpose</label><Textarea value={formData.spiritual_purpose || ""} onChange={(e) => setFormData(prev => ({ ...prev, spiritual_purpose: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Image URL</label><Input value={formData.image_url || ""} onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))} /></div>
+          </div>
+        );
+
+      case "shamanic-practices":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Name</label><Input value={formData.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} /></div>
+              <div>
+                <label className="text-sm text-muted-foreground">Category</label>
+                <Select value={formData.category || "journey"} onValueChange={(v) => setFormData(prev => ({ ...prev, category: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{shamanicCategories.map(c => <SelectItem key={c} value={c}>{c.replace('_', ' ')}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Tradition</label><Input value={formData.tradition || ""} onChange={(e) => setFormData(prev => ({ ...prev, tradition: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Duration (min)</label><Input type="number" value={formData.duration_minutes || 30} onChange={(e) => setFormData(prev => ({ ...prev, duration_minutes: parseInt(e.target.value) }))} /></div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Description</label><Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Preparation</label><Textarea value={formData.preparation || ""} onChange={(e) => setFormData(prev => ({ ...prev, preparation: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Journey Steps (one per line)</label><Textarea value={(formData.journey_steps || []).join("\n")} onChange={(e) => handleArrayInput("journey_steps", e.target.value)} rows={4} /></div>
+            <div><label className="text-sm text-muted-foreground">Safety Notes</label><Textarea value={formData.safety_notes || ""} onChange={(e) => setFormData(prev => ({ ...prev, safety_notes: e.target.value }))} rows={2} /></div>
+            <div><label className="text-sm text-muted-foreground">Closing Prayer</label><Textarea value={formData.closing_prayer || ""} onChange={(e) => setFormData(prev => ({ ...prev, closing_prayer: e.target.value }))} rows={2} /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Image URL</label><Input value={formData.image_url || ""} onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))} /></div>
+              <div className="flex items-center gap-2 mt-6">
+                <input type="checkbox" id="requires_unlock" checked={formData.requires_unlock || false} onChange={(e) => setFormData(prev => ({ ...prev, requires_unlock: e.target.checked }))} />
+                <label htmlFor="requires_unlock" className="text-sm text-muted-foreground">Requires Achievement Unlock</label>
+              </div>
             </div>
           </div>
         );

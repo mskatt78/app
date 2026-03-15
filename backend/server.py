@@ -257,11 +257,6 @@ ORACLE_CARDS = [
     {"id": "22", "name": "Star Nations", "element": "Spirit", "meaning": "Cosmic connection, star ancestors", "reversed_meaning": "Feeling ungrounded"},
 ]
 
-@api_router.get("/oracle/cards")
-async def get_oracle_cards():
-    """Get all oracle cards."""
-    return ORACLE_CARDS
-
 @api_router.post("/oracle/reading")
 async def create_oracle_reading(
     data: OracleReadingRequest,
@@ -591,454 +586,6 @@ async def get_oracle_cards(element: Optional[str] = None):
     cards = await db.oracle_cards.find(query, {"_id": 0}).to_list(length=50)
     return cards
 
-@api_router.get("/mantras")
-async def get_mantras(element: Optional[str] = None):
-    """Get mantras, optionally filtered by element."""
-    mantras = MANTRAS
-    if element:
-        mantras = [m for m in mantras if m["element"].lower() == element.lower()]
-    return mantras
-
-# ============ MUDRAS ROUTES ============
-
-MUDRAS = [
-    {
-        "id": "1", 
-        "name": "Gyan Mudra", 
-        "sanskrit_name": "Jnana Mudra", 
-        "element": "Air", 
-        "description": "Touch thumb to index finger, other fingers extended. The gesture of knowledge and wisdom.",
-        "instructions": "Sit comfortably. Touch the tip of your thumb to the tip of your index finger, forming a circle. Keep the other three fingers extended but relaxed. Rest hands on knees with palms facing up or down.",
-        "benefits": ["Mental clarity", "Concentration", "Wisdom", "Calms the mind", "Improves memory"], 
-        "image_url": "https://images.unsplash.com/photo-1607824972522-2821fba071f5?w=800"
-    },
-    {
-        "id": "2", 
-        "name": "Anjali Mudra", 
-        "sanskrit_name": "Namaste", 
-        "element": "Spirit", 
-        "description": "Palms pressed together at heart. The gesture of greeting and honoring the divine in all.",
-        "instructions": "Bring your palms together at heart center. Press thumbs gently into your sternum. Keep fingers pointing upward and spread slightly. Bow your head and close your eyes.",
-        "benefits": ["Heart opening", "Gratitude", "Connection", "Centers the mind", "Promotes humility"], 
-        "image_url": "https://images.unsplash.com/photo-1667821658191-00f13347bdfe?w=800"
-    },
-    {
-        "id": "3", 
-        "name": "Dhyana Mudra", 
-        "sanskrit_name": "Meditation Mudra", 
-        "element": "Water", 
-        "description": "Hands in lap, right over left, thumbs touching. Deep meditation gesture.",
-        "instructions": "Sit in a comfortable meditation posture. Place your left hand in your lap, palm facing up. Rest your right hand on top, also palm up. Touch thumb tips together forming a triangle.",
-        "benefits": ["Deep meditation", "Inner peace", "Concentration", "Spiritual awakening", "Calms emotions"], 
-        "image_url": "https://images.unsplash.com/photo-1612197315436-e9ecf682b264?w=800"
-    },
-    {
-        "id": "4", 
-        "name": "Prithvi Mudra", 
-        "sanskrit_name": "Earth Mudra", 
-        "element": "Earth", 
-        "description": "Thumb touches ring finger. Connects to earth element and stability.",
-        "instructions": "Touch the tip of your ring finger to the tip of your thumb. Keep the other three fingers extended and relaxed. Practice with both hands resting on your thighs.",
-        "benefits": ["Grounding", "Stability", "Physical strength", "Increases earth element", "Promotes healing"], 
-        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
-    },
-    {
-        "id": "5", 
-        "name": "Varuna Mudra", 
-        "sanskrit_name": "Water Mudra", 
-        "element": "Water", 
-        "description": "Thumb touches little finger. Balances water element in body.",
-        "instructions": "Touch the tip of your little finger (pinky) to the tip of your thumb. Keep the other three fingers extended and comfortable. Practice while seated in meditation.",
-        "benefits": ["Emotional balance", "Hydration", "Flexibility", "Improves skin health", "Balances fluids"], 
-        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
-    },
-    {
-        "id": "6", 
-        "name": "Agni Mudra", 
-        "sanskrit_name": "Fire Mudra", 
-        "element": "Fire", 
-        "description": "Fold ring finger to palm, thumb pressing on it. Increases internal fire.",
-        "instructions": "Bend your ring finger to touch the base of your thumb. Press gently with your thumb on the second phalange of your ring finger. Keep other fingers straight.",
-        "benefits": ["Metabolism", "Digestion", "Transformation", "Reduces body fat", "Increases body heat"], 
-        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
-    },
-    {
-        "id": "7", 
-        "name": "Vayu Mudra", 
-        "sanskrit_name": "Air Mudra", 
-        "element": "Air", 
-        "description": "Fold index finger to palm, thumb pressing on it. Balances air element.",
-        "instructions": "Bend your index finger to touch the base of your thumb. Press gently with your thumb on the second phalange of the index finger. Other fingers remain extended.",
-        "benefits": ["Calms anxiety", "Reduces gas", "Mental clarity", "Relieves joint pain", "Balances Vata"], 
-        "image_url": "https://images.unsplash.com/photo-1607824972522-2821fba071f5?w=800"
-    },
-    {
-        "id": "8", 
-        "name": "Shuni Mudra", 
-        "sanskrit_name": "Saturn Mudra", 
-        "element": "Earth", 
-        "description": "Thumb touches middle finger. Patience and discipline.",
-        "instructions": "Touch the tip of your middle finger to the tip of your thumb. Keep the other fingers extended but relaxed. Practice on both hands while sitting comfortably.",
-        "benefits": ["Patience", "Discipline", "Responsibility", "Improves hearing", "Promotes understanding"], 
-        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
-    },
-    {
-        "id": "9", 
-        "name": "Surya Mudra", 
-        "sanskrit_name": "Sun Mudra", 
-        "element": "Fire", 
-        "description": "Bend ring finger to touch base of thumb, thumb presses on ring finger.",
-        "instructions": "Bend your ring finger to touch the mount of your thumb (base). Press gently with your thumb on the ring finger. Keep other fingers straight and relaxed.",
-        "benefits": ["Increases fire element", "Weight management", "Warmth", "Improves thyroid function", "Boosts energy"], 
-        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
-    },
-    {
-        "id": "10", 
-        "name": "Prana Mudra", 
-        "sanskrit_name": "Life Force Mudra", 
-        "element": "Spirit", 
-        "description": "Touch tips of ring and little finger to thumb tip.",
-        "instructions": "Touch the tips of your ring finger and little finger to the tip of your thumb simultaneously. Keep the index and middle fingers extended. Practice on both hands.",
-        "benefits": ["Increases vitality", "Reduces fatigue", "Awakens dormant energy", "Improves immunity", "Enhances vision"], 
-        "image_url": "https://images.unsplash.com/photo-1612197315436-e9ecf682b264?w=800"
-    },
-    {
-        "id": "11", 
-        "name": "Apana Mudra", 
-        "sanskrit_name": "Downward Energy Mudra", 
-        "element": "Earth", 
-        "description": "Touch tips of middle and ring finger to thumb tip.",
-        "instructions": "Touch the tips of your middle finger and ring finger to the tip of your thumb. Keep the index finger and little finger extended. Practice while seated.",
-        "benefits": ["Detoxification", "Elimination", "Grounding", "Regulates menstruation", "Supports heart health"], 
-        "image_url": "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800"
-    },
-    {
-        "id": "12", 
-        "name": "Chin Mudra", 
-        "sanskrit_name": "Consciousness Mudra", 
-        "element": "Air", 
-        "description": "Like Gyan mudra but palms face down. Grounds consciousness.",
-        "instructions": "Same hand position as Gyan Mudra - touch thumb tip to index finger tip. The difference is the palms face downward on your knees instead of upward. This creates a grounding effect.",
-        "benefits": ["Grounded awareness", "Meditation", "Mental stability", "Promotes introspection", "Balances energy"], 
-        "image_url": "https://images.unsplash.com/photo-1607824972522-2821fba071f5?w=800"
-    },
-]
-
-@api_router.get("/mudras")
-async def get_mudras(element: Optional[str] = None):
-    """Get mudras, optionally filtered by element."""
-    mudras = MUDRAS
-    if element:
-        mudras = [m for m in mudras if m["element"].lower() == element.lower()]
-    return mudras
-
-# ============ 13-MONTH ASTROLOGY ROUTES ============
-
-THIRTEEN_MONTH_CALENDAR = [
-    {"id": "1", "month_number": 1, "name": "Wolf Moon", "symbol": "Wolf", "element": "Earth", "dates": "Dec 21 - Jan 17", "description": "Time of the wolf pack, community, and inner guidance. The longest nights invite deep introspection.", "themes": ["Community", "Intuition", "Survival", "Inner guidance"], "crystals": ["Black Tourmaline", "Smoky Quartz"], "practices": ["Shadow work", "Pack meditation", "Night journeys"]},
-    {"id": "2", "month_number": 2, "name": "Storm Moon", "symbol": "Thunder", "element": "Fire", "dates": "Jan 18 - Feb 14", "description": "Purification through storm energy. Lightning illuminates truth and clears stagnation.", "themes": ["Purification", "Truth", "Awakening", "Release"], "crystals": ["Clear Quartz", "Labradorite"], "practices": ["Thunder meditation", "Energy clearing", "Storm dance"]},
-    {"id": "3", "month_number": 3, "name": "Crow Moon", "symbol": "Crow", "element": "Air", "dates": "Feb 15 - Mar 14", "description": "The crow brings messages from the spirit world. Magic stirs as winter breaks.", "themes": ["Magic", "Messages", "Transformation", "Creation"], "crystals": ["Amethyst", "Obsidian"], "practices": ["Divination", "Dream work", "Crow meditation"]},
-    {"id": "4", "month_number": 4, "name": "Seed Moon", "symbol": "Seed", "element": "Earth", "dates": "Mar 15 - Apr 11", "description": "Spring equinox energy. Time to plant seeds of intention in fertile ground.", "themes": ["New beginnings", "Planting", "Fertility", "Hope"], "crystals": ["Green Aventurine", "Moss Agate"], "practices": ["Intention setting", "Earth ceremonies", "Seed meditation"]},
-    {"id": "5", "month_number": 5, "name": "Hare Moon", "symbol": "Hare", "element": "Water", "dates": "Apr 12 - May 9", "description": "The hare's fertility and playfulness. Joy returns with spring's full bloom.", "themes": ["Fertility", "Joy", "Playfulness", "Abundance"], "crystals": ["Rose Quartz", "Moonstone"], "practices": ["Fertility rituals", "Dance", "Joy ceremonies"]},
-    {"id": "6", "month_number": 6, "name": "Dyad Moon", "symbol": "Twins", "element": "Air", "dates": "May 10 - Jun 6", "description": "The sacred twins - light and shadow, masculine and feminine united.", "themes": ["Duality", "Balance", "Partnership", "Integration"], "crystals": ["Citrine", "Tiger's Eye"], "practices": ["Shadow integration", "Partner work", "Balance rituals"]},
-    {"id": "7", "month_number": 7, "name": "Mead Moon", "symbol": "Bee", "element": "Fire", "dates": "Jun 7 - Jul 4", "description": "Summer solstice energy. The bee's honey sweetens life's celebrations.", "themes": ["Celebration", "Sweetness", "Community", "Abundance"], "crystals": ["Sunstone", "Carnelian"], "practices": ["Solstice ceremony", "Honey rituals", "Fire celebration"]},
-    {"id": "8", "month_number": 8, "name": "Wort Moon", "symbol": "Herb", "element": "Earth", "dates": "Jul 5 - Aug 1", "description": "Peak of plant medicine. Herbs are most potent for healing and magic.", "themes": ["Healing", "Plant medicine", "Green magic", "Harvesting"], "crystals": ["Green Jade", "Peridot"], "practices": ["Herb gathering", "Plant communication", "Green healing"]},
-    {"id": "9", "month_number": 9, "name": "Barley Moon", "symbol": "Grain", "element": "Earth", "dates": "Aug 2 - Aug 29", "description": "First harvest. Gratitude for abundance and preparing for darker times.", "themes": ["Harvest", "Gratitude", "Sacrifice", "Abundance"], "crystals": ["Amber", "Citrine"], "practices": ["Harvest ceremony", "Gratitude rituals", "Bread making"]},
-    {"id": "10", "month_number": 10, "name": "Wine Moon", "symbol": "Grape", "element": "Water", "dates": "Aug 30 - Sep 26", "description": "The vine's gift of transformation. What was bitter becomes sweet.", "themes": ["Transformation", "Intoxication", "Ecstasy", "Release"], "crystals": ["Amethyst", "Lepidolite"], "practices": ["Ecstatic dance", "Transformation rituals", "Release ceremonies"]},
-    {"id": "11", "month_number": 11, "name": "Blood Moon", "symbol": "Stag", "element": "Fire", "dates": "Sep 27 - Oct 24", "description": "The stag's sacrifice. Honoring ancestors and the cycle of life and death.", "themes": ["Ancestors", "Sacrifice", "Death/Rebirth", "Honor"], "crystals": ["Obsidian", "Garnet"], "practices": ["Ancestor work", "Blood mysteries", "Hunt meditation"]},
-    {"id": "12", "month_number": 12, "name": "Snow Moon", "symbol": "Bear", "element": "Water", "dates": "Oct 25 - Nov 21", "description": "The bear retreats to dream. Time for introspection and dream journeys.", "themes": ["Dreaming", "Introspection", "Rest", "Inner journey"], "crystals": ["Blue Lace Agate", "Howlite"], "practices": ["Dream incubation", "Bear meditation", "Deep rest"]},
-    {"id": "13", "month_number": 13, "name": "Oak Moon", "symbol": "Oak", "element": "Spirit", "dates": "Nov 22 - Dec 20", "description": "The oak stands firm through winter's dark. Wisdom of the ancestors in the world tree.", "themes": ["Wisdom", "Ancestors", "World tree", "Endurance"], "crystals": ["Petrified Wood", "Smoky Quartz"], "practices": ["Tree meditation", "Ancestor ceremonies", "Winter preparation"]},
-]
-
-@api_router.get("/astrology/months")
-async def get_astrology_months():
-    """Get all 13 lunar months."""
-    return THIRTEEN_MONTH_CALENDAR
-
-@api_router.get("/astrology/months/{month_id}")
-async def get_astrology_month(month_id: str):
-    """Get a specific lunar month."""
-    month = next((m for m in THIRTEEN_MONTH_CALENDAR if m["id"] == month_id), None)
-    if not month:
-        raise HTTPException(status_code=404, detail="Month not found")
-    return month
-
-@api_router.get("/astrology/current")
-async def get_current_month():
-    """Get the current lunar month based on today's date."""
-    today = datetime.now()
-    month_day = today.strftime("%b %d")
-    
-    # Simple date matching (would be more complex in production)
-    month_ranges = [
-        (12, 21, 1, 17, "1"),
-        (1, 18, 2, 14, "2"),
-        (2, 15, 3, 14, "3"),
-        (3, 15, 4, 11, "4"),
-        (4, 12, 5, 9, "5"),
-        (5, 10, 6, 6, "6"),
-        (6, 7, 7, 4, "7"),
-        (7, 5, 8, 1, "8"),
-        (8, 2, 8, 29, "9"),
-        (8, 30, 9, 26, "10"),
-        (9, 27, 10, 24, "11"),
-        (10, 25, 11, 21, "12"),
-        (11, 22, 12, 20, "13"),
-    ]
-    
-    current_month = today.month
-    current_day = today.day
-    
-    for start_month, start_day, end_month, end_day, month_id in month_ranges:
-        if start_month <= end_month:
-            if (current_month == start_month and current_day >= start_day) or \
-               (current_month == end_month and current_day <= end_day) or \
-               (start_month < current_month < end_month):
-                return next(m for m in THIRTEEN_MONTH_CALENDAR if m["id"] == month_id)
-        else:
-            if (current_month == start_month and current_day >= start_day) or \
-               (current_month == end_month and current_day <= end_day) or \
-               current_month > start_month or current_month < end_month:
-                return next(m for m in THIRTEEN_MONTH_CALENDAR if m["id"] == month_id)
-    
-    return THIRTEEN_MONTH_CALENDAR[0]
-
-# ============ MINDFULNESS PRACTICES ============
-
-MINDFULNESS_PRACTICES = [
-    {"id": "1", "name": "Present Moment Awareness", "category": "awareness", "element": "Air", "description": "Simply notice what is happening right now. Observe thoughts, sensations, and sounds without judgment. Be the witness.", "duration_minutes": 10, "benefits": ["Presence", "Reduced anxiety", "Mental clarity"], "instructions": ["Find a comfortable position", "Close your eyes or soften your gaze", "Notice your breath without changing it", "Observe thoughts like clouds passing", "Return to the present moment"]},
-    {"id": "2", "name": "Body Scan", "category": "body", "element": "Earth", "description": "Slowly move your attention through each part of your body, noticing sensations without trying to change them.", "duration_minutes": 20, "benefits": ["Body awareness", "Tension release", "Relaxation"], "instructions": ["Lie down comfortably", "Start at the crown of your head", "Slowly scan down through each body part", "Notice sensations without judgment", "Release tension with each exhale"]},
-    {"id": "3", "name": "Mindful Eating", "category": "daily", "element": "Earth", "description": "Bring full attention to the experience of eating. Notice colors, textures, flavors, and sensations.", "duration_minutes": 15, "benefits": ["Better digestion", "Food appreciation", "Presence"], "instructions": ["Choose a small piece of food", "Observe it with all senses before eating", "Chew slowly and mindfully", "Notice flavors and textures", "Express gratitude for nourishment"]},
-    {"id": "4", "name": "Walking Meditation", "category": "movement", "element": "Earth", "description": "Walk slowly and deliberately, bringing full awareness to each step and the sensations of movement.", "duration_minutes": 15, "benefits": ["Grounding", "Mind-body connection", "Presence"], "instructions": ["Find a quiet path", "Walk slowly and deliberately", "Feel each part of your foot touch the ground", "Synchronize breath with steps", "Stay present with each movement"]},
-    {"id": "5", "name": "Loving-Kindness Practice", "category": "heart", "element": "Water", "description": "Generate feelings of love and compassion, first for yourself, then expanding to all beings.", "duration_minutes": 15, "benefits": ["Self-compassion", "Emotional healing", "Connection"], "instructions": ["Begin with self-love", "Repeat: May I be happy, may I be healthy", "Extend to loved ones", "Expand to all beings", "Rest in universal love"]},
-    {"id": "6", "name": "Breath Counting", "category": "focus", "element": "Air", "description": "Count breaths from 1 to 10, then start over. When you lose count, gently return to 1.", "duration_minutes": 10, "benefits": ["Concentration", "Calm mind", "Focus"], "instructions": ["Sit comfortably", "Breathe naturally", "Count each exhale from 1 to 10", "Start over at 10 or when distracted", "Practice without judgment"]},
-    {"id": "7", "name": "Sound Meditation", "category": "awareness", "element": "Air", "description": "Open your awareness to all sounds around you. Notice near and far, loud and soft, without labeling.", "duration_minutes": 10, "benefits": ["Expanded awareness", "Presence", "Acceptance"], "instructions": ["Close your eyes", "Open awareness to all sounds", "Notice sounds arising and passing", "Don't label or judge sounds", "Rest in pure listening"]},
-    {"id": "8", "name": "Gratitude Practice", "category": "heart", "element": "Fire", "description": "Consciously recall and feel gratitude for the blessings in your life, large and small.", "duration_minutes": 10, "benefits": ["Positive mindset", "Heart opening", "Joy"], "instructions": ["Reflect on your day", "Find 3 things to be grateful for", "Feel the gratitude in your heart", "Express thanks silently", "Carry this feeling with you"]},
-]
-
-@api_router.get("/mindfulness")
-async def get_mindfulness_practices(category: Optional[str] = None, element: Optional[str] = None):
-    """Get mindfulness practices."""
-    practices = MINDFULNESS_PRACTICES
-    if category:
-        practices = [p for p in practices if p["category"].lower() == category.lower()]
-    if element:
-        practices = [p for p in practices if p["element"].lower() == element.lower()]
-    return practices
-
-# ============ GUIDED MEDITATIONS ============
-
-MEDITATIONS = [
-    {"id": "1", "name": "Inner Peace Journey", "category": "relaxation", "element": "Water", "description": "A gentle journey to your inner sanctuary of peace and stillness.", "duration_minutes": 15, "benefits": ["Deep relaxation", "Stress relief", "Inner peace"], "visualization": "Imagine descending a spiral staircase into a sacred underground chamber. With each step, you feel more relaxed. At the bottom, you find a pool of healing water, glowing with soft blue light. Enter the water and feel all tension dissolve...", "background_sound": "gentle_water"},
-    {"id": "2", "name": "Mountain Meditation", "category": "grounding", "element": "Earth", "description": "Become the mountain - stable, ancient, unmovable. Weather passes but the mountain remains.", "duration_minutes": 20, "benefits": ["Stability", "Resilience", "Groundedness"], "visualization": "See yourself as a great mountain. Your base is rooted deep in the earth. Your peak touches the sky. Clouds pass, storms come and go, seasons change - but you remain steady and unmoved. You are ancient, patient, enduring...", "background_sound": "wind"},
-    {"id": "3", "name": "Chakra Cleansing", "category": "energy", "element": "Spirit", "description": "Journey through each chakra, clearing blockages and activating your energy centers.", "duration_minutes": 25, "benefits": ["Energy balance", "Chakra activation", "Vitality"], "visualization": "Begin at your root chakra, a spinning wheel of red light. See it clearing and brightening. Move up to orange at the sacral, yellow at the solar plexus, green at the heart, blue at the throat, indigo at the third eye, and violet at the crown...", "background_sound": "singing_bowls"},
-    {"id": "4", "name": "Forest Bathing", "category": "nature", "element": "Earth", "description": "Immerse yourself in an ancient forest, absorbing the healing energy of trees.", "duration_minutes": 20, "benefits": ["Calm mind", "Nature connection", "Healing"], "visualization": "You walk into an ancient forest. Giant trees tower above, their canopy filtering golden light. The air is rich with the scent of pine and earth. You feel the trees welcoming you, sharing their ancient wisdom and healing energy...", "background_sound": "forest"},
-    {"id": "5", "name": "Ocean of Consciousness", "category": "expansion", "element": "Water", "description": "Expand your awareness to merge with the infinite ocean of universal consciousness.", "duration_minutes": 20, "benefits": ["Expanded awareness", "Unity", "Transcendence"], "visualization": "You stand on a shore at sunset. Waves gently lap at your feet. You wade in, feeling the warm water embrace you. You float on your back, looking up at infinite stars. You become the ocean - boundless, eternal, connected to all...", "background_sound": "ocean_waves"},
-    {"id": "6", "name": "Inner Fire Activation", "category": "energy", "element": "Fire", "description": "Awaken your inner fire, the transformative energy at your core.", "duration_minutes": 15, "benefits": ["Energy boost", "Transformation", "Willpower"], "visualization": "Deep in your belly, a small flame burns. With each breath, you feed this flame. It grows brighter, warmer, more powerful. This is your inner fire - your will, your passion, your power to transform. Feel it radiate through your being...", "background_sound": "drums"},
-    {"id": "7", "name": "Starlight Healing", "category": "healing", "element": "Spirit", "description": "Receive healing light from the stars and cosmos, cleansing and restoring your being.", "duration_minutes": 20, "benefits": ["Healing", "Cosmic connection", "Renewal"], "visualization": "Lie beneath a sky of infinite stars. Choose one star that calls to you. A beam of pure white light descends from this star, entering through your crown. This cosmic light fills every cell, healing, cleansing, restoring...", "background_sound": "cosmic"},
-    {"id": "8", "name": "Ancestor Connection", "category": "spiritual", "element": "Spirit", "description": "Connect with the wisdom and support of your ancestors across all time.", "duration_minutes": 20, "benefits": ["Ancestral healing", "Guidance", "Support"], "visualization": "You stand in a sacred circle. Behind you, stretching back through time, stand your ancestors - parents, grandparents, and beyond. Feel their love and support flowing to you. They offer their wisdom, their strength, their blessing...", "background_sound": "drums"},
-    {"id": "9", "name": "Heart Opening", "category": "heart", "element": "Water", "description": "Open and expand your heart center, cultivating unconditional love.", "duration_minutes": 15, "benefits": ["Heart healing", "Love expansion", "Compassion"], "visualization": "Place your attention on your heart. See a beautiful green or pink light glowing there. With each breath, this light expands. It fills your chest, then your whole body, then radiates outward - touching all beings with love...", "background_sound": "gentle_music"},
-    {"id": "10", "name": "Third Eye Awakening", "category": "intuition", "element": "Air", "description": "Activate and open your third eye, the center of intuition and inner vision.", "duration_minutes": 15, "benefits": ["Intuition", "Inner vision", "Clarity"], "visualization": "Focus on the point between your eyebrows. See a deep indigo light there. With each breath, it brightens. Your inner eye begins to open, revealing visions, symbols, and intuitive knowing. Trust what you see...", "background_sound": "singing_bowls"},
-]
-
-@api_router.get("/meditations")
-async def get_meditations(category: Optional[str] = None, element: Optional[str] = None):
-    """Get guided meditations."""
-    meditations = MEDITATIONS
-    if category:
-        meditations = [m for m in meditations if m["category"].lower() == category.lower()]
-    if element:
-        meditations = [m for m in meditations if m["element"].lower() == element.lower()]
-    return meditations
-
-@api_router.get("/meditations/{meditation_id}")
-async def get_meditation(meditation_id: str):
-    """Get a specific meditation."""
-    meditation = next((m for m in MEDITATIONS if m["id"] == meditation_id), None)
-    if not meditation:
-        raise HTTPException(status_code=404, detail="Meditation not found")
-    return meditation
-
-# ============ NUMEROLOGY ============
-
-LIFE_PATH_MEANINGS = {
-    1: {"name": "The Leader", "traits": ["Independent", "Pioneering", "Ambitious"], "description": "You are a natural leader with strong individuality. Your path is about self-reliance, innovation, and courage. You're meant to blaze new trails and inspire others through your example.", "element": "Fire", "crystal": "Ruby", "mantra": "I am confident in my unique path"},
-    2: {"name": "The Peacemaker", "traits": ["Diplomatic", "Sensitive", "Cooperative"], "description": "You are a natural mediator with deep intuition. Your path is about partnership, balance, and serving others. You bring harmony wherever you go and excel at collaboration.", "element": "Water", "crystal": "Moonstone", "mantra": "I create harmony in all my relationships"},
-    3: {"name": "The Creative", "traits": ["Expressive", "Joyful", "Artistic"], "description": "You are a natural communicator and artist. Your path is about self-expression, creativity, and bringing joy to others. Your words and creations have the power to inspire.", "element": "Air", "crystal": "Citrine", "mantra": "I express my creativity freely"},
-    4: {"name": "The Builder", "traits": ["Practical", "Disciplined", "Stable"], "description": "You are a natural organizer and builder. Your path is about creating solid foundations, working hard, and achieving tangible results. You bring order from chaos.", "element": "Earth", "crystal": "Green Jade", "mantra": "I build lasting foundations"},
-    5: {"name": "The Freedom Seeker", "traits": ["Adventurous", "Versatile", "Dynamic"], "description": "You are a natural explorer and change-maker. Your path is about freedom, adventure, and embracing change. You inspire others to break free from limitations.", "element": "Air", "crystal": "Turquoise", "mantra": "I embrace change and freedom"},
-    6: {"name": "The Nurturer", "traits": ["Responsible", "Caring", "Harmonious"], "description": "You are a natural healer and caretaker. Your path is about love, responsibility, and creating beauty and harmony. You have a gift for making others feel safe and loved.", "element": "Water", "crystal": "Rose Quartz", "mantra": "I nurture with unconditional love"},
-    7: {"name": "The Seeker", "traits": ["Analytical", "Spiritual", "Introspective"], "description": "You are a natural philosopher and mystic. Your path is about seeking truth, inner wisdom, and spiritual understanding. You are drawn to life's deeper mysteries.", "element": "Spirit", "crystal": "Amethyst", "mantra": "I trust my inner wisdom"},
-    8: {"name": "The Powerhouse", "traits": ["Ambitious", "Authoritative", "Abundant"], "description": "You are a natural achiever and manifester. Your path is about material success, power, and abundance. You're meant to achieve great things and use your influence wisely.", "element": "Fire", "crystal": "Tiger's Eye", "mantra": "I manifest abundance with integrity"},
-    9: {"name": "The Humanitarian", "traits": ["Compassionate", "Wise", "Universal"], "description": "You are a natural healer and old soul. Your path is about service, compassion, and universal love. You're meant to give back and help elevate humanity.", "element": "Spirit", "crystal": "Clear Quartz", "mantra": "I serve the highest good of all"},
-    11: {"name": "The Illuminator", "traits": ["Intuitive", "Inspirational", "Visionary"], "description": "You are a master number, a spiritual messenger. Your path is about inspiration, intuition, and illuminating others. You channel higher wisdom and are meant to uplift humanity.", "element": "Spirit", "crystal": "Labradorite", "mantra": "I am a channel for divine light"},
-    22: {"name": "The Master Builder", "traits": ["Visionary", "Practical", "Powerful"], "description": "You are a master number, a practical visionary. Your path is about turning dreams into reality on a grand scale. You have the power to create lasting change in the world.", "element": "Earth", "crystal": "Moldavite", "mantra": "I build my vision into reality"},
-    33: {"name": "The Master Teacher", "traits": ["Loving", "Selfless", "Healing"], "description": "You are a master number, a spiritual teacher. Your path is about selfless service, healing, and teaching through love. You embody compassion and elevate all you encounter.", "element": "Spirit", "crystal": "Selenite", "mantra": "I teach through love and example"},
-}
-
-def calculate_life_path(birth_date: str) -> int:
-    """Calculate life path number from birth date (YYYY-MM-DD)."""
-    # Remove dashes and convert to string of digits
-    digits = birth_date.replace("-", "")
-    
-    # Sum all digits
-    total = sum(int(d) for d in digits)
-    
-    # Reduce to single digit or master number (11, 22, 33)
-    while total > 9 and total not in [11, 22, 33]:
-        total = sum(int(d) for d in str(total))
-    
-    return total
-
-def calculate_expression_number(full_name: str) -> int:
-    """Calculate expression number from full name."""
-    letter_values = {
-        'a': 1, 'b': 2, 'c': 3, 'd': 4, 'e': 5, 'f': 6, 'g': 7, 'h': 8, 'i': 9,
-        'j': 1, 'k': 2, 'l': 3, 'm': 4, 'n': 5, 'o': 6, 'p': 7, 'q': 8, 'r': 9,
-        's': 1, 't': 2, 'u': 3, 'v': 4, 'w': 5, 'x': 6, 'y': 7, 'z': 8
-    }
-    
-    total = sum(letter_values.get(c.lower(), 0) for c in full_name if c.isalpha())
-    
-    while total > 9 and total not in [11, 22, 33]:
-        total = sum(int(d) for d in str(total))
-    
-    return total
-
-def calculate_soul_urge(full_name: str) -> int:
-    """Calculate soul urge number from vowels in name."""
-    vowels = 'aeiou'
-    letter_values = {
-        'a': 1, 'e': 5, 'i': 9, 'o': 6, 'u': 3
-    }
-    
-    total = sum(letter_values.get(c.lower(), 0) for c in full_name if c.lower() in vowels)
-    
-    while total > 9 and total not in [11, 22, 33]:
-        total = sum(int(d) for d in str(total))
-    
-    return total
-
-def get_personal_year(birth_month: int, birth_day: int) -> int:
-    """Calculate personal year number."""
-    current_year = datetime.now().year
-    total = birth_month + birth_day + sum(int(d) for d in str(current_year))
-    
-    while total > 9:
-        total = sum(int(d) for d in str(total))
-    
-    return total
-
-class NumerologyRequest(BaseModel):
-    birth_date: str  # YYYY-MM-DD format
-    full_name: Optional[str] = None
-
-@api_router.post("/numerology/reading")
-async def get_numerology_reading(data: NumerologyRequest, user: User = Depends(get_current_user)):
-    """Generate a complete numerology reading."""
-    try:
-        # Parse birth date
-        birth_parts = data.birth_date.split("-")
-        birth_year = int(birth_parts[0])
-        birth_month = int(birth_parts[1])
-        birth_day = int(birth_parts[2])
-        
-        # Calculate numbers
-        life_path = calculate_life_path(data.birth_date)
-        personal_year = get_personal_year(birth_month, birth_day)
-        
-        reading = {
-            "life_path": {
-                "number": life_path,
-                **LIFE_PATH_MEANINGS.get(life_path, LIFE_PATH_MEANINGS[9])
-            },
-            "personal_year": {
-                "number": personal_year,
-                "theme": ["New beginnings", "Partnership", "Creativity", "Foundation", "Change", "Responsibility", "Reflection", "Power", "Completion"][personal_year - 1],
-                "description": f"This is a {personal_year} year for you - a time of {['initiating new projects', 'nurturing relationships', 'creative expression', 'building foundations', 'embracing change', 'family and responsibility', 'inner reflection', 'material achievement', 'completion and release'][personal_year - 1]}."
-            },
-            "birth_day": {
-                "number": birth_day,
-                "description": f"Being born on the {birth_day}th gives you special qualities related to the energy of {birth_day}."
-            }
-        }
-        
-        # Add name-based calculations if name provided
-        if data.full_name:
-            expression = calculate_expression_number(data.full_name)
-            soul_urge = calculate_soul_urge(data.full_name)
-            
-            reading["expression"] = {
-                "number": expression,
-                "description": f"Your Expression Number {expression} reveals your natural talents and abilities."
-            }
-            reading["soul_urge"] = {
-                "number": soul_urge,
-                "description": f"Your Soul Urge Number {soul_urge} reveals your inner desires and motivations."
-            }
-        
-        # Save reading to history
-        reading_doc = {
-            "reading_id": f"num_{uuid.uuid4().hex[:12]}",
-            "user_id": user.user_id,
-            "birth_date": data.birth_date,
-            "full_name": data.full_name,
-            "reading": reading,
-            "created_at": datetime.now(timezone.utc).isoformat()
-        }
-        await db.numerology_readings.insert_one(reading_doc)
-        
-        return reading
-        
-    except Exception as e:
-        logger.error(f"Numerology calculation failed: {e}")
-        raise HTTPException(status_code=400, detail="Invalid birth date format. Use YYYY-MM-DD")
-
-@api_router.get("/numerology/life-paths")
-async def get_life_path_meanings():
-    """Get all life path number meanings."""
-    return LIFE_PATH_MEANINGS
-
-@api_router.get("/numerology/readings")
-async def get_numerology_history(user: User = Depends(get_current_user)):
-    """Get user's numerology reading history."""
-    readings = await db.numerology_readings.find(
-        {"user_id": user.user_id},
-        {"_id": 0}
-    ).sort("created_at", -1).to_list(20)
-    return readings
-
-# ============ SOMATIC & GROUNDING ROUTES ============
-
-SOMATIC_PRACTICES = [
-    {"id": "1", "name": "Earth Connection", "element": "Earth", "description": "Stand barefoot on earth. Feel roots growing from your feet deep into the ground. Sense the heartbeat of Mother Earth rising through you.", "duration_minutes": 10, "benefits": ["Grounding", "Stability", "Earth connection"]},
-    {"id": "2", "name": "Shake & Release", "element": "Fire", "description": "Like animals shake off stress, let your body tremor and shake freely. Release stuck energy and trauma through movement.", "duration_minutes": 15, "benefits": ["Trauma release", "Energy clearing", "Nervous system reset"]},
-    {"id": "3", "name": "Water Flow", "element": "Water", "description": "Move like water - fluid, formless, following gravity. Let your body find its natural rhythm and flow.", "duration_minutes": 20, "benefits": ["Flexibility", "Emotional release", "Fluidity"]},
-    {"id": "4", "name": "Wind Dance", "element": "Air", "description": "Dance as if moved by wind. Let breath guide movement. Be light, expansive, free.", "duration_minutes": 15, "benefits": ["Freedom", "Breath expansion", "Lightness"]},
-    {"id": "5", "name": "Fire Stomp", "element": "Fire", "description": "Powerful stomping and arm movements. Awaken your inner warrior and burn through blocks.", "duration_minutes": 10, "benefits": ["Power", "Anger release", "Energy activation"]},
-    {"id": "6", "name": "Spiral Movement", "element": "Spirit", "description": "Move in spirals - the sacred geometry of life. DNA, galaxies, and shells all spiral.", "duration_minutes": 15, "benefits": ["Integration", "Sacred geometry", "Wholeness"]},
-]
-
-GROUNDING_EXERCISES = [
-    {"id": "1", "name": "5-4-3-2-1 Senses", "element": "Earth", "description": "Name 5 things you see, 4 you hear, 3 you feel, 2 you smell, 1 you taste. Return fully to the present moment.", "duration_minutes": 5, "benefits": ["Presence", "Anxiety relief", "Body awareness"]},
-    {"id": "2", "name": "Root Visualization", "element": "Earth", "description": "Visualize roots growing from your base down into the earth's core. Feel anchored and supported.", "duration_minutes": 10, "benefits": ["Grounding", "Security", "Stability"]},
-    {"id": "3", "name": "Stone Holding", "element": "Earth", "description": "Hold a stone in each hand. Feel its weight, temperature, texture. Let earth energy flow through you.", "duration_minutes": 10, "benefits": ["Earth connection", "Calming", "Presence"]},
-    {"id": "4", "name": "Barefoot Walking", "element": "Earth", "description": "Walk slowly barefoot on earth, grass, or sand. Feel every sensation. Connect with the living earth.", "duration_minutes": 15, "benefits": ["Earth connection", "Mindfulness", "Energy exchange"]},
-    {"id": "5", "name": "Tree Embrace", "element": "Earth", "description": "Stand with back against a tree. Feel its strength and age. Breathe with its rhythm.", "duration_minutes": 15, "benefits": ["Tree connection", "Support", "Ancient wisdom"]},
-]
-
-@api_router.get("/somatic/practices")
-async def get_somatic_practices(element: Optional[str] = None):
-    """Get somatic movement practices."""
-    practices = SOMATIC_PRACTICES
-    if element:
-        practices = [p for p in practices if p["element"].lower() == element.lower()]
-    return practices
-
-@api_router.get("/grounding/exercises")
-async def get_grounding_exercises():
-    """Get grounding exercises."""
-    return GROUNDING_EXERCISES
 
 # ============ DASHBOARD / USER DATA ============
 
@@ -2144,6 +1691,178 @@ async def delete_course(course_id: str, current_user: User = Depends(get_current
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Course not found")
     return {"message": "Course deleted successfully"}
+
+# ============ ADMIN SHAMANIC CONTENT ============
+
+# ---- EARTH ALTARS CRUD ----
+class EarthAltarCreate(BaseModel):
+    name: str
+    element: str
+    description: str
+    purpose: Optional[str] = None
+    items: Optional[List[dict]] = []
+    setup_ritual: Optional[List[str]] = []
+    activation_prayer: Optional[str] = None
+    best_time: Optional[str] = None
+    image_url: Optional[str] = None
+
+@api_router.post("/admin/earth-altars")
+async def create_earth_altar(altar: EarthAltarCreate, current_user: User = Depends(get_current_user)):
+    altar_dict = altar.model_dump()
+    altar_dict["id"] = str(uuid.uuid4())[:8]
+    await db.earth_altars.insert_one(altar_dict)
+    return {"message": "Earth altar created", "id": altar_dict["id"]}
+
+@api_router.put("/admin/earth-altars/{altar_id}")
+async def update_earth_altar(altar_id: str, altar: EarthAltarCreate, current_user: User = Depends(get_current_user)):
+    result = await db.earth_altars.update_one({"id": altar_id}, {"$set": altar.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Earth altar not found")
+    return {"message": "Earth altar updated"}
+
+@api_router.delete("/admin/earth-altars/{altar_id}")
+async def delete_earth_altar(altar_id: str, current_user: User = Depends(get_current_user)):
+    result = await db.earth_altars.delete_one({"id": altar_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Earth altar not found")
+    return {"message": "Earth altar deleted"}
+
+# ---- CREATIVE PROCESSES CRUD ----
+class CreativeProcessCreate(BaseModel):
+    name: str
+    category: str
+    description: str
+    tradition: Optional[str] = None
+    materials: Optional[List[str]] = []
+    process_steps: Optional[List[str]] = []
+    spiritual_purpose: Optional[str] = None
+    duration_minutes: Optional[int] = 30
+    image_url: Optional[str] = None
+
+@api_router.post("/admin/creative-processes")
+async def create_creative_process(process: CreativeProcessCreate, current_user: User = Depends(get_current_user)):
+    process_dict = process.model_dump()
+    process_dict["id"] = str(uuid.uuid4())[:8]
+    await db.creative_processes.insert_one(process_dict)
+    return {"message": "Creative process created", "id": process_dict["id"]}
+
+@api_router.put("/admin/creative-processes/{process_id}")
+async def update_creative_process(process_id: str, process: CreativeProcessCreate, current_user: User = Depends(get_current_user)):
+    result = await db.creative_processes.update_one({"id": process_id}, {"$set": process.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Creative process not found")
+    return {"message": "Creative process updated"}
+
+@api_router.delete("/admin/creative-processes/{process_id}")
+async def delete_creative_process(process_id: str, current_user: User = Depends(get_current_user)):
+    result = await db.creative_processes.delete_one({"id": process_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Creative process not found")
+    return {"message": "Creative process deleted"}
+
+# ---- HEART PRACTICES CRUD ----
+class HeartPracticeCreate(BaseModel):
+    name: str
+    category: str
+    description: str
+    tradition: Optional[str] = None
+    benefits: Optional[List[str]] = []
+    steps: Optional[List[str]] = []
+    affirmation: Optional[str] = None
+    duration_minutes: Optional[int] = 20
+    image_url: Optional[str] = None
+
+@api_router.post("/admin/heart-practices")
+async def create_heart_practice(practice: HeartPracticeCreate, current_user: User = Depends(get_current_user)):
+    practice_dict = practice.model_dump()
+    practice_dict["id"] = str(uuid.uuid4())[:8]
+    await db.heart_practices.insert_one(practice_dict)
+    return {"message": "Heart practice created", "id": practice_dict["id"]}
+
+@api_router.put("/admin/heart-practices/{practice_id}")
+async def update_heart_practice(practice_id: str, practice: HeartPracticeCreate, current_user: User = Depends(get_current_user)):
+    result = await db.heart_practices.update_one({"id": practice_id}, {"$set": practice.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Heart practice not found")
+    return {"message": "Heart practice updated"}
+
+@api_router.delete("/admin/heart-practices/{practice_id}")
+async def delete_heart_practice(practice_id: str, current_user: User = Depends(get_current_user)):
+    result = await db.heart_practices.delete_one({"id": practice_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Heart practice not found")
+    return {"message": "Heart practice deleted"}
+
+# ---- SHAMANIC PRACTICES CRUD ----
+class ShamanicPracticeCreate(BaseModel):
+    name: str
+    category: str
+    description: str
+    tradition: Optional[str] = None
+    preparation: Optional[str] = None
+    journey_steps: Optional[List[str]] = []
+    safety_notes: Optional[str] = None
+    closing_prayer: Optional[str] = None
+    duration_minutes: Optional[int] = 30
+    requires_unlock: Optional[bool] = False
+    image_url: Optional[str] = None
+
+@api_router.post("/admin/shamanic-practices")
+async def create_shamanic_practice(practice: ShamanicPracticeCreate, current_user: User = Depends(get_current_user)):
+    practice_dict = practice.model_dump()
+    practice_dict["id"] = str(uuid.uuid4())[:8]
+    await db.shamanic_practices.insert_one(practice_dict)
+    return {"message": "Shamanic practice created", "id": practice_dict["id"]}
+
+@api_router.put("/admin/shamanic-practices/{practice_id}")
+async def update_shamanic_practice(practice_id: str, practice: ShamanicPracticeCreate, current_user: User = Depends(get_current_user)):
+    result = await db.shamanic_practices.update_one({"id": practice_id}, {"$set": practice.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Shamanic practice not found")
+    return {"message": "Shamanic practice updated"}
+
+@api_router.delete("/admin/shamanic-practices/{practice_id}")
+async def delete_shamanic_practice(practice_id: str, current_user: User = Depends(get_current_user)):
+    result = await db.shamanic_practices.delete_one({"id": practice_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Shamanic practice not found")
+    return {"message": "Shamanic practice deleted"}
+
+# ---- ELEMENTAL PRACTICES CRUD ----
+class ElementalPracticeCreate(BaseModel):
+    name: str
+    element: str
+    category: str
+    description: str
+    duration_minutes: Optional[int] = 20
+    difficulty: Optional[str] = "Beginner"
+    benefits: Optional[List[str]] = []
+    instructions: Optional[List[str]] = []
+    best_time: Optional[str] = None
+    moon_phase: Optional[str] = None
+    caution: Optional[str] = None
+    image_url: Optional[str] = None
+
+@api_router.post("/admin/elemental-practices")
+async def create_elemental_practice(practice: ElementalPracticeCreate, current_user: User = Depends(get_current_user)):
+    practice_dict = practice.model_dump()
+    practice_dict["id"] = str(uuid.uuid4())[:8]
+    await db.elemental_practices.insert_one(practice_dict)
+    return {"message": "Elemental practice created", "id": practice_dict["id"]}
+
+@api_router.put("/admin/elemental-practices/{practice_id}")
+async def update_elemental_practice(practice_id: str, practice: ElementalPracticeCreate, current_user: User = Depends(get_current_user)):
+    result = await db.elemental_practices.update_one({"id": practice_id}, {"$set": practice.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Elemental practice not found")
+    return {"message": "Elemental practice updated"}
+
+@api_router.delete("/admin/elemental-practices/{practice_id}")
+async def delete_elemental_practice(practice_id: str, current_user: User = Depends(get_current_user)):
+    result = await db.elemental_practices.delete_one({"id": practice_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Elemental practice not found")
+    return {"message": "Elemental practice deleted"}
 
 # ============ ROOT & HEALTH ============
 

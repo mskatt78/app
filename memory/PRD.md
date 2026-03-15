@@ -42,6 +42,13 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
   - **Shamanic Practices** (8 practices) - Deep journeys and ceremonial work
   - **Elemental Practices** (10 practices) - Element-specific connection exercises
 
+- [x] **Admin CMS Extended** - Now manages all shamanic content:
+  - Earth Altars CRUD
+  - Creative Processes CRUD
+  - Heart Practices CRUD
+  - Shamanic Practices CRUD
+  - Elemental Practices CRUD
+
 ### Phase 3: Mantra Audio (March 15, 2026)
 - [x] **Audio Player Implementation** - Full audio playback for mantras
 
@@ -128,7 +135,6 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 ## Prioritized Backlog
 
 ### P1 - Next Priority
-- [ ] Extend Admin CMS to manage new shamanic content
 - [ ] Refine UI/UX for locked/unlocked content display
 
 ### P2 - Nice to Have
@@ -137,6 +143,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - [ ] Premium subscription tier
 - [ ] More mantra audio files
 - [ ] Journey recording feature
+- [ ] Audio guides for meditation and shamanic journeys
 
 ## 3rd Party Integrations
 - **Claude Sonnet 4.5** (Text Generation) — uses Emergent LLM Key
