@@ -49,6 +49,14 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
   - Shamanic Practices CRUD
   - Elemental Practices CRUD
 
+- [x] **Refined Locked/Unlocked UI** - Enhanced visual experience:
+  - Blur blend effect on locked content
+  - Animated lock indicators with gradient backgrounds
+  - Sparkle badge for unlocked premium content
+  - Click-to-view achievements from locked items
+  - New "Deeper Journeys" section on Dashboard
+  - Progress section with Practice Log, Achievements, Favorites quick access
+
 ### Phase 3: Mantra Audio (March 15, 2026)
 - [x] **Audio Player Implementation** - Full audio playback for mantras
 
@@ -134,16 +142,17 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 
 ## Prioritized Backlog
 
-### P1 - Next Priority
-- [ ] Refine UI/UX for locked/unlocked content display
-
-### P2 - Nice to Have
-- [ ] Push notifications
-- [ ] Community features / social feed
-- [ ] Premium subscription tier
-- [ ] More mantra audio files
-- [ ] Journey recording feature
+### P2 - Nice to Have (Future Features)
 - [ ] Audio guides for meditation and shamanic journeys
+- [ ] Push notifications for daily practice reminders
+- [ ] Community features / social feed for sharing practices
+- [ ] Premium subscription tier with exclusive content
+- [ ] More mantra audio files
+- [ ] Journey recording feature (record and playback experiences)
+- [ ] Guided audio meditations with voice-over
+- [ ] Offline mode for saved practices
+- [ ] Calendar integration for scheduling rituals
+- [ ] Progress sharing to social media
 
 ## 3rd Party Integrations
 - **Claude Sonnet 4.5** (Text Generation) — uses Emergent LLM Key

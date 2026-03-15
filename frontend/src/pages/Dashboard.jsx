@@ -399,6 +399,74 @@ const Dashboard = ({ user, api }) => {
                   ))}
                 </div>
               </div>
+
+              {/* New Shamanic Sections */}
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <h3 className="text-2xl font-serif">Deeper <span className="italic text-primary">Journeys</span></h3>
+                  <span className="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-medium">New</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {navItems.filter(item => ['/elemental-practices', '/earth-altars', '/creative-processes', '/heart-practices', '/shamanic-practices'].includes(item.path)).map((item, index) => (
+                    <motion.button
+                      key={item.path}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 + index * 0.1 }}
+                      onClick={() => navigate(item.path)}
+                      className={`p-5 rounded-2xl border backdrop-blur-xl text-center
+                                 hover:scale-105 transition-all duration-300 relative overflow-hidden
+                                 ${elementBg[item.element]}`}
+                    >
+                      <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary animate-pulse" />
+                      <item.icon className={`w-7 h-7 mx-auto mb-2 ${elementColors[item.element]}`} strokeWidth={1.5} />
+                      <p className="text-sm font-medium">{item.label}</p>
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Progress Section */}
+              <div>
+                <h3 className="text-2xl font-serif mb-6">Your <span className="italic text-primary">Progress</span></h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                    onClick={() => navigate('/practice-log')}
+                    className="p-6 rounded-2xl bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/20 hover:border-orange-500/40 transition-all text-left"
+                  >
+                    <BarChart3 className="w-8 h-8 text-orange-400 mb-3" />
+                    <h4 className="font-medium mb-1">Practice Log</h4>
+                    <p className="text-xs text-muted-foreground">Track your sacred journey</p>
+                  </motion.button>
+                  
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.9 }}
+                    onClick={() => navigate('/achievements')}
+                    className="p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20 hover:border-amber-500/40 transition-all text-left"
+                  >
+                    <Trophy className="w-8 h-8 text-amber-400 mb-3" />
+                    <h4 className="font-medium mb-1">Achievements</h4>
+                    <p className="text-xs text-muted-foreground">Earn badges & unlock content</p>
+                  </motion.button>
+                  
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.0 }}
+                    onClick={() => navigate('/favorites')}
+                    className="p-6 rounded-2xl bg-gradient-to-br from-pink-500/10 to-rose-500/10 border border-pink-500/20 hover:border-pink-500/40 transition-all text-left"
+                  >
+                    <Star className="w-8 h-8 text-pink-400 mb-3" />
+                    <h4 className="font-medium mb-1">Favorites</h4>
+                    <p className="text-xs text-muted-foreground">Your saved practices</p>
+                  </motion.button>
+                </div>
+              </div>
             </>
           )}
         </div>

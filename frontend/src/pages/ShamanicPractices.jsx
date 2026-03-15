@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Feather, Moon, Eye, Drum, TreeDeciduous, Compass,
-  ChevronRight, X, Clock, Play, Lock, AlertTriangle
+  ChevronRight, X, Clock, Play, Lock, AlertTriangle, Trophy, Sparkles
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -159,25 +159,52 @@ const ShamanicPractices = ({ user, api }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 className={`group rounded-2xl overflow-hidden bg-card/50 border ${colors.border} 
-                           ${locked ? 'opacity-60' : 'hover:border-opacity-50'} 
                            transition-all duration-500 cursor-pointer relative`}
-                onClick={() => !locked && setSelectedPractice(practice)}
+                onClick={() => locked ? navigate("/achievements") : setSelectedPractice(practice)}
                 data-testid={`practice-${practice.id}`}
               >
+                {/* Locked overlay with blur blend effect */}
                 {locked && (
-                  <div className="absolute inset-0 z-10 bg-black/40 flex items-center justify-center">
-                    <div className="text-center">
-                      <Lock className="w-8 h-8 mx-auto text-amber-400 mb-2" />
-                      <p className="text-sm text-amber-400">Unlock through achievements</p>
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 z-10 backdrop-blur-[2px] bg-gradient-to-t from-black/70 via-black/40 to-black/20 flex items-center justify-center"
+                  >
+                    <div className="text-center p-4">
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", delay: 0.1 }}
+                        className="w-14 h-14 mx-auto mb-3 rounded-full bg-gradient-to-br from-amber-500/30 to-orange-600/30 border border-amber-500/40 flex items-center justify-center"
+                      >
+                        <Lock className="w-6 h-6 text-amber-400" />
+                      </motion.div>
+                      <p className="text-amber-400 font-medium text-sm mb-1">Sacred Practice</p>
+                      <p className="text-xs text-amber-200/60 mb-3">Unlock through achievements</p>
+                      <div className="flex items-center justify-center gap-1 text-xs text-amber-400/80">
+                        <Trophy className="w-3 h-3" />
+                        <span>View progress</span>
+                      </div>
                     </div>
-                  </div>
+                  </motion.div>
+                )}
+                {/* Unlocked sparkle indicator */}
+                {!locked && practice.requires_unlock && (
+                  <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    className="absolute top-3 left-3 z-10 w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30"
+                  >
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </motion.div>
                 )}
                 {practice.image_url && (
                   <div className="relative h-48 overflow-hidden">
                     <img
                       src={practice.image_url}
                       alt={practice.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className={`w-full h-full object-cover transition-transform duration-500 ${locked ? '' : 'group-hover:scale-105'}`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                     <div className={`absolute top-4 right-4 px-3 py-1 rounded-full ${colors.bg} ${colors.text}`}>
