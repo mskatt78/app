@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Plus, Pencil, Trash2, Save, X, 
   Sparkles, Wind, Droplets, Flame, Mountain, 
-  Calendar, Users, BookOpen, Video, Heart, Feather, Zap, Palette
+  Calendar, Users, BookOpen, Video, Heart, Feather, Zap, Palette,
+  Upload, Image, Loader2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -22,6 +23,8 @@ const AdminCMS = ({ user, api }) => {
   const [editingItem, setEditingItem] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({});
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
 
   const tabs = [
     { id: "yoga", label: "Yoga", icon: Sparkles },
@@ -47,6 +50,47 @@ const AdminCMS = ({ user, api }) => {
   const creativeCategories = ["visual", "writing", "movement", "nature", "meditation"];
   const shamanicCategories = ["journey", "power_animal", "ancestral", "divination", "ceremony", "shadow"];
   const elementalCategories = ["grounding", "emotional", "energy", "communication", "spiritual", "integration", "nature_connection", "purification", "divination", "energy_work"];
+
+  // Image upload handler
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Please upload a valid image (JPG, PNG, GIF, or WebP)");
+      return;
+    }
+
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    setUploading(true);
+    try {
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+
+      const response = await api.post('/upload/image', formDataUpload, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      const imageUrl = response.data.url;
+      setFormData(prev => ({ ...prev, image_url: imageUrl }));
+      toast.success("Image uploaded successfully!");
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload image");
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
 
   useEffect(() => {
     fetchItems();
@@ -200,6 +244,52 @@ const AdminCMS = ({ user, api }) => {
     setFormData(prev => ({ ...prev, [field]: arr }));
   };
 
+  // Reusable Image Upload Field Component
+  const ImageUploadField = () => (
+    <div className="space-y-2">
+      <label className="text-sm text-muted-foreground">Image</label>
+      <div className="flex gap-2">
+        <Input
+          value={formData.image_url || ""}
+          onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+          placeholder="Paste URL or upload image"
+          className="flex-1"
+        />
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleImageUpload}
+          accept="image/jpeg,image/png,image/gif,image/webp"
+          className="hidden"
+        />
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="flex items-center gap-2"
+        >
+          {uploading ? (
+            <Loader2 className="w-4 h-4 animate-spin" />
+          ) : (
+            <Upload className="w-4 h-4" />
+          )}
+          Upload
+        </Button>
+      </div>
+      {formData.image_url && (
+        <div className="mt-2 relative w-32 h-32 rounded-lg overflow-hidden border border-white/10">
+          <img
+            src={formData.image_url}
+            alt="Preview"
+            className="w-full h-full object-cover"
+            onError={(e) => { e.target.style.display = 'none'; }}
+          />
+        </div>
+      )}
+    </div>
+  );
+
   const renderForm = () => {
     switch (activeTab) {
       case "yoga":
@@ -260,14 +350,7 @@ const AdminCMS = ({ user, api }) => {
                 rows={2}
               />
             </div>
-            <div>
-              <label className="text-sm text-muted-foreground">Image URL</label>
-              <Input
-                value={formData.image_url || ""}
-                onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                placeholder="https://..."
-              />
-            </div>
+            <ImageUploadField />
             <div>
               <label className="text-sm text-muted-foreground">Instructions (one per line)</label>
               <Textarea
