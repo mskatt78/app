@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { 
   Leaf, Eye, Wind, Moon, Sparkles, Heart, Waves, Mountain,
   LogOut, Menu, X, ChevronRight, Sun, User, Star, Clock, Trophy, BookOpen, Settings,
-  Brain, Compass, Hash, Shield
+  Brain, Compass, Hash, Shield, BarChart3, Palette, Feather, Zap
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -29,6 +29,14 @@ const Dashboard = ({ user, api }) => {
     { icon: Sun, label: "Mudras", path: "/mudras", element: "fire" },
     { icon: Waves, label: "Somatic", path: "/somatic", element: "water" },
     { icon: Mountain, label: "Grounding", path: "/grounding", element: "earth" },
+    // New Shamanic Sections
+    { icon: Zap, label: "Elemental", path: "/elemental-practices", element: "spirit" },
+    { icon: Mountain, label: "Altars", path: "/earth-altars", element: "earth" },
+    { icon: Palette, label: "Creative", path: "/creative-processes", element: "spirit" },
+    { icon: Heart, label: "Heart", path: "/heart-practices", element: "water" },
+    { icon: Feather, label: "Shamanic", path: "/shamanic-practices", element: "spirit" },
+    // User Features
+    { icon: BarChart3, label: "Practice Log", path: "/practice-log", element: "fire" },
     { icon: Star, label: "Favorites", path: "/favorites", element: "fire" },
     { icon: Clock, label: "Rituals", path: "/rituals", element: "spirit" },
     { icon: Trophy, label: "Achievements", path: "/achievements", element: "fire" },

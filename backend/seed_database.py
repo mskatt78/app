@@ -18,6 +18,10 @@ from data.all_content import (
     THIRTEEN_MONTH_CALENDAR, ORACLE_CARDS, SOMATIC_PRACTICES,
     GROUNDING_EXERCISES, MINDFULNESS_PRACTICES, MEDITATIONS
 )
+from data.shamanic_content import (
+    EARTH_ALTARS, CREATIVE_PROCESSES, HEART_PRACTICES, 
+    SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES
+)
 
 async def seed_database():
     """Seed MongoDB with all content data."""
@@ -43,6 +47,13 @@ async def seed_database():
         ("grounding_exercises", GROUNDING_EXERCISES),
         ("mindfulness_practices", MINDFULNESS_PRACTICES),
         ("meditations", MEDITATIONS),
+        # Shamanic content
+        ("earth_altars", EARTH_ALTARS),
+        ("creative_processes", CREATIVE_PROCESSES),
+        ("heart_practices", HEART_PRACTICES),
+        ("shamanic_practices", SHAMANIC_PRACTICES),
+        ("elemental_practices", ELEMENTAL_PRACTICES),
+        ("achievement_definitions", ENHANCED_ACHIEVEMENTS),
     ]
     
     for collection_name, data in collections:

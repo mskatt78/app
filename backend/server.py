@@ -1161,10 +1161,11 @@ async def check_favorite(item_type: str, item_id: str, user: User = Depends(get_
 # ============ PRACTICE HISTORY ============
 
 class PracticeLogCreate(BaseModel):
-    practice_type: str  # "yoga", "breathwork", "meditation", "oracle"
+    practice_type: str  # "yoga", "breathwork", "meditation", "oracle", "elemental", etc.
     practice_id: Optional[str] = None
     duration_minutes: int
     notes: Optional[str] = None
+    element: Optional[str] = None  # Element associated with the practice (Earth, Water, Fire, Air, Spirit)
 
 @api_router.post("/practice-history")
 async def log_practice(data: PracticeLogCreate, user: User = Depends(get_current_user)):
@@ -1176,6 +1177,7 @@ async def log_practice(data: PracticeLogCreate, user: User = Depends(get_current
         "practice_id": data.practice_id,
         "duration_minutes": data.duration_minutes,
         "notes": data.notes,
+        "element": data.element,
         "completed_at": datetime.now(timezone.utc).isoformat()
     }
     
@@ -1497,21 +1499,46 @@ async def delete_journal_entry(entry_id: str, user: User = Depends(get_current_u
 
 @api_router.get("/achievements")
 async def get_achievements(user: User = Depends(get_current_user)):
-    """Get user's achievements with unlock status."""
+    """Get user's achievements with unlock status and unlockable content."""
+    # Get achievement definitions from database
+    achievement_defs = await db.achievement_definitions.find({}, {"_id": 0}).to_list(100)
+    
     # Get user stats
     history = await db.practice_history.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
     oracle_readings = await db.oracle_readings.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
+    rituals = await db.rituals.find({"user_id": user.user_id}, {"_id": 0}).to_list(100)
     
     total_sessions = len(history)
     total_minutes = sum(h.get("duration_minutes", 0) for h in history)
     
-    # Count by type
+    # Count by type and element
     by_type = {}
-    elements_practiced = set()
+    by_element = {"Earth": 0, "Water": 0, "Fire": 0, "Air": 0, "Spirit": 0}
+    heart_practices = 0
+    shadow_work = 0
+    journeys = 0
+    ancestral = 0
+    creative = 0
+    
     for h in history:
         ptype = h.get("practice_type", "unknown")
+        element = h.get("element", "Spirit")
+        
         by_type[ptype] = by_type.get(ptype, 0) + 1
-        # Track elements (would need to enhance practice logging to include element)
+        if element in by_element:
+            by_element[element] += 1
+        
+        # Track specific practice categories
+        if ptype == "heart_practice":
+            heart_practices += 1
+        elif ptype == "shadow_work":
+            shadow_work += 1
+        elif ptype in ["power_animal_journey", "upper_world_journey", "shamanic_journey"]:
+            journeys += 1
+        elif ptype == "ancestral_healing":
+            ancestral += 1
+        elif ptype in ["creative_process", "vision_journaling", "shamanic_art"]:
+            creative += 1
     
     # Calculate streak
     if history:
@@ -1528,41 +1555,260 @@ async def get_achievements(user: User = Depends(get_current_user)):
     
     # Check each achievement
     achievements = []
-    for ach in ACHIEVEMENT_DEFINITIONS:
-        req = ach["requirement"]
+    unlocked_content = []
+    
+    for ach in achievement_defs:
+        req = ach.get("requirement", {})
         unlocked = False
         progress = 0
+        target = req.get("count", 1)
         
-        if req["type"] == "sessions":
+        req_type = req.get("type", "")
+        
+        if req_type == "sessions":
             progress = total_sessions
-            unlocked = total_sessions >= req["count"]
-        elif req["type"] == "streak":
+            unlocked = total_sessions >= target
+        elif req_type == "streak":
             progress = streak
-            unlocked = streak >= req["count"]
-        elif req["type"] == "minutes":
+            unlocked = streak >= target
+        elif req_type == "minutes":
             progress = total_minutes
-            unlocked = total_minutes >= req["count"]
-        elif req["type"] == "oracle_readings":
+            unlocked = total_minutes >= target
+        elif req_type == "oracle_readings":
             progress = len(oracle_readings)
-            unlocked = len(oracle_readings) >= req["count"]
-        elif req["type"] == "breathwork":
+            unlocked = len(oracle_readings) >= target
+        elif req_type == "breathwork":
             progress = by_type.get("breathwork", 0)
-            unlocked = by_type.get("breathwork", 0) >= req["count"]
-        elif req["type"] == "yoga":
+            unlocked = by_type.get("breathwork", 0) >= target
+        elif req_type == "yoga":
             progress = by_type.get("yoga", 0)
-            unlocked = by_type.get("yoga", 0) >= req["count"]
-        elif req["type"] == "elements":
-            progress = len(elements_practiced)
-            unlocked = len(elements_practiced) >= req["count"]
+            unlocked = by_type.get("yoga", 0) >= target
+        elif req_type == "element":
+            element = req.get("element", "Spirit")
+            progress = by_element.get(element, 0)
+            unlocked = progress >= target
+        elif req_type == "all_elements":
+            min_element = min(by_element.values())
+            progress = min_element
+            unlocked = min_element >= target
+        elif req_type == "heart_practices":
+            progress = heart_practices
+            unlocked = heart_practices >= target
+        elif req_type == "shadow_work":
+            progress = shadow_work
+            unlocked = shadow_work >= target
+        elif req_type == "journeys":
+            progress = journeys
+            unlocked = journeys >= target
+        elif req_type == "ancestral":
+            progress = ancestral
+            unlocked = ancestral >= target
+        elif req_type == "creative":
+            progress = creative
+            unlocked = creative >= target
+        elif req_type == "rituals_created":
+            progress = len(rituals)
+            unlocked = len(rituals) >= target
         
-        achievements.append({
-            **ach,
+        achievement_data = {
+            "id": ach.get("id"),
+            "name": ach.get("name"),
+            "description": ach.get("description"),
+            "category": ach.get("category"),
+            "badge_color": ach.get("badge_color", "#8b5cf6"),
             "unlocked": unlocked,
             "progress": progress,
-            "target": req["count"]
+            "target": target,
+            "unlocks": ach.get("unlocks")
+        }
+        achievements.append(achievement_data)
+        
+        # Track what content has been unlocked
+        if unlocked and ach.get("unlocks"):
+            unlocked_content.append(ach.get("unlocks"))
+    
+    return {
+        "achievements": achievements,
+        "unlocked_content": unlocked_content,
+        "stats": {
+            "total_unlocked": sum(1 for a in achievements if a["unlocked"]),
+            "total_achievements": len(achievements),
+            "current_streak": streak,
+            "total_minutes": total_minutes
+        }
+    }
+
+# ============ EARTH ALTARS ============
+
+@api_router.get("/earth-altars")
+async def get_earth_altars(element: Optional[str] = None):
+    """Get earth altar guides."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    altars = await db.earth_altars.find(query, {"_id": 0}).to_list(length=20)
+    return altars
+
+@api_router.get("/earth-altars/{altar_id}")
+async def get_earth_altar(altar_id: str):
+    """Get specific earth altar guide."""
+    altar = await db.earth_altars.find_one({"id": altar_id}, {"_id": 0})
+    if not altar:
+        raise HTTPException(status_code=404, detail="Altar not found")
+    return altar
+
+# ============ CREATIVE PROCESSES ============
+
+@api_router.get("/creative-processes")
+async def get_creative_processes(category: Optional[str] = None):
+    """Get creative process guides."""
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    processes = await db.creative_processes.find(query, {"_id": 0}).to_list(length=20)
+    return processes
+
+@api_router.get("/creative-processes/{process_id}")
+async def get_creative_process(process_id: str):
+    """Get specific creative process guide."""
+    process = await db.creative_processes.find_one({"id": process_id}, {"_id": 0})
+    if not process:
+        raise HTTPException(status_code=404, detail="Creative process not found")
+    return process
+
+# ============ HEART PRACTICES ============
+
+@api_router.get("/heart-practices")
+async def get_heart_practices(category: Optional[str] = None):
+    """Get heart-centered practices."""
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    practices = await db.heart_practices.find(query, {"_id": 0}).to_list(length=20)
+    return practices
+
+@api_router.get("/heart-practices/{practice_id}")
+async def get_heart_practice(practice_id: str):
+    """Get specific heart practice."""
+    practice = await db.heart_practices.find_one({"id": practice_id}, {"_id": 0})
+    if not practice:
+        raise HTTPException(status_code=404, detail="Heart practice not found")
+    return practice
+
+# ============ SHAMANIC PRACTICES ============
+
+@api_router.get("/shamanic-practices")
+async def get_shamanic_practices(category: Optional[str] = None):
+    """Get deep shamanic practices."""
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    practices = await db.shamanic_practices.find(query, {"_id": 0}).to_list(length=20)
+    return practices
+
+@api_router.get("/shamanic-practices/{practice_id}")
+async def get_shamanic_practice(practice_id: str):
+    """Get specific shamanic practice."""
+    practice = await db.shamanic_practices.find_one({"id": practice_id}, {"_id": 0})
+    if not practice:
+        raise HTTPException(status_code=404, detail="Shamanic practice not found")
+    return practice
+
+
+# ============ ELEMENTAL PRACTICES ============
+
+@api_router.get("/elemental-practices")
+async def get_elemental_practices(element: Optional[str] = None, category: Optional[str] = None):
+    """Get elemental practices."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    practices = await db.elemental_practices.find(query, {"_id": 0}).to_list(length=20)
+    return practices
+
+@api_router.get("/elemental-practices/{practice_id}")
+async def get_elemental_practice(practice_id: str):
+    """Get specific elemental practice."""
+    practice = await db.elemental_practices.find_one({"id": practice_id}, {"_id": 0})
+    if not practice:
+        raise HTTPException(status_code=404, detail="Elemental practice not found")
+    return practice
+
+
+# ============ ENHANCED PRACTICE STATS ============
+
+@api_router.get("/practice-history/detailed-stats")
+async def get_detailed_practice_stats(user: User = Depends(get_current_user)):
+    """Get detailed practice statistics including element breakdown, weekly data, and more."""
+    history = await db.practice_history.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
+    oracle_readings = await db.oracle_readings.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
+    
+    total_sessions = len(history)
+    total_minutes = sum(h.get("duration_minutes", 0) for h in history)
+    
+    # Count by practice type
+    by_type = {}
+    by_element = {"Earth": 0, "Water": 0, "Fire": 0, "Air": 0, "Spirit": 0}
+    by_day = {}
+    
+    for h in history:
+        ptype = h.get("practice_type", "unknown")
+        element = h.get("element", "Spirit")
+        date = h.get("completed_at", "")[:10]
+        
+        if ptype not in by_type:
+            by_type[ptype] = {"count": 0, "minutes": 0}
+        by_type[ptype]["count"] += 1
+        by_type[ptype]["minutes"] += h.get("duration_minutes", 0)
+        
+        if element in by_element:
+            by_element[element] += 1
+        
+        if date not in by_day:
+            by_day[date] = {"count": 0, "minutes": 0}
+        by_day[date]["count"] += 1
+        by_day[date]["minutes"] += h.get("duration_minutes", 0)
+    
+    # Calculate streak
+    if history:
+        dates = sorted(set(h.get("completed_at", "")[:10] for h in history if h.get("completed_at")), reverse=True)
+        streak = 0
+        for i, date in enumerate(dates):
+            expected = (datetime.now(timezone.utc) - timedelta(days=i)).strftime("%Y-%m-%d")
+            if date == expected or (i == 0 and date == (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")):
+                streak += 1
+            else:
+                break
+    else:
+        streak = 0
+    
+    # Weekly breakdown (last 7 days)
+    weekly_data = []
+    for i in range(7):
+        date = (datetime.now(timezone.utc) - timedelta(days=6-i)).strftime("%Y-%m-%d")
+        day_name = (datetime.now(timezone.utc) - timedelta(days=6-i)).strftime("%a")
+        day_data = by_day.get(date, {"count": 0, "minutes": 0})
+        weekly_data.append({
+            "date": date,
+            "day": day_name,
+            "sessions": day_data["count"],
+            "minutes": day_data["minutes"]
         })
     
-    return achievements
+    return {
+        "total_sessions": total_sessions,
+        "total_minutes": total_minutes,
+        "total_hours": round(total_minutes / 60, 1),
+        "oracle_readings_count": len(oracle_readings),
+        "current_streak": streak,
+        "by_type": by_type,
+        "by_element": by_element,
+        "weekly_data": weekly_data,
+        "practice_days": len(by_day),
+        "avg_session_length": round(total_minutes / total_sessions, 1) if total_sessions > 0 else 0
+    }
 
 # ============ ADMIN CMS ROUTES ============
 # These routes allow authorized users to manage content

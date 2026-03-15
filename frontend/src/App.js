@@ -24,6 +24,13 @@ import Mindfulness from "./pages/Mindfulness";
 import Meditations from "./pages/Meditations";
 import Numerology from "./pages/Numerology";
 import AdminCMS from "./pages/AdminCMS";
+// New Shamanic Pages
+import PracticeLog from "./pages/PracticeLog";
+import EarthAltars from "./pages/EarthAltars";
+import CreativeProcesses from "./pages/CreativeProcesses";
+import HeartPractices from "./pages/HeartPractices";
+import ShamanicPractices from "./pages/ShamanicPractices";
+import ElementalPractices from "./pages/ElementalPractices";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -281,6 +288,55 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             {({ user, api }) => <AdminCMS user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      {/* New Shamanic Routes */}
+      <Route
+        path="/practice-log"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <PracticeLog user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/earth-altars"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <EarthAltars user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/creative-processes"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <CreativeProcesses user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/heart-practices"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <HeartPractices user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/shamanic-practices"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <ShamanicPractices user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/elemental-practices"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <ElementalPractices user={user} api={api} />}
           </ProtectedRoute>
         }
       />
