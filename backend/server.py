@@ -670,25 +670,46 @@ async def get_favorites(user: User = Depends(get_current_user), item_type: Optio
     
     favorites = await db.favorites.find(query, {"_id": 0}).to_list(500)
     
-    # Enrich with actual item data from MongoDB
+    # Group favorite IDs by type for batch queries (avoid N+1 problem)
+    ids_by_type = {}
+    for fav in favorites:
+        ids_by_type.setdefault(fav["item_type"], []).append(fav["item_id"])
+    
+    # Fetch all items by type in bulk using $in operator
+    items_cache = {}
+    
+    if "pose" in ids_by_type:
+        poses = await db.yoga_poses.find({"id": {"$in": ids_by_type["pose"]}}, {"_id": 0}).to_list(None)
+        items_cache["pose"] = {p["id"]: p for p in poses}
+    
+    if "crystal" in ids_by_type:
+        crystals = await db.crystals.find({"id": {"$in": ids_by_type["crystal"]}}, {"_id": 0}).to_list(None)
+        items_cache["crystal"] = {c["id"]: c for c in crystals}
+    
+    if "mantra" in ids_by_type:
+        mantras = await db.mantras.find({"id": {"$in": ids_by_type["mantra"]}}, {"_id": 0}).to_list(None)
+        items_cache["mantra"] = {m["id"]: m for m in mantras}
+    
+    if "mudra" in ids_by_type:
+        mudras = await db.mudras.find({"id": {"$in": ids_by_type["mudra"]}}, {"_id": 0}).to_list(None)
+        items_cache["mudra"] = {m["id"]: m for m in mudras}
+    
+    if "breathwork" in ids_by_type:
+        sessions = await db.breathwork_sessions.find({"id": {"$in": ids_by_type["breathwork"]}}, {"_id": 0}).to_list(None)
+        items_cache["breathwork"] = {s["id"]: s for s in sessions}
+    
+    if "somatic" in ids_by_type:
+        practices = await db.somatic_practices.find({"id": {"$in": ids_by_type["somatic"]}}, {"_id": 0}).to_list(None)
+        items_cache["somatic"] = {p["id"]: p for p in practices}
+    
+    if "grounding" in ids_by_type:
+        exercises = await db.grounding_exercises.find({"id": {"$in": ids_by_type["grounding"]}}, {"_id": 0}).to_list(None)
+        items_cache["grounding"] = {e["id"]: e for e in exercises}
+    
+    # Build enriched list using cache
     enriched = []
     for fav in favorites:
-        item_data = None
-        if fav["item_type"] == "pose":
-            item_data = await db.yoga_poses.find_one({"id": fav["item_id"]}, {"_id": 0})
-        elif fav["item_type"] == "crystal":
-            item_data = await db.crystals.find_one({"id": fav["item_id"]}, {"_id": 0})
-        elif fav["item_type"] == "mantra":
-            item_data = await db.mantras.find_one({"id": fav["item_id"]}, {"_id": 0})
-        elif fav["item_type"] == "mudra":
-            item_data = await db.mudras.find_one({"id": fav["item_id"]}, {"_id": 0})
-        elif fav["item_type"] == "breathwork":
-            item_data = await db.breathwork_sessions.find_one({"id": fav["item_id"]}, {"_id": 0})
-        elif fav["item_type"] == "somatic":
-            item_data = await db.somatic_practices.find_one({"id": fav["item_id"]}, {"_id": 0})
-        elif fav["item_type"] == "grounding":
-            item_data = await db.grounding_exercises.find_one({"id": fav["item_id"]}, {"_id": 0})
-        
+        item_data = items_cache.get(fav["item_type"], {}).get(fav["item_id"])
         if item_data:
             enriched.append({**fav, "item": item_data})
     
