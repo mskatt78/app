@@ -50,6 +50,18 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
   - Events (create/edit/delete)  
   - Courses (create/edit/delete)
 
+### Phase 3: Mantra Audio (March 15, 2026)
+- [x] **Audio Player Implementation** - Full audio playback for mantras:
+  - Play/Pause button with visual feedback
+  - Volume slider with mute toggle
+  - Loop toggle (on by default)
+  - Skip to next repetition button
+  - Progress bar with time display
+  - Repetition counter
+  - "Audio" badge on mantra cards with audio
+  - Timer-based fallback for mantras without audio
+- [x] **Working Audio**: Om mantra has Wikipedia Commons audio (https://upload.wikimedia.org/wikipedia/commons/3/31/Om.ogg)
+
 ### Previously Implemented (Jan 2026)
 - [x] Landing page with shamanic design
 - [x] Google OAuth authentication
@@ -78,7 +90,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - `GET /api/mudras` - List mudras (with element filter)
 - `GET /api/breathwork/sessions` - List breathwork sessions
 - `GET /api/crystals` - List crystals
-- `GET /api/mantras` - List mantras
+- `GET /api/mantras` - List mantras (with audio_url)
 - `GET /api/astrology/months` - List 13 lunar months
 - `GET /api/astrology/current` - Get current lunar month
 - `GET /api/workshops` - List workshops
@@ -104,7 +116,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 - `mudras` - 12 mudras
 - `breathwork_sessions` - 6 sessions
 - `crystals` - 12 crystals
-- `mantras` - 12 mantras
+- `mantras` - 12 mantras (with audio_url)
 - `astrology_months` - 13 months
 - `oracle_cards` - 22 cards
 - `somatic_practices` - 6 practices
@@ -117,22 +129,22 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 
 ## Prioritized Backlog
 
-### P1 - Medium Priority
-- [ ] **Mantra Audio** - Add audio playback for mantras
-
 ### P2 - Nice to Have
 - [ ] Push notifications
 - [ ] Community features / social feed
 - [ ] Premium subscription tier
+- [ ] More mantra audio files
 
 ## 3rd Party Integrations
 - **Claude Sonnet 4.5** (Text Generation) — uses Emergent LLM Key
 - **Emergent-managed Google Auth** — no User Key required
 
 ## Testing Status
-- Backend: 100% pass rate (34/34 tests)
+- Backend: 100% pass rate (all tests)
 - Frontend: 100% features verified
-- Test files: `/app/backend/tests/test_admin_cms.py`
+- Test files: 
+  - `/app/backend/tests/test_admin_cms.py`
+  - `/app/backend/tests/test_mantras_audio.py`
 
 ## Files Structure
 ```
@@ -141,6 +153,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 ├── seed_database.py    # MongoDB seeding script
 ├── .env               # Environment variables
 ├── requirements.txt   # Python dependencies
+├── tests/             # Test files
 └── data/
     ├── __init__.py
     ├── yoga_poses.py   # 60 yoga poses data
@@ -153,6 +166,7 @@ Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology c
 │   ├── YogaLibrary.jsx # Enhanced yoga library
 │   ├── MudrasLibrary.jsx # Enhanced mudras
 │   ├── Breathwork.jsx  # Enhanced breathwork
+│   ├── MantrasLibrary.jsx # Mantras with audio player
 │   ├── Dashboard.jsx   # Main dashboard
 │   └── ...             # Other pages
 └── components/ui/      # Shadcn components
