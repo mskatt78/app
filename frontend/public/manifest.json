@@ -7,33 +7,58 @@
       "src": "icon-192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
     },
     {
       "src": "icon-512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#1a1a2e",
   "background_color": "#0a0a0f",
   "orientation": "portrait-primary",
   "categories": ["health", "fitness", "lifestyle"],
-  "screenshots": [
+  "lang": "en-US",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "shortcuts": [
     {
-      "src": "screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
+      "name": "Yoga Library",
+      "short_name": "Yoga",
+      "description": "Browse 60 yoga poses",
+      "url": "/yoga",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
-      "src": "screenshot-narrow.png",
-      "sizes": "720x1280",
-      "type": "image/png",
-      "form_factor": "narrow"
+      "name": "Oracle Reading",
+      "short_name": "Oracle",
+      "description": "Get your daily oracle reading",
+      "url": "/oracle",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Breathwork",
+      "short_name": "Breathwork",
+      "description": "Guided breathing sessions",
+      "url": "/breathwork",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
   ]
 }
