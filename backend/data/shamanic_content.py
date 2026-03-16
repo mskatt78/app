@@ -171,7 +171,7 @@ CREATIVE_PROCESSES = [
     {
         "id": "1",
         "name": "Vision Quest Journaling",
-        "category": "journaling",
+        "category": "writing",
         "element": "Spirit",
         "description": "Deep introspective writing to seek your life vision and purpose. Based on the tradition of going into the wilderness for answers.",
         "duration_minutes": 30,
@@ -197,7 +197,7 @@ CREATIVE_PROCESSES = [
     {
         "id": "2",
         "name": "Shamanic Art Medicine",
-        "category": "art",
+        "category": "visual",
         "element": "Fire",
         "description": "Create intuitive art as a form of healing and self-discovery. No artistic skill needed - this is soul expression.",
         "duration_minutes": 45,
@@ -225,7 +225,7 @@ CREATIVE_PROCESSES = [
     {
         "id": "3",
         "name": "Dream Weaving Circle",
-        "category": "dreamwork",
+        "category": "meditation",
         "element": "Water",
         "description": "Work with your dreams as messages from the spirit world. Learn to remember, record, and interpret dream medicine.",
         "duration_minutes": 20,
@@ -253,7 +253,7 @@ CREATIVE_PROCESSES = [
     {
         "id": "4",
         "name": "Sacred Sound Creation",
-        "category": "sound",
+        "category": "movement",
         "element": "Air",
         "description": "Create your own sacred sounds through toning, chanting, and rhythmic expression.",
         "duration_minutes": 25,
@@ -281,7 +281,7 @@ CREATIVE_PROCESSES = [
     {
         "id": "5",
         "name": "Medicine Bundle Creation",
-        "category": "craft",
+        "category": "nature",
         "element": "Earth",
         "description": "Create a personal medicine bundle containing sacred objects that hold power for you.",
         "duration_minutes": 60,
@@ -310,7 +310,7 @@ CREATIVE_PROCESSES = [
     {
         "id": "6",
         "name": "Ancestral Story Weaving",
-        "category": "storytelling",
+        "category": "writing",
         "element": "Spirit",
         "description": "Connect with ancestral wisdom through intuitive storytelling and mythmaking.",
         "duration_minutes": 40,
@@ -400,7 +400,7 @@ HEART_PRACTICES = [
     {
         "id": "3",
         "name": "Grief Honoring Practice",
-        "category": "healing",
+        "category": "journey",
         "element": "Water",
         "description": "A sacred practice for moving through grief with honor and allowing tears to be healing medicine.",
         "duration_minutes": 40,
@@ -522,7 +522,7 @@ SHAMANIC_PRACTICES = [
     {
         "id": "1",
         "name": "Power Animal Journey",
-        "category": "journeying",
+        "category": "power_animal",
         "element": "Spirit",
         "description": "Journey to the Lower World to meet and connect with your power animal - a spirit ally who offers protection and guidance.",
         "duration_minutes": 30,
@@ -552,7 +552,7 @@ SHAMANIC_PRACTICES = [
     {
         "id": "2",
         "name": "Soul Retrieval Visualization",
-        "category": "healing",
+        "category": "ancestral",
         "element": "Water",
         "description": "A gentle visualization for calling back parts of yourself that may have fragmented due to trauma or difficult experiences.",
         "duration_minutes": 35,
@@ -581,7 +581,7 @@ SHAMANIC_PRACTICES = [
     {
         "id": "3",
         "name": "Ancestral Healing Ritual",
-        "category": "healing",
+        "category": "shadow",
         "element": "Earth",
         "description": "Heal patterns passed down through generations by working with ancestral spirits and releasing inherited trauma.",
         "duration_minutes": 45,
@@ -612,7 +612,7 @@ SHAMANIC_PRACTICES = [
     {
         "id": "4",
         "name": "Shadow Integration Ceremony",
-        "category": "healing",
+        "category": "divination",
         "element": "Fire",
         "description": "Face and integrate the shadow - the rejected parts of self - through sacred ceremony.",
         "duration_minutes": 50,
@@ -642,7 +642,7 @@ SHAMANIC_PRACTICES = [
     {
         "id": "5",
         "name": "Drum Journey to Upper World",
-        "category": "journeying",
+        "category": "journey",
         "element": "Air",
         "description": "Journey to the Upper World to meet teachers, guides, and beings of light for wisdom and guidance.",
         "duration_minutes": 30,
@@ -735,7 +735,7 @@ SHAMANIC_PRACTICES = [
     {
         "id": "8",
         "name": "Nature Communion Walk",
-        "category": "practice",
+        "category": "journey",
         "element": "Earth",
         "description": "Walk in nature as ceremony - communicating with the spirits of the land, plants, and animals.",
         "duration_minutes": 45,
