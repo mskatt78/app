@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
+import AppFooter from "./components/AppFooter";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -346,9 +347,12 @@ function AppRouter() {
 
 function App() {
   return (
-    <div className="App grain-overlay">
+    <div className="App grain-overlay min-h-screen flex flex-col">
       <BrowserRouter>
-        <AppRouter />
+        <div className="flex-1">
+          <AppRouter />
+        </div>
+        <AppFooter />
       </BrowserRouter>
       <Toaster position="bottom-right" />
     </div>

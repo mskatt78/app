@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { toast } from "sonner";
 
@@ -14,12 +15,41 @@ const Numerology = ({ user, api }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [birthDate, setBirthDate] = useState("");
+  const [birthYear, setBirthYear] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay] = useState("");
   const [fullName, setFullName] = useState("");
   const [reading, setReading] = useState(null);
   const [lifePaths, setLifePaths] = useState({});
   const [pastReadings, setPastReadings] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
   const [selectedLifePath, setSelectedLifePath] = useState(null);
+
+  // Generate year options (1900 to current year)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1899 }, (_, i) => currentYear - i);
+  const months = [
+    { value: "01", label: "January" },
+    { value: "02", label: "February" },
+    { value: "03", label: "March" },
+    { value: "04", label: "April" },
+    { value: "05", label: "May" },
+    { value: "06", label: "June" },
+    { value: "07", label: "July" },
+    { value: "08", label: "August" },
+    { value: "09", label: "September" },
+    { value: "10", label: "October" },
+    { value: "11", label: "November" },
+    { value: "12", label: "December" },
+  ];
+  const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
+
+  // Update birthDate when components change
+  useEffect(() => {
+    if (birthYear && birthMonth && birthDay) {
+      setBirthDate(`${birthYear}-${birthMonth}-${birthDay}`);
+    }
+  }, [birthYear, birthMonth, birthDay]);
 
   const elementColors = {
     Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
@@ -78,6 +108,9 @@ const Numerology = ({ user, api }) => {
   const resetReading = () => {
     setReading(null);
     setBirthDate("");
+    setBirthYear("");
+    setBirthMonth("");
+    setBirthDay("");
     setFullName("");
   };
 
@@ -312,17 +345,44 @@ const Numerology = ({ user, api }) => {
 
             <div className="space-y-6 p-8 rounded-2xl bg-card/50 border border-white/5">
               <div>
-                <label className="block text-sm text-muted-foreground mb-2 flex items-center gap-2">
+                <label className="block text-sm text-muted-foreground mb-3 flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   Birth Date (required)
                 </label>
-                <Input
-                  type="date"
-                  value={birthDate}
-                  onChange={(e) => setBirthDate(e.target.value)}
-                  className="bg-card/50 border-white/10"
-                  data-testid="birth-date-input"
-                />
+                <div className="grid grid-cols-3 gap-3">
+                  <Select value={birthYear} onValueChange={setBirthYear}>
+                    <SelectTrigger className="bg-card/50 border-white/10" data-testid="birth-year">
+                      <SelectValue placeholder="Year" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60 bg-card border-white/10">
+                      {years.map((year) => (
+                        <SelectItem key={year} value={String(year)}>{year}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={birthMonth} onValueChange={setBirthMonth}>
+                    <SelectTrigger className="bg-card/50 border-white/10" data-testid="birth-month">
+                      <SelectValue placeholder="Month" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-card border-white/10">
+                      {months.map((month) => (
+                        <SelectItem key={month.value} value={month.value}>{month.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={birthDay} onValueChange={setBirthDay}>
+                    <SelectTrigger className="bg-card/50 border-white/10" data-testid="birth-day">
+                      <SelectValue placeholder="Day" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60 bg-card border-white/10">
+                      {days.map((day) => (
+                        <SelectItem key={day} value={day}>{parseInt(day)}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div>

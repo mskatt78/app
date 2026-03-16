@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Sparkles, Filter, Heart } from "lucide-react";
+import { ArrowLeft, Sparkles, Filter, Heart, Volume2, Music, Quote } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import HealthDisclaimer from "../components/HealthDisclaimer";
 
 const CrystalGuide = ({ user, api }) => {
   const navigate = useNavigate();
@@ -147,7 +148,7 @@ const CrystalGuide = ({ user, api }) => {
 
       {/* Crystal Detail Dialog */}
       <Dialog open={!!selectedCrystal} onOpenChange={() => setSelectedCrystal(null)}>
-        <DialogContent className="bg-card border-white/10 max-w-lg">
+        <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto">
           {selectedCrystal && (
             <>
               <DialogHeader>
@@ -156,10 +157,50 @@ const CrystalGuide = ({ user, api }) => {
                   {selectedCrystal.element} Element
                 </div>
                 <DialogTitle className="text-3xl font-serif">{selectedCrystal.name}</DialogTitle>
+                {selectedCrystal.pronunciation && (
+                  <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                    <Volume2 className="w-4 h-4" />
+                    <span className="italic">/{selectedCrystal.pronunciation}/</span>
+                  </p>
+                )}
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
                 <p className="text-muted-foreground leading-relaxed">{selectedCrystal.description}</p>
+
+                {/* Frequency & Vibration */}
+                {selectedCrystal.frequency_hz && (
+                  <div className="bg-primary/5 border border-primary/10 rounded-xl p-4">
+                    <h4 className="text-sm uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
+                      <Music className="w-4 h-4" /> Vibrational Frequency
+                    </h4>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Frequency:</span>
+                        <p className="text-2xl font-light text-primary">{selectedCrystal.frequency_hz} Hz</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Musical Note:</span>
+                        <p className="text-2xl font-light">{selectedCrystal.vibrational_note}</p>
+                      </div>
+                    </div>
+                    {selectedCrystal.music_recommendation && (
+                      <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-white/5">
+                        <span className="text-primary">Music: </span>{selectedCrystal.music_recommendation}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Affirmation */}
+                {selectedCrystal.affirmation && (
+                  <div className="bg-white/5 rounded-xl p-4">
+                    <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-2 flex items-center gap-2">
+                      <Quote className="w-4 h-4" /> Crystal Affirmation
+                    </h4>
+                    <p className="text-lg italic text-center py-2">"{selectedCrystal.affirmation}"</p>
+                  </div>
+                )}
 
                 <div>
                   <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
@@ -184,6 +225,8 @@ const CrystalGuide = ({ user, api }) => {
                     ))}
                   </div>
                 </div>
+
+                <HealthDisclaimer type="crystal" />
               </div>
             </>
           )}

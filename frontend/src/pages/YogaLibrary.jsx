@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent } from "../components/ui/dialog";
 import { toast } from "sonner";
+import HealthDisclaimer from "../components/HealthDisclaimer";
 
 const YogaLibrary = ({ user, api }) => {
   const navigate = useNavigate();
