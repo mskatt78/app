@@ -579,6 +579,28 @@ async def get_grounding_exercises(element: Optional[str] = None):
     exercises = await db.grounding_exercises.find(query, {"_id": 0}).to_list(length=50)
     return exercises
 
+
+# ============ PRESET RITUALS ============
+
+@api_router.get("/preset-rituals")
+async def get_preset_rituals(element: Optional[str] = None):
+    """Get preset ritual templates."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    
+    rituals = await db.preset_rituals.find(query, {"_id": 0}).to_list(length=50)
+    return rituals
+
+@api_router.get("/preset-rituals/{ritual_id}")
+async def get_preset_ritual(ritual_id: str):
+    """Get a specific preset ritual."""
+    ritual = await db.preset_rituals.find_one({"id": ritual_id}, {"_id": 0})
+    if not ritual:
+        raise HTTPException(status_code=404, detail="Preset ritual not found")
+    return ritual
+
+
 # ============ ORACLE CARDS ============
 
 @api_router.get("/oracle/cards")

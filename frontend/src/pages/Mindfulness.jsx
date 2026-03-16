@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, Brain, Filter, Clock, Play, Heart, Footprints, 
-  Eye, Ear, Sparkles, CheckCircle
+  Eye, Ear, Sparkles, CheckCircle, Pause, RotateCcw, Volume2, VolumeX
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Progress } from "../components/ui/progress";
 import { toast } from "sonner";
+import HealthDisclaimer from "../components/HealthDisclaimer";
 
 const Mindfulness = ({ user, api }) => {
   const navigate = useNavigate();
@@ -19,6 +21,13 @@ const Mindfulness = ({ user, api }) => {
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [currentStep, setCurrentStep] = useState(0);
   const [isPracticing, setIsPracticing] = useState(false);
+  
+  // Timer state
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(0);
+  const [totalTime, setTotalTime] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
+  const timerRef = useRef(null);
 
   const categories = [
     { value: "all", label: "All Practices" },
@@ -74,6 +83,44 @@ const Mindfulness = ({ user, api }) => {
   const startPractice = () => {
     setCurrentStep(0);
     setIsPracticing(true);
+    const totalSeconds = (selectedPractice?.duration_minutes || 5) * 60;
+    setTotalTime(totalSeconds);
+    setTimeRemaining(totalSeconds);
+    setTimerRunning(true);
+  };
+
+  // Timer effect
+  useEffect(() => {
+    if (timerRunning && timeRemaining > 0) {
+      timerRef.current = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev <= 1) {
+            setTimerRunning(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [timerRunning]);
+
+  const toggleTimer = () => {
+    setTimerRunning(!timerRunning);
+  };
+
+  const resetTimer = () => {
+    setTimerRunning(false);
+    setTimeRemaining(totalTime);
+    setCurrentStep(0);
+  };
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   const nextStep = () => {
@@ -243,17 +290,58 @@ const Mindfulness = ({ user, api }) => {
                     </Button>
                   </>
                 ) : (
-                  /* Guided Practice Mode */
+                  /* Guided Practice Mode with Timer */
                   <div className="py-4">
+                    {/* Timer Display */}
                     <div className="text-center mb-6">
+                      <div className="text-5xl font-light tracking-wider mb-2">
+                        {formatTime(timeRemaining)}
+                      </div>
+                      <Progress 
+                        value={totalTime > 0 ? ((totalTime - timeRemaining) / totalTime) * 100 : 0} 
+                        className="h-2 mb-4" 
+                      />
+                      
+                      {/* Timer Controls */}
+                      <div className="flex items-center justify-center gap-4 mb-6">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={resetTimer}
+                          className="rounded-full border-white/10"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </Button>
+                        
+                        <Button
+                          size="lg"
+                          onClick={toggleTimer}
+                          className={`rounded-full w-14 h-14 ${timerRunning ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary'}`}
+                        >
+                          {timerRunning ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+                        </Button>
+                        
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => setIsMuted(!isMuted)}
+                          className="rounded-full border-white/10"
+                        >
+                          {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Step Progress */}
+                    <div className="text-center mb-4">
                       <p className="text-sm text-muted-foreground mb-2">
                         Step {currentStep + 1} of {selectedPractice.instructions?.length}
                       </p>
-                      <div className="flex justify-center gap-1 mb-6">
+                      <div className="flex justify-center gap-1 mb-4">
                         {selectedPractice.instructions?.map((_, i) => (
                           <div 
                             key={i} 
-                            className={`w-2 h-2 rounded-full ${i <= currentStep ? 'bg-primary' : 'bg-white/20'}`} 
+                            className={`w-2 h-2 rounded-full transition-colors ${i <= currentStep ? 'bg-primary' : 'bg-white/20'}`} 
                           />
                         ))}
                       </div>
@@ -283,6 +371,12 @@ const Mindfulness = ({ user, api }) => {
                         </>
                       )}
                     </Button>
+                    
+                    {!isMuted && (
+                      <p className="text-xs text-center text-muted-foreground mt-4">
+                        🔔 Bell will sound at end of practice
+                      </p>
+                    )}
                   </div>
                 )}
               </div>

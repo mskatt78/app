@@ -1,102 +1,94 @@
 # Shamanic Elemental Yoga App - PRD
 
-## Original Problem Statement
-Build a Shamanic Elemental Yoga app with yoga, mindfulness, 13-month astrology calendar, Oracle Reads, Breathwork, somatic movement, crystals, health, energy, grounding, mantras, mudras.
-
 ## Status: ✅ READY FOR DEPLOYMENT
 
-## Links
-- **Preview URL:** https://mindful-shamanic-app.preview.emergentagent.com
-- **Production URL:** (Available after deployment)
-- **Code:** Use "Save to GitHub" in chat interface to export
+## Recent Updates (Dec 15, 2025)
 
-## What's Included
+### Safety & Legal
+- ✅ **Warrior III image** - Replaced dangerous mountain image with safe indoor studio
+- ✅ **Health Disclaimers** - Added to Crystal Guide, Footer, throughout app
+- ✅ **AppFooter** - Legal disclaimer, Terms, Privacy links on all pages
 
-### AI-Generated Sacred Images (116 total)
-- ✅ 60 Yoga Poses - Element-specific sacred imagery
-- ✅ 12 Mudras - Hand gesture sacred art
-- ✅ 8 Shamanic Practices - Visionary spiritual art
-- ✅ 6 Earth Altars - Sacred altar arrangements
-- ✅ 10 Elemental Practices - Element connection imagery
-- ✅ 6 Creative Processes - Artistic shamanic visualization
-- ✅ 6 Heart Practices - Heart chakra healing imagery
-- ✅ App Icons (192px, 512px) - Sacred lotus design
+### Crystal Enhancements
+- ✅ **Pronunciation** - Added phonetic guides for all 12 crystals
+- ✅ **Frequency (Hz)** - Vibrational frequency for each crystal
+- ✅ **Musical Note** - Corresponding note for sound healing
+- ✅ **Music Recommendation** - Suggested audio for each crystal
+- ✅ **Affirmation** - Healing affirmation for each crystal
 
-### PWA (Progressive Web App) - Mobile Ready
-- ✅ manifest.json configured
-- ✅ Service Worker for offline capability
-- ✅ App icons for home screen installation
-- ✅ iOS & Android "Add to Home Screen" support
+### Timers Throughout App
+- ✅ **Mindfulness Practices** (8) - Full timer with segments, silence indicators
+- ✅ **Grounding Exercises** (8) - Timer segments with audio cues
+- ✅ **Somatic Practices** (6) - Timer segments for movement practices
+- ✅ **PracticeTimer Component** - Reusable timer with play/pause/skip/mute
 
-### Core Features
-- ✅ Google OAuth authentication
-- ✅ Dashboard with daily guidance & Pose of the Day
-- ✅ Yoga library (60 poses, 5 elements) with Favorites
-- ✅ Oracle readings with Claude AI interpretation
-- ✅ Breathwork sessions with interactive timer
-- ✅ 13-month astrology calendar
-- ✅ Crystal guide (12 crystals)
-- ✅ Mantras library with audio playback
-- ✅ Mudras library (12 mudras)
-- ✅ Somatic movement practices
-- ✅ Grounding exercises
-- ✅ Daily Ritual Builder with timer
-- ✅ Practice Log with statistics
-- ✅ Achievement Badges System (24 achievements)
-- ✅ Sacred Journal
-- ✅ Admin CMS with image upload
+### Grounding Practices Expanded
+- ✅ Added 3 new practices (Tree Hugging, Stone Holding, Mountain Visualization)
+- ✅ Total: 8 grounding practices (was 5)
 
-### Shamanic Content Sections
-- ✅ Earth Altars (6) - Sacred space creation guides
-- ✅ Creative Processes (6) - Shamanic art and expression
-- ✅ Heart Practices (6) - Heart-opening ceremonies
-- ✅ Shamanic Practices (8) - Deep journeys and ceremonies
-- ✅ Elemental Practices (10) - Element connection exercises
+### Ritual Practices
+- ✅ **8 Preset Rituals** - Ready-to-use ritual templates:
+  1. Morning Sun Salutation (20 min)
+  2. Evening Wind Down (25 min)
+  3. Grounding Earth Ritual (15 min)
+  4. Heart Opening Ceremony (20 min)
+  5. Full Moon Release (30 min)
+  6. New Moon Intention Setting (25 min)
+  7. Quick Energy Reset (10 min)
+  8. Chakra Balancing Journey (35 min)
+
+### Numerology Calendar Fix
+- ✅ Replaced date input with Year/Month/Day dropdowns
+- ✅ Easy year selection without clicking through months
+
+### Category Filter Fixes
+- ✅ Heart Practices - categories aligned with frontend
+- ✅ Creative Processes - categories aligned with frontend
+- ✅ Shamanic Practices - categories aligned with frontend
+
+## API Endpoints Added
+- `GET /api/preset-rituals` - Get preset ritual templates
+- `GET /api/preset-rituals/{id}` - Get specific preset ritual
+
+## All Content with AI Images (116 total)
+- 60 Yoga Poses
+- 12 Mudras
+- 8 Shamanic Practices
+- 6 Earth Altars
+- 10 Elemental Practices
+- 6 Creative Processes
+- 6 Heart Practices
+
+## PWA Ready
+- manifest.json configured
+- Service Worker for offline
+- App icons (192px, 512px)
+- iOS & Android install support
 
 ## Tech Stack
-- **Frontend:** React, Tailwind CSS, Framer Motion, Shadcn UI
-- **Backend:** FastAPI, MongoDB
-- **Auth:** Emergent Google OAuth
-- **AI:** Claude Sonnet 4.5 (Oracle readings)
-- **Images:** Imagen 4.0 AI-generated
+- Frontend: React, Tailwind CSS, Framer Motion, Shadcn UI
+- Backend: FastAPI, MongoDB
+- Auth: Emergent Google OAuth
+- AI: Claude Sonnet 4.5 (Oracle readings)
+- Images: AI-generated via Imagen 4.0
 
-## Deployment Instructions
-1. Click **"Deploy"** button in Emergent interface
-2. Follow the deployment wizard
-3. Your app will get a permanent production URL
+## Links
+- Preview: https://mindful-shamanic-app.preview.emergentagent.com
+- Production: https://mindful-shamanic-app.emergent.host (after deploy)
 
-## Mobile Installation (PWA)
-After deployment, users can:
-- **iOS:** Open in Safari → Share → "Add to Home Screen"
-- **Android:** Open in Chrome → Menu → "Add to Home Screen"
+## Files Updated This Session
+- `/app/frontend/src/components/HealthDisclaimer.jsx` - NEW
+- `/app/frontend/src/components/AppFooter.jsx` - NEW
+- `/app/frontend/src/components/PracticeTimer.jsx` - NEW
+- `/app/frontend/src/pages/CrystalGuide.jsx` - Enhanced
+- `/app/frontend/src/pages/Mindfulness.jsx` - Timer added
+- `/app/frontend/src/pages/Numerology.jsx` - Date picker fixed
+- `/app/frontend/src/App.js` - Footer added
+- `/app/backend/server.py` - Preset rituals endpoint
 
-## Admin Access
-- Navigate to `/admin` when logged in
-- Full CRUD for all content types
-- Image upload capability
-
-## Files Structure
-```
-/app/
-├── backend/
-│   ├── server.py           # FastAPI endpoints
-│   ├── seed_database.py    # Database seeding
-│   └── data/               # Seed data with AI image URLs
-└── frontend/
-    ├── public/
-    │   ├── manifest.json   # PWA config
-    │   ├── service-worker.js
-    │   ├── icon-192.png
-    │   ├── icon-512.png
-    │   └── favicon.ico
-    └── src/
-        ├── pages/          # All app pages
-        └── components/     # UI components
-```
-
-## Future Enhancements (Backlog)
-- Audio guides for meditation/shamanic journeys
-- Push notifications for daily reminders
-- Community features / social feed
-- Premium subscription tier
-- Native Play Store app (via Capacitor)
+## Testing Status
+- ✅ All APIs verified working
+- ✅ Category filters all functioning
+- ✅ Crystal data enhanced and verified
+- ✅ Grounding practices expanded
+- ✅ Build successful (warnings only)
