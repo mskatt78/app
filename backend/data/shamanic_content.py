@@ -341,7 +341,7 @@ HEART_PRACTICES = [
     {
         "id": "1",
         "name": "Heart Opening Ceremony",
-        "category": "ceremony",
+        "category": "self_love",
         "element": "Water",
         "description": "A sacred ceremony to open, heal, and expand the heart chakra. Creates space for love to flow freely.",
         "duration_minutes": 30,
@@ -371,7 +371,7 @@ HEART_PRACTICES = [
     {
         "id": "2",
         "name": "Forgiveness Fire Ritual",
-        "category": "ritual",
+        "category": "forgiveness",
         "element": "Fire",
         "description": "A powerful ritual to release resentment and free yourself from the chains of unforgiveness.",
         "duration_minutes": 45,
@@ -429,7 +429,7 @@ HEART_PRACTICES = [
     {
         "id": "4",
         "name": "Compassion Expansion Meditation",
-        "category": "meditation",
+        "category": "compassion",
         "element": "Air",
         "description": "Expand compassion from self to all beings through the traditional loving-kindness practice with shamanic elements.",
         "duration_minutes": 25,
@@ -458,7 +458,7 @@ HEART_PRACTICES = [
     {
         "id": "5",
         "name": "Inner Child Healing Journey",
-        "category": "healing",
+        "category": "connection",
         "element": "Earth",
         "description": "A gentle journey to reconnect with, heal, and integrate your inner child.",
         "duration_minutes": 35,
@@ -489,7 +489,7 @@ HEART_PRACTICES = [
     {
         "id": "6",
         "name": "Sacred Relationship Blessing",
-        "category": "ceremony",
+        "category": "gratitude",
         "element": "Spirit",
         "description": "A blessing ceremony for any important relationship - romantic, family, friendship, or with self.",
         "duration_minutes": 20,
