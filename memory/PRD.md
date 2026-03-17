@@ -4,6 +4,21 @@
 
 ## Recent Updates (March 17, 2026)
 
+### Timers & Rituals Enhancement - COMPLETED ✅
+- ✅ **Grounding Practices Timer** - PracticeTimer integrated with segment tracking
+  - Shows Step X of Y, countdown timer, play/pause, skip, background audio indicator
+  - Bug fixed: API endpoint corrected from `/grounding/exercises` to `/grounding`
+- ✅ **Crystal Audio Features** - All 12 crystals display:
+  - Frequency (Hz), Vibrational Note, Music Recommendation, Pronunciation
+- ✅ **Preset Rituals Expanded** - Now 14 rituals across all 5 elements:
+  - Fire: Morning Sun Salutation, Quick Energy Reset, Inner Fire Activation
+  - Water: Evening Wind Down, Full Moon Release, Ocean Breath Release
+  - Air: Heart Opening Ceremony, Wind Clearing Ceremony
+  - Earth: Grounding Earth Ritual, Deep Earth Connection
+  - Spirit: New Moon Intention, Chakra Balancing, Ancestor Honoring, Sacred Self-Love
+- ✅ **Admin Rituals CRUD** - POST/DELETE `/api/admin/preset-rituals`
+- ✅ All tests passed (18/18 backend, 100% frontend)
+
 ### Admin CMS Expansion - COMPLETED ✅
 New content types added for user-generated content management:
 - ✅ **Retreats** - Multi-day retreat experiences with full details
@@ -136,6 +151,9 @@ New content types added for user-generated content management:
 - ✅ Frontend E2E auth flow verified
 - ✅ Admin CMS expansion tested (24/24 tests passed)
 - ✅ New content pages (Live, Retreats, Books) verified
+- ✅ Grounding timer integration tested (18/18 tests passed)
+- ✅ Crystal audio features verified
+- ✅ 14 preset rituals verified
 
 ## Auth Test Credentials
 - Email: test@example.com
