@@ -73,7 +73,7 @@
 - Images: AI-generated via Imagen 4.0
 
 ## Links
-- Preview: https://mindful-shamanic-app.preview.emergentagent.com
+- Preview: https://temple-login-test.preview.emergentagent.com
 - Production: https://mindful-shamanic-app.emergent.host (after deploy)
 
 ## Files Updated This Session

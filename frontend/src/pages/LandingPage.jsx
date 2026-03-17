@@ -147,6 +147,7 @@ const LandingPage = ({ onLoginSuccess }) => {
           <div className="space-y-6 py-4">
             {/* Google Login Button */}
             <Button
+              data-testid="google-login-btn"
               onClick={handleGoogleLogin}
               variant="outline"
               className="w-full py-6 text-lg border-white/20 hover:bg-white/5"
@@ -175,6 +176,7 @@ const LandingPage = ({ onLoginSuccess }) => {
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                   <Input
+                    data-testid="auth-name-input"
                     type="text"
                     placeholder="Your name"
                     value={formData.name}
@@ -188,6 +190,7 @@ const LandingPage = ({ onLoginSuccess }) => {
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
+                  data-testid="auth-email-input"
                   type="email"
                   placeholder="Email address"
                   value={formData.email}
@@ -200,6 +203,7 @@ const LandingPage = ({ onLoginSuccess }) => {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <Input
+                  data-testid="auth-password-input"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   value={formData.password}
@@ -218,6 +222,7 @@ const LandingPage = ({ onLoginSuccess }) => {
               </div>
 
               <Button
+                data-testid="auth-submit-btn"
                 type="submit"
                 disabled={loading}
                 className="w-full py-6 bg-primary text-lg"
@@ -236,6 +241,7 @@ const LandingPage = ({ onLoginSuccess }) => {
             <p className="text-center text-sm text-muted-foreground">
               {isLogin ? "New to Shamanic Yoga?" : "Already have an account?"}{" "}
               <button
+                data-testid="auth-toggle-mode-btn"
                 onClick={() => setIsLogin(!isLogin)}
                 className="text-primary hover:underline"
               >
