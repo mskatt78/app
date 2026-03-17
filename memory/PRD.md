@@ -2,7 +2,22 @@
 
 ## Status: ✅ READY FOR DEPLOYMENT
 
-## Recent Updates (Dec 15, 2025)
+## Recent Updates (March 17, 2026)
+
+### Email/Password Authentication - COMPLETED ✅
+- ✅ Backend endpoints: `/api/auth/register`, `/api/auth/login`
+- ✅ Password hashing with salt (SHA-256)
+- ✅ Session management via HttpOnly cookies (30 days)
+- ✅ Auth modal with Google OAuth + Email/Password options
+- ✅ Login form with email/password fields
+- ✅ Registration form with name/email/password fields
+- ✅ Toggle between login/register modes
+- ✅ Error handling for invalid credentials
+- ✅ Error handling for duplicate email registration
+- ✅ Automatic redirect to dashboard after login
+- ✅ All tests passed (12/12 backend, 100% frontend E2E)
+
+## Previous Updates (Dec 15, 2025)
 
 ### Safety & Legal
 - ✅ **Warrior III image** - Replaced dangerous mountain image with safe indoor studio
@@ -68,7 +83,7 @@
 ## Tech Stack
 - Frontend: React, Tailwind CSS, Framer Motion, Shadcn UI
 - Backend: FastAPI, MongoDB
-- Auth: Emergent Google OAuth
+- Auth: Emergent Google OAuth + Email/Password (dual auth)
 - AI: Claude Sonnet 4.5 (Oracle readings)
 - Images: AI-generated via Imagen 4.0
 
@@ -92,3 +107,14 @@
 - ✅ Crystal data enhanced and verified
 - ✅ Grounding practices expanded
 - ✅ Build successful (warnings only)
+- ✅ Email/Password Auth tested (12/12 tests passed)
+- ✅ Frontend E2E auth flow verified
+
+## Auth Test Credentials
+- Email: test@example.com
+- Password: password123
+
+## Files Updated (March 17, 2026)
+- `/app/frontend/src/pages/LandingPage.jsx` - Auth modal with email/password
+- `/app/backend/server.py` - Email/Password auth endpoints (lines 250-361)
+- `/app/backend/tests/test_email_auth.py` - Auth test suite
