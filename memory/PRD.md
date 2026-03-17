@@ -4,6 +4,24 @@
 
 ## Recent Updates (March 18, 2026)
 
+### PayPal Integration & Backend Refactoring - COMPLETED ✅
+- ✅ **PayPal Integration** - Full PayPal payment support added:
+  - Create order endpoint via PayPal REST API
+  - Capture payment endpoint for completing transactions
+  - Supports both subscriptions and one-time purchases
+  - Graceful error handling when not configured
+  - Sandbox mode ready (requires PAYPAL_CLIENT_ID, PAYPAL_SECRET in .env)
+- ✅ **Backend Refactoring** - Modular router architecture:
+  - `/routers/auth.py` - Google OAuth and email/password auth
+  - `/routers/payments.py` - Stripe + PayPal payment routes
+  - `/routers/dependencies.py` - Shared db access and auth helpers
+  - Main server.py imports and includes routers
+- ✅ **Frontend Updated** - Pricing page with payment method selector:
+  - Toggle between Stripe and PayPal
+  - Visual feedback for selected payment method
+  - PayPal order capture on return
+- ✅ All tests passed (14/14 backend, 100% frontend)
+
 ### Guided Practice Mode Fix - COMPLETED ✅
 - ✅ **Bug Fixed**: "Begin Practice" buttons now launch guided practice mode with timer instead of just logging the practice
 - ✅ **HeartPractices** - Added PracticeTimer integration with step-by-step guidance
