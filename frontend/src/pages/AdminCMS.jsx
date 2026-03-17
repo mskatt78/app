@@ -893,22 +893,25 @@ const AdminCMS = ({ user, api }) => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-6">
+      <main className="max-w-6xl mx-auto p-4 sm:p-6">
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="bg-card/50 border border-white/10 p-1 flex flex-wrap gap-1">
-            {tabs.map((tab) => (
-              <TabsTrigger
-                key={tab.id}
-                value={tab.id}
-                className="data-[state=active]:bg-primary data-[state=active]:text-white"
-                data-testid={`tab-${tab.id}`}
-              >
-                <tab.icon className="w-4 h-4 mr-2" />
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          {/* Scrollable tabs container */}
+          <div className="overflow-x-auto -mx-4 px-4 pb-2">
+            <TabsList className="bg-card/50 border border-white/10 p-1 inline-flex gap-1 min-w-max">
+              {tabs.map((tab) => (
+                <TabsTrigger
+                  key={tab.id}
+                  value={tab.id}
+                  className="data-[state=active]:bg-primary data-[state=active]:text-white whitespace-nowrap px-3 py-2"
+                  data-testid={`tab-${tab.id}`}
+                >
+                  <tab.icon className="w-4 h-4 mr-1.5" />
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
           {tabs.map((tab) => (
             <TabsContent key={tab.id} value={tab.id}>
@@ -925,48 +928,52 @@ const AdminCMS = ({ user, api }) => {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {items.map((item, index) => (
                     <motion.div
                       key={item.id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.02 }}
-                      className="p-4 rounded-xl bg-card border border-white/10 flex items-center justify-between group"
+                      className="p-4 rounded-xl bg-card border border-white/10"
                       data-testid={`item-${item.id}`}
                     >
-                      <div className="flex items-center gap-4">
+                      <div className="flex items-start gap-3">
                         {item.image_url && (
                           <img 
                             src={item.image_url} 
                             alt={item.name || item.title}
-                            className="w-16 h-16 rounded-lg object-cover"
+                            className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover flex-shrink-0"
                           />
                         )}
-                        <div>
-                          <h3 className="font-medium">{item.name || item.title}</h3>
-                          <p className="text-sm text-muted-foreground">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-medium text-sm sm:text-base truncate">{item.name || item.title}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                             {item.element && <span className="text-primary">{item.element}</span>}
                             {item.difficulty && <span className="ml-2">{item.difficulty}</span>}
-                            {item.date && <span className="ml-2">{item.date}</span>}
+                            {item.category && <span className="ml-2 capitalize">{item.category?.replace(/_/g, ' ')}</span>}
+                            {item.status && <span className="ml-2 capitalize">{item.status}</span>}
                           </p>
                         </div>
                       </div>
                       
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      {/* Action buttons - always visible on mobile */}
+                      <div className="flex gap-2 mt-3 pt-3 border-t border-white/5">
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleEdit(item)}
+                          className="flex-1"
                           data-testid={`edit-${item.id}`}
                         >
-                          <Pencil className="w-4 h-4" />
+                          <Pencil className="w-4 h-4 mr-1.5" />
+                          Edit
                         </Button>
                         <Button
-                          variant="ghost"
+                          variant="outline"
                           size="sm"
                           onClick={() => handleDelete(item)}
-                          className="text-red-400 hover:text-red-300"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
                           data-testid={`delete-${item.id}`}
                         >
                           <Trash2 className="w-4 h-4" />
