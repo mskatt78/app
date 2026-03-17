@@ -4,6 +4,18 @@
 
 ## Recent Updates (March 17, 2026)
 
+### Enhanced Mantras & Shamanic Content - COMPLETED ✅
+- ✅ **Mantras Enhanced** - All 12 mantras now include:
+  - Pronunciation guide (e.g., "ohm (with resonance in chest)")
+  - Frequency (Hz) with vibrational note (e.g., 432 Hz, Note A)
+  - Music recommendations (e.g., "Tibetan singing bowls in A")
+  - Practice tips for each mantra
+- ✅ **Shamanic Ceremonies Expanded** - Now 16 ceremonies (was 8):
+  - Original: Power Animal, Soul Retrieval, Ancestral Healing, Shadow Work, Upper World Journey, Death/Rebirth, Extraction, Nature Walk
+  - **NEW**: Medicine Wheel, Sweat Lodge, Fire Ceremony, Despacho, Cord Cutting, Plant Spirit, Vision Quest, Womb/Hara Healing
+- ✅ **Frontend Updated** - MantrasLibrary displays pronunciation, frequency, note, and music in dialog
+- ✅ All tests passed (24/24 backend, 100% frontend)
+
 ### Timers & Rituals Enhancement - COMPLETED ✅
 - ✅ **Grounding Practices Timer** - PracticeTimer integrated with segment tracking
   - Shows Step X of Y, countdown timer, play/pause, skip, background audio indicator
@@ -154,6 +166,8 @@ New content types added for user-generated content management:
 - ✅ Grounding timer integration tested (18/18 tests passed)
 - ✅ Crystal audio features verified
 - ✅ 14 preset rituals verified
+- ✅ Mantras enhanced with pronunciation/frequency (24/24 tests)
+- ✅ 16 shamanic ceremonies verified
 
 ## Auth Test Credentials
 - Email: test@example.com
