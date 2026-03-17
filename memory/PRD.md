@@ -4,6 +4,26 @@
 
 ## Recent Updates (March 17, 2026)
 
+### Complete Backlog Implementation - COMPLETED ✅
+1. **Earth Altars Enhanced** - All 6 altars now include:
+   - `therapeutic_applications` - Conditions they help with (Anxiety, Grief, Depression, etc.)
+   - Each with: condition, how_it_helps, practice instructions
+   - `weekly_practice` - Regular maintenance guidance
+2. **Creative Processes Expanded** - Now 12 processes (was 6):
+   - NEW: Forest Bathing, Earth Acupuncture, Stone People Medicine
+   - NEW: Herbal Smoke Ceremony, Water Blessing, Ancestral Clay Working
+   - Each with `therapeutic_benefits` array
+3. **Push Notifications Backend** - Ready for production:
+   - Subscribe/Unsubscribe endpoints implemented
+   - Service worker push handler added
+   - Requires VAPID keys in production
+4. **App Store Guide** - Complete submission guide at `/app/APP_STORE_GUIDE.md`:
+   - Google Play Store (TWA/PWABuilder)
+   - Apple App Store (Capacitor/PWABuilder)
+   - Screenshots, descriptions, keywords
+   - Privacy policy requirements
+- ✅ All tests passed (14/14 backend, 100% frontend)
+
 ### Enhanced Mantras & Shamanic Content - COMPLETED ✅
 - ✅ **Mantras Enhanced** - All 12 mantras now include:
   - Pronunciation guide (e.g., "ohm (with resonance in chest)")
@@ -168,6 +188,9 @@ New content types added for user-generated content management:
 - ✅ 14 preset rituals verified
 - ✅ Mantras enhanced with pronunciation/frequency (24/24 tests)
 - ✅ 16 shamanic ceremonies verified
+- ✅ Earth Altars therapeutic applications (14/14 tests)
+- ✅ Creative Processes expanded to 12 with benefits
+- ✅ Push notifications backend ready
 
 ## Auth Test Credentials
 - Email: test@example.com
