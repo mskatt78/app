@@ -36,6 +36,10 @@ import ElementalPractices from "./pages/ElementalPractices";
 import LiveSessions from "./pages/LiveSessions";
 import Retreats from "./pages/Retreats";
 import Books from "./pages/Books";
+// Payment Pages
+import Pricing from "./pages/Pricing";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -369,6 +373,27 @@ function AppRouter() {
             {({ user, api }) => <Books user={user} api={api} />}
           </ProtectedRoute>
         }
+      />
+      {/* Payment Routes */}
+      <Route
+        path="/pricing"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Pricing user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/payment/success"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <PaymentSuccess user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/payment/cancel"
+        element={<PaymentCancel />}
       />
     </Routes>
   );
