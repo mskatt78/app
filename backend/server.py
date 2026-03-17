@@ -706,6 +706,13 @@ async def get_grounding_exercises(element: Optional[str] = None):
 
 # ============ PRESET RITUALS ============
 
+class PresetRitualCreate(BaseModel):
+    name: str
+    description: str
+    element: str = "Spirit"
+    image_url: Optional[str] = None
+    segments: List[dict] = []  # [{"name": "...", "duration": 300}]
+
 @api_router.get("/preset-rituals")
 async def get_preset_rituals(element: Optional[str] = None):
     """Get preset ritual templates."""
@@ -723,6 +730,24 @@ async def get_preset_ritual(ritual_id: str):
     if not ritual:
         raise HTTPException(status_code=404, detail="Preset ritual not found")
     return ritual
+
+@api_router.post("/admin/preset-rituals")
+async def create_preset_ritual(ritual: PresetRitualCreate, current_user: User = Depends(get_current_user)):
+    """Create a new preset ritual."""
+    ritual_dict = ritual.model_dump()
+    ritual_dict["id"] = str(uuid.uuid4())[:8]
+    ritual_dict["created_by"] = current_user.user_id
+    ritual_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.preset_rituals.insert_one(ritual_dict)
+    return {"message": "Preset ritual created successfully", "id": ritual_dict["id"]}
+
+@api_router.delete("/admin/preset-rituals/{ritual_id}")
+async def delete_preset_ritual(ritual_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a preset ritual."""
+    result = await db.preset_rituals.delete_one({"id": ritual_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Preset ritual not found")
+    return {"message": "Preset ritual deleted successfully"}
 
 
 # ============ ORACLE CARDS ============

@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Mountain, Clock, TreeDeciduous } from "lucide-react";
+import { ArrowLeft, Mountain, Clock, TreeDeciduous, Play, CheckCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
+import { toast } from "sonner";
+import PracticeTimer from "../components/PracticeTimer";
 
 const GroundingPractices = ({ user, api }) => {
   const navigate = useNavigate();
   const [exercises, setExercises] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedExercise, setSelectedExercise] = useState(null);
+  const [isPracticing, setIsPracticing] = useState(false);
 
   useEffect(() => {
     fetchExercises();
@@ -16,7 +20,7 @@ const GroundingPractices = ({ user, api }) => {
 
   const fetchExercises = async () => {
     try {
-      const response = await api.get("/grounding/exercises");
+      const response = await api.get("/grounding");
       setExercises(response.data);
     } catch (error) {
       console.error("Failed to fetch exercises:", error);
@@ -135,8 +139,8 @@ const GroundingPractices = ({ user, api }) => {
       </main>
 
       {/* Exercise Detail Dialog */}
-      <Dialog open={!!selectedExercise} onOpenChange={() => setSelectedExercise(null)}>
-        <DialogContent className="bg-card border-white/10 max-w-lg">
+      <Dialog open={!!selectedExercise} onOpenChange={() => { setSelectedExercise(null); setIsPracticing(false); }}>
+        <DialogContent className="bg-card border-white/10 max-w-lg max-h-[85vh] overflow-y-auto">
           {selectedExercise && (
             <>
               <DialogHeader>
@@ -148,33 +152,96 @@ const GroundingPractices = ({ user, api }) => {
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
-                <p className="text-muted-foreground leading-relaxed">{selectedExercise.description}</p>
+                {!isPracticing ? (
+                  <>
+                    <p className="text-muted-foreground leading-relaxed">{selectedExercise.description}</p>
 
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5">
-                  <Clock className="w-5 h-5 text-emerald-400" />
-                  <div>
-                    <p className="text-sm font-medium">Duration</p>
-                    <p className="text-muted-foreground">{selectedExercise.duration_minutes} minutes</p>
+                    <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5">
+                      <Clock className="w-5 h-5 text-emerald-400" />
+                      <div>
+                        <p className="text-sm font-medium">Duration</p>
+                        <p className="text-muted-foreground">{selectedExercise.duration_minutes} minutes</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Benefits</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedExercise.benefits?.map((benefit) => (
+                          <span key={benefit} className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-sm">
+                            {benefit}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {selectedExercise.instructions?.length > 0 && (
+                      <div>
+                        <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Steps</h4>
+                        <ul className="space-y-2">
+                          {selectedExercise.instructions.map((step, i) => (
+                            <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                              <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs flex-shrink-0">
+                                {i + 1}
+                              </span>
+                              {step}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <Button
+                      onClick={() => setIsPracticing(true)}
+                      className="w-full bg-emerald-600 hover:bg-emerald-700"
+                      data-testid="start-practice-btn"
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Begin Practice with Timer
+                    </Button>
+
+                    <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                      <p className="text-sm text-muted-foreground">
+                        <strong className="text-emerald-400">Remember:</strong> The Earth is always there to support you. 
+                        You need only place your awareness on it to feel its grounding presence.
+                      </p>
+                    </div>
+                  </>
+                ) : (
+                  /* Timer Mode */
+                  <div className="space-y-6">
+                    <PracticeTimer
+                      segments={selectedExercise.timer_segments || []}
+                      totalDuration={selectedExercise.duration_minutes * 60}
+                      backgroundAudio={selectedExercise.background_audio || "silence"}
+                      practiceType="grounding"
+                      onComplete={async () => {
+                        try {
+                          await api.post("/practice-history", {
+                            practice_type: "grounding",
+                            practice_id: selectedExercise.id,
+                            duration_minutes: selectedExercise.duration_minutes,
+                            notes: `Completed ${selectedExercise.name}`,
+                          });
+                          toast.success("Practice complete! You are grounded.");
+                          setIsPracticing(false);
+                        } catch (error) {
+                          console.error("Failed to log practice:", error);
+                          toast.success("Practice complete!");
+                          setIsPracticing(false);
+                        }
+                      }}
+                    />
+
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsPracticing(false)}
+                      className="w-full"
+                    >
+                      Exit Practice
+                    </Button>
                   </div>
-                </div>
-
-                <div>
-                  <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Benefits</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {selectedExercise.benefits?.map((benefit) => (
-                      <span key={benefit} className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-sm">
-                        {benefit}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                  <p className="text-sm text-muted-foreground">
-                    <strong className="text-emerald-400">Remember:</strong> The Earth is always there to support you. 
-                    You need only place your awareness on it to feel its grounding presence.
-                  </p>
-                </div>
+                )}
               </div>
             </>
           )}

@@ -47,6 +47,7 @@ const AdminCMS = ({ user, api }) => {
     { id: "books", label: "Book", icon: BookOpen },
     { id: "custom-oracle-cards", label: "Oracle Deck", icon: CreditCard },
     { id: "live-sessions", label: "Live", icon: Radio },
+    { id: "preset-rituals", label: "Rituals", icon: Sparkles },
   ];
 
   const elements = ["Earth", "Water", "Fire", "Air", "Spirit", "All"];
@@ -122,6 +123,7 @@ const AdminCMS = ({ user, api }) => {
       "books": isAdmin ? "/admin/books" : "/books",
       "custom-oracle-cards": isAdmin ? "/admin/custom-oracle-cards" : "/custom-oracle-cards",
       "live-sessions": isAdmin ? "/admin/live-sessions" : "/live-sessions",
+      "preset-rituals": isAdmin ? "/admin/preset-rituals" : "/preset-rituals",
     };
     return endpoints[tab] || "/yoga/poses";
   };
@@ -221,6 +223,9 @@ const AdminCMS = ({ user, api }) => {
         scheduled_date: "", scheduled_time: "", duration_minutes: 60,
         stream_url: "", registration_required: false, max_participants: null,
         price: 0, image_url: "", topics: [], status: "scheduled"
+      },
+      "preset-rituals": {
+        name: "", description: "", element: "Spirit", image_url: "", segments: []
       }
     };
     return defaults[tab] || {};
@@ -793,6 +798,25 @@ const AdminCMS = ({ user, api }) => {
               <label htmlFor="registration_required" className="text-sm text-muted-foreground">Registration Required</label>
             </div>
             <ImageUploadField />
+          </div>
+        );
+
+      case "preset-rituals":
+        return (
+          <div className="space-y-4">
+            <div><label className="text-sm text-muted-foreground">Ritual Name</label><Input value={formData.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} placeholder="Sacred Morning Ritual" /></div>
+            <div><label className="text-sm text-muted-foreground">Description</label><Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={3} /></div>
+            <div>
+              <label className="text-sm text-muted-foreground">Element</label>
+              <Select value={formData.element || "Spirit"} onValueChange={(v) => setFormData(prev => ({ ...prev, element: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>{elements.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+              </Select>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Image URL</label><Input value={formData.image_url || ""} onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))} /></div>
+            <div className="p-4 rounded-lg bg-white/5 border border-white/10">
+              <p className="text-sm text-muted-foreground mb-2">Segments are edited via the Ritual Builder page for now.</p>
+            </div>
           </div>
         );
 
