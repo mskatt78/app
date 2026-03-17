@@ -477,7 +477,7 @@ def generate_fallback_interpretation(cards: List[dict], question: Optional[str])
     elements = [c["element"] for c in cards]
     dominant_element = max(set(elements), key=elements.count)
     
-    intro = f"The spirits have spoken through these sacred cards. "
+    intro = "The spirits have spoken through these sacred cards. "
     if question:
         intro += f"Regarding your question about {question[:50]}... "
     
@@ -1619,6 +1619,68 @@ class CourseCreate(BaseModel):
     image_url: Optional[str] = None
     level: str = "Beginner"
 
+# ============ NEW CONTENT MODELS ============
+
+class RetreatCreate(BaseModel):
+    title: str
+    description: str
+    location: str
+    start_date: str
+    end_date: str
+    duration_days: int
+    price: float = 0
+    deposit: float = 0
+    max_participants: int = 20
+    image_url: Optional[str] = None
+    highlights: List[str] = []
+    includes: List[str] = []
+    schedule: List[dict] = []  # [{"day": 1, "activities": [...]}]
+    accommodation: Optional[str] = None
+    facilitator: Optional[str] = None
+    registration_link: Optional[str] = None
+    status: str = "upcoming"  # upcoming, open, full, completed
+
+class BookCreate(BaseModel):
+    title: str
+    subtitle: Optional[str] = None
+    description: str
+    author: str
+    chapters: List[dict] = []  # [{"number": 1, "title": "...", "preview": "..."}]
+    cover_image: Optional[str] = None
+    price: float = 0
+    purchase_link: Optional[str] = None
+    sample_pdf: Optional[str] = None
+    publication_date: Optional[str] = None
+    isbn: Optional[str] = None
+    pages: int = 0
+    testimonials: List[dict] = []  # [{"name": "...", "quote": "..."}]
+
+class OracleCardCreate(BaseModel):
+    name: str
+    element: str
+    meaning: str
+    reversed_meaning: Optional[str] = None
+    keywords: List[str] = []
+    affirmation: Optional[str] = None
+    image_url: Optional[str] = None
+    guidance: Optional[str] = None
+    ritual_suggestion: Optional[str] = None
+
+class LiveSessionCreate(BaseModel):
+    title: str
+    description: str
+    session_type: str  # "youtube_live", "zoom", "group_meditation", "q_and_a"
+    scheduled_date: str
+    scheduled_time: str
+    duration_minutes: int = 60
+    stream_url: Optional[str] = None
+    registration_required: bool = False
+    max_participants: Optional[int] = None
+    price: float = 0
+    image_url: Optional[str] = None
+    topics: List[str] = []
+    status: str = "scheduled"  # scheduled, live, completed, cancelled
+
 # ---- YOGA POSES CRUD ----
 @api_router.post("/admin/yoga/poses")
 async def create_yoga_pose(pose: YogaPoseCreate, current_user: User = Depends(get_current_user)):
@@ -1863,6 +1925,183 @@ async def delete_course(course_id: str, current_user: User = Depends(get_current
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Course not found")
     return {"message": "Course deleted successfully"}
+
+# ============ RETREATS CRUD ============
+
+@api_router.get("/retreats")
+async def get_retreats(status: Optional[str] = None):
+    """Get all retreats, optionally filtered by status."""
+    query = {}
+    if status:
+        query["status"] = status
+    retreats = await db.retreats.find(query, {"_id": 0}).to_list(length=50)
+    return retreats
+
+@api_router.get("/retreats/{retreat_id}")
+async def get_retreat(retreat_id: str):
+    """Get a specific retreat."""
+    retreat = await db.retreats.find_one({"id": retreat_id}, {"_id": 0})
+    if not retreat:
+        raise HTTPException(status_code=404, detail="Retreat not found")
+    return retreat
+
+@api_router.post("/admin/retreats")
+async def create_retreat(retreat: RetreatCreate, current_user: User = Depends(get_current_user)):
+    """Create a new retreat."""
+    retreat_dict = retreat.model_dump()
+    retreat_dict["id"] = str(uuid.uuid4())[:8]
+    retreat_dict["created_by"] = current_user.user_id
+    retreat_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.retreats.insert_one(retreat_dict)
+    return {"message": "Retreat created successfully", "id": retreat_dict["id"]}
+
+@api_router.put("/admin/retreats/{retreat_id}")
+async def update_retreat(retreat_id: str, retreat: RetreatCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing retreat."""
+    result = await db.retreats.update_one({"id": retreat_id}, {"$set": retreat.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Retreat not found")
+    return {"message": "Retreat updated successfully"}
+
+@api_router.delete("/admin/retreats/{retreat_id}")
+async def delete_retreat(retreat_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a retreat."""
+    result = await db.retreats.delete_one({"id": retreat_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Retreat not found")
+    return {"message": "Retreat deleted successfully"}
+
+# ============ BOOK CRUD ============
+
+@api_router.get("/books")
+async def get_books():
+    """Get all books."""
+    books = await db.books.find({}, {"_id": 0}).to_list(length=50)
+    return books
+
+@api_router.get("/books/{book_id}")
+async def get_book(book_id: str):
+    """Get a specific book."""
+    book = await db.books.find_one({"id": book_id}, {"_id": 0})
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return book
+
+@api_router.post("/admin/books")
+async def create_book(book: BookCreate, current_user: User = Depends(get_current_user)):
+    """Create a new book."""
+    book_dict = book.model_dump()
+    book_dict["id"] = str(uuid.uuid4())[:8]
+    book_dict["created_by"] = current_user.user_id
+    book_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.books.insert_one(book_dict)
+    return {"message": "Book created successfully", "id": book_dict["id"]}
+
+@api_router.put("/admin/books/{book_id}")
+async def update_book(book_id: str, book: BookCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing book."""
+    result = await db.books.update_one({"id": book_id}, {"$set": book.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return {"message": "Book updated successfully"}
+
+@api_router.delete("/admin/books/{book_id}")
+async def delete_book(book_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a book."""
+    result = await db.books.delete_one({"id": book_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return {"message": "Book deleted successfully"}
+
+# ============ CUSTOM ORACLE CARDS CRUD ============
+
+@api_router.get("/custom-oracle-cards")
+async def get_custom_oracle_cards(element: Optional[str] = None):
+    """Get all custom oracle cards."""
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    cards = await db.custom_oracle_cards.find(query, {"_id": 0}).to_list(length=100)
+    return cards
+
+@api_router.get("/custom-oracle-cards/{card_id}")
+async def get_custom_oracle_card(card_id: str):
+    """Get a specific custom oracle card."""
+    card = await db.custom_oracle_cards.find_one({"id": card_id}, {"_id": 0})
+    if not card:
+        raise HTTPException(status_code=404, detail="Oracle card not found")
+    return card
+
+@api_router.post("/admin/custom-oracle-cards")
+async def create_oracle_card(card: OracleCardCreate, current_user: User = Depends(get_current_user)):
+    """Create a new custom oracle card."""
+    card_dict = card.model_dump()
+    card_dict["id"] = str(uuid.uuid4())[:8]
+    card_dict["created_by"] = current_user.user_id
+    card_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.custom_oracle_cards.insert_one(card_dict)
+    return {"message": "Oracle card created successfully", "id": card_dict["id"]}
+
+@api_router.put("/admin/custom-oracle-cards/{card_id}")
+async def update_oracle_card(card_id: str, card: OracleCardCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing custom oracle card."""
+    result = await db.custom_oracle_cards.update_one({"id": card_id}, {"$set": card.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Oracle card not found")
+    return {"message": "Oracle card updated successfully"}
+
+@api_router.delete("/admin/custom-oracle-cards/{card_id}")
+async def delete_oracle_card(card_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a custom oracle card."""
+    result = await db.custom_oracle_cards.delete_one({"id": card_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Oracle card not found")
+    return {"message": "Oracle card deleted successfully"}
+
+# ============ LIVE SESSIONS CRUD ============
+
+@api_router.get("/live-sessions")
+async def get_live_sessions(status: Optional[str] = None):
+    """Get all live sessions, optionally filtered by status."""
+    query = {}
+    if status:
+        query["status"] = status
+    sessions = await db.live_sessions.find(query, {"_id": 0}).sort("scheduled_date", 1).to_list(length=50)
+    return sessions
+
+@api_router.get("/live-sessions/{session_id}")
+async def get_live_session(session_id: str):
+    """Get a specific live session."""
+    session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=404, detail="Live session not found")
+    return session
+
+@api_router.post("/admin/live-sessions")
+async def create_live_session(session: LiveSessionCreate, current_user: User = Depends(get_current_user)):
+    """Create a new live session."""
+    session_dict = session.model_dump()
+    session_dict["id"] = str(uuid.uuid4())[:8]
+    session_dict["created_by"] = current_user.user_id
+    session_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    await db.live_sessions.insert_one(session_dict)
+    return {"message": "Live session created successfully", "id": session_dict["id"]}
+
+@api_router.put("/admin/live-sessions/{session_id}")
+async def update_live_session(session_id: str, session: LiveSessionCreate, current_user: User = Depends(get_current_user)):
+    """Update an existing live session."""
+    result = await db.live_sessions.update_one({"id": session_id}, {"$set": session.model_dump()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Live session not found")
+    return {"message": "Live session updated successfully"}
+
+@api_router.delete("/admin/live-sessions/{session_id}")
+async def delete_live_session(session_id: str, current_user: User = Depends(get_current_user)):
+    """Delete a live session."""
+    result = await db.live_sessions.delete_one({"id": session_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Live session not found")
+    return {"message": "Live session deleted successfully"}
 
 # ============ ADMIN SHAMANIC CONTENT ============
 

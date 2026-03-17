@@ -5,7 +5,7 @@ import {
   ArrowLeft, Plus, Pencil, Trash2, Save, X, 
   Sparkles, Wind, Droplets, Flame, Mountain, 
   Calendar, Users, BookOpen, Video, Heart, Feather, Zap, Palette,
-  Upload, Image, Loader2
+  Upload, Image, Loader2, MapPin, Radio, CreditCard
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -42,6 +42,11 @@ const AdminCMS = ({ user, api }) => {
     { id: "workshops", label: "Workshops", icon: Users },
     { id: "events", label: "Events", icon: Calendar },
     { id: "courses", label: "Courses", icon: BookOpen },
+    // New content types
+    { id: "retreats", label: "Retreats", icon: MapPin },
+    { id: "books", label: "Book", icon: BookOpen },
+    { id: "custom-oracle-cards", label: "Oracle Deck", icon: CreditCard },
+    { id: "live-sessions", label: "Live", icon: Radio },
   ];
 
   const elements = ["Earth", "Water", "Fire", "Air", "Spirit", "All"];
@@ -112,6 +117,11 @@ const AdminCMS = ({ user, api }) => {
       "heart-practices": isAdmin ? "/admin/heart-practices" : "/heart-practices",
       "creative-processes": isAdmin ? "/admin/creative-processes" : "/creative-processes",
       "shamanic-practices": isAdmin ? "/admin/shamanic-practices" : "/shamanic-practices",
+      // New content types
+      "retreats": isAdmin ? "/admin/retreats" : "/retreats",
+      "books": isAdmin ? "/admin/books" : "/books",
+      "custom-oracle-cards": isAdmin ? "/admin/custom-oracle-cards" : "/custom-oracle-cards",
+      "live-sessions": isAdmin ? "/admin/live-sessions" : "/live-sessions",
     };
     return endpoints[tab] || "/yoga/poses";
   };
@@ -189,6 +199,28 @@ const AdminCMS = ({ user, api }) => {
         name: "", category: "journey", description: "", tradition: "",
         preparation: "", journey_steps: [], safety_notes: "", closing_prayer: "",
         duration_minutes: 30, requires_unlock: false, image_url: ""
+      },
+      // New content types
+      "retreats": {
+        title: "", description: "", location: "", start_date: "", end_date: "",
+        duration_days: 3, price: 0, deposit: 0, max_participants: 20,
+        image_url: "", highlights: [], includes: [], schedule: [],
+        accommodation: "", facilitator: "", registration_link: "", status: "upcoming"
+      },
+      "books": {
+        title: "", subtitle: "", description: "", author: "",
+        chapters: [], cover_image: "", price: 0, purchase_link: "",
+        sample_pdf: "", publication_date: "", isbn: "", pages: 0, testimonials: []
+      },
+      "custom-oracle-cards": {
+        name: "", element: "Spirit", meaning: "", reversed_meaning: "",
+        keywords: [], affirmation: "", image_url: "", guidance: "", ritual_suggestion: ""
+      },
+      "live-sessions": {
+        title: "", description: "", session_type: "youtube_live",
+        scheduled_date: "", scheduled_time: "", duration_minutes: 60,
+        stream_url: "", registration_required: false, max_participants: null,
+        price: 0, image_url: "", topics: [], status: "scheduled"
       }
     };
     return defaults[tab] || {};
@@ -615,6 +647,152 @@ const AdminCMS = ({ user, api }) => {
                 <label htmlFor="requires_unlock" className="text-sm text-muted-foreground">Requires Achievement Unlock</label>
               </div>
             </div>
+          </div>
+        );
+
+      // ============ NEW CONTENT TYPE FORMS ============
+
+      case "retreats":
+        return (
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm text-muted-foreground">Title</label>
+              <Input value={formData.title || ""} onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} placeholder="Sacred Journey Retreat" />
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground">Description</label>
+              <Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={3} />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Location</label><Input value={formData.location || ""} onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))} placeholder="Sedona, Arizona" /></div>
+              <div><label className="text-sm text-muted-foreground">Facilitator</label><Input value={formData.facilitator || ""} onChange={(e) => setFormData(prev => ({ ...prev, facilitator: e.target.value }))} /></div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div><label className="text-sm text-muted-foreground">Start Date</label><Input type="date" value={formData.start_date || ""} onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">End Date</label><Input type="date" value={formData.end_date || ""} onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Duration (days)</label><Input type="number" value={formData.duration_days || 3} onChange={(e) => setFormData(prev => ({ ...prev, duration_days: parseInt(e.target.value) }))} /></div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div><label className="text-sm text-muted-foreground">Price ($)</label><Input type="number" value={formData.price || 0} onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Deposit ($)</label><Input type="number" value={formData.deposit || 0} onChange={(e) => setFormData(prev => ({ ...prev, deposit: parseFloat(e.target.value) }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Max Participants</label><Input type="number" value={formData.max_participants || 20} onChange={(e) => setFormData(prev => ({ ...prev, max_participants: parseInt(e.target.value) }))} /></div>
+            </div>
+            <div>
+              <label className="text-sm text-muted-foreground">Status</label>
+              <Select value={formData.status || "upcoming"} onValueChange={(v) => setFormData(prev => ({ ...prev, status: v }))}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="upcoming">Upcoming</SelectItem>
+                  <SelectItem value="open">Open for Registration</SelectItem>
+                  <SelectItem value="full">Full</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Highlights (one per line)</label><Textarea value={(formData.highlights || []).join("\n")} onChange={(e) => handleArrayInput("highlights", e.target.value)} rows={3} placeholder="Shamanic journeying sessions&#10;Nature immersion&#10;Sound healing ceremonies" /></div>
+            <div><label className="text-sm text-muted-foreground">What's Included (one per line)</label><Textarea value={(formData.includes || []).join("\n")} onChange={(e) => handleArrayInput("includes", e.target.value)} rows={3} placeholder="Accommodation&#10;All meals&#10;Ceremony materials" /></div>
+            <div><label className="text-sm text-muted-foreground">Accommodation Details</label><Textarea value={formData.accommodation || ""} onChange={(e) => setFormData(prev => ({ ...prev, accommodation: e.target.value }))} rows={2} /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Registration Link</label><Input value={formData.registration_link || ""} onChange={(e) => setFormData(prev => ({ ...prev, registration_link: e.target.value }))} placeholder="https://..." /></div>
+              <div><label className="text-sm text-muted-foreground">Image URL</label><Input value={formData.image_url || ""} onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))} /></div>
+            </div>
+          </div>
+        );
+
+      case "books":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Title</label><Input value={formData.title || ""} onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Subtitle</label><Input value={formData.subtitle || ""} onChange={(e) => setFormData(prev => ({ ...prev, subtitle: e.target.value }))} /></div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Description</label><Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={4} /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Author</label><Input value={formData.author || ""} onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Publication Date</label><Input type="date" value={formData.publication_date || ""} onChange={(e) => setFormData(prev => ({ ...prev, publication_date: e.target.value }))} /></div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div><label className="text-sm text-muted-foreground">Price ($)</label><Input type="number" value={formData.price || 0} onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Pages</label><Input type="number" value={formData.pages || 0} onChange={(e) => setFormData(prev => ({ ...prev, pages: parseInt(e.target.value) }))} /></div>
+              <div><label className="text-sm text-muted-foreground">ISBN</label><Input value={formData.isbn || ""} onChange={(e) => setFormData(prev => ({ ...prev, isbn: e.target.value }))} /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Purchase Link</label><Input value={formData.purchase_link || ""} onChange={(e) => setFormData(prev => ({ ...prev, purchase_link: e.target.value }))} placeholder="Amazon, your store, etc." /></div>
+              <div><label className="text-sm text-muted-foreground">Sample PDF Link</label><Input value={formData.sample_pdf || ""} onChange={(e) => setFormData(prev => ({ ...prev, sample_pdf: e.target.value }))} /></div>
+            </div>
+            <ImageUploadField />
+          </div>
+        );
+
+      case "custom-oracle-cards":
+        return (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Card Name</label><Input value={formData.name || ""} onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))} placeholder="The Medicine Wheel" /></div>
+              <div>
+                <label className="text-sm text-muted-foreground">Element</label>
+                <Select value={formData.element || "Spirit"} onValueChange={(v) => setFormData(prev => ({ ...prev, element: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{elements.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Upright Meaning</label><Textarea value={formData.meaning || ""} onChange={(e) => setFormData(prev => ({ ...prev, meaning: e.target.value }))} rows={2} placeholder="The core meaning when drawn upright..." /></div>
+            <div><label className="text-sm text-muted-foreground">Reversed Meaning</label><Textarea value={formData.reversed_meaning || ""} onChange={(e) => setFormData(prev => ({ ...prev, reversed_meaning: e.target.value }))} rows={2} placeholder="The meaning when drawn reversed..." /></div>
+            <div><label className="text-sm text-muted-foreground">Keywords (one per line)</label><Textarea value={(formData.keywords || []).join("\n")} onChange={(e) => handleArrayInput("keywords", e.target.value)} rows={2} placeholder="Transformation&#10;Cycles&#10;Wholeness" /></div>
+            <div><label className="text-sm text-muted-foreground">Guidance Message</label><Textarea value={formData.guidance || ""} onChange={(e) => setFormData(prev => ({ ...prev, guidance: e.target.value }))} rows={3} placeholder="Deeper guidance for the seeker..." /></div>
+            <div><label className="text-sm text-muted-foreground">Affirmation</label><Input value={formData.affirmation || ""} onChange={(e) => setFormData(prev => ({ ...prev, affirmation: e.target.value }))} placeholder="I embrace the sacred cycles of life..." /></div>
+            <div><label className="text-sm text-muted-foreground">Ritual Suggestion</label><Textarea value={formData.ritual_suggestion || ""} onChange={(e) => setFormData(prev => ({ ...prev, ritual_suggestion: e.target.value }))} rows={2} placeholder="A practice to embody this card's medicine..." /></div>
+            <ImageUploadField />
+          </div>
+        );
+
+      case "live-sessions":
+        return (
+          <div className="space-y-4">
+            <div><label className="text-sm text-muted-foreground">Title</label><Input value={formData.title || ""} onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))} placeholder="Full Moon Meditation Circle" /></div>
+            <div><label className="text-sm text-muted-foreground">Description</label><Textarea value={formData.description || ""} onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))} rows={3} /></div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm text-muted-foreground">Session Type</label>
+                <Select value={formData.session_type || "youtube_live"} onValueChange={(v) => setFormData(prev => ({ ...prev, session_type: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="youtube_live">YouTube Live</SelectItem>
+                    <SelectItem value="zoom">Zoom Meeting</SelectItem>
+                    <SelectItem value="group_meditation">Group Meditation</SelectItem>
+                    <SelectItem value="q_and_a">Q&A Session</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm text-muted-foreground">Status</label>
+                <Select value={formData.status || "scheduled"} onValueChange={(v) => setFormData(prev => ({ ...prev, status: v }))}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="scheduled">Scheduled</SelectItem>
+                    <SelectItem value="live">Live Now</SelectItem>
+                    <SelectItem value="completed">Completed</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              <div><label className="text-sm text-muted-foreground">Date</label><Input type="date" value={formData.scheduled_date || ""} onChange={(e) => setFormData(prev => ({ ...prev, scheduled_date: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Time</label><Input type="time" value={formData.scheduled_time || ""} onChange={(e) => setFormData(prev => ({ ...prev, scheduled_time: e.target.value }))} /></div>
+              <div><label className="text-sm text-muted-foreground">Duration (min)</label><Input type="number" value={formData.duration_minutes || 60} onChange={(e) => setFormData(prev => ({ ...prev, duration_minutes: parseInt(e.target.value) }))} /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div><label className="text-sm text-muted-foreground">Stream/Meeting URL</label><Input value={formData.stream_url || ""} onChange={(e) => setFormData(prev => ({ ...prev, stream_url: e.target.value }))} placeholder="https://youtube.com/live/..." /></div>
+              <div><label className="text-sm text-muted-foreground">Price (0 for free)</label><Input type="number" value={formData.price || 0} onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) }))} /></div>
+            </div>
+            <div><label className="text-sm text-muted-foreground">Topics (one per line)</label><Textarea value={(formData.topics || []).join("\n")} onChange={(e) => handleArrayInput("topics", e.target.value)} rows={2} placeholder="Full moon rituals&#10;Energy clearing&#10;Q&A" /></div>
+            <div className="flex items-center gap-2">
+              <input type="checkbox" id="registration_required" checked={formData.registration_required || false} onChange={(e) => setFormData(prev => ({ ...prev, registration_required: e.target.checked }))} />
+              <label htmlFor="registration_required" className="text-sm text-muted-foreground">Registration Required</label>
+            </div>
+            <ImageUploadField />
           </div>
         );
 

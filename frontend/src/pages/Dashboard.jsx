@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { 
   Leaf, Eye, Wind, Moon, Sparkles, Heart, Waves, Mountain,
   LogOut, Menu, X, ChevronRight, Sun, User, Star, Clock, Trophy, BookOpen, Settings,
-  Brain, Compass, Hash, Shield, BarChart3, Palette, Feather, Zap
+  Brain, Compass, Hash, Shield, BarChart3, Palette, Feather, Zap, Radio, MapPin
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -41,6 +41,10 @@ const Dashboard = ({ user, api }) => {
     { icon: Clock, label: "Rituals", path: "/rituals", element: "spirit" },
     { icon: Trophy, label: "Achievements", path: "/achievements", element: "fire" },
     { icon: BookOpen, label: "Journal", path: "/journal", element: "water" },
+    // New Content
+    { icon: Radio, label: "Live", path: "/live", element: "fire" },
+    { icon: MapPin, label: "Retreats", path: "/retreats", element: "earth" },
+    { icon: BookOpen, label: "Book", path: "/books", element: "spirit" },
     { icon: Shield, label: "Admin CMS", path: "/admin", element: "spirit" },
   ];
 

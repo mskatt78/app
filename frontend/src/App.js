@@ -32,6 +32,10 @@ import CreativeProcesses from "./pages/CreativeProcesses";
 import HeartPractices from "./pages/HeartPractices";
 import ShamanicPractices from "./pages/ShamanicPractices";
 import ElementalPractices from "./pages/ElementalPractices";
+// New Content Pages
+import LiveSessions from "./pages/LiveSessions";
+import Retreats from "./pages/Retreats";
+import Books from "./pages/Books";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -338,6 +342,31 @@ function AppRouter() {
         element={
           <ProtectedRoute>
             {({ user, api }) => <ElementalPractices user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      {/* New Content Routes */}
+      <Route
+        path="/live"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <LiveSessions user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/retreats"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Retreats user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/books"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <Books user={user} api={api} />}
           </ProtectedRoute>
         }
       />
