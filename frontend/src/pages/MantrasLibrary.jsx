@@ -566,13 +566,40 @@ const MantrasLibrary = ({ user, api }) => {
                   </div>
                 </div>
 
+                {/* Pronunciation & Frequency Section - NEW */}
+                <div className="grid grid-cols-2 gap-4">
+                  {selectedMantra.pronunciation && (
+                    <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20">
+                      <h4 className="text-xs uppercase tracking-wider text-primary mb-2">Pronunciation</h4>
+                      <p className="text-sm font-medium">{selectedMantra.pronunciation}</p>
+                    </div>
+                  )}
+                  {selectedMantra.frequency_hz && (
+                    <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                      <h4 className="text-xs uppercase tracking-wider text-blue-400 mb-2">Frequency</h4>
+                      <p className="text-sm font-medium">{selectedMantra.frequency_hz} Hz</p>
+                      {selectedMantra.vibrational_note && (
+                        <p className="text-xs text-muted-foreground mt-1">Note: {selectedMantra.vibrational_note}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Music Recommendation */}
+                {selectedMantra.music_recommendation && (
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+                    <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Recommended Music</h4>
+                    <p className="text-sm text-foreground/80">{selectedMantra.music_recommendation}</p>
+                  </div>
+                )}
+
                 {/* Practice Tip */}
                 <div className="p-4 rounded-xl bg-white/5 border border-white/10">
                   <p className="text-sm text-muted-foreground">
-                    <strong className="text-primary">Practice Tip:</strong> Find a comfortable seated position. 
+                    <strong className="text-primary">Practice Tip:</strong> {selectedMantra.practice_tips || `Find a comfortable seated position. 
                     Close your eyes and focus on the sound and vibration of the mantra. 
-                    Let each repetition deepen your connection to the {selectedMantra.element.toLowerCase()} element
-                    and your {selectedMantra.chakra} chakra.
+                    Let each repetition deepen your connection to the ${selectedMantra.element.toLowerCase()} element
+                    and your ${selectedMantra.chakra} chakra.`}
                   </p>
                 </div>
               </div>

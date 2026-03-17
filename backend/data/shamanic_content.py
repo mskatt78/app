@@ -761,6 +761,247 @@ SHAMANIC_PRACTICES = [
             "Animals bring specific medicine messages"
         ],
         "image_url": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800"
+    },
+    # NEW SHAMANIC CEREMONIES
+    {
+        "id": "9",
+        "name": "Medicine Wheel Ceremony",
+        "category": "ceremony",
+        "element": "Spirit",
+        "description": "A sacred ceremony honoring all four directions and elements, creating balance and wholeness through the medicine wheel.",
+        "duration_minutes": 60,
+        "preparation": ["Four stones for directions", "Offerings (tobacco, sage, cedar, sweetgrass)", "Drum or rattle", "Quiet outdoor space if possible"],
+        "ceremony_steps": [
+            "Create sacred space by smudging yourself and the area",
+            "Place stones at the four cardinal directions",
+            "Begin in the East (Air/Spring/Dawn) - offer tobacco and prayer for new beginnings",
+            "Move clockwise to South (Fire/Summer/Noon) - offer for passion and transformation",
+            "Continue to West (Water/Fall/Dusk) - offer for healing and release",
+            "Move to North (Earth/Winter/Night) - offer for wisdom and ancestors",
+            "Return to center (Spirit) - connect above and below, within and without",
+            "Sit in the center and receive guidance from all directions",
+            "Give thanks to each direction before closing",
+            "Ground yourself thoroughly before leaving the wheel"
+        ],
+        "directional_prayers": [
+            "East: Spirits of the East, bring clarity and new vision",
+            "South: Spirits of the South, ignite my inner fire and courage",
+            "West: Spirits of the West, help me release and heal",
+            "North: Spirits of the North, share your ancestral wisdom",
+            "Center: Great Mystery, unite all within me"
+        ],
+        "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800"
+    },
+    {
+        "id": "10",
+        "name": "Sweat Lodge Visualization",
+        "category": "ceremony",
+        "element": "Fire",
+        "description": "A guided visualization replicating the purifying experience of a sweat lodge ceremony - rebirth through sacred heat.",
+        "duration_minutes": 40,
+        "preparation": ["Dark room or eye mask", "Blankets for warmth", "Water nearby", "Drum track"],
+        "ceremony_steps": [
+            "Lie down and cover yourself with blankets to create warmth",
+            "Close eyes and visualize entering a dome-shaped lodge",
+            "See the glowing grandfather stones (heated rocks) in the center pit",
+            "Feel the heat embrace you as water is poured on stones",
+            "With each round, release what no longer serves: fear, doubt, pain",
+            "Sing to the spirits, pray, let tears flow with sweat",
+            "Feel yourself purified as toxins leave through your skin",
+            "When complete, visualize crawling out - reborn from Earth's womb",
+            "Drink water to honor the life-giving element",
+            "Rest and integrate the purification"
+        ],
+        "rounds_meaning": [
+            "Round 1: Honor the spirit world, set intentions",
+            "Round 2: Pray for courage and release fears",
+            "Round 3: Pray for healing of self and others",
+            "Round 4: Give thanks and receive blessings"
+        ],
+        "image_url": "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800"
+    },
+    {
+        "id": "11",
+        "name": "Fire Ceremony",
+        "category": "ceremony",
+        "element": "Fire",
+        "description": "A powerful transformation ceremony using sacred fire to release the old and call in the new.",
+        "duration_minutes": 45,
+        "preparation": ["Safe fire pit or fireproof bowl", "Small sticks or paper for burdens", "Offerings", "Water for safety"],
+        "ceremony_steps": [
+            "Build your fire with intention, each piece of wood carrying prayer",
+            "Light the fire and call in the fire spirits",
+            "Gaze into flames and enter a meditative state",
+            "Pick up a stick - breathe your burden/fear/pain into it",
+            "Say aloud what you're releasing",
+            "Place the stick in the fire - watch it transform",
+            "Repeat with other burdens",
+            "When release is complete, offer gratitude to the fire",
+            "Speak your intentions into new sticks and place them in flames",
+            "Watch the smoke carry your prayers skyward",
+            "Stay until fire burns down, feeding it with offerings"
+        ],
+        "fire_prayers": [
+            "Sacred fire, transform my pain into wisdom",
+            "Burn away what limits my spirit",
+            "Carry my prayers on your smoke to the Creator",
+            "I release this to your transformative power",
+            "From these ashes, I rise renewed"
+        ],
+        "image_url": "https://images.unsplash.com/photo-1475666675596-cca2035b3d79?w=800"
+    },
+    {
+        "id": "12",
+        "name": "Despacho Offering Ceremony",
+        "category": "ceremony",
+        "element": "Earth",
+        "description": "An Andean offering ceremony creating a prayer bundle (despacho) to honor Pachamama and manifest intentions.",
+        "duration_minutes": 50,
+        "preparation": ["Large paper or cloth", "Rice, beans, candies, flowers", "Coca leaves or bay leaves", "Red and white wine (or juice)", "Ribbons, shells, small meaningful items"],
+        "ceremony_steps": [
+            "Lay paper/cloth on ground, creating your altar space",
+            "Open sacred space by calling the four directions",
+            "Begin building the despacho with base of sugar/rice for sweetness",
+            "Add coca/bay leaves in sets of three - each set carries a prayer",
+            "Place flowers for beauty and offerings for the spirits",
+            "Add personal items representing your prayers and gratitude",
+            "Sprinkle wine in offering to Pachamama",
+            "When complete, fold the despacho into a bundle",
+            "Tie with ribbon - this is your prayer bundle",
+            "Either burn (fast transformation) or bury (slow manifestation)",
+            "Close sacred space with gratitude"
+        ],
+        "despacho_elements": [
+            "Sugar: for sweetness in life",
+            "Rice: for abundance",
+            "Flowers: for beauty and appreciation",
+            "Coca/bay leaves: carriers of prayer",
+            "Wine: life force offering to earth"
+        ],
+        "image_url": "https://images.unsplash.com/photo-1508349937151-22b68b72d5b1?w=800"
+    },
+    {
+        "id": "13",
+        "name": "Cord Cutting Ceremony",
+        "category": "healing",
+        "element": "Air",
+        "description": "A powerful ceremony to release energetic cords connecting you to people, places, or situations that drain your energy.",
+        "duration_minutes": 35,
+        "preparation": ["Scissors or ritual blade", "Two candles", "String or ribbon", "Sage for clearing"],
+        "ceremony_steps": [
+            "Smudge yourself and your space thoroughly",
+            "Light two candles - one representing you, one representing what you're releasing",
+            "Connect the candles with string - this represents the cord",
+            "Close your eyes and feel where the cord attaches in your body",
+            "Thank the person/situation for any lessons learned",
+            "Say: 'I release all cords that bind me in unhealthy ways'",
+            "With intention, cut the string between the candles",
+            "Immediately fill the space with golden light",
+            "Burn the cut string pieces in one candle flame",
+            "Snuff the candle representing what you released",
+            "Keep your candle burning to strengthen your own light"
+        ],
+        "after_care": [
+            "Take a salt bath to clear residual energy",
+            "You may feel tired - rest is healing",
+            "If cords reform, repeat ceremony",
+            "Focus energy on self-care for several days"
+        ],
+        "image_url": "https://images.unsplash.com/photo-1516534775068-ba3e7458af70?w=800"
+    },
+    {
+        "id": "14",
+        "name": "Plant Spirit Medicine Ceremony",
+        "category": "ceremony",
+        "element": "Earth",
+        "description": "A ceremony to connect with the healing spirit of a plant ally and receive its medicine through meditation.",
+        "duration_minutes": 40,
+        "preparation": ["A plant (live, dried herb, or flower)", "Offering (water, cornmeal)", "Journal", "Quiet space"],
+        "ceremony_steps": [
+            "Choose a plant you feel drawn to",
+            "Create sacred space around you and the plant",
+            "Offer water or cornmeal to the plant spirit",
+            "Hold or sit near the plant, close your eyes",
+            "Ask permission: 'May I connect with your spirit?'",
+            "If yes felt, breathe in the plant's essence",
+            "Ask: 'What medicine do you offer me?'",
+            "Listen with your heart - images, feelings, knowing",
+            "Receive any healing the plant offers",
+            "Thank the plant spirit",
+            "Journal your experience immediately",
+            "Consider how to honor this plant ally going forward"
+        ],
+        "common_plant_medicines": [
+            "Rose: unconditional love, heart healing",
+            "Lavender: peace, calm, spiritual cleansing",
+            "Sage: purification, wisdom, clarity",
+            "Cedar: protection, grounding, longevity",
+            "Mugwort: dreams, intuition, psychic vision"
+        ],
+        "image_url": "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800"
+    },
+    {
+        "id": "15",
+        "name": "Vision Quest Preparation",
+        "category": "journey",
+        "element": "Spirit",
+        "description": "A guided preparation for seeking vision - a solo quest in nature to receive guidance from the spirits.",
+        "duration_minutes": 60,
+        "preparation": ["Fasting from food (water only) for preparation", "Sacred items", "Journal", "Nature location"],
+        "journey_steps": [
+            "Begin preparation 3 days before with simplified diet",
+            "Set your intention clearly - what guidance do you seek?",
+            "Create a small medicine bundle with sacred items",
+            "Choose your quest spot in nature (safe and sacred)",
+            "Create a circle or boundary for your quest area",
+            "Enter with prayer, leaving ordinary life behind",
+            "Sit in stillness, observation, and receptivity",
+            "Pay attention to all visitors - animals, insects, weather",
+            "Watch for signs and symbols in nature",
+            "Journal any visions, dreams, or insights",
+            "When complete, offer tobacco in gratitude",
+            "Return slowly to ordinary life",
+            "Seek elder or guide to help interpret your vision"
+        ],
+        "vision_quest_principles": [
+            "The land will speak if you listen",
+            "Every creature is a potential messenger",
+            "Hunger sharpens spiritual perception",
+            "Silence is the voice of spirit",
+            "Your discomfort is your teacher"
+        ],
+        "image_url": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800"
+    },
+    {
+        "id": "16",
+        "name": "Womb/Hara Healing Ceremony",
+        "category": "healing",
+        "element": "Water",
+        "description": "A healing ceremony for the sacred womb space (or hara/sacral center for all genders) - releasing trauma and restoring creative power.",
+        "duration_minutes": 45,
+        "preparation": ["Orange candle", "Rose water or flower essence", "Warm blanket", "Moonstone or carnelian crystal"],
+        "ceremony_steps": [
+            "Create a safe, warm, womb-like space",
+            "Light orange candle for the sacral chakra",
+            "Lie down and place hands on lower belly",
+            "Breathe deeply into this sacred center",
+            "Speak to your womb/hara: 'I honor you'",
+            "Ask what needs to be released or healed",
+            "Allow any emotions, sounds, or movements",
+            "Visualize orange-golden light filling this space",
+            "Call back any creative energy given away",
+            "Anoint the area with rose water",
+            "Place crystal on sacral area for sealing",
+            "Rest in the healing for as long as needed"
+        ],
+        "healing_affirmations": [
+            "My creative center is sacred and whole",
+            "I release all that was planted without my consent",
+            "I reclaim my creative power",
+            "My womb/hara is a source of infinite wisdom",
+            "I am safe in my body"
+        ],
+        "image_url": "https://images.unsplash.com/photo-1495555961986-6d4c1ecb7be3?w=800"
     }
 ]
 
