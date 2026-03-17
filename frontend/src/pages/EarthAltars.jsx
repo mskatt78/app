@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Mountain, Droplets, Flame, Wind, Sparkles, 
-  ChevronRight, X, Clock, Star, CheckCircle2
+  ChevronRight, X, Clock, Star, CheckCircle2, Heart
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -258,6 +258,33 @@ const EarthAltars = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
                     <h3 className="font-medium mb-2">Activation Prayer</h3>
                     <p className="text-sm italic text-muted-foreground">{selectedAltar.activation_prayer}</p>
+                  </div>
+                )}
+
+                {selectedAltar.therapeutic_applications && selectedAltar.therapeutic_applications.length > 0 && (
+                  <div>
+                    <h3 className="font-medium mb-3 flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-rose-400" />
+                      Therapeutic Applications
+                    </h3>
+                    <div className="space-y-3">
+                      {selectedAltar.therapeutic_applications.map((app, i) => (
+                        <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/10">
+                          <div className="font-medium text-sm text-rose-300 mb-1">{app.condition}</div>
+                          <p className="text-xs text-muted-foreground mb-2">{app.how_it_helps}</p>
+                          <div className="text-xs bg-white/5 rounded-lg p-2 text-foreground/80">
+                            <strong>Practice:</strong> {app.practice}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedAltar.weekly_practice && (
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                    <h3 className="font-medium mb-2 text-emerald-400">Weekly Practice</h3>
+                    <p className="text-sm text-muted-foreground">{selectedAltar.weekly_practice}</p>
                   </div>
                 )}
 

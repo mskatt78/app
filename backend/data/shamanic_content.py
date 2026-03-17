@@ -8,6 +8,12 @@ EARTH_ALTARS = [
         "element": "Earth",
         "description": "A grounding altar connecting to the stability and abundance of Mother Earth. Place in the North direction.",
         "purpose": "Grounding, stability, abundance, physical healing, connecting with ancestors",
+        "therapeutic_applications": [
+            {"condition": "Anxiety & Overwhelm", "how_it_helps": "Earth energy grounds scattered thoughts and calms the nervous system", "practice": "Sit before altar, place hands on earth element, breathe slowly for 10 minutes"},
+            {"condition": "Financial Stress", "how_it_helps": "Earth represents abundance and material manifestation", "practice": "Offer seeds while stating money intentions, visualize roots of prosperity"},
+            {"condition": "Physical Illness", "how_it_helps": "Earth holds healing frequencies for the physical body", "practice": "Place item representing ailment on altar, ask earth spirits for healing"},
+            {"condition": "Feeling Unrooted", "how_it_helps": "Reconnects to sense of home, belonging, and stability", "practice": "Add soil from meaningful places, meditate on your roots"}
+        ],
         "items": [
             {"name": "Stones or crystals", "description": "Black tourmaline, smoky quartz, moss agate, or stones collected from sacred places"},
             {"name": "Earth element", "description": "Bowl of soil, sand, or salt representing the earth"},
@@ -27,6 +33,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Great Mother Earth, I honor your stability and abundance. Ground me in your wisdom, connect me to my ancestors, and help me manifest my intentions into physical reality. Aho.",
         "best_time": "During new moon, winter, or when needing grounding",
+        "weekly_practice": "Visit altar each morning, touch the earth element, state one grounding intention for the day",
         "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5ee9d8a0cb084c662bbb08b32f053b13c5a7de7c7f2370ef91f2111b020de8af.png"
     },
     {
@@ -35,6 +42,12 @@ EARTH_ALTARS = [
         "element": "Water",
         "description": "A flowing altar honoring emotions, intuition, and the sacred feminine. Place in the West direction.",
         "purpose": "Emotional healing, intuition, dreams, feminine energy, purification",
+        "therapeutic_applications": [
+            {"condition": "Grief & Loss", "how_it_helps": "Water holds and transforms emotional pain", "practice": "Let tears fall into altar water, then pour outside as release"},
+            {"condition": "Blocked Intuition", "how_it_helps": "Water element opens psychic channels", "practice": "Gaze into water vessel before sleep, ask for dream guidance"},
+            {"condition": "Relationship Wounds", "how_it_helps": "Water cleanses emotional attachments and cords", "practice": "Write name of person on paper, submerge in water with forgiveness prayer"},
+            {"condition": "Creative Blocks", "how_it_helps": "Water represents flow and creative juice", "practice": "Stir water clockwise while visualizing creative energy flowing"}
+        ],
         "items": [
             {"name": "Water vessel", "description": "Bowl of moon-charged water, spring water, or collected rain"},
             {"name": "Shells", "description": "Seashells, especially spiral shells representing the goddess"},
@@ -54,6 +67,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Sacred waters of life, I honor your flow and wisdom. Help me release what no longer serves, trust my intuition, and move with grace through life's changes. So mote it be.",
         "best_time": "During full moon, autumn, or when processing emotions",
+        "weekly_practice": "Refresh altar water weekly on the same day, speak gratitude as you pour old water to plants",
         "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/3c731376069fd1b01b73d7d8cac37726ffaac9e5a54ec79085b6f93596a31bc8.png"
     },
     {
@@ -62,6 +76,12 @@ EARTH_ALTARS = [
         "element": "Fire",
         "description": "A transformative altar honoring passion, willpower, and the sacred masculine. Place in the South direction.",
         "purpose": "Transformation, passion, courage, purification, masculine energy, action",
+        "therapeutic_applications": [
+            {"condition": "Depression & Low Energy", "how_it_helps": "Fire rekindles the inner spark and life force", "practice": "Light candle, visualize flame entering your solar plexus, breathe fire energy"},
+            {"condition": "Stuck Patterns", "how_it_helps": "Fire transforms and releases what's crystallized", "practice": "Write pattern on paper, burn safely while declaring release"},
+            {"condition": "Lack of Motivation", "how_it_helps": "Fire ignites willpower and drive", "practice": "Gaze at candle flame for 5 minutes while affirming your goals"},
+            {"condition": "Anger Issues", "how_it_helps": "Fire transmutes destructive anger into creative power", "practice": "Breathe anger into candle flame, watch it transform to light"}
+        ],
         "items": [
             {"name": "Candles", "description": "Red, orange, or gold candles - one or three"},
             {"name": "Fire crystals", "description": "Carnelian, citrine, sunstone, or tiger's eye"},
@@ -81,6 +101,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Sacred flame of transformation, I honor your power and light. Burn away what limits me, ignite my passion, and guide me to take courageous action. Blessed be the fire.",
         "best_time": "During waxing moon, summer, or when needing courage",
+        "weekly_practice": "Light altar candle every evening at sunset, state one bold intention",
         "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/b7b2a71dfa180c210c7ddee3b2351f6389606e30ee1dfe81842ebbf8da872cf4.png"
     },
     {
@@ -89,6 +110,12 @@ EARTH_ALTARS = [
         "element": "Air",
         "description": "An altar of clarity and communication, honoring the mind and breath. Place in the East direction.",
         "purpose": "Mental clarity, communication, new beginnings, inspiration, learning",
+        "therapeutic_applications": [
+            {"condition": "Mental Fog & Confusion", "how_it_helps": "Air clears the mind and brings fresh perspective", "practice": "Ring bells over your head, breathe deeply, ask for clarity"},
+            {"condition": "Communication Issues", "how_it_helps": "Air governs the throat and authentic expression", "practice": "Speak your truth to the feathers, release words into the wind"},
+            {"condition": "Learning Difficulties", "how_it_helps": "Air enhances mental faculties and memory", "practice": "Study near altar, ask air spirits to carry knowledge into your mind"},
+            {"condition": "Decision Paralysis", "how_it_helps": "Air brings objectivity and bird's-eye view", "practice": "Write options on paper, let incense smoke reveal which feels right"}
+        ],
         "items": [
             {"name": "Feathers", "description": "Ethically sourced feathers representing air spirits"},
             {"name": "Bells or chimes", "description": "Sound tools to move energy"},
@@ -108,6 +135,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Winds of the four directions, I honor your breath and wisdom. Clear my mind, carry my prayers, and bring inspiration on the breeze. May my words carry truth. Aho.",
         "best_time": "During dawn, spring, or when seeking clarity",
+        "weekly_practice": "Each morning at dawn, face East at your altar, take 7 deep breaths, set your intention",
         "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/c5ecdbf5fc5ec0b012390dc138da1b78fb4a6de6662613d25e158c20311d8a79.png"
     },
     {
@@ -116,6 +144,12 @@ EARTH_ALTARS = [
         "element": "Spirit",
         "description": "A sacred altar honoring the spirit realm, ancestors, and guides. Place in the center or a special sacred space.",
         "purpose": "Ancestral connection, spirit guides, divine guidance, remembrance, healing lineage",
+        "therapeutic_applications": [
+            {"condition": "Feeling Alone/Unsupported", "how_it_helps": "Connects to vast network of ancestors and guides", "practice": "Sit with photos, speak to ancestors, feel their presence surrounding you"},
+            {"condition": "Inherited Trauma", "how_it_helps": "Heals patterns passed through generations", "practice": "Ask ancestors to help release patterns that began before you"},
+            {"condition": "Life Direction Confusion", "how_it_helps": "Ancestors can offer guidance from beyond", "practice": "Light candle, ask specific question, watch for signs over next 3 days"},
+            {"condition": "Fear of Death", "how_it_helps": "Normalizes death as transition, not ending", "practice": "Meditate on ancestors' continuing presence, feel the veil thin"}
+        ],
         "items": [
             {"name": "Photos of ancestors", "description": "Images of beloved deceased family members"},
             {"name": "Heirlooms", "description": "Objects belonging to ancestors"},
@@ -135,6 +169,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Beloved ancestors, guides, and spirits who walk with me, I honor your presence. Thank you for your protection and wisdom. Help me heal our lineage and walk my sacred path. I remember you.",
         "best_time": "During Samhain/Day of Dead, dark moon, or when seeking guidance",
+        "weekly_practice": "Every Sunday, refresh offerings, light candle, speak to ancestors for 10 minutes",
         "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/2a6a3c9fcf908f960a19146b7a74fdf14b9c00af9801c8069a049d942d96676e.png"
     },
     {
@@ -143,6 +178,12 @@ EARTH_ALTARS = [
         "element": "Spirit",
         "description": "A complete ceremonial altar incorporating all four directions and elements in the sacred hoop.",
         "purpose": "Balance, wholeness, ceremony, connecting all elements, major rituals",
+        "therapeutic_applications": [
+            {"condition": "Feeling Fragmented", "how_it_helps": "Integrates all aspects of self through elemental balance", "practice": "Walk the wheel, leaving a piece of yourself at each direction, gather them at center"},
+            {"condition": "Major Life Transitions", "how_it_helps": "Provides container for big changes", "practice": "Enter wheel from East (new beginning), process through each direction, exit renewed"},
+            {"condition": "Seeking Wholeness", "how_it_helps": "The wheel represents the complete self", "practice": "Monthly ceremony - assess which element needs attention, work with that direction"},
+            {"condition": "Disconnection from Nature", "how_it_helps": "Reconnects to natural cycles and directions", "practice": "Build wheel outdoors, sit in center and feel your place in the web of life"}
+        ],
         "items": [
             {"name": "Four directional stones", "description": "Four larger stones for N, S, E, W"},
             {"name": "Elemental items", "description": "Earth, water bowl, candle, feather"},
@@ -163,6 +204,7 @@ EARTH_ALTARS = [
         ],
         "activation_prayer": "Sacred hoop of life, I stand at the center of all directions. East, bring new beginnings. South, bring transformation. West, bring healing. North, bring wisdom. Great Spirit above and Mother Earth below, make me whole. All my relations.",
         "best_time": "Solstices, equinoxes, or major life ceremonies",
+        "weekly_practice": "Walk your medicine wheel once weekly, pausing at each direction to check in with that element in your life",
         "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/6dc586eb610e26e57ac17a0cc8c036ca211ff7c5d40d4b0a2ef006c72b303c06.png"
     }
 ]
@@ -334,6 +376,203 @@ CREATIVE_PROCESSES = [
         ],
         "integration": "These stories become part of your personal mythology. Return to them for strength.",
         "image_url": "https://images.unsplash.com/photo-1474552226712-ac0f0961a954?w=800"
+    },
+    # NEW CREATIVE PROCESSES - Earth-Based Healing Modalities
+    {
+        "id": "7",
+        "name": "Forest Bathing (Shinrin-Yoku)",
+        "category": "nature",
+        "element": "Earth",
+        "description": "A Japanese practice of immersing in the forest atmosphere for healing. No hiking - just presence with trees.",
+        "duration_minutes": 90,
+        "materials": ["Comfortable clothes", "Optional: journal", "Water", "No phone or minimal use"],
+        "therapeutic_benefits": [
+            "Reduces cortisol and blood pressure",
+            "Boosts immune system (phytoncides from trees)",
+            "Improves mood and reduces anxiety",
+            "Enhances creativity and focus",
+            "Deepens connection to nature spirits"
+        ],
+        "process": [
+            "Find a forest or area with mature trees",
+            "Leave phone behind or on airplane mode",
+            "Walk slowly with no destination in mind",
+            "Stop frequently to engage each sense",
+            "Touch bark, smell leaves, listen to birds",
+            "Find a tree to sit with for 20 minutes",
+            "Ask the tree if it has a message for you",
+            "Express gratitude before leaving"
+        ],
+        "integration": "Practice weekly for cumulative benefits. Build relationship with specific trees.",
+        "image_url": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800"
+    },
+    {
+        "id": "8",
+        "name": "Earth Acupuncture (Grounding)",
+        "category": "healing",
+        "element": "Earth",
+        "description": "A practice of lying directly on the earth to receive her healing frequencies and discharge excess energy.",
+        "duration_minutes": 30,
+        "materials": ["Blanket (optional)", "Earth/grass/sand location", "Comfortable clothes"],
+        "therapeutic_benefits": [
+            "Grounds excess electromagnetic energy",
+            "Reduces inflammation through electron transfer",
+            "Balances circadian rhythms",
+            "Calms nervous system",
+            "Reconnects to Earth's Schumann resonance"
+        ],
+        "process": [
+            "Find a natural spot - grass, sand, or soil",
+            "Remove shoes and lie directly on earth",
+            "Place palms down, spread fingers into earth",
+            "Breathe deeply and feel earth supporting you",
+            "Visualize roots growing from your spine into earth",
+            "Release tension, pain, worry into the ground",
+            "Receive earth's healing energy rising into you",
+            "Stay for minimum 20 minutes"
+        ],
+        "integration": "Practice 2-3 times weekly. Morning is best for energy, evening for releasing.",
+        "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800"
+    },
+    {
+        "id": "9",
+        "name": "Stone People Medicine",
+        "category": "healing",
+        "element": "Earth",
+        "description": "Working with stones as conscious beings for healing, divination, and energy work.",
+        "duration_minutes": 40,
+        "materials": ["Collection of stones you've gathered", "Cloth to lay them on", "Bowl of salt water"],
+        "therapeutic_benefits": [
+            "Each stone carries unique medicine/frequency",
+            "Stones hold and transform energy",
+            "Ancient wisdom keepers",
+            "Grounding and stabilizing",
+            "Connection to mineral kingdom"
+        ],
+        "process": [
+            "Gather stones that call to you over time",
+            "Cleanse in salt water under moonlight",
+            "Hold each stone and ask its name/medicine",
+            "Create a relationship through regular holding",
+            "Place stones on body for healing work",
+            "Ask stones questions for divination",
+            "Return stones to earth when complete",
+            "Always ask permission before taking a stone"
+        ],
+        "stone_medicine_examples": [
+            "River stones: flow, smoothing rough edges",
+            "Mountain stones: strength, endurance",
+            "Black stones: protection, grounding",
+            "White stones: clarity, purification",
+            "Red stones: vitality, passion"
+        ],
+        "integration": "Keep stone altar. Develop relationship with 3-4 stones deeply before expanding collection.",
+        "image_url": "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800"
+    },
+    {
+        "id": "10",
+        "name": "Herbal Smoke Ceremony Guide",
+        "category": "ritual",
+        "element": "Air",
+        "description": "A comprehensive guide to cleansing and blessing with sacred smoke from various plant allies.",
+        "duration_minutes": 25,
+        "materials": ["Sacred herbs (sage, cedar, sweetgrass, palo santo)", "Shell or heat-proof dish", "Feather for directing smoke"],
+        "therapeutic_benefits": [
+            "Clears negative energy from space and aura",
+            "Kills airborne bacteria (proven by science)",
+            "Shifts consciousness for ceremony",
+            "Honors plant spirit allies",
+            "Creates sacred container"
+        ],
+        "herb_properties": [
+            {"herb": "White Sage", "medicine": "Deep purification, clearing negativity, calling in spirits"},
+            {"herb": "Cedar", "medicine": "Protection, grounding, inviting positive energies"},
+            {"herb": "Sweetgrass", "medicine": "Blessing, calling in sweetness, attracting good spirits"},
+            {"herb": "Palo Santo", "medicine": "Cleansing, creativity, raising vibration"},
+            {"herb": "Mugwort", "medicine": "Dreams, psychic vision, protection during journey"},
+            {"herb": "Lavender", "medicine": "Peace, calm, gentle cleansing"}
+        ],
+        "process": [
+            "Set intention for cleansing",
+            "Light herb bundle or loose herbs in shell",
+            "Let flame extinguish, allow smoke to rise",
+            "Use feather to direct smoke around your body",
+            "Start at feet, move up and around",
+            "Cleanse front, back, and top of head",
+            "Move through space clockwise",
+            "End with gratitude to plant spirits"
+        ],
+        "integration": "Smudge yourself daily. Cleanse home weekly. Always after illness, conflict, or heavy energy.",
+        "image_url": "https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?w=800"
+    },
+    {
+        "id": "11",
+        "name": "Water Blessing Ceremony",
+        "category": "ritual",
+        "element": "Water",
+        "description": "Honor and bless water as a living being, and receive its healing medicine.",
+        "duration_minutes": 30,
+        "materials": ["Glass of spring or filtered water", "Flower petals (optional)", "Crystal (optional)", "Quiet space"],
+        "therapeutic_benefits": [
+            "Structures water with healing intention",
+            "Deepens relationship with water element",
+            "Creates blessed water for use in ceremony",
+            "Honors water as sacred",
+            "Receives water's wisdom"
+        ],
+        "process": [
+            "Hold glass of water in both hands",
+            "Breathe slowly, come into presence",
+            "Speak gratitude to the water: 'Thank you for your gift of life'",
+            "Visualize golden light entering water",
+            "Speak your blessing or intention into water",
+            "Add flower petals or crystal if desired",
+            "Let water sit in moonlight to charge",
+            "Drink mindfully, feeling blessing enter your cells"
+        ],
+        "water_prayers": [
+            "Water, I honor you as the blood of Mother Earth",
+            "May this water carry healing to every cell",
+            "I bless this water with love, light, and gratitude",
+            "As I drink, I become the blessing",
+            "Water, teach me to flow with life"
+        ],
+        "integration": "Bless all water before drinking. Notice how blessed water feels different in body.",
+        "image_url": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800"
+    },
+    {
+        "id": "12",
+        "name": "Ancestral Clay Working",
+        "category": "visual",
+        "element": "Earth",
+        "description": "Work with clay to connect with ancestral memories held in your hands and DNA.",
+        "duration_minutes": 60,
+        "materials": ["Air-dry clay or real earth clay", "Bowl of water", "Natural tools (sticks, stones)", "Mat for working"],
+        "therapeutic_benefits": [
+            "Activates ancestral memory in hands",
+            "Grounds and calms nervous system",
+            "Allows unconscious to express through form",
+            "Connects to the oldest human art form",
+            "Creates sacred objects"
+        ],
+        "process": [
+            "Set intention to connect with ancestors",
+            "Take clay and begin working without plan",
+            "Close eyes and let hands remember ancient movements",
+            "Allow form to emerge - don't force",
+            "Speak to ancestors as you work",
+            "Ask what they want to show you",
+            "Let piece dry in moonlight",
+            "Place on ancestor altar when complete"
+        ],
+        "prompts": [
+            "Let your hands create what your ancestors couldn't",
+            "Form the shape of your lineage's healing",
+            "Create a vessel to hold ancestral blessings",
+            "Shape your grandmother's/grandfather's wisdom"
+        ],
+        "integration": "Keep creations on altar. Do this practice during ancestral work or when seeking guidance.",
+        "image_url": "https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?w=800"
     }
 ]
 

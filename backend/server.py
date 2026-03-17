@@ -2361,6 +2361,87 @@ async def get_uploaded_image(filename: str):
     
     return FileResponse(file_path, media_type=content_type)
 
+# ============ PUSH NOTIFICATIONS ============
+
+class PushSubscription(BaseModel):
+    endpoint: str
+    keys: dict  # {"p256dh": "...", "auth": "..."}
+
+@api_router.post("/push/subscribe")
+async def subscribe_push(subscription: PushSubscription, current_user: User = Depends(get_current_user)):
+    """Subscribe to push notifications."""
+    sub_dict = subscription.model_dump()
+    sub_dict["user_id"] = current_user.user_id
+    sub_dict["created_at"] = datetime.now(timezone.utc).isoformat()
+    
+    # Upsert - update if exists, insert if not
+    await db.push_subscriptions.update_one(
+        {"user_id": current_user.user_id, "endpoint": subscription.endpoint},
+        {"$set": sub_dict},
+        upsert=True
+    )
+    return {"message": "Subscribed to push notifications"}
+
+@api_router.delete("/push/unsubscribe")
+async def unsubscribe_push(subscription: PushSubscription, current_user: User = Depends(get_current_user)):
+    """Unsubscribe from push notifications."""
+    await db.push_subscriptions.delete_one({
+        "user_id": current_user.user_id,
+        "endpoint": subscription.endpoint
+    })
+    return {"message": "Unsubscribed from push notifications"}
+
+@api_router.post("/admin/push/send")
+async def send_push_notification(
+    title: str,
+    body: str,
+    url: Optional[str] = None,
+    current_user: User = Depends(get_current_user)
+):
+    """Send push notification to all subscribers (admin only)."""
+    try:
+        from pywebpush import webpush, WebPushException
+        
+        # Get VAPID keys from env (you'll need to generate these)
+        vapid_private_key = os.environ.get("VAPID_PRIVATE_KEY")
+        vapid_email = os.environ.get("VAPID_EMAIL", "admin@shamanicyoga.com")
+        
+        if not vapid_private_key:
+            return {"message": "Push notifications not configured (VAPID keys missing)", "sent": 0}
+        
+        subscriptions = await db.push_subscriptions.find({}, {"_id": 0}).to_list(length=1000)
+        
+        notification_data = {
+            "title": title,
+            "body": body,
+            "icon": "/icon-192.png",
+            "badge": "/icon-192.png",
+            "url": url or "/"
+        }
+        
+        sent_count = 0
+        for sub in subscriptions:
+            try:
+                webpush(
+                    subscription_info={
+                        "endpoint": sub["endpoint"],
+                        "keys": sub["keys"]
+                    },
+                    data=str(notification_data),
+                    vapid_private_key=vapid_private_key,
+                    vapid_claims={"sub": f"mailto:{vapid_email}"}
+                )
+                sent_count += 1
+            except WebPushException as e:
+                # Remove invalid subscriptions
+                if e.response and e.response.status_code in [404, 410]:
+                    await db.push_subscriptions.delete_one({"endpoint": sub["endpoint"]})
+                logger.warning(f"Push failed for {sub['endpoint']}: {e}")
+        
+        return {"message": f"Push notifications sent", "sent": sent_count}
+    except ImportError:
+        return {"message": "pywebpush not installed", "sent": 0}
+
 # Include the router in the main app
 app.include_router(api_router)
 

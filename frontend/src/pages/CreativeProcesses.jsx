@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Palette, Pen, Music, Camera, Sparkles,
-  ChevronRight, X, Clock, Play
+  ChevronRight, X, Clock, Play, CheckCircle2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -250,6 +250,34 @@ const CreativeProcesses = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
                     <h3 className="font-medium mb-2">Spiritual Purpose</h3>
                     <p className="text-sm italic text-muted-foreground">{selectedProcess.spiritual_purpose}</p>
+                  </div>
+                )}
+
+                {selectedProcess.therapeutic_benefits && selectedProcess.therapeutic_benefits.length > 0 && (
+                  <div>
+                    <h3 className="font-medium mb-3">Therapeutic Benefits</h3>
+                    <div className="space-y-2">
+                      {selectedProcess.therapeutic_benefits.map((benefit, i) => (
+                        <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                          {benefit}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedProcess.herb_properties && (
+                  <div>
+                    <h3 className="font-medium mb-3">Herb Properties</h3>
+                    <div className="space-y-2">
+                      {selectedProcess.herb_properties.map((herb, i) => (
+                        <div key={i} className="p-3 rounded-lg bg-white/5">
+                          <span className="font-medium text-primary">{herb.herb}</span>
+                          <p className="text-xs text-muted-foreground mt-1">{herb.medicine}</p>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 )}
 
