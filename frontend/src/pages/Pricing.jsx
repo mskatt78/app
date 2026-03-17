@@ -17,14 +17,21 @@ const Pricing = ({ user, api }) => {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [processingPlan, setProcessingPlan] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("stripe");
 
   useEffect(() => {
     fetchData();
     
     // Check for return from payment
     const sessionId = searchParams.get("session_id");
+    const isPayPal = searchParams.get("paypal");
+    const token = searchParams.get("token"); // PayPal returns token param
+    
     if (sessionId) {
       checkPaymentStatus(sessionId);
+    } else if (isPayPal && token) {
+      // Handle PayPal return - need to capture the order
+      capturePayPalOrder(token);
     }
   }, [searchParams]);
 
@@ -55,6 +62,21 @@ const Pricing = ({ user, api }) => {
     }
   };
 
+  const capturePayPalOrder = async (orderId) => {
+    try {
+      const response = await api.post(`/payments/paypal/capture/${orderId}`);
+      if (response.data.payment_status === "paid") {
+        toast.success("PayPal payment successful! Welcome to your membership.");
+        fetchData();
+      } else {
+        toast.error("Payment not completed. Please try again.");
+      }
+    } catch (error) {
+      console.error("PayPal capture failed:", error);
+      toast.error("Failed to complete PayPal payment.");
+    }
+  };
+
   const handleSubscribe = async (planId) => {
     setProcessingPlan(planId);
     try {
@@ -62,7 +84,7 @@ const Pricing = ({ user, api }) => {
         product_type: "subscription",
         plan_id: planId,
         origin_url: window.location.origin,
-        payment_method: "stripe"
+        payment_method: selectedPaymentMethod
       });
       
       if (response.data.checkout_url) {
@@ -70,7 +92,8 @@ const Pricing = ({ user, api }) => {
       }
     } catch (error) {
       console.error("Checkout error:", error);
-      toast.error("Failed to start checkout. Please try again.");
+      const errorMsg = error.response?.data?.detail || "Failed to start checkout. Please try again.";
+      toast.error(errorMsg);
       setProcessingPlan(null);
     }
   };
@@ -230,12 +253,37 @@ const Pricing = ({ user, api }) => {
 
         {/* Payment Methods */}
         <div className="text-center pt-8 border-t border-white/10">
-          <p className="text-sm text-muted-foreground mb-4">Secure payment powered by</p>
-          <div className="flex items-center justify-center gap-6">
-            <div className="px-4 py-2 rounded-lg bg-white/5">
+          <p className="text-sm text-muted-foreground mb-4">Choose your payment method</p>
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <button
+              onClick={() => setSelectedPaymentMethod("stripe")}
+              className={`px-6 py-3 rounded-xl border-2 transition-all ${
+                selectedPaymentMethod === "stripe"
+                  ? "border-[#635BFF] bg-[#635BFF]/10"
+                  : "border-white/10 bg-white/5 hover:border-white/30"
+              }`}
+              data-testid="payment-stripe"
+            >
               <span className="font-bold text-[#635BFF]">stripe</span>
-            </div>
+            </button>
+            <button
+              onClick={() => setSelectedPaymentMethod("paypal")}
+              className={`px-6 py-3 rounded-xl border-2 transition-all ${
+                selectedPaymentMethod === "paypal"
+                  ? "border-[#003087] bg-[#003087]/10"
+                  : "border-white/10 bg-white/5 hover:border-white/30"
+              }`}
+              data-testid="payment-paypal"
+            >
+              <span className="font-bold text-[#003087]">Pay</span>
+              <span className="font-bold text-[#009CDE]">Pal</span>
+            </button>
           </div>
+          <p className="text-xs text-muted-foreground">
+            {selectedPaymentMethod === "stripe" 
+              ? "Credit/Debit cards accepted via Stripe" 
+              : "Pay securely with your PayPal account"}
+          </p>
         </div>
       </main>
     </div>

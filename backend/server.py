@@ -19,6 +19,11 @@ import secrets
 # Import Stripe integration
 from emergentintegrations.payments.stripe.checkout import StripeCheckout, CheckoutSessionResponse, CheckoutStatusResponse, CheckoutSessionRequest
 
+# Import routers
+from routers import dependencies as router_deps
+from routers.auth import router as auth_router
+from routers.payments import router as payments_router
+
 ROOT_DIR = Path(__file__).parent
 UPLOADS_DIR = ROOT_DIR / "uploads"
 UPLOADS_DIR.mkdir(exist_ok=True)
@@ -30,11 +35,18 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
+# Set database for routers
+router_deps.set_db(db)
+
 # Create the main app
 app = FastAPI()
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+
+# Include modular routers
+api_router.include_router(auth_router)
+api_router.include_router(payments_router)
 
 # Configure logging
 logging.basicConfig(
