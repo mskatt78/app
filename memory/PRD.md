@@ -4,6 +4,22 @@
 
 ## Recent Updates (March 17, 2026)
 
+### Admin CMS Expansion - COMPLETED ✅
+New content types added for user-generated content management:
+- ✅ **Retreats** - Multi-day retreat experiences with full details
+  - Backend: `/api/retreats`, `/api/admin/retreats` CRUD
+  - Frontend: `/retreats` page, Admin CMS tab
+- ✅ **Books** - Book content with chapters, testimonials, purchase links
+  - Backend: `/api/books`, `/api/admin/books` CRUD
+  - Frontend: `/books` page, Admin CMS tab
+- ✅ **Custom Oracle Cards** - User's own oracle card deck
+  - Backend: `/api/custom-oracle-cards`, `/api/admin/custom-oracle-cards` CRUD
+  - Frontend: Admin CMS "Oracle Deck" tab
+- ✅ **Live Sessions** - Live interaction feature (YouTube Live, Zoom, etc.)
+  - Backend: `/api/live-sessions`, `/api/admin/live-sessions` CRUD
+  - Frontend: `/live` page, Admin CMS tab
+- ✅ All tests passed (24/24 backend, 100% frontend)
+
 ### Email/Password Authentication - COMPLETED ✅
 - ✅ Backend endpoints: `/api/auth/register`, `/api/auth/login`
 - ✅ Password hashing with salt (SHA-256)
@@ -64,6 +80,15 @@
 ## API Endpoints Added
 - `GET /api/preset-rituals` - Get preset ritual templates
 - `GET /api/preset-rituals/{id}` - Get specific preset ritual
+- **NEW (March 17, 2026):**
+- `GET /api/retreats` - Get all retreats
+- `POST/PUT/DELETE /api/admin/retreats` - Manage retreats
+- `GET /api/books` - Get all books
+- `POST/PUT/DELETE /api/admin/books` - Manage books
+- `GET /api/custom-oracle-cards` - Get oracle cards
+- `POST/PUT/DELETE /api/admin/custom-oracle-cards` - Manage oracle cards
+- `GET /api/live-sessions` - Get live sessions
+- `POST/PUT/DELETE /api/admin/live-sessions` - Manage live sessions
 
 ## All Content with AI Images (116 total)
 - 60 Yoga Poses
@@ -109,6 +134,8 @@
 - ✅ Build successful (warnings only)
 - ✅ Email/Password Auth tested (12/12 tests passed)
 - ✅ Frontend E2E auth flow verified
+- ✅ Admin CMS expansion tested (24/24 tests passed)
+- ✅ New content pages (Live, Retreats, Books) verified
 
 ## Auth Test Credentials
 - Email: test@example.com
@@ -116,5 +143,12 @@
 
 ## Files Updated (March 17, 2026)
 - `/app/frontend/src/pages/LandingPage.jsx` - Auth modal with email/password
-- `/app/backend/server.py` - Email/Password auth endpoints (lines 250-361)
+- `/app/backend/server.py` - Email/Password auth + Admin CMS expansion
 - `/app/backend/tests/test_email_auth.py` - Auth test suite
+- `/app/backend/tests/test_new_content_types.py` - New content tests
+- `/app/frontend/src/pages/AdminCMS.jsx` - New tabs and forms
+- `/app/frontend/src/pages/LiveSessions.jsx` - NEW
+- `/app/frontend/src/pages/Retreats.jsx` - NEW
+- `/app/frontend/src/pages/Books.jsx` - NEW
+- `/app/frontend/src/App.js` - New routes
+- `/app/frontend/src/pages/Dashboard.jsx` - New nav items
