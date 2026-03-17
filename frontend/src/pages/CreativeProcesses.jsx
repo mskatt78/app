@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import PracticeTimer from "../components/PracticeTimer";
 
 const CreativeProcesses = ({ user, api }) => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const CreativeProcesses = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [selectedProcess, setSelectedProcess] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [isPracticing, setIsPracticing] = useState(false);
 
   const categoryIcons = {
     visual: Palette,
@@ -182,7 +184,7 @@ const CreativeProcesses = ({ user, api }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSelectedProcess(null)}
+            onClick={() => { setSelectedProcess(null); setIsPracticing(false); }}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -192,111 +194,190 @@ const CreativeProcesses = ({ user, api }) => {
               onClick={(e) => e.stopPropagation()}
               data-testid="process-modal"
             >
+              {/* Close button always visible */}
+              <button
+                onClick={() => { setSelectedProcess(null); setIsPracticing(false); }}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10"
+                data-testid="close-modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
               {/* Scrollable content */}
               <div className="flex-1 overflow-y-auto">
-                {selectedProcess.image_url && (
-                  <div className="relative h-48 sm:h-64">
-                    <img
-                      src={selectedProcess.image_url}
-                      alt={selectedProcess.name}
-                      className="w-full h-full object-cover"
+                {!isPracticing ? (
+                  <>
+                    {selectedProcess.image_url && (
+                      <div className="relative h-48 sm:h-64">
+                        <img
+                          src={selectedProcess.image_url}
+                          alt={selectedProcess.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                      </div>
+                    )}
+                    
+                    <div className="p-6 space-y-6">
+                      <div>
+                        <h2 className="text-2xl font-serif mb-2">{selectedProcess.name}</h2>
+                        <p className="text-sm text-muted-foreground italic mb-4">{selectedProcess.tradition}</p>
+                        <p className="text-muted-foreground">{selectedProcess.description}</p>
+                      </div>
+
+                      <div className="flex items-center gap-4 p-4 rounded-xl bg-primary/10">
+                        <Clock className="w-5 h-5 text-primary" />
+                        <div>
+                          <p className="text-sm font-medium">Duration</p>
+                          <p className="text-muted-foreground">{selectedProcess.duration_minutes || 30} minutes</p>
+                        </div>
+                      </div>
+
+                      {selectedProcess.materials && (
+                        <div>
+                          <h3 className="font-medium mb-3">Materials Needed</h3>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedProcess.materials.map((material, i) => (
+                              <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
+                                {material}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedProcess.process_steps && (
+                        <div>
+                          <h3 className="font-medium mb-3">Creative Process</h3>
+                          <ol className="space-y-3">
+                            {selectedProcess.process_steps.map((step, i) => (
+                              <li key={i} className="flex items-start gap-3 text-sm">
+                                <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
+                                  {i + 1}
+                                </span>
+                                <span className="text-muted-foreground">{step}</span>
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                      )}
+
+                      {selectedProcess.spiritual_purpose && (
+                        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                          <h3 className="font-medium mb-2">Spiritual Purpose</h3>
+                          <p className="text-sm italic text-muted-foreground">{selectedProcess.spiritual_purpose}</p>
+                        </div>
+                      )}
+
+                      {selectedProcess.therapeutic_benefits && selectedProcess.therapeutic_benefits.length > 0 && (
+                        <div>
+                          <h3 className="font-medium mb-3">Therapeutic Benefits</h3>
+                          <div className="space-y-2">
+                            {selectedProcess.therapeutic_benefits.map((benefit, i) => (
+                              <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                                <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                                {benefit}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedProcess.herb_properties && (
+                        <div>
+                          <h3 className="font-medium mb-3">Herb Properties</h3>
+                          <div className="space-y-2">
+                            {selectedProcess.herb_properties.map((herb, i) => (
+                              <div key={i} className="p-3 rounded-lg bg-white/5">
+                                <span className="font-medium text-primary">{herb.herb}</span>
+                                <p className="text-xs text-muted-foreground mt-1">{herb.medicine}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  /* Guided Creative Practice Mode with Timer */
+                  <div className="p-6 space-y-6">
+                    <div className="text-center mb-4">
+                      <div className={`w-16 h-16 mx-auto mb-4 rounded-full ${categoryColors[selectedProcess.category]?.bg || 'bg-primary/20'} flex items-center justify-center`}>
+                        {(() => {
+                          const Icon = categoryIcons[selectedProcess.category] || Sparkles;
+                          return <Icon className={`w-8 h-8 ${categoryColors[selectedProcess.category]?.text || 'text-primary'}`} />;
+                        })()}
+                      </div>
+                      <h2 className="text-2xl font-serif">{selectedProcess.name}</h2>
+                      <p className="text-sm text-muted-foreground mt-2">Guided Creative Practice</p>
+                    </div>
+
+                    <PracticeTimer
+                      segments={selectedProcess.process_steps?.map((step, i) => ({
+                        name: `Step ${i + 1}: ${step.substring(0, 50)}${step.length > 50 ? '...' : ''}`,
+                        duration_seconds: Math.floor((selectedProcess.duration_minutes || 30) * 60 / (selectedProcess.process_steps?.length || 1)),
+                        has_audio: false
+                      })) || []}
+                      totalDuration={(selectedProcess.duration_minutes || 30) * 60}
+                      backgroundAudio="silence"
+                      practiceType="creative"
+                      onComplete={async () => {
+                        try {
+                          await api.post("/practice-history", {
+                            practice_type: "creative_process",
+                            practice_id: selectedProcess.id,
+                            duration_minutes: selectedProcess.duration_minutes || 30,
+                            element: "Spirit",
+                            notes: `Completed guided ${selectedProcess.name}`
+                          });
+                          toast.success("Creative practice complete! Your spirit is expressed.");
+                          setIsPracticing(false);
+                          setSelectedProcess(null);
+                        } catch (error) {
+                          console.error("Failed to log practice:", error);
+                          toast.success("Creative practice complete!");
+                          setIsPracticing(false);
+                          setSelectedProcess(null);
+                        }
+                      }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
-                    <button
-                      onClick={() => setSelectedProcess(null)}
-                      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10"
-                      data-testid="close-modal"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
+
+                    {/* Spiritual purpose during practice */}
+                    {selectedProcess.spiritual_purpose && (
+                      <div className={`p-4 rounded-xl ${categoryColors[selectedProcess.category]?.bg || 'bg-primary/10'} border ${categoryColors[selectedProcess.category]?.border || 'border-primary/20'} text-center`}>
+                        <p className={`text-sm ${categoryColors[selectedProcess.category]?.text || 'text-primary'}`}>Remember your intention:</p>
+                        <p className="text-lg italic text-white/80 mt-2">"{selectedProcess.spiritual_purpose}"</p>
+                      </div>
+                    )}
                   </div>
                 )}
-                
-                <div className="p-6 space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-serif mb-2">{selectedProcess.name}</h2>
-                    <p className="text-sm text-muted-foreground italic mb-4">{selectedProcess.tradition}</p>
-                    <p className="text-muted-foreground">{selectedProcess.description}</p>
-                  </div>
-
-                  {selectedProcess.materials && (
-                    <div>
-                      <h3 className="font-medium mb-3">Materials Needed</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedProcess.materials.map((material, i) => (
-                          <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
-                            {material}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedProcess.process_steps && (
-                    <div>
-                      <h3 className="font-medium mb-3">Creative Process</h3>
-                      <ol className="space-y-3">
-                        {selectedProcess.process_steps.map((step, i) => (
-                          <li key={i} className="flex items-start gap-3 text-sm">
-                            <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
-                              {i + 1}
-                            </span>
-                            <span className="text-muted-foreground">{step}</span>
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                  )}
-
-                  {selectedProcess.spiritual_purpose && (
-                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-                      <h3 className="font-medium mb-2">Spiritual Purpose</h3>
-                      <p className="text-sm italic text-muted-foreground">{selectedProcess.spiritual_purpose}</p>
-                    </div>
-                  )}
-
-                  {selectedProcess.therapeutic_benefits && selectedProcess.therapeutic_benefits.length > 0 && (
-                    <div>
-                      <h3 className="font-medium mb-3">Therapeutic Benefits</h3>
-                      <div className="space-y-2">
-                        {selectedProcess.therapeutic_benefits.map((benefit, i) => (
-                          <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                            {benefit}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {selectedProcess.herb_properties && (
-                    <div>
-                      <h3 className="font-medium mb-3">Herb Properties</h3>
-                      <div className="space-y-2">
-                        {selectedProcess.herb_properties.map((herb, i) => (
-                          <div key={i} className="p-3 rounded-lg bg-white/5">
-                            <span className="font-medium text-primary">{herb.herb}</span>
-                            <p className="text-xs text-muted-foreground mt-1">{herb.medicine}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {/* Fixed button at bottom */}
               <div className="p-4 border-t border-white/10 bg-card rounded-b-2xl">
-                <button 
-                  type="button"
-                  onClick={() => { logPractice(selectedProcess); setSelectedProcess(null); }}
-                  className="w-full py-4 px-6 bg-primary hover:bg-primary/90 active:bg-primary/80 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
-                  style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
-                  data-testid="complete-process-btn"
-                >
-                  <Play className="w-5 h-5" />
-                  Start Creative Practice
-                </button>
+                {!isPracticing ? (
+                  <button 
+                    type="button"
+                    onClick={() => setIsPracticing(true)}
+                    className="w-full py-4 px-6 bg-primary hover:bg-primary/90 active:bg-primary/80 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
+                    style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
+                    data-testid="begin-practice-btn"
+                  >
+                    <Play className="w-5 h-5" />
+                    Begin Guided Creative Practice
+                  </button>
+                ) : (
+                  <button 
+                    type="button"
+                    onClick={() => setIsPracticing(false)}
+                    className="w-full py-4 px-6 bg-gray-600 hover:bg-gray-700 active:bg-gray-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
+                    style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
+                    data-testid="exit-practice-btn"
+                  >
+                    <X className="w-5 h-5" />
+                    Exit Practice
+                  </button>
+                )}
               </div>
             </motion.div>
           </motion.div>

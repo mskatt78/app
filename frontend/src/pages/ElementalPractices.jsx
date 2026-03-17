@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import PracticeTimer from "../components/PracticeTimer";
 
 const ElementalPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const ElementalPractices = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [isPracticing, setIsPracticing] = useState(false);
 
   const elementIcons = {
     Earth: Mountain,
@@ -197,112 +199,200 @@ const ElementalPractices = ({ user, api }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={() => setSelectedPractice(null)}
+            onClick={() => { setSelectedPractice(null); setIsPracticing(false); }}
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
               data-testid="practice-modal"
             >
-              {selectedPractice.image_url && (
-                <div className="relative h-64">
-                  <img
-                    src={selectedPractice.image_url}
-                    alt={selectedPractice.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
-                  <button
-                    onClick={() => setSelectedPractice(null)}
-                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center"
-                    data-testid="close-modal"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              )}
-              
-              <div className="p-6 space-y-6">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <h2 className="text-2xl font-serif">{selectedPractice.name}</h2>
-                    {selectedPractice.difficulty && (
-                      <span className={`px-2 py-0.5 rounded-full text-xs ${difficultyColors[selectedPractice.difficulty]}`}>
-                        {selectedPractice.difficulty}
-                      </span>
+              {/* Close button always visible */}
+              <button
+                onClick={() => { setSelectedPractice(null); setIsPracticing(false); }}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10"
+                data-testid="close-modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Scrollable content */}
+              <div className="flex-1 overflow-y-auto">
+                {!isPracticing ? (
+                  <>
+                    {selectedPractice.image_url && (
+                      <div className="relative h-64">
+                        <img
+                          src={selectedPractice.image_url}
+                          alt={selectedPractice.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                      </div>
                     )}
-                  </div>
-                  <p className="text-muted-foreground">{selectedPractice.description}</p>
-                </div>
+                    
+                    <div className="p-6 space-y-6">
+                      <div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <h2 className="text-2xl font-serif">{selectedPractice.name}</h2>
+                          {selectedPractice.difficulty && (
+                            <span className={`px-2 py-0.5 rounded-full text-xs ${difficultyColors[selectedPractice.difficulty]}`}>
+                              {selectedPractice.difficulty}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-muted-foreground">{selectedPractice.description}</p>
+                      </div>
 
-                {selectedPractice.benefits && (
-                  <div>
-                    <h3 className="font-medium mb-3">Benefits</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedPractice.benefits.map((benefit, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
-                          {benefit}
-                        </span>
-                      ))}
+                      <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5">
+                        <Clock className="w-5 h-5 text-primary" />
+                        <div>
+                          <p className="text-sm font-medium">Duration</p>
+                          <p className="text-muted-foreground">{selectedPractice.duration_minutes || 20} minutes</p>
+                        </div>
+                      </div>
+
+                      {selectedPractice.benefits && (
+                        <div>
+                          <h3 className="font-medium mb-3">Benefits</h3>
+                          <div className="flex flex-wrap gap-2">
+                            {selectedPractice.benefits.map((benefit, i) => (
+                              <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
+                                {benefit}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {selectedPractice.instructions && (
+                        <div>
+                          <h3 className="font-medium mb-3">Instructions</h3>
+                          <ol className="space-y-3">
+                            {selectedPractice.instructions.map((step, i) => (
+                              <li key={i} className="flex items-start gap-3 text-sm">
+                                <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
+                                  {i + 1}
+                                </span>
+                                <span className="text-muted-foreground">{step}</span>
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-4">
+                        {selectedPractice.best_time && (
+                          <div className="p-3 rounded-lg bg-white/5">
+                            <p className="text-xs text-muted-foreground mb-1">Best Time</p>
+                            <p className="text-sm flex items-center gap-2">
+                              <Clock className="w-4 h-4 text-primary" />
+                              {selectedPractice.best_time}
+                            </p>
+                          </div>
+                        )}
+                        {selectedPractice.moon_phase && (
+                          <div className="p-3 rounded-lg bg-white/5">
+                            <p className="text-xs text-muted-foreground mb-1">Moon Phase</p>
+                            <p className="text-sm flex items-center gap-2">
+                              <Moon className="w-4 h-4 text-primary" />
+                              {selectedPractice.moon_phase}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {selectedPractice.caution && (
+                        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                          <h3 className="font-medium mb-2 text-amber-400">Caution</h3>
+                          <p className="text-sm text-muted-foreground">{selectedPractice.caution}</p>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                )}
+                  </>
+                ) : (
+                  /* Guided Elemental Practice Mode with Timer */
+                  <div className="p-6 space-y-6">
+                    <div className="text-center mb-4">
+                      <div className={`w-16 h-16 mx-auto mb-4 rounded-full ${elementColors[selectedPractice.element]?.bg || 'bg-primary/20'} flex items-center justify-center`}>
+                        {(() => {
+                          const Icon = elementIcons[selectedPractice.element] || Star;
+                          return <Icon className={`w-8 h-8 ${elementColors[selectedPractice.element]?.text || 'text-primary'}`} />;
+                        })()}
+                      </div>
+                      <h2 className="text-2xl font-serif">{selectedPractice.name}</h2>
+                      <p className="text-sm text-muted-foreground mt-2">Guided {selectedPractice.element} Practice</p>
+                    </div>
 
-                {selectedPractice.instructions && (
-                  <div>
-                    <h3 className="font-medium mb-3">Instructions</h3>
-                    <ol className="space-y-3">
-                      {selectedPractice.instructions.map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm">
-                          <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
-                            {i + 1}
-                          </span>
-                          <span className="text-muted-foreground">{step}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                )}
+                    <PracticeTimer
+                      segments={selectedPractice.instructions?.map((step, i) => ({
+                        name: `Step ${i + 1}: ${step.substring(0, 50)}${step.length > 50 ? '...' : ''}`,
+                        duration_seconds: Math.floor((selectedPractice.duration_minutes || 20) * 60 / (selectedPractice.instructions?.length || 1)),
+                        has_audio: false
+                      })) || []}
+                      totalDuration={(selectedPractice.duration_minutes || 20) * 60}
+                      backgroundAudio="silence"
+                      practiceType="elemental"
+                      onComplete={async () => {
+                        try {
+                          await api.post("/practice-history", {
+                            practice_type: "elemental",
+                            practice_id: selectedPractice.id,
+                            duration_minutes: selectedPractice.duration_minutes || 20,
+                            element: selectedPractice.element,
+                            notes: `Completed guided ${selectedPractice.name}`
+                          });
+                          toast.success(`${selectedPractice.element} practice complete! You are aligned.`);
+                          setIsPracticing(false);
+                          setSelectedPractice(null);
+                        } catch (error) {
+                          console.error("Failed to log practice:", error);
+                          toast.success("Elemental practice complete!");
+                          setIsPracticing(false);
+                          setSelectedPractice(null);
+                        }
+                      }}
+                    />
 
-                <div className="grid grid-cols-2 gap-4">
-                  {selectedPractice.best_time && (
-                    <div className="p-3 rounded-lg bg-white/5">
-                      <p className="text-xs text-muted-foreground mb-1">Best Time</p>
-                      <p className="text-sm flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-primary" />
-                        {selectedPractice.best_time}
+                    {/* Element affirmation during practice */}
+                    <div className={`p-4 rounded-xl ${elementColors[selectedPractice.element]?.bg || 'bg-primary/10'} border ${elementColors[selectedPractice.element]?.border || 'border-primary/20'} text-center`}>
+                      <p className={`text-sm ${elementColors[selectedPractice.element]?.text || 'text-primary'}`}>
+                        Connect with the {selectedPractice.element} element
+                      </p>
+                      <p className="text-lg text-white/80 mt-2">
+                        Feel its energy flowing through you
                       </p>
                     </div>
-                  )}
-                  {selectedPractice.moon_phase && (
-                    <div className="p-3 rounded-lg bg-white/5">
-                      <p className="text-xs text-muted-foreground mb-1">Moon Phase</p>
-                      <p className="text-sm flex items-center gap-2">
-                        <Moon className="w-4 h-4 text-primary" />
-                        {selectedPractice.moon_phase}
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {selectedPractice.caution && (
-                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                    <h3 className="font-medium mb-2 text-amber-400">Caution</h3>
-                    <p className="text-sm text-muted-foreground">{selectedPractice.caution}</p>
                   </div>
                 )}
+              </div>
 
-                <Button 
-                  onClick={() => { logPractice(selectedPractice); setSelectedPractice(null); }}
-                  className="w-full"
-                  data-testid="complete-practice-btn"
-                >
-                  <Play className="w-4 h-4 mr-2" />
-                  Begin Elemental Practice
-                </Button>
+              {/* Fixed button at bottom */}
+              <div className="p-4 border-t border-white/10 bg-card rounded-b-2xl">
+                {!isPracticing ? (
+                  <Button 
+                    onClick={() => setIsPracticing(true)}
+                    className="w-full py-4"
+                    style={{ minHeight: '56px' }}
+                    data-testid="begin-practice-btn"
+                  >
+                    <Play className="w-4 h-4 mr-2" />
+                    Begin Guided Elemental Practice
+                  </Button>
+                ) : (
+                  <Button 
+                    variant="outline"
+                    onClick={() => setIsPracticing(false)}
+                    className="w-full py-4"
+                    style={{ minHeight: '56px' }}
+                    data-testid="exit-practice-btn"
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    Exit Practice
+                  </Button>
+                )}
               </div>
             </motion.div>
           </motion.div>
