@@ -188,107 +188,115 @@ const CreativeProcesses = ({ user, api }) => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
               data-testid="process-modal"
             >
-              {selectedProcess.image_url && (
-                <div className="relative h-64">
-                  <img
-                    src={selectedProcess.image_url}
-                    alt={selectedProcess.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
-                  <button
-                    onClick={() => setSelectedProcess(null)}
-                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center"
-                    data-testid="close-modal"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              )}
-              
-              <div className="p-6 space-y-6">
-                <div>
-                  <h2 className="text-2xl font-serif mb-2">{selectedProcess.name}</h2>
-                  <p className="text-sm text-muted-foreground italic mb-4">{selectedProcess.tradition}</p>
-                  <p className="text-muted-foreground">{selectedProcess.description}</p>
-                </div>
-
-                {selectedProcess.materials && (
-                  <div>
-                    <h3 className="font-medium mb-3">Materials Needed</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProcess.materials.map((material, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
-                          {material}
-                        </span>
-                      ))}
-                    </div>
+              {/* Scrollable content */}
+              <div className="flex-1 overflow-y-auto">
+                {selectedProcess.image_url && (
+                  <div className="relative h-48 sm:h-64">
+                    <img
+                      src={selectedProcess.image_url}
+                      alt={selectedProcess.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                    <button
+                      onClick={() => setSelectedProcess(null)}
+                      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10"
+                      data-testid="close-modal"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
                   </div>
                 )}
-
-                {selectedProcess.process_steps && (
+                
+                <div className="p-6 space-y-6">
                   <div>
-                    <h3 className="font-medium mb-3">Creative Process</h3>
-                    <ol className="space-y-3">
-                      {selectedProcess.process_steps.map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm">
-                          <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
-                            {i + 1}
+                    <h2 className="text-2xl font-serif mb-2">{selectedProcess.name}</h2>
+                    <p className="text-sm text-muted-foreground italic mb-4">{selectedProcess.tradition}</p>
+                    <p className="text-muted-foreground">{selectedProcess.description}</p>
+                  </div>
+
+                  {selectedProcess.materials && (
+                    <div>
+                      <h3 className="font-medium mb-3">Materials Needed</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedProcess.materials.map((material, i) => (
+                          <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
+                            {material}
                           </span>
-                          <span className="text-muted-foreground">{step}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                )}
-
-                {selectedProcess.spiritual_purpose && (
-                  <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-                    <h3 className="font-medium mb-2">Spiritual Purpose</h3>
-                    <p className="text-sm italic text-muted-foreground">{selectedProcess.spiritual_purpose}</p>
-                  </div>
-                )}
-
-                {selectedProcess.therapeutic_benefits && selectedProcess.therapeutic_benefits.length > 0 && (
-                  <div>
-                    <h3 className="font-medium mb-3">Therapeutic Benefits</h3>
-                    <div className="space-y-2">
-                      {selectedProcess.therapeutic_benefits.map((benefit, i) => (
-                        <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                          {benefit}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {selectedProcess.herb_properties && (
-                  <div>
-                    <h3 className="font-medium mb-3">Herb Properties</h3>
-                    <div className="space-y-2">
-                      {selectedProcess.herb_properties.map((herb, i) => (
-                        <div key={i} className="p-3 rounded-lg bg-white/5">
-                          <span className="font-medium text-primary">{herb.herb}</span>
-                          <p className="text-xs text-muted-foreground mt-1">{herb.medicine}</p>
-                        </div>
-                      ))}
+                  {selectedProcess.process_steps && (
+                    <div>
+                      <h3 className="font-medium mb-3">Creative Process</h3>
+                      <ol className="space-y-3">
+                        {selectedProcess.process_steps.map((step, i) => (
+                          <li key={i} className="flex items-start gap-3 text-sm">
+                            <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
+                              {i + 1}
+                            </span>
+                            <span className="text-muted-foreground">{step}</span>
+                          </li>
+                        ))}
+                      </ol>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <Button 
+                  {selectedProcess.spiritual_purpose && (
+                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
+                      <h3 className="font-medium mb-2">Spiritual Purpose</h3>
+                      <p className="text-sm italic text-muted-foreground">{selectedProcess.spiritual_purpose}</p>
+                    </div>
+                  )}
+
+                  {selectedProcess.therapeutic_benefits && selectedProcess.therapeutic_benefits.length > 0 && (
+                    <div>
+                      <h3 className="font-medium mb-3">Therapeutic Benefits</h3>
+                      <div className="space-y-2">
+                        {selectedProcess.therapeutic_benefits.map((benefit, i) => (
+                          <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                            <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
+                            {benefit}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {selectedProcess.herb_properties && (
+                    <div>
+                      <h3 className="font-medium mb-3">Herb Properties</h3>
+                      <div className="space-y-2">
+                        {selectedProcess.herb_properties.map((herb, i) => (
+                          <div key={i} className="p-3 rounded-lg bg-white/5">
+                            <span className="font-medium text-primary">{herb.herb}</span>
+                            <p className="text-xs text-muted-foreground mt-1">{herb.medicine}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Fixed button at bottom */}
+              <div className="p-4 border-t border-white/10 bg-card rounded-b-2xl">
+                <button 
+                  type="button"
                   onClick={() => { logPractice(selectedProcess); setSelectedProcess(null); }}
-                  className="w-full"
+                  className="w-full py-4 px-6 bg-primary hover:bg-primary/90 active:bg-primary/80 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
+                  style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
                   data-testid="complete-process-btn"
                 >
-                  <Play className="w-4 h-4 mr-2" />
+                  <Play className="w-5 h-5" />
                   Start Creative Practice
-                </Button>
+                </button>
               </div>
             </motion.div>
           </motion.div>

@@ -190,84 +190,90 @@ const HeartPractices = ({ user, api }) => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
               data-testid="practice-modal"
             >
-              {selectedPractice.image_url && (
-                <div className="relative h-64">
-                  <img
-                    src={selectedPractice.image_url}
-                    alt={selectedPractice.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
-                  <button
-                    onClick={() => setSelectedPractice(null)}
-                    className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center"
-                    data-testid="close-modal"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-              )}
-              
-              <div className="p-6 space-y-6">
-                <div>
-                  <h2 className="text-2xl font-serif mb-2">{selectedPractice.name}</h2>
-                  <p className="text-sm text-muted-foreground italic mb-4">{selectedPractice.tradition}</p>
-                  <p className="text-muted-foreground">{selectedPractice.description}</p>
-                </div>
-
-                {selectedPractice.benefits && (
-                  <div>
-                    <h3 className="font-medium mb-3">Benefits</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedPractice.benefits.map((benefit, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-pink-500/10 text-pink-400 text-sm">
-                          {benefit}
-                        </span>
-                      ))}
-                    </div>
+              {/* Scrollable content */}
+              <div className="flex-1 overflow-y-auto">
+                {selectedPractice.image_url && (
+                  <div className="relative h-48 sm:h-64">
+                    <img
+                      src={selectedPractice.image_url}
+                      alt={selectedPractice.name}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                    <button
+                      onClick={() => setSelectedPractice(null)}
+                      className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10"
+                      data-testid="close-modal"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
                   </div>
                 )}
-
-                {selectedPractice.steps && (
+                
+                <div className="p-6 space-y-6">
                   <div>
-                    <h3 className="font-medium mb-3">Practice Steps</h3>
-                    <ol className="space-y-3">
-                      {selectedPractice.steps.map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm">
-                          <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
-                            {i + 1}
+                    <h2 className="text-2xl font-serif mb-2">{selectedPractice.name}</h2>
+                    <p className="text-sm text-muted-foreground italic mb-4">{selectedPractice.tradition}</p>
+                    <p className="text-muted-foreground">{selectedPractice.description}</p>
+                  </div>
+
+                  {selectedPractice.benefits && (
+                    <div>
+                      <h3 className="font-medium mb-3">Benefits</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedPractice.benefits.map((benefit, i) => (
+                          <span key={i} className="px-3 py-1 rounded-full bg-pink-500/10 text-pink-400 text-sm">
+                            {benefit}
                           </span>
-                          <span className="text-muted-foreground">{step}</span>
-                        </li>
-                      ))}
-                    </ol>
-                  </div>
-                )}
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-                {selectedPractice.affirmation && (
-                  <div className="p-4 rounded-xl bg-pink-500/5 border border-pink-500/20">
-                    <h3 className="font-medium mb-2">Heart Affirmation</h3>
-                    <p className="text-sm italic text-muted-foreground">"{selectedPractice.affirmation}"</p>
-                  </div>
-                )}
+                  {selectedPractice.steps && (
+                    <div>
+                      <h3 className="font-medium mb-3">Practice Steps</h3>
+                      <ol className="space-y-3">
+                        {selectedPractice.steps.map((step, i) => (
+                          <li key={i} className="flex items-start gap-3 text-sm">
+                            <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
+                              {i + 1}
+                            </span>
+                            <span className="text-muted-foreground">{step}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
 
-                <Button 
-                  onClick={(e) => { 
-                    e.preventDefault();
-                    e.stopPropagation();
+                  {selectedPractice.affirmation && (
+                    <div className="p-4 rounded-xl bg-pink-500/5 border border-pink-500/20">
+                      <h3 className="font-medium mb-2">Heart Affirmation</h3>
+                      <p className="text-sm italic text-muted-foreground">"{selectedPractice.affirmation}"</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Fixed button at bottom */}
+              <div className="p-4 border-t border-white/10 bg-card rounded-b-2xl">
+                <button 
+                  type="button"
+                  onClick={() => { 
                     logPractice(selectedPractice); 
                     setSelectedPractice(null); 
                   }}
-                  className="w-full bg-pink-600 hover:bg-pink-700 active:bg-pink-800 touch-manipulation"
+                  className="w-full py-4 px-6 bg-pink-600 hover:bg-pink-700 active:bg-pink-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
+                  style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
                   data-testid="complete-practice-btn"
                 >
-                  <Play className="w-4 h-4 mr-2" />
+                  <Play className="w-5 h-5" />
                   Begin Heart Practice
-                </Button>
+                </button>
               </div>
             </motion.div>
           </motion.div>
