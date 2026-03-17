@@ -256,8 +256,13 @@ const HeartPractices = ({ user, api }) => {
                 )}
 
                 <Button 
-                  onClick={() => { logPractice(selectedPractice); setSelectedPractice(null); }}
-                  className="w-full bg-pink-600 hover:bg-pink-700"
+                  onClick={(e) => { 
+                    e.preventDefault();
+                    e.stopPropagation();
+                    logPractice(selectedPractice); 
+                    setSelectedPractice(null); 
+                  }}
+                  className="w-full bg-pink-600 hover:bg-pink-700 active:bg-pink-800 touch-manipulation"
                   data-testid="complete-practice-btn"
                 >
                   <Play className="w-4 h-4 mr-2" />

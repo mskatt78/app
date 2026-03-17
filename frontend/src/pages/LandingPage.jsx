@@ -100,9 +100,9 @@ const LandingPage = ({ onLoginSuccess }) => {
             <h1 className="text-5xl sm:text-6xl md:text-8xl font-serif font-light tracking-tight mb-4 leading-none">
               <span className="italic text-foreground">Shamanic</span>
               <br />
-              <span className="text-primary">Elemental</span>
+              <span className="text-primary">Elements</span>
               <br />
-              <span className="text-foreground/80">Yoga</span>
+              <span className="text-foreground/80 text-3xl sm:text-4xl md:text-5xl">Temple of the Soul</span>
             </h1>
 
             <p className="text-base md:text-lg text-muted-foreground font-light max-w-xl mx-auto mb-8 leading-relaxed">
