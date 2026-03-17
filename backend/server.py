@@ -13,6 +13,8 @@ import uuid
 from datetime import datetime, timezone, timedelta
 import httpx
 import shutil
+import hashlib
+import secrets
 
 ROOT_DIR = Path(__file__).parent
 UPLOADS_DIR = ROOT_DIR / "uploads"
@@ -53,6 +55,16 @@ class SessionCreate(BaseModel):
 class OracleReadingRequest(BaseModel):
     question: Optional[str] = None
     spread_type: str = "single"  # single, three_card, celtic_cross
+
+# Email/Password Auth Models
+class UserRegister(BaseModel):
+    email: str
+    password: str
+    name: str
+
+class UserLogin(BaseModel):
+    email: str
+    password: str
 
 class OracleReading(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -234,6 +246,118 @@ async def logout(request: Request, response: Response):
     
     response.delete_cookie(key="session_token", path="/")
     return {"message": "Logged out successfully"}
+
+# ============ EMAIL/PASSWORD AUTH ============
+
+def hash_password(password: str) -> str:
+    """Hash a password using SHA-256 with salt."""
+    salt = secrets.token_hex(16)
+    hashed = hashlib.sha256((password + salt).encode()).hexdigest()
+    return f"{salt}:{hashed}"
+
+def verify_password(password: str, stored_hash: str) -> bool:
+    """Verify a password against the stored hash."""
+    try:
+        salt, hashed = stored_hash.split(":")
+        return hashlib.sha256((password + salt).encode()).hexdigest() == hashed
+    except:
+        return False
+
+@api_router.post("/auth/register")
+async def register_user(data: UserRegister, response: Response):
+    """Register a new user with email and password."""
+    # Check if email already exists
+    existing = await db.users.find_one({"email": data.email.lower()})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered. Please login instead.")
+    
+    # Create user
+    user_id = str(uuid.uuid4())
+    password_hash = hash_password(data.password)
+    
+    user_doc = {
+        "user_id": user_id,
+        "email": data.email.lower(),
+        "name": data.name,
+        "password_hash": password_hash,
+        "auth_type": "email",
+        "picture": None,
+        "created_at": datetime.now(timezone.utc)
+    }
+    
+    await db.users.insert_one(user_doc)
+    
+    # Create session
+    session_token = secrets.token_urlsafe(32)
+    await db.user_sessions.insert_one({
+        "session_token": session_token,
+        "user_id": user_id,
+        "created_at": datetime.now(timezone.utc),
+        "expires_at": datetime.now(timezone.utc) + timedelta(days=30)
+    })
+    
+    # Set cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        max_age=30 * 24 * 60 * 60,
+        samesite="lax",
+        secure=True,
+        path="/"
+    )
+    
+    return {
+        "user_id": user_id,
+        "email": data.email.lower(),
+        "name": data.name,
+        "message": "Registration successful"
+    }
+
+@api_router.post("/auth/login")
+async def login_user(data: UserLogin, response: Response):
+    """Login with email and password."""
+    user = await db.users.find_one({"email": data.email.lower()})
+    
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Check if this is an email auth user
+    if user.get("auth_type") != "email" or not user.get("password_hash"):
+        raise HTTPException(
+            status_code=401, 
+            detail="This account uses Google login. Please use 'Continue with Google' instead."
+        )
+    
+    if not verify_password(data.password, user["password_hash"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Create session
+    session_token = secrets.token_urlsafe(32)
+    await db.user_sessions.insert_one({
+        "session_token": session_token,
+        "user_id": user["user_id"],
+        "created_at": datetime.now(timezone.utc),
+        "expires_at": datetime.now(timezone.utc) + timedelta(days=30)
+    })
+    
+    # Set cookie
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        max_age=30 * 24 * 60 * 60,
+        samesite="lax",
+        secure=True,
+        path="/"
+    )
+    
+    return {
+        "user_id": user["user_id"],
+        "email": user["email"],
+        "name": user["name"],
+        "message": "Login successful"
+    }
 
 # ============ ORACLE ROUTES ============
 
