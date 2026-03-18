@@ -2,7 +2,35 @@
 
 ## Status: ✅ READY FOR DEPLOYMENT
 
-## Recent Updates (March 18, 2026)
+## Recent Updates (March 18, 2026 - Session 2)
+
+### Critical Bug Fixes - COMPLETED ✅
+1. **Email/Password Login Fixed** - Sign In button was unclickable due to z-index issue
+   - Root cause: Dialog overlay (z-50) was intercepting clicks meant for form content
+   - Fix: Increased DialogContent z-index to z-[60] in `/app/frontend/src/components/ui/dialog.jsx`
+   - Backend fix: Auth endpoint now checks for both `password_hash` AND `password_salt` before login (line 247-248 in auth.py)
+   - ✅ Tested: Registration and login both working (100% success rate)
+
+2. **Admin Access Control Fixed** - Non-admin users could access Admin CMS
+   - Fix: Added proper admin email check in `AdminRoute` component (App.js lines 142-199)
+   - Fix: Hidden Admin CMS link in Dashboard sidebar for non-admin users
+   - Admin emails: `skywatersacredembodiments@gmail.com`, `mskatt78@gmail.com`
+   - ✅ Tested: Non-admin users redirected from /admin with "Admin access required" toast
+   - ✅ Tested: Admin CMS link hidden in sidebar for non-admin users
+
+### Files Updated (Session 2):
+- `/app/frontend/src/components/ui/dialog.jsx` - z-index fix (z-50 → z-[60])
+- `/app/backend/routers/auth.py` - password_salt check added
+- `/app/frontend/src/App.js` - toast import added, mskatt78@gmail.com added to admin list
+- `/app/frontend/src/pages/Dashboard.jsx` - mskatt78@gmail.com added to admin list
+
+### Test Report: `/app/test_reports/iteration_17.json`
+- Backend: 100% (12/12 tests passed)
+- Frontend: 100% (all features verified)
+
+---
+
+## Previous Updates (March 18, 2026 - Session 1)
 
 ### Backend Refactoring - COMPLETED ✅
 - ✅ **Modular Router Architecture** - server.py reduced from 3040 lines to ~90 lines
