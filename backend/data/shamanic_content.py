@@ -786,7 +786,7 @@ SHAMANIC_PRACTICES = [
             "Call on it in times of need",
             "Honor it with offerings"
         ],
-        "image_url": "https://images.unsplash.com/photo-1474511320723-9a56873571b7?w=800"
+        "image_url": "https://images.unsplash.com/photo-1761754763205-c38d5a44f880?w=800"
     },
     {
         "id": "2",

@@ -365,6 +365,8 @@ const ShamanicPractices = ({ user, api }) => {
                       totalDuration={(selectedPractice.duration_minutes || 30) * 60}
                       backgroundAudio="drums"
                       practiceType="shamanic"
+                      element="Spirit"
+                      visualizationType="aurora"
                       onComplete={async () => {
                         try {
                           await api.post("/practice-history", {

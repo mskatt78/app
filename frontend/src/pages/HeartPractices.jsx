@@ -290,8 +290,10 @@ const HeartPractices = ({ user, api }) => {
                         has_audio: false
                       })) || []}
                       totalDuration={(selectedPractice.duration_minutes || 20) * 60}
-                      backgroundAudio="silence"
+                      backgroundAudio="singing_bowls"
                       practiceType="heart"
+                      element="Water"
+                      visualizationType="mandala"
                       onComplete={async () => {
                         try {
                           await api.post("/practice-history", {

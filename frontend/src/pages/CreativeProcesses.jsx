@@ -319,8 +319,10 @@ const CreativeProcesses = ({ user, api }) => {
                         has_audio: false
                       })) || []}
                       totalDuration={(selectedProcess.duration_minutes || 30) * 60}
-                      backgroundAudio="silence"
+                      backgroundAudio="nature"
                       practiceType="creative"
+                      element="Spirit"
+                      visualizationType="particles"
                       onComplete={async () => {
                         try {
                           await api.post("/practice-history", {

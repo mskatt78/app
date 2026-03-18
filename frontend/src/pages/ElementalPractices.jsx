@@ -333,8 +333,10 @@ const ElementalPractices = ({ user, api }) => {
                         has_audio: false
                       })) || []}
                       totalDuration={(selectedPractice.duration_minutes || 20) * 60}
-                      backgroundAudio="silence"
+                      backgroundAudio={selectedPractice.element === "Fire" ? "fire" : selectedPractice.element === "Water" ? "ocean" : selectedPractice.element === "Air" ? "wind" : "nature"}
                       practiceType="elemental"
+                      element={selectedPractice.element || "Earth"}
+                      visualizationType="element"
                       onComplete={async () => {
                         try {
                           await api.post("/practice-history", {
