@@ -73,7 +73,7 @@ const FullDisclaimer = () => (
       </div>
       
       <div className="pt-4 border-t border-white/5 text-xs">
-        <p>© {new Date().getFullYear()} Shamanic Elemental Yoga. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} Shamanic Elements - Temple Of The Soul. All rights reserved.</p>
         <p className="mt-1">By using this app, you agree to these terms and acknowledge that you have read and understood this disclaimer.</p>
       </div>
     </div>
