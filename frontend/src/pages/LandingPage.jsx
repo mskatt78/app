@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Sun, Moon, Sparkles, Star, LogIn, Mail, Lock, User, Eye, EyeOff, ArrowRight
@@ -12,6 +13,7 @@ import axios from "axios";
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const LandingPage = ({ onLoginSuccess }) => {
+  const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -109,7 +111,7 @@ const LandingPage = ({ onLoginSuccess }) => {
               Journey through the sacred elements. Transform your practice with shamanic traditions.
             </p>
 
-            {/* BIG ENTER BUTTON - Very Visible */}
+            {/* BIG ENTER BUTTON - Goes to content, no login required */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
@@ -117,7 +119,7 @@ const LandingPage = ({ onLoginSuccess }) => {
             >
               <Button
                 data-testid="enter-temple-btn"
-                onClick={() => setShowAuthModal(true)}
+                onClick={() => navigate('/yoga')}
                 className="bg-primary text-primary-foreground rounded-full px-16 py-8 text-xl md:text-2xl font-serif italic
                            shadow-[0_0_60px_rgba(212,175,55,0.5)] hover:shadow-[0_0_80px_rgba(212,175,55,0.7)]
                            transition-all duration-500 animate-pulse hover:animate-none"
@@ -128,9 +130,19 @@ const LandingPage = ({ onLoginSuccess }) => {
               </Button>
             </motion.div>
 
-            <p className="text-sm text-muted-foreground/70">
-              Click above to begin your sacred journey
+            <p className="text-sm text-muted-foreground/70 mb-4">
+              Explore freely • No account needed
             </p>
+            
+            {/* Sign In link for returning users */}
+            <Button
+              variant="ghost"
+              onClick={() => setShowAuthModal(true)}
+              className="text-primary/70 hover:text-primary"
+            >
+              <LogIn className="w-4 h-4 mr-2" />
+              Sign in to save your progress
+            </Button>
           </motion.div>
         </div>
       </section>
