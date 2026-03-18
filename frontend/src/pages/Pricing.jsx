@@ -36,18 +36,24 @@ const Pricing = ({ user, api }) => {
   }, [searchParams]);
 
   const fetchData = async () => {
+    // Fetch plans (public endpoint - always works)
     try {
-      const [plansRes, subRes] = await Promise.all([
-        api.get("/payments/plans"),
-        api.get("/payments/subscription-status")
-      ]);
+      const plansRes = await api.get("/payments/plans");
       setPlans(plansRes.data.plans || []);
+    } catch (error) {
+      console.error("Failed to fetch plans:", error);
+    }
+    
+    // Fetch subscription status (requires auth - may fail for unauthenticated users)
+    try {
+      const subRes = await api.get("/payments/subscription-status");
       setSubscription(subRes.data);
     } catch (error) {
-      console.error("Failed to fetch data:", error);
-    } finally {
-      setLoading(false);
+      // Expected to fail for unauthenticated users - that's OK
+      console.log("Subscription status not available (not logged in)");
     }
+    
+    setLoading(false);
   };
 
   const checkPaymentStatus = async (sessionId) => {
