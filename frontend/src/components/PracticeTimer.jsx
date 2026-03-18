@@ -1,10 +1,40 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Play, Pause, RotateCcw, Volume2, VolumeX, SkipForward, Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
-import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
+import { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
 import MeditationVisualizer from "./MeditationVisualizer";
 import BreathingVisualizer from "./BreathingVisualizer";
+
+// Web Audio sound generation functions
+const createBrownNoise = (audioContext) => {
+  const bufferSize = 2 * audioContext.sampleRate;
+  const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+  const output = noiseBuffer.getChannelData(0);
+  
+  let lastOut = 0.0;
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+    output[i] = (lastOut + (0.02 * white)) / 1.02;
+    lastOut = output[i];
+    output[i] *= 3.5;
+  }
+  
+  const whiteNoise = audioContext.createBufferSource();
+  whiteNoise.buffer = noiseBuffer;
+  whiteNoise.loop = true;
+  return whiteNoise;
+};
+
+const createFilteredNoise = (audioContext, frequency, Q = 1) => {
+  const noise = createBrownNoise(audioContext);
+  const filter = audioContext.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = frequency;
+  filter.Q.value = Q;
+  noise.connect(filter);
+  return { source: noise, output: filter };
+};
 
 const PracticeTimer = ({ 
   segments = [], 
@@ -13,8 +43,8 @@ const PracticeTimer = ({
   backgroundAudio = "silence",
   practiceType = "general",
   element = "Spirit",
-  breathingPattern = null, // Optional: { inhale: 4, hold: 4, exhale: 4, hold_empty: 0 }
-  visualizationType = "particles" // particles, aurora, mandala, chakra, element
+  breathingPattern = null,
+  visualizationType = "particles"
 }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
@@ -23,8 +53,13 @@ const PracticeTimer = ({
   const [isMuted, setIsMuted] = useState(false);
   const [showVisuals, setShowVisuals] = useState(true);
   const [audioVolume, setAudioVolume] = useState(0.5);
+  const [audioPlaying, setAudioPlaying] = useState(false);
   const intervalRef = useRef(null);
-  const audioRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const gainNodeRef = useRef(null);
+  const sourcesRef = useRef([]);
+  const drumIntervalRef = useRef(null);
+  const bowlIntervalRef = useRef(null);
 
   // Calculate total duration from segments or use provided
   const calculatedTotal = segments.length > 0 
@@ -45,34 +80,152 @@ const PracticeTimer = ({
     }
   };
 
-  // Initialize audio on mount
-  useEffect(() => {
-    if (backgroundAudio && backgroundAudio !== "silence" && AMBIENT_SOUNDS[backgroundAudio]?.url) {
-      const audio = new Audio(AMBIENT_SOUNDS[backgroundAudio].url);
-      audio.loop = true;
-      audio.volume = audioVolume;
-      audioRef.current = audio;
+  // Cleanup audio resources
+  const cleanupAudio = useCallback(() => {
+    if (drumIntervalRef.current) {
+      clearInterval(drumIntervalRef.current);
+      drumIntervalRef.current = null;
     }
+    if (bowlIntervalRef.current) {
+      clearInterval(bowlIntervalRef.current);
+      bowlIntervalRef.current = null;
+    }
+    sourcesRef.current.forEach(source => {
+      try { source.stop?.(); } catch (e) {}
+      try { source.disconnect?.(); } catch (e) {}
+    });
+    sourcesRef.current = [];
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
+    }
+    audioContextRef.current = null;
+    gainNodeRef.current = null;
+    setAudioPlaying(false);
+  }, []);
 
+  // Start audio
+  const startAudio = useCallback(() => {
+    if (backgroundAudio === "silence" || isMuted) return;
+    
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioContext();
+      audioContextRef.current = ctx;
+      
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = audioVolume * 0.5;
+      gainNode.connect(ctx.destination);
+      gainNodeRef.current = gainNode;
+      
+      const sound = AMBIENT_SOUNDS[backgroundAudio];
+      
+      switch (sound?.type) {
+        case "rain":
+        case "water": {
+          const { source, output } = createFilteredNoise(ctx, 400, 2);
+          output.connect(gainNode);
+          source.start();
+          sourcesRef.current.push(source);
+          break;
+        }
+        case "ocean": {
+          const { source: low, output: lowOut } = createFilteredNoise(ctx, 200, 1);
+          const { source: mid, output: midOut } = createFilteredNoise(ctx, 800, 0.5);
+          lowOut.connect(gainNode);
+          midOut.connect(gainNode);
+          low.start();
+          mid.start();
+          sourcesRef.current.push(low, mid);
+          break;
+        }
+        case "wind": {
+          const { source, output } = createFilteredNoise(ctx, 600, 3);
+          output.connect(gainNode);
+          source.start();
+          sourcesRef.current.push(source);
+          break;
+        }
+        case "fire":
+        case "nature": {
+          const { source, output } = createFilteredNoise(ctx, 500, 0.5);
+          output.connect(gainNode);
+          source.start();
+          sourcesRef.current.push(source);
+          break;
+        }
+        case "drums": {
+          const playDrum = () => {
+            if (!audioContextRef.current) return;
+            const osc = ctx.createOscillator();
+            const oscGain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(80, ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
+            oscGain.gain.setValueAtTime(0.5, ctx.currentTime);
+            oscGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+            osc.connect(oscGain);
+            oscGain.connect(gainNode);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+          };
+          playDrum();
+          drumIntervalRef.current = setInterval(playDrum, 214); // ~280 BPM
+          break;
+        }
+        case "bowls": {
+          const playBowl = () => {
+            if (!audioContextRef.current) return;
+            [528, 1056, 1584].forEach((freq, i) => {
+              const osc = ctx.createOscillator();
+              const oscGain = ctx.createGain();
+              osc.type = "sine";
+              osc.frequency.value = freq;
+              const vol = 0.15 / (i + 1);
+              oscGain.gain.setValueAtTime(0, ctx.currentTime);
+              oscGain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.5);
+              oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 8);
+              osc.connect(oscGain);
+              oscGain.connect(gainNode);
+              osc.start();
+              osc.stop(ctx.currentTime + 8);
+            });
+          };
+          playBowl();
+          bowlIntervalRef.current = setInterval(playBowl, 10000);
+          break;
+        }
+      }
+      setAudioPlaying(true);
+    } catch (e) {
+      console.warn('Web Audio API error:', e);
+    }
+  }, [backgroundAudio, audioVolume, isMuted]);
+
+  // Handle audio when timer state changes
+  useEffect(() => {
+    if (isRunning && !isMuted && backgroundAudio !== "silence") {
+      if (!audioPlaying) {
+        startAudio();
+      }
+    } else {
+      cleanupAudio();
+    }
+  }, [isRunning, isMuted, backgroundAudio, startAudio, cleanupAudio, audioPlaying]);
+
+  // Update volume
+  useEffect(() => {
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = isMuted ? 0 : audioVolume * 0.5;
+    }
+  }, [audioVolume, isMuted]);
+
+  // Cleanup on unmount
+  useEffect(() => {
     return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
+      cleanupAudio();
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [backgroundAudio]);
-
-  // Handle audio playback
-  useEffect(() => {
-    if (audioRef.current) {
-      if (isRunning && !isMuted) {
-        audioRef.current.volume = audioVolume;
-        audioRef.current.play().catch(e => console.warn('Audio autoplay blocked:', e));
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [isRunning, isMuted, audioVolume]);
+  }, [cleanupAudio]);
 
   useEffect(() => {
     if (isRunning) {
@@ -89,7 +242,7 @@ const PracticeTimer = ({
             } else {
               // Practice complete
               setIsRunning(false);
-              if (audioRef.current) audioRef.current.pause();
+              cleanupAudio();
               onComplete?.();
               return prev;
             }
@@ -101,7 +254,7 @@ const PracticeTimer = ({
         setTotalElapsed(prev => {
           if (prev + 1 >= calculatedTotal) {
             setIsRunning(false);
-            if (audioRef.current) audioRef.current.pause();
+            cleanupAudio();
             onComplete?.();
           }
           return prev + 1;
@@ -131,10 +284,7 @@ const PracticeTimer = ({
     setCurrentSegmentIndex(0);
     setSegmentTime(0);
     setTotalElapsed(0);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-    }
+    cleanupAudio();
   };
 
   const handleSkipSegment = () => {

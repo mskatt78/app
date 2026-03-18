@@ -1,75 +1,121 @@
 /**
  * Ambient Sound Player - Provides background audio for meditation practices
- * Uses free audio from various sources and Web Audio API for generation
+ * Uses Web Audio API to generate ambient sounds procedurally
+ * This avoids CDN hotlinking issues and works offline
  */
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
 
-// Ambient sound definitions with URLs to free audio
+// Sound type definitions
 const AMBIENT_SOUNDS = {
-  silence: { name: "Silence", url: null },
-  nature: { 
-    name: "Forest & Birds", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-forest-birds-ambience-1210.mp3"
-  },
-  rain: { 
-    name: "Gentle Rain", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-light-rain-2394.mp3"
-  },
-  ocean: { 
-    name: "Ocean Waves", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-sea-waves-loop-1196.mp3"
-  },
-  fire: { 
-    name: "Crackling Fire", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-campfire-crackles-1330.mp3"
-  },
-  wind: { 
-    name: "Gentle Wind", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-blizzard-cold-winds-1153.mp3"
-  },
-  drums: { 
-    name: "Shamanic Drums", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-tribal-dry-drum-558.mp3"
-  },
-  singing_bowls: { 
-    name: "Singing Bowls", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-meditation-bell-sound-593.mp3"
-  },
-  gentle_water: { 
-    name: "Flowing Stream", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-river-stream-nature-1189.mp3"
-  },
-  forest: { 
-    name: "Deep Forest", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-forest-birds-ambience-1210.mp3"
-  },
-  ocean_waves: { 
-    name: "Beach Waves", 
-    url: "https://assets.mixkit.co/sfx/preview/mixkit-sea-waves-loop-1196.mp3"
-  }
+  silence: { name: "Silence", type: "none" },
+  nature: { name: "Forest & Birds", type: "nature" },
+  rain: { name: "Gentle Rain", type: "rain" },
+  ocean: { name: "Ocean Waves", type: "ocean" },
+  fire: { name: "Crackling Fire", type: "fire" },
+  wind: { name: "Gentle Wind", type: "wind" },
+  drums: { name: "Shamanic Drums", type: "drums" },
+  singing_bowls: { name: "Singing Bowls", type: "bowls" },
+  gentle_water: { name: "Flowing Stream", type: "water" },
+  forest: { name: "Deep Forest", type: "nature" },
+  ocean_waves: { name: "Beach Waves", type: "ocean" }
 };
 
-// Generate a binaural beat using Web Audio API
-const generateBinauralBeat = (audioContext, baseFreq = 200, beatFreq = 10) => {
-  const leftOsc = audioContext.createOscillator();
-  const rightOsc = audioContext.createOscillator();
-  const gainNode = audioContext.createGain();
-  const merger = audioContext.createChannelMerger(2);
+// Generate brown noise (deeper, more soothing than white noise)
+const createBrownNoise = (audioContext) => {
+  const bufferSize = 2 * audioContext.sampleRate;
+  const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+  const output = noiseBuffer.getChannelData(0);
   
-  leftOsc.frequency.value = baseFreq;
-  rightOsc.frequency.value = baseFreq + beatFreq;
-  leftOsc.type = 'sine';
-  rightOsc.type = 'sine';
+  let lastOut = 0.0;
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+    output[i] = (lastOut + (0.02 * white)) / 1.02;
+    lastOut = output[i];
+    output[i] *= 3.5; // Adjust volume
+  }
   
-  leftOsc.connect(merger, 0, 0);
-  rightOsc.connect(merger, 0, 1);
-  merger.connect(gainNode);
-  gainNode.gain.value = 0.3;
+  const whiteNoise = audioContext.createBufferSource();
+  whiteNoise.buffer = noiseBuffer;
+  whiteNoise.loop = true;
+  return whiteNoise;
+};
+
+// Create a low-pass filtered noise for ocean/wind sounds
+const createFilteredNoise = (audioContext, frequency, Q = 1) => {
+  const noise = createBrownNoise(audioContext);
+  const filter = audioContext.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = frequency;
+  filter.Q.value = Q;
+  noise.connect(filter);
+  return { source: noise, output: filter };
+};
+
+// Create a simple tone (for bowls)
+const createTone = (audioContext, frequency) => {
+  const oscillator = audioContext.createOscillator();
+  oscillator.type = "sine";
+  oscillator.frequency.value = frequency;
+  return oscillator;
+};
+
+// Create drum pattern
+const createDrumPattern = (audioContext, gainNode) => {
+  const playDrum = () => {
+    const osc = audioContext.createOscillator();
+    const oscGain = audioContext.createGain();
+    
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(80, audioContext.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(40, audioContext.currentTime + 0.1);
+    
+    oscGain.gain.setValueAtTime(0.5, audioContext.currentTime);
+    oscGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    osc.connect(oscGain);
+    oscGain.connect(gainNode);
+    
+    osc.start();
+    osc.stop(audioContext.currentTime + 0.3);
+  };
   
-  return { leftOsc, rightOsc, gainNode };
+  // Shamanic drum pattern: 4-7 beats per second (theta wave inducing)
+  const bpm = 280; // ~4.7 beats per second
+  const interval = 60000 / bpm;
+  
+  return setInterval(playDrum, interval);
+};
+
+// Create singing bowl sound
+const createBowlSound = (audioContext, gainNode, baseFreq = 528) => {
+  const playBowl = () => {
+    const frequencies = [baseFreq, baseFreq * 2, baseFreq * 3, baseFreq * 4];
+    
+    frequencies.forEach((freq, i) => {
+      const osc = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+      
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      
+      const volume = 0.15 / (i + 1);
+      oscGain.gain.setValueAtTime(0, audioContext.currentTime);
+      oscGain.gain.linearRampToValueAtTime(volume, audioContext.currentTime + 0.5);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 8);
+      
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      
+      osc.start();
+      osc.stop(audioContext.currentTime + 8);
+    });
+  };
+  
+  playBowl();
+  return setInterval(playBowl, 10000); // Play every 10 seconds
 };
 
 const AmbientSoundPlayer = ({ 
@@ -77,131 +123,173 @@ const AmbientSoundPlayer = ({
   autoPlay = false,
   showControls = true,
   volume: initialVolume = 0.5,
-  binauralFrequency = null, // e.g., 432, 528, 639 Hz
   onPlayStateChange = () => {}
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(initialVolume);
   const [isMuted, setIsMuted] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
   
-  const audioRef = useRef(null);
   const audioContextRef = useRef(null);
-  const binauralRef = useRef(null);
+  const gainNodeRef = useRef(null);
+  const sourcesRef = useRef([]);
+  const intervalsRef = useRef([]);
 
-  // Initialize audio
-  useEffect(() => {
-    const sound = AMBIENT_SOUNDS[soundType];
+  const cleanup = useCallback(() => {
+    // Clear intervals
+    intervalsRef.current.forEach(clearInterval);
+    intervalsRef.current = [];
     
-    if (sound?.url) {
-      const audio = new Audio(sound.url);
-      audio.loop = true;
-      audio.volume = volume;
-      audio.preload = "auto";
-      
-      audio.addEventListener('canplaythrough', () => setIsLoaded(true));
-      audio.addEventListener('error', (e) => {
-        console.warn('Audio load error:', e);
-        setIsLoaded(true); // Still allow UI to function
-      });
-      
-      audioRef.current = audio;
-    } else {
-      setIsLoaded(true);
+    // Stop sources
+    sourcesRef.current.forEach(source => {
+      try { source.stop?.(); } catch (e) {}
+      try { source.disconnect?.(); } catch (e) {}
+    });
+    sourcesRef.current = [];
+    
+    // Close audio context
+    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+      audioContextRef.current.close();
     }
+    audioContextRef.current = null;
+    gainNodeRef.current = null;
+  }, []);
 
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-      stopBinaural();
-    };
-  }, [soundType]);
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
 
   // Handle volume changes
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : volume;
-    }
-    if (binauralRef.current?.gainNode) {
-      binauralRef.current.gainNode.gain.value = isMuted ? 0 : volume * 0.3;
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = isMuted ? 0 : volume * 0.5;
     }
   }, [volume, isMuted]);
 
-  // Auto-play
-  useEffect(() => {
-    if (autoPlay && isLoaded) {
-      play();
+  const startSound = useCallback(() => {
+    if (soundType === "silence") {
+      setIsPlaying(true);
+      onPlayStateChange(true);
+      return;
     }
-  }, [autoPlay, isLoaded]);
 
-  const startBinaural = useCallback(() => {
-    if (!binauralFrequency) return;
-    
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
-      audioContextRef.current = new AudioContext();
+      const ctx = new AudioContext();
+      audioContextRef.current = ctx;
       
-      const binaural = generateBinauralBeat(
-        audioContextRef.current, 
-        binauralFrequency, 
-        10 // 10Hz alpha waves for relaxation
-      );
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = volume * 0.5;
+      gainNode.connect(ctx.destination);
+      gainNodeRef.current = gainNode;
       
-      binaural.gainNode.connect(audioContextRef.current.destination);
-      binaural.leftOsc.start();
-      binaural.rightOsc.start();
+      const sound = AMBIENT_SOUNDS[soundType];
       
-      binauralRef.current = binaural;
+      switch (sound?.type) {
+        case "rain":
+        case "water": {
+          const { source, output } = createFilteredNoise(ctx, 400, 2);
+          output.connect(gainNode);
+          source.start();
+          sourcesRef.current.push(source);
+          break;
+        }
+        
+        case "ocean": {
+          // Create multiple layers for ocean sound
+          const { source: low, output: lowOut } = createFilteredNoise(ctx, 200, 1);
+          const { source: mid, output: midOut } = createFilteredNoise(ctx, 800, 0.5);
+          
+          // Add LFO for wave motion
+          const lfo = ctx.createOscillator();
+          const lfoGain = ctx.createGain();
+          lfo.frequency.value = 0.1; // Very slow oscillation
+          lfoGain.gain.value = 0.3;
+          lfo.connect(lfoGain);
+          lfoGain.connect(gainNode.gain);
+          
+          lowOut.connect(gainNode);
+          midOut.connect(gainNode);
+          low.start();
+          mid.start();
+          lfo.start();
+          sourcesRef.current.push(low, mid, lfo);
+          break;
+        }
+        
+        case "wind": {
+          const { source, output } = createFilteredNoise(ctx, 600, 3);
+          output.connect(gainNode);
+          source.start();
+          sourcesRef.current.push(source);
+          break;
+        }
+        
+        case "fire": {
+          // Crackling fire = filtered noise with random amplitude modulation
+          const { source, output } = createFilteredNoise(ctx, 1000, 1);
+          output.connect(gainNode);
+          source.start();
+          sourcesRef.current.push(source);
+          break;
+        }
+        
+        case "nature": {
+          // Gentle ambient noise
+          const { source, output } = createFilteredNoise(ctx, 500, 0.5);
+          output.connect(gainNode);
+          source.start();
+          sourcesRef.current.push(source);
+          break;
+        }
+        
+        case "drums": {
+          const drumInterval = createDrumPattern(ctx, gainNode);
+          intervalsRef.current.push(drumInterval);
+          break;
+        }
+        
+        case "bowls": {
+          // Singing bowl at 528 Hz (love frequency)
+          const bowlInterval = createBowlSound(ctx, gainNode, 528);
+          intervalsRef.current.push(bowlInterval);
+          break;
+        }
+        
+        default:
+          break;
+      }
+      
+      setIsPlaying(true);
+      onPlayStateChange(true);
     } catch (e) {
-      console.warn('Web Audio API not supported:', e);
+      console.warn('Web Audio API error:', e);
     }
-  }, [binauralFrequency]);
+  }, [soundType, volume, onPlayStateChange]);
 
-  const stopBinaural = useCallback(() => {
-    if (binauralRef.current) {
-      binauralRef.current.leftOsc?.stop();
-      binauralRef.current.rightOsc?.stop();
-      binauralRef.current = null;
-    }
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
-  }, []);
-
-  const play = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.play().catch(e => console.warn('Audio play failed:', e));
-    }
-    if (binauralFrequency) {
-      startBinaural();
-    }
-    setIsPlaying(true);
-    onPlayStateChange(true);
-  }, [binauralFrequency, startBinaural, onPlayStateChange]);
-
-  const pause = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-    }
-    stopBinaural();
+  const stopSound = useCallback(() => {
+    cleanup();
     setIsPlaying(false);
     onPlayStateChange(false);
-  }, [stopBinaural, onPlayStateChange]);
+  }, [cleanup, onPlayStateChange]);
 
   const togglePlay = () => {
     if (isPlaying) {
-      pause();
+      stopSound();
     } else {
-      play();
+      startSound();
     }
   };
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
   };
+
+  // Auto-play support
+  useEffect(() => {
+    if (autoPlay && !isPlaying) {
+      startSound();
+    }
+  }, [autoPlay]);
 
   if (!showControls) {
     return null;
@@ -216,7 +304,7 @@ const AmbientSoundPlayer = ({
         size="icon"
         onClick={togglePlay}
         className="rounded-full w-10 h-10"
-        disabled={!isLoaded && soundType !== "silence"}
+        data-testid="ambient-play"
       >
         {isPlaying ? (
           <Pause className="w-4 h-4" />
@@ -227,9 +315,7 @@ const AmbientSoundPlayer = ({
       
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">{soundName}</p>
-        {binauralFrequency && (
-          <p className="text-xs text-muted-foreground">{binauralFrequency}Hz Binaural</p>
-        )}
+        <p className="text-xs text-muted-foreground">Web Audio Generated</p>
       </div>
       
       <div className="flex items-center gap-2">
@@ -246,6 +332,7 @@ const AmbientSoundPlayer = ({
           size="icon"
           onClick={toggleMute}
           className="rounded-full w-8 h-8"
+          data-testid="ambient-mute"
         >
           {isMuted ? (
             <VolumeX className="w-4 h-4" />
