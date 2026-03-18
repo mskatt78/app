@@ -136,6 +136,47 @@ const ProtectedRoute = ({ children }) => {
   return children({ user, api });
 };
 
+// Public Route Component - allows viewing without login, but shows user if logged in
+const PublicRoute = ({ children }) => {
+  const location = useLocation();
+  const [user, setUser] = useState(location.state?.user || null);
+  const [checked, setChecked] = useState(false);
+
+  useEffect(() => {
+    if (location.state?.user) {
+      setUser(location.state.user);
+      setChecked(true);
+      return;
+    }
+
+    const checkAuth = async () => {
+      try {
+        const response = await api.get("/auth/me");
+        setUser(response.data);
+      } catch (error) {
+        // Not logged in - that's OK for public routes
+        setUser(null);
+      }
+      setChecked(true);
+    };
+
+    checkAuth();
+  }, [location.state]);
+
+  if (!checked) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground font-serif italic">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return children({ user, api });
+};
+
 // App Router
 function AppRouter() {
   const location = useLocation();
@@ -156,27 +197,149 @@ function AppRouter() {
           </ProtectedRoute>
         }
       />
+      {/* PUBLIC ROUTES - Can view without login */}
       <Route
         path="/yoga"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <YogaLibrary user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/oracle"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <OracleReadings user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
         }
       />
       <Route
         path="/breathwork"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <Breathwork user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/crystals"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <CrystalGuide user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/mantras"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <MantrasLibrary user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/mudras"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <MudrasLibrary user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/grounding"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <GroundingPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/mindfulness"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <Mindfulness user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/meditations"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <Meditations user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/earth-altars"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <EarthAltars user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/creative-processes"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <CreativeProcesses user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/heart-practices"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <HeartPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/shamanic-practices"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ShamanicPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/elemental-practices"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ElementalPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/live"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <LiveSessions user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/retreats"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <Retreats user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/books"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <Books user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/pricing"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <Pricing user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      {/* PROTECTED ROUTES - Require login */}
+      <Route
+        path="/oracle"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <OracleReadings user={user} api={api} />}
           </ProtectedRoute>
         }
       />
@@ -189,42 +352,10 @@ function AppRouter() {
         }
       />
       <Route
-        path="/crystals"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <CrystalGuide user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/mantras"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <MantrasLibrary user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/mudras"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <MudrasLibrary user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/somatic"
         element={
           <ProtectedRoute>
             {({ user, api }) => <SomaticMovement user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/grounding"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <GroundingPractices user={user} api={api} />}
           </ProtectedRoute>
         }
       />
@@ -269,27 +400,11 @@ function AppRouter() {
         }
       />
       <Route
-        path="/mindfulness"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <Mindfulness user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/meditations"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <Meditations user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/numerology"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <Numerology user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
         }
       />
       <Route
