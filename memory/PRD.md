@@ -22,14 +22,19 @@
 ### Gifting Feature - COMPLETED ✅
 - ✅ **Gift Creation** - Create gifts for subscriptions, retreats, books, sessions
 - ✅ **Gift Codes** - Unique GIFT-XXXXXXXX codes generated
-- ✅ **Gift Redemption** - Redeem gift codes to unlock content
-- ✅ **Gift Status Tracking** - pending, paid, redeemed, expired states
+- ✅ **Gift Pricing** - Automatically pulls price from subscription plans or products
+- ✅ **Payment Integration** - Full Stripe AND PayPal support for gift purchases
+- ✅ **Gift Redemption** - Redeem codes to unlock subscriptions or products
+- ✅ **User Tracking** - Track sent/received gifts per user
+- ✅ **Status Flow**: pending → paid → redeemed
 - ✅ **API Endpoints**:
-  - `POST /api/gifts/create` - Create a new gift
+  - `POST /api/gifts/create` - Create a gift (with automatic pricing)
+  - `POST /api/gifts/pay` - Pay for gift via Stripe or PayPal
+  - `POST /api/gifts/confirm-payment` - Confirm payment after checkout
   - `GET /api/gifts/{gift_code}` - Get gift details
-  - `POST /api/gifts/redeem` - Redeem a gift code
-  - `GET /api/gifts/by-email/sent` - Get sent gifts
-  - `GET /api/gifts/by-email/received` - Get received gifts
+  - `POST /api/gifts/redeem` - Redeem a gift code (authenticated)
+  - `GET /api/gifts/my/sent` - Get sent gifts (authenticated)
+  - `GET /api/gifts/my/received` - Get received gifts (authenticated)
 
 ### Frontend Admin Components - COMPLETED ✅
 - ✅ **AdminFormFields.jsx** - Reusable form components:
