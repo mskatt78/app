@@ -23,6 +23,7 @@ from emergentintegrations.payments.stripe.checkout import StripeCheckout, Checko
 from routers import dependencies as router_deps
 from routers.auth import router as auth_router
 from routers.payments import router as payments_router
+from routers.birth_chart import router as birth_chart_router
 
 ROOT_DIR = Path(__file__).parent
 UPLOADS_DIR = ROOT_DIR / "uploads"
@@ -47,6 +48,7 @@ api_router = APIRouter(prefix="/api")
 # Include modular routers
 api_router.include_router(auth_router)
 api_router.include_router(payments_router)
+api_router.include_router(birth_chart_router)
 
 # Configure logging
 logging.basicConfig(

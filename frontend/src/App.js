@@ -40,6 +40,8 @@ import Books from "./pages/Books";
 import Pricing from "./pages/Pricing";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
+// Birth Chart
+import BirthChart from "./pages/BirthChart";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -404,6 +406,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <Numerology user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/birth-chart"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <BirthChart user={user} api={api} />}
           </PublicRoute>
         }
       />

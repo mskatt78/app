@@ -23,6 +23,7 @@ const Dashboard = ({ user, api }) => {
     { icon: Brain, label: "Mindfulness", path: "/mindfulness", element: "air" },
     { icon: Compass, label: "Meditations", path: "/meditations", element: "spirit" },
     { icon: Moon, label: "Astrology", path: "/astrology", element: "water" },
+    { icon: Star, label: "Birth Chart", path: "/birth-chart", element: "spirit" },
     { icon: Hash, label: "Numerology", path: "/numerology", element: "fire" },
     { icon: Sparkles, label: "Crystals", path: "/crystals", element: "spirit" },
     { icon: Heart, label: "Mantras", path: "/mantras", element: "fire" },
