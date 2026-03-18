@@ -14,6 +14,7 @@ from emergentintegrations.payments.stripe.checkout import (
 )
 
 from .dependencies import get_db, get_current_user, User
+from services.email_service import send_gift_notification_email, send_gift_redeemed_notification
 
 router = APIRouter(tags=["gifts"])
 logger = logging.getLogger(__name__)
@@ -393,11 +394,28 @@ async def _verify_stripe_gift_payment(gift, session_id):
                 {"$set": {"payment_status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
             )
             
+            # Send email notification to recipient
+            try:
+                base_url = os.environ.get("FRONTEND_URL", "https://shamanic-yoga-temple.preview.emergentagent.com")
+                await send_gift_notification_email(
+                    recipient_email=gift["recipient_email"],
+                    recipient_name=gift["recipient_name"],
+                    sender_name=gift["sender_name"],
+                    gift_type=gift["gift_type"],
+                    gift_code=gift["gift_code"],
+                    message=gift.get("message"),
+                    base_url=base_url
+                )
+                logger.info(f"Gift notification email sent for {gift['gift_code']}")
+            except Exception as e:
+                logger.error(f"Failed to send gift notification email: {e}")
+            
             return {
                 "message": "Gift payment confirmed",
                 "gift_code": gift["gift_code"],
                 "status": "paid",
-                "recipient_email": gift["recipient_email"]
+                "recipient_email": gift["recipient_email"],
+                "email_sent": True
             }
         else:
             return {
@@ -463,11 +481,28 @@ async def _capture_paypal_gift_order(gift, order_id):
                     {"$set": {"payment_status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
                 )
                 
+                # Send email notification to recipient
+                try:
+                    frontend_url = os.environ.get("FRONTEND_URL", "https://shamanic-yoga-temple.preview.emergentagent.com")
+                    await send_gift_notification_email(
+                        recipient_email=gift["recipient_email"],
+                        recipient_name=gift["recipient_name"],
+                        sender_name=gift["sender_name"],
+                        gift_type=gift["gift_type"],
+                        gift_code=gift["gift_code"],
+                        message=gift.get("message"),
+                        base_url=frontend_url
+                    )
+                    logger.info(f"Gift notification email sent for {gift['gift_code']}")
+                except Exception as e:
+                    logger.error(f"Failed to send gift notification email: {e}")
+                
                 return {
                     "message": "Gift payment confirmed",
                     "gift_code": gift["gift_code"],
                     "status": "paid",
-                    "recipient_email": gift["recipient_email"]
+                    "recipient_email": gift["recipient_email"],
+                    "email_sent": True
                 }
         
         return {
@@ -547,6 +582,21 @@ async def redeem_gift(data: GiftRedeem, current_user: User = Depends(get_current
             "gift_code": data.gift_code,
             "purchased_at": datetime.now(timezone.utc).isoformat()
         })
+    
+    # Send notification to sender that gift was redeemed
+    try:
+        # Get sender's email from transaction
+        transaction = await db.payment_transactions.find_one({"gift_code": data.gift_code})
+        if transaction and transaction.get("user_email"):
+            await send_gift_redeemed_notification(
+                sender_email=transaction["user_email"],
+                sender_name=gift["sender_name"],
+                recipient_name=gift["recipient_name"],
+                gift_type=gift["gift_type"]
+            )
+            logger.info(f"Gift redemption notification sent for {data.gift_code}")
+    except Exception as e:
+        logger.error(f"Failed to send redemption notification: {e}")
     
     return {
         "message": "Gift redeemed successfully!",
