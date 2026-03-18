@@ -346,9 +346,9 @@ function AppRouter() {
       <Route
         path="/astrology"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <AstrologyCalendar user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
         }
       />
       <Route
