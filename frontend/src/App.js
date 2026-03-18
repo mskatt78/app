@@ -149,7 +149,7 @@ const AdminRoute = ({ children }) => {
   const ADMIN_EMAILS = [
     "skywatersacredembodiments@gmail.com",
     // Add more admin emails as needed
-  ];
+  ].map(e => e.toLowerCase());
 
   useEffect(() => {
     const checkAdmin = async () => {
@@ -158,17 +158,23 @@ const AdminRoute = ({ children }) => {
         const userData = response.data;
         setUser(userData);
         
-        // Check if user email is in admin list
-        const isAdmin = ADMIN_EMAILS.includes(userData.email?.toLowerCase()) || userData.is_admin === true;
+        // Check if user email is in admin list (case-insensitive)
+        const userEmail = (userData.email || "").toLowerCase();
+        const isAdmin = ADMIN_EMAILS.includes(userEmail) || userData.is_admin === true;
+        
+        console.log("Admin check:", { userEmail, isAdmin, adminEmails: ADMIN_EMAILS });
         
         if (isAdmin) {
           setIsAuthorized(true);
         } else {
           setIsAuthorized(false);
+          toast.error("Admin access required");
           navigate("/dashboard", { replace: true });
         }
       } catch (error) {
+        console.log("Admin auth error:", error);
         setIsAuthorized(false);
+        toast.error("Please sign in to access admin");
         navigate("/", { replace: true });
       }
     };

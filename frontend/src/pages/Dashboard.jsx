@@ -16,6 +16,13 @@ const Dashboard = ({ user, api }) => {
   const [dailyData, setDailyData] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Admin emails for showing admin link
+  const ADMIN_EMAILS = [
+    "skywatersacredembodiments@gmail.com",
+  ].map(e => e.toLowerCase());
+  
+  const isAdmin = user && ADMIN_EMAILS.includes((user.email || "").toLowerCase());
+
   const navItems = [
     { icon: Leaf, label: "Yoga", path: "/yoga", element: "earth" },
     { icon: Eye, label: "Oracle", path: "/oracle", element: "spirit" },
@@ -48,7 +55,8 @@ const Dashboard = ({ user, api }) => {
     { icon: BookOpen, label: "Book", path: "/books", element: "spirit" },
     // Account
     { icon: CreditCard, label: "Membership", path: "/pricing", element: "fire" },
-    { icon: Shield, label: "Admin CMS", path: "/admin", element: "spirit" },
+    // Admin - only visible to admin users
+    ...(isAdmin ? [{ icon: Shield, label: "Admin CMS", path: "/admin", element: "spirit" }] : []),
   ];
 
   const elementColors = {
