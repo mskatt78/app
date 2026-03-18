@@ -90,14 +90,12 @@ const Numerology = ({ user, api }) => {
 
     setLoading(true);
     try {
-      // Use /calculate for public, /reading for authenticated users
-      const endpoint = user ? "/numerology/reading" : "/numerology/calculate";
-      const response = await api.post(endpoint, {
+      // Always use /calculate - it's public and returns the same data
+      const response = await api.post("/numerology/calculate", {
         birth_date: birthDate,
         full_name: fullName || null,
       });
       setReading(response.data);
-      if (user) fetchHistory();
       toast.success("Your numerology reading is ready!");
     } catch (error) {
       console.error("Failed to calculate reading:", error);
