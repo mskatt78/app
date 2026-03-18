@@ -400,7 +400,6 @@ def determine_house(planet_lon: float, houses: Dict) -> int:
 def calculate_aspects(planets: List[Dict]) -> List[Dict]:
     """Calculate all aspects between planets."""
     aspects = []
-    planet_names = [p["name"] for p in planets]
     
     for i, p1 in enumerate(planets):
         for p2 in planets[i+1:]:
@@ -604,9 +603,6 @@ async def calculate_birth_chart(request: BirthChartRequest):
         # Assign houses to planets
         for planet in planets:
             planet["house"] = determine_house(planet["longitude"], houses)
-        
-        # Add ascendant and midheaven to planet list for aspects
-        all_points = planets + [ascendant, midheaven]
         
         # Calculate aspects
         aspects = calculate_aspects(planets)  # Only between planets, not angles
