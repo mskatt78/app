@@ -258,7 +258,7 @@ const LandingPage = ({ onLoginSuccess }) => {
             </form>
 
             <p className="text-center text-sm text-muted-foreground">
-              {isLogin ? "New to Shamanic Yoga?" : "Already have an account?"}{" "}
+              {isLogin ? "New to Shamanic Elements?" : "Already have an account?"}{" "}
               <button
                 data-testid="auth-toggle-mode-btn"
                 onClick={() => setIsLogin(!isLogin)}
