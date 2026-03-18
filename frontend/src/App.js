@@ -4,6 +4,7 @@ import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
 import AppFooter from "./components/AppFooter";
+import BottomNav from "./components/BottomNav";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -243,14 +244,33 @@ const PublicRoute = ({ children }) => {
 // App Router
 function AppRouter() {
   const location = useLocation();
+  const [user, setUser] = useState(null);
+
+  // Check user auth status for BottomNav
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const response = await api.get("/auth/me");
+        setUser(response.data);
+      } catch {
+        setUser(null);
+      }
+    };
+    checkAuth();
+  }, [location.pathname]);
 
   // Check URL fragment for session_id synchronously
   if (location.hash?.includes("session_id=")) {
     return <AuthCallback />;
   }
 
+  // Pages that should NOT show bottom nav
+  const noBottomNavPages = ["/", "/dashboard", "/admin", "/payment/success", "/payment/cancel"];
+  const showBottomNav = !noBottomNavPages.includes(location.pathname);
+
   return (
-    <Routes>
+    <>
+      <Routes>
       <Route path="/" element={<LandingPage api={api} />} />
       <Route
         path="/dashboard"
@@ -582,6 +602,10 @@ function AppRouter() {
         element={<PaymentCancel />}
       />
     </Routes>
+    {showBottomNav && <BottomNav user={user} />}
+    {/* Add padding at bottom for nav bar */}
+    {showBottomNav && <div className="h-20" />}
+    </>
   );
 }
 
