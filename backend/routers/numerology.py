@@ -17,9 +17,12 @@ LIFE_PATHS = {
         "name": "The Leader",
         "keywords": ["Independence", "Pioneering", "Ambition", "Innovation"],
         "description": "You are a natural-born leader with a strong drive for independence and achievement. Your path is about learning to stand on your own and trust your unique vision.",
+        "traits": ["Independent", "Ambitious", "Innovative", "Courageous", "Determined"],
         "strengths": ["Leadership", "Creativity", "Determination", "Self-reliance"],
         "challenges": ["Stubbornness", "Impatience", "Ego", "Isolation"],
         "element": "Fire",
+        "crystal": "Ruby",
+        "mantra": "I am a powerful creator of my own destiny",
         "career_paths": ["Entrepreneur", "Executive", "Inventor", "Pioneer"],
         "spiritual_lesson": "Learning to lead with heart while maintaining independence"
     },
@@ -28,9 +31,12 @@ LIFE_PATHS = {
         "name": "The Peacemaker",
         "keywords": ["Cooperation", "Diplomacy", "Sensitivity", "Partnership"],
         "description": "You are a natural mediator and peacemaker with deep intuition and sensitivity. Your path involves learning to balance your needs with others.",
+        "traits": ["Diplomatic", "Intuitive", "Patient", "Empathic", "Harmonious"],
         "strengths": ["Diplomacy", "Intuition", "Patience", "Cooperation"],
         "challenges": ["Over-sensitivity", "Indecision", "Dependency", "Passivity"],
         "element": "Water",
+        "crystal": "Moonstone",
+        "mantra": "I create harmony in all my relationships",
         "career_paths": ["Counselor", "Mediator", "Healer", "Artist"],
         "spiritual_lesson": "Finding strength in gentleness and partnership"
     },
@@ -39,9 +45,12 @@ LIFE_PATHS = {
         "name": "The Communicator",
         "keywords": ["Expression", "Creativity", "Joy", "Communication"],
         "description": "You are gifted with creative expression and the ability to inspire others through words, art, or performance. Your path is about authentic self-expression.",
+        "traits": ["Creative", "Expressive", "Joyful", "Optimistic", "Artistic"],
         "strengths": ["Communication", "Optimism", "Artistic talent", "Social skills"],
         "challenges": ["Scattered energy", "Superficiality", "Moodiness", "Self-doubt"],
         "element": "Air",
+        "crystal": "Citrine",
+        "mantra": "My voice and creativity inspire the world",
         "career_paths": ["Writer", "Artist", "Speaker", "Entertainer"],
         "spiritual_lesson": "Using your voice to uplift and inspire"
     },
@@ -50,9 +59,12 @@ LIFE_PATHS = {
         "name": "The Builder",
         "keywords": ["Stability", "Hard work", "Order", "Foundation"],
         "description": "You are practical and grounded, with the ability to build lasting structures in life. Your path involves creating security and solid foundations.",
+        "traits": ["Reliable", "Organized", "Practical", "Hardworking", "Loyal"],
         "strengths": ["Reliability", "Organization", "Dedication", "Practicality"],
         "challenges": ["Rigidity", "Stubbornness", "Limitations", "Workaholism"],
         "element": "Earth",
+        "crystal": "Green Jade",
+        "mantra": "I build lasting foundations for my dreams",
         "career_paths": ["Engineer", "Architect", "Manager", "Organizer"],
         "spiritual_lesson": "Building spiritual foundations through disciplined practice"
     },
@@ -61,9 +73,12 @@ LIFE_PATHS = {
         "name": "The Freedom Seeker",
         "keywords": ["Change", "Adventure", "Freedom", "Versatility"],
         "description": "You are dynamic and adventurous, craving variety and new experiences. Your path involves learning to embrace change while finding inner stability.",
+        "traits": ["Adventurous", "Versatile", "Curious", "Dynamic", "Free-spirited"],
         "strengths": ["Adaptability", "Curiosity", "Resourcefulness", "Charisma"],
         "challenges": ["Restlessness", "Impulsiveness", "Irresponsibility", "Overindulgence"],
         "element": "Air",
+        "crystal": "Turquoise",
+        "mantra": "I embrace change as the path to freedom",
         "career_paths": ["Travel", "Sales", "Media", "Adventure guide"],
         "spiritual_lesson": "Finding freedom within rather than without"
     },
@@ -72,9 +87,12 @@ LIFE_PATHS = {
         "name": "The Nurturer",
         "keywords": ["Responsibility", "Love", "Family", "Healing"],
         "description": "You are a natural caretaker with a deep sense of responsibility for others. Your path involves learning to balance giving with receiving.",
+        "traits": ["Nurturing", "Responsible", "Loving", "Compassionate", "Protective"],
         "strengths": ["Compassion", "Reliability", "Nurturing", "Harmony"],
         "challenges": ["Self-sacrifice", "Perfectionism", "Worry", "Controlling"],
         "element": "Water",
+        "crystal": "Rose Quartz",
+        "mantra": "I give and receive love in perfect balance",
         "career_paths": ["Healthcare", "Teaching", "Counseling", "Homemaking"],
         "spiritual_lesson": "Learning that true love includes self-love"
     },
@@ -83,9 +101,12 @@ LIFE_PATHS = {
         "name": "The Seeker",
         "keywords": ["Wisdom", "Spirituality", "Analysis", "Introspection"],
         "description": "You are a deep thinker and spiritual seeker, drawn to understanding life's mysteries. Your path involves developing inner wisdom.",
+        "traits": ["Wise", "Spiritual", "Analytical", "Intuitive", "Contemplative"],
         "strengths": ["Intuition", "Analysis", "Wisdom", "Spirituality"],
         "challenges": ["Isolation", "Over-thinking", "Skepticism", "Secretiveness"],
         "element": "Spirit",
+        "crystal": "Amethyst",
+        "mantra": "I trust my inner wisdom to guide my path",
         "career_paths": ["Researcher", "Spiritual teacher", "Analyst", "Philosopher"],
         "spiritual_lesson": "Balancing the mind with the heart and spirit"
     },
@@ -94,9 +115,12 @@ LIFE_PATHS = {
         "name": "The Achiever",
         "keywords": ["Power", "Abundance", "Authority", "Success"],
         "description": "You are naturally drawn to success and abundance, with strong business sense. Your path involves learning to use power responsibly.",
+        "traits": ["Powerful", "Ambitious", "Successful", "Authoritative", "Resourceful"],
         "strengths": ["Leadership", "Business sense", "Ambition", "Efficiency"],
         "challenges": ["Materialism", "Workaholism", "Control issues", "Ruthlessness"],
         "element": "Earth",
+        "crystal": "Tiger's Eye",
+        "mantra": "I use my power and abundance to serve the greater good",
         "career_paths": ["Business leader", "Finance", "Politics", "Real estate"],
         "spiritual_lesson": "Using abundance for the greater good"
     },
@@ -105,9 +129,12 @@ LIFE_PATHS = {
         "name": "The Humanitarian",
         "keywords": ["Compassion", "Wisdom", "Service", "Completion"],
         "description": "You are an old soul with deep compassion for humanity. Your path involves selfless service and completing karmic cycles.",
+        "traits": ["Compassionate", "Generous", "Wise", "Idealistic", "Humanitarian"],
         "strengths": ["Compassion", "Wisdom", "Creativity", "Generosity"],
         "challenges": ["Aloofness", "Martyrdom", "Scattered focus", "Emotional distance"],
         "element": "Spirit",
+        "crystal": "Lapis Lazuli",
+        "mantra": "I serve humanity with love and compassion",
         "career_paths": ["Humanitarian", "Artist", "Healer", "Philanthropist"],
         "spiritual_lesson": "Embracing endings as beginnings"
     },
@@ -116,9 +143,12 @@ LIFE_PATHS = {
         "name": "The Illuminator",
         "keywords": ["Intuition", "Inspiration", "Spiritual insight", "Visionary"],
         "description": "You are a master number carrying heightened spiritual awareness. Your path involves inspiring and illuminating others.",
+        "traits": ["Visionary", "Intuitive", "Inspirational", "Charismatic", "Enlightened"],
         "strengths": ["Intuition", "Inspiration", "Charisma", "Visionary thinking"],
         "challenges": ["Nervous tension", "Impracticality", "Self-doubt", "Overwhelm"],
         "element": "Spirit",
+        "crystal": "Clear Quartz",
+        "mantra": "I channel divine light to illuminate the world",
         "career_paths": ["Spiritual leader", "Counselor", "Artist", "Inventor"],
         "spiritual_lesson": "Channeling divine inspiration into earthly action",
         "is_master": True
@@ -128,9 +158,12 @@ LIFE_PATHS = {
         "name": "The Master Builder",
         "keywords": ["Master manifestation", "Large-scale vision", "Practical idealism"],
         "description": "You carry the most powerful master number, capable of turning dreams into reality on a grand scale.",
+        "traits": ["Visionary", "Practical", "Disciplined", "Masterful", "Transformative"],
         "strengths": ["Vision", "Leadership", "Discipline", "Practical idealism"],
         "challenges": ["Pressure", "High expectations", "Overwhelm", "Workaholic tendencies"],
         "element": "Earth",
+        "crystal": "Moldavite",
+        "mantra": "I manifest my greatest visions into reality",
         "career_paths": ["Visionary leader", "Architect", "Global organizer", "Philanthropist"],
         "spiritual_lesson": "Building structures that serve humanity",
         "is_master": True
@@ -140,9 +173,12 @@ LIFE_PATHS = {
         "name": "The Master Teacher",
         "keywords": ["Spiritual teaching", "Healing", "Selfless service", "Divine love"],
         "description": "The rarest master number, you are here to teach spiritual truths through your life example.",
+        "traits": ["Loving", "Healing", "Teaching", "Selfless", "Divinely guided"],
         "strengths": ["Healing", "Teaching", "Compassion", "Selfless love"],
         "challenges": ["Self-sacrifice", "Burden of responsibility", "Perfectionism"],
         "element": "Spirit",
+        "crystal": "Sugilite",
+        "mantra": "I embody divine love and teach through my being",
         "career_paths": ["Spiritual teacher", "Healer", "Humanitarian leader"],
         "spiritual_lesson": "Embodying divine love in human form",
         "is_master": True
@@ -225,21 +261,47 @@ async def get_life_paths():
 async def calculate_numerology_public(request: NumerologyRequest):
     """Calculate numerology reading without saving (public endpoint)."""
     try:
-        life_path = calculate_life_path(request.birth_date)
-        life_path_info = LIFE_PATHS.get(life_path, LIFE_PATHS.get(reduce_to_single_digit(life_path, False), {}))
+        life_path_number = calculate_life_path(request.birth_date)
+        life_path_info = LIFE_PATHS.get(life_path_number, LIFE_PATHS.get(reduce_to_single_digit(life_path_number, False), {}))
+        
+        # Calculate personal year
+        current_year = datetime.now().year
+        birth_parts = request.birth_date.split("-")
+        month = int(birth_parts[1])
+        day = int(birth_parts[2])
+        personal_year_sum = reduce_to_single_digit(month + day + sum(int(d) for d in str(current_year)), False)
+        
+        personal_year_themes = {
+            1: {"number": 1, "theme": "New Beginnings", "description": "A year of fresh starts, independence, and planting seeds for the future."},
+            2: {"number": 2, "theme": "Partnerships", "description": "A year of cooperation, patience, and nurturing relationships."},
+            3: {"number": 3, "theme": "Creativity", "description": "A year of self-expression, joy, and creative expansion."},
+            4: {"number": 4, "theme": "Foundation", "description": "A year of hard work, building stability, and laying groundwork."},
+            5: {"number": 5, "theme": "Change", "description": "A year of transformation, freedom, and new experiences."},
+            6: {"number": 6, "theme": "Responsibility", "description": "A year of home, family, love, and nurturing others."},
+            7: {"number": 7, "theme": "Introspection", "description": "A year of spiritual growth, rest, and inner reflection."},
+            8: {"number": 8, "theme": "Abundance", "description": "A year of achievement, recognition, and material success."},
+            9: {"number": 9, "theme": "Completion", "description": "A year of endings, release, and preparing for new cycles."},
+        }
         
         result = {
             "birth_date": request.birth_date,
             "full_name": request.full_name,
-            "life_path_number": life_path,
-            "life_path_info": life_path_info,
+            "life_path_number": life_path_number,
+            "life_path": life_path_info,
+            "personal_year": personal_year_themes.get(personal_year_sum, personal_year_themes[9]),
         }
         
         if request.full_name:
-            result["expression_number"] = calculate_expression_number(request.full_name)
-            result["soul_urge_number"] = calculate_soul_urge(request.full_name)
-            result["expression_info"] = LIFE_PATHS.get(result["expression_number"], {})
-            result["soul_urge_info"] = LIFE_PATHS.get(result["soul_urge_number"], {})
+            expression_num = calculate_expression_number(request.full_name)
+            soul_urge_num = calculate_soul_urge(request.full_name)
+            result["expression"] = {
+                "number": expression_num,
+                "description": LIFE_PATHS.get(expression_num, {}).get("description", "Your talents and abilities manifest through this number.")
+            }
+            result["soul_urge"] = {
+                "number": soul_urge_num,
+                "description": LIFE_PATHS.get(soul_urge_num, {}).get("description", "Your heart's deepest desires resonate with this number.")
+            }
         
         return result
     except ValueError as e:
@@ -257,31 +319,63 @@ async def create_numerology_reading(
     """Calculate and save a numerology reading."""
     db = get_db()
     try:
-        life_path = calculate_life_path(request.birth_date)
-        life_path_info = LIFE_PATHS.get(life_path, LIFE_PATHS.get(reduce_to_single_digit(life_path, False), {}))
+        life_path_number = calculate_life_path(request.birth_date)
+        life_path_info = LIFE_PATHS.get(life_path_number, LIFE_PATHS.get(reduce_to_single_digit(life_path_number, False), {}))
         
-        reading = {
-            "id": str(__import__('uuid').uuid4())[:8],
-            "user_id": user.user_id,
-            "birth_date": request.birth_date,
-            "full_name": request.full_name,
-            "life_path_number": life_path,
-            "life_path_info": life_path_info,
-            "created_at": datetime.now(timezone.utc).isoformat()
+        # Calculate personal year
+        current_year = datetime.now().year
+        birth_parts = request.birth_date.split("-")
+        month = int(birth_parts[1])
+        day = int(birth_parts[2])
+        personal_year_sum = reduce_to_single_digit(month + day + sum(int(d) for d in str(current_year)), False)
+        
+        personal_year_themes = {
+            1: {"number": 1, "theme": "New Beginnings", "description": "A year of fresh starts, independence, and planting seeds for the future."},
+            2: {"number": 2, "theme": "Partnerships", "description": "A year of cooperation, patience, and nurturing relationships."},
+            3: {"number": 3, "theme": "Creativity", "description": "A year of self-expression, joy, and creative expansion."},
+            4: {"number": 4, "theme": "Foundation", "description": "A year of hard work, building stability, and laying groundwork."},
+            5: {"number": 5, "theme": "Change", "description": "A year of transformation, freedom, and new experiences."},
+            6: {"number": 6, "theme": "Responsibility", "description": "A year of home, family, love, and nurturing others."},
+            7: {"number": 7, "theme": "Introspection", "description": "A year of spiritual growth, rest, and inner reflection."},
+            8: {"number": 8, "theme": "Abundance", "description": "A year of achievement, recognition, and material success."},
+            9: {"number": 9, "theme": "Completion", "description": "A year of endings, release, and preparing for new cycles."},
+        }
+        
+        reading_data = {
+            "life_path": life_path_info,
+            "personal_year": personal_year_themes.get(personal_year_sum, personal_year_themes[9]),
         }
         
         # Add name-based numbers if name provided
         if request.full_name:
-            reading["expression_number"] = calculate_expression_number(request.full_name)
-            reading["soul_urge_number"] = calculate_soul_urge(request.full_name)
-            reading["expression_info"] = LIFE_PATHS.get(reading["expression_number"], {})
-            reading["soul_urge_info"] = LIFE_PATHS.get(reading["soul_urge_number"], {})
+            expression_num = calculate_expression_number(request.full_name)
+            soul_urge_num = calculate_soul_urge(request.full_name)
+            reading_data["expression"] = {
+                "number": expression_num,
+                "description": LIFE_PATHS.get(expression_num, {}).get("description", "Your talents and abilities manifest through this number.")
+            }
+            reading_data["soul_urge"] = {
+                "number": soul_urge_num,
+                "description": LIFE_PATHS.get(soul_urge_num, {}).get("description", "Your heart's deepest desires resonate with this number.")
+            }
+        
+        # Full record to save
+        record = {
+            "reading_id": str(__import__('uuid').uuid4())[:8],
+            "user_id": user.user_id,
+            "birth_date": request.birth_date,
+            "full_name": request.full_name,
+            "life_path_number": life_path_number,
+            "reading": reading_data,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
         
         # Save to database
-        await db.numerology_readings.insert_one(reading)
-        reading.pop("_id", None)
+        await db.numerology_readings.insert_one(record)
+        record.pop("_id", None)
         
-        return reading
+        # Return the reading in the expected format
+        return reading_data
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
