@@ -15,6 +15,8 @@ try:
     import swisseph as swe
     import pytz
     SWISSEPH_AVAILABLE = True
+    # Use built-in Moshier ephemeris (no external files needed)
+    # This provides ~1 arcsecond accuracy, sufficient for astrological purposes
 except ImportError:
     SWISSEPH_AVAILABLE = False
 
@@ -22,6 +24,9 @@ from .dependencies import get_db, get_current_user, User
 
 router = APIRouter(prefix="/birth-chart", tags=["astrology"])
 logger = logging.getLogger(__name__)
+
+# Flag for Chiron availability (requires additional ephemeris files)
+CHIRON_AVAILABLE = False  # Set to True if sepl*.se1 files are properly installed
 
 # Zodiac sign data with comprehensive information
 ZODIAC_SIGNS = {
