@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
+import { toast } from "sonner";
 import AppFooter from "./components/AppFooter";
 
 // Pages
@@ -148,7 +149,7 @@ const AdminRoute = ({ children }) => {
   // Admin emails list - add your admin email(s) here
   const ADMIN_EMAILS = [
     "skywatersacredembodiments@gmail.com",
-    // Add more admin emails as needed
+    "mskatt78@gmail.com",
   ].map(e => e.toLowerCase());
 
   useEffect(() => {

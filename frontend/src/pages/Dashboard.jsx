@@ -19,6 +19,7 @@ const Dashboard = ({ user, api }) => {
   // Admin emails for showing admin link
   const ADMIN_EMAILS = [
     "skywatersacredembodiments@gmail.com",
+    "mskatt78@gmail.com",
   ].map(e => e.toLowerCase());
   
   const isAdmin = user && ADMIN_EMAILS.includes((user.email || "").toLowerCase());

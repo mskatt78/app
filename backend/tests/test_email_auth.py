@@ -36,11 +36,14 @@ class TestEmailPasswordAuth:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
         
-        # Validate response structure
-        assert "user_id" in data, "Response should contain user_id"
-        assert data["email"] == self.test_email.lower(), "Email should match (lowercase)"
-        assert data["name"] == self.test_name, "Name should match"
-        assert data["message"] == "Registration successful"
+        # Validate response structure - API returns {"user": {...}, "session_token": "..."}
+        assert "user" in data, "Response should contain user object"
+        assert "session_token" in data, "Response should contain session_token"
+        
+        user = data["user"]
+        assert "user_id" in user, "User object should contain user_id"
+        assert user["email"] == self.test_email.lower(), "Email should match (lowercase)"
+        assert user["name"] == self.test_name, "Name should match"
         
         # Check cookie was set
         assert "session_token" in response.cookies or any("session_token" in str(c) for c in self.session.cookies)
@@ -98,9 +101,11 @@ class TestEmailPasswordAuth:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
         
-        assert "user_id" in data
-        assert data["email"] == self.test_email.lower()
-        assert data["message"] == "Login successful"
+        # Validate response structure - API returns {"user": {...}, "session_token": "..."}
+        assert "user" in data, "Response should contain user object"
+        user = data["user"]
+        assert "user_id" in user
+        assert user["email"] == self.test_email.lower()
         print(f"✓ Login successful for {self.test_email}")
     
     def test_login_invalid_email(self):

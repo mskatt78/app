@@ -244,7 +244,7 @@ async def login_user(data: UserLogin, response: Response):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
     # Check if user has password (might be Google-only user)
-    if not user.get("password_hash"):
+    if not user.get("password_hash") or not user.get("password_salt"):
         raise HTTPException(status_code=401, detail="Please sign in with Google")
     
     # Verify password
