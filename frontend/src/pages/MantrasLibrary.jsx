@@ -1,13 +1,20 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Heart, Filter, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward } from "lucide-react";
+import { ArrowLeft, Heart, Filter, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward, Gauge, Minus, Plus } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Progress } from "../components/ui/progress";
 import { Slider } from "../components/ui/slider";
 import { toast } from "sonner";
+import { 
+  createMantraAudioContext, 
+  playBellTone, 
+  playOmTone, 
+  playMantraSound,
+  ELEMENT_FREQUENCIES 
+} from "../components/audio/MantraAudio";
 
 const MantrasLibrary = ({ user, api }) => {
   const navigate = useNavigate();
@@ -33,6 +40,17 @@ const MantrasLibrary = ({ user, api }) => {
   const [audioDuration, setAudioDuration] = useState(0);
   const [isLooping, setIsLooping] = useState(true);
   const [audioError, setAudioError] = useState(false);
+  
+  // Speed/Tempo control for health reasons
+  const [tempo, setTempo] = useState("normal"); // slow, normal, fast
+  const tempoMultipliers = { slow: 1.5, normal: 1.0, fast: 0.7 };
+  const tempoLabels = { slow: "Slow (Relaxed)", normal: "Normal", fast: "Fast (Energizing)" };
+  
+  // Generated mantra sound state
+  const mantraAudioCtxRef = useRef(null);
+  const mantraGainRef = useRef(null);
+  const mantraIntervalRef = useRef(null);
+  const [useGeneratedSound, setUseGeneratedSound] = useState(true); // Default to generated sound
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
@@ -206,15 +224,21 @@ const MantrasLibrary = ({ user, api }) => {
     }
   };
 
-  // Timer-based chanting (fallback when no audio)
+  // Timer-based chanting (with optional generated sound)
   const startChanting = () => {
     if (!selectedMantra) return;
     setIsChanting(true);
     setCurrentRep(0);
     setChantProgress(0);
     
-    const durationPerRep = selectedMantra.duration_seconds || 10;
+    const baseDuration = selectedMantra.duration_seconds || 10;
+    const durationPerRep = baseDuration * tempoMultipliers[tempo];
     const totalReps = selectedMantra.repetitions || 108;
+    
+    // Start generated mantra sound if enabled
+    if (useGeneratedSound && !isMuted) {
+      startMantraSound(selectedMantra.element, durationPerRep);
+    }
     
     intervalRef.current = setInterval(() => {
       setChantProgress(prev => {
@@ -227,6 +251,10 @@ const MantrasLibrary = ({ user, api }) => {
               toast.success("Mantra practice complete!");
               return rep;
             }
+            // Play sound for new repetition
+            if (useGeneratedSound && !isMuted && mantraAudioCtxRef.current && mantraGainRef.current) {
+              playMantraSound(mantraAudioCtxRef.current, mantraGainRef.current, selectedMantra.element, 3);
+            }
             return newRep;
           });
           return 0;
@@ -235,6 +263,45 @@ const MantrasLibrary = ({ user, api }) => {
       });
     }, 100);
   };
+  
+  // Start generated mantra sound
+  const startMantraSound = (element, cycleDuration) => {
+    try {
+      const ctx = createMantraAudioContext();
+      mantraAudioCtxRef.current = ctx;
+      
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = volume * 0.6;
+      gainNode.connect(ctx.destination);
+      mantraGainRef.current = gainNode;
+      
+      // Play initial bell
+      playBellTone(ctx, gainNode, ELEMENT_FREQUENCIES[element] || 432, 3);
+      
+      // Set up recurring chant sounds
+      mantraIntervalRef.current = setInterval(() => {
+        if (mantraAudioCtxRef.current && mantraGainRef.current) {
+          playMantraSound(mantraAudioCtxRef.current, mantraGainRef.current, element, cycleDuration * 0.8);
+        }
+      }, cycleDuration * 1000);
+      
+    } catch (e) {
+      console.warn("Could not start mantra sound:", e);
+    }
+  };
+  
+  // Stop generated mantra sound
+  const stopMantraSound = () => {
+    if (mantraIntervalRef.current) {
+      clearInterval(mantraIntervalRef.current);
+      mantraIntervalRef.current = null;
+    }
+    if (mantraAudioCtxRef.current && mantraAudioCtxRef.current.state !== 'closed') {
+      mantraAudioCtxRef.current.close();
+    }
+    mantraAudioCtxRef.current = null;
+    mantraGainRef.current = null;
+  };
 
   const stopChanting = () => {
     setIsChanting(false);
@@ -242,12 +309,14 @@ const MantrasLibrary = ({ user, api }) => {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    stopMantraSound();
   };
 
   const resetChanting = () => {
     stopChanting();
     setCurrentRep(0);
     setChantProgress(0);
+    stopMantraSound();
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -515,11 +584,11 @@ const MantrasLibrary = ({ user, api }) => {
                     </p>
                   </div>
                 ) : (
-                  /* Timer-based Chanting Practice (fallback) */
+                  /* Timer-based Chanting Practice with Sound */
                   <div className="p-6 rounded-xl bg-primary/10 border border-primary/20">
                     <h4 className="text-sm uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
                       <Volume2 className="w-4 h-4" />
-                      Chanting Timer
+                      Chanting Timer with Sound
                     </h4>
                     
                     <div className="text-center mb-4">
@@ -528,6 +597,86 @@ const MantrasLibrary = ({ user, api }) => {
                     </div>
 
                     <Progress value={chantProgress} className="h-2 mb-4" />
+                    
+                    {/* Tempo/Speed Control for Health Reasons */}
+                    <div className="mb-4 p-4 rounded-lg bg-black/20">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-xs uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                          <Gauge className="w-4 h-4" /> Pace Control
+                        </span>
+                        <span className="text-xs text-primary">{tempoLabels[tempo]}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setTempo("slow")}
+                          disabled={isChanting}
+                          className={`flex-1 text-xs ${tempo === "slow" ? "bg-blue-500/20 text-blue-400" : ""}`}
+                        >
+                          <Minus className="w-3 h-3 mr-1" /> Slow
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setTempo("normal")}
+                          disabled={isChanting}
+                          className={`flex-1 text-xs ${tempo === "normal" ? "bg-primary/20 text-primary" : ""}`}
+                        >
+                          Normal
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setTempo("fast")}
+                          disabled={isChanting}
+                          className={`flex-1 text-xs ${tempo === "fast" ? "bg-orange-500/20 text-orange-400" : ""}`}
+                        >
+                          Fast <Plus className="w-3 h-3 ml-1" />
+                        </Button>
+                      </div>
+                      <p className="text-xs text-muted-foreground mt-2 text-center">
+                        {tempo === "slow" ? "Relaxed pace for meditation & breathing conditions" : 
+                         tempo === "fast" ? "Energizing pace for active practice" : 
+                         "Standard pace for balanced practice"}
+                      </p>
+                    </div>
+                    
+                    {/* Sound Toggle */}
+                    <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-black/20">
+                      <span className="text-sm flex items-center gap-2">
+                        <Music className="w-4 h-4 text-primary" /> Mantra Sound
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setUseGeneratedSound(!useGeneratedSound)}
+                        className={useGeneratedSound ? "text-primary" : "text-muted-foreground"}
+                      >
+                        {useGeneratedSound ? "On" : "Off"}
+                      </Button>
+                    </div>
+                    
+                    {/* Volume Control (when sound enabled) */}
+                    {useGeneratedSound && (
+                      <div className="flex items-center gap-3 mb-4">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setIsMuted(!isMuted)}
+                          className="text-muted-foreground hover:text-primary"
+                        >
+                          {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                        </Button>
+                        <Slider
+                          value={[isMuted ? 0 : volume]}
+                          onValueChange={([v]) => { setVolume(v); setIsMuted(false); }}
+                          max={1}
+                          step={0.01}
+                          className="flex-1"
+                        />
+                      </div>
+                    )}
 
                     <div className="flex items-center justify-center gap-4">
                       <Button
@@ -549,7 +698,10 @@ const MantrasLibrary = ({ user, api }) => {
                     </div>
 
                     <p className="text-xs text-muted-foreground text-center mt-4">
-                      Chant along with each cycle. {selectedMantra.duration_seconds} seconds per repetition.
+                      {useGeneratedSound 
+                        ? `Om tones & bells accompany your ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])}s cycles.`
+                        : `Chant along with each ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])} second cycle.`
+                      }
                     </p>
                   </div>
                 )}

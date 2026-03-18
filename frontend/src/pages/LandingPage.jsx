@@ -45,10 +45,17 @@ const LandingPage = ({ onLoginSuccess }) => {
         withCredentials: true
       });
 
-      toast.success(isLogin ? "Welcome back!" : "Account created successfully!");
-      
-      // Redirect to dashboard
-      window.location.href = "/dashboard";
+      if (response.data.user) {
+        toast.success(isLogin ? "Welcome back!" : "Account created successfully!");
+        
+        // Close modal and navigate
+        setShowAuthModal(false);
+        
+        // Small delay to ensure cookie is set, then redirect
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 100);
+      }
       
     } catch (error) {
       const message = error.response?.data?.detail || "Authentication failed";

@@ -221,6 +221,34 @@ async def get_life_paths():
     return LIFE_PATHS
 
 
+@router.post("/numerology/calculate")
+async def calculate_numerology_public(request: NumerologyRequest):
+    """Calculate numerology reading without saving (public endpoint)."""
+    try:
+        life_path = calculate_life_path(request.birth_date)
+        life_path_info = LIFE_PATHS.get(life_path, LIFE_PATHS.get(reduce_to_single_digit(life_path, False), {}))
+        
+        result = {
+            "birth_date": request.birth_date,
+            "full_name": request.full_name,
+            "life_path_number": life_path,
+            "life_path_info": life_path_info,
+        }
+        
+        if request.full_name:
+            result["expression_number"] = calculate_expression_number(request.full_name)
+            result["soul_urge_number"] = calculate_soul_urge(request.full_name)
+            result["expression_info"] = LIFE_PATHS.get(result["expression_number"], {})
+            result["soul_urge_info"] = LIFE_PATHS.get(result["soul_urge_number"], {})
+        
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Numerology calculation error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to calculate reading")
+
+
 @router.post("/numerology/reading")
 async def create_numerology_reading(
     request: NumerologyRequest,

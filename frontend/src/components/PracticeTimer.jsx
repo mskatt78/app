@@ -44,7 +44,8 @@ const PracticeTimer = ({
   practiceType = "general",
   element = "Spirit",
   breathingPattern = null,
-  visualizationType = "particles"
+  visualizationType = "particles",
+  allowSpeedControl = true // Enable tempo/speed control for health reasons
 }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
@@ -54,6 +55,8 @@ const PracticeTimer = ({
   const [showVisuals, setShowVisuals] = useState(true);
   const [audioVolume, setAudioVolume] = useState(0.5);
   const [audioPlaying, setAudioPlaying] = useState(false);
+  const [tempo, setTempo] = useState("normal"); // slow, normal, fast
+  const tempoMultipliers = { slow: 1.5, normal: 1.0, fast: 0.7 };
   const intervalRef = useRef(null);
   const audioContextRef = useRef(null);
   const gainNodeRef = useRef(null);
@@ -229,6 +232,9 @@ const PracticeTimer = ({
 
   useEffect(() => {
     if (isRunning) {
+      // Adjust interval based on tempo (slow = longer intervals = slower practice)
+      const intervalMs = 1000 * tempoMultipliers[tempo];
+      
       intervalRef.current = setInterval(() => {
         setSegmentTime(prev => {
           const newTime = prev + 1;
@@ -259,7 +265,7 @@ const PracticeTimer = ({
           }
           return prev + 1;
         });
-      }, 1000);
+      }, intervalMs);
     }
 
     return () => {
@@ -267,7 +273,7 @@ const PracticeTimer = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, currentSegment, currentSegmentIndex, segments.length, calculatedTotal, onComplete]);
+  }, [isRunning, currentSegment, currentSegmentIndex, segments.length, calculatedTotal, onComplete, tempo]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -417,6 +423,54 @@ const PracticeTimer = ({
           {showVisuals ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
         </Button>
       </div>
+
+      {/* Speed/Tempo Control for Health Reasons */}
+      {allowSpeedControl && (
+        <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-3">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs uppercase tracking-wider text-muted-foreground">
+              Practice Speed
+            </span>
+            <span className="text-xs text-primary">
+              {tempo === "slow" ? "Slow (Relaxed)" : tempo === "fast" ? "Fast (Energizing)" : "Normal"}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => !isRunning && setTempo("slow")}
+              disabled={isRunning}
+              className={`flex-1 text-xs ${tempo === "slow" ? "bg-blue-500/20 text-blue-400" : ""}`}
+            >
+              Slow
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => !isRunning && setTempo("normal")}
+              disabled={isRunning}
+              className={`flex-1 text-xs ${tempo === "normal" ? "bg-primary/20 text-primary" : ""}`}
+            >
+              Normal
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => !isRunning && setTempo("fast")}
+              disabled={isRunning}
+              className={`flex-1 text-xs ${tempo === "fast" ? "bg-orange-500/20 text-orange-400" : ""}`}
+            >
+              Fast
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2 text-center">
+            {tempo === "slow" ? "50% slower - for breathing conditions or deep relaxation" : 
+             tempo === "fast" ? "30% faster - for energizing practice" : 
+             "Standard pace"}
+          </p>
+        </div>
+      )}
 
       {/* Background Audio Indicator */}
       {backgroundAudio && backgroundAudio !== "silence" && (

@@ -138,6 +138,60 @@ const ProtectedRoute = ({ children }) => {
   return children({ user, api });
 };
 
+// Admin Route Component - requires admin role
+const AdminRoute = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isAuthorized, setIsAuthorized] = useState(null);
+  const [user, setUser] = useState(location.state?.user || null);
+
+  // Admin emails list - add your admin email(s) here
+  const ADMIN_EMAILS = [
+    "skywatersacredembodiments@gmail.com",
+    // Add more admin emails as needed
+  ];
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const response = await api.get("/auth/me");
+        const userData = response.data;
+        setUser(userData);
+        
+        // Check if user email is in admin list
+        const isAdmin = ADMIN_EMAILS.includes(userData.email?.toLowerCase()) || userData.is_admin === true;
+        
+        if (isAdmin) {
+          setIsAuthorized(true);
+        } else {
+          setIsAuthorized(false);
+          navigate("/dashboard", { replace: true });
+        }
+      } catch (error) {
+        setIsAuthorized(false);
+        navigate("/", { replace: true });
+      }
+    };
+
+    checkAdmin();
+  }, [navigate]);
+
+  if (isAuthorized === null) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground font-serif italic">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) return null;
+
+  return children({ user, api });
+};
+
 // Public Route Component - allows viewing without login, but shows user if logged in
 const PublicRoute = ({ children }) => {
   const location = useLocation();
@@ -420,9 +474,9 @@ function AppRouter() {
       <Route
         path="/admin"
         element={
-          <ProtectedRoute>
+          <AdminRoute>
             {({ user, api }) => <AdminCMS user={user} api={api} />}
-          </ProtectedRoute>
+          </AdminRoute>
         }
       />
       {/* New Shamanic Routes */}
