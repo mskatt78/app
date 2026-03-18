@@ -228,7 +228,7 @@ New content types added for user-generated content management:
 - Images: AI-generated via Imagen 4.0
 
 ## Links
-- Preview: https://elemental-yoga.preview.emergentagent.com
+- Preview: https://shamanic-yoga-temple.preview.emergentagent.com
 - Production: https://mindful-shamanic-app.emergent.host (after deploy)
 
 ## Files Updated This Session

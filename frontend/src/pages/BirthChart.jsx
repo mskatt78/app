@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Sun, Moon, Star, Sparkles, Calendar, Clock, MapPin,
-  ChevronRight, Loader2, Save, User
+  ChevronRight, Loader2, Save, User, TrendingUp, Circle, Triangle,
+  Square, Hexagon, Info, ChevronDown
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
 
 const BirthChart = ({ user, api }) => {
@@ -16,6 +18,8 @@ const BirthChart = ({ user, api }) => {
   const [calculating, setCalculating] = useState(false);
   const [chart, setChart] = useState(null);
   const [zodiacSigns, setZodiacSigns] = useState({});
+  const [showAspects, setShowAspects] = useState(false);
+  const [showHouses, setShowHouses] = useState(false);
   const [formData, setFormData] = useState({
     birth_date: "",
     birth_time: "12:00",
@@ -62,7 +66,7 @@ const BirthChart = ({ user, api }) => {
       const endpoint = user ? "/birth-chart/save" : "/birth-chart/calculate";
       const response = await api.post(endpoint, formData);
       setChart(response.data);
-      toast.success("Birth chart calculated!");
+      toast.success("Birth chart calculated with Swiss Ephemeris precision!");
     } catch (error) {
       console.error("Chart calculation error:", error);
       toast.error(error.response?.data?.detail || "Failed to calculate chart");
@@ -73,20 +77,57 @@ const BirthChart = ({ user, api }) => {
 
   const getElementColor = (element) => {
     switch (element) {
-      case "Fire": return "text-orange-400 bg-orange-500/20";
-      case "Earth": return "text-emerald-400 bg-emerald-500/20";
-      case "Air": return "text-cyan-400 bg-cyan-500/20";
-      case "Water": return "text-blue-400 bg-blue-500/20";
-      default: return "text-purple-400 bg-purple-500/20";
+      case "Fire": return "text-orange-400 bg-orange-500/20 border-orange-500/30";
+      case "Earth": return "text-emerald-400 bg-emerald-500/20 border-emerald-500/30";
+      case "Air": return "text-cyan-400 bg-cyan-500/20 border-cyan-500/30";
+      case "Water": return "text-blue-400 bg-blue-500/20 border-blue-500/30";
+      default: return "text-purple-400 bg-purple-500/20 border-purple-500/30";
+    }
+  };
+
+  const getElementBgColor = (element) => {
+    switch (element) {
+      case "Fire": return "bg-gradient-to-br from-orange-500/20 to-red-500/10";
+      case "Earth": return "bg-gradient-to-br from-emerald-500/20 to-green-500/10";
+      case "Air": return "bg-gradient-to-br from-cyan-500/20 to-sky-500/10";
+      case "Water": return "bg-gradient-to-br from-blue-500/20 to-indigo-500/10";
+      default: return "bg-gradient-to-br from-purple-500/20 to-violet-500/10";
     }
   };
 
   const getPlanetIcon = (planet) => {
+    const iconClass = "w-5 h-5";
     switch (planet) {
-      case "Sun": return <Sun className="w-5 h-5 text-yellow-400" />;
-      case "Moon": return <Moon className="w-5 h-5 text-slate-300" />;
-      default: return <Star className="w-5 h-5 text-purple-400" />;
+      case "Sun": return <Sun className={`${iconClass} text-yellow-400`} />;
+      case "Moon": return <Moon className={`${iconClass} text-slate-300`} />;
+      case "Mercury": return <Circle className={`${iconClass} text-amber-400`} />;
+      case "Venus": return <Circle className={`${iconClass} text-pink-400`} />;
+      case "Mars": return <Triangle className={`${iconClass} text-red-400`} />;
+      case "Jupiter": return <Hexagon className={`${iconClass} text-orange-300`} />;
+      case "Saturn": return <Square className={`${iconClass} text-amber-600`} />;
+      case "Uranus": return <Sparkles className={`${iconClass} text-cyan-400`} />;
+      case "Neptune": return <Sparkles className={`${iconClass} text-blue-400`} />;
+      case "Pluto": return <Circle className={`${iconClass} text-purple-400`} />;
+      case "North Node": return <TrendingUp className={`${iconClass} text-green-400`} />;
+      case "South Node": return <TrendingUp className={`${iconClass} text-gray-400 rotate-180`} />;
+      case "Chiron": return <Star className={`${iconClass} text-amber-400`} />;
+      default: return <Star className={`${iconClass} text-purple-400`} />;
     }
+  };
+
+  const getAspectColor = (aspect) => {
+    switch (aspect) {
+      case "Conjunction": return "text-yellow-400 bg-yellow-500/20";
+      case "Trine": return "text-green-400 bg-green-500/20";
+      case "Sextile": return "text-cyan-400 bg-cyan-500/20";
+      case "Square": return "text-red-400 bg-red-500/20";
+      case "Opposition": return "text-orange-400 bg-orange-500/20";
+      default: return "text-purple-400 bg-purple-500/20";
+    }
+  };
+
+  const formatDegree = (degree, minute) => {
+    return `${degree}°${minute || 0}'`;
   };
 
   return (
@@ -100,12 +141,13 @@ const BirthChart = ({ user, api }) => {
               size="icon"
               onClick={() => navigate(-1)}
               className="shrink-0"
+              data-testid="back-button"
             >
               <ArrowLeft className="w-5 h-5" />
             </Button>
             <div>
               <h1 className="text-xl font-serif">Birth Chart</h1>
-              <p className="text-xs text-muted-foreground">Your Cosmic Blueprint</p>
+              <p className="text-xs text-muted-foreground">Swiss Ephemeris Precision</p>
             </div>
           </div>
         </div>
@@ -124,10 +166,13 @@ const BirthChart = ({ user, api }) => {
                   <Sparkles className="w-5 h-5 text-primary" />
                   Calculate Your Birth Chart
                 </CardTitle>
+                <CardDescription>
+                  Using Swiss Ephemeris for professional-grade accuracy (0.0001° precision)
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  Enter your birth details to discover your Sun sign, Moon sign, planetary placements, and house positions.
+                  Enter your birth details to discover your complete natal chart including Sun sign, Moon sign, Rising sign (Ascendant), all planetary positions, house placements, and aspects.
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -153,7 +198,7 @@ const BirthChart = ({ user, api }) => {
                       onChange={(e) => setFormData({ ...formData, birth_time: e.target.value })}
                       data-testid="birth-time-input"
                     />
-                    <p className="text-xs text-muted-foreground mt-1">For accurate Moon & Rising signs</p>
+                    <p className="text-xs text-muted-foreground mt-1">Required for accurate Rising sign & houses</p>
                   </div>
                   
                   <div>
@@ -190,7 +235,7 @@ const BirthChart = ({ user, api }) => {
                   {calculating ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Calculating...
+                      Calculating with Swiss Ephemeris...
                     </>
                   ) : (
                     <>
@@ -225,18 +270,42 @@ const BirthChart = ({ user, api }) => {
             animate={{ opacity: 1 }}
             className="space-y-6"
           >
-            {/* Sun Sign Hero */}
-            <Card className="bg-gradient-to-br from-yellow-500/20 to-orange-500/10 border-yellow-500/30 overflow-hidden">
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <div className="text-6xl mb-2">{chart.sun_sign_info?.symbol || "☀️"}</div>
-                  <h2 className="text-3xl font-serif text-yellow-400">{chart.sun_sign}</h2>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {chart.sun_sign_info?.element} Sign • {chart.sun_sign_info?.quality}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Ruled by {chart.sun_sign_info?.ruler}
-                  </p>
+            {/* Big Three - Sun, Moon, Rising */}
+            <Card className="bg-gradient-to-br from-purple-500/20 via-blue-500/10 to-yellow-500/10 border-purple-500/30 overflow-hidden">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-center text-lg">Your Big Three</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  {/* Sun Sign */}
+                  <div className="space-y-2">
+                    <div className="text-4xl">{chart.sun_sign_info?.symbol || "☉"}</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Sun</div>
+                    <div className="font-serif text-lg text-yellow-400">{chart.sun_sign}</div>
+                    <Badge variant="outline" className="text-xs">
+                      {chart.sun_sign_info?.element}
+                    </Badge>
+                  </div>
+                  
+                  {/* Moon Sign */}
+                  <div className="space-y-2">
+                    <div className="text-4xl">{chart.moon_sign_info?.symbol || "☽"}</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Moon</div>
+                    <div className="font-serif text-lg text-slate-300">{chart.moon_sign}</div>
+                    <Badge variant="outline" className="text-xs">
+                      {chart.moon_sign_info?.element}
+                    </Badge>
+                  </div>
+                  
+                  {/* Rising Sign */}
+                  <div className="space-y-2">
+                    <div className="text-4xl">{chart.rising_sign_info?.symbol || "AC"}</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wide">Rising</div>
+                    <div className="font-serif text-lg text-primary">{chart.rising_sign}</div>
+                    <Badge variant="outline" className="text-xs">
+                      {chart.rising_sign_info?.element}
+                    </Badge>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -248,38 +317,140 @@ const BirthChart = ({ user, api }) => {
                   <Star className="w-5 h-5 text-purple-400" />
                   Planetary Positions
                 </CardTitle>
+                <CardDescription>
+                  All planets calculated with Swiss Ephemeris precision
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {chart.planets?.map((planet, index) => (
-                    <motion.div
-                      key={planet.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
-                    >
-                      <div className="flex items-center gap-3">
-                        {getPlanetIcon(planet.name)}
-                        <div>
-                          <p className="font-medium">{planet.name}</p>
-                          <p className="text-xs text-muted-foreground">{planet.meaning}</p>
+                  {chart.planets?.map((planet, index) => {
+                    const signInfo = zodiacSigns[planet.sign] || {};
+                    return (
+                      <motion.div
+                        key={planet.name}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className={`p-3 rounded-xl ${getElementBgColor(signInfo.element)} border border-white/5 hover:border-white/10 transition-colors`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            {getPlanetIcon(planet.name)}
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <p className="font-medium">{planet.name}</p>
+                                {planet.retrograde && (
+                                  <Badge variant="destructive" className="text-xs px-1 py-0">
+                                    ℞ Rx
+                                  </Badge>
+                                )}
+                              </div>
+                              <p className="text-xs text-muted-foreground line-clamp-1">
+                                {planet.meaning}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <div className="flex items-center gap-2 justify-end">
+                              <span className="text-lg">{planet.sign_symbol}</span>
+                              <span className="font-medium">{planet.sign}</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {formatDegree(planet.degree, planet.minute)} • House {planet.house}
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium flex items-center gap-1">
-                          <span>{planet.sign_symbol}</span>
-                          <span>{planet.sign}</span>
-                          {planet.retrograde && <span className="text-xs text-red-400">℞</span>}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {planet.degree}° • House {planet.house}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    );
+                  })}
                 </div>
               </CardContent>
+            </Card>
+
+            {/* Ascendant & Midheaven */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Card className="bg-gradient-to-br from-violet-500/20 to-purple-500/10 border-violet-500/30">
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-2">{chart.ascendant?.sign_symbol}</div>
+                    <h3 className="text-sm text-muted-foreground uppercase tracking-wide">Ascendant (Rising)</h3>
+                    <p className="text-xl font-serif text-primary">{chart.ascendant?.sign}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formatDegree(chart.ascendant?.degree, chart.ascendant?.minute)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2 italic">
+                      {chart.ascendant?.meaning}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-amber-500/20 to-orange-500/10 border-amber-500/30">
+                <CardContent className="pt-6">
+                  <div className="text-center">
+                    <div className="text-3xl mb-2">{chart.midheaven?.sign_symbol}</div>
+                    <h3 className="text-sm text-muted-foreground uppercase tracking-wide">Midheaven (MC)</h3>
+                    <p className="text-xl font-serif text-amber-400">{chart.midheaven?.sign}</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formatDegree(chart.midheaven?.degree, chart.midheaven?.minute)}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2 italic">
+                      {chart.midheaven?.meaning}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Aspects Section */}
+            <Card className="bg-card/50 border-white/10">
+              <CardHeader 
+                className="cursor-pointer" 
+                onClick={() => setShowAspects(!showAspects)}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-cyan-400" />
+                    Planetary Aspects ({chart.aspects?.length || 0})
+                  </CardTitle>
+                  <ChevronDown className={`w-5 h-5 transition-transform ${showAspects ? 'rotate-180' : ''}`} />
+                </div>
+                <CardDescription>
+                  Geometric relationships between planets
+                </CardDescription>
+              </CardHeader>
+              <AnimatePresence>
+                {showAspects && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                  >
+                    <CardContent>
+                      <div className="space-y-2 max-h-96 overflow-y-auto">
+                        {chart.aspects?.map((aspect, index) => (
+                          <div
+                            key={index}
+                            className={`p-3 rounded-lg ${getAspectColor(aspect.aspect)} flex items-center justify-between`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium">{aspect.planet1}</span>
+                              <span className="text-lg">{aspect.symbol}</span>
+                              <span className="font-medium">{aspect.planet2}</span>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm font-medium">{aspect.aspect}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Orb: {aspect.orb}° {aspect.applying ? "(applying)" : "(separating)"}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </Card>
 
             {/* Element & Quality Balance */}
@@ -311,6 +482,11 @@ const BirthChart = ({ user, api }) => {
                   <p className="text-xs text-center mt-3 text-muted-foreground">
                     Dominant: <span className="text-primary">{chart.elements?.dominant}</span>
                   </p>
+                  {chart.elements?.interpretation && (
+                    <p className="text-xs text-muted-foreground mt-2 italic">
+                      {chart.elements.interpretation}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
 
@@ -341,36 +517,76 @@ const BirthChart = ({ user, api }) => {
                   <p className="text-xs text-center mt-3 text-muted-foreground">
                     Dominant: <span className="text-primary">{chart.qualities?.dominant}</span>
                   </p>
+                  {chart.qualities?.interpretation && (
+                    <p className="text-xs text-muted-foreground mt-2 italic">
+                      {chart.qualities.interpretation}
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             </div>
 
             {/* Houses */}
             <Card className="bg-card/50 border-white/10">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-primary" />
-                  The 12 Houses
-                </CardTitle>
+              <CardHeader 
+                className="cursor-pointer"
+                onClick={() => setShowHouses(!showHouses)}
+              >
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Hexagon className="w-5 h-5 text-primary" />
+                    The 12 Houses
+                  </CardTitle>
+                  <ChevronDown className={`w-5 h-5 transition-transform ${showHouses ? 'rotate-180' : ''}`} />
+                </div>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {chart.houses?.map((house, index) => (
-                    <motion.div
-                      key={house.number}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
-                    >
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-lg font-serif text-primary">{house.number}</span>
-                        <span className="text-lg">{house.sign_symbol}</span>
+              <AnimatePresence>
+                {showHouses && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                  >
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {Object.values(chart.houses || {}).map((house, index) => {
+                          const signInfo = zodiacSigns[house.sign] || {};
+                          return (
+                            <motion.div
+                              key={house.number}
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: index * 0.03 }}
+                              className={`p-3 rounded-xl ${getElementBgColor(signInfo.element)} border border-white/5`}
+                            >
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="text-lg font-serif text-primary">{house.number}</span>
+                                <span className="text-lg">{house.sign_symbol}</span>
+                              </div>
+                              <p className="text-xs font-medium">{house.theme}</p>
+                              <p className="text-xs text-muted-foreground">{house.sign}</p>
+                              <p className="text-xs text-muted-foreground/60">
+                                {formatDegree(house.degree, house.minute)}
+                              </p>
+                            </motion.div>
+                          );
+                        })}
                       </div>
-                      <p className="text-xs font-medium">{house.theme}</p>
-                      <p className="text-xs text-muted-foreground">{house.sign}</p>
-                    </motion.div>
-                  ))}
+                    </CardContent>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Card>
+
+            {/* Calculation Info */}
+            <Card className="bg-card/30 border-white/5">
+              <CardContent className="pt-4">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Info className="w-4 h-4" />
+                  <span>
+                    Calculated using {chart.calculation_method} • Precision: {chart.precision} • 
+                    Julian Day: {chart.birth_data?.julian_day}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -380,6 +596,7 @@ const BirthChart = ({ user, api }) => {
               variant="outline"
               onClick={() => setChart(null)}
               className="w-full"
+              data-testid="new-chart-btn"
             >
               Calculate New Chart
             </Button>

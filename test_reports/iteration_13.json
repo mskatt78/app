@@ -79,7 +79,7 @@
     }
   },
   "test_environment": {
-    "app_url": "https://elemental-yoga.preview.emergentagent.com",
+    "app_url": "https://shamanic-yoga-temple.preview.emergentagent.com",
     "viewport": "375x812 (mobile)"
   },
   "console_errors_observed": [

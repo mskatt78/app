@@ -27,17 +27,17 @@ print('User ID: ' + userId);
 ## Step 2: Test Backend API
 ```bash
 # Test auth endpoint
-curl -X GET "https://elemental-yoga.preview.emergentagent.com/api/auth/me" \
+curl -X GET "https://shamanic-yoga-temple.preview.emergentagent.com/api/auth/me" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 
 # Test yoga poses
-curl -X GET "https://elemental-yoga.preview.emergentagent.com/api/yoga/poses"
+curl -X GET "https://shamanic-yoga-temple.preview.emergentagent.com/api/yoga/poses"
 
 # Test crystals
-curl -X GET "https://elemental-yoga.preview.emergentagent.com/api/crystals"
+curl -X GET "https://shamanic-yoga-temple.preview.emergentagent.com/api/crystals"
 
 # Test oracle (requires auth)
-curl -X POST "https://elemental-yoga.preview.emergentagent.com/api/oracle/reading" \
+curl -X POST "https://shamanic-yoga-temple.preview.emergentagent.com/api/oracle/reading" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
   -d '{"question": "What guidance do I need?", "spread_type": "single"}'
@@ -55,7 +55,7 @@ await page.context.add_cookies([{
     "secure": true,
     "sameSite": "None"
 }]);
-await page.goto("https://elemental-yoga.preview.emergentagent.com/dashboard");
+await page.goto("https://shamanic-yoga-temple.preview.emergentagent.com/dashboard");
 ```
 
 ## Checklist
