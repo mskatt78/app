@@ -12,6 +12,7 @@ const AstrologyCalendar = ({ user, api }) => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [loading, setLoading] = useState(true);
   const [viewIndex, setViewIndex] = useState(0);
+  const [hemisphere, setHemisphere] = useState("north"); // Default to north
 
   const elementColors = {
     Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", gradient: "from-emerald-500/20 to-emerald-900/10" },
@@ -23,7 +24,41 @@ const AstrologyCalendar = ({ user, api }) => {
 
   useEffect(() => {
     fetchData();
+    detectHemisphere();
   }, []);
+
+  const detectHemisphere = () => {
+    // Try to detect hemisphere from timezone or geolocation
+    try {
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      // Southern hemisphere timezones typically include these regions
+      const southernTimezones = [
+        'Australia', 'Auckland', 'Pacific/Auckland', 'Antarctica',
+        'Argentina', 'Brazil', 'Chile', 'Peru', 'Africa/Johannesburg',
+        'Africa/Cape', 'Indian/Mauritius', 'Pacific/Fiji'
+      ];
+      
+      const isSouthern = southernTimezones.some(tz => 
+        timezone.toLowerCase().includes(tz.toLowerCase())
+      );
+      
+      setHemisphere(isSouthern ? "south" : "north");
+    } catch (e) {
+      // Default to north if detection fails
+      setHemisphere("north");
+    }
+  };
+
+  // Helper to get hemisphere-appropriate description
+  const getDescription = (month) => {
+    if (hemisphere === "south" && month.description_south) {
+      return month.description_south;
+    }
+    if (hemisphere === "north" && month.description_north) {
+      return month.description_north;
+    }
+    return month.description; // Fallback to original
+  };
 
   const fetchData = async () => {
     try {
@@ -234,7 +269,30 @@ const AstrologyCalendar = ({ user, api }) => {
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
-                <p className="text-muted-foreground leading-relaxed">{selectedMonth.description}</p>
+                {/* Hemisphere Toggle */}
+                <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
+                  <span className="text-sm text-muted-foreground">Your Hemisphere</span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setHemisphere("north")}
+                      className={hemisphere === "north" ? "bg-primary/20 text-primary" : "text-muted-foreground"}
+                    >
+                      Northern
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setHemisphere("south")}
+                      className={hemisphere === "south" ? "bg-primary/20 text-primary" : "text-muted-foreground"}
+                    >
+                      Southern
+                    </Button>
+                  </div>
+                </div>
+
+                <p className="text-muted-foreground leading-relaxed">{getDescription(selectedMonth)}</p>
 
                 <div>
                   <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Themes</h4>
