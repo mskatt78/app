@@ -271,14 +271,17 @@ const MantrasLibrary = ({ user, api }) => {
       mantraAudioCtxRef.current = ctx;
       
       const gainNode = ctx.createGain();
-      gainNode.gain.value = volume * 0.6;
+      gainNode.gain.value = volume * 1.5; // Increased volume for audibility
       gainNode.connect(ctx.destination);
       mantraGainRef.current = gainNode;
       
-      // Play initial bell
-      playBellTone(ctx, gainNode, ELEMENT_FREQUENCIES[element] || 432, 3);
+      // Play initial bell - louder and longer
+      playBellTone(ctx, gainNode, ELEMENT_FREQUENCIES[element] || 432, 4);
       
-      // Set up recurring chant sounds
+      // Show toast that sound is playing
+      toast.success("Mantra sound playing - adjust volume if needed");
+      
+      // Set up recurring chant sounds - more frequent
       mantraIntervalRef.current = setInterval(() => {
         if (mantraAudioCtxRef.current && mantraGainRef.current) {
           playMantraSound(mantraAudioCtxRef.current, mantraGainRef.current, element, cycleDuration * 0.8);
@@ -287,6 +290,7 @@ const MantrasLibrary = ({ user, api }) => {
       
     } catch (e) {
       console.warn("Could not start mantra sound:", e);
+      toast.error("Could not play sound - please check your device volume");
     }
   };
   
@@ -643,19 +647,27 @@ const MantrasLibrary = ({ user, api }) => {
                     </div>
                     
                     {/* Sound Toggle */}
-                    <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-black/20">
+                    <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
                       <span className="text-sm flex items-center gap-2">
-                        <Music className="w-4 h-4 text-primary" /> Mantra Sound
+                        <Music className="w-4 h-4 text-primary" /> 
+                        <span className="font-medium">Meditation Sound</span>
                       </span>
                       <Button
-                        variant="ghost"
+                        variant={useGeneratedSound ? "default" : "ghost"}
                         size="sm"
                         onClick={() => setUseGeneratedSound(!useGeneratedSound)}
-                        className={useGeneratedSound ? "text-primary" : "text-muted-foreground"}
+                        className={useGeneratedSound ? "bg-primary text-primary-foreground" : "text-muted-foreground"}
                       >
-                        {useGeneratedSound ? "On" : "Off"}
+                        {useGeneratedSound ? "ON - Bells & Om" : "OFF - Silent"}
                       </Button>
                     </div>
+                    
+                    {/* Sound Info */}
+                    {useGeneratedSound && (
+                      <p className="text-xs text-primary/80 text-center mb-4 p-2 rounded bg-primary/5">
+                        🔔 Bell tones & Om sounds will play during your practice. Make sure your device volume is up!
+                      </p>
+                    )}
                     
                     {/* Volume Control (when sound enabled) */}
                     {useGeneratedSound && (

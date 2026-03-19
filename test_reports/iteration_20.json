@@ -1,0 +1,69 @@
+{
+  "summary": "Tested all 4 user-requested fixes: 1) Numerology calculation working correctly with birth date 1978-01-27 (shows Life Path 8 'The Achiever' with Crystal/Element/Mantra/Traits), 2) Moon Calendar has hemisphere toggle (Northern/Southern) in month detail dialog, 3) Mantras page shows 'Meditation Sound ON - Bells & Om' by default with volume control and clear instructions, 4) Crystals page shows 30 crystals. Bottom navigation working on all content pages with access to all sections via More menu.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dialog components", "issues": ["Console warning: Missing `Description` or `aria-describedby` for DialogContent - minor accessibility issue"]}
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_20.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "All 4 user-requested fixes are working correctly",
+    "Numerology /calculate endpoint is public and returns complete data",
+    "Moon Calendar hemisphere toggle dynamically changes description text (winter breaks vs autumn deepens)",
+    "Mantras sound is ON by default with volume=0.7 * 1.5 multiplier for audibility",
+    "Crystals API returns exactly 30 crystals as expected",
+    "Bottom navigation provides full access to all 16 sections via More menu"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only testing)",
+    "frontend": "100% (all features working)"
+  },
+  "test_credentials": {},
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 4 user-requested fixes verified working: 1) Numerology calculates correctly, 2) Moon Calendar has hemisphere toggle, 3) Mantras has audible sound ON by default, 4) 30 crystals displayed. Preview URL: https://yoga-astrology-hub.preview.emergentagent.com",
+  "features_tested": {
+    "numerology": {
+      "calculation_with_date_1978-01-27": "PASS - Life Path 8 'The Achiever'",
+      "crystal_display": "PASS - Tiger's Eye",
+      "element_display": "PASS - Earth",
+      "mantra_display": "PASS - 'I use my power and abundance to serve the greater good'",
+      "traits_display": "PASS - Powerful, Ambitious, Successful, Authoritative, Resourceful",
+      "personal_year": "PASS - Year 2 'Partnerships'"
+    },
+    "moon_calendar": {
+      "page_loads": "PASS",
+      "hemisphere_toggle_visible": "PASS - Northern/Southern buttons in dialog",
+      "auto_detection": "PASS - Code detects Southern hemisphere for Australia timezones",
+      "description_changes": "PASS - Northern: 'winter breaks', Southern: 'autumn deepens'"
+    },
+    "mantras": {
+      "page_loads": "PASS - 12 mantras displayed",
+      "sound_on_by_default": "PASS - 'Meditation Sound' shows 'ON - Bells & Om'",
+      "volume_control": "PASS - Slider present",
+      "sound_instructions": "PASS - 'Bell tones & Om sounds will play during your practice. Make sure your device volume is up!'"
+    },
+    "crystals": {
+      "total_count": "PASS - 30 crystals (API verified)",
+      "page_displays": "PASS - Crystals grid visible"
+    },
+    "bottom_navigation": {
+      "home": "PASS",
+      "yoga": "PASS",
+      "breathwork": "PASS",
+      "meditations": "PASS",
+      "more_menu": "PASS - Shows all 16 sections including Crystals, Mantras, Numerology, Shamanic, etc."
+    }
+  }
+}

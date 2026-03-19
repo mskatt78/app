@@ -26,10 +26,10 @@ export const playBellTone = (ctx, gainNode, frequency = 528, duration = 4) => {
   osc3.type = "sine";
   osc3.frequency.value = frequency * 3; // Second harmonic
   
-  // Envelope
+  // Envelope - LOUDER
   oscGain.gain.setValueAtTime(0, now);
-  oscGain.gain.linearRampToValueAtTime(0.4, now + 0.05);
-  oscGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+  oscGain.gain.linearRampToValueAtTime(0.8, now + 0.05);  // Increased from 0.4 to 0.8
+  oscGain.gain.exponentialRampToValueAtTime(0.01, now + duration);
   
   osc1.connect(oscGain);
   osc2.connect(oscGain);
@@ -64,12 +64,12 @@ export const playOmTone = (ctx, gainNode, baseFreq = 136.1, duration = 6) => {
     osc.type = i === 0 ? "sine" : "triangle";
     osc.frequency.value = freq;
     
-    // Envelope - "Aaa-Uuu-Mmm" shape
-    const vol = 0.15 / (i + 1);
+    // Envelope - "Aaa-Uuu-Mmm" shape - LOUDER
+    const vol = 0.4 / (i + 1);  // Increased from 0.15 to 0.4
     oscGain.gain.setValueAtTime(0, now);
     oscGain.gain.linearRampToValueAtTime(vol, now + duration * 0.1); // Attack
     oscGain.gain.setValueAtTime(vol, now + duration * 0.5); // Sustain
-    oscGain.gain.exponentialRampToValueAtTime(0.001, now + duration); // Release
+    oscGain.gain.exponentialRampToValueAtTime(0.01, now + duration); // Release
     
     osc.connect(oscGain);
     oscGain.connect(gainNode);
