@@ -4,7 +4,7 @@ import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
 import AppFooter from "./components/AppFooter";
-import BottomNav from "./components/BottomNav";
+import TopNav from "./components/TopNav";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -264,12 +264,15 @@ function AppRouter() {
     return <AuthCallback />;
   }
 
-  // Pages that should NOT show bottom nav
-  const noBottomNavPages = ["/", "/dashboard", "/admin", "/payment/success", "/payment/cancel"];
-  const showBottomNav = !noBottomNavPages.includes(location.pathname);
+  // Pages that should NOT show top nav
+  const noNavPages = ["/", "/dashboard", "/admin", "/payment/success", "/payment/cancel"];
+  const showNav = !noNavPages.includes(location.pathname);
 
   return (
     <>
+      {showNav && <TopNav user={user} />}
+      {/* Add padding at top for nav bar */}
+      {showNav && <div className="h-16" />}
       <Routes>
       <Route path="/" element={<LandingPage api={api} />} />
       <Route
@@ -602,9 +605,6 @@ function AppRouter() {
         element={<PaymentCancel />}
       />
     </Routes>
-    {showBottomNav && <BottomNav user={user} />}
-    {/* Add padding at bottom for nav bar */}
-    {showBottomNav && <div className="h-20" />}
     </>
   );
 }
