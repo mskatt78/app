@@ -9,7 +9,7 @@ import os
 import uuid
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://yoga-astrology-hub.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://temple-soul-dev.preview.emergentagent.com')
 
 # Test credentials
 TEST_EMAIL = "testuser123@example.com"

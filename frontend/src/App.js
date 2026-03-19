@@ -382,10 +382,34 @@ function AppRouter() {
         }
       />
       <Route
+        path="/shamanic"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ShamanicPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
         path="/elemental-practices"
         element={
           <PublicRoute>
             {({ user, api }) => <ElementalPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/elemental"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ElementalPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/creative"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <CreativeProcesses user={user} api={api} />}
           </PublicRoute>
         }
       />
@@ -510,7 +534,7 @@ function AppRouter() {
           </AdminRoute>
         }
       />
-      {/* New Shamanic Routes */}
+      {/* Protected Routes - Require Login */}
       <Route
         path="/practice-log"
         element={
@@ -519,104 +543,7 @@ function AppRouter() {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/earth-altars"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <EarthAltars user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/creative-processes"
-        element={
-          <PublicRoute>
-            {({ user, api }) => <CreativeProcesses user={user} api={api} />}
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/creative"
-        element={
-          <PublicRoute>
-            {({ user, api }) => <CreativeProcesses user={user} api={api} />}
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/heart-practices"
-        element={
-          <PublicRoute>
-            {({ user, api }) => <HeartPractices user={user} api={api} />}
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/shamanic-practices"
-        element={
-          <PublicRoute>
-            {({ user, api }) => <ShamanicPractices user={user} api={api} />}
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/shamanic"
-        element={
-          <PublicRoute>
-            {({ user, api }) => <ShamanicPractices user={user} api={api} />}
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/elemental-practices"
-        element={
-          <PublicRoute>
-            {({ user, api }) => <ElementalPractices user={user} api={api} />}
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/elemental"
-        element={
-          <PublicRoute>
-            {({ user, api }) => <ElementalPractices user={user} api={api} />}
-          </PublicRoute>
-        }
-      />
-      {/* New Content Routes */}
-      <Route
-        path="/live"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <LiveSessions user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/retreats"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <Retreats user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/books"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <Books user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
       {/* Payment Routes */}
-      <Route
-        path="/pricing"
-        element={
-          <ProtectedRoute>
-            {({ user, api }) => <Pricing user={user} api={api} />}
-          </ProtectedRoute>
-        }
-      />
       <Route
         path="/payment/success"
         element={

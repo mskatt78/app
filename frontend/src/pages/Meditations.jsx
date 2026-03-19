@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, Sparkles, Filter, Clock, Play, Pause, RotateCcw,
-  Mountain, Waves, Flame, Wind, Heart, Eye, Moon, Star
+  Mountain, Waves, Flame, Wind, Heart, Eye, Moon, Star,
+  Volume2, VolumeX, Loader2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Progress } from "../components/ui/progress";
+import { Slider } from "../components/ui/slider";
 import { toast } from "sonner";
 
 const Meditations = ({ user, api }) => {
@@ -22,6 +24,13 @@ const Meditations = ({ user, api }) => {
   const [progress, setProgress] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const intervalRef = useRef(null);
+  
+  // Audio state
+  const audioRef = useRef(null);
+  const [audioLoading, setAudioLoading] = useState(false);
+  const [audioReady, setAudioReady] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(80);
 
   const categories = [
     { value: "all", label: "All Meditations" },
@@ -83,11 +92,39 @@ const Meditations = ({ user, api }) => {
     }
   };
 
-  const startMeditation = (meditation) => {
+  const startMeditation = async (meditation) => {
     setActiveMeditation(meditation);
     setProgress(0);
     setElapsedTime(0);
     setIsPlaying(false);
+    setAudioReady(false);
+    setAudioLoading(true);
+    
+    // Generate audio for the meditation
+    try {
+      const response = await api.post(`/tts/meditation/${meditation.id}`, null, {
+        params: { voice: "nova" }
+      });
+      
+      if (response.data.audio_base64) {
+        const audioData = `data:audio/mp3;base64,${response.data.audio_base64}`;
+        audioRef.current = new Audio(audioData);
+        audioRef.current.volume = volume / 100;
+        
+        audioRef.current.onended = () => {
+          completeMeditation();
+        };
+        
+        setAudioReady(true);
+        toast.success("Guided audio ready");
+      }
+    } catch (error) {
+      console.error("Failed to generate audio:", error);
+      toast.info("Audio unavailable - timer mode active");
+      setAudioReady(false);
+    } finally {
+      setAudioLoading(false);
+    }
   };
 
   const togglePlay = () => {
@@ -95,9 +132,18 @@ const Meditations = ({ user, api }) => {
 
     if (isPlaying) {
       clearInterval(intervalRef.current);
+      if (audioRef.current && audioReady) {
+        audioRef.current.pause();
+      }
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
+      
+      // Play audio if available
+      if (audioRef.current && audioReady) {
+        audioRef.current.play().catch(console.error);
+      }
+      
       const totalSeconds = activeMeditation.duration_minutes * 60;
       
       intervalRef.current = setInterval(() => {
@@ -117,9 +163,28 @@ const Meditations = ({ user, api }) => {
 
   const resetMeditation = () => {
     clearInterval(intervalRef.current);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
     setIsPlaying(false);
     setProgress(0);
     setElapsedTime(0);
+  };
+  
+  const toggleMute = () => {
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+    }
+    setIsMuted(!isMuted);
+  };
+  
+  const handleVolumeChange = (value) => {
+    const newVolume = value[0];
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100;
+    }
   };
 
   const completeMeditation = async () => {
@@ -147,10 +212,16 @@ const Meditations = ({ user, api }) => {
 
   const closeMeditation = () => {
     clearInterval(intervalRef.current);
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
     setActiveMeditation(null);
     setIsPlaying(false);
     setProgress(0);
     setElapsedTime(0);
+    setAudioReady(false);
+    setAudioLoading(false);
   };
 
   return (
@@ -213,6 +284,20 @@ const Meditations = ({ user, api }) => {
 
             {/* Timer */}
             <div className="p-8 rounded-2xl bg-card/50 border border-primary/20 mb-8">
+              {/* Audio Status */}
+              {audioLoading && (
+                <div className="flex items-center justify-center gap-2 mb-4 text-primary">
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span className="text-sm">Generating guided audio...</span>
+                </div>
+              )}
+              {audioReady && !audioLoading && (
+                <div className="flex items-center justify-center gap-2 mb-4 text-emerald-400">
+                  <Volume2 className="w-5 h-5" />
+                  <span className="text-sm">Guided audio ready</span>
+                </div>
+              )}
+              
               <div className="text-center mb-6">
                 <p className="text-6xl font-serif text-primary mb-2">
                   {formatTime(elapsedTime)}
@@ -228,10 +313,17 @@ const Meditations = ({ user, api }) => {
                 <Button
                   size="lg"
                   onClick={togglePlay}
+                  disabled={audioLoading}
                   className={`rounded-full w-16 h-16 ${isPlaying ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary'}`}
                   data-testid="play-pause-btn"
                 >
-                  {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+                  {audioLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  ) : isPlaying ? (
+                    <Pause className="w-6 h-6" />
+                  ) : (
+                    <Play className="w-6 h-6 ml-1" />
+                  )}
                 </Button>
                 <Button
                   variant="outline"
@@ -241,7 +333,32 @@ const Meditations = ({ user, api }) => {
                 >
                   <RotateCcw className="w-5 h-5" />
                 </Button>
+                {audioReady && (
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={toggleMute}
+                    className="rounded-full border-white/10"
+                  >
+                    {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                  </Button>
+                )}
               </div>
+              
+              {/* Volume Control */}
+              {audioReady && (
+                <div className="flex items-center justify-center gap-3 mt-4 px-8">
+                  <VolumeX className="w-4 h-4 text-muted-foreground" />
+                  <Slider
+                    value={[volume]}
+                    onValueChange={handleVolumeChange}
+                    max={100}
+                    step={1}
+                    className="w-32"
+                  />
+                  <Volume2 className="w-4 h-4 text-muted-foreground" />
+                </div>
+              )}
             </div>
 
             {/* Visualization Guide */}

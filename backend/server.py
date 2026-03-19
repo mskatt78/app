@@ -25,6 +25,7 @@ from routers.numerology import router as numerology_router
 from routers.user import router as user_router
 from routers.admin import router as admin_router
 from routers.gifts import router as gifts_router
+from routers.tts import router as tts_router
 
 ROOT_DIR = Path(__file__).parent
 UPLOADS_DIR = ROOT_DIR / "uploads"
@@ -60,6 +61,7 @@ api_router.include_router(numerology_router)
 api_router.include_router(user_router)
 api_router.include_router(admin_router)
 api_router.include_router(gifts_router)
+api_router.include_router(tts_router)
 
 # Configure logging
 logging.basicConfig(
