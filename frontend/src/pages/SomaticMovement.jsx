@@ -38,7 +38,7 @@ const SomaticMovement = ({ user, api }) => {
 
   const fetchPractices = async () => {
     try {
-      const response = await api.get("/somatic/practices");
+      const response = await api.get("/somatic");
       setPractices(response.data);
       setFilteredPractices(response.data);
     } catch (error) {
