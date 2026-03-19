@@ -421,13 +421,13 @@ function AppRouter() {
           </PublicRoute>
         }
       />
-      {/* PROTECTED ROUTES - Require login */}
+      {/* PUBLIC CONTENT ROUTES */}
       <Route
         path="/oracle"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <OracleReadings user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
         }
       />
       <Route
@@ -441,9 +441,9 @@ function AppRouter() {
       <Route
         path="/somatic"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <SomaticMovement user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
         }
       />
       <Route
@@ -530,33 +530,57 @@ function AppRouter() {
       <Route
         path="/creative-processes"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <CreativeProcesses user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/creative"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <CreativeProcesses user={user} api={api} />}
+          </PublicRoute>
         }
       />
       <Route
         path="/heart-practices"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <HeartPractices user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
         }
       />
       <Route
         path="/shamanic-practices"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <ShamanicPractices user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/shamanic"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ShamanicPractices user={user} api={api} />}
+          </PublicRoute>
         }
       />
       <Route
         path="/elemental-practices"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <ElementalPractices user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/elemental"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ElementalPractices user={user} api={api} />}
+          </PublicRoute>
         }
       />
       {/* New Content Routes */}
