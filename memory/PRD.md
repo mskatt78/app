@@ -2,7 +2,52 @@
 
 ## Status: ✅ READY FOR DEPLOYMENT
 
-## Recent Updates (March 18, 2026 - Session 2)
+## Recent Updates (March 19, 2026 - Session 3)
+
+### Critical Bug Fixes - COMPLETED ✅
+
+1. **Duplicate Route Fix** - Content pages were inaccessible (blank or required login)
+   - Root cause: App.js had duplicate route definitions where protected versions overrode public routes
+   - Fix: Removed duplicate routes at lines 513-631, kept only public routes for content pages
+   - Added short route aliases: `/shamanic`, `/elemental`, `/creative`
+   - ✅ All content pages now load WITHOUT login
+
+2. **Somatic Movement Page Fixed** - Was showing blank
+   - The API endpoint call was already fixed (`/somatic` not `/somatic/practices`)
+   - Route definition was missing the `/somatic` path
+   - ✅ Now shows 39 practices (Tai Chi, Qigong, etc.)
+
+3. **Meditations TTS Audio Implemented** - Previously had no sound
+   - Created new `/app/backend/routers/tts.py` with OpenAI TTS integration
+   - Uses emergentintegrations library with EMERGENT_LLM_KEY
+   - Voice: "nova" (calm, meditative), Speed: 0.8x (slower for meditation)
+   - Generates guided meditation script from visualization text
+   - Frontend shows "Generating guided audio..." then "Guided audio ready"
+   - Includes play/pause, reset, mute, and volume controls
+   - ✅ Audio plays when user clicks Play button
+
+4. **Public Routes Fixed** - Pages incorrectly required login
+   - Fixed routes for: `/shamanic`, `/elemental`, `/creative`, `/oracle`, `/somatic`, `/heart-practices`
+   - All content pages now use `PublicRoute` component
+   - ✅ Users can browse all content without signing in
+
+5. **Back Navigation Fixed** - Was redirecting to sign-in page
+   - Issue was related to duplicate route definitions causing auth redirects
+   - After route cleanup, navigation works correctly
+   - ✅ Browser back button works as expected
+
+### Files Updated (Session 3):
+- `/app/frontend/src/App.js` - Removed duplicate routes, added short route aliases
+- `/app/frontend/src/pages/Meditations.jsx` - Added TTS audio integration with controls
+- `/app/backend/routers/tts.py` - NEW: OpenAI TTS endpoint for meditation audio
+- `/app/backend/server.py` - Added tts_router import
+
+### Test Reports:
+- `/app/test_reports/iteration_21.json` - All fixes verified (100% pass rate)
+
+---
+
+## Previous Updates (March 18, 2026 - Session 2)
 
 ### Critical Bug Fixes - COMPLETED ✅
 1. **Email/Password Login Fixed** - Sign In button was unclickable due to z-index issue
