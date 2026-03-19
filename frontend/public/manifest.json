@@ -1,7 +1,7 @@
 {
-  "short_name": "Temple Soul",
   "name": "Shamanic Elements - Temple Of The Soul",
-  "description": "Sacred yoga, breathwork, oracle readings, and shamanic practices for spiritual wellness",
+  "short_name": "Temple Soul",
+  "description": "Sacred yoga, breathwork, oracle readings, crystals, mantras, numerology, and shamanic practices for spiritual wellness and transformation.",
   "icons": [
     {
       "src": "icon-192.png",
@@ -30,19 +30,37 @@
   ],
   "start_url": "/",
   "scope": "/",
+  "id": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "theme_color": "#1a1a2e",
   "background_color": "#0a0a0f",
   "orientation": "portrait-primary",
-  "categories": ["health", "fitness", "lifestyle"],
+  "categories": ["health", "fitness", "lifestyle", "education"],
   "lang": "en-US",
   "dir": "ltr",
   "prefer_related_applications": false,
+  "screenshots": [
+    {
+      "src": "screenshot-1.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Home Screen"
+    },
+    {
+      "src": "screenshot-2.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Yoga Library"
+    }
+  ],
   "shortcuts": [
     {
       "name": "Yoga Library",
       "short_name": "Yoga",
-      "description": "Browse 60 yoga poses",
+      "description": "Browse 66 yoga poses by element",
       "url": "/yoga",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
@@ -54,11 +72,23 @@
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
+      "name": "Numerology",
+      "short_name": "Numerology",
+      "description": "Calculate your life path number",
+      "url": "/numerology",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
       "name": "Breathwork",
       "short_name": "Breathwork",
       "description": "Guided breathing sessions",
       "url": "/breathwork",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
-  ]
+  ],
+  "related_applications": [],
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }

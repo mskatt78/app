@@ -5,6 +5,7 @@ import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
 import AppFooter from "./components/AppFooter";
 import TopNav from "./components/TopNav";
+import InstallPrompt from "./components/InstallPrompt";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -619,6 +620,7 @@ function App() {
         <AppFooter />
       </BrowserRouter>
       <Toaster position="bottom-right" />
+      <InstallPrompt />
     </div>
   );
 }
