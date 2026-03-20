@@ -35,6 +35,7 @@ import CreativeProcesses from "./pages/CreativeProcesses";
 import HeartPractices from "./pages/HeartPractices";
 import ShamanicPractices from "./pages/ShamanicPractices";
 import ElementalPractices from "./pages/ElementalPractices";
+import MainMenu from "./pages/MainMenu";
 // New Content Pages
 import LiveSessions from "./pages/LiveSessions";
 import Retreats from "./pages/Retreats";
@@ -276,6 +277,14 @@ function AppRouter() {
       {showNav && <div className="h-16" />}
       <Routes>
       <Route path="/" element={<LandingPage api={api} />} />
+      <Route
+        path="/menu"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <MainMenu user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
       <Route
         path="/dashboard"
         element={

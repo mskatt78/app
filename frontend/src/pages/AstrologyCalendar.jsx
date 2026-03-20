@@ -28,23 +28,28 @@ const AstrologyCalendar = ({ user, api }) => {
   }, []);
 
   const detectHemisphere = () => {
-    // Try to detect hemisphere from timezone or geolocation
+    // Try to detect hemisphere from timezone
     try {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      // Southern hemisphere timezones typically include these regions
-      const southernTimezones = [
-        'Australia', 'Auckland', 'Pacific/Auckland', 'Antarctica',
-        'Argentina', 'Brazil', 'Chile', 'Peru', 'Africa/Johannesburg',
-        'Africa/Cape', 'Indian/Mauritius', 'Pacific/Fiji'
+      console.log("Detected timezone:", timezone);
+      
+      // Southern hemisphere timezones - be more inclusive
+      const southernPatterns = [
+        'australia', 'sydney', 'melbourne', 'brisbane', 'perth', 'adelaide', 'hobart', 'darwin',
+        'auckland', 'wellington', 'fiji', 'pacific/auckland', 'pacific/fiji',
+        'antarctica', 'argentina', 'buenos_aires', 'brazil', 'sao_paulo',
+        'chile', 'santiago', 'lima', 'peru', 'johannesburg', 'cape_town',
+        'africa/johannesburg', 'africa/cape', 'indian/mauritius',
+        'new_zealand', 'nz'
       ];
       
-      const isSouthern = southernTimezones.some(tz => 
-        timezone.toLowerCase().includes(tz.toLowerCase())
-      );
+      const tzLower = timezone.toLowerCase();
+      const isSouthern = southernPatterns.some(pattern => tzLower.includes(pattern));
       
+      console.log("Hemisphere detected:", isSouthern ? "south" : "north");
       setHemisphere(isSouthern ? "south" : "north");
     } catch (e) {
-      // Default to north if detection fails
+      console.log("Hemisphere detection failed, defaulting to north");
       setHemisphere("north");
     }
   };
@@ -114,6 +119,30 @@ const AstrologyCalendar = ({ user, api }) => {
               <h1 className="text-xl font-serif">13-Moon <span className="italic text-primary">Calendar</span></h1>
             </div>
           </div>
+          
+          {/* Hemisphere Toggle */}
+          <div className="flex items-center gap-2 bg-white/5 rounded-full p-1">
+            <button
+              onClick={() => setHemisphere("north")}
+              className={`px-3 py-1 rounded-full text-sm transition-all ${
+                hemisphere === "north" 
+                  ? "bg-primary text-primary-foreground" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Northern
+            </button>
+            <button
+              onClick={() => setHemisphere("south")}
+              className={`px-3 py-1 rounded-full text-sm transition-all ${
+                hemisphere === "south" 
+                  ? "bg-primary text-primary-foreground" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Southern
+            </button>
+          </div>
         </div>
       </header>
 
@@ -150,7 +179,13 @@ const AstrologyCalendar = ({ user, api }) => {
                     <p className={`text-sm ${elementColors[currentMonth.element]?.text}`}>
                       {currentMonth.element} Element • Symbol: {currentMonth.symbol}
                     </p>
-                    <p className="text-muted-foreground mt-4 leading-relaxed">{currentMonth.description}</p>
+                    <p className="text-muted-foreground mt-4 leading-relaxed">
+                      {hemisphere === "south" && currentMonth.description_south 
+                        ? currentMonth.description_south 
+                        : (hemisphere === "north" && currentMonth.description_north 
+                          ? currentMonth.description_north 
+                          : currentMonth.description)}
+                    </p>
                   </div>
                 </div>
               </motion.div>

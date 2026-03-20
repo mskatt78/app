@@ -118,7 +118,7 @@ const LandingPage = ({ onLoginSuccess }) => {
               Journey through the sacred elements. Transform your practice with shamanic traditions.
             </p>
 
-            {/* BIG ENTER BUTTON - Goes to content, no login required */}
+            {/* BIG ENTER BUTTON - Goes to main menu */}
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
@@ -126,7 +126,7 @@ const LandingPage = ({ onLoginSuccess }) => {
             >
               <Button
                 data-testid="enter-temple-btn"
-                onClick={() => navigate('/yoga')}
+                onClick={() => navigate('/menu')}
                 className="bg-primary text-primary-foreground rounded-full px-16 py-8 text-xl md:text-2xl font-serif italic
                            shadow-[0_0_60px_rgba(212,175,55,0.5)] hover:shadow-[0_0_80px_rgba(212,175,55,0.7)]
                            transition-all duration-500 animate-pulse hover:animate-none"
