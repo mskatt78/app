@@ -42,7 +42,9 @@ const OracleReadings = ({ user, api }) => {
     setShowCards(false);
     
     try {
-      const response = await api.post("/oracle/reading", {
+      // Use guest endpoint if not logged in, regular endpoint if logged in
+      const endpoint = user ? "/oracle/reading" : "/oracle/reading/guest";
+      const response = await api.post(endpoint, {
         question: question || null,
         spread_type: spreadType,
       });
@@ -50,7 +52,9 @@ const OracleReadings = ({ user, api }) => {
       setReading(response.data);
       setTimeout(() => setShowCards(true), 500);
       toast.success("The spirits have spoken");
-      fetchPastReadings();
+      if (user) {
+        fetchPastReadings();
+      }
     } catch (error) {
       console.error("Reading failed:", error);
       toast.error("The spirits are silent. Please try again.");

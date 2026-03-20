@@ -50,7 +50,7 @@ async def create_oracle_reading(
     data: OracleReadingRequest,
     user: User = Depends(get_current_user)
 ):
-    """Create a new oracle reading with AI interpretation."""
+    """Create a new oracle reading with AI interpretation (authenticated - saves to history)."""
     db = get_db()
     
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
@@ -75,6 +75,31 @@ async def create_oracle_reading(
     
     await db.oracle_readings.insert_one(reading)
     reading.pop("_id", None)
+    return reading
+
+
+@router.post("/reading/guest")
+async def create_guest_oracle_reading(data: OracleReadingRequest):
+    """Create an oracle reading without authentication (doesn't save to history)."""
+    num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
+    selected_cards = random.sample(ORACLE_CARDS, min(num_cards, len(ORACLE_CARDS)))
+    
+    for card in selected_cards:
+        card["is_reversed"] = random.choice([True, False])
+        card["position"] = selected_cards.index(card) + 1
+    
+    # Generate AI interpretation using Claude
+    interpretation = await generate_oracle_interpretation(selected_cards, data.question, data.spread_type)
+    
+    reading = {
+        "id": str(uuid.uuid4()),
+        "question": data.question,
+        "spread_type": data.spread_type,
+        "cards": selected_cards,
+        "interpretation": interpretation,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
     return reading
 
 
