@@ -2,7 +2,45 @@
 
 ## Status: ✅ READY FOR DEPLOYMENT
 
-## Recent Updates (March 19, 2026 - Session 3)
+## Recent Updates (March 20, 2026 - Session 4)
+
+### New Features & Fixes - COMPLETED ✅
+
+1. **Main Menu Page Created** - New `/menu` page with organized categories
+   - Movement & Body: Yoga Library, Breathwork, Somatic Movement, Mudras
+   - Mind & Spirit: Guided Meditations, Mindfulness, Grounding, Mantras
+   - Shamanic Wisdom: Shamanic Practices, Elemental, Heart Practices, Creative
+   - Divination & Guidance: Oracle, Numerology, Birth Chart, Moon Calendar
+   - Sacred Tools: Crystal Guide
+
+2. **"Enter the Temple" Now Goes to Main Menu** - Changed from `/yoga` to `/menu`
+   - Better user experience with organized navigation
+   - Clear categorization of all features
+
+3. **Southern Hemisphere Support (Australia)** - Fixed Astrology Calendar
+   - Improved timezone detection for Australian users
+   - Added visible Northern/Southern toggle buttons
+   - Southern Hemisphere shows "Autumn equinox energy" (correct for March in Australia)
+
+4. **Oracle Guest Endpoint** - Works without login
+   - Added `/api/oracle/reading/guest` endpoint
+   - Frontend uses guest endpoint when user not authenticated
+   - Readings complete successfully without auth
+
+### Files Updated (Session 4):
+- `/app/frontend/src/pages/MainMenu.jsx` - NEW: Main temple menu
+- `/app/frontend/src/pages/LandingPage.jsx` - Changed Enter button to /menu
+- `/app/frontend/src/pages/AstrologyCalendar.jsx` - Hemisphere toggle & auto-detect
+- `/app/frontend/src/pages/OracleReadings.jsx` - Uses guest endpoint
+- `/app/backend/routers/oracle.py` - Added /reading/guest endpoint
+- `/app/frontend/src/App.js` - Added /menu route
+
+### Test Reports:
+- `/app/test_reports/iteration_23.json` - All features verified (100% pass rate)
+
+---
+
+## Previous Updates (March 19, 2026 - Session 3)
 
 ### Critical Bug Fixes - COMPLETED ✅
 
