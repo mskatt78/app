@@ -96,3 +96,62 @@ async def health_check():
         "app": "Shamanic Elements Temple Of The Soul",
         "version": "2.0.0"
     }
+
+
+# ============ DATABASE SEEDING ============
+
+@app.on_event("startup")
+async def startup_seed_database():
+    """Seed database with content if collections are empty."""
+    try:
+        # Check if yoga_poses collection is empty
+        yoga_count = await db.yoga_poses.count_documents({})
+        if yoga_count == 0:
+            logger.info("Database empty - seeding content...")
+            await seed_all_content()
+            logger.info("Database seeding complete!")
+        else:
+            logger.info(f"Database already has {yoga_count} yoga poses - skipping seed")
+    except Exception as e:
+        logger.error(f"Error during startup seeding: {e}")
+
+
+async def seed_all_content():
+    """Seed all content collections."""
+    from data.yoga_poses import YOGA_POSES
+    from data.all_content import (
+        CRYSTALS, MANTRAS, MUDRAS, BREATHWORK_SESSIONS,
+        THIRTEEN_MONTH_CALENDAR, ORACLE_CARDS,
+        GROUNDING_EXERCISES, MINDFULNESS_PRACTICES, MEDITATIONS
+    )
+    from data.somatic_practices import SOMATIC_PRACTICES
+    from data.shamanic_content import (
+        EARTH_ALTARS, CREATIVE_PROCESSES, HEART_PRACTICES,
+        SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES
+    )
+
+    collections = [
+        ("yoga_poses", YOGA_POSES),
+        ("crystals", CRYSTALS),
+        ("mantras", MANTRAS),
+        ("mudras", MUDRAS),
+        ("breathwork_sessions", BREATHWORK_SESSIONS),
+        ("astrology_months", THIRTEEN_MONTH_CALENDAR),
+        ("oracle_cards", ORACLE_CARDS),
+        ("somatic_practices", SOMATIC_PRACTICES),
+        ("grounding_exercises", GROUNDING_EXERCISES),
+        ("mindfulness_practices", MINDFULNESS_PRACTICES),
+        ("meditations", MEDITATIONS),
+        ("earth_altars", EARTH_ALTARS),
+        ("creative_processes", CREATIVE_PROCESSES),
+        ("heart_practices", HEART_PRACTICES),
+        ("shamanic_practices", SHAMANIC_PRACTICES),
+        ("achievements", ENHANCED_ACHIEVEMENTS),
+        ("elemental_practices", ELEMENTAL_PRACTICES),
+    ]
+
+    for name, data in collections:
+        if data:
+            await db[name].delete_many({})  # Clear existing
+            await db[name].insert_many(data)
+            logger.info(f"  Seeded {name}: {len(data)} items")
