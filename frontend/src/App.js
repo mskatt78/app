@@ -36,6 +36,7 @@ import HeartPractices from "./pages/HeartPractices";
 import ShamanicPractices from "./pages/ShamanicPractices";
 import ElementalPractices from "./pages/ElementalPractices";
 import MainMenu from "./pages/MainMenu";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 // New Content Pages
 import LiveSessions from "./pages/LiveSessions";
 import Retreats from "./pages/Retreats";
@@ -294,6 +295,7 @@ function AppRouter() {
         }
       />
       {/* PUBLIC ROUTES - Can view without login */}
+      <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route
         path="/yoga"
         element={
