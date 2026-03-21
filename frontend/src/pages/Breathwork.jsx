@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Wind, Play, Pause, RotateCcw, Filter } from "lucide-react";
+import { ArrowLeft, Wind, Play, Pause, RotateCcw, Filter, Volume2, VolumeX } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Progress } from "../components/ui/progress";
@@ -17,10 +17,14 @@ const Breathwork = ({ user, api }) => {
   const [breathPhase, setBreathPhase] = useState("inhale");
   const [phaseProgress, setPhaseProgress] = useState(0);
   const [cycleCount, setCycleCount] = useState(0);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   
   const intervalRef = useRef(null);
   const phaseRef = useRef(breathPhase);
   const progressRef = useRef(phaseProgress);
+  const audioContextRef = useRef(null);
+  const oscillatorRef = useRef(null);
+  const gainNodeRef = useRef(null);
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
@@ -43,8 +47,74 @@ const Breathwork = ({ user, api }) => {
     fetchSessions();
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      stopSound();
     };
   }, []);
+
+  // Extract Hz frequency from session
+  const extractFrequency = (session) => {
+    if (!session?.frequency) return 432; // Default to 432 Hz
+    const match = session.frequency.match(/(\d+)\s*[Hh]z/);
+    return match ? parseInt(match[1]) : 432;
+  };
+
+  // Initialize Web Audio for frequency tone
+  const initAudio = (frequency) => {
+    try {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      
+      // Resume if suspended (browser autoplay policy)
+      if (audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+
+      // Create oscillator
+      oscillatorRef.current = audioContextRef.current.createOscillator();
+      oscillatorRef.current.type = 'sine';
+      oscillatorRef.current.frequency.setValueAtTime(frequency, audioContextRef.current.currentTime);
+
+      // Create gain node for volume control
+      gainNodeRef.current = audioContextRef.current.createGain();
+      gainNodeRef.current.gain.setValueAtTime(0.15, audioContextRef.current.currentTime); // Low volume
+
+      // Connect: oscillator -> gain -> output
+      oscillatorRef.current.connect(gainNodeRef.current);
+      gainNodeRef.current.connect(audioContextRef.current.destination);
+
+      oscillatorRef.current.start();
+      console.log(`Playing ${frequency} Hz tone`);
+    } catch (error) {
+      console.error('Audio init failed:', error);
+    }
+  };
+
+  const stopSound = () => {
+    try {
+      if (oscillatorRef.current) {
+        oscillatorRef.current.stop();
+        oscillatorRef.current.disconnect();
+        oscillatorRef.current = null;
+      }
+      if (gainNodeRef.current) {
+        gainNodeRef.current.disconnect();
+        gainNodeRef.current = null;
+      }
+    } catch (error) {
+      // Ignore errors when stopping
+    }
+  };
+
+  const toggleSound = () => {
+    if (soundEnabled && oscillatorRef.current) {
+      stopSound();
+    } else if (!soundEnabled && isPlaying && activeSession) {
+      const freq = extractFrequency(activeSession);
+      initAudio(freq);
+    }
+    setSoundEnabled(!soundEnabled);
+  };
 
   useEffect(() => {
     phaseRef.current = breathPhase;
@@ -87,9 +157,15 @@ const Breathwork = ({ user, api }) => {
 
     if (isPlaying) {
       clearInterval(intervalRef.current);
+      stopSound();
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
+      // Start frequency sound if enabled
+      if (soundEnabled && activeSession.frequency) {
+        const freq = extractFrequency(activeSession);
+        initAudio(freq);
+      }
       runBreathCycle();
     }
   };
@@ -136,6 +212,7 @@ const Breathwork = ({ user, api }) => {
 
   const resetSession = () => {
     clearInterval(intervalRef.current);
+    stopSound();
     setIsPlaying(false);
     setBreathPhase("inhale");
     setPhaseProgress(0);
@@ -144,6 +221,7 @@ const Breathwork = ({ user, api }) => {
 
   const closeSession = () => {
     clearInterval(intervalRef.current);
+    stopSound();
     setActiveSession(null);
     setIsPlaying(false);
   };
@@ -255,6 +333,18 @@ const Breathwork = ({ user, api }) => {
               >
                 <RotateCcw className="w-5 h-5" />
               </Button>
+              {activeSession.frequency && (
+                <Button
+                  data-testid="sound-toggle-btn"
+                  onClick={toggleSound}
+                  variant="outline"
+                  size="icon"
+                  className={`rounded-full border-white/10 ${soundEnabled ? 'text-primary' : 'text-muted-foreground'}`}
+                  title={soundEnabled ? 'Sound On' : 'Sound Off'}
+                >
+                  {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+                </Button>
+              )}
             </div>
 
             {/* Cycle Counter */}
@@ -274,7 +364,12 @@ const Breathwork = ({ user, api }) => {
             {(activeSession.frequency || activeSession.instructions) && (
               <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10 max-w-md text-center">
                 {activeSession.frequency && (
-                  <p className="text-sm text-primary mb-2">{activeSession.frequency}</p>
+                  <p className="text-sm text-primary mb-2">
+                    {activeSession.frequency}
+                    {soundEnabled && isPlaying && (
+                      <span className="ml-2 text-xs text-emerald-400">(Playing)</span>
+                    )}
+                  </p>
                 )}
                 {activeSession.instructions && (
                   <p className="text-xs text-muted-foreground">{activeSession.instructions}</p>
