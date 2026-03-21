@@ -6,6 +6,8 @@ from emergentintegrations.llm.openai import OpenAITextToSpeech
 import os
 import hashlib
 import logging
+import base64
+import io
 
 router = APIRouter(prefix="/tts", tags=["tts"])
 logger = logging.getLogger(__name__)
@@ -17,6 +19,54 @@ class TTSRequest(BaseModel):
     text: str
     voice: str = "nova"  # Default to nova for calm, meditation voice
     speed: float = 0.85  # Slightly slower for meditation
+
+
+async def generate_audio_chunk(text: str, voice: str, speed: float, api_key: str) -> bytes:
+    """Generate a single chunk of TTS audio."""
+    tts = OpenAITextToSpeech(api_key=api_key)
+    return await tts.generate_speech(
+        text=text,
+        model="tts-1",
+        voice=voice,
+        speed=speed,
+        response_format="mp3"
+    )
+
+
+async def generate_long_audio(text: str, voice: str, speed: float, api_key: str) -> bytes:
+    """Generate audio for text longer than 4096 chars by chunking."""
+    # If text is short enough, generate directly
+    if len(text) <= 3800:
+        return await generate_audio_chunk(text, voice, speed, api_key)
+    
+    # Split text into chunks at sentence boundaries
+    chunks = []
+    current_chunk = ""
+    sentences = text.replace(". ", ".|").replace("? ", "?|").replace("! ", "!|").split("|")
+    
+    for sentence in sentences:
+        if len(current_chunk) + len(sentence) < 3800:
+            current_chunk += sentence + " "
+        else:
+            if current_chunk:
+                chunks.append(current_chunk.strip())
+            current_chunk = sentence + " "
+    
+    if current_chunk:
+        chunks.append(current_chunk.strip())
+    
+    logger.info(f"Generating {len(chunks)} audio chunks for {len(text)} char script")
+    
+    # Generate audio for each chunk
+    audio_parts = []
+    for i, chunk in enumerate(chunks):
+        logger.info(f"Generating chunk {i+1}/{len(chunks)} ({len(chunk)} chars)")
+        audio = await generate_audio_chunk(chunk, voice, speed, api_key)
+        audio_parts.append(audio)
+    
+    # Concatenate MP3 files (MP3s can be simply concatenated)
+    combined = b''.join(audio_parts)
+    return combined
 
 @router.post("/generate")
 async def generate_speech(request: TTSRequest):
@@ -73,34 +123,25 @@ async def generate_speech(request: TTSRequest):
 @router.post("/generate-base64")
 async def generate_speech_base64(request: TTSRequest):
     """Generate TTS audio and return as base64 for embedding."""
-    import base64
     
     api_key = os.getenv("EMERGENT_LLM_KEY")
     if not api_key:
         raise HTTPException(status_code=500, detail="TTS not configured")
     
-    # Check text length (4096 char limit)
-    if len(request.text) > 4096:
-        text = request.text[:4000] + "..."
-    else:
-        text = request.text
-    
-    # Create cache key
-    cache_key = hashlib.md5(f"{text}:{request.voice}:{request.speed}:base64".encode()).hexdigest()
+    # Create cache key from full text
+    cache_key = hashlib.md5(f"{request.text}:{request.voice}:{request.speed}:base64".encode()).hexdigest()
     
     # Check cache
     if cache_key in audio_cache:
         return {"audio_base64": audio_cache[cache_key], "format": "mp3"}
     
     try:
-        tts = OpenAITextToSpeech(api_key=api_key)
-        
-        audio_bytes = await tts.generate_speech(
-            text=text,
-            model="tts-1",
-            voice=request.voice,
-            speed=request.speed,
-            response_format="mp3"
+        # Use long audio generator for any length text
+        audio_bytes = await generate_long_audio(
+            request.text, 
+            request.voice, 
+            request.speed, 
+            api_key
         )
         
         audio_b64 = base64.b64encode(audio_bytes).decode('utf-8')
@@ -126,119 +167,197 @@ async def generate_meditation_audio(meditation_id: str, voice: str = "nova"):
     if not meditation:
         raise HTTPException(status_code=404, detail="Meditation not found")
     
-    duration = meditation.get('duration_minutes', 10)
+    duration = meditation.get('duration_minutes', 15)
     name = meditation.get('name', 'this meditation')
     description = meditation.get('description', '')
     visualization = meditation.get('visualization', '')
     element = meditation.get('element', 'Spirit')
     
-    # Build a longer, more immersive meditation script based on duration
-    # Each section adds breathing pauses and guidance
+    # Build a comprehensive guided meditation script
+    # This creates approximately 10-15 minutes of spoken guidance
+    # The slower speed (0.7) extends this further
     
     script_parts = [
-        # Opening (30 seconds)
+        # ===== OPENING (1-2 minutes) =====
         f"Welcome to {name}.",
+        "",
         f"{description}",
         "",
-        "Find a comfortable position, either sitting or lying down.",
-        "Allow your body to settle into this space.",
-        "Close your eyes gently.",
+        "Find a comfortable position. You may sit with your spine tall, or lie down on your back.",
+        "Allow your body to settle completely into this space.",
+        "There is nowhere else you need to be right now.",
+        "",
+        "Gently close your eyes.",
+        "Take a moment to acknowledge yourself for choosing this time for inner peace.",
         "",
         
-        # Initial grounding (1 minute)
-        "Take a moment to arrive fully in this present moment.",
-        "Notice the weight of your body.",
-        "Feel the surface supporting you.",
-        "You are safe. You are held.",
+        # ===== BREATH AWARENESS (2-3 minutes) =====
+        "Begin by simply noticing your breath.",
+        "Don't try to change it. Just observe.",
+        "Notice the cool air entering your nostrils.",
+        "Notice the warm air leaving your body.",
         "",
-        "Let's begin with three deep breaths together.",
-        "Breathe in deeply through your nose...",
-        "And slowly exhale through your mouth, releasing any tension.",
+        "Now, let's take three deep, cleansing breaths together.",
         "",
-        "Breathe in again, filling your lungs completely...",
-        "And exhale, letting go of any thoughts from your day.",
+        "Breathe in slowly through your nose... two... three... four...",
+        "Hold gently... two... three...",
+        "And exhale slowly through your mouth... two... three... four... five... six...",
         "",
-        "One more deep breath in...",
-        "And exhale completely, arriving fully in this moment.",
+        "Again. Breathe in deeply... filling your belly... your ribs... your chest...",
+        "Hold...",
+        "And release... letting go of any tension... any worry... any stress...",
         "",
-        
-        # Body relaxation (2 minutes)
-        "Now, let your breath return to its natural rhythm.",
-        "Begin to scan your body from the top of your head.",
-        "Notice your forehead... let it soften.",
-        "Your eyes... relaxed and heavy.",
-        "Your jaw... unclenching, releasing.",
+        "One more time. A deep, nourishing breath in...",
+        "Hold...",
+        "And let it all go... feeling your body sink deeper into relaxation...",
         "",
-        "Feel your shoulders drop away from your ears.",
-        "Your arms growing heavy and warm.",
-        "Your hands soft and open.",
-        "",
-        "Notice your chest rising and falling with each breath.",
-        "Your belly soft and relaxed.",
-        "Your hips releasing into the surface beneath you.",
-        "",
-        "Your legs growing heavy.",
-        "Your feet relaxed.",
-        "Your whole body now at ease.",
+        "Now let your breath return to its natural rhythm.",
+        "There's nothing to control. Nothing to force.",
+        "Just easy, natural breathing.",
         "",
         
-        # Main visualization (3-5 minutes based on content)
-        "Now, we begin our journey.",
+        # ===== PROGRESSIVE RELAXATION (3-4 minutes) =====
+        "We'll now move through your body, releasing any remaining tension.",
+        "",
+        "Bring your attention to the top of your head.",
+        "Feel any tightness there... and let it dissolve.",
+        "Your scalp softening... relaxing...",
+        "",
+        "Move down to your forehead.",
+        "Let all the tiny muscles there smooth out.",
+        "Your forehead is calm... peaceful... relaxed.",
+        "",
+        "Notice your eyes... even behind closed lids, they may be working.",
+        "Let them rest now. Let them be still and soft.",
+        "",
+        "Your jaw... where so many of us hold tension.",
+        "Let it drop slightly. Unclench your teeth.",
+        "Feel the relief as your jaw releases.",
+        "",
+        "Your neck and throat... so often tight from daily life.",
+        "Imagine warmth flowing through, loosening every muscle.",
+        "",
+        "Your shoulders... let them drop away from your ears.",
+        "Feel them melting down... heavy and relaxed.",
+        "",
+        "This relaxation flows down your arms...",
+        "Through your upper arms... your elbows... your forearms...",
+        "Into your wrists... your hands... your fingers...",
+        "Your hands are heavy, warm, and completely relaxed.",
+        "",
+        "Bring attention to your chest and heart space.",
+        "With each breath, your chest rises and falls easily.",
+        "Your heart beats steadily, faithfully.",
+        "",
+        "Your belly is soft. No need to hold it in.",
+        "Let it rise and fall naturally with each breath.",
+        "",
+        "Feel your lower back releasing any tension.",
+        "Your hips... your pelvis... settling and softening.",
+        "",
+        "This wave of relaxation continues down your legs.",
+        "Your thighs grow heavy... your knees... your calves...",
+        "Your ankles... your feet... each toe relaxing completely.",
+        "",
+        "Your entire body is now in a state of deep relaxation.",
+        "Heavy. Warm. Peaceful. Still.",
+        "",
+        
+        # ===== MAIN VISUALIZATION (4-5 minutes) =====
+        "Now, we begin our journey inward.",
         "",
         visualization,
         "",
-        
-        # Extended meditation space (2 minutes)
-        "Stay here in this peaceful space.",
-        "Allow yourself to simply be.",
-        "There is nothing you need to do.",
-        "Nothing you need to fix or change.",
-        "Just breathe and be present.",
+        "Stay with this experience.",
+        "Let yourself be fully present in this sacred space.",
         "",
-        "With each breath, you go deeper into relaxation.",
-        "With each exhale, you release anything that no longer serves you.",
+        "Notice any colors that appear...",
+        "Any sensations in your body...",
+        "Any emotions that arise...",
         "",
-        "Feel the peace that exists within you.",
-        "This peace is always available to you.",
-        "You can return to this feeling anytime you choose.",
+        "Everything you experience is welcome here.",
+        "There is no right or wrong.",
+        "Simply be with what is.",
         "",
-        
-        # Affirmations based on element
-        f"As you rest in this {element.lower()} energy...",
-        "Know that you are exactly where you need to be.",
-        "You are worthy of peace.",
-        "You are worthy of love.",
-        "You are worthy of joy.",
+        "Breathe into this experience.",
+        "With each inhale, draw in peace and healing.",
+        "With each exhale, release anything that no longer serves you.",
         "",
         
-        # Gentle return (1 minute)
+        # ===== EXTENDED STILLNESS (2-3 minutes) =====
+        "Rest now in the stillness.",
+        "",
+        "This is the space between thoughts.",
+        "The silence beneath all sound.",
+        "The peace that is always within you.",
+        "",
+        "You don't need to do anything.",
+        "You don't need to be anyone.",
+        "Just rest in this moment of pure being.",
+        "",
+        f"Feel the {element.lower()} energy surrounding you.",
+        "Supporting you.",
+        "Healing you.",
+        "",
+        "Know that this peace is your true nature.",
+        "It never leaves you.",
+        "You can return to it anytime, simply by closing your eyes and breathing.",
+        "",
+        "Take a moment to feel gratitude.",
+        "Gratitude for this body that carries you through life.",
+        "Gratitude for this breath that sustains you.",
+        "Gratitude for this moment of peace.",
+        "",
+        
+        # ===== AFFIRMATIONS (1 minute) =====
+        "As you rest here, let these words sink into your being.",
+        "",
+        "I am at peace.",
+        "I am whole.",
+        "I am exactly where I need to be.",
+        "",
+        "I release all worry about the past.",
+        "I release all anxiety about the future.",
+        "I am fully present in this moment.",
+        "",
+        "I am worthy of love.",
+        "I am worthy of joy.",
+        "I am worthy of all the blessings life has to offer.",
+        "",
+        
+        # ===== GENTLE RETURN (2 minutes) =====
         "Now, it's time to slowly begin your return.",
-        "There's no rush. Take your time.",
+        "There is no rush. Take all the time you need.",
         "",
-        "Begin to deepen your breath.",
-        "Feel the air filling your lungs once more.",
+        "Begin to deepen your breath once more.",
+        "Breathing in fresh energy and vitality.",
+        "Breathing out, knowing you can return to this peace anytime.",
         "",
-        "Gently wiggle your fingers and toes.",
-        "Feel the life force returning to your body.",
+        "Start to bring gentle movement back into your body.",
+        "Wiggle your fingers... and your toes.",
+        "These small movements reconnecting you with your physical form.",
         "",
-        "Roll your wrists and ankles in small circles.",
-        "Stretch in any way that feels good.",
+        "Roll your wrists gently... your ankles.",
+        "Perhaps stretch your arms overhead if that feels good.",
+        "",
+        "Take a deep breath and feel the energy returning to your body.",
+        "You are refreshed. You are renewed. You are at peace.",
         "",
         "When you're ready, slowly open your eyes.",
-        "Take a moment before moving.",
+        "Keep your gaze soft.",
+        "Take a moment before moving, honoring the journey you've just taken.",
         "",
         
-        # Closing (30 seconds)
-        "Carry this peace with you into your day.",
-        "Remember, you can return to this calm center anytime.",
+        # ===== CLOSING =====
+        f"Thank you for practicing {name} today.",
+        "May the peace you've cultivated stay with you throughout your day.",
         "",
-        "Thank you for practicing with me today.",
         "Namaste.",
-        "The light in me honors the light in you."
+        "The light in me honors and recognizes the light in you."
     ]
     
     script = " ".join(script_parts)
     
-    # Use the base64 endpoint logic with slower speed for meditation
-    request = TTSRequest(text=script, voice=voice, speed=0.75)
+    # Use slower speed for meditation (0.7 = about 30% slower)
+    request = TTSRequest(text=script, voice=voice, speed=0.7)
     return await generate_speech_base64(request)
