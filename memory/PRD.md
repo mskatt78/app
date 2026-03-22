@@ -131,10 +131,16 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 ### P0 (Critical)
 - None currently outstanding
 
+### Completed This Session (Mar 2026)
+- [x] **Healing Modalities** in Heart Practices:
+  - Meridian Therapy Flow (35 min) - Traditional Chinese Medicine & Shamanic Integration
+  - Trauma-Informed Somatic Release (40 min) - Somatic Experiencing & Indigenous Healing Practices
+  - Shamanic Healing Journey (45 min) - Core Shamanism & Global Indigenous Traditions
+  - Energy Sweeping & Aura Cleansing (25 min) - Curanderismo, Reiki & Shamanic Clearing
+
 ### P1 (High)
 - Gifting Frontend UI — backend complete, needs purchase/redeem UI
-- Equinox Rituals content (seasonal)
-- Earth Crafting content (seasonal)
+- Sunrise & Sunset Practices (dedicated content/sections)
 - More Shamanic/Elemental content  
 
 ### P2 (Medium)

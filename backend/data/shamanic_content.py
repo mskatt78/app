@@ -754,6 +754,169 @@ HEART_PRACTICES = [
         ],
         "integration": "Renew this blessing at each anniversary or when the relationship needs tending.",
         "image_url": "https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=800"
+    },
+    {
+        "id": "7",
+        "name": "Meridian Therapy Flow",
+        "category": "healing",
+        "element": "Water",
+        "tradition": "Traditional Chinese Medicine & Shamanic Integration",
+        "description": "Work with the body's energy meridians to release blockages, restore flow, and bring the body back into harmony. This practice combines ancient Chinese medicine wisdom with shamanic energy work.",
+        "duration_minutes": 35,
+        "benefits": ["Energy flow restoration", "Pain relief", "Emotional release", "Organ balancing", "Stress reduction", "Improved vitality"],
+        "preparation": ["Comfortable clothing", "Quiet space", "Optional: acupressure chart", "Warm hands"],
+        "steps": [
+            "Begin by rubbing palms together vigorously to activate healing energy in your hands",
+            "Starting at the crown of your head, use fingertips to tap along the Governing Vessel down the spine",
+            "Move to the Lung meridian - tap from chest, down inner arm to thumb",
+            "Trace the Large Intestine meridian from index finger, up outer arm to face",
+            "Work the Stomach meridian from face, down chest and front of leg to second toe",
+            "Tap the Spleen meridian from big toe, up inner leg to chest",
+            "Heart meridian flows from armpit, down inner arm to pinky finger",
+            "Small Intestine runs from pinky, up outer arm to ear",
+            "Bladder meridian goes from inner eye, over head, down back and leg to small toe",
+            "Kidney meridian flows from sole of foot, up inner leg to chest",
+            "Complete by holding hands over your heart and breathing deeply"
+        ],
+        "key_points": [
+            {"name": "LI4 (Hegu)", "location": "Web between thumb and index finger", "benefits": "Pain relief, headaches, immune boost"},
+            {"name": "ST36 (Zusanli)", "location": "Four finger widths below kneecap, one finger outside shinbone", "benefits": "Energy, digestion, longevity"},
+            {"name": "SP6 (Sanyinjiao)", "location": "Four finger widths above inner ankle", "benefits": "Hormonal balance, calming, blood flow"},
+            {"name": "PC6 (Neiguan)", "location": "Three finger widths above inner wrist crease", "benefits": "Nausea, anxiety, heart opening"},
+            {"name": "KD1 (Yongquan)", "location": "Center of sole, in depression when toes curl", "benefits": "Grounding, kidney energy, emergency revival"}
+        ],
+        "affirmation": "Energy flows freely through all my channels. I am in perfect balance and harmony.",
+        "image_url": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800"
+    },
+    {
+        "id": "8",
+        "name": "Trauma-Informed Somatic Release",
+        "category": "healing",
+        "element": "Earth",
+        "tradition": "Somatic Experiencing & Indigenous Healing Practices",
+        "description": "A gentle, body-centered approach to releasing stored trauma. This practice honors that the body holds memory and wisdom, allowing trauma to release at its own pace through somatic awareness and titration.",
+        "duration_minutes": 40,
+        "benefits": ["Trauma release", "Nervous system regulation", "Embodiment", "Safety restoration", "Emotional processing", "Resilience building"],
+        "preparation": ["Safe, private space", "Blanket or comfort items", "Option to stop at any time", "Grounding objects nearby"],
+        "safety_guidelines": [
+            "You are always in control - stop or pause whenever needed",
+            "Stay within your 'window of tolerance' - don't push into overwhelm",
+            "Use grounding techniques if activation becomes too intense",
+            "This is not about re-experiencing trauma, but releasing it gently",
+            "Consider working with a practitioner for deep trauma"
+        ],
+        "steps": [
+            "Create a safe container - lock door, have comfort items ready, set intention",
+            "Begin with grounding: Feel your feet on floor, notice 5 things you can see",
+            "Scan your body slowly from feet to head - notice sensations without judgment",
+            "Find an area holding tension or discomfort - approach it with curiosity",
+            "Place a hand there and breathe gently into that space",
+            "Ask the body: 'What do you need me to know?'",
+            "Allow any micro-movements that want to happen - trembling, twitching, stretching",
+            "If emotions arise, let them flow without story - just sensation",
+            "Practice 'pendulation' - move attention between the tight area and a calm area",
+            "When the area softens, rest and integrate",
+            "Complete with self-compassion: 'I honor what my body has carried'"
+        ],
+        "grounding_techniques": [
+            "5-4-3-2-1: Name 5 things you see, 4 you hear, 3 you feel, 2 you smell, 1 you taste",
+            "Push feet firmly into ground and feel the support",
+            "Hold a cold object or splash cold water on face",
+            "Hum or make 'voo' sound to activate vagus nerve",
+            "Wrap yourself tightly in a blanket for containment"
+        ],
+        "affirmation": "My body knows how to heal. I trust its wisdom and timing. I am safe now.",
+        "image_url": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800"
+    },
+    {
+        "id": "9",
+        "name": "Shamanic Healing Journey",
+        "category": "healing",
+        "element": "Spirit",
+        "tradition": "Core Shamanism & Global Indigenous Traditions",
+        "description": "A deep healing journey working with spirit allies, power animals, and ancestral helpers to address illness, imbalance, or wounds at the soul level. This practice accesses non-ordinary reality for healing.",
+        "duration_minutes": 45,
+        "benefits": ["Soul-level healing", "Power restoration", "Spiritual cleansing", "Guidance for illness", "Energetic extraction", "Connection to helping spirits"],
+        "preparation": ["Drumming track (4-7 beats per second)", "Eye mask or dark room", "Lying position", "Clear healing intention", "Rattle (optional)"],
+        "types_of_shamanic_healing": [
+            {"type": "Power Retrieval", "description": "Restoring lost vitality and life force through reconnection with power animals"},
+            {"type": "Soul Retrieval", "description": "Calling back soul parts lost through trauma or shock"},
+            {"type": "Extraction", "description": "Removing intrusive energies that don't belong in the energy body"},
+            {"type": "Psychopomp", "description": "Helping stuck spirits or ancestor energies move on"},
+            {"type": "Divination", "description": "Journeying to receive guidance about the source of illness"}
+        ],
+        "steps": [
+            "Create sacred space - smudge with sage, call in protective spirits",
+            "State your healing intention clearly three times",
+            "Lie down, cover eyes, begin drumming track",
+            "Enter the journey through your usual portal (tree, cave, water)",
+            "Call your power animal and ask them to guide you to healing",
+            "Follow where they lead - trust the journey",
+            "You may be taken to a healing place, a helper, or shown what needs attention",
+            "Allow the healing to occur - you may see, feel, or just know",
+            "Receive any gifts, messages, or medicine offered",
+            "Thank all helpers and return through your portal",
+            "Rest and integrate - journal your experience"
+        ],
+        "post_journey_integration": [
+            "Rest for at least 30 minutes after the journey",
+            "Drink water and eat grounding food",
+            "Journal everything you remember",
+            "Honor your power animal with a small offering",
+            "Notice dreams and synchronicities in coming days"
+        ],
+        "affirmation": "I am supported by loving spirits who guide my healing. I am never alone on this path.",
+        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+    },
+    {
+        "id": "10",
+        "name": "Energy Sweeping & Aura Cleansing",
+        "category": "healing",
+        "element": "Air",
+        "tradition": "Curanderismo, Reiki & Shamanic Clearing",
+        "description": "Clear stagnant, heavy, or negative energy from your aura and energy field using traditional sweeping techniques. This practice removes energetic debris picked up from others, environments, or difficult experiences.",
+        "duration_minutes": 25,
+        "benefits": ["Aura cleansing", "Energy field repair", "Removal of negative attachments", "Lightness and clarity", "Protection strengthening", "Psychic hygiene"],
+        "preparation": ["Sage, palo santo, or cleansing spray", "Feather or hands for sweeping", "Bowl of salt water", "Optional: egg for limpia"],
+        "sweeping_techniques": [
+            {
+                "name": "Hand Sweeping",
+                "description": "Use your hands like brushes to sweep energy away from the body",
+                "steps": ["Start at crown of head", "Sweep hands down and away in long strokes", "Flick energy off hands between sweeps", "Continue down entire body", "Pay attention to joints and energy centers", "Sweep front, back, and sides"]
+            },
+            {
+                "name": "Feather Sweeping (Limpia)",
+                "description": "Traditional curandera technique using feathers to clear energy",
+                "steps": ["Hold feather bundle or single large feather", "Begin at head, sweeping outward", "Use intention: 'I release all that does not serve'", "Move down body in spiraling motions", "Shake feather toward earth to release energy", "Complete by sweeping feet and grounding"]
+            },
+            {
+                "name": "Smoke Cleansing",
+                "description": "Using sacred smoke to purify the aura",
+                "steps": ["Light sage, palo santo, or cedar", "Waft smoke around entire body", "Pay special attention to heavy or tight areas", "Visualize smoke absorbing and carrying away density", "Let smoke rise, carrying unwanted energy to sky", "Complete with gratitude prayer"]
+            },
+            {
+                "name": "Egg Cleansing (Limpia con Huevo)",
+                "description": "Traditional Mexican practice using an egg to absorb negative energy",
+                "steps": ["Take a room-temperature egg", "Pray over it, asking it to absorb negativity", "Roll egg over entire body without breaking", "Start at head, move down in spiral patterns", "When complete, crack egg into water", "Read the patterns, then flush - never eat the egg"]
+            }
+        ],
+        "protection_seal": [
+            "After cleansing, visualize golden light surrounding you",
+            "Say: 'I seal my energy field with divine protection'",
+            "Imagine the light forming an egg-shaped shield",
+            "Know that only love and light can enter",
+            "This protection lasts until you release it"
+        ],
+        "when_to_use": [
+            "After being in crowds or negative environments",
+            "When feeling heavy, drained, or unlike yourself",
+            "After arguments or difficult interactions",
+            "Before and after healing work",
+            "Weekly as regular energy hygiene",
+            "When recovering from illness"
+        ],
+        "affirmation": "I release all energy that is not mine. I am clear, clean, and protected. Only love remains.",
+        "image_url": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?w=800"
     }
 ]
 
