@@ -790,7 +790,7 @@ HEART_PRACTICES = [
     },
     {
         "id": "8",
-        "name": "Trauma-Informed Somatic Release",
+        "name": "Trauma-Informed Somatic Shedding",
         "category": "healing",
         "element": "Earth",
         "tradition": "Somatic Experiencing & Indigenous Healing Practices",
