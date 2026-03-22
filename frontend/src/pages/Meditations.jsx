@@ -4,14 +4,14 @@ import { motion } from "framer-motion";
 import { 
   ArrowLeft, Sparkles, Filter, Clock, Play, Pause, RotateCcw,
   Mountain, Waves, Flame, Wind, Heart, Eye, Moon, Star,
-  Volume2, VolumeX, Loader2
+  Volume2, VolumeX, Loader2, Music
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Progress } from "../components/ui/progress";
 import { Slider } from "../components/ui/slider";
 import { toast } from "sonner";
+import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
 
 const Meditations = ({ user, api }) => {
   const navigate = useNavigate();
@@ -31,6 +31,7 @@ const Meditations = ({ user, api }) => {
   const [audioReady, setAudioReady] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(80);
+  const [ambientSound, setAmbientSound] = useState("silence");
 
   const categories = [
     { value: "all", label: "All Meditations" },
@@ -372,6 +373,38 @@ const Meditations = ({ user, api }) => {
                   />
                   <Volume2 className="w-4 h-4 text-muted-foreground" />
                 </div>
+              )}
+            </div>
+
+            {/* Ambient Soundscapes */}
+            <div className="p-5 rounded-2xl bg-card/30 border border-white/5 mb-6">
+              <h3 className="text-sm font-semibold mb-4 flex items-center gap-2 text-primary">
+                <Music className="w-4 h-4" />
+                Ambient Soundscape
+              </h3>
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                {["silence", "ocean", "rain", "singing_bowls", "crystal_bowls", "binaural"].map((key) => (
+                  <button
+                    key={key}
+                    onClick={() => setAmbientSound(key)}
+                    data-testid={`ambient-${key}`}
+                    className={`px-2 py-2 rounded-xl text-xs text-center transition-all border
+                      ${ambientSound === key
+                        ? "bg-primary/20 border-primary/40 text-primary"
+                        : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"
+                      }`}
+                  >
+                    {AMBIENT_SOUNDS[key]?.name || key}
+                  </button>
+                ))}
+              </div>
+              {ambientSound !== "silence" && (
+                <AmbientSoundPlayer
+                  soundType={ambientSound}
+                  autoPlay={true}
+                  volume={0.4}
+                  showControls={true}
+                />
               )}
             </div>
 

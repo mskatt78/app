@@ -506,3 +506,26 @@ async def get_light_language():
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
     return data.get("light_language_symbols", []) if data else []
+
+
+# ============ SACRED GUARDIANS & ALLIES ============
+
+@router.get("/sacred-guardians")
+async def get_sacred_guardians(category: Optional[str] = None):
+    """Get sacred guardians and allies, optionally filtered by category."""
+    db = get_db()
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    guardians = await db.sacred_guardians.find(query, {"_id": 0}).to_list(length=100)
+    return guardians
+
+
+@router.get("/sacred-guardians/{guardian_id}")
+async def get_sacred_guardian(guardian_id: str):
+    """Get a specific sacred guardian."""
+    db = get_db()
+    guardian = await db.sacred_guardians.find_one({"id": guardian_id}, {"_id": 0})
+    if not guardian:
+        raise HTTPException(status_code=404, detail="Guardian not found")
+    return guardian

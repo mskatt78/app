@@ -49,6 +49,8 @@ import PaymentCancel from "./pages/PaymentCancel";
 import BirthChart from "./pages/BirthChart";
 // Reviews
 import Reviews from "./pages/Reviews";
+// Sacred Guardians
+import SacredGuardians from "./pages/SacredGuardians";
 // New Temples
 import RoseTemple from "./pages/RoseTemple";
 import ElementalTemples from "./pages/ElementalTemples";
@@ -676,6 +678,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <Reviews user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/sacred-guardians"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <SacredGuardians user={user} api={api} />}
           </PublicRoute>
         }
       />

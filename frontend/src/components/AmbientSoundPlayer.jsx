@@ -11,16 +11,16 @@ import { Slider } from "./ui/slider";
 // Sound type definitions
 const AMBIENT_SOUNDS = {
   silence: { name: "Silence", type: "none" },
-  nature: { name: "Forest & Birds", type: "nature" },
-  rain: { name: "Gentle Rain", type: "rain" },
   ocean: { name: "Ocean Waves", type: "ocean" },
+  rain: { name: "Forest Rain", type: "rain" },
+  singing_bowls: { name: "Tibetan Bowls", type: "bowls" },
+  crystal_bowls: { name: "Crystal Bowls", type: "crystal_bowls" },
+  binaural: { name: "Binaural Tones", type: "binaural" },
+  nature: { name: "Forest & Birds", type: "nature" },
   fire: { name: "Crackling Fire", type: "fire" },
   wind: { name: "Gentle Wind", type: "wind" },
   drums: { name: "Shamanic Drums", type: "drums" },
-  singing_bowls: { name: "Singing Bowls", type: "bowls" },
   gentle_water: { name: "Flowing Stream", type: "water" },
-  forest: { name: "Deep Forest", type: "nature" },
-  ocean_waves: { name: "Beach Waves", type: "ocean" }
 };
 
 // Generate brown noise (deeper, more soothing than white noise)
@@ -118,7 +118,63 @@ const createBowlSound = (audioContext, gainNode, baseFreq = 528) => {
   return setInterval(playBowl, 10000); // Play every 10 seconds
 };
 
-const AmbientSoundPlayer = ({ 
+// Create crystal bowl sound (higher frequency, 432 Hz tuning)
+const createCrystalBowlSound = (audioContext, gainNode) => {
+  const CRYSTAL_FREQS = [432, 528, 639, 741, 852];
+  let idx = 0;
+  const playBowl = () => {
+    const baseFreq = CRYSTAL_FREQS[idx % CRYSTAL_FREQS.length];
+    idx++;
+    for (let i = 0; i < 3; i++) {
+      const osc = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+      osc.type = "sine";
+      osc.frequency.value = baseFreq * (i + 1);
+      const vol = 0.12 / (i + 1);
+      oscGain.gain.setValueAtTime(0, audioContext.currentTime);
+      oscGain.gain.linearRampToValueAtTime(vol, audioContext.currentTime + 0.3);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 12);
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      osc.stop(audioContext.currentTime + 12);
+    }
+  };
+  playBowl();
+  return setInterval(playBowl, 13000);
+};
+
+// Create binaural beats (theta wave ~6 Hz for deep meditation)
+const createBinauralBeats = (audioContext, gainNode, beatFreq = 6) => {
+  const baseFreq = 200;
+  const leftOsc = audioContext.createOscillator();
+  const leftGain = audioContext.createGain();
+  const leftPan = audioContext.createStereoPanner();
+  leftOsc.type = "sine";
+  leftOsc.frequency.value = baseFreq;
+  leftGain.gain.value = 0.2;
+  leftPan.pan.value = -1;
+  leftOsc.connect(leftGain);
+  leftGain.connect(leftPan);
+  leftPan.connect(gainNode);
+  leftOsc.start();
+
+  const rightOsc = audioContext.createOscillator();
+  const rightGain = audioContext.createGain();
+  const rightPan = audioContext.createStereoPanner();
+  rightOsc.type = "sine";
+  rightOsc.frequency.value = baseFreq + beatFreq;
+  rightGain.gain.value = 0.2;
+  rightPan.pan.value = 1;
+  rightOsc.connect(rightGain);
+  rightGain.connect(rightPan);
+  rightPan.connect(gainNode);
+  rightOsc.start();
+
+  return [leftOsc, rightOsc];
+};
+
+const AmbientSoundPlayer = ({
   soundType = "silence", 
   autoPlay = false,
   showControls = true,
@@ -252,6 +308,18 @@ const AmbientSoundPlayer = ({
           // Singing bowl at 528 Hz (love frequency)
           const bowlInterval = createBowlSound(ctx, gainNode, 528);
           intervalsRef.current.push(bowlInterval);
+          break;
+        }
+
+        case "crystal_bowls": {
+          const crystalInterval = createCrystalBowlSound(ctx, gainNode);
+          intervalsRef.current.push(crystalInterval);
+          break;
+        }
+
+        case "binaural": {
+          const binauralSources = createBinauralBeats(ctx, gainNode, 6);
+          sourcesRef.current.push(...binauralSources);
           break;
         }
         

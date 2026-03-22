@@ -32,7 +32,7 @@
   "seed_data_creation": "",
   "retest_needed": false,
   "should_main_agent_self_test": false,
-  "context_for_next_testing_agent": "All 4 user-requested fixes verified working: 1) Numerology calculates correctly, 2) Moon Calendar has hemisphere toggle, 3) Mantras has audible sound ON by default, 4) 30 crystals displayed. Preview URL: https://sacred-elements.preview.emergentagent.com",
+  "context_for_next_testing_agent": "All 4 user-requested fixes verified working: 1) Numerology calculates correctly, 2) Moon Calendar has hemisphere toggle, 3) Mantras has audible sound ON by default, 4) 30 crystals displayed. Preview URL: https://sacred-guardians-1.preview.emergentagent.com",
   "features_tested": {
     "numerology": {
       "calculation_with_date_1978-01-27": "PASS - Life Path 8 'The Achiever'",

@@ -5,7 +5,7 @@ import {
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
   Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins, Droplets, Dna,
-  BarChart3, Calculator, MessageCircle
+  BarChart3, Calculator, MessageCircle, Feather
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -97,6 +97,7 @@ const MainMenu = ({ user }) => {
         { path: "/elemental", icon: Sparkles, label: "Elemental", color: "text-teal-400", desc: "Five elements" },
         { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening" },
         { path: "/creative", icon: Palette, label: "Creative Processes", color: "text-violet-400", desc: "Sacred art" },
+        { path: "/sacred-guardians", icon: Feather, label: "Sacred Guardians", color: "text-amber-400", desc: "Power animals, dragons & angels" },
       ]
     },
     {

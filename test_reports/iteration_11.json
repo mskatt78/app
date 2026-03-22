@@ -88,7 +88,7 @@
   },
   "test_environment": {
     "viewport": "375x812 (mobile)",
-    "tested_url": "https://sacred-elements.preview.emergentagent.com"
+    "tested_url": "https://sacred-guardians-1.preview.emergentagent.com"
   },
   "rca_of_the_issue": "Original bug: Clicking 'Begin Practice' button in practice modals only logged practice to history without showing guided experience. Fix: Added isPracticing state and PracticeTimer component integration to HeartPractices, ShamanicPractices, ElementalPractices, and CreativeProcesses pages. When isPracticing=true, modal content switches from practice details to timer view with step-by-step guidance."
 }
