@@ -34,11 +34,20 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - [x] Oracle card readings (guest + authenticated)
 - [x] Meditations with chunked TTS audio (OpenAI via Emergent LLM Key)
 
-### Sacred Temples (NEW - Feb 2026)
-- [x] **Rose Temple** — 6 portals: Rose Lineage, Rose Meditations, Feminine Embodiment, Rose Ceremonies, Rose Rituals & Embodiment (Magdalene Anointing, Womb Healing, Daily Devotion, Sisterhood Ritual, Sacred Dance), Ancient Women's Teachings
-- [x] **Elemental Temples** — Earth, Water, Fire, Air, Spirit — 6 tabs each: Embodiment, Within You, In Nature, Practices, Rituals 🙏 (2 ceremonies per element), Affirmations
-- [x] **Masculine Temple** — Warrior, King, Magician, Lover, Ancestral — 3-tab modal: Teachings + Practices + Ritual 🙏 (ceremony per archetype)
-- [x] **Shamanic hero image** — AI-generated sacred fire ceremony + stone circle + Milky Way + spirit animals
+### Sacred Temples (NEW - Feb/Mar 2026)
+- [x] **Rose Temple** — 6 portals: Rose Lineage, Rose Meditations, Feminine Embodiment, Rose Ceremonies, Rose Rituals & Embodiment (5 full ceremonies), Ancient Women's Teachings
+- [x] **Elemental Temples** — Earth, Water, Fire, Air, Spirit — 6 tabs each incl. Rituals 🙏 (2 ceremonies per element)
+- [x] **Masculine Temple** — Warrior, King, Magician, Lover, Ancestral — 3-tab modal with full Ritual 🙏 ceremony per archetype
+- [x] **Wheel of the Year** `/seasonal-temple` — 8 Sabbats (Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon) with full ritual, embodiment, crystals/herbs tabs; North/South hemisphere toggle; Earth Crafting section (5 practices)
+
+### Daily Sacred Practice Widget (NEW - Mar 2026)
+- [x] **Sacred Practice of the Day** on Main Menu — real-time date-aware widget:
+  - Moon phase (calculated from actual date, hemisphere-aware mirror)
+  - Element of the day (planetary day correspondences Sun→Fire, Mon→Water etc.)
+  - Crystal of the day (matched to element, rotates daily)
+  - Oracle message of the day (52 curated shamanic messages, rotates by day of year)
+  - Practice recommendation linked to moon phase energy
+
 
 ### Partner & Accessible Yoga (NEW - Feb 2026)
 - [x] **Partner Yoga** page with 8 partner poses, difficulty filter, detailed instructions
