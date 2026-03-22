@@ -476,6 +476,126 @@ LIGHT_CODES = {
             "meaning": "Interdependence, no beginning no end, Buddhist wisdom",
             "meditation": "Trace the continuous line with your mind, never stopping, never starting.",
             "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg11", "name": "Tetrahedron",
+            "symbol": "△",
+            "description": "The simplest Platonic solid with four triangular faces. Represents fire element.",
+            "meaning": "Transformation, change, willpower, masculine energy",
+            "meditation": "Visualize a pyramid of light surrounding you, igniting your inner fire.",
+            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg12", "name": "Cube (Hexahedron)",
+            "symbol": "▢",
+            "description": "Six square faces representing earth element and physical stability.",
+            "meaning": "Grounding, stability, material foundation, patience",
+            "meditation": "Feel yourself anchored within a cube of golden earth energy.",
+            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg13", "name": "Octahedron",
+            "symbol": "◇",
+            "description": "Eight triangular faces representing the air element.",
+            "meaning": "Integration, reflection, compassion, healing",
+            "meditation": "Breathe and visualize an octahedron of light within your heart center.",
+            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg14", "name": "Icosahedron",
+            "symbol": "⬡",
+            "description": "Twenty triangular faces representing the water element.",
+            "meaning": "Transformation, flow, creativity, emotional balance",
+            "meditation": "Feel the fluid form of the icosahedron cleansing your emotional body.",
+            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg15", "name": "Dodecahedron",
+            "symbol": "⬠",
+            "description": "Twelve pentagonal faces representing ether/spirit element.",
+            "meaning": "Divine expression, ascension, universal consciousness",
+            "meditation": "Connect with the universe through the twelve pentagonal portals.",
+            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg16", "name": "Tree of Life",
+            "symbol": "🌲",
+            "description": "The Kabbalistic diagram of ten interconnected spheres (Sephiroth).",
+            "meaning": "Divine structure, path to enlightenment, cosmic blueprint",
+            "meditation": "Ascend through each sphere from Malkuth to Kether, receiving wisdom.",
+            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg17", "name": "Egg of Life",
+            "symbol": "⊛",
+            "description": "Eight spheres forming the basis of all musical harmonics.",
+            "meaning": "Cellular structure, embryonic life, musical creation",
+            "meditation": "Feel the eight spheres vibrating within you at the frequency of creation.",
+            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg18", "name": "Fruit of Life",
+            "symbol": "❃",
+            "description": "Thirteen circles derived from the Flower of Life.",
+            "meaning": "The blueprint of the universe, hidden knowledge, sacred feminine",
+            "meditation": "Connect with the thirteen sacred energies of cosmic creation.",
+            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg19", "name": "64 Tetrahedron Grid",
+            "symbol": "✧",
+            "description": "The geometric structure underlying reality, matching the 64 codons of DNA.",
+            "meaning": "Complete universal pattern, I Ching, genetic code, wholeness",
+            "meditation": "Feel your DNA resonating with the 64-fold structure of existence.",
+            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg20", "name": "Vector Equilibrium",
+            "symbol": "✦",
+            "description": "The only geometric form where all vectors are equal in length.",
+            "meaning": "Perfect balance, zero point, stillness in motion",
+            "meditation": "Find the center point of perfect equilibrium within your being.",
+            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg21", "name": "Labyrinth",
+            "symbol": "⌘",
+            "description": "Ancient single-path walking meditation pattern.",
+            "meaning": "Journey to center, sacred pilgrimage, contemplation",
+            "meditation": "Walk the labyrinth mentally, releasing with each turn toward center.",
+            "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg22", "name": "Spiral of Creation",
+            "symbol": "@",
+            "description": "The logarithmic spiral found from galaxies to seashells.",
+            "meaning": "Growth, evolution, cosmic dance, sacred mathematics",
+            "meditation": "Feel yourself spiraling outward from center, expanding infinitely.",
+            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg23", "name": "Hunab Ku",
+            "symbol": "☸",
+            "description": "Mayan symbol for the galactic center, the cosmic butterfly.",
+            "meaning": "Galactic consciousness, transformation, cosmic center",
+            "meditation": "Connect with the galactic center, the heart of the Milky Way.",
+            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg24", "name": "Yin Yang",
+            "symbol": "☯",
+            "description": "The Taoist symbol of complementary opposites in dynamic balance.",
+            "meaning": "Duality, balance, interdependence, flow",
+            "meditation": "Observe the dance of light and shadow, seeing wholeness in polarity.",
+            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "sg25", "name": "Enneagram",
+            "symbol": "⬡",
+            "description": "Nine-pointed figure representing personality types and spiritual growth.",
+            "meaning": "Self-knowledge, transformation paths, spiritual development",
+            "meditation": "Travel around the nine points, understanding each aspect of self.",
+            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&w=400"
         }
     ],
     "ancient_alphabets": [
@@ -559,6 +679,150 @@ LIGHT_CODES = {
             "pronunciation": "Rei-Ki",
             "practice": "Draw the symbols while channeling healing energy through your hands.",
             "image_url": "https://images.pexels.com/photos/745988/pexels-photo-745988.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa10", "name": "Eye of Horus (𓂀)",
+            "symbol": "𓂀",
+            "description": "Ancient Egyptian symbol of protection, health, and restoration.",
+            "meaning": "Divine protection, healing, royal power, intuition",
+            "pronunciation": "Wedjat",
+            "practice": "Visualize the eye watching over you, providing divine protection.",
+            "image_url": "https://images.pexels.com/photos/6932131/pexels-photo-6932131.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa11", "name": "Djed Pillar (𓊽)",
+            "symbol": "𓊽",
+            "description": "Egyptian symbol representing the spine of Osiris and stability.",
+            "meaning": "Stability, endurance, resurrection, the axis mundi",
+            "pronunciation": "Djed",
+            "practice": "Feel your spine as a pillar of light connecting heaven and earth.",
+            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa12", "name": "Scarab (𓆣)",
+            "symbol": "𓆣",
+            "description": "Egyptian beetle symbolizing transformation and the rising sun.",
+            "meaning": "Rebirth, transformation, protection, solar energy",
+            "pronunciation": "Kheper",
+            "practice": "Meditate on transformation, pushing through darkness toward the light.",
+            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa13", "name": "Sanskrit Shri (श्री)",
+            "symbol": "श्री",
+            "description": "Sacred syllable representing divine feminine prosperity.",
+            "meaning": "Abundance, beauty, grace, Lakshmi energy",
+            "pronunciation": "Shree",
+            "practice": "Chant to invoke divine feminine blessings of prosperity.",
+            "image_url": "https://images.pexels.com/photos/6664354/pexels-photo-6664354.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa14", "name": "Sanskrit Gam (गं)",
+            "symbol": "गं",
+            "description": "Seed mantra of Lord Ganesha, remover of obstacles.",
+            "meaning": "Obstacle removal, new beginnings, wisdom, success",
+            "pronunciation": "Gam",
+            "practice": "Chant 108 times when beginning new ventures or facing challenges.",
+            "image_url": "https://images.pexels.com/photos/7686377/pexels-photo-7686377.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa15", "name": "Hebrew Shin (ש)",
+            "symbol": "ש",
+            "description": "Letter representing divine fire and the presence of God.",
+            "meaning": "Divine fire, transformation, the Holy Spirit, teeth/consume",
+            "pronunciation": "Sh",
+            "practice": "Feel the three flames of shin rising from your crown.",
+            "image_url": "https://images.pexels.com/photos/5371888/pexels-photo-5371888.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa16", "name": "Hebrew Mem (מ)",
+            "symbol": "מ",
+            "description": "Letter representing water and the womb of creation.",
+            "meaning": "Water, womb, nurturing, hidden wisdom",
+            "pronunciation": "M",
+            "practice": "Hum the 'mmm' sound, feeling the vibration as primordial waters.",
+            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa17", "name": "Norse Rune Fehu (ᚠ)",
+            "symbol": "ᚠ",
+            "description": "The rune of cattle, wealth, and abundance.",
+            "meaning": "Prosperity, luck, fertility, new beginnings",
+            "pronunciation": "F (Fehu)",
+            "practice": "Draw the rune while setting intentions for abundance.",
+            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa18", "name": "Norse Rune Ansuz (ᚨ)",
+            "symbol": "ᚨ",
+            "description": "The rune of Odin, divine breath, and communication.",
+            "meaning": "Divine wisdom, inspiration, communication, truth",
+            "pronunciation": "A (Ansuz)",
+            "practice": "Invoke for clarity in communication and receiving divine messages.",
+            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa19", "name": "Norse Rune Sowilo (ᛊ)",
+            "symbol": "ᛊ",
+            "description": "The sun rune representing victory and life force.",
+            "meaning": "Sun, success, honor, vitality, guidance",
+            "pronunciation": "S (Sowilo)",
+            "practice": "Draw in the air to invoke solar energy and success.",
+            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa20", "name": "Chinese Fu (福)",
+            "symbol": "福",
+            "description": "The character for luck and good fortune.",
+            "meaning": "Blessing, happiness, good luck, prosperity",
+            "pronunciation": "Fú",
+            "practice": "Display upside down to let fortune 'pour' into your space.",
+            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa21", "name": "Chinese Shou (壽)",
+            "symbol": "壽",
+            "description": "The character for longevity and immortality.",
+            "meaning": "Long life, health, vitality, immortality",
+            "pronunciation": "Shòu",
+            "practice": "Contemplate the many forms this character takes in sacred art.",
+            "image_url": "https://images.pexels.com/photos/745988/pexels-photo-745988.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa22", "name": "Adinkra Sankofa",
+            "symbol": "ↄ",
+            "description": "West African symbol meaning 'go back and get it.'",
+            "meaning": "Learning from past, wisdom, heritage, reclamation",
+            "pronunciation": "San-ko-fa",
+            "practice": "Reflect on ancestral wisdom you need to reclaim.",
+            "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa23", "name": "Adinkra Gye Nyame",
+            "symbol": "☗",
+            "description": "Supreme Akan symbol meaning 'Except for God.'",
+            "meaning": "Omnipotence of God, faith, divine supremacy",
+            "pronunciation": "Jeh Nyah-meh",
+            "practice": "Surrender to divine will, trusting the greater plan.",
+            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa24", "name": "Maori Koru",
+            "symbol": "🌿",
+            "description": "Unfolding fern frond symbolizing new life.",
+            "meaning": "New beginnings, growth, harmony, peace",
+            "pronunciation": "Ko-ru",
+            "practice": "Trace the spiral while embracing new chapters in life.",
+            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "aa25", "name": "Greek Chi Rho (☧)",
+            "symbol": "☧",
+            "description": "Early Christian symbol combining X and P (Christ).",
+            "meaning": "Christ consciousness, victory, divine presence",
+            "pronunciation": "Ki-Ro",
+            "practice": "Invoke Christ consciousness and divine protection.",
+            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
         }
     ],
     "light_language_symbols": [
@@ -641,125 +905,126 @@ LIGHT_CODES = {
             "activation": "Visualize healing light flowing back through generations.",
             "purpose": "Heals ancestral trauma, releases inherited patterns, honors lineage",
             "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
-        }
-    ]
-}
-        {
-            "id": "sg4", "name": "Seed of Life",
-            "description": "Seven overlapping circles forming the pattern of creation.",
-            "meaning": "The seven days of creation, new beginnings, potential",
-            "meditation": "Place awareness in each circle, honoring the seven sacred aspects of creation.",
-            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
         },
         {
-            "id": "sg5", "name": "Vesica Piscis",
-            "description": "Two overlapping circles creating an almond shape - the womb of creation.",
-            "meaning": "Divine union, birth portal, the space between worlds",
-            "meditation": "Visualize yourself within the vesica, in the space of pure potential.",
-            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
+            "id": "ll11", "name": "Akashic Records Key",
+            "symbol": "🔑",
+            "description": "A key pattern unlocking access to the cosmic library.",
+            "activation": "Visualize golden key turning, opening doors to all knowledge.",
+            "purpose": "Access past life memories, soul records, cosmic wisdom",
+            "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&w=400"
         },
         {
-            "id": "sg6", "name": "Torus",
-            "description": "The fundamental shape of energy flow in the universe.",
-            "meaning": "Energy circulation, heart field, self-sustaining systems",
-            "meditation": "Feel your heart's torus field expanding, circulating love through your being.",
-            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+            "id": "ll12", "name": "Sacral Creation Code",
+            "symbol": "🌊",
+            "description": "Flowing wave patterns activating creative and sensual energy.",
+            "activation": "Feel orange light swirling in your lower belly, igniting creation.",
+            "purpose": "Enhances creativity, pleasure, emotional flow, fertility",
+            "image_url": "https://images.pexels.com/photos/1252500/pexels-photo-1252500.jpeg?auto=compress&w=400"
         },
         {
-            "id": "sg7", "name": "Merkaba",
-            "description": "Two interlocking tetrahedrons creating a light vehicle.",
-            "meaning": "Ascension, interdimensional travel, protection",
-            "meditation": "Visualize the counter-rotating tetrahedrons activating around your body.",
+            "id": "ll13", "name": "Stargate Activation",
+            "symbol": "⭐",
+            "description": "Multi-pointed star portal for interdimensional travel.",
+            "activation": "Visualize standing in center of star, portals opening in all directions.",
+            "purpose": "Astral travel, dimensional shifting, star being connection",
+            "image_url": "https://images.unsplash.com/photo-1744168441194-6ec745ea76cc?auto=format&w=400"
+        },
+        {
+            "id": "ll14", "name": "Crystalline Body Code",
+            "symbol": "💎",
+            "description": "Geometric crystal pattern upgrading physical body to light.",
+            "activation": "Feel your cells transforming into crystalline light structures.",
+            "purpose": "Physical body ascension, cellular regeneration, light body activation",
+            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "ll15", "name": "Abundance Matrix",
+            "symbol": "💰",
+            "description": "Golden grid pattern attracting prosperity and flow.",
+            "activation": "Visualize golden coins of light flowing into your energy field.",
+            "purpose": "Attracts abundance, releases scarcity, opens prosperity channels",
+            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "ll16", "name": "Twin Flame Union",
+            "symbol": "💞",
+            "description": "Two spiraling flames meeting and merging into one.",
+            "activation": "Feel your flame reaching across dimensions to your divine counterpart.",
+            "purpose": "Attracts twin flame, harmonizes relationships, divine union",
+            "image_url": "https://images.pexels.com/photos/6932102/pexels-photo-6932102.jpeg?auto=compress&w=400"
+        },
+        {
+            "id": "ll17", "name": "Kundalini Serpent Rise",
+            "symbol": "🐍",
+            "description": "Double helix serpent energy ascending the spine.",
+            "activation": "Feel the serpent energy slowly uncoiling and rising through each chakra.",
+            "purpose": "Kundalini awakening, spiritual enlightenment, energy mastery",
             "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
-        }
-    ],
-    "ancient_alphabets": [
-        {
-            "id": "aa1", "name": "Sanskrit Om (ॐ)",
-            "description": "The primordial sound of creation. The vibration underlying all existence.",
-            "meaning": "Universal consciousness, the sound of creation, divine presence",
-            "pronunciation": "AUM (A-U-M)",
-            "practice": "Chant three times, feeling the vibration move through your entire body."
         },
         {
-            "id": "aa2", "name": "Hebrew Aleph (א)",
-            "description": "The first letter, representing the breath of God, silence before creation.",
-            "meaning": "Divine breath, beginning, the void pregnant with potential",
-            "pronunciation": "Silent or glottal stop",
-            "practice": "Meditate on the silent breath, the space between thoughts."
+            "id": "ll18", "name": "Light Body Merkaba",
+            "symbol": "✴",
+            "description": "Activated light vehicle surrounding the human form.",
+            "activation": "Spin the counter-rotating tetrahedrons at increasing speed.",
+            "purpose": "Ascension vehicle, protection, interdimensional travel",
+            "image_url": "https://images.unsplash.com/photo-1597600159211-d6c104f408d1?auto=format&w=400"
         },
         {
-            "id": "aa3", "name": "Egyptian Ankh (☥)",
-            "description": "The key of life, held by gods in Egyptian art.",
-            "meaning": "Eternal life, divine protection, balance of masculine and feminine",
-            "pronunciation": "Ankh",
-            "practice": "Visualize the ankh as a key unlocking eternal wisdom within you."
+            "id": "ll19", "name": "Pleiadian Healing Light",
+            "symbol": "✨",
+            "description": "Seven-star cluster radiating healing frequencies.",
+            "activation": "Connect to the seven sisters, receiving their healing transmissions.",
+            "purpose": "Star seed activation, healing, remembering cosmic origins",
+            "image_url": "https://images.unsplash.com/photo-1744164361532-c3a4676c55b9?auto=format&w=400"
         },
         {
-            "id": "aa4", "name": "Greek Alpha-Omega (Α Ω)",
-            "description": "The first and last letters, representing totality.",
-            "meaning": "Beginning and end, completeness, the eternal nature of divine",
-            "pronunciation": "Alpha - Omega",
-            "practice": "Contemplate what has no beginning and no end within you."
+            "id": "ll20", "name": "Sirian Blue Light",
+            "symbol": "💙",
+            "description": "Deep blue ray from Sirius activating higher wisdom.",
+            "activation": "Bathe in deep blue light streaming from the Dog Star.",
+            "purpose": "Advanced healing, dolphin/whale connection, ancient wisdom",
+            "image_url": "https://images.pexels.com/photos/1252500/pexels-photo-1252500.jpeg?auto=compress&w=400"
         },
         {
-            "id": "aa5", "name": "Tibetan Om Mani Padme Hum",
-            "description": "The jewel in the lotus. Most sacred Buddhist mantra.",
-            "meaning": "Compassion, purification of body/speech/mind, enlightenment",
-            "pronunciation": "Om Ma-ni Pad-me Hum",
-            "practice": "Recite 108 times with prayer beads, visualizing each syllable's color."
+            "id": "ll21", "name": "Arcturian Geometry",
+            "symbol": "🔷",
+            "description": "Complex geometric patterns from Arcturus for healing.",
+            "activation": "Allow Arcturian beings to download sacred geometric healing codes.",
+            "purpose": "Advanced healing technology, emotional clearing, spiritual surgery",
+            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&w=400"
         },
         {
-            "id": "aa6", "name": "Celtic Ogham Beith (ᚁ)",
-            "description": "The birch tree in Ogham script. First letter of the tree alphabet.",
-            "meaning": "New beginnings, purification, writing sacred knowledge",
-            "pronunciation": "B (Beith)",
-            "practice": "Trace the mark while focusing on new beginnings and fresh starts."
+            "id": "ll22", "name": "Angelic Wings Activation",
+            "symbol": "👼",
+            "description": "Ethereal wing patterns emerging from shoulder blades.",
+            "activation": "Feel wings of light unfurling from your back, lifting your spirit.",
+            "purpose": "Angelic connection, lightness of being, divine protection",
+            "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&w=400"
         },
         {
-            "id": "aa7", "name": "Norse Rune Algiz (ᛉ)",
-            "description": "The elk-sedge or protection rune, resembling raised hands.",
-            "meaning": "Divine protection, connection to higher self, spiritual warrior",
-            "pronunciation": "Z (Algiz)",
-            "practice": "Stand with arms raised like the rune, invoking protection."
-        }
-    ],
-    "light_language_symbols": [
-        {
-            "id": "ll1", "name": "Heart Activation Code",
-            "description": "A spiral pattern emerging from the heart, opening pathways of love.",
-            "activation": "Place hand on heart, visualize golden spiral expanding outward.",
-            "purpose": "Opens heart chakra, increases capacity for love and compassion"
+            "id": "ll23", "name": "Rainbow Bridge Code",
+            "symbol": "🌈",
+            "description": "Full spectrum light bridge connecting dimensions.",
+            "activation": "Walk the rainbow bridge between physical and spiritual realms.",
+            "purpose": "Dimensional bridging, chakra alignment, full spectrum healing",
+            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
         },
         {
-            "id": "ll2", "name": "Third Eye Awakening",
-            "description": "Concentric circles with central eye, activating inner vision.",
-            "activation": "Focus between brows, visualize indigo light pulsing in circular waves.",
-            "purpose": "Enhances intuition, activates psychic sight, connects to inner wisdom"
+            "id": "ll24", "name": "Womb Healing Spiral",
+            "symbol": "🌙",
+            "description": "Inward spiral for healing the sacred feminine center.",
+            "activation": "Visualize gentle spiral of pink light healing the womb space.",
+            "purpose": "Feminine healing, reproductive balance, creative restoration",
+            "image_url": "https://images.pexels.com/photos/6932102/pexels-photo-6932102.jpeg?auto=compress&w=400"
         },
         {
-            "id": "ll3", "name": "DNA Activation Helix",
-            "description": "Double helix spiraling upward with light codes embedded.",
-            "activation": "Visualize your DNA strands glowing and activating dormant codes.",
-            "purpose": "Awakens latent spiritual abilities, accelerates evolution"
-        },
-        {
-            "id": "ll4", "name": "Cosmic Portal",
-            "description": "Radiating starburst pattern opening dimensional doorways.",
-            "activation": "Visualize the portal opening above your crown, receiving cosmic downloads.",
-            "purpose": "Connects to higher dimensions, receives cosmic information"
-        },
-        {
-            "id": "ll5", "name": "Grounding Root Code",
-            "description": "Downward branching pattern connecting to Earth's core.",
-            "activation": "Visualize roots extending from your feet into Earth's crystalline core.",
-            "purpose": "Deep grounding, Earth connection, stability in spiritual work"
-        },
-        {
-            "id": "ll6", "name": "Unity Consciousness Grid",
-            "description": "Interconnected triangular matrix spanning the planet.",
-            "activation": "Visualize connecting to the global grid of awakened beings.",
-            "purpose": "Connects to collective consciousness, amplifies healing intentions"
+            "id": "ll25", "name": "Sacred Masculine Rod",
+            "symbol": "⚡",
+            "description": "Vertical pillar of light activating divine masculine power.",
+            "activation": "Feel a rod of golden light strengthening your spine and will.",
+            "purpose": "Masculine healing, grounded power, protective strength",
+            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&w=400"
         }
     ]
 }
