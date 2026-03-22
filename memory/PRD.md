@@ -139,32 +139,40 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
   - Energy Sweeping & Aura Cleansing (25 min) - Curanderismo, Reiki & Shamanic Clearing
 - [x] **Sunrise & Sunset Practices** - New dedicated page `/sunrise-sunset`:
   - 4 Sunrise Practices: Sun Salutation Awakening, Dawn Breathwork Ritual, Morning Earth Connection, Sacred Morning Pages
-  - 5 Sunset Practices: Evening Gratitude Ceremony, Twilight Body Scan, Moon Water Blessing, Evening Star Meditation, Releasing Fire Ritual
+  - 5 Sunset Practices: Evening Gratitude Ceremony, Twilight Body Scan, Moon Water Blessing, Evening Star Meditation, Shedding Fire Ritual
+  - All "release" language changed to "shed" (energy doesn't return)
   - Added to Main Menu under Sacred Temples
 
 ### P1 (High)
 - Gifting Frontend UI — backend complete, needs purchase/redeem UI
-- More Shamanic/Elemental content  
 
 ### P2 (Medium)
 - Audio state management refactor to React Context
 - Additional content for new temples
+- Session history sync across devices
 
 ### P3 (Future / Nice-to-Have)
-- World timezone converter (dropdown to see QLD time mapped to any timezone)
 - Seasonal/moon-aware content recommendations
-- Session history and favorites sync across devices
+- More Shamanic/Elemental content
 
 ---
 
-## Testing Status
-- Last test run: `iteration_25.json` — 100% pass rate (all 11 features)
-- Backend tests: iteration_24.json — 100% pass
-- No known regressions
+## Features Verified Working (Mar 2026)
+- ✅ World Timezone Converter (in Astrology Calendar)
+- ✅ Hemisphere Toggle (Southern/Northern)
+- ✅ Practice History logging (all practice pages)
+- ✅ Audio cleanup on unmount (Breathwork, Meditations)
+- ✅ All 4 Healing Modalities in Heart Practices
+- ✅ All 9 Sunrise/Sunset Practices
+- ✅ All Sacred Temples (Rose, Elemental, Masculine, Seasonal)
+- ✅ Journal system (Moon, Dream, Personal)
+- ✅ Mantras Library with audio
+- ✅ Daily Practice Widget
 
 ---
 
 ## Deployment Notes
-- Use "Replace Existing Deployment" in Emergent to push to custom domain
+- **Custom Domain:** https://temple-soul-dev.emergent.host (KEEP THIS)
+- Use "Replace Existing Deployment" in Emergent to push updates
 - Do NOT create duplicate deployments — this confuses users testing on stale URLs
 - Preview URL: https://meditation-portal-2.preview.emergentagent.com
