@@ -206,6 +206,7 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - ✅ **Partner Yoga** — 8 poses with real yoga photos on cards & modal (NEW Mar 22)
 - ✅ **Light Codes** — 75 symbols with authentic thematic images (no generic placeholders) (UPDATED Mar 22)
 - ✅ **Community Reviews** — star ratings, written reviews, share modal, stats block, upsert (NEW Mar 22)
+- ✅ **Meditations** — real matching images on cards & player banner; timer starts immediately; audio generates in background (UPDATED Mar 22)
 
 ---
 
