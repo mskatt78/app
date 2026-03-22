@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Eye, Sparkles, RotateCcw, Loader2 } from "lucide-react";
+import { ArrowLeft, Eye, Sparkles, RotateCcw, Loader2, Share2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Textarea } from "../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { toast } from "sonner";
+import { ShareButton } from "../components/ShareModal";
 
 const OracleReadings = ({ user, api }) => {
   const navigate = useNavigate();
@@ -219,7 +220,7 @@ const OracleReadings = ({ user, api }) => {
             )}
 
             {/* New Reading Button */}
-            <div className="text-center">
+            <div className="flex justify-center gap-4">
               <Button
                 data-testid="new-reading-btn"
                 onClick={resetReading}
@@ -229,6 +230,11 @@ const OracleReadings = ({ user, api }) => {
                 <RotateCcw className="w-4 h-4 mr-2" />
                 New Reading
               </Button>
+              <ShareButton 
+                title="My Oracle Reading from Temple of the Soul"
+                description={`I drew ${reading.cards?.map(c => c.name).join(', ')} - ${reading.interpretation?.substring(0, 100)}...`}
+                className="border border-white/10 rounded-full px-4 py-2 hover:bg-white/5"
+              />
             </div>
           </motion.div>
         ) : (

@@ -170,10 +170,14 @@ const LightCodes = ({ user, api }) => {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                      {/* Symbol overlay */}
+                      <div className="absolute top-3 right-3 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center">
+                        <span className="text-xl">{symbol.symbol || "✨"}</span>
+                      </div>
                     </div>
                   ) : (
                     <div className={`h-48 flex items-center justify-center ${categoryInfo.bg}`}>
-                      <span className="text-6xl">{symbol.symbol || "✨"}</span>
+                      <span className="text-7xl">{symbol.symbol || "✨"}</span>
                     </div>
                   )}
                   

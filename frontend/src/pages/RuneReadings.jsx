@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Sparkles, Moon, Sun, Eye, Star, Shuffle, 
-  ChevronRight, RotateCcw, Info, X, Clock
+  ChevronRight, RotateCcw, Info, X, Clock, Share2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { ShareButton } from "../components/ShareModal";
 
 const RuneReadings = ({ user, api }) => {
   const navigate = useNavigate();
@@ -333,9 +334,16 @@ const RuneReadings = ({ user, api }) => {
                   ))}
                 </div>
 
-                <Button onClick={() => setSelectedRune(null)} className="w-full" variant="outline">
-                  Close
-                </Button>
+                <div className="flex gap-2">
+                  <Button onClick={() => setSelectedRune(null)} className="flex-1" variant="outline">
+                    Close
+                  </Button>
+                  <ShareButton 
+                    title={`Rune: ${selectedRune.name}`}
+                    description={`I drew the ${selectedRune.name} rune - ${selectedRune.meaning}`}
+                    className="border border-white/10 rounded-lg px-4"
+                  />
+                </div>
               </div>
             </motion.div>
           </motion.div>

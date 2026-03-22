@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Coins, RotateCcw, BookOpen, Info, X, Sparkles } from "lucide-react";
+import { ArrowLeft, Coins, RotateCcw, BookOpen, Info, X, Sparkles, Share2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { ShareButton } from "../components/ShareModal";
 
 const IChing = ({ user, api }) => {
   const navigate = useNavigate();
@@ -245,6 +246,15 @@ const IChing = ({ user, api }) => {
                 </div>
               </div>
             )}
+
+            {/* Share Button */}
+            <div className="text-center">
+              <ShareButton 
+                title={`I Ching: Hexagram ${result.number} - ${result.name}`}
+                description={`${result.chinese} - ${result.judgment?.substring(0, 120)}...`}
+                className="border border-white/10 rounded-full px-6 py-3 hover:bg-white/5 inline-flex items-center gap-2"
+              />
+            </div>
           </motion.div>
         )}
 
