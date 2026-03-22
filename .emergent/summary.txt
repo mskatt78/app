@@ -1,0 +1,142 @@
+<analysis>**original_problem_statement:**
+The user is building a comprehensive full-stack application called Shamanic Elements Temple Of The Soul (React, FastAPI, MongoDB). The app features yoga, somatic movements, oracle readings, breathwork, guided meditations, ambient frequencies, advanced healing modalities, and divination tools. The user specifically requested social sharing capabilities, expanding the Light Codes library with highly accurate, authentic energetic images, and adding visual image guides for Couples yoga (Partner Yoga).
+
+**User's preferred language**: English
+*(INSTRUCT NEXT AGENT: You MUST respond in English only)*
+
+**what currently exists?** 
+A highly robust FastAPI + React application. It includes Sacred Temples, Meditations (OpenAI TTS), Web Audio API soundscapes, Healing Modalities, Sunrise/Sunset practices, Journaling, Mantras, Divination (Oracle, Runes, I Ching), Water Practices, Gene Keys, Human Design, a Profile Calculator, Progress Dashboard, In-App Notifications, Social Sharing functionality, Offline Mode (PWA Service Worker), and an expanded Light Codes library (75 symbols). 
+
+**Last working item**:
+    - **Last item agent was working:** The agent was investigating  to fulfill the user's latest request to add visual images for Couples yoga so users can see what the poses look like.
+    - **Status:** IN PROGRESS
+    - **Agent Testing Done:** N
+    - **Which testing method agent to use?** Frontend testing agent or manual screenshot tool after integrating the images into the Partner Yoga UI and data structure.
+    - **User Testing Done:** N
+
+**All Pending/In progress Issue list**:
+  Issue 1: Apply Authentic Images to Light Codes (P1)
+  Issue 2: Verify Review feature (P2)
+  
+  Issues Detail:
+  - Issue 1: Apply Authentic Images to Light Codes
+     - Attempted fixes: User explicitly stated that Light Code images *must* be energetically correct/authentic (not generic placeholders). The agent successfully expanded the DB to 75 items and started using  to find accurate representations (Flower of Life, Metatron's Cube, etc.) but was distracted by a deployment log query before mapping these images to the backend data.
+     - Next debug checklist: Review . Ensure all 75 items have highly accurate  fields. Reseed the DB and verify on the frontend.
+     - Why fix this issue and what will be achieved with the fix? Meets the user's strict requirement for energetic authenticity in the app's visual representation.
+     - Status: IN PROGRESS
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? Both (Ensure DB seeds correctly, verify UI via screenshot).
+     - Blocked on other issue: None.
+
+  - Issue 2: Verify Review feature
+     - Attempted fixes: Carried over from a previous fork. User asked Is review option working earlier. Agent never clarified if this meant App Store reviews, session practice reviews, or journal reviews.
+     - Next debug checklist: Ask the user to clarify what they meant by the Review option.
+     - Why fix this issue and what will be achieved with the fix? Ensures no features are left behind before final app store push.
+     - Status: USER VERIFICATION PENDING
+     - Is recurring issue? Y
+     - Should Test frontend/backend/both after fix? N/A
+     - Blocked on other issue: None.
+
+**In progress Task List**:
+  Task 1: Add Images to Partner (Couples) Yoga
+     - Where to resume:  (and potentially backend data if poses are fetched via API).
+     - What will be achieved with this? Users will have visual aids to understand how to perform two-person yoga poses.
+     - Status: NOT STARTED (Agent only viewed the file).
+     - Should Test frontend/backend/both after fix? Frontend.
+     - Blocked on something: None.
+
+**Upcoming and Future Tasks**
+    Upcoming Tasks:
+    - (P1) Complete the accurate image mapping for the 75 Light Codes.
+    - (P2) Gifting Frontend UI: Backend for gifting is complete, but frontend UI for purchasing/redeeming gifts is pending from backlog.
+    Future Tasks:
+    - (P3) Birth Chart Visualization: Create a visual bodygraph/mandala from the Profile Calculator data.
+    - (P4) Additional healing/elemental content expansion.
+
+**Completed work in this session**
+- Built and tested  UI and linked it (DONE)
+- Built  and  pages (DONE)
+- Built  with complex astrological/Sun/Earth calculations (DONE)
+- Built  (DONE)
+- Implemented Offline Mode via PWA Service Worker () and In-App Notifications (DONE)
+- Added  to Oracle, Runes, I Ching, and Profile Calculator for social sharing (DONE)
+- Expanded  in backend to 25 items per category (75 total symbols) (DONE)
+- Fixed backend DB seeding issue caused by  DB name mismatch (DONE)
+- Analyzed deployment logs and confirmed a successful production deployment (DONE)
+
+**Earlier issues found/mentioned but not fixed**
+   - Issue 1: Agent missed updating the Light Codes data with the authentic images they found before transitioning to the user's deployment log query.
+
+**Known issue recurrence from previous fork**
+  - Issue recurrence in previous fork: User confusion regarding temporary preview URLs vs permanent deployment URLs and how to edit code.
+  - Recurrence count: 3
+  - Status: RESOLVED (Agent explained GitHub export and deployment mechanics).
+  Note: Be extremely clear when providing URLs. Do not confuse the user with temporary URLs when they ask for production links.
+
+**Code Architecture**
+
+
+**Key Technical Concepts**
+- Frontend: React, Framer Motion, PWA Service Workers, HTML5 Web Audio API.
+- Backend: FastAPI, MongoDB (Motor Async).
+- Dynamic Data: Complex astrological calculations for Gene Keys/Human Design on frontend; OpenAI TTS generation for meditations.
+
+**key DB schema**
+  - : { sacred_geometry: [], ancient_alphabets: [], light_language_symbols: [] } (Now contains 25 items each).
+
+**changes in tech stack**
+  - Added PWA Service Worker for offline caching functionality.
+
+**All files of reference** 
+  -  (Target for current task)
+  -  (Needs authentic image mapping for Light Codes)
+  -  (Created)
+  -  (Created)
+  -  (Created)
+
+**Areas that need refactoring**:
+  -  is growing very large due to the 75 added symbols. 
+
+**key api endpoints**
+  - , 
+
+**Critical Info for New Agent** 
+- **DB_NAME Quirk:** The  file uses . Previous agent struggled because they manually queried . Always respect the  variable when doing manual queries or forcing reseeds.
+- **Terminology Rule:** Release must be labeled as Shed or Shedding across all content.
+- **Authenticity Rule:** The user is highly sensitive to the *energetic accuracy* of images. Do not use generic placeholders for sacred geometry, alphabets, or yoga poses. Use  carefully to find exact representations.
+
+**documents and test reports created in this job**
+  -  (100% Pass)
+  -  (100% Pass)
+  -  (Updated)
+
+**Last 10 User Messages and any pending HUMAN messages** 
+ 1. User asked for download/editable access, shareable link, and PlayStore link. (Answered)
+ 2. User asked for just a link for me nothing else please. (Provided)
+ 3. User clarified they want an actual link to edit/add things. (Explained Save to GitHub feature).
+ 4. User requested in-app social sharing and a mini-library for Light Codes/Geometry with specific matching images (not default stars). (Built sharing, expanded library structure).
+ 5. User asked to expand Light Codes to at least 22-33 symbols per category. (Completed - expanded to 25 each).
+ 6. User stated Light Code images MUST be correct/authentic to properly seed energy into the app. (Acknowledged, started searching, pending data mapping).
+ 7. User pasted deployment error logs fearing a failure. (Agent analyzed logs and confirmed deployment was actually successful).
+ 8. *User (Latest):* Couples yoga needs images so they can see what the pose looks like (PENDING - Agent viewed  before cutoff).
+
+**Project Health Check:**
+Healthy. No broken routes.
+
+**3rd Party Integrations** 
+ - OpenAI TTS (Audio generation) — uses Emergent LLM Key
+ - Gemini (Image Generation) — uses Emergent LLM Key
+ - Resend (Emails) — requires User API Key
+ - Google OAuth — Emergent-managed
+
+**Testing status**
+  - Testing agent used after significant changes: YES (Iteration 28 and 29 generated).
+  - Troubleshoot agent used after agent stuck in loop: NO
+  - Test files created: None this session.
+  - Known regressions: None.
+
+**Credentials to test flow:**
+Standard Auth/Guest flows active.
+
+**What agent forgot to execute**
+- The agent found excellent authentic images for the Light Codes but did not map them into  before pivoting to analyze the user's deployment logs. Ensure these 75 items get their proper images.</analysis>

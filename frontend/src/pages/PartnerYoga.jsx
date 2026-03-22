@@ -11,6 +11,7 @@ const partnerPoses = [
     element: "Water",
     difficulty: "Beginner",
     duration: 5,
+    image_url: "https://images.pexels.com/photos/4127317/pexels-photo-4127317.jpeg?auto=compress&cs=tinysrgb&w=800",
     description: "Sit back-to-back or facing each other and gently assist your partner into a deep forward fold. This builds trust and deepens the stretch for both.",
     instructions: [
       "Sit facing each other with legs extended straight, feet touching or overlapping",
@@ -30,6 +31,7 @@ const partnerPoses = [
     element: "Fire",
     difficulty: "Intermediate",
     duration: 3,
+    image_url: "https://images.pexels.com/photos/7593000/pexels-photo-7593000.jpeg?auto=compress&cs=tinysrgb&w=800",
     description: "Sit facing your partner, hold hands, and lift both sets of legs to create a diamond shape between you. Builds core strength and requires synchronized effort.",
     instructions: [
       "Sit facing your partner, knees bent, toes touching",
@@ -50,6 +52,7 @@ const partnerPoses = [
     element: "Earth",
     difficulty: "Beginner",
     duration: 3,
+    image_url: "https://images.pexels.com/photos/5837039/pexels-photo-5837039.jpeg?auto=compress&cs=tinysrgb&w=800",
     description: "Stand side by side and balance together, with each person bringing the inner foot up and wrapping inner arms. Creates stability through connection.",
     instructions: [
       "Stand side by side with your inside shoulders touching",
@@ -71,6 +74,7 @@ const partnerPoses = [
     element: "Air",
     difficulty: "Advanced",
     duration: 5,
+    image_url: "https://images.pexels.com/photos/4971855/pexels-photo-4971855.jpeg?auto=compress&cs=tinysrgb&w=800",
     description: "One partner (the base) lies on their back with feet raised; the flyer balances on the base's feet while arching into a backbend. Requires trust, core strength, and communication.",
     instructions: [
       "BASE: Lie on your back, arms extended alongside body, knees bent. Press feet toward the ceiling, slightly wider than hip-width",
@@ -92,6 +96,7 @@ const partnerPoses = [
     element: "Air",
     difficulty: "Beginner",
     duration: 3,
+    image_url: "https://images.pexels.com/photos/7593022/pexels-photo-7593022.jpeg?auto=compress&cs=tinysrgb&w=800",
     description: "Kneel back to back with your partner. As both partners arch backward, they support each other's upper back and create a beautiful heart-opening backbend.",
     instructions: [
       "Kneel back-to-back, hips pressed together, knees hip-width apart",
@@ -113,6 +118,7 @@ const partnerPoses = [
     element: "Fire",
     difficulty: "Beginner",
     duration: 5,
+    image_url: "https://images.unsplash.com/photo-1758599880222-550a42cb42bc?w=800&q=80",
     description: "Sit back-to-back in easy pose and twist in opposite directions, placing hands on each other's knees for a gentle assisted spinal twist.",
     instructions: [
       "Sit back-to-back in easy pose (crossed legs)",
@@ -134,6 +140,7 @@ const partnerPoses = [
     element: "Water",
     difficulty: "Beginner",
     duration: 5,
+    image_url: "https://images.pexels.com/photos/7078131/pexels-photo-7078131.jpeg?auto=compress&cs=tinysrgb&w=800",
     description: "One partner lies across the other's legs/lap in a gentle supported backbend. A deeply receptive, trusting pose that opens the heart and allows complete surrender.",
     instructions: [
       "Partner A sits in a comfortable cross-legged position",
@@ -155,6 +162,7 @@ const partnerPoses = [
     element: "Earth",
     difficulty: "Beginner",
     duration: 5,
+    image_url: "https://images.pexels.com/photos/4127304/pexels-photo-4127304.jpeg?auto=compress&cs=tinysrgb&w=800",
     description: "One partner folds forward while the other provides gentle pressure on their sacrum and upper back to deepen the fold. Excellent for releasing tight hamstrings and lower back.",
     instructions: [
       "Partner A folds into Standing Forward Fold (Uttanasana)",
@@ -256,29 +264,38 @@ const PartnerYoga = ({ user, api }) => {
               transition={{ delay: index * 0.05 }}
               onClick={() => setSelectedPose(pose)}
               data-testid={`pose-card-${pose.id}`}
-              className={`group cursor-pointer p-6 rounded-2xl border backdrop-blur-xl
-                         ${pose.color.bg} ${pose.color.border}
+              className={`group cursor-pointer rounded-2xl border backdrop-blur-xl overflow-hidden
+                         ${pose.color.border}
                          hover:scale-[1.02] transition-all duration-300`}
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className={`w-10 h-10 rounded-xl ${pose.color.bg} border ${pose.color.border} flex items-center justify-center`}>
-                  <Users className={`w-5 h-5 ${pose.color.text}`} />
+              {/* Pose Image */}
+              {pose.image_url && (
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={pose.image_url}
+                    alt={pose.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs border backdrop-blur-sm ${difficultyColors[pose.difficulty]}`}>
+                    {pose.difficulty}
+                  </span>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-xs border ${difficultyColors[pose.difficulty]}`}>
-                  {pose.difficulty}
-                </span>
-              </div>
+              )}
 
-              <h3 className="text-lg font-serif mb-1">{pose.name}</h3>
-              <p className={`text-xs ${pose.color.text} mb-3 italic`}>{pose.sanskrit}</p>
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{pose.description}</p>
+              <div className={`p-5 ${pose.color.bg}`}>
+                <h3 className="text-lg font-serif mb-1">{pose.name}</h3>
+                <p className={`text-xs ${pose.color.text} mb-3 italic`}>{pose.sanskrit}</p>
+                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{pose.description}</p>
 
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  <span>{pose.duration} min</span>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    <span>{pose.duration} min</span>
+                  </div>
+                  <span className={pose.color.text}>{pose.element}</span>
                 </div>
-                <span className={pose.color.text}>{pose.element}</span>
               </div>
             </motion.div>
           ))}
@@ -321,10 +338,28 @@ const PartnerYoga = ({ user, api }) => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-card rounded-2xl max-w-2xl w-full my-8"
+              className="bg-card rounded-2xl max-w-2xl w-full my-8 overflow-hidden"
               data-testid="pose-detail-modal"
             >
-              <div className={`p-6 rounded-t-2xl ${selectedPose.color.bg} border-b ${selectedPose.color.border}`}>
+              {/* Modal Image */}
+              {selectedPose.image_url && (
+                <div className="relative h-56 overflow-hidden">
+                  <img
+                    src={selectedPose.image_url}
+                    alt={selectedPose.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                  <button
+                    onClick={() => setSelectedPose(null)}
+                    className="absolute top-4 right-4 p-2 rounded-full bg-black/40 hover:bg-black/60 transition-colors backdrop-blur-sm"
+                  >
+                    <ArrowLeft className="w-5 h-5 rotate-180" />
+                  </button>
+                </div>
+              )}
+
+              <div className={`p-6 ${!selectedPose.image_url ? 'rounded-t-2xl' : ''} ${selectedPose.color.bg} border-b ${selectedPose.color.border}`}>
                 <div className="flex items-start justify-between">
                   <div>
                     <h2 className="text-2xl font-serif">{selectedPose.name}</h2>
@@ -338,9 +373,11 @@ const PartnerYoga = ({ user, api }) => {
                       </span>
                     </div>
                   </div>
-                  <button onClick={() => setSelectedPose(null)} className="p-2 rounded-full hover:bg-white/10 transition-colors">
-                    <ArrowLeft className="w-5 h-5 rotate-180" />
-                  </button>
+                  {!selectedPose.image_url && (
+                    <button onClick={() => setSelectedPose(null)} className="p-2 rounded-full hover:bg-white/10 transition-colors">
+                      <ArrowLeft className="w-5 h-5 rotate-180" />
+                    </button>
+                  )}
                 </div>
                 <p className="mt-3 text-sm text-muted-foreground">{selectedPose.description}</p>
               </div>

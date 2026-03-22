@@ -1,0 +1,62 @@
+{
+  "summary": "Frontend testing of Partner Yoga image feature and Light Codes image update feature. Partner Yoga is fully working with all 8 pose images visible. Light Codes has a critical data issue: 13 out of 75 symbols still serve generic placeholder images from MongoDB (stale data not re-seeded after divination_content.py was updated).",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "GET /api/light-codes",
+        "issue": "13 out of 75 light code symbols return generic placeholder image URLs (pexels-photo-2098428 and pexels-photo-1169754) instead of authentic, energetically accurate images. Root cause: MongoDB light_codes collection was NOT re-seeded after divination_content.py was updated. The startup seeding in server.py only runs when yoga_poses collection is empty (line 108-114), so updated file changes never reach the database.",
+        "priority": "HIGH",
+        "affected_items": [
+          "sg4 (Seed of Life)", "sg5 (Vesica Piscis)", "sg6 (Torus)", "sg8 (Golden Spiral)",
+          "sg11 (Tetrahedron)", "sg14 (Icosahedron)", "sg17 (Egg of Life)",
+          "sg20 (Vector Equilibrium)", "sg22 (Spiral of Creation)",
+          "aa4 (Greek Alpha-Omega)", "aa16 (Hebrew Mem)", "aa23 (Adinkra Gye Nyame)",
+          "ll17 (Kundalini Serpent Rise)"
+        ]
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_30.json"],
+  "action_items": [
+    "CRITICAL: Force re-seed the light_codes MongoDB collection with updated data from divination_content.py. The database has stale data because startup seeding only runs when yoga_poses is empty. Fix: Add a separate check for light_codes version or force-update the light_codes collection on startup regardless of yoga_poses count. The divination_content.py already has correct non-generic URLs for all 13 affected symbols."
+  ],
+  "critical_code_review_comments": [
+    "server.py L108-114: The startup seeding conditional (if yoga_count == 0) means that any updates to data files (like divination_content.py) are NEVER applied to an already-seeded database. This is a systemic issue - any content updates require either a DB reset or a force-reseed mechanism.",
+    "divination_content.py: The LIGHT_CODES data already has correct non-generic URLs for all 13 affected items. The fix is simply to update the MongoDB collection. No code changes needed in divination_content.py.",
+    "server.py: Consider adding light_codes-specific seeding with a force flag or version check to allow content updates without full DB reset."
+  ],
+  "updated_files": [],
+  "features_verified": {
+    "partner_yoga_page_loads": "PASS - /partner-yoga loads with data-testid='partner-yoga'",
+    "partner_yoga_8_pose_cards": "PASS - All 8 pose cards (p1-p8) found and rendered",
+    "partner_yoga_images_on_cards": "PASS - All 8/8 pose cards show real yoga photos (pexels/unsplash)",
+    "partner_yoga_difficulty_badges": "PASS - Difficulty badges correctly overlaid on images (top-right corner): Beginner, Intermediate, Advanced",
+    "partner_yoga_filter_beginner": "PASS - Beginner filter shows 6 beginner pose cards only",
+    "partner_yoga_filter_intermediate": "PASS - Intermediate filter shows 1 card (Double Boat Pose)",
+    "partner_yoga_filter_advanced": "PASS - Advanced filter shows 1 card (Flying Bow AcroYoga)",
+    "partner_yoga_filter_all_levels": "PASS - All Levels filter shows all 8 pose cards",
+    "partner_yoga_modal_opens": "PASS - Clicking pose card opens detail modal with data-testid='pose-detail-modal'",
+    "partner_yoga_modal_image": "PASS - Modal shows pose image prominently at the top (h-56 image container)",
+    "partner_yoga_modal_content": "PASS - Modal shows pose name, Sanskrit name, difficulty badge, duration, instructions, benefits, modifications",
+    "light_codes_page_loads": "PASS - /light-codes loads with data-testid='light-codes'",
+    "light_codes_sacred_geometry_tab": "PASS - Sacred Geometry category tab found and active by default",
+    "light_codes_images_visible": "PASS - 25 images visible on Sacred Geometry tab (images load from API)",
+    "light_codes_api_total_items": "PASS - API returns 75 total symbols (25 per category)",
+    "light_codes_generic_placeholders": "FAIL - 13/75 symbols still use generic placeholder images (pexels-photo-2098428: 9, pexels-photo-1169754: 4)"
+  },
+  "success_rate": {
+    "backend": "87% (62/75 light code images are non-generic; 13 still have stale placeholder data)",
+    "frontend": "95% (Partner Yoga 100% pass; Light Codes page loads and shows images but 13 items have generic placeholders)"
+  },
+  "rca_of_issue": "Root Cause: MongoDB light_codes collection has stale data. The startup_seed_database() function in server.py (lines 103-116) only triggers a full database seed when the yoga_poses collection is empty (if yoga_count == 0). Since the database already has yoga poses, the updated divination_content.py with new image URLs is never applied to the MongoDB light_codes collection. The divination_content.py ALREADY has the correct authentic image URLs for all 13 affected items - the fix only requires force-updating the MongoDB collection. Mitigation: Either (1) add specific light_codes version checking and re-seeding, (2) use an environment variable to force re-seed, or (3) directly run a MongoDB update script for the 13 affected items.",
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Partner Yoga at /partner-yoga: 100% working - 8 pose cards with real yoga images (pexels/unsplash), difficulty badges overlaid top-right, filter buttons (All Levels/Beginner/Intermediate/Advanced) all work correctly, modal opens with image at top showing full pose details. Light Codes at /light-codes: Page loads, categories work, but 13/75 symbols have stale generic placeholder images from MongoDB. The divination_content.py file was updated but MongoDB was NOT re-seeded (conditional startup seeding prevents updates). After main agent fixes the re-seeding, verify all 75 light code symbols have non-generic image URLs via GET /api/light-codes."
+}

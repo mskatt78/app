@@ -403,7 +403,7 @@ LIGHT_CODES = {
             "description": "The fundamental form of space and time. Contains all patterns of creation.",
             "meaning": "Unity, creation, interconnectedness of all life",
             "meditation": "Visualize the overlapping circles expanding from your heart, connecting you to all creation.",
-            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/7181600/pexels-photo-7181600.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg2", "name": "Metatron's Cube",
@@ -411,7 +411,7 @@ LIGHT_CODES = {
             "description": "Contains all five Platonic solids. Named after Archangel Metatron.",
             "meaning": "Balance, harmony, spiritual protection, sacred knowledge",
             "meditation": "Visualize the cube rotating around you, balancing and protecting your energy field.",
-            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg3", "name": "Sri Yantra",
@@ -419,7 +419,7 @@ LIGHT_CODES = {
             "description": "Nine interlocking triangles radiating from the bindu (central point).",
             "meaning": "Divine feminine and masculine union, cosmic creation, enlightenment",
             "meditation": "Focus on the central point and let your awareness expand through each layer.",
-            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/2158521/pexels-photo-2158521.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg4", "name": "Seed of Life",
@@ -427,7 +427,7 @@ LIGHT_CODES = {
             "description": "Seven overlapping circles forming the pattern of creation.",
             "meaning": "The seven days of creation, new beginnings, potential",
             "meditation": "Place awareness in each circle, honoring the seven sacred aspects of creation.",
-            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/7181600/pexels-photo-7181600.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg5", "name": "Vesica Piscis",
@@ -435,7 +435,7 @@ LIGHT_CODES = {
             "description": "Two overlapping circles creating an almond shape - the womb of creation.",
             "meaning": "Divine union, birth portal, the space between worlds",
             "meditation": "Visualize yourself within the vesica, in the space of pure potential.",
-            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg6", "name": "Torus",
@@ -443,7 +443,7 @@ LIGHT_CODES = {
             "description": "The fundamental shape of energy flow in the universe.",
             "meaning": "Energy circulation, heart field, self-sustaining systems",
             "meditation": "Feel your heart's torus field expanding, circulating love through your being.",
-            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/4233216/pexels-photo-4233216.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg7", "name": "Merkaba",
@@ -459,7 +459,7 @@ LIGHT_CODES = {
             "description": "The Fibonacci spiral found throughout nature - shells, galaxies, hurricanes.",
             "meaning": "Divine proportion, natural growth, cosmic evolution",
             "meditation": "Trace the spiral from your heart outward, feeling expansion in all directions.",
-            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+            "image_url": "https://images.unsplash.com/photo-1700164748020-263700047c4b?auto=format&w=400"
         },
         {
             "id": "sg9", "name": "Platonic Solids",
@@ -467,7 +467,7 @@ LIGHT_CODES = {
             "description": "The five perfect 3D shapes: tetrahedron, cube, octahedron, dodecahedron, icosahedron.",
             "meaning": "The building blocks of reality, elemental forms, cosmic structure",
             "meditation": "Visualize each solid corresponding to an element: fire, earth, air, ether, water.",
-            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg10", "name": "Infinite Knot",
@@ -475,7 +475,7 @@ LIGHT_CODES = {
             "description": "The endless knot representing eternal wisdom and compassion.",
             "meaning": "Interdependence, no beginning no end, Buddhist wisdom",
             "meditation": "Trace the continuous line with your mind, never stopping, never starting.",
-            "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg11", "name": "Tetrahedron",
@@ -483,7 +483,7 @@ LIGHT_CODES = {
             "description": "The simplest Platonic solid with four triangular faces. Represents fire element.",
             "meaning": "Transformation, change, willpower, masculine energy",
             "meditation": "Visualize a pyramid of light surrounding you, igniting your inner fire.",
-            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg12", "name": "Cube (Hexahedron)",
@@ -491,7 +491,7 @@ LIGHT_CODES = {
             "description": "Six square faces representing earth element and physical stability.",
             "meaning": "Grounding, stability, material foundation, patience",
             "meditation": "Feel yourself anchored within a cube of golden earth energy.",
-            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg13", "name": "Octahedron",
@@ -499,7 +499,7 @@ LIGHT_CODES = {
             "description": "Eight triangular faces representing the air element.",
             "meaning": "Integration, reflection, compassion, healing",
             "meditation": "Breathe and visualize an octahedron of light within your heart center.",
-            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/7181600/pexels-photo-7181600.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg14", "name": "Icosahedron",
@@ -507,7 +507,7 @@ LIGHT_CODES = {
             "description": "Twenty triangular faces representing the water element.",
             "meaning": "Transformation, flow, creativity, emotional balance",
             "meditation": "Feel the fluid form of the icosahedron cleansing your emotional body.",
-            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/2158521/pexels-photo-2158521.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg15", "name": "Dodecahedron",
@@ -515,7 +515,7 @@ LIGHT_CODES = {
             "description": "Twelve pentagonal faces representing ether/spirit element.",
             "meaning": "Divine expression, ascension, universal consciousness",
             "meditation": "Connect with the universe through the twelve pentagonal portals.",
-            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/4233216/pexels-photo-4233216.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg16", "name": "Tree of Life",
@@ -523,7 +523,7 @@ LIGHT_CODES = {
             "description": "The Kabbalistic diagram of ten interconnected spheres (Sephiroth).",
             "meaning": "Divine structure, path to enlightenment, cosmic blueprint",
             "meditation": "Ascend through each sphere from Malkuth to Kether, receiving wisdom.",
-            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/7377417/pexels-photo-7377417.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg17", "name": "Egg of Life",
@@ -531,7 +531,7 @@ LIGHT_CODES = {
             "description": "Eight spheres forming the basis of all musical harmonics.",
             "meaning": "Cellular structure, embryonic life, musical creation",
             "meditation": "Feel the eight spheres vibrating within you at the frequency of creation.",
-            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/7181600/pexels-photo-7181600.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg18", "name": "Fruit of Life",
@@ -539,7 +539,7 @@ LIGHT_CODES = {
             "description": "Thirteen circles derived from the Flower of Life.",
             "meaning": "The blueprint of the universe, hidden knowledge, sacred feminine",
             "meditation": "Connect with the thirteen sacred energies of cosmic creation.",
-            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg19", "name": "64 Tetrahedron Grid",
@@ -547,7 +547,7 @@ LIGHT_CODES = {
             "description": "The geometric structure underlying reality, matching the 64 codons of DNA.",
             "meaning": "Complete universal pattern, I Ching, genetic code, wholeness",
             "meditation": "Feel your DNA resonating with the 64-fold structure of existence.",
-            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg20", "name": "Vector Equilibrium",
@@ -555,7 +555,7 @@ LIGHT_CODES = {
             "description": "The only geometric form where all vectors are equal in length.",
             "meaning": "Perfect balance, zero point, stillness in motion",
             "meditation": "Find the center point of perfect equilibrium within your being.",
-            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+            "image_url": "https://images.unsplash.com/photo-1762429121350-6c3dec288cbf?auto=format&w=400"
         },
         {
             "id": "sg21", "name": "Labyrinth",
@@ -563,7 +563,7 @@ LIGHT_CODES = {
             "description": "Ancient single-path walking meditation pattern.",
             "meaning": "Journey to center, sacred pilgrimage, contemplation",
             "meditation": "Walk the labyrinth mentally, releasing with each turn toward center.",
-            "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/2158521/pexels-photo-2158521.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "sg22", "name": "Spiral of Creation",
@@ -571,7 +571,7 @@ LIGHT_CODES = {
             "description": "The logarithmic spiral found from galaxies to seashells.",
             "meaning": "Growth, evolution, cosmic dance, sacred mathematics",
             "meditation": "Feel yourself spiraling outward from center, expanding infinitely.",
-            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+            "image_url": "https://images.unsplash.com/photo-1700164748020-263700047c4b?auto=format&w=400"
         },
         {
             "id": "sg23", "name": "Hunab Ku",
@@ -579,7 +579,7 @@ LIGHT_CODES = {
             "description": "Mayan symbol for the galactic center, the cosmic butterfly.",
             "meaning": "Galactic consciousness, transformation, cosmic center",
             "meditation": "Connect with the galactic center, the heart of the Milky Way.",
-            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&w=400"
+            "image_url": "https://images.unsplash.com/photo-1762429121350-6c3dec288cbf?auto=format&w=400"
         },
         {
             "id": "sg24", "name": "Yin Yang",
@@ -587,7 +587,7 @@ LIGHT_CODES = {
             "description": "The Taoist symbol of complementary opposites in dynamic balance.",
             "meaning": "Duality, balance, interdependence, flow",
             "meditation": "Observe the dance of light and shadow, seeing wholeness in polarity.",
-            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+            "image_url": "https://images.unsplash.com/photo-1745864709009-457569a2aed1?auto=format&w=400"
         },
         {
             "id": "sg25", "name": "Enneagram",
@@ -595,7 +595,7 @@ LIGHT_CODES = {
             "description": "Nine-pointed figure representing personality types and spiritual growth.",
             "meaning": "Self-knowledge, transformation paths, spiritual development",
             "meditation": "Travel around the nine points, understanding each aspect of self.",
-            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&cs=tinysrgb&w=400"
         }
     ],
     "ancient_alphabets": [
@@ -615,7 +615,7 @@ LIGHT_CODES = {
             "meaning": "Divine breath, beginning, the void pregnant with potential",
             "pronunciation": "Silent or glottal stop",
             "practice": "Meditate on the silent breath, the space between thoughts.",
-            "image_url": "https://images.pexels.com/photos/5371888/pexels-photo-5371888.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/5371888/pexels-photo-5371888.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa3", "name": "Egyptian Ankh (☥)",
@@ -624,7 +624,7 @@ LIGHT_CODES = {
             "meaning": "Eternal life, divine protection, balance of masculine and feminine",
             "pronunciation": "Ankh",
             "practice": "Visualize the ankh as a key unlocking eternal wisdom within you.",
-            "image_url": "https://images.unsplash.com/photo-1575783402312-883c35cad34b?auto=format&w=400"
+            "image_url": "https://images.unsplash.com/photo-1678544119978-8e253d5f3ecb?auto=format&w=400"
         },
         {
             "id": "aa4", "name": "Greek Alpha-Omega (Α Ω)",
@@ -633,7 +633,7 @@ LIGHT_CODES = {
             "meaning": "Beginning and end, completeness, the eternal nature of divine",
             "pronunciation": "Alpha - Omega",
             "practice": "Contemplate what has no beginning and no end within you.",
-            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa5", "name": "Tibetan Om Mani Padme Hum",
@@ -642,7 +642,7 @@ LIGHT_CODES = {
             "meaning": "Compassion, purification of body/speech/mind, enlightenment",
             "pronunciation": "Om Ma-ni Pad-me Hum",
             "practice": "Recite 108 times with prayer beads, visualizing each syllable's color.",
-            "image_url": "https://images.pexels.com/photos/7686377/pexels-photo-7686377.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/7686377/pexels-photo-7686377.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa6", "name": "Celtic Ogham Beith (ᚁ)",
@@ -651,7 +651,7 @@ LIGHT_CODES = {
             "meaning": "New beginnings, purification, writing sacred knowledge",
             "pronunciation": "B (Beith)",
             "practice": "Trace the mark while focusing on new beginnings and fresh starts.",
-            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa7", "name": "Norse Rune Algiz (ᛉ)",
@@ -660,7 +660,7 @@ LIGHT_CODES = {
             "meaning": "Divine protection, connection to higher self, spiritual warrior",
             "pronunciation": "Z (Algiz)",
             "practice": "Stand with arms raised like the rune, invoking protection.",
-            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa8", "name": "Chinese Dragon (龍)",
@@ -669,7 +669,7 @@ LIGHT_CODES = {
             "meaning": "Divine power, wisdom, transformation, imperial energy",
             "pronunciation": "Lóng",
             "practice": "Visualize the dragon's energy coiling up your spine, awakening your power.",
-            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa9", "name": "Japanese Kanji Reiki (靈氣)",
@@ -678,7 +678,7 @@ LIGHT_CODES = {
             "meaning": "Universal life force energy, spiritual healing power",
             "pronunciation": "Rei-Ki",
             "practice": "Draw the symbols while channeling healing energy through your hands.",
-            "image_url": "https://images.pexels.com/photos/745988/pexels-photo-745988.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/745988/pexels-photo-745988.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa10", "name": "Eye of Horus (𓂀)",
@@ -687,7 +687,7 @@ LIGHT_CODES = {
             "meaning": "Divine protection, healing, royal power, intuition",
             "pronunciation": "Wedjat",
             "practice": "Visualize the eye watching over you, providing divine protection.",
-            "image_url": "https://images.pexels.com/photos/6932131/pexels-photo-6932131.jpeg?auto=compress&w=400"
+            "image_url": "https://images.unsplash.com/photo-1690628656580-1232c3c77894?auto=format&w=400"
         },
         {
             "id": "aa11", "name": "Djed Pillar (𓊽)",
@@ -696,7 +696,7 @@ LIGHT_CODES = {
             "meaning": "Stability, endurance, resurrection, the axis mundi",
             "pronunciation": "Djed",
             "practice": "Feel your spine as a pillar of light connecting heaven and earth.",
-            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/36324215/pexels-photo-36324215.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa12", "name": "Scarab (𓆣)",
@@ -705,7 +705,7 @@ LIGHT_CODES = {
             "meaning": "Rebirth, transformation, protection, solar energy",
             "pronunciation": "Kheper",
             "practice": "Meditate on transformation, pushing through darkness toward the light.",
-            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/36324194/pexels-photo-36324194.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa13", "name": "Sanskrit Shri (श्री)",
@@ -714,7 +714,7 @@ LIGHT_CODES = {
             "meaning": "Abundance, beauty, grace, Lakshmi energy",
             "pronunciation": "Shree",
             "practice": "Chant to invoke divine feminine blessings of prosperity.",
-            "image_url": "https://images.pexels.com/photos/6664354/pexels-photo-6664354.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6664354/pexels-photo-6664354.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa14", "name": "Sanskrit Gam (गं)",
@@ -723,7 +723,7 @@ LIGHT_CODES = {
             "meaning": "Obstacle removal, new beginnings, wisdom, success",
             "pronunciation": "Gam",
             "practice": "Chant 108 times when beginning new ventures or facing challenges.",
-            "image_url": "https://images.pexels.com/photos/7686377/pexels-photo-7686377.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/7686377/pexels-photo-7686377.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa15", "name": "Hebrew Shin (ש)",
@@ -732,7 +732,7 @@ LIGHT_CODES = {
             "meaning": "Divine fire, transformation, the Holy Spirit, teeth/consume",
             "pronunciation": "Sh",
             "practice": "Feel the three flames of shin rising from your crown.",
-            "image_url": "https://images.pexels.com/photos/5371888/pexels-photo-5371888.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/5371888/pexels-photo-5371888.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa16", "name": "Hebrew Mem (מ)",
@@ -741,7 +741,7 @@ LIGHT_CODES = {
             "meaning": "Water, womb, nurturing, hidden wisdom",
             "pronunciation": "M",
             "practice": "Hum the 'mmm' sound, feeling the vibration as primordial waters.",
-            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/2860703/pexels-photo-2860703.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa17", "name": "Norse Rune Fehu (ᚠ)",
@@ -750,7 +750,7 @@ LIGHT_CODES = {
             "meaning": "Prosperity, luck, fertility, new beginnings",
             "pronunciation": "F (Fehu)",
             "practice": "Draw the rune while setting intentions for abundance.",
-            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa18", "name": "Norse Rune Ansuz (ᚨ)",
@@ -759,7 +759,7 @@ LIGHT_CODES = {
             "meaning": "Divine wisdom, inspiration, communication, truth",
             "pronunciation": "A (Ansuz)",
             "practice": "Invoke for clarity in communication and receiving divine messages.",
-            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa19", "name": "Norse Rune Sowilo (ᛊ)",
@@ -768,7 +768,7 @@ LIGHT_CODES = {
             "meaning": "Sun, success, honor, vitality, guidance",
             "pronunciation": "S (Sowilo)",
             "practice": "Draw in the air to invoke solar energy and success.",
-            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa20", "name": "Chinese Fu (福)",
@@ -777,7 +777,7 @@ LIGHT_CODES = {
             "meaning": "Blessing, happiness, good luck, prosperity",
             "pronunciation": "Fú",
             "practice": "Display upside down to let fortune 'pour' into your space.",
-            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa21", "name": "Chinese Shou (壽)",
@@ -786,7 +786,7 @@ LIGHT_CODES = {
             "meaning": "Long life, health, vitality, immortality",
             "pronunciation": "Shòu",
             "practice": "Contemplate the many forms this character takes in sacred art.",
-            "image_url": "https://images.pexels.com/photos/745988/pexels-photo-745988.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/745988/pexels-photo-745988.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa22", "name": "Adinkra Sankofa",
@@ -795,7 +795,7 @@ LIGHT_CODES = {
             "meaning": "Learning from past, wisdom, heritage, reclamation",
             "pronunciation": "San-ko-fa",
             "practice": "Reflect on ancestral wisdom you need to reclaim.",
-            "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa23", "name": "Adinkra Gye Nyame",
@@ -804,7 +804,7 @@ LIGHT_CODES = {
             "meaning": "Omnipotence of God, faith, divine supremacy",
             "pronunciation": "Jeh Nyah-meh",
             "practice": "Surrender to divine will, trusting the greater plan.",
-            "image_url": "https://images.pexels.com/photos/2098428/pexels-photo-2098428.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/7181600/pexels-photo-7181600.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "aa24", "name": "Maori Koru",
@@ -813,7 +813,7 @@ LIGHT_CODES = {
             "meaning": "New beginnings, growth, harmony, peace",
             "pronunciation": "Ko-ru",
             "practice": "Trace the spiral while embracing new chapters in life.",
-            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+            "image_url": "https://images.unsplash.com/photo-1700164748020-263700047c4b?auto=format&w=400"
         },
         {
             "id": "aa25", "name": "Greek Chi Rho (☧)",
@@ -822,7 +822,7 @@ LIGHT_CODES = {
             "meaning": "Christ consciousness, victory, divine presence",
             "pronunciation": "Ki-Ro",
             "practice": "Invoke Christ consciousness and divine protection.",
-            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&cs=tinysrgb&w=400"
         }
     ],
     "light_language_symbols": [
@@ -832,7 +832,7 @@ LIGHT_CODES = {
             "description": "A spiral pattern emerging from the heart, opening pathways of love.",
             "activation": "Place hand on heart, visualize golden spiral expanding outward.",
             "purpose": "Opens heart chakra, increases capacity for love and compassion",
-            "image_url": "https://images.pexels.com/photos/6932102/pexels-photo-6932102.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6931818/pexels-photo-6931818.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll2", "name": "Third Eye Awakening",
@@ -840,7 +840,7 @@ LIGHT_CODES = {
             "description": "Concentric circles with central eye, activating inner vision.",
             "activation": "Focus between brows, visualize indigo light pulsing in circular waves.",
             "purpose": "Enhances intuition, activates psychic sight, connects to inner wisdom",
-            "image_url": "https://images.pexels.com/photos/6932131/pexels-photo-6932131.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6931975/pexels-photo-6931975.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll3", "name": "DNA Activation Helix",
@@ -856,7 +856,7 @@ LIGHT_CODES = {
             "description": "Radiating starburst pattern opening dimensional doorways.",
             "activation": "Visualize the portal opening above your crown, receiving cosmic downloads.",
             "purpose": "Connects to higher dimensions, receives cosmic information",
-            "image_url": "https://images.unsplash.com/photo-1744168441194-6ec745ea76cc?auto=format&w=400"
+            "image_url": "https://images.pexels.com/photos/4233216/pexels-photo-4233216.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll5", "name": "Grounding Root Code",
@@ -864,7 +864,7 @@ LIGHT_CODES = {
             "description": "Downward branching pattern connecting to Earth's core.",
             "activation": "Visualize roots extending from your feet into Earth's crystalline core.",
             "purpose": "Deep grounding, Earth connection, stability in spiritual work",
-            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll6", "name": "Unity Consciousness Grid",
@@ -880,7 +880,7 @@ LIGHT_CODES = {
             "description": "Radiant sun pattern igniting personal power and confidence.",
             "activation": "Breathe golden light into your solar plexus, feeling your power expand.",
             "purpose": "Strengthens will, confidence, personal boundaries and sovereignty",
-            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll8", "name": "Throat Chakra Expression",
@@ -888,7 +888,7 @@ LIGHT_CODES = {
             "description": "Sound wave patterns emanating from the throat center.",
             "activation": "Tone or hum, visualizing blue waves of light carrying your truth.",
             "purpose": "Clears communication blocks, empowers authentic self-expression",
-            "image_url": "https://images.pexels.com/photos/1252500/pexels-photo-1252500.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6931975/pexels-photo-6931975.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll9", "name": "Crown Connection",
@@ -896,7 +896,7 @@ LIGHT_CODES = {
             "description": "Thousand-petaled lotus opening at the crown of the head.",
             "activation": "Visualize violet-white light streaming down through your crown.",
             "purpose": "Divine connection, spiritual enlightenment, cosmic consciousness",
-            "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6931818/pexels-photo-6931818.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll10", "name": "Ancestral Healing Code",
@@ -904,7 +904,7 @@ LIGHT_CODES = {
             "description": "Interwoven branches representing the family tree of light.",
             "activation": "Visualize healing light flowing back through generations.",
             "purpose": "Heals ancestral trauma, releases inherited patterns, honors lineage",
-            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll11", "name": "Akashic Records Key",
@@ -912,7 +912,7 @@ LIGHT_CODES = {
             "description": "A key pattern unlocking access to the cosmic library.",
             "activation": "Visualize golden key turning, opening doors to all knowledge.",
             "purpose": "Access past life memories, soul records, cosmic wisdom",
-            "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll12", "name": "Sacral Creation Code",
@@ -920,7 +920,7 @@ LIGHT_CODES = {
             "description": "Flowing wave patterns activating creative and sensual energy.",
             "activation": "Feel orange light swirling in your lower belly, igniting creation.",
             "purpose": "Enhances creativity, pleasure, emotional flow, fertility",
-            "image_url": "https://images.pexels.com/photos/1252500/pexels-photo-1252500.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/2860703/pexels-photo-2860703.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll13", "name": "Stargate Activation",
@@ -928,7 +928,7 @@ LIGHT_CODES = {
             "description": "Multi-pointed star portal for interdimensional travel.",
             "activation": "Visualize standing in center of star, portals opening in all directions.",
             "purpose": "Astral travel, dimensional shifting, star being connection",
-            "image_url": "https://images.unsplash.com/photo-1744168441194-6ec745ea76cc?auto=format&w=400"
+            "image_url": "https://images.pexels.com/photos/3180831/pexels-photo-3180831.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll14", "name": "Crystalline Body Code",
@@ -936,7 +936,7 @@ LIGHT_CODES = {
             "description": "Geometric crystal pattern upgrading physical body to light.",
             "activation": "Feel your cells transforming into crystalline light structures.",
             "purpose": "Physical body ascension, cellular regeneration, light body activation",
-            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll15", "name": "Abundance Matrix",
@@ -944,7 +944,7 @@ LIGHT_CODES = {
             "description": "Golden grid pattern attracting prosperity and flow.",
             "activation": "Visualize golden coins of light flowing into your energy field.",
             "purpose": "Attracts abundance, releases scarcity, opens prosperity channels",
-            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll16", "name": "Twin Flame Union",
@@ -952,7 +952,7 @@ LIGHT_CODES = {
             "description": "Two spiraling flames meeting and merging into one.",
             "activation": "Feel your flame reaching across dimensions to your divine counterpart.",
             "purpose": "Attracts twin flame, harmonizes relationships, divine union",
-            "image_url": "https://images.pexels.com/photos/6932102/pexels-photo-6932102.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6932102/pexels-photo-6932102.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll17", "name": "Kundalini Serpent Rise",
@@ -960,7 +960,7 @@ LIGHT_CODES = {
             "description": "Double helix serpent energy ascending the spine.",
             "activation": "Feel the serpent energy slowly uncoiling and rising through each chakra.",
             "purpose": "Kundalini awakening, spiritual enlightenment, energy mastery",
-            "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6931975/pexels-photo-6931975.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll18", "name": "Light Body Merkaba",
@@ -976,7 +976,7 @@ LIGHT_CODES = {
             "description": "Seven-star cluster radiating healing frequencies.",
             "activation": "Connect to the seven sisters, receiving their healing transmissions.",
             "purpose": "Star seed activation, healing, remembering cosmic origins",
-            "image_url": "https://images.unsplash.com/photo-1744164361532-c3a4676c55b9?auto=format&w=400"
+            "image_url": "https://images.pexels.com/photos/4233216/pexels-photo-4233216.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll20", "name": "Sirian Blue Light",
@@ -984,7 +984,7 @@ LIGHT_CODES = {
             "description": "Deep blue ray from Sirius activating higher wisdom.",
             "activation": "Bathe in deep blue light streaming from the Dog Star.",
             "purpose": "Advanced healing, dolphin/whale connection, ancient wisdom",
-            "image_url": "https://images.pexels.com/photos/1252500/pexels-photo-1252500.jpeg?auto=compress&w=400"
+            "image_url": "https://images.unsplash.com/photo-1597366812780-bc0f837f6ca6?auto=format&w=400"
         },
         {
             "id": "ll21", "name": "Arcturian Geometry",
@@ -992,7 +992,7 @@ LIGHT_CODES = {
             "description": "Complex geometric patterns from Arcturus for healing.",
             "activation": "Allow Arcturian beings to download sacred geometric healing codes.",
             "purpose": "Advanced healing technology, emotional clearing, spiritual surgery",
-            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll22", "name": "Angelic Wings Activation",
@@ -1000,7 +1000,7 @@ LIGHT_CODES = {
             "description": "Ethereal wing patterns emerging from shoulder blades.",
             "activation": "Feel wings of light unfurling from your back, lifting your spirit.",
             "purpose": "Angelic connection, lightness of being, divine protection",
-            "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll23", "name": "Rainbow Bridge Code",
@@ -1008,7 +1008,7 @@ LIGHT_CODES = {
             "description": "Full spectrum light bridge connecting dimensions.",
             "activation": "Walk the rainbow bridge between physical and spiritual realms.",
             "purpose": "Dimensional bridging, chakra alignment, full spectrum healing",
-            "image_url": "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/3180831/pexels-photo-3180831.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll24", "name": "Womb Healing Spiral",
@@ -1016,7 +1016,7 @@ LIGHT_CODES = {
             "description": "Inward spiral for healing the sacred feminine center.",
             "activation": "Visualize gentle spiral of pink light healing the womb space.",
             "purpose": "Feminine healing, reproductive balance, creative restoration",
-            "image_url": "https://images.pexels.com/photos/6932102/pexels-photo-6932102.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/6932102/pexels-photo-6932102.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "ll25", "name": "Sacred Masculine Rod",
@@ -1024,7 +1024,7 @@ LIGHT_CODES = {
             "description": "Vertical pillar of light activating divine masculine power.",
             "activation": "Feel a rod of golden light strengthening your spine and will.",
             "purpose": "Masculine healing, grounded power, protective strength",
-            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&w=400"
+            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&cs=tinysrgb&w=400"
         }
     ]
 }

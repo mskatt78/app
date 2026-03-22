@@ -96,7 +96,7 @@
     }
   },
   "test_environment": {
-    "app_url": "https://shamanic-soul-temple.preview.emergentagent.com",
+    "app_url": "https://sacred-elements.preview.emergentagent.com",
     "backend_tests": "pytest /app/backend/tests/test_final_comprehensive.py",
     "playwright_tests": "Desktop 1920x1080 and Mobile 375x812"
   },
