@@ -52,6 +52,7 @@ import RoseTemple from "./pages/RoseTemple";
 import ElementalTemples from "./pages/ElementalTemples";
 import MasculineTemple from "./pages/MasculineTemple";
 import PartnerYoga from "./pages/PartnerYoga";
+import SeasonalTemple from "./pages/SeasonalTemple";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -539,6 +540,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <BirthChart user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/seasonal-temple"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <SeasonalTemple user={user} api={api} />}
           </PublicRoute>
         }
       />

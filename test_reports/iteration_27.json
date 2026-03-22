@@ -1,0 +1,51 @@
+{
+  "summary": "Frontend testing of 2 new features: (1) DailyPracticeWidget on /menu, (2) SeasonalTemple at /seasonal-temple. All 14 test scenarios passed at 100%.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_27.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "DailyPracticeWidget: Correctly uses hemisphere='south' hardcoded in MainMenu.jsx. Moon phase, element-of-day, crystal, oracle message and practice CTA all rendering correctly.",
+    "SeasonalTemple: Hemisphere auto-detection uses timezone — in non-AU test environments defaults to 'north', which correctly shows Ostara as 'Currently nearest' (March monthIndex=2 matches current month). This is expected behavior.",
+    "SeasonalTemple: 8 SABBATS array entries all properly positioned on the wheel using CSS absolute positioning with trigonometry (angle → x/y). All 8 nodes are clickable.",
+    "Earth Crafting: 5 EARTH_CRAFTING entries with full step arrays and notes — all rendering correctly in the 3-column grid.",
+    "Sabbat modal: 4 tabs (overview/Traditions, ritual/Ritual 🙏, embodiment/Embodiment, nature/Crystals & Herbs) working correctly with tab switching.",
+    "All data-testid attributes present: daily-practice-widget, element-of-day, crystal-of-day, oracle-message, practice-cta, wheel-{id}, sabbat-card-{id}, sabbat-modal, close-sabbat, craft-{id}, craft-modal, hemi-south, hemi-north, seasonal-temple."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only test)",
+    "frontend": "100% (all 14 test scenarios passed)"
+  },
+  "test_credentials": "No login required - all pages are public",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "Both new features fully verified: (1) DailyPracticeWidget on /menu: Southern Hemisphere label, Sunday 22 March 2026, Waxing Crescent moon (🌘 mirrored for south) with GROWTH energy, Fire/Sun's Day element, Amber crystal, italic oracle quote, Breathwork CTA navigating to /breathwork. (2) SeasonalTemple at /seasonal-temple: 8 wheel nodes, Ostara 'Now' badge (North default in test env), hemisphere toggle working (South shows Samhain Apr 30 – May 1), Samhain modal with 4 tabs including Ritual 🙏 with 7 numbered steps, 5 Earth Crafting cards all opening modals with numbered steps and notes, Sacred Temples section on /menu has 4 items (Rose, Elemental, Masculine, Wheel of the Year → /seasonal-temple).",
+  "features_verified": {
+    "daily_widget_on_menu": "PASS - DailyPracticeWidget visible on /menu with data-testid='daily-practice-widget'",
+    "southern_hemisphere_label": "PASS - Shows '🌿 SOUTHERN HEMISPHERE · SUNDAY 22 MARCH 2026' (hardcoded hemisphere='south')",
+    "moon_phase_card": "PASS - Waxing Crescent moon with 🌘 (mirrored for South), GROWTH energy label",
+    "element_fire_sunday": "PASS - SUN'S DAY / Fire element correctly shown for Sunday",
+    "oracle_italic_quote": "PASS - Oracle shows italic shamanic quote: 'What would you do today if you were completely unafraid?'",
+    "practice_cta_navigates": "PASS - 'Breathwork' CTA navigates to /breathwork (Waxing Crescent practice)",
+    "seasonal_temple_loads": "PASS - /seasonal-temple loads with data-testid='seasonal-temple'",
+    "wheel_8_nodes": "PASS - 8 clickable wheel nodes: samhain, yule, imbolc, ostara, beltane, litha, lughnasadh, mabon",
+    "ostara_now_badge": "PASS - Ostara card has 'Now' badge and ring-1 highlight (North hemisphere default in test env)",
+    "hemisphere_toggle": "PASS - South/North toggle buttons found (hemi-south, hemi-north), switching to South changes dates",
+    "samhain_south_dates": "PASS - After toggling to South: Samhain shows 'Apr 30 – May 1'",
+    "sabbat_modal_4_tabs": "PASS - Samhain modal has 4 tabs: Traditions, Ritual 🙏, Embodiment, Crystals & Herbs",
+    "ritual_tab_steps": "PASS - Ritual tab shows 'Ancestor Feast Ceremony' with 7 numbered steps",
+    "earth_crafting_5_cards": "PASS - 5 cards: Medicine Wheel, Crystal Grid in Nature, Herb Bundling & Plant Medicine, Sacred Land Offerings, Stone Circle Altar",
+    "craft_modal_steps_note": "PASS - Medicine Wheel modal shows 8 numbered steps + note 'Leave the wheel in place...It becomes a living altar'",
+    "sacred_temples_4_items": "PASS - Sacred Temples section has 4 items: Rose Temple, Elemental Temples, Masculine Temple, Wheel of the Year",
+    "wheel_of_year_link": "PASS - 'Wheel of the Year' button navigates to /seasonal-temple"
+  }
+}

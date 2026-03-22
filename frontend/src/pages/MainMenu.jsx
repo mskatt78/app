@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 import { 
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
-  Flower2, Shield, Globe, Users
+  Flower2, Shield, Globe, Users, Leaf
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
 import axios from "axios";
+import DailyPracticeWidget from "../components/DailyPracticeWidget";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || "";
 
@@ -83,6 +84,7 @@ const MainMenu = ({ user }) => {
         { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400", desc: "Ancient feminine wisdom" },
         { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400", desc: "Earth · Water · Fire · Air · Spirit" },
         { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400", desc: "Embodied masculine wisdom" },
+        { path: "/seasonal-temple", icon: Leaf, label: "Wheel of the Year", color: "text-orange-400", desc: "8 Sabbats · Earth Crafting" },
       ]
     },
     {
@@ -153,7 +155,7 @@ const MainMenu = ({ user }) => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <Sparkles className="w-12 h-12 text-primary mx-auto mb-4" />
           <h2 className="text-3xl font-serif mb-2">Welcome to the <span className="italic text-primary">Temple</span></h2>
@@ -161,6 +163,9 @@ const MainMenu = ({ user }) => {
             Explore ancient wisdom practices for mind, body, and spirit.
           </p>
         </motion.div>
+
+        {/* Daily Practice Widget */}
+        <DailyPracticeWidget hemisphere="south" />
 
         {/* Menu Sections */}
         <div className="space-y-10">

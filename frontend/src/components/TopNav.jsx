@@ -21,7 +21,8 @@ import {
   Flower2,
   Shield,
   Globe,
-  Users
+  Users,
+  Leaf
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,6 +55,7 @@ const TopNav = ({ user }) => {
     { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400" },
     { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400" },
     { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400" },
+    { path: "/seasonal-temple", icon: Leaf, label: "Wheel of the Year", color: "text-orange-400" },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -141,11 +143,12 @@ const TopNav = ({ user }) => {
                 {/* Sacred Temples Section */}
                 <div className="mb-4">
                   <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3 px-1">Sacred Temples</p>
-                  <div className="grid grid-cols-3 gap-3 max-w-4xl mx-auto">
+                <div className="grid grid-cols-4 gap-3 max-w-4xl mx-auto">
                     {[
                       { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400" },
                       { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400" },
                       { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400" },
+                      { path: "/seasonal-temple", icon: Leaf, label: "Wheel of the Year", color: "text-orange-400" },
                     ].map((item) => (
                       <motion.button
                         key={item.path}
