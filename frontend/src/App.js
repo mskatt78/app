@@ -671,6 +671,14 @@ function AppRouter() {
           </PublicRoute>
         }
       />
+      <Route
+        path="/reviews"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <Reviews user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
       {/* Admin Route */}
       <Route
         path="/admin"

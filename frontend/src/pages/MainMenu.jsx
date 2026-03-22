@@ -5,7 +5,7 @@ import {
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
   Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins, Droplets, Dna,
-  BarChart3, Calculator
+  BarChart3, Calculator, MessageCircle
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -118,6 +118,7 @@ const MainMenu = ({ user }) => {
         { path: "/crystals", icon: Gem, label: "Crystal Guide", color: "text-pink-400", desc: "42 healing stones" },
         { path: "/light-codes", icon: Hexagon, label: "Light Codes", color: "text-violet-400", desc: "Sacred geometry & symbols" },
         { path: "/progress", icon: BarChart3, label: "Progress Dashboard", color: "text-emerald-400", desc: "Track your sacred journey" },
+        { path: "/reviews", icon: MessageCircle, label: "Community Reviews", color: "text-rose-400", desc: "Sacred voices & testimonials" },
       ]
     }
   ];
