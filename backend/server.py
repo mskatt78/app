@@ -107,12 +107,19 @@ async def startup_seed_database():
     """Seed database with content if collections are empty. Always refreshes light_codes."""
     try:
         from data.divination_content import LIGHT_CODES
+        from data.all_content import MEDITATIONS
 
         # Always reseed light_codes so content updates in divination_content.py are applied
         logger.info("Refreshing light_codes collection with latest data...")
         await db.light_codes.delete_many({})
         await db.light_codes.insert_one(LIGHT_CODES)
         logger.info("light_codes refreshed.")
+
+        # Always reseed meditations so image_url updates are applied
+        logger.info("Refreshing meditations collection...")
+        await db.meditations.delete_many({})
+        await db.meditations.insert_many(MEDITATIONS)
+        logger.info("meditations refreshed.")
 
         # Only seed everything else if yoga_poses is empty
         yoga_count = await db.yoga_poses.count_documents({})

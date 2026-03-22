@@ -103,31 +103,42 @@ const Meditations = ({ user, api }) => {
     setActiveMeditation(meditation);
     setProgress(0);
     setElapsedTime(0);
-    setIsPlaying(false);
     setAudioReady(false);
     setAudioLoading(true);
-    
-    // Generate audio for the meditation
+
+    // START timer and visualization immediately — don't make user wait for audio
+    setIsPlaying(true);
+    const totalSeconds = meditation.duration_minutes * 60;
+    intervalRef.current = setInterval(() => {
+      setElapsedTime(prev => {
+        const next = prev + 1;
+        setProgress((next / totalSeconds) * 100);
+        if (next >= totalSeconds) {
+          clearInterval(intervalRef.current);
+          completeMeditation();
+        }
+        return next;
+      });
+    }, 1000);
+
+    // Generate audio in background — plays automatically when ready
     try {
       const response = await api.post(`/tts/meditation/${meditation.id}`, null, {
         params: { voice: "nova" }
       });
-      
       if (response.data.audio_base64) {
         const audioData = `data:audio/mp3;base64,${response.data.audio_base64}`;
         audioRef.current = new Audio(audioData);
         audioRef.current.volume = volume / 100;
-        
-        audioRef.current.onended = () => {
-          completeMeditation();
-        };
-        
+        audioRef.current.onended = () => setIsPlaying(false);
         setAudioReady(true);
-        toast.success("Guided audio ready");
+        // Auto-play as soon as ready
+        audioRef.current.play().catch(() => {});
+        toast.success("Guided audio is playing");
       }
     } catch (error) {
       console.error("Failed to generate audio:", error);
-      toast.info("Audio unavailable - timer mode active");
+      toast.info("Audio unavailable — timer meditation active");
       setAudioReady(false);
     } finally {
       setAudioLoading(false);
@@ -139,29 +150,17 @@ const Meditations = ({ user, api }) => {
 
     if (isPlaying) {
       clearInterval(intervalRef.current);
-      if (audioRef.current && audioReady) {
-        audioRef.current.pause();
-      }
+      if (audioRef.current && audioReady) audioRef.current.pause();
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
-      
-      // Play audio if available
-      if (audioRef.current && audioReady) {
-        audioRef.current.play().catch(console.error);
-      }
-      
+      if (audioRef.current && audioReady) audioRef.current.play().catch(console.error);
       const totalSeconds = activeMeditation.duration_minutes * 60;
-      
       intervalRef.current = setInterval(() => {
         setElapsedTime(prev => {
           const newTime = prev + 1;
           setProgress((newTime / totalSeconds) * 100);
-          
-          if (newTime >= totalSeconds) {
-            completeMeditation();
-            return prev;
-          }
+          if (newTime >= totalSeconds) { completeMeditation(); return prev; }
           return newTime;
         });
       }, 1000);
@@ -276,32 +275,43 @@ const Meditations = ({ user, api }) => {
             animate={{ opacity: 1 }}
             className="max-w-2xl mx-auto"
           >
-            {/* Meditation Header */}
-            <div className="text-center mb-8">
-              <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center
-                             ${elementColors[activeMeditation.element]?.bg}`}>
-                {(() => {
-                  const Icon = categoryIcons[activeMeditation.category] || Sparkles;
-                  return <Icon className={`w-10 h-10 ${elementColors[activeMeditation.element]?.text}`} />;
-                })()}
+            {/* Meditation Image Banner */}
+            {activeMeditation.image_url && (
+              <div className="relative h-52 rounded-2xl overflow-hidden mb-6">
+                <img
+                  src={activeMeditation.image_url}
+                  alt={activeMeditation.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h2 className="text-2xl font-serif text-white">{activeMeditation.name}</h2>
+                  <p className="text-sm text-white/70 mt-1">{activeMeditation.description}</p>
+                </div>
               </div>
-              <h2 className="text-3xl font-serif mb-2">{activeMeditation.name}</h2>
-              <p className="text-muted-foreground">{activeMeditation.description}</p>
-            </div>
+            )}
+
+            {/* Fallback header if no image */}
+            {!activeMeditation.image_url && (
+              <div className="text-center mb-6">
+                <h2 className="text-3xl font-serif mb-2">{activeMeditation.name}</h2>
+                <p className="text-muted-foreground">{activeMeditation.description}</p>
+              </div>
+            )}
 
             {/* Timer */}
             <div className="p-8 rounded-2xl bg-card/50 border border-primary/20 mb-8">
               {/* Audio Status */}
               {audioLoading && (
-                <div className="flex items-center justify-center gap-2 mb-4 text-primary">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  <span className="text-sm">Generating guided audio...</span>
+                <div className="flex items-center justify-center gap-2 mb-4 text-amber-400">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm">Preparing guided audio in background…</span>
                 </div>
               )}
               {audioReady && !audioLoading && (
                 <div className="flex items-center justify-center gap-2 mb-4 text-emerald-400">
-                  <Volume2 className="w-5 h-5" />
-                  <span className="text-sm">Guided audio ready</span>
+                  <Volume2 className="w-4 h-4" />
+                  <span className="text-sm">Guided audio playing</span>
                 </div>
               )}
               
@@ -320,13 +330,10 @@ const Meditations = ({ user, api }) => {
                 <Button
                   size="lg"
                   onClick={togglePlay}
-                  disabled={audioLoading}
                   className={`rounded-full w-16 h-16 ${isPlaying ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary'}`}
                   data-testid="play-pause-btn"
                 >
-                  {audioLoading ? (
-                    <Loader2 className="w-6 h-6 animate-spin" />
-                  ) : isPlaying ? (
+                  {isPlaying ? (
                     <Pause className="w-6 h-6" />
                   ) : (
                     <Play className="w-6 h-6 ml-1" />
@@ -416,33 +423,46 @@ const Meditations = ({ user, api }) => {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
-                    className={`p-6 rounded-2xl border backdrop-blur-xl cursor-pointer
-                               ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
+                    className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden
+                               ${colors.border} hover:scale-[1.02] transition-all duration-300 group`}
                     onClick={() => startMeditation(meditation)}
                     data-testid={`meditation-card-${meditation.id}`}
                   >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`p-3 rounded-xl ${colors.bg}`}>
-                        <Icon className={`w-6 h-6 ${colors.text}`} />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {meditation.duration_minutes} min
+                    {/* Card Image */}
+                    {meditation.image_url ? (
+                      <div className="relative h-40 overflow-hidden">
+                        <img
+                          src={meditation.image_url}
+                          alt={meditation.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                        <span className="absolute bottom-3 left-3 text-lg font-serif text-white drop-shadow-lg">{meditation.name}</span>
+                        <span className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs text-white">
+                          <Clock className="w-3 h-3" />{meditation.duration_minutes} min
                         </span>
                       </div>
-                    </div>
-                    
-                    <h3 className="text-xl font-serif mb-2">{meditation.name}</h3>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{meditation.description}</p>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
-                        {meditation.element}
-                      </span>
-                      <span className="px-3 py-1 rounded-full bg-white/5 text-xs capitalize">
-                        {meditation.category}
-                      </span>
+                    ) : (
+                      <div className={`p-4 ${colors.bg} flex items-center justify-between`}>
+                        <Icon className={`w-6 h-6 ${colors.text}`} />
+                        <span className="text-sm text-muted-foreground flex items-center gap-1">
+                          <Clock className="w-4 h-4" />{meditation.duration_minutes} min
+                        </span>
+                      </div>
+                    )}
+
+                    <div className={`p-4 ${colors.bg}`}>
+                      {!meditation.image_url && <h3 className="text-xl font-serif mb-2">{meditation.name}</h3>}
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{meditation.description}</p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text} border ${colors.border}`}>
+                          {meditation.element}
+                        </span>
+                        <span className="px-3 py-1 rounded-full bg-white/5 text-xs capitalize">
+                          {meditation.category}
+                        </span>
+                      </div>
                     </div>
                   </motion.div>
                 );
