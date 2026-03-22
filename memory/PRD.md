@@ -158,4 +158,4 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 ## Deployment Notes
 - Use "Replace Existing Deployment" in Emergent to push to custom domain
 - Do NOT create duplicate deployments — this confuses users testing on stale URLs
-- Preview URL: https://breathwork-hub-3.preview.emergentagent.com
+- Preview URL: https://meditation-portal-2.preview.emergentagent.com
