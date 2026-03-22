@@ -134,13 +134,16 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 ### Completed This Session (Mar 2026)
 - [x] **Healing Modalities** in Heart Practices:
   - Meridian Therapy Flow (35 min) - Traditional Chinese Medicine & Shamanic Integration
-  - Trauma-Informed Somatic Release (40 min) - Somatic Experiencing & Indigenous Healing Practices
+  - Trauma-Informed Somatic Shedding (40 min) - Somatic Experiencing & Indigenous Healing Practices
   - Shamanic Healing Journey (45 min) - Core Shamanism & Global Indigenous Traditions
   - Energy Sweeping & Aura Cleansing (25 min) - Curanderismo, Reiki & Shamanic Clearing
+- [x] **Sunrise & Sunset Practices** - New dedicated page `/sunrise-sunset`:
+  - 4 Sunrise Practices: Sun Salutation Awakening, Dawn Breathwork Ritual, Morning Earth Connection, Sacred Morning Pages
+  - 5 Sunset Practices: Evening Gratitude Ceremony, Twilight Body Scan, Moon Water Blessing, Evening Star Meditation, Releasing Fire Ritual
+  - Added to Main Menu under Sacred Temples
 
 ### P1 (High)
 - Gifting Frontend UI — backend complete, needs purchase/redeem UI
-- Sunrise & Sunset Practices (dedicated content/sections)
 - More Shamanic/Elemental content  
 
 ### P2 (Medium)

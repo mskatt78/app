@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { 
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
-  Flower2, Shield, Globe, Users, Leaf
+  Flower2, Shield, Globe, Users, Leaf, Sunrise
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -85,6 +85,7 @@ const MainMenu = ({ user }) => {
         { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400", desc: "Earth · Water · Fire · Air · Spirit" },
         { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400", desc: "Embodied masculine wisdom" },
         { path: "/seasonal-temple", icon: Leaf, label: "Wheel of the Year", color: "text-orange-400", desc: "8 Sabbats · Earth Crafting" },
+        { path: "/sunrise-sunset", icon: Sunrise, label: "Sunrise & Sunset", color: "text-yellow-400", desc: "Sacred daily transitions" },
       ]
     },
     {

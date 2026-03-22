@@ -53,6 +53,7 @@ import ElementalTemples from "./pages/ElementalTemples";
 import MasculineTemple from "./pages/MasculineTemple";
 import PartnerYoga from "./pages/PartnerYoga";
 import SeasonalTemple from "./pages/SeasonalTemple";
+import SunriseSunsetPractices from "./pages/SunriseSunsetPractices";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -580,6 +581,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <MasculineTemple user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/sunrise-sunset"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <SunriseSunsetPractices user={user} api={api} />}
           </PublicRoute>
         }
       />
