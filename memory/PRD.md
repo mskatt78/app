@@ -35,18 +35,20 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - [x] Meditations with chunked TTS audio (OpenAI via Emergent LLM Key)
 
 ### Sacred Temples (NEW - Feb 2026)
-- [x] **Rose Temple** — Ancient Rose Lineage, Mary Magdalene, Sophia, feminine embodiment practices
-- [x] **Elemental Temples** — Earth, Water, Fire, Air, Spirit — each with embodiment, inner/outer, nature practices, affirmations
-- [x] **Masculine Temple** — Warrior, King, Magician, Lover, Ancestral Connection archetypes
+- [x] **Rose Temple** — 6 portals: Rose Lineage, Rose Meditations, Feminine Embodiment, Rose Ceremonies, Rose Rituals & Embodiment (Magdalene Anointing, Womb Healing, Daily Devotion, Sisterhood Ritual, Sacred Dance), Ancient Women's Teachings
+- [x] **Elemental Temples** — Earth, Water, Fire, Air, Spirit — 6 tabs each: Embodiment, Within You, In Nature, Practices, Rituals 🙏 (2 ceremonies per element), Affirmations
+- [x] **Masculine Temple** — Warrior, King, Magician, Lover, Ancestral — 3-tab modal: Teachings + Practices + Ritual 🙏 (ceremony per archetype)
+- [x] **Shamanic hero image** — AI-generated sacred fire ceremony + stone circle + Milky Way + spirit animals
 
 ### Partner & Accessible Yoga (NEW - Feb 2026)
 - [x] **Partner Yoga** page with 8 partner poses, difficulty filter, detailed instructions
 - [x] **Mobility Accessible Filter** in Yoga Library (Beginner-only filter for accessibility)
 - [x] Partner Yoga banner in Yoga Library with direct link
 
-### Time Zone
-- [x] **QLD AEST time** (UTC+10, no DST) shown in nav header for all users
-- Shows "HH:MM QLD" with clock icon; tooltip shows user's local time
+### Moon Calendar & Timezone (Updated Feb 2026)
+- [x] QLD time removed from nav (moved to proper context — Astrology/Moon Calendar)
+- [x] **Hemisphere toggle** (Southern 🌿 / Northern ☀️) in AstrologyCalendar — auto-detects from browser timezone
+- [x] **World timezone dropdown** — 43 timezones grouped by hemisphere with live local time display
 
 ### PWA / App Store
 - [x] manifest.json configured for PWABuilder/Google Play Store
