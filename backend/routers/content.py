@@ -319,3 +319,190 @@ async def get_earth_altar(altar_id: str):
     if not altar:
         raise HTTPException(status_code=404, detail="Earth altar not found")
     return altar
+
+
+
+# ============ RUNES ROUTES ============
+
+@router.get("/runes")
+async def get_runes():
+    """Get all Elder Futhark runes."""
+    db = get_db()
+    runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
+    return runes
+
+
+@router.get("/runes/{rune_id}")
+async def get_rune(rune_id: str):
+    """Get a specific rune."""
+    db = get_db()
+    rune = await db.runes.find_one({"id": rune_id}, {"_id": 0})
+    if not rune:
+        raise HTTPException(status_code=404, detail="Rune not found")
+    return rune
+
+
+@router.get("/runes/draw/single")
+async def draw_single_rune():
+    """Draw a single rune for daily guidance."""
+    import random
+    db = get_db()
+    runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
+    if not runes:
+        raise HTTPException(status_code=404, detail="No runes found")
+    rune = random.choice(runes)
+    rune["is_reversed"] = random.random() < 0.3  # 30% chance reversed
+    return rune
+
+
+@router.get("/runes/draw/three")
+async def draw_three_runes():
+    """Draw three runes for past/present/future spread."""
+    import random
+    db = get_db()
+    runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
+    if not runes or len(runes) < 3:
+        raise HTTPException(status_code=404, detail="Not enough runes found")
+    selected = random.sample(runes, 3)
+    positions = ["past", "present", "future"]
+    result = []
+    for i, rune in enumerate(selected):
+        rune["position"] = positions[i]
+        rune["is_reversed"] = random.random() < 0.3
+        result.append(rune)
+    return result
+
+
+@router.get("/runes/draw/celtic-cross")
+async def draw_celtic_cross():
+    """Draw 10 runes for a full Celtic Cross spread."""
+    import random
+    db = get_db()
+    runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
+    if not runes or len(runes) < 10:
+        raise HTTPException(status_code=404, detail="Not enough runes found")
+    selected = random.sample(runes, 10)
+    positions = [
+        "present", "challenge", "past", "future", 
+        "above", "below", "advice", "external",
+        "hopes_fears", "outcome"
+    ]
+    position_meanings = [
+        "Your current situation",
+        "The challenge or obstacle",
+        "The foundation/past influence",
+        "The near future",
+        "Your conscious goal",
+        "Your subconscious influence",
+        "Advice from the runes",
+        "External influences",
+        "Your hopes and fears",
+        "The final outcome"
+    ]
+    result = []
+    for i, rune in enumerate(selected):
+        rune["position"] = positions[i]
+        rune["position_meaning"] = position_meanings[i]
+        rune["is_reversed"] = random.random() < 0.3
+        result.append(rune)
+    return result
+
+
+# ============ I CHING ROUTES ============
+
+@router.get("/i-ching")
+async def get_hexagrams():
+    """Get all I Ching hexagrams."""
+    db = get_db()
+    hexagrams = await db.i_ching.find({}, {"_id": 0}).to_list(length=70)
+    return hexagrams
+
+
+@router.get("/i-ching/{hexagram_number}")
+async def get_hexagram(hexagram_number: int):
+    """Get a specific hexagram by number."""
+    db = get_db()
+    hexagram = await db.i_ching.find_one({"number": hexagram_number}, {"_id": 0})
+    if not hexagram:
+        raise HTTPException(status_code=404, detail="Hexagram not found")
+    return hexagram
+
+
+@router.get("/i-ching/cast/coins")
+async def cast_i_ching():
+    """Cast I Ching using the three coin method."""
+    import random
+    db = get_db()
+    
+    # Simulate 6 coin tosses (3 coins each)
+    lines = []
+    changing_lines = []
+    
+    for i in range(6):
+        # Each coin: heads=3, tails=2
+        toss = sum(random.choice([2, 3]) for _ in range(3))
+        # 6 = old yin (changing), 7 = young yang, 8 = young yin, 9 = old yang (changing)
+        lines.append(toss)
+        if toss == 6 or toss == 9:
+            changing_lines.append(i + 1)
+    
+    # Convert to binary (yang=1, yin=0)
+    binary_lines = [1 if l in [7, 9] else 0 for l in lines]
+    hexagram_number = int(''.join(str(b) for b in reversed(binary_lines)), 2) + 1
+    
+    # Cap at 8 for our sample data (in full implementation, all 64 would be available)
+    hexagram_number = min(hexagram_number, 8)
+    
+    hexagram = await db.i_ching.find_one({"number": hexagram_number}, {"_id": 0})
+    if not hexagram:
+        # Fallback to hexagram 1 if not found
+        hexagram = await db.i_ching.find_one({"number": 1}, {"_id": 0})
+    
+    # Add casting details
+    hexagram["lines_cast"] = lines
+    hexagram["changing_lines"] = changing_lines
+    hexagram["line_meanings"] = []
+    
+    if hexagram.get("changing_lines_text"):
+        for line_num in changing_lines:
+            if str(line_num) in hexagram.get("changing_lines", {}):
+                hexagram["line_meanings"].append({
+                    "line": line_num,
+                    "meaning": hexagram["changing_lines"][str(line_num)]
+                })
+    
+    return hexagram
+
+
+# ============ LIGHT CODES ROUTES ============
+
+@router.get("/light-codes")
+async def get_all_light_codes():
+    """Get all light codes (sacred geometry, alphabets, light language)."""
+    db = get_db()
+    light_codes = await db.light_codes.find_one({}, {"_id": 0})
+    return light_codes or {}
+
+
+@router.get("/light-codes/sacred-geometry")
+async def get_sacred_geometry():
+    """Get sacred geometry symbols."""
+    db = get_db()
+    data = await db.light_codes.find_one({}, {"_id": 0})
+    return data.get("sacred_geometry", []) if data else []
+
+
+@router.get("/light-codes/ancient-alphabets")
+async def get_ancient_alphabets():
+    """Get ancient alphabet symbols."""
+    db = get_db()
+    data = await db.light_codes.find_one({}, {"_id": 0})
+    return data.get("ancient_alphabets", []) if data else []
+
+
+@router.get("/light-codes/light-language")
+async def get_light_language():
+    """Get light language symbols."""
+    db = get_db()
+    data = await db.light_codes.find_one({}, {"_id": 0})
+    return data.get("light_language_symbols", []) if data else []

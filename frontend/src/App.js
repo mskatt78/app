@@ -55,6 +55,11 @@ import PartnerYoga from "./pages/PartnerYoga";
 import SeasonalTemple from "./pages/SeasonalTemple";
 import SunriseSunsetPractices from "./pages/SunriseSunsetPractices";
 
+// Divination
+import RuneReadings from "./pages/RuneReadings";
+import IChing from "./pages/IChing";
+import LightCodes from "./pages/LightCodes";
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
@@ -589,6 +594,30 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <SunriseSunsetPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/rune-readings"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <RuneReadings user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/i-ching"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <IChing user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/light-codes"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <LightCodes user={user} api={api} />}
           </PublicRoute>
         }
       />

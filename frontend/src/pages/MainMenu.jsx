@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { 
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
-  Flower2, Shield, Globe, Users, Leaf, Sunrise
+  Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -101,8 +101,9 @@ const MainMenu = ({ user }) => {
       title: "Divination & Guidance",
       items: [
         { path: "/oracle", icon: Eye, label: "Oracle Readings", color: "text-purple-400", desc: "Spirit guidance" },
+        { path: "/rune-readings", icon: Star, label: "Rune Readings", color: "text-amber-400", desc: "Elder Futhark wisdom" },
+        { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
         { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400", desc: "Life path numbers" },
-        { path: "/birth-chart", icon: Star, label: "Birth Chart", color: "text-yellow-400", desc: "Astrology chart" },
         { path: "/astrology", icon: Moon, label: "Moon Calendar", color: "text-blue-400", desc: "13-Moon system" },
       ]
     },
@@ -110,6 +111,7 @@ const MainMenu = ({ user }) => {
       title: "Sacred Tools",
       items: [
         { path: "/crystals", icon: Gem, label: "Crystal Guide", color: "text-pink-400", desc: "42 healing stones" },
+        { path: "/light-codes", icon: Hexagon, label: "Light Codes", color: "text-violet-400", desc: "Sacred geometry & symbols" },
       ]
     }
   ];

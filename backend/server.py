@@ -129,6 +129,9 @@ async def seed_all_content():
         EARTH_ALTARS, CREATIVE_PROCESSES, HEART_PRACTICES,
         SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES
     )
+    from data.divination_content import (
+        ELDER_FUTHARK_RUNES, I_CHING_HEXAGRAMS, LIGHT_CODES
+    )
 
     collections = [
         ("yoga_poses", YOGA_POSES),
@@ -148,6 +151,8 @@ async def seed_all_content():
         ("shamanic_practices", SHAMANIC_PRACTICES),
         ("achievements", ENHANCED_ACHIEVEMENTS),
         ("elemental_practices", ELEMENTAL_PRACTICES),
+        ("runes", ELDER_FUTHARK_RUNES),
+        ("i_ching", I_CHING_HEXAGRAMS),
     ]
 
     for name, data in collections:
@@ -155,3 +160,9 @@ async def seed_all_content():
             await db[name].delete_many({})  # Clear existing
             await db[name].insert_many(data)
             logger.info(f"  Seeded {name}: {len(data)} items")
+    
+    # Seed light codes as a single document
+    if LIGHT_CODES:
+        await db.light_codes.delete_many({})
+        await db.light_codes.insert_one(LIGHT_CODES)
+        logger.info("  Seeded light_codes: 1 document")
