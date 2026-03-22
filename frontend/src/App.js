@@ -47,6 +47,8 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 // Birth Chart
 import BirthChart from "./pages/BirthChart";
+// Reviews
+import Reviews from "./pages/Reviews";
 // New Temples
 import RoseTemple from "./pages/RoseTemple";
 import ElementalTemples from "./pages/ElementalTemples";
