@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Droplets, Sparkles, Heart, Moon, Sun, 
-  Play, X, Clock, Volume2, Star, Waves
+  Play, X, Clock, Volume2, Star, Waves, Pause, Loader2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -12,6 +12,80 @@ const WaterPractices = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [activeCategory, setActiveCategory] = useState("blessing");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioLoading, setAudioLoading] = useState(false);
+  const audioRef = useRef(null);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  // Generate guided audio for water practice
+  const generateGuidedAudio = async () => {
+    if (!selectedPractice || !api) return;
+    
+    setAudioLoading(true);
+    
+    // Create guided meditation script from practice steps
+    const script = `Welcome to the ${selectedPractice.name}. 
+    ${selectedPractice.description}
+    
+    Let's begin. ${selectedPractice.steps?.slice(0, 5).join('. ') || ''}
+    
+    ${selectedPractice.affirmation ? `Repeat this affirmation: ${selectedPractice.affirmation}` : ''}
+    
+    Take a moment to feel gratitude for this sacred practice with water.`;
+    
+    try {
+      const response = await api.post("/tts/generate", {
+        text: script,
+        voice: "nova"
+      });
+      
+      if (response.data.audio_url) {
+        if (audioRef.current) {
+          audioRef.current.pause();
+        }
+        
+        audioRef.current = new Audio(response.data.audio_url);
+        audioRef.current.onended = () => setIsPlaying(false);
+        audioRef.current.onerror = () => {
+          toast.error("Audio playback failed");
+          setIsPlaying(false);
+        };
+        
+        await audioRef.current.play();
+        setIsPlaying(true);
+        toast.success("Guided audio started");
+      }
+    } catch (error) {
+      console.error("Failed to generate audio:", error);
+      toast.error("Could not generate guided audio");
+    } finally {
+      setAudioLoading(false);
+    }
+  };
+
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play();
+        setIsPlaying(true);
+      }
+    } else {
+      generateGuidedAudio();
+    }
+  };
 
   const categories = [
     { id: "blessing", name: "Water Blessing", icon: Heart, color: "text-blue-400" },
@@ -581,7 +655,40 @@ const WaterPractices = ({ user, api }) => {
                   </div>
                 )}
 
-                <Button onClick={() => setSelectedPractice(null)} className="w-full" variant="outline">
+                {/* Guided Audio Button */}
+                {api && (
+                  <Button 
+                    onClick={toggleAudio}
+                    disabled={audioLoading}
+                    className="w-full bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30"
+                  >
+                    {audioLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Generating Audio...
+                      </>
+                    ) : isPlaying ? (
+                      <>
+                        <Pause className="w-4 h-4 mr-2" />
+                        Pause Guided Audio
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 className="w-4 h-4 mr-2" />
+                        Play Guided Audio
+                      </>
+                    )}
+                  </Button>
+                )}
+
+                <Button onClick={() => {
+                  if (audioRef.current) {
+                    audioRef.current.pause();
+                    audioRef.current = null;
+                    setIsPlaying(false);
+                  }
+                  setSelectedPractice(null);
+                }} className="w-full" variant="outline">
                   Close
                 </Button>
               </div>

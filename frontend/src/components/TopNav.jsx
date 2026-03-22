@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { NotificationBell } from "./NotificationSystem";
 
 const TopNav = ({ user }) => {
   const navigate = useNavigate();
@@ -97,23 +98,26 @@ const TopNav = ({ user }) => {
           </button>
 
           {/* User/Sign In */}
-          {user ? (
-            <button
-              onClick={() => navigate("/dashboard")}
-              className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-            >
-              <User className="w-5 h-5" />
-              <span className="text-sm hidden sm:inline">Dashboard</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-            >
-              <User className="w-5 h-5" />
-              <span className="text-sm hidden sm:inline">Sign In</span>
-            </button>
-          )}
+          <div className="flex items-center gap-2">
+            {user && <NotificationBell />}
+            {user ? (
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <User className="w-5 h-5" />
+                <span className="text-sm hidden sm:inline">Dashboard</span>
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+              >
+                <User className="w-5 h-5" />
+                <span className="text-sm hidden sm:inline">Sign In</span>
+              </button>
+            )}
+          </div>
         </div>
       </nav>
 

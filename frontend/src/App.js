@@ -62,6 +62,11 @@ import LightCodes from "./pages/LightCodes";
 import WaterPractices from "./pages/WaterPractices";
 import GeneKeys from "./pages/GeneKeys";
 import HumanDesign from "./pages/HumanDesign";
+// New Features
+import ProgressDashboard from "./pages/ProgressDashboard";
+import ProfileCalculator from "./pages/ProfileCalculator";
+// Notifications
+import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -648,6 +653,22 @@ function AppRouter() {
           </PublicRoute>
         }
       />
+      <Route
+        path="/progress"
+        element={
+          <ProtectedRoute>
+            {({ user, api }) => <ProgressDashboard user={user} api={api} />}
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile-calculator"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ProfileCalculator user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
       {/* Admin Route */}
       <Route
         path="/admin"
@@ -685,17 +706,33 @@ function AppRouter() {
 }
 
 function App() {
+  // Register service worker for offline support
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then((registration) => {
+          console.log('SW registered:', registration.scope);
+        })
+        .catch((error) => {
+          console.log('SW registration failed:', error);
+        });
+    }
+  }, []);
+
   return (
-    <div className="App grain-overlay min-h-screen flex flex-col">
-      <BrowserRouter>
-        <div className="flex-1">
-          <AppRouter />
-        </div>
-        <AppFooter />
-      </BrowserRouter>
-      <Toaster position="bottom-right" />
-      <InstallPrompt />
-    </div>
+    <NotificationProvider>
+      <div className="App grain-overlay min-h-screen flex flex-col">
+        <BrowserRouter>
+          <div className="flex-1">
+            <AppRouter />
+          </div>
+          <AppFooter />
+        </BrowserRouter>
+        <Toaster position="bottom-right" />
+        <InstallPrompt />
+        <NotificationCenter />
+      </div>
+    </NotificationProvider>
   );
 }
 

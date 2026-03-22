@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  ArrowLeft, Bell, Clock, Calendar, Save, Moon, Sun, User, LogOut
+  ArrowLeft, Bell, Clock, Calendar, Save, Moon, Sun, User, LogOut, 
+  Sparkles, Smartphone, Globe
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -10,12 +11,21 @@ import { Switch } from "../components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { toast } from "sonner";
+import { useNotifications } from "../components/NotificationSystem";
 
 const Settings = ({ user, api }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [rituals, setRituals] = useState([]);
+  
+  // Get notification context
+  const { 
+    preferences: notificationPrefs, 
+    updatePreferences: updateNotificationPrefs,
+    supportsNotifications,
+    sendTestNotification
+  } = useNotifications();
   
   const [reminderSettings, setReminderSettings] = useState({
     enabled: false,
@@ -269,6 +279,117 @@ const Settings = ({ user, api }) => {
               )}
               Save Settings
             </Button>
+
+            {/* Notification Settings Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="p-6 rounded-2xl bg-card/50 border border-white/5"
+            >
+              <h2 className="text-xl font-serif mb-6 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Sacred Notifications
+              </h2>
+              
+              <div className="space-y-6">
+                {/* Moon Phase Alerts */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium flex items-center gap-2">
+                      <Moon className="w-4 h-4 text-purple-400" />
+                      Moon Phase Alerts
+                    </p>
+                    <p className="text-sm text-muted-foreground">Get notified on New & Full Moons</p>
+                  </div>
+                  <Switch
+                    checked={notificationPrefs.moonPhaseAlerts}
+                    onCheckedChange={(checked) => 
+                      updateNotificationPrefs({ moonPhaseAlerts: checked })
+                    }
+                  />
+                </div>
+
+                {/* Daily Wisdom */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium flex items-center gap-2">
+                      <Sun className="w-4 h-4 text-amber-400" />
+                      Daily Wisdom
+                    </p>
+                    <p className="text-sm text-muted-foreground">Receive daily spiritual inspiration</p>
+                  </div>
+                  <Switch
+                    checked={notificationPrefs.dailyWisdom}
+                    onCheckedChange={(checked) => 
+                      updateNotificationPrefs({ dailyWisdom: checked })
+                    }
+                  />
+                </div>
+
+                {/* Practice Reminders */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium flex items-center gap-2">
+                      <Bell className="w-4 h-4 text-blue-400" />
+                      Practice Reminders
+                    </p>
+                    <p className="text-sm text-muted-foreground">Gentle nudge for daily practice</p>
+                  </div>
+                  <Switch
+                    checked={notificationPrefs.practiceReminders}
+                    onCheckedChange={(checked) => 
+                      updateNotificationPrefs({ practiceReminders: checked })
+                    }
+                  />
+                </div>
+
+                {/* Browser Notifications */}
+                {supportsNotifications && (
+                  <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                    <div>
+                      <p className="font-medium flex items-center gap-2">
+                        <Smartphone className="w-4 h-4 text-green-400" />
+                        Browser Notifications
+                      </p>
+                      <p className="text-sm text-muted-foreground">Receive notifications even when app is closed</p>
+                    </div>
+                    <Switch
+                      checked={notificationPrefs.browserNotifications}
+                      onCheckedChange={(checked) => 
+                        updateNotificationPrefs({ browserNotifications: checked })
+                      }
+                    />
+                  </div>
+                )}
+
+                {/* Notification Time */}
+                <div className="pt-4 border-t border-white/10">
+                  <label className="block text-sm text-muted-foreground mb-2">
+                    <Clock className="w-4 h-4 inline mr-1" />
+                    Notification Time
+                  </label>
+                  <Input
+                    type="time"
+                    value={notificationPrefs.reminderTime || "08:00"}
+                    onChange={(e) => 
+                      updateNotificationPrefs({ reminderTime: e.target.value })
+                    }
+                    className="bg-card/50 border-white/10 w-40"
+                  />
+                </div>
+
+                {/* Test Notification Button */}
+                <Button
+                  variant="outline"
+                  onClick={sendTestNotification}
+                  className="w-full"
+                >
+                  <Bell className="w-4 h-4 mr-2" />
+                  Send Test Notification
+                </Button>
+              </div>
+            </motion.div>
 
             {/* Logout Section */}
             <motion.div

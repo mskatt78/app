@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { 
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
-  Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins, Droplets, Dna
+  Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins, Droplets, Dna,
+  BarChart3, Calculator
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -106,6 +107,7 @@ const MainMenu = ({ user }) => {
         { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
         { path: "/gene-keys", icon: Dna, label: "Gene Keys", color: "text-violet-400", desc: "64 Keys · Shadow to Siddhi" },
         { path: "/human-design", icon: Hexagon, label: "Human Design", color: "text-indigo-400", desc: "Your energetic blueprint" },
+        { path: "/profile-calculator", icon: Calculator, label: "Profile Calculator", color: "text-pink-400", desc: "Discover your unique blueprint" },
         { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400", desc: "Life path numbers" },
         { path: "/astrology", icon: Moon, label: "Moon Calendar", color: "text-blue-400", desc: "13-Moon system" },
       ]
@@ -115,6 +117,7 @@ const MainMenu = ({ user }) => {
       items: [
         { path: "/crystals", icon: Gem, label: "Crystal Guide", color: "text-pink-400", desc: "42 healing stones" },
         { path: "/light-codes", icon: Hexagon, label: "Light Codes", color: "text-violet-400", desc: "Sacred geometry & symbols" },
+        { path: "/progress", icon: BarChart3, label: "Progress Dashboard", color: "text-emerald-400", desc: "Track your sacred journey" },
       ]
     }
   ];

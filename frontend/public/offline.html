@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline - Temple of the Soul</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 400px;
+    }
+    .icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 2rem;
+      opacity: 0.5;
+    }
+    h1 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      font-weight: 300;
+    }
+    h1 span {
+      color: #a78bfa;
+      font-style: italic;
+    }
+    p {
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+    .practices {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .practices h3 {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #a78bfa;
+      margin-bottom: 1rem;
+    }
+    .practices ul {
+      list-style: none;
+      text-align: left;
+    }
+    .practices li {
+      padding: 0.5rem 0;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .practices li::before {
+      content: "✨";
+    }
+    button {
+      background: rgba(167, 139, 250, 0.2);
+      border: 1px solid rgba(167, 139, 250, 0.3);
+      color: #a78bfa;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: rgba(167, 139, 250, 0.3);
+    }
+    .quote {
+      margin-top: 2rem;
+      font-style: italic;
+      color: #64748b;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+      <path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/>
+    </svg>
+    
+    <h1>You're <span>Offline</span></h1>
+    
+    <p>
+      Your connection to the digital realm has been interrupted. 
+      But remember, your sacred practice doesn't require the internet.
+    </p>
+    
+    <div class="practices">
+      <h3>Offline Practices You Can Do Now</h3>
+      <ul>
+        <li>Take 10 deep breaths</li>
+        <li>Ground yourself by feeling your feet</li>
+        <li>Close your eyes and listen to the sounds around you</li>
+        <li>Place your hands on your heart and breathe</li>
+        <li>Repeat a mantra: "I am peace, I am love"</li>
+      </ul>
+    </div>
+    
+    <button onclick="window.location.reload()">
+      Try Again
+    </button>
+    
+    <p class="quote">
+      "The real temple is within you."
+    </p>
+  </div>
+</body>
+</html>
