@@ -118,35 +118,35 @@ const SunriseSunsetPractices = ({ user, api }) => {
     {
       id: "sunset-1",
       name: "Evening Gratitude Ceremony",
-      description: "Honor the closing day with a sacred gratitude practice that helps release the day's energy and prepares the soul for rest.",
+      description: "Honor the closing day with a sacred gratitude practice that helps shed the day's energy and prepares the soul for rest.",
       duration_minutes: 15,
       element: "Water",
       best_time: "As the sun touches the horizon",
-      benefits: ["Emotional release", "Gratitude cultivation", "Peaceful transition", "Heart opening"],
+      benefits: ["Emotional shedding", "Gratitude cultivation", "Peaceful transition", "Heart opening"],
       steps: [
         "Find a quiet space, facing west if possible",
         "Light a candle to honor the departing sun",
-        "Take 5 slow breaths, letting the day's tension release",
+        "Take 5 slow breaths, letting the day's tension shed away",
         "Place hands on heart and review your day without judgment",
         "Name 3 things you're grateful for from today, speaking them aloud",
         "Name 1 challenge and find something to appreciate within it",
         "Forgive yourself for any perceived failures: 'I did my best'",
         "Forgive anyone who may have caused difficulty",
         "Visualize releasing the day into the setting sun",
-        "Say: 'I release this day with love. I am complete.'",
+        "Say: 'I shed this day with love. I am complete.'",
         "Blow out candle, symbolizing the sun's departure"
       ],
-      affirmation: "I release this day with gratitude. What needed to happen, happened. I am at peace.",
-      prayer: "Setting Sun, I thank you for the light you gave this day. Take with you all that I no longer need. I release it to the West, to the waters, to be transformed. I welcome the healing dark."
+      affirmation: "I shed this day with gratitude. What needed to happen, happened. I am at peace.",
+      prayer: "Setting Sun, I thank you for the light you gave this day. Take with you all that I no longer need. I shed it to the West, to the waters, to be transformed and never return. I welcome the healing dark."
     },
     {
       id: "sunset-2",
       name: "Twilight Body Scan",
-      description: "A gentle somatic practice to release accumulated tension and prepare the body for restorative sleep.",
+      description: "A gentle somatic practice to shed accumulated tension and prepare the body for restorative sleep.",
       duration_minutes: 20,
       element: "Earth",
       best_time: "After sunset, before dinner",
-      benefits: ["Tension release", "Body awareness", "Nervous system calming", "Sleep preparation"],
+      benefits: ["Tension shedding", "Body awareness", "Nervous system calming", "Sleep preparation"],
       steps: [
         "Lie down in a comfortable position, perhaps with blanket",
         "Close eyes and take 5 deep breaths",
@@ -156,13 +156,13 @@ const SunriseSunsetPractices = ({ user, api }) => {
         "Continue up through thighs, hips, pelvis",
         "Notice your lower back - breathe into any tension",
         "Relax belly, chest, shoulders",
-        "Release tension in arms, hands, fingers",
+        "Shed tension in arms, hands, fingers",
         "Soften neck, jaw, face, scalp",
         "Feel your whole body heavy and supported by earth",
         "Rest here for 5 minutes, simply being",
         "Wiggle fingers and toes, return slowly"
       ],
-      affirmation: "My body served me well today. I thank it with rest and release.",
+      affirmation: "My body served me well today. I thank it with rest as I shed what it no longer needs.",
       note: "This practice can be done in bed if you wish to transition directly to sleep."
     },
     {
@@ -216,26 +216,26 @@ const SunriseSunsetPractices = ({ user, api }) => {
     },
     {
       id: "sunset-5",
-      name: "Releasing Fire Ritual",
-      description: "Use the transformative power of fire at sunset to burn away what you're ready to shed from your life.",
+      name: "Shedding Fire Ritual",
+      description: "Use the transformative power of fire at sunset to burn away what you're ready to shed from your life - permanently, without return.",
       duration_minutes: 20,
       element: "Fire",
       best_time: "As sun disappears below horizon",
-      benefits: ["Energetic release", "Transformation", "Letting go", "Renewal"],
+      benefits: ["Energetic shedding", "Transformation", "Letting go permanently", "Renewal"],
       steps: [
         "Gather: paper, pen, fireproof container, matches",
         "Sit quietly and ask: 'What am I ready to shed?'",
         "Write on paper what you're releasing - fears, habits, beliefs, grief",
         "Be specific: not just 'fear' but 'fear of being seen'",
         "Hold paper to heart, feel the weight of carrying this",
-        "Say: 'I thank you for what you taught me. I release you now.'",
+        "Say: 'I thank you for what you taught me. I shed you now - you will not return.'",
         "Safely light the paper and place in fireproof container",
         "Watch it burn completely - this is transformation, not destruction",
         "As smoke rises, know the energy is transmuting",
         "When ash is cool, scatter to wind or bury in earth",
         "Say: 'It is done. I am free. Space is created for the new.'"
       ],
-      affirmation: "I shed what no longer serves. Fire transforms my pain into light.",
+      affirmation: "I shed what no longer serves - it will not return. Fire transforms my pain into light.",
       safety: "Always practice fire safety. Have water nearby. Never leave fire unattended."
     }
   ];
@@ -338,7 +338,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
             <Sunset className="w-6 h-6" />
             <div className="text-left">
               <p className="font-medium">Sunset</p>
-              <p className="text-xs opacity-70">Release & Restore</p>
+              <p className="text-xs opacity-70">Shed & Restore</p>
             </div>
           </button>
         </div>
@@ -410,7 +410,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
           <blockquote className="text-lg font-serif italic text-foreground/80 max-w-2xl mx-auto">
             {activeTab === "sunrise" 
               ? "Every sunrise is an invitation to rise again, to begin again, to remember who you are before the world told you who to be."
-              : "Every sunset is permission to let go, to release the day's weight, to trust that what needs to continue will still be there tomorrow."
+              : "Every sunset is permission to let go, to shed the day's weight permanently, to trust that what needs to continue will still be there tomorrow."
             }
           </blockquote>
         </div>
