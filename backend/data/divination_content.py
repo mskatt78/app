@@ -403,7 +403,7 @@ LIGHT_CODES = {
             "description": "The fundamental form of space and time. Contains all patterns of creation.",
             "meaning": "Unity, creation, interconnectedness of all life",
             "meditation": "Visualize the overlapping circles expanding from your heart, connecting you to all creation.",
-            "image_url": "https://images.pexels.com/photos/7181600/pexels-photo-7181600.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/f8cda1d338682ffbabb1c9134f30346c9eb0f4a7c104952a8438c4b6aae6929f.png"
         },
         {
             "id": "sg2", "name": "Metatron's Cube",
@@ -411,7 +411,7 @@ LIGHT_CODES = {
             "description": "Contains all five Platonic solids. Named after Archangel Metatron.",
             "meaning": "Balance, harmony, spiritual protection, sacred knowledge",
             "meditation": "Visualize the cube rotating around you, balancing and protecting your energy field.",
-            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/a2ecc7781a08c3d728cafeb2bf09d5ba237064a7a43128033a5e01a5c2b82050.png"
         },
         {
             "id": "sg3", "name": "Sri Yantra",
@@ -419,7 +419,7 @@ LIGHT_CODES = {
             "description": "Nine interlocking triangles radiating from the bindu (central point).",
             "meaning": "Divine feminine and masculine union, cosmic creation, enlightenment",
             "meditation": "Focus on the central point and let your awareness expand through each layer.",
-            "image_url": "https://images.pexels.com/photos/2158521/pexels-photo-2158521.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/d6401cc1c08d73b203edced981018c3fec2560a1593a0827a8f363b05755f2d7.png"
         },
         {
             "id": "sg4", "name": "Seed of Life",
@@ -427,7 +427,7 @@ LIGHT_CODES = {
             "description": "Seven overlapping circles forming the pattern of creation.",
             "meaning": "The seven days of creation, new beginnings, potential",
             "meditation": "Place awareness in each circle, honoring the seven sacred aspects of creation.",
-            "image_url": "https://images.pexels.com/photos/7181600/pexels-photo-7181600.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/93350b32c17b9f1e9490b862268f44313fd71eed66cbbb947034013ddc340b93.png"
         },
         {
             "id": "sg5", "name": "Vesica Piscis",
@@ -435,7 +435,7 @@ LIGHT_CODES = {
             "description": "Two overlapping circles creating an almond shape - the womb of creation.",
             "meaning": "Divine union, birth portal, the space between worlds",
             "meditation": "Visualize yourself within the vesica, in the space of pure potential.",
-            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/dc37307cc4794399856ec33c7d9bcf87c4f30e9d36ef710d29091c065d8e99dc.png"
         },
         {
             "id": "sg6", "name": "Torus",
@@ -443,7 +443,7 @@ LIGHT_CODES = {
             "description": "The fundamental shape of energy flow in the universe.",
             "meaning": "Energy circulation, heart field, self-sustaining systems",
             "meditation": "Feel your heart's torus field expanding, circulating love through your being.",
-            "image_url": "https://images.pexels.com/photos/4233216/pexels-photo-4233216.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/4819feac15cb5899efb55759627805df3f01e05507866d4cbebbcdc543ac8b4b.png"
         },
         {
             "id": "sg7", "name": "Merkaba",
@@ -451,7 +451,7 @@ LIGHT_CODES = {
             "description": "Two interlocking tetrahedrons creating a light vehicle.",
             "meaning": "Ascension, interdimensional travel, protection",
             "meditation": "Visualize the counter-rotating tetrahedrons activating around your body.",
-            "image_url": "https://images.unsplash.com/photo-1597600159211-d6c104f408d1?auto=format&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/08982674cbcc22bfc7b091264cb7bc189717420f344ec94d039062c54fc69446.png"
         },
         {
             "id": "sg8", "name": "Golden Spiral",
@@ -459,7 +459,7 @@ LIGHT_CODES = {
             "description": "The Fibonacci spiral found throughout nature - shells, galaxies, hurricanes.",
             "meaning": "Divine proportion, natural growth, cosmic evolution",
             "meditation": "Trace the spiral from your heart outward, feeling expansion in all directions.",
-            "image_url": "https://images.unsplash.com/photo-1700164748020-263700047c4b?auto=format&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/51a9ffb3b952a283c59b0cefcb14ebe258b6fd7e4b084fa656aa872bfb74120d.png"
         },
         {
             "id": "sg9", "name": "Platonic Solids",
@@ -523,7 +523,7 @@ LIGHT_CODES = {
             "description": "The Kabbalistic diagram of ten interconnected spheres (Sephiroth).",
             "meaning": "Divine structure, path to enlightenment, cosmic blueprint",
             "meditation": "Ascend through each sphere from Malkuth to Kether, receiving wisdom.",
-            "image_url": "https://images.pexels.com/photos/7377417/pexels-photo-7377417.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/d8b1b74f83dbbf279793b58a1eaa8e8db37aad4c8a6c9c5c106dc8f149e39817.png"
         },
         {
             "id": "sg17", "name": "Egg of Life",
@@ -587,7 +587,7 @@ LIGHT_CODES = {
             "description": "The Taoist symbol of complementary opposites in dynamic balance.",
             "meaning": "Duality, balance, interdependence, flow",
             "meditation": "Observe the dance of light and shadow, seeing wholeness in polarity.",
-            "image_url": "https://images.unsplash.com/photo-1745864709009-457569a2aed1?auto=format&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/061ca16cef1e29da81cf75a762b5117ef9c58de7fcc853f8e6004de2ca15008e.png"
         },
         {
             "id": "sg25", "name": "Enneagram",
@@ -606,7 +606,7 @@ LIGHT_CODES = {
             "meaning": "Universal consciousness, the sound of creation, divine presence",
             "pronunciation": "AUM (A-U-M)",
             "practice": "Chant three times, feeling the vibration move through your entire body.",
-            "image_url": "https://images.unsplash.com/photo-1725483733130-97bdc5250726?auto=format&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/a8fc4a4783e5f82dc3f17065479b25fa0a38cd4330fb709e1b323644951bda91.png"
         },
         {
             "id": "aa2", "name": "Hebrew Aleph (א)",
@@ -615,7 +615,7 @@ LIGHT_CODES = {
             "meaning": "Divine breath, beginning, the void pregnant with potential",
             "pronunciation": "Silent or glottal stop",
             "practice": "Meditate on the silent breath, the space between thoughts.",
-            "image_url": "https://images.pexels.com/photos/5371888/pexels-photo-5371888.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/b0eed4c4c39077b49f2d32a84301d3e3f7339bb7b421f0f8afd122964cc262aa.png"
         },
         {
             "id": "aa3", "name": "Egyptian Ankh (☥)",
@@ -624,7 +624,7 @@ LIGHT_CODES = {
             "meaning": "Eternal life, divine protection, balance of masculine and feminine",
             "pronunciation": "Ankh",
             "practice": "Visualize the ankh as a key unlocking eternal wisdom within you.",
-            "image_url": "https://images.unsplash.com/photo-1678544119978-8e253d5f3ecb?auto=format&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/e6f63abe56e146ca6d298593c3b8d57fba072a0aa23fdd43efe653a1b8647e3d.png"
         },
         {
             "id": "aa4", "name": "Greek Alpha-Omega (Α Ω)",
@@ -642,8 +642,8 @@ LIGHT_CODES = {
             "meaning": "Compassion, purification of body/speech/mind, enlightenment",
             "pronunciation": "Om Ma-ni Pad-me Hum",
             "practice": "Recite 108 times with prayer beads, visualizing each syllable's color.",
-            "image_url": "https://images.pexels.com/photos/7686377/pexels-photo-7686377.jpeg?auto=compress&cs=tinysrgb&w=400"
-        },
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/d4824686a87eb1feb4030852d892f9ef82fbcd491c78dd1582fd2aee1876afe2.png"
+        }, 
         {
             "id": "aa6", "name": "Celtic Ogham Beith (ᚁ)",
             "symbol": "ᚁ",
@@ -660,8 +660,8 @@ LIGHT_CODES = {
             "meaning": "Divine protection, connection to higher self, spiritual warrior",
             "pronunciation": "Z (Algiz)",
             "practice": "Stand with arms raised like the rune, invoking protection.",
-            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&cs=tinysrgb&w=400"
-        },
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/90c18aa26d272cebf12dbab9963dd2f7ed2e442670098c385c01b1f335418480.png"
+        }, 
         {
             "id": "aa8", "name": "Chinese Dragon (龍)",
             "symbol": "龍",
@@ -687,7 +687,7 @@ LIGHT_CODES = {
             "meaning": "Divine protection, healing, royal power, intuition",
             "pronunciation": "Wedjat",
             "practice": "Visualize the eye watching over you, providing divine protection.",
-            "image_url": "https://images.unsplash.com/photo-1690628656580-1232c3c77894?auto=format&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/5d1350ea9d95638a6eae74a65c27762b5fb61c1110a14c935aa62a0a5d147971.png"
         },
         {
             "id": "aa11", "name": "Djed Pillar (𓊽)",
@@ -732,7 +732,7 @@ LIGHT_CODES = {
             "meaning": "Divine fire, transformation, the Holy Spirit, teeth/consume",
             "pronunciation": "Sh",
             "practice": "Feel the three flames of shin rising from your crown.",
-            "image_url": "https://images.pexels.com/photos/5371888/pexels-photo-5371888.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/b0eed4c4c39077b49f2d32a84301d3e3f7339bb7b421f0f8afd122964cc262aa.png"
         },
         {
             "id": "aa16", "name": "Hebrew Mem (מ)",
@@ -750,7 +750,7 @@ LIGHT_CODES = {
             "meaning": "Prosperity, luck, fertility, new beginnings",
             "pronunciation": "F (Fehu)",
             "practice": "Draw the rune while setting intentions for abundance.",
-            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/90c18aa26d272cebf12dbab9963dd2f7ed2e442670098c385c01b1f335418480.png"
         },
         {
             "id": "aa18", "name": "Norse Rune Ansuz (ᚨ)",
@@ -759,7 +759,7 @@ LIGHT_CODES = {
             "meaning": "Divine wisdom, inspiration, communication, truth",
             "pronunciation": "A (Ansuz)",
             "practice": "Invoke for clarity in communication and receiving divine messages.",
-            "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/90c18aa26d272cebf12dbab9963dd2f7ed2e442670098c385c01b1f335418480.png"
         },
         {
             "id": "aa19", "name": "Norse Rune Sowilo (ᛊ)",
@@ -768,7 +768,7 @@ LIGHT_CODES = {
             "meaning": "Sun, success, honor, vitality, guidance",
             "pronunciation": "S (Sowilo)",
             "practice": "Draw in the air to invoke solar energy and success.",
-            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/90c18aa26d272cebf12dbab9963dd2f7ed2e442670098c385c01b1f335418480.png"
         },
         {
             "id": "aa20", "name": "Chinese Fu (福)",
@@ -960,7 +960,7 @@ LIGHT_CODES = {
             "description": "Double helix serpent energy ascending the spine.",
             "activation": "Feel the serpent energy slowly uncoiling and rising through each chakra.",
             "purpose": "Kundalini awakening, spiritual enlightenment, energy mastery",
-            "image_url": "https://images.pexels.com/photos/6931975/pexels-photo-6931975.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/4819feac15cb5899efb55759627805df3f01e05507866d4cbebbcdc543ac8b4b.png"
         },
         {
             "id": "ll18", "name": "Light Body Merkaba",
