@@ -9,6 +9,7 @@ const teachings = [
     title: "The Rose Lineage",
     subtitle: "Ancient Feminine Wisdom",
     icon: Flower2,
+    image: "https://images.pexels.com/photos/827106/pexels-photo-827106.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-rose-300", bg: "bg-rose-500/10", border: "border-rose-500/20", glow: "shadow-rose-500/20" },
     description: "The Rose Lineage carries the unbroken thread of feminine wisdom through time — from Isis of ancient Egypt, the High Priestesses of Avalon, Mary Magdalene and the Essene communities, to the Cathars, the troubadours, and beyond.",
     content: [
@@ -35,6 +36,7 @@ const teachings = [
     title: "Rose Meditations",
     subtitle: "Heart Opening Practices",
     icon: Heart,
+    image: "https://images.pexels.com/photos/6931767/pexels-photo-6931767.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-pink-300", bg: "bg-pink-500/10", border: "border-pink-500/20", glow: "shadow-pink-500/20" },
     description: "These meditations work with the rose as a living portal to the heart. Each petal is a layer of the self — each fragrance a memory of home.",
     content: [
@@ -57,6 +59,7 @@ const teachings = [
     title: "Feminine Embodiment",
     subtitle: "Practices for Women",
     icon: Sparkles,
+    image: "https://images.pexels.com/photos/6015070/pexels-photo-6015070.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-fuchsia-300", bg: "bg-fuchsia-500/10", border: "border-fuchsia-500/20", glow: "shadow-fuchsia-500/20" },
     description: "Embodiment is the practice of coming home to your body — not as an object, but as a sacred vessel of consciousness. The feminine principle lives in the body, in sensation, in the felt sense of being alive.",
     content: [
@@ -83,6 +86,7 @@ const teachings = [
     title: "Rose Ceremonies & Rituals",
     subtitle: "Sacred Feminine Practices",
     icon: Moon,
+    image: "https://images.pexels.com/photos/7252509/pexels-photo-7252509.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-amber-300", bg: "bg-amber-500/10", border: "border-amber-500/20", glow: "shadow-amber-500/20" },
     description: "Ceremony creates a container for transformation. When we mark the sacred passages of our lives with ritual, we weave ourselves back into the web of life.",
     content: [
@@ -229,20 +233,33 @@ const RoseTemple = ({ user, api }) => {
                 transition={{ delay: index * 0.1 }}
                 onClick={() => setSelectedTeaching(teaching)}
                 data-testid={`teaching-${teaching.id}`}
-                className={`group cursor-pointer p-6 rounded-2xl border backdrop-blur-xl
+                className={`group cursor-pointer rounded-2xl border backdrop-blur-xl overflow-hidden
                            ${teaching.color.bg} ${teaching.color.border}
                            hover:scale-[1.02] transition-all duration-300
                            hover:shadow-lg ${teaching.color.glow}`}
               >
-                <div className={`w-12 h-12 rounded-xl ${teaching.color.bg} flex items-center justify-center mb-4`}>
-                  <Icon className={`w-6 h-6 ${teaching.color.text}`} />
-                </div>
-                <h3 className="text-lg font-serif mb-1">{teaching.title}</h3>
-                <p className={`text-xs ${teaching.color.text} mb-3 uppercase tracking-wider`}>{teaching.subtitle}</p>
-                <p className="text-sm text-muted-foreground line-clamp-3">{teaching.description}</p>
-                <div className={`mt-4 flex items-center gap-1 text-xs ${teaching.color.text} opacity-0 group-hover:opacity-100 transition-opacity`}>
-                  <Eye className="w-3 h-3" />
-                  <span>Enter Portal</span>
+                {/* Image */}
+                {teaching.image && (
+                  <div className="relative h-40 overflow-hidden">
+                    <img 
+                      src={teaching.image} 
+                      alt={teaching.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent`} />
+                    <div className={`absolute top-4 left-4 w-10 h-10 rounded-xl ${teaching.color.bg} border ${teaching.color.border} flex items-center justify-center backdrop-blur-sm`}>
+                      <Icon className={`w-5 h-5 ${teaching.color.text}`} />
+                    </div>
+                  </div>
+                )}
+                <div className="p-5">
+                  <h3 className="text-xl font-serif mb-1">{teaching.title}</h3>
+                  <p className={`text-sm ${teaching.color.text} mb-3 uppercase tracking-wider`}>{teaching.subtitle}</p>
+                  <p className="text-base text-muted-foreground line-clamp-3 leading-relaxed">{teaching.description}</p>
+                  <div className={`mt-4 flex items-center gap-1 text-sm ${teaching.color.text} opacity-0 group-hover:opacity-100 transition-opacity`}>
+                    <Eye className="w-4 h-4" />
+                    <span>Enter Portal</span>
+                  </div>
                 </div>
               </motion.div>
             );

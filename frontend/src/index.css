@@ -70,6 +70,39 @@
         font-family: 'Manrope', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        font-size: 16px; /* Base size for mobile */
+    }
+
+    /* Ensure readable text on mobile */
+    @media (max-width: 768px) {
+        body {
+            font-size: 17px;
+        }
+        
+        p, li, span {
+            font-size: 1rem !important;
+            line-height: 1.6 !important;
+        }
+        
+        .text-sm {
+            font-size: 0.9375rem !important; /* 15px instead of 14px */
+        }
+        
+        .text-xs {
+            font-size: 0.8125rem !important; /* 13px instead of 12px */
+        }
+        
+        h1 {
+            font-size: 2rem !important;
+        }
+        
+        h2 {
+            font-size: 1.5rem !important;
+        }
+        
+        h3 {
+            font-size: 1.25rem !important;
+        }
     }
 
     h1, h2, h3, h4, h5, h6 {

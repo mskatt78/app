@@ -10,6 +10,7 @@ const elements = [
     element: "Earth",
     symbol: "⬛",
     icon: Mountain,
+    image: "https://images.pexels.com/photos/4017166/pexels-photo-4017166.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-emerald-300", bg: "bg-emerald-500/10", border: "border-emerald-500/30", accent: "emerald", glow: "shadow-emerald-500/20", gradient: "from-emerald-900/80 to-stone-900/60" },
     tagline: "Rooted. Abundant. Embodied.",
     description: "Earth is the foundation — the body itself, the ground beneath your feet, the slow wisdom of forests and stone. Earth teaches us patience, permanence, and the sacred act of being fully present in matter.",
@@ -77,6 +78,7 @@ const elements = [
     element: "Water",
     symbol: "🌊",
     icon: Waves,
+    image: "https://images.pexels.com/photos/2860703/pexels-photo-2860703.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-blue-300", bg: "bg-blue-500/10", border: "border-blue-500/30", accent: "blue", glow: "shadow-blue-500/20", gradient: "from-blue-900/80 to-slate-900/60" },
     tagline: "Fluid. Feeling. Flowing.",
     description: "Water is the element of emotion, intuition, and the unconscious. Like water, we cannot be grasped — we can only be held in a vessel. Water teaches us that feeling is not weakness; it is the intelligence of the soul.",
@@ -144,6 +146,7 @@ const elements = [
     element: "Fire",
     symbol: "🔥",
     icon: Flame,
+    image: "https://images.unsplash.com/photo-1605254252017-c84820fe9913?crop=entropy&cs=srgb&fm=jpg&w=800",
     color: { text: "text-orange-300", bg: "bg-orange-500/10", border: "border-orange-500/30", accent: "orange", glow: "shadow-orange-500/20", gradient: "from-orange-900/80 to-red-950/60" },
     tagline: "Transformed. Alive. Radiant.",
     description: "Fire is the element of transformation, will, and radiant power. It is the sacred force that burns away what no longer serves, illuminates the darkness, and ignites the passion to live fully and authentically.",
@@ -212,6 +215,7 @@ const elements = [
     element: "Air",
     symbol: "🌬️",
     icon: Wind,
+    image: "https://images.unsplash.com/photo-1581058478189-fdf8d2c6925e?crop=entropy&cs=srgb&fm=jpg&w=800",
     color: { text: "text-cyan-300", bg: "bg-cyan-500/10", border: "border-cyan-500/30", accent: "cyan", glow: "shadow-cyan-500/20", gradient: "from-cyan-900/80 to-slate-900/60" },
     tagline: "Free. Clear. Expansive.",
     description: "Air is the element of mind, breath, communication, and freedom. It is the most subtle and pervasive — like thought itself, it is everywhere and nowhere, connecting all things, impossible to grasp.",
@@ -279,6 +283,7 @@ const elements = [
     element: "Spirit",
     symbol: "✨",
     icon: Sparkles,
+    image: "https://images.unsplash.com/photo-1754851539824-5a87c5c7cb86?crop=entropy&cs=srgb&fm=jpg&w=800",
     color: { text: "text-purple-300", bg: "bg-purple-500/10", border: "border-purple-500/30", accent: "purple", glow: "shadow-purple-500/20", gradient: "from-purple-900/80 to-indigo-950/60" },
     tagline: "Unified. Infinite. Divine.",
     description: "Spirit — the fifth element, the quintessence — is not separate from the other four. It is the animating force that moves through all of them. It is consciousness itself: the witness, the dreamer, the sacred ground of all being.",
@@ -419,22 +424,33 @@ const ElementalTemples = ({ user, api }) => {
                       transition={{ delay: index * 0.1 }}
                       onClick={() => { setActiveTemple(el); setActiveSection("embodiment"); }}
                       data-testid={`temple-${el.id}`}
-                      className={`group cursor-pointer relative overflow-hidden rounded-2xl border p-6
+                      className={`group cursor-pointer relative overflow-hidden rounded-2xl border
                                  ${el.color.bg} ${el.color.border}
                                  hover:scale-[1.02] transition-all duration-300 hover:shadow-xl ${el.color.glow}`}
                     >
-                      <div className="flex items-start justify-between mb-4">
-                        <div className={`w-14 h-14 rounded-xl ${el.color.bg} border ${el.color.border} flex items-center justify-center`}>
-                          <Icon className={`w-7 h-7 ${el.color.text}`} />
+                      {/* Image */}
+                      {el.image && (
+                        <div className="relative h-36 overflow-hidden">
+                          <img 
+                            src={el.image} 
+                            alt={el.name}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          />
+                          <div className={`absolute inset-0 bg-gradient-to-t from-card via-card/60 to-transparent`} />
+                          <div className={`absolute top-4 left-4 w-12 h-12 rounded-xl ${el.color.bg} border ${el.color.border} flex items-center justify-center backdrop-blur-sm`}>
+                            <Icon className={`w-6 h-6 ${el.color.text}`} />
+                          </div>
+                          <span className={`absolute top-4 right-4 text-2xl font-serif ${el.color.text}`}>{el.element}</span>
                         </div>
-                        <span className={`text-2xl ${el.color.text} font-serif`}>{el.element}</span>
-                      </div>
-                      <h3 className="text-xl font-serif mb-1">{el.name}</h3>
-                      <p className={`text-xs ${el.color.text} mb-3 italic`}>{el.tagline}</p>
-                      <p className="text-sm text-muted-foreground line-clamp-3">{el.description}</p>
-                      <div className={`mt-4 flex items-center gap-1 text-xs ${el.color.text} opacity-0 group-hover:opacity-100 transition-opacity`}>
-                        <ChevronRight className="w-4 h-4" />
-                        <span>Enter Temple</span>
+                      )}
+                      <div className="p-5">
+                        <h3 className="text-xl font-serif mb-1">{el.name}</h3>
+                        <p className={`text-sm ${el.color.text} mb-3 italic`}>{el.tagline}</p>
+                        <p className="text-base text-muted-foreground line-clamp-3 leading-relaxed">{el.description}</p>
+                        <div className={`mt-4 flex items-center gap-1 text-sm ${el.color.text} opacity-0 group-hover:opacity-100 transition-opacity`}>
+                          <ChevronRight className="w-4 h-4" />
+                          <span>Enter Temple</span>
+                        </div>
                       </div>
                     </motion.div>
                   );

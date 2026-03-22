@@ -9,6 +9,7 @@ const archetypes = [
     title: "The Warrior",
     subtitle: "Courage & Boundaries",
     icon: Sword,
+    image: "https://images.pexels.com/photos/5971304/pexels-photo-5971304.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-red-300", bg: "bg-red-500/10", border: "border-red-500/30" },
     description: "The Warrior is not the one who fights, but the one who knows when to act and when to be still. He is the guardian of his own integrity — the one who protects what is sacred, speaks truth regardless of consequence, and meets challenge with a steady, grounded heart.",
     teachings: [
@@ -42,6 +43,7 @@ const archetypes = [
     title: "The King",
     subtitle: "Leadership & Sovereignty",
     icon: Crown,
+    image: "https://images.pexels.com/photos/5386375/pexels-photo-5386375.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-amber-300", bg: "bg-amber-500/10", border: "border-amber-500/30" },
     description: "The King archetype is not about hierarchy but about sovereignty over one's own inner kingdom. The mature King is stable, generous, clear, and life-giving. He does not rule from fear but from a deep rootedness in who he is and what he stands for.",
     teachings: [
@@ -74,6 +76,7 @@ const archetypes = [
     title: "The Magician",
     subtitle: "Wisdom & Transformation",
     icon: Eye,
+    image: "https://images.unsplash.com/photo-1611430995190-712d5f93f37e?crop=entropy&cs=srgb&fm=jpg&w=800",
     color: { text: "text-purple-300", bg: "bg-purple-500/10", border: "border-purple-500/30" },
     description: "The Magician is the master of the liminal — the one who stands between worlds and transforms energy from one form to another. He is the healer, the shaman, the teacher, the scientist, the poet. He initiates others and himself through the power of awareness.",
     teachings: [
@@ -106,6 +109,7 @@ const archetypes = [
     title: "The Lover",
     subtitle: "Passion & Connection",
     icon: Heart,
+    image: "https://images.pexels.com/photos/4955511/pexels-photo-4955511.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-rose-300", bg: "bg-rose-500/10", border: "border-rose-500/30" },
     description: "The Lover in a man is not primarily about romantic love — it is his capacity for aliveness: his ability to be moved, to feel beauty, to live with passion, to be fully present with another person, and to be undone by the magnificence of being alive.",
     teachings: [
@@ -138,6 +142,7 @@ const archetypes = [
     title: "Ancestral Connection",
     subtitle: "Lineage & Legacy",
     icon: TreePine,
+    image: "https://images.pexels.com/photos/1792626/pexels-photo-1792626.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-emerald-300", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
     description: "Every man stands on the shoulders of an unbroken line of men stretching back to the first human beings. Ancestral connection is about reclaiming this lineage — healing what is broken, honoring what is good, and consciously becoming the ancestor your descendants will need.",
     teachings: [
@@ -234,19 +239,32 @@ const MasculineTemple = ({ user, api }) => {
                 transition={{ delay: index * 0.1 }}
                 onClick={() => { setSelectedArchetype(arch); setActiveTab("teachings"); }}
                 data-testid={`archetype-${arch.id}`}
-                className={`group cursor-pointer p-6 rounded-2xl border backdrop-blur-xl
+                className={`group cursor-pointer rounded-2xl border backdrop-blur-xl overflow-hidden
                            ${arch.color.bg} ${arch.color.border}
                            hover:scale-[1.02] transition-all duration-300`}
               >
-                <div className={`w-12 h-12 rounded-xl ${arch.color.bg} border ${arch.color.border} flex items-center justify-center mb-4`}>
-                  <Icon className={`w-6 h-6 ${arch.color.text}`} />
-                </div>
-                <h3 className="text-lg font-serif mb-1">{arch.title}</h3>
-                <p className={`text-xs ${arch.color.text} mb-3 uppercase tracking-wider`}>{arch.subtitle}</p>
-                <p className="text-sm text-muted-foreground line-clamp-3">{arch.description}</p>
-                <div className={`mt-4 flex items-center gap-1 text-xs ${arch.color.text} opacity-0 group-hover:opacity-100 transition-opacity`}>
-                  <ChevronRight className="w-4 h-4" />
-                  <span>Enter the Teaching</span>
+                {/* Image */}
+                {arch.image && (
+                  <div className="relative h-40 overflow-hidden">
+                    <img 
+                      src={arch.image} 
+                      alt={arch.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className={`absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent`} />
+                    <div className={`absolute top-4 left-4 w-10 h-10 rounded-xl ${arch.color.bg} border ${arch.color.border} flex items-center justify-center backdrop-blur-sm`}>
+                      <Icon className={`w-5 h-5 ${arch.color.text}`} />
+                    </div>
+                  </div>
+                )}
+                <div className="p-5">
+                  <h3 className="text-xl font-serif mb-1">{arch.title}</h3>
+                  <p className={`text-sm ${arch.color.text} mb-3 uppercase tracking-wider`}>{arch.subtitle}</p>
+                  <p className="text-base text-muted-foreground line-clamp-3 leading-relaxed">{arch.description}</p>
+                  <div className={`mt-4 flex items-center gap-1 text-sm ${arch.color.text} opacity-0 group-hover:opacity-100 transition-opacity`}>
+                    <ChevronRight className="w-4 h-4" />
+                    <span>Enter the Teaching</span>
+                  </div>
                 </div>
               </motion.div>
             );
