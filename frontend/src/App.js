@@ -59,6 +59,9 @@ import SunriseSunsetPractices from "./pages/SunriseSunsetPractices";
 import RuneReadings from "./pages/RuneReadings";
 import IChing from "./pages/IChing";
 import LightCodes from "./pages/LightCodes";
+import WaterPractices from "./pages/WaterPractices";
+import GeneKeys from "./pages/GeneKeys";
+import HumanDesign from "./pages/HumanDesign";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -618,6 +621,30 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <LightCodes user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/water-practices"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <WaterPractices user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/gene-keys"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <GeneKeys user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/human-design"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <HumanDesign user={user} api={api} />}
           </PublicRoute>
         }
       />

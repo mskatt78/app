@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { 
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
-  Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins
+  Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins, Droplets, Dna
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -86,6 +86,7 @@ const MainMenu = ({ user }) => {
         { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400", desc: "Embodied masculine wisdom" },
         { path: "/seasonal-temple", icon: Leaf, label: "Wheel of the Year", color: "text-orange-400", desc: "8 Sabbats · Earth Crafting" },
         { path: "/sunrise-sunset", icon: Sunrise, label: "Sunrise & Sunset", color: "text-yellow-400", desc: "Sacred daily transitions" },
+        { path: "/water-practices", icon: Droplets, label: "Water Practices", color: "text-blue-400", desc: "Blessing · Crystalline · Cleansing" },
       ]
     },
     {
@@ -103,6 +104,8 @@ const MainMenu = ({ user }) => {
         { path: "/oracle", icon: Eye, label: "Oracle Readings", color: "text-purple-400", desc: "Spirit guidance" },
         { path: "/rune-readings", icon: Star, label: "Rune Readings", color: "text-amber-400", desc: "Elder Futhark wisdom" },
         { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
+        { path: "/gene-keys", icon: Dna, label: "Gene Keys", color: "text-violet-400", desc: "64 Keys · Shadow to Siddhi" },
+        { path: "/human-design", icon: Hexagon, label: "Human Design", color: "text-indigo-400", desc: "Your energetic blueprint" },
         { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400", desc: "Life path numbers" },
         { path: "/astrology", icon: Moon, label: "Moon Calendar", color: "text-blue-400", desc: "13-Moon system" },
       ]

@@ -186,4 +186,4 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - **Custom Domain:** https://temple-soul-dev.emergent.host (KEEP THIS)
 - Use "Replace Existing Deployment" in Emergent to push updates
 - Do NOT create duplicate deployments — this confuses users testing on stale URLs
-- Preview URL: https://meditation-portal-2.preview.emergentagent.com
+- Preview URL: https://shamanic-soul-temple.preview.emergentagent.com
