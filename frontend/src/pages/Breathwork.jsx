@@ -47,7 +47,23 @@ const Breathwork = ({ user, api }) => {
     fetchSessions();
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      stopSound();
+      // Stop oscillator
+      try {
+        if (oscillatorRef.current) {
+          oscillatorRef.current.stop();
+          oscillatorRef.current.disconnect();
+          oscillatorRef.current = null;
+        }
+        if (gainNodeRef.current) {
+          gainNodeRef.current.disconnect();
+          gainNodeRef.current = null;
+        }
+      } catch (_) {}
+      // Close AudioContext to fully release audio resources
+      if (audioContextRef.current) {
+        audioContextRef.current.close().catch(() => {});
+        audioContextRef.current = null;
+      }
     };
   }, []);
 

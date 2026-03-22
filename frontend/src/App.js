@@ -47,6 +47,11 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 // Birth Chart
 import BirthChart from "./pages/BirthChart";
+// New Temples
+import RoseTemple from "./pages/RoseTemple";
+import ElementalTemples from "./pages/ElementalTemples";
+import MasculineTemple from "./pages/MasculineTemple";
+import PartnerYoga from "./pages/PartnerYoga";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -537,6 +542,39 @@ function AppRouter() {
           </PublicRoute>
         }
       />
+      <Route
+        path="/partner-yoga"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <PartnerYoga user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/rose-temple"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <RoseTemple user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/elemental-temples"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ElementalTemples user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/masculine-temple"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <MasculineTemple user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      {/* Admin Route */}
       <Route
         path="/admin"
         element={

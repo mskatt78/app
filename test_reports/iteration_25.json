@@ -1,0 +1,47 @@
+{
+  "summary": "Frontend testing of 6 new features: audio cleanup bug fix, QLD time display, Rose Temple, Elemental Temples, Masculine Temple, Partner Yoga, Yoga Library Accessible filter, and MainMenu Sacred Temples section. All features verified working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "TopNav - QLD time display",
+        "issues": ["QLD time clock is ONLY visible in top nav bar for non-authenticated users (hidden when user is logged in, replaced by 'Dashboard' button). For logged-in users, QLD time is only visible inside the 'Explore Practices' menu overlay header. Consider showing it for logged-in users too if that's the intent."]
+      }
+    ]
+  },
+  "test_report_links": ["/app/test_reports/iteration_25.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Audio cleanup Breathwork.jsx (lines 46-68): Properly closes AudioContext with .close() on unmount - CORRECT",
+    "Audio cleanup Meditations.jsx (lines 68-80): Properly pauses, clears src, and nulls audioRef on unmount - CORRECT",
+    "QLD time: Only shows in top nav bar when user is NOT logged in (hidden md:flex condition inside !user block). Logged-in users only see it in the menu overlay. Minor UX consideration if always-visible time was intended for all users."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only test)",
+    "frontend": "100% (all 11 test scenarios passed)"
+  },
+  "test_credentials": "No login required - all pages are public",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "All 6 new features tested and verified passing: audio cleanup code verified by code review + observation of 'Playing 432 Hz tone' console log and subsequent navigation; QLD time shows in top nav (non-logged-in users) and always in menu overlay; Rose Temple has 5 teaching cards with modal; Elemental Temples has 5 elements with 5 section tabs each; Masculine Temple has 5 archetype cards with modal; Partner Yoga has 8 poses with difficulty filter (6 beginner); Yoga Library has Accessible/mobility filter (50 beginner from 78 total) + Partner Yoga banner; Main Menu has Sacred Temples section with 3 cards. Previous backend test report (iteration_24.json) confirmed 100% backend pass rate.",
+  "features_verified": {
+    "audio_cleanup_breathwork": "Code verified: useEffect cleanup stops oscillator + closes AudioContext. Console log 'Playing 432 Hz tone' confirmed audio started, component navigated away to /menu triggering cleanup",
+    "audio_cleanup_meditations": "Code verified: useEffect cleanup pauses audio, sets src='', nulls ref on unmount",
+    "qld_time_display": "PASS - Shows '01:26 pm QLD' with clock icon in top nav bar (non-logged-in) and menu overlay header",
+    "rose_temple_5_cards": "PASS - 5 teaching cards (data-testid='teaching-{id}'): rose-lineage, rose-meditations, feminine-embodiment, rose-ceremonies, ancient-teachings",
+    "elemental_temples_5_elements": "PASS - 5 element cards: earth, water, fire, air, spirit all found",
+    "elemental_temples_section_tabs": "PASS - All 5 tabs: Embodiment, Within You, In Nature, Practices, Affirmations",
+    "masculine_temple_archetypes": "PASS - 5 archetypes: Warrior, King, Magician, Lover, Ancestral Connection with modal",
+    "partner_yoga_poses_filter": "PASS - 8 pose cards, difficulty filter works (8 total → 6 Beginner → back to 8 All), pose detail modal opens",
+    "yoga_accessible_filter": "PASS - 'Accessible' button (data-testid='mobility-filter') filters 78→50 Beginner poses, shows accessibility banner",
+    "yoga_partner_yoga_banner": "PASS - Partner Yoga banner with 'Explore' link (data-testid='partner-yoga-link') visible in Yoga Library",
+    "main_menu_sacred_temples": "PASS - Sacred Temples section with Rose Temple, Elemental Temples, Masculine Temple in /menu"
+  }
+}

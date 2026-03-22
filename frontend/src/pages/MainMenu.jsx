@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
-  Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User
+  Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
+  Flower2, Shield, Globe, Users
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -61,6 +62,7 @@ const MainMenu = ({ user }) => {
       title: "Movement & Body",
       items: [
         { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400", desc: "78 sacred poses" },
+        { path: "/partner-yoga", icon: Users, label: "Partner Yoga", color: "text-teal-400", desc: "Yoga for two" },
         { path: "/breathwork", icon: Wind, label: "Breathwork", color: "text-cyan-400", desc: "Pranayama practices" },
         { path: "/somatic", icon: Flame, label: "Somatic Movement", color: "text-red-400", desc: "Tai Chi & Qigong" },
         { path: "/mudras", icon: Hand, label: "Mudras", color: "text-orange-400", desc: "Sacred hand gestures" },
@@ -73,6 +75,14 @@ const MainMenu = ({ user }) => {
         { path: "/mindfulness", icon: Heart, label: "Mindfulness", color: "text-rose-400", desc: "Present moment practices" },
         { path: "/grounding", icon: TreePine, label: "Grounding", color: "text-green-400", desc: "Earth connection" },
         { path: "/mantras", icon: Music2, label: "Mantras", color: "text-amber-400", desc: "Sacred sounds" },
+      ]
+    },
+    {
+      title: "Sacred Temples",
+      items: [
+        { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400", desc: "Ancient feminine wisdom" },
+        { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400", desc: "Earth · Water · Fire · Air · Spirit" },
+        { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400", desc: "Embodied masculine wisdom" },
       ]
     },
     {

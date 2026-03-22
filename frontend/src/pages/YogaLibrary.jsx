@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check } from "lucide-react";
+import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check, Users, Accessibility } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent } from "../components/ui/dialog";
@@ -18,6 +18,7 @@ const YogaLibrary = ({ user, api }) => {
   const [selectedPose, setSelectedPose] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [mobilityMode, setMobilityMode] = useState(false);
   const [imageErrors, setImageErrors] = useState(new Set());
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
@@ -51,9 +52,14 @@ const YogaLibrary = ({ user, api }) => {
     if (showFavoritesOnly) {
       filtered = filtered.filter(p => favorites.has(p.id));
     }
+
+    // Mobility-friendly: show only Beginner difficulty poses
+    if (mobilityMode) {
+      filtered = filtered.filter(p => p.difficulty === "Beginner");
+    }
     
     setFilteredPoses(filtered);
-  }, [selectedElement, poses, showFavoritesOnly, favorites]);
+  }, [selectedElement, poses, showFavoritesOnly, favorites, mobilityMode]);
 
   // Open specific pose from URL parameter
   useEffect(() => {
@@ -164,6 +170,18 @@ const YogaLibrary = ({ user, api }) => {
               <Star className={`w-4 h-4 mr-1 ${showFavoritesOnly ? "fill-current" : ""}`} />
               Favorites ({favorites.size})
             </Button>
+
+            <Button
+              variant={mobilityMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => setMobilityMode(!mobilityMode)}
+              className={mobilityMode ? "bg-emerald-600 hover:bg-emerald-700" : "border-white/10"}
+              data-testid="mobility-filter"
+              title="Show only beginner/accessible poses suitable for mobility challenges"
+            >
+              <Accessibility className="w-4 h-4 mr-1" />
+              Accessible
+            </Button>
             
             <Select value={selectedElement} onValueChange={setSelectedElement}>
               <SelectTrigger data-testid="element-filter" className="w-44 bg-card border-white/10">
@@ -201,6 +219,41 @@ const YogaLibrary = ({ user, api }) => {
             );
           })}
         </div>
+
+        {/* Mobility Mode Banner */}
+        {mobilityMode && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2"
+          >
+            <Accessibility className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+            <p className="text-xs text-emerald-300">
+              Showing <strong>Beginner / Accessible</strong> poses only — suitable for those with mobility challenges, injuries, or new to yoga. 
+              Each pose includes contraindications to help you practice safely.
+            </p>
+          </motion.div>
+        )}
+
+        {/* Partner Yoga Banner */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-3 p-3 rounded-xl bg-primary/5 border border-primary/15 flex items-center justify-between"
+        >
+          <div className="flex items-center gap-2">
+            <Users className="w-4 h-4 text-primary/70" />
+            <p className="text-xs text-muted-foreground">Practicing with a partner? Try our dedicated Partner Yoga poses.</p>
+          </div>
+          <button
+            onClick={() => navigate("/partner-yoga")}
+            className="text-xs text-primary hover:text-primary/80 font-medium flex items-center gap-1 transition-colors"
+            data-testid="partner-yoga-link"
+          >
+            Explore <ChevronRight className="w-3 h-3" />
+          </button>
+        </motion.div>
       </div>
 
       {/* Content */}

@@ -68,7 +68,14 @@ const Meditations = ({ user, api }) => {
   useEffect(() => {
     fetchMeditations();
     return () => {
+      // Clear timer
       if (intervalRef.current) clearInterval(intervalRef.current);
+      // Stop and release audio when component unmounts (e.g. navigating away)
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = '';
+        audioRef.current = null;
+      }
     };
   }, []);
 

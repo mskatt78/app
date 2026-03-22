@@ -79,7 +79,7 @@
     }
   },
   "test_environment": {
-    "app_url": "https://temple-soul-dev.preview.emergentagent.com",
+    "app_url": "https://breathwork-hub-3.preview.emergentagent.com",
     "viewport": "375x812 (mobile)"
   },
   "console_errors_observed": [

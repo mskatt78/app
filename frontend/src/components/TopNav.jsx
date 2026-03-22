@@ -17,18 +17,39 @@ import {
   X,
   Home,
   User,
-  ChevronDown
+  ChevronDown,
+  Flower2,
+  Shield,
+  Globe,
+  Clock,
+  Users
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+// Queensland runs AEST (UTC+10) all year — no daylight saving
+const getQldTime = () => {
+  const now = new Date();
+  const qldOffset = 10 * 60; // UTC+10 in minutes
+  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+  const qld = new Date(utc + qldOffset * 60000);
+  return qld.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit", hour12: true });
+};
 
 const TopNav = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
+  const [qldTime, setQldTime] = useState(getQldTime());
+
+  useEffect(() => {
+    const timer = setInterval(() => setQldTime(getQldTime()), 30000);
+    return () => clearInterval(timer);
+  }, []);
 
   const menuItems = [
     { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400" },
+    { path: "/partner-yoga", icon: Users, label: "Partner Yoga", color: "text-teal-400" },
     { path: "/breathwork", icon: Wind, label: "Breathwork", color: "text-cyan-400" },
     { path: "/meditations", icon: Brain, label: "Meditations", color: "text-purple-400" },
     { path: "/crystals", icon: Gem, label: "Crystals", color: "text-pink-400" },
@@ -45,6 +66,10 @@ const TopNav = ({ user }) => {
     { path: "/birth-chart", icon: Star, label: "Birth Chart", color: "text-yellow-400" },
     { path: "/oracle", icon: Moon, label: "Oracle", color: "text-purple-400" },
     { path: "/astrology", icon: Moon, label: "Moon Calendar", color: "text-blue-400" },
+    // Sacred Temples
+    { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400" },
+    { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400" },
+    { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400" },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -95,13 +120,24 @@ const TopNav = ({ user }) => {
               <span className="text-sm hidden sm:inline">Dashboard</span>
             </button>
           ) : (
-            <button
-              onClick={() => navigate("/")}
-              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-            >
-              <User className="w-5 h-5" />
-              <span className="text-sm hidden sm:inline">Sign In</span>
-            </button>
+            <div className="flex items-center gap-3">
+              {/* QLD Time */}
+              <div
+                className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-muted-foreground"
+                title={`Queensland AEST (UTC+10) — No daylight saving\nYour local time: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+              >
+                <Clock className="w-3 h-3 text-primary/60" />
+                <span className="text-primary/80 font-medium">{qldTime}</span>
+                <span className="text-muted-foreground/50">QLD</span>
+              </div>
+              <button
+                onClick={() => navigate("/")}
+                className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+              >
+                <User className="w-5 h-5" />
+                <span className="text-sm hidden sm:inline">Sign In</span>
+              </button>
+            </div>
           )}
         </div>
       </nav>
@@ -118,7 +154,17 @@ const TopNav = ({ user }) => {
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-white/10">
-                <h2 className="text-xl font-serif">Explore Practices</h2>
+                <div className="flex items-center gap-4">
+                  <h2 className="text-xl font-serif">Explore Practices</h2>
+                  <div
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-muted-foreground"
+                    title={`Queensland time (AEST UTC+10)`}
+                  >
+                    <Clock className="w-3 h-3 text-primary/60" />
+                    <span className="text-primary/80 font-medium">{qldTime}</span>
+                    <span className="text-muted-foreground/50">QLD</span>
+                  </div>
+                </div>
                 <button 
                   onClick={() => setShowMenu(false)}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors"
@@ -129,6 +175,35 @@ const TopNav = ({ user }) => {
 
               {/* Menu Grid */}
               <div className="flex-1 overflow-y-auto p-4">
+                {/* Sacred Temples Section */}
+                <div className="mb-4">
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3 px-1">Sacred Temples</p>
+                  <div className="grid grid-cols-3 gap-3 max-w-4xl mx-auto">
+                    {[
+                      { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400" },
+                      { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400" },
+                      { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400" },
+                    ].map((item) => (
+                      <motion.button
+                        key={item.path}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => { navigate(item.path); setShowMenu(false); }}
+                        className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all ${
+                          isActive(item.path)
+                            ? "bg-primary/20 border-2 border-primary/50"
+                            : "bg-white/5 hover:bg-white/10 border border-white/10"
+                        }`}
+                      >
+                        <item.icon className={`w-7 h-7 mb-2 ${item.color}`} />
+                        <span className="text-sm text-center font-medium">{item.label}</span>
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border-t border-white/10 mb-4 pt-4">
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3 px-1">All Practices</p>
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
                   {menuItems.map((item) => (
                     <motion.button
