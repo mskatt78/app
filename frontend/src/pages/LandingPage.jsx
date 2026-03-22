@@ -73,10 +73,10 @@ const LandingPage = ({ onLoginSuccess }) => {
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{ 
-            backgroundImage: `url('https://images.unsplash.com/photo-1738084843875-48f8118c87af?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2ODl8MHwxfHNlYXJjaHwyfHxteXN0aWNhbCUyMHlvZ2ElMjB3b21hbiUyMG5hdHVyZSUyMHN1bnNldCUyMHNpbGhvdWV0dGV8ZW58MHx8fHwxNzcxNTA0MTc1fDA&ixlib=rb-4.1.0&q=85')` 
+            backgroundImage: `url('https://static.prod-images.emergentagent.com/jobs/30743729-c71b-4ef6-9e6e-aecb9cd4b3a8/images/662567cd330fc281bb3d5078d4cf60eb9a2fff9d8ffc9f441d949f94145901ba.png')` 
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/50 to-background" />
         </div>
 
         {/* Floating Elements */}

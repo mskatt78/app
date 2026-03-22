@@ -1,9 +1,69 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowLeft, Moon, Star, ChevronLeft, ChevronRight, Sparkles, Leaf } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Moon, Star, ChevronLeft, ChevronRight, Sparkles, Leaf, Globe, Clock, ChevronDown } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+
+// World timezone groups for the selector
+const TIMEZONES = [
+  { label: "Southern Hemisphere", group: true },
+  { label: "🌿 Queensland, AU (AEST UTC+10)", tz: "Australia/Brisbane", hemi: "south" },
+  { label: "🌿 Sydney / Melbourne (AEST/AEDT)", tz: "Australia/Sydney", hemi: "south" },
+  { label: "🌿 Perth, AU (AWST UTC+8)", tz: "Australia/Perth", hemi: "south" },
+  { label: "🌿 Adelaide, AU (ACST/ACDT)", tz: "Australia/Adelaide", hemi: "south" },
+  { label: "🌿 Auckland, NZ (NZST/NZDT)", tz: "Pacific/Auckland", hemi: "south" },
+  { label: "🌿 Johannesburg, SA (SAST UTC+2)", tz: "Africa/Johannesburg", hemi: "south" },
+  { label: "🌿 Buenos Aires, AR (ART UTC-3)", tz: "America/Argentina/Buenos_Aires", hemi: "south" },
+  { label: "🌿 São Paulo, BR (BRT UTC-3)", tz: "America/Sao_Paulo", hemi: "south" },
+  { label: "🌿 Santiago, CL (CLT UTC-4)", tz: "America/Santiago", hemi: "south" },
+  { label: "🌿 Lima, PE (PET UTC-5)", tz: "America/Lima", hemi: "south" },
+  { label: "Northern Hemisphere", group: true },
+  { label: "☀️ London, UK (GMT/BST)", tz: "Europe/London", hemi: "north" },
+  { label: "☀️ Paris / Berlin (CET/CEST UTC+1/+2)", tz: "Europe/Paris", hemi: "north" },
+  { label: "☀️ Athens / Kyiv (EET UTC+2/+3)", tz: "Europe/Athens", hemi: "north" },
+  { label: "☀️ Moscow, RU (MSK UTC+3)", tz: "Europe/Moscow", hemi: "north" },
+  { label: "☀️ Dubai, UAE (GST UTC+4)", tz: "Asia/Dubai", hemi: "north" },
+  { label: "☀️ New Delhi, IN (IST UTC+5:30)", tz: "Asia/Kolkata", hemi: "north" },
+  { label: "☀️ Bangkok, TH (ICT UTC+7)", tz: "Asia/Bangkok", hemi: "north" },
+  { label: "☀️ Singapore / KL (SGT UTC+8)", tz: "Asia/Singapore", hemi: "north" },
+  { label: "☀️ Tokyo / Seoul (JST/KST UTC+9)", tz: "Asia/Tokyo", hemi: "north" },
+  { label: "☀️ New York, US (EST/EDT UTC-5/-4)", tz: "America/New_York", hemi: "north" },
+  { label: "☀️ Chicago, US (CST/CDT UTC-6/-5)", tz: "America/Chicago", hemi: "north" },
+  { label: "☀️ Denver, US (MST/MDT UTC-7/-6)", tz: "America/Denver", hemi: "north" },
+  { label: "☀️ Los Angeles, US (PST/PDT UTC-8/-7)", tz: "America/Los_Angeles", hemi: "north" },
+  { label: "☀️ Anchorage, AK (AKST/AKDT)", tz: "America/Anchorage", hemi: "north" },
+  { label: "☀️ Honolulu, HI (HST UTC-10)", tz: "America/Honolulu", hemi: "north" },
+  { label: "☀️ Reykjavik (UTC+0)", tz: "Atlantic/Reykjavik", hemi: "north" },
+  { label: "☀️ Toronto, CA (EST/EDT)", tz: "America/Toronto", hemi: "north" },
+  { label: "☀️ Vancouver, CA (PST/PDT)", tz: "America/Vancouver", hemi: "north" },
+  { label: "☀️ Mexico City, MX (CST/CDT)", tz: "America/Mexico_City", hemi: "north" },
+  { label: "☀️ Cairo, EG (EET UTC+2)", tz: "Africa/Cairo", hemi: "north" },
+  { label: "☀️ Nairobi, KE (EAT UTC+3)", tz: "Africa/Nairobi", hemi: "north" },
+];
+
+const getLocalTime = (tz) => {
+  try {
+    return new Date().toLocaleTimeString("en-US", {
+      timeZone: tz,
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      timeZoneName: "short"
+    });
+  } catch { return ""; }
+};
+
+const getLocalDate = (tz) => {
+  try {
+    return new Date().toLocaleDateString("en-US", {
+      timeZone: tz,
+      weekday: "short",
+      day: "numeric",
+      month: "short"
+    });
+  } catch { return ""; }
+};
 
 const AstrologyCalendar = ({ user, api }) => {
   const navigate = useNavigate();
@@ -12,7 +72,10 @@ const AstrologyCalendar = ({ user, api }) => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [loading, setLoading] = useState(true);
   const [viewIndex, setViewIndex] = useState(0);
-  const [hemisphere, setHemisphere] = useState("north"); // Default to north
+  const [hemisphere, setHemisphere] = useState("north");
+  const [selectedTz, setSelectedTz] = useState(null);
+  const [showTzDropdown, setShowTzDropdown] = useState(false);
+  const tzRef = useRef(null);
 
   const elementColors = {
     Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", gradient: "from-emerald-500/20 to-emerald-900/10" },
@@ -24,34 +87,33 @@ const AstrologyCalendar = ({ user, api }) => {
 
   useEffect(() => {
     fetchData();
-    detectHemisphere();
+    autoDetectTimezone();
+    // Close dropdown on outside click
+    const handler = (e) => { if (tzRef.current && !tzRef.current.contains(e.target)) setShowTzDropdown(false); };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const detectHemisphere = () => {
-    // Try to detect hemisphere from timezone
+  const autoDetectTimezone = () => {
     try {
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      console.log("Detected timezone:", timezone);
-      
-      // Southern hemisphere timezones - be more inclusive
-      const southernPatterns = [
-        'australia', 'sydney', 'melbourne', 'brisbane', 'perth', 'adelaide', 'hobart', 'darwin',
-        'auckland', 'wellington', 'fiji', 'pacific/auckland', 'pacific/fiji',
-        'antarctica', 'argentina', 'buenos_aires', 'brazil', 'sao_paulo',
-        'chile', 'santiago', 'lima', 'peru', 'johannesburg', 'cape_town',
-        'africa/johannesburg', 'africa/cape', 'indian/mauritius',
-        'new_zealand', 'nz'
-      ];
-      
-      const tzLower = timezone.toLowerCase();
-      const isSouthern = southernPatterns.some(pattern => tzLower.includes(pattern));
-      
-      console.log("Hemisphere detected:", isSouthern ? "south" : "north");
-      setHemisphere(isSouthern ? "south" : "north");
-    } catch (e) {
-      console.log("Hemisphere detection failed, defaulting to north");
-      setHemisphere("north");
-    }
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const match = TIMEZONES.find(t => !t.group && t.tz === tz);
+      if (match) {
+        setSelectedTz(match);
+        setHemisphere(match.hemi);
+        return;
+      }
+      // Fallback: detect hemisphere from tz string
+      const southPatterns = ['australia','auckland','wellington','argentina','sao_paulo','santiago','lima','johannesburg','cape','mauritius','new_zealand','nz'];
+      const isSouth = southPatterns.some(p => tz.toLowerCase().includes(p));
+      setHemisphere(isSouth ? "south" : "north");
+    } catch { setHemisphere("north"); }
+  };
+
+  const handleTzSelect = (tz) => {
+    setSelectedTz(tz);
+    setHemisphere(tz.hemi);
+    setShowTzDropdown(false);
   };
 
   // Helper to get hemisphere-appropriate description
@@ -105,7 +167,7 @@ const AstrologyCalendar = ({ user, api }) => {
 
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto p-4 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-4">
             <button
               data-testid="back-btn"
@@ -120,30 +182,87 @@ const AstrologyCalendar = ({ user, api }) => {
             </div>
           </div>
           
-          {/* Hemisphere Toggle */}
-          <div className="flex items-center gap-2 bg-white/5 rounded-full p-1">
-            <button
-              onClick={() => setHemisphere("north")}
-              className={`px-3 py-1 rounded-full text-sm transition-all ${
-                hemisphere === "north" 
-                  ? "bg-primary text-primary-foreground" 
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Northern
-            </button>
-            <button
-              onClick={() => setHemisphere("south")}
-              className={`px-3 py-1 rounded-full text-sm transition-all ${
-                hemisphere === "south" 
-                  ? "bg-primary text-primary-foreground" 
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              Southern
-            </button>
+          {/* Hemisphere + Timezone Selector */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Hemisphere Toggle */}
+            <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/10">
+              <button
+                onClick={() => setHemisphere("south")}
+                data-testid="hemi-south"
+                className={`px-3 py-1 rounded-full text-xs transition-all ${
+                  hemisphere === "south" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                🌿 Southern
+              </button>
+              <button
+                onClick={() => setHemisphere("north")}
+                data-testid="hemi-north"
+                className={`px-3 py-1 rounded-full text-xs transition-all ${
+                  hemisphere === "north" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                ☀️ Northern
+              </button>
+            </div>
+
+            {/* Timezone Dropdown */}
+            <div className="relative" ref={tzRef}>
+              <button
+                onClick={() => setShowTzDropdown(!showTzDropdown)}
+                data-testid="timezone-selector"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-muted-foreground hover:bg-white/10 transition-all"
+              >
+                <Clock className="w-3 h-3" />
+                <span className="max-w-[140px] truncate">
+                  {selectedTz ? selectedTz.label.replace(/^[🌿☀️]\s/, '') : "Select timezone"}
+                </span>
+                <ChevronDown className="w-3 h-3" />
+              </button>
+
+              <AnimatePresence>
+                {showTzDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto bg-card border border-white/15 rounded-xl shadow-2xl z-50"
+                  >
+                    {TIMEZONES.map((tz, i) => (
+                      tz.group ? (
+                        <div key={i} className="px-3 pt-3 pb-1">
+                          <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium">{tz.label}</p>
+                        </div>
+                      ) : (
+                        <button
+                          key={i}
+                          onClick={() => handleTzSelect(tz)}
+                          className={`w-full flex items-center justify-between px-3 py-2 text-xs hover:bg-white/5 transition-colors ${
+                            selectedTz?.tz === tz.tz ? "text-primary bg-primary/10" : "text-muted-foreground"
+                          }`}
+                        >
+                          <span>{tz.label}</span>
+                          <span className="text-muted-foreground/50 text-xs ml-2 flex-shrink-0">{getLocalTime(tz.tz)}</span>
+                        </button>
+                      )
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
+
+        {/* Current timezone strip */}
+        {selectedTz && (
+          <div className="max-w-6xl mx-auto px-4 pb-2 flex items-center gap-2 text-xs text-muted-foreground/60">
+            <Globe className="w-3 h-3" />
+            <span>{selectedTz.label.replace(/^[🌿☀️]\s/, '')} — {getLocalDate(selectedTz.tz)} · {getLocalTime(selectedTz.tz)}</span>
+            <span className={`ml-auto px-2 py-0.5 rounded-full text-xs border ${hemisphere === "south" ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : "text-amber-400 border-amber-500/30 bg-amber-500/10"}`}>
+              {hemisphere === "south" ? "🌿 Southern Hemisphere" : "☀️ Northern Hemisphere"}
+            </span>
+          </div>
+        )}
       </header>
 
       <main className="relative max-w-6xl mx-auto p-6">

@@ -20,7 +20,22 @@ const archetypes = [
       { name: "Boundary Practice", desc: "Choose one relationship where you regularly say yes when you mean no. This week, practice saying: 'That doesn't work for me' or 'I need time to think about that.' Notice the discomfort — and notice what comes after. This is Warrior training." },
       { name: "Warrior's Breath (Bhastrika)", desc: "Sit tall. Take 20 rapid, powerful breaths through the nose — forceful inhale, forceful exhale. Then take a deep inhale, hold for as long as comfortable, and slowly exhale. This ignites the solar plexus and the Warrior's fire. Repeat 3 rounds." },
       { name: "Iron Bow Pose", desc: "Stand in a wide stance with arms raised overhead, fingers interlaced. Arch back powerfully, lifting the chest to the sky. Hold for 5 breaths. Feel your ribcage open, your heart exposed. The Warrior is powerful AND open-hearted." }
-    ]
+    ],
+    ritual: {
+      name: "Shield & Sword Declaration Ceremony 🙏",
+      timing: "New Moon, or when facing a major challenge or transition",
+      steps: [
+        "Find an outdoor space at dawn or dusk. Stand facing east (the direction of new beginnings).",
+        "Hold in your right hand an object that represents your sword — your truth, your clarity, your discernment (a stick, a pen, a stone with an edge).",
+        "Hold in your left hand an object representing your shield — what you protect (a photo, a stone, an object from home).",
+        "Stand in a wide stance, feet rooted. Take 10 warrior breaths — forceful and rhythmic.",
+        "Speak aloud what you are defending: your values, your family, your truth, your integrity. Name them clearly.",
+        "Speak aloud what you are willing to cut away: what no longer belongs in your life, what you have been tolerating that dishonors you.",
+        "Strike the ground with your 'sword' hand three times: 'I stand for this. I am a warrior of integrity.'",
+        "Bow to the four directions — a sign of humility and respect for all life."
+      ],
+      closing: "Return to this ceremony whenever you feel your boundaries eroding or your purpose unclear."
+    }
   },
   {
     id: "king",
@@ -38,7 +53,21 @@ const archetypes = [
       { name: "The Blessing Practice", desc: "Write a letter of genuine appreciation to three men in your life — a father figure, a friend, a mentor or son. Tell them specifically what you see in them, what they mean to you, what gifts they carry. Send at least one." },
       { name: "Morning Sovereignty", desc: "Before checking your phone in the morning, sit for 5 minutes in silence. Ask: 'What matters most today? Who do I want to be?' Set one clear intention as king of your day. This is not grandiosity — it is taking responsibility for the direction of your energy." },
       { name: "Decision Practice", desc: "When facing a difficult decision, ask: 'What would the best version of me — generous, clear, long-sighted — choose here?' The King thinks in generations, not moments. He asks: 'What story do I want told about this choice?'" }
-    ]
+    ],
+    ritual: {
+      name: "Morning Sovereignty Embodiment Ritual 🙏",
+      timing: "Every morning — especially during periods of leadership challenge",
+      steps: [
+        "Rise 15 minutes before anyone else in your home. Go to a window or outdoors and face the light.",
+        "Stand tall. Place one hand on your heart and one on your solar plexus.",
+        "Breathe deeply 7 times — with each breath, feel yourself settling into your body, into your role, into this day.",
+        "Speak your sovereign declaration aloud: 'Today I lead with clarity. I give freely. I receive with gratitude. I protect what matters. I build what lasts.'",
+        "Review your day mentally: What does the King in you most need to tend to today? What act of generosity can you offer? What decision needs your full, unhurried attention?",
+        "Close by bowing slightly — not in submission, but in reverence. The mature King bows to life, to those he serves, to the sacred.",
+        "Begin your day from this grounded, generous center."
+      ],
+      closing: "This ritual takes under 10 minutes but sets the tone for how you inhabit your whole day."
+    }
   },
   {
     id: "magician",
@@ -56,7 +85,21 @@ const archetypes = [
       { name: "Shadow Integration", desc: "Write down three qualities in other people that irritate or disgust you most. For each, ask honestly: 'Is this in me, in any form?' Denied qualities in ourselves are often what we most judge in others. Integration begins with acknowledgment." },
       { name: "Sit with Difficulty", desc: "Choose one thing you have been avoiding — a conversation, a truth, a feeling. Sit with it for 20 minutes. Do not solve it. Simply witness it with the Magician's steady awareness. The act of truly seeing something begins its transformation." },
       { name: "Journal of Questions", desc: "Keep a journal not of answers but of questions. Begin each entry with: 'What if...' or 'I wonder...' or 'What am I not seeing?' The Magician is not the one with all the answers. He is the one who knows which questions open doors." }
-    ]
+    ],
+    ritual: {
+      name: "Initiation by Fire and Shadow 🙏",
+      timing: "At a life threshold — a major change, loss, or transformation",
+      steps: [
+        "Find an evening when you can be alone and undisturbed. Gather: candles, a journal, a bowl, and matches.",
+        "Create a circle of candles around you. Sit in the center. This is your sacred container — the Magician's circle.",
+        "Write on separate small papers every part of yourself you have rejected, suppressed, or are afraid to look at. Be courageous. Nothing is too dark to name here.",
+        "Read each one aloud and say: 'I see you. I acknowledge you. You are part of me. I am not afraid of you.'",
+        "For each piece, decide: is this something to integrate (give it its appropriate place) or release (burn it)?",
+        "Burn the papers you are releasing, one by one. For those you are integrating, tear them and scatter them across your journal pages.",
+        "Sit in the circle until the candles burn down or you feel complete. You have looked into your own darkness and named it. This is the Magician's greatest work."
+      ],
+      closing: "What you integrate loses its power over you. What you release transforms into compost for your next becoming."
+    }
   },
   {
     id: "lover",
@@ -74,7 +117,21 @@ const archetypes = [
       { name: "Beauty Practice", desc: "Spend 10 minutes today looking — really looking — at something beautiful. A tree, a piece of music, a work of art, a person you love. Without categorizing or explaining it. Just receive it. Allow yourself to be moved. This is Lover practice." },
       { name: "Deep Listening", desc: "In your next conversation with someone close to you, practice listening without preparing your response. Listen to understand, not to reply. When they finish, pause before speaking. Ask: 'Is there anything more?' This is presence — the Lover's greatest offering." },
       { name: "Body Aliveness Scan", desc: "Lie down and slowly scan your body from feet to crown, spending 10 seconds at each area simply noticing sensation: warmth, tingling, pressure, emptiness. The Lover reconnects men to the felt sense of being alive — not as performance, but as genuine experience." }
-    ]
+    ],
+    ritual: {
+      name: "Body Aliveness & Gratitude Ceremony 🙏",
+      timing: "Weekly — particularly when feeling disconnected, numb, or driven purely by output",
+      steps: [
+        "Choose a time when you won't be interrupted. Dim the lights. Put on music that has moved you emotionally — music you love.",
+        "Lie on the floor on your back. Close your eyes.",
+        "Begin with one hand on your heart. Simply feel it beating for 3 minutes — the faithful, uncomplaining rhythm of the body that has kept you alive through everything.",
+        "Slowly begin to move — let the music move you. Not performance. Not exercise. Simply let your body move however it wants to. Let it be strange, or tender, or powerful.",
+        "As you move, internally or aloud, begin to thank each part of your body: 'Thank you, feet, for carrying me. Thank you, hands, for building and creating. Thank you, heart, for feeling.'",
+        "Dance or move for at least 20 minutes. You may feel emotion arise — let it. The Lover does not suppress sensation.",
+        "End lying on the floor again, breathing. Feel the warmth and aliveness in your body. This is the gift."
+      ],
+      closing: "The Lover reminds us: the body is not a vehicle. It is the experience itself."
+    }
   },
   {
     id: "ancestral",
@@ -92,7 +149,21 @@ const archetypes = [
       { name: "Ancestor Altar", desc: "Create a small altar with photos, objects, or symbols representing the men of your lineage — father, grandfathers, great-grandfathers. Light a candle. Speak to them. Thank what was good. Ask for what you need. If there are wounds, offer forgiveness — not condoning but releasing." },
       { name: "Men's Circle", desc: "Seek or create a men's circle — a regular gathering of men who meet to speak honestly about their lives, not to fix each other, but to witness each other. Brotherhood in its deepest sense is one of the most healing forces available to men." },
       { name: "Letter to Your Descendants", desc: "Write a letter to a man in your bloodline who will be born 100 years from now. What do you want him to know? What are you healing for him? What gifts are you passing on? What do you hope for him? Keep this letter." }
-    ]
+    ],
+    ritual: {
+      name: "Ancestor Altar Ceremony 🙏",
+      timing: "Samhain/Halloween, Day of the Dead, Father's Day, or any time you feel the need to reconnect with your lineage",
+      steps: [
+        "Gather: a cloth for the altar, candles, photos or objects from men in your ancestry, a glass of water, a glass of whiskey or a drink your ancestors would have known, food they would have recognized.",
+        "Arrange the altar with care. Place the photos or objects where they feel right. Light the candles.",
+        "Pour the water and the drink. Place the food. These are your offerings — you are feeding your ancestors.",
+        "Sit before the altar and speak aloud: 'I call to the men of my bloodline. I honor what you gave me: your strength, your resilience, your sacrifices, your love expressed in the language available to you.'",
+        "Then speak what you are healing: 'I acknowledge the wounds in this lineage. I do not blame. I choose to transform them. The pattern ends with me. What begins with me is this...' (name the new pattern you are choosing).",
+        "Ask for what you need from your ancestors: wisdom, courage, guidance. Sit in silence for 10 minutes and listen.",
+        "Close by saying: 'Thank you. I carry you with me. I continue what was good. I transform what was broken. I love you.'"
+      ],
+      closing: "Tend this altar until the candles naturally burn down. The food and drink offerings can be left overnight and returned to the earth."
+    }
   }
 ];
 
@@ -241,7 +312,7 @@ const MasculineTemple = ({ user, api }) => {
 
               {/* Tabs */}
               <div className={`flex border-b ${selectedArchetype.color.border}`}>
-                {["teachings", "practices"].map((tab) => (
+                {["teachings", "practices", "ritual"].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -251,7 +322,7 @@ const MasculineTemple = ({ user, api }) => {
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {tab}
+                    {tab === "ritual" ? "Ritual 🙏" : tab}
                   </button>
                 ))}
               </div>
@@ -279,6 +350,25 @@ const MasculineTemple = ({ user, api }) => {
                         <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
                       </div>
                     ))}
+                  </div>
+                )}
+                {activeTab === "ritual" && selectedArchetype.ritual && (
+                  <div className="space-y-4">
+                    <div className={`p-4 rounded-xl ${selectedArchetype.color.bg} border ${selectedArchetype.color.border}`}>
+                      <h3 className="font-serif text-lg mb-1">{selectedArchetype.ritual.name}</h3>
+                      <p className="text-xs text-muted-foreground italic">{selectedArchetype.ritual.timing}</p>
+                    </div>
+                    <ol className="space-y-3">
+                      {selectedArchetype.ritual.steps.map((step, i) => (
+                        <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                          <span className={`w-7 h-7 rounded-full ${selectedArchetype.color.bg} border ${selectedArchetype.color.border} flex items-center justify-center text-xs ${selectedArchetype.color.text} flex-shrink-0`}>{i + 1}</span>
+                          {step}
+                        </li>
+                      ))}
+                    </ol>
+                    <div className={`p-4 rounded-xl ${selectedArchetype.color.bg} border ${selectedArchetype.color.border}`}>
+                      <p className="text-xs text-muted-foreground/80 italic">{selectedArchetype.ritual.closing}</p>
+                    </div>
                   </div>
                 )}
               </div>

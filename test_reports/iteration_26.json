@@ -1,0 +1,47 @@
+{
+  "summary": "Frontend testing of 3 change areas: (1) New shamanic hero image, (2) QLD time removed from nav + timezone moved to Astrology page, (3) Ritual content added to Rose Temple, Elemental Temples (all 5), and Masculine Temple (all 5 archetypes). All 12 test scenarios passed at 100%.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/test_reports/iteration_26.json"],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "All 3 change areas correctly implemented. No issues found.",
+    "LandingPage.jsx: New shamanic image (static.prod-images.emergentagent.com) confirmed — dark fire ceremony / stone circle / spirit animals scene. Old Unsplash yoga woman is gone.",
+    "TopNav.jsx: Clock import removed, QLD time widget removed entirely from nav bar. Only Home/Menu/User buttons remain.",
+    "AstrologyCalendar.jsx: TIMEZONES array (43 entries) with 'Southern Hemisphere' group header correctly showing QLD, Sydney, NZ, Johannesburg etc. Hemisphere toggle buttons (data-testid: hemi-south, hemi-north) working.",
+    "RoseTemple.jsx: 6 teaching cards (was 5). New 'rituals-embodiment' card added with 5 ceremony entries: Magdalene Anointing, Womb Healing, Daily Rose Devotion, Full Moon Sisterhood Ritual, Sacred Embodiment Dance.",
+    "ElementalTemples.jsx: 'Rituals 🙏' section tab added to sections array. All 5 elements (Earth, Water, Fire, Air, Spirit) have 'rituals' arrays with 2 ceremonies each.",
+    "MasculineTemple.jsx: Modal now has 3 tabs — Teachings, Practices, Ritual 🙏. All 5 archetypes (Warrior, King, Magician, Lover, Ancestral) have ritual data."
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only test)",
+    "frontend": "100% (all 12 test scenarios passed)"
+  },
+  "test_credentials": "No login required - all pages are public",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": false,
+  "context_for_next_testing_agent": "All 3 change areas verified: (1) Shamanic hero image (stone circle, fire, spirit animals) confirmed via screenshot and background-image URL check; (2) Nav bar has no QLD time / Clock — only Home button, menu toggle, and Sign In; (3) /astrology has hemisphere toggle (Southern/Northern) and full world timezone dropdown with SOUTHERN HEMISPHERE group showing QLD, Sydney, NZ, Johannesburg etc.; (4) /rose-temple has 6 cards, 'rituals-embodiment' modal shows 5 ceremonies; (5) /elemental-temples all 5 elements show 'Rituals 🙏' tab with rich ceremony content; (6) /masculine-temple warrior modal shows Teachings/Practices/Ritual 🙏 with Shield & Sword Declaration steps 1-8.",
+  "features_verified": {
+    "hero_image_shamanic": "PASS - New shamanic stone circle / fire ceremony / spirit animals image confirmed. Background URL: static.prod-images.emergentagent.com/.../662567cd...png",
+    "no_qld_time_in_nav": "PASS - Nav bar has no QLD time or Clock widget (screenshot confirmed: only Home, Moon Calendar, Sign In in nav)",
+    "astrology_hemisphere_toggle": "PASS - Southern 🌿 / Northern ☀️ toggle buttons found (data-testid: hemi-south, hemi-north)",
+    "astrology_timezone_dropdown": "PASS - 'Select timezone' button opens dropdown with SOUTHERN HEMISPHERE group: QLD, Sydney, Perth, Adelaide, Auckland, Johannesburg, Buenos Aires, São Paulo...",
+    "rose_temple_6_cards": "PASS - 6 teaching cards: rose-lineage, rose-meditations, feminine-embodiment, rose-ceremonies, rituals-embodiment, ancient-teachings",
+    "rose_rituals_modal": "PASS - Modal shows: Magdalene Anointing Ceremony, Womb Healing Ceremony, Daily Rose Devotion Practice, Full Moon Rose Sisterhood Ritual, Sacred Embodiment Dance",
+    "elemental_rituals_tab": "PASS - All element temples show 'Rituals 🙏' tab in section navigation",
+    "earth_temple_rituals": "PASS - Sacred Planting Ceremony 🙏 and Grounding Body Ritual 🙏 found",
+    "water_temple_rituals": "PASS - Moon Water Blessing Ceremony 🙏 found",
+    "fire_temple_rituals": "PASS - Sacred Fire Ceremony 🙏 found",
+    "masculine_warrior_3tabs": "PASS - Warrior modal has 3 tabs: Teachings, Practices, Ritual 🙏",
+    "warrior_ritual_steps": "PASS - Shield & Sword Declaration Ceremony with 8 numbered steps (facing east, sword object, shield object, warrior breaths, etc.)"
+  }
+}

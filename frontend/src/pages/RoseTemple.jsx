@@ -105,6 +105,36 @@ const teachings = [
     ]
   },
   {
+    id: "rituals-embodiment",
+    title: "Rose Rituals & Embodiment",
+    subtitle: "Sacred Ceremonies for Women",
+    icon: Star,
+    color: { text: "text-amber-300", bg: "bg-amber-500/10", border: "border-amber-500/20", glow: "shadow-amber-500/20" },
+    description: "These rituals are doorways into the living body of the Rose Temple — full ceremony formats designed to be practiced with reverence, intention, and the willingness to be transformed. 🙏",
+    content: [
+      {
+        heading: "Magdalene Anointing Ceremony 🙏",
+        body: "Gather: rose essential oil (or coconut oil with dried rose petals), a red or white candle, a mirror, your journal. Light the candle. Sit before the mirror and look into your own eyes without looking away for 3 full minutes — the 'soft gaze' that sees beyond the surface. Then, dip your finger into the rose oil. Anoint your third eye (between your eyebrows), your throat, your heart, your womb space, and the soles of your feet. With each anointing, speak aloud: 'I consecrate this [eye/voice/heart/womb/path] to the truth of who I am. I am anointed. I am enough. I am loved.' Close by placing both hands on your heart, bowing to yourself in the mirror, and offering gratitude for this body that carries you."
+      },
+      {
+        heading: "Womb Healing Ceremony 🙏",
+        body: "Create a safe, warm, private space. Bring: a red cloth or blanket, a warm water bottle for your belly, rose oil, and your journal. Play soft instrumental music. Lie down, place the warmth on your lower belly. Begin with 10 minutes of conscious breathing into the womb space — imagine golden light filling this center. Then speak aloud, tenderly, to your womb: name what it has carried that was not yours to carry. Name what has been done to it without its consent. Name what it has created — life, art, love. Offer forgiveness, compassion, and gratitude. This is not a one-time practice — return to it whenever this space needs tending. End by placing one hand on your womb and one on your heart: 'You are safe. You are sacred. You are mine.'"
+      },
+      {
+        heading: "Daily Rose Devotion Practice 🙏",
+        body: "A 5-minute morning practice: Place fresh or dried rose petals on your altar or in a small bowl of water. Place one hand on your heart. Take 3 deep breaths. As you exhale each breath, feel your heart softening — like rose petals opening. Speak: 'Today I choose love as my foundation. I move from the heart. I receive what life offers with grace. I bloom in my own time.' Pick up one rose petal and hold it through your morning. Let it be a reminder throughout the day to return to your heart. At night, return the petal to the earth."
+      },
+      {
+        heading: "Full Moon Rose Sisterhood Ritual 🙏",
+        body: "Gather 3 or more women on or near the full moon. Create a circle with candles and a vase of roses in the center. One by one, each woman takes a rose from the vase and speaks: one wound she is releasing, one truth she is claiming, one blessing she offers to all women in the circle and beyond. No commentary or advice is offered — only witnessing. After all have spoken, each woman places a petal in a shared bowl of water, saying: 'May all women be free.' Close by standing, hands linked, breathing together in silence for 2 minutes. The bowl of rose water is poured onto the earth the next morning as an offering."
+      },
+      {
+        heading: "Sacred Embodiment Dance 🙏",
+        body: "This practice requires 30–45 minutes of privacy and music that moves you — anything from slow devotional music to tribal beats, depending on what you need. Begin lying on the floor in stillness. Feel the weight of your body. After 5 minutes, begin to let one finger move, then your hand, then your arm, then your whole body, rising slowly from the floor. Let the body lead — not the mind. There is no choreography here. There are no steps to get right. Simply follow sensation: where does your body want to move? What part needs to shake loose? What wants to rise, to spiral, to collapse, to extend? Stay with each impulse until it completes itself, then follow the next. Close with both hands on your heart, kneeling or standing, and bow to the body that danced you home."
+      }
+    ]
+  },
+  {
     id: "ancient-teachings",
     title: "Ancient Women's Teachings",
     subtitle: "Wisdom Through the Ages",

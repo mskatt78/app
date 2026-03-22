@@ -21,31 +21,15 @@ import {
   Flower2,
   Shield,
   Globe,
-  Clock,
   Users
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-// Queensland runs AEST (UTC+10) all year — no daylight saving
-const getQldTime = () => {
-  const now = new Date();
-  const qldOffset = 10 * 60; // UTC+10 in minutes
-  const utc = now.getTime() + now.getTimezoneOffset() * 60000;
-  const qld = new Date(utc + qldOffset * 60000);
-  return qld.toLocaleTimeString("en-AU", { hour: "2-digit", minute: "2-digit", hour12: true });
-};
 
 const TopNav = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
-  const [qldTime, setQldTime] = useState(getQldTime());
-
-  useEffect(() => {
-    const timer = setInterval(() => setQldTime(getQldTime()), 30000);
-    return () => clearInterval(timer);
-  }, []);
 
   const menuItems = [
     { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400" },
@@ -120,24 +104,13 @@ const TopNav = ({ user }) => {
               <span className="text-sm hidden sm:inline">Dashboard</span>
             </button>
           ) : (
-            <div className="flex items-center gap-3">
-              {/* QLD Time */}
-              <div
-                className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-muted-foreground"
-                title={`Queensland AEST (UTC+10) — No daylight saving\nYour local time: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
-              >
-                <Clock className="w-3 h-3 text-primary/60" />
-                <span className="text-primary/80 font-medium">{qldTime}</span>
-                <span className="text-muted-foreground/50">QLD</span>
-              </div>
-              <button
-                onClick={() => navigate("/")}
-                className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-              >
-                <User className="w-5 h-5" />
-                <span className="text-sm hidden sm:inline">Sign In</span>
-              </button>
-            </div>
+            <button
+              onClick={() => navigate("/")}
+              className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+            >
+              <User className="w-5 h-5" />
+              <span className="text-sm hidden sm:inline">Sign In</span>
+            </button>
           )}
         </div>
       </nav>
@@ -154,17 +127,7 @@ const TopNav = ({ user }) => {
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-white/10">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-xl font-serif">Explore Practices</h2>
-                  <div
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-muted-foreground"
-                    title={`Queensland time (AEST UTC+10)`}
-                  >
-                    <Clock className="w-3 h-3 text-primary/60" />
-                    <span className="text-primary/80 font-medium">{qldTime}</span>
-                    <span className="text-muted-foreground/50">QLD</span>
-                  </div>
-                </div>
+                <h2 className="text-xl font-serif">Explore Practices</h2>
                 <button 
                   onClick={() => setShowMenu(false)}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors"
