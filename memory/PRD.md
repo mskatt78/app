@@ -4,6 +4,7 @@
 **App Name:** Shamanic Elements Temple Of The Soul  
 **Stack:** React (frontend) · FastAPI (backend) · MongoDB (database)  
 **Status:** Production-ready  
+**Last Updated:** March 2026
 
 ---
 
@@ -39,6 +40,12 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - [x] **Elemental Temples** — Earth, Water, Fire, Air, Spirit — 6 tabs each incl. Rituals 🙏 (2 ceremonies per element)
 - [x] **Masculine Temple** — Warrior, King, Magician, Lover, Ancestral — 3-tab modal with full Ritual 🙏 ceremony per archetype
 - [x] **Wheel of the Year** `/seasonal-temple` — 8 Sabbats (Samhain, Yule, Imbolc, Ostara, Beltane, Litha, Lughnasadh, Mabon) with full ritual, embodiment, crystals/herbs tabs; North/South hemisphere toggle; Earth Crafting section (5 practices)
+- [x] **Water Practices** `/water-practices` — 4 categories: Water Blessing, Crystalline Activation, Energy Cleansing, Moon Water with 12+ practices based on Dr. Emoto's research
+
+### Wisdom Systems (NEW - Mar 2026)
+- [x] **Gene Keys** `/gene-keys` — Complete 64 Gene Keys library with Shadow/Gift/Siddhi, Golden Path sequences (Activation, Venus, Pearl), contemplation tools, searchable grid
+- [x] **Human Design** `/human-design` — 5 Energy Types (Generator, Manifesting Generator, Projector, Manifestor, Reflector), 9 Centers, key Gates, experiment guide
+- [x] **Profile Calculator** `/profile-calculator` — Birth data input calculates personal Gene Keys Activation Sequence and Human Design type with full astrological calculations
 
 ### Daily Sacred Practice Widget (NEW - Mar 2026)
 - [x] **Sacred Practice of the Day** on Main Menu — real-time date-aware widget:
@@ -168,12 +175,10 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - Gifting Frontend UI — backend complete, needs purchase/redeem UI
 
 ### P2 (Medium)
-- Audio state management refactor to React Context
-- Additional content for new temples
 - Session history sync across devices
+- Additional content for new temples
 
 ### P3 (Future / Nice-to-Have)
-- Seasonal/moon-aware content recommendations
 - More Shamanic/Elemental content
 
 ---
@@ -189,9 +194,14 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - ✅ Journal system (Moon, Dream, Personal)
 - ✅ Mantras Library with audio
 - ✅ Daily Practice Widget
-- ✅ Water Practices (4 categories, 12+ practices, clickable modals) - NEW
+- ✅ Water Practices (4 categories, 12+ practices, TTS guided audio) - NEW
 - ✅ Gene Keys (64 keys with Shadow/Gift/Siddhi, Golden Path, Contemplation) - NEW
 - ✅ Human Design (5 types, 9 centers, 64 gates, detailed modals) - NEW
+- ✅ Profile Calculator (Gene Keys Activation Sequence + Human Design type from birth data) - NEW
+- ✅ Progress Dashboard (visual tracking, element balance, achievements) - NEW
+- ✅ Share to Social Media (Twitter, Facebook, WhatsApp, Email, Copy Link) - NEW
+- ✅ Notification System (Moon phase alerts, daily wisdom, practice reminders, browser push) - NEW
+- ✅ Offline Mode (Service worker caching for offline access) - NEW
 
 ---
 
