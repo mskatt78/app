@@ -102,16 +102,24 @@ async def health_check():
 
 @app.on_event("startup")
 async def startup_seed_database():
-    """Seed database with content if collections are empty."""
+    """Seed database with content if collections are empty. Always refreshes light_codes."""
     try:
-        # Check if yoga_poses collection is empty
+        from data.divination_content import LIGHT_CODES
+
+        # Always reseed light_codes so content updates in divination_content.py are applied
+        logger.info("Refreshing light_codes collection with latest data...")
+        await db.light_codes.delete_many({})
+        await db.light_codes.insert_one(LIGHT_CODES)
+        logger.info("light_codes refreshed.")
+
+        # Only seed everything else if yoga_poses is empty
         yoga_count = await db.yoga_poses.count_documents({})
         if yoga_count == 0:
             logger.info("Database empty - seeding content...")
             await seed_all_content()
             logger.info("Database seeding complete!")
         else:
-            logger.info(f"Database already has {yoga_count} yoga poses - skipping seed")
+            logger.info(f"Database already has {yoga_count} yoga poses - skipping full seed")
     except Exception as e:
         logger.error(f"Error during startup seeding: {e}")
 

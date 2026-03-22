@@ -4,7 +4,7 @@
 **App Name:** Shamanic Elements Temple Of The Soul  
 **Stack:** React (frontend) · FastAPI (backend) · MongoDB (database)  
 **Status:** Production-ready  
-**Last Updated:** March 2026
+**Last Updated:** March 22, 2026
 
 ---
 
@@ -56,8 +56,9 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
   - Practice recommendation linked to moon phase energy
 
 
-### Partner & Accessible Yoga (NEW - Feb 2026)
+### Partner & Accessible Yoga (Updated Mar 22, 2026)
 - [x] **Partner Yoga** page with 8 partner poses, difficulty filter, detailed instructions
+- [x] **Real yoga pose images** on every Partner Yoga card and modal (authentic Pexels/Unsplash photos)
 - [x] **Mobility Accessible Filter** in Yoga Library (Beginner-only filter for accessibility)
 - [x] Partner Yoga banner in Yoga Library with direct link
 
@@ -183,7 +184,7 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 
 ---
 
-## Features Verified Working (Mar 2026)
+## Features Verified Working (Mar 22, 2026)
 - ✅ World Timezone Converter (in Astrology Calendar)
 - ✅ Hemisphere Toggle (Southern/Northern)
 - ✅ Practice History logging (all practice pages)
@@ -194,14 +195,16 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - ✅ Journal system (Moon, Dream, Personal)
 - ✅ Mantras Library with audio
 - ✅ Daily Practice Widget
-- ✅ Water Practices (4 categories, 12+ practices, TTS guided audio) - NEW
-- ✅ Gene Keys (64 keys with Shadow/Gift/Siddhi, Golden Path, Contemplation) - NEW
-- ✅ Human Design (5 types, 9 centers, 64 gates, detailed modals) - NEW
-- ✅ Profile Calculator (Gene Keys Activation Sequence + Human Design type from birth data) - NEW
-- ✅ Progress Dashboard (visual tracking, element balance, achievements) - NEW
-- ✅ Share to Social Media (Twitter, Facebook, WhatsApp, Email, Copy Link) - NEW
-- ✅ Notification System (Moon phase alerts, daily wisdom, practice reminders, browser push) - NEW
-- ✅ Offline Mode (Service worker caching for offline access) - NEW
+- ✅ Water Practices (4 categories, 12+ practices, TTS guided audio)
+- ✅ Gene Keys (64 keys with Shadow/Gift/Siddhi, Golden Path, Contemplation)
+- ✅ Human Design (5 types, 9 centers, 64 gates, detailed modals)
+- ✅ Profile Calculator (Gene Keys Activation Sequence + Human Design type from birth data)
+- ✅ Progress Dashboard (visual tracking, element balance, achievements)
+- ✅ Share to Social Media (Twitter, Facebook, WhatsApp, Email, Copy Link)
+- ✅ Notification System (Moon phase alerts, daily wisdom, practice reminders, browser push)
+- ✅ Offline Mode (Service worker caching for offline access)
+- ✅ **Partner Yoga** — 8 poses with real yoga photos on cards & modal (NEW Mar 22)
+- ✅ **Light Codes** — 75 symbols with authentic thematic images (no generic placeholders) (UPDATED Mar 22)
 
 ---
 
