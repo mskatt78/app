@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, BookOpen, Plus, Trash2, Calendar, Tag, 
-  Smile, Zap, Heart, Brain, Mountain, ChevronRight
+  Smile, Zap, Heart, Brain, Mountain, ChevronRight,
+  Moon, Sun, Sparkles, Cloud, Feather
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -19,14 +20,40 @@ const Journal = ({ user, api }) => {
   const [creating, setCreating] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState(null);
   const [filterMood, setFilterMood] = useState("all");
+  const [activeJournalType, setActiveJournalType] = useState("all");
 
   const [newEntry, setNewEntry] = useState({
     title: "",
     content: "",
     mood: "",
     tags: [],
+    journal_type: "personal",
+    dream_symbols: "",
+    moon_phase: "",
+    moon_intention: "",
   });
   const [tagInput, setTagInput] = useState("");
+
+  const journalTypes = [
+    { value: "all", label: "All Journals", icon: BookOpen, color: "text-primary", bg: "bg-primary/10" },
+    { value: "moon", label: "Moon Journal", icon: Moon, color: "text-purple-400", bg: "bg-purple-500/10", 
+      description: "Track lunar cycles, set intentions, and reflect on moon energy" },
+    { value: "dream", label: "Dream Journal", icon: Cloud, color: "text-blue-400", bg: "bg-blue-500/10",
+      description: "Record dreams, symbols, and messages from the subconscious" },
+    { value: "personal", label: "Personal Diary", icon: Feather, color: "text-amber-400", bg: "bg-amber-500/10",
+      description: "Daily reflections, gratitude, and personal insights" },
+  ];
+
+  const moonPhases = [
+    { value: "new_moon", label: "New Moon 🌑", energy: "New beginnings, setting intentions" },
+    { value: "waxing_crescent", label: "Waxing Crescent 🌒", energy: "Building momentum, taking action" },
+    { value: "first_quarter", label: "First Quarter 🌓", energy: "Challenges, decisions, commitment" },
+    { value: "waxing_gibbous", label: "Waxing Gibbous 🌔", energy: "Refinement, patience, trust" },
+    { value: "full_moon", label: "Full Moon 🌕", energy: "Culmination, release, celebration" },
+    { value: "waning_gibbous", label: "Waning Gibbous 🌖", energy: "Gratitude, sharing wisdom" },
+    { value: "last_quarter", label: "Last Quarter 🌗", energy: "Letting go, forgiveness" },
+    { value: "waning_crescent", label: "Waning Crescent 🌘", energy: "Rest, reflection, surrender" },
+  ];
 
   const moods = [
     { value: "peaceful", label: "Peaceful", icon: Smile, color: "text-blue-400" },
@@ -38,12 +65,15 @@ const Journal = ({ user, api }) => {
 
   useEffect(() => {
     fetchEntries();
-  }, [filterMood]);
+  }, [filterMood, activeJournalType]);
 
   const fetchEntries = async () => {
     try {
-      const params = filterMood !== "all" ? `?mood=${filterMood}` : "";
-      const response = await api.get(`/journal${params}`);
+      const params = new URLSearchParams();
+      if (filterMood !== "all") params.append("mood", filterMood);
+      if (activeJournalType !== "all") params.append("journal_type", activeJournalType);
+      const queryString = params.toString() ? `?${params.toString()}` : "";
+      const response = await api.get(`/journal${queryString}`);
       setEntries(response.data);
     } catch (error) {
       console.error("Failed to fetch entries:", error);
@@ -59,14 +89,30 @@ const Journal = ({ user, api }) => {
     }
 
     try {
-      const response = await api.post("/journal", {
-        ...newEntry,
-        tags: newEntry.tags.length > 0 ? newEntry.tags : null,
+      const entryData = {
+        title: newEntry.title,
+        content: newEntry.content,
         mood: newEntry.mood || null,
-      });
+        tags: newEntry.tags.length > 0 ? newEntry.tags : null,
+        journal_type: newEntry.journal_type,
+      };
+
+      // Add type-specific fields
+      if (newEntry.journal_type === "moon") {
+        entryData.moon_phase = newEntry.moon_phase || null;
+        entryData.moon_intention = newEntry.moon_intention || null;
+      } else if (newEntry.journal_type === "dream") {
+        entryData.dream_symbols = newEntry.dream_symbols || null;
+      }
+
+      const response = await api.post("/journal", entryData);
       
       setEntries(prev => [response.data, ...prev]);
-      setNewEntry({ title: "", content: "", mood: "", tags: [] });
+      setNewEntry({ 
+        title: "", content: "", mood: "", tags: [], 
+        journal_type: newEntry.journal_type,
+        dream_symbols: "", moon_phase: "", moon_intention: ""
+      });
       setCreating(false);
       toast.success("Journal entry saved");
     } catch (error) {
@@ -162,6 +208,28 @@ const Journal = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6">
+        {/* Journal Type Tabs */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+          {journalTypes.map((type) => {
+            const Icon = type.icon;
+            return (
+              <button
+                key={type.value}
+                onClick={() => setActiveJournalType(type.value)}
+                className={`flex items-center gap-2 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${
+                  activeJournalType === type.value
+                    ? `${type.bg} ${type.color} border border-current/30`
+                    : "bg-card/50 text-muted-foreground hover:bg-card border border-white/5"
+                }`}
+                data-testid={`journal-type-${type.value}`}
+              >
+                <Icon className="w-4 h-4" />
+                <span className="font-medium">{type.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
@@ -198,6 +266,16 @@ const Journal = ({ user, api }) => {
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="w-4 h-4" />
                         <span>{formatDate(entry.created_at)}</span>
+                        {entry.journal_type && entry.journal_type !== "personal" && (
+                          <span className={`px-2 py-0.5 rounded-full text-xs ${
+                            entry.journal_type === "moon" ? "bg-purple-500/20 text-purple-400" :
+                            entry.journal_type === "dream" ? "bg-blue-500/20 text-blue-400" :
+                            "bg-amber-500/20 text-amber-400"
+                          }`}>
+                            {entry.journal_type === "moon" ? "🌙 Moon" : 
+                             entry.journal_type === "dream" ? "☁️ Dream" : "📝 Personal"}
+                          </span>
+                        )}
                       </div>
                       {entry.mood && getMoodIcon(entry.mood)}
                     </div>
@@ -206,6 +284,20 @@ const Journal = ({ user, api }) => {
                       <h3 className="text-xl font-serif mb-2 group-hover:text-primary transition-colors">
                         {entry.title}
                       </h3>
+                    )}
+
+                    {/* Moon Journal specific display */}
+                    {entry.journal_type === "moon" && entry.moon_phase && (
+                      <div className="mb-2 text-sm text-purple-400">
+                        {moonPhases.find(p => p.value === entry.moon_phase)?.label || entry.moon_phase}
+                      </div>
+                    )}
+
+                    {/* Dream Journal specific display */}
+                    {entry.journal_type === "dream" && entry.dream_symbols && (
+                      <div className="mb-2 text-sm text-blue-400 italic">
+                        Symbols: {entry.dream_symbols}
+                      </div>
                     )}
                     
                     <p className="text-muted-foreground line-clamp-3 mb-4">
@@ -279,6 +371,32 @@ const Journal = ({ user, api }) => {
           </DialogHeader>
           
           <div className="space-y-4 mt-4">
+            {/* Journal Type Selection */}
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">Journal Type</label>
+              <div className="flex gap-2">
+                {journalTypes.filter(t => t.value !== "all").map((type) => {
+                  const Icon = type.icon;
+                  const isSelected = newEntry.journal_type === type.value;
+                  return (
+                    <button
+                      key={type.value}
+                      onClick={() => setNewEntry(prev => ({ ...prev, journal_type: type.value }))}
+                      className={`flex-1 px-3 py-3 rounded-xl flex flex-col items-center gap-1 transition-all border ${
+                        isSelected 
+                          ? `${type.bg} ${type.color} border-current/30` 
+                          : "bg-card/50 border-white/10 text-muted-foreground hover:border-white/20"
+                      }`}
+                      data-testid={`select-journal-type-${type.value}`}
+                    >
+                      <Icon className="w-5 h-5" />
+                      <span className="text-xs">{type.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm text-muted-foreground mb-2">Title (optional)</label>
               <Input
@@ -288,6 +406,55 @@ const Journal = ({ user, api }) => {
                 className="bg-card/50 border-white/10"
               />
             </div>
+
+            {/* Moon Journal Specific Fields */}
+            {newEntry.journal_type === "moon" && (
+              <>
+                <div>
+                  <label className="block text-sm text-muted-foreground mb-2">Moon Phase</label>
+                  <Select 
+                    value={newEntry.moon_phase} 
+                    onValueChange={(value) => setNewEntry(prev => ({ ...prev, moon_phase: value }))}
+                  >
+                    <SelectTrigger className="bg-card/50 border-white/10">
+                      <SelectValue placeholder="Select moon phase..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {moonPhases.map((phase) => (
+                        <SelectItem key={phase.value} value={phase.value}>
+                          <div>
+                            <div>{phase.label}</div>
+                            <div className="text-xs text-muted-foreground">{phase.energy}</div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <label className="block text-sm text-muted-foreground mb-2">Moon Intention (optional)</label>
+                  <Input
+                    value={newEntry.moon_intention}
+                    onChange={(e) => setNewEntry(prev => ({ ...prev, moon_intention: e.target.value }))}
+                    placeholder="What intention are you setting with this moon?"
+                    className="bg-card/50 border-white/10"
+                  />
+                </div>
+              </>
+            )}
+
+            {/* Dream Journal Specific Fields */}
+            {newEntry.journal_type === "dream" && (
+              <div>
+                <label className="block text-sm text-muted-foreground mb-2">Dream Symbols (optional)</label>
+                <Input
+                  value={newEntry.dream_symbols}
+                  onChange={(e) => setNewEntry(prev => ({ ...prev, dream_symbols: e.target.value }))}
+                  placeholder="Key symbols: water, flying, animals..."
+                  className="bg-card/50 border-white/10"
+                />
+              </div>
+            )}
 
             <div>
               <label className="block text-sm text-muted-foreground mb-2">How are you feeling?</label>
@@ -315,11 +482,18 @@ const Journal = ({ user, api }) => {
             </div>
 
             <div>
-              <label className="block text-sm text-muted-foreground mb-2">Your Reflection</label>
+              <label className="block text-sm text-muted-foreground mb-2">
+                {newEntry.journal_type === "moon" ? "Moon Reflection" : 
+                 newEntry.journal_type === "dream" ? "Dream Description" : "Your Reflection"}
+              </label>
               <Textarea
                 value={newEntry.content}
                 onChange={(e) => setNewEntry(prev => ({ ...prev, content: e.target.value }))}
-                placeholder="Write your thoughts, insights, and reflections..."
+                placeholder={
+                  newEntry.journal_type === "moon" ? "Reflect on the moon's energy and your intentions..." :
+                  newEntry.journal_type === "dream" ? "Describe your dream in detail..." :
+                  "Write your thoughts, insights, and reflections..."
+                }
                 className="bg-card/50 border-white/10 min-h-40"
               />
             </div>

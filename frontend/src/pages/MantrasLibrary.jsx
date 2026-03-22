@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Heart, Filter, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward, Gauge, Minus, Plus } from "lucide-react";
+import { ArrowLeft, Heart, Filter, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward, Gauge, Minus, Plus, PenLine, Trash2, Edit2, Sparkles } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Progress } from "../components/ui/progress";
 import { Slider } from "../components/ui/slider";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
 import { toast } from "sonner";
 import { 
   createMantraAudioContext, 
@@ -24,6 +26,18 @@ const MantrasLibrary = ({ user, api }) => {
   const [selectedElement, setSelectedElement] = useState("all");
   const [selectedMantra, setSelectedMantra] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
+  
+  // User custom mantras
+  const [activeTab, setActiveTab] = useState("library"); // "library" or "custom"
+  const [userMantras, setUserMantras] = useState([]);
+  const [isCreatingMantra, setIsCreatingMantra] = useState(false);
+  const [editingMantra, setEditingMantra] = useState(null);
+  const [newMantra, setNewMantra] = useState({
+    text: "",
+    category: "personal",
+    element: "",
+    notes: ""
+  });
   
   // Chanting state
   const [isChanting, setIsChanting] = useState(false);
@@ -53,6 +67,14 @@ const MantrasLibrary = ({ user, api }) => {
   const [useGeneratedSound, setUseGeneratedSound] = useState(true); // Default to generated sound
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
+  
+  const mantraCategories = [
+    { value: "personal", label: "Personal Power" },
+    { value: "healing", label: "Healing" },
+    { value: "abundance", label: "Abundance" },
+    { value: "protection", label: "Protection" },
+    { value: "love", label: "Love & Compassion" },
+  ];
 
   const elementColors = {
     Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", gradient: "from-emerald-500/20" },
@@ -65,6 +87,9 @@ const MantrasLibrary = ({ user, api }) => {
   useEffect(() => {
     fetchMantras();
     fetchFavorites();
+    if (user) {
+      fetchUserMantras();
+    }
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (audioRef.current) {
@@ -73,6 +98,80 @@ const MantrasLibrary = ({ user, api }) => {
       }
     };
   }, []);
+
+  const fetchUserMantras = async () => {
+    try {
+      const response = await api.get("/mantras/custom");
+      setUserMantras(response.data);
+    } catch (error) {
+      console.error("Failed to fetch user mantras:", error);
+    }
+  };
+
+  const createUserMantra = async () => {
+    if (!newMantra.text.trim()) {
+      toast.error("Please write your mantra");
+      return;
+    }
+    try {
+      const response = await api.post("/mantras/custom", {
+        text: newMantra.text,
+        category: newMantra.category,
+        element: newMantra.element || null,
+        notes: newMantra.notes || null
+      });
+      setUserMantras(prev => [response.data, ...prev]);
+      setNewMantra({ text: "", category: "personal", element: "", notes: "" });
+      setIsCreatingMantra(false);
+      toast.success("Mantra saved!");
+    } catch (error) {
+      console.error("Failed to create mantra:", error);
+      toast.error("Could not save mantra");
+    }
+  };
+
+  const updateUserMantra = async () => {
+    if (!editingMantra || !newMantra.text.trim()) return;
+    try {
+      const response = await api.put(`/mantras/custom/${editingMantra.mantra_id}`, {
+        text: newMantra.text,
+        category: newMantra.category,
+        element: newMantra.element || null,
+        notes: newMantra.notes || null
+      });
+      setUserMantras(prev => prev.map(m => 
+        m.mantra_id === editingMantra.mantra_id ? response.data : m
+      ));
+      setNewMantra({ text: "", category: "personal", element: "", notes: "" });
+      setEditingMantra(null);
+      toast.success("Mantra updated!");
+    } catch (error) {
+      console.error("Failed to update mantra:", error);
+      toast.error("Could not update mantra");
+    }
+  };
+
+  const deleteUserMantra = async (mantraId) => {
+    try {
+      await api.delete(`/mantras/custom/${mantraId}`);
+      setUserMantras(prev => prev.filter(m => m.mantra_id !== mantraId));
+      toast.success("Mantra deleted");
+    } catch (error) {
+      console.error("Failed to delete mantra:", error);
+      toast.error("Could not delete mantra");
+    }
+  };
+
+  const startEditingMantra = (mantra) => {
+    setEditingMantra(mantra);
+    setNewMantra({
+      text: mantra.text,
+      category: mantra.category || "personal",
+      element: mantra.element || "",
+      notes: mantra.notes || ""
+    });
+    setIsCreatingMantra(true);
+  };
 
   useEffect(() => {
     if (selectedElement === "all") {
@@ -394,7 +493,134 @@ const MantrasLibrary = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6">
-        {loading ? (
+        {/* Tabs: Library vs Custom */}
+        <div className="flex gap-4 mb-6">
+          <button
+            onClick={() => setActiveTab("library")}
+            className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-all ${
+              activeTab === "library"
+                ? "bg-primary/20 text-primary border border-primary/30"
+                : "bg-card/50 text-muted-foreground border border-white/5 hover:border-white/10"
+            }`}
+            data-testid="tab-library"
+          >
+            <Music className="w-4 h-4" />
+            Sacred Library
+          </button>
+          <button
+            onClick={() => setActiveTab("custom")}
+            className={`px-6 py-3 rounded-xl flex items-center gap-2 transition-all ${
+              activeTab === "custom"
+                ? "bg-purple-500/20 text-purple-400 border border-purple-500/30"
+                : "bg-card/50 text-muted-foreground border border-white/5 hover:border-white/10"
+            }`}
+            data-testid="tab-custom"
+          >
+            <PenLine className="w-4 h-4" />
+            My Mantras
+            {userMantras.length > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-xs">
+                {userMantras.length}
+              </span>
+            )}
+          </button>
+        </div>
+
+        {activeTab === "custom" ? (
+          /* Custom Mantras Section */
+          <div className="space-y-6">
+            {/* Create New Mantra Button */}
+            {user ? (
+              <Button
+                onClick={() => {
+                  setEditingMantra(null);
+                  setNewMantra({ text: "", category: "personal", element: "", notes: "" });
+                  setIsCreatingMantra(true);
+                }}
+                className="w-full py-6 bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 text-purple-300 hover:from-purple-600/30 hover:to-pink-600/30"
+                data-testid="create-mantra-btn"
+              >
+                <PenLine className="w-5 h-5 mr-2" />
+                Write Your Own Powerful Mantra
+              </Button>
+            ) : (
+              <div className="p-6 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-center">
+                <Sparkles className="w-10 h-10 mx-auto mb-3 text-purple-400" />
+                <p className="text-lg font-serif mb-2">Sign in to create your own mantras</p>
+                <p className="text-sm text-muted-foreground mb-4">Save and organize your personal sacred words</p>
+                <Button onClick={() => navigate("/auth")} className="bg-purple-600 hover:bg-purple-700">
+                  Sign In
+                </Button>
+              </div>
+            )}
+
+            {/* User's Custom Mantras List */}
+            {userMantras.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {userMantras.map((mantra, index) => {
+                  const colors = mantra.element ? elementColors[mantra.element] : { bg: "bg-purple-500/10", border: "border-purple-500/20", text: "text-purple-400" };
+                  return (
+                    <motion.div
+                      key={mantra.mantra_id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className={`p-6 rounded-2xl border ${colors.bg} ${colors.border} relative group`}
+                    >
+                      {/* Actions */}
+                      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => startEditingMantra(mantra)}
+                          className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                          data-testid={`edit-mantra-${mantra.mantra_id}`}
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteUserMantra(mantra.mantra_id)}
+                          className="p-2 rounded-full bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-colors"
+                          data-testid={`delete-mantra-${mantra.mantra_id}`}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Category & Element Badge */}
+                      <div className="flex gap-2 mb-3">
+                        <span className="px-2 py-1 rounded-full bg-white/10 text-xs capitalize">
+                          {mantra.category}
+                        </span>
+                        {mantra.element && (
+                          <span className={`px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
+                            {mantra.element}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Mantra Text */}
+                      <p className="text-lg font-serif italic leading-relaxed mb-3">
+                        "{mantra.text}"
+                      </p>
+
+                      {/* Notes */}
+                      {mantra.notes && (
+                        <p className="text-sm text-muted-foreground">
+                          {mantra.notes}
+                        </p>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            ) : user && (
+              <div className="text-center py-12">
+                <PenLine className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <p className="text-lg font-serif mb-2">No custom mantras yet</p>
+                <p className="text-muted-foreground">Write your first powerful mantra above</p>
+              </div>
+            )}
+          </div>
+        ) : loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
@@ -769,6 +995,112 @@ const MantrasLibrary = ({ user, api }) => {
               </div>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Create/Edit Custom Mantra Dialog */}
+      <Dialog open={isCreatingMantra} onOpenChange={(open) => {
+        setIsCreatingMantra(open);
+        if (!open) {
+          setEditingMantra(null);
+          setNewMantra({ text: "", category: "personal", element: "", notes: "" });
+        }
+      }}>
+        <DialogContent className="bg-card border-white/10 max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-serif">
+              {editingMantra ? "Edit Your Mantra" : "Write Your Mantra"}
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 mt-4">
+            {/* Mantra Text */}
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">Your Sacred Words</label>
+              <Textarea
+                value={newMantra.text}
+                onChange={(e) => setNewMantra(prev => ({ ...prev, text: e.target.value }))}
+                placeholder="I am worthy of love and abundance..."
+                className="bg-card/50 border-white/10 min-h-24 text-lg font-serif"
+                data-testid="mantra-text-input"
+              />
+            </div>
+
+            {/* Category */}
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">Category</label>
+              <Select 
+                value={newMantra.category} 
+                onValueChange={(value) => setNewMantra(prev => ({ ...prev, category: value }))}
+              >
+                <SelectTrigger className="bg-card/50 border-white/10">
+                  <SelectValue placeholder="Select category..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {mantraCategories.map((cat) => (
+                    <SelectItem key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Element (optional) */}
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">Element (optional)</label>
+              <Select 
+                value={newMantra.element} 
+                onValueChange={(value) => setNewMantra(prev => ({ ...prev, element: value }))}
+              >
+                <SelectTrigger className="bg-card/50 border-white/10">
+                  <SelectValue placeholder="Connect to an element..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">None</SelectItem>
+                  {elements.filter(e => e !== "all").map((el) => (
+                    <SelectItem key={el} value={el}>
+                      {el}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Notes */}
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">Notes (optional)</label>
+              <Input
+                value={newMantra.notes}
+                onChange={(e) => setNewMantra(prev => ({ ...prev, notes: e.target.value }))}
+                placeholder="When to use this mantra, what it means to you..."
+                className="bg-card/50 border-white/10"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsCreatingMantra(false);
+                  setEditingMantra(null);
+                  setNewMantra({ text: "", category: "personal", element: "", notes: "" });
+                }}
+                className="flex-1 border-white/10"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={editingMantra ? updateUserMantra : createUserMantra}
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+                data-testid="save-mantra-btn"
+              >
+                <Sparkles className="w-4 h-4 mr-2" />
+                {editingMantra ? "Update Mantra" : "Save Mantra"}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

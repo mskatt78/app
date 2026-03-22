@@ -53,6 +53,24 @@ class JournalEntryCreate(BaseModel):
     mood: Optional[str] = None  # "peaceful", "energized", "grateful", "reflective", "challenged"
     practices_completed: Optional[List[str]] = None
     tags: Optional[List[str]] = None
+    journal_type: Optional[str] = "personal"  # "moon", "dream", "personal"
+    moon_phase: Optional[str] = None  # For moon journal
+    moon_intention: Optional[str] = None  # For moon journal
+    dream_symbols: Optional[str] = None  # For dream journal
+
+
+class UserMantraCreate(BaseModel):
+    text: str
+    category: Optional[str] = "personal"  # "healing", "abundance", "protection", "love", "personal"
+    element: Optional[str] = None  # "earth", "water", "fire", "air", "spirit"
+    notes: Optional[str] = None
+
+
+class UserMantraUpdate(BaseModel):
+    text: Optional[str] = None
+    category: Optional[str] = None
+    element: Optional[str] = None
+    notes: Optional[str] = None
 
 
 # ============ DASHBOARD ============
@@ -477,8 +495,16 @@ async def create_journal_entry(data: JournalEntryCreate, user: User = Depends(ge
         "mood": data.mood,
         "practices_completed": data.practices_completed or [],
         "tags": data.tags or [],
+        "journal_type": data.journal_type or "personal",
         "created_at": datetime.now(timezone.utc).isoformat()
     }
+    
+    # Add type-specific fields
+    if data.journal_type == "moon":
+        entry["moon_phase"] = data.moon_phase
+        entry["moon_intention"] = data.moon_intention
+    elif data.journal_type == "dream":
+        entry["dream_symbols"] = data.dream_symbols
     
     await db.journal.insert_one(entry)
     entry.pop("_id", None)
@@ -489,13 +515,16 @@ async def create_journal_entry(data: JournalEntryCreate, user: User = Depends(ge
 async def get_journal_entries(
     user: User = Depends(get_current_user),
     limit: int = 50,
-    mood: Optional[str] = None
+    mood: Optional[str] = None,
+    journal_type: Optional[str] = None
 ):
     """Get user's journal entries."""
     db = get_db()
     query = {"user_id": user.user_id}
     if mood:
         query["mood"] = mood
+    if journal_type:
+        query["journal_type"] = journal_type
     
     entries = await db.journal.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
     return entries
@@ -609,3 +638,80 @@ async def get_achievements(user: User = Depends(get_current_user)):
         })
     
     return achievements
+
+
+
+# ============ USER MANTRAS ============
+
+@router.post("/mantras/custom")
+async def create_user_mantra(data: UserMantraCreate, user: User = Depends(get_current_user)):
+    """Create a custom mantra."""
+    db = get_db()
+    mantra = {
+        "mantra_id": f"mantra_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "text": data.text,
+        "category": data.category or "personal",
+        "element": data.element,
+        "notes": data.notes,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.user_mantras.insert_one(mantra)
+    mantra.pop("_id", None)
+    return mantra
+
+
+@router.get("/mantras/custom")
+async def get_user_mantras(
+    user: User = Depends(get_current_user),
+    category: Optional[str] = None
+):
+    """Get user's custom mantras."""
+    db = get_db()
+    query = {"user_id": user.user_id}
+    if category:
+        query["category"] = category
+    
+    mantras = await db.user_mantras.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return mantras
+
+
+@router.put("/mantras/custom/{mantra_id}")
+async def update_user_mantra(
+    mantra_id: str, 
+    data: UserMantraUpdate, 
+    user: User = Depends(get_current_user)
+):
+    """Update a custom mantra."""
+    db = get_db()
+    
+    update_data = {k: v for k, v in data.dict().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    
+    result = await db.user_mantras.update_one(
+        {"mantra_id": mantra_id, "user_id": user.user_id},
+        {"$set": update_data}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Mantra not found")
+    
+    mantra = await db.user_mantras.find_one(
+        {"mantra_id": mantra_id, "user_id": user.user_id}, 
+        {"_id": 0}
+    )
+    return mantra
+
+
+@router.delete("/mantras/custom/{mantra_id}")
+async def delete_user_mantra(mantra_id: str, user: User = Depends(get_current_user)):
+    """Delete a custom mantra."""
+    db = get_db()
+    result = await db.user_mantras.delete_one({"mantra_id": mantra_id, "user_id": user.user_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Mantra not found")
+    
+    return {"message": "Mantra deleted successfully"}

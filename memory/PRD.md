@@ -142,6 +142,17 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
   - 5 Sunset Practices: Evening Gratitude Ceremony, Twilight Body Scan, Moon Water Blessing, Evening Star Meditation, Shedding Fire Ritual
   - All "release" language changed to "shed" (energy doesn't return)
   - Added to Main Menu under Sacred Temples
+- [x] **Journal Types** - Enhanced Journal page with 3 specialized types:
+  - Moon Journal: Track lunar cycles, moon phases, intentions
+  - Dream Journal: Record dreams, symbols, subconscious messages
+  - Personal Diary: Daily reflections, gratitude, insights
+  - Filter tabs to view by journal type
+- [x] **Custom Mantras** - "Write Your Own Mantras" feature:
+  - Create, edit, delete personal mantras
+  - Categories: Personal Power, Healing, Abundance, Protection, Love
+  - Optional element association
+  - Notes field for context
+  - New "My Mantras" tab in Mantras Library
 
 ### P1 (High)
 - Gifting Frontend UI — backend complete, needs purchase/redeem UI
