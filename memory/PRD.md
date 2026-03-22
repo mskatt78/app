@@ -81,6 +81,7 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 │   ├── data/
 │   │   └── all_content.py      # Master seed content
 │   │   └── yoga_poses.py       # 78 yoga poses
+│   │   └── divination_content.py # Runes, I Ching, Light Codes
 │   └── routers/
 │       ├── auth.py
 │       ├── tts.py              # Chunked audio generation
@@ -95,14 +96,17 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
         │   ├── MainMenu.jsx    # Central hub with all categories
         │   ├── Breathwork.jsx  # Web Audio API Hz frequencies
         │   ├── Meditations.jsx # TTS audio meditations
-        │   ├── RoseTemple.jsx  # Women's sacred space [NEW]
-        │   ├── ElementalTemples.jsx  # 5 element temples [NEW]
-        │   ├── MasculineTemple.jsx   # Men's embodiment [NEW]
-        │   ├── PartnerYoga.jsx       # Partner yoga poses [NEW]
+        │   ├── RoseTemple.jsx  # Women's sacred space
+        │   ├── ElementalTemples.jsx  # 5 element temples
+        │   ├── MasculineTemple.jsx   # Men's embodiment
+        │   ├── PartnerYoga.jsx       # Partner yoga poses
+        │   ├── WaterPractices.jsx    # Water blessing & crystalline [NEW]
+        │   ├── GeneKeys.jsx          # 64 Gene Keys system [NEW]
+        │   ├── HumanDesign.jsx       # Human Design system [NEW]
         │   ├── YogaLibrary.jsx # + Mobility filter + Partner Yoga banner
         │   └── PrivacyPolicy.jsx
         └── components/
-            └── TopNav.jsx      # + QLD time clock widget
+            └── TopNav.jsx      # Navigation component
 ```
 
 ---
@@ -132,27 +136,33 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - None currently outstanding
 
 ### Completed This Session (Mar 2026)
-- [x] **Healing Modalities** in Heart Practices:
-  - Meridian Therapy Flow (35 min) - Traditional Chinese Medicine & Shamanic Integration
-  - Trauma-Informed Somatic Shedding (40 min) - Somatic Experiencing & Indigenous Healing Practices
-  - Shamanic Healing Journey (45 min) - Core Shamanism & Global Indigenous Traditions
-  - Energy Sweeping & Aura Cleansing (25 min) - Curanderismo, Reiki & Shamanic Clearing
-- [x] **Sunrise & Sunset Practices** - New dedicated page `/sunrise-sunset`:
-  - 4 Sunrise Practices: Sun Salutation Awakening, Dawn Breathwork Ritual, Morning Earth Connection, Sacred Morning Pages
-  - 5 Sunset Practices: Evening Gratitude Ceremony, Twilight Body Scan, Moon Water Blessing, Evening Star Meditation, Shedding Fire Ritual
-  - All "release" language changed to "shed" (energy doesn't return)
+- [x] **Water Practices** `/water-practices` - NEW comprehensive water wisdom page:
+  - 4 Categories: Water Blessing, Crystalline Activation, Energy Cleansing, Moon Water
+  - 12+ practices including Intention Water Blessing, Gratitude Water Ritual, Prayer Over Water
+  - Crystalline Water Activation with sacred geometry and frequencies (528Hz, 432Hz, etc.)
+  - Chakra Cleansing Water with 7 chakra correspondences
+  - Full Moon, New Moon, and Eclipse Water rituals
+  - Based on Dr. Masaru Emoto's water memory research
   - Added to Main Menu under Sacred Temples
-- [x] **Journal Types** - Enhanced Journal page with 3 specialized types:
-  - Moon Journal: Track lunar cycles, moon phases, intentions
-  - Dream Journal: Record dreams, symbols, subconscious messages
-  - Personal Diary: Daily reflections, gratitude, insights
-  - Filter tabs to view by journal type
-- [x] **Custom Mantras** - "Write Your Own Mantras" feature:
-  - Create, edit, delete personal mantras
-  - Categories: Personal Power, Healing, Abundance, Protection, Love
-  - Optional element association
-  - Notes field for context
-  - New "My Mantras" tab in Mantras Library
+- [x] **Gene Keys** `/gene-keys` - NEW wisdom system page:
+  - Complete 64 Gene Keys library with Shadow/Gift/Siddhi for each key
+  - 4 Tabs: Overview, 64 Gene Keys (searchable grid), Golden Path, Contemplation
+  - Three Sequences (Activation, Venus, Pearl) with sphere explanations
+  - Draw Today's Gene Key random selection feature
+  - DNA codon information for each key
+  - Based on Richard Rudd's Gene Keys system
+- [x] **Human Design** `/human-design` - NEW wisdom system page:
+  - 5 Energy Types: Generator, Manifesting Generator, Projector, Manifestor, Reflector
+  - Detailed info: Strategy, Aura, Signature, Not-Self Theme, Key Traits, Deconditioning
+  - 9 Centers with defined/undefined explanations
+  - 13 Key Gates with meanings
+  - Your Experiment guide for living your design
+  - Based on Ra Uru Hu's Human Design System
+- [x] **Previous Session Work** (preserved):
+  - Healing Modalities in Heart Practices (4 modalities)
+  - Sunrise & Sunset Practices (9 practices)
+  - Journal Types (Moon, Dream, Personal)
+  - Custom Mantras feature
 
 ### P1 (High)
 - Gifting Frontend UI — backend complete, needs purchase/redeem UI
@@ -179,6 +189,9 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - ✅ Journal system (Moon, Dream, Personal)
 - ✅ Mantras Library with audio
 - ✅ Daily Practice Widget
+- ✅ Water Practices (4 categories, 12+ practices, clickable modals) - NEW
+- ✅ Gene Keys (64 keys with Shadow/Gift/Siddhi, Golden Path, Contemplation) - NEW
+- ✅ Human Design (5 types, 9 centers, 64 gates, detailed modals) - NEW
 
 ---
 
