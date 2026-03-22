@@ -205,6 +205,7 @@ Build a full-stack spiritual wellness platform featuring yoga, somatic movements
 - ✅ Offline Mode (Service worker caching for offline access)
 - ✅ **Partner Yoga** — 8 poses with real yoga photos on cards & modal (NEW Mar 22)
 - ✅ **Light Codes** — 75 symbols with authentic thematic images (no generic placeholders) (UPDATED Mar 22)
+- ✅ **Community Reviews** — star ratings, written reviews, share modal, stats block, upsert (NEW Mar 22)
 
 ---
 
