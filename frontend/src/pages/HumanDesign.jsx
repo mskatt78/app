@@ -663,6 +663,33 @@ const HumanDesign = ({ user, api }) => {
                   <Button variant="outline" className="w-full border-white/10" onClick={resetChart} data-testid="hd-reset-btn">
                     Calculate New Chart
                   </Button>
+
+                  {/* Link to Gene Keys */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-500/20">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-violet-500/20 flex items-center justify-center">
+                        <Sparkles className="w-5 h-5 text-violet-400" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-sm">Explore Your Gene Keys</p>
+                        <p className="text-xs text-muted-foreground">Profile {hdProfile.profile} unlocks your genetic wisdom</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+                      Your Profile {hdProfile.profile} in Human Design corresponds directly to your Gene Keys Hologenetic Profile. 
+                      Discover your Life's Work, Evolution, Radiance, and Purpose through the 64 Gene Keys — 
+                      the Shadow, Gift, and Siddhi transformations that map your spiritual journey.
+                    </p>
+                    <Button
+                      onClick={() => navigate("/gene-keys")}
+                      className="w-full bg-violet-500/20 hover:bg-violet-500/30 text-violet-300 border border-violet-500/30"
+                      data-testid="hd-to-gk-btn"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Explore My Gene Keys
+                      <ChevronRight className="w-4 h-4 ml-auto" />
+                    </Button>
+                  </div>
                 </motion.div>
               )}
             </motion.div>

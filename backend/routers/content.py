@@ -576,3 +576,65 @@ async def get_sound_frequency(freq_id: str):
     if not entry:
         raise HTTPException(status_code=404, detail="Sound frequency not found")
     return entry
+
+
+
+# ============ TAROT ROUTES ============
+
+@router.get("/tarot/cards")
+async def get_tarot_cards(arcana: Optional[str] = None):
+    """Get tarot cards, optionally filtered by arcana type."""
+    db = get_db()
+    query = {}
+    if arcana:
+        query["arcana"] = {"$regex": f"^{arcana}$", "$options": "i"}
+    cards = await db.tarot_cards.find(query, {"_id": 0}).to_list(length=100)
+    return cards
+
+
+@router.get("/tarot/cards/{card_id}")
+async def get_tarot_card(card_id: str):
+    """Get a specific tarot card."""
+    db = get_db()
+    card = await db.tarot_cards.find_one({"id": card_id}, {"_id": 0})
+    if not card:
+        raise HTTPException(status_code=404, detail="Tarot card not found")
+    return card
+
+
+@router.get("/tarot/reading")
+async def get_tarot_reading(spread: str = "single"):
+    """Get a random tarot reading. Spreads: single, three, celtic_cross"""
+    import random
+    db = get_db()
+    cards = await db.tarot_cards.find({}, {"_id": 0}).to_list(length=100)
+    
+    if not cards:
+        raise HTTPException(status_code=404, detail="No tarot cards found")
+    
+    if spread == "single":
+        selected = random.sample(cards, 1)
+        positions = ["Present Situation"]
+    elif spread == "three":
+        selected = random.sample(cards, 3)
+        positions = ["Past", "Present", "Future"]
+    elif spread == "celtic_cross":
+        selected = random.sample(cards, min(10, len(cards)))
+        positions = ["Present", "Challenge", "Past", "Future", "Above", "Below", 
+                    "Advice", "External Influences", "Hopes/Fears", "Outcome"]
+    else:
+        selected = random.sample(cards, 1)
+        positions = ["Message"]
+    
+    # Add reversed status randomly
+    reading = []
+    for i, card in enumerate(selected):
+        is_reversed = random.choice([True, False])
+        reading.append({
+            "position": positions[i] if i < len(positions) else f"Card {i+1}",
+            "card": card,
+            "reversed": is_reversed,
+            "meaning": card["reversed_meaning"] if is_reversed else card["upright_meaning"]
+        })
+    
+    return {"spread": spread, "cards": reading}

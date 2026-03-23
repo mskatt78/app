@@ -469,6 +469,33 @@ const GeneKeys = ({ user, api }) => {
                   >
                     Calculate New Profile
                   </Button>
+
+                  {/* Link to Human Design */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                        <Zap className="w-5 h-5 text-indigo-400" />
+                      </div>
+                      <div>
+                        <p className="font-semibold text-sm">Discover Your Human Design</p>
+                        <p className="text-xs text-muted-foreground">Your Profile {profile.profile} connects to your Human Design chart</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
+                      Gene Keys and Human Design share the same foundation. Your Profile number ({profile.profile}) 
+                      represents your conscious and unconscious personality traits in both systems. 
+                      Explore your full Body Graph to understand your energy type and decision-making strategy.
+                    </p>
+                    <Button
+                      onClick={() => navigate("/human-design")}
+                      className="w-full bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30"
+                      data-testid="gk-to-hd-btn"
+                    >
+                      <Zap className="w-4 h-4 mr-2" />
+                      View My Human Design Chart
+                      <ChevronRight className="w-4 h-4 ml-auto" />
+                    </Button>
+                  </div>
                 </motion.div>
               )}
             </motion.div>

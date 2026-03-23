@@ -105,6 +105,7 @@ const MainMenu = ({ user }) => {
       title: "Divination & Guidance",
       items: [
         { path: "/oracle", icon: Eye, label: "Oracle Readings", color: "text-purple-400", desc: "Spirit guidance" },
+        { path: "/tarot", icon: Star, label: "Tarot Reading", color: "text-indigo-400", desc: "Major Arcana wisdom" },
         { path: "/rune-readings", icon: Star, label: "Rune Readings", color: "text-amber-400", desc: "Elder Futhark wisdom" },
         { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
         { path: "/gene-keys", icon: Dna, label: "Gene Keys", color: "text-violet-400", desc: "64 Keys · Shadow to Siddhi" },

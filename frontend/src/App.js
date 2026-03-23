@@ -55,6 +55,8 @@ import SacredGuardians from "./pages/SacredGuardians";
 import AncientWisdom from "./pages/AncientWisdom";
 // Sound & Frequency Healing
 import SoundFrequencies from "./pages/SoundFrequencies";
+// Tarot Reading
+import TarotReading from "./pages/TarotReading";
 // New Temples
 import RoseTemple from "./pages/RoseTemple";
 import ElementalTemples from "./pages/ElementalTemples";
@@ -698,6 +700,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <SoundFrequencies user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/tarot"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <TarotReading user={user} api={api} />}
           </PublicRoute>
         }
       />
