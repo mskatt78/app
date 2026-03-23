@@ -44,17 +44,18 @@ const WaterPractices = ({ user, api }) => {
     Take a moment to feel gratitude for this sacred practice with water.`;
     
     try {
-      const response = await api.post("/tts/generate", {
+      const response = await api.post("/tts/generate-base64", {
         text: script,
-        voice: "nova"
+        voice: "nova",
+        speed: 0.85
       });
       
-      if (response.data.audio_url) {
+      if (response.data.audio_base64) {
         if (audioRef.current) {
           audioRef.current.pause();
         }
         
-        audioRef.current = new Audio(response.data.audio_url);
+        audioRef.current = new Audio(`data:audio/mp3;base64,${response.data.audio_base64}`);
         audioRef.current.onended = () => setIsPlaying(false);
         audioRef.current.onerror = () => {
           toast.error("Audio playback failed");
@@ -88,8 +89,11 @@ const WaterPractices = ({ user, api }) => {
   };
 
   const categories = [
-    { id: "blessing", name: "Water Blessing", icon: Heart, color: "text-blue-400" },
-    { id: "crystalline", name: "Crystalline Activation", icon: Sparkles, color: "text-cyan-400" },
+    { id: "blessing", name: "Water Blessings", icon: Heart, color: "text-blue-400" },
+    { id: "ceremony", name: "Ceremonies", icon: Star, color: "text-violet-400" },
+    { id: "ritual", name: "Rituals", icon: Moon, color: "text-purple-400" },
+    { id: "frequency", name: "Frequency & Sound", icon: Waves, color: "text-cyan-400" },
+    { id: "crystalline", name: "Crystalline Charging", icon: Sparkles, color: "text-cyan-300" },
     { id: "cleansing", name: "Energy Cleansing", icon: Droplets, color: "text-teal-400" },
     { id: "moon", name: "Moon Water", icon: Moon, color: "text-purple-400" },
   ];
@@ -360,6 +364,211 @@ const WaterPractices = ({ user, api }) => {
           "Add to baths during intense life transitions"
         ],
         affirmation: "I embrace the shadow and the light. Transformation is my birthright."
+      }
+    ],
+    ceremony: [
+      {
+        id: "water-gratitude-ceremony",
+        name: "Sacred Water Gratitude Ceremony",
+        description: "A full sacred ceremony to honour, bless, and give thanks for the gift of water — the source of all life. Draws on indigenous water-keeper traditions and Dr. Emoto's research.",
+        duration_minutes: 30,
+        benefits: ["Deep reverence for water", "Crystalline water activation", "Community healing", "Ancestral connection"],
+        materials: ["A bowl of pure spring or filtered water", "Flowers or petals", "A candle (blue or white)", "Small crystals (optional)", "A drum, bell, or rattle (optional)"],
+        steps: [
+          "Create a sacred space: lay a cloth, place your water bowl at centre, surround with flowers, light your candle",
+          "Face East (direction of new beginnings) and call in the water spirits: 'I call upon the sacred waters — the oceans, rivers, rain, and springs — to join this ceremony'",
+          "Hold the bowl of water with both hands and bow in gratitude: 'Miigwech (thank you) for carrying life. Miigwech for nourishing every being on Earth'",
+          "Speak loving words DIRECTLY to the water — 'I love you. You are sacred. You are holy. You are the blood of Mother Earth'",
+          "Sound your drum, bell, or rattle three times to seal the blessing",
+          "If with others, pass the bowl and invite each person to speak a single word of gratitude into the water",
+          "With ceremony, pour a small amount onto the earth as an offering to the ancestors and water spirits",
+          "Drink the blessed water consciously — each sip a communion with the sacred"
+        ],
+        affirmation: "Water is life. I am grateful. I am the keeper of water.",
+        tradition_note: "In many Indigenous traditions, a Water Keeper is a sacred role — usually a woman — who tends to the water and speaks for it in ceremony. All of us can carry this responsibility."
+      },
+      {
+        id: "water-release-ceremony",
+        name: "Water Release & Renewal Ceremony",
+        description: "A ceremony to release what no longer serves — grief, fear, pain, old stories — to the water, and call in fresh, renewed energy. Water receives and transforms.",
+        duration_minutes: 45,
+        benefits: ["Emotional liberation", "Grief release", "Energetic renewal", "Healing transmission"],
+        materials: ["Access to flowing water (river, ocean, stream) OR a large bowl", "Biodegradable paper and a pen", "Flower petals or natural offerings", "Sea salt"],
+        steps: [
+          "Go to a body of water or prepare a large bowl with salted water — add 1 tablespoon of sea salt and stir",
+          "Sit in silence for 5 minutes and allow what needs to be released to surface",
+          "On biodegradable paper, write everything you are ready to let go of — do not censor yourself",
+          "Hold the paper to your heart and say: 'I have carried this long enough. I release it now with love and gratitude'",
+          "Tear the paper into small pieces and place it into the water bowl (or scatter petals onto the river/ocean)",
+          "If using a bowl, add the paper pieces — they will dissolve in the salted water",
+          "Watch the paper dissolve and feel the shift in your body. The water transforms what it receives",
+          "Pour the bowl's contents onto earth away from where you walk — returning it to the cycle",
+          "Now prepare a fresh bowl of clean water. Speak your intentions for renewal: 'I welcome clarity, joy, ease, love'",
+          "Drink this water of renewal with reverence"
+        ],
+        affirmation: "I release to the waters what no longer flows through me. I am renewed."
+      },
+      {
+        id: "new-moon-water-ceremony",
+        name: "New Moon New Waters Ceremony",
+        description: "A monthly ceremony aligned with the new moon to set intentions in water — planting the seeds of your desires in the most fertile energetic time.",
+        duration_minutes: 20,
+        benefits: ["Intention setting", "Manifestation support", "Emotional reset", "Cyclical living"],
+        materials: ["A glass jar with a lid", "Spring or filtered water", "A moonstone, clear quartz, or rose quartz", "Blue or black ink pen", "Paper"],
+        steps: [
+          "On the night of the new moon (within 24 hours either side), gather your materials",
+          "Write your intentions on paper — what you are calling in this lunar cycle. Be specific and write in present tense: 'I am...' 'I have...' 'I feel...'",
+          "Fold the paper and place it under your glass jar",
+          "Fill the jar with pure water. Drop your crystal into the water",
+          "Hold the jar and breathe your intentions into it — really feel them as already true",
+          "Seal the jar and place it on a window ledge — it does not need direct moonlight on a new moon. The energy is in the dark sky",
+          "Leave overnight. In the morning, hold the jar and re-read your intentions",
+          "Drink this water throughout the day, consciously receiving your intentions into your body"
+        ],
+        affirmation: "I plant my intentions in the sacred waters of this new moon. They are already becoming."
+      }
+    ],
+    ritual: [
+      {
+        id: "morning-water-ritual",
+        name: "Sacred Morning Water Ritual",
+        description: "Begin every day with this potent ritual that blesses your body with conscious, intentional water — setting the frequency for your entire day.",
+        duration_minutes: 10,
+        benefits: ["Daily frequency setting", "Conscious hydration", "Gratitude practice", "Body honouring"],
+        materials: ["A glass of pure water (spring or filtered)", "Optional: a pinch of Himalayan salt", "Optional: a slice of lemon or drop of lemon essential oil"],
+        steps: [
+          "Before checking your phone, before coffee, before speaking to anyone — tend to your water",
+          "Fill a glass with pure water. If you have it, add a tiny pinch of Himalayan pink salt for minerals and trace elements",
+          "Hold the glass between both palms and close your eyes",
+          "Take three deep breaths. With each exhale, breathe your love into the water",
+          "Speak (aloud or in your heart): 'Good morning, water. Thank you for giving me life today.'",
+          "State one intention or quality you are calling in today: 'I ask this water to carry [peace / clarity / joy / courage] into every cell of my being'",
+          "Drink slowly and mindfully. Feel the water moving through you.",
+          "After drinking, place one hand on your belly and one on your heart. Say: 'I am grateful. I am alive. I am sacred water.'"
+        ],
+        affirmation: "With this first water, I set the frequency of my day. I choose love. I choose life.",
+        tip: "This practice becomes transformational when done consistently. It takes 3 minutes. Within weeks, it reshapes how you relate to your body and to life."
+      },
+      {
+        id: "water-sound-ritual",
+        name: "Sound & Vibration Water Charging Ritual",
+        description: "Use singing bowls, toning, drumming, and sacred sound to charge water with high frequencies. Sound changes the molecular structure of water — science and spirit agree.",
+        duration_minutes: 15,
+        benefits: ["Frequency-charged water", "Sound healing transmission", "Vibrational medicine", "Deep cellular nourishment"],
+        materials: ["Glass bowl or cup of water", "Crystal singing bowl, Tibetan bowl, tuning fork, or simply your voice", "Optional: 528Hz or 432Hz frequency recording"],
+        steps: [
+          "Place your water in a glass container. If using a bowl, place the water bowl near (not touching) the singing bowl",
+          "Begin by centring yourself — 3 deep breaths, shoulders relaxed, heart open",
+          "Play 528Hz or 432Hz music near the water for 5 minutes, or:",
+          "Tone 'AUM' or 'OM' three times, directing the sound vibration toward the water",
+          "Strike your Tibetan or crystal bowl and hold it near the water — feel the vibration",
+          "Speak these words in a low, resonant voice directly to the water: 'Love... Peace... Healing... Gratitude... Harmony... Joy...'",
+          "Each word should be felt in your body as you speak — not just thought but felt",
+          "Spend 3-5 minutes in each modality (sound, word, tone) — or combine them",
+          "Complete with: 'I seal this water with the frequency of love'",
+          "Drink with full awareness of what you are receiving"
+        ],
+        affirmation: "My voice is a healing instrument. The water carries my song into every cell.",
+        science: "Masaru Emoto's water crystal research showed that words like 'Love' and 'Gratitude' produced the most beautiful crystalline structures. Music — especially Bach and classical — also produced beautiful crystals. Heavy metal music produced distorted patterns."
+      },
+      {
+        id: "water-ancestor-ritual",
+        name: "Ancestral Water Remembrance Ritual",
+        description: "Honour your ancestral connection to water — we are all from ocean-dwelling ancestors. This ritual connects you to the ancient intelligence of water that lives within your very cells.",
+        duration_minutes: 25,
+        benefits: ["Ancestral healing", "Cellular memory activation", "Deep belonging", "Lineage healing"],
+        materials: ["A glass bowl of water", "Photo or object representing your ancestors (optional)", "A blue or silver candle"],
+        steps: [
+          "Create a quiet, sacred space. Light a candle. Place your water bowl before you",
+          "If you have ancestral photos or objects, place them nearby",
+          "Breathe slowly and call in your ancestors: 'I call on all my ancestors of love and healing, from all lineages, across all time'",
+          "Contemplate this truth: your body is made of water. The ocean called you into being. Life began in water 4 billion years ago",
+          "Speak to the water: 'I remember. I remember that I am water. That my people came from water. That all life is water.'",
+          "With your finger, draw a spiral in the water — the symbol of the sacred feminine, of time, of ocean",
+          "Cup some water in your palms and bring it to your face — feel it on your skin. This is the ocean remembering itself",
+          "Anoint your forehead, your heart, and your wrists with the water",
+          "Sit in silence for 5 minutes. What memories arise? What do you feel in your body?",
+          "Offer the remaining water to the earth or to a plant with gratitude"
+        ],
+        affirmation: "I remember. I am ancient water. I carry the ocean within me."
+      }
+    ],
+    frequency: [
+      {
+        id: "loving-words-water",
+        name: "Charging Water with Loving Words & Intentions",
+        description: "Based on Dr. Masaru Emoto's groundbreaking research — water changes its crystalline structure in response to words, thoughts, and intentions. This practice transforms ordinary water into a living, high-vibrational medicine.",
+        duration_minutes: 10,
+        benefits: ["Living water activation", "Positive frequency infusion", "Cellular healing", "Consciousness medicine"],
+        materials: ["A glass of pure water (spring or filtered is best)", "Paper and pen (optional)"],
+        steps: [
+          "Hold your glass of water at heart height",
+          "Take 3 deep breaths to become fully present",
+          "Speak these words DIRECTLY and LOVINGLY to the water — one at a time, feeling each word:",
+          "  💙 LOVE — feel it radiate from your heart",
+          "  💙 GRATITUDE — remember something you are deeply grateful for",
+          "  💙 HEALING — see golden light entering the water",
+          "  💙 PEACE — let your body soften as you say it",
+          "  💙 JOY — smile as you speak it",
+          "  💙 I LOVE YOU — say this to the water three times",
+          "  💙 THANK YOU — say this to the water three times",
+          "You can also write words on paper and wrap them around the glass — the water responds to the written word too",
+          "Drink slowly, one sip at a time, feeling each sip as medicine entering your cells"
+        ],
+        power_words: [
+          { word: "Love", frequency: "528 Hz (Miracle tone)", effect: "Creates perfect hexagonal crystals — the most beautiful patterns Emoto observed" },
+          { word: "Gratitude", frequency: "432 Hz (Earth tuning)", effect: "Forms radiant snowflake-like crystals" },
+          { word: "Peace", frequency: "396 Hz (Liberation)", effect: "Creates soft, harmonious patterns" },
+          { word: "Healing", frequency: "741 Hz (Awakening)", effect: "Generates clean, clear crystalline forms" },
+          { word: "I Love You", frequency: "All frequencies", effect: "The most powerful phrase in Emoto's research — in any language, it creates beauty" }
+        ],
+        affirmation: "Water hears me. Water heals me. I am water.",
+        science: "Dr. Masaru Emoto exposed water to different words, music, and prayers, then photographed the water crystals under a microscope. Positive, loving words created beautiful symmetrical crystals. Negative words created distorted, broken patterns. This suggests water has a form of consciousness and memory."
+      },
+      {
+        id: "solfeggio-water",
+        name: "Solfeggio Frequency Water Infusion",
+        description: "Play Solfeggio healing frequencies near your water to charge it with specific healing vibrations. Each frequency carries distinct healing properties.",
+        duration_minutes: 15,
+        benefits: ["Frequency-specific healing", "DNA repair support", "Vibrational medicine", "Cellular activation"],
+        materials: ["Glass of water", "A device to play frequencies (phone/speaker)", "Optional: clear quartz crystal"],
+        steps: [
+          "Place your glass of water next to (or near) a speaker",
+          "Search for your chosen Solfeggio frequency on YouTube or a streaming service",
+          "396 Hz: for releasing guilt and fear — say 'I release...'",
+          "432 Hz: for natural harmony — say 'I align with Earth's heartbeat'",
+          "528 Hz: the Love/Miracle frequency — say 'I call in miraculous healing'",
+          "639 Hz: for relationships — say 'I call in harmonious connection'",
+          "741 Hz: for awakening — say 'I awaken to truth'",
+          "852 Hz: for spiritual order — say 'I align with divine will'",
+          "Play the frequency for 10-15 minutes with the water beside the speaker",
+          "Hold your crystal over the water during charging if using one",
+          "Drink the frequency-infused water with full conscious awareness"
+        ],
+        affirmation: "I drink healing frequencies. Every cell resonates with sacred sound."
+      },
+      {
+        id: "crystal-charged-water",
+        name: "Crystal-Charged Water Medicine",
+        description: "Use the vibrational signature of crystals to infuse your water with specific healing energies. Each crystal imparts its unique frequency to the water.",
+        duration_minutes: 120,
+        benefits: ["Crystal frequency medicine", "Targeted healing", "Energetic enhancement", "Sacred water creation"],
+        caution: "NOT all crystals are safe to place IN water. Use the method of placing crystals BESIDE or UNDER the container, not directly in the water, unless you are certain a crystal is non-toxic.",
+        steps: [
+          "Choose your crystal based on your intention:",
+          "  Clear Quartz — amplifies all intentions, purification, clarity",
+          "  Rose Quartz — love, self-compassion, heart healing",
+          "  Amethyst — spiritual connection, peace, sleep (BESIDE container only)",
+          "  Citrine — joy, abundance, vitality",
+          "  Shungite — EMF protection, deep purification (safe in water)",
+          "  Selenite — angelic connection, clearing (BESIDE container only — dissolves in water)",
+          "Place the crystal BESIDE or UNDER the glass container (not in the water unless verified safe)",
+          "Set the crystal and water in sunlight for 2-4 hours (some crystals fade in direct sun — research your crystal)",
+          "Or set in moonlight overnight for a gentler, more feminine charge",
+          "Speak your intention into the water before drinking",
+          "Drink within 24 hours"
+        ],
+        affirmation: "The crystal kingdom speaks to my cells through this sacred water."
       }
     ]
   };
