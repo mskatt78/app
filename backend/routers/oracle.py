@@ -7,37 +7,13 @@ import uuid
 import random
 import logging
 import os
+import copy
 
 from .dependencies import get_db, get_current_user, User
+from data.all_content import ORACLE_CARDS
 
 router = APIRouter(prefix="/oracle", tags=["oracle"])
 logger = logging.getLogger(__name__)
-
-# Oracle cards data
-ORACLE_CARDS = [
-    {"id": "1", "name": "The Medicine Wheel", "element": "Spirit", "meaning": "Cycles, wholeness, sacred directions", "reversed_meaning": "Disconnection from nature's rhythms"},
-    {"id": "2", "name": "The Drum", "element": "Earth", "meaning": "Heartbeat of Mother Earth, grounding", "reversed_meaning": "Loss of rhythm in life"},
-    {"id": "3", "name": "Eagle Spirit", "element": "Air", "meaning": "Vision, freedom, divine perspective", "reversed_meaning": "Lack of clarity or direction"},
-    {"id": "4", "name": "Bear Medicine", "element": "Earth", "meaning": "Introspection, healing, strength", "reversed_meaning": "Avoidance of necessary rest"},
-    {"id": "5", "name": "Wolf Pack", "element": "Water", "meaning": "Community, loyalty, intuition", "reversed_meaning": "Isolation, trust issues"},
-    {"id": "6", "name": "Serpent Wisdom", "element": "Fire", "meaning": "Transformation, kundalini, rebirth", "reversed_meaning": "Resistance to change"},
-    {"id": "7", "name": "Owl Vision", "element": "Air", "meaning": "Truth, shadow work, night magic", "reversed_meaning": "Deception or self-delusion"},
-    {"id": "8", "name": "Deer Spirit", "element": "Earth", "meaning": "Gentleness, grace, heart opening", "reversed_meaning": "Being too passive"},
-    {"id": "9", "name": "Raven Messenger", "element": "Spirit", "meaning": "Magic, creation, transformation", "reversed_meaning": "Misuse of gifts"},
-    {"id": "10", "name": "Butterfly Emergence", "element": "Air", "meaning": "Metamorphosis, joy, lightness", "reversed_meaning": "Stuck in cocoon phase"},
-    {"id": "11", "name": "Thunder Being", "element": "Fire", "meaning": "Power, purification, awakening", "reversed_meaning": "Destructive anger"},
-    {"id": "12", "name": "Moon Mother", "element": "Water", "meaning": "Intuition, cycles, feminine energy", "reversed_meaning": "Ignoring intuition"},
-    {"id": "13", "name": "Sun Father", "element": "Fire", "meaning": "Vitality, clarity, masculine energy", "reversed_meaning": "Burnout, ego inflation"},
-    {"id": "14", "name": "Turtle Island", "element": "Earth", "meaning": "Patience, grounding, Mother Earth", "reversed_meaning": "Moving too fast"},
-    {"id": "15", "name": "Hummingbird Joy", "element": "Air", "meaning": "Presence, sweetness, adaptability", "reversed_meaning": "Scattered energy"},
-    {"id": "16", "name": "Coyote Trickster", "element": "Fire", "meaning": "Humor, lessons, sacred foolishness", "reversed_meaning": "Taking life too seriously"},
-    {"id": "17", "name": "Whale Dreamer", "element": "Water", "meaning": "Deep wisdom, ancient memories", "reversed_meaning": "Lost in the depths"},
-    {"id": "18", "name": "Spider Weaver", "element": "Spirit", "meaning": "Creativity, fate, web of life", "reversed_meaning": "Feeling trapped"},
-    {"id": "19", "name": "Jaguar Power", "element": "Earth", "meaning": "Courage, shadow integration, power", "reversed_meaning": "Fear of own power"},
-    {"id": "20", "name": "Dragonfly Dreams", "element": "Water", "meaning": "Illusion, change, emotional depth", "reversed_meaning": "Surface living"},
-    {"id": "21", "name": "Phoenix Rising", "element": "Fire", "meaning": "Rebirth, renewal, immortality", "reversed_meaning": "Clinging to the old"},
-    {"id": "22", "name": "Star Nations", "element": "Spirit", "meaning": "Cosmic connection, star ancestors", "reversed_meaning": "Feeling ungrounded"},
-]
 
 
 class OracleReadingRequest(BaseModel):
@@ -54,11 +30,11 @@ async def create_oracle_reading(
     db = get_db()
     
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
-    selected_cards = random.sample(ORACLE_CARDS, min(num_cards, len(ORACLE_CARDS)))
+    selected_cards = [copy.deepcopy(c) for c in random.sample(ORACLE_CARDS, min(num_cards, len(ORACLE_CARDS)))]
     
-    for card in selected_cards:
+    for i, card in enumerate(selected_cards):
         card["is_reversed"] = random.choice([True, False])
-        card["position"] = selected_cards.index(card) + 1
+        card["position"] = i + 1
     
     # Generate AI interpretation using Claude
     interpretation = await generate_oracle_interpretation(selected_cards, data.question, data.spread_type)
@@ -82,11 +58,11 @@ async def create_oracle_reading(
 async def create_guest_oracle_reading(data: OracleReadingRequest):
     """Create an oracle reading without authentication (doesn't save to history)."""
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
-    selected_cards = random.sample(ORACLE_CARDS, min(num_cards, len(ORACLE_CARDS)))
+    selected_cards = [copy.deepcopy(c) for c in random.sample(ORACLE_CARDS, min(num_cards, len(ORACLE_CARDS)))]
     
-    for card in selected_cards:
+    for i, card in enumerate(selected_cards):
         card["is_reversed"] = random.choice([True, False])
-        card["position"] = selected_cards.index(card) + 1
+        card["position"] = i + 1
     
     # Generate AI interpretation using Claude
     interpretation = await generate_oracle_interpretation(selected_cards, data.question, data.spread_type)

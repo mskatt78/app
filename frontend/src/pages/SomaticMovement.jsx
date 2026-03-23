@@ -425,12 +425,19 @@ const SomaticMovement = ({ user, api }) => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className={`p-6 rounded-2xl border backdrop-blur-xl cursor-pointer
+                      className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden
                                  ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
                       onClick={() => setSelectedPractice(practice)}
                       data-testid={`practice-card-${practice.id}`}
                     >
-                      <div className="flex items-start justify-between mb-4">
+                      {practice.image_url && (
+                        <div className="relative h-40 overflow-hidden">
+                          <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/30 to-transparent" />
+                        </div>
+                      )}
+                      <div className="p-6">
+                      <div className={`flex items-start justify-between mb-4 ${practice.image_url ? 'hidden' : ''}`}>
                         <div className={`p-3 rounded-xl ${colors.bg}`}>
                           <Waves className={`w-6 h-6 ${colors.text}`} />
                         </div>
@@ -444,7 +451,17 @@ const SomaticMovement = ({ user, api }) => {
                           </span>
                         </div>
                       </div>
-                      
+                      {practice.image_url && (
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {practice.duration_minutes} min
+                          </span>
+                          <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
+                            {practice.element}
+                          </span>
+                        </div>
+                      )}
                       <h3 className="text-xl font-serif mb-3">{practice.name}</h3>
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{practice.description}</p>
                       
@@ -454,6 +471,7 @@ const SomaticMovement = ({ user, api }) => {
                             {benefit}
                           </span>
                         ))}
+                      </div>
                       </div>
                     </motion.div>
                   );

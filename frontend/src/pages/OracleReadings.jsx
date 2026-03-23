@@ -223,7 +223,7 @@ const OracleReadings = ({ user, api }) => {
                   </p>
                 )}
                 <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
-                  {reading.interpretation}
+                  {reading.interpretation?.replace(/#{1,3}\s/g, '').replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')}
                 </p>
               </motion.div>
             )}

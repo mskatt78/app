@@ -267,7 +267,7 @@ const SABBATS = [
   {
     id: "mabon",
     name: "Mabon",
-    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/59b3a6e0af6df3d94ad9b3e3c8ef5db2cbcf1c6bfc2e3cebd77bc6d4a75c5f3.png",
+    image: "https://images.unsplash.com/photo-1541480333465-b09786ad8ac6?crop=entropy&cs=srgb&fm=jpg&q=85",
     subtitle: "Autumn Equinox · The Second Harvest",
     dates: { north: "Sep 20–23", south: "Mar 19–22" },
     monthIndex: { north: 8, south: 2 },
