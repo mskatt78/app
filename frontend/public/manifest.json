@@ -1,9 +1,51 @@
 {
   "name": "Shamanic Elements Soul Temple 2.0",
-  "short_name": "Soul Temple 2.0",
-  "description": "Sacred yoga, breathwork, oracle readings, crystals, mantras, numerology, and shamanic practices for spiritual wellness and transformation.",
+  "short_name": "Soul Temple",
+  "description": "Sacred yoga, breathwork, oracle readings, star lineage discovery, elemental healing, crystals, mantras, numerology, and shamanic practices for spiritual wellness and transformation.",
   "icons": [
     {
+      "src": "icon-72.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-96.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-128.png",
+      "type": "image/png",
+      "sizes": "128x128",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-144.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-152.png",
+      "type": "image/png",
+      "sizes": "152x152",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-167.png",
+      "type": "image/png",
+      "sizes": "167x167",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-180.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any"
+    },
+    {
       "src": "icon-192.png",
       "type": "image/png",
       "sizes": "192x192",
@@ -16,6 +58,12 @@
       "purpose": "maskable"
     },
     {
+      "src": "icon-384.png",
+      "type": "image/png",
+      "sizes": "384x384",
+      "purpose": "any"
+    },
+    {
       "src": "icon-512.png",
       "type": "image/png",
       "sizes": "512x512",
@@ -26,6 +74,12 @@
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "maskable"
+    },
+    {
+      "src": "app-icon-1024.png",
+      "type": "image/png",
+      "sizes": "1024x1024",
+      "purpose": "any"
     }
   ],
   "start_url": "/",
@@ -53,36 +107,36 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Yoga Library"
+      "label": "Star Lineage Quiz"
     }
   ],
   "shortcuts": [
     {
-      "name": "Yoga Library",
-      "short_name": "Yoga",
-      "description": "Browse 66 yoga poses by element",
-      "url": "/yoga",
+      "name": "Star Lineage Quiz",
+      "short_name": "Star Quiz",
+      "description": "Discover your star lineage",
+      "url": "/star-lineage",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Oracle Reading",
       "short_name": "Oracle",
-      "description": "Get your daily oracle reading",
+      "description": "Get your oracle reading",
       "url": "/oracle",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Numerology",
-      "short_name": "Numerology",
-      "description": "Calculate your life path number",
-      "url": "/numerology",
+      "name": "Retreats",
+      "short_name": "Retreats",
+      "description": "Healing retreats and experiences",
+      "url": "/retreats",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Breathwork",
-      "short_name": "Breathwork",
-      "description": "Guided breathing sessions",
-      "url": "/breathwork",
+      "name": "All Links",
+      "short_name": "Links",
+      "description": "All practices and features",
+      "url": "/links",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
   ],

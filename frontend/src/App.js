@@ -79,6 +79,7 @@ import HumanDesign from "./pages/HumanDesign";
 import ProgressDashboard from "./pages/ProgressDashboard";
 import ProfileCalculator from "./pages/ProfileCalculator";
 import StarLineageQuiz from "./pages/StarLineageQuiz";
+import LinksPage from "./pages/LinksPage";
 // Notifications
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 
@@ -330,6 +331,7 @@ function AppRouter() {
       />
       {/* PUBLIC ROUTES - Can view without login */}
       <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/links" element={<LinksPage />} />
       <Route
         path="/yoga"
         element={
@@ -726,6 +728,14 @@ function AppRouter() {
       {/* Star Lineage Quiz */}
       <Route
         path="/star-lineage"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <StarLineageQuiz user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/star-lineage/result/:lineageId"
         element={
           <PublicRoute>
             {({ user, api }) => <StarLineageQuiz user={user} api={api} />}

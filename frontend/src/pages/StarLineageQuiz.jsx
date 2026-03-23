@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowRight, Star, Sparkles, RefreshCw, Share2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Star, Sparkles, RefreshCw, Share2, Copy, Check, X } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
@@ -299,13 +299,25 @@ const QUESTIONS = [
 
 export default function StarLineageQuiz() {
   const navigate = useNavigate();
+  const { lineageId } = useParams();
   const [step, setStep] = useState("intro"); // intro | quiz | result
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [showShare, setShowShare] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  // If a lineageId is in the URL, show that result directly
+  useEffect(() => {
+    if (lineageId && LINEAGES[lineageId]) {
+      setResult({ primary: lineageId, secondary: null, scores: {} });
+      setStep("result");
+    }
+  }, [lineageId]);
 
   const progress = ((currentQ) / QUESTIONS.length) * 100;
+  const baseUrl = window.location.origin;
 
   const handleAnswer = (answerIndex) => {
     setSelected(answerIndex);
@@ -441,6 +453,14 @@ export default function StarLineageQuiz() {
             className="max-w-3xl mx-auto px-6 py-10">
 
             {/* Hero */}
+            {lineageId && (
+              <div className="mb-6 p-4 rounded-xl bg-primary/10 border border-primary/20 text-center">
+                <p className="text-sm text-muted-foreground mb-2">Someone shared their Star Lineage with you!</p>
+                <Button size="sm" onClick={() => { navigate("/star-lineage"); setStep("intro"); setResult(null); }} data-testid="take-quiz-cta">
+                  <Star className="w-4 h-4 mr-2" /> Discover Your Own Star Lineage
+                </Button>
+              </div>
+            )}
             <div className={`rounded-3xl p-8 mb-8 text-center ${primaryLineage.image_bg} border ${primaryLineage.border} ${primaryLineage.glow}`}>
               <motion.div initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ type: "spring", duration: 0.8 }}>
                 <div className="text-6xl mb-4">{primaryLineage.symbol}</div>
@@ -505,7 +525,10 @@ export default function StarLineageQuiz() {
             )}
 
             {/* Actions */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 mb-6">
+              <Button onClick={() => setShowShare(true)} variant="outline" className="flex-1" data-testid="share-result-btn">
+                <Share2 className="w-4 h-4 mr-2" /> Share My Lineage
+              </Button>
               <Button onClick={reset} variant="outline" className="flex-1" data-testid="retake-quiz-btn">
                 <RefreshCw className="w-4 h-4 mr-2" /> Retake Quiz
               </Button>
@@ -513,6 +536,91 @@ export default function StarLineageQuiz() {
                 Explore Ancient Wisdom <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
+
+            {/* Share Modal */}
+            <AnimatePresence>
+              {showShare && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                  onClick={() => setShowShare(false)}
+                >
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    className="bg-card rounded-2xl max-w-md w-full p-6 space-y-5"
+                    onClick={(e) => e.stopPropagation()}
+                    data-testid="share-modal"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-serif">Share Your Star Lineage</h3>
+                      <button onClick={() => setShowShare(false)} className="text-muted-foreground hover:text-foreground">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <div className={`p-4 rounded-xl text-center ${primaryLineage.image_bg} border ${primaryLineage.border}`}>
+                      <div className="text-3xl mb-1">{primaryLineage.symbol}</div>
+                      <p className="font-serif text-lg">{primaryLineage.name}</p>
+                      <p className={`text-sm ${primaryLineage.accent}`}>{primaryLineage.subtitle}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(`I discovered I'm a ${primaryLineage.name} soul — ${primaryLineage.subtitle}! Take the Star Lineage Quiz: ${baseUrl}/star-lineage/result/${result.primary}`)}`, "_blank")}
+                        className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm transition-colors"
+                        data-testid="share-whatsapp"
+                      >
+                        WhatsApp
+                      </button>
+                      <button
+                        onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(`I'm a ${primaryLineage.name} soul — ${primaryLineage.subtitle}! Discover your Star Lineage:`)}&url=${encodeURIComponent(`${baseUrl}/star-lineage/result/${result.primary}`)}`, "_blank")}
+                        className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-black hover:bg-gray-800 text-white text-sm transition-colors"
+                        data-testid="share-twitter"
+                      >
+                        Twitter/X
+                      </button>
+                      <button
+                        onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${baseUrl}/star-lineage/result/${result.primary}`)}&quote=${encodeURIComponent(`I'm a ${primaryLineage.name} soul — ${primaryLineage.subtitle}!`)}`, "_blank")}
+                        className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm transition-colors"
+                        data-testid="share-facebook"
+                      >
+                        Facebook
+                      </button>
+                      <button
+                        onClick={() => window.open(`mailto:?subject=${encodeURIComponent(`My Star Lineage: ${primaryLineage.name}`)}&body=${encodeURIComponent(`I discovered I'm a ${primaryLineage.name} soul — ${primaryLineage.subtitle}!\n\nTake the quiz yourself: ${baseUrl}/star-lineage/result/${result.primary}`)}`, "_blank")}
+                        className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gray-600 hover:bg-gray-700 text-white text-sm transition-colors"
+                        data-testid="share-email"
+                      >
+                        Email
+                      </button>
+                    </div>
+                    <div className="flex gap-2">
+                      <div className="flex-1 px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs text-muted-foreground truncate">
+                        {baseUrl}/star-lineage/result/{result.primary}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${baseUrl}/star-lineage/result/${result.primary}`);
+                          setCopied(true);
+                          toast.success("Link copied!");
+                          setTimeout(() => setCopied(false), 2000);
+                        }}
+                        data-testid="copy-link-btn"
+                      >
+                        {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center">
+                      Anyone with this link will see your {primaryLineage.name} lineage and can take the quiz too
+                    </p>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
