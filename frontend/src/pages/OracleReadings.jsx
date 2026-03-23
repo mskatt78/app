@@ -170,26 +170,35 @@ const OracleReadings = ({ user, api }) => {
                     initial={{ opacity: 0, rotateY: 180, scale: 0.8 }}
                     animate={{ opacity: 1, rotateY: 0, scale: 1 }}
                     transition={{ delay: index * 0.3, duration: 0.6, type: "spring" }}
-                    className={`w-48 rounded-2xl border backdrop-blur-xl p-6 text-center
+                    className={`w-52 rounded-2xl border backdrop-blur-xl overflow-hidden text-center
                                ${card.is_reversed ? 'rotate-180' : ''}
                                bg-gradient-to-br from-card to-card/50 border-white/10
-                               shadow-[0_0_30px_rgba(212,175,55,0.1)]`}
+                               shadow-[0_0_30px_rgba(212,175,55,0.15)]`}
                   >
                     <div className={card.is_reversed ? 'rotate-180' : ''}>
-                      <div className={`w-12 h-12 mx-auto mb-4 rounded-full flex items-center justify-center
-                                      bg-white/5`}>
-                        <Eye className={`w-6 h-6 ${elementColors[card.element]}`} />
-                      </div>
-                      <h4 className="font-serif text-lg mb-1">{card.name}</h4>
-                      <p className={`text-xs ${elementColors[card.element]} mb-2`}>{card.element}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {card.is_reversed ? card.reversed_meaning : card.meaning}
-                      </p>
-                      {card.is_reversed && (
-                        <span className="inline-block mt-2 px-2 py-1 rounded bg-destructive/20 text-destructive text-xs">
-                          Reversed
-                        </span>
+                      {card.image_url ? (
+                        <div className="relative h-40 overflow-hidden">
+                          <img src={card.image_url} alt={card.name} className="w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/30 to-transparent" />
+                          <span className={`absolute bottom-2 left-2 right-2 text-sm font-serif text-white drop-shadow-lg`}>{card.name}</span>
+                        </div>
+                      ) : (
+                        <div className={`w-12 h-12 mx-auto mt-6 mb-2 rounded-full flex items-center justify-center bg-white/5`}>
+                          <Eye className={`w-6 h-6 ${elementColors[card.element]}`} />
+                        </div>
                       )}
+                      <div className="p-3">
+                        {!card.image_url && <h4 className="font-serif text-base mb-1">{card.name}</h4>}
+                        <p className={`text-xs ${elementColors[card.element]} mb-2`}>{card.element}</p>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {card.is_reversed ? card.reversed_meaning : card.meaning}
+                        </p>
+                        {card.is_reversed && (
+                          <span className="inline-block mt-2 px-2 py-1 rounded bg-destructive/20 text-destructive text-xs">
+                            Reversed
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -231,7 +240,7 @@ const OracleReadings = ({ user, api }) => {
                 New Reading
               </Button>
               <ShareButton 
-                title="My Oracle Reading from Temple of the Soul"
+                title="My Oracle Reading from Soul Temple 2.0"
                 description={`I drew ${reading.cards?.map(c => c.name).join(', ')} - ${reading.interpretation?.substring(0, 100)}...`}
                 className="border border-white/10 rounded-full px-4 py-2 hover:bg-white/5"
               />

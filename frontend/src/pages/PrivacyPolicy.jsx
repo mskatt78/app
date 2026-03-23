@@ -20,7 +20,7 @@ const PrivacyPolicy = () => {
         
         <h2 className="text-xl font-serif text-primary mt-8">Introduction</h2>
         <p>
-          Shamanic Elements - Temple Of The Soul ("we", "our", or "us") respects your privacy 
+          Shamanic Elements Soul Temple 2.0 ("we", "our", or "us") respects your privacy 
           and is committed to protecting your personal data. This privacy policy explains how 
           we collect, use, and safeguard your information when you use our mobile application.
         </p>
@@ -89,7 +89,7 @@ const PrivacyPolicy = () => {
         <p className="text-primary">skywatersacredembodiments@gmail.com</p>
         
         <div className="mt-12 pt-8 border-t border-white/10 text-center text-muted-foreground">
-          <p>Shamanic Elements - Temple Of The Soul</p>
+          <p>Shamanic Elements Soul Temple 2.0</p>
           <p>© 2026 All Rights Reserved</p>
         </div>
       </main>

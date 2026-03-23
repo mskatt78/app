@@ -111,7 +111,7 @@ const LandingPage = ({ onLoginSuccess }) => {
               <br />
               <span className="text-primary">Elements</span>
               <br />
-              <span className="text-foreground/80 text-3xl sm:text-4xl md:text-5xl">Temple of the Soul</span>
+              <span className="text-foreground/80 text-3xl sm:text-4xl md:text-5xl">Soul Temple <span className="text-primary/70 text-2xl">2.0</span></span>
             </h1>
 
             <p className="text-base md:text-lg text-muted-foreground font-light max-w-xl mx-auto mb-8 leading-relaxed">
@@ -258,7 +258,7 @@ const LandingPage = ({ onLoginSuccess }) => {
             </form>
 
             <p className="text-center text-sm text-muted-foreground">
-              {isLogin ? "New to Shamanic Elements?" : "Already have an account?"}{" "}
+              {isLogin ? "New to Soul Temple 2.0?" : "Already have an account?"}{" "}
               <button
                 data-testid="auth-toggle-mode-btn"
                 onClick={() => setIsLogin(!isLogin)}

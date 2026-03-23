@@ -115,7 +115,7 @@ const Dashboard = ({ user, api }) => {
       {/* Sidebar - Desktop */}
       <aside className="hidden lg:flex flex-col w-64 border-r border-white/5 bg-card/30 backdrop-blur-xl">
         <div className="p-6 border-b border-white/5">
-          <h1 className="text-xl font-serif italic text-primary">Temple of the Soul</h1>
+          <h1 className="text-xl font-serif italic text-primary">Soul Temple 2.0</h1>
         </div>
         
         <nav className="flex-1 p-4 space-y-2">
@@ -175,7 +175,7 @@ const Dashboard = ({ user, api }) => {
             className="absolute left-0 top-0 bottom-0 w-64 bg-card border-r border-white/5"
           >
             <div className="p-6 border-b border-white/5 flex items-center justify-between">
-              <h1 className="text-xl font-serif italic text-primary">Temple of the Soul</h1>
+              <h1 className="text-xl font-serif italic text-primary">Soul Temple 2.0</h1>
               <button onClick={() => setSidebarOpen(false)}>
                 <X className="w-5 h-5 text-muted-foreground" />
               </button>

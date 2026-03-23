@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Shield, Sword, Crown, Heart, Mountain, TreePine, Zap, BookOpen, Star, ChevronRight, X, Eye } from "lucide-react";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const archetypes = [
   {
@@ -365,7 +366,13 @@ const MasculineTemple = ({ user, api }) => {
                           <Star className={`w-4 h-4 ${selectedArchetype.color.text}`} />
                           {p.name}
                         </h4>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{p.desc}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed mb-3">{p.desc}</p>
+                        <GuidedAudioButton
+                          api={api}
+                          script={`${selectedArchetype.name} practice: ${p.name}. ${p.desc}`}
+                          label="Listen to practice"
+                          className="text-xs"
+                        />
                       </div>
                     ))}
                   </div>
@@ -387,6 +394,11 @@ const MasculineTemple = ({ user, api }) => {
                     <div className={`p-4 rounded-xl ${selectedArchetype.color.bg} border ${selectedArchetype.color.border}`}>
                       <p className="text-xs text-muted-foreground/80 italic">{selectedArchetype.ritual.closing}</p>
                     </div>
+                    <GuidedAudioButton
+                      api={api}
+                      script={`${selectedArchetype.name} ritual: ${selectedArchetype.ritual.name}. ${selectedArchetype.ritual.steps.join(". ")}. ${selectedArchetype.ritual.closing}`}
+                      label="Listen to Guided Ritual"
+                    />
                   </div>
                 )}
               </div>

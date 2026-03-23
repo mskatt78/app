@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const HeartPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -281,6 +282,21 @@ const HeartPractices = ({ user, api }) => {
                       </div>
                       <h2 className="text-2xl font-serif">{selectedPractice.name}</h2>
                       <p className="text-sm text-muted-foreground mt-2">Guided Heart Practice</p>
+                    </div>
+
+                    {/* Guided Audio */}
+                    <div className="flex justify-center mb-2">
+                      <GuidedAudioButton
+                        api={api}
+                        label="Play Guided Narration"
+                        script={[
+                          `Welcome to this heart-opening practice: ${selectedPractice.name}.`,
+                          selectedPractice.description || "",
+                          selectedPractice.steps ? selectedPractice.steps.map((s, i) => `Step ${i+1}: ${s}`).join(". ") : "",
+                          selectedPractice.affirmation ? `Close by repeating: ${selectedPractice.affirmation}` : "",
+                          "Rest in the warmth of your open heart. You are love itself."
+                        ].filter(Boolean).join(" ")}
+                      />
                     </div>
 
                     <PracticeTimer

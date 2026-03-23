@@ -79,7 +79,7 @@
     }
   },
   "test_environment": {
-    "app_url": "https://chakra-guide-2.preview.emergentagent.com",
+    "app_url": "https://breathwork-oracle.preview.emergentagent.com",
     "viewport": "375x812 (mobile)"
   },
   "console_errors_observed": [

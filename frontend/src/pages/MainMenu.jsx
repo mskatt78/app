@@ -323,7 +323,7 @@ const MainMenu = ({ user }) => {
             </form>
 
             <p className="text-center text-sm text-muted-foreground">
-              {isLogin ? "New to Shamanic Elements?" : "Already have an account?"}{" "}
+              {isLogin ? "New to Soul Temple 2.0?" : "Already have an account?"}{" "}
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}

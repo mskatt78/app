@@ -314,7 +314,7 @@ const Reviews = ({ user, api }) => {
         <ShareModal
           isOpen={!!shareItem}
           onClose={() => setShareItem(null)}
-          title="Shamanic Elements — Temple of the Soul"
+          title="Shamanic Elements Soul Temple 2.0"
           description={`"${shareItem.text.slice(0, 120)}${shareItem.text.length > 120 ? "..." : ""}" — ${shareItem.user_name} ${renderStars(shareItem.rating)}`}
           url={window.location.origin + "/reviews"}
         />

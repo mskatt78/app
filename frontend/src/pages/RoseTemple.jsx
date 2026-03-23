@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Heart, Sparkles, Moon, Star, Eye, Flower2, BookOpen, X, Play } from "lucide-react";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const teachings = [
   {
@@ -352,6 +353,16 @@ const RoseTemple = ({ user, api }) => {
                         >
                           {section.body}
                         </motion.p>
+                      )}
+                      {selectedContent === i && section.body && (
+                        <div className="mt-3 flex">
+                          <GuidedAudioButton
+                            api={api}
+                            script={`${selectedTeaching.title}: ${section.heading}. ${section.body}`}
+                            label="Listen to this practice"
+                            className="text-xs"
+                          />
+                        </div>
                       )}
                     </AnimatePresence>
                   </motion.div>

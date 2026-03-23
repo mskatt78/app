@@ -171,6 +171,13 @@ async def startup_seed_database():
         await db.light_codes.insert_one(LIGHT_CODES)
         logger.info("light_codes refreshed.")
 
+        # Always reseed somatic_practices (to get updated images)
+        from data.somatic_practices import SOMATIC_PRACTICES
+        logger.info("Refreshing somatic_practices collection...")
+        await db.somatic_practices.delete_many({})
+        await db.somatic_practices.insert_many(SOMATIC_PRACTICES)
+        logger.info(f"somatic_practices refreshed — {len(SOMATIC_PRACTICES)} entries.")
+
         # Only seed everything else if yoga_poses is empty
         yoga_count = await db.yoga_poses.count_documents({})
         if yoga_count == 0:

@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const ShamanicPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -354,6 +355,22 @@ const ShamanicPractices = ({ user, api }) => {
                       </div>
                       <h2 className="text-2xl font-serif">{selectedPractice.name}</h2>
                       <p className="text-sm text-muted-foreground mt-2">Guided Shamanic Journey</p>
+                    </div>
+
+                    {/* Guided Audio Player */}
+                    <div className="flex justify-center mb-2">
+                      <GuidedAudioButton
+                        api={api}
+                        label="Play Guided Journey Narration"
+                        script={[
+                          `Welcome to this shamanic journey: ${selectedPractice.name}.`,
+                          selectedPractice.description || "",
+                          selectedPractice.preparation ? `Preparation: ${selectedPractice.preparation}` : "",
+                          selectedPractice.journey_steps ? `Your journey unfolds in ${selectedPractice.journey_steps.length} steps. ` + selectedPractice.journey_steps.map((s, i) => `Step ${i+1}: ${s}`).join(". ") : "",
+                          selectedPractice.closing_prayer ? `When you are ready to close, offer this prayer: ${selectedPractice.closing_prayer}` : "",
+                          "Gently return to your body. Wiggle your fingers and toes. Take three deep breaths. Welcome back."
+                        ].filter(Boolean).join(" ")}
+                      />
                     </div>
 
                     <PracticeTimer

@@ -1,0 +1,74 @@
+{
+  "summary": "Frontend testing of Shamanic Elements Soul Temple 2.0 features including app rename, image fixes, GuidedAudioButton on practice pages, and auth flow.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "/api/oracle/reading/guest (and /reading)",
+        "issue": "Oracle router (/app/backend/routers/oracle.py lines 17-40) defines its OWN local ORACLE_CARDS list WITHOUT image_url fields. The actual oracle cards with image_url are in /app/backend/data/all_content.py but that list is NOT used by the oracle router. Fix: replace inline ORACLE_CARDS in oracle.py with the one from data/all_content.py that includes image_url",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": [
+      {
+        "endpoint": "/api/oracle/reading",
+        "issue": "selected_cards mutation: card['is_reversed'] and card['position'] are set directly on ORACLE_CARDS dict references, mutating the module-level list on each request. Use copy.deepcopy or dict spread to avoid state pollution across requests."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "SomaticMovement.jsx - Practice Grid Cards",
+        "issue": "Practice cards do NOT render images even though the backend data returns image_url for all 39 practices. The card component (lines 419-459) shows only a Waves icon and never renders practice.image_url. An img tag needs to be added to the card similar to how ShamanicPractices.jsx and ElementalPractices.jsx render images.",
+        "selector": "[data-testid^='practice-card-'] img",
+        "priority": "HIGH"
+      },
+      {
+        "component": "OracleReadings.jsx - Card Display",
+        "issue": "Oracle cards show no image (Eye icon only). Root cause is backend issue - oracle router uses inline ORACLE_CARDS without image_url. Frontend code correctly handles image_url (lines 179-188) - fix is on backend.",
+        "selector": ".w-52 img",
+        "priority": "HIGH"
+      },
+      {
+        "component": "OracleReadings.jsx - Interpretation Text",
+        "issue": "Oracle interpretation text renders raw markdown (##, **bold**) instead of formatted text. The interpretation contains markdown that should be rendered using a markdown renderer.",
+        "selector": null,
+        "priority": "MEDIUM"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "BUG FIX (Critical): In /app/backend/routers/oracle.py - replace the inline ORACLE_CARDS list (lines 17-40) with the image-bearing version from /app/backend/data/all_content.py - OR add image_url fields to each card in oracle.py's local list",
+    "BUG FIX (Critical): In /app/frontend/src/pages/SomaticMovement.jsx - add image rendering to practice grid cards (lines 419-459). Pattern: if (practice.image_url) render <div className='relative h-48 overflow-hidden'><img src={practice.image_url} alt={practice.name} .../></div> above the card content - similar to how HeartPractices.jsx does it",
+    "BUG FIX (Medium): Fix oracle interpretation markdown rendering - wrap interpretation text in a markdown renderer or strip markdown markers",
+    "BUG FIX (Minor): Fix oracle.py ORACLE_CARDS mutation - use copy.deepcopy when sampling cards to prevent state pollution"
+  ],
+  "critical_code_review_comments": [
+    "oracle.py has its own ORACLE_CARDS without image_url - should use the canonical one from data/all_content.py",
+    "SomaticMovement.jsx practice cards missing image rendering despite data having image_url",
+    "oracle.py mutates ORACLE_CARDS dicts directly - causes cross-request state pollution (is_reversed/position persist)"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only test)",
+    "frontend": "75% (9 of 12 features verified; 3 features have bugs)"
+  },
+  "test_credentials": "No auth needed for most tests; Google Auth and email/password forms verified visually",
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "1. Somatic practices page (/somatic): 39 cards loaded but none show images - component missing img render. 2. Oracle (/oracle): cards drawn work but show no image because oracle router uses local ORACLE_CARDS without image_url. 3. All GuidedAudioButton features verified working: Shamanic='Play Guided Journey Narration', Elemental='Play Guided Narration', Heart='Play Guided Narration', Rose='Listen to this practice', Masculine Practices='Listen to practice', Masculine Ritual='Listen to Guided Ritual'. 4. Wheel of Year shows all 8 sabbat images. 5. Landing page shows 'Shamanic Elements Soul Temple 2.0' correctly. 6. Auth modal with Google + email/password form works.",
+  "rca_of_issues": {
+    "somatic_images_missing": {
+      "root_cause": "SomaticMovement.jsx practice grid card template (lines 419-459) only renders icon + name + description + benefits. No img tag for practice.image_url despite backend data having it.",
+      "fix": "Add conditional image block to practice card: if (practice.image_url) { render <div class='relative h-48 overflow-hidden'><img src={practice.image_url} .../></div> } before the card body"
+    },
+    "oracle_card_images_missing": {
+      "root_cause": "oracle.py router (lines 17-40) defines its own local ORACLE_CARDS list with only id/name/element/meaning/reversed_meaning - no image_url. The comprehensive ORACLE_CARDS with image_url is in data/all_content.py but is not imported by oracle.py.",
+      "fix": "In oracle.py, remove the inline ORACLE_CARDS definition and import from data/all_content.py: 'from data.all_content import ORACLE_CARDS'"
+    }
+  }
+}

@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const ElementalPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -324,6 +325,20 @@ const ElementalPractices = ({ user, api }) => {
                       </div>
                       <h2 className="text-2xl font-serif">{selectedPractice.name}</h2>
                       <p className="text-sm text-muted-foreground mt-2">Guided {selectedPractice.element} Practice</p>
+                    </div>
+
+                    {/* Guided Audio */}
+                    <div className="flex justify-center mb-2">
+                      <GuidedAudioButton
+                        api={api}
+                        label="Play Guided Narration"
+                        script={[
+                          `Welcome to this ${selectedPractice.element} elemental practice: ${selectedPractice.name}.`,
+                          selectedPractice.description || "",
+                          selectedPractice.instructions ? `Follow these steps: ` + selectedPractice.instructions.map((s, i) => `Step ${i+1}: ${s}`).join(". ") : "",
+                          "Take a moment to honour the element you have worked with. Breathe deeply and return to stillness."
+                        ].filter(Boolean).join(" ")}
+                      />
                     </div>
 
                     <PracticeTimer

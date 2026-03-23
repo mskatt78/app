@@ -106,7 +106,7 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 ---
 
 ## Current Working URL
-**https://chakra-guide-2.preview.emergentagent.com/menu**
+**https://breathwork-oracle.preview.emergentagent.com/menu**
 
 ---
 

@@ -11,7 +11,7 @@ const ShareModal = ({ isOpen, onClose, title, description, url, image }) => {
   const [copied, setCopied] = useState(false);
   
   const shareUrl = url || window.location.href;
-  const shareTitle = title || "Sacred Practice from Temple of the Soul";
+  const shareTitle = title || "Sacred Practice from Soul Temple 2.0";
   const shareText = description || "Discover this beautiful spiritual practice";
 
   const shareLinks = [

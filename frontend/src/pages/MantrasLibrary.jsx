@@ -96,6 +96,15 @@ const MantrasLibrary = ({ user, api }) => {
         audioRef.current.pause();
         audioRef.current = null;
       }
+      // Stop Web Audio API context (generated mantra sounds)
+      if (mantraAudioCtxRef.current) {
+        try { mantraAudioCtxRef.current.close(); } catch(e) {}
+        mantraAudioCtxRef.current = null;
+      }
+      if (mantraIntervalRef.current) {
+        clearInterval(mantraIntervalRef.current);
+        mantraIntervalRef.current = null;
+      }
     };
   }, []);
 

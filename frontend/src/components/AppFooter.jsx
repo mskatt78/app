@@ -13,7 +13,7 @@ const AppFooter = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Heart className="w-4 h-4 text-primary" />
-              <span>Shamanic Elements - Temple Of The Soul</span>
+              <span>Shamanic Elements Soul Temple 2.0</span>
             </div>
             
             <div className="flex flex-wrap items-center justify-center gap-4 text-xs">

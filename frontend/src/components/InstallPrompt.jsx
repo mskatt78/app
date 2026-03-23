@@ -84,7 +84,7 @@ const InstallPrompt = () => {
             <div className="flex-1">
               <h3 className="font-semibold text-foreground mb-1">Install App</h3>
               <p className="text-sm text-muted-foreground mb-3">
-                Add Shamanic Elements to your home screen for quick access & offline use.
+                Add Shamanic Elements Soul Temple 2.0 to your home screen for quick access Add Shamanic Elements to your home screen for quick access & offline use. offline use.
               </p>
               <div className="flex gap-2">
                 <Button

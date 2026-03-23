@@ -8,6 +8,7 @@ const SABBATS = [
   {
     id: "samhain",
     name: "Samhain",
+    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/c0aa6a8f18a1ccea2657e8b30c966cf641dba34020c725befcba1b0861cbd21f.png",
     subtitle: "The Hallows · The Celtic New Year",
     dates: { north: "Oct 31 – Nov 1", south: "Apr 30 – May 1" },
     monthIndex: { north: 9, south: 3 }, // 0-based month for proximity calc
@@ -44,6 +45,7 @@ const SABBATS = [
   {
     id: "yule",
     name: "Yule",
+    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/4110dc171c9c1d123761f27f4da3235dbebc96e243aac796af35b41c7526d89b.png",
     subtitle: "Winter Solstice · Rebirth of the Light",
     dates: { north: "Dec 20–23", south: "Jun 20–23" },
     monthIndex: { north: 11, south: 5 },
@@ -80,6 +82,7 @@ const SABBATS = [
   {
     id: "imbolc",
     name: "Imbolc",
+    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/c95268332ae4a98eb7cf58fbe24526fc25f6e41d1fd253e24c8921ff127fe60b.png",
     subtitle: "Candlemas · Brigid's Fire",
     dates: { north: "Feb 1–2", south: "Aug 1–2" },
     monthIndex: { north: 1, south: 7 },
@@ -116,6 +119,7 @@ const SABBATS = [
   {
     id: "ostara",
     name: "Ostara",
+    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/48ebe7e9ead519ebd4aded8d1abc0f8202d298c4a70aad88438dc4dab16df1ae.png",
     subtitle: "Spring Equinox · The Great Balance",
     dates: { north: "Mar 19–22", south: "Sep 20–23" },
     monthIndex: { north: 2, south: 8 },
@@ -152,6 +156,7 @@ const SABBATS = [
   {
     id: "beltane",
     name: "Beltane",
+    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/b3881e3cefcbb9d994caae304281bf0db724d2afb84a9036e814d544910c6346.png",
     subtitle: "May Day · The Great Marriage",
     dates: { north: "Apr 30 – May 1", south: "Oct 31 – Nov 1" },
     monthIndex: { north: 4, south: 10 },
@@ -188,6 +193,7 @@ const SABBATS = [
   {
     id: "litha",
     name: "Litha",
+    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/ff1bc23e547f1833f9c792ef415c71285f6e66a0d2c21aa1c55b6652c633734d.png",
     subtitle: "Summer Solstice · Peak of the Light",
     dates: { north: "Jun 20–23", south: "Dec 20–23" },
     monthIndex: { north: 5, south: 11 },
@@ -224,6 +230,7 @@ const SABBATS = [
   {
     id: "lughnasadh",
     name: "Lughnasadh",
+    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/9611418f1cc7e292141bcc36351d44a389add748c45ce20ecefcb47dcc0ba18a.png",
     subtitle: "Lammas · First Harvest",
     dates: { north: "Aug 1–2", south: "Feb 1–2" },
     monthIndex: { north: 7, south: 1 },
@@ -260,6 +267,7 @@ const SABBATS = [
   {
     id: "mabon",
     name: "Mabon",
+    image: "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/59b3a6e0af6df3d94ad9b3e3c8ef5db2cbcf1c6bfc2e3cebd77bc6d4a75c5f3.png",
     subtitle: "Autumn Equinox · The Second Harvest",
     dates: { north: "Sep 20–23", south: "Mar 19–22" },
     monthIndex: { north: 8, south: 2 },
@@ -522,17 +530,26 @@ const SeasonalTemple = ({ user }) => {
                 transition={{ delay: i * 0.05 }}
                 onClick={() => { setSelectedSabbat(s); setActiveTab("overview"); }}
                 data-testid={`sabbat-card-${s.id}`}
-                className={`cursor-pointer p-4 rounded-xl border transition-all hover:scale-[1.02]
+                className={`cursor-pointer rounded-xl border transition-all hover:scale-[1.02] overflow-hidden
                            ${s.color.bg} ${s.color.border}
                            ${isCurrent ? "ring-1 ring-primary" : ""}`}
               >
-                <div className="flex items-center justify-between mb-3">
+                {s.image && (
+                  <div className="relative h-28 overflow-hidden">
+                    <img src={s.image} alt={s.name} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/30 to-transparent" />
+                    {isCurrent && <span className="absolute top-2 right-2 text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">Now</span>}
+                  </div>
+                )}
+                <div className="p-4">
+                <div className={`flex items-center justify-between mb-3 ${s.image ? 'hidden' : ''}`}>
                   <Icon className={`w-6 h-6 ${s.color.text}`} />
-                  {isCurrent && <span className="text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">Now</span>}
+                  {isCurrent && !s.image && <span className="text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">Now</span>}
                 </div>
                 <h3 className="font-serif text-base mb-0.5">{s.name}</h3>
                 <p className={`text-xs ${s.color.text} mb-2`}>{s.dates[hemisphere]}</p>
                 <p className="text-xs text-muted-foreground line-clamp-2">{s.theme}</p>
+                </div>
               </motion.div>
             );
           })}
