@@ -11,6 +11,7 @@ import { Button } from "../components/ui/button";
 const TRADITIONS = [
   { id: "all",          label: "All Traditions", icon: Globe,    color: "text-amber-400",   bg: "bg-amber-500/10",    border: "border-amber-500/20" },
   { id: "egyptian",     label: "Egyptian",       icon: Sun,      color: "text-yellow-400",  bg: "bg-yellow-500/10",   border: "border-yellow-500/20" },
+  { id: "avalon",       label: "Avalon",         icon: Sparkles, color: "text-rose-400",    bg: "bg-rose-500/10",     border: "border-rose-500/20" },
   { id: "aboriginal",   label: "Aboriginal",     icon: Mountain, color: "text-orange-400",  bg: "bg-orange-500/10",   border: "border-orange-500/20" },
   { id: "celtic",       label: "Celtic",         icon: Feather,  color: "text-emerald-400", bg: "bg-emerald-500/10",  border: "border-emerald-500/20" },
   { id: "peruvian",     label: "Peruvian",       icon: Flame,    color: "text-teal-400",    bg: "bg-teal-500/10",     border: "border-teal-500/20" },
@@ -22,6 +23,7 @@ const TRADITIONS = [
 
 const TRADITION_MAP = {
   egyptian:     { label: "Egyptian Alchemy",      color: "text-yellow-400",  bg: "bg-yellow-500/10",  border: "border-yellow-500/20",  icon: Sun      },
+  avalon:       { label: "Avalon Mysteries",      color: "text-rose-400",    bg: "bg-rose-500/10",    border: "border-rose-500/20",    icon: Sparkles },
   aboriginal:   { label: "Aboriginal Wisdom",     color: "text-orange-400",  bg: "bg-orange-500/10",  border: "border-orange-500/20",  icon: Mountain },
   celtic:       { label: "Celtic Alchemy",        color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", icon: Feather  },
   peruvian:     { label: "Peruvian Alchemy",      color: "text-teal-400",    bg: "bg-teal-500/10",    border: "border-teal-500/20",    icon: Flame    },

@@ -128,15 +128,23 @@ async def startup_seed_database():
         await db.sacred_guardians.insert_many(SACRED_GUARDIANS)
         logger.info("sacred_guardians refreshed.")
 
-        # Always reseed ancient_wisdom (combine all three files)
+        # Always reseed ancient_wisdom (combine all four files)
         from data.ancient_wisdom_content import ANCIENT_WISDOM
         from data.ancient_wisdom_extended import ANCIENT_WISDOM_EXTENDED
         from data.ancient_wisdom_final import ANCIENT_WISDOM_FINAL
-        all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL
+        from data.ancient_wisdom_avalon import ANCIENT_WISDOM_AVALON
+        all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL + ANCIENT_WISDOM_AVALON
         logger.info("Refreshing ancient_wisdom collection...")
         await db.ancient_wisdom.delete_many({})
         await db.ancient_wisdom.insert_many(all_ancient_wisdom)
         logger.info(f"ancient_wisdom refreshed — {len(all_ancient_wisdom)} entries.")
+
+        # Always reseed sound_frequencies
+        from data.sound_frequencies import SOUND_FREQUENCIES
+        logger.info("Refreshing sound_frequencies collection...")
+        await db.sound_frequencies.delete_many({})
+        await db.sound_frequencies.insert_many(SOUND_FREQUENCIES)
+        logger.info(f"sound_frequencies refreshed — {len(SOUND_FREQUENCIES)} entries.")
 
         # Only seed everything else if yoga_poses is empty
         yoga_count = await db.yoga_poses.count_documents({})

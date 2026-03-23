@@ -552,3 +552,27 @@ async def get_ancient_wisdom_entry(entry_id: str):
     if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
     return entry
+
+
+
+# ============ SOUND FREQUENCIES ROUTES ============
+
+@router.get("/sound-frequencies")
+async def get_sound_frequencies(category: Optional[str] = None):
+    """Get sound frequency healing content, optionally filtered by category."""
+    db = get_db()
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    entries = await db.sound_frequencies.find(query, {"_id": 0}).to_list(length=50)
+    return entries
+
+
+@router.get("/sound-frequencies/{freq_id}")
+async def get_sound_frequency(freq_id: str):
+    """Get a specific sound frequency entry."""
+    db = get_db()
+    entry = await db.sound_frequencies.find_one({"id": freq_id}, {"_id": 0})
+    if not entry:
+        raise HTTPException(status_code=404, detail="Sound frequency not found")
+    return entry
