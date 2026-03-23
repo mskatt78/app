@@ -209,7 +209,7 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - All 8 Wheel of Year Sabbats have images
 - Oracle Cards now show images (fixed oracle.py import bug)
 
-### Admin CMS (March 2026)
+## CHANGELOG — March 2026 Session 3
 - Password-protected portal at `/admin/login` (password: stored in ADMIN_PASSWORD env var)
 - Dashboard shows all 11 content collections with live counts
 - Per-section: list all entries, search, add new, edit, delete
