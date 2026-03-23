@@ -3,11 +3,152 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Sparkles, Star, Sun, Moon, Zap, Users, Eye, 
-  ChevronRight, X, Circle, Hexagon, Target, Shield, Heart, Brain
+  ChevronRight, X, Circle, Hexagon, Target, Shield, Heart, Brain,
+  Calendar, CheckCircle2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+const SOLAR_WHEEL = [
+  41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,
+  27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,
+  31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,
+  28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60
+];
+function getDayOfYear(d) {
+  return Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000);
+}
+function getSolarPos(date) {
+  const adj = ((getDayOfYear(date) - 22) + 365) % 365;
+  const pos = Math.floor(adj * 64 / 365) % 64;
+  const line = Math.max(1, Math.min(6, Math.floor(((adj*64/365)-pos)*6)+1));
+  return { gate: SOLAR_WHEEL[pos], pos, line };
+}
+function calcHDProfile(birthDate) {
+  const date = new Date(birthDate + "T12:00:00");
+  const { gate: sunGate, line: sunLine } = getSolarPos(date);
+  const earthGate = SOLAR_WHEEL[(SOLAR_WHEEL.indexOf(sunGate)+32)%64] || sunGate;
+  const designDate = new Date(date.getTime() - 88*24*60*60*1000);
+  const { gate: dGate, line: dLine } = getSolarPos(designDate);
+  const dEarthGate = SOLAR_WHEEL[(SOLAR_WHEEL.indexOf(dGate)+32)%64] || dGate;
+  return { sunGate, earthGate, dGate, dEarthGate,
+           profile: `${sunLine}/${dLine}`, sunLine, dLine };
+}
 
-// Five Human Design Types
+const PROFILE_LINES = {
+  1:{name:"Investigator",desc:"Foundation-seeker. You need deep knowledge and security before you shine."},
+  2:{name:"Hermit",desc:"Natural talent emerges through solitude then re-engaging the world."},
+  3:{name:"Martyr",desc:"You learn through trial and error — your 'mistakes' are sacred wisdom."},
+  4:{name:"Opportunist",desc:"Networks and community are your power base. Relationships open doors."},
+  5:{name:"Heretic",desc:"Others project their hopes onto you. You're here to offer practical solutions."},
+  6:{name:"Role Model",desc:"You live in three phases: trial (1–30), withdrawal (30–50), wisdom (50+)."},
+};
+
+// ── BodyGraph SVG Component ───────────────────────────────────────────────────
+// Typical defined centers per type (simplified archetypes for visualisation)
+const DEFINED_CENTERS_BY_TYPE = {
+  generator:             ["Sacral","G","Root"],
+  "manifesting-generator":["Sacral","Throat","G","Root"],
+  projector:             ["G","Ajna"],
+  manifestor:            ["Throat","Heart","SolarPlexus"],
+  reflector:             [],
+};
+const CENTER_COLORS = {
+  Head:"#f0c040", Ajna:"#74c08a", Throat:"#8B6A4A",
+  G:"#f0c040", Heart:"#cc4444", SolarPlexus:"#e07030",
+  Sacral:"#cc4444", Spleen:"#8B6A4A", Root:"#8B6A4A"
+};
+const UNDEFINED_COLOR = "transparent";
+const STROKE_COLOR = "#ffffff22";
+const DEFINED_STROKE = "#ffffff55";
+
+const BodyGraph = ({ typId }) => {
+  const defined = DEFINED_CENTERS_BY_TYPE[typId] || [];
+  const def = (name) => defined.includes(name);
+  const fill = (name) => def(name) ? CENTER_COLORS[name] : UNDEFINED_COLOR;
+  const stroke = (name) => def(name) ? DEFINED_STROKE : "#ffffff33";
+
+  // Channel connections
+  const channels = [
+    [[100,30],[100,46]],           // Head-Ajna
+    [[100,66],[100,86]],           // Ajna-Throat
+    [[100,116],[100,136]],         // Throat-G
+    [[116,100],[132,114]],         // Throat-Heart
+    [[128,144],[134,130]],         // G-Heart
+    [[100,172],[100,188]],         // G-Sacral
+    [[74,156],[60,162]],           // G-Spleen
+    [[100,214],[100,264]],         // Sacral-Root
+    [[128,200],[142,200]],         // Sacral-SolarPlexus
+    [[52,170],[80,268]],           // Spleen-Root
+    [[60,156],[72,200]],           // Spleen-Sacral
+    [[150,214],[122,270]],         // SolarPlexus-Root
+  ];
+
+  return (
+    <svg viewBox="0 0 200 310" className="w-full max-w-[220px] mx-auto drop-shadow-lg">
+      {/* Channels */}
+      {channels.map(([[x1,y1],[x2,y2]], i) => (
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+          stroke="#ffffff18" strokeWidth="4" />
+      ))}
+
+      {/* Head — diamond */}
+      <polygon points="100,0 120,16 100,32 80,16"
+        fill={fill("Head")} stroke={stroke("Head")} strokeWidth="1.5" />
+
+      {/* Ajna — triangle up */}
+      <polygon points="80,46 120,46 100,68"
+        fill={fill("Ajna")} stroke={stroke("Ajna")} strokeWidth="1.5" />
+
+      {/* Throat — rect */}
+      <rect x="76" y="86" width="48" height="28" rx="3"
+        fill={fill("Throat")} stroke={stroke("Throat")} strokeWidth="1.5" />
+
+      {/* G Center — diamond */}
+      <polygon points="100,134 126,156 100,178 74,156"
+        fill={fill("G")} stroke={stroke("G")} strokeWidth="1.5" />
+
+      {/* Heart — small square right */}
+      <rect x="130" y="113" width="28" height="26" rx="3"
+        fill={fill("Heart")} stroke={stroke("Heart")} strokeWidth="1.5" />
+
+      {/* Solar Plexus — triangle right */}
+      <polygon points="140,188 164,188 152,214"
+        fill={fill("SolarPlexus")} stroke={stroke("SolarPlexus")} strokeWidth="1.5" />
+
+      {/* Sacral — rect */}
+      <rect x="72" y="188" width="56" height="28" rx="3"
+        fill={fill("Sacral")} stroke={stroke("Sacral")} strokeWidth="1.5" />
+
+      {/* Spleen — triangle left */}
+      <polygon points="36,148 60,148 48,172"
+        fill={fill("Spleen")} stroke={stroke("Spleen")} strokeWidth="1.5" />
+
+      {/* Root — rect */}
+      <rect x="76" y="264" width="48" height="26" rx="3"
+        fill={fill("Root")} stroke={stroke("Root")} strokeWidth="1.5" />
+
+      {/* Labels */}
+      {[
+        {label:"HEAD", x:100, y:17},
+        {label:"AJNA", x:100, y:59},
+        {label:"THROAT", x:100, y:103},
+        {label:"G", x:100, y:157},
+        {label:"HEART", x:144, y:128},
+        {label:"SP", x:152, y:203},
+        {label:"SACRAL", x:100, y:205},
+        {label:"SPLN", x:48, y:162},
+        {label:"ROOT", x:100, y:280},
+      ].map(({label,x,y}) => (
+        <text key={label} x={x} y={y} textAnchor="middle" fontSize="5.5"
+          fill="rgba(255,255,255,0.7)" fontFamily="serif" fontWeight="600">
+          {label}
+        </text>
+      ))}
+    </svg>
+  );
+};
+
+
 const humanDesignTypes = [
   {
     id: "generator",
@@ -220,14 +361,47 @@ const keyGates = [
 
 const HumanDesign = ({ user, api }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("types");
+  const [activeTab, setActiveTab] = useState("chart");
   const [selectedType, setSelectedType] = useState(null);
   const [selectedCenter, setSelectedCenter] = useState(null);
 
+  // My Chart state
+  const [birthYear, setBirthYear]   = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay]     = useState("");
+  const [hdProfile, setHdProfile]   = useState(null);
+  const [chosenType, setChosenType] = useState(null);
+  const [phase, setPhase] = useState(1); // 1=DOB, 2=type-pick, 3=results
+
+  const currentYear = new Date().getFullYear();
+  const years  = Array.from({length: currentYear - 1899}, (_,i) => currentYear - i);
+  const months = [
+    {value:"01",label:"January"},{value:"02",label:"February"},{value:"03",label:"March"},
+    {value:"04",label:"April"},{value:"05",label:"May"},{value:"06",label:"June"},
+    {value:"07",label:"July"},{value:"08",label:"August"},{value:"09",label:"September"},
+    {value:"10",label:"October"},{value:"11",label:"November"},{value:"12",label:"December"},
+  ];
+  const days = Array.from({length:31},(_,i)=>String(i+1).padStart(2,"0"));
+
+  const handleCalcProfile = () => {
+    if (!birthYear||!birthMonth||!birthDay) return;
+    const p = calcHDProfile(`${birthYear}-${birthMonth}-${birthDay}`);
+    setHdProfile(p);
+    setPhase(2);
+  };
+
+  const handleSelectType = (typeId) => {
+    setChosenType(humanDesignTypes.find(t=>t.id===typeId));
+    setPhase(3);
+  };
+
+  const resetChart = () => { setPhase(1); setHdProfile(null); setChosenType(null); setBirthYear(""); setBirthMonth(""); setBirthDay(""); };
+
   const tabs = [
-    { id: "types", label: "5 Energy Types" },
-    { id: "centers", label: "9 Centers" },
-    { id: "gates", label: "64 Gates" },
+    { id: "chart",    label: "My Chart" },
+    { id: "types",    label: "5 Energy Types" },
+    { id: "centers",  label: "9 Centers" },
+    { id: "gates",    label: "64 Gates" },
     { id: "experiment", label: "Your Experiment" }
   ];
 
@@ -297,6 +471,204 @@ const HumanDesign = ({ user, api }) => {
 
         {/* Tab Content */}
         <AnimatePresence mode="wait">
+
+          {/* ── MY CHART TAB ── */}
+          {activeTab === "chart" && (
+            <motion.div key="chart" initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0}} className="max-w-2xl mx-auto space-y-6">
+
+              {/* Phase 1 — DOB input */}
+              {phase === 1 && (
+                <div className="p-8 rounded-2xl bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-blue-500/10 border border-indigo-500/20">
+                  <div className="text-center mb-8">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-500/20 flex items-center justify-center">
+                      <Hexagon className="w-8 h-8 text-indigo-400" />
+                    </div>
+                    <h3 className="text-2xl font-serif mb-2">Your <span className="italic text-primary">Human Design Chart</span></h3>
+                    <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                      Enter your birth date to discover your Profile and then identify your Energy Type for a personalised Human Design reading.
+                    </p>
+                  </div>
+
+                  <div className="space-y-5">
+                    <div>
+                      <label className="block text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        Date of Birth
+                      </label>
+                      <div className="grid grid-cols-3 gap-3">
+                        <Select value={birthYear} onValueChange={setBirthYear}>
+                          <SelectTrigger className="bg-card/50 border-white/10" data-testid="hd-birth-year">
+                            <SelectValue placeholder="Year" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-60 bg-card border-white/10">
+                            {years.map(y=><SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <Select value={birthMonth} onValueChange={setBirthMonth}>
+                          <SelectTrigger className="bg-card/50 border-white/10" data-testid="hd-birth-month">
+                            <SelectValue placeholder="Month" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-white/10">
+                            {months.map(m=><SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                        <Select value={birthDay} onValueChange={setBirthDay}>
+                          <SelectTrigger className="bg-card/50 border-white/10" data-testid="hd-birth-day">
+                            <SelectValue placeholder="Day" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-60 bg-card border-white/10">
+                            {days.map(d=><SelectItem key={d} value={d}>{parseInt(d)}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Button onClick={handleCalcProfile} disabled={!birthYear||!birthMonth||!birthDay} className="w-full" data-testid="hd-calculate-btn">
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Reveal My Profile
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Phase 2 — Type selection */}
+              {phase === 2 && hdProfile && (
+                <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="space-y-6">
+                  {/* Profile revealed */}
+                  <div className="p-5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center">
+                    <p className="text-xs uppercase tracking-wider text-indigo-400 mb-1">Your Human Design Profile</p>
+                    <p className="text-3xl font-serif text-indigo-300">{hdProfile.profile}</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {PROFILE_LINES[hdProfile.sunLine]?.name} / {PROFILE_LINES[hdProfile.dLine]?.name}
+                    </p>
+                    <div className="mt-3 grid grid-cols-2 gap-3 text-left">
+                      <div className="p-3 rounded-xl bg-white/5 text-xs">
+                        <p className="text-indigo-400 mb-1">Conscious Sun Gate</p>
+                        <p className="font-mono text-lg text-foreground">{hdProfile.sunGate}</p>
+                      </div>
+                      <div className="p-3 rounded-xl bg-white/5 text-xs">
+                        <p className="text-violet-400 mb-1">Design Sun Gate</p>
+                        <p className="font-mono text-lg text-foreground">{hdProfile.dGate}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-center">
+                    <p className="text-sm font-medium mb-1">Now select your Energy Type</p>
+                    <p className="text-xs text-muted-foreground">Choose the description that resonates most deeply with your lived experience</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    {humanDesignTypes.map(t => {
+                      const s = getTypeColor(t.color);
+                      const Icon = t.icon;
+                      return (
+                        <motion.button key={t.id} whileTap={{scale:0.98}}
+                          onClick={()=>handleSelectType(t.id)}
+                          className={`w-full text-left p-4 rounded-2xl bg-gradient-to-r ${s.split(' ').slice(0,2).join(' ')} border ${s.split(' ')[2]} hover:scale-[1.01] transition-all`}
+                          data-testid={`hd-type-select-${t.id}`}>
+                          <div className="flex items-center gap-3 mb-1">
+                            <Icon className={`w-5 h-5 ${s.split(' ')[3]}`} />
+                            <span className="font-serif text-lg">{t.name}</span>
+                            <span className="text-xs text-muted-foreground ml-auto">{t.population}</span>
+                          </div>
+                          <p className="text-xs text-muted-foreground line-clamp-2">{t.description}</p>
+                          <p className={`text-xs mt-1 ${s.split(' ')[3]}`}>Strategy: {t.strategy}</p>
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+                  <Button variant="outline" className="w-full border-white/10 text-xs" onClick={()=>setPhase(1)}>
+                    ← Change Birth Date
+                  </Button>
+                </motion.div>
+              )}
+
+              {/* Phase 3 — Full results */}
+              {phase === 3 && hdProfile && chosenType && (
+                <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="space-y-6" data-testid="hd-results">
+                  {/* Header */}
+                  <div className={`p-6 rounded-2xl bg-gradient-to-br ${getTypeColor(chosenType.color).split(' ').slice(0,2).join(' ')} border ${getTypeColor(chosenType.color).split(' ')[2]}`}>
+                    <div className="flex items-center gap-4 mb-3">
+                      {(() => { const Icon = chosenType.icon; return <Icon className={`w-10 h-10 ${getTypeColor(chosenType.color).split(' ')[3]}`} />; })()}
+                      <div>
+                        <p className="text-xs text-muted-foreground uppercase tracking-wider">Your Type</p>
+                        <h2 className="text-2xl font-serif">{chosenType.name}</h2>
+                      </div>
+                      <div className={`ml-auto px-3 py-1 rounded-full text-sm font-mono
+                        bg-white/10 ${getTypeColor(chosenType.color).split(' ')[3]}`}>
+                        Profile {hdProfile.profile}
+                      </div>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{chosenType.description}</p>
+                  </div>
+
+                  {/* BodyGraph + Key Mechanics side by side */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
+                    {/* BodyGraph */}
+                    <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
+                      <p className="text-xs uppercase tracking-wider text-muted-foreground mb-4 text-center">BodyGraph</p>
+                      <BodyGraph typId={chosenType.id} />
+                      <p className="text-center text-xs text-muted-foreground mt-3">Coloured = typically defined</p>
+                    </div>
+
+                    {/* Strategy + Authority + Signature + Not-Self */}
+                    <div className="space-y-3">
+                      {[
+                        {label:"Strategy", value:chosenType.strategy, color:"green"},
+                        {label:"Aura",     value:chosenType.aura,     color:"blue"},
+                        {label:"Signature",value:chosenType.signature, color:"amber"},
+                        {label:"Not-Self", value:chosenType.notSelf,   color:"red"},
+                      ].map(({label,value,color})=>(
+                        <div key={label} className={`p-3 rounded-xl bg-${color}-500/10 border border-${color}-500/20`}>
+                          <p className={`text-xs text-${color}-400 uppercase tracking-wider mb-0.5`}>{label}</p>
+                          <p className="text-sm font-medium">{value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Profile description */}
+                  <div className="p-5 rounded-2xl bg-violet-500/10 border border-violet-500/20">
+                    <p className="text-xs uppercase tracking-wider text-violet-400 mb-2">Profile {hdProfile.profile} — {PROFILE_LINES[hdProfile.sunLine]?.name} / {PROFILE_LINES[hdProfile.dLine]?.name}</p>
+                    <p className="text-sm text-muted-foreground">{PROFILE_LINES[hdProfile.sunLine]?.desc}</p>
+                  </div>
+
+                  {/* Key Traits */}
+                  <div>
+                    <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                      <Star className="w-4 h-4 text-amber-400" />
+                      Key Traits
+                    </h4>
+                    <div className="space-y-2">
+                      {chosenType.keyTraits.map((t,i)=>(
+                        <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <CheckCircle2 className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
+                          {t}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Deconditioning */}
+                  <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                    <h4 className="text-sm font-semibold mb-2 text-indigo-300">Deconditioning Path</h4>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{chosenType.deconditioning}</p>
+                  </div>
+
+                  {/* Affirmation */}
+                  <div className="p-5 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 text-center">
+                    <p className="text-lg font-serif italic">"{chosenType.affirmation}"</p>
+                  </div>
+
+                  <Button variant="outline" className="w-full border-white/10" onClick={resetChart} data-testid="hd-reset-btn">
+                    Calculate New Chart
+                  </Button>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+
+          {/* ── EXISTING TABS ── */}
           {activeTab === "types" && (
             <motion.div
               key="types"

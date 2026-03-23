@@ -52,7 +52,11 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - **Light Codes Overhaul** — 75 authentic AI-generated images (DONE)
 - **Meditations UX Overhaul** — instant timer, background TTS, banner images (DONE)
 - **Community Reviews** — full-stack POST/GET with ratings (DONE)
-- **Gene Keys Personal Profile Calculator** (DONE - 2026-03-22)
+- **Human Design BodyGraph Calculator** (DONE - 2026-03-22)
+  - New "My Chart" tab added as default tab on Human Design page
+  - Phase 1: DOB input → calculates Profile (1/5 Investigator/Heretic, etc.) + Conscious/Design Sun Gates
+  - Phase 2: Type self-assessment — 5 types listed with descriptions to choose from
+  - Phase 3: Full results — SVG BodyGraph with colored defined centers, Strategy, Aura, Signature, Not-Self, Key Traits, Deconditioning Path, Affirmation
   - New "My Profile" tab added as default tab on Gene Keys page
   - DOB input (Year/Month/Day selects, same pattern as Numerology)
   - Solar wheel calculation: Life's Work, Evolution, Radiance, Purpose keys
