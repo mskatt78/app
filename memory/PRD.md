@@ -131,18 +131,19 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - [ ] Investigate if TTS guided meditations actually play for users (browser autoplay policies)
 
 ### P1 (High Priority)
-- [ ] Admin CMS improvements - full content upload capability
+- [x] Star Lineage Quiz — 12 questions, 8 lineage results (DONE March 2026)
+- [x] Retreats page redesign — elemental/womb healing modalities, CMS-managed retreats (DONE March 2026)
+- [x] Video Integration — Admin CMS video uploads, PracticeVideos component on Somatic/Shamanic pages (DONE March 2026)
 - [ ] Test Google OAuth end-to-end with actual browser redirect
 
 ### P2 (Medium Priority)
-- [ ] Video integration for practices
-- [ ] Workshops / Playshops with socials / retreats page
+- [ ] Migrate hardcoded frontend data (ElementalTemples, WaterPractices) to MongoDB
+- [ ] Daily Sacred Practice feature on home dashboard
 - [ ] Live & Recorded courses access portal
 
 ### P3 (Low Priority / Backlog)
 - [ ] Playable audio samples for Sound Frequencies page
-- [ ] More somatic practices with videos
-- [ ] Community features (sharing journeys)
+- [ ] Community features (sharing journeys, member profiles)
 
 ---
 
@@ -233,4 +234,42 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - Expanded **Practices** from 4 to 8 per element (added Shinrin-yoku, Stone Circle, Swimming Meditation, Kite Flying, Inner Sun visualization, etc.)
 - Expanded **Affirmations** from 4 to 8 per element
 - Added 2 more **Rituals** per element (Earth: Crystal Grid, Ancestral; Water: Ancestors, New Moon; Fire: Shadow Burning, Passion; Air: Dawn Awakening, Truth Speaking; Spirit: Vigil, Five Element Integration)
+
+
+## CHANGELOG — March 2026 Session 4 (P1 Features)
+
+### Star Lineage Quiz
+- 12-question quiz at `/star-lineage` to discover your star lineage
+- 8 possible results: Pleiadian, Sirian, Arcturian, Lyran, Andromedan, Venusian, Cassiopeian, Hydian
+- Each result includes: description, gifts, mission, recommended practices, sacred challenge, secondary lineage
+- Scoring system tallies lineage points across all answers
+- Retake Quiz functionality to try again
+
+### Retreats Page Redesign
+- Redesigned `/retreats` page with hero section and healing modality showcase
+- **Elemental Healing** section: 5-element healing work descriptions with expandable practice details
+- **Womb Healing** section: sacred feminine restoration work with practice descriptions
+- Retreat cards now fetched dynamically from MongoDB via Admin CMS
+- Detail modal with rich information display (location, dates, price, highlights, includes, accommodation)
+- Admin CMS: `retreats` collection added with full field config (title, status, location, dates, price, highlights, includes, healing_modalities, registration_link, etc.)
+
+### Video Integration
+- New `videos` collection in Admin CMS for managing practice videos
+- Admin can add videos with: title, category (somatic/shamanic), video_url (YouTube/Vimeo/direct), thumbnail, duration
+- **PracticeVideos** reusable component (`/app/frontend/src/components/PracticeVideos.jsx`)
+- Supports YouTube embeds, Vimeo embeds, and direct .mp4 video URLs
+- Auto-generates YouTube thumbnails from video ID
+- Video player modal with autoplay
+- Added to Somatic Movement page (category: somatic)
+- Added to Shamanic Practices page (category: shamanic)
+- Videos section automatically hides when no videos exist in category
+
+### Backend API Additions
+- `GET /api/retreats` — list all retreats (optional `?status=` filter)
+- `GET /api/retreats/{id}` — get single retreat
+- `GET /api/videos` — list all videos (optional `?category=` filter)
+- `GET /api/videos/{id}` — get single video
+- Admin CRUD for both `retreats` and `videos` collections
+
+
 
