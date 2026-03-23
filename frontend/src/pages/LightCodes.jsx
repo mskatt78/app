@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Sparkles, Star, Eye, Triangle, Circle, 
-  Hexagon, Square, X, Volume2
+  Hexagon, Square, X, Volume2, Zap, Globe
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -42,6 +42,24 @@ const LightCodes = ({ user, api }) => {
       bg: "bg-cyan-500/10",
       border: "border-cyan-500/20",
       description: "Activational codes for spiritual awakening"
+    },
+    {
+      id: "galactic_codes",
+      name: "Galactic Codes",
+      icon: Globe,
+      color: "text-indigo-400",
+      bg: "bg-indigo-500/10",
+      border: "border-indigo-500/20",
+      description: "Light transmissions from star systems & galactic civilizations"
+    },
+    {
+      id: "chakra_codes",
+      name: "Chakra Activation",
+      icon: Zap,
+      color: "text-rose-400",
+      bg: "bg-rose-500/10",
+      border: "border-rose-500/20",
+      description: "Sacred codes for each energy center from Earth Star to Stellar Gateway"
     }
   ];
 
@@ -257,42 +275,45 @@ const LightCodes = ({ user, api }) => {
 
               <div className="p-6 space-y-4">
                 <div>
-                  <h2 className="text-2xl font-serif mb-2">{selectedSymbol.name}</h2>
-                  <p className="text-muted-foreground">{selectedSymbol.description}</p>
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-3xl">{selectedSymbol.symbol || "✨"}</span>
+                    <h2 className="text-2xl font-serif">{selectedSymbol.name}</h2>
+                  </div>
+                  <p className="text-muted-foreground leading-relaxed">{selectedSymbol.description}</p>
                 </div>
 
                 {selectedSymbol.meaning && (
                   <div className={`p-4 rounded-xl ${getActiveCategoryInfo()?.bg} border ${getActiveCategoryInfo()?.border}`}>
-                    <h3 className="font-medium mb-2">Meaning</h3>
-                    <p className="text-muted-foreground">{selectedSymbol.meaning}</p>
-                  </div>
-                )}
-
-                {selectedSymbol.meditation && (
-                  <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
-                    <h3 className="font-medium mb-2 text-violet-300">Meditation Practice</h3>
-                    <p className="text-muted-foreground">{selectedSymbol.meditation}</p>
+                    <h3 className={`font-medium mb-2 ${getActiveCategoryInfo()?.color}`}>Meaning & Significance</h3>
+                    <p className="text-muted-foreground leading-relaxed">{selectedSymbol.meaning}</p>
                   </div>
                 )}
 
                 {selectedSymbol.activation && (
                   <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
-                    <h3 className="font-medium mb-2 text-cyan-300">Activation</h3>
-                    <p className="text-muted-foreground">{selectedSymbol.activation}</p>
+                    <h3 className="font-medium mb-2 text-cyan-300">Activation Practice</h3>
+                    <p className="text-muted-foreground leading-relaxed">{selectedSymbol.activation}</p>
+                  </div>
+                )}
+
+                {selectedSymbol.meditation && (
+                  <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20">
+                    <h3 className="font-medium mb-2 text-violet-300">Contemplation & Meditation</h3>
+                    <p className="text-muted-foreground leading-relaxed">{selectedSymbol.meditation}</p>
                   </div>
                 )}
 
                 {selectedSymbol.purpose && (
                   <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                    <h3 className="font-medium mb-2 text-amber-300">Purpose</h3>
-                    <p className="text-muted-foreground">{selectedSymbol.purpose}</p>
+                    <h3 className="font-medium mb-2 text-amber-300">Healing Purpose</h3>
+                    <p className="text-muted-foreground leading-relaxed">{selectedSymbol.purpose}</p>
                   </div>
                 )}
 
                 {selectedSymbol.practice && (
                   <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                    <h3 className="font-medium mb-2 text-emerald-300">Practice</h3>
-                    <p className="text-muted-foreground">{selectedSymbol.practice}</p>
+                    <h3 className="font-medium mb-2 text-emerald-300">Daily Practice</h3>
+                    <p className="text-muted-foreground leading-relaxed">{selectedSymbol.practice}</p>
                   </div>
                 )}
 

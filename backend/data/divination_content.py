@@ -1026,5 +1026,252 @@ LIGHT_CODES = {
             "purpose": "Masculine healing, grounded power, protective strength",
             "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&cs=tinysrgb&w=400"
         }
+    ],
+    "galactic_codes": [
+        {
+            "id": "gc1", "name": "Pleiadian Love Transmission",
+            "symbol": "✧",
+            "description": "The Pleiadian star system — seven sisters in Taurus — has long been associated with unconditional love, healing, and the awakening of humanity. The Pleiadians are among Earth's most ancient teachers, remembered in the myths of cultures from the Maya to the Greeks.",
+            "activation": "Visualize soft pink-gold light streaming down from the Pleiades star cluster above your head, flowing through your heart, filling your entire body. Say: 'I receive Pleiadian love. I am held by the seven sisters.'",
+            "purpose": "Heart opening, healing emotional wounds, remembering your star origins, connecting to unconditional love transmissions",
+            "practice": "On clear nights, find the Pleiades (the small cluster in Taurus). Gaze at them softly for 5 minutes. Allow any messages, memories, or feelings that arise to surface naturally.",
+            "image_url": "https://images.pexels.com/photos/3180831/pexels-photo-3180831.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc2", "name": "Sirian Healing Grid",
+            "symbol": "💙",
+            "description": "Sirius — the brightest star in Earth's sky — is the spiritual sun behind our physical sun. Ancient Egyptians oriented entire temples to Sirius, celebrating its heliacal rising as the source of the Nile's flooding. Sirian consciousness carries advanced healing codes, dolphin and whale intelligence, and the wisdom of Atlantis.",
+            "activation": "Visualize electric blue-white light streaming from Sirius through your crown and into your entire energy body. Feel old wounds dissolving at the cellular level. Say: 'Sirian healing light restores my original divine blueprint.'",
+            "purpose": "Advanced healing, DNA activation, dolphin-whale consciousness connection, accessing Atlantean and ancient Egyptian wisdom",
+            "practice": "Research Sirius's role in ancient Egypt. Meditate facing the direction of Sirius (southeast in the northern hemisphere) at dawn. Listen for cetacean (dolphin/whale) songs in your inner hearing.",
+            "image_url": "https://images.unsplash.com/photo-1597366812780-bc0f837f6ca6?auto=format&w=400"
+        },
+        {
+            "id": "gc3", "name": "Arcturian Healing Technology",
+            "symbol": "🔷",
+            "description": "Arcturus — the fourth brightest star — is considered by many galactic traditions to be the most advanced civilization in our galaxy. The Arcturians specialize in etheric surgical healing, emotional clearing, and geometric light transmissions. They are the 'doctors of the galaxy.'",
+            "activation": "Invite the Arcturian healing team. Feel a light table forming beneath you. Allow geometric patterns of blue-purple light to move through your energy body, clearing blockages, upgrading your field.",
+            "purpose": "Etheric healing, emotional body clearing, geometric light codes, advanced spiritual surgery, auric field repair",
+            "practice": "Before sleep, ask to be taken to an Arcturian healing chamber. Keep a journal beside your bed. Upon waking, record any geometric images, colors, or body sensations from the night.",
+            "image_url": "https://images.pexels.com/photos/4489336/pexels-photo-4489336.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc4", "name": "Lyran Original Blueprint",
+            "symbol": "⭐",
+            "description": "Lyra — the small constellation containing Vega — is considered by many traditions to be the original home of humanoid consciousness in this galaxy. The Lyrans hold the first template of human form and the codes of our original divine design before any density or distortion entered.",
+            "activation": "Visualize golden lion-like beings of pure light surrounding you. They hold a crystalline template of your original divine design. Feel this template overlaying your body, restoring you to your first perfect pattern.",
+            "purpose": "Soul origin remembrance, restoring original divine blueprint, healing 'original wound' of separation, accessing first-humanity wisdom",
+            "practice": "Ask in meditation: 'What was I before the forgetting?' Allow images, feelings, or knowings to arise. These are Lyran memory codes activating within you.",
+            "image_url": "https://images.pexels.com/photos/4233216/pexels-photo-4233216.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc5", "name": "Andromedan Integration Code",
+            "symbol": "◈",
+            "description": "The Andromedan galaxy — our nearest galactic neighbor — carries codes of radical freedom and multidimensional integration. Andromedan consciousness exists in a state of complete non-attachment while being fully engaged. They specialize in helping beings integrate all aspects of self — light and shadow, human and divine.",
+            "activation": "Breathe into your entire multidimensional self. Feel all versions of you — past, future, parallel — being integrated into this present moment. The Andromedan code says: You are already whole.",
+            "purpose": "Multidimensional integration, overcoming fragmentation, radical freedom consciousness, shadow-light integration",
+            "practice": "Sit in stillness. Ask to receive the Andromedan code of integration. Simply breathe and allow all aspects of yourself to be acknowledged and welcomed home.",
+            "image_url": "https://images.pexels.com/photos/3180831/pexels-photo-3180831.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc6", "name": "Venusian Rose Love Codes",
+            "symbol": "🌹",
+            "description": "Venus — our sister planet and the brightest object in the night sky after the moon — carries codes of sacred love, divine feminine beauty, and heart-based creation. The Venusian rose codes activate the higher heart and reveal love as a cosmic creative force, not merely a human emotion.",
+            "activation": "Breathe in the fragrance of roses. See rose-golden light entering your heart from Venus above. Feel love not as a feeling toward something, but as the very substance of your being.",
+            "purpose": "Sacred love activation, divine feminine embodiment, higher heart opening, creating from love rather than fear",
+            "practice": "Spend time with roses — smell them, look at their geometry (a 5-petaled rose contains the golden ratio). Let the rose teach you about love as structure, love as architecture.",
+            "image_url": "https://images.pexels.com/photos/6931818/pexels-photo-6931818.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc7", "name": "Cassiopeian Crystal Matrix",
+            "symbol": "💎",
+            "description": "Cassiopeia — the W-shaped queen constellation — holds crystalline consciousness codes of clarity, pure truth, and cosmic order. The Cassiopeian beings work with crystalline light to restore clarity to muddied waters of the mind, cut through illusion, and activate diamond-consciousness.",
+            "activation": "Visualize a crystalline matrix of pure white light descending from Cassiopeia. Each crystal point activates a different aspect of clarity: mental, emotional, spiritual. Feel confusion dissolving into diamond-like precision.",
+            "purpose": "Mental clarity, dissolving confusion and illusion, crystal consciousness activation, aligning with cosmic truth",
+            "practice": "When facing confusion, sit with a clear quartz crystal and gaze into it for 10 minutes while breathing slowly. The Cassiopeian codes will move through the crystal into your awareness.",
+            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc8", "name": "Hydian Dolphin Transmission",
+            "symbol": "🐬",
+            "description": "The Hydra star system carries the ancient dolphin and cetacean consciousness codes — the original sound healers of our oceans. Hydian beings communicate through complex harmonic frequencies and teach the intelligence of the body and the wisdom embedded in play, sound, and water.",
+            "activation": "Listen to dolphin sounds or simply imagine them. Feel the sonar of dolphin consciousness moving through your body, scanning for what needs healing, transmitting codes of joy and play.",
+            "purpose": "Sound healing activation, body intelligence, joy codes, cetacean consciousness connection, healing through play",
+            "practice": "Play near water. Swim if possible. Let your body be as free and joyful as a dolphin. Sing or tone while in water. The vibrations are Hydian codes entering your cells.",
+            "image_url": "https://images.pexels.com/photos/2860703/pexels-photo-2860703.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc9", "name": "Orion Balance Gateway",
+            "symbol": "⚖",
+            "description": "Orion — one of the most recognizable constellations — holds ancient codes of polarity mastery and the balance between darkness and light. The great spiritual battle between light and shadow was encoded in Orion mythology across cultures. These codes help us integrate our own inner warrior.",
+            "activation": "Stand with feet wide apart, like Orion the Hunter. Feel the tension between your light and your shadow as creative power, not conflict. Say: 'I integrate all that I am. My darkness is my teacher. My light is my gift.'",
+            "purpose": "Shadow integration, polarity mastery, warrior consciousness, inner conflict resolution, masculine healing",
+            "practice": "Identify your most persistent 'shadow' quality. Spend 10 minutes writing its gifts and what it is protecting. The Orion code teaches that your darkness is your greatest power, once integrated.",
+            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc10", "name": "Antares Fire of Transformation",
+            "symbol": "🔥",
+            "description": "Antares — the heart of the Scorpion — is a red supergiant star 700 times the size of our sun. It holds codes of radical transformation, death and rebirth, and the courage to release all that no longer serves. Antares energy does not allow stagnation. It burns what is incomplete to ash and creates new form.",
+            "activation": "Feel the fire of Antares at your solar plexus. It burns away fear, limitation, and stagnation — but only with your permission. Say: 'I give permission for sacred fire to transform everything in me that no longer serves my highest evolution.'",
+            "purpose": "Radical transformation, releasing old patterns, death/rebirth codes, fire element mastery, scorpio consciousness",
+            "practice": "Write on paper everything you are ready to release. Read it aloud to the night sky, facing the direction of Scorpio. Then burn the paper safely, watching smoke carry it to Antares.",
+            "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc11", "name": "Galactic Center Pulse",
+            "symbol": "☸",
+            "description": "The center of the Milky Way galaxy — 26,000 light years away — emits massive pulses of gamma rays and cosmic information. The Maya tracked the galactic center alignment that occurs every 26,000 years. These pulses carry evolutionary upgrade codes for all life in the galaxy.",
+            "activation": "Stand under the open sky, ideally at night. Feel the center of the galaxy — in the direction of Sagittarius — sending pulses of evolutionary energy through you. Your DNA is an antenna receiving these cosmic transmissions.",
+            "purpose": "Evolutionary upgrades, galactic consciousness, DNA activation at the highest level, receiving cosmic intelligence",
+            "practice": "Study the Mayan Long Count calendar and galactic center alignment. On solstices and equinoxes, meditate facing the galactic center direction (Sagittarius) as the galactic transmissions are strongest.",
+            "image_url": "https://images.unsplash.com/photo-1762429121350-6c3dec288cbf?auto=format&w=400"
+        },
+        {
+            "id": "gc12", "name": "Mintaka Sacred Temple Code",
+            "symbol": "⊕",
+            "description": "Mintaka — one of the three stars in Orion's belt — is considered a significant origin point for many starseeds. Those with Mintaka connections often feel a deep, aching sense of homesickness for a paradise they cannot name. Mintaka held a golden age civilization of beauty, peace, and divine love.",
+            "activation": "Visualize a golden paradise of perfect beauty and peace. This is your memory of Mintaka. Allow the homesickness to arise — it is not tragedy, it is information. You are here to help create that golden age on Earth.",
+            "purpose": "Starseed activation, healing cosmic homesickness, remembering golden age templates, hope codes for Earth's future",
+            "practice": "When you feel inexplicable longing or homesickness, look to the night sky. This is Mintaka activating in you. Journal what you most long for — this IS your mission.",
+            "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc13", "name": "Vegan Peace Transmission",
+            "symbol": "🕊",
+            "description": "Vega — the brightest star in the constellation Lyra — carries exceptionally pure peace codes and represents the original Lyran consciousness in its most refined form. Vegan beings are teachers of harmony, cooperation, and the path of peace as an active spiritual practice.",
+            "activation": "Breathe in pure white light from Vega. Feel it as the embodiment of peace — not the absence of conflict, but a profound positive presence of harmony. Let it fill every cell until your entire being resonates with it.",
+            "purpose": "Peace codes, conflict resolution, harmonizing relationships and inner states, Lyran ancestral healing",
+            "practice": "Practice 'Vegan peace': for one full day, commit to responding to every challenge with genuine curiosity rather than reaction. Peace is a discipline before it is a state.",
+            "image_url": "https://images.pexels.com/photos/3180831/pexels-photo-3180831.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc14", "name": "Spica Abundance Matrix",
+            "symbol": "💛",
+            "description": "Spica — the brightest star in Virgo — carries codes of sacred abundance, divine feminine service, and the harvest of spiritual labor. Spica was navigated by ancient mariners and honored in the temple of Athena. It activates the understanding that true abundance flows from aligned, devoted service.",
+            "activation": "Visualize golden harvest light streaming from Spica. Feel your life's work being recognized and blessed by the divine. Say: 'I am aligned with true abundance. My service is my prayer. My prayer is my abundance.'",
+            "purpose": "Abundance activation, aligning with purposeful service, receiving the harvest of spiritual labor, Virgo goddess consciousness",
+            "practice": "Identify one act of service you offer that aligns completely with your soul. Commit to deepening it for 30 days. Watch what Spica-abundance returns to you.",
+            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "gc15", "name": "Galactic Federation Seal",
+            "symbol": "✴",
+            "description": "Many galactic traditions describe a council or federation of civilizations that guides the evolutionary development of younger planets. This symbol represents your conscious alignment with the galactic community and your role as a planetary guardian and bridge between cosmic and earthly realms.",
+            "activation": "Place one hand on the Earth (or floor) and one hand open to the sky. Feel yourself as the bridge between galactic intelligence and planetary consciousness. Say: 'I am a bridge between worlds. I serve the highest good of all life.'",
+            "purpose": "Planetary service activation, starseed mission clarification, cosmic citizenship, integration of cosmic and earthly purpose",
+            "practice": "Spend time in nature placing your hands on the Earth. Offer what you receive from the cosmos directly into the planet. You are a conduit. This is the galactic federation work.",
+            "image_url": "https://images.pexels.com/photos/4233216/pexels-photo-4233216.jpeg?auto=compress&cs=tinysrgb&w=400"
+        }
+    ],
+    "chakra_codes": [
+        {
+            "id": "cc1", "name": "Earth Star Chakra",
+            "symbol": "⬛",
+            "description": "Below the feet, connecting deep into the Earth's crystalline core — the Earth Star is the anchor of your entire energy system. Before the spiritual journey begins, this chakra must be activated. It holds the codes of your soul's agreement with Planet Earth and your purpose in this specific incarnation on this planet.",
+            "activation": "Stand barefoot. Breathe your awareness all the way down through your legs, through the soles of your feet, and into the Earth below. Feel a dark silver-brown star beneath your feet — 30cm down. Breathe into it. Feel it pulsing with the heartbeat of the Earth.",
+            "purpose": "Deep grounding beyond the physical body, anchoring light codes into Earth, activating soul agreement with this incarnation",
+            "practice": "Walk barefoot on earth daily and consciously breathe into your Earth Star. Before any spiritual practice, activate this chakra first — it ensures cosmic energies safely enter the Earth plane.",
+            "image_url": "https://images.pexels.com/photos/4017166/pexels-photo-4017166.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc2", "name": "Root Chakra — Muladhara",
+            "symbol": "🔴",
+            "description": "At the base of the spine — the foundation of all life force energy. Muladhara means 'root support.' This deep red chakra governs survival, safety, belonging, and your right to exist. It holds the codes of your tribal origins, your body wisdom, and your ancestral lineage.",
+            "activation": "Sit on the ground with the base of your spine making contact. Breathe in deep red earth energy. Chant 'LAM' (the seed mantra) three times, feeling the vibration at the base of your spine.",
+            "purpose": "Safety and security activation, grounding, ancestral healing, embodiment codes, survival intelligence",
+            "practice": "Eat root vegetables mindfully, walk barefoot, work with red and brown crystals (garnet, red jasper). Chant LAM for 5 minutes while grounding your body completely.",
+            "image_url": "https://images.pexels.com/photos/4017166/pexels-photo-4017166.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc3", "name": "Sacral Chakra — Svadhisthana",
+            "symbol": "🟠",
+            "description": "Below the navel — the center of creativity, pleasure, sexuality, and emotional intelligence. Svadhisthana means 'one's own abode.' This warm orange chakra governs your capacity for pleasure, healthy sensuality, creative flow, and your relationship with the sacred feminine energies of water and the moon.",
+            "activation": "Place your hands on your lower belly. Breathe warm orange light into this center. Chant 'VAM' three times, feeling your creative life force awakening. Move your hips in gentle circles — the sacral chakra loves movement.",
+            "purpose": "Creative flow activation, pleasure healing, healthy sexuality, emotional intelligence, feminine energy restoration",
+            "practice": "Dance freely for 10 minutes daily. Create something with your hands. Allow yourself pleasure without guilt. Swim, take baths, work with water. Chant VAM and let your hips move.",
+            "image_url": "https://images.pexels.com/photos/6931862/pexels-photo-6931862.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc4", "name": "Solar Plexus Chakra — Manipura",
+            "symbol": "🟡",
+            "description": "At the navel and solar plexus — the sun within. Manipura means 'city of jewels.' This golden-yellow chakra is your personal power center, your will, your confidence, and your sense of self. It is the fire in your belly — the engine of manifestation and the seat of your sovereign self-authority.",
+            "activation": "Place your hands on your solar plexus. Breathe in golden sunlight. Chant 'RAM' three times with force, feeling warmth and power expanding in your belly. Stand tall. Say: 'I am sovereign. I am powerful. I have the right to act.'",
+            "purpose": "Personal power activation, will and confidence building, sovereignty codes, manifestation fuel, overcoming powerlessness",
+            "practice": "Practice saying 'no' to one thing that depletes you. Work with citrine, yellow topaz, tiger's eye. Spend time in direct sunlight, consciously receiving solar codes into your solar plexus.",
+            "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc5", "name": "Heart Chakra — Anahata",
+            "symbol": "💚",
+            "description": "At the heart center — the bridge between the lower (human) and upper (divine) chakras. Anahata means 'unstruck' — the sound made without two things striking. The heart is the master chakra, the seat of the soul, and the most powerful electromagnetic generator in the human body (60x stronger than the brain).",
+            "activation": "Place both hands on your heart. Breathe in green-gold light. Chant 'YAM' three times, feeling your chest expand. Recall someone or something you love deeply. Let that feeling fill your entire body.",
+            "purpose": "Love activation, healing relational wounds, self-compassion, unity consciousness, the bridge to higher dimensions",
+            "practice": "Practice Ho'oponopono (I love you, I'm sorry, please forgive me, thank you) directed at yourself for 10 minutes daily. Work with rose quartz, emerald, malachite.",
+            "image_url": "https://images.pexels.com/photos/6931818/pexels-photo-6931818.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc6", "name": "High Heart — Thymus Chakra",
+            "symbol": "💗",
+            "description": "Between the heart and throat — the seat of compassion, the Christ-Buddha consciousness within. The thymus gland is the center of the immune system and the seat of the soul's higher love. This chakra holds the codes of unconditional compassion that transcends personal love to universal love.",
+            "activation": "Place your fingers on the thymus (center of your chest, just above your heart). Tap gently three times. Visualize aquamarine-pink light radiating from this center. Feel compassion — not just for those you love, but for all beings.",
+            "purpose": "Unconditional compassion activation, Christ-Buddha consciousness, immune system strengthening through love, universal love expansion",
+            "practice": "Daily: tap the thymus 3 times while breathing in compassion. Direct love to those you find difficult. This is the most direct activation of the High Heart.",
+            "image_url": "https://images.pexels.com/photos/6932102/pexels-photo-6932102.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc7", "name": "Throat Chakra — Vishuddha",
+            "symbol": "🔵",
+            "description": "At the throat — the center of truth, communication, and creative self-expression. Vishuddha means 'especially pure.' This bright blue chakra governs your voice, your ability to speak your truth, your capacity to be heard, and your connection to divine will through aligned expression.",
+            "activation": "Tilt your head back slightly, opening your throat. Breathe in sky-blue light. Chant 'HAM' three times with full voice — feel the vibration in your throat, jaw, and skull. Say: 'My voice is sacred. My truth is safe to speak.'",
+            "purpose": "Truth-speaking activation, creative voice, releasing communication blocks, aligning personal will with divine will",
+            "practice": "Sing daily, even quietly. Tone into blue lace agate or aquamarine. Write in a journal without censorship. Practice speaking one truth you've been afraid to speak.",
+            "image_url": "https://images.pexels.com/photos/6931975/pexels-photo-6931975.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc8", "name": "Third Eye Chakra — Ajna",
+            "symbol": "👁",
+            "description": "Between and slightly above the eyebrows — the seat of inner vision, intuition, and the witness consciousness. Ajna means 'command' — this is where the soul gives commands to the body-mind through insight. The pineal gland (the physical third eye) is a crystalline structure that produces DMT and responds to light.",
+            "activation": "Gently press your fingertip to the space between your brows. Breathe in deep indigo light. Chant 'OM' or 'KSHAM' softly. Focus your inner gaze on this point. In the darkness behind your closed eyes, watch what forms.",
+            "purpose": "Intuition activation, psychic sight, inner knowing, connection to higher guidance, pineal gland activation",
+            "practice": "Work with amethyst or lapis lazuli placed at the third eye during meditation. Practice seeing with your eyes closed — track colors, shapes, visions. Trust what you see.",
+            "image_url": "https://images.pexels.com/photos/6931975/pexels-photo-6931975.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc9", "name": "Crown Chakra — Sahasrara",
+            "symbol": "👑",
+            "description": "At the crown of the head — the thousand-petaled lotus of pure consciousness. Sahasrara means 'thousand-petaled.' This violet-white chakra is the gateway between individual and cosmic consciousness. When it opens fully, the sense of separation dissolves — you know yourself as part of the infinite whole.",
+            "activation": "Sit in stillness. Feel the top of your head as soft and open. Breathe in pure white-violet light through your crown, down your central channel, and into your heart. Chant 'OM' on the exhale, feeling it resonate throughout your entire body.",
+            "purpose": "Divine connection, enlightenment, cosmic consciousness, dissolving the illusion of separation",
+            "practice": "Sit in open awareness meditation: not focusing on any object, simply being aware that you are aware. This direct recognition of consciousness is the practice of the Crown Chakra.",
+            "image_url": "https://images.pexels.com/photos/6931818/pexels-photo-6931818.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc10", "name": "Soul Star Chakra",
+            "symbol": "⭐",
+            "description": "30cm above the crown — your soul's seat, the keeper of your multidimensional records. The Soul Star holds all your soul contracts, your higher purpose, your past-life wisdom, and the codes of your entire evolutionary journey across many lifetimes. This is the star you came from.",
+            "activation": "Extend your awareness 30cm above your head. Feel a star of pure radiant light — your personal soul star. Breathe into it. Ask: 'What does my soul most need me to know right now?' Receive in stillness.",
+            "purpose": "Soul contract access, past life wisdom, higher purpose activation, multidimensional self connection, Akashic access",
+            "practice": "Before sleep, reach your awareness to your Soul Star and ask for guidance through dreams. Keep a dream journal. The Soul Star communicates most clearly during sleep and deep meditation.",
+            "image_url": "https://images.pexels.com/photos/4233216/pexels-photo-4233216.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc11", "name": "Stellar Gateway",
+            "symbol": "✨",
+            "description": "1.5 meters above the crown — the doorway to the cosmic and galactic dimensions. The Stellar Gateway is the highest chakra in the human energy field accessible during embodied life. It connects you to galactic consciousness, cosmic intelligence, and the councils of light that guide your soul's evolution.",
+            "activation": "In deep meditation, extend your awareness high above your body. Feel yourself touching the edge of galactic space. Visualize golden-white light streaming down from the cosmos through your Stellar Gateway into your Soul Star, Crown, and into your heart.",
+            "purpose": "Galactic connection, cosmic intelligence access, light body activation at the highest level, connection to ascended masters and cosmic councils",
+            "practice": "Reserve this activation for advanced states of meditation when your lower chakras are already fully grounded and open. Ground thoroughly after this practice.",
+            "image_url": "https://images.pexels.com/photos/3180831/pexels-photo-3180831.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc12", "name": "Unified Field Activation",
+            "symbol": "◎",
+            "description": "The complete chakra system activated simultaneously — all centers open, aligned, and spinning in perfect harmony from Earth Star through Stellar Gateway. This is the full spectrum of human consciousness, from the deepest Earth to the highest cosmos, all unified in one coherent, luminous body.",
+            "activation": "Begin at your Earth Star below your feet and breathe upward through each chakra in sequence. As you reach each one, feel it open and brighten. By the time you reach the Stellar Gateway, feel the entire column of light vibrating as one unified field of consciousness.",
+            "purpose": "Full-spectrum activation, complete energy body alignment, integration of all chakra work, preparation for major ceremonies and healings",
+            "practice": "Use this as a daily morning practice: 1 breath per chakra, moving from Earth Star to Stellar Gateway. Each inhale opens and brightens; each exhale grounds and integrates. 12 breaths. Your whole day changes.",
+            "image_url": "https://images.pexels.com/photos/7181600/pexels-photo-7181600.jpeg?auto=compress&cs=tinysrgb&w=400"
+        }
     ]
 }

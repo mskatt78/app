@@ -157,7 +157,7 @@ class TestPaymentRoutesWithAuth:
             json={
                 "product_type": "subscription",
                 "plan_id": "monthly",
-                "origin_url": "https://breathwork-oracle.preview.emergentagent.com",
+                "origin_url": "https://shamanic-soul-temple-1.preview.emergentagent.com",
                 "payment_method": "stripe"
             }
         )
@@ -180,7 +180,7 @@ class TestPaymentRoutesWithAuth:
             json={
                 "product_type": "subscription",
                 "plan_id": "monthly",
-                "origin_url": "https://breathwork-oracle.preview.emergentagent.com",
+                "origin_url": "https://shamanic-soul-temple-1.preview.emergentagent.com",
                 "payment_method": "paypal"
             }
         )

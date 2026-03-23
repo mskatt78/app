@@ -11,7 +11,7 @@ import time
 from datetime import datetime
 
 class ShamanicYogaAPITester:
-    def __init__(self, base_url="https://breathwork-oracle.preview.emergentagent.com"):
+    def __init__(self, base_url="https://shamanic-soul-temple-1.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_base = f"{base_url}/api"
         self.session_token = None
