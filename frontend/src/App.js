@@ -28,6 +28,9 @@ import Mindfulness from "./pages/Mindfulness";
 import Meditations from "./pages/Meditations";
 import Numerology from "./pages/Numerology";
 import AdminCMS from "./pages/AdminCMS";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminSection from "./pages/AdminSection";
 // New Shamanic Pages
 import PracticeLog from "./pages/PracticeLog";
 import EarthAltars from "./pages/EarthAltars";
@@ -298,8 +301,8 @@ function AppRouter() {
   }
 
   // Pages that should NOT show top nav
-  const noNavPages = ["/", "/dashboard", "/admin", "/payment/success", "/payment/cancel"];
-  const showNav = !noNavPages.includes(location.pathname);
+  const noNavPages = ["/", "/dashboard", "/payment/success", "/payment/cancel"];
+  const showNav = !noNavPages.includes(location.pathname) && !location.pathname.startsWith("/admin");
 
   return (
     <>
@@ -719,9 +722,13 @@ function AppRouter() {
           </PublicRoute>
         }
       />
-      {/* Admin Route */}
+      {/* Admin Routes - Password protected (no Google Auth needed) */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin/manage/:collection" element={<AdminSection />} />
+      {/* Legacy Admin CMS */}
       <Route
-        path="/admin"
+        path="/admin-legacy"
         element={
           <AdminRoute>
             {({ user, api }) => <AdminCMS user={user} api={api} />}

@@ -209,7 +209,14 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - All 8 Wheel of Year Sabbats have images
 - Oracle Cards now show images (fixed oracle.py import bug)
 
-## CHANGELOG — March 2026 Session 3
+### Admin CMS (March 2026)
+- Password-protected portal at `/admin/login` (password: stored in ADMIN_PASSWORD env var)
+- Dashboard shows all 11 content collections with live counts
+- Per-section: list all entries, search, add new, edit, delete
+- File upload (audio MP3, images) via object storage → public URLs
+- Media Library at `/admin/manage/audio_files` — upload, preview, copy URL, delete
+- Collections managed: Oracle Cards, Tarot, Ancient Wisdom, Somatic Practices, Sound Frequencies, Crystals, Mantras, Meditations, Mudras, Runes, Sacred Guardians
+- Admin password: `ShamanicAdmin2026!`
 
 ### Light Codes Expansion
 - Added **Galactic Codes** category (15 entries): Pleiadian, Sirian, Arcturian, Lyran, Andromedan, Venusian, Cassiopeian, Hydian, Orion, Antares, Galactic Center, Mintaka, Vegan, Spica, Galactic Federation
