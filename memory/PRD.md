@@ -47,7 +47,7 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - **Oracle Cards** (22 cards with images) ✅ - Fixed oracle.py to use all_content.py
 - **Rune Readings** (25 Elder Futhark runes with AI images) ✅
 - **I Ching** (64 hexagrams) ✅
-- **Light Codes** (75 AI-generated sacred geometry) ✅
+- **Light Codes** (77 entries: Sacred Geometry 25, Ancient Alphabets 25, Light Language 25, Galactic Codes 15, Chakra Activation 12) ✅ Updated March 2026
 
 ### Calculations & Charts
 - **Gene Keys Calculator** ✅
@@ -83,6 +83,8 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - **Masculine Temple** (with GuidedAudioButton) ✅
 - **Wheel of the Year** (8 sabbats with AI images) ✅
 - **Mantras Library** (with audio, cleanup fixed) ✅
+- **Elemental Temples** (5 elements, 8 sections each: Embodiment, Within You, In Nature, Practices, Rituals, Ceremonies, Blessings, Affirmations) ✅ Expanded March 2026
+- **Water Practices** (ceremonies, rituals, blessing categories) ✅ Expanded March 2026
 
 ### Other
 - **Oracle Readings** (22 cards with images) ✅ - Fixed mutation bug
@@ -206,3 +208,22 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - All 39 Somatic Practices now have images
 - All 8 Wheel of Year Sabbats have images
 - Oracle Cards now show images (fixed oracle.py import bug)
+
+## CHANGELOG — March 2026 Session 3
+
+### Light Codes Expansion
+- Added **Galactic Codes** category (15 entries): Pleiadian, Sirian, Arcturian, Lyran, Andromedan, Venusian, Cassiopeian, Hydian, Orion, Antares, Galactic Center, Mintaka, Vegan, Spica, Galactic Federation
+- Added **Chakra Activation** category (12 entries): Earth Star through Stellar Gateway — all major and transpersonal chakras
+- Each new entry has rich: description, activation practice, healing purpose, daily practice, image
+- Updated LightCodes.jsx modal to show "Activation Practice", "Healing Purpose", "Daily Practice" labels more richly
+- Total Light Codes: 77 entries across 5 categories
+
+### Elemental Temples Deep Expansion
+- All 5 elements (Earth, Water, Fire, Air, Spirit) now have 8 section tabs:
+  - Embodiment, Within You, In Nature, Practices (8 each), Rituals (4 each), **Ceremonies (2 each)**, **Blessings (5 each)**, Affirmations (8 each)
+- Added **Ceremonies** section: 2 communal ceremonies per element with flow steps and closing prayers
+- Added **Blessings** section: 5 sacred blessings/prayers per element with timing guidance
+- Expanded **Practices** from 4 to 8 per element (added Shinrin-yoku, Stone Circle, Swimming Meditation, Kite Flying, Inner Sun visualization, etc.)
+- Expanded **Affirmations** from 4 to 8 per element
+- Added 2 more **Rituals** per element (Earth: Crystal Grid, Ancestral; Water: Ancestors, New Moon; Fire: Shadow Burning, Passion; Air: Dawn Awakening, Truth Speaking; Spirit: Vigil, Five Element Integration)
+
