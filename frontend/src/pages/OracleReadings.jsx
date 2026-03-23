@@ -168,37 +168,43 @@ const OracleReadings = ({ user, api }) => {
                   <motion.div
                     key={card.id}
                     initial={{ opacity: 0, rotateY: 180, scale: 0.8 }}
-                    animate={{ opacity: 1, rotateY: 0, scale: 1 }}
+                    animate={{ opacity: 1, rotateY: card.is_reversed ? 180 : 0, scale: 1 }}
                     transition={{ delay: index * 0.3, duration: 0.6, type: "spring" }}
-                    className={`w-52 rounded-2xl border backdrop-blur-xl overflow-hidden text-center
-                               ${card.is_reversed ? 'rotate-180' : ''}
+                    className="w-52 rounded-2xl border overflow-hidden text-center
                                bg-gradient-to-br from-card to-card/50 border-white/10
-                               shadow-[0_0_30px_rgba(212,175,55,0.15)]`}
+                               shadow-[0_0_30px_rgba(212,175,55,0.15)] flex-shrink-0"
+                    data-testid={`oracle-card-${index}`}
                   >
-                    <div className={card.is_reversed ? 'rotate-180' : ''}>
-                      {card.image_url ? (
-                        <div className="relative h-40 overflow-hidden">
-                          <img src={card.image_url} alt={card.name} className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/30 to-transparent" />
-                          <span className={`absolute bottom-2 left-2 right-2 text-sm font-serif text-white drop-shadow-lg`}>{card.name}</span>
-                        </div>
-                      ) : (
-                        <div className={`w-12 h-12 mx-auto mt-6 mb-2 rounded-full flex items-center justify-center bg-white/5`}>
-                          <Eye className={`w-6 h-6 ${elementColors[card.element]}`} />
-                        </div>
-                      )}
-                      <div className="p-3">
-                        {!card.image_url && <h4 className="font-serif text-base mb-1">{card.name}</h4>}
-                        <p className={`text-xs ${elementColors[card.element]} mb-2`}>{card.element}</p>
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          {card.is_reversed ? card.reversed_meaning : card.meaning}
-                        </p>
+                    {card.image_url ? (
+                      <div className="relative h-56 overflow-hidden">
+                        <img
+                          src={card.image_url}
+                          alt={card.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => { e.target.style.display='none'; }}
+                        />
+                        {/* Subtle gradient only at bottom for text readability */}
+                        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent" />
+                        <span className="absolute bottom-3 left-2 right-2 text-sm font-serif text-white drop-shadow-lg leading-tight">{card.name}</span>
                         {card.is_reversed && (
-                          <span className="inline-block mt-2 px-2 py-1 rounded bg-destructive/20 text-destructive text-xs">
+                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-red-900/70 text-red-200 text-xs border border-red-500/30">
                             Reversed
                           </span>
                         )}
                       </div>
+                    ) : (
+                      <div className="h-40 flex flex-col items-center justify-center bg-white/5">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center bg-white/10">
+                          <Eye className={`w-6 h-6 ${elementColors[card.element]}`} />
+                        </div>
+                        <h4 className="font-serif text-base px-2">{card.name}</h4>
+                      </div>
+                    )}
+                    <div className="p-3">
+                      <p className={`text-xs font-medium ${elementColors[card.element]} mb-1`}>{card.element}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {card.is_reversed ? card.reversed_meaning : card.meaning}
+                      </p>
                     </div>
                   </motion.div>
                 ))}
