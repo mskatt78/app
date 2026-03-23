@@ -128,12 +128,15 @@ async def startup_seed_database():
         await db.sacred_guardians.insert_many(SACRED_GUARDIANS)
         logger.info("sacred_guardians refreshed.")
 
-        # Always reseed ancient_wisdom
+        # Always reseed ancient_wisdom (combine all three files)
         from data.ancient_wisdom_content import ANCIENT_WISDOM
+        from data.ancient_wisdom_extended import ANCIENT_WISDOM_EXTENDED
+        from data.ancient_wisdom_final import ANCIENT_WISDOM_FINAL
+        all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL
         logger.info("Refreshing ancient_wisdom collection...")
         await db.ancient_wisdom.delete_many({})
-        await db.ancient_wisdom.insert_many(ANCIENT_WISDOM)
-        logger.info(f"ancient_wisdom refreshed — {len(ANCIENT_WISDOM)} entries.")
+        await db.ancient_wisdom.insert_many(all_ancient_wisdom)
+        logger.info(f"ancient_wisdom refreshed — {len(all_ancient_wisdom)} entries.")
 
         # Only seed everything else if yoga_poses is empty
         yoga_count = await db.yoga_poses.count_documents({})

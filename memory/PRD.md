@@ -11,75 +11,80 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 ```
 /app/
 ├── backend/
-│   ├── .env (MONGO_URL, DB_NAME)
+│   ├── .env (MONGO_URL, DB_NAME, EMERGENT_LLM_KEY)
 │   ├── data/
 │   │   ├── all_content.py       (crystals, mantras, mudras, breathwork, oracle, meditations)
 │   │   ├── divination_content.py (runes, I Ching, light codes — AI-generated images)
 │   │   ├── shamanic_content.py  (earth altars, heart practices, creative, elemental, shamanic journeys)
 │   │   ├── somatic_practices.py
 │   │   ├── yoga_poses.py
-│   │   └── guardians_content.py  [NEW] 37 sacred guardians
+│   │   ├── guardians_content.py  (37 sacred guardians)
+│   │   ├── ancient_wisdom_content.py (Base ancient wisdom - 25 entries)
+│   │   ├── ancient_wisdom_extended.py (Extended - 54 entries)
+│   │   └── ancient_wisdom_final.py (Final expansion - 17 entries = 96 total)
 │   ├── routers/
 │   │   ├── auth.py, payments.py, birth_chart.py, content.py
 │   │   ├── oracle.py, numerology.py, user.py, admin.py
-│   │   ├── gifts.py, tts.py, reviews.py
-│   │   └── (sacred-guardians API in content.py)
+│   │   ├── gifts.py, tts.py (includes meditation + somatic audio), reviews.py
 │   └── server.py (startup seeding for all collections)
 ├── frontend/
 │   └── src/
 │       ├── components/
-│       │   ├── AmbientSoundPlayer.jsx  [UPDATED] + binaural + crystal bowls
-│       │   ├── MainMenu.jsx [in pages/], TopNav, BottomNav, AppFooter
+│       │   ├── AmbientSoundPlayer.jsx (procedural audio: binaural + crystal bowls)
+│       │   ├── TopNav, BottomNav, AppFooter
 │       │   └── ...
 │       └── pages/
-│           ├── SacredGuardians.jsx  [NEW]
-│           ├── Meditations.jsx      [UPDATED] ambient soundscapes integrated
-│           └── (40+ pages)
+│           ├── SacredGuardians.jsx
+│           ├── AncientWisdom.jsx
+│           ├── SomaticMovement.jsx (NOW WITH GUIDED AUDIO)
+│           ├── Meditations.jsx (with TTS + ambient soundscapes)
+│           └── (50+ pages)
 ```
 
 ---
 
-## What's Been Implemented
+## What's Been Implemented (as of March 23, 2026)
 
 ### Phase 1 — Core App (previous sessions)
 - Sacred Temples, Healing Modalities, Sunrise/Sunset practices
 - Journaling, Mantras, Mudras, Divination (Oracle, Runes, I Ching)
 - Water Practices, Gene Keys, Human Design, Profile Calculator, Progress Dashboard
-- Breathwork, Somatic, Grounding, Mindfulness, Crystals
+- Breathwork, Grounding, Mindfulness, Crystals
 
 ### Phase 2 — Recent Sessions
-- **Partner Yoga** with photos for all 8 poses (DONE)
-- **Light Codes Overhaul** — 75 authentic AI-generated images (DONE)
-- **Meditations UX Overhaul** — instant timer, background TTS, banner images (DONE)
-- **Community Reviews** — full-stack POST/GET with ratings (DONE)
-- **Ancient Wisdom Traditions** (DONE - 2026-03-23)
-  - 25 entries across 8 traditions: Egyptian (8), Celtic (3), Aboriginal Australian (3), Peruvian (2), International (4), Lemurian/Mu (1), Atlantean (1), Galactic (3)
-  - Each entry: AI-generated image, description, sacred message, invocation, teachings, sacred tools, practice steps, crystals, chakra
-  - Filter tabs for each tradition, detail modal with full content
-  - New page `/ancient-wisdom` added to Main Menu under "Shamanic Wisdom"
-  - Backend API: GET /api/ancient-wisdom (with ?tradition= filter)
-  - New "My Chart" tab added as default tab on Human Design page
-  - Phase 1: DOB input → calculates Profile (1/5 Investigator/Heretic, etc.) + Conscious/Design Sun Gates
-  - Phase 2: Type self-assessment — 5 types listed with descriptions to choose from
-  - Phase 3: Full results — SVG BodyGraph with colored defined centers, Strategy, Aura, Signature, Not-Self, Key Traits, Deconditioning Path, Affirmation
-  - New "My Profile" tab added as default tab on Gene Keys page
-  - DOB input (Year/Month/Day selects, same pattern as Numerology)
-  - Solar wheel calculation: Life's Work, Evolution, Radiance, Purpose keys
-  - Profile line calculation (e.g. 2/6 Hermit/Role Model)
-  - Clickable key cards that open the full Gene Key detail modal
-  - Personalized contemplation prompt based on Life's Work key
-  - 37 beings: Power Animals (8), Spirit Animals (6), Dragon Energy (6), Angels (5), Familiars (6), Messengers (6)
-  - Each with AI-generated authentic image, description, sacred message, symbolism, spiritual gifts, how-to-connect, chakra
-  - Full frontend page with hero banner, category filter tabs, grid, detail modal
-  - Backend API: GET /api/sacred-guardians (with ?category= filter)
-  - Added to MainMenu under "Shamanic Wisdom"
-- **Ambient Soundscapes for Meditations** (DONE - 2026-03-22)
-  - 6 sounds: Ocean Waves, Forest Rain, Tibetan Bowls, Crystal Bowls, Binaural Tones, Silence
-  - Web Audio API (no CDN, works offline), integrated in Meditations player
-  - AmbientSoundPlayer component enhanced with crystal bowls + binaural tones
+- **Partner Yoga** with photos for all 8 poses
+- **Light Codes Overhaul** — 75 authentic AI-generated images
+- **Meditations UX Overhaul** — instant timer, background TTS, banner images
+- **Community Reviews** — full-stack POST/GET with ratings
+
+### Phase 3 — Latest Session (March 23, 2026)
+- **Somatic Movement with Guided Audio** ✅
+  - Added TTS endpoint `/api/tts/somatic/{id}` for guided practice audio
+  - Updated SomaticMovement.jsx with full guided practice mode:
+    - Timer with progress bar
+    - TTS audio generation (preparing → playing)
+    - Ambient Soundscapes (Ocean, Forest Rain, Tibetan Bowls, Crystal Bowls, Binaural Tones)
+    - Movement Instructions display
+    - Play/Pause, Reset, Volume controls
+  
+- **Ancient Wisdom Traditions Expanded to 96 entries (12 per tradition)** ✅
+  - Egyptian: 12 (Isis, Ra, Thoth, Sekhmet, Osiris, Horus, Hathor, Bastet, Anubis, Nephthys, Nut, Ma'at)
+  - Aboriginal Australian: 12 (Rainbow Serpent, Wandjina, Songlines, Biame, Bunjil, Yhi, + 6 more)
+  - Celtic: 12 (Morrigan, Brigid, Cernunnos, Lugh, Danu, Cerridwen, Dagda, Rhiannon, Aengus + more)
+  - Peruvian: 12 (Pachamama, Inti, Viracocha, Mama Quilla, Qero, Supay, Illapa + more)
+  - International: 12 (Shiva, Lakshmi, Ganesha, Odin, Yemoja, Poseidon, White Tara, Hecate + more)
+  - Lemurian: 12 (Crystal Temples, Priests, Violet Flame Priestess, Dolphin Consciousness + more)
+  - Atlantean: 12 (High Priests, Crystal Skulls, Crystal Master, Mermaid Priestess + more)
+  - Galactic: 12 (Pleiadian, Sirian, Arcturian, Lyran, Andromedan, Blue Avian, Mantis + more)
+  - All with AI-generated images using Gemini imagen-4.0
+
+- **Sacred Guardians** — 37 beings with AI-generated images
+- **Gene Keys Calculator** with DOB-based profile calculation
+- **Human Design Calculator** with Body Graph SVG generation
+- **Ambient Soundscapes** integrated into Meditations and Somatic pages
 
 ### 3rd Party Integrations
-- OpenAI TTS (Meditations audio) — Emergent LLM Key
+- OpenAI TTS (Meditations + Somatic audio) — Emergent LLM Key
 - Gemini Image Generation — Emergent LLM Key
 - Resend (emails) — user API key
 - Google OAuth — Emergent-managed
@@ -87,16 +92,19 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 ---
 
 ## Key API Endpoints
-- GET /api/sacred-guardians — all 37 guardians
-- GET /api/sacred-guardians?category=dragon_energy — filtered
-- GET /api/sacred-guardians/{id} — single guardian
-- POST /api/reviews, GET /api/reviews
-- POST /api/tts/meditation/{id} — audio generation
+- `GET /api/sacred-guardians` — all 37 guardians
+- `GET /api/ancient-wisdom` — all 96 traditions (with ?tradition= filter)
+- `POST /api/tts/meditation/{id}` — meditation audio generation
+- `POST /api/tts/somatic/{id}` — somatic practice audio generation ✅ NEW
+- `GET /api/somatic` — all 39 somatic practices
+- `POST /api/reviews`, `GET /api/reviews`
 
 ---
 
 ## DB Schema (key collections)
 - `sacred_guardians`: id, name, category, element, description, symbolism[], spiritual_gifts[], message, how_to_connect[], chakra, image_url
+- `ancient_wisdom`: id, name, tradition, type, title, element, description, teachings[], sacred_tools[], invocation, message, practice[], crystals[], chakra, color, image_url
+- `somatic_practices`: id, name, element, description, duration_minutes, benefits[], instructions[], category, has_audio
 - `reviews`: author, rating, comment, created_at
 - `meditations`: id, name, category, element, duration_minutes, image_url, visualization, benefits[]
 
@@ -104,17 +112,31 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 
 ## Prioritized Backlog
 
+### P1 — Link Gene Keys ↔ Human Design
+- Add navigation bridge between Gene Keys Profile and Human Design Chart (share Profile number)
+
 ### P2 — Gifting UI
 - Backend complete; frontend to purchase & redeem gifts still pending
 
-### P3 — Birth Chart Visualization
-- Current page shows text data; needs visual bodygraph/mandala rendering
-
 ### P3 — Refactoring
 - `divination_content.py` is very large — could be split into JSON files per category
+- Clean up `data/` folder organization
+
+---
+
+## Current Working URL
+**https://chakra-guide-2.preview.emergentagent.com/menu**
 
 ---
 
 ## Admin Access
 - skywatersacredembodiments@gmail.com
 - mskatt78@gmail.com
+
+---
+
+## Testing Status
+- Somatic Guided Audio: ✅ Tested and working
+- Ancient Wisdom 96 entries: ✅ Verified (12 per tradition)
+- Sacred Guardians: ✅ 37 entries verified
+- TTS Endpoints: ✅ Both meditation and somatic working

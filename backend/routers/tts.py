@@ -361,3 +361,102 @@ async def generate_meditation_audio(meditation_id: str, voice: str = "nova"):
     # Use slower speed for meditation (0.7 = about 30% slower)
     request = TTSRequest(text=script, voice=voice, speed=0.7)
     return await generate_speech_base64(request)
+
+
+# Somatic Movement-specific endpoint with guided instructions
+@router.post("/somatic/{practice_id}")
+async def generate_somatic_audio(practice_id: str, voice: str = "nova"):
+    """Generate guided audio for a specific somatic practice."""
+    from .dependencies import get_db
+    
+    db = get_db()
+    practice = await db.somatic_practices.find_one({"id": practice_id}, {"_id": 0})
+    
+    if not practice:
+        raise HTTPException(status_code=404, detail="Somatic practice not found")
+    
+    duration = practice.get('duration_minutes', 10)
+    name = practice.get('name', 'this practice')
+    description = practice.get('description', '')
+    element = practice.get('element', 'Earth')
+    instructions = practice.get('instructions', [])
+    benefits = practice.get('benefits', [])
+    category = practice.get('category', 'Movement')
+    
+    # Build comprehensive guided somatic practice script
+    instructions_text = " ".join([f"Step {i+1}: {inst}" for i, inst in enumerate(instructions)])
+    benefits_text = ", ".join(benefits) if benefits else "releasing tension and finding inner peace"
+    
+    script_parts = [
+        # ===== OPENING =====
+        f"Welcome to {name}.",
+        "",
+        f"{description}",
+        "",
+        f"This practice takes approximately {duration} minutes.",
+        f"The benefits include {benefits_text}.",
+        "",
+        "Find a comfortable space where you can move freely.",
+        "Take a moment to arrive fully in your body.",
+        "",
+        
+        # ===== BREATH PREPARATION =====
+        "Let's begin by connecting with your breath.",
+        "Take a deep breath in through your nose...",
+        "And exhale slowly through your mouth...",
+        "",
+        "Again. Breathe in, filling your belly...",
+        "And release, letting go of any tension...",
+        "",
+        "One more time. A deep, grounding breath...",
+        "And let it all flow out...",
+        "",
+        
+        # ===== BODY SCAN =====
+        "Before we move, let's check in with your body.",
+        "Notice where you feel any tension or holding.",
+        "Simply observe without judgment.",
+        "Your body has wisdom. Trust it.",
+        "",
+        
+        # ===== INSTRUCTIONS =====
+        "Now, let's begin the movement practice.",
+        "",
+        instructions_text,
+        "",
+        
+        # ===== ENCOURAGEMENT =====
+        "Remember, there is no perfect way to do this.",
+        "Your body knows what it needs.",
+        "Follow your own rhythm.",
+        "Trust the wisdom within you.",
+        "",
+        f"Feel the {element.lower()} energy supporting your practice.",
+        "Let it guide your movements.",
+        "",
+        
+        # ===== CLOSING =====
+        "As you continue, notice any shifts in your body.",
+        "Any release. Any opening. Any new sensations.",
+        "",
+        "When you feel complete, slowly bring your movements to stillness.",
+        "Take three deep breaths.",
+        "",
+        "Breathe in... and out...",
+        "Breathe in... and out...",
+        "Breathe in... and out...",
+        "",
+        "Place a hand on your heart.",
+        "Thank your body for this practice.",
+        "",
+        f"You have completed {name}.",
+        "May you carry this sense of embodiment throughout your day.",
+        "",
+        "Namaste."
+    ]
+    
+    script = " ".join(script_parts)
+    
+    # Use moderate speed for movement guidance (0.85 = slightly slower)
+    request = TTSRequest(text=script, voice=voice, speed=0.85)
+    return await generate_speech_base64(request)
