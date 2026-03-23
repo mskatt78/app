@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Sparkles, Star, Sun, Moon, Heart, Dna, 
-  ChevronRight, X, Zap, Eye, Gift, Cloud, Crown
+  ChevronRight, X, Zap, Eye, Gift, Cloud, Crown, Calendar, Calculator, User
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 
 // 64 Gene Keys Data - Comprehensive library
 const geneKeysData = [
@@ -75,6 +76,74 @@ const geneKeysData = [
   { key: 64, shadow: "Confusion", gift: "Imagination", siddhi: "Illumination", theme: "The Aurora", codon: "UUU", amino: "Phe" }
 ];
 
+// ── Solar Wheel Gene Key Calculator ──────────────────────────────────────────
+// The 64 Gene Keys are arranged on a solar wheel starting at 0° Aquarius (≈ Jan 22).
+// Each key spans ~5.7 days. Earth key is always the opposite (+32 positions).
+const SOLAR_WHEEL = [
+  41, 19, 13, 49, 30, 55, 37, 63, 22, 36, 25, 17, 21, 51, 42, 3,
+  27, 24, 2, 23, 8, 20, 16, 35, 45, 12, 15, 52, 39, 53, 62, 56,
+  31, 33, 7, 4, 29, 59, 40, 64, 47, 6, 46, 18, 48, 57, 32, 50,
+  28, 44, 1, 43, 14, 34, 9, 5, 26, 11, 10, 58, 38, 54, 61, 60
+];
+
+function getDayOfYear(date) {
+  const start = new Date(date.getFullYear(), 0, 0);
+  return Math.floor((date - start) / 86400000);
+}
+
+function getSolarPosition(date) {
+  const day = getDayOfYear(date);
+  const adjusted = ((day - 22) + 365) % 365;
+  const pos = Math.floor(adjusted * 64 / 365) % 64;
+  const frac = (adjusted * 64 / 365) - pos;
+  const line = Math.max(1, Math.min(6, Math.floor(frac * 6) + 1));
+  return { pos, line };
+}
+
+function calculateHologenicProfile(birthDate) {
+  const date = new Date(birthDate + "T12:00:00");
+  const { pos: sunPos, line: sunLine } = getSolarPosition(date);
+  const earthPos = (sunPos + 32) % 64;
+
+  // Design calculation: ~88 days before birth
+  const designDate = new Date(date.getTime() - 88 * 24 * 60 * 60 * 1000);
+  const { pos: designPos, line: designLine } = getSolarPosition(designDate);
+  const designEarthPos = (designPos + 32) % 64;
+
+  return {
+    lifesWork:   { key: SOLAR_WHEEL[sunPos],        line: sunLine,    role: "Life's Work",  sphere: "Conscious Sun",  color: "amber"  },
+    evolution:   { key: SOLAR_WHEEL[earthPos],      line: sunLine,    role: "Evolution",    sphere: "Conscious Earth", color: "emerald" },
+    radiance:    { key: SOLAR_WHEEL[designPos],     line: designLine, role: "Radiance",     sphere: "Unconscious Sun", color: "violet" },
+    purpose:     { key: SOLAR_WHEEL[designEarthPos],line: designLine, role: "Purpose",      sphere: "Unconscious Earth", color: "rose" },
+    profile:     `${sunLine}/${designLine}`,
+  };
+}
+
+const SPHERE_DESCRIPTIONS = {
+  "Life's Work":  "Your vocation and external purpose — the genius you are here to express in the world.",
+  "Evolution":    "The core challenge that drives your growth and evolution throughout life.",
+  "Radiance":     "Your physical vitality and the energy field you radiate. How your body reflects inner alignment.",
+  "Purpose":      "Your core wound and deepest gift — the sacred purpose that emerged through your greatest challenges.",
+};
+
+const PROFILE_LINES = {
+  1: { name: "Investigator", desc: "You need a solid foundation of knowledge and security before you can shine." },
+  2: { name: "Hermit",       desc: "You have natural talents that emerge when you withdraw and then re-engage the world." },
+  3: { name: "Martyr",       desc: "You learn through trial and error. Your 'mistakes' are your greatest teachings." },
+  4: { name: "Opportunist",  desc: "You thrive through networks and relationships. Your community is your power base." },
+  5: { name: "Heretic",      desc: "Others project their hopes onto you. You are here to offer practical solutions." },
+  6: { name: "Role Model",   desc: "You live in three phases: trial (1-30), withdrawal (30-50), wisdom (50+)." },
+};
+
+const sphereColors = {
+  amber:   { bg: "bg-amber-500/10",  border: "border-amber-500/20",  text: "text-amber-400",  badge: "bg-amber-500/20"  },
+  emerald: { bg: "bg-emerald-500/10",border: "border-emerald-500/20",text: "text-emerald-400",badge: "bg-emerald-500/20" },
+  violet:  { bg: "bg-violet-500/10", border: "border-violet-500/20", text: "text-violet-400", badge: "bg-violet-500/20"  },
+  rose:    { bg: "bg-rose-500/10",   border: "border-rose-500/20",   text: "text-rose-400",   badge: "bg-rose-500/20"   },
+};
+
+const KEY_ICONS = { amber: Sun, emerald: Dna, violet: Moon, rose: Heart };
+
 // Three Sequences
 const sequences = [
   {
@@ -127,10 +196,35 @@ const sequences = [
 
 const GeneKeys = ({ user, api }) => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("overview");
+  const [activeTab, setActiveTab] = useState("profile");
   const [selectedKey, setSelectedKey] = useState(null);
   const [selectedSequence, setSelectedSequence] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Profile calculator state
+  const [birthYear, setBirthYear] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay] = useState("");
+  const [profile, setProfile] = useState(null);
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1899 }, (_, i) => currentYear - i);
+  const months = [
+    { value: "01", label: "January" }, { value: "02", label: "February" },
+    { value: "03", label: "March" },   { value: "04", label: "April" },
+    { value: "05", label: "May" },     { value: "06", label: "June" },
+    { value: "07", label: "July" },    { value: "08", label: "August" },
+    { value: "09", label: "September" },{ value: "10", label: "October" },
+    { value: "11", label: "November" },{ value: "12", label: "December" },
+  ];
+  const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
+
+  const handleCalculate = () => {
+    if (!birthYear || !birthMonth || !birthDay) return;
+    const dateStr = `${birthYear}-${birthMonth}-${birthDay}`;
+    const result = calculateHologenicProfile(dateStr);
+    setProfile(result);
+  };
 
   const filteredKeys = geneKeysData.filter(k => 
     k.shadow.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -141,6 +235,7 @@ const GeneKeys = ({ user, api }) => {
   );
 
   const tabs = [
+    { id: "profile", label: "My Profile" },
     { id: "overview", label: "Overview" },
     { id: "keys", label: "64 Gene Keys" },
     { id: "sequences", label: "Golden Path" },
@@ -202,6 +297,183 @@ const GeneKeys = ({ user, api }) => {
 
         {/* Tab Content */}
         <AnimatePresence mode="wait">
+          {activeTab === "profile" && (
+            <motion.div
+              key="profile"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="space-y-6 max-w-2xl mx-auto"
+            >
+              {/* DOB Input Card */}
+              {!profile ? (
+                <div className="p-8 rounded-2xl bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-indigo-500/10 border border-violet-500/20">
+                  <div className="text-center mb-8">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-violet-500/20 flex items-center justify-center">
+                      <Dna className="w-8 h-8 text-violet-400" />
+                    </div>
+                    <h3 className="text-2xl font-serif mb-2">Your <span className="italic text-primary">Hologenetic Profile</span></h3>
+                    <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                      Enter your date of birth to discover your 4 personal Gene Keys — the Activation Sequence encoded in your DNA.
+                    </p>
+                  </div>
+
+                  <div className="space-y-5">
+                    <div>
+                      <label className="block text-sm text-muted-foreground mb-3 flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        Date of Birth
+                      </label>
+                      <div className="grid grid-cols-3 gap-3">
+                        <Select value={birthYear} onValueChange={setBirthYear}>
+                          <SelectTrigger className="bg-card/50 border-white/10" data-testid="gk-birth-year">
+                            <SelectValue placeholder="Year" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-60 bg-card border-white/10">
+                            {years.map((year) => (
+                              <SelectItem key={year} value={String(year)}>{year}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select value={birthMonth} onValueChange={setBirthMonth}>
+                          <SelectTrigger className="bg-card/50 border-white/10" data-testid="gk-birth-month">
+                            <SelectValue placeholder="Month" />
+                          </SelectTrigger>
+                          <SelectContent className="bg-card border-white/10">
+                            {months.map((m) => (
+                              <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        <Select value={birthDay} onValueChange={setBirthDay}>
+                          <SelectTrigger className="bg-card/50 border-white/10" data-testid="gk-birth-day">
+                            <SelectValue placeholder="Day" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-60 bg-card border-white/10">
+                            {days.map((d) => (
+                              <SelectItem key={d} value={d}>{parseInt(d)}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+
+                    <Button
+                      onClick={handleCalculate}
+                      disabled={!birthYear || !birthMonth || !birthDay}
+                      className="w-full"
+                      data-testid="gk-calculate-btn"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Reveal My Gene Keys
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                /* Profile Results */
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="space-y-6"
+                  data-testid="gk-profile-results"
+                >
+                  {/* Profile Header */}
+                  <div className="p-6 rounded-2xl bg-gradient-to-br from-violet-500/10 to-indigo-500/10 border border-violet-500/20 text-center">
+                    <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-violet-500/20 flex items-center justify-center">
+                      <Dna className="w-7 h-7 text-violet-400" />
+                    </div>
+                    <h3 className="text-2xl font-serif mb-1">Your Hologenetic Profile</h3>
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/20 border border-violet-500/30 mt-2">
+                      <User className="w-3.5 h-3.5 text-violet-400" />
+                      <span className="text-sm text-violet-300">
+                        Profile {profile.profile} — {PROFILE_LINES[parseInt(profile.profile[0])]?.name} / {PROFILE_LINES[parseInt(profile.profile[2])]?.name}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-3 max-w-sm mx-auto">
+                      {PROFILE_LINES[parseInt(profile.profile[0])]?.desc}
+                    </p>
+                  </div>
+
+                  {/* 4 Activation Sequence Keys */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {[profile.lifesWork, profile.evolution, profile.radiance, profile.purpose].map((sphere) => {
+                      const gk = geneKeysData.find(k => k.key === sphere.key);
+                      const c = sphereColors[sphere.color];
+                      const Icon = KEY_ICONS[sphere.color];
+                      return (
+                        <motion.div
+                          key={sphere.role}
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className={`p-5 rounded-2xl border ${c.bg} ${c.border} cursor-pointer hover:scale-[1.02] transition-all`}
+                          onClick={() => gk && setSelectedKey(gk)}
+                          data-testid={`gk-sphere-${sphere.role.toLowerCase().replace(/[' ]/g, '-')}`}
+                        >
+                          <div className="flex items-center justify-between mb-3">
+                            <span className={`text-xs uppercase tracking-wider ${c.text}`}>{sphere.sphere}</span>
+                            <span className={`w-7 h-7 rounded-full ${c.badge} flex items-center justify-center text-xs ${c.text} font-mono`}>
+                              L{sphere.line}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className={`w-12 h-12 rounded-xl ${c.badge} flex items-center justify-center flex-shrink-0`}>
+                              <span className={`text-xl font-serif ${c.text}`}>{sphere.key}</span>
+                            </div>
+                            <div>
+                              <p className="font-semibold text-sm">{sphere.role}</p>
+                              {gk && <p className={`text-xs ${c.text}`}>{gk.gift}</p>}
+                            </div>
+                          </div>
+                          {gk && (
+                            <>
+                              <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+                                {SPHERE_DESCRIPTIONS[sphere.role]}
+                              </p>
+                              <div className="flex gap-2 text-xs">
+                                <span className={`px-2 py-0.5 rounded-full ${c.bg} ${c.border} border ${c.text}`}>
+                                  {gk.shadow}
+                                </span>
+                                <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-muted-foreground">
+                                  → {gk.gift}
+                                </span>
+                              </div>
+                              <p className="text-xs text-muted-foreground mt-2 italic">{gk.siddhi} ✦</p>
+                            </>
+                          )}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Contemplation for their keys */}
+                  <div className="p-5 rounded-2xl bg-white/5 border border-white/10">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Your Contemplation Path
+                    </p>
+                    <p className="text-sm text-muted-foreground leading-relaxed italic">
+                      "Begin with Gene Key {profile.lifesWork.key} — your Life's Work. 
+                      Contemplate the shadow of <strong className="text-foreground">{geneKeysData.find(k=>k.key===profile.lifesWork.key)?.shadow}</strong> and 
+                      how it wants to become the gift of <strong className="text-foreground">{geneKeysData.find(k=>k.key===profile.lifesWork.key)?.gift}</strong>. 
+                      This single contemplation can transform your entire vocation."
+                    </p>
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    className="w-full border-white/10"
+                    onClick={() => setProfile(null)}
+                    data-testid="gk-reset-btn"
+                  >
+                    Calculate New Profile
+                  </Button>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+
           {activeTab === "overview" && (
             <motion.div
               key="overview"

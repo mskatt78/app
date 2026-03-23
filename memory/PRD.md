@@ -52,7 +52,13 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - **Light Codes Overhaul** — 75 authentic AI-generated images (DONE)
 - **Meditations UX Overhaul** — instant timer, background TTS, banner images (DONE)
 - **Community Reviews** — full-stack POST/GET with ratings (DONE)
-- **Sacred Guardians & Allies** (DONE - 2026-03-22)
+- **Gene Keys Personal Profile Calculator** (DONE - 2026-03-22)
+  - New "My Profile" tab added as default tab on Gene Keys page
+  - DOB input (Year/Month/Day selects, same pattern as Numerology)
+  - Solar wheel calculation: Life's Work, Evolution, Radiance, Purpose keys
+  - Profile line calculation (e.g. 2/6 Hermit/Role Model)
+  - Clickable key cards that open the full Gene Key detail modal
+  - Personalized contemplation prompt based on Life's Work key
   - 37 beings: Power Animals (8), Spirit Animals (6), Dragon Energy (6), Angels (5), Familiars (6), Messengers (6)
   - Each with AI-generated authentic image, description, sacred message, symbolism, spiritual gifts, how-to-connect, chakra
   - Full frontend page with hero banner, category filter tabs, grid, detail modal
