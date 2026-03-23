@@ -271,5 +271,25 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - `GET /api/videos/{id}` — get single video
 - Admin CRUD for both `retreats` and `videos` collections
 
+### Enhancements (Session 4 continued)
+
+#### Share Your Star Lineage
+- Shareable URL: `/star-lineage/result/:lineageId` (e.g. `/star-lineage/result/pleiadian`)
+- Share modal with WhatsApp, Twitter/X, Facebook, Email, Copy link
+- Shared result shows CTA: "Discover Your Own Star Lineage" → takes quiz
+- Each of 8 lineages has a unique shareable link
+
+#### Links Page (Linktree-style)
+- `/links` — Beautiful organized page with all app sections
+- 5 sections: Discover Your Path, Divination & Guidance, Movement & Healing, Sacred Spaces, Sacred Journeys
+- 23 total links to all major features
+
+#### App Store Ready (PWA)
+- Generated icons in all required sizes: 16, 32, 72, 96, 128, 144, 152, 167, 180, 192, 384, 512, 1024
+- Sacred geometry lotus icon (golden on dark blue)
+- Updated `manifest.json` with full icon set, shortcuts, and metadata
+- Apple touch icons for iOS, Open Graph tags for social sharing
+- App Store guide at `/app/APP_STORE_GUIDE.md`
+
 
 
