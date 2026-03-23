@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import PracticeVideos from "../components/PracticeVideos";
 
 const ShamanicPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -249,6 +250,7 @@ const ShamanicPractices = ({ user, api }) => {
             <p className="text-muted-foreground">No shamanic practices found for this category.</p>
           </div>
         )}
+        <PracticeVideos api={api} category="shamanic" />
       </main>
 
       {/* Practice Detail Modal */}

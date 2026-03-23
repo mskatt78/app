@@ -22,21 +22,41 @@ const FIELD_CONFIG = {
   mudras: ["name", "type", "description", "benefits", "instructions", "image_url"],
   runes: ["name", "symbol", "phonetic", "meaning", "description", "reversed_meaning", "image_url"],
   sacred_guardians: ["name", "type", "element", "description", "gifts", "invocation", "image_url"],
+  retreats: ["title", "status", "description", "location", "start_date", "end_date", "duration_days", "max_participants", "price", "deposit", "facilitator", "highlights", "includes", "accommodation", "healing_modalities", "registration_link", "image_url"],
+  videos: ["title", "category", "description", "video_url", "thumbnail_url", "duration", "practice_type"],
 };
 
 const TEXTAREA_FIELDS = new Set([
   "description", "meaning", "reversed_meaning", "teaching", "practice", "instructions",
-  "benefits", "uses", "text", "invocation", "gifts", "upright_meaning"
+  "benefits", "uses", "text", "invocation", "gifts", "upright_meaning",
+  "highlights", "includes", "accommodation", "healing_modalities"
 ]);
 
-const IMAGE_FIELDS = new Set(["image_url"]);
+const IMAGE_FIELDS = new Set(["image_url", "thumbnail_url"]);
 const AUDIO_FIELDS = new Set(["audio_url"]);
+const VIDEO_FIELDS = new Set(["video_url"]);
 
 function FieldInput({ field, value, onChange, onUpload, uploadLoading }) {
   const isTextarea = TEXTAREA_FIELDS.has(field);
   const isImage = IMAGE_FIELDS.has(field);
   const isAudio = AUDIO_FIELDS.has(field);
+  const isVideo = VIDEO_FIELDS.has(field);
   const fileRef = useRef();
+
+  if (isVideo) {
+    return (
+      <div className="space-y-2">
+        <input
+          type="text"
+          value={value || ""}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="YouTube/Vimeo URL or direct video URL"
+          className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-primary/50"
+        />
+        <p className="text-xs text-muted-foreground">Paste a YouTube, Vimeo, or direct .mp4 video link</p>
+      </div>
+    );
+  }
 
   if (isImage || isAudio) {
     const accept = isImage ? "image/*" : "audio/mp3,audio/mpeg,audio/*";
@@ -312,6 +332,8 @@ export default function AdminSection() {
     mudras: { name: "Mudras", icon: "🤲" },
     runes: { name: "Runes", icon: "ᚱ" },
     sacred_guardians: { name: "Sacred Guardians", icon: "🦁" },
+    retreats: { name: "Retreats", icon: "🏔️" },
+    videos: { name: "Practice Videos", icon: "🎬" },
     audio_files: { name: "Audio & Media Library", icon: "🎧" },
   }[collection] || { name: collection, icon: "📁" };
 

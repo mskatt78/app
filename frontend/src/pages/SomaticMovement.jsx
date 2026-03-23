@@ -12,6 +12,7 @@ import { Progress } from "../components/ui/progress";
 import { Slider } from "../components/ui/slider";
 import { toast } from "sonner";
 import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
+import PracticeVideos from "../components/PracticeVideos";
 
 const SomaticMovement = ({ user, api }) => {
   const navigate = useNavigate();
@@ -478,6 +479,7 @@ const SomaticMovement = ({ user, api }) => {
                 })}
               </div>
             )}
+            <PracticeVideos api={api} category="somatic" />
           </>
         )}
       </main>

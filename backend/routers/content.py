@@ -638,3 +638,50 @@ async def get_tarot_reading(spread: str = "single"):
         })
     
     return {"spread": spread, "cards": reading}
+
+
+
+# ============ RETREATS ROUTES ============
+
+@router.get("/retreats")
+async def get_retreats(status: Optional[str] = None):
+    """Get retreats, optionally filtered by status."""
+    db = get_db()
+    query = {}
+    if status:
+        query["status"] = {"$regex": f"^{status}$", "$options": "i"}
+    retreats = await db.retreats.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=50)
+    return retreats
+
+
+@router.get("/retreats/{retreat_id}")
+async def get_retreat(retreat_id: str):
+    """Get a specific retreat."""
+    db = get_db()
+    retreat = await db.retreats.find_one({"id": retreat_id}, {"_id": 0})
+    if not retreat:
+        raise HTTPException(status_code=404, detail="Retreat not found")
+    return retreat
+
+
+# ============ VIDEOS ROUTES ============
+
+@router.get("/videos")
+async def get_videos(category: Optional[str] = None):
+    """Get practice videos, optionally filtered by category."""
+    db = get_db()
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    videos = await db.videos.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=100)
+    return videos
+
+
+@router.get("/videos/{video_id}")
+async def get_video(video_id: str):
+    """Get a specific video."""
+    db = get_db()
+    video = await db.videos.find_one({"id": video_id}, {"_id": 0})
+    if not video:
+        raise HTTPException(status_code=404, detail="Video not found")
+    return video

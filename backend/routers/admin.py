@@ -83,7 +83,7 @@ def get_db():
 ALLOWED_COLLECTIONS = {
     "oracle_cards", "tarot_cards", "ancient_wisdom", "somatic_practices",
     "sound_frequencies", "crystals", "mantras", "meditations",
-    "mudras", "runes", "sacred_guardians",
+    "mudras", "runes", "sacred_guardians", "retreats", "videos",
 }
 
 COLLECTION_META = [
@@ -98,6 +98,8 @@ COLLECTION_META = [
     {"id": "mudras", "name": "Mudras", "icon": "🤲"},
     {"id": "runes", "name": "Runes", "icon": "ᚱ"},
     {"id": "sacred_guardians", "name": "Sacred Guardians", "icon": "🦁"},
+    {"id": "retreats", "name": "Retreats", "icon": "🏔️"},
+    {"id": "videos", "name": "Practice Videos", "icon": "🎬"},
     {"id": "audio_files", "name": "Audio Uploads", "icon": "🎧"},
 ]
 

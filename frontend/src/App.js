@@ -78,6 +78,7 @@ import HumanDesign from "./pages/HumanDesign";
 // New Features
 import ProgressDashboard from "./pages/ProgressDashboard";
 import ProfileCalculator from "./pages/ProfileCalculator";
+import StarLineageQuiz from "./pages/StarLineageQuiz";
 // Notifications
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 
@@ -719,6 +720,15 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <SacredGuardians user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      {/* Star Lineage Quiz */}
+      <Route
+        path="/star-lineage"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <StarLineageQuiz user={user} api={api} />}
           </PublicRoute>
         }
       />
