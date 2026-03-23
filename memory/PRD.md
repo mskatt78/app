@@ -7,97 +7,101 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 
 ---
 
-## What's Been Implemented (as of March 23, 2026)
+## Comprehensive App Audit (March 23, 2026)
 
-### ✅ P1 COMPLETE: Gene Keys ↔ Human Design Cross-Links
-- Gene Keys "My Profile" tab now shows "View My Human Design Chart" button after calculation
-- Human Design results show "Explore My Gene Keys" button with Profile number context
-- Both pages explain how the Profile number connects the two systems
+### ✅ CONTENT WITH IMAGES (All Working)
+| Section | Total | With Images | Status |
+|---------|-------|-------------|--------|
+| Breathwork Sessions | 6 | 6 | ✅ |
+| Meditations | 6 | 6 | ✅ |
+| Oracle Cards | 22 | 22 | ✅ |
+| Tarot Cards | 22 | 22 | ✅ |
+| Sound Frequencies | 12 | 12 | ✅ |
+| Ancient Wisdom | 108 | 108 | ✅ |
+| Sacred Guardians | 37 | 37 | ✅ |
+| Runes | 25 | 25 | ✅ |
 
-### ✅ TAROT READING (22 Major Arcana)
-New page at `/tarot` with:
-- **22 AI-generated Major Arcana cards** (stunning custom imagery)
-- **3 Spread types:** Single Card, Past-Present-Future (3 cards), Celtic Cross (10 cards)
-- **Complete card meanings:** Upright, Reversed, Love, Career, Spiritual interpretations
-- **Yes/No answers** and **Card Advice** for each card
-- Interactive gallery to explore all cards
+### ✅ DATE INPUT DROPDOWNS (All Updated)
+- **Gene Keys**: Year/Month/Day dropdown selects ✅
+- **Human Design**: Year/Month/Day dropdown selects ✅
+- **Numerology**: Year/Month/Day dropdown selects ✅
+- **Birth Chart**: Year/Month/Day/Hour/Minute dropdowns ✅ (Updated this session)
 
-### ✅ AVALON MYSTERIES (12 entries)
-Added to Ancient Wisdom Traditions:
-- Merlin, Lady of the Lake, Morgan Le Fay, Guinevere
-- King Arthur, Nimue, Nine Priestesses, Viviane
-- Sir Lancelot, The Holy Grail, Excalibur, Isle of Avalon
-- All with stunning AI-generated Arthurian imagery
+### ✅ GUIDED AUDIO/TTS (All Working)
+- **Meditations**: TTS endpoint `/api/tts/meditation/{id}` ✅
+- **Somatic Movement**: TTS endpoint `/api/tts/somatic/{id}` ✅
+- **Ambient Soundscapes**: Web Audio API procedural generation ✅
+  - Ocean Waves, Forest Rain, Tibetan Bowls, Crystal Bowls, Binaural Tones
 
-### ✅ SOUND & FREQUENCY HEALING (12 entries)
-New page at `/sound-frequencies` with:
-- **Cetacean:** Dolphin Frequencies, Whale Song Frequencies
-- **Instruments:** Crystal Singing Bowls, Tibetan Bowls, Tuning Forks, Gong Bath, Shamanic Drums, Didgeridoo, Chimes/Bells, Harp
-- **Frequencies:** Solfeggio Frequencies (174-963 Hz)
-- **Nature:** Water Frequencies
-- Complete healing properties, how-to-use, chakra associations, crystals
-
-### ✅ SOMATIC MOVEMENT with Guided Audio
-- TTS endpoint `/api/tts/somatic/{id}`
-- Full guided practice mode with timer, audio, ambient soundscapes
-
-### ✅ ANCIENT WISDOM EXPANDED to 108 entries
-9 traditions × 12 entries each:
-- Egyptian, Avalon, Aboriginal, Celtic, Peruvian
-- International, Lemurian, Atlantean, Galactic
-
-### Previous Sessions
-- Sacred Guardians (37 entries)
-- Gene Keys & Human Design calculators with Body Graph
-- Partner Yoga with photos
-- Light Codes (75 AI images)
-- Meditations with TTS and Ambient Soundscapes
-- Community Reviews system
-- Oracle Cards, Rune Readings, I Ching
+### ✅ CROSS-LINKS (P1 Complete)
+- Gene Keys → Human Design (Profile number bridge) ✅
+- Human Design → Gene Keys (Profile number bridge) ✅
 
 ---
 
-## Architecture
-```
-/app/
-├── backend/
-│   ├── data/
-│   │   ├── tarot_cards.py (22 Major Arcana) ✅ NEW
-│   │   ├── ancient_wisdom_avalon.py (12 Avalon entries) ✅ NEW
-│   │   ├── sound_frequencies.py (12 entries) ✅ NEW
-│   │   └── ... (all previous data files)
-│   ├── routers/
-│   │   └── content.py (tarot, sound-frequencies endpoints) ✅ UPDATED
-│   └── server.py (seeding for new collections)
-├── frontend/
-│   └── src/pages/
-│       ├── TarotReading.jsx ✅ NEW
-│       ├── SoundFrequencies.jsx ✅ NEW
-│       ├── GeneKeys.jsx (added HD link) ✅ UPDATED
-│       ├── HumanDesign.jsx (added GK link) ✅ UPDATED
-│       └── AncientWisdom.jsx (added Avalon tab) ✅ UPDATED
-```
+## What's Working
+
+### Divination & Guidance
+- **Tarot Reading** (22 Major Arcana with AI images, 3 spreads) ✅ NEW
+- **Oracle Cards** (22 cards with images) ✅
+- **Rune Readings** (25 Elder Futhark runes with AI images) ✅
+- **I Ching** (64 hexagrams) ✅
+- **Light Codes** (75 AI-generated sacred geometry) ✅
+- **Gene Keys Calculator** (DOB → Profile) ✅
+- **Human Design Calculator** (DOB → Body Graph) ✅
+- **Numerology** (Life Path calculation) ✅
+- **Birth Chart** (with dropdown date inputs) ✅
+
+### Movement & Body
+- **Yoga Poses** (78 poses, 66 with images) ⚠️
+- **Somatic Movement** (39 practices with guided TTS audio) ✅
+- **Partner Yoga** (8 poses with photos) ✅
+
+### Mind & Spirit
+- **Meditations** (6 with TTS audio + ambient soundscapes) ✅
+- **Breathwork** (6 sessions with images) ✅
+- **Mindfulness Practices** ✅
+- **Grounding Exercises** ✅
+
+### Shamanic Wisdom
+- **Shamanic Practices** (21 entries) ✅
+- **Elemental Practices** ✅
+- **Heart Practices** ✅
+- **Creative Processes** ✅
+- **Earth Altars** ✅
+- **Sacred Guardians** (37 with AI images) ✅
+- **Ancient Wisdom** (108 entries - 9 traditions × 12) ✅
+  - Egyptian, Avalon, Aboriginal, Celtic, Peruvian, International, Lemurian, Atlantean, Galactic
+
+### Sound & Frequency
+- **Sound Frequencies** (12 entries - Dolphin, Whale, Crystal Bowls, etc.) ✅ NEW
+- **Ambient Soundscapes** (procedural audio) ✅
+
+### Sacred Temples
+- Rose Temple, Masculine Temple, Seasonal Temple ✅
+- Sunrise/Sunset Temple ✅
+- Elemental Temple ✅
+
+### Other Features
+- **Community Reviews** (POST/GET with ratings) ✅
+- **User Profiles & Progress** ✅
+- **Practice History Tracking** ✅
+- **Crystals** (42 entries, 30 with images) ⚠️
+- **Mantras** (12 entries) ⚠️
+- **Mudras** ✅
 
 ---
 
-## Key API Endpoints (New)
-- `GET /api/tarot/cards` — all 22 Major Arcana
-- `GET /api/tarot/reading?spread=single|three|celtic_cross` — random reading
-- `GET /api/sound-frequencies` — all 12 sound healing entries
-- `GET /api/ancient-wisdom?tradition=avalon` — Avalon tradition
+## Known Issues (Minor)
 
----
+### Images Partially Missing
+- Yoga Poses: 78 total, 12 missing images (still functional)
+- Crystals: 42 total, 12 missing images
+- Mantras: 12 total, no images (text-based content)
 
-## Cancelled Tasks
-- ❌ P2 Gifting UI (cancelled per user request)
-
----
-
-## Future Backlog (User Requested)
-- 📝 Admin CMS to add your own activations/recordings
-- 📝 Video integration for practices
-- 📝 Live & Recorded access courses
-- 📝 Workshops/Playshops with socials/retreats
+### TTS Response Time
+- TTS endpoints take 30-60 seconds to generate audio (OpenAI API)
+- Frontend handles this with loading states
 
 ---
 
@@ -106,30 +110,25 @@ New page at `/sound-frequencies` with:
 
 ---
 
-## Database Collections (New)
-- `tarot_cards`: 22 entries (Major Arcana with full meanings)
-- `sound_frequencies`: 12 entries (healing frequencies)
-- `ancient_wisdom`: 108 entries (9 traditions × 12)
+## 3rd Party Integrations
+- OpenAI TTS — Emergent LLM Key ✅
+- Gemini Image Generation — Emergent LLM Key ✅
+- Resend (emails) — user API key
+- Google OAuth — Emergent-managed ✅
 
 ---
 
-## 3rd Party Integrations
-- OpenAI TTS — Emergent LLM Key
-- Gemini Image Generation — Emergent LLM Key
-- Resend (emails) — user API key
-- Google OAuth — Emergent-managed
+## Future Backlog
+- 📝 Admin CMS for custom content uploads
+- 📝 Video integration for practices
+- 📝 Workshops/Playshops with socials/retreats
+- 📝 Live & Recorded access courses
+- 📝 Add remaining yoga pose images (12)
+- 📝 Add mantra images
+- 📝 Add remaining crystal images (12)
 
 ---
 
 ## Admin Access
 - skywatersacredembodiments@gmail.com
 - mskatt78@gmail.com
-
----
-
-## Testing Status
-- Tarot Reading: ✅ 22 cards, 3 spreads verified
-- Sound Frequencies: ✅ 12 entries verified
-- Avalon Tradition: ✅ 12 entries verified  
-- Gene Keys ↔ Human Design links: ✅ Working
-- Ancient Wisdom Total: ✅ 108 entries

@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
@@ -20,12 +21,44 @@ const BirthChart = ({ user, api }) => {
   const [zodiacSigns, setZodiacSigns] = useState({});
   const [showAspects, setShowAspects] = useState(false);
   const [showHouses, setShowHouses] = useState(false);
+  
+  // Dropdown date state
+  const [birthYear, setBirthYear] = useState("");
+  const [birthMonth, setBirthMonth] = useState("");
+  const [birthDay, setBirthDay] = useState("");
+  const [birthHour, setBirthHour] = useState("12");
+  const [birthMinute, setBirthMinute] = useState("00");
+  
   const [formData, setFormData] = useState({
     birth_date: "",
     birth_time: "12:00",
     birth_city: "",
     birth_country: ""
   });
+
+  // Generate dropdown options
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1899 }, (_, i) => currentYear - i);
+  const months = [
+    { value: "01", label: "January" }, { value: "02", label: "February" }, { value: "03", label: "March" },
+    { value: "04", label: "April" }, { value: "05", label: "May" }, { value: "06", label: "June" },
+    { value: "07", label: "July" }, { value: "08", label: "August" }, { value: "09", label: "September" },
+    { value: "10", label: "October" }, { value: "11", label: "November" }, { value: "12", label: "December" }
+  ];
+  const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
+  const hours = Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0"));
+  const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
+
+  // Update formData when date components change
+  useEffect(() => {
+    if (birthYear && birthMonth && birthDay) {
+      setFormData(prev => ({ 
+        ...prev, 
+        birth_date: `${birthYear}-${birthMonth}-${birthDay}`,
+        birth_time: `${birthHour}:${birthMinute}`
+      }));
+    }
+  }, [birthYear, birthMonth, birthDay, birthHour, birthMinute]);
 
   useEffect(() => {
     fetchZodiacSigns();
@@ -180,24 +213,56 @@ const BirthChart = ({ user, api }) => {
                     <label className="text-sm text-muted-foreground flex items-center gap-2 mb-2">
                       <Calendar className="w-4 h-4" /> Birth Date *
                     </label>
-                    <Input
-                      type="date"
-                      value={formData.birth_date}
-                      onChange={(e) => setFormData({ ...formData, birth_date: e.target.value })}
-                      data-testid="birth-date-input"
-                    />
+                    <div className="grid grid-cols-3 gap-2">
+                      <Select value={birthYear} onValueChange={setBirthYear}>
+                        <SelectTrigger className="bg-card/50 border-white/10" data-testid="birth-year">
+                          <SelectValue placeholder="Year" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          {years.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                      <Select value={birthMonth} onValueChange={setBirthMonth}>
+                        <SelectTrigger className="bg-card/50 border-white/10" data-testid="birth-month">
+                          <SelectValue placeholder="Month" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {months.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                      <Select value={birthDay} onValueChange={setBirthDay}>
+                        <SelectTrigger className="bg-card/50 border-white/10" data-testid="birth-day">
+                          <SelectValue placeholder="Day" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          {days.map(d => <SelectItem key={d} value={d}>{d}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                   
                   <div>
                     <label className="text-sm text-muted-foreground flex items-center gap-2 mb-2">
                       <Clock className="w-4 h-4" /> Birth Time
                     </label>
-                    <Input
-                      type="time"
-                      value={formData.birth_time}
-                      onChange={(e) => setFormData({ ...formData, birth_time: e.target.value })}
-                      data-testid="birth-time-input"
-                    />
+                    <div className="grid grid-cols-2 gap-2">
+                      <Select value={birthHour} onValueChange={setBirthHour}>
+                        <SelectTrigger className="bg-card/50 border-white/10" data-testid="birth-hour">
+                          <SelectValue placeholder="Hour" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          {hours.map(h => <SelectItem key={h} value={h}>{h}:00</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                      <Select value={birthMinute} onValueChange={setBirthMinute}>
+                        <SelectTrigger className="bg-card/50 border-white/10" data-testid="birth-minute">
+                          <SelectValue placeholder="Min" />
+                        </SelectTrigger>
+                        <SelectContent className="max-h-60">
+                          {minutes.map(m => <SelectItem key={m} value={m}>:{m}</SelectItem>)}
+                        </SelectContent>
+                      </Select>
+                    </div>
                     <p className="text-xs text-muted-foreground mt-1">Required for accurate Rising sign & houses</p>
                   </div>
                   

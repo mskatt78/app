@@ -153,6 +153,13 @@ async def startup_seed_database():
         await db.tarot_cards.insert_many(TAROT_MAJOR_ARCANA)
         logger.info(f"tarot_cards refreshed — {len(TAROT_MAJOR_ARCANA)} entries.")
 
+        # Always reseed breathwork_sessions (to get updated images)
+        from data.all_content import BREATHWORK_SESSIONS
+        logger.info("Refreshing breathwork_sessions collection...")
+        await db.breathwork_sessions.delete_many({})
+        await db.breathwork_sessions.insert_many(BREATHWORK_SESSIONS)
+        logger.info(f"breathwork_sessions refreshed — {len(BREATHWORK_SESSIONS)} entries.")
+
         # Only seed everything else if yoga_poses is empty
         yoga_count = await db.yoga_poses.count_documents({})
         if yoga_count == 0:
