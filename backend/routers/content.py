@@ -529,3 +529,26 @@ async def get_sacred_guardian(guardian_id: str):
     if not guardian:
         raise HTTPException(status_code=404, detail="Guardian not found")
     return guardian
+
+
+# ============ ANCIENT WISDOM TRADITIONS ============
+
+@router.get("/ancient-wisdom")
+async def get_ancient_wisdom(tradition: Optional[str] = None):
+    """Get ancient wisdom entries, optionally filtered by tradition."""
+    db = get_db()
+    query = {}
+    if tradition:
+        query["tradition"] = {"$regex": f"^{tradition}$", "$options": "i"}
+    entries = await db.ancient_wisdom.find(query, {"_id": 0}).to_list(length=200)
+    return entries
+
+
+@router.get("/ancient-wisdom/{entry_id}")
+async def get_ancient_wisdom_entry(entry_id: str):
+    """Get a specific ancient wisdom entry."""
+    db = get_db()
+    entry = await db.ancient_wisdom.find_one({"id": entry_id}, {"_id": 0})
+    if not entry:
+        raise HTTPException(status_code=404, detail="Entry not found")
+    return entry

@@ -52,7 +52,12 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 - **Light Codes Overhaul** — 75 authentic AI-generated images (DONE)
 - **Meditations UX Overhaul** — instant timer, background TTS, banner images (DONE)
 - **Community Reviews** — full-stack POST/GET with ratings (DONE)
-- **Human Design BodyGraph Calculator** (DONE - 2026-03-22)
+- **Ancient Wisdom Traditions** (DONE - 2026-03-23)
+  - 25 entries across 8 traditions: Egyptian (8), Celtic (3), Aboriginal Australian (3), Peruvian (2), International (4), Lemurian/Mu (1), Atlantean (1), Galactic (3)
+  - Each entry: AI-generated image, description, sacred message, invocation, teachings, sacred tools, practice steps, crystals, chakra
+  - Filter tabs for each tradition, detail modal with full content
+  - New page `/ancient-wisdom` added to Main Menu under "Shamanic Wisdom"
+  - Backend API: GET /api/ancient-wisdom (with ?tradition= filter)
   - New "My Chart" tab added as default tab on Human Design page
   - Phase 1: DOB input → calculates Profile (1/5 Investigator/Heretic, etc.) + Conscious/Design Sun Gates
   - Phase 2: Type self-assessment — 5 types listed with descriptions to choose from

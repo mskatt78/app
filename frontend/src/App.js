@@ -51,6 +51,8 @@ import BirthChart from "./pages/BirthChart";
 import Reviews from "./pages/Reviews";
 // Sacred Guardians
 import SacredGuardians from "./pages/SacredGuardians";
+// Ancient Wisdom Traditions
+import AncientWisdom from "./pages/AncientWisdom";
 // New Temples
 import RoseTemple from "./pages/RoseTemple";
 import ElementalTemples from "./pages/ElementalTemples";
@@ -678,6 +680,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <Reviews user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/ancient-wisdom"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <AncientWisdom user={user} api={api} />}
           </PublicRoute>
         }
       />
