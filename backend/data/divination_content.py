@@ -1,6 +1,6 @@
 # Divination Content - Runes, I Ching, Light Codes
 
-# Elder Futhark Runes - 24 Runes
+# Elder Futhark Runes - 24 Runes with AI-generated images
 ELDER_FUTHARK_RUNES = [
     {
         "id": "1", "name": "Fehu", "symbol": "ᚠ", "phonetic": "F",
@@ -10,7 +10,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["abundance", "prosperity", "luck", "energy"],
         "advice": "Material wealth is coming. Share generously and prosperity multiplies.",
         "shadow": "Beware of greed or placing too much value on possessions.",
-        "image_url": "https://images.pexels.com/photos/1435752/pexels-photo-1435752.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/c0caa0ebec7979efcd0cee074d98e34779861fb3555d3fd98bb8826fcd5049b3.png"
     },
     {
         "id": "2", "name": "Uruz", "symbol": "ᚢ", "phonetic": "U",
@@ -20,7 +20,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["strength", "health", "courage", "endurance"],
         "advice": "Tap into your primal strength. You have more power than you realize.",
         "shadow": "Don't let raw power become aggression or domination.",
-        "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/d01e17c4c89a20f7e2b6e17a168ac684b34f9897fc4d9b1ee57ebf21ac134424.png"
     },
     {
         "id": "3", "name": "Thurisaz", "symbol": "ᚦ", "phonetic": "TH",
@@ -30,7 +30,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["protection", "defense", "boundaries", "catalyst"],
         "advice": "Set strong boundaries. Sometimes the best defense is a good offense.",
         "shadow": "Avoid being overly defensive or creating unnecessary conflict.",
-        "image_url": "https://images.pexels.com/photos/1162251/pexels-photo-1162251.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/ec5ecc74bca7d8522bd3b4acd0e1eff28c72242a6b7cabd297366f67d6b68007.png"
     },
     {
         "id": "4", "name": "Ansuz", "symbol": "ᚨ", "phonetic": "A",
@@ -40,7 +40,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["wisdom", "communication", "truth", "divine message"],
         "advice": "Listen for divine guidance. Speak your truth with clarity.",
         "shadow": "Be wary of deception - both from others and self-deception.",
-        "image_url": "https://images.pexels.com/photos/1169754/pexels-photo-1169754.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/40940a549595c75dc5a88515390894a7f0383fdb7840ae837ed5049131b981c6.png"
     },
     {
         "id": "5", "name": "Raidho", "symbol": "ᚱ", "phonetic": "R",
@@ -50,7 +50,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["journey", "movement", "progress", "rhythm"],
         "advice": "Trust the journey. The path will unfold as you walk it.",
         "shadow": "Don't stay stuck when movement is needed.",
-        "image_url": "https://images.pexels.com/photos/1252500/pexels-photo-1252500.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/bf85632695c2eca9579e900ad736d2af5263d1b69bdaf94b6edec2e3ddd2220d.png"
     },
     {
         "id": "6", "name": "Kenaz", "symbol": "ᚲ", "phonetic": "K",
@@ -60,7 +60,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["knowledge", "creativity", "illumination", "passion"],
         "advice": "Let your inner fire illuminate the darkness. Create something new.",
         "shadow": "Don't burn yourself or others with unchecked passion.",
-        "image_url": "https://images.pexels.com/photos/266429/pexels-photo-266429.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/b835a406d75dd9a19154926f9726127db32581ef89f65ac393438f2833bc1b91.png"
     },
     {
         "id": "7", "name": "Gebo", "symbol": "ᚷ", "phonetic": "G",
@@ -70,7 +70,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["gift", "partnership", "balance", "generosity"],
         "advice": "Give freely and receive graciously. Partnership brings abundance.",
         "shadow": "Be mindful of the strings attached to gifts.",
-        "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/a6d999487f519b4710380bb570a95418251b37b0fbcb6db7f959404cb298db38.png"
     },
     {
         "id": "8", "name": "Wunjo", "symbol": "ᚹ", "phonetic": "W",
@@ -80,7 +80,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["joy", "harmony", "celebration", "fulfillment"],
         "advice": "Celebrate your victories. Joy shared is joy multiplied.",
         "shadow": "Don't ignore problems in pursuit of false harmony.",
-        "image_url": "https://images.pexels.com/photos/745988/pexels-photo-745988.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/bf53d1af155a789983756b856f16e51baca561d94927c0b42e06033e8aa5b600.png"
     },
     {
         "id": "9", "name": "Hagalaz", "symbol": "ᚺ", "phonetic": "H",
@@ -90,7 +90,7 @@ ELDER_FUTHARK_RUNES = [
         "keywords": ["change", "disruption", "transformation", "nature's power"],
         "advice": "The storm clears the way for new growth. Trust the process.",
         "shadow": "Destruction without purpose leads only to chaos.",
-        "image_url": "https://images.pexels.com/photos/1446076/pexels-photo-1446076.jpeg?auto=compress&w=400"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/909576ea2028c034e4f7a3e7165982520bac7139b44c429eb54cbc121de154f3.png"
     },
     {
         "id": "10", "name": "Nauthiz", "symbol": "ᚾ", "phonetic": "N",
@@ -467,7 +467,7 @@ LIGHT_CODES = {
             "description": "The five perfect 3D shapes: tetrahedron, cube, octahedron, dodecahedron, icosahedron.",
             "meaning": "The building blocks of reality, elemental forms, cosmic structure",
             "meditation": "Visualize each solid corresponding to an element: fire, earth, air, ether, water.",
-            "image_url": "https://images.pexels.com/photos/5238325/pexels-photo-5238325.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/e4ce5ac0cc3d85117ea9d61df0f1611a8d3ccaf6ad98f0f25bfc7af19548eebe.png"
         },
         {
             "id": "sg10", "name": "Infinite Knot",
@@ -475,7 +475,7 @@ LIGHT_CODES = {
             "description": "The endless knot representing eternal wisdom and compassion.",
             "meaning": "Interdependence, no beginning no end, Buddhist wisdom",
             "meditation": "Trace the continuous line with your mind, never stopping, never starting.",
-            "image_url": "https://images.pexels.com/photos/1666067/pexels-photo-1666067.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/06e2b03c23b94ead1bad33f9d94b16ff74b7b77f3cdc1f96ba76d2f1b39be3b9.png"
         },
         {
             "id": "sg11", "name": "Tetrahedron",
@@ -669,7 +669,7 @@ LIGHT_CODES = {
             "meaning": "Divine power, wisdom, transformation, imperial energy",
             "pronunciation": "Lóng",
             "practice": "Visualize the dragon's energy coiling up your spine, awakening your power.",
-            "image_url": "https://images.pexels.com/photos/3377405/pexels-photo-3377405.jpeg?auto=compress&cs=tinysrgb&w=400"
+            "image_url": "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88ae-acae134e3fb1/images/09efbae47f76ab3410acabb5fdd31f88013b2f1b8f49af0d29b6a76095f23cc0.png"
         },
         {
             "id": "aa9", "name": "Japanese Kanji Reiki (靈氣)",

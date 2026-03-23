@@ -44,32 +44,92 @@ def verify_password(password: str, password_hash: str, salt: str) -> bool:
 
 @router.post("/session")
 async def create_session(data: SessionCreate, response: Response):
-    """Create or update user session from Google OAuth."""
+    """Create or update user session from Emergent Google OAuth."""
+    import httpx
+    import uuid
     db = get_db()
     
-    # Get session from database (created by frontend Google OAuth)
-    session = await db.sessions.find_one({"session_token": data.session_id})
+    # Call Emergent Auth's session-data endpoint to get user info
+    try:
+        async with httpx.AsyncClient() as client:
+            emergent_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": data.session_id},
+                timeout=10.0
+            )
+            
+            if emergent_response.status_code != 200:
+                logger.error(f"Emergent auth failed: {emergent_response.text}")
+                raise HTTPException(status_code=400, detail="Invalid session. Please sign in with Google.")
+            
+            google_user = emergent_response.json()
+    except httpx.RequestError as e:
+        logger.error(f"Emergent auth request failed: {e}")
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
     
-    if not session:
-        # This might be a new Google OAuth session
-        # The frontend sends Google user data, we need to create/update user
-        raise HTTPException(status_code=400, detail="Invalid session. Please sign in with Google.")
+    # Extract user data from Emergent response
+    email = google_user.get("email")
+    name = google_user.get("name", email.split("@")[0] if email else "User")
+    picture = google_user.get("picture")
+    emergent_session_token = google_user.get("session_token")
     
-    # Get user data
-    user_data = await db.users.find_one({"user_id": session["user_id"]})
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid user data from Google")
     
-    if not user_data:
-        raise HTTPException(status_code=404, detail="User not found")
+    # Check if user exists
+    existing_user = await db.users.find_one({"email": email}, {"_id": 0})
+    
+    if existing_user:
+        # Update existing user
+        await db.users.update_one(
+            {"email": email},
+            {"$set": {
+                "name": name,
+                "picture": picture,
+                "last_login": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        user_id = existing_user["user_id"]
+    else:
+        # Create new user with custom user_id
+        user_id = f"user_{uuid.uuid4().hex[:12]}"
+        new_user = {
+            "user_id": user_id,
+            "email": email,
+            "name": name,
+            "picture": picture,
+            "auth_type": "google",
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "last_login": datetime.now(timezone.utc).isoformat()
+        }
+        await db.users.insert_one(new_user)
+    
+    # Create session in our database
+    session_token = emergent_session_token or secrets.token_urlsafe(32)
+    session = {
+        "session_token": session_token,
+        "user_id": user_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "expires_at": (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
+    }
+    
+    # Remove old sessions for this user and insert new one
+    await db.sessions.delete_many({"user_id": user_id})
+    await db.sessions.insert_one(session)
     
     # Set session cookie
     response.set_cookie(
         key="session_token",
-        value=data.session_id,
+        value=session_token,
         httponly=True,
         secure=True,
         samesite="none",
-        max_age=30 * 24 * 60 * 60  # 30 days
+        path="/",
+        max_age=7 * 24 * 60 * 60  # 7 days
     )
+    
+    # Get user data to return
+    user_data = await db.users.find_one({"user_id": user_id}, {"_id": 0})
     
     return {
         "user": {

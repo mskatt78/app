@@ -160,6 +160,17 @@ async def startup_seed_database():
         await db.breathwork_sessions.insert_many(BREATHWORK_SESSIONS)
         logger.info(f"breathwork_sessions refreshed — {len(BREATHWORK_SESSIONS)} entries.")
 
+        # Always reseed runes (to get updated AI images)
+        from data.divination_content import ELDER_FUTHARK_RUNES, LIGHT_CODES
+        logger.info("Refreshing runes and light_codes collections...")
+        await db.runes.delete_many({})
+        await db.runes.insert_many(ELDER_FUTHARK_RUNES)
+        logger.info(f"runes refreshed — {len(ELDER_FUTHARK_RUNES)} entries.")
+        
+        await db.light_codes.delete_many({})
+        await db.light_codes.insert_one(LIGHT_CODES)
+        logger.info("light_codes refreshed.")
+
         # Only seed everything else if yoga_poses is empty
         yoga_count = await db.yoga_poses.count_documents({})
         if yoga_count == 0:
