@@ -337,21 +337,22 @@ const SoundFrequencies = ({ user, api }) => {
                   </div>
                 </div>
 
-                {/* Ambient Sound Player */}
-                {selectedFreq.category === "cetacean" && (
-                  <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
-                    <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
-                      <Music className="w-4 h-4 text-primary" />
-                      Try Ambient Sound
-                    </h4>
-                    <AmbientSoundPlayer
-                      soundType={selectedFreq.name.toLowerCase().includes("dolphin") ? "singing_bowls" : "ocean"}
-                      autoPlay={false}
-                      volume={0.5}
-                      showControls={true}
-                    />
-                  </div>
-                )}
+                {/* Ambient Sound Player — for ALL frequency types */}
+                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
+                  <h4 className="text-sm font-medium mb-3 flex items-center gap-2">
+                    <Music className="w-4 h-4 text-primary" />
+                    Play {selectedFreq.name}
+                  </h4>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Synthesised healing audio — generated live in your browser
+                  </p>
+                  <AmbientSoundPlayer
+                    soundType={selectedFreq.ambient_type || "crystal_bowls"}
+                    autoPlay={false}
+                    volume={0.6}
+                    showControls={true}
+                  />
+                </div>
               </div>
             </>
           )}

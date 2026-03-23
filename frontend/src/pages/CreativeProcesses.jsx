@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const CreativeProcesses = ({ user, api }) => {
   const navigate = useNavigate();
@@ -310,6 +311,21 @@ const CreativeProcesses = ({ user, api }) => {
                       </div>
                       <h2 className="text-2xl font-serif">{selectedProcess.name}</h2>
                       <p className="text-sm text-muted-foreground mt-2">Guided Creative Practice</p>
+                    </div>
+
+                    {/* Guided Audio Narration */}
+                    <div className="flex justify-center">
+                      <GuidedAudioButton
+                        api={api}
+                        label="Play Guided Creative Narration"
+                        script={[
+                          `Welcome to this creative practice: ${selectedProcess.name}.`,
+                          selectedProcess.description || "",
+                          selectedProcess.spiritual_purpose ? `Your spiritual purpose today: ${selectedProcess.spiritual_purpose}` : "",
+                          selectedProcess.process_steps ? `Follow these steps: ` + selectedProcess.process_steps.map((s, i) => `Step ${i + 1}: ${s}`).join(". ") : "",
+                          "Allow your creativity to flow freely. Trust the process. Your expression is sacred.",
+                        ].filter(Boolean).join(" ")}
+                      />
                     </div>
 
                     <PracticeTimer

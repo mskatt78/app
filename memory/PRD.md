@@ -177,3 +177,32 @@ Build a comprehensive full-stack spiritual wellness application with yoga, somat
 3. **Oracle Cards**: `oracle.py` imports `ORACLE_CARDS` from `data/all_content.py`
 4. **TTS Delays**: Audio generation can take 10-20+ seconds. Always show loading indicator.
 5. **GuidedAudioButton**: Drop-in component for any page needing TTS. Needs `api` prop (axios instance).
+
+---
+
+## CHANGELOG — March 2026 Session 2
+
+### Star Beings & Ancient Wisdom
+- Added **Cassiopeian Star Beings** and **Hydian Star People** to Galactic tradition (now 14 beings)
+- Added **"Listen to Sacred Invocation"** audio button to every Ancient Wisdom entry
+- Added **"Listen to Ceremony Steps"** audio button for ritual/practice sections
+- Renamed "Sacred Practice" to **"Ceremony / Ritual Steps"**
+- Fixed React AnimatePresence duplicate key bug that crashed the page
+
+### Sound Healing Frequencies
+- Extended AmbientSoundPlayer with 14 new synthesised sound types:
+  - Dolphin chirps, Whale songs, Bird chorus, Leaves rustling
+  - Harp (Karplus-Strong), Gong bath, Bells & Chimes
+  - Solfeggio 528Hz, 432Hz, 396Hz, 741Hz, 852Hz
+  - Didgeridoo drone, Tuning fork
+- Every sound frequency now has a **Play** button in its detail view
+- All sounds generated live in browser (no external audio files needed)
+
+### Guided Audio Expansion
+- Added **GuidedAudioButton** to Creative Processes (guided narration via TTS)
+- Fixed label: "Sacred Practice" → "Ceremony / Ritual Steps" in Ancient Wisdom
+
+### Images
+- All 39 Somatic Practices now have images
+- All 8 Wheel of Year Sabbats have images
+- Oracle Cards now show images (fixed oracle.py import bug)

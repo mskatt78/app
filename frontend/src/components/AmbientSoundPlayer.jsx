@@ -21,6 +21,21 @@ const AMBIENT_SOUNDS = {
   wind: { name: "Gentle Wind", type: "wind" },
   drums: { name: "Shamanic Drums", type: "drums" },
   gentle_water: { name: "Flowing Stream", type: "water" },
+  // New healing sound types
+  dolphin: { name: "Dolphin Song", type: "dolphin" },
+  whale: { name: "Whale Song", type: "whale" },
+  birds: { name: "Bird Chorus", type: "birds" },
+  leaves: { name: "Leaves Rustling", type: "leaves" },
+  harp: { name: "Healing Harp", type: "harp" },
+  gong: { name: "Gong Bath", type: "gong" },
+  chimes: { name: "Bells & Chimes", type: "chimes" },
+  solfeggio_528: { name: "528 Hz Love Frequency", type: "solfeggio_528" },
+  solfeggio_432: { name: "432 Hz Earth Tuning", type: "solfeggio_432" },
+  didgeridoo: { name: "Didgeridoo Drone", type: "didgeridoo" },
+  tuning_fork: { name: "Tuning Fork", type: "tuning_fork" },
+  solfeggio_396: { name: "396 Hz Liberation", type: "solfeggio_396" },
+  solfeggio_741: { name: "741 Hz Awakening", type: "solfeggio_741" },
+  solfeggio_852: { name: "852 Hz Intuition", type: "solfeggio_852" },
 };
 
 // Generate brown noise (deeper, more soothing than white noise)
@@ -60,6 +75,236 @@ const createTone = (audioContext, frequency) => {
   oscillator.type = "sine";
   oscillator.frequency.value = frequency;
   return oscillator;
+};
+
+// Dolphin: rapid frequency-modulated chirps and whistles
+const createDolphinSound = (audioContext, gainNode) => {
+  const playChirp = () => {
+    const osc = audioContext.createOscillator();
+    const g = audioContext.createGain();
+    const startFreq = 3000 + Math.random() * 8000;
+    const endFreq = startFreq + (Math.random() - 0.5) * 4000;
+    const dur = 0.05 + Math.random() * 0.2;
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(startFreq, audioContext.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(Math.max(100, endFreq), audioContext.currentTime + dur);
+    g.gain.setValueAtTime(0.15, audioContext.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + dur);
+    osc.connect(g); g.connect(gainNode);
+    osc.start(); osc.stop(audioContext.currentTime + dur);
+  };
+  const interval = setInterval(() => {
+    const count = 1 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) setTimeout(playChirp, i * 80);
+  }, 400 + Math.random() * 600);
+  return interval;
+};
+
+// Whale: deep, slow sweeping tones
+const createWhaleSound = (audioContext, gainNode) => {
+  const playSong = () => {
+    const osc = audioContext.createOscillator();
+    const g = audioContext.createGain();
+    const startFreq = 50 + Math.random() * 150;
+    const endFreq = startFreq * (0.5 + Math.random() * 1.2);
+    const dur = 3 + Math.random() * 5;
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(startFreq, audioContext.currentTime);
+    osc.frequency.linearRampToValueAtTime(Math.max(30, endFreq), audioContext.currentTime + dur * 0.7);
+    osc.frequency.linearRampToValueAtTime(startFreq * 0.8, audioContext.currentTime + dur);
+    g.gain.setValueAtTime(0, audioContext.currentTime);
+    g.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 0.5);
+    g.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + dur - 0.3);
+    g.gain.linearRampToValueAtTime(0, audioContext.currentTime + dur);
+    osc.connect(g); g.connect(gainNode);
+    osc.start(); osc.stop(audioContext.currentTime + dur + 0.1);
+  };
+  playSong();
+  return setInterval(playSong, 5000 + Math.random() * 3000);
+};
+
+// Birds: multiple oscillators simulating bird calls
+const createBirdsSound = (audioContext, gainNode) => {
+  // Low ambient forest noise
+  const { source: noise, output: noiseOut } = createFilteredNoise(audioContext, 300, 0.5);
+  noiseOut.connect(gainNode);
+  noise.start();
+  const playBird = () => {
+    const steps = 2 + Math.floor(Math.random() * 5);
+    const baseFreq = 1500 + Math.random() * 3000;
+    for (let i = 0; i < steps; i++) {
+      setTimeout(() => {
+        const osc = audioContext.createOscillator();
+        const g = audioContext.createGain();
+        const f = baseFreq + (Math.random() - 0.5) * 800;
+        const dur = 0.05 + Math.random() * 0.15;
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(f, audioContext.currentTime);
+        osc.frequency.linearRampToValueAtTime(f * (0.8 + Math.random() * 0.4), audioContext.currentTime + dur);
+        g.gain.setValueAtTime(0.12, audioContext.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + dur);
+        osc.connect(g); g.connect(gainNode);
+        osc.start(); osc.stop(audioContext.currentTime + dur + 0.05);
+      }, i * (80 + Math.random() * 120));
+    }
+  };
+  const birdInterval = setInterval(playBird, 800 + Math.random() * 2000);
+  return [noise, birdInterval];
+};
+
+// Leaves: bandpass-filtered noise with gentle modulation
+const createLeavesSound = (audioContext, gainNode) => {
+  const bufferSize = 2 * audioContext.sampleRate;
+  const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+  const output = noiseBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) output[i] = Math.random() * 2 - 1;
+  const noiseSource = audioContext.createBufferSource();
+  noiseSource.buffer = noiseBuffer;
+  noiseSource.loop = true;
+  const highpass = audioContext.createBiquadFilter();
+  highpass.type = "highpass";
+  highpass.frequency.value = 1500;
+  const lowpass = audioContext.createBiquadFilter();
+  lowpass.type = "lowpass";
+  lowpass.frequency.value = 4000;
+  const lfo = audioContext.createOscillator();
+  const lfoGain = audioContext.createGain();
+  lfo.frequency.value = 0.3;
+  lfoGain.gain.value = 0.15;
+  lfo.connect(lfoGain);
+  lfoGain.connect(gainNode.gain);
+  noiseSource.connect(highpass);
+  highpass.connect(lowpass);
+  lowpass.connect(gainNode);
+  noiseSource.start();
+  lfo.start();
+  return [noiseSource, lfo];
+};
+
+// Harp: Karplus-Strong plucked string synthesis
+const createHarpSound = (audioContext, gainNode) => {
+  const HARP_NOTES = [261.63, 329.63, 392.00, 493.88, 523.25, 659.25, 783.99, 1046.50];
+  const pluck = (freq) => {
+    const osc1 = audioContext.createOscillator();
+    const osc2 = audioContext.createOscillator();
+    const g = audioContext.createGain();
+    osc1.type = "triangle";
+    osc2.type = "sine";
+    osc1.frequency.value = freq;
+    osc2.frequency.value = freq * 2;
+    g.gain.setValueAtTime(0.2, audioContext.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 4);
+    osc1.connect(g); osc2.connect(g); g.connect(gainNode);
+    osc1.start(); osc2.start();
+    osc1.stop(audioContext.currentTime + 4);
+    osc2.stop(audioContext.currentTime + 4);
+  };
+  let idx = 0;
+  const playArpeggio = () => {
+    const sequence = [0, 2, 4, 7, 4, 2];
+    sequence.forEach((noteIdx, i) => {
+      setTimeout(() => pluck(HARP_NOTES[noteIdx % HARP_NOTES.length] * (idx % 2 === 0 ? 1 : 0.5)), i * 300);
+    });
+    idx++;
+  };
+  playArpeggio();
+  return setInterval(playArpeggio, 3000);
+};
+
+// Gong: noise impulse with harmonic decay
+const createGongSound = (audioContext, gainNode) => {
+  const strike = () => {
+    const freqs = [55, 110, 165, 220, 330];
+    freqs.forEach((f, i) => {
+      const osc = audioContext.createOscillator();
+      const g = audioContext.createGain();
+      osc.type = i === 0 ? "sawtooth" : "sine";
+      osc.frequency.value = f;
+      const vol = 0.15 / (i + 1);
+      g.gain.setValueAtTime(vol, audioContext.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 12 - i);
+      osc.connect(g); g.connect(gainNode);
+      osc.start(); osc.stop(audioContext.currentTime + 12);
+    });
+  };
+  strike();
+  return setInterval(strike, 15000);
+};
+
+// Chimes & Bells: bright bell tones
+const createChimesSound = (audioContext, gainNode) => {
+  const CHIME_FREQS = [523, 659, 784, 1047, 1319, 1568];
+  const playChime = () => {
+    const f = CHIME_FREQS[Math.floor(Math.random() * CHIME_FREQS.length)];
+    const osc = audioContext.createOscillator();
+    const g = audioContext.createGain();
+    osc.type = "sine";
+    osc.frequency.value = f;
+    g.gain.setValueAtTime(0.2, audioContext.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 3);
+    osc.connect(g); g.connect(gainNode);
+    osc.start(); osc.stop(audioContext.currentTime + 3);
+  };
+  playChime();
+  return setInterval(playChime, 1500 + Math.random() * 1000);
+};
+
+// Solfeggio: sustained pure tone at specific Hz
+const createSolfeggioTone = (audioContext, gainNode, hz) => {
+  const osc = audioContext.createOscillator();
+  const osc2 = audioContext.createOscillator();
+  const g = audioContext.createGain();
+  osc.type = "sine";
+  osc2.type = "sine";
+  osc.frequency.value = hz;
+  osc2.frequency.value = hz * 1.0025; // slight detune for depth
+  g.gain.value = 0.15;
+  osc.connect(g); osc2.connect(g); g.connect(gainNode);
+  osc.start(); osc2.start();
+  return [osc, osc2];
+};
+
+// Didgeridoo: low drone with overtone resonance
+const createDidgeridooSound = (audioContext, gainNode) => {
+  const fundamental = audioContext.createOscillator();
+  const harm2 = audioContext.createOscillator();
+  const harm3 = audioContext.createOscillator();
+  const g = audioContext.createGain();
+  fundamental.type = "sawtooth";
+  harm2.type = "sine";
+  harm3.type = "sine";
+  fundamental.frequency.value = 58;
+  harm2.frequency.value = 116;
+  harm3.frequency.value = 174;
+  g.gain.value = 0.2;
+  // LFO for circular breathing effect
+  const lfo = audioContext.createOscillator();
+  const lfoGain = audioContext.createGain();
+  lfo.frequency.value = 3.5;
+  lfoGain.gain.value = 0.05;
+  lfo.connect(lfoGain);
+  lfoGain.connect(g.gain);
+  fundamental.connect(g); harm2.connect(g); harm3.connect(g);
+  g.connect(gainNode);
+  fundamental.start(); harm2.start(); harm3.start(); lfo.start();
+  return [fundamental, harm2, harm3, lfo];
+};
+
+// Tuning Fork: clean pure sine with slow attack
+const createTuningForkSound = (audioContext, gainNode) => {
+  const strike = () => {
+    const osc = audioContext.createOscillator();
+    const g = audioContext.createGain();
+    osc.type = "sine";
+    osc.frequency.value = 432;
+    g.gain.setValueAtTime(0, audioContext.currentTime);
+    g.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 8);
+    osc.connect(g); g.connect(gainNode);
+    osc.start(); osc.stop(audioContext.currentTime + 8);
+  };
+  strike();
+  return setInterval(strike, 9000);
 };
 
 // Create drum pattern
@@ -320,6 +565,91 @@ const AmbientSoundPlayer = ({
         case "binaural": {
           const binauralSources = createBinauralBeats(ctx, gainNode, 6);
           sourcesRef.current.push(...binauralSources);
+          break;
+        }
+
+        case "dolphin": {
+          const dolphinInterval = createDolphinSound(ctx, gainNode);
+          intervalsRef.current.push(dolphinInterval);
+          break;
+        }
+
+        case "whale": {
+          const whaleInterval = createWhaleSound(ctx, gainNode);
+          intervalsRef.current.push(whaleInterval);
+          break;
+        }
+
+        case "birds": {
+          const [birdNoise, birdInterval] = createBirdsSound(ctx, gainNode);
+          sourcesRef.current.push(birdNoise);
+          intervalsRef.current.push(birdInterval);
+          break;
+        }
+
+        case "leaves": {
+          const leavesResult = createLeavesSound(ctx, gainNode);
+          sourcesRef.current.push(leavesResult[0], leavesResult[1]);
+          break;
+        }
+
+        case "harp": {
+          const harpInterval = createHarpSound(ctx, gainNode);
+          intervalsRef.current.push(harpInterval);
+          break;
+        }
+
+        case "gong": {
+          const gongInterval = createGongSound(ctx, gainNode);
+          intervalsRef.current.push(gongInterval);
+          break;
+        }
+
+        case "chimes": {
+          const chimesInterval = createChimesSound(ctx, gainNode);
+          intervalsRef.current.push(chimesInterval);
+          break;
+        }
+
+        case "solfeggio_528": {
+          const solSources = createSolfeggioTone(ctx, gainNode, 528);
+          sourcesRef.current.push(...solSources);
+          break;
+        }
+
+        case "solfeggio_432": {
+          const sol432Sources = createSolfeggioTone(ctx, gainNode, 432);
+          sourcesRef.current.push(...sol432Sources);
+          break;
+        }
+
+        case "solfeggio_396": {
+          const sol396Sources = createSolfeggioTone(ctx, gainNode, 396);
+          sourcesRef.current.push(...sol396Sources);
+          break;
+        }
+
+        case "solfeggio_741": {
+          const sol741Sources = createSolfeggioTone(ctx, gainNode, 741);
+          sourcesRef.current.push(...sol741Sources);
+          break;
+        }
+
+        case "solfeggio_852": {
+          const sol852Sources = createSolfeggioTone(ctx, gainNode, 852);
+          sourcesRef.current.push(...sol852Sources);
+          break;
+        }
+
+        case "didgeridoo": {
+          const didgeSources = createDidgeridooSound(ctx, gainNode);
+          sourcesRef.current.push(...didgeSources);
+          break;
+        }
+
+        case "tuning_fork": {
+          const tuningInterval = createTuningForkSound(ctx, gainNode);
+          intervalsRef.current.push(tuningInterval);
           break;
         }
         

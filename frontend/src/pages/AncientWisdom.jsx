@@ -7,6 +7,7 @@ import {
   BookOpen, Gem
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const TRADITIONS = [
   { id: "all",          label: "All Traditions", icon: Globe,    color: "text-amber-400",   bg: "bg-amber-500/10",    border: "border-amber-500/20" },
@@ -139,23 +140,20 @@ const AncientWisdom = ({ user, api }) => {
 
         {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          <AnimatePresence>
-            {filtered.map((entry, i) => {
-              const trad = TRADITION_MAP[entry.tradition] || TRADITION_MAP.egyptian;
-              const Icon = trad.icon;
-              return (
-                <motion.div
-                  key={entry.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ delay: i * 0.03 }}
-                  onClick={() => setSelected(entry)}
-                  className={`cursor-pointer rounded-2xl overflow-hidden border group
-                    ${trad.border} hover:scale-[1.03] transition-all duration-300`}
-                  data-testid={`entry-card-${entry.id}`}
-                >
+          {filtered.map((entry, i) => {
+            const trad = TRADITION_MAP[entry.tradition] || TRADITION_MAP.egyptian;
+            const Icon = trad.icon;
+            return (
+              <motion.div
+                key={entry.id}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: i * 0.02, duration: 0.3 }}
+                onClick={() => setSelected(entry)}
+                className={`cursor-pointer rounded-2xl overflow-hidden border group
+                  ${trad.border} hover:scale-[1.03] transition-all duration-300`}
+                data-testid={`entry-card-${entry.id}`}
+              >
                   <div className="relative aspect-square overflow-hidden">
                     <img
                       src={entry.image_url}
@@ -177,9 +175,8 @@ const AncientWisdom = ({ user, api }) => {
                     </div>
                   </div>
                 </motion.div>
-              );
-            })}
-          </AnimatePresence>
+            );
+          })}
         </div>
 
         {filtered.length === 0 && (
@@ -254,9 +251,18 @@ const AncientWisdom = ({ user, api }) => {
                   <div className="p-5 rounded-2xl bg-amber-500/5 border border-amber-500/20">
                     <h4 className="text-xs uppercase tracking-wider text-amber-400 mb-3 flex items-center gap-2">
                       <BookOpen className="w-3.5 h-3.5" />
-                      Sacred Invocation
+                      Sacred Mantra / Invocation
                     </h4>
                     <p className="text-sm italic text-muted-foreground leading-relaxed">"{selected.invocation}"</p>
+                    <div className="mt-3">
+                      <GuidedAudioButton
+                        api={api}
+                        script={`Sacred invocation for ${selected.name}: ${selected.invocation}`}
+                        label="Listen to Sacred Invocation"
+                        voice="nova"
+                        className="text-xs"
+                      />
+                    </div>
                   </div>
                 )}
 
@@ -293,12 +299,12 @@ const AncientWisdom = ({ user, api }) => {
                   </div>
                 )}
 
-                {/* Practice Steps */}
+                {/* Ceremony / Ritual Steps */}
                 {selected.practice?.length > 0 && (
                   <div>
                     <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
                       <Heart className="w-4 h-4 text-rose-400" />
-                      Sacred Practice
+                      Ceremony / Ritual Steps
                     </h4>
                     <ol className="space-y-2">
                       {selected.practice.map((step, i) => (
@@ -310,6 +316,15 @@ const AncientWisdom = ({ user, api }) => {
                         </li>
                       ))}
                     </ol>
+                    <div className="mt-3">
+                      <GuidedAudioButton
+                        api={api}
+                        script={`${selected.name} ceremony. ${selected.practice.map((s,i)=>`Step ${i+1}: ${s}`).join(". ")}`}
+                        label="Listen to Ceremony Steps"
+                        voice="nova"
+                        className="text-xs"
+                      />
+                    </div>
                   </div>
                 )}
 

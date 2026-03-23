@@ -82,7 +82,7 @@ ANCIENT_WISDOM_FINAL = [
         "image_url": _TIDDALIK
     },
     {
-        "id": "aboriginal-mimi",
+        "id": "aboriginal-mimi-2",
         "name": "Mimi Spirits",
         "tradition": "aboriginal",
         "type": "spirit",

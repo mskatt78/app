@@ -17,7 +17,7 @@ _HARP = "https://static.prod-images.emergentagent.com/jobs/c434b815-e29c-4b6e-88
 
 SOUND_FREQUENCIES = [
     {
-        "id": "freq-dolphin",
+        "id": "freq-dolphin", "ambient_type": "dolphin",
         "name": "Dolphin Frequencies",
         "category": "cetacean",
         "element": "Water",
@@ -33,7 +33,7 @@ SOUND_FREQUENCIES = [
         "image_url": _DOLPHIN
     },
     {
-        "id": "freq-whale",
+        "id": "freq-whale", "ambient_type": "whale",
         "name": "Whale Song Frequencies",
         "category": "cetacean",
         "element": "Water",
@@ -49,7 +49,7 @@ SOUND_FREQUENCIES = [
         "image_url": _WHALE
     },
     {
-        "id": "freq-crystal-bowls",
+        "id": "freq-crystal-bowls", "ambient_type": "crystal_bowls",
         "name": "Crystal Singing Bowls",
         "category": "instrument",
         "element": "Spirit",
@@ -65,7 +65,7 @@ SOUND_FREQUENCIES = [
         "image_url": _CRYSTAL_BOWLS
     },
     {
-        "id": "freq-tibetan-bowls",
+        "id": "freq-tibetan-bowls", "ambient_type": "singing_bowls",
         "name": "Tibetan Singing Bowls",
         "category": "instrument",
         "element": "Earth & Spirit",
@@ -81,7 +81,7 @@ SOUND_FREQUENCIES = [
         "image_url": _TIBETAN_BOWLS
     },
     {
-        "id": "freq-water",
+        "id": "freq-water", "ambient_type": "gentle_water",
         "name": "Water Frequencies",
         "category": "nature",
         "element": "Water",
@@ -97,7 +97,7 @@ SOUND_FREQUENCIES = [
         "image_url": _WATER
     },
     {
-        "id": "freq-tuning-forks",
+        "id": "freq-tuning-forks", "ambient_type": "tuning_fork",
         "name": "Tuning Fork Therapy",
         "category": "instrument",
         "element": "Air",
@@ -113,7 +113,7 @@ SOUND_FREQUENCIES = [
         "image_url": _TUNING_FORKS
     },
     {
-        "id": "freq-gong",
+        "id": "freq-gong", "ambient_type": "gong",
         "name": "Gong Bath Healing",
         "category": "instrument",
         "element": "Spirit & Fire",
@@ -129,7 +129,7 @@ SOUND_FREQUENCIES = [
         "image_url": _GONG
     },
     {
-        "id": "freq-drum",
+        "id": "freq-drum", "ambient_type": "drums",
         "name": "Shamanic Drumming",
         "category": "instrument",
         "element": "Earth & Fire",
@@ -145,7 +145,7 @@ SOUND_FREQUENCIES = [
         "image_url": _DRUM
     },
     {
-        "id": "freq-solfeggio",
+        "id": "freq-solfeggio", "ambient_type": "solfeggio_528",
         "name": "Solfeggio Frequencies",
         "category": "frequency",
         "element": "Spirit",
@@ -161,7 +161,7 @@ SOUND_FREQUENCIES = [
         "image_url": _SOLFEGGIO
     },
     {
-        "id": "freq-didgeridoo",
+        "id": "freq-didgeridoo", "ambient_type": "didgeridoo",
         "name": "Didgeridoo Healing",
         "category": "instrument",
         "element": "Earth & Air",
@@ -177,7 +177,7 @@ SOUND_FREQUENCIES = [
         "image_url": _DIDGERIDOO
     },
     {
-        "id": "freq-chimes",
+        "id": "freq-chimes", "ambient_type": "chimes",
         "name": "Chimes, Bells & Tingsha",
         "category": "instrument",
         "element": "Air & Spirit",
@@ -193,7 +193,7 @@ SOUND_FREQUENCIES = [
         "image_url": _CHIMES
     },
     {
-        "id": "freq-harp",
+        "id": "freq-harp", "ambient_type": "harp",
         "name": "Harp & Angelic Frequencies",
         "category": "instrument",
         "element": "Air & Spirit",

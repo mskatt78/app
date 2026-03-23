@@ -616,5 +616,51 @@ ANCIENT_WISDOM = [
         "chakra": "Third Eye & Crown",
         "color": "violet",
         "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/992081bdd5c57a6e4f6d7d8ccaa4e0b7ffbf29b55b742b69d3ec722eec0c8262.png"
+    },
+    {
+        "id": "gal-cassiopeian",
+        "name": "Cassiopeian Star Beings",
+        "tradition": "galactic",
+        "type": "being",
+        "title": "Keepers of Celestial Records, Guardians of the Cosmic Akasha",
+        "element": "Ether & Light",
+        "description": "The Cassiopeians are beings of profound wisdom and record-keeping from the W-shaped constellation of Cassiopeia — the celestial queen. They are guardians of the Akashic Records and cosmic libraries, holding the blueprints of all souls and the histories of countless civilisations across time. Their energy is regal, ancient, and deeply feminine-divine, calling forth your soul's deepest purpose and most sacred remembrance.",
+        "teachings": ["The Akashic Records as a living, breathable library of soul memory", "Soul purpose and the remembrance of your original divine blueprint", "Cosmic queenship — sovereignty over your own frequency field", "The sacred art of celestial record-reading and soul retrieval", "Starlight transmission as a form of healing and activation"],
+        "sacred_tools": ["Clear quartz (Akashic access stone)", "Star maps and celestial charts", "White and silver candles", "Cassiopeia star gazing (best viewed in Northern Hemisphere)", "Sacred writing and journaling"],
+        "invocation": "Cassiopeian star keepers, guardians of the eternal records — I open the library of my soul. Show me what I came here to do. Illuminate the blueprint of my highest path. I am ready to remember.",
+        "message": "You have lived in the stars far longer than you have lived on Earth. We hold every memory — every lifetime, every contract, every vow of love and service. You are not here by accident. Your name is written in the celestial records as one who chose to come. We honour your courage. Now remember who you are.",
+        "practice": [
+            "Cassiopeian Akashic meditation: on a clear night, gaze at the W-shape of Cassiopeia and breathe her light into your crown chakra",
+            "Soul record request: close your eyes and ask 'Show me one memory from a past life that is relevant to my healing now' — receive images without forcing",
+            "Blueprint activation: write down your deepest gifts and ask the Cassiopeians to amplify them in your field",
+            "Celestial journaling: each morning write one sentence that begins 'My soul came here to...' without overthinking"
+        ],
+        "crystals": ["Clear quartz", "Selenite", "Apophyllite", "Stellar beam calcite"],
+        "chakra": "Crown & Soul Star",
+        "color": "silver",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/179baf939a14d87fb8e5203c0b3b3e2bd60e036001911380f9634ba8ac5a25a1.png"
+    },
+    {
+        "id": "gal-hydian",
+        "name": "Hydian Star People",
+        "tradition": "galactic",
+        "type": "being",
+        "title": "Ancient Serpent Wisdom Keepers, Masters of Kundalini & Cosmic Waters",
+        "element": "Water & Ether",
+        "description": "The Hydian Star People originate from the constellation of Hydra — the great celestial water serpent and the longest constellation in the sky. They are among the most ancient star lineages, carrying the wisdom of the primal serpent force — kundalini, the awakening of cosmic consciousness through the sacred body. The Hydians hold the codes of water memory, DNA activation, and the sacred union of spirit and matter through the serpent path.",
+        "teachings": ["Kundalini as a sacred cosmic intelligence, not merely a biological force", "Water consciousness — the memory held in every molecule of water in your body", "Serpent path of initiation: shedding, renewal, and ascension through the body", "DNA as a cosmic antenna that receives star transmissions", "The sacred body as the ultimate temple of galactic wisdom"],
+        "sacred_tools": ["Water (charged with moonlight or starlight)", "Serpentine crystal", "Kundalini breathwork (breath of fire)", "Sacred bathing ceremonies", "Moonlit water bowls for scrying"],
+        "invocation": "Ancient ones of Hydra, cosmic serpent keepers — awaken the living intelligence within my spine. Activate the waters of my body as a clear channel of galactic light. I honour the sacred serpent as my teacher and guide.",
+        "message": "We are the ancient ones. Long before your current civilisations rose and fell, we seeded the knowledge of the sacred body into your ancestors. The serpent has always been the symbol of wisdom — the shedding of the old, the continuous rebirth into greater light. The kundalini rising within you is our transmission arriving home. Trust the body. Trust the serpent path.",
+        "practice": [
+            "Hydian water blessing: fill a bowl with pure water under moonlight, whisper your intentions into it, and drink it slowly the next morning as a sacred transmission",
+            "Serpent spine meditation: lying flat, visualise a golden serpent of light ascending slowly from your root chakra to your crown — allow 10–15 minutes",
+            "DNA activation breath: breathe deeply into your belly 7 times, each time intending 'I activate my cosmic DNA codes' on the exhale",
+            "Sacred bathing ceremony: add sea salt and rose petals to your bath, set the intention of receiving Hydian water memory codes, and soak for 20 minutes in silence"
+        ],
+        "crystals": ["Serpentine", "Larimar", "Aquamarine", "Green aventurine"],
+        "chakra": "Root, Sacral & Crown (full serpent path)",
+        "color": "teal",
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/1834e61f-9422-4ee4-90fd-d2458c84ed8d/images/0fc503a37e88e5e72fb6e36979ef9169214be022d28d099df7d3b33036971e25.png"
     }
 ]
