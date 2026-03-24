@@ -350,7 +350,7 @@ const HeartPractices = ({ user, api }) => {
                   <button 
                     type="button"
                     onClick={() => {
-                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); if (c.state === 'suspended') c.resume(); window.__warmAudioCtx = c; } catch(e) {}
+                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) {}
                       setIsPracticing(true);
                     }}
                     className="w-full py-4 px-6 bg-pink-600 hover:bg-pink-700 active:bg-pink-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"

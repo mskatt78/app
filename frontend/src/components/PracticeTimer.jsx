@@ -135,7 +135,7 @@ const PracticeTimer = ({
       audioContextRef.current = ctx;
       
       const gainNode = ctx.createGain();
-      gainNode.gain.value = audioVolume * 0.5;
+      gainNode.gain.value = Math.max(audioVolume * 1.5, 0.6);
       gainNode.connect(ctx.destination);
       gainNodeRef.current = gainNode;
       
@@ -187,7 +187,7 @@ const PracticeTimer = ({
             drumBody.type = "sine";
             drumBody.frequency.setValueAtTime(90, now);
             drumBody.frequency.exponentialRampToValueAtTime(50, now + 0.15);
-            drumGain.gain.setValueAtTime(0.7, now);
+            drumGain.gain.setValueAtTime(1.0, now);
             drumGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
             drumBody.connect(drumGain);
             drumGain.connect(gainNode);
@@ -208,7 +208,7 @@ const PracticeTimer = ({
             noiseFilter.frequency.value = 200;
             noiseFilter.Q.value = 1.5;
             const noiseGain = ctx.createGain();
-            noiseGain.gain.setValueAtTime(0.4, now);
+            noiseGain.gain.setValueAtTime(0.6, now);
             noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
             noise.connect(noiseFilter);
             noiseFilter.connect(noiseGain);
@@ -220,7 +220,7 @@ const PracticeTimer = ({
             const subGain = ctx.createGain();
             sub.type = "sine";
             sub.frequency.setValueAtTime(45, now);
-            subGain.gain.setValueAtTime(0.35, now);
+            subGain.gain.setValueAtTime(0.5, now);
             subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
             sub.connect(subGain);
             subGain.connect(gainNode);
@@ -380,12 +380,16 @@ const PracticeTimer = ({
 
   const handlePlayPause = () => {
     if (!isRunning) {
-      // Warm up AudioContext on user tap for mobile
+      // Play silent buffer to unlock audio on mobile
       try { 
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!window.__warmAudioCtx || window.__warmAudioCtx.state === 'closed') {
           const c = new AC();
-          if (c.state === 'suspended') c.resume();
+          const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate);
+          const s = c.createBufferSource();
+          s.buffer = b;
+          s.connect(c.destination);
+          s.start(0);
           window.__warmAudioCtx = c;
         }
       } catch(e) {}
@@ -465,9 +469,14 @@ const PracticeTimer = ({
             </p>
           )}
           <Progress value={segmentProgress} className="h-2" />
-          {currentSegment.has_audio && !isMuted && (
-            <p className="text-xs text-primary/70 mt-2 flex items-center gap-1">
-              <Volume2 className="w-3 h-3" /> Audio guidance available
+          {currentSegment.has_audio && !isMuted && audioPlaying && (
+            <p className="text-xs text-primary/70 mt-2 flex items-center gap-1 animate-pulse">
+              <Volume2 className="w-3 h-3" /> Sound playing
+            </p>
+          )}
+          {!isMuted && backgroundAudio !== "silence" && !audioPlaying && (
+            <p className="text-xs text-amber-400/70 mt-2 flex items-center gap-1">
+              <Volume2 className="w-3 h-3" /> Tap play to start audio
             </p>
           )}
         </div>

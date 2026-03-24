@@ -437,12 +437,16 @@ const ShamanicPractices = ({ user, api }) => {
                   <button 
                     type="button"
                     onClick={() => {
-                      // Warm up AudioContext on user tap (required for mobile)
+                      // Create AudioContext and play immediate test tone on user tap (REQUIRED for mobile)
                       try {
                         const AC = window.AudioContext || window.webkitAudioContext;
                         const ctx = new AC();
-                        if (ctx.state === 'suspended') ctx.resume();
-                        // Store globally so PracticeTimer can reuse it
+                        // Play a brief silent buffer to unlock audio on mobile
+                        const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.1, ctx.sampleRate);
+                        const source = ctx.createBufferSource();
+                        source.buffer = buffer;
+                        source.connect(ctx.destination);
+                        source.start(0);
                         window.__warmAudioCtx = ctx;
                       } catch (e) {}
                       setIsPracticing(true);
