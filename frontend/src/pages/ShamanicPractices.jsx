@@ -436,7 +436,17 @@ const ShamanicPractices = ({ user, api }) => {
                 {!isPracticing ? (
                   <button 
                     type="button"
-                    onClick={() => setIsPracticing(true)}
+                    onClick={() => {
+                      // Warm up AudioContext on user tap (required for mobile)
+                      try {
+                        const AC = window.AudioContext || window.webkitAudioContext;
+                        const ctx = new AC();
+                        if (ctx.state === 'suspended') ctx.resume();
+                        // Store globally so PracticeTimer can reuse it
+                        window.__warmAudioCtx = ctx;
+                      } catch (e) {}
+                      setIsPracticing(true);
+                    }}
                     className="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
                     style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
                     data-testid="begin-practice-btn"

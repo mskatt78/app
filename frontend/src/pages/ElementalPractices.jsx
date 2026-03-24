@@ -392,7 +392,10 @@ const ElementalPractices = ({ user, api }) => {
               <div className="p-4 border-t border-white/10 bg-card rounded-b-2xl">
                 {!isPracticing ? (
                   <Button 
-                    onClick={() => setIsPracticing(true)}
+                    onClick={() => {
+                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); if (c.state === 'suspended') c.resume(); window.__warmAudioCtx = c; } catch(e) {}
+                      setIsPracticing(true);
+                    }}
                     className="w-full py-4"
                     style={{ minHeight: '56px' }}
                     data-testid="begin-practice-btn"

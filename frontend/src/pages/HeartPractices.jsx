@@ -349,7 +349,10 @@ const HeartPractices = ({ user, api }) => {
                 {!isPracticing ? (
                   <button 
                     type="button"
-                    onClick={() => setIsPracticing(true)}
+                    onClick={() => {
+                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); if (c.state === 'suspended') c.resume(); window.__warmAudioCtx = c; } catch(e) {}
+                      setIsPracticing(true);
+                    }}
                     className="w-full py-4 px-6 bg-pink-600 hover:bg-pink-700 active:bg-pink-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
                     style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
                     data-testid="begin-practice-btn"

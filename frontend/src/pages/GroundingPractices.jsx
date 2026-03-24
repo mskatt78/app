@@ -192,7 +192,10 @@ const GroundingPractices = ({ user, api }) => {
                     )}
 
                     <Button
-                      onClick={() => setIsPracticing(true)}
+                      onClick={() => {
+                        try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); if (c.state === 'suspended') c.resume(); window.__warmAudioCtx = c; } catch(e) {}
+                        setIsPracticing(true);
+                      }}
                       className="w-full bg-emerald-600 hover:bg-emerald-700"
                       data-testid="start-practice-btn"
                     >

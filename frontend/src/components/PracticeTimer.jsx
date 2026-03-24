@@ -122,7 +122,16 @@ const PracticeTimer = ({
     
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
-      const ctx = new AudioContext();
+      // Reuse warmed AudioContext from user tap if available (mobile requirement)
+      let ctx;
+      if (window.__warmAudioCtx && window.__warmAudioCtx.state !== 'closed') {
+        ctx = window.__warmAudioCtx;
+        window.__warmAudioCtx = null;
+        if (ctx.state === 'suspended') ctx.resume();
+      } else {
+        ctx = new AudioContext();
+        if (ctx.state === 'suspended') ctx.resume();
+      }
       audioContextRef.current = ctx;
       
       const gainNode = ctx.createGain();
@@ -370,6 +379,17 @@ const PracticeTimer = ({
   };
 
   const handlePlayPause = () => {
+    if (!isRunning) {
+      // Warm up AudioContext on user tap for mobile
+      try { 
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!window.__warmAudioCtx || window.__warmAudioCtx.state === 'closed') {
+          const c = new AC();
+          if (c.state === 'suspended') c.resume();
+          window.__warmAudioCtx = c;
+        }
+      } catch(e) {}
+    }
     setIsRunning(!isRunning);
   };
 
