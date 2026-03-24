@@ -530,8 +530,8 @@ const SunriseSunsetPractices = ({ user, api }) => {
                     <PracticeTimer
                       segments={selectedPractice.steps.map((step, i) => ({
                         name: `Step ${i + 1}`,
+                        description: step,
                         duration_seconds: Math.floor((selectedPractice.duration_minutes * 60) / selectedPractice.steps.length),
-                        instruction: step
                       }))}
                       totalDuration={selectedPractice.duration_minutes * 60}
                       practiceType={activeTab}

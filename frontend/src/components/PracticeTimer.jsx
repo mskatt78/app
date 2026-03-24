@@ -222,6 +222,43 @@ const PracticeTimer = ({
     }
   }, [audioVolume, isMuted]);
 
+  // Play a gentle bell sound for segment transitions
+  const playTransitionBell = useCallback(() => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioContext();
+      
+      // Bell tone - gentle chime
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
+      osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.8);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 1.5);
+      
+      // Secondary harmonic for richer bell sound
+      const osc2 = ctx.createOscillator();
+      const gain2 = ctx.createGain();
+      osc2.type = "sine";
+      osc2.frequency.setValueAtTime(1320, ctx.currentTime); // E6
+      gain2.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
+      osc2.connect(gain2);
+      gain2.connect(ctx.destination);
+      osc2.start();
+      osc2.stop(ctx.currentTime + 1.0);
+      
+      setTimeout(() => ctx.close(), 2000);
+    } catch (e) {
+      // Audio not available - silent fallback
+    }
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -244,11 +281,13 @@ const PracticeTimer = ({
             // Move to next segment
             if (currentSegmentIndex < segments.length - 1) {
               setCurrentSegmentIndex(prev => prev + 1);
+              if (!isMuted) playTransitionBell();
               return 0;
             } else {
               // Practice complete
               setIsRunning(false);
               cleanupAudio();
+              if (!isMuted) playTransitionBell();
               onComplete?.();
               return prev;
             }
@@ -351,6 +390,11 @@ const PracticeTimer = ({
             </span>
           </div>
           <h4 className="font-medium text-lg mb-2">{currentSegment.name}</h4>
+          {currentSegment.description && (
+            <p className="text-sm text-muted-foreground leading-relaxed mb-2">
+              {currentSegment.description}
+            </p>
+          )}
           <Progress value={segmentProgress} className="h-2" />
           {currentSegment.has_audio && !isMuted && (
             <p className="text-xs text-primary/70 mt-2 flex items-center gap-1">

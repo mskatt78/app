@@ -354,10 +354,19 @@ const MantrasLibrary = ({ user, api }) => {
           setCurrentRep(rep => {
             const newRep = rep + 1;
             if (newRep >= totalReps) {
+              // Play completion bells
+              if (!isMuted && mantraAudioCtxRef.current && mantraGainRef.current) {
+                playBellTone(mantraAudioCtxRef.current, mantraGainRef.current, 528, 5);
+              }
               stopChanting();
               logPractice();
               toast.success("Mantra practice complete!");
               return rep;
+            }
+            // Play bell chime at each repetition transition (audible cue for eyes-closed practice)
+            if (!isMuted && mantraAudioCtxRef.current && mantraGainRef.current) {
+              playBellTone(mantraAudioCtxRef.current, mantraGainRef.current, 
+                ELEMENT_FREQUENCIES[selectedMantra.element] || 432, 2);
             }
             // Play sound for new repetition
             if (useGeneratedSound && !isMuted && mantraAudioCtxRef.current && mantraGainRef.current) {

@@ -301,7 +301,8 @@ const HeartPractices = ({ user, api }) => {
 
                     <PracticeTimer
                       segments={selectedPractice.steps?.map((step, i) => ({
-                        name: `Step ${i + 1}: ${step.substring(0, 50)}${step.length > 50 ? '...' : ''}`,
+                        name: `Step ${i + 1}`,
+                        description: step,
                         duration_seconds: Math.floor((selectedPractice.duration_minutes || 20) * 60 / (selectedPractice.steps?.length || 1)),
                         has_audio: false
                       })) || []}

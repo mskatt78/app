@@ -330,7 +330,8 @@ const CreativeProcesses = ({ user, api }) => {
 
                     <PracticeTimer
                       segments={selectedProcess.process_steps?.map((step, i) => ({
-                        name: `Step ${i + 1}: ${step.substring(0, 50)}${step.length > 50 ? '...' : ''}`,
+                        name: `Step ${i + 1}`,
+                        description: step,
                         duration_seconds: Math.floor((selectedProcess.duration_minutes || 30) * 60 / (selectedProcess.process_steps?.length || 1)),
                         has_audio: false
                       })) || []}
