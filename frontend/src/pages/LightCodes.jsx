@@ -325,6 +325,15 @@ const LightCodes = ({ user, api }) => {
                   </div>
                 )}
 
+                {selectedSymbol.how_to_draw && (
+                  <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20">
+                    <h3 className="font-medium mb-2 text-rose-300">How to Draw</h3>
+                    <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                      {selectedSymbol.how_to_draw.replace(/(\d+)\./g, '\n$1.').trim()}
+                    </p>
+                  </div>
+                )}
+
                 {selectedSymbol.pronunciation && (
                   <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5">
                     <Volume2 className="w-5 h-5 text-primary" />

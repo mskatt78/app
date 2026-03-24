@@ -403,6 +403,7 @@ LIGHT_CODES = {
             "description": "The fundamental form of space and time. Contains all patterns of creation.",
             "meaning": "Unity, creation, interconnectedness of all life",
             "meditation": "Visualize the overlapping circles expanding from your heart, connecting you to all creation.",
+            "how_to_draw": "1. Draw a central circle with a compass. 2. Place compass point on the circle's edge and draw a second circle of the same radius. 3. Move compass to where the two circles intersect and draw a third circle. 4. Continue around the first circle, placing your compass at each new intersection — you'll create 6 petals around the center (this is the Seed of Life). 5. Repeat the process using the outer intersections as new centers. 6. Continue expanding outward for 19 total circles. The overlapping pattern reveals the Flower of Life. Practice slowly — drawing it is itself a meditation.",
             "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/f8cda1d338682ffbabb1c9134f30346c9eb0f4a7c104952a8438c4b6aae6929f.png"
         },
         {
@@ -411,6 +412,7 @@ LIGHT_CODES = {
             "description": "Contains all five Platonic solids. Named after Archangel Metatron.",
             "meaning": "Balance, harmony, spiritual protection, sacred knowledge",
             "meditation": "Visualize the cube rotating around you, balancing and protecting your energy field.",
+            "how_to_draw": "1. Draw the Fruit of Life (13 circles in a specific arrangement from the Flower of Life). 2. Mark the center of each of the 13 circles with a dot. 3. Connect every center point to every other center point with straight lines — 78 lines total. 4. Within this web of lines, you can find all five Platonic Solids: Tetrahedron, Cube, Octahedron, Dodecahedron, and Icosahedron. Use a ruler and light pencil first, then go over the lines in ink. The process of drawing each connection is a meditation on the interconnectedness of all forms.",
             "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/a2ecc7781a08c3d728cafeb2bf09d5ba237064a7a43128033a5e01a5c2b82050.png"
         },
         {
@@ -419,6 +421,7 @@ LIGHT_CODES = {
             "description": "Nine interlocking triangles radiating from the bindu (central point).",
             "meaning": "Divine feminine and masculine union, cosmic creation, enlightenment",
             "meditation": "Focus on the central point and let your awareness expand through each layer.",
+            "how_to_draw": "1. Begin with the bindu (central dot). 2. Draw 4 upward-pointing triangles (representing Shiva/masculine). 3. Draw 5 downward-pointing triangles (representing Shakti/feminine). 4. These 9 triangles must interlock precisely, creating 43 smaller triangles. 5. Surround with two concentric circles of lotus petals (8 inner, 16 outer). 6. Frame with a square gated border (bhupura) with 4 openings. This is one of the most complex sacred geometries — traditionally drawn by hand over days. Start with graph paper for alignment.",
             "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/d6401cc1c08d73b203edced981018c3fec2560a1593a0827a8f363b05755f2d7.png"
         },
         {
@@ -427,6 +430,7 @@ LIGHT_CODES = {
             "description": "Seven overlapping circles forming the pattern of creation.",
             "meaning": "The seven days of creation, new beginnings, potential",
             "meditation": "Place awareness in each circle, honoring the seven sacred aspects of creation.",
+            "how_to_draw": "1. Draw one circle with a compass. 2. Place compass on the circle's edge (at 12 o'clock) and draw a second circle of equal size. 3. Move to where both circles intersect (moving clockwise) and draw a third. 4. Continue around — each new circle starts at the intersection of the previous two. 5. You'll complete 6 circles around the center, making 7 total. This is the Seed of Life, the simplest and most satisfying sacred geometry to draw. It takes about 5 minutes and is perfect for beginners.",
             "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/93350b32c17b9f1e9490b862268f44313fd71eed66cbbb947034013ddc340b93.png"
         },
         {
@@ -435,6 +439,7 @@ LIGHT_CODES = {
             "description": "Two overlapping circles creating an almond shape - the womb of creation.",
             "meaning": "Divine union, birth portal, the space between worlds",
             "meditation": "Visualize yourself within the vesica, in the space of pure potential.",
+            "how_to_draw": "1. Draw a circle with a compass. 2. Without changing the compass width, place the point on the circle's edge and draw a second circle. 3. The almond-shaped overlap in the middle is the Vesica Piscis — literally 'vessel of the fish.' 4. The ratio of the vesica's height to width is the square root of 3, the basis for many sacred proportions. This is the simplest sacred geometry — just two overlapping circles. It is the birth of all form from unity.",
             "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/dc37307cc4794399856ec33c7d9bcf87c4f30e9d36ef710d29091c065d8e99dc.png"
         },
         {
@@ -451,6 +456,7 @@ LIGHT_CODES = {
             "description": "Two interlocking tetrahedrons creating a light vehicle.",
             "meaning": "Ascension, interdimensional travel, protection",
             "meditation": "Visualize the counter-rotating tetrahedrons activating around your body.",
+            "how_to_draw": "1. Draw an upward-pointing equilateral triangle. 2. Draw a downward-pointing equilateral triangle of the same size overlapping it — forming a Star of David / hexagram. 3. This is the 2D Merkaba. For the 3D version: extend each triangle into a tetrahedron (pyramid shape). 4. One tetrahedron points up (masculine, sun, spirit ascending), one points down (feminine, earth, spirit descending). 5. In meditation, visualize the upper one spinning clockwise and the lower spinning counter-clockwise around your body.",
             "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/08982674cbcc22bfc7b091264cb7bc189717420f344ec94d039062c54fc69446.png"
         },
         {
@@ -459,6 +465,7 @@ LIGHT_CODES = {
             "description": "The Fibonacci spiral found throughout nature - shells, galaxies, hurricanes.",
             "meaning": "Divine proportion, natural growth, cosmic evolution",
             "meditation": "Trace the spiral from your heart outward, feeling expansion in all directions.",
+            "how_to_draw": "1. Draw a small square (1x1). 2. Attach a same-size square to its right side. 3. Below both, attach a 2x2 square. 4. To the right, add a 3x3 square. 5. Above, add a 5x5 square. Continue with 8x8, 13x13, etc. (each new square's side = sum of the previous two: the Fibonacci sequence). 6. In each square, draw a quarter-circle from one corner to the opposite. 7. Connect all quarter-circles — you now have the Golden Spiral. Find it everywhere: nautilus shells, sunflower seeds, galaxies, and your own ear.",
             "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/51a9ffb3b952a283c59b0cefcb14ebe258b6fd7e4b084fa656aa872bfb74120d.png"
         },
         {
@@ -523,6 +530,7 @@ LIGHT_CODES = {
             "description": "The Kabbalistic diagram of ten interconnected spheres (Sephiroth).",
             "meaning": "Divine structure, path to enlightenment, cosmic blueprint",
             "meditation": "Ascend through each sphere from Malkuth to Kether, receiving wisdom.",
+            "how_to_draw": "1. Draw 10 circles (Sephiroth) arranged in 3 columns: left pillar (3), middle pillar (4), right pillar (3). 2. From bottom: Malkuth (center), Yesod (center), Hod (left), Netzach (right), Tiphareth (center), Geburah (left), Chesed (right), Binah (left), Chokmah (right), Kether (center top). 3. Connect them with 22 paths (lines), one for each Hebrew letter. 4. The three pillars represent Severity (left), Mercy (right), and Balance (middle). The drawing itself teaches the structure of consciousness.",
             "image_url": "https://static.prod-images.emergentagent.com/jobs/1b34964a-dc31-4895-9e95-ff99f39895ac/images/d8b1b74f83dbbf279793b58a1eaa8e8db37aad4c8a6c9c5c106dc8f149e39817.png"
         },
         {
@@ -1245,6 +1253,15 @@ LIGHT_CODES = {
             "purpose": "Divine connection, enlightenment, cosmic consciousness, dissolving the illusion of separation",
             "practice": "Sit in open awareness meditation: not focusing on any object, simply being aware that you are aware. This direct recognition of consciousness is the practice of the Crown Chakra.",
             "image_url": "https://images.pexels.com/photos/6931818/pexels-photo-6931818.jpeg?auto=compress&cs=tinysrgb&w=400"
+        },
+        {
+            "id": "cc9b", "name": "Causal Chakra",
+            "symbol": "🌀",
+            "description": "Located at the back of the head near the base of the skull — the Causal Chakra is the seat of karmic memory, past life recall, and soul-level understanding. It stores the blueprint of your soul's entire journey: every lifetime, every lesson, every choice. When activated, it allows access to the akashic records of your own being and reveals the deeper 'why' behind your current incarnation. This is where destiny meets free will.",
+            "activation": "Place your awareness at the back of your head, at the occipital ridge where skull meets neck. Breathe into this space and feel it softening, opening like an ancient library. Allow memories, images, or feelings to arise without judgment. You may receive flashes of past lives, ancestral memories, or deep knowing about your soul's purpose. Chant 'AUM' slowly, directing the vibration to the back of your skull.",
+            "purpose": "Past life access, karmic understanding, soul memory retrieval, akashic record connection, understanding soul contracts, releasing ancestral and karmic patterns, accessing the causal plane of existence",
+            "practice": "Before sleep, place your hand at the back of your head and breathe into your Causal Chakra. Ask to be shown what you most need to understand about your soul's journey. Keep a journal by your bed — insights often come through dreams. During the day, when you feel strong deja vu or inexplicable connection to a place or person, pause and breathe into your Causal Chakra. It is showing you something.",
+            "image_url": "https://images.pexels.com/photos/3560044/pexels-photo-3560044.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
             "id": "cc10", "name": "Soul Star Chakra",
