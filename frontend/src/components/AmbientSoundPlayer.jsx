@@ -103,24 +103,38 @@ const createDolphinSound = (audioContext, gainNode) => {
 // Whale: deep, slow sweeping tones
 const createWhaleSound = (audioContext, gainNode) => {
   const playSong = () => {
+    // Primary whale call - shifted up to phone-audible range (200-600Hz)
     const osc = audioContext.createOscillator();
     const g = audioContext.createGain();
-    const startFreq = 50 + Math.random() * 150;
-    const endFreq = startFreq * (0.5 + Math.random() * 1.2);
-    const dur = 3 + Math.random() * 5;
+    const startFreq = 200 + Math.random() * 300;
+    const endFreq = startFreq * (0.6 + Math.random() * 0.8);
+    const dur = 3 + Math.random() * 4;
     osc.type = "sine";
     osc.frequency.setValueAtTime(startFreq, audioContext.currentTime);
-    osc.frequency.linearRampToValueAtTime(Math.max(30, endFreq), audioContext.currentTime + dur * 0.7);
-    osc.frequency.linearRampToValueAtTime(startFreq * 0.8, audioContext.currentTime + dur);
+    osc.frequency.linearRampToValueAtTime(Math.max(150, endFreq), audioContext.currentTime + dur * 0.4);
+    osc.frequency.linearRampToValueAtTime(startFreq * 1.2, audioContext.currentTime + dur * 0.7);
+    osc.frequency.linearRampToValueAtTime(startFreq * 0.7, audioContext.currentTime + dur);
     g.gain.setValueAtTime(0, audioContext.currentTime);
-    g.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 0.5);
-    g.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + dur - 0.3);
+    g.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.3);
+    g.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + dur * 0.5);
     g.gain.linearRampToValueAtTime(0, audioContext.currentTime + dur);
     osc.connect(g); g.connect(gainNode);
     osc.start(); osc.stop(audioContext.currentTime + dur + 0.1);
+    
+    // Harmonic overtone for richness
+    const osc2 = audioContext.createOscillator();
+    const g2 = audioContext.createGain();
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(startFreq * 1.5, audioContext.currentTime);
+    osc2.frequency.linearRampToValueAtTime(endFreq * 1.5, audioContext.currentTime + dur * 0.7);
+    g2.gain.setValueAtTime(0, audioContext.currentTime);
+    g2.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 0.5);
+    g2.gain.linearRampToValueAtTime(0, audioContext.currentTime + dur);
+    osc2.connect(g2); g2.connect(gainNode);
+    osc2.start(); osc2.stop(audioContext.currentTime + dur + 0.1);
   };
   playSong();
-  return setInterval(playSong, 5000 + Math.random() * 3000);
+  return setInterval(playSong, 4000 + Math.random() * 3000);
 };
 
 // Birds: multiple oscillators simulating bird calls
@@ -462,7 +476,7 @@ const AmbientSoundPlayer = ({
   // Handle volume changes
   useEffect(() => {
     if (gainNodeRef.current) {
-      gainNodeRef.current.gain.value = isMuted ? 0 : volume * 0.5;
+      gainNodeRef.current.gain.value = isMuted ? 0 : Math.max(volume * 1.5, 0.6);
     }
   }, [volume, isMuted]);
 
@@ -476,10 +490,17 @@ const AmbientSoundPlayer = ({
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       const ctx = new AudioContext();
+      // Play silent buffer to unlock audio on mobile
+      if (ctx.state === 'suspended') ctx.resume();
+      const unlockBuf = ctx.createBuffer(1, ctx.sampleRate * 0.1, ctx.sampleRate);
+      const unlockSrc = ctx.createBufferSource();
+      unlockSrc.buffer = unlockBuf;
+      unlockSrc.connect(ctx.destination);
+      unlockSrc.start(0);
       audioContextRef.current = ctx;
       
       const gainNode = ctx.createGain();
-      gainNode.gain.value = volume * 0.5;
+      gainNode.gain.value = Math.max(volume * 1.5, 0.6);
       gainNode.connect(ctx.destination);
       gainNodeRef.current = gainNode;
       
