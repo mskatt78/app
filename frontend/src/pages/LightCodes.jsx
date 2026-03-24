@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -14,6 +14,8 @@ const LightCodes = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("sacred_geometry");
   const [selectedSymbol, setSelectedSymbol] = useState(null);
+
+  const contentRef = useRef(null);
 
   const categories = [
     { 
@@ -71,6 +73,7 @@ const LightCodes = ({ user, api }) => {
     try {
       const response = await api.get("/light-codes");
       setLightCodes(response.data);
+      setTimeout(() => contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 300);
     } catch (error) {
       console.error("Failed to fetch light codes:", error);
       toast.error("Could not load light codes");
@@ -140,7 +143,10 @@ const LightCodes = ({ user, api }) => {
             return (
               <button
                 key={category.id}
-                onClick={() => setActiveCategory(category.id)}
+                onClick={() => {
+                  setActiveCategory(category.id);
+                  setTimeout(() => contentRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+                }}
                 className={`px-6 py-4 rounded-2xl flex items-center gap-3 transition-all ${
                   isActive 
                     ? `${category.bg} ${category.color} border ${category.border}` 
@@ -159,6 +165,7 @@ const LightCodes = ({ user, api }) => {
         </div>
 
         {/* Content */}
+        <div ref={contentRef}>
         {loading ? (
           <div className="text-center py-20">
             <div className="w-16 h-16 mx-auto rounded-full bg-primary/20 animate-pulse flex items-center justify-center">
@@ -223,6 +230,7 @@ const LightCodes = ({ user, api }) => {
             })}
           </div>
         )}
+        </div>
 
         {/* Wisdom Section */}
         <div className="p-8 rounded-2xl bg-gradient-to-br from-white/5 to-transparent border border-white/10 text-center">
