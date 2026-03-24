@@ -337,6 +337,7 @@ const CreativeProcesses = ({ user, api }) => {
                       })) || []}
                       totalDuration={(selectedProcess.duration_minutes || 30) * 60}
                       backgroundAudio="nature"
+                      autoStartAudio={true}
                       practiceType="creative"
                       element="Spirit"
                       visualizationType="particles"

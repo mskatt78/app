@@ -534,6 +534,8 @@ const SunriseSunsetPractices = ({ user, api }) => {
                         duration_seconds: Math.floor((selectedPractice.duration_minutes * 60) / selectedPractice.steps.length),
                       }))}
                       totalDuration={selectedPractice.duration_minutes * 60}
+                      backgroundAudio="singing_bowls"
+                      autoStartAudio={true}
                       practiceType={activeTab}
                       element={selectedPractice.element}
                       onComplete={async () => {

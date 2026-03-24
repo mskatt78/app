@@ -308,6 +308,7 @@ const HeartPractices = ({ user, api }) => {
                       })) || []}
                       totalDuration={(selectedPractice.duration_minutes || 20) * 60}
                       backgroundAudio="singing_bowls"
+                      autoStartAudio={true}
                       practiceType="heart"
                       element="Water"
                       visualizationType="mandala"

@@ -213,7 +213,8 @@ const GroundingPractices = ({ user, api }) => {
                     <PracticeTimer
                       segments={selectedExercise.timer_segments || []}
                       totalDuration={selectedExercise.duration_minutes * 60}
-                      backgroundAudio={selectedExercise.background_audio || "silence"}
+                      backgroundAudio={selectedExercise.background_audio || "nature"}
+                      autoStartAudio={true}
                       practiceType="grounding"
                       onComplete={async () => {
                         try {

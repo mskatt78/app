@@ -92,6 +92,12 @@ const ShamanicPractices = ({ user, api }) => {
 
   const categories = ["all", "journey", "power_animal", "ancestral", "divination", "ceremony", "shadow"];
 
+  // Helper: get journey/practice steps from any of the possible field names
+  const getSteps = (practice) => {
+    if (!practice) return [];
+    return practice.journey_steps || practice.visualization_steps || practice.ritual_steps || practice.ceremony_steps || practice.steps || [];
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -317,11 +323,11 @@ const ShamanicPractices = ({ user, api }) => {
                         </div>
                       )}
 
-                      {selectedPractice.journey_steps && (
+                      {getSteps(selectedPractice).length > 0 && (
                         <div>
                           <h3 className="font-medium mb-3">Journey Steps</h3>
                           <ol className="space-y-3">
-                            {selectedPractice.journey_steps.map((step, i) => (
+                            {getSteps(selectedPractice).map((step, i) => (
                               <li key={i} className="flex items-start gap-3 text-sm">
                                 <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
                                   {i + 1}
@@ -367,8 +373,8 @@ const ShamanicPractices = ({ user, api }) => {
                         script={[
                           `Welcome to this shamanic journey: ${selectedPractice.name}.`,
                           selectedPractice.description || "",
-                          selectedPractice.preparation ? `Preparation: ${selectedPractice.preparation}` : "",
-                          selectedPractice.journey_steps ? `Your journey unfolds in ${selectedPractice.journey_steps.length} steps. ` + selectedPractice.journey_steps.map((s, i) => `Step ${i+1}: ${s}`).join(". ") : "",
+                          selectedPractice.preparation ? (Array.isArray(selectedPractice.preparation) ? `Preparation: ${selectedPractice.preparation.join(". ")}` : `Preparation: ${selectedPractice.preparation}`) : "",
+                          getSteps(selectedPractice).length > 0 ? `Your journey unfolds in ${getSteps(selectedPractice).length} steps. ` + getSteps(selectedPractice).map((s, i) => `Step ${i+1}: ${s}`).join(". ") : "",
                           selectedPractice.closing_prayer ? `When you are ready to close, offer this prayer: ${selectedPractice.closing_prayer}` : "",
                           "Gently return to your body. Wiggle your fingers and toes. Take three deep breaths. Welcome back."
                         ].filter(Boolean).join(" ")}
@@ -376,13 +382,20 @@ const ShamanicPractices = ({ user, api }) => {
                     </div>
 
                     <PracticeTimer
-                      segments={selectedPractice.journey_steps?.map((step, i) => ({
-                        name: `Step ${i + 1}: ${step.substring(0, 50)}${step.length > 50 ? '...' : ''}`,
-                        duration_seconds: Math.floor((selectedPractice.duration_minutes || 30) * 60 / (selectedPractice.journey_steps?.length || 1)),
-                        has_audio: false
-                      })) || []}
+                      segments={getSteps(selectedPractice).length > 0 ? getSteps(selectedPractice).map((step, i) => ({
+                        name: `Step ${i + 1}`,
+                        description: step,
+                        duration_seconds: Math.floor((selectedPractice.duration_minutes || 30) * 60 / getSteps(selectedPractice).length),
+                        has_audio: true
+                      })) : [{
+                        name: selectedPractice.name,
+                        description: selectedPractice.description || "Allow yourself to journey deeply with the drumming.",
+                        duration_seconds: (selectedPractice.duration_minutes || 30) * 60,
+                        has_audio: true
+                      }]}
                       totalDuration={(selectedPractice.duration_minutes || 30) * 60}
                       backgroundAudio="drums"
+                      autoStartAudio={true}
                       practiceType="shamanic"
                       element="Spirit"
                       visualizationType="aurora"

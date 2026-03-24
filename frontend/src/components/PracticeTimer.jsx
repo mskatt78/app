@@ -45,7 +45,8 @@ const PracticeTimer = ({
   element = "Spirit",
   breathingPattern = null,
   visualizationType = "particles",
-  allowSpeedControl = true // Enable tempo/speed control for health reasons
+  allowSpeedControl = true, // Enable tempo/speed control for health reasons
+  autoStartAudio = false // Auto-start audio and timer when component mounts
 }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
@@ -63,6 +64,7 @@ const PracticeTimer = ({
   const sourcesRef = useRef([]);
   const drumIntervalRef = useRef(null);
   const bowlIntervalRef = useRef(null);
+  const autoStartedRef = useRef(false);
 
   // Calculate total duration from segments or use provided
   const calculatedTotal = segments.length > 0 
@@ -70,6 +72,14 @@ const PracticeTimer = ({
     : totalDuration;
 
   const currentSegment = segments[currentSegmentIndex];
+
+  // Auto-start timer and audio if requested
+  useEffect(() => {
+    if (autoStartAudio && !autoStartedRef.current && segments.length > 0) {
+      autoStartedRef.current = true;
+      setIsRunning(true);
+    }
+  }, [autoStartAudio, segments.length]);
 
   // Map practice type to visualization
   const getVisualization = () => {
@@ -157,25 +167,64 @@ const PracticeTimer = ({
           break;
         }
         case "drums": {
+          // Shamanic drumming - deep resonant frame drum at ~4.5 Hz journey tempo
           const playDrum = () => {
-            if (!audioContextRef.current) return;
-            const osc = ctx.createOscillator();
-            const oscGain = ctx.createGain();
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(80, ctx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.1);
-            oscGain.gain.setValueAtTime(0.5, ctx.currentTime);
-            oscGain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
-            osc.connect(oscGain);
-            oscGain.connect(gainNode);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.3);
+            if (!audioContextRef.current || audioContextRef.current.state === 'closed') return;
+            const now = ctx.currentTime;
+            
+            // Low drum body - deep resonant hit
+            const drumBody = ctx.createOscillator();
+            const drumGain = ctx.createGain();
+            drumBody.type = "sine";
+            drumBody.frequency.setValueAtTime(90, now);
+            drumBody.frequency.exponentialRampToValueAtTime(50, now + 0.15);
+            drumGain.gain.setValueAtTime(0.7, now);
+            drumGain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+            drumBody.connect(drumGain);
+            drumGain.connect(gainNode);
+            drumBody.start(now);
+            drumBody.stop(now + 0.35);
+            
+            // Drum skin slap - noise burst for realism
+            const bufferSize = ctx.sampleRate * 0.05;
+            const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+            const data = noiseBuffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+              data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+            }
+            const noise = ctx.createBufferSource();
+            noise.buffer = noiseBuffer;
+            const noiseFilter = ctx.createBiquadFilter();
+            noiseFilter.type = "bandpass";
+            noiseFilter.frequency.value = 200;
+            noiseFilter.Q.value = 1.5;
+            const noiseGain = ctx.createGain();
+            noiseGain.gain.setValueAtTime(0.4, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(gainNode);
+            noise.start(now);
+            
+            // Low sub-resonance for depth
+            const sub = ctx.createOscillator();
+            const subGain = ctx.createGain();
+            sub.type = "sine";
+            sub.frequency.setValueAtTime(45, now);
+            subGain.gain.setValueAtTime(0.35, now);
+            subGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+            sub.connect(subGain);
+            subGain.connect(gainNode);
+            sub.start(now);
+            sub.stop(now + 0.25);
           };
           playDrum();
-          drumIntervalRef.current = setInterval(playDrum, 214); // ~280 BPM
+          // 222ms = ~4.5 Hz, traditional shamanic journey drumming tempo
+          drumIntervalRef.current = setInterval(playDrum, 222);
           break;
         }
-        case "bowls": {
+        case "bowls":
+        case "singing_bowls": {
           const playBowl = () => {
             if (!audioContextRef.current) return;
             [528, 1056, 1584].forEach((freq, i) => {

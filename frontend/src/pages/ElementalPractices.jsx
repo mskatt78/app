@@ -350,6 +350,7 @@ const ElementalPractices = ({ user, api }) => {
                       })) || []}
                       totalDuration={(selectedPractice.duration_minutes || 20) * 60}
                       backgroundAudio={selectedPractice.element === "Fire" ? "fire" : selectedPractice.element === "Water" ? "ocean" : selectedPractice.element === "Air" ? "wind" : "nature"}
+                      autoStartAudio={true}
                       practiceType="elemental"
                       element={selectedPractice.element || "Earth"}
                       visualizationType="element"
