@@ -396,7 +396,7 @@ async def _verify_stripe_gift_payment(gift, session_id):
             
             # Send email notification to recipient
             try:
-                base_url = os.environ.get("FRONTEND_URL", "https://embodiment-journey.preview.emergentagent.com")
+                base_url = os.environ.get("FRONTEND_URL", "https://shamanic-wellness.preview.emergentagent.com")
                 await send_gift_notification_email(
                     recipient_email=gift["recipient_email"],
                     recipient_name=gift["recipient_name"],
@@ -483,7 +483,7 @@ async def _capture_paypal_gift_order(gift, order_id):
                 
                 # Send email notification to recipient
                 try:
-                    frontend_url = os.environ.get("FRONTEND_URL", "https://embodiment-journey.preview.emergentagent.com")
+                    frontend_url = os.environ.get("FRONTEND_URL", "https://shamanic-wellness.preview.emergentagent.com")
                     await send_gift_notification_email(
                         recipient_email=gift["recipient_email"],
                         recipient_name=gift["recipient_name"],
