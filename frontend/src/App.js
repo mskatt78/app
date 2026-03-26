@@ -687,9 +687,9 @@ function AppRouter() {
       <Route
         path="/progress"
         element={
-          <ProtectedRoute>
+          <PublicRoute>
             {({ user, api }) => <ProgressDashboard user={user} api={api} />}
-          </ProtectedRoute>
+          </PublicRoute>
         }
       />
       <Route

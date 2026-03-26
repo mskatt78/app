@@ -108,36 +108,49 @@ const CrystalGuide = ({ user, api }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className={`p-6 rounded-2xl border backdrop-blur-xl cursor-pointer
+                  className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden
                              ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
                   onClick={() => setSelectedCrystal(crystal)}
                   data-testid={`crystal-card-${crystal.id}`}
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 rounded-xl ${colors.bg}`}>
-                      <Sparkles className={`w-6 h-6 ${colors.text}`} />
+                  {crystal.image_url && (
+                    <div className="relative h-36 overflow-hidden">
+                      <img src={crystal.image_url} alt={crystal.name} className="w-full h-full object-cover" loading="lazy" />
+                      <div className={`absolute inset-0 bg-gradient-to-t from-black/70 to-transparent`} />
+                      <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm`}>
+                        {crystal.element}
+                      </span>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
-                      {crystal.element}
-                    </span>
-                  </div>
-                  
-                  <h3 className="text-xl font-serif mb-3">{crystal.name}</h3>
-                  
-                  <div className="flex flex-wrap gap-1 mb-4">
-                    {crystal.chakras?.map((chakra) => (
-                      <span key={chakra} className="px-2 py-1 rounded-full bg-primary/10 text-primary text-xs">
-                        {chakra}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  <div className="flex flex-wrap gap-1">
-                    {crystal.properties?.slice(0, 3).map((prop) => (
-                      <span key={prop} className="px-2 py-1 rounded-full bg-white/5 text-xs text-muted-foreground">
-                        {prop}
-                      </span>
-                    ))}
+                  )}
+                  <div className="p-6">
+                    {!crystal.image_url && (
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`p-3 rounded-xl ${colors.bg}`}>
+                          <Sparkles className={`w-6 h-6 ${colors.text}`} />
+                        </div>
+                        <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
+                          {crystal.element}
+                        </span>
+                      </div>
+                    )}
+                    
+                    <h3 className="text-xl font-serif mb-3">{crystal.name}</h3>
+                    
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {crystal.chakras?.map((chakra) => (
+                        <span key={chakra} className="px-2 py-1 rounded-full bg-primary/10 text-primary text-xs">
+                          {chakra}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1">
+                      {crystal.properties?.slice(0, 3).map((prop) => (
+                        <span key={prop} className="px-2 py-1 rounded-full bg-white/5 text-xs text-muted-foreground">
+                          {prop}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               );
@@ -152,6 +165,12 @@ const CrystalGuide = ({ user, api }) => {
           {selectedCrystal && (
             <>
               <DialogHeader>
+                {selectedCrystal.image_url && (
+                  <div className="relative h-40 rounded-xl overflow-hidden mb-3 -mx-2">
+                    <img src={selectedCrystal.image_url} alt={selectedCrystal.name} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  </div>
+                )}
                 <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs mb-2 w-fit
                                ${elementColors[selectedCrystal.element]?.bg} ${elementColors[selectedCrystal.element]?.text}`}>
                   {selectedCrystal.element} Element
