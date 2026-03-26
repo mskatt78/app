@@ -157,8 +157,11 @@ async def generate_speech_base64(request: TTSRequest):
 
 # Meditation-specific endpoint with prepared guidance
 @router.post("/meditation/{meditation_id}")
-async def generate_meditation_audio(meditation_id: str, voice: str = "nova"):
-    """Generate guided meditation audio for a specific meditation."""
+async def generate_meditation_audio(meditation_id: str, voice: str = "nova", part: int = 1):
+    """Generate guided meditation audio in 2 parts for full-length guidance with integration pauses.
+    Part 1: Opening, breathing, body scan (~5 min)
+    Part 2: Visualization, deepening, affirmations, return (~5-7 min)
+    """
     from .dependencies import get_db
     
     db = get_db()
@@ -172,36 +175,105 @@ async def generate_meditation_audio(meditation_id: str, voice: str = "nova"):
     visualization = meditation.get('visualization', '')
     element = meditation.get('element', 'Spirit')
     
-    # Build a concise guided script (under 3800 chars for single TTS call = fast response)
-    vis_text = visualization[:400] if visualization else ""
+    vis_text = visualization[:500] if visualization else f"Imagine yourself surrounded by a gentle {element.lower()} energy. This energy is warm, ancient, and deeply healing. It wraps around you like a cocoon of light. With each breath you draw this energy deeper into your being."
     
-    script = f"""Welcome to {name}. {description}
+    if part == 1:
+        script = f"""Welcome to {name}. {description}. 
 
-Find a comfortable position and gently close your eyes. Allow your body to settle completely.
+Find a comfortable position. You may sit with your spine tall, or lie down on your back. Allow your body to settle completely into this space. There is nowhere else you need to be right now.
 
-Take a deep breath in through your nose... hold gently... and exhale slowly through your mouth. 
+Gently close your eyes. Take a moment to acknowledge yourself for choosing this time for inner peace.
 
-Again. Breathe in deeply, filling your belly... hold... and release, letting go of any tension.
+Begin by simply noticing your breath. Don't try to change it. Just observe. Notice the cool air entering your nostrils. Notice the warm air leaving your body.
 
-One more time. A deep, nourishing breath in... hold... and let it all go. Feel your body sink deeper into relaxation.
+Now, let's take three deep, cleansing breaths together.
 
-Let your breath return to its natural rhythm. There is nothing to control. Just easy, natural breathing.
+Breathe in slowly through your nose... two... three... four... Hold gently... two... three... And exhale slowly through your mouth... two... three... four... five... six...
 
-Now bring your attention to the top of your head. Feel any tightness and let it dissolve. Move down through your face, jaw, neck, shoulders... releasing tension with each breath.
+Again. Breathe in deeply... filling your belly... your ribs... your chest... Hold... And release... letting go of any tension... any worry... any stress...
 
-Feel warmth flowing down through your arms, your hands. Your chest softens. Your belly relaxes. Your hips, your legs, all the way down to your feet. Your whole body is at peace.
+One more time. A deep, nourishing breath in... Hold... And let it all go... feeling your body sink deeper into relaxation...
+
+Now let your breath return to its natural rhythm. There's nothing to control. Nothing to force. Just easy, natural breathing.
+
+Allow yourself to deepen into this space.
+
+We'll now move through your body, releasing any remaining tension.
+
+Bring your attention to the top of your head. Feel any tightness there... and let it dissolve. Your scalp softening... relaxing...
+
+Move down to your forehead. Let all the tiny muscles there smooth out. Your forehead is calm... peaceful... relaxed.
+
+Notice your eyes. Even behind closed lids, they may be working. Let them rest now. Let them be still and soft.
+
+Your jaw. Where so many of us hold tension. Let it drop slightly. Unclench your teeth. Feel the relief as your jaw releases.
+
+Your neck and throat. So often tight from daily life. Imagine warmth flowing through, loosening every muscle.
+
+Your shoulders. Let them drop away from your ears. Feel the weight of the world sliding off your shoulders. They are free now.
+
+This relaxation flows down your arms... through your elbows... your wrists... into your hands and fingers. Your hands are heavy, warm, and completely relaxed.
+
+Bring attention to your chest and heart space. With each breath, your chest rises and falls easily. Your heart beats steadily, faithfully. Allow your heart to soften and open.
+
+Your belly is soft. No need to hold it in. Let it rise and fall naturally with each breath.
+
+Feel your lower back releasing any tension. Your hips, your pelvis, settling and softening.
+
+This wave of relaxation continues down your legs. Your thighs grow heavy. Your knees. Your calves. Your ankles. Your feet. Each toe relaxing completely.
+
+Your entire body is now in a state of deep relaxation. Heavy. Warm. Peaceful. Still.
+
+Rest here for a moment. Simply feeling the peace in your body. Allow yourself to deepen into this stillness.""".strip()
+
+    else:
+        script = f"""Now, we journey deeper inward.
 
 {vis_text}
 
-Allow the {element.lower()} energy to support you as you rest in this space. There is nothing to do, nowhere to be. Simply breathe and be present.
+Stay with this experience. Let yourself be fully present in this sacred space. Notice any colors that appear. Any sensations in your body. Any emotions that arise. Everything you experience is welcome here. There is no right or wrong. Simply be with what is.
 
-The ambient sounds will continue to hold this space for you. When you are ready to return, take three deep breaths and gently open your eyes. Namaste.""".strip()
+Breathe into this experience. With each inhale, draw in peace and healing. With each exhale, release anything that no longer serves you.
+
+Allow yourself to go deeper.
+
+Rest now in the stillness. This is the space between thoughts. The silence beneath all sound. The peace that is always within you.
+
+You don't need to do anything. You don't need to be anyone. Just rest in this moment of pure being.
+
+Feel the {element.lower()} energy surrounding you. Supporting you. Healing you. Know that this peace is your true nature. It never leaves you. You can return to it anytime, simply by closing your eyes and breathing.
+
+Allow yourself to deepen even further into this experience.
+
+Take a moment to feel gratitude. Gratitude for this body that carries you through life. Gratitude for this breath that sustains you. Gratitude for this moment of peace.
+
+As you rest here, let these words sink into your being.
+
+I am at peace. I am whole. I am exactly where I need to be.
+
+I release all worry about the past. I release all anxiety about the future. I am fully present in this moment.
+
+I am worthy of love. I am worthy of joy. I am worthy of all the blessings life has to offer.
+
+Rest here with these truths.
+
+Now, it's time to slowly begin your return. There is no rush. Take all the time you need.
+
+Begin to deepen your breath once more. Breathing in fresh energy and vitality. Breathing out, knowing you can return to this peace anytime.
+
+Start to bring gentle movement back into your body. Wiggle your fingers and your toes. These small movements reconnecting you with your physical form.
+
+Roll your wrists gently. Your ankles. Perhaps stretch your arms overhead if that feels good.
+
+Take a deep breath and feel the energy returning to your body. You are refreshed. You are renewed. You are at peace.
+
+When you're ready, slowly open your eyes. Keep your gaze soft. Take a moment before moving, honoring the journey you've just taken.
+
+Thank you for practicing {name} today. May the peace you've cultivated stay with you throughout your day.
+
+Namaste. The light in me honors and recognizes the light in you.""".strip()
     
-    # Trim to single chunk limit for fast response
-    if len(script) > 3800:
-        script = script[:3800]
-    
-    request = TTSRequest(text=script, voice=voice, speed=0.8)
+    request = TTSRequest(text=script, voice=voice, speed=0.7)
     return await generate_speech_base64(request)
 
 
