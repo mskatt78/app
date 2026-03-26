@@ -167,199 +167,41 @@ async def generate_meditation_audio(meditation_id: str, voice: str = "nova"):
     if not meditation:
         raise HTTPException(status_code=404, detail="Meditation not found")
     
-    duration = meditation.get('duration_minutes', 15)
     name = meditation.get('name', 'this meditation')
     description = meditation.get('description', '')
     visualization = meditation.get('visualization', '')
     element = meditation.get('element', 'Spirit')
     
-    # Build a comprehensive guided meditation script
-    # This creates approximately 10-15 minutes of spoken guidance
-    # The slower speed (0.7) extends this further
+    # Build a concise guided script (under 3800 chars for single TTS call = fast response)
+    vis_text = visualization[:400] if visualization else ""
     
-    script_parts = [
-        # ===== OPENING (1-2 minutes) =====
-        f"Welcome to {name}.",
-        "",
-        f"{description}",
-        "",
-        "Find a comfortable position. You may sit with your spine tall, or lie down on your back.",
-        "Allow your body to settle completely into this space.",
-        "There is nowhere else you need to be right now.",
-        "",
-        "Gently close your eyes.",
-        "Take a moment to acknowledge yourself for choosing this time for inner peace.",
-        "",
-        
-        # ===== BREATH AWARENESS (2-3 minutes) =====
-        "Begin by simply noticing your breath.",
-        "Don't try to change it. Just observe.",
-        "Notice the cool air entering your nostrils.",
-        "Notice the warm air leaving your body.",
-        "",
-        "Now, let's take three deep, cleansing breaths together.",
-        "",
-        "Breathe in slowly through your nose... two... three... four...",
-        "Hold gently... two... three...",
-        "And exhale slowly through your mouth... two... three... four... five... six...",
-        "",
-        "Again. Breathe in deeply... filling your belly... your ribs... your chest...",
-        "Hold...",
-        "And release... letting go of any tension... any worry... any stress...",
-        "",
-        "One more time. A deep, nourishing breath in...",
-        "Hold...",
-        "And let it all go... feeling your body sink deeper into relaxation...",
-        "",
-        "Now let your breath return to its natural rhythm.",
-        "There's nothing to control. Nothing to force.",
-        "Just easy, natural breathing.",
-        "",
-        
-        # ===== PROGRESSIVE RELAXATION (3-4 minutes) =====
-        "We'll now move through your body, releasing any remaining tension.",
-        "",
-        "Bring your attention to the top of your head.",
-        "Feel any tightness there... and let it dissolve.",
-        "Your scalp softening... relaxing...",
-        "",
-        "Move down to your forehead.",
-        "Let all the tiny muscles there smooth out.",
-        "Your forehead is calm... peaceful... relaxed.",
-        "",
-        "Notice your eyes... even behind closed lids, they may be working.",
-        "Let them rest now. Let them be still and soft.",
-        "",
-        "Your jaw... where so many of us hold tension.",
-        "Let it drop slightly. Unclench your teeth.",
-        "Feel the relief as your jaw releases.",
-        "",
-        "Your neck and throat... so often tight from daily life.",
-        "Imagine warmth flowing through, loosening every muscle.",
-        "",
-        "Your shoulders... let them drop away from your ears.",
-        "Feel them melting down... heavy and relaxed.",
-        "",
-        "This relaxation flows down your arms...",
-        "Through your upper arms... your elbows... your forearms...",
-        "Into your wrists... your hands... your fingers...",
-        "Your hands are heavy, warm, and completely relaxed.",
-        "",
-        "Bring attention to your chest and heart space.",
-        "With each breath, your chest rises and falls easily.",
-        "Your heart beats steadily, faithfully.",
-        "",
-        "Your belly is soft. No need to hold it in.",
-        "Let it rise and fall naturally with each breath.",
-        "",
-        "Feel your lower back releasing any tension.",
-        "Your hips... your pelvis... settling and softening.",
-        "",
-        "This wave of relaxation continues down your legs.",
-        "Your thighs grow heavy... your knees... your calves...",
-        "Your ankles... your feet... each toe relaxing completely.",
-        "",
-        "Your entire body is now in a state of deep relaxation.",
-        "Heavy. Warm. Peaceful. Still.",
-        "",
-        
-        # ===== MAIN VISUALIZATION (4-5 minutes) =====
-        "Now, we begin our journey inward.",
-        "",
-        visualization,
-        "",
-        "Stay with this experience.",
-        "Let yourself be fully present in this sacred space.",
-        "",
-        "Notice any colors that appear...",
-        "Any sensations in your body...",
-        "Any emotions that arise...",
-        "",
-        "Everything you experience is welcome here.",
-        "There is no right or wrong.",
-        "Simply be with what is.",
-        "",
-        "Breathe into this experience.",
-        "With each inhale, draw in peace and healing.",
-        "With each exhale, release anything that no longer serves you.",
-        "",
-        
-        # ===== EXTENDED STILLNESS (2-3 minutes) =====
-        "Rest now in the stillness.",
-        "",
-        "This is the space between thoughts.",
-        "The silence beneath all sound.",
-        "The peace that is always within you.",
-        "",
-        "You don't need to do anything.",
-        "You don't need to be anyone.",
-        "Just rest in this moment of pure being.",
-        "",
-        f"Feel the {element.lower()} energy surrounding you.",
-        "Supporting you.",
-        "Healing you.",
-        "",
-        "Know that this peace is your true nature.",
-        "It never leaves you.",
-        "You can return to it anytime, simply by closing your eyes and breathing.",
-        "",
-        "Take a moment to feel gratitude.",
-        "Gratitude for this body that carries you through life.",
-        "Gratitude for this breath that sustains you.",
-        "Gratitude for this moment of peace.",
-        "",
-        
-        # ===== AFFIRMATIONS (1 minute) =====
-        "As you rest here, let these words sink into your being.",
-        "",
-        "I am at peace.",
-        "I am whole.",
-        "I am exactly where I need to be.",
-        "",
-        "I release all worry about the past.",
-        "I release all anxiety about the future.",
-        "I am fully present in this moment.",
-        "",
-        "I am worthy of love.",
-        "I am worthy of joy.",
-        "I am worthy of all the blessings life has to offer.",
-        "",
-        
-        # ===== GENTLE RETURN (2 minutes) =====
-        "Now, it's time to slowly begin your return.",
-        "There is no rush. Take all the time you need.",
-        "",
-        "Begin to deepen your breath once more.",
-        "Breathing in fresh energy and vitality.",
-        "Breathing out, knowing you can return to this peace anytime.",
-        "",
-        "Start to bring gentle movement back into your body.",
-        "Wiggle your fingers... and your toes.",
-        "These small movements reconnecting you with your physical form.",
-        "",
-        "Roll your wrists gently... your ankles.",
-        "Perhaps stretch your arms overhead if that feels good.",
-        "",
-        "Take a deep breath and feel the energy returning to your body.",
-        "You are refreshed. You are renewed. You are at peace.",
-        "",
-        "When you're ready, slowly open your eyes.",
-        "Keep your gaze soft.",
-        "Take a moment before moving, honoring the journey you've just taken.",
-        "",
-        
-        # ===== CLOSING =====
-        f"Thank you for practicing {name} today.",
-        "May the peace you've cultivated stay with you throughout your day.",
-        "",
-        "Namaste.",
-        "The light in me honors and recognizes the light in you."
-    ]
+    script = f"""Welcome to {name}. {description}
+
+Find a comfortable position and gently close your eyes. Allow your body to settle completely.
+
+Take a deep breath in through your nose... hold gently... and exhale slowly through your mouth. 
+
+Again. Breathe in deeply, filling your belly... hold... and release, letting go of any tension.
+
+One more time. A deep, nourishing breath in... hold... and let it all go. Feel your body sink deeper into relaxation.
+
+Let your breath return to its natural rhythm. There is nothing to control. Just easy, natural breathing.
+
+Now bring your attention to the top of your head. Feel any tightness and let it dissolve. Move down through your face, jaw, neck, shoulders... releasing tension with each breath.
+
+Feel warmth flowing down through your arms, your hands. Your chest softens. Your belly relaxes. Your hips, your legs, all the way down to your feet. Your whole body is at peace.
+
+{vis_text}
+
+Allow the {element.lower()} energy to support you as you rest in this space. There is nothing to do, nowhere to be. Simply breathe and be present.
+
+The ambient sounds will continue to hold this space for you. When you are ready to return, take three deep breaths and gently open your eyes. Namaste.""".strip()
     
-    script = " ".join(script_parts)
+    # Trim to single chunk limit for fast response
+    if len(script) > 3800:
+        script = script[:3800]
     
-    # Use slower speed for meditation (0.7 = about 30% slower)
-    request = TTSRequest(text=script, voice=voice, speed=0.7)
+    request = TTSRequest(text=script, voice=voice, speed=0.8)
     return await generate_speech_base64(request)
 
 
