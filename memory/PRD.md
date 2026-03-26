@@ -82,6 +82,8 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 | /star-lineage | Star Lineage Quiz |
 | /star-lineage/result/:id | Shared Lineage Result |
 | /retreats | Retreats & Healing |
+| /courses | Courses Portal |
+| /community | Sacred Circle (Community) |
 | /oracle | Oracle Readings |
 | /tarot | Tarot Reading |
 | /light-codes | Light Codes |
@@ -99,18 +101,26 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 ## API Endpoints
 - GET /api/retreats, /api/retreats/:id
 - GET /api/videos, /api/videos/:id
+- GET /api/courses, /api/courses/:id
+- GET /api/community/posts, /api/community/posts/:id
+- GET /api/sacred-geometry
 - GET /api/light-codes
 - GET /api/oracle/readings
 - GET /api/shamanic-practices
 - GET /api/sound-frequencies
 - GET /api/mindfulness
 - POST /api/admin/login
-- GET /api/admin/collections
-- CRUD /api/admin/collections/:name/items
+- GET /api/admin/collections (25 collections)
+- CRUD /api/admin/{collection}/items
 
 ## Recent Changes
-- **2026-03-26**: Fixed Guided Meditation TTS timeout. Split 10-12 min scripts into 4 parts (~1000-1500 chars each). Frontend requests all 4 in parallel, chains playback seamlessly with "Part X of 4" status. Each part generates in ~18-29s.
-- **2026-03-26**: Comprehensive audit of all guided sections. Added images to Mindfulness (8 practices) and Grounding (8 exercises). Added image rendering to Mindfulness, Grounding, and Breathwork card components. Fixed Grounding timer NaN bug (PracticeTimer field name mismatch). Added 3 new Grounding exercises (Tree Hugging, Stone Holding, Mountain Visualization). Verified all 14 content APIs return data with images.
+- **2026-03-26**: Fixed Guided Meditation TTS timeout (4-part chunking, ~18-29s per part).
+- **2026-03-26**: Added images to Mindfulness (8) and Grounding (8). Fixed Grounding timer NaN bug. Added 3 new exercises.
+- **2026-03-26**: Built Courses Portal (/courses) with level/category filters, detail modals, enrollment links, video previews.
+- **2026-03-26**: Built Community/Sacred Circle (/community) with journey/insight/gratitude/question post types.
+- **2026-03-26**: Expanded Admin CMS from 14 to 25 manageable collections.
+- **2026-03-26**: Added custom audio_url support to Sound Frequencies.
+- **2026-03-26**: Added "Learn & Connect" section to main menu.
 
 ## Backlog / Future Tasks
 
@@ -119,10 +129,7 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - [ ] Daily Sacred Practice feature on home dashboard
 
 ### P3 (Low Priority / Backlog)
-- [ ] Live & Recorded courses access portal
-- [ ] Community features (sharing journeys, member profiles)
-- [ ] Playable audio samples for Sound Frequencies page
-- [ ] More sacred geometry drawing guides (remaining 17 entries)
+- [ ] Seed initial Sacred Geometry drawing guides into CMS
 
 ## Admin Access
 - URL: /admin/login
