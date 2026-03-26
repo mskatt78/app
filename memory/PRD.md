@@ -108,6 +108,9 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - GET /api/admin/collections
 - CRUD /api/admin/collections/:name/items
 
+## Recent Changes
+- **2026-03-26**: Fixed Guided Meditation TTS timeout. Split 10-12 min scripts into 4 parts (~1000-1500 chars each). Frontend requests all 4 in parallel, chains playback seamlessly with "Part X of 4" status. Each part generates in ~18-29s (was ~50s for a single oversized request).
+
 ## Backlog / Future Tasks
 
 ### P2 (Medium Priority)
