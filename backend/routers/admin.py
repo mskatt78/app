@@ -87,7 +87,8 @@ ALLOWED_COLLECTIONS = {
     "courses", "breathwork_sessions", "shamanic_practices",
     "mindfulness_practices", "grounding_exercises", "heart_practices",
     "creative_processes", "elemental_practices", "yoga_poses",
-    "community_posts", "sacred_geometry",
+    "community_posts", "sacred_geometry", "energy_healing",
+    "free_form_movement", "chakra_cleansing",
 }
 
 COLLECTION_META = [
@@ -107,6 +108,9 @@ COLLECTION_META = [
     {"id": "creative_processes", "name": "Creative Processes", "icon": "🎨"},
     {"id": "yoga_poses", "name": "Yoga Poses", "icon": "🧘‍♀️"},
     {"id": "sacred_geometry", "name": "Sacred Geometry", "icon": "🔺"},
+    {"id": "energy_healing", "name": "Energy Healing", "icon": "✨"},
+    {"id": "free_form_movement", "name": "Free Form Movement", "icon": "💃"},
+    {"id": "chakra_cleansing", "name": "Chakra Cleansing", "icon": "🌈"},
     {"id": "oracle_cards", "name": "Oracle Cards", "icon": "🔮"},
     {"id": "tarot_cards", "name": "Tarot Cards", "icon": "🃏"},
     {"id": "ancient_wisdom", "name": "Ancient Wisdom", "icon": "📿"},

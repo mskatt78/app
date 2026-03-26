@@ -35,6 +35,9 @@ const FIELD_CONFIG = {
   creative_processes: ["name", "element", "description", "duration_minutes", "benefits", "materials", "instructions", "image_url"],
   elemental_practices: ["name", "element", "description", "duration_minutes", "benefits", "instructions", "image_url"],
   yoga_poses: ["name", "sanskrit_name", "element", "category", "description", "benefits", "instructions", "image_url"],
+  energy_healing: ["name", "modality", "element", "description", "history", "how_it_works", "self_healing_guide", "benefits", "contraindications", "duration_minutes", "image_url"],
+  free_form_movement: ["name", "category", "element", "description", "duration_minutes", "benefits", "guidance", "music_suggestion", "image_url"],
+  chakra_cleansing: ["name", "chakra_name", "chakra_number", "color", "location", "element", "description", "blockage_signs", "cleansing_practice", "affirmations", "duration_minutes", "sound", "image_url"],
 };
 
 const TEXTAREA_FIELDS = new Set([
@@ -42,7 +45,9 @@ const TEXTAREA_FIELDS = new Set([
   "benefits", "uses", "text", "invocation", "gifts", "upright_meaning",
   "highlights", "includes", "accommodation", "healing_modalities",
   "content", "visualization", "journey_steps", "steps", "affirmations",
-  "materials", "how_to_draw", "symbolism", "lessons"
+  "materials", "how_to_draw", "symbolism", "lessons",
+  "self_healing_guide", "how_it_works", "history", "contraindications",
+  "guidance", "blockage_signs", "cleansing_practice"
 ]);
 
 const IMAGE_FIELDS = new Set(["image_url", "thumbnail_url"]);

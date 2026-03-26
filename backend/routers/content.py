@@ -743,3 +743,48 @@ async def get_sacred_geometry_collection():
     db = get_db()
     guides = await db.sacred_geometry.find({}, {"_id": 0}).to_list(length=100)
     return guides
+
+
+# ============ ENERGY HEALING ROUTES ============
+
+@router.get("/energy-healing")
+async def get_energy_healing(modality: Optional[str] = None):
+    """Get energy healing modalities with self-healing guides."""
+    db = get_db()
+    query = {}
+    if modality:
+        query["modality"] = {"$regex": f"^{modality}$", "$options": "i"}
+    practices = await db.energy_healing.find(query, {"_id": 0}).to_list(length=100)
+    return practices
+
+
+@router.get("/energy-healing/{practice_id}")
+async def get_energy_healing_practice(practice_id: str):
+    db = get_db()
+    practice = await db.energy_healing.find_one({"id": practice_id}, {"_id": 0})
+    if not practice:
+        raise HTTPException(status_code=404, detail="Practice not found")
+    return practice
+
+
+# ============ FREE FORM MOVEMENT ROUTES ============
+
+@router.get("/free-form-movement")
+async def get_free_form_movement(category: Optional[str] = None):
+    """Get free form movement and somatic yoga practices."""
+    db = get_db()
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    practices = await db.free_form_movement.find(query, {"_id": 0}).to_list(length=100)
+    return practices
+
+
+# ============ CHAKRA CLEANSING ROUTES ============
+
+@router.get("/chakra-cleansing")
+async def get_chakra_cleansing():
+    """Get chakra cleansing practices."""
+    db = get_db()
+    practices = await db.chakra_cleansing.find({}, {"_id": 0}).to_list(length=100)
+    return practices
