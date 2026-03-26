@@ -155,12 +155,20 @@ async def generate_speech_base64(request: TTSRequest):
         logger.error(f"TTS generation failed: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to generate audio: {str(e)}")
 
+@router.get("/meditation/{meditation_id}/parts")
+async def get_meditation_parts_info(meditation_id: str):
+    """Return the number of audio parts available for a meditation."""
+    return {"meditation_id": meditation_id, "total_parts": 4}
+
+
 # Meditation-specific endpoint with prepared guidance
 @router.post("/meditation/{meditation_id}")
 async def generate_meditation_audio(meditation_id: str, voice: str = "nova", part: int = 1):
-    """Generate guided meditation audio in 2 parts for full-length guidance with integration pauses.
-    Part 1: Opening, breathing, body scan (~5 min)
-    Part 2: Visualization, deepening, affirmations, return (~5-7 min)
+    """Generate guided meditation audio in 4 parts to stay within proxy timeout.
+    Part 1: Welcome + Breathing (~2-3 min)
+    Part 2: Body Scan (~2-3 min)
+    Part 3: Visualization + Deepening (~3 min)
+    Part 4: Affirmations + Return + Closing (~2-3 min)
     """
     from .dependencies import get_db
     
@@ -175,79 +183,78 @@ async def generate_meditation_audio(meditation_id: str, voice: str = "nova", par
     visualization = meditation.get('visualization', '')
     element = meditation.get('element', 'Spirit')
     
-    vis_text = visualization[:500] if visualization else f"Imagine yourself surrounded by a gentle {element.lower()} energy. This energy is warm, ancient, and deeply healing. It wraps around you like a cocoon of light. With each breath you draw this energy deeper into your being."
+    vis_text = visualization[:400] if visualization else f"Imagine yourself surrounded by a gentle {element.lower()} energy. This energy is warm, ancient, and deeply healing. It wraps around you like a cocoon of light."
     
-    if part == 1:
-        script = f"""Welcome to {name}. {description}. 
+    scripts = {
+        1: f"""Welcome to {name}. {description}.
 
-Find a comfortable position. You may sit with your spine tall, or lie down on your back. Allow your body to settle completely into this space. There is nowhere else you need to be right now.
+Find a comfortable position. You may sit with your spine tall, or lie down on your back. Allow your body to settle completely. There is nowhere else you need to be.
 
-Gently close your eyes. Take a moment to acknowledge yourself for choosing this time for inner peace.
+Gently close your eyes. Acknowledge yourself for choosing this time for inner peace.
 
-Begin by simply noticing your breath. Don't try to change it. Just observe. Notice the cool air entering your nostrils. Notice the warm air leaving your body.
+Begin by noticing your breath. Don't change it. Just observe. The cool air entering your nostrils. The warm air leaving.
 
-Now, let's take three deep, cleansing breaths together.
+Now, three deep cleansing breaths together.
 
-Breathe in slowly through your nose... two... three... four... Hold gently... two... three... And exhale slowly through your mouth... two... three... four... five... six...
+Breathe in slowly... two... three... four... Hold gently... two... three... Exhale slowly... two... three... four... five... six...
 
-Again. Breathe in deeply... filling your belly... your ribs... your chest... Hold... And release... letting go of any tension... any worry... any stress...
+Again. Breathe in deeply... filling your belly... your ribs... your chest... Hold... And release... letting go of tension... worry... stress...
 
-One more time. A deep, nourishing breath in... Hold... And let it all go... feeling your body sink deeper into relaxation...
+One more time. A deep nourishing breath in... Hold... And let it all go... sinking deeper into relaxation...
 
-Now let your breath return to its natural rhythm. There's nothing to control. Nothing to force. Just easy, natural breathing.
+Let your breath return to its natural rhythm. Nothing to control. Nothing to force. Easy, natural breathing.
 
-Allow yourself to deepen into this space.
+Allow yourself to deepen into this space.""".strip(),
 
-We'll now move through your body, releasing any remaining tension.
+        2: f"""We now move through your body, releasing any remaining tension.
 
-Bring your attention to the top of your head. Feel any tightness there... and let it dissolve. Your scalp softening... relaxing...
+Bring attention to the top of your head. Feel any tightness... and let it dissolve. Your scalp softening... relaxing...
 
-Move down to your forehead. Let all the tiny muscles there smooth out. Your forehead is calm... peaceful... relaxed.
+Move down to your forehead. Let the tiny muscles smooth out. Your forehead is calm... peaceful... relaxed.
 
-Notice your eyes. Even behind closed lids, they may be working. Let them rest now. Let them be still and soft.
+Your eyes. Even behind closed lids, they may be working. Let them rest. Still and soft.
 
-Your jaw. Where so many of us hold tension. Let it drop slightly. Unclench your teeth. Feel the relief as your jaw releases.
+Your jaw. Where so many hold tension. Let it drop slightly. Unclench your teeth. Feel the relief.
 
-Your neck and throat. So often tight from daily life. Imagine warmth flowing through, loosening every muscle.
+Your neck and throat. Imagine warmth flowing through, loosening every muscle.
 
-Your shoulders. Let them drop away from your ears. Feel the weight of the world sliding off your shoulders. They are free now.
+Your shoulders. Let them drop away from your ears. The weight of the world sliding off. They are free now.
 
-This relaxation flows down your arms... through your elbows... your wrists... into your hands and fingers. Your hands are heavy, warm, and completely relaxed.
+Relaxation flows down your arms... through elbows... wrists... into hands and fingers. Heavy, warm, completely relaxed.
 
-Bring attention to your chest and heart space. With each breath, your chest rises and falls easily. Your heart beats steadily, faithfully. Allow your heart to soften and open.
+Your chest and heart space. Each breath, your chest rises and falls easily. Allow your heart to soften and open.
 
-Your belly is soft. No need to hold it in. Let it rise and fall naturally with each breath.
+Your belly is soft. Let it rise and fall naturally.
 
-Feel your lower back releasing any tension. Your hips, your pelvis, settling and softening.
+Lower back releasing tension. Hips, pelvis, settling and softening.
 
-This wave of relaxation continues down your legs. Your thighs grow heavy. Your knees. Your calves. Your ankles. Your feet. Each toe relaxing completely.
+Down your legs. Thighs grow heavy. Knees. Calves. Ankles. Feet. Each toe relaxing completely.
 
-Your entire body is now in a state of deep relaxation. Heavy. Warm. Peaceful. Still.
+Your entire body is in deep relaxation. Heavy. Warm. Peaceful. Still.
 
-Rest here for a moment. Simply feeling the peace in your body. Allow yourself to deepen into this stillness.""".strip()
+Rest here. Feel the peace in your body. Allow yourself to deepen into this stillness.""".strip(),
 
-    else:
-        script = f"""Now, we journey deeper inward.
+        3: f"""Now, we journey deeper inward.
 
 {vis_text}
 
-Stay with this experience. Let yourself be fully present in this sacred space. Notice any colors that appear. Any sensations in your body. Any emotions that arise. Everything you experience is welcome here. There is no right or wrong. Simply be with what is.
+Stay with this experience. Be fully present in this sacred space. Notice any colors that appear. Any sensations. Any emotions. Everything is welcome here. No right or wrong. Simply be with what is.
 
-Breathe into this experience. With each inhale, draw in peace and healing. With each exhale, release anything that no longer serves you.
+Breathe into this experience. Each inhale, draw in peace and healing. Each exhale, release what no longer serves you.
 
 Allow yourself to go deeper.
 
-Rest now in the stillness. This is the space between thoughts. The silence beneath all sound. The peace that is always within you.
+Rest in the stillness. The space between thoughts. The silence beneath all sound. The peace always within you.
 
-You don't need to do anything. You don't need to be anyone. Just rest in this moment of pure being.
+You don't need to do anything. Don't need to be anyone. Just rest in pure being.
 
-Feel the {element.lower()} energy surrounding you. Supporting you. Healing you. Know that this peace is your true nature. It never leaves you. You can return to it anytime, simply by closing your eyes and breathing.
+Feel the {element.lower()} energy surrounding you. Supporting you. Healing you. This peace is your true nature. It never leaves you. Return to it anytime, by closing your eyes and breathing.
 
-Allow yourself to deepen even further into this experience.
+Allow yourself to deepen even further into this experience.""".strip(),
 
-Take a moment to feel gratitude. Gratitude for this body that carries you through life. Gratitude for this breath that sustains you. Gratitude for this moment of peace.
+        4: f"""Take a moment to feel gratitude. Gratitude for this body that carries you through life. For this breath that sustains you. For this moment of peace.
 
-As you rest here, let these words sink into your being.
+Let these words sink into your being.
 
 I am at peace. I am whole. I am exactly where I need to be.
 
@@ -257,21 +264,28 @@ I am worthy of love. I am worthy of joy. I am worthy of all the blessings life h
 
 Rest here with these truths.
 
-Now, it's time to slowly begin your return. There is no rush. Take all the time you need.
+Now, slowly begin your return. There is no rush. Take all the time you need.
 
-Begin to deepen your breath once more. Breathing in fresh energy and vitality. Breathing out, knowing you can return to this peace anytime.
+Deepen your breath once more. Breathing in fresh energy and vitality. Breathing out, knowing you can return to this peace anytime.
 
-Start to bring gentle movement back into your body. Wiggle your fingers and your toes. These small movements reconnecting you with your physical form.
+Bring gentle movement back. Wiggle your fingers and toes. Small movements reconnecting you with your physical form.
 
-Roll your wrists gently. Your ankles. Perhaps stretch your arms overhead if that feels good.
+Roll your wrists gently. Your ankles. Stretch your arms overhead if that feels good.
 
-Take a deep breath and feel the energy returning to your body. You are refreshed. You are renewed. You are at peace.
+Take a deep breath. Feel energy returning to your body. You are refreshed. Renewed. At peace.
 
-When you're ready, slowly open your eyes. Keep your gaze soft. Take a moment before moving, honoring the journey you've just taken.
+When ready, slowly open your eyes. Keep your gaze soft. Honor the journey you've taken.
 
-Thank you for practicing {name} today. May the peace you've cultivated stay with you throughout your day.
+Thank you for practicing {name} today. May the peace stay with you throughout your day.
 
-Namaste. The light in me honors and recognizes the light in you.""".strip()
+Namaste. The light in me honors the light in you.""".strip(),
+    }
+    
+    if part not in scripts:
+        raise HTTPException(status_code=400, detail=f"Invalid part number. Use 1-4.")
+    
+    script = scripts[part]
+    logger.info(f"Generating meditation {meditation_id} part {part}: {len(script)} chars")
     
     request = TTSRequest(text=script, voice=voice, speed=0.7)
     return await generate_speech_base64(request)

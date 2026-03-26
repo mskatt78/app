@@ -25,10 +25,13 @@ const Meditations = ({ user, api }) => {
   const [elapsedTime, setElapsedTime] = useState(0);
   const intervalRef = useRef(null);
   
-  // Audio state
+  // Audio state - multi-part TTS
   const audioRef = useRef(null);
+  const audioPartsRef = useRef([]); // Array of Audio objects for parts 1-4
+  const currentPartRef = useRef(0);
   const [audioLoading, setAudioLoading] = useState(false);
   const [audioReady, setAudioReady] = useState(false);
+  const [audioPartStatus, setAudioPartStatus] = useState(""); // e.g. "Part 1 of 4"
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(80);
   const [ambientSound, setAmbientSound] = useState("silence");
@@ -69,12 +72,12 @@ const Meditations = ({ user, api }) => {
   useEffect(() => {
     fetchMeditations();
     return () => {
-      // Clear timer
       if (intervalRef.current) clearInterval(intervalRef.current);
-      // Stop and release audio when component unmounts (e.g. navigating away)
+      // Stop all audio parts
+      audioPartsRef.current.forEach(a => { if (a) { a.pause(); a.src = ''; } });
+      audioPartsRef.current = [];
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.src = '';
         audioRef.current = null;
       }
     };
@@ -100,14 +103,35 @@ const Meditations = ({ user, api }) => {
     }
   };
 
+  const playNextPart = () => {
+    const parts = audioPartsRef.current;
+    const nextIdx = currentPartRef.current + 1;
+    if (nextIdx < parts.length && parts[nextIdx]) {
+      currentPartRef.current = nextIdx;
+      const nextAudio = parts[nextIdx];
+      nextAudio.volume = volume / 100;
+      nextAudio.muted = isMuted;
+      nextAudio.onended = playNextPart;
+      audioRef.current = nextAudio;
+      setAudioPartStatus(`Part ${nextIdx + 1} of 4`);
+      nextAudio.play().catch(() => {});
+    } else {
+      // All parts finished
+      setAudioPartStatus("Complete");
+    }
+  };
+
   const startMeditation = async (meditation) => {
     setActiveMeditation(meditation);
     setProgress(0);
     setElapsedTime(0);
     setAudioReady(false);
     setAudioLoading(true);
+    setAudioPartStatus("Loading...");
+    audioPartsRef.current = [null, null, null, null];
+    currentPartRef.current = 0;
 
-    // START timer and visualization immediately — don't make user wait for audio
+    // START timer immediately
     setIsPlaying(true);
     const totalSeconds = meditation.duration_minutes * 60;
     intervalRef.current = setInterval(() => {
@@ -122,25 +146,44 @@ const Meditations = ({ user, api }) => {
       });
     }, 1000);
 
-    // Generate audio in background — plays automatically when ready
+    // Request all 4 parts in parallel for speed
+    const partPromises = [1, 2, 3, 4].map(async (partNum) => {
+      try {
+        const response = await api.post(`/tts/meditation/${meditation.id}`, null, {
+          params: { voice: "nova", part: partNum },
+          timeout: 58000
+        });
+        if (response.data.audio_base64) {
+          const audio = new Audio(`data:audio/mp3;base64,${response.data.audio_base64}`);
+          audioPartsRef.current[partNum - 1] = audio;
+          return { part: partNum, success: true };
+        }
+        return { part: partNum, success: false };
+      } catch (err) {
+        console.error(`TTS part ${partNum} failed:`, err);
+        return { part: partNum, success: false };
+      }
+    });
+
+    // As soon as Part 1 arrives, start playing
     try {
-      const response = await api.post(`/tts/meditation/${meditation.id}`, null, {
-        params: { voice: "nova" }
-      });
-      if (response.data.audio_base64) {
-        const audioData = `data:audio/mp3;base64,${response.data.audio_base64}`;
-        audioRef.current = new Audio(audioData);
-        audioRef.current.volume = volume / 100;
-        audioRef.current.onended = () => setIsPlaying(false);
+      const results = await Promise.allSettled(partPromises);
+      const part1Audio = audioPartsRef.current[0];
+      if (part1Audio) {
+        part1Audio.volume = volume / 100;
+        part1Audio.onended = playNextPart;
+        audioRef.current = part1Audio;
+        currentPartRef.current = 0;
         setAudioReady(true);
-        // Auto-play as soon as ready
-        audioRef.current.play().catch(() => {});
+        setAudioPartStatus("Part 1 of 4");
+        part1Audio.play().catch(() => {});
         toast.success("Guided audio is playing");
+      } else {
+        toast.info("Audio unavailable — timer meditation active");
       }
     } catch (error) {
       console.error("Failed to generate audio:", error);
       toast.info("Audio unavailable — timer meditation active");
-      setAudioReady(false);
     } finally {
       setAudioLoading(false);
     }
@@ -170,13 +213,16 @@ const Meditations = ({ user, api }) => {
 
   const resetMeditation = () => {
     clearInterval(intervalRef.current);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+    audioPartsRef.current.forEach(a => { if (a) { a.pause(); a.currentTime = 0; } });
+    currentPartRef.current = 0;
+    if (audioPartsRef.current[0]) {
+      audioRef.current = audioPartsRef.current[0];
+      audioRef.current.onended = playNextPart;
     }
     setIsPlaying(false);
     setProgress(0);
     setElapsedTime(0);
+    setAudioPartStatus(audioReady ? "Part 1 of 4" : "");
   };
   
   const toggleMute = () => {
@@ -219,16 +265,17 @@ const Meditations = ({ user, api }) => {
 
   const closeMeditation = () => {
     clearInterval(intervalRef.current);
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
-    }
+    audioPartsRef.current.forEach(a => { if (a) { a.pause(); a.src = ''; } });
+    audioPartsRef.current = [];
+    audioRef.current = null;
+    currentPartRef.current = 0;
     setActiveMeditation(null);
     setIsPlaying(false);
     setProgress(0);
     setElapsedTime(0);
     setAudioReady(false);
     setAudioLoading(false);
+    setAudioPartStatus("");
   };
 
   return (
@@ -306,13 +353,13 @@ const Meditations = ({ user, api }) => {
               {audioLoading && (
                 <div className="flex items-center justify-center gap-2 mb-4 text-amber-400">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="text-sm">Preparing guided audio in background…</span>
+                  <span className="text-sm">Preparing guided audio…</span>
                 </div>
               )}
               {audioReady && !audioLoading && (
                 <div className="flex items-center justify-center gap-2 mb-4 text-emerald-400">
                   <Volume2 className="w-4 h-4" />
-                  <span className="text-sm">Guided audio playing</span>
+                  <span className="text-sm">Guided audio playing — {audioPartStatus}</span>
                 </div>
               )}
               
