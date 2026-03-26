@@ -76,6 +76,7 @@ const FreeFormMovement = lazy(() => import("./pages/FreeFormMovement"));
 const SomaticYoga = lazy(() => import("./pages/SomaticYoga"));
 const ChakraCleansing = lazy(() => import("./pages/ChakraCleansing"));
 const DailySacredPractice = lazy(() => import("./pages/DailySacredPractice"));
+const PracticeJournal = lazy(() => import("./pages/PracticeJournal"));
 // Notifications
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 
@@ -801,6 +802,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <ChakraCleansing user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/practice-journal"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <PracticeJournal user={user} api={api} />}
           </PublicRoute>
         }
       />

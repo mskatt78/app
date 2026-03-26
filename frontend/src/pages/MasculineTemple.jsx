@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Shield, Sword, Crown, Heart, Mountain, TreePine, Zap, BookOpen, Star, ChevronRight, X, Eye, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import AddToJournal from "../components/AddToJournal";
 import axios from "axios";
 
 const apiClient = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
@@ -590,6 +591,13 @@ const MasculineTemple = ({ user, api }) => {
                     script={`${selectedPractice.name}. ${selectedPractice.description}. ${selectedPractice.practice_guide || ''}`}
                     label="Listen to Guided Practice"
                     className="flex-1"
+                  />
+                  <AddToJournal 
+                    practiceName={selectedPractice.name} 
+                    practiceType="masculine" 
+                    duration={selectedPractice.duration_minutes || 20}
+                    buttonVariant="outline"
+                    buttonSize="default"
                   />
                   <button onClick={() => setSelectedPractice(null)} className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                     Close

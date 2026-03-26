@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Heart, Sparkles, Moon, Star, Eye, Flower2, BookOpen, X, Play, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import AddToJournal from "../components/AddToJournal";
 import axios from "axios";
 import { toast } from "sonner";
 
@@ -556,6 +557,13 @@ const RoseTemple = ({ user, api }) => {
                     script={`${selectedPractice.name}. ${selectedPractice.description}. ${selectedPractice.practice_guide || ''}`}
                     label="Listen to Guided Practice"
                     className="flex-1"
+                  />
+                  <AddToJournal 
+                    practiceName={selectedPractice.name} 
+                    practiceType="feminine" 
+                    duration={selectedPractice.duration_minutes || 20}
+                    buttonVariant="outline"
+                    buttonSize="default"
                   />
                   <button onClick={() => setSelectedPractice(null)} className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                     Close

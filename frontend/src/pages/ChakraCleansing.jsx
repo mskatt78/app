@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
+import AddToJournal from "../components/AddToJournal";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -222,7 +223,16 @@ export default function ChakraCleansing() {
                   </div>
                 )}
 
-                <Button variant="ghost" onClick={() => setSelectedPractice(null)} className="w-full mt-4">Close</Button>
+                <div className="flex gap-2 mt-4">
+                  <AddToJournal 
+                    practiceName={selectedPractice.name} 
+                    practiceType="chakra" 
+                    duration={selectedPractice.duration_minutes || 15}
+                    buttonVariant="outline"
+                    buttonSize="default"
+                  />
+                  <Button variant="ghost" onClick={() => setSelectedPractice(null)} className="flex-1">Close</Button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
