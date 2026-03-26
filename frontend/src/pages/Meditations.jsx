@@ -127,11 +127,11 @@ const Meditations = ({ user, api }) => {
     setElapsedTime(0);
     setAudioReady(false);
     setAudioLoading(true);
-    setAudioPartStatus("Loading...");
+    setAudioPartStatus("Preparing audio...");
     audioPartsRef.current = [null, null, null, null];
     currentPartRef.current = 0;
 
-    // START timer immediately
+    // START timer immediately so user doesn't wait
     setIsPlaying(true);
     const totalSeconds = meditation.duration_minutes * 60;
     intervalRef.current = setInterval(() => {
@@ -146,46 +146,54 @@ const Meditations = ({ user, api }) => {
       });
     }, 1000);
 
-    // Request all 4 parts in parallel for speed
-    const partPromises = [1, 2, 3, 4].map(async (partNum) => {
+    // Load Part 1 first for quick start
+    try {
+      const response = await api.post(`/tts/meditation/${meditation.id}`, null, {
+        params: { voice: "nova", part: 1 },
+        timeout: 45000
+      });
+      
+      if (response.data.audio_base64) {
+        const audio = new Audio(`data:audio/mp3;base64,${response.data.audio_base64}`);
+        audioPartsRef.current[0] = audio;
+        audio.volume = volume / 100;
+        audio.onended = playNextPart;
+        audioRef.current = audio;
+        setAudioReady(true);
+        setAudioPartStatus("Part 1 ready");
+        audio.play().catch(() => {});
+        toast.success("Guided audio playing");
+        
+        // Load remaining parts in background
+        loadRemainingParts(meditation.id);
+      } else {
+        toast.info("Timer meditation active - follow on-screen guidance");
+      }
+    } catch (error) {
+      console.error("Audio generation failed:", error);
+      toast.info("Timer active - audio timed out, follow guidance on screen");
+    } finally {
+      setAudioLoading(false);
+    }
+  };
+
+  // Load parts 2-4 in background after part 1 starts
+  const loadRemainingParts = async (meditationId) => {
+    for (let partNum = 2; partNum <= 4; partNum++) {
       try {
-        const response = await api.post(`/tts/meditation/${meditation.id}`, null, {
+        const response = await api.post(`/tts/meditation/${meditationId}`, null, {
           params: { voice: "nova", part: partNum },
-          timeout: 58000
+          timeout: 50000
         });
         if (response.data.audio_base64) {
           const audio = new Audio(`data:audio/mp3;base64,${response.data.audio_base64}`);
+          audio.volume = volume / 100;
           audioPartsRef.current[partNum - 1] = audio;
-          return { part: partNum, success: true };
+          setAudioPartStatus(`Parts 1-${partNum} loaded`);
         }
-        return { part: partNum, success: false };
       } catch (err) {
-        console.error(`TTS part ${partNum} failed:`, err);
-        return { part: partNum, success: false };
+        console.log(`Part ${partNum} skipped`);
       }
-    });
-
-    // As soon as Part 1 arrives, start playing
-    try {
-      const results = await Promise.allSettled(partPromises);
-      const part1Audio = audioPartsRef.current[0];
-      if (part1Audio) {
-        part1Audio.volume = volume / 100;
-        part1Audio.onended = playNextPart;
-        audioRef.current = part1Audio;
-        currentPartRef.current = 0;
-        setAudioReady(true);
-        setAudioPartStatus("Part 1 of 4");
-        part1Audio.play().catch(() => {});
-        toast.success("Guided audio is playing");
-      } else {
-        toast.info("Audio unavailable — timer meditation active");
-      }
-    } catch (error) {
-      console.error("Failed to generate audio:", error);
-      toast.info("Audio unavailable — timer meditation active");
-    } finally {
-      setAudioLoading(false);
     }
   };
 
@@ -353,7 +361,7 @@ const Meditations = ({ user, api }) => {
               {audioLoading && (
                 <div className="flex items-center justify-center gap-2 mb-4 text-amber-400">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span className="text-sm">Preparing guided audio…</span>
+                  <span className="text-sm">Preparing audio (may take 15-20 sec)...</span>
                 </div>
               )}
               {audioReady && !audioLoading && (

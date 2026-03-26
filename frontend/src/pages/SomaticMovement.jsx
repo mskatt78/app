@@ -105,7 +105,8 @@ const SomaticMovement = ({ user, api }) => {
     // Generate audio in background
     try {
       const response = await api.post(`/tts/somatic/${practice.id}`, null, {
-        params: { voice: "nova" }
+        params: { voice: "nova" },
+        timeout: 45000
       });
       if (response.data.audio_base64) {
         const audioData = `data:audio/mp3;base64,${response.data.audio_base64}`;
@@ -114,11 +115,11 @@ const SomaticMovement = ({ user, api }) => {
         audioRef.current.onended = () => setIsPlaying(false);
         setAudioReady(true);
         audioRef.current.play().catch(() => {});
-        toast.success("Guided audio is playing");
+        toast.success("Guided audio playing");
       }
     } catch (error) {
       console.error("Failed to generate audio:", error);
-      toast.info("Audio unavailable — timer active. Follow the instructions.");
+      toast.info("Timer active - follow on-screen instructions");
       setAudioReady(false);
     } finally {
       setAudioLoading(false);
