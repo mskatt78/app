@@ -138,6 +138,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - GET /api/masculine-embodiment
 
 ## Recent Changes
+- **2026-03-26 (Session 2)**: ✅ COMPLETED - Practice Journal Feature:
+  - New `/practice-journal` page with full journaling capabilities
+  - Comprehensive entry fields: mood before/after, body sensations, spiritual downloads, intentions, key insights, reflection
+  - Moon phase auto-tagging on all entries
+  - Practice streak counter (consecutive days tracked)
+  - LocalStorage persistence (no login required)
+  - Filter by practice type + search functionality
+  - "Journal This" button integrated in ChakraCleansing, RoseTemple, MasculineTemple modals
+  - Added to Main Menu under Self-Healing section
+  - Testing Agent verified: 100% frontend tests pass (15/15 features)
+
 - **2026-03-26 (Session 2)**: ✅ COMPLETED - Deepened ALL remaining content:
   - Extended Chakras: Causal (3425 chars), Stellar Gateway (4762 chars), Universal Gateway (4544 chars) now have rich philosophical teachings including shadow work, somatic practices, and spiritual principles
   - All 13 Feminine Embodiment practices now have deeper_teaching content (Sacred Sensuality, Moon Cycle, Goddess Embodiment, Rose Lineage, Body Blessing, Breast/Heart Healing, Yoni Honoring, Mirror Love, Priestess Path, Moon Lodge, Sisterhood Circle, Wild Woman)
@@ -152,6 +163,7 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 
 ### P1 (High Priority)
 - [x] ~~Deepen all chakra and embodiment content~~ ✅ COMPLETED
+- [x] ~~Practice Journal feature~~ ✅ COMPLETED
 - [ ] Deploy application for stable URL (user has requested)
 
 ### P2 (Medium Priority)
@@ -161,8 +173,9 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 
 ### P3 (Low Priority / Backlog)
 - [ ] Community reflection sharing for embodiment practices
-- [ ] Practice streaks/journaling integration
+- [x] ~~Practice streaks/journaling integration~~ ✅ COMPLETED (Part of Practice Journal)
 - [ ] Seed initial Sacred Geometry drawing guides into CMS
+- [ ] Video tutorials for somatic practices
 
 ## Technical Notes
 - All pages use React.lazy() for code-splitting (CRITICAL for performance)
