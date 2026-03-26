@@ -192,8 +192,10 @@ const RoseTemple = ({ user, api }) => {
   const [loadingPractices, setLoadingPractices] = useState(true);
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [showIntro, setShowIntro] = useState(true);
+  const [sacredRites, setSacredRites] = useState([]);
+  const [selectedRite, setSelectedRite] = useState(null);
 
-  // Fetch feminine embodiment practices from database
+  // Fetch feminine embodiment practices and sacred rites from database
   useEffect(() => {
     const fetchPractices = async () => {
       try {
@@ -205,7 +207,18 @@ const RoseTemple = ({ user, api }) => {
         setLoadingPractices(false);
       }
     };
+    
+    const fetchSacredRites = async () => {
+      try {
+        const { data } = await apiClient.get("/sacred-rites");
+        setSacredRites(data);
+      } catch (err) {
+        console.log("Sacred rites not loaded");
+      }
+    };
+    
     fetchPractices();
+    fetchSacredRites();
   }, []);
 
   return (
@@ -332,6 +345,49 @@ const RoseTemple = ({ user, api }) => {
                   <span className="text-xs text-fuchsia-300 uppercase tracking-wider">{practice.category}</span>
                   <h4 className="font-serif text-lg mt-1 group-hover:text-fuchsia-300 transition-colors">{practice.name}</h4>
                   <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{practice.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Sacred Rites Section - Munay Ki, Nusta Karpay, 13th Womb Rite */}
+        {sacredRites.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="mb-12"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <Moon className="w-6 h-6 text-violet-400" />
+              <h3 className="text-2xl font-serif">Sacred Rites & Initiations</h3>
+            </div>
+            <p className="text-muted-foreground mb-6">Ancient Peruvian rites of transformation — Munay Ki, Nusta Karpay, and the 13th Rite of the Womb.</p>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {sacredRites.map((rite, index) => (
+                <motion.div
+                  key={rite.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  onClick={() => setSelectedRite(rite)}
+                  className="p-5 rounded-xl bg-violet-500/10 border border-violet-500/20 cursor-pointer hover:scale-[1.02] transition-all group"
+                  data-testid={`rite-${rite.id}`}
+                >
+                  {rite.image_url && (
+                    <div className="relative h-32 rounded-lg overflow-hidden mb-4">
+                      <img src={rite.image_url} alt={rite.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </div>
+                  )}
+                  <span className="text-xs text-violet-300 uppercase tracking-wider">{rite.level}</span>
+                  <h4 className="font-serif text-lg mt-1 group-hover:text-violet-300 transition-colors">{rite.title}</h4>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{rite.description}</p>
+                  {rite.lessons && (
+                    <p className="text-xs text-violet-400 mt-3">{rite.lessons.length} sacred teachings</p>
+                  )}
                 </motion.div>
               ))}
             </div>
@@ -566,6 +622,80 @@ const RoseTemple = ({ user, api }) => {
                     buttonSize="default"
                   />
                   <button onClick={() => setSelectedPractice(null)} className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                    Close
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Sacred Rite Detail Modal */}
+      <AnimatePresence>
+        {selectedRite && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto"
+            onClick={() => setSelectedRite(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card rounded-2xl max-w-3xl w-full my-8"
+              data-testid="rite-modal"
+            >
+              {selectedRite.image_url && (
+                <div className="relative h-56 rounded-t-2xl overflow-hidden">
+                  <img src={selectedRite.image_url} alt={selectedRite.title} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                  <button 
+                    onClick={() => setSelectedRite(null)} 
+                    className="absolute top-4 right-4 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+              )}
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs">{selectedRite.category}</span>
+                  <span className="px-3 py-1 rounded-full bg-white/5 text-xs">{selectedRite.level}</span>
+                  {selectedRite.duration && <span className="px-3 py-1 rounded-full bg-white/5 text-xs">{selectedRite.duration}</span>}
+                </div>
+                <h2 className="text-2xl font-serif mb-3">{selectedRite.title}</h2>
+                <p className="text-muted-foreground mb-6 leading-relaxed">{selectedRite.description}</p>
+
+                {selectedRite.highlights && selectedRite.highlights.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                      <Star className="w-4 h-4 text-violet-400" /> Sacred Teachings
+                    </h3>
+                    <div className="p-4 rounded-xl bg-violet-500/5 border border-violet-500/10 max-h-96 overflow-y-auto">
+                      <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{selectedRite.highlights}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-3 mt-6">
+                  <GuidedAudioButton
+                    api={api}
+                    script={`${selectedRite.title}. ${selectedRite.description}`}
+                    label="Listen to Introduction"
+                    className="flex-1"
+                  />
+                  <AddToJournal 
+                    practiceName={selectedRite.title} 
+                    practiceType="rite" 
+                    duration={60}
+                    buttonVariant="outline"
+                    buttonSize="default"
+                  />
+                  <button onClick={() => setSelectedRite(null)} className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
                     Close
                   </button>
                 </div>
