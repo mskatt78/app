@@ -43,30 +43,36 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - Neck & Shoulder Stress Release
 
 ### Feminine Embodiment (Rose Temple)
-- 9 practices via /api/feminine-embodiment:
-  - Womb Awakening & Healing
-  - Sacred Sensuality Awakening
-  - Moon Cycle Attunement
-  - Goddess Embodiment Ritual
-  - Rose Lineage Meditation
-  - **Sacred Body Blessing** (NEW)
-  - **Breast & Heart Healing** (NEW)
-  - **Yoni Honoring Practice** (NEW)
-  - **Mirror of Love Practice** (NEW)
-- Temple intro: "Your Body is the Rose Temple" with 4 principles (Unconditional Self-Love, Pleasure as Prayer, Cyclical Wisdom, Womb as Creation Center)
+- 13 practices via /api/feminine-embodiment:
+  - **Womb Wisdom**: Womb Awakening & Healing
+  - **Sensuality**: Sacred Sensuality Awakening
+  - **Lunar Wisdom**: Moon Cycle Attunement, Moon Lodge Retreat
+  - **Divine Feminine**: Goddess Embodiment Ritual
+  - **Rose Mysteries**: Rose Lineage Meditation
+  - **Body Love**: Sacred Body Blessing, Breast & Heart Healing
+  - **Sacred Sexuality**: Yoni Honoring Practice
+  - **Self-Love**: Mirror of Love Practice
+  - **Priestess**: Priestess Path Initiation
+  - **Sisterhood**: Sisterhood Circle Practice
+  - **Wild Feminine**: Wild Woman Awakening
+- Temple intro: "Your Body is the Rose Temple" with 4 principles
 
 ### Masculine Embodiment (Masculine Temple)
-- 9 practices via /api/masculine-embodiment:
-  - Sacred Warrior Activation
-  - Heart-Centered King Practice
-  - Sacred Lover Embodiment
-  - Inner Sage & Magician Practice
-  - Healing & Embodying Father Energy
-  - **Body Honoring Practice** (NEW)
-  - **Sacred Masculine Sexuality** (NEW)
-  - **Wild Man Awakening** (NEW)
-  - **Tender Warrior Practice** (NEW)
-- Temple intro: "Your Body is the Temple" with 4 principles (Unconditional Self-Honor, Strength with Heart, Body as Ground, Sacred Aloneness & Brotherhood)
+- 13 practices via /api/masculine-embodiment:
+  - **Warrior**: Sacred Warrior Activation
+  - **King**: Heart-Centered King Practice
+  - **Lover**: Sacred Lover Embodiment
+  - **Sage**: Inner Sage & Magician Practice
+  - **Father**: Healing & Embodying Father Energy
+  - **Body Wisdom**: Body Honoring Practice
+  - **Sacred Sexuality**: Sacred Masculine Sexuality
+  - **Wild Man**: Wild Man Awakening
+  - **Heart Warrior**: Tender Warrior Practice
+  - **Brotherhood**: Brotherhood Circle Practice
+  - **Elder**: Seeking the Elder Within
+  - **Nature**: Wild Nature Immersion
+  - **Shadow**: Men's Grief Ritual
+- Temple intro: "Your Body is the Temple" with 4 principles
 
 ### Divination & Guidance
 - Oracle Card Readings (with AI-generated images)
@@ -132,13 +138,13 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - GET /api/masculine-embodiment
 
 ## Recent Changes
+- **2026-03-26**: Added 4 more feminine practices (Priestess Path, Moon Lodge, Sisterhood Circle, Wild Woman)
+- **2026-03-26**: Added 4 more masculine practices (Brotherhood Circle, Elder Within, Nature Immersion, Grief Ritual)
+- **2026-03-26**: Generated unique AI images for Higher Heart & Soul Star chakras
 - **2026-03-26**: Enhanced Rose Temple & Masculine Temple with "Body as Temple" philosophy
-- **2026-03-26**: Added 4 new feminine embodiment practices (Body Blessing, Breast/Heart Healing, Yoni Honoring, Mirror of Love)
-- **2026-03-26**: Added 4 new masculine embodiment practices (Body Honoring, Sacred Sexuality, Wild Man, Tender Warrior)
 - **2026-03-26**: Added 13-chakra system (Earth Star → Universal Gateway)
 - **2026-03-26**: Added Energy Healing with Egyptian Sekhem & Australian Aboriginal modalities
 - **2026-03-26**: Created separate Somatic Yoga page & API (5 practices)
-- **2026-03-26**: Added Free Form Movement practices (Ecstatic Dance, Primal Shake, Intuitive Flow)
 - **2026-03-26**: Fixed React.lazy() code-splitting for 65+ routes (performance)
 
 ## Backlog / Future Tasks
