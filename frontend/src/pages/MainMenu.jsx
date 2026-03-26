@@ -125,6 +125,15 @@ const MainMenu = ({ user }) => {
       ]
     },
     {
+      title: "Self-Healing & Energy Work",
+      items: [
+        { path: "/energy-healing", icon: Sparkles, label: "Energy Healing", color: "text-amber-400", desc: "Reiki, Egyptian & more" },
+        { path: "/chakra-cleansing", icon: Hexagon, label: "Chakra Cleansing", color: "text-violet-400", desc: "All 7 energy centers" },
+        { path: "/free-form-movement", icon: Wind, label: "Free Form Movement", color: "text-fuchsia-400", desc: "Ecstatic dance & liberation" },
+        { path: "/somatic-yoga", icon: Leaf, label: "Somatic Yoga", color: "text-emerald-400", desc: "Body-centered healing" },
+      ]
+    },
+    {
       title: "Learn & Connect",
       items: [
         { path: "/courses", icon: BookOpen, label: "Courses", color: "text-violet-400", desc: "Live & recorded teachings" },

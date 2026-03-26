@@ -71,6 +71,10 @@ const ProgressDashboard = lazy(() => import("./pages/ProgressDashboard"));
 const ProfileCalculator = lazy(() => import("./pages/ProfileCalculator"));
 const StarLineageQuiz = lazy(() => import("./pages/StarLineageQuiz"));
 const LinksPage = lazy(() => import("./pages/LinksPage"));
+const EnergyHealing = lazy(() => import("./pages/EnergyHealing"));
+const FreeFormMovement = lazy(() => import("./pages/FreeFormMovement"));
+const SomaticYoga = lazy(() => import("./pages/SomaticYoga"));
+const ChakraCleansing = lazy(() => import("./pages/ChakraCleansing"));
 // Notifications
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 
@@ -754,6 +758,39 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <StarLineageQuiz user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      {/* Self-Healing Modalities */}
+      <Route
+        path="/energy-healing"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <EnergyHealing user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/free-form-movement"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <FreeFormMovement user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/somatic-yoga"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <SomaticYoga user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/chakra-cleansing"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <ChakraCleansing user={user} api={api} />}
           </PublicRoute>
         }
       />
