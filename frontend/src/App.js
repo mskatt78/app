@@ -43,6 +43,8 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 // New Content Pages
 import LiveSessions from "./pages/LiveSessions";
 import Retreats from "./pages/Retreats";
+import Courses from "./pages/Courses";
+import Community from "./pages/Community";
 import Books from "./pages/Books";
 // Payment Pages
 import Pricing from "./pages/Pricing";
@@ -473,6 +475,22 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <Retreats user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/courses"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <Courses user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/community"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <Community user={user} api={api} />}
           </PublicRoute>
         }
       />

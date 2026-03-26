@@ -343,15 +343,26 @@ const SoundFrequencies = ({ user, api }) => {
                     <Music className="w-4 h-4 text-primary" />
                     Play {selectedFreq.name}
                   </h4>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    Synthesised healing audio — generated live in your browser
-                  </p>
-                  <AmbientSoundPlayer
-                    soundType={selectedFreq.ambient_type || "crystal_bowls"}
-                    autoPlay={false}
-                    volume={0.6}
-                    showControls={true}
-                  />
+                  {selectedFreq.audio_url ? (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-3">Custom audio recording</p>
+                      <audio controls src={selectedFreq.audio_url} className="w-full" data-testid="custom-audio-player">
+                        Your browser does not support audio.
+                      </audio>
+                    </div>
+                  ) : (
+                    <div>
+                      <p className="text-xs text-muted-foreground mb-3">
+                        Synthesised healing audio — generated live in your browser
+                      </p>
+                      <AmbientSoundPlayer
+                        soundType={selectedFreq.ambient_type || "crystal_bowls"}
+                        autoPlay={false}
+                        volume={0.6}
+                        showControls={true}
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
             </>

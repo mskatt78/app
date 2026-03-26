@@ -123,6 +123,14 @@ const MainMenu = ({ user }) => {
         { path: "/progress", icon: BarChart3, label: "Progress Dashboard", color: "text-emerald-400", desc: "Track your sacred journey" },
         { path: "/reviews", icon: MessageCircle, label: "Community Reviews", color: "text-rose-400", desc: "Sacred voices & testimonials" },
       ]
+    },
+    {
+      title: "Learn & Connect",
+      items: [
+        { path: "/courses", icon: BookOpen, label: "Courses", color: "text-violet-400", desc: "Live & recorded teachings" },
+        { path: "/community", icon: Users, label: "Sacred Circle", color: "text-rose-400", desc: "Shared journeys & wisdom" },
+        { path: "/retreats", icon: Globe, label: "Retreats", color: "text-emerald-400", desc: "Sacred gatherings" },
+      ]
     }
   ];
 

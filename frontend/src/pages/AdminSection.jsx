@@ -11,25 +11,38 @@ import { toast } from "sonner";
 const AUDIO_COLLECTION = "audio_files";
 
 const FIELD_CONFIG = {
+  courses: ["title", "category", "level", "description", "instructor", "duration", "lessons", "format", "price", "status", "highlights", "image_url", "video_url", "registration_link"],
+  community_posts: ["author_name", "title", "type", "content", "element", "tags", "status", "image_url"],
+  sacred_geometry: ["name", "element", "description", "symbolism", "how_to_draw", "image_url"],
   oracle_cards: ["name", "element", "meaning", "reversed_meaning", "image_url", "keywords"],
   tarot_cards: ["name", "arcana", "number", "upright_meaning", "reversed_meaning", "description", "image_url"],
   ancient_wisdom: ["name", "tradition", "type", "description", "teaching", "practice", "image_url"],
-  somatic_practices: ["name", "type", "description", "benefits", "duration", "instructions", "image_url"],
-  sound_frequencies: ["name", "frequency", "element", "description", "benefits", "practice"],
+  somatic_practices: ["name", "type", "element", "description", "benefits", "duration", "instructions", "image_url"],
+  sound_frequencies: ["name", "frequency", "element", "category", "ambient_type", "description", "benefits", "practice", "audio_url", "image_url"],
   crystals: ["name", "color", "element", "chakra", "description", "properties", "uses", "image_url"],
   mantras: ["name", "tradition", "text", "meaning", "pronunciation", "benefits", "practice"],
-  meditations: ["name", "type", "duration", "description", "instructions", "audio_url", "image_url"],
+  meditations: ["name", "type", "element", "duration_minutes", "description", "visualization", "instructions", "image_url"],
   mudras: ["name", "type", "description", "benefits", "instructions", "image_url"],
   runes: ["name", "symbol", "phonetic", "meaning", "description", "reversed_meaning", "image_url"],
   sacred_guardians: ["name", "type", "element", "description", "gifts", "invocation", "image_url"],
   retreats: ["title", "status", "description", "location", "start_date", "end_date", "duration_days", "max_participants", "price", "deposit", "facilitator", "highlights", "includes", "accommodation", "healing_modalities", "registration_link", "image_url"],
   videos: ["title", "category", "description", "video_url", "thumbnail_url", "duration", "practice_type"],
+  breathwork_sessions: ["name", "element", "description", "duration_minutes", "frequency", "benefits", "instructions", "image_url"],
+  shamanic_practices: ["name", "category", "element", "description", "duration_minutes", "benefits", "journey_steps", "image_url"],
+  mindfulness_practices: ["name", "category", "element", "description", "duration_minutes", "benefits", "instructions", "image_url"],
+  grounding_exercises: ["name", "element", "description", "duration_minutes", "benefits", "instructions", "background_audio", "image_url"],
+  heart_practices: ["name", "category", "element", "description", "duration_minutes", "benefits", "steps", "affirmations", "image_url"],
+  creative_processes: ["name", "element", "description", "duration_minutes", "benefits", "materials", "instructions", "image_url"],
+  elemental_practices: ["name", "element", "description", "duration_minutes", "benefits", "instructions", "image_url"],
+  yoga_poses: ["name", "sanskrit_name", "element", "category", "description", "benefits", "instructions", "image_url"],
 };
 
 const TEXTAREA_FIELDS = new Set([
   "description", "meaning", "reversed_meaning", "teaching", "practice", "instructions",
   "benefits", "uses", "text", "invocation", "gifts", "upright_meaning",
-  "highlights", "includes", "accommodation", "healing_modalities"
+  "highlights", "includes", "accommodation", "healing_modalities",
+  "content", "visualization", "journey_steps", "steps", "affirmations",
+  "materials", "how_to_draw", "symbolism", "lessons"
 ]);
 
 const IMAGE_FIELDS = new Set(["image_url", "thumbnail_url"]);

@@ -447,7 +447,7 @@ async def cast_i_ching():
             changing_lines.append(i + 1)
     
     # Convert to binary (yang=1, yin=0)
-    binary_lines = [1 if l in [7, 9] else 0 for l in lines]
+    binary_lines = [1 if line in [7, 9] else 0 for line in lines]
     hexagram_number = int(''.join(str(b) for b in reversed(binary_lines)), 2) + 1
     
     # Cap at 8 for our sample data (in full implementation, all 64 would be available)
@@ -685,3 +685,61 @@ async def get_video(video_id: str):
     if not video:
         raise HTTPException(status_code=404, detail="Video not found")
     return video
+
+
+# ============ COURSES ROUTES ============
+
+@router.get("/courses")
+async def get_courses(category: Optional[str] = None, level: Optional[str] = None):
+    """Get courses, optionally filtered by category or level."""
+    db = get_db()
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    if level:
+        query["level"] = {"$regex": f"^{level}$", "$options": "i"}
+    courses = await db.courses.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=100)
+    return courses
+
+
+@router.get("/courses/{course_id}")
+async def get_course(course_id: str):
+    """Get a specific course."""
+    db = get_db()
+    course = await db.courses.find_one({"id": course_id}, {"_id": 0})
+    if not course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    return course
+
+
+# ============ COMMUNITY ROUTES ============
+
+@router.get("/community/posts")
+async def get_community_posts(type: Optional[str] = None):
+    """Get community posts, optionally filtered by type."""
+    db = get_db()
+    query = {"status": {"$ne": "hidden"}}
+    if type:
+        query["type"] = {"$regex": f"^{type}$", "$options": "i"}
+    posts = await db.community_posts.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=100)
+    return posts
+
+
+@router.get("/community/posts/{post_id}")
+async def get_community_post(post_id: str):
+    """Get a specific community post."""
+    db = get_db()
+    post = await db.community_posts.find_one({"id": post_id}, {"_id": 0})
+    if not post:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return post
+
+
+# ============ SACRED GEOMETRY ROUTES ============
+
+@router.get("/sacred-geometry")
+async def get_sacred_geometry_collection():
+    """Get sacred geometry guides from dedicated collection."""
+    db = get_db()
+    guides = await db.sacred_geometry.find({}, {"_id": 0}).to_list(length=100)
+    return guides
