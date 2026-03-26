@@ -43,20 +43,30 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - Neck & Shoulder Stress Release
 
 ### Feminine Embodiment (Rose Temple)
-- 5 practices via /api/feminine-embodiment:
+- 9 practices via /api/feminine-embodiment:
   - Womb Awakening & Healing
   - Sacred Sensuality Awakening
   - Moon Cycle Attunement
   - Goddess Embodiment Ritual
   - Rose Lineage Meditation
+  - **Sacred Body Blessing** (NEW)
+  - **Breast & Heart Healing** (NEW)
+  - **Yoni Honoring Practice** (NEW)
+  - **Mirror of Love Practice** (NEW)
+- Temple intro: "Your Body is the Rose Temple" with 4 principles (Unconditional Self-Love, Pleasure as Prayer, Cyclical Wisdom, Womb as Creation Center)
 
 ### Masculine Embodiment (Masculine Temple)
-- 5 practices via /api/masculine-embodiment:
+- 9 practices via /api/masculine-embodiment:
   - Sacred Warrior Activation
   - Heart-Centered King Practice
   - Sacred Lover Embodiment
   - Inner Sage & Magician Practice
   - Healing & Embodying Father Energy
+  - **Body Honoring Practice** (NEW)
+  - **Sacred Masculine Sexuality** (NEW)
+  - **Wild Man Awakening** (NEW)
+  - **Tender Warrior Practice** (NEW)
+- Temple intro: "Your Body is the Temple" with 4 principles (Unconditional Self-Honor, Strength with Heart, Body as Ground, Sacred Aloneness & Brotherhood)
 
 ### Divination & Guidance
 - Oracle Card Readings (with AI-generated images)
@@ -122,13 +132,13 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - GET /api/masculine-embodiment
 
 ## Recent Changes
+- **2026-03-26**: Enhanced Rose Temple & Masculine Temple with "Body as Temple" philosophy
+- **2026-03-26**: Added 4 new feminine embodiment practices (Body Blessing, Breast/Heart Healing, Yoni Honoring, Mirror of Love)
+- **2026-03-26**: Added 4 new masculine embodiment practices (Body Honoring, Sacred Sexuality, Wild Man, Tender Warrior)
 - **2026-03-26**: Added 13-chakra system (Earth Star → Universal Gateway)
 - **2026-03-26**: Added Energy Healing with Egyptian Sekhem & Australian Aboriginal modalities
 - **2026-03-26**: Created separate Somatic Yoga page & API (5 practices)
 - **2026-03-26**: Added Free Form Movement practices (Ecstatic Dance, Primal Shake, Intuitive Flow)
-- **2026-03-26**: Added Feminine Embodiment practices (Womb, Sensuality, Moon, Goddess, Rose)
-- **2026-03-26**: Added Masculine Embodiment practices (Warrior, King, Lover, Sage, Father)
-- **2026-03-26**: Updated chakra images with unique AI-generated visuals (throat, third eye)
 - **2026-03-26**: Fixed React.lazy() code-splitting for 65+ routes (performance)
 
 ## Backlog / Future Tasks

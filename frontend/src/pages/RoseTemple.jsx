@@ -1,8 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Heart, Sparkles, Moon, Star, Eye, Flower2, BookOpen, X, Play } from "lucide-react";
+import { ArrowLeft, Heart, Sparkles, Moon, Star, Eye, Flower2, BookOpen, X, Play, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import axios from "axios";
+import { toast } from "sonner";
+
+const apiClient = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
+
+// Introduction to the Rose Temple as Sacred Body Temple
+const templeIntro = {
+  title: "Your Body is the Rose Temple",
+  description: "The Rose Temple is not a place outside of you — it IS you. Your body is the sacred vessel, the living temple where the Divine Feminine dwells. Every curve, every breath, every sensation is holy ground. This is not about becoming worthy — you already ARE the temple. This work is about remembering.",
+  principles: [
+    { title: "Unconditional Self-Love", text: "Love yourself not because you earned it, but because you exist. Your body does not need to be fixed, improved, or disciplined into worthiness. It needs to be listened to, honored, and loved — exactly as it is, right now." },
+    { title: "Pleasure as Prayer", text: "Pleasure is not sinful — it is how the Goddess speaks through the body. When you deny pleasure, you deny the sacred. When you shame your desires, you shame the Divine. Reclaim pleasure as your birthright and your spiritual practice." },
+    { title: "Cyclical Wisdom", text: "The feminine does not move in straight lines. She spirals. She ebbs and flows. Honor your cycles — menstrual, lunar, seasonal. Rest is not laziness. Slowness is not failure. Trust your body's rhythms." },
+    { title: "The Womb as Creation Center", text: "Whether you have a physical womb or not, the energetic womb space is your portal of creation. From here, all things are birthed — children, art, ideas, healing. Tend this space with reverence." }
+  ]
+};
 
 const teachings = [
   {
@@ -171,6 +187,25 @@ const RoseTemple = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedTeaching, setSelectedTeaching] = useState(null);
   const [selectedContent, setSelectedContent] = useState(null);
+  const [embodimentPractices, setEmbodimentPractices] = useState([]);
+  const [loadingPractices, setLoadingPractices] = useState(true);
+  const [selectedPractice, setSelectedPractice] = useState(null);
+  const [showIntro, setShowIntro] = useState(true);
+
+  // Fetch feminine embodiment practices from database
+  useEffect(() => {
+    const fetchPractices = async () => {
+      try {
+        const { data } = await apiClient.get("/feminine-embodiment");
+        setEmbodimentPractices(data);
+      } catch (err) {
+        console.log("Embodiment practices not loaded");
+      } finally {
+        setLoadingPractices(false);
+      }
+    };
+    fetchPractices();
+  }, []);
 
   return (
     <div className="min-h-screen bg-background" data-testid="rose-temple">
@@ -199,7 +234,7 @@ const RoseTemple = ({ user, api }) => {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16 pt-8"
+          className="text-center mb-12 pt-8"
         >
           <div className="relative inline-block mb-6">
             <div className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-rose-500/30 to-pink-600/20 border border-rose-500/30 flex items-center justify-center">
@@ -222,7 +257,94 @@ const RoseTemple = ({ user, api }) => {
           </div>
         </motion.div>
 
+        {/* Body as Temple Introduction */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-12 p-6 rounded-2xl bg-gradient-to-br from-rose-500/10 to-pink-500/5 border border-rose-500/20"
+        >
+          <button 
+            onClick={() => setShowIntro(!showIntro)}
+            className="w-full flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <Heart className="w-6 h-6 text-rose-400" />
+              <h3 className="text-xl font-serif text-rose-200">{templeIntro.title}</h3>
+            </div>
+            {showIntro ? <ChevronUp className="w-5 h-5 text-rose-300" /> : <ChevronDown className="w-5 h-5 text-rose-300" />}
+          </button>
+          
+          <AnimatePresence>
+            {showIntro && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <p className="text-muted-foreground mt-4 mb-6 leading-relaxed">{templeIntro.description}</p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {templeIntro.principles.map((principle, i) => (
+                    <div key={i} className="p-4 rounded-xl bg-black/20 border border-rose-500/10">
+                      <h4 className="font-serif text-rose-300 mb-2">{principle.title}</h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed">{principle.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Embodiment Practices from Database */}
+        {embodimentPractices.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mb-12"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <Sparkles className="w-6 h-6 text-fuchsia-400" />
+              <h3 className="text-2xl font-serif">Embodiment Practices</h3>
+            </div>
+            <p className="text-muted-foreground mb-6">Sacred practices for loving your whole temple — body, heart, womb, and soul.</p>
+            
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {embodimentPractices.map((practice, index) => (
+                <motion.div
+                  key={practice.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 * index }}
+                  onClick={() => setSelectedPractice(practice)}
+                  className="p-5 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 cursor-pointer hover:scale-[1.02] transition-all group"
+                  data-testid={`embodiment-${practice.id}`}
+                >
+                  {practice.image_url && (
+                    <div className="relative h-32 rounded-lg overflow-hidden mb-4">
+                      <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </div>
+                  )}
+                  <span className="text-xs text-fuchsia-300 uppercase tracking-wider">{practice.category}</span>
+                  <h4 className="font-serif text-lg mt-1 group-hover:text-fuchsia-300 transition-colors">{practice.name}</h4>
+                  <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{practice.description}</p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         {/* Teaching Portals */}
+        <div className="mb-6">
+          <div className="flex items-center gap-3 mb-6">
+            <BookOpen className="w-6 h-6 text-rose-400" />
+            <h3 className="text-2xl font-serif">Rose Lineage Teachings</h3>
+          </div>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {teachings.map((teaching, index) => {
             const Icon = teaching.icon;
@@ -367,6 +489,78 @@ const RoseTemple = ({ user, api }) => {
                     </AnimatePresence>
                   </motion.div>
                 ))}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Embodiment Practice Detail Modal */}
+      <AnimatePresence>
+        {selectedPractice && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto"
+            onClick={() => setSelectedPractice(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-card rounded-2xl max-w-2xl w-full my-8"
+              data-testid="embodiment-modal"
+            >
+              {selectedPractice.image_url && (
+                <div className="relative h-48 rounded-t-2xl overflow-hidden">
+                  <img src={selectedPractice.image_url} alt={selectedPractice.name} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+                </div>
+              )}
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="px-3 py-1 rounded-full bg-fuchsia-500/20 text-fuchsia-300 text-xs">{selectedPractice.category}</span>
+                  {selectedPractice.element && <span className="px-3 py-1 rounded-full bg-white/5 text-xs">{selectedPractice.element} Element</span>}
+                  {selectedPractice.duration_minutes && <span className="px-3 py-1 rounded-full bg-white/5 text-xs">{selectedPractice.duration_minutes} min</span>}
+                </div>
+                <h2 className="text-2xl font-serif mb-3">{selectedPractice.name}</h2>
+                <p className="text-muted-foreground mb-6">{selectedPractice.description}</p>
+
+                {selectedPractice.practice_guide && (
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <Heart className="w-4 h-4 text-rose-400" /> Practice Guide
+                    </h3>
+                    <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                      {selectedPractice.practice_guide}
+                    </div>
+                  </div>
+                )}
+
+                {selectedPractice.benefits && (
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium mb-2">Benefits</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((b, i) => (
+                        <span key={i} className="px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-3 mt-6">
+                  <GuidedAudioButton
+                    api={api}
+                    script={`${selectedPractice.name}. ${selectedPractice.description}. ${selectedPractice.practice_guide || ''}`}
+                    label="Listen to Guided Practice"
+                    className="flex-1"
+                  />
+                  <button onClick={() => setSelectedPractice(null)} className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                    Close
+                  </button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
