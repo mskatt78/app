@@ -839,6 +839,156 @@ async def get_feminine_embodiment(category: Optional[str] = None):
     return practices
 
 
+# ============ DAILY SACRED PRACTICE ============
+
+@router.get("/daily-practice")
+async def get_daily_practice(focus: Optional[str] = None):
+    """
+    Get a daily sacred practice based on moon phase, day of week, and optional focus area.
+    Returns morning and evening practice pair.
+    """
+    import random
+    from datetime import datetime
+    import math
+    
+    db = get_db()
+    
+    # Calculate moon phase (0-29.5 days cycle)
+    def get_moon_phase():
+        known_new_moon = datetime(2024, 1, 11)  # Known new moon date
+        days_since = (datetime.now() - known_new_moon).days
+        moon_age = days_since % 29.5
+        
+        if moon_age < 1.85: return "new_moon"
+        elif moon_age < 7.38: return "waxing_crescent"
+        elif moon_age < 9.23: return "first_quarter"
+        elif moon_age < 14.77: return "waxing_gibbous"
+        elif moon_age < 16.61: return "full_moon"
+        elif moon_age < 22.15: return "waning_gibbous"
+        elif moon_age < 23.99: return "last_quarter"
+        else: return "waning_crescent"
+    
+    moon_phase = get_moon_phase()
+    day_of_week = datetime.now().strftime("%A").lower()
+    
+    # Moon phase practice recommendations
+    moon_guidance = {
+        "new_moon": {"theme": "New Beginnings & Intention Setting", "energy": "introspective", "focus": ["womb", "shadow", "rest"]},
+        "waxing_crescent": {"theme": "Taking First Steps", "energy": "building", "focus": ["warrior", "solar", "action"]},
+        "first_quarter": {"theme": "Overcoming Challenges", "energy": "active", "focus": ["warrior", "boundaries", "strength"]},
+        "waxing_gibbous": {"theme": "Refinement & Adjustment", "energy": "refining", "focus": ["heart", "relationship", "healing"]},
+        "full_moon": {"theme": "Illumination & Release", "energy": "peak", "focus": ["crown", "release", "celebration"]},
+        "waning_gibbous": {"theme": "Gratitude & Sharing", "energy": "distributing", "focus": ["heart", "service", "teaching"]},
+        "last_quarter": {"theme": "Letting Go", "energy": "releasing", "focus": ["grief", "shadow", "forgiveness"]},
+        "waning_crescent": {"theme": "Rest & Surrender", "energy": "surrendering", "focus": ["rest", "womb", "intuition"]}
+    }
+    
+    # Day of week themes
+    day_themes = {
+        "monday": {"ruler": "Moon", "theme": "Intuition & Emotions", "practices": ["lunar", "womb", "water"]},
+        "tuesday": {"ruler": "Mars", "theme": "Courage & Action", "practices": ["warrior", "fire", "strength"]},
+        "wednesday": {"ruler": "Mercury", "theme": "Communication & Learning", "practices": ["throat", "sage", "voice"]},
+        "thursday": {"ruler": "Jupiter", "theme": "Expansion & Abundance", "practices": ["crown", "spiritual", "gratitude"]},
+        "friday": {"ruler": "Venus", "theme": "Love & Beauty", "practices": ["heart", "sensuality", "self-love"]},
+        "saturday": {"ruler": "Saturn", "theme": "Structure & Discipline", "practices": ["root", "grounding", "boundaries"]},
+        "sunday": {"ruler": "Sun", "theme": "Vitality & Self-Expression", "practices": ["solar", "king", "radiance"]}
+    }
+    
+    current_moon = moon_guidance.get(moon_phase, moon_guidance["new_moon"])
+    current_day = day_themes.get(day_of_week, day_themes["monday"])
+    
+    # Fetch practices from all collections
+    all_practices = []
+    
+    # Chakra practices
+    chakras = await db.chakra_cleansing.find({}, {"_id": 0}).to_list(100)
+    for c in chakras:
+        c["source"] = "chakra"
+        c["practice_type"] = "chakra_cleansing"
+    all_practices.extend(chakras)
+    
+    # Feminine embodiment
+    feminine = await db.feminine_embodiment.find({}, {"_id": 0}).to_list(100)
+    for f in feminine:
+        f["source"] = "feminine"
+        f["practice_type"] = "embodiment"
+    all_practices.extend(feminine)
+    
+    # Masculine embodiment
+    masculine = await db.masculine_embodiment.find({}, {"_id": 0}).to_list(100)
+    for m in masculine:
+        m["source"] = "masculine"
+        m["practice_type"] = "embodiment"
+    all_practices.extend(masculine)
+    
+    # Energy healing
+    energy = await db.energy_healing.find({}, {"_id": 0}).to_list(100)
+    for e in energy:
+        e["source"] = "energy"
+        e["practice_type"] = "energy_healing"
+    all_practices.extend(energy)
+    
+    # Somatic yoga
+    somatic = await db.somatic_yoga.find({}, {"_id": 0}).to_list(100)
+    for s in somatic:
+        s["source"] = "somatic"
+        s["practice_type"] = "somatic_yoga"
+    all_practices.extend(somatic)
+    
+    # Free form movement
+    movement = await db.free_form_movement.find({}, {"_id": 0}).to_list(100)
+    for m in movement:
+        m["source"] = "movement"
+        m["practice_type"] = "free_form_movement"
+    all_practices.extend(movement)
+    
+    # Filter by focus if provided
+    if focus:
+        focus_lower = focus.lower()
+        filtered = [p for p in all_practices if 
+                    focus_lower in str(p.get("name", "")).lower() or
+                    focus_lower in str(p.get("description", "")).lower() or
+                    focus_lower in str(p.get("category", "")).lower() or
+                    focus_lower in str(p.get("chakra", "")).lower()]
+        if filtered:
+            all_practices = filtered
+    
+    # Select morning practice (more active/awakening)
+    morning_keywords = ["awakening", "warrior", "solar", "activation", "grounding", "breath", "movement"]
+    morning_candidates = [p for p in all_practices if any(kw in str(p).lower() for kw in morning_keywords)]
+    if not morning_candidates:
+        morning_candidates = all_practices
+    morning_practice = random.choice(morning_candidates) if morning_candidates else None
+    
+    # Select evening practice (more restful/reflective)
+    evening_keywords = ["rest", "release", "healing", "moon", "womb", "heart", "grief", "restorative"]
+    evening_candidates = [p for p in all_practices if any(kw in str(p).lower() for kw in evening_keywords)]
+    if not evening_candidates:
+        evening_candidates = all_practices
+    # Avoid same practice as morning
+    if morning_practice:
+        evening_candidates = [p for p in evening_candidates if p.get("id") != morning_practice.get("id")]
+    evening_practice = random.choice(evening_candidates) if evening_candidates else None
+    
+    return {
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "day_of_week": day_of_week.capitalize(),
+        "day_ruler": current_day["ruler"],
+        "day_theme": current_day["theme"],
+        "moon_phase": moon_phase.replace("_", " ").title(),
+        "moon_theme": current_moon["theme"],
+        "moon_energy": current_moon["energy"],
+        "guidance": f"Today is {day_of_week.capitalize()}, ruled by {current_day['ruler']}, during the {moon_phase.replace('_', ' ')}. This is a powerful time for {current_moon['theme'].lower()}. Honor the {current_moon['energy']} energy by moving gently with the cosmic rhythm.",
+        "morning_practice": morning_practice,
+        "evening_practice": evening_practice,
+        "reflection_prompts": [
+            f"What wants to be {current_moon['energy'].replace('ing', 'ed') if current_moon['energy'].endswith('ing') else current_moon['energy']} in my life right now?",
+            f"How can I honor the energy of {current_day['ruler']} today?",
+            "What is my body asking for in this moment?"
+        ]
+    }
+
+
 # ============ MASCULINE EMBODIMENT ============
 
 @router.get("/masculine-embodiment")

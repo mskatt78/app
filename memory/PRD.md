@@ -138,14 +138,14 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - GET /api/masculine-embodiment
 
 ## Recent Changes
+- **2026-03-26**: Built Daily Sacred Practice feature with moon phase + day of week themes
+- **2026-03-26**: Deepened all content with richer teachings, somatic practices, shadow work sections
+- **2026-03-26**: Root, Heart, Crown chakras now have extensive deeper teachings + shadow integration
+- **2026-03-26**: Womb Awakening, Sacred Warrior, Grief Ritual have extended 45-60 min practices
 - **2026-03-26**: Added 4 more feminine practices (Priestess Path, Moon Lodge, Sisterhood Circle, Wild Woman)
 - **2026-03-26**: Added 4 more masculine practices (Brotherhood Circle, Elder Within, Nature Immersion, Grief Ritual)
-- **2026-03-26**: Generated unique AI images for Higher Heart & Soul Star chakras
+- **2026-03-26**: All 13 chakras now have unique images (AI + stock)
 - **2026-03-26**: Enhanced Rose Temple & Masculine Temple with "Body as Temple" philosophy
-- **2026-03-26**: Added 13-chakra system (Earth Star → Universal Gateway)
-- **2026-03-26**: Added Energy Healing with Egyptian Sekhem & Australian Aboriginal modalities
-- **2026-03-26**: Created separate Somatic Yoga page & API (5 practices)
-- **2026-03-26**: Fixed React.lazy() code-splitting for 65+ routes (performance)
 
 ## Backlog / Future Tasks
 

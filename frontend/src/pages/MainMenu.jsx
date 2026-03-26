@@ -127,6 +127,7 @@ const MainMenu = ({ user }) => {
     {
       title: "Self-Healing & Energy Work",
       items: [
+        { path: "/daily-practice", icon: Sunrise, label: "Daily Sacred Practice", color: "text-violet-400", desc: "Your personalized daily guidance" },
         { path: "/energy-healing", icon: Sparkles, label: "Energy Healing", color: "text-amber-400", desc: "Reiki, Egyptian & more" },
         { path: "/chakra-cleansing", icon: Hexagon, label: "Chakra Cleansing", color: "text-violet-400", desc: "All 7 energy centers" },
         { path: "/free-form-movement", icon: Wind, label: "Free Form Movement", color: "text-fuchsia-400", desc: "Ecstatic dance & liberation" },

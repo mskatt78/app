@@ -75,6 +75,7 @@ const EnergyHealing = lazy(() => import("./pages/EnergyHealing"));
 const FreeFormMovement = lazy(() => import("./pages/FreeFormMovement"));
 const SomaticYoga = lazy(() => import("./pages/SomaticYoga"));
 const ChakraCleansing = lazy(() => import("./pages/ChakraCleansing"));
+const DailySacredPractice = lazy(() => import("./pages/DailySacredPractice"));
 // Notifications
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 
@@ -758,6 +759,15 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <StarLineageQuiz user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      {/* Daily Sacred Practice */}
+      <Route
+        path="/daily-practice"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <DailySacredPractice user={user} api={api} />}
           </PublicRoute>
         }
       />

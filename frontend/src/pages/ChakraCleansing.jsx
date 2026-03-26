@@ -187,9 +187,13 @@ export default function ChakraCleansing() {
 
                 {/* Expandable sections */}
                 {[
+                  { key: "teaching", label: "Deeper Teaching", icon: Sparkles, content: selectedPractice.deeper_teaching },
                   { key: "guide", label: "Self-Healing Guide", icon: Heart, content: selectedPractice.cleansing_guide },
+                  { key: "somatic", label: "Somatic Practice", icon: Zap, content: selectedPractice.somatic_practice },
                   { key: "signs", label: "Signs of Imbalance", icon: Flame, content: selectedPractice.signs_of_imbalance },
-                  { key: "affirmations", label: "Healing Affirmations", icon: Sun, content: selectedPractice.affirmations },
+                  { key: "healing", label: "Signs of Healing", icon: Sun, content: selectedPractice.signs_of_healing },
+                  { key: "shadow", label: "Shadow Work", icon: Moon, content: selectedPractice.shadow_work },
+                  { key: "affirmations", label: "Healing Affirmations", icon: Heart, content: selectedPractice.affirmations },
                   { key: "crystals", label: "Supporting Crystals", icon: Sparkles, content: selectedPractice.crystals },
                 ].filter(s => s.content).map(section => (
                   <div key={section.key} className="mb-3 border border-white/10 rounded-xl overflow-hidden">
