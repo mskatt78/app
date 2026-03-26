@@ -189,14 +189,87 @@ async def startup_seed_database():
         await db.mindfulness_practices.insert_many(MINDFULNESS_PRACTICES)
         logger.info(f"mindfulness_practices refreshed — {len(MINDFULNESS_PRACTICES)} entries.")
 
-        # Only seed everything else if yoga_poses is empty
-        yoga_count = await db.yoga_poses.count_documents({})
-        if yoga_count == 0:
-            logger.info("Database empty - seeding content...")
+        # Always reseed yoga_poses and mudras (critical content)
+        from data.yoga_poses import YOGA_POSES
+        from data.all_content import MUDRAS
+        logger.info("Refreshing yoga_poses collection...")
+        await db.yoga_poses.delete_many({})
+        await db.yoga_poses.insert_many(YOGA_POSES)
+        logger.info(f"yoga_poses refreshed — {len(YOGA_POSES)} entries.")
+        
+        logger.info("Refreshing mudras collection...")
+        await db.mudras.delete_many({})
+        await db.mudras.insert_many(MUDRAS)
+        logger.info(f"mudras refreshed — {len(MUDRAS)} entries.")
+
+        # Always reseed healing modalities (energy healing, chakras, movement, embodiment)
+        from data.seed_healing_modalities import (
+            ENERGY_HEALING_DATA, FREE_FORM_MOVEMENT_DATA, CHAKRA_CLEANSING_DATA
+        )
+        from data.seed_extended_modalities import EXTENDED_CHAKRAS, SOMATIC_YOGA_DATA
+        from data.complete_embodiment_data import COMPLETE_FEMININE_EMBODIMENT, COMPLETE_MASCULINE_EMBODIMENT
+        
+        logger.info("Refreshing energy_healing collection...")
+        await db.energy_healing.delete_many({})
+        await db.energy_healing.insert_many(ENERGY_HEALING_DATA)
+        logger.info(f"energy_healing refreshed — {len(ENERGY_HEALING_DATA)} entries.")
+        
+        logger.info("Refreshing free_form_movement collection...")
+        await db.free_form_movement.delete_many({})
+        await db.free_form_movement.insert_many(FREE_FORM_MOVEMENT_DATA)
+        logger.info(f"free_form_movement refreshed — {len(FREE_FORM_MOVEMENT_DATA)} entries.")
+        
+        # Combine base 7 chakras + 6 extended chakras = 13 total
+        logger.info("Refreshing chakra_cleansing collection (13 chakras)...")
+        await db.chakra_cleansing.delete_many({})
+        all_chakras = CHAKRA_CLEANSING_DATA + EXTENDED_CHAKRAS
+        await db.chakra_cleansing.insert_many(all_chakras)
+        logger.info(f"chakra_cleansing refreshed — {len(all_chakras)} entries (7 base + 6 extended).")
+        
+        logger.info("Refreshing somatic_yoga collection...")
+        await db.somatic_yoga.delete_many({})
+        await db.somatic_yoga.insert_many(SOMATIC_YOGA_DATA)
+        logger.info(f"somatic_yoga refreshed — {len(SOMATIC_YOGA_DATA)} entries.")
+        
+        logger.info("Refreshing feminine_embodiment collection (13 practices)...")
+        await db.feminine_embodiment.delete_many({})
+        await db.feminine_embodiment.insert_many(COMPLETE_FEMININE_EMBODIMENT)
+        logger.info(f"feminine_embodiment refreshed — {len(COMPLETE_FEMININE_EMBODIMENT)} entries.")
+        
+        logger.info("Refreshing masculine_embodiment collection (13 practices)...")
+        await db.masculine_embodiment.delete_many({})
+        await db.masculine_embodiment.insert_many(COMPLETE_MASCULINE_EMBODIMENT)
+        logger.info(f"masculine_embodiment refreshed — {len(COMPLETE_MASCULINE_EMBODIMENT)} entries.")
+        
+        # Apply deeper teachings to chakras and embodiment practices
+        logger.info("Applying deeper teachings to content...")
+        try:
+            from data.deepen_chakras import CHAKRA_DEEPER_TEACHINGS
+            from data.deepen_feminine import FEMININE_DEEPER_TEACHINGS
+            from data.deepen_masculine import MASCULINE_DEEPER_TEACHINGS
+            
+            for chakra_id, teachings in CHAKRA_DEEPER_TEACHINGS.items():
+                await db.chakra_cleansing.update_one({"id": chakra_id}, {"$set": teachings})
+            logger.info(f"Applied deep teachings to {len(CHAKRA_DEEPER_TEACHINGS)} chakras")
+            
+            for practice_id, teachings in FEMININE_DEEPER_TEACHINGS.items():
+                await db.feminine_embodiment.update_one({"id": practice_id}, {"$set": teachings})
+            logger.info(f"Applied deep teachings to {len(FEMININE_DEEPER_TEACHINGS)} feminine practices")
+            
+            for practice_id, teachings in MASCULINE_DEEPER_TEACHINGS.items():
+                await db.masculine_embodiment.update_one({"id": practice_id}, {"$set": teachings})
+            logger.info(f"Applied deep teachings to {len(MASCULINE_DEEPER_TEACHINGS)} masculine practices")
+        except Exception as e:
+            logger.warning(f"Could not apply deeper teachings: {e}")
+
+        # Only seed everything else if crystals is empty (to avoid duplicate seeding)
+        crystals_count = await db.crystals.count_documents({})
+        if crystals_count == 0:
+            logger.info("Database empty - seeding remaining content...")
             await seed_all_content()
             logger.info("Database seeding complete!")
         else:
-            logger.info(f"Database already has {yoga_count} yoga poses - skipping full seed")
+            logger.info(f"Database already has {crystals_count} crystals - skipping full seed")
     except Exception as e:
         logger.error(f"Error during startup seeding: {e}")
 
