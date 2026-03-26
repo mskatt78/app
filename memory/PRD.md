@@ -7,129 +7,152 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **Frontend:** React, Framer Motion, Tailwind CSS, Shadcn/UI
 - **Backend:** FastAPI, MongoDB (Motor Async)
 - **Auth:** Google OAuth (Emergent-managed) + Custom JWT Admin Auth
-- **Integrations:** OpenAI TTS, Gemini Image Gen, Emergent Object Storage
+- **Integrations:** OpenAI TTS, Gemini Image Gen (Nano Banana), Emergent Object Storage
 - **PWA:** Full manifest with app store ready icons
 
 ## Core Features (All Implemented)
+
+### Self-Healing & Energy Work (NEW)
+- **Energy Healing** (/energy-healing) - 9 modalities with AI images:
+  - Usui Reiki, Kundalini Reiki
+  - Shamanic Energy Healing
+  - Pranic Healing
+  - **Sekhem Egyptian Healing** (Ancient Egyptian healing art)
+  - **Aboriginal Dreamtime Healing** (Australian 65,000+ year tradition)
+  - Crystal Healing Therapy
+  - Sound Bath Healing
+  - Quantum Healing
+- **Chakra Cleansing** (/chakra-cleansing) - Full 13-chakra system:
+  - Earth Star (below feet) - Gaia consciousness
+  - Root, Sacral, Solar Plexus, Heart (main 4)
+  - Higher Heart/Thymus - Unconditional love
+  - Throat, Third Eye, Crown (upper 3)
+  - Causal - Divine feminine, past lives
+  - Soul Star - Higher Self connection
+  - Stellar Gateway - Galactic origins
+  - Universal Gateway - Source connection
+- **Free Form Movement** (/free-form-movement) - 3 practices:
+  - Ecstatic Dance Liberation
+  - Primal Shake & Release
+  - Intuitive Flow Journey
+- **Somatic Yoga** (/somatic-yoga) - 5 body-centered practices:
+  - Trauma Release Somatic Flow
+  - Restorative Somatic Yoga
+  - Grounding Somatic Flow
+  - Hip Release & Emotional Freedom
+  - Neck & Shoulder Stress Release
+
+### Feminine Embodiment (Rose Temple)
+- 5 practices via /api/feminine-embodiment:
+  - Womb Awakening & Healing
+  - Sacred Sensuality Awakening
+  - Moon Cycle Attunement
+  - Goddess Embodiment Ritual
+  - Rose Lineage Meditation
+
+### Masculine Embodiment (Masculine Temple)
+- 5 practices via /api/masculine-embodiment:
+  - Sacred Warrior Activation
+  - Heart-Centered King Practice
+  - Sacred Lover Embodiment
+  - Inner Sage & Magician Practice
+  - Healing & Embodying Father Energy
 
 ### Divination & Guidance
 - Oracle Card Readings (with AI-generated images)
 - 22 Major Arcana Tarot
 - Rune Readings (Elder Futhark)
 - I Ching (64 Hexagrams)
-- Light Codes (Sacred Geometry with How-to-Draw guides, Ancient Alphabets, Light Language, Galactic Codes, 13 Chakra Activations incl. Causal Chakra)
+- Light Codes (Sacred Geometry, Ancient Alphabets, Light Language, Galactic Codes)
 
 ### Movement & Healing
 - Yoga Library (78 poses by element)
 - Somatic Movement (with practice videos support)
 - Breathwork (6 guided sessions)
-- Shamanic Practices (21 practices with drums, auto-start, step descriptions)
-- Grounding Practices
-- Heart Practices
-- Creative Processes
-- Sunrise/Sunset Practices
+- Shamanic Practices (21 practices with drums, auto-start)
+- Grounding Practices, Heart Practices, Creative Processes, Sunrise/Sunset Practices
 
 ### Sacred Spaces
-- Elemental Temples (Earth, Water, Fire, Air, Spirit — 8 sections each)
-- Rose Temple
+- Elemental Temples (Earth, Water, Fire, Air, Spirit)
+- Rose Temple (Feminine wisdom)
+- Masculine Temple
 - Water Practices (ceremonies & rituals)
-- Sound Frequencies (including whale songs, singing bowls, drums)
-- Crystal Guide
-- Mantras Library (108 rep chanting timer with transition bells)
+- Sound Frequencies (whale songs, singing bowls, drums)
+- Crystal Guide (42 crystals with AI images)
+- Mantras Library (108 rep chanting timer)
 
 ### Discovery & Profiles
-- Star Lineage Quiz (12 questions, 8 lineage results, shareable URLs)
-- Birth Chart Calculator
-- Numerology
-- Gene Keys
-- Human Design
-- Sacred Guardians (37 spirit guides)
-- Ancient Wisdom (108 teachings)
+- Star Lineage Quiz, Birth Chart Calculator, Numerology
+- Gene Keys, Human Design
+- Sacred Guardians (37 spirit guides), Ancient Wisdom (108 teachings)
 
-### Retreats & Events
-- Retreats page with Elemental Healing & Womb Healing modality sections
-- CMS-managed retreats (add/edit/delete via Admin)
-- Detail modal with full retreat info
+### Learn & Connect
+- Courses Portal (/courses) - Nusta Karpay, Munay Ki, 13th Rite of the Womb
+- Community Sacred Circle (/community)
+- Retreats & Events
 
 ### Admin CMS
-- JWT-based admin auth (password in .env)
-- Dashboard with 13+ content collections
-- CRUD operations for all collections
-- Object Storage integration for file uploads
-- Retreats management
-- Practice Videos management
-
-### App & Sharing
-- Links page (Linktree-style, 23 links across 5 sections)
-- Share Star Lineage (WhatsApp, Twitter, Facebook, Email, copy link)
-- Open Graph meta tags for social sharing
-- PWA with all icon sizes (16px to 1024px)
-- App Store Guide (Google Play & Apple App Store via PWABuilder)
-
-### Audio System
-- Background audio for all practices (drums, nature, bowls, ocean, wind, fire)
-- Mobile audio unlock (silent buffer technique)
-- Bell chimes at step transitions
-- Whale song frequencies (phone-audible range)
-- Mantra chanting timer with rep transition bells
-- Volume boosted for mobile speakers
+- JWT-based admin auth
+- 29+ content collections manageable
+- CRUD operations, Object Storage integration
 
 ## Key Pages & Routes
 | Route | Page |
 |-------|------|
-| / | Dashboard |
-| /links | All Links (Linktree) |
-| /star-lineage | Star Lineage Quiz |
-| /star-lineage/result/:id | Shared Lineage Result |
-| /retreats | Retreats & Healing |
+| /energy-healing | Energy Healing Modalities |
+| /chakra-cleansing | 13-Chakra Cleansing |
+| /free-form-movement | Free Form Movement |
+| /somatic-yoga | Somatic Yoga |
 | /courses | Courses Portal |
-| /community | Sacred Circle (Community) |
+| /community | Sacred Circle |
 | /oracle | Oracle Readings |
 | /tarot | Tarot Reading |
-| /light-codes | Light Codes |
 | /shamanic | Shamanic Practices |
-| /somatic | Somatic Movement |
 | /yoga | Yoga Library |
-| /breathwork | Breathwork |
-| /meditations | Meditations |
-| /mindfulness | Mindfulness |
-| /sound-frequencies | Sound Frequencies |
-| /elemental-temples | Elemental Temples |
-| /admin/login | Admin Login |
+| /meditations | Guided Meditations |
+| /crystals | Crystal Guide |
 | /admin | Admin Dashboard |
 
-## API Endpoints
-- GET /api/retreats, /api/retreats/:id
-- GET /api/videos, /api/videos/:id
-- GET /api/courses, /api/courses/:id
-- GET /api/community/posts, /api/community/posts/:id
-- GET /api/sacred-geometry
-- GET /api/light-codes
-- GET /api/oracle/readings
-- GET /api/shamanic-practices
-- GET /api/sound-frequencies
-- GET /api/mindfulness
-- POST /api/admin/login
-- GET /api/admin/collections (25 collections)
-- CRUD /api/admin/{collection}/items
+## API Endpoints (New)
+- GET /api/energy-healing, /api/energy-healing/:id
+- GET /api/chakra-cleansing, /api/chakra-cleansing/:id
+- GET /api/free-form-movement
+- GET /api/somatic-yoga, /api/somatic-yoga/:id
+- GET /api/feminine-embodiment
+- GET /api/masculine-embodiment
 
 ## Recent Changes
-- **2026-03-26**: Fixed Guided Meditation TTS timeout (4-part chunking, ~18-29s per part).
-- **2026-03-26**: Added images to Mindfulness (8) and Grounding (8). Fixed Grounding timer NaN bug. Added 3 new exercises.
-- **2026-03-26**: Built Courses Portal (/courses) with level/category filters, detail modals, enrollment links, video previews.
-- **2026-03-26**: Built Community/Sacred Circle (/community) with journey/insight/gratitude/question post types.
-- **2026-03-26**: Expanded Admin CMS from 14 to 25 manageable collections.
-- **2026-03-26**: Added custom audio_url support to Sound Frequencies.
-- **2026-03-26**: Added "Learn & Connect" section to main menu.
+- **2026-03-26**: Added 13-chakra system (Earth Star → Universal Gateway)
+- **2026-03-26**: Added Energy Healing with Egyptian Sekhem & Australian Aboriginal modalities
+- **2026-03-26**: Created separate Somatic Yoga page & API (5 practices)
+- **2026-03-26**: Added Free Form Movement practices (Ecstatic Dance, Primal Shake, Intuitive Flow)
+- **2026-03-26**: Added Feminine Embodiment practices (Womb, Sensuality, Moon, Goddess, Rose)
+- **2026-03-26**: Added Masculine Embodiment practices (Warrior, King, Lover, Sage, Father)
+- **2026-03-26**: Updated chakra images with unique AI-generated visuals (throat, third eye)
+- **2026-03-26**: Fixed React.lazy() code-splitting for 65+ routes (performance)
 
 ## Backlog / Future Tasks
+
+### P1 (High Priority)
+- [ ] Generate unique AI images for remaining chakras (Crown, Earth Star, Soul Star, Stellar, Universal, Causal, Higher Heart)
+- [ ] Add more modalities to feminine embodiment (Priestess, Moon Lodge, etc.)
+- [ ] Add more modalities to masculine embodiment (Wild Man, Mentor, etc.)
 
 ### P2 (Medium Priority)
 - [ ] Migrate hardcoded frontend data (ElementalTemples, WaterPractices) to MongoDB
 - [ ] Daily Sacred Practice feature on home dashboard
+- [ ] Connect feminine embodiment to Rose Temple page
+- [ ] Connect masculine embodiment to Masculine Temple page
 
 ### P3 (Low Priority / Backlog)
 - [ ] Seed initial Sacred Geometry drawing guides into CMS
+- [ ] Add video tutorials for somatic practices
+
+## Technical Notes
+- All pages use React.lazy() for code-splitting (CRITICAL for performance)
+- AI images generated via Gemini Nano Banana (rate limited: 20/min)
+- TTS uses OpenAI with 4-part chunking to avoid timeout
+- Backend uses Motor async MongoDB driver
 
 ## Admin Access
 - URL: /admin/login

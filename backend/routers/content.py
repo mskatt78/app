@@ -783,8 +783,70 @@ async def get_free_form_movement(category: Optional[str] = None):
 # ============ CHAKRA CLEANSING ROUTES ============
 
 @router.get("/chakra-cleansing")
-async def get_chakra_cleansing():
-    """Get chakra cleansing practices."""
+async def get_chakra_cleansing(chakra: Optional[str] = None):
+    """Get chakra cleansing practices for all 13 chakras."""
     db = get_db()
-    practices = await db.chakra_cleansing.find({}, {"_id": 0}).to_list(length=100)
+    query = {}
+    if chakra:
+        query["chakra"] = {"$regex": f"^{chakra}$", "$options": "i"}
+    practices = await db.chakra_cleansing.find(query, {"_id": 0}).to_list(length=100)
+    return practices
+
+
+@router.get("/chakra-cleansing/{chakra_id}")
+async def get_chakra_cleansing_practice(chakra_id: str):
+    """Get a specific chakra cleansing practice."""
+    db = get_db()
+    practice = await db.chakra_cleansing.find_one({"id": chakra_id}, {"_id": 0})
+    if not practice:
+        raise HTTPException(status_code=404, detail="Chakra practice not found")
+    return practice
+
+
+# ============ SOMATIC YOGA ROUTES ============
+
+@router.get("/somatic-yoga")
+async def get_somatic_yoga(style: Optional[str] = None):
+    """Get somatic yoga practices."""
+    db = get_db()
+    query = {}
+    if style:
+        query["style"] = {"$regex": f"^{style}$", "$options": "i"}
+    practices = await db.somatic_yoga.find(query, {"_id": 0}).to_list(length=100)
+    return practices
+
+
+@router.get("/somatic-yoga/{practice_id}")
+async def get_somatic_yoga_practice(practice_id: str):
+    """Get a specific somatic yoga practice."""
+    db = get_db()
+    practice = await db.somatic_yoga.find_one({"id": practice_id}, {"_id": 0})
+    if not practice:
+        raise HTTPException(status_code=404, detail="Somatic yoga practice not found")
+    return practice
+
+
+# ============ FEMININE EMBODIMENT (ROSE TEMPLE) ============
+
+@router.get("/feminine-embodiment")
+async def get_feminine_embodiment(category: Optional[str] = None):
+    """Get feminine embodiment practices for Rose Temple."""
+    db = get_db()
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    practices = await db.feminine_embodiment.find(query, {"_id": 0}).to_list(length=100)
+    return practices
+
+
+# ============ MASCULINE EMBODIMENT ============
+
+@router.get("/masculine-embodiment")
+async def get_masculine_embodiment(category: Optional[str] = None):
+    """Get masculine embodiment practices for Masculine Temple."""
+    db = get_db()
+    query = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    practices = await db.masculine_embodiment.find(query, {"_id": 0}).to_list(length=100)
     return practices

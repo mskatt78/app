@@ -29,15 +29,8 @@ export default function SomaticYoga() {
 
   const fetchPractices = async () => {
     try {
-      // Use free-form-movement API with somatic yoga category filter
-      const { data } = await api.get("/free-form-movement?category=somatic_yoga");
-      // If empty, get all and filter client-side
-      if (data.length === 0) {
-        const allData = await api.get("/free-form-movement");
-        setPractices(allData.data.filter(p => p.category?.toLowerCase().includes('somatic') || p.category?.toLowerCase().includes('yoga')));
-      } else {
-        setPractices(data);
-      }
+      const { data } = await api.get("/somatic-yoga");
+      setPractices(data);
     } catch { toast.error("Failed to load practices"); }
     finally { setLoading(false); }
   };

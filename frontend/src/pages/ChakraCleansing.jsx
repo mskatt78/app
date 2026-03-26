@@ -9,13 +9,19 @@ import axios from "axios";
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
 const CHAKRA_CONFIG = {
-  root: { color: "bg-red-500", border: "border-red-500/30", text: "text-red-400", icon: "🔴", sanskrit: "Muladhara", element: "Earth", location: "Base of spine" },
-  sacral: { color: "bg-orange-500", border: "border-orange-500/30", text: "text-orange-400", icon: "🟠", sanskrit: "Svadhisthana", element: "Water", location: "Below navel" },
-  solar: { color: "bg-yellow-500", border: "border-yellow-500/30", text: "text-yellow-400", icon: "🟡", sanskrit: "Manipura", element: "Fire", location: "Solar plexus" },
-  heart: { color: "bg-green-500", border: "border-green-500/30", text: "text-green-400", icon: "💚", sanskrit: "Anahata", element: "Air", location: "Heart center" },
-  throat: { color: "bg-cyan-500", border: "border-cyan-500/30", text: "text-cyan-400", icon: "🔵", sanskrit: "Vishuddha", element: "Ether", location: "Throat" },
-  third_eye: { color: "bg-indigo-500", border: "border-indigo-500/30", text: "text-indigo-400", icon: "💜", sanskrit: "Ajna", element: "Light", location: "Between brows" },
-  crown: { color: "bg-violet-500", border: "border-violet-500/30", text: "text-violet-400", icon: "👑", sanskrit: "Sahasrara", element: "Cosmic", location: "Crown of head" },
+  earth_star: { color: "bg-stone-700", border: "border-stone-500/30", text: "text-stone-400", icon: "🌍", sanskrit: "Vasundhara", element: "Earth Core", location: "12 inches below feet", order: 0 },
+  root: { color: "bg-red-500", border: "border-red-500/30", text: "text-red-400", icon: "🔴", sanskrit: "Muladhara", element: "Earth", location: "Base of spine", order: 1 },
+  sacral: { color: "bg-orange-500", border: "border-orange-500/30", text: "text-orange-400", icon: "🟠", sanskrit: "Svadhisthana", element: "Water", location: "Below navel", order: 2 },
+  solar: { color: "bg-yellow-500", border: "border-yellow-500/30", text: "text-yellow-400", icon: "🟡", sanskrit: "Manipura", element: "Fire", location: "Solar plexus", order: 3 },
+  heart: { color: "bg-green-500", border: "border-green-500/30", text: "text-green-400", icon: "💚", sanskrit: "Anahata", element: "Air", location: "Heart center", order: 4 },
+  higher_heart: { color: "bg-teal-400", border: "border-teal-400/30", text: "text-teal-300", icon: "💎", sanskrit: "Thymus", element: "Higher Air", location: "Between heart & throat", order: 5 },
+  throat: { color: "bg-cyan-500", border: "border-cyan-500/30", text: "text-cyan-400", icon: "🔵", sanskrit: "Vishuddha", element: "Ether", location: "Throat", order: 6 },
+  third_eye: { color: "bg-indigo-500", border: "border-indigo-500/30", text: "text-indigo-400", icon: "💜", sanskrit: "Ajna", element: "Light", location: "Between brows", order: 7 },
+  crown: { color: "bg-violet-500", border: "border-violet-500/30", text: "text-violet-400", icon: "👑", sanskrit: "Sahasrara", element: "Cosmic", location: "Crown of head", order: 8 },
+  causal: { color: "bg-pink-300", border: "border-pink-300/30", text: "text-pink-200", icon: "🌸", sanskrit: "Causal", element: "Divine Feminine", location: "Back of head", order: 9 },
+  soul_star: { color: "bg-white", border: "border-white/30", text: "text-white", icon: "⭐", sanskrit: "Sutara", element: "Soul Light", location: "6 inches above crown", order: 10 },
+  stellar: { color: "bg-amber-200", border: "border-amber-200/30", text: "text-amber-100", icon: "✨", sanskrit: "Stellar Gateway", element: "Galactic", location: "12 inches above crown", order: 11 },
+  universal: { color: "bg-gradient-to-r from-violet-400 to-amber-300", border: "border-amber-300/30", text: "text-amber-200", icon: "🌌", sanskrit: "Universal Gateway", element: "Source", location: "18 inches above crown", order: 12 },
 };
 
 export default function ChakraCleansing() {
@@ -57,14 +63,18 @@ export default function ChakraCleansing() {
             </div>
             <div>
               <h1 className="text-4xl sm:text-5xl font-serif">Chakra Cleansing</h1>
-              <p className="text-muted-foreground mt-1">Self-healing guides for all 7 energy centers</p>
+              <p className="text-muted-foreground mt-1">Self-healing guides for all 13 energy centers</p>
             </div>
           </div>
           
-          {/* Chakra visual strip */}
-          <div className="flex gap-2 mt-6 justify-center">
-            {Object.entries(CHAKRA_CONFIG).map(([key, config]) => (
-              <div key={key} className={`w-8 h-8 rounded-full ${config.color} opacity-70 animate-pulse`} style={{ animationDelay: `${Object.keys(CHAKRA_CONFIG).indexOf(key) * 0.1}s` }} />
+          {/* Chakra visual strip - 13 chakras */}
+          <div className="flex gap-1.5 mt-6 justify-center flex-wrap">
+            {Object.entries(CHAKRA_CONFIG)
+              .sort((a, b) => a[1].order - b[1].order)
+              .map(([key, config], idx) => (
+              <div key={key} className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full ${config.color} opacity-80 animate-pulse shadow-lg`} 
+                style={{ animationDelay: `${idx * 0.08}s` }} 
+                title={`${config.sanskrit} - ${config.location}`} />
             ))}
           </div>
         </div>
