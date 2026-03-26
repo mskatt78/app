@@ -318,33 +318,46 @@ const Mindfulness = ({ user, api }) => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className={`p-6 rounded-2xl border backdrop-blur-xl cursor-pointer
+                  className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden
                              ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
                   onClick={() => setSelectedPractice(practice)}
                   data-testid={`practice-card-${practice.id}`}
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className={`p-3 rounded-xl ${colors.bg}`}>
-                      <Icon className={`w-6 h-6 ${colors.text}`} />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {practice.duration_minutes} min
+                  {practice.image_url && (
+                    <div className="relative h-36 overflow-hidden">
+                      <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                      <span className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs text-white">
+                        <Clock className="w-3 h-3" />{practice.duration_minutes} min
                       </span>
                     </div>
-                  </div>
-                  
-                  <h3 className="text-xl font-serif mb-2">{practice.name}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{practice.description}</p>
-                  
-                  <div className="flex flex-wrap gap-2">
-                    <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
-                      {practice.element}
-                    </span>
-                    <span className="px-3 py-1 rounded-full bg-white/5 text-xs capitalize">
-                      {practice.category}
-                    </span>
+                  )}
+                  <div className="p-6">
+                    {!practice.image_url && (
+                      <div className="flex items-start justify-between mb-4">
+                        <div className={`p-3 rounded-xl ${colors.bg}`}>
+                          <Icon className={`w-6 h-6 ${colors.text}`} />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-4 h-4" />
+                            {practice.duration_minutes} min
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <h3 className="text-xl font-serif mb-2">{practice.name}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{practice.description}</p>
+                    
+                    <div className="flex flex-wrap gap-2">
+                      <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
+                        {practice.element}
+                      </span>
+                      <span className="px-3 py-1 rounded-full bg-white/5 text-xs capitalize">
+                        {practice.category}
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               );

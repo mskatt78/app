@@ -67,8 +67,9 @@ const PracticeTimer = ({
   const autoStartedRef = useRef(false);
 
   // Calculate total duration from segments or use provided
+  // Support both duration_seconds and duration field names
   const calculatedTotal = segments.length > 0 
-    ? segments.reduce((sum, seg) => sum + seg.duration_seconds, 0)
+    ? segments.reduce((sum, seg) => sum + (seg.duration_seconds || seg.duration || 60), 0)
     : totalDuration;
 
   const currentSegment = segments[currentSegmentIndex];
@@ -335,7 +336,8 @@ const PracticeTimer = ({
           const newTime = prev + 1;
           
           // Check if segment is complete
-          if (currentSegment && newTime >= currentSegment.duration_seconds) {
+          const segmentDuration = currentSegment.duration_seconds || currentSegment.duration || 60;
+          if (currentSegment && newTime >= segmentDuration) {
             // Move to next segment
             if (currentSegmentIndex < segments.length - 1) {
               setCurrentSegmentIndex(prev => prev + 1);
@@ -407,15 +409,19 @@ const PracticeTimer = ({
 
   const handleSkipSegment = () => {
     if (currentSegmentIndex < segments.length - 1) {
-      setTotalElapsed(prev => prev + (currentSegment.duration_seconds - segmentTime));
+      const segmentDuration = currentSegment.duration_seconds || currentSegment.duration || 60;
+      setTotalElapsed(prev => prev + (segmentDuration - segmentTime));
       setCurrentSegmentIndex(prev => prev + 1);
       setSegmentTime(0);
     }
   };
 
   const overallProgress = (totalElapsed / calculatedTotal) * 100;
+  const currentSegmentDuration = currentSegment 
+    ? (currentSegment.duration_seconds || currentSegment.duration || 60)
+    : 60;
   const segmentProgress = currentSegment 
-    ? (segmentTime / currentSegment.duration_seconds) * 100 
+    ? (segmentTime / currentSegmentDuration) * 100 
     : 0;
 
   return (
@@ -459,7 +465,7 @@ const PracticeTimer = ({
               Step {currentSegmentIndex + 1} of {segments.length}
             </span>
             <span className="text-sm text-primary">
-              {formatTime(currentSegment.duration_seconds - segmentTime)}
+              {formatTime(currentSegmentDuration - segmentTime)}
             </span>
           </div>
           <h4 className="font-medium text-lg mb-2">{currentSegment.name}</h4>

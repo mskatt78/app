@@ -79,30 +79,43 @@ const GroundingPractices = ({ user, api }) => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-xl 
-                          cursor-pointer hover:scale-[1.02] transition-all duration-300"
+                className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 backdrop-blur-xl 
+                          cursor-pointer hover:scale-[1.02] transition-all duration-300 overflow-hidden"
                 onClick={() => setSelectedExercise(exercise)}
                 data-testid={`exercise-card-${exercise.id}`}
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="p-3 rounded-xl bg-emerald-500/10">
-                    <Mountain className="w-6 h-6 text-emerald-400" />
-                  </div>
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>{exercise.duration_minutes} min</span>
-                  </div>
-                </div>
-                
-                <h3 className="text-xl font-serif mb-3">{exercise.name}</h3>
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{exercise.description}</p>
-                
-                <div className="flex flex-wrap gap-1">
-                  {exercise.benefits?.slice(0, 2).map((benefit) => (
-                    <span key={benefit} className="px-2 py-1 rounded-full bg-white/5 text-xs text-muted-foreground">
-                      {benefit}
+                {exercise.image_url && (
+                  <div className="relative h-36 overflow-hidden">
+                    <img src={exercise.image_url} alt={exercise.name} className="w-full h-full object-cover" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <span className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs text-white">
+                      <Clock className="w-3 h-3" />{exercise.duration_minutes} min
                     </span>
-                  ))}
+                  </div>
+                )}
+                <div className="p-6">
+                  {!exercise.image_url && (
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="p-3 rounded-xl bg-emerald-500/10">
+                        <Mountain className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        <span>{exercise.duration_minutes} min</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <h3 className="text-xl font-serif mb-3">{exercise.name}</h3>
+                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{exercise.description}</p>
+                  
+                  <div className="flex flex-wrap gap-1">
+                    {exercise.benefits?.slice(0, 2).map((benefit) => (
+                      <span key={benefit} className="px-2 py-1 rounded-full bg-white/5 text-xs text-muted-foreground">
+                        {benefit}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -144,6 +157,12 @@ const GroundingPractices = ({ user, api }) => {
           {selectedExercise && (
             <>
               <DialogHeader>
+                {selectedExercise.image_url && (
+                  <div className="relative h-40 rounded-xl overflow-hidden mb-3 -mx-2">
+                    <img src={selectedExercise.image_url} alt={selectedExercise.name} className="w-full h-full object-cover" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  </div>
+                )}
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs mb-2 w-fit
                                bg-emerald-500/10 text-emerald-400">
                   Earth Element

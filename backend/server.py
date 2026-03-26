@@ -178,6 +178,17 @@ async def startup_seed_database():
         await db.somatic_practices.insert_many(SOMATIC_PRACTICES)
         logger.info(f"somatic_practices refreshed — {len(SOMATIC_PRACTICES)} entries.")
 
+        # Always reseed grounding and mindfulness (images added)
+        from data.all_content import GROUNDING_EXERCISES, MINDFULNESS_PRACTICES
+        logger.info("Refreshing grounding_exercises collection...")
+        await db.grounding_exercises.delete_many({})
+        await db.grounding_exercises.insert_many(GROUNDING_EXERCISES)
+        logger.info(f"grounding_exercises refreshed — {len(GROUNDING_EXERCISES)} entries.")
+        logger.info("Refreshing mindfulness_practices collection...")
+        await db.mindfulness_practices.delete_many({})
+        await db.mindfulness_practices.insert_many(MINDFULNESS_PRACTICES)
+        logger.info(f"mindfulness_practices refreshed — {len(MINDFULNESS_PRACTICES)} entries.")
+
         # Only seed everything else if yoga_poses is empty
         yoga_count = await db.yoga_poses.count_documents({})
         if yoga_count == 0:
