@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Toaster } from "./components/ui/sonner";
@@ -7,81 +7,70 @@ import AppFooter from "./components/AppFooter";
 import TopNav from "./components/TopNav";
 import InstallPrompt from "./components/InstallPrompt";
 
-// Pages
+// Eager load: landing & main menu (first things user sees)
 import LandingPage from "./pages/LandingPage";
-import Dashboard from "./pages/Dashboard";
-import YogaLibrary from "./pages/YogaLibrary";
-import OracleReadings from "./pages/OracleReadings";
-import Breathwork from "./pages/Breathwork";
-import AstrologyCalendar from "./pages/AstrologyCalendar";
-import CrystalGuide from "./pages/CrystalGuide";
-import MantrasLibrary from "./pages/MantrasLibrary";
-import MudrasLibrary from "./pages/MudrasLibrary";
-import SomaticMovement from "./pages/SomaticMovement";
-import GroundingPractices from "./pages/GroundingPractices";
-import Favorites from "./pages/Favorites";
-import RitualBuilder from "./pages/RitualBuilder";
-import Achievements from "./pages/Achievements";
-import Journal from "./pages/Journal";
-import Settings from "./pages/Settings";
-import Mindfulness from "./pages/Mindfulness";
-import Meditations from "./pages/Meditations";
-import Numerology from "./pages/Numerology";
-import AdminCMS from "./pages/AdminCMS";
-import AdminLogin from "./pages/AdminLogin";
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminSection from "./pages/AdminSection";
-// New Shamanic Pages
-import PracticeLog from "./pages/PracticeLog";
-import EarthAltars from "./pages/EarthAltars";
-import CreativeProcesses from "./pages/CreativeProcesses";
-import HeartPractices from "./pages/HeartPractices";
-import ShamanicPractices from "./pages/ShamanicPractices";
-import ElementalPractices from "./pages/ElementalPractices";
 import MainMenu from "./pages/MainMenu";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-// New Content Pages
-import LiveSessions from "./pages/LiveSessions";
-import Retreats from "./pages/Retreats";
-import Courses from "./pages/Courses";
-import Community from "./pages/Community";
-import Books from "./pages/Books";
-// Payment Pages
-import Pricing from "./pages/Pricing";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import PaymentCancel from "./pages/PaymentCancel";
-// Birth Chart
-import BirthChart from "./pages/BirthChart";
-// Reviews
-import Reviews from "./pages/Reviews";
-// Sacred Guardians
-import SacredGuardians from "./pages/SacredGuardians";
-// Ancient Wisdom Traditions
-import AncientWisdom from "./pages/AncientWisdom";
-// Sound & Frequency Healing
-import SoundFrequencies from "./pages/SoundFrequencies";
-// Tarot Reading
-import TarotReading from "./pages/TarotReading";
-// New Temples
-import RoseTemple from "./pages/RoseTemple";
-import ElementalTemples from "./pages/ElementalTemples";
-import MasculineTemple from "./pages/MasculineTemple";
-import PartnerYoga from "./pages/PartnerYoga";
-import SeasonalTemple from "./pages/SeasonalTemple";
-import SunriseSunsetPractices from "./pages/SunriseSunsetPractices";
 
-// Divination
-import RuneReadings from "./pages/RuneReadings";
-import IChing from "./pages/IChing";
-import LightCodes from "./pages/LightCodes";
-import WaterPractices from "./pages/WaterPractices";
-import GeneKeys from "./pages/GeneKeys";
-import HumanDesign from "./pages/HumanDesign";
-// New Features
-import ProgressDashboard from "./pages/ProgressDashboard";
-import ProfileCalculator from "./pages/ProfileCalculator";
-import StarLineageQuiz from "./pages/StarLineageQuiz";
-import LinksPage from "./pages/LinksPage";
+// Lazy load everything else
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const YogaLibrary = lazy(() => import("./pages/YogaLibrary"));
+const OracleReadings = lazy(() => import("./pages/OracleReadings"));
+const Breathwork = lazy(() => import("./pages/Breathwork"));
+const AstrologyCalendar = lazy(() => import("./pages/AstrologyCalendar"));
+const CrystalGuide = lazy(() => import("./pages/CrystalGuide"));
+const MantrasLibrary = lazy(() => import("./pages/MantrasLibrary"));
+const MudrasLibrary = lazy(() => import("./pages/MudrasLibrary"));
+const SomaticMovement = lazy(() => import("./pages/SomaticMovement"));
+const GroundingPractices = lazy(() => import("./pages/GroundingPractices"));
+const Favorites = lazy(() => import("./pages/Favorites"));
+const RitualBuilder = lazy(() => import("./pages/RitualBuilder"));
+const Achievements = lazy(() => import("./pages/Achievements"));
+const Journal = lazy(() => import("./pages/Journal"));
+const Settings = lazy(() => import("./pages/Settings"));
+const Mindfulness = lazy(() => import("./pages/Mindfulness"));
+const Meditations = lazy(() => import("./pages/Meditations"));
+const Numerology = lazy(() => import("./pages/Numerology"));
+const AdminCMS = lazy(() => import("./pages/AdminCMS"));
+const AdminLogin = lazy(() => import("./pages/AdminLogin"));
+const AdminDashboard = lazy(() => import("./pages/AdminDashboard"));
+const AdminSection = lazy(() => import("./pages/AdminSection"));
+const PracticeLog = lazy(() => import("./pages/PracticeLog"));
+const EarthAltars = lazy(() => import("./pages/EarthAltars"));
+const CreativeProcesses = lazy(() => import("./pages/CreativeProcesses"));
+const HeartPractices = lazy(() => import("./pages/HeartPractices"));
+const ShamanicPractices = lazy(() => import("./pages/ShamanicPractices"));
+const ElementalPractices = lazy(() => import("./pages/ElementalPractices"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const LiveSessions = lazy(() => import("./pages/LiveSessions"));
+const Retreats = lazy(() => import("./pages/Retreats"));
+const Courses = lazy(() => import("./pages/Courses"));
+const Community = lazy(() => import("./pages/Community"));
+const Books = lazy(() => import("./pages/Books"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const PaymentCancel = lazy(() => import("./pages/PaymentCancel"));
+const BirthChart = lazy(() => import("./pages/BirthChart"));
+const Reviews = lazy(() => import("./pages/Reviews"));
+const SacredGuardians = lazy(() => import("./pages/SacredGuardians"));
+const AncientWisdom = lazy(() => import("./pages/AncientWisdom"));
+const SoundFrequencies = lazy(() => import("./pages/SoundFrequencies"));
+const TarotReading = lazy(() => import("./pages/TarotReading"));
+const RoseTemple = lazy(() => import("./pages/RoseTemple"));
+const ElementalTemples = lazy(() => import("./pages/ElementalTemples"));
+const MasculineTemple = lazy(() => import("./pages/MasculineTemple"));
+const PartnerYoga = lazy(() => import("./pages/PartnerYoga"));
+const SeasonalTemple = lazy(() => import("./pages/SeasonalTemple"));
+const SunriseSunsetPractices = lazy(() => import("./pages/SunriseSunsetPractices"));
+const RuneReadings = lazy(() => import("./pages/RuneReadings"));
+const IChing = lazy(() => import("./pages/IChing"));
+const LightCodes = lazy(() => import("./pages/LightCodes"));
+const WaterPractices = lazy(() => import("./pages/WaterPractices"));
+const GeneKeys = lazy(() => import("./pages/GeneKeys"));
+const HumanDesign = lazy(() => import("./pages/HumanDesign"));
+const ProgressDashboard = lazy(() => import("./pages/ProgressDashboard"));
+const ProfileCalculator = lazy(() => import("./pages/ProfileCalculator"));
+const StarLineageQuiz = lazy(() => import("./pages/StarLineageQuiz"));
+const LinksPage = lazy(() => import("./pages/LinksPage"));
 // Notifications
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 
@@ -313,6 +302,14 @@ function AppRouter() {
       {showNav && <TopNav user={user} />}
       {/* Add padding at top for nav bar */}
       {showNav && <div className="h-16" />}
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="text-center">
+            <div className="w-10 h-10 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-3" />
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+      }>
       <Routes>
       <Route path="/" element={<LandingPage api={api} />} />
       <Route
@@ -796,6 +793,7 @@ function AppRouter() {
         element={<PaymentCancel />}
       />
     </Routes>
+      </Suspense>
     </>
   );
 }
