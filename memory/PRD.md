@@ -109,7 +109,8 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - CRUD /api/admin/collections/:name/items
 
 ## Recent Changes
-- **2026-03-26**: Fixed Guided Meditation TTS timeout. Split 10-12 min scripts into 4 parts (~1000-1500 chars each). Frontend requests all 4 in parallel, chains playback seamlessly with "Part X of 4" status. Each part generates in ~18-29s (was ~50s for a single oversized request).
+- **2026-03-26**: Fixed Guided Meditation TTS timeout. Split 10-12 min scripts into 4 parts (~1000-1500 chars each). Frontend requests all 4 in parallel, chains playback seamlessly with "Part X of 4" status. Each part generates in ~18-29s.
+- **2026-03-26**: Comprehensive audit of all guided sections. Added images to Mindfulness (8 practices) and Grounding (8 exercises). Added image rendering to Mindfulness, Grounding, and Breathwork card components. Fixed Grounding timer NaN bug (PracticeTimer field name mismatch). Added 3 new Grounding exercises (Tree Hugging, Stone Holding, Mountain Visualization). Verified all 14 content APIs return data with images.
 
 ## Backlog / Future Tasks
 
