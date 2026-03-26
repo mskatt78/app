@@ -17,11 +17,11 @@ const MudrasLibrary = ({ user, api }) => {
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
   const elementColors = {
-    Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", gradient: "from-emerald-950/80 via-emerald-900/60 to-emerald-900/80" },
-    Water: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", gradient: "from-blue-950/80 via-blue-900/60 to-blue-900/80" },
-    Fire: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20", gradient: "from-orange-950/80 via-orange-900/60 to-orange-900/80" },
-    Air: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20", gradient: "from-cyan-950/80 via-cyan-900/60 to-cyan-900/80" },
-    Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", gradient: "from-purple-950/80 via-purple-900/60 to-purple-900/80" },
+    Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", gradient: "from-emerald-950/60 via-transparent to-transparent" },
+    Water: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", gradient: "from-blue-950/60 via-transparent to-transparent" },
+    Fire: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20", gradient: "from-orange-950/60 via-transparent to-transparent" },
+    Air: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20", gradient: "from-cyan-950/60 via-transparent to-transparent" },
+    Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", gradient: "from-purple-950/60 via-transparent to-transparent" },
   };
 
   const placeholderImage = "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800";
@@ -116,7 +116,7 @@ const MudrasLibrary = ({ user, api }) => {
                     <img
                       src={hasImageError ? placeholderImage : (mudra.image_url || placeholderImage)}
                       alt={mudra.name}
-                      className="w-full h-full object-cover opacity-40"
+                      className="w-full h-full object-cover opacity-90"
                       onError={() => handleImageError(mudra.id)}
                     />
                     <div className={`absolute inset-0 bg-gradient-to-t ${colors.gradient}`} />
@@ -159,7 +159,7 @@ const MudrasLibrary = ({ user, api }) => {
                 <img
                   src={imageErrors.has(selectedMudra.id) ? placeholderImage : (selectedMudra.image_url || placeholderImage)}
                   alt={selectedMudra.name}
-                  className="w-full h-full object-cover opacity-40"
+                  className="w-full h-full object-cover opacity-90"
                   onError={() => handleImageError(selectedMudra.id)}
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t ${elementColors[selectedMudra.element]?.gradient || 'from-black/80 to-black/40'}`} />
