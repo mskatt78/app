@@ -60,87 +60,92 @@ const MainMenu = ({ user }) => {
 
   const menuSections = [
     {
+      title: "Daily Practice",
+      items: [
+        { path: "/daily-practice", icon: Sunrise, label: "Today's Guidance", color: "text-violet-400", desc: "Moon phase & daily wisdom" },
+        { path: "/practice-journal", icon: NotebookPen, label: "Practice Journal", color: "text-emerald-400", desc: "Track your sacred journey" },
+      ]
+    },
+    {
       title: "Movement & Body",
       items: [
         { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400", desc: "78 sacred poses" },
-        { path: "/partner-yoga", icon: Users, label: "Partner Yoga", color: "text-teal-400", desc: "Yoga for two" },
         { path: "/breathwork", icon: Wind, label: "Breathwork", color: "text-cyan-400", desc: "Pranayama practices" },
-        { path: "/somatic", icon: Flame, label: "Somatic Movement", color: "text-red-400", desc: "Tai Chi & Qigong" },
         { path: "/mudras", icon: Hand, label: "Mudras", color: "text-orange-400", desc: "Sacred hand gestures" },
+        { path: "/somatic", icon: Flame, label: "Somatic Movement", color: "text-red-400", desc: "Tai Chi & Qigong" },
+        { path: "/partner-yoga", icon: Users, label: "Partner Yoga", color: "text-teal-400", desc: "Sacred connection for two" },
       ]
     },
     {
       title: "Mind & Spirit",
       items: [
-        { path: "/meditations", icon: Brain, label: "Guided Meditations", color: "text-purple-400", desc: "With voice guidance" },
-        { path: "/mindfulness", icon: Heart, label: "Mindfulness", color: "text-rose-400", desc: "Present moment practices" },
+        { path: "/meditations", icon: Brain, label: "Guided Meditations", color: "text-purple-400", desc: "Voice-guided journeys" },
+        { path: "/mindfulness", icon: Heart, label: "Mindfulness", color: "text-rose-400", desc: "Present moment awareness" },
         { path: "/grounding", icon: TreePine, label: "Grounding", color: "text-green-400", desc: "Earth connection" },
-        { path: "/mantras", icon: Music2, label: "Mantras", color: "text-amber-400", desc: "Sacred sounds" },
+        { path: "/mantras", icon: Music2, label: "Mantras", color: "text-amber-400", desc: "Sacred sound healing" },
       ]
     },
     {
       title: "Sacred Temples",
       items: [
-        { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400", desc: "Ancient feminine wisdom" },
+        { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400", desc: "Divine feminine embodiment" },
+        { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400", desc: "Sacred masculine wisdom" },
         { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400", desc: "Earth · Water · Fire · Air · Spirit" },
-        { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400", desc: "Embodied masculine wisdom" },
-        { path: "/seasonal-temple", icon: Leaf, label: "Wheel of the Year", color: "text-orange-400", desc: "8 Sabbats · Earth Crafting" },
+        { path: "/seasonal-temple", icon: Leaf, label: "Wheel of the Year", color: "text-orange-400", desc: "8 Sabbats · Earth cycles" },
         { path: "/sunrise-sunset", icon: Sunrise, label: "Sunrise & Sunset", color: "text-yellow-400", desc: "Sacred daily transitions" },
-        { path: "/water-practices", icon: Droplets, label: "Water Practices", color: "text-blue-400", desc: "Blessing · Crystalline · Cleansing" },
+        { path: "/water-practices", icon: Droplets, label: "Water Practices", color: "text-blue-400", desc: "Blessing & cleansing rituals" },
       ]
     },
     {
       title: "Shamanic Wisdom",
       items: [
-        { path: "/shamanic", icon: Moon, label: "Shamanic Practices", color: "text-indigo-400", desc: "Journey work" },
-        { path: "/elemental", icon: Sparkles, label: "Elemental", color: "text-teal-400", desc: "Five elements" },
-        { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening" },
-        { path: "/creative", icon: Palette, label: "Creative Processes", color: "text-violet-400", desc: "Sacred art" },
-        { path: "/sacred-guardians", icon: Feather, label: "Sacred Guardians", color: "text-amber-400", desc: "Power animals, dragons & angels" },
-        { path: "/ancient-wisdom",   icon: Globe,   label: "Ancient Wisdom Traditions", color: "text-yellow-400", desc: "Egyptian, Celtic, Avalon & more" },
-        { path: "/sound-frequencies", icon: Volume2, label: "Sound & Frequencies", color: "text-cyan-400", desc: "Dolphin, whale, crystal healing" },
+        { path: "/shamanic", icon: Moon, label: "Shamanic Practices", color: "text-indigo-400", desc: "Journey & soul retrieval" },
+        { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening ceremonies" },
+        { path: "/sacred-guardians", icon: Feather, label: "Sacred Guardians", color: "text-amber-400", desc: "Animals, dragons & angels" },
+        { path: "/elemental", icon: Sparkles, label: "Five Elements", color: "text-teal-400", desc: "Elemental wisdom" },
+        { path: "/ancient-wisdom", icon: Globe, label: "Ancient Traditions", color: "text-yellow-400", desc: "Egyptian, Celtic & Avalon" },
+        { path: "/sound-frequencies", icon: Volume2, label: "Sound Healing", color: "text-cyan-400", desc: "Frequencies & vibration" },
+        { path: "/creative", icon: Palette, label: "Sacred Art", color: "text-violet-400", desc: "Creative expression" },
       ]
     },
     {
       title: "Divination & Guidance",
       items: [
-        { path: "/oracle", icon: Eye, label: "Oracle Readings", color: "text-purple-400", desc: "Spirit guidance" },
         { path: "/tarot", icon: Star, label: "Tarot Reading", color: "text-indigo-400", desc: "Major Arcana wisdom" },
+        { path: "/oracle", icon: Eye, label: "Oracle Cards", color: "text-purple-400", desc: "Spirit guidance" },
         { path: "/rune-readings", icon: Star, label: "Rune Readings", color: "text-amber-400", desc: "Elder Futhark wisdom" },
         { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
-        { path: "/gene-keys", icon: Dna, label: "Gene Keys", color: "text-violet-400", desc: "64 Keys · Shadow to Siddhi" },
-        { path: "/human-design", icon: Hexagon, label: "Human Design", color: "text-indigo-400", desc: "Your energetic blueprint" },
-        { path: "/profile-calculator", icon: Calculator, label: "Profile Calculator", color: "text-pink-400", desc: "Discover your unique blueprint" },
         { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400", desc: "Life path numbers" },
-        { path: "/astrology", icon: Moon, label: "Moon Calendar", color: "text-blue-400", desc: "13-Moon system" },
+        { path: "/astrology", icon: Moon, label: "Moon Calendar", color: "text-blue-400", desc: "Lunar cycles & phases" },
+        { path: "/gene-keys", icon: Dna, label: "Gene Keys", color: "text-violet-400", desc: "Shadow to Siddhi" },
+        { path: "/human-design", icon: Hexagon, label: "Human Design", color: "text-indigo-400", desc: "Your energetic blueprint" },
+        { path: "/profile-calculator", icon: Calculator, label: "Profile Calculator", color: "text-pink-400", desc: "Discover your type" },
       ]
     },
     {
       title: "Sacred Tools",
       items: [
         { path: "/crystals", icon: Gem, label: "Crystal Guide", color: "text-pink-400", desc: "42 healing stones" },
-        { path: "/light-codes", icon: Hexagon, label: "Light Codes", color: "text-violet-400", desc: "Sacred geometry & symbols" },
-        { path: "/progress", icon: BarChart3, label: "Progress Dashboard", color: "text-emerald-400", desc: "Track your sacred journey" },
-        { path: "/reviews", icon: MessageCircle, label: "Community Reviews", color: "text-rose-400", desc: "Sacred voices & testimonials" },
+        { path: "/light-codes", icon: Hexagon, label: "Light Codes", color: "text-violet-400", desc: "Sacred geometry" },
       ]
     },
     {
       title: "Self-Healing & Energy Work",
       items: [
-        { path: "/daily-practice", icon: Sunrise, label: "Daily Sacred Practice", color: "text-violet-400", desc: "Your personalized daily guidance" },
-        { path: "/practice-journal", icon: NotebookPen, label: "Practice Journal", color: "text-emerald-400", desc: "Track your sacred journey" },
-        { path: "/energy-healing", icon: Sparkles, label: "Energy Healing", color: "text-amber-400", desc: "Reiki, Egyptian & more" },
-        { path: "/chakra-cleansing", icon: Hexagon, label: "Chakra Cleansing", color: "text-violet-400", desc: "All 7 energy centers" },
+        { path: "/chakra-cleansing", icon: Hexagon, label: "Chakra Cleansing", color: "text-violet-400", desc: "All 13 energy centers" },
+        { path: "/energy-healing", icon: Sparkles, label: "Energy Healing", color: "text-amber-400", desc: "Reiki, Sekhem & Dreamtime" },
+        { path: "/somatic-yoga", icon: Leaf, label: "Somatic Yoga", color: "text-emerald-400", desc: "Trauma release & healing" },
         { path: "/free-form-movement", icon: Wind, label: "Free Form Movement", color: "text-fuchsia-400", desc: "Ecstatic dance & liberation" },
-        { path: "/somatic-yoga", icon: Leaf, label: "Somatic Yoga", color: "text-emerald-400", desc: "Body-centered healing" },
       ]
     },
     {
-      title: "Learn & Connect",
+      title: "Community & Learning",
       items: [
         { path: "/courses", icon: BookOpen, label: "Courses", color: "text-violet-400", desc: "Live & recorded teachings" },
-        { path: "/community", icon: Users, label: "Sacred Circle", color: "text-rose-400", desc: "Shared journeys & wisdom" },
+        { path: "/community", icon: Users, label: "Sacred Circle", color: "text-rose-400", desc: "Shared wisdom & journeys" },
         { path: "/retreats", icon: Globe, label: "Retreats", color: "text-emerald-400", desc: "Sacred gatherings" },
+        { path: "/reviews", icon: MessageCircle, label: "Testimonials", color: "text-amber-400", desc: "Community voices" },
+        { path: "/progress", icon: BarChart3, label: "My Progress", color: "text-cyan-400", desc: "Track your growth" },
       ]
     }
   ];
