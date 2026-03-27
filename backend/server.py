@@ -127,7 +127,7 @@ async def do_database_seeding():
             
             if crystals_count == 0 or yoga_count == 0:
                 logger.info("Database empty - running minimal seed...")
-                await minimal_seed()
+                await seed_all_content()
         except Exception as e:
             logger.error(f"Error checking database: {e}")
         return
@@ -335,6 +335,13 @@ async def do_database_seeding():
             logger.info(f"Applied comprehensive teachings to {len(BREATHWORK_DEEP_TEACHINGS)} breathwork sessions")
         except Exception as e:
             logger.warning(f"Could not apply comprehensive deep teachings: {e}")
+
+        # Always reseed community posts so Sacred Circle content stays fresh
+        from data.community_posts import COMMUNITY_POSTS
+        logger.info("Refreshing community_posts collection...")
+        await db.community_posts.delete_many({})
+        await db.community_posts.insert_many(COMMUNITY_POSTS)
+        logger.info(f"community_posts refreshed — {len(COMMUNITY_POSTS)} entries.")
 
         # Only seed everything else if crystals is empty (to avoid duplicate seeding)
         crystals_count = await db.crystals.count_documents({})

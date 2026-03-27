@@ -1,0 +1,56 @@
+{
+  "summary": "Bug fix verification for 4 reported issues: Mudras (unique images), Heart Practices (no black screen), Courses (3 Sacred Rites), Sacred Circle (5 community posts). All 18 backend tests passed. All 4 UI flows verified via Playwright. Core fixes working, but 1 UX issue found in Heart Practices guided mode.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "HeartPractices.jsx - Guided Practice Mode",
+        "issue": "When 'Begin Guided Heart Practice' is clicked, the guided mode shows only the practice name and a 'When complete, press button below' message — NO actual step-by-step instructions shown for 7 out of 10 practices. Root cause: HeartPractices.jsx only reads `selectedPractice.steps`, but most heart practice DB records use `ceremony_steps`, `meditation_steps`, `journey_steps`, `ritual_steps`, or `visualization_steps` — not `steps`. Only 3 practices (Meridian Therapy Flow, Trauma-Informed Somatic Shedding, Shamanic Healing Journey) use `steps`. The original 'black screen' crash bug is fixed — no crash occurs — but the guided mode shows near-empty content for most practices.",
+        "selector": "[data-testid=\"begin-practice-btn\"]",
+        "priority": "MEDIUM",
+        "fix_suggestion": "In HeartPractices.jsx guided mode, also read ceremony_steps, meditation_steps, journey_steps, ritual_steps, visualization_steps — OR normalise all practices in the DB to use `steps` field. Example fix in JSX: const steps = selectedPractice.steps || selectedPractice.ceremony_steps || selectedPractice.meditation_steps || selectedPractice.journey_steps || selectedPractice.ritual_steps || selectedPractice.visualization_steps || [];"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_bug_fixes_iteration44.py",
+    "/app/test_reports/pytest/pytest_iteration44.xml"
+  ],
+  "action_items": [
+    "Fix HeartPractices.jsx to read alternate step field names (ceremony_steps, meditation_steps, journey_steps, etc.) — guided mode is currently near-empty for 7/10 practices despite having step data in DB"
+  ],
+  "critical_code_review_comments": [
+    "HeartPractices.jsx guided mode only reads `selectedPractice.steps` — needs to also check `ceremony_steps`, `meditation_steps`, `journey_steps`, `ritual_steps`, `visualization_steps`. All 10 practices have step content in some field, but only 3 display it.",
+    "Heart practices also have `affirmations` (plural array) but JSX checks `selectedPractice.affirmation` (singular string) — first practice won't show affirmation in guided mode",
+    "The black screen issue (caused by PracticeTimer) is fully resolved — no crashes or blank screens occur"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_bug_fixes_iteration44.py"
+  ],
+  "success_rate": {
+    "backend": "100% - 18/18 tests passed",
+    "frontend": "75% - 3/4 bugs fully fixed, Heart Practices guided mode works but shows minimal content"
+  },
+  "seed_data_creation": "None - data already seeded via server.py startup",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All 4 reported bugs verified. Bug 1 (mudra images) - FIXED: 12 unique Pexels/Unsplash URLs. Bug 2 (heart practices black screen) - FIXED (no crash), but guided mode still shows minimal content due to field name mismatch (steps vs ceremony_steps/etc). Bug 3 (Sacred Rites courses) - FIXED: 3 courses confirmed. Bug 4 (Sacred Circle empty) - FIXED: 5 community posts confirmed. Main remaining issue: HeartPractices.jsx guided mode field name mismatch for 7/10 practices.",
+  "api_verification": {
+    "GET /api/mudras": "PASS - 12 mudras returned, all with unique image URLs",
+    "GET /api/heart-practices": "PASS - 10 practices returned, step-type fields exist in various forms",
+    "GET /api/courses": "PASS - 3 Sacred Rites: Munay Ki, Nusta Karpay, 13th Womb Rite",
+    "GET /api/community/posts": "PASS - 5 posts: Munay Ki, Womb Rite, Nusta Karpay, Welcome, Shamanic Calling"
+  },
+  "rca_of_issues": {
+    "heart_practices_guided_mode_minimal_content": {
+      "root_cause": "Data structure mismatch: HeartPractices.jsx reads selectedPractice.steps, but heart practice DB records use ceremony_steps, meditation_steps, journey_steps, ritual_steps, visualization_steps for different practice types. Only the 3 newest practices (ids 7-9 in shamanic_content.py) use the 'steps' key.",
+      "reproduction": "Navigate to /heart-practices, click any of the first 6 practice cards, click 'Begin Guided Heart Practice' — guided mode shows name + 'When complete...' but NO practice steps",
+      "mitigation": "Update HeartPractices.jsx line 292: replace `selectedPractice.steps` with a merged/fallback: const steps = selectedPractice.steps || selectedPractice.ceremony_steps || selectedPractice.meditation_steps || selectedPractice.journey_steps || selectedPractice.ritual_steps || selectedPractice.visualization_steps || [];"
+    }
+  }
+}

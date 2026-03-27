@@ -24,7 +24,7 @@ const MudrasLibrary = ({ user, api }) => {
     Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", gradient: "from-purple-950/60 via-transparent to-transparent" },
   };
 
-  const placeholderImage = "https://images.unsplash.com/photo-1595754069947-f9896fed5b38?w=800";
+  const placeholderImage = "https://images.pexels.com/photos/6867682/pexels-photo-6867682.jpeg?auto=compress&cs=tinysrgb&w=800";
 
   useEffect(() => {
     fetchMudras();

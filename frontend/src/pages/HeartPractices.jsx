@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Heart, HeartHandshake, Sparkles, Users, Flower,
-  ChevronRight, X, Clock, Play, Star, Pause
+  ChevronRight, X, Clock, Play, Star, CheckCircle2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
-import PracticeTimer from "../components/PracticeTimer";
-import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const HeartPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -193,14 +191,14 @@ const HeartPractices = ({ user, api }) => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col"
+              className="relative bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
               data-testid="practice-modal"
             >
-              {/* Close button always visible */}
+              {/* Close button */}
               <button
                 onClick={() => { setSelectedPractice(null); setIsPracticing(false); }}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10"
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10 hover:bg-black/70 transition-colors"
                 data-testid="close-modal"
               >
                 <X className="w-5 h-5" />
@@ -215,9 +213,9 @@ const HeartPractices = ({ user, api }) => {
                         <img
                           src={selectedPractice.image_url}
                           alt={selectedPractice.name}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover rounded-t-2xl"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent rounded-t-2xl" />
                       </div>
                     )}
                     
@@ -255,7 +253,7 @@ const HeartPractices = ({ user, api }) => {
                           <ol className="space-y-3">
                             {selectedPractice.steps.map((step, i) => (
                               <li key={i} className="flex items-start gap-3 text-sm">
-                                <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
+                                <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
                                   {i + 1}
                                 </span>
                                 <span className="text-muted-foreground">{step}</span>
@@ -274,72 +272,43 @@ const HeartPractices = ({ user, api }) => {
                     </div>
                   </>
                 ) : (
-                  /* Guided Practice Mode with Timer */
-                  <div className="p-6 space-y-6">
-                    <div className="text-center mb-4">
+                  /* Guided Practice Mode - Clean Simple View */
+                  <div className="p-6 space-y-5">
+                    <div className="text-center pt-4">
                       <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-pink-500/20 flex items-center justify-center">
                         <Heart className="w-8 h-8 text-pink-400" />
                       </div>
                       <h2 className="text-2xl font-serif">{selectedPractice.name}</h2>
-                      <p className="text-sm text-muted-foreground mt-2">Guided Heart Practice</p>
+                      <p className="text-sm text-pink-300/70 mt-1">Guided Heart Practice — {selectedPractice.duration_minutes || 20} min</p>
                     </div>
 
-                    {/* Guided Audio */}
-                    <div className="flex justify-center mb-2">
-                      <GuidedAudioButton
-                        api={api}
-                        label="Play Guided Narration"
-                        script={[
-                          `Welcome to this heart-opening practice: ${selectedPractice.name}.`,
-                          selectedPractice.description || "",
-                          selectedPractice.steps ? selectedPractice.steps.map((s, i) => `Step ${i+1}: ${s}`).join(". ") : "",
-                          selectedPractice.affirmation ? `Close by repeating: ${selectedPractice.affirmation}` : "",
-                          "Rest in the warmth of your open heart. You are love itself."
-                        ].filter(Boolean).join(" ")}
-                      />
-                    </div>
-
-                    <PracticeTimer
-                      segments={selectedPractice.steps?.map((step, i) => ({
-                        name: `Step ${i + 1}`,
-                        description: step,
-                        duration_seconds: Math.floor((selectedPractice.duration_minutes || 20) * 60 / (selectedPractice.steps?.length || 1)),
-                        has_audio: false
-                      })) || []}
-                      totalDuration={(selectedPractice.duration_minutes || 20) * 60}
-                      backgroundAudio="singing_bowls"
-                      autoStartAudio={true}
-                      practiceType="heart"
-                      element="Water"
-                      visualizationType="mandala"
-                      onComplete={async () => {
-                        try {
-                          await api.post("/practice-history", {
-                            practice_type: "heart_practice",
-                            practice_id: selectedPractice.id,
-                            duration_minutes: selectedPractice.duration_minutes || 20,
-                            element: "Water",
-                            notes: `Completed guided ${selectedPractice.name}`
-                          });
-                          toast.success("Heart practice complete! Your heart is open.");
-                          setIsPracticing(false);
-                          setSelectedPractice(null);
-                        } catch (error) {
-                          console.error("Failed to log practice:", error);
-                          toast.success("Heart practice complete!");
-                          setIsPracticing(false);
-                          setSelectedPractice(null);
-                        }
-                      }}
-                    />
-
-                    {/* Current step guidance */}
                     {selectedPractice.affirmation && (
                       <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20 text-center">
-                        <p className="text-sm text-pink-300">Repeat this affirmation:</p>
-                        <p className="text-lg italic text-pink-100 mt-2">"{selectedPractice.affirmation}"</p>
+                        <p className="text-xs text-pink-400 uppercase tracking-wider mb-1">Hold this intention</p>
+                        <p className="text-base italic text-pink-100">"{selectedPractice.affirmation}"</p>
                       </div>
                     )}
+
+                    {selectedPractice.steps && selectedPractice.steps.length > 0 && (
+                      <div>
+                        <h3 className="font-medium mb-4 text-pink-300">Follow these steps:</h3>
+                        <div className="space-y-3">
+                          {selectedPractice.steps.map((step, i) => (
+                            <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-pink-500/10">
+                              <span className="w-7 h-7 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
+                                {i + 1}
+                              </span>
+                              <p className="text-sm text-muted-foreground leading-relaxed">{step}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="p-4 rounded-xl bg-pink-500/5 border border-pink-500/15 text-center">
+                      <CheckCircle2 className="w-5 h-5 text-pink-400 mx-auto mb-2" />
+                      <p className="text-sm text-muted-foreground">When complete, press the button below to log your practice.</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -349,10 +318,7 @@ const HeartPractices = ({ user, api }) => {
                 {!isPracticing ? (
                   <button 
                     type="button"
-                    onClick={() => {
-                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) {}
-                      setIsPracticing(true);
-                    }}
+                    onClick={() => setIsPracticing(true)}
                     className="w-full py-4 px-6 bg-pink-600 hover:bg-pink-700 active:bg-pink-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
                     style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
                     data-testid="begin-practice-btn"
@@ -361,16 +327,41 @@ const HeartPractices = ({ user, api }) => {
                     Begin Guided Heart Practice
                   </button>
                 ) : (
-                  <button 
-                    type="button"
-                    onClick={() => setIsPracticing(false)}
-                    className="w-full py-4 px-6 bg-gray-600 hover:bg-gray-700 active:bg-gray-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
-                    style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
-                    data-testid="exit-practice-btn"
-                  >
-                    <X className="w-5 h-5" />
-                    Exit Practice
-                  </button>
+                  <div className="flex gap-3">
+                    <button 
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await api.post("/practice-history", {
+                            practice_type: "heart_practice",
+                            practice_id: selectedPractice.id,
+                            duration_minutes: selectedPractice.duration_minutes || 20,
+                            element: "Water"
+                          });
+                          toast.success("Heart practice complete! Your heart is open.");
+                        } catch (e) {
+                          toast.success("Heart practice complete!");
+                        }
+                        setIsPracticing(false);
+                        setSelectedPractice(null);
+                      }}
+                      className="flex-1 py-4 px-4 bg-pink-600 hover:bg-pink-700 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
+                      style={{ minHeight: '56px' }}
+                      data-testid="complete-practice-btn"
+                    >
+                      <CheckCircle2 className="w-5 h-5" />
+                      Complete Practice
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setIsPracticing(false)}
+                      className="py-4 px-5 bg-white/10 hover:bg-white/20 text-white font-medium rounded-xl flex items-center justify-center touch-manipulation"
+                      style={{ minHeight: '56px' }}
+                      data-testid="exit-practice-btn"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
                 )}
               </div>
             </motion.div>
