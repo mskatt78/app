@@ -12,6 +12,7 @@ import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPl
 
 const CATEGORIES = [
   { id: "all", label: "All Frequencies", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10" },
+  { id: "shamanic", label: "Shamanic Drums", icon: Drum, color: "text-orange-400", bg: "bg-orange-500/10" },
   { id: "cetacean", label: "Dolphin & Whale", icon: Waves, color: "text-cyan-400", bg: "bg-cyan-500/10" },
   { id: "instrument", label: "Instruments", icon: Music, color: "text-violet-400", bg: "bg-violet-500/10" },
   { id: "frequency", label: "Pure Frequencies", icon: Volume2, color: "text-emerald-400", bg: "bg-emerald-500/10" },

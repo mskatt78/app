@@ -19,140 +19,121 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **Somatic Yoga** (/somatic-yoga) - 5 body-centered practices
 
 ### Feminine Embodiment (Rose Temple)
-- 13 practices via /api/feminine-embodiment with comprehensive deep teachings:
-  - Each practice now includes "Why This Heals", "Practice Guide", "Extended Teachings", and "Benefits"
-  - Full spiritual wisdom explaining the healing purpose of each practice
-- **Sacred Rites Section** (NEW - March 2026):
-  - Munay Ki — The 9 Great Rites of Initiation
-  - Nusta Karpay — The 7 Goddess Rites of the Divine Feminine
-  - The 13th Rite of the Womb — The Rite of the Womb
-- Temple intro: "Your Body is the Rose Temple" with 4 principles
+- 13 practices via /api/feminine-embodiment with comprehensive deep teachings
+- **Sacred Rites Section** (Munay Ki 9 Rites, Nusta Karpay 7 Rites, 13th Womb Rite 3 Aspects)
 
-### Masculine Embodiment (Masculine Temple)
-- 13 practices via /api/masculine-embodiment with comprehensive deep teachings:
-  - Each practice now includes "Why This Heals", "Practice Guide", "Extended Teachings", and "Benefits"
-  - Archetypes: Warrior, King, Magician/Sage, Lover, Wild Man, Elder
-- Temple intro: "Your Body is the Temple" with sacred masculine principles
+### Masculine Embodiment
+- 13 practices via /api/masculine-embodiment with comprehensive deep teachings
 
 ### Breathwork Sessions
-- 6 elemental breathwork sessions via /api/breathwork/sessions
-- Each session now includes "Why This Heals", "Full Instructions", and "Best Time"
-- Interactive breathing circle with sound frequencies
-- Pattern-based timing (inhale, hold, exhale, hold_empty)
+- 6 elemental breathwork sessions with deep teachings
 
-### Practice Journal (NEW - Previous Session)
-- Moon phase tracking
-- Practice streak tracking
-- Quick-add buttons on practice modals
-- Local storage for offline access
+### Sound Healing (Updated March 2026)
+- 17 sound frequency entries including 6 Shamanic Drum types:
+  - Classic Shamanic Drums (280 BPM)
+  - Gentle Grounding Journey (90 BPM)
+  - Classic Theta Journey (240 BPM)
+  - Awakening Activation (420 BPM)
+  - Fire Ceremony Syncopated rhythm
+  - Journey Return Call (4-beat + 3-beat pattern)
+- New "Shamanic Drums" filter tab in Sound Frequencies page
 
-### Meditations & Guided Audio
-- TTS audio generation using OpenAI
-- Optimized streaming: Part 1 plays instantly while Parts 2-4 load in background
-- Multiple meditation types across all temple sections
+### Creative Processes (Deep Content - March 2026)
+- 9 comprehensive practices with deep healing content:
+  - Vision Quest Journaling
+  - Shamanic Art Medicine
+  - Dream Weaving Circle
+  - Sacred Sound Creation
+  - Medicine Bundle Creation
+  - Ancestral Story Weaving
+  - Forest Bathing — Shinrin-Yoku
+  - **Sacred Smudging & Space Clearing** (NEW — standalone deep guide with 6 herb profiles)
+  - Stone People Medicine
+- Each practice includes:
+  - `why_this_heals` — deep explanation of healing mechanism
+  - `safety_precautions` — comprehensive safety guidance
+  - `preparation` — preparation instructions
+  - `integration` — post-practice integration
+  - `therapeutic_benefits` — list of benefits
+  - `process_steps` — detailed step-by-step
+
+### Sacred Geometry Drawing Guides (Updated March 2026)
+- Safety preparation section now prominently displayed before how-to-draw instructions
+- 6 grounding/safety principles shown before each drawing guide
+
+### Practice Journal (Updated March 2026)
+- Practice streak tracking with milestone badges:
+  - 3-Day Seeker, 7-Day Guardian, 14-Day Fortnight Keeper, 21-Day Initiation, 40-Day Sacred 40
+- **Share to Sacred Circle** button on each expanded journal entry
+  - POSTs to /api/community/posts with reflection content
+  - Linked to community page
+
+### Video Tutorials (NEW - March 2026)
+- 15 tutorial videos seeded across 8 categories (shamanic, somatic, breathwork, creative, sacred_rites, sound, meditation, movement)
+- PracticeVideos component with YouTube/Vimeo/direct embed support
+- Accessible via /api/videos with category filter
+
+### Community (Sacred Circle)
+- Community posts with like/comment functionality
+- POST /api/community/posts endpoint (for journal sharing)
+- POST /api/community/posts/{id}/like endpoint
 
 ### Other Features
 - Yoga Library (78 poses, 5 elements)
-- Mudras Library (12 mudras, 90% opacity images)
+- Mudras Library (12 mudras)
 - Crystal Healing (42 crystals)
 - Tarot/Oracle readings
-- Sacred Geometry
-- Sound Frequencies
+- Runes, I Ching
+- Ancient Wisdom library
+- Sacred Guardians
+- Elemental Temples
+- Water Practices
+- Seasonal Temple
 
-## Recent Updates (March 2026)
+## Key API Endpoints
+- `GET /api/sound-frequencies?category=shamanic` — filter for shamanic drums
+- `GET /api/creative-processes` — 9 deep processes with safety content
+- `GET /api/videos?category=shamanic` — video tutorials by category
+- `GET /api/community/posts` — community posts
+- `POST /api/community/posts` — create new post (journal sharing)
+- `POST /api/community/posts/{id}/like` — like a post
+- `GET /api/courses` — Sacred Rites (Munay Ki, Nusta Karpay, Womb Rite)
+- `GET /api/light-codes/sacred-geometry` — Sacred Geometry symbols with drawing guides
 
-### Bug Fixes (Latest)
-- **Mudra Images Fixed**: All 12 mudras now have unique verified Pexels/Unsplash images. DB reseeded.
-- **Heart Practices Black Screen Fixed**: Replaced complex PracticeTimer+GuidedAudioButton combo with simple clean step-by-step guided view. Also fixed field name normalization (steps/ceremony_steps/meditation_steps/journey_steps/ritual_steps/visualization_steps) and affirmation/affirmations plural handling.
-- **Sacred Rites Now in Courses**: Munay Ki, Nusta Karpay, 13th Womb Rite confirmed visible at /courses page with full content.
-- **Sacred Circle Awakening Populated**: 5 community posts added covering Munay Ki, 13th Womb Rite, Nusta Karpay, Welcome message, and Shamanic Calling.
-- **server.py Bug Fixed**: Undefined `minimal_seed()` replaced with `seed_all_content()`. Community posts added to startup seeding.
+## Key DB Schema
+- `sound_frequencies`: 17 entries (6 shamanic drums)
+- `creative_processes`: 9 deep entries with safety content
+- `videos`: 15 tutorial entries across 8 categories
+- `courses`: 3 sacred rites (munay-ki, nusta-karpay, 13th-rite-womb)
+- `community_posts`: community reflections
+- `chakra_cleansing`, `feminine_embodiment`, `masculine_embodiment`
+- `elemental_temples`, `water_practices`
 
+## Architecture
+```
+/app/
+├── backend/
+│   ├── data/
+│   │   ├── creative_processes_deep.py (NEW - 9 deep practices with safety)
+│   │   ├── video_content.py (NEW - 15 video tutorials)
+│   │   ├── sound_frequencies.py (UPDATED - 5 new drum types)
+│   │   ├── sacred_rites_deep.py
+│   │   ├── elemental_temples_data.py
+│   │   ├── water_practices_data.py
+│   ├── routers/
+│   │   ├── content.py (UPDATED - POST /community/posts endpoint)
+│   ├── server.py (UPDATED - always reseeds creative_processes, videos, sacred_rites)
+├── frontend/
+│   ├── src/components/
+│   │   ├── AmbientSoundPlayer.jsx (UPDATED - 5 new drum functions)
+│   ├── src/pages/
+│   │   ├── SoundFrequencies.jsx (UPDATED - Shamanic Drums filter tab)
+│   │   ├── CreativeProcesses.jsx (UPDATED - shows safety, why_heals, integration)
+│   │   ├── LightCodes.jsx (UPDATED - safety section before drawing guide)
+│   │   ├── PracticeJournal.jsx (UPDATED - share to community + streak milestones)
+```
 
-### Sacred Rites Courses — Deep Content (Latest)
-- **Munay Ki**: 9 fully described individual rites (Bands of Power → Creator Rite), 3 ceremonies (Despacho, Mesa Activation, Saminchakuy), 4 embodiment practices, preparation + integration guidance.
-- **Nusta Karpay**: 7 goddess rites (Mama Ocllo → Huayra Mujia), 3 rituals (Seven Roses, Moonbath, Womb Awakening), 2 embodiment practices.
-- **13th Womb Rite**: 3 aspects (The Transmission, Lineage Healing, Creative Rebirth), 3 rituals (Rose Water Womb Blessing, Red Thread Circle, Moonblood Ceremony), 3 embodiment practices (40-Day, Womb-to-Heart, Earth Womb).
-- **Courses modal rebuilt**: 4-tab UI — The Rites / Rituals / Embodiment / Prepare & Integrate. Each rite/ritual is expandable with full content.
-
-
-
-### P2 Features Complete (Latest)
-- **All 13 Chakra Images Unique**: All chakra images replaced with unique stock photos. Updated seed_healing_modalities.py and seed_extended_modalities.py.
-- **Elemental Temples Migrated**: 853 lines of hardcoded JSX → MongoDB `elemental_temples` + `/api/elemental-temples`. Frontend fetches API with STATIC_ELEMENTS fallback.
-- **Water Practices Migrated**: 473 lines of hardcoded JSX → MongoDB `water_practices` + `/api/water-practices`. Frontend shows loading skeleton while fetching.
-- New data files: `/app/backend/data/elemental_temples_data.py`, `/app/backend/data/water_practices_data.py`
-
-
-### Deep Content Enhancement
-All practices throughout the app have been enhanced with comprehensive spiritual teachings that explain WHY each practice heals:
-
-1. **Feminine Embodiment** (13 practices) - Full "Why This Heals", extended teachings, practice guides
-2. **Masculine Embodiment** (13 practices) - Full "Why This Heals", extended teachings, practice guides
-3. **Chakra Cleansing** (13 chakras) - "Why This Heals", deeper teachings, healing practices, affirmations
-4. **Breathwork** (6 sessions) - "Why This Heals", full instructions, best time recommendations
-
-### Sacred Rites Restored
-The Munay Ki, Nusta Karpay, and 13th Womb Rite are now visible in Rose Temple with their full detailed teachings. These were present in the database but not displayed - now they have a dedicated "Sacred Rites & Initiations" section.
-
-### Database Seeding
-All deep teachings are now included in the server.py startup seeding, ensuring production deployments have full content.
-
-## API Endpoints
-
-### Core Content
-- GET /api/yoga/poses - 78 yoga poses
-- GET /api/mudras - 12 mudras
-- GET /api/chakra-cleansing - 13 chakras with deep teachings
-- GET /api/breathwork/sessions - 6 sessions with deep teachings
-- GET /api/feminine-embodiment - 13 practices with deep teachings
-- GET /api/masculine-embodiment - 13 practices with deep teachings
-- GET /api/sacred-rites - Munay Ki, Nusta Karpay, 13th Womb Rite
-
-### TTS Audio
-- POST /api/tts/meditation/{id} - Generates chunked base64 audio
-
-### Other
-- GET /api/meditations
-- GET /api/crystals
-- GET /api/oracle/tarot
-
-## Files of Reference
-
-### Data Files (Deep Teachings)
-- `/app/backend/data/deep_teachings_complete.py` - Feminine & Masculine embodiment deep teachings
-- `/app/backend/data/deep_teachings_chakras_breath.py` - Chakra & Breathwork deep teachings
-- `/app/backend/data/complete_embodiment_data.py` - Base embodiment practice data
-
-### Frontend Pages
-- `/app/frontend/src/pages/RoseTemple.jsx` - Feminine embodiment with Sacred Rites
-- `/app/frontend/src/pages/MasculineTemple.jsx` - Masculine embodiment
-- `/app/frontend/src/pages/ChakraCleansing.jsx` - 13 chakras
-- `/app/frontend/src/pages/Breathwork.jsx` - Breathwork sessions
-
-### Backend
-- `/app/backend/server.py` - Startup seeding with deep teachings
-- `/app/backend/routers/content.py` - API endpoints including /sacred-rites
-
-## Deployment Notes
-
-### Database Seeding
-The server automatically seeds all content on startup including:
-1. Base content (yoga, mudras, chakras, breathwork, meditations)
-2. Deep teachings (why_this_heals, practice_guide, extended_teachings)
-3. Sacred rites (Munay Ki, Nusta Karpay, 13th Womb Rite)
-
-### Preview vs Production
-- Preview and production use DIFFERENT databases
-- After deployment, the production server restarts and seeds the production database
-- All content should appear after successful deployment
-
-## Upcoming Tasks (P2)
-- Migrate Elemental Temples & Water Practices from frontend to MongoDB
-- Generate unique AI images for extended chakras (Causal, Stellar Gateway, Universal Gateway)
-
-## Future Tasks (P3)
-- Video tutorials for somatic practices
-- Community Reflection Sharing for Practice Journal
-- Practice streaks gamification
-- Sacred Geometry drawing guides
+## Remaining Backlog
+- P3: Deeper production deployment seeding (pending platform support resolution)
+- P3: Video URLs need to be updated with real YouTube IDs (currently placeholder)
+- P3: More video tutorials per category
