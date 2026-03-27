@@ -68,6 +68,14 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **Sacred Circle Awakening Populated**: 5 community posts added covering Munay Ki, 13th Womb Rite, Nusta Karpay, Welcome message, and Shamanic Calling.
 - **server.py Bug Fixed**: Undefined `minimal_seed()` replaced with `seed_all_content()`. Community posts added to startup seeding.
 
+
+### P2 Features Complete (Latest)
+- **All 13 Chakra Images Unique**: All chakra images replaced with unique stock photos. Updated seed_healing_modalities.py and seed_extended_modalities.py.
+- **Elemental Temples Migrated**: 853 lines of hardcoded JSX → MongoDB `elemental_temples` + `/api/elemental-temples`. Frontend fetches API with STATIC_ELEMENTS fallback.
+- **Water Practices Migrated**: 473 lines of hardcoded JSX → MongoDB `water_practices` + `/api/water-practices`. Frontend shows loading skeleton while fetching.
+- New data files: `/app/backend/data/elemental_temples_data.py`, `/app/backend/data/water_practices_data.py`
+
+
 ### Deep Content Enhancement
 All practices throughout the app have been enhanced with comprehensive spiritual teachings that explain WHY each practice heals:
 

@@ -193,7 +193,21 @@ const WaterPractices = ({ user, api }) => {
 
         {/* Practice Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {currentPractices.map((practice, index) => (
+          {loading ? (
+            Array.from({length: 4}).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 p-6 animate-pulse">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/20 mb-4" />
+                <div className="h-5 bg-blue-500/20 rounded mb-2 w-3/4" />
+                <div className="h-3 bg-white/10 rounded mb-1 w-full" />
+                <div className="h-3 bg-white/10 rounded w-2/3" />
+              </div>
+            ))
+          ) : currentPractices.length === 0 ? (
+            <div className="col-span-2 text-center py-12 text-muted-foreground">
+              <Droplets className="w-12 h-12 mx-auto mb-3 opacity-30" />
+              <p>No practices in this category yet.</p>
+            </div>
+          ) : currentPractices.map((practice, index) => (
             <motion.div
               key={practice.id}
               initial={{ opacity: 0, y: 20 }}
