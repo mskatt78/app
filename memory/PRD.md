@@ -61,6 +61,13 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 
 ## Recent Updates (March 2026)
 
+### Bug Fixes (Latest)
+- **Mudra Images Fixed**: All 12 mudras now have unique verified Pexels/Unsplash images. DB reseeded.
+- **Heart Practices Black Screen Fixed**: Replaced complex PracticeTimer+GuidedAudioButton combo with simple clean step-by-step guided view. Also fixed field name normalization (steps/ceremony_steps/meditation_steps/journey_steps/ritual_steps/visualization_steps) and affirmation/affirmations plural handling.
+- **Sacred Rites Now in Courses**: Munay Ki, Nusta Karpay, 13th Womb Rite confirmed visible at /courses page with full content.
+- **Sacred Circle Awakening Populated**: 5 community posts added covering Munay Ki, 13th Womb Rite, Nusta Karpay, Welcome message, and Shamanic Calling.
+- **server.py Bug Fixed**: Undefined `minimal_seed()` replaced with `seed_all_content()`. Community posts added to startup seeding.
+
 ### Deep Content Enhancement
 All practices throughout the app have been enhanced with comprehensive spiritual teachings that explain WHY each practice heals:
 

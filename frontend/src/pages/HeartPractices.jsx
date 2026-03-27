@@ -206,7 +206,10 @@ const HeartPractices = ({ user, api }) => {
 
               {/* Scrollable content */}
               <div className="flex-1 overflow-y-auto">
-                {!isPracticing ? (
+                {(() => {
+                  const practiceSteps = selectedPractice.steps || selectedPractice.ceremony_steps || selectedPractice.meditation_steps || selectedPractice.journey_steps || selectedPractice.ritual_steps || selectedPractice.visualization_steps || [];
+                  const practiceAffirmation = selectedPractice.affirmation || (Array.isArray(selectedPractice.affirmations) && selectedPractice.affirmations[0]) || '';
+                  return !isPracticing ? (
                   <>
                     {selectedPractice.image_url && (
                       <div className="relative h-48 sm:h-64">
@@ -247,11 +250,11 @@ const HeartPractices = ({ user, api }) => {
                         </div>
                       )}
 
-                      {selectedPractice.steps && (
+                      {practiceSteps.length > 0 && (
                         <div>
                           <h3 className="font-medium mb-3">Practice Steps</h3>
                           <ol className="space-y-3">
-                            {selectedPractice.steps.map((step, i) => (
+                            {practiceSteps.map((step, i) => (
                               <li key={i} className="flex items-start gap-3 text-sm">
                                 <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
                                   {i + 1}
@@ -263,10 +266,10 @@ const HeartPractices = ({ user, api }) => {
                         </div>
                       )}
 
-                      {selectedPractice.affirmation && (
+                      {practiceAffirmation && (
                         <div className="p-4 rounded-xl bg-pink-500/5 border border-pink-500/20">
                           <h3 className="font-medium mb-2">Heart Affirmation</h3>
-                          <p className="text-sm italic text-muted-foreground">"{selectedPractice.affirmation}"</p>
+                          <p className="text-sm italic text-muted-foreground">"{practiceAffirmation}"</p>
                         </div>
                       )}
                     </div>
@@ -282,18 +285,18 @@ const HeartPractices = ({ user, api }) => {
                       <p className="text-sm text-pink-300/70 mt-1">Guided Heart Practice — {selectedPractice.duration_minutes || 20} min</p>
                     </div>
 
-                    {selectedPractice.affirmation && (
+                    {practiceAffirmation && (
                       <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20 text-center">
                         <p className="text-xs text-pink-400 uppercase tracking-wider mb-1">Hold this intention</p>
-                        <p className="text-base italic text-pink-100">"{selectedPractice.affirmation}"</p>
+                        <p className="text-base italic text-pink-100">"{practiceAffirmation}"</p>
                       </div>
                     )}
 
-                    {selectedPractice.steps && selectedPractice.steps.length > 0 && (
+                    {practiceSteps.length > 0 && (
                       <div>
                         <h3 className="font-medium mb-4 text-pink-300">Follow these steps:</h3>
                         <div className="space-y-3">
-                          {selectedPractice.steps.map((step, i) => (
+                          {practiceSteps.map((step, i) => (
                             <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-pink-500/10">
                               <span className="w-7 h-7 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
                                 {i + 1}
@@ -310,7 +313,8 @@ const HeartPractices = ({ user, api }) => {
                       <p className="text-sm text-muted-foreground">When complete, press the button below to log your practice.</p>
                     </div>
                   </div>
-                )}
+                );
+                })()}
               </div>
 
               {/* Fixed button at bottom */}
