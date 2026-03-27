@@ -43,7 +43,7 @@
     "share_modal": {
       "trigger_button": "Share My Lineage",
       "share_options": ["WhatsApp", "Twitter/X", "Facebook", "Email", "Copy link"],
-      "shareable_url_format": "https://embodiment-hub.preview.emergentagent.com/star-lineage/result/{lineageId}"
+      "shareable_url_format": "https://sacred-rites-deep.preview.emergentagent.com/star-lineage/result/{lineageId}"
     },
     "links_page": {
       "route": "/links",

@@ -67,7 +67,7 @@
     }
   },
   "test_environment": {
-    "app_url": "https://embodiment-hub.preview.emergentagent.com",
+    "app_url": "https://sacred-rites-deep.preview.emergentagent.com",
     "viewport": "1920x1080"
   },
   "notes": "PayPal integration is FUNCTIONAL but requires valid PAYPAL_CLIENT_ID and PAYPAL_SECRET in backend/.env to complete actual payments. Current empty values correctly trigger graceful error handling."
