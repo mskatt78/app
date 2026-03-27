@@ -1,9 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Mountain, Waves, Flame, Wind, Sparkles, ChevronRight, X, Star, Leaf, Droplets, Zap, Eye, Globe, Heart, Moon, Sun, Music } from "lucide-react";
 
-const elements = [
+// Icon mapping for element ids (React components can't be stored in MongoDB)
+const ELEMENT_ICONS = {
+  mountain: Mountain,
+  waves: Waves,
+  flame: Flame,
+  wind: Wind,
+  sparkles: Sparkles,
+};
+
+const STATIC_ELEMENTS = [
   {
     id: "earth",
     name: "Earth Temple",
@@ -860,6 +869,24 @@ const ElementalTemples = ({ user, api }) => {
   const navigate = useNavigate();
   const [activeTemple, setActiveTemple] = useState(null);
   const [activeSection, setActiveSection] = useState("embodiment");
+  const [elements, setElements] = useState(STATIC_ELEMENTS);
+
+  // Fetch fresh data from API (enriched content from MongoDB)
+  useEffect(() => {
+    if (!api) return;
+    api.get("/elemental-temples")
+      .then(res => {
+        if (res.data && res.data.length > 0) {
+          // Merge API data with static icon references
+          const merged = res.data.map(el => ({
+            ...el,
+            icon: ELEMENT_ICONS[el.icon] || Mountain,
+          }));
+          setElements(merged);
+        }
+      })
+      .catch(() => { /* silently use static data */ });
+  }, [api]);
 
   const sections = [
     { id: "embodiment", label: "Embodiment" },

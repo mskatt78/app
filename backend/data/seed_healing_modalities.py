@@ -17,10 +17,14 @@ IMAGES = {
     "quantum_healing": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/8ed3c5244187116ac15623170bf5cfb0722e815611a2036476849a7f081021f9.png",
     "chakra_all": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/ace2a076d232e17f83130e3de840a429f08cdd696d0e20580af31a64676b9129.png",
     "somatic_yoga": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/332ca1a29950e4cecb210a3dc9444579511b230da8420cde70731198f4729a3d.png",
-    "chakra_root": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/4f789faa21b0358abf4005f7e2e896ba04f2363b361027de76adaa38d0517871.png",
-    "chakra_sacral": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/0bddcef7f53f8fb7cd1e021991ea81b8b777170abbf0841bf1dd9f5118b1035c.png",
-    "chakra_solar": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/b1d6a77f129e8b2a5d8d663ee0088b0bf0896ca366f4e477ba3d32ae38e961ab.png",
-    "chakra_heart": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/2fb48658f784573b3260e3fff7138b26f6245a9867b447b6002f5a1ae300cec2.png",
+    # Unique chakra images (stock photos)
+    "chakra_root": "https://images.unsplash.com/photo-1721297015100-f9427750f38a?w=800&q=80",
+    "chakra_sacral": "https://images.pexels.com/photos/5581630/pexels-photo-5581630.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_solar": "https://images.pexels.com/photos/4239834/pexels-photo-4239834.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_heart": "https://images.pexels.com/photos/219891/pexels-photo-219891.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_throat": "https://images.pexels.com/photos/6252094/pexels-photo-6252094.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_third_eye": "https://images.unsplash.com/photo-1684765111512-c00df9f0c5fa?w=800&q=80",
+    "chakra_crown": "https://images.pexels.com/photos/515631/pexels-photo-515631.jpeg?auto=compress&cs=tinysrgb&w=800",
 }
 
 # Energy Healing Modalities
@@ -395,10 +399,7 @@ CHAKRA_CLEANSING_DATA = [
         "chakra": "Throat",
         "sanskrit_name": "Vishuddha",
         "description": "Speak your truth clearly and authentically by clearing the throat chakra—your center of communication, self-expression, and creative voice.",
-        "image_url": IMAGES["chakra_all"],
-        "duration_minutes": 15,
-        "color": "Blue",
-        "element": "Ether/Sound",
+        "image_url": IMAGES["chakra_throat"],
         "location": "Throat",
         "cleansing_guide": """1. Sit with spine tall. Gently roll your neck in circles to release tension.
 
@@ -428,7 +429,7 @@ CHAKRA_CLEANSING_DATA = [
         "chakra": "Third Eye",
         "sanskrit_name": "Ajna",
         "description": "Awaken intuition and inner vision by clearing the third eye chakra between your brows—your center of insight, imagination, and higher perception.",
-        "image_url": IMAGES["chakra_all"],
+        "image_url": IMAGES["chakra_third_eye"],
         "duration_minutes": 15,
         "color": "Indigo",
         "element": "Light",
@@ -461,7 +462,7 @@ CHAKRA_CLEANSING_DATA = [
         "chakra": "Crown",
         "sanskrit_name": "Sahasrara",
         "description": "Connect to divine consciousness and spiritual oneness by clearing the crown chakra at the top of your head—your gateway to cosmic awareness and enlightenment.",
-        "image_url": IMAGES["chakra_all"],
+        "image_url": IMAGES["chakra_crown"],
         "duration_minutes": 20,
         "color": "Violet/White",
         "element": "Cosmic/Thought",

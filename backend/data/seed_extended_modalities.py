@@ -9,18 +9,26 @@ from datetime import datetime, timezone
 
 # Image URLs - existing and new
 IMAGES = {
-    # Chakra images we have
-    "chakra_root": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/4f789faa21b0358abf4005f7e2e896ba04f2363b361027de76adaa38d0517871.png",
-    "chakra_sacral": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/0bddcef7f53f8fb7cd1e021991ea81b8b777170abbf0841bf1dd9f5118b1035c.png",
-    "chakra_solar": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/b1d6a77f129e8b2a5d8d663ee0088b0bf0896ca366f4e477ba3d32ae38e961ab.png",
-    "chakra_heart": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/2fb48658f784573b3260e3fff7138b26f6245a9867b447b6002f5a1ae300cec2.png",
-    "chakra_throat": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/f75c5a5bf1f4e85f0d123691ee2af9b9fe161c76674f5dba18358efa5a9fc129.png",
-    "chakra_third_eye": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/f23340cca996c7aa660755019810098457b047a7d0d1097be248df25d29684a4.png",
-    "chakra_all": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/ace2a076d232e17f83130e3de840a429f08cdd696d0e20580af31a64676b9129.png",
+    # Base 7 chakra images (unique stock photos)
+    "chakra_root": "https://images.unsplash.com/photo-1721297015100-f9427750f38a?w=800&q=80",
+    "chakra_sacral": "https://images.pexels.com/photos/5581630/pexels-photo-5581630.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_solar": "https://images.pexels.com/photos/4239834/pexels-photo-4239834.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_heart": "https://images.pexels.com/photos/219891/pexels-photo-219891.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_throat": "https://images.pexels.com/photos/6252094/pexels-photo-6252094.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_third_eye": "https://images.unsplash.com/photo-1684765111512-c00df9f0c5fa?w=800&q=80",
+    "chakra_crown": "https://images.pexels.com/photos/515631/pexels-photo-515631.jpeg?auto=compress&cs=tinysrgb&w=800",
+    # Extended 6 chakra images (unique stock photos)
+    "chakra_earth_star": "https://images.pexels.com/photos/6614307/pexels-photo-6614307.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_higher_heart": "https://images.unsplash.com/photo-1487050619389-c5af29e2db2f?w=800&q=80",
+    "chakra_causal": "https://images.pexels.com/photos/7686900/pexels-photo-7686900.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_soul_star": "https://images.unsplash.com/photo-1693842749199-fe51d21345c3?w=800&q=80",
+    "chakra_stellar_gateway": "https://images.pexels.com/photos/3709430/pexels-photo-3709430.jpeg?auto=compress&cs=tinysrgb&w=800",
+    "chakra_universal_gateway": "https://images.unsplash.com/photo-1768464864653-c5ab6400747e?w=800&q=80",
     # Somatic/Movement
     "somatic_yoga": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/332ca1a29950e4cecb210a3dc9444579511b230da8420cde70731198f4729a3d.png",
     "freeform_dance": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/bfa160f5c1406c20b01733894e46ad000bdda5bc9011a4095489ab158ff91537.png",
     "quantum_healing": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/8ed3c5244187116ac15623170bf5cfb0722e815611a2036476849a7f081021f9.png",
+    "chakra_all": "https://static.prod-images.emergentagent.com/jobs/a8dcbcc8-4bb5-44d9-a29b-9babc824e7bc/images/ace2a076d232e17f83130e3de840a429f08cdd696d0e20580af31a64676b9129.png",
 }
 
 # Extended 13 Chakra System - Adding 6 new chakras to existing 7
@@ -31,7 +39,7 @@ EXTENDED_CHAKRAS = [
         "chakra": "Earth Star",
         "sanskrit_name": "Vasundhara",
         "description": "Ground into the crystalline core of Mother Earth by activating the Earth Star chakra 12 inches below your feet—your anchor to Gaia consciousness, ancestral lineage, and planetary healing.",
-        "image_url": IMAGES["chakra_root"],  # Will update with unique image
+        "image_url": IMAGES["chakra_earth_star"],  # Unique earth star image
         "duration_minutes": 20,
         "color": "Magenta/Brown",
         "element": "Earth Core",
@@ -65,7 +73,7 @@ EXTENDED_CHAKRAS = [
         "chakra": "Higher Heart",
         "sanskrit_name": "Thymus/Ananda Kanda",
         "description": "Activate the seat of the soul and unconditional love between the heart and throat—the Higher Heart chakra connects you to divine love, soul purpose, and the ability to love without conditions.",
-        "image_url": IMAGES["chakra_heart"],  # Teal variant
+        "image_url": IMAGES["chakra_higher_heart"],  # Unique higher heart image
         "duration_minutes": 18,
         "color": "Turquoise/Aqua/Pink",
         "element": "Higher Air/Ether",
@@ -99,9 +107,7 @@ EXTENDED_CHAKRAS = [
         "chakra": "Causal",
         "sanskrit_name": "Causal/Moon Center",
         "description": "Awaken the divine feminine energy center at the back of your head—the Causal chakra connects you to lunar wisdom, past life memories, and the akashic records of your soul's journey.",
-        "image_url": IMAGES["chakra_all"],  # Will update
-        "duration_minutes": 20,
-        "color": "Soft Pink/White/Silver",
+        "image_url": IMAGES["chakra_causal"],
         "element": "Divine Feminine/Moon",
         "location": "Back of head, base of skull",
         "order": 9,
@@ -133,9 +139,7 @@ EXTENDED_CHAKRAS = [
         "chakra": "Soul Star",
         "sanskrit_name": "Sutara/Seat of the Soul",
         "description": "Connect to your Higher Self and soul's light 6 inches above your crown—the Soul Star chakra is where your individual soul meets universal consciousness and downloads spiritual gifts.",
-        "image_url": IMAGES["chakra_all"],  # Will update
-        "duration_minutes": 20,
-        "color": "White/Magenta/Gold",
+        "image_url": IMAGES["chakra_soul_star"],
         "element": "Soul Light",
         "location": "6 inches above crown",
         "order": 10,
@@ -167,9 +171,7 @@ EXTENDED_CHAKRAS = [
         "chakra": "Stellar Gateway",
         "sanskrit_name": "Stellar Gateway",
         "description": "Open the portal to your galactic origins 12 inches above your crown—the Stellar Gateway connects you to star lineages, galactic councils, and cosmic consciousness beyond Earth.",
-        "image_url": IMAGES["quantum_healing"],
-        "duration_minutes": 25,
-        "color": "Gold/Silver/Opalescent",
+        "image_url": IMAGES["chakra_stellar_gateway"],
         "element": "Galactic/Stellar",
         "location": "12 inches above crown",
         "order": 11,
@@ -201,9 +203,7 @@ EXTENDED_CHAKRAS = [
         "chakra": "Universal Gateway",
         "sanskrit_name": "Universal/Divine Gateway",
         "description": "Touch the infinite at 18 inches above your crown—the Universal Gateway is your direct connection to Source, the unified field, and the consciousness that underlies all existence.",
-        "image_url": IMAGES["quantum_healing"],
-        "duration_minutes": 25,
-        "color": "Rainbow/Diamond/Pure Light",
+        "image_url": IMAGES["chakra_universal_gateway"],
         "element": "Source/Infinite",
         "location": "18 inches above crown",
         "order": 12,

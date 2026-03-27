@@ -1026,3 +1026,37 @@ async def get_masculine_embodiment(category: Optional[str] = None):
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     practices = await db.masculine_embodiment.find(query, {"_id": 0}).to_list(length=100)
     return practices
+
+
+# ============ ELEMENTAL TEMPLES ROUTES ============
+
+@router.get("/elemental-temples")
+async def get_elemental_temples():
+    """Get all 5 elemental temples with full content."""
+    db = get_db()
+    temples = await db.elemental_temples.find({}, {"_id": 0}).to_list(length=10)
+    return temples
+
+
+@router.get("/elemental-temples/{element_id}")
+async def get_elemental_temple(element_id: str):
+    """Get a specific elemental temple by id (earth, water, fire, air, spirit)."""
+    db = get_db()
+    temple = await db.elemental_temples.find_one({"id": element_id}, {"_id": 0})
+    if not temple:
+        raise HTTPException(status_code=404, detail="Temple not found")
+    return temple
+
+
+# ============ WATER PRACTICES ROUTES ============
+
+@router.get("/water-practices")
+async def get_water_practices(category: Optional[str] = None):
+    """Get water practices, optionally filtered by category."""
+    db = get_db()
+    query = {}
+    if category:
+        query["category"] = category
+    practices = await db.water_practices.find(query, {"_id": 0}).to_list(length=100)
+    return practices
+
