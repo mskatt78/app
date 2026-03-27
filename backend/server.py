@@ -357,6 +357,45 @@ async def do_database_seeding():
         await db.videos.insert_many(VIDEO_TUTORIALS)
         logger.info(f"videos refreshed — {len(VIDEO_TUTORIALS)} entries.")
 
+        # Apply chakra safety + daily embodiment to all 13 chakras
+        from data.chakra_safety_deep import CHAKRA_SAFETY_EMBODIMENT
+        logger.info("Applying chakra safety & embodiment ceremonies...")
+        for chakra_id, safety_data in CHAKRA_SAFETY_EMBODIMENT.items():
+            await db.chakra_cleansing.update_one(
+                {"id": chakra_id},
+                {"$set": safety_data}
+            )
+        logger.info(f"Chakra safety applied to {len(CHAKRA_SAFETY_EMBODIMENT)} chakras.")
+
+        # Apply yoga spiritual purpose + energetic effects
+        from data.yoga_spiritual_data import YOGA_SPIRITUAL_DATA
+        logger.info("Applying yoga spiritual depth data...")
+        updated = 0
+        async for pose in db.yoga_poses.find({}, {"_id": 0, "id": 1, "name": 1}):
+            key = pose.get("name", "").lower().strip()
+            if key in YOGA_SPIRITUAL_DATA:
+                await db.yoga_poses.update_one(
+                    {"id": pose["id"]},
+                    {"$set": YOGA_SPIRITUAL_DATA[key]}
+                )
+                updated += 1
+        logger.info(f"Yoga spiritual depth applied to {updated} poses.")
+
+        # Apply elemental temple safety precautions
+        TEMPLE_SAFETY = {
+            "earth": "Earth practices connect us with ancestral memory, grief stored in the body, and deep feminine wisdom. Work gently if you carry unresolved trauma around belonging, displacement, or loss of home. Allow yourself to receive support — do not only be the one who holds others. Grounding ceremonies are not appropriate if you are extremely dissociated from your body; in this case, seek somatic support first. Garden ceremonies: wash your hands before touching eyes, and be mindful of plants that may be toxic if ingested.",
+            "water": "Water ceremonies work deeply with the emotional body and can surface stored grief, fear, and long-suppressed feelings. Do not work in natural bodies of water (rivers, oceans) alone, at night, or when emotionally overwhelmed. For bathing rituals: test water temperature carefully — very hot baths are contraindicated in pregnancy and for those with cardiovascular conditions. If you are in acute grief, work with a practitioner alongside water ceremonies rather than alone. Avoid extended water fasting without medical supervision.",
+            "fire": "Fire is the most powerful and potentially dangerous of the elements to work with ceremonially. FIRE SAFETY: Always have water and a fire extinguisher nearby. Never leave a fire unattended. Keep flames away from flammable materials. Keep children and pets away from ceremonial fires. Extinguish completely before sleeping or leaving. For candle fire ceremonies: use fireproof holders, keep away from drafts and curtains. Emotionally: fire ceremony can bring up intense anger, passion, and grief. These are the fire element's medicine — honour them without acting impulsively on what they reveal.",
+            "air": "Air practices (breathwork, movement, sound) are generally gentle and accessible. However: intense breathing practices (kapalabhati, holotropic breath) are contraindicated for those with high blood pressure, heart conditions, epilepsy, seizure history, or during pregnancy. Hyperventilation can cause light-headedness, tingling, or temporary tetany (muscle cramping) — these pass when breathing normalises. Always practice intense breathwork lying down. Do not drive or operate machinery for 30 minutes after breathwork. Air ceremonies outdoors: be aware of wind conditions, sun exposure, and temperature changes.",
+            "spirit": "Spirit practices work with the transpersonal — dimensions of consciousness beyond the ordinary. Approach with respect and preparation. These practices are not appropriate during acute mental health crises, psychotic episodes, or severe dissociation. Spirit element work can dissolve the sense of personal boundaries — always re-establish grounding afterward (earth food, physical contact, walking barefoot). If you are newly beginning your spiritual path, build a foundation in the lower elements (earth, water, fire, air) before working primarily with spirit. Have spiritual community or guidance for support through major spirit-element openings."
+        }
+        for temple_id, safety in TEMPLE_SAFETY.items():
+            await db.elemental_temples.update_one(
+                {"id": temple_id},
+                {"$set": {"safety_precautions": safety}}
+            )
+        logger.info(f"Elemental temple safety precautions applied to {len(TEMPLE_SAFETY)} temples.")
+
         # Always refresh sacred rites (courses) so content deepening takes effect
         from data.sacred_rites_deep import SACRED_RITES_DEEP
         logger.info("Refreshing sacred_rites courses...")

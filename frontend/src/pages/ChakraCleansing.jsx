@@ -214,6 +214,53 @@ export default function ChakraCleansing() {
                   </div>
                 ))}
 
+                {/* Safety Precautions */}
+                {selectedPractice.safety_precautions && (
+                  <div className="mb-3 border border-red-500/20 rounded-xl overflow-hidden">
+                    <button onClick={() => setExpandedSection(expandedSection === "safety" ? null : "safety")}
+                      className="w-full flex items-center justify-between p-4 hover:bg-red-500/5 transition-colors"
+                      data-testid="section-safety">
+                      <span className="flex items-center gap-2 text-sm font-medium text-red-400">
+                        ⚠ Safety Precautions
+                      </span>
+                      {expandedSection === "safety" ? <ChevronUp className="w-4 h-4 text-red-400" /> : <ChevronDown className="w-4 h-4 text-red-400" />}
+                    </button>
+                    {expandedSection === "safety" && (
+                      <div className="px-4 pb-4 text-sm text-muted-foreground whitespace-pre-line leading-relaxed bg-red-500/3">{selectedPractice.safety_precautions}</div>
+                    )}
+                  </div>
+                )}
+
+                {/* Daily Embodiment Ceremony */}
+                {selectedPractice.daily_embodiment_ceremony && (
+                  <div className="mb-3 border border-emerald-500/20 rounded-xl overflow-hidden">
+                    <button onClick={() => setExpandedSection(expandedSection === "daily" ? null : "daily")}
+                      className="w-full flex items-center justify-between p-4 hover:bg-emerald-500/5 transition-colors"
+                      data-testid="section-daily">
+                      <span className="flex items-center gap-2 text-sm font-medium text-emerald-400">
+                        <Flame className="w-4 h-4" /> Daily Embodiment Ceremony
+                      </span>
+                      {expandedSection === "daily" ? <ChevronUp className="w-4 h-4 text-emerald-400" /> : <ChevronDown className="w-4 h-4 text-emerald-400" />}
+                    </button>
+                    {expandedSection === "daily" && (
+                      <div className="px-4 pb-4 bg-emerald-500/3 space-y-3">
+                        <div className="flex items-center gap-2 pt-1">
+                          <span className="text-emerald-300 font-medium text-sm">{selectedPractice.daily_embodiment_ceremony.name}</span>
+                          <span className="text-xs text-muted-foreground">— {selectedPractice.daily_embodiment_ceremony.duration}</span>
+                        </div>
+                        <ol className="space-y-2">
+                          {(selectedPractice.daily_embodiment_ceremony.steps || []).map((step, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{i+1}</span>
+                              <span className="leading-relaxed">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {selectedPractice.benefits && (
                   <div className="mt-4">
                     <h3 className="text-sm font-medium mb-2">Benefits When Balanced</h3>

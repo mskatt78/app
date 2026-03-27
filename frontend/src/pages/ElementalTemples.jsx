@@ -896,7 +896,8 @@ const ElementalTemples = ({ user, api }) => {
     { id: "rituals", label: "Rituals" },
     { id: "ceremonies", label: "Ceremonies" },
     { id: "blessings", label: "Blessings" },
-    { id: "affirmations", label: "Affirmations" }
+    { id: "affirmations", label: "Affirmations" },
+    { id: "safety_precautions", label: "Safety" }
   ];
 
   return (
@@ -1247,6 +1248,24 @@ const ElementalTemples = ({ user, api }) => {
                       <p className="mt-8 text-xs text-muted-foreground uppercase tracking-widest">
                         Speak these aloud with your hand on your heart
                       </p>
+                    </div>
+                  )}
+
+                  {activeSection === "safety_precautions" && (
+                    <div className="p-6 rounded-2xl bg-red-500/5 border border-red-500/20 space-y-4">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="text-red-400 text-xl">⚠</span>
+                        <h3 className="text-xl font-serif text-red-300">Safety Precautions for {activeTemple.element} Work</h3>
+                      </div>
+                      {activeTemple.safety_precautions ? (
+                        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
+                          {activeTemple.safety_precautions}
+                        </p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">
+                          Always approach elemental work with care and reverence. Ground yourself before and after practice, stay hydrated, and be gentle with what arises.
+                        </p>
+                      )}
                     </div>
                   )}
                 </motion.div>

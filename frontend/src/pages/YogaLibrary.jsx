@@ -484,6 +484,32 @@ const YogaLibrary = ({ user, api }) => {
                   </div>
                 )}
 
+                {/* Spiritual Purpose */}
+                {selectedPose.spiritual_purpose && (
+                  <div>
+                    <h3 className="text-lg font-serif mb-3 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400">✦</span>
+                      Spiritual Purpose
+                    </h3>
+                    <div className="pl-10 p-4 rounded-xl bg-violet-500/5 border border-violet-500/20">
+                      <p className="text-sm text-muted-foreground leading-relaxed italic">{selectedPose.spiritual_purpose}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Energetic Effects */}
+                {selectedPose.energetic_effects && (
+                  <div>
+                    <h3 className="text-lg font-serif mb-3 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400">⚡</span>
+                      Energetic Effects
+                    </h3>
+                    <div className="pl-10 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                      <p className="text-sm text-muted-foreground leading-relaxed">{selectedPose.energetic_effects}</p>
+                    </div>
+                  </div>
+                )}
+
                 {/* Practice Tip */}
                 <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
                   <p className="text-sm text-muted-foreground">
