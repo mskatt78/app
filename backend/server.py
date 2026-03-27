@@ -109,7 +109,30 @@ async def root_health_check():
 # ============ DATABASE SEEDING ============
 
 async def do_database_seeding():
-    """Actual database seeding logic - runs in background."""
+    """Actual database seeding logic - runs in background with full error handling."""
+    import os
+    
+    # Skip heavy seeding in production to prevent startup crashes
+    # Data should already be in the database from previous deployments
+    is_production = "emergent.host" in os.environ.get("REACT_APP_BACKEND_URL", "") or \
+                    "atlas" in os.environ.get("MONGO_URL", "").lower()
+    
+    if is_production:
+        logger.info("Production environment detected - using lightweight seeding")
+        try:
+            # Just check if database has content, don't do heavy seeding
+            crystals_count = await db.crystals.count_documents({})
+            yoga_count = await db.yoga_poses.count_documents({})
+            logger.info(f"Database status: {crystals_count} crystals, {yoga_count} yoga poses")
+            
+            if crystals_count == 0 or yoga_count == 0:
+                logger.info("Database empty - running minimal seed...")
+                await minimal_seed()
+        except Exception as e:
+            logger.error(f"Error checking database: {e}")
+        return
+    
+    # Full seeding for preview/development
     try:
         from data.divination_content import LIGHT_CODES
         from data.all_content import MEDITATIONS
