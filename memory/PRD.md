@@ -69,6 +69,14 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **server.py Bug Fixed**: Undefined `minimal_seed()` replaced with `seed_all_content()`. Community posts added to startup seeding.
 
 
+### Sacred Rites Courses — Deep Content (Latest)
+- **Munay Ki**: 9 fully described individual rites (Bands of Power → Creator Rite), 3 ceremonies (Despacho, Mesa Activation, Saminchakuy), 4 embodiment practices, preparation + integration guidance.
+- **Nusta Karpay**: 7 goddess rites (Mama Ocllo → Huayra Mujia), 3 rituals (Seven Roses, Moonbath, Womb Awakening), 2 embodiment practices.
+- **13th Womb Rite**: 3 aspects (The Transmission, Lineage Healing, Creative Rebirth), 3 rituals (Rose Water Womb Blessing, Red Thread Circle, Moonblood Ceremony), 3 embodiment practices (40-Day, Womb-to-Heart, Earth Womb).
+- **Courses modal rebuilt**: 4-tab UI — The Rites / Rituals / Embodiment / Prepare & Integrate. Each rite/ritual is expandable with full content.
+
+
+
 ### P2 Features Complete (Latest)
 - **All 13 Chakra Images Unique**: All chakra images replaced with unique stock photos. Updated seed_healing_modalities.py and seed_extended_modalities.py.
 - **Elemental Temples Migrated**: 853 lines of hardcoded JSX → MongoDB `elemental_temples` + `/api/elemental-temples`. Frontend fetches API with STATIC_ELEMENTS fallback.

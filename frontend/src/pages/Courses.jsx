@@ -133,7 +133,6 @@ export default function Courses() {
                 className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all duration-300 group"
                 onClick={() => { setSelectedCourse(course); setActiveTab(course.rites?.length ? "rites" : "overview"); setExpandedRite(null); setExpandedRitual(null); }}
                 data-testid={`course-card-${course.id}`}
-                data-testid={`course-card-${course.id}`}
               >
                 {course.image_url ? (
                   <div className="relative h-44 overflow-hidden">
