@@ -1,0 +1,54 @@
+{
+  "summary": "Complete testing of Stripe Payment Integration and Extended Course Content - Iteration 49. All 18 backend tests passed (100%). Frontend verified: 3 courses with correct prices ($147, $177, $197), 7 tabs in modal, content locking for premium courses, Unlock Course button redirects to sign-in.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "Courses.jsx",
+        "issue": "navigate('/auth') redirects to non-existent route. Console shows 'No routes matched location /auth'. Should redirect to '/' (landing page) or show sign-in modal instead.",
+        "selector": "handlePurchase function line 139",
+        "priority": "LOW"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_stripe_payment_iteration49.py",
+    "/app/test_reports/pytest/pytest_iteration49.xml"
+  ],
+  "action_items": [
+    "MINOR: Fix Courses.jsx line 139 - change navigate('/auth') to navigate('/') since /auth route doesn't exist. The toast message 'Please sign in to purchase courses' already displays correctly."
+  ],
+  "critical_code_review_comments": [
+    "Stripe integration is properly implemented using emergentintegrations.payments.stripe.checkout module",
+    "Course access endpoint correctly requires authentication",
+    "Content locking logic works correctly - Safety and Prepare tabs are public, Rites/Rituals/Embodiment/Daily/Calendar tabs are locked",
+    "All 3 courses have correct prices: Munay Ki $197, Nusta Karpay $177, 13th Rite of the Womb $147",
+    "Munay Ki has 5 rituals including new Fire Ceremony and Lineage Healing Ceremony"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_stripe_payment_iteration49.py"
+  ],
+  "success_rate": {
+    "backend": "100% - 18/18 tests passed",
+    "frontend": "95% - All features working except minor /auth route issue"
+  },
+  "test_credentials": "Admin: /admin, password: ShamanicAdmin2026!. User auth requires Google OAuth.",
+  "seed_data_creation": "None - all course data seeded via sacred_rites_deep.py",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Stripe payment integration verified. All 3 Sacred Rites courses have correct prices and is_premium=True. Course modal has 7 tabs: The Rites, Rituals, Embodiment, Prepare & Integrate, Daily Practice, 40-Day Journey, Safety. Content locking works correctly - premium content (Rites, Rituals, Embodiment, Daily, Calendar) is locked for unauthenticated users. Safety and Prepare tabs are publicly accessible. Munay Ki has 5 rituals (including 2 new: Fire Ceremony, Lineage Healing). Payment flow: click Unlock Course → toast 'Please sign in' → redirect to /auth (minor bug: route doesn't exist, should be '/'). Payment endpoints require authentication. Plans endpoint is public.",
+  "api_verification": {
+    "GET /api/courses": "PASS - returns 3 courses with correct prices",
+    "GET /api/courses/munay-ki": "PASS - $197, is_premium=True, 9 rites, 5 rituals",
+    "GET /api/courses/nusta-karpay": "PASS - $177, is_premium=True, 7 rites",
+    "GET /api/courses/13th-rite-womb": "PASS - $147, is_premium=True",
+    "GET /api/payments/course-access": "PASS - requires auth (401)",
+    "GET /api/payments/plans": "PASS - returns monthly/yearly plans with stripe/paypal methods",
+    "POST /api/payments/create-checkout": "PASS - requires auth (401)"
+  }
+}

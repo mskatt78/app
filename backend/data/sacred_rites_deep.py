@@ -5,6 +5,16 @@ Adds: rites[], rituals[], embodiment_practices[], preparation, integration_guida
 
 MUNAY_KI_DEEP = {
     "id": "munay-ki",
+    "title": "Munay Ki — The 9 Great Rites of Initiation",
+    "description": "A profound lineage transmission from the Q'ero shamans of Peru. Receive the 9 sacred rites that transform the luminous energy field, awaken dormant gifts, and connect you to a living lineage of healers across time.",
+    "price": 197.00,
+    "category": "sacred_rites",
+    "level": "All Levels",
+    "duration": "9 rites over 40+ days",
+    "format": "Self-Paced",
+    "instructor": "Lineage Transmission",
+    "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+    "highlights": "• Receive all 9 Munay Ki rites\n• 40-day integration journey with daily practices\n• Complete embodiment exercises for each rite\n• Sacred ceremony guides (Despacho, Mesa Activation)\n• Lifetime access to the teachings",
     "preparation": (
         "Before receiving any of the Munay Ki rites, spend time in nature connecting to Pachamama. "
         "Fast lightly if possible — eat simple, clean foods for 3 days prior. Cleanse your mesa (altar) "
@@ -320,6 +330,40 @@ MUNAY_KI_DEEP = {
                 "Close with gratitude. Say: 'Thank you, Pachamama, for receiving and transforming what I release.'"
             ],
             "closing": "Drink a glass of water. Eat something grounding. This practice is most potent done barefoot on grass or earth."
+        },
+        {
+            "name": "Fire Ceremony — Releasing What No Longer Serves",
+            "timing": "Dark moon, or when called to release",
+            "duration": "45–60 minutes",
+            "what_you_need": ["Safe fire pit or large fireproof bowl", "Paper and pen", "Dried herbs for offering", "Candle if indoors"],
+            "description": "The fire ceremony is one of the oldest practices of humanity — calling upon the transformational power of fire to transmute what we are ready to release. In the Andean tradition, fire carries our prayers directly to the upper world.",
+            "steps": [
+                "Create sacred space. Call the four directions and invite your lineage.",
+                "Write on separate small papers what you are releasing: patterns, beliefs, relationships, wounds.",
+                "Hold each paper to your heart. Breathe your emotion into it — let yourself truly feel.",
+                "One by one, feed each paper to the fire with the words: 'I release you with love. Transform.'",
+                "Watch the smoke carry your releases upward. Feel your energy field lighten.",
+                "When all is released, sit in silence watching the flames for 10 minutes.",
+                "Close by thanking the fire and the lineage. Scatter the cooled ashes to the earth or water."
+            ],
+            "closing": "Drink water. Eat something grounding. Rest deeply. The fire continues to work in your dreams."
+        },
+        {
+            "name": "Lineage Healing Ceremony",
+            "timing": "After receiving the Healer's or Wisdomkeeper's Rite",
+            "duration": "60–90 minutes",
+            "what_you_need": ["Altar with ancestors' photos or names", "Seven candles", "Bowl of water", "Flowers"],
+            "description": "A ceremony to consciously heal the wounds passed down through your ancestral lineage and to call in the gifts that are your birthright.",
+            "steps": [
+                "Prepare your altar with ancestor photos or written names going back as far as you know.",
+                "Light seven candles — one for each generation back (even if you don't know names).",
+                "Speak aloud to your lineage: 'I see you. I honour you. I receive the gifts you carried.'",
+                "Then say: 'I also release the wounds, traumas, and burdens that are not mine to carry.'",
+                "Breathe in the gifts: courage, resilience, love, skill. Feel them enter your bones.",
+                "Breathe out the wounds: grief, betrayal, poverty consciousness, fear. Let them flow into the water bowl.",
+                "Sit in silence for 20 minutes, feeling the recalibration of your lineage field."
+            ],
+            "closing": "Pour the water into the earth. Let the candles burn down safely. Keep the altar active for 7 days."
         }
     ],
     "embodiment_practices": [
@@ -499,6 +543,16 @@ MUNAY_KI_DEEP = {
 
 NUSTA_KARPAY_DEEP = {
     "id": "nusta-karpay",
+    "title": "Nusta Karpay — The 7 Goddess Rites of the Divine Feminine",
+    "description": "An initiation into the seven faces of the Divine Feminine through the Andean goddess lineage. Each Nusta activates a chakra and awakens feminine power, flow, creativity, love, voice, vision, and divine connection.",
+    "price": 177.00,
+    "category": "sacred_rites",
+    "level": "All Levels",
+    "duration": "7 rites over 40+ days",
+    "format": "Self-Paced",
+    "instructor": "Feminine Lineage",
+    "image_url": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800",
+    "highlights": "• Receive all 7 Goddess Rites\n• Work with sacred feminine archetypes\n• Moonbath and Womb Awakening ceremonies\n• Seven Roses ritual guide\n• Daily Goddess Body Prayer practice",
     "preparation": (
         "The Nusta Karpay requires deep feminine preparation. Spend one week prior in relationship with water — drink it consciously, "
         "bathe or swim with awareness, listen to its voice. Clear your womb space through rest, warmth, and releasing old emotional patterns. "
@@ -896,6 +950,16 @@ NUSTA_KARPAY_DEEP = {
 
 WOMB_RITE_DEEP = {
     "id": "13th-rite-womb",
+    "title": "The 13th Rite of the Womb — The Rite of the Womb",
+    "description": "The most ancient feminine healing rite: releasing suffering from the womb across generations. This single powerful transmission heals ancestral feminine wounding and reclaims the womb as a sacred centre of creative power.",
+    "price": 147.00,
+    "category": "sacred_rites",
+    "level": "All Levels",
+    "duration": "1 rite + 40 days integration",
+    "format": "Self-Paced",
+    "instructor": "Womb Lineage",
+    "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800",
+    "highlights": "• The complete 13th Rite transmission\n• 40-day Womb Integration Calendar\n• 13-Minute daily meditation practice\n• Womb Blessing & Moonblood ceremonies\n• Lineage healing protocols",
     "preparation": (
         "The 13th Rite of the Womb requires honest and gentle preparation. In the week before, practice daily silence for at least 20 minutes. "
         "Bring awareness to your womb space (or your creative/sacral centre if you do not have a womb in your body — this rite is available to all). "

@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, BookOpen, Clock, Star, Users, Play, ChevronRight, ExternalLink, Loader2, Heart, ChevronDown, Flame, Wind, Sparkles, Leaf, Scroll, Lock, Calendar, Shield } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { ArrowLeft, BookOpen, Clock, Star, Users, Play, ChevronRight, ExternalLink, Loader2, Heart, ChevronDown, Flame, Wind, Sparkles, Leaf, Scroll, Lock, Calendar, Shield, CreditCard, CheckCircle2, Unlock } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
@@ -19,10 +19,12 @@ const FORMAT_ICONS = {
   live: "Live",
   recorded: "Recorded",
   hybrid: "Hybrid",
+  "self-paced": "Self-Paced",
 };
 
 export default function Courses() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -31,12 +33,17 @@ export default function Courses() {
   const [activeTab, setActiveTab] = useState("rites");
   const [expandedRite, setExpandedRite] = useState(null);
   const [expandedRitual, setExpandedRitual] = useState(null);
+  const [purchasedCourses, setPurchasedCourses] = useState([]);
+  const [hasSubscription, setHasSubscription] = useState(false);
+  const [purchaseLoading, setPurchaseLoading] = useState(false);
+  const [checkingPayment, setCheckingPayment] = useState(false);
 
-  useEffect(() => {
-    fetchCourses();
-  }, []);
+  // Get auth token from localStorage
+  const getAuthToken = () => localStorage.getItem("auth_token");
+  const isLoggedIn = () => !!getAuthToken();
 
-  const fetchCourses = async () => {
+  // Fetch courses
+  const fetchCourses = useCallback(async () => {
     try {
       const { data } = await api.get("/courses");
       setCourses(data);
@@ -44,6 +51,119 @@ export default function Courses() {
       toast.error("Failed to load courses");
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  // Fetch user's course access status
+  const fetchCourseAccess = useCallback(async () => {
+    if (!isLoggedIn()) return;
+    try {
+      const token = getAuthToken();
+      const { data } = await api.get("/payments/course-access", {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setPurchasedCourses(data.purchased_courses || []);
+      setHasSubscription(data.has_subscription || false);
+    } catch (err) {
+      console.log("Could not fetch course access:", err);
+    }
+  }, []);
+
+  // Check if user has access to a course
+  const hasAccess = (courseId) => {
+    return hasSubscription || purchasedCourses.includes(courseId);
+  };
+
+  // Poll payment status after redirect
+  const pollPaymentStatus = useCallback(async (sessionId, attempts = 0) => {
+    const maxAttempts = 10;
+    const pollInterval = 2000;
+
+    if (attempts >= maxAttempts) {
+      setCheckingPayment(false);
+      toast.error("Payment verification timed out. Please check your email for confirmation.");
+      return;
+    }
+
+    try {
+      const token = getAuthToken();
+      const { data } = await api.get(`/payments/status/${sessionId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (data.payment_status === "paid") {
+        setCheckingPayment(false);
+        toast.success("Payment successful! You now have access to the course.");
+        fetchCourseAccess();
+        // Clear URL params
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      } else if (data.status === "expired") {
+        setCheckingPayment(false);
+        toast.error("Payment session expired. Please try again.");
+        window.history.replaceState({}, document.title, window.location.pathname);
+        return;
+      }
+
+      // Continue polling
+      setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+    } catch (error) {
+      console.error("Error checking payment status:", error);
+      if (attempts < maxAttempts - 1) {
+        setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), pollInterval);
+      } else {
+        setCheckingPayment(false);
+        toast.error("Error verifying payment. Please contact support.");
+      }
+    }
+  }, [fetchCourseAccess]);
+
+  // Check for payment return
+  useEffect(() => {
+    const sessionId = searchParams.get("session_id");
+    if (sessionId && isLoggedIn()) {
+      setCheckingPayment(true);
+      pollPaymentStatus(sessionId);
+    }
+  }, [searchParams, pollPaymentStatus]);
+
+  useEffect(() => {
+    fetchCourses();
+    fetchCourseAccess();
+  }, [fetchCourses, fetchCourseAccess]);
+
+  // Handle course purchase
+  const handlePurchase = async (course) => {
+    if (!isLoggedIn()) {
+      toast.error("Please sign in to purchase courses");
+      navigate("/auth");
+      return;
+    }
+
+    setPurchaseLoading(true);
+    try {
+      const token = getAuthToken();
+      const originUrl = window.location.origin;
+      
+      const { data } = await api.post("/payments/create-checkout", {
+        product_type: "course",
+        product_id: course.id,
+        origin_url: originUrl,
+        payment_method: "stripe"
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (data.checkout_url) {
+        window.location.href = data.checkout_url;
+      } else {
+        toast.error("Could not create checkout session");
+      }
+    } catch (err) {
+      console.error("Purchase error:", err);
+      toast.error(err.response?.data?.detail || "Failed to start checkout");
+    } finally {
+      setPurchaseLoading(false);
     }
   };
 
@@ -58,6 +178,17 @@ export default function Courses() {
 
   return (
     <div className="min-h-screen bg-background" data-testid="courses-page">
+      {/* Payment verification overlay */}
+      {checkingPayment && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="text-center p-8 rounded-2xl bg-card border border-white/10">
+            <Loader2 className="w-12 h-12 animate-spin text-violet-400 mx-auto mb-4" />
+            <h3 className="text-xl font-serif mb-2">Verifying Payment...</h3>
+            <p className="text-muted-foreground text-sm">Please wait while we confirm your purchase.</p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="relative overflow-hidden border-b border-white/10 bg-gradient-to-b from-violet-950/40 to-background">
         <div className="max-w-6xl mx-auto px-4 py-8">
@@ -69,8 +200,8 @@ export default function Courses() {
               <BookOpen className="w-8 h-8 text-violet-400" />
             </div>
             <div>
-              <h1 className="text-4xl sm:text-5xl font-serif">Courses</h1>
-              <p className="text-muted-foreground mt-1">Live & recorded teachings for your spiritual journey</p>
+              <h1 className="text-4xl sm:text-5xl font-serif">Sacred Courses</h1>
+              <p className="text-muted-foreground mt-1">Deep teachings and initiations for your spiritual journey</p>
             </div>
           </div>
         </div>
@@ -103,7 +234,7 @@ export default function Courses() {
                     filterCategory === cat ? "bg-primary/20 text-primary border border-primary/40" : "bg-white/5 text-muted-foreground hover:bg-white/10"
                   }`}
                 >
-                  {cat === "all" ? "All Categories" : cat}
+                  {cat === "all" ? "All Categories" : cat.replace("_", " ")}
                 </button>
               ))}
             </div>
@@ -124,67 +255,80 @@ export default function Courses() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map((course, index) => (
-              <motion.div
-                key={course.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all duration-300 group relative"
-                onClick={() => { setSelectedCourse(course); setActiveTab(course.rites?.length ? "rites" : "overview"); setExpandedRite(null); setExpandedRitual(null); }}
-                data-testid={`course-card-${course.id}`}
-              >
-                {/* Premium Sacred Course badge */}
-                {course.is_premium && (
-                  <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-medium backdrop-blur-sm">
-                    <Lock className="w-2.5 h-2.5" /> Sacred Course
-                  </div>
-                )}
-                {course.image_url ? (
-                  <div className="relative h-44 overflow-hidden">
-                    <img src={course.image_url} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                    {course.format && (
-                      <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs bg-black/50 backdrop-blur-sm text-white border border-white/20">
-                        {FORMAT_ICONS[course.format?.toLowerCase()] || course.format}
-                      </span>
-                    )}
-                    {course.level && (
-                      <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs border ${LEVEL_COLORS[course.level?.toLowerCase()] || LEVEL_COLORS.all}`}>
-                        {course.level}
-                      </span>
-                    )}
-                  </div>
-                ) : (
-                  <div className="h-32 bg-gradient-to-br from-violet-500/10 to-indigo-500/10 flex items-center justify-center">
-                    <BookOpen className="w-12 h-12 text-violet-400/40" />
-                  </div>
-                )}
-                <div className="p-5">
-                  <h3 className="text-lg font-serif mb-2 group-hover:text-violet-300 transition-colors">{course.title || course.name}</h3>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{course.description}</p>
-                  
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    {course.duration && (
-                      <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{course.duration}</span>
-                    )}
-                    {course.lessons && (
-                      <span className="flex items-center gap-1"><Play className="w-3 h-3" />{course.lessons} lessons</span>
-                    )}
-                    {course.instructor && (
-                      <span className="flex items-center gap-1"><Users className="w-3 h-3" />{course.instructor}</span>
-                    )}
-                  </div>
-                  
-                  {course.price && (
-                    <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
-                      <span className="text-violet-300 font-medium">{course.price}</span>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            {filtered.map((course, index) => {
+              const userHasAccess = hasAccess(course.id);
+              return (
+                <motion.div
+                  key={course.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all duration-300 group relative"
+                  onClick={() => { setSelectedCourse(course); setActiveTab(course.rites?.length ? "rites" : "overview"); setExpandedRite(null); setExpandedRitual(null); }}
+                  data-testid={`course-card-${course.id}`}
+                >
+                  {/* Premium/Access badges */}
+                  {course.is_premium && (
+                    <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5">
+                      {userHasAccess ? (
+                        <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-medium backdrop-blur-sm">
+                          <Unlock className="w-2.5 h-2.5" /> Unlocked
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-medium backdrop-blur-sm">
+                          <Lock className="w-2.5 h-2.5" /> Sacred Course
+                        </span>
+                      )}
                     </div>
                   )}
-                </div>
-              </motion.div>
-            ))}
+
+                  {course.image_url ? (
+                    <div className="relative h-44 overflow-hidden">
+                      <img src={course.image_url} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                      {course.format && (
+                        <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs bg-black/50 backdrop-blur-sm text-white border border-white/20">
+                          {FORMAT_ICONS[course.format?.toLowerCase()] || course.format}
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="h-32 bg-gradient-to-br from-violet-500/10 to-indigo-500/10 flex items-center justify-center">
+                      <BookOpen className="w-12 h-12 text-violet-400/40" />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <h3 className="text-lg font-serif mb-2 group-hover:text-violet-300 transition-colors">{course.title || course.name}</h3>
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{course.description}</p>
+                    
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      {course.duration && (
+                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{course.duration}</span>
+                      )}
+                      {course.lessons && (
+                        <span className="flex items-center gap-1"><Play className="w-3 h-3" />{course.lessons} lessons</span>
+                      )}
+                      {course.instructor && (
+                        <span className="flex items-center gap-1"><Users className="w-3 h-3" />{course.instructor}</span>
+                      )}
+                    </div>
+                    
+                    {course.price && (
+                      <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
+                        {userHasAccess ? (
+                          <span className="text-emerald-400 font-medium flex items-center gap-1">
+                            <CheckCircle2 className="w-4 h-4" /> Purchased
+                          </span>
+                        ) : (
+                          <span className="text-violet-300 font-medium">${course.price}</span>
+                        )}
+                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </main>
@@ -230,7 +374,12 @@ export default function Courses() {
                   <div className="flex gap-2 flex-wrap mb-1">
                     {selectedCourse.category && (
                       <span className="px-2 py-0.5 rounded-full text-xs bg-violet-500/20 text-violet-300 border border-violet-500/30">
-                        {selectedCourse.category}
+                        {selectedCourse.category.replace("_", " ")}
+                      </span>
+                    )}
+                    {selectedCourse.level && (
+                      <span className={`px-2 py-0.5 rounded-full text-xs border ${LEVEL_COLORS[selectedCourse.level?.toLowerCase()] || LEVEL_COLORS.all}`}>
+                        {selectedCourse.level}
                       </span>
                     )}
                   </div>
@@ -241,7 +390,55 @@ export default function Courses() {
               {/* Description */}
               <div className="px-5 pt-3 pb-2 flex-shrink-0">
                 <p className="text-sm text-muted-foreground leading-relaxed">{selectedCourse.description}</p>
+                
+                {/* Course highlights */}
+                {selectedCourse.highlights && (
+                  <div className="mt-3 p-3 rounded-lg bg-white/5 border border-white/10">
+                    <p className="text-xs text-violet-300 font-medium mb-2">What&apos;s Included:</p>
+                    <div className="text-xs text-muted-foreground whitespace-pre-line">{selectedCourse.highlights}</div>
+                  </div>
+                )}
               </div>
+
+              {/* Purchase section for premium courses */}
+              {selectedCourse.is_premium && selectedCourse.price && !hasAccess(selectedCourse.id) && (
+                <div className="px-5 pb-3 flex-shrink-0">
+                  <div className="p-4 rounded-xl bg-gradient-to-r from-violet-500/10 to-amber-500/10 border border-violet-500/20">
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                      <div>
+                        <p className="text-xs text-muted-foreground mb-1">One-time purchase</p>
+                        <p className="text-2xl font-serif text-violet-300">${selectedCourse.price}</p>
+                      </div>
+                      <Button
+                        onClick={() => handlePurchase(selectedCourse)}
+                        disabled={purchaseLoading}
+                        className="bg-violet-500 hover:bg-violet-600 text-white px-6 py-2"
+                        data-testid="purchase-course-btn"
+                      >
+                        {purchaseLoading ? (
+                          <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Processing...</>
+                        ) : (
+                          <><CreditCard className="w-4 h-4 mr-2" /> Unlock Course</>
+                        )}
+                      </Button>
+                    </div>
+                    <p className="text-[10px] text-muted-foreground mt-2">Secure payment via Stripe. Lifetime access included.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Purchased indicator */}
+              {selectedCourse.is_premium && hasAccess(selectedCourse.id) && (
+                <div className="px-5 pb-3 flex-shrink-0">
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-3">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                    <div>
+                      <p className="text-sm font-medium text-emerald-300">You have access to this course</p>
+                      <p className="text-xs text-muted-foreground">Explore all the teachings below</p>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Tabs - only if deep content exists */}
               {(selectedCourse.rites?.length > 0 || selectedCourse.rituals?.length > 0 || selectedCourse.embodiment_practices?.length > 0) && (
@@ -322,8 +519,32 @@ export default function Courses() {
 
               {/* Tab content - scrollable */}
               <div className="flex-1 overflow-y-auto">
+                {/* Content lock for premium courses without access */}
+                {selectedCourse.is_premium && !hasAccess(selectedCourse.id) && (activeTab === "rites" || activeTab === "rituals" || activeTab === "embodiment" || activeTab === "daily" || activeTab === "calendar") && (
+                  <div className="p-8 text-center" data-testid="content-locked">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-amber-500/10 flex items-center justify-center">
+                      <Lock className="w-8 h-8 text-amber-400" />
+                    </div>
+                    <h3 className="text-lg font-serif mb-2">This Content is Locked</h3>
+                    <p className="text-sm text-muted-foreground mb-4 max-w-sm mx-auto">
+                      Purchase this sacred course to unlock the full teachings, rituals, and embodiment practices.
+                    </p>
+                    <Button
+                      onClick={() => handlePurchase(selectedCourse)}
+                      disabled={purchaseLoading}
+                      className="bg-violet-500 hover:bg-violet-600"
+                    >
+                      {purchaseLoading ? (
+                        <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Processing...</>
+                      ) : (
+                        <><CreditCard className="w-4 h-4 mr-2" /> Unlock for ${selectedCourse.price}</>
+                      )}
+                    </Button>
+                  </div>
+                )}
+
                 {/* THE RITES TAB */}
-                {activeTab === "rites" && selectedCourse.rites?.length > 0 && (
+                {activeTab === "rites" && selectedCourse.rites?.length > 0 && (hasAccess(selectedCourse.id) || !selectedCourse.is_premium) && (
                   <div className="p-4 space-y-3" data-testid="rites-tab-content">
                     {selectedCourse.rites.map((rite, i) => (
                       <div key={i} className="rounded-xl border border-violet-500/20 bg-violet-500/5 overflow-hidden">
@@ -386,7 +607,7 @@ export default function Courses() {
                 )}
 
                 {/* RITUALS TAB */}
-                {activeTab === "rituals" && selectedCourse.rituals?.length > 0 && (
+                {activeTab === "rituals" && selectedCourse.rituals?.length > 0 && (hasAccess(selectedCourse.id) || !selectedCourse.is_premium) && (
                   <div className="p-4 space-y-4" data-testid="rituals-tab-content">
                     {selectedCourse.rituals.map((ritual, i) => (
                       <div key={i} className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
@@ -457,7 +678,7 @@ export default function Courses() {
                 )}
 
                 {/* EMBODIMENT PRACTICES TAB */}
-                {activeTab === "embodiment" && selectedCourse.embodiment_practices?.length > 0 && (
+                {activeTab === "embodiment" && selectedCourse.embodiment_practices?.length > 0 && (hasAccess(selectedCourse.id) || !selectedCourse.is_premium) && (
                   <div className="p-4 space-y-4" data-testid="embodiment-tab-content">
                     {selectedCourse.embodiment_practices.map((practice, i) => (
                       <div key={i} className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-4 space-y-3">
@@ -487,7 +708,7 @@ export default function Courses() {
                   </div>
                 )}
 
-                {/* PREPARE & INTEGRATE TAB */}
+                {/* PREPARE & INTEGRATE TAB - always accessible */}
                 {activeTab === "prepare" && (
                   <div className="p-4 space-y-4" data-testid="prepare-tab-content">
                     {selectedCourse.preparation && (
@@ -546,7 +767,7 @@ export default function Courses() {
                 )}
 
                 {/* DAILY PRACTICE TAB */}
-                {activeTab === "daily" && selectedCourse.daily_practice && (
+                {activeTab === "daily" && selectedCourse.daily_practice && (hasAccess(selectedCourse.id) || !selectedCourse.is_premium) && (
                   <div className="p-4 space-y-4" data-testid="daily-tab-content">
                     <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 overflow-hidden">
                       <div className="p-4 bg-emerald-500/10 border-b border-emerald-500/20">
@@ -572,7 +793,7 @@ export default function Courses() {
                 )}
 
                 {/* 40-DAY INTEGRATION CALENDAR TAB */}
-                {activeTab === "calendar" && selectedCourse.forty_day_integration && (
+                {activeTab === "calendar" && selectedCourse.forty_day_integration && (hasAccess(selectedCourse.id) || !selectedCourse.is_premium) && (
                   <div className="p-4 space-y-4" data-testid="calendar-tab-content">
                     <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
                       <div className="flex items-center gap-2 mb-2">
@@ -616,7 +837,7 @@ export default function Courses() {
                   </div>
                 )}
 
-                {/* SAFETY TAB */}
+                {/* SAFETY TAB - always accessible */}
                 {activeTab === "safety" && selectedCourse.safety_precautions && (
                   <div className="p-4" data-testid="safety-tab-content">
                     <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
@@ -642,28 +863,6 @@ export default function Courses() {
                   <div className="p-4">
                     <h3 className="text-sm font-medium mb-3 text-violet-300">What You&apos;ll Learn</h3>
                     <div className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{selectedCourse.highlights}</div>
-                  </div>
-                )}
-
-                {/* Enrol section */}
-                {selectedCourse.price && (
-                  <div className="p-4 pt-0">
-                    <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-between">
-                      <span className="text-violet-300 text-lg font-medium">{selectedCourse.price}</span>
-                      {selectedCourse.registration_link ? (
-                        <a
-                          href={selectedCourse.registration_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="px-5 py-2 rounded-full bg-violet-500 text-white text-sm hover:bg-violet-600 transition-colors flex items-center gap-2"
-                          data-testid="course-register-btn"
-                        >
-                          Enrol Now <ExternalLink className="w-4 h-4" />
-                        </a>
-                      ) : (
-                        <span className="text-sm text-muted-foreground">Contact for enrollment</span>
-                      )}
-                    </div>
                   </div>
                 )}
               </div>

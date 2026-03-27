@@ -7,7 +7,7 @@ import requests
 import os
 import time
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://sacred-rites-deep.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://deep-practice-portal.preview.emergentagent.com')
 
 class TestHealthAndBasics:
     """Basic health and connectivity tests"""

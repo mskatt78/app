@@ -550,6 +550,72 @@ async def get_my_purchases(current_user: User = Depends(get_current_user)):
         "transactions": transactions
     }
 
+@router.get("/check-access/{product_type}/{product_id}")
+async def check_product_access(
+    product_type: str,
+    product_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Check if user has access to a specific product (course, retreat, etc.)."""
+    db = get_db()
+    
+    # Check for direct purchase
+    purchase = await db.user_purchases.find_one({
+        "user_id": current_user.user_id,
+        "product_type": product_type,
+        "product_id": product_id
+    })
+    
+    if purchase:
+        return {"has_access": True, "access_type": "purchased"}
+    
+    # Check for active subscription (subscriptions grant access to all courses)
+    subscription = await db.user_subscriptions.find_one({
+        "user_id": current_user.user_id,
+        "status": "active"
+    })
+    
+    if subscription:
+        expires_at = subscription.get("expires_at")
+        if expires_at:
+            expiry = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+            if expiry > datetime.now(timezone.utc):
+                return {"has_access": True, "access_type": "subscription"}
+    
+    return {"has_access": False, "access_type": None}
+
+@router.get("/course-access")
+async def get_all_course_access(current_user: User = Depends(get_current_user)):
+    """Get access status for all premium courses."""
+    db = get_db()
+    
+    # Get user's course purchases
+    purchases = await db.user_purchases.find({
+        "user_id": current_user.user_id,
+        "product_type": "course"
+    }, {"_id": 0, "product_id": 1}).to_list(length=100)
+    
+    purchased_courses = [p["product_id"] for p in purchases]
+    
+    # Check subscription status
+    has_subscription = False
+    subscription = await db.user_subscriptions.find_one({
+        "user_id": current_user.user_id,
+        "status": "active"
+    })
+    
+    if subscription:
+        expires_at = subscription.get("expires_at")
+        if expires_at:
+            expiry = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+            if expiry > datetime.now(timezone.utc):
+                has_subscription = True
+    
+    return {
+        "purchased_courses": purchased_courses,
+        "has_subscription": has_subscription
+    }
+
 @router.get("/plans")
 async def get_subscription_plans():
     """Get available subscription plans."""
