@@ -751,6 +751,43 @@ async def get_community_posts(type: Optional[str] = None):
     return posts
 
 
+@router.post("/community/posts")
+async def create_community_post(post_data: dict):
+    """Create a new community post (shared from journal or directly)."""
+    from datetime import datetime, timezone
+    db = get_db()
+    post = {
+        "id": f"post_{int(datetime.now(timezone.utc).timestamp() * 1000)}",
+        "title": post_data.get("title", "Reflection"),
+        "content": post_data.get("content", ""),
+        "author": post_data.get("author", "Anonymous"),
+        "type": post_data.get("type", "reflection"),
+        "practice_type": post_data.get("practice_type", ""),
+        "moon_phase": post_data.get("moon_phase", ""),
+        "mood": post_data.get("mood", ""),
+        "likes": 0,
+        "comments": [],
+        "status": "published",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.community_posts.insert_one(post)
+    post.pop("_id", None)
+    return post
+
+
+@router.post("/community/posts/{post_id}/like")
+async def like_community_post(post_id: str):
+    """Like a community post."""
+    db = get_db()
+    result = await db.community_posts.update_one(
+        {"id": post_id},
+        {"$inc": {"likes": 1}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return {"success": True}
+
+
 @router.get("/community/posts/{post_id}")
 async def get_community_post(post_id: str):
     """Get a specific community post."""

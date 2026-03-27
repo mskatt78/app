@@ -326,11 +326,31 @@ const LightCodes = ({ user, api }) => {
                 )}
 
                 {selectedSymbol.how_to_draw && (
-                  <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20">
-                    <h3 className="font-medium mb-2 text-rose-300">How to Draw</h3>
-                    <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
-                      {selectedSymbol.how_to_draw.replace(/(\d+)\./g, '\n$1.').trim()}
-                    </p>
+                  <div className="rounded-xl border border-rose-500/30 overflow-hidden">
+                    <div className="p-4 bg-rose-500/10 border-b border-rose-500/20">
+                      <h3 className="font-medium text-rose-300 text-lg">Sacred Geometry Drawing Guide</h3>
+                      <p className="text-xs text-muted-foreground mt-1">Step-by-step instructions for drawing this symbol with intention</p>
+                    </div>
+                    {/* Safety Precautions Before Drawing */}
+                    <div className="p-4 bg-amber-500/5 border-b border-amber-500/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-amber-400">⚠</span>
+                        <h4 className="text-sm font-medium text-amber-400">Before You Draw — Preparation & Safety</h4>
+                      </div>
+                      <ul className="text-xs text-muted-foreground space-y-1.5">
+                        <li>• Ground yourself before beginning. Sit quietly for 3 minutes and breathe into the earth.</li>
+                        <li>• Set a clear, positive intention. These symbols carry real energy — draw only when in a stable emotional state.</li>
+                        <li>• Do not draw sacred symbols in anger, grief, or energetic overwhelm — wait until you are centred.</li>
+                        <li>• Close your eyes and feel the symbol in your heart before making any marks on the page.</li>
+                        <li>• Use dedicated paper — not a notepad or notebook used for mundane tasks.</li>
+                        <li>• After drawing, ground the energy: touch the earth, drink water, and integrate quietly for a few minutes.</li>
+                      </ul>
+                    </div>
+                    <div className="p-4 bg-rose-500/5">
+                      <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-sm">
+                        {selectedSymbol.how_to_draw.replace(/(\d+)\./g, '\n$1.').trim()}
+                      </p>
+                    </div>
                   </div>
                 )}
 

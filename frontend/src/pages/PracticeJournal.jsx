@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, BookOpen, Plus, Calendar, Moon, Flame, Heart, 
   Sparkles, Clock, Trash2, Edit3, Filter, TrendingUp, Star,
-  ChevronDown, ChevronUp, Search, X
+  ChevronDown, ChevronUp, Search, X, Share2, Users, Award
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
@@ -75,7 +75,7 @@ const saveEntries = (entries) => {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
 };
 
-export default function PracticeJournal() {
+export default function PracticeJournal({ user, api }) {
   const navigate = useNavigate();
   const [entries, setEntries] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -84,6 +84,7 @@ export default function PracticeJournal() {
   const [searchTerm, setSearchTerm] = useState("");
   const [expandedEntry, setExpandedEntry] = useState(null);
   const [currentPrompt, setCurrentPrompt] = useState(PROMPTS[0]);
+  const [sharingId, setSharingId] = useState(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -206,6 +207,49 @@ export default function PracticeJournal() {
     setShowForm(true);
   };
 
+  const handleShareToCommunity = async (entry) => {
+    if (!api) { toast.error("Please log in to share to the community"); return; }
+    if (!entry.reflection && !entry.spiritual_downloads && !entry.key_insights) {
+      toast.error("Add a reflection first before sharing to community");
+      return;
+    }
+    setSharingId(entry.id);
+    try {
+      const content = [
+        entry.reflection && `**Reflection:** ${entry.reflection}`,
+        entry.spiritual_downloads && `**Spiritual Downloads:** ${entry.spiritual_downloads}`,
+        entry.key_insights && `**Key Insights:** ${entry.key_insights}`,
+      ].filter(Boolean).join("\n\n");
+
+      await api.post("/community/posts", {
+        title: `${entry.practice_name} — Journey Reflection`,
+        content,
+        author: user?.name || user?.email || "Sacred Traveller",
+        type: "reflection",
+        practice_type: entry.practice_type,
+        moon_phase: entry.moon_phase,
+        mood: MOODS.find(m => m.value === entry.mood_after)?.label || "",
+      });
+      toast.success("Reflection shared to Sacred Circle!", {
+        action: { label: "View Community", onClick: () => navigate("/community") }
+      });
+    } catch (err) {
+      console.error("Share failed:", err);
+      toast.error("Could not share to community");
+    } finally {
+      setSharingId(null);
+    }
+  };
+
+  const getStreakMilestone = (streak) => {
+    if (streak >= 40) return { label: "Sacred 40", color: "text-yellow-400", icon: "✦" };
+    if (streak >= 21) return { label: "21-Day Initiation", color: "text-amber-400", icon: "✦" };
+    if (streak >= 14) return { label: "Fortnight Keeper", color: "text-orange-400", icon: "✦" };
+    if (streak >= 7) return { label: "7-Day Guardian", color: "text-emerald-400", icon: "✦" };
+    if (streak >= 3) return { label: "3-Day Seeker", color: "text-teal-400", icon: "✦" };
+    return null;
+  };
+
   // Filter entries
   const filteredEntries = entries.filter(entry => {
     const matchesType = filterType === "all" || entry.practice_type === filterType;
@@ -216,6 +260,7 @@ export default function PracticeJournal() {
   });
 
   const streak = calculateStreak();
+  const milestone = getStreakMilestone(streak);
   const totalEntries = entries.length;
   const thisWeek = entries.filter(e => {
     const weekAgo = new Date();
@@ -262,6 +307,9 @@ export default function PracticeJournal() {
                 <span className="text-sm">Streak</span>
               </div>
               <p className="text-2xl font-bold">{streak} {streak === 1 ? 'day' : 'days'}</p>
+              {milestone && (
+                <p className={`text-xs mt-1 ${milestone.color} font-medium`}>{milestone.icon} {milestone.label}</p>
+              )}
             </div>
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
               <div className="flex items-center gap-2 text-violet-400 mb-1">
@@ -451,6 +499,27 @@ export default function PracticeJournal() {
                               <p className="text-sm whitespace-pre-line">{entry.key_insights}</p>
                             </div>
                           )}
+
+                          {/* Share to Community */}
+                          <div className="pt-2 border-t border-white/10">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10"
+                              onClick={(e) => { e.stopPropagation(); handleShareToCommunity(entry); }}
+                              disabled={sharingId === entry.id}
+                              data-testid={`share-entry-${entry.id}`}
+                            >
+                              {sharingId === entry.id ? (
+                                <span className="animate-pulse">Sharing...</span>
+                              ) : (
+                                <>
+                                  <Users className="w-3 h-3 mr-1" />
+                                  Share to Sacred Circle
+                                </>
+                              )}
+                            </Button>
+                          </div>
                         </div>
                       </motion.div>
                     )}

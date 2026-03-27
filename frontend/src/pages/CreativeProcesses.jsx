@@ -31,7 +31,8 @@ const CreativeProcesses = ({ user, api }) => {
     writing: { text: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
     movement: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
     nature: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-    meditation: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" }
+    meditation: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
+    ceremony: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" }
   };
 
   useEffect(() => {
@@ -65,7 +66,7 @@ const CreativeProcesses = ({ user, api }) => {
     }
   };
 
-  const categories = ["all", "visual", "writing", "movement", "nature", "meditation"];
+  const categories = ["all", "visual", "writing", "movement", "nature", "meditation", "ceremony"];
 
   if (loading) {
     return (
@@ -286,7 +287,7 @@ const CreativeProcesses = ({ user, api }) => {
 
                       {selectedProcess.herb_properties && (
                         <div>
-                          <h3 className="font-medium mb-3">Herb Properties</h3>
+                          <h3 className="font-medium mb-3">Sacred Plant Allies</h3>
                           <div className="space-y-2">
                             {selectedProcess.herb_properties.map((herb, i) => (
                               <div key={i} className="p-3 rounded-lg bg-white/5">
@@ -295,6 +296,37 @@ const CreativeProcesses = ({ user, api }) => {
                               </div>
                             ))}
                           </div>
+                        </div>
+                      )}
+
+                      {selectedProcess.why_this_heals && (
+                        <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+                          <h3 className="font-medium mb-2 text-emerald-400">Why This Heals</h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.why_this_heals}</p>
+                        </div>
+                      )}
+
+                      {selectedProcess.preparation && (
+                        <div>
+                          <h3 className="font-medium mb-3">Preparation</h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.preparation}</p>
+                        </div>
+                      )}
+
+                      {selectedProcess.safety_precautions && (
+                        <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/20">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-red-400 text-lg">⚠</span>
+                            <h3 className="font-medium text-red-400">Safety Precautions</h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.safety_precautions}</p>
+                        </div>
+                      )}
+
+                      {selectedProcess.integration && (
+                        <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
+                          <h3 className="font-medium mb-2 text-blue-400">Integration After Practice</h3>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.integration}</p>
                         </div>
                       )}
                     </div>

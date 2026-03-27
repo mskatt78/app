@@ -343,6 +343,27 @@ async def do_database_seeding():
         await db.community_posts.insert_many(COMMUNITY_POSTS)
         logger.info(f"community_posts refreshed — {len(COMMUNITY_POSTS)} entries.")
 
+        # Always reseed creative processes with deep content
+        from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
+        logger.info("Refreshing creative_processes collection with deep content...")
+        await db.creative_processes.delete_many({})
+        await db.creative_processes.insert_many(CREATIVE_PROCESSES_DEEP)
+        logger.info(f"creative_processes refreshed — {len(CREATIVE_PROCESSES_DEEP)} entries.")
+
+        # Always reseed video tutorials
+        from data.video_content import VIDEO_TUTORIALS
+        logger.info("Refreshing videos collection...")
+        await db.videos.delete_many({})
+        await db.videos.insert_many(VIDEO_TUTORIALS)
+        logger.info(f"videos refreshed — {len(VIDEO_TUTORIALS)} entries.")
+
+        # Always refresh sacred rites (courses) so content deepening takes effect
+        from data.sacred_rites_deep import SACRED_RITES_DEEP
+        logger.info("Refreshing sacred_rites courses...")
+        for rite_id, deep_data in SACRED_RITES_DEEP.items():
+            await db.courses.update_one({"id": rite_id}, {"$set": deep_data}, upsert=True)
+        logger.info(f"sacred_rites refreshed — {len(SACRED_RITES_DEEP)} courses.")
+
         # Seed elemental temples if empty
         temples_count = await db.elemental_temples.count_documents({})
         if temples_count == 0:
@@ -394,12 +415,14 @@ async def seed_all_content():
     )
     from data.somatic_practices import SOMATIC_PRACTICES
     from data.shamanic_content import (
-        EARTH_ALTARS, CREATIVE_PROCESSES, HEART_PRACTICES,
+        EARTH_ALTARS, HEART_PRACTICES,
         SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES
     )
     from data.divination_content import (
         ELDER_FUTHARK_RUNES, I_CHING_HEXAGRAMS, LIGHT_CODES
     )
+    from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
+    from data.video_content import VIDEO_TUTORIALS
 
     collections = [
         ("yoga_poses", YOGA_POSES),
@@ -414,13 +437,14 @@ async def seed_all_content():
         ("mindfulness_practices", MINDFULNESS_PRACTICES),
         ("meditations", MEDITATIONS),
         ("earth_altars", EARTH_ALTARS),
-        ("creative_processes", CREATIVE_PROCESSES),
+        ("creative_processes", CREATIVE_PROCESSES_DEEP),
         ("heart_practices", HEART_PRACTICES),
         ("shamanic_practices", SHAMANIC_PRACTICES),
         ("achievements", ENHANCED_ACHIEVEMENTS),
         ("elemental_practices", ELEMENTAL_PRACTICES),
         ("runes", ELDER_FUTHARK_RUNES),
         ("i_ching", I_CHING_HEXAGRAMS),
+        ("videos", VIDEO_TUTORIALS),
     ]
 
     for name, data in collections:
@@ -434,3 +458,21 @@ async def seed_all_content():
         await db.light_codes.delete_many({})
         await db.light_codes.insert_one(LIGHT_CODES)
         logger.info("  Seeded light_codes: 1 document")
+
+    # Seed courses (sacred rites) — always refresh so content deepening takes effect
+    await _seed_sacred_rites_courses()
+
+
+async def _seed_sacred_rites_courses():
+    """Seed or refresh the sacred rites in the courses collection."""
+    from data.sacred_rites_deep import SACRED_RITES_DEEP
+
+    # Upsert each sacred rite with deep content
+    for rite_id, deep_data in SACRED_RITES_DEEP.items():
+        await db.courses.update_one(
+            {"id": rite_id},
+            {"$set": deep_data},
+            upsert=True
+        )
+    logger.info(f"  Refreshed sacred rites: {len(SACRED_RITES_DEEP)} courses")
+

@@ -19,7 +19,12 @@ const AMBIENT_SOUNDS = {
   nature: { name: "Forest & Birds", type: "nature" },
   fire: { name: "Crackling Fire", type: "fire" },
   wind: { name: "Gentle Wind", type: "wind" },
-  drums: { name: "Shamanic Drums", type: "drums" },
+  drums: { name: "Shamanic Drums (Classic)", type: "drums" },
+  drums_gentle: { name: "Gentle Ground Journey (90 BPM)", type: "drums_gentle" },
+  drums_journey: { name: "Classic Theta Journey (240 BPM)", type: "drums_journey" },
+  drums_awakening: { name: "Awakening Activation (420 BPM)", type: "drums_awakening" },
+  drums_fire: { name: "Fire Ceremony Rhythm", type: "drums_fire" },
+  drums_return: { name: "Journey Return Call", type: "drums_return" },
   gentle_water: { name: "Flowing Stream", type: "water" },
   // New healing sound types
   dolphin: { name: "Dolphin Song", type: "dolphin" },
@@ -348,6 +353,143 @@ const createDrumPattern = (audioContext, gainNode) => {
   return setInterval(playDrum, interval);
 };
 
+// Gentle Grounding Drum — 90 BPM (~1.5 BPS), low earth frequency
+const createGentleDrums = (audioContext, gainNode) => {
+  const playDrum = () => {
+    try {
+      if (audioContext.state === 'closed') return;
+      const osc = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(60, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(28, audioContext.currentTime + 0.45);
+      oscGain.gain.setValueAtTime(0.35, audioContext.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.6);
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.6);
+    } catch(e) {}
+  };
+  return setInterval(playDrum, 667); // 90 BPM
+};
+
+// Classic Theta Journey Drum — 240 BPM (~4 BPS), traditional journey tempo
+const createJourneyDrums = (audioContext, gainNode) => {
+  const playDrum = () => {
+    try {
+      if (audioContext.state === 'closed') return;
+      const osc = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(78, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(38, audioContext.currentTime + 0.12);
+      oscGain.gain.setValueAtTime(0.48, audioContext.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.28);
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.28);
+    } catch(e) {}
+  };
+  return setInterval(playDrum, 250); // 240 BPM
+};
+
+// Awakening Activation Drum — 420 BPM (~7 BPS), fire energy
+const createAwakeningDrums = (audioContext, gainNode) => {
+  const playDrum = () => {
+    try {
+      if (audioContext.state === 'closed') return;
+      const osc = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(92, audioContext.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(55, audioContext.currentTime + 0.07);
+      oscGain.gain.setValueAtTime(0.58, audioContext.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.14);
+      osc.connect(oscGain);
+      oscGain.connect(gainNode);
+      osc.start();
+      osc.stop(audioContext.currentTime + 0.14);
+    } catch(e) {}
+  };
+  return setInterval(playDrum, 143); // 420 BPM
+};
+
+// Fire Ceremony — syncopated pattern [strong, rest, strong, strong, rest, strong, rest, strong]
+const createFireCeremonyDrums = (audioContext, gainNode) => {
+  const PATTERN = [1, 0, 1, 1, 0, 1, 0, 1];
+  const ACCENTS = [0, 3, 5];
+  let beat = 0;
+  const playBeat = () => {
+    try {
+      if (audioContext.state === 'closed') return;
+      if (PATTERN[beat % PATTERN.length]) {
+        const isAccent = ACCENTS.includes(beat % PATTERN.length);
+        const osc = audioContext.createOscillator();
+        const oscGain = audioContext.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(isAccent ? 86 : 68, audioContext.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(32, audioContext.currentTime + 0.22);
+        oscGain.gain.setValueAtTime(isAccent ? 0.62 : 0.38, audioContext.currentTime);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.28);
+        osc.connect(oscGain);
+        oscGain.connect(gainNode);
+        osc.start();
+        osc.stop(audioContext.currentTime + 0.28);
+      }
+      beat++;
+    } catch(e) {}
+  };
+  return setInterval(playBeat, 190); // ~316 BPM subdivided
+};
+
+// Return Call — 4 fast beats, then pause, then 3 slow beats (classic journey return)
+const createReturnCallDrums = (audioContext, gainNode) => {
+  // Pattern: beats at ms offsets within a 4500ms cycle
+  const FAST = [0, 160, 320, 480];
+  const SLOW = [1700, 2300, 2900];
+  const CYCLE = 4400;
+
+  const playPattern = () => {
+    FAST.forEach((delay) => {
+      setTimeout(() => {
+        try {
+          if (audioContext.state === 'closed') return;
+          const osc = audioContext.createOscillator();
+          const g = audioContext.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(88, audioContext.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.09);
+          g.gain.setValueAtTime(0.52, audioContext.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.18);
+          osc.connect(g); g.connect(gainNode);
+          osc.start(); osc.stop(audioContext.currentTime + 0.18);
+        } catch(e) {}
+      }, delay);
+    });
+    SLOW.forEach((delay) => {
+      setTimeout(() => {
+        try {
+          if (audioContext.state === 'closed') return;
+          const osc = audioContext.createOscillator();
+          const g = audioContext.createGain();
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(74, audioContext.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(38, audioContext.currentTime + 0.28);
+          g.gain.setValueAtTime(0.56, audioContext.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.45);
+          osc.connect(g); g.connect(gainNode);
+          osc.start(); osc.stop(audioContext.currentTime + 0.45);
+        } catch(e) {}
+      }, delay);
+    });
+  };
+
+  playPattern();
+  return setInterval(playPattern, CYCLE);
+};
+
 // Create singing bowl sound
 const createBowlSound = (audioContext, gainNode, baseFreq = 528) => {
   const playBowl = () => {
@@ -567,6 +709,36 @@ const AmbientSoundPlayer = ({
         case "drums": {
           const drumInterval = createDrumPattern(ctx, gainNode);
           intervalsRef.current.push(drumInterval);
+          break;
+        }
+
+        case "drums_gentle": {
+          const gentleInterval = createGentleDrums(ctx, gainNode);
+          intervalsRef.current.push(gentleInterval);
+          break;
+        }
+
+        case "drums_journey": {
+          const journeyInterval = createJourneyDrums(ctx, gainNode);
+          intervalsRef.current.push(journeyInterval);
+          break;
+        }
+
+        case "drums_awakening": {
+          const awakeningInterval = createAwakeningDrums(ctx, gainNode);
+          intervalsRef.current.push(awakeningInterval);
+          break;
+        }
+
+        case "drums_fire": {
+          const fireInterval = createFireCeremonyDrums(ctx, gainNode);
+          intervalsRef.current.push(fireInterval);
+          break;
+        }
+
+        case "drums_return": {
+          const returnInterval = createReturnCallDrums(ctx, gainNode);
+          intervalsRef.current.push(returnInterval);
           break;
         }
         
