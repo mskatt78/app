@@ -383,7 +383,118 @@ MUNAY_KI_DEEP = {
                 "Return to ordinary awareness carrying this perspective. Write what you received."
             ]
         }
-    ]
+    ],
+    "is_premium": True,
+    "safety_precautions": (
+        "The Munay Ki rites open and expand the luminous energy field. For most people this feels expansive and profoundly positive. "
+        "However, as with any powerful energy transmission, please observe these precautions:\n\n"
+        "1. Space between rites: Allow 3-7 days between each rite. Receiving them all at once overwhelms the energy field's capacity to integrate. "
+        "The rites must be 'digested' just as food must be digested — too much too quickly creates confusion rather than transformation.\n\n"
+        "2. Mental health: If you have a history of psychosis, schizophrenia, severe bipolar disorder, or are currently in a mental health crisis, "
+        "consult with your mental health professional before receiving these rites. Energy transmissions amplify whatever is present in the field, "
+        "and can intensify symptoms for those with certain vulnerabilities.\n\n"
+        "3. Emotional material: Emotional releases (tears, anger, grief, joy) are normal and healthy responses to the rites. If releases become overwhelming, "
+        "ground yourself immediately: press your bare feet to earth, drink cold water, eat something, call a trusted friend.\n\n"
+        "4. After each rite: Rest as much as possible for the following 24-48 hours. Sleep, walk in nature, avoid alcohol and stimulants. "
+        "Your energy field is reorganising — give it quiet and support.\n\n"
+        "5. Children under 16: These rites are not appropriate for children — their energy fields are still developing and the transmission is too strong.\n\n"
+        "6. Pregnancy: Consult your midwife or healer before receiving while pregnant. The rites are generally considered safe but require awareness."
+    ),
+    "ceremony_preparation_guide": {
+        "title": "Creating Sacred Space for the Munay Ki",
+        "duration": "3 days minimum before first rite",
+        "altar_items": [
+            "Four direction markers: Stone (South), Water/shell (West), Candle/feather (North), Flower/incense (East)",
+            "Mesa cloth — a natural fabric square to hold your sacred objects",
+            "Khuya stones — stones you feel called to as your primary mesa allies",
+            "White candle for the Great Spirit at the centre",
+            "Bowl of clean water with flower petals",
+            "Palo santo or sage for smudging",
+            "Offerings: flowers, cornmeal, tobacco (if appropriate), fruits"
+        ],
+        "preparation_steps": [
+            "Three days before your first rite, begin fasting lightly — eating clean, simple foods. Avoid alcohol, meat, and sugar.",
+            "Create your altar in the east of your room (direction of new beginnings). Take time with this — it is a physical prayer.",
+            "Each morning, light your candle and spend 10 minutes in silence at the altar, simply breathing with intention.",
+            "Each evening, offer a small blessing to the four directions: 'Thank you South — the serpent teaches me to shed what no longer serves. Thank you West...'",
+            "Sleep with one of your khuya stones under your pillow for the three preparation nights.",
+            "On the morning of your first rite, smudge yourself and your space thoroughly.",
+            "Write your intention for receiving the Munay Ki: 'I receive these rites for the healing of myself and all my relations.'"
+        ]
+    },
+    "daily_practice": {
+        "name": "The Morning Mesa Activation",
+        "duration": "10-15 minutes",
+        "description": "A daily ceremony to be practiced every morning throughout the 40-day integration period. This practice keeps the rites active and working.",
+        "steps": [
+            "Rise before full light if possible. Come to your altar in a clean, calm state.",
+            "Light your candle. Sit in silence for one full minute.",
+            "Pick up your mesa (bundle of khuya stones). Hold it in both hands at your heart.",
+            "Breathe slowly and deeply into the mesa for three breaths. With each breath, feel the rites awakening.",
+            "Call the four directions in sequence: 'Winds of the South — I call the great serpent, Sachamama. Shed my old stories.'",
+            "'Winds of the West — I call the jaguar, Otorongo. Devour my fears and transform them.'",
+            "'Winds of the North — I call the hummingbird, Siwar Qenti, and the ancestors. Feed me on sweetness.'",
+            "'Winds of the East — I call the eagle and condor, Apuchin. Show me the highest view of my life.'",
+            "Rest in silence for five minutes. Feel the rites humming in your field.",
+            "Close with gratitude: 'I am grateful for these luminous transmissions. May I walk them fully today.'",
+            "Blow out your candle. Carry the mesa awareness through your day."
+        ]
+    },
+    "forty_day_integration": {
+        "overview": (
+            "The Munay Ki rites require a minimum of 40 days for initial integration. This is not arbitrary — 40 days is a sacred number "
+            "across traditions (40 days in the wilderness, 40-day Vedic practices, 40-day women's cycles). "
+            "The rites continue working at a deep level throughout this period, reorganising your luminous energy field, "
+            "clearing what needs to be released, and activating capacities that were dormant. "
+            "Your only job is to show up each morning for the daily practice and remain attentive to what is shifting."
+        ),
+        "phases": [
+            {
+                "days": "Days 1–9",
+                "title": "Receiving the Nine Rites",
+                "focus": "Receive one rite every 1-2 days. Space them intentionally. Between each rite, rest and notice.",
+                "daily_focus": "Morning Mesa Activation. Journal: 'What is this rite activating in me?'",
+                "journaling_prompts": [
+                    "What am I letting die that has needed to die?",
+                    "Who am I in relation to healing — not as something I do but as something I am?",
+                    "What protection do I feel that I have never felt before?"
+                ]
+            },
+            {
+                "days": "Days 10–19",
+                "title": "Deepening — Working the Rites",
+                "focus": "Spend one day with each rite, actively practising its embodiment exercise. Go through all 9.",
+                "daily_focus": "Morning Mesa Activation. Afternoon: one rite's embodiment practice. Evening: journal.",
+                "journaling_prompts": [
+                    "Which rite feels most alive in me? Which feels most challenging?",
+                    "What lineage connections have I felt or dreamed about?",
+                    "How is my relationship to healing — my own and others' — shifting?"
+                ]
+            },
+            {
+                "days": "Days 20–29",
+                "title": "Integration — Letting It Land",
+                "focus": "Slow down. No new practices. Only the morning ceremony. Trust the rites are working without you doing anything.",
+                "daily_focus": "Morning Mesa Activation. Long walks in nature. Naps and rest.",
+                "journaling_prompts": [
+                    "What old identity am I grieving as it falls away?",
+                    "What new capacity is emerging that I haven't named yet?",
+                    "What would it mean to truly be a healer — not of others, but of my own life?"
+                ]
+            },
+            {
+                "days": "Days 30–40",
+                "title": "Embodiment & Service",
+                "focus": "Begin to offer your medicine to the world. Small acts of service. Holding space for others. Walking as a carrier of the rites.",
+                "daily_focus": "Morning Mesa Activation. One act of conscious service per day. Gratitude practice.",
+                "journaling_prompts": [
+                    "What specific gift do these rites want me to offer the world?",
+                    "Who has crossed my path for me to support with this new luminosity?",
+                    "How am I different on Day 40 from Day 1? What has genuinely changed?"
+                ]
+            }
+        ]
+    }
 }
 
 NUSTA_KARPAY_DEEP = {
@@ -677,7 +788,110 @@ NUSTA_KARPAY_DEEP = {
                 "Call Huayra Mujia: become very still. Feel all seven goddesses present in your body."
             ]
         }
-    ]
+    ],
+    "is_premium": True,
+    "safety_precautions": (
+        "The Nusta Karpay works deeply with the feminine body, the womb, the reproductive system, and feminine ancestral lineage. "
+        "Please observe these precautions with care and respect:\n\n"
+        "1. Pregnancy: If you are pregnant, do not receive the Nusta Karpay without first consulting a trained midwife-shaman or your healthcare provider. "
+        "These rites work powerfully through the womb space and can be contraindicated in the first trimester.\n\n"
+        "2. Recent womb trauma: If you have experienced recent miscarriage, abortion, hysterectomy, or any womb surgery within the past three months, "
+        "allow your body to stabilise before receiving these rites. The rites will be available to you when your body has found a new baseline.\n\n"
+        "3. Unprocessed sexual trauma: The Nusta Karpay can activate deep grief, anger, or shame held in the feminine body. "
+        "If you have significant unprocessed trauma around your body, sexuality, or womanhood, it is strongly recommended that you work with "
+        "a trauma-informed therapist before beginning.\n\n"
+        "4. Men receiving: These rites are available to all who carry feminine principle within them, regardless of biological sex or gender. "
+        "For men receiving, the 'womb' refers to the creative sacral centre. The goddess archetypes connect to qualities within the psyche, not biological function.\n\n"
+        "5. Emotional intensity: These rites are profoundly feminine in nature — they move through feeling, not thinking. "
+        "Grief, tears, tenderness, and joy are all appropriate responses. Intensity is not a sign something is wrong — "
+        "it is a sign the rites are reaching where they need to reach."
+    ),
+    "ceremony_preparation_guide": {
+        "title": "Preparing to Receive the Nusta Karpay",
+        "duration": "7 days minimum before first rite",
+        "altar_items": [
+            "White cloth or rose-coloured cloth for the altar",
+            "Bowl of water (fresh spring water or collected rainwater)",
+            "Seven flowers — one for each goddess if possible",
+            "Moonstone, rose quartz, aquamarine, and/or labradorite crystals",
+            "White or pink candle",
+            "Mirror — the goddesses come through your own face",
+            "Small bowl of milk or cream (traditional feminine offering)",
+            "Images or statues of feminine divine — from any tradition"
+        ],
+        "preparation_steps": [
+            "For seven days before receiving: take a ritual bath or shower each evening. As you wash, speak to your feminine body: 'I honour you. I am sorry for any neglect. I am listening.'",
+            "Drink more water than usual throughout the week. The Nusta Karpay is deeply connected to water — hydrate the vessel.",
+            "Clear your womb space through warmth (hot water bottle, warm baths) and gentle movement. Release held tension in the belly and hips.",
+            "Write a letter to the women in your lineage: your mother, grandmothers, great-grandmothers. Thank them. Release what they passed you that was not theirs to carry.",
+            "Spend time in front of your mirror, making eye contact with yourself. The goddesses look back at you through your own eyes.",
+            "If you menstruate, time the first rite to align with your bleed if possible — this is a powerful time to receive feminine transmissions.",
+            "On the morning of each rite, anoint yourself with a small amount of rose oil at your heart, wrists, and behind your ears."
+        ]
+    },
+    "daily_practice": {
+        "name": "The Goddess Body Prayer",
+        "duration": "12-15 minutes",
+        "description": "A daily embodiment ceremony that keeps the seven goddess frequencies active through your integration period.",
+        "steps": [
+            "Begin standing before your altar or mirror. Light a candle.",
+            "Take three deep breaths into your belly. Feel your feet on the ground.",
+            "Speak aloud: 'I honour the seven Nustas. I am their living vessel.'",
+            "Call Mama Ocllo — Earth: breathe into your feet and legs, feel weight and belonging.",
+            "Call Choquesuso — Water: let your hips begin to sway gently. Feel fluidity.",
+            "Call Mama Simona — Fire: let heat rise in your belly. Feel will and passion.",
+            "Call Qarawayra — Air: take a full breath, expand your chest and arms wide.",
+            "Call Maria Sakapana — Stars: feel your crown open upward to the night sky.",
+            "Call Dona Teresa — Rainbow: see all colours moving through your body like light through a prism.",
+            "Call Huayra Mujia — Wind: become very still. Feel all seven present simultaneously.",
+            "Rest in this whole-body activation for five minutes. Receive what comes.",
+            "Close: 'I carry these seven medicines into this day. May they flow through me into the world.'"
+        ]
+    },
+    "forty_day_integration": {
+        "overview": (
+            "The Nusta Karpay opens the feminine body-temple to receive the seven goddess frequencies as living presences. "
+            "The 40-day integration is not a practice period — it is a gestation. The goddesses need time to move through "
+            "the layers of conditioning, protection, and armour that most women have built over a lifetime. "
+            "Be gentle with yourself. This is deep feminine work. The outer world may feel less interesting during this period — "
+            "that is appropriate. You are tending something that is growing from the inside out."
+        ),
+        "phases": [
+            {
+                "days": "Days 1–7",
+                "title": "Receiving — One Goddess at a Time",
+                "focus": "Receive all seven rites within this first week. Space them as feels right — one or two per day.",
+                "daily_focus": "Daily Goddess Body Prayer. Time in water (bath, swim, or rain walk).",
+                "journaling_prompts": [
+                    "Which goddess feels closest to you? Which feels most distant?",
+                    "What relationship do you have with your feminine body right now — honest answer?",
+                    "What would it mean to be fully at home in your own body?"
+                ]
+            },
+            {
+                "days": "Days 8–21",
+                "title": "Deepening — Living with the Goddesses",
+                "focus": "Work with one goddess per 2-day period. Move through them all twice.",
+                "daily_focus": "Daily Goddess Body Prayer. Monthly cycle awareness. Moon phase tracking.",
+                "journaling_prompts": [
+                    "Which wounds are being touched by this work? What is being healed in your lineage?",
+                    "How is your relationship with other women shifting?",
+                    "What does 'feminine power' feel like in your body — not the idea, but the felt sensation?"
+                ]
+            },
+            {
+                "days": "Days 22–40",
+                "title": "Embodiment — Living as the Temple",
+                "focus": "The goddess frequencies become less about practice and more about how you move through life.",
+                "daily_focus": "Daily Goddess Body Prayer. One act of receiving per day (receiving a compliment, help, gift — fully).",
+                "journaling_prompts": [
+                    "How has your relationship with receiving changed?",
+                    "What is the gift you now carry that your lineage did not fully live?",
+                    "How does the world feel different to you now?"
+                ]
+            }
+        ]
+    }
 }
 
 WOMB_RITE_DEEP = {
@@ -881,7 +1095,121 @@ WOMB_RITE_DEEP = {
                 "When you rise, carry the knowing that you are always held inside the Great Feminine."
             ]
         }
-    ]
+    ],
+    "is_premium": True,
+    "safety_precautions": (
+        "The 13th Rite of the Womb works at the deepest level of the feminine: the original creative power, and the place where "
+        "trauma, grief, shame, and unlived life are most densely stored. This is therefore a rite requiring the greatest care:\n\n"
+        "1. Miscarriage, abortion, or pregnancy loss: If you have experienced any womb loss within the past six months, "
+        "please allow yourself to grieve fully before receiving this rite. The rite can activate grief intensely. "
+        "This can be profoundly healing — but it is important to have support structures in place. Consider receiving with a "
+        "trained facilitator rather than alone.\n\n"
+        "2. Womb surgery or medical conditions: Endometriosis, PCOS, fibroids, or any ongoing womb condition may be touched by "
+        "this work. Many women find the rite profoundly supportive for these conditions. Be gentle and consult your healthcare "
+        "provider if you are uncertain.\n\n"
+        "3. Sexual abuse history: This rite works through the womb's history of suffering. If you carry significant "
+        "unprocessed sexual trauma, the rite is available to you — but work with a trauma-informed therapist or "
+        "somatic practitioner alongside this process.\n\n"
+        "4. For those without a physical womb: The 13th Rite is for all. The 'womb' refers to the sacred creative centre, "
+        "located in the lower abdomen. It is not limited to biological womanhood. Men who receive this rite access their "
+        "own feminine creative principle. All genders are welcome.\n\n"
+        "5. The 40-day daily practice: This rite traditionally requires 13 minutes of daily practice for 40 days. "
+        "Do not begin if you cannot commit to this. An incomplete 40-day practice is less effective than not starting."
+    ),
+    "ceremony_preparation_guide": {
+        "title": "Preparing to Receive the 13th Rite",
+        "duration": "3-7 days minimum",
+        "altar_items": [
+            "Pink or red cloth (colours of the womb)",
+            "Bowl of water with rose petals",
+            "Pink or white candle",
+            "Rose quartz at the centre — the stone of the womb",
+            "Any blood medicine: a drop of menstrual blood if available and desired (traditional), or red wine as substitute",
+            "Photographs of mothers, grandmothers — your feminine lineage",
+            "A written letter of release to your lineage (to be burned during preparation)"
+        ],
+        "preparation_steps": [
+            "Write a letter to your maternal lineage: 'I release all the suffering, the grief, the unfulfilled longing that has been passed to me. I return it with love to where it belongs, transformed.'",
+            "Burn this letter in a candle flame or small fire. Watch the smoke carry it upward.",
+            "For three mornings before the rite: sit with both hands on your womb or lower belly. Breathe slowly. Simply listen. What is being held there?",
+            "Take a ritual bath or shower with the intention of physical cleansing AND energetic clearing. Use salt in the bath if possible.",
+            "Fast lightly on the day of receiving — no heavy foods, no alcohol, minimal screen time.",
+            "On the morning of the rite, sit in silence for 13 minutes (the number of this rite). Simply breathe and be present to the sacredness of what you are about to receive."
+        ]
+    },
+    "daily_practice": {
+        "name": "The 13-Minute Womb Meditation",
+        "duration": "13 minutes exactly",
+        "description": "The traditional daily practice for the 40-day integration. 13 minutes each day, for 40 days. This is the traditional container specified by the lineage.",
+        "steps": [
+            "Come to a comfortable seated or lying position. Set a timer for 13 minutes.",
+            "Place both hands on your womb or lower belly, below the navel.",
+            "Close your eyes. Take three deep breaths, each exhale releasing into the womb space.",
+            "Speak inwardly or aloud: 'The womb is not a place of suffering. The womb is a place of power, creativity, and love.'",
+            "Breathe slowly and deeply. Feel the warmth of your hands entering the womb space.",
+            "If emotion arises — grief, anger, tenderness, joy — let it move through without resistance.",
+            "In the final 3 minutes: visualise your womb as a golden seed of light. Feel it warm and glowing.",
+            "Speak: 'I reclaim my womb as a sacred centre of creative power. I release all that is not mine to carry.'",
+            "When the timer sounds, press both palms firmly into your lower belly for 10 seconds. This seals the practice.",
+            "Drink a glass of water. Carry the warmth of the practice into your day."
+        ]
+    },
+    "forty_day_integration": {
+        "overview": (
+            "The 13th Rite asks for 40 consecutive days of 13 minutes of daily practice. "
+            "This is not optional — it is the minimum required for the rite to fully anchor in your energy field. "
+            "If you miss a day, you begin again from Day 1. Not as punishment, but because continuity is how the rite works. "
+            "It is building a new neural and energetic pathway — like learning to walk, it requires consistent daily use "
+            "until the new way of being becomes the body's default. Many women report that the most profound shifts happen "
+            "in the second and fourth weeks, not the first."
+        ),
+        "phases": [
+            {
+                "days": "Days 1–10",
+                "title": "Awakening — Making Contact",
+                "focus": "Simply show up each day for the 13 minutes. No agenda. Just contact with the womb.",
+                "daily_focus": "13-minute womb meditation. Evening: note one thing you noticed in your body today.",
+                "journaling_prompts": [
+                    "What has my womb been carrying that I haven't fully acknowledged?",
+                    "What is the oldest grief in my belly?",
+                    "What would change if I fully trusted my creative power?"
+                ]
+            },
+            {
+                "days": "Days 11–20",
+                "title": "Releasing — The Grief Wave",
+                "focus": "Many women experience a wave of grief and emotion in the second week. This is the rite working. Stay with it.",
+                "daily_focus": "13-minute womb meditation. Extra rest. Increased water intake.",
+                "journaling_prompts": [
+                    "What am I grieving — from this lifetime and perhaps from the lineage?",
+                    "What has my womb witnessed that I have never spoken aloud?",
+                    "What do I need to forgive myself for?"
+                ]
+            },
+            {
+                "days": "Days 21–30",
+                "title": "Reclaiming — The Creative Fire",
+                "focus": "As the grief clears, creative energy begins to flow. Notice what wants to be born through you.",
+                "daily_focus": "13-minute womb meditation. One creative act per day — writing, dancing, drawing, planting.",
+                "journaling_prompts": [
+                    "What is trying to be born through me that I have been preventing?",
+                    "What creative gift have I been withholding from the world?",
+                    "What does creative power feel like in my body now — compared to Day 1?"
+                ]
+            },
+            {
+                "days": "Days 31–40",
+                "title": "Embodiment — Living from the Sacred Centre",
+                "focus": "The womb is now your daily guide. Begin to make decisions from this centre rather than from the head.",
+                "daily_focus": "13-minute womb meditation. Before each significant decision: ask the womb for guidance.",
+                "journaling_prompts": [
+                    "How has my relationship to my body changed over these 40 days?",
+                    "What patterns in my lineage have I interrupted?",
+                    "Who am I now, in my womb, that I was not on Day 1?"
+                ]
+            }
+        ]
+    }
 }
 
 SACRED_RITES_DEEP = {

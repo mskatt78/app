@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, BookOpen, Clock, Star, Users, Play, ChevronRight, ExternalLink, Loader2, Heart, ChevronDown, Flame, Wind, Sparkles, Leaf, Scroll } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock, Star, Users, Play, ChevronRight, ExternalLink, Loader2, Heart, ChevronDown, Flame, Wind, Sparkles, Leaf, Scroll, Lock, Calendar, Shield } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -130,10 +130,16 @@ export default function Courses() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all duration-300 group"
+                className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden cursor-pointer hover:scale-[1.02] transition-all duration-300 group relative"
                 onClick={() => { setSelectedCourse(course); setActiveTab(course.rites?.length ? "rites" : "overview"); setExpandedRite(null); setExpandedRitual(null); }}
                 data-testid={`course-card-${course.id}`}
               >
+                {/* Premium Sacred Course badge */}
+                {course.is_premium && (
+                  <div className="absolute top-3 left-3 z-10 flex items-center gap-1 px-2 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-[10px] font-medium backdrop-blur-sm">
+                    <Lock className="w-2.5 h-2.5" /> Sacred Course
+                  </div>
+                )}
                 {course.image_url ? (
                   <div className="relative h-44 overflow-hidden">
                     <img src={course.image_url} alt={course.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
@@ -274,6 +280,33 @@ export default function Courses() {
                       data-testid="tab-prepare"
                     >
                       <Leaf className="w-3 h-3 inline mr-1" />Prepare & Integrate
+                    </button>
+                  )}
+                  {selectedCourse.daily_practice && (
+                    <button
+                      onClick={() => setActiveTab("daily")}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${activeTab === "daily" ? "bg-emerald-500 text-white" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`}
+                      data-testid="tab-daily"
+                    >
+                      <Flame className="w-3 h-3 inline mr-1" />Daily Practice
+                    </button>
+                  )}
+                  {selectedCourse.forty_day_integration && (
+                    <button
+                      onClick={() => setActiveTab("calendar")}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${activeTab === "calendar" ? "bg-amber-500 text-white" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`}
+                      data-testid="tab-calendar"
+                    >
+                      <Calendar className="w-3 h-3 inline mr-1" />40-Day Journey
+                    </button>
+                  )}
+                  {selectedCourse.safety_precautions && (
+                    <button
+                      onClick={() => setActiveTab("safety")}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${activeTab === "safety" ? "bg-red-500 text-white" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`}
+                      data-testid="tab-safety"
+                    >
+                      <Shield className="w-3 h-3 inline mr-1" />Safety
                     </button>
                   )}
                   {!selectedCourse.rites?.length && selectedCourse.highlights && (
@@ -466,6 +499,40 @@ export default function Courses() {
                         <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedCourse.preparation}</p>
                       </div>
                     )}
+                    {selectedCourse.ceremony_preparation_guide && (
+                      <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-amber-400" />
+                          <p className="font-medium text-sm text-amber-200">{selectedCourse.ceremony_preparation_guide.title}</p>
+                        </div>
+                        <p className="text-xs text-amber-400/70">Duration: {selectedCourse.ceremony_preparation_guide.duration}</p>
+                        {selectedCourse.ceremony_preparation_guide.altar_items?.length > 0 && (
+                          <div>
+                            <p className="text-xs font-medium text-amber-300 mb-2">Sacred Altar Items:</p>
+                            <ul className="space-y-1">
+                              {selectedCourse.ceremony_preparation_guide.altar_items.map((item, i) => (
+                                <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
+                                  <span className="text-amber-400 mt-0.5">•</span>{item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {selectedCourse.ceremony_preparation_guide.preparation_steps?.length > 0 && (
+                          <div>
+                            <p className="text-xs font-medium text-amber-300 mb-2">Preparation Steps:</p>
+                            <ol className="space-y-2">
+                              {selectedCourse.ceremony_preparation_guide.preparation_steps.map((step, i) => (
+                                <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                  <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{i+1}</span>
+                                  <span>{step}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        )}
+                      </div>
+                    )}
                     {selectedCourse.integration_guidance && (
                       <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-4">
                         <div className="flex items-center gap-2 mb-3">
@@ -475,6 +542,90 @@ export default function Courses() {
                         <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedCourse.integration_guidance}</p>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* DAILY PRACTICE TAB */}
+                {activeTab === "daily" && selectedCourse.daily_practice && (
+                  <div className="p-4 space-y-4" data-testid="daily-tab-content">
+                    <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 overflow-hidden">
+                      <div className="p-4 bg-emerald-500/10 border-b border-emerald-500/20">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Flame className="w-4 h-4 text-emerald-400" />
+                          <h3 className="font-medium text-emerald-200">{selectedCourse.daily_practice.name}</h3>
+                        </div>
+                        <p className="text-xs text-emerald-400/70">Daily for 40 days — {selectedCourse.daily_practice.duration}</p>
+                        <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{selectedCourse.daily_practice.description}</p>
+                      </div>
+                      <div className="p-4">
+                        <ol className="space-y-3">
+                          {selectedCourse.daily_practice.steps?.map((step, i) => (
+                            <li key={i} className="flex items-start gap-3 text-xs text-muted-foreground">
+                              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{i+1}</span>
+                              <span className="leading-relaxed">{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 40-DAY INTEGRATION CALENDAR TAB */}
+                {activeTab === "calendar" && selectedCourse.forty_day_integration && (
+                  <div className="p-4 space-y-4" data-testid="calendar-tab-content">
+                    <div className="p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Calendar className="w-4 h-4 text-amber-400" />
+                        <h3 className="font-medium text-sm text-amber-200">Your 40-Day Integration Journey</h3>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{selectedCourse.forty_day_integration.overview}</p>
+                    </div>
+                    <div className="space-y-3">
+                      {selectedCourse.forty_day_integration.phases?.map((phase, i) => (
+                        <div key={i} className="rounded-xl border border-white/10 bg-white/2 overflow-hidden">
+                          <div className="p-3 bg-white/5 flex items-center gap-3">
+                            <span className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 text-xs flex items-center justify-center font-bold flex-shrink-0">{i+1}</span>
+                            <div>
+                              <p className="text-xs font-medium text-amber-200">{phase.days}</p>
+                              <p className="text-sm font-medium">{phase.title}</p>
+                            </div>
+                          </div>
+                          <div className="p-3 space-y-2">
+                            <p className="text-xs text-muted-foreground leading-relaxed">{phase.focus}</p>
+                            <div className="p-2 rounded-lg bg-emerald-500/5 border border-emerald-500/15">
+                              <p className="text-[10px] text-emerald-400 font-medium mb-1">Daily Focus:</p>
+                              <p className="text-xs text-muted-foreground">{phase.daily_focus}</p>
+                            </div>
+                            {phase.journaling_prompts?.length > 0 && (
+                              <div className="p-2 rounded-lg bg-blue-500/5 border border-blue-500/15">
+                                <p className="text-[10px] text-blue-400 font-medium mb-1">Journal Prompts:</p>
+                                <ul className="space-y-1">
+                                  {phase.journaling_prompts.map((prompt, pi) => (
+                                    <li key={pi} className="text-xs text-muted-foreground flex items-start gap-1">
+                                      <span className="text-blue-400">•</span>{prompt}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* SAFETY TAB */}
+                {activeTab === "safety" && selectedCourse.safety_precautions && (
+                  <div className="p-4" data-testid="safety-tab-content">
+                    <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Shield className="w-4 h-4 text-red-400" />
+                        <h3 className="font-medium text-sm text-red-200">Safety Precautions & Contraindications</h3>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedCourse.safety_precautions}</p>
+                    </div>
                   </div>
                 )}
 
