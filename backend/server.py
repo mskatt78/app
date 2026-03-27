@@ -100,11 +100,16 @@ async def health_check():
     }
 
 
+@app.get("/health")
+async def root_health_check():
+    """Root health check endpoint for deployment verification."""
+    return {"status": "healthy"}
+
+
 # ============ DATABASE SEEDING ============
 
-@app.on_event("startup")
-async def startup_seed_database():
-    """Seed database with content if collections are empty. Always refreshes light_codes."""
+async def do_database_seeding():
+    """Actual database seeding logic - runs in background."""
     try:
         from data.divination_content import LIGHT_CODES
         from data.all_content import MEDITATIONS
@@ -318,6 +323,17 @@ async def startup_seed_database():
             logger.info(f"Database already has {crystals_count} crystals - skipping full seed")
     except Exception as e:
         logger.error(f"Error during startup seeding: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+
+
+@app.on_event("startup")
+async def startup_seed_database():
+    """Seed database with content on startup."""
+    import asyncio
+    # Run seeding in background to not block startup
+    asyncio.create_task(do_database_seeding())
+    logger.info("Database seeding started in background...")
 
 
 async def seed_all_content():
