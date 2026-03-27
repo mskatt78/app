@@ -188,13 +188,15 @@ export default function ChakraCleansing() {
 
                 {/* Expandable sections */}
                 {[
-                  { key: "teaching", label: "Deeper Teaching", icon: Sparkles, content: selectedPractice.deeper_teaching },
+                  { key: "why", label: "Why This Heals", icon: Sparkles, content: selectedPractice.why_this_heals },
+                  { key: "teaching", label: "Deeper Teaching", icon: Sparkles, content: selectedPractice.deeper_teaching || selectedPractice.deeper_teachings },
                   { key: "guide", label: "Self-Healing Guide", icon: Heart, content: selectedPractice.cleansing_guide },
                   { key: "somatic", label: "Somatic Practice", icon: Zap, content: selectedPractice.somatic_practice },
                   { key: "signs", label: "Signs of Imbalance", icon: Flame, content: selectedPractice.signs_of_imbalance },
                   { key: "healing", label: "Signs of Healing", icon: Sun, content: selectedPractice.signs_of_healing },
                   { key: "shadow", label: "Shadow Work", icon: Moon, content: selectedPractice.shadow_work },
-                  { key: "affirmations", label: "Healing Affirmations", icon: Heart, content: selectedPractice.affirmations },
+                  { key: "practices", label: "Healing Practices", icon: Heart, content: selectedPractice.healing_practices?.join ? selectedPractice.healing_practices.join("\n\n• ") : selectedPractice.healing_practices },
+                  { key: "affirmations", label: "Healing Affirmations", icon: Heart, content: Array.isArray(selectedPractice.affirmations) ? selectedPractice.affirmations.join("\n") : selectedPractice.affirmations },
                   { key: "crystals", label: "Supporting Crystals", icon: Sparkles, content: selectedPractice.crystals },
                 ].filter(s => s.content).map(section => (
                   <div key={section.key} className="mb-3 border border-white/10 rounded-xl overflow-hidden">

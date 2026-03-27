@@ -377,21 +377,33 @@ const Breathwork = ({ user, api }) => {
             </div>
             
             {/* Frequency & Instructions */}
-            {(activeSession.frequency || activeSession.instructions) && (
-              <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10 max-w-md text-center">
+            {(activeSession.frequency || activeSession.instructions || activeSession.why_this_heals || activeSession.full_instructions) && (
+              <div className="mt-6 p-4 rounded-xl bg-white/5 border border-white/10 max-w-xl text-left space-y-4">
+                {activeSession.why_this_heals && (
+                  <div>
+                    <h4 className="text-sm font-medium text-amber-400 mb-2">Why This Heals</h4>
+                    <p className="text-sm text-muted-foreground whitespace-pre-line">{activeSession.why_this_heals}</p>
+                  </div>
+                )}
                 {activeSession.frequency && (
-                  <p className="text-sm text-primary mb-2">
+                  <p className="text-sm text-primary">
                     {activeSession.frequency}
                     {soundEnabled && isPlaying && (
                       <span className="ml-2 text-xs text-emerald-400">(Playing)</span>
                     )}
                   </p>
                 )}
-                {activeSession.instructions && (
+                {activeSession.full_instructions && (
+                  <div>
+                    <h4 className="text-sm font-medium text-violet-400 mb-2">Full Instructions</h4>
+                    <div className="text-xs text-muted-foreground whitespace-pre-line max-h-48 overflow-y-auto pr-2">{activeSession.full_instructions}</div>
+                  </div>
+                )}
+                {activeSession.instructions && !activeSession.full_instructions && (
                   <p className="text-xs text-muted-foreground">{activeSession.instructions}</p>
                 )}
                 {activeSession.best_time && (
-                  <p className="text-xs text-muted-foreground mt-2 opacity-70">Best time: {activeSession.best_time}</p>
+                  <p className="text-xs text-muted-foreground opacity-70">Best time: {activeSession.best_time}</p>
                 )}
               </div>
             )}

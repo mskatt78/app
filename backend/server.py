@@ -261,6 +261,52 @@ async def startup_seed_database():
             logger.info(f"Applied deep teachings to {len(MASCULINE_DEEPER_TEACHINGS)} masculine practices")
         except Exception as e:
             logger.warning(f"Could not apply deeper teachings: {e}")
+        
+        # Apply comprehensive deep teachings (why this heals, practice guides, extended teachings)
+        logger.info("Applying comprehensive deep teachings...")
+        try:
+            from data.deep_teachings_complete import FEMININE_DEEP_TEACHINGS, MASCULINE_DEEP_TEACHINGS
+            from data.deep_teachings_chakras_breath import CHAKRA_DEEP_TEACHINGS, BREATHWORK_DEEP_TEACHINGS
+            
+            for practice_id, teachings in FEMININE_DEEP_TEACHINGS.items():
+                await db.feminine_embodiment.update_one({"id": practice_id}, {"$set": {
+                    "why_this_heals": teachings.get("why_this_heals", ""),
+                    "practice_guide": teachings.get("practice_guide", ""),
+                    "extended_teachings": teachings.get("extended_teachings", ""),
+                    "benefits": teachings.get("benefits", []),
+                    "duration_minutes": teachings.get("duration_minutes", 20)
+                }})
+            logger.info(f"Applied comprehensive teachings to {len(FEMININE_DEEP_TEACHINGS)} feminine practices")
+            
+            for practice_id, teachings in MASCULINE_DEEP_TEACHINGS.items():
+                await db.masculine_embodiment.update_one({"id": practice_id}, {"$set": {
+                    "why_this_heals": teachings.get("why_this_heals", ""),
+                    "practice_guide": teachings.get("practice_guide", ""),
+                    "extended_teachings": teachings.get("extended_teachings", ""),
+                    "benefits": teachings.get("benefits", []),
+                    "duration_minutes": teachings.get("duration_minutes", 20)
+                }})
+            logger.info(f"Applied comprehensive teachings to {len(MASCULINE_DEEP_TEACHINGS)} masculine practices")
+            
+            for chakra_id, teachings in CHAKRA_DEEP_TEACHINGS.items():
+                await db.chakra_cleansing.update_one({"id": chakra_id}, {"$set": {
+                    "why_this_heals": teachings.get("why_this_heals", ""),
+                    "deeper_teachings": teachings.get("deeper_teachings", ""),
+                    "healing_practices": teachings.get("healing_practices", []),
+                    "affirmations": teachings.get("affirmations", [])
+                }})
+            logger.info(f"Applied comprehensive teachings to {len(CHAKRA_DEEP_TEACHINGS)} chakras")
+            
+            for session_id, teachings in BREATHWORK_DEEP_TEACHINGS.items():
+                await db.breathwork_sessions.update_one({"id": session_id}, {"$set": {
+                    "why_this_heals": teachings.get("why_this_heals", ""),
+                    "full_instructions": teachings.get("full_instructions", ""),
+                    "benefits": teachings.get("benefits", []),
+                    "best_time": teachings.get("best_time", "")
+                }})
+            logger.info(f"Applied comprehensive teachings to {len(BREATHWORK_DEEP_TEACHINGS)} breathwork sessions")
+        except Exception as e:
+            logger.warning(f"Could not apply comprehensive deep teachings: {e}")
 
         # Only seed everything else if crystals is empty (to avoid duplicate seeding)
         crystals_count = await db.crystals.count_documents({})

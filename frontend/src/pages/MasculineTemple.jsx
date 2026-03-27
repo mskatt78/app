@@ -563,13 +563,35 @@ const MasculineTemple = ({ user, api }) => {
                 <h2 className="text-2xl font-serif mb-3">{selectedPractice.name}</h2>
                 <p className="text-muted-foreground mb-6">{selectedPractice.description}</p>
 
+                {selectedPractice.why_this_heals && (
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-amber-400" /> Why This Heals
+                    </h3>
+                    <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                      {selectedPractice.why_this_heals}
+                    </div>
+                  </div>
+                )}
+
                 {selectedPractice.practice_guide && (
                   <div className="mb-4">
                     <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
                       <Shield className="w-4 h-4 text-amber-400" /> Practice Guide
                     </h3>
-                    <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                    <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-muted-foreground whitespace-pre-line leading-relaxed max-h-64 overflow-y-auto">
                       {selectedPractice.practice_guide}
+                    </div>
+                  </div>
+                )}
+
+                {selectedPractice.extended_teachings && (
+                  <div className="mb-4">
+                    <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-violet-400" /> Deeper Teachings
+                    </h3>
+                    <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20 text-sm text-muted-foreground whitespace-pre-line leading-relaxed max-h-48 overflow-y-auto">
+                      {selectedPractice.extended_teachings}
                     </div>
                   </div>
                 )}
