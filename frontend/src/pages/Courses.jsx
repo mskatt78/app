@@ -136,7 +136,7 @@ export default function Courses() {
   const handlePurchase = async (course) => {
     if (!isLoggedIn()) {
       toast.error("Please sign in to purchase courses");
-      navigate("/auth");
+      navigate("/"); // Redirect to landing page for sign-in
       return;
     }
 

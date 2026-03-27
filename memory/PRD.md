@@ -7,20 +7,29 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **Frontend:** React, Framer Motion, Tailwind CSS, Shadcn/UI
 - **Backend:** FastAPI, MongoDB (Motor Async)
 - **Auth:** Google OAuth (Emergent-managed) + Custom JWT Admin Auth
+- **Payments:** Stripe Checkout (emergentintegrations library)
 - **Integrations:** OpenAI TTS, Gemini Image Gen (Nano Banana), Emergent Object Storage
 - **PWA:** Full manifest with app store ready icons
 
 ## Core Features (All Implemented)
 
 ### Sacred Rites — Premium Courses (Updated March 2026)
-- **3 Sacred Rite courses** (Munay Ki, Nusta Karpay, 13th Womb Rite)
+- **3 Sacred Rite courses** with Stripe payment integration:
+  - Munay Ki ($197) — 9 Great Rites of Initiation
+  - Nusta Karpay ($177) — 7 Goddess Rites of the Divine Feminine  
+  - 13th Rite of the Womb ($147) — The most ancient feminine healing rite
 - Each course has **7 tabs**: The Rites | Rituals | Embodiment | Prepare & Integrate | Daily Practice | 40-Day Journey | Safety
-- **Premium badge** ("Sacred Course") visible on course cards
-- `is_premium: True` flag on all 3 courses (ready for Stripe lock)
-- **40-Day Integration Calendar** with phased journey, daily focus, journaling prompts
-- **Daily Practice** - named ceremony with full step-by-step (Morning Mesa Activation, Goddess Body Prayer, 13-Minute Womb Meditation)
-- **Ceremony Preparation Guide** with altar items + preparation steps
-- **Safety Precautions** comprehensive for each tradition
+- **Premium lock UI**: "Sacred Course" badge, "Unlock Course" button
+- `is_premium: True` flag on all 3 courses with Stripe checkout integration
+- **Content locking**: Rites, Rituals, Embodiment, Daily, Calendar tabs locked for non-purchasers
+- **Public tabs**: Safety and Prepare & Integrate always accessible
+
+### Payment System
+- Stripe Checkout integration via emergentintegrations library
+- One-time course purchases stored in `user_purchases` collection
+- Monthly ($19.99) and Yearly ($149.99) subscription plans
+- PayPal as alternative payment method
+- Payment status polling after Stripe redirect
 
 ### Dashboard (Updated March 2026)
 - **Practice Streak Widget**: Flame + streak count + week dots (Mon-Sun) + milestone badges
@@ -29,80 +38,65 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - Quick "Journal" CTA button
 
 ### Sound Healing (Updated March 2026)
-- 17 sound frequency entries including 6 Shamanic Drum types:
-  - Classic Shamanic Drums (280 BPM)
-  - Gentle Grounding Journey (90 BPM)
-  - Classic Theta Journey (240 BPM)
-  - Awakening Activation (420 BPM)
-  - Fire Ceremony Syncopated rhythm
-  - Journey Return Call (4-beat + 3-beat pattern)
+- 17 sound frequency entries including 6 Shamanic Drum types
 - **"Shamanic Drums" filter tab** in Sound Frequencies page
 
-### Creative Processes (Deep Content — March 2026)
+### Creative Processes (Deep Content)
 - 9 comprehensive practices with safety, why_this_heals, preparation, integration
 - **Sacred Smudging & Space Clearing** — standalone deep guide with 6 herb profiles
-- "ceremony" category filter tab added
 
-### Practice Journal (Updated March 2026)
+### Practice Journal (Updated)
 - Streak milestones: 3, 7, 14, 21, 40-day badges
 - **Share to Sacred Circle** → POST /api/community/posts
 
-### Community Sacred Circle
-- POST /api/community/posts — create posts (from journal sharing)
-- POST /api/community/posts/{id}/like
-- GET /api/community/posts
-
-### Video Tutorials (NEW)
-- 15 tutorial entries seeded across 8 categories
-- Placeholder YouTube URLs (needs real IDs)
-
-### Sacred Geometry Drawing Guides
-- Safety preparation section before every drawing guide
+### Video Tutorials
+- 16 video entries seeded across 8 categories with real YouTube URLs
 
 ## Key API Endpoints
-- `GET /api/courses` — 3 Sacred Rites with all new deep fields
-- `GET /api/courses/{id}` — Full course: is_premium, forty_day_integration, daily_practice, ceremony_preparation_guide, safety_precautions
-- `GET /api/sound-frequencies?category=shamanic` — 5 drum journeys
-- `GET /api/creative-processes` — 9 deep processes with safety content
-- `GET /api/videos?category=<type>` — video tutorials
-- `POST /api/community/posts` — share reflections to community
+- `GET /api/courses` — 3 Sacred Rites with prices and premium flags
+- `GET /api/courses/{id}` — Full course content
+- `POST /api/payments/create-checkout` — Create Stripe checkout session (auth required)
+- `GET /api/payments/status/{session_id}` — Check payment status
+- `GET /api/payments/course-access` — Get user's purchased courses (auth required)
+- `GET /api/payments/check-access/{product_type}/{product_id}` — Check specific course access
+- `GET /api/payments/plans` — Get subscription plans
 
 ## Key DB Schema
-- `courses`: 3 sacred rites, all with new deep fields
-- `sound_frequencies`: 17 entries (6 shamanic drums, 5 with new BPM types)
-- `creative_processes`: 9 deep entries with safety content
-- `videos`: 15 tutorial entries
+- `courses`: 3 sacred rites with prices, rites, rituals, embodiment_practices
+- `user_purchases`: user_id, product_type, product_id, purchased_at
+- `payment_transactions`: session_id, amount, status, metadata
+- `user_subscriptions`: user_id, plan_id, status, expires_at
+
+## Completed Work (March 2026)
+- [x] Stripe payment integration for premium courses
+- [x] Course access checking and content locking
+- [x] Extended Munay Ki course with 2 new rituals (Fire Ceremony, Lineage Healing)
+- [x] Updated course prices: $197, $177, $147
+- [x] Frontend purchase flow with payment status polling
+- [x] Fixed /auth route redirect issue
 
 ## Remaining Backlog
-- **P1**: Update video tutorial URLs with real YouTube educational video IDs
-- **P1**: Stripe payment integration to lock premium Sacred Rite courses
+- **P1**: Add real YouTube video IDs to video tutorials (currently placeholders)
+- **P2**: Subscription-based access to all premium content
 - **P2**: Community page improvements (reply threading, post filtering)
-- **P2**: Chakra Cleansing deeper embodiment + safety precautions
-- **P2**: Elemental Temples full ceremony guides
-- **P3**: Yoga poses spiritual purpose + energetic effects
+- **P3**: Admin dashboard for managing purchases and users
 - **P3**: Production deployment fix (awaiting Emergent platform support)
-- **P3**: More video tutorials per category
 
 ## Architecture
 ```
 /app/
 ├── backend/
 │   ├── data/
-│   │   ├── creative_processes_deep.py — 9 deep practices with safety
-│   │   ├── video_content.py — 15 video tutorials
-│   │   ├── sound_frequencies.py — 17 entries (6 drums)
-│   │   ├── sacred_rites_deep.py — 3 rites with 40-day calendar, daily practice, safety
+│   │   ├── sacred_rites_deep.py — 3 rites with extended rituals
+│   │   ├── video_content.py — 16 video tutorials
+│   │   ├── creative_processes_deep.py — 9 deep practices
 │   ├── routers/
-│   │   ├── content.py — POST /community/posts + like endpoint
-│   ├── server.py — reseeds creative_processes, videos, sacred_rites on every startup
+│   │   ├── payments.py — Stripe/PayPal checkout, course access
+│   │   ├── content.py — course content endpoints
+│   ├── server.py — startup seeding
 ├── frontend/
 │   ├── src/pages/
-│   │   ├── Dashboard.jsx — StreakWidget component
-│   │   ├── Courses.jsx — 7-tab modal, premium badge, new tabs
-│   │   ├── SoundFrequencies.jsx — Shamanic Drums filter
-│   │   ├── CreativeProcesses.jsx — ceremony filter, safety/why_heals UI
-│   │   ├── LightCodes.jsx — safety section before drawing guide
-│   │   ├── PracticeJournal.jsx — share + streak milestones
-│   ├── src/components/
-│   │   ├── AmbientSoundPlayer.jsx — 5 new drum functions
+│   │   ├── Courses.jsx — 7-tab modal, Stripe purchase flow
+│   │   ├── PaymentSuccess.jsx — payment verification
+│   │   ├── Dashboard.jsx — streak widget
 ```
