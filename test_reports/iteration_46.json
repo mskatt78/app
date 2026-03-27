@@ -1,0 +1,37 @@
+{
+  "summary": "Sacred Rites course deep content feature testing. All 3 courses (Munay Ki, Nusta Karpay, 13th Rite of the Womb) verified end-to-end. Backend API returns full rites/rituals/embodiment_practices data. Frontend modal with 4-tab tabbed UI is fully functional.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_sacred_rites_courses_iter46.py",
+    "/app/test_reports/pytest/pytest_iteration46.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Courses.jsx line 136-137: duplicate data-testid attribute on course card motion.div (`data-testid={course-card-${course.id}}` appears twice). HTML ignores duplicate attributes so not a bug, but should be cleaned up."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_sacred_rites_courses_iter46.py"
+  ],
+  "success_rate": {
+    "backend": "100% - 28/28 tests passed",
+    "frontend": "100% - All tabbed modal interactions working"
+  },
+  "seed_data_creation": "None - data already in MongoDB from previous seeding",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Sacred Rites deep content fully working. All 3 course modals (Munay Ki, Nusta Karpay, 13th Womb Rite) open with 4-tab interface (The Rites / Rituals / Embodiment / Prepare & Integrate). Rites are expandable showing description, what_it_heals and embodiment_practice steps. Rituals expand showing steps and what_you_need. Embodiment practices show type, duration and steps. Prepare & Integrate shows both preparation text and integration_guidance. Munay Ki=9 rites, 3 rituals, 4 embodiment. Nusta Karpay=7 rites, 3 rituals, 2 embodiment. 13th Womb Rite=3 rites, 3 rituals, 3 embodiment.",
+  "api_verification": {
+    "GET /api/courses": "PASS - returns 3 courses with all deep content fields",
+    "GET /api/courses/munay-ki": "PASS - 9 rites each with description+what_it_heals+embodiment_practice.steps, 3 rituals with steps+what_you_need, 4 embodiment practices, preparation+integration_guidance",
+    "GET /api/courses/nusta-karpay": "PASS - 7 rites (Mama Ocllo, Dona Mujia, Mama Simona, Choquesuso, Dona Teresa, Maria Sakapana, Huayra Mujia), 3 rituals, 2 embodiment practices, preparation",
+    "GET /api/courses/13th-rite-womb": "PASS - 3 rites, 3 rituals, 3 embodiment practices, preparation"
+  }
+}
