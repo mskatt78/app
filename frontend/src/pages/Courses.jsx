@@ -143,6 +143,32 @@ export default function Courses() {
     }
   };
 
+  const handleBundlePurchase = async () => {
+    if (!isLoggedIn()) {
+      toast.error("Please sign in to begin your sacred journey");
+      navigate("/");
+      return;
+    }
+    setPurchaseLoading(true);
+    try {
+      const token = getAuthToken();
+      const { data } = await api.post("/payments/create-checkout", {
+        product_type: "bundle",
+        product_id: "sacred-rites-bundle",
+        origin_url: window.location.origin,
+        payment_method: "stripe"
+      }, { headers: { Authorization: `Bearer ${token}` } });
+      if (data.checkout_url) window.location.href = data.checkout_url;
+      else toast.error("Could not create checkout session");
+    } catch (err) {
+      toast.error(err.response?.data?.detail || "Failed to start checkout");
+    } finally {
+      setPurchaseLoading(false);
+    }
+  };
+
+  const allCoursesUnlocked = courses.length > 0 && courses.every(c => hasAccess(c.id));
+
   const getCourseImage = (course) => COURSE_IMAGES[course.id] || course.image_url;
 
   const tabs = [
@@ -201,6 +227,60 @@ export default function Courses() {
 
       {/* Courses Grid */}
       <main className="max-w-6xl mx-auto px-6 md:px-12 py-16 md:py-24">
+        {/* Bundle Offer - Only show if not all courses are unlocked */}
+        {!loading && courses.length > 0 && !allCoursesUnlocked && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="mb-16 p-8 md:p-10 rounded-3xl relative overflow-hidden"
+            style={{ 
+              background: `linear-gradient(135deg, ${colors.accent}15, ${colors.primary}10)`,
+              border: `2px solid ${colors.accent}30`
+            }}
+            data-testid="bundle-offer"
+          >
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full opacity-20" style={{ background: `radial-gradient(circle, ${colors.accent}40, transparent)`, transform: "translate(30%, -30%)" }} />
+            <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+              <div className="flex-1">
+                <span className="inline-block px-4 py-1.5 rounded-full text-xs uppercase tracking-[0.2em] font-semibold mb-4" style={{ backgroundColor: `${colors.accent}20`, color: colors.accent }}>
+                  Save $124
+                </span>
+                <h2 className="text-3xl md:text-4xl mb-3" style={{ fontFamily: "'Cormorant Garamond', serif", color: colors.textMain }}>
+                  All Sacred Rites Bundle
+                </h2>
+                <p className="text-base leading-relaxed mb-4" style={{ color: colors.textMuted, maxWidth: "500px" }}>
+                  Receive all three sacred initiations: Munay Ki, Nusta Karpay, and the 13th Rite of the Womb. Complete your feminine healing journey with lifetime access to every teaching.
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  <span className="px-3 py-1 rounded-full text-xs" style={{ backgroundColor: colors.surface, color: colors.textMuted }}>Munay Ki ($197)</span>
+                  <span className="px-3 py-1 rounded-full text-xs" style={{ backgroundColor: colors.surface, color: colors.textMuted }}>Nusta Karpay ($177)</span>
+                  <span className="px-3 py-1 rounded-full text-xs" style={{ backgroundColor: colors.surface, color: colors.textMuted }}>13th Rite ($147)</span>
+                </div>
+              </div>
+              <div className="text-center lg:text-right">
+                <p className="text-xs uppercase tracking-[0.2em] mb-1" style={{ color: colors.textMuted }}>Bundle Price</p>
+                <div className="flex items-baseline gap-2 mb-1 justify-center lg:justify-end">
+                  <span className="text-4xl" style={{ fontFamily: "'Playfair Display', serif", color: colors.accent }}>$397</span>
+                  <span className="text-lg line-through" style={{ color: colors.textMuted }}>$521</span>
+                </div>
+                <Button
+                  onClick={handleBundlePurchase}
+                  disabled={purchaseLoading}
+                  className="mt-4 px-8 py-4 rounded-full font-medium tracking-wide transition-all duration-300 hover:scale-105"
+                  style={{ backgroundColor: colors.accent, color: "white" }}
+                  data-testid="bundle-purchase-btn"
+                >
+                  {purchaseLoading ? (
+                    <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Processing...</>
+                  ) : (
+                    <><CreditCard className="w-4 h-4 mr-2" /> Unlock All Three</>
+                  )}
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-10 h-10 animate-spin" style={{ color: colors.primary }} />

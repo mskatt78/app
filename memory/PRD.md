@@ -81,21 +81,25 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - Premium course cards with aspect-[4/5] images
   - Elegant tabs with clean underline styling
   - "Begin Your Initiation" CTA with soft gold accents
-- [x] **Practice Journal Feminine Redesign**:
-  - Warm ivory background with soft secondary tones
-  - Elegant stat cards with streak, total, this week
-  - Moon phase indicator with refined styling
-  - Beautiful entry cards with practice type badges
-- [x] **Sound Frequencies Feminine Redesign**:
-  - Meditation hero image with elegant overlay
-  - Soft filter tabs with icons
-  - Beautiful frequency cards with element badges
-  - Refined modal with healing properties display
-- [x] **Dashboard Feminine Redesign**:
-  - Warm sidebar with terracotta accents
-  - Elegant streak widget with gold accents
-  - Daily guidance cards with soft hover effects
-  - Sacred Practices grid with feminine color palette
+- [x] **Practice Journal Feminine Redesign**
+- [x] **Sound Frequencies Feminine Redesign**
+- [x] **Dashboard Feminine Redesign**
+- [x] **31 Real YouTube Videos** across 12 categories:
+  - Chakra healing (4), Kundalini (3), Feminine embodiment (5), Shamanic drumming (3)
+  - Plus existing: meditation, breathwork, somatic, movement, sound, creative, shamanic
+- [x] **Course Bundle Feature**: All 3 Sacred Rites for $397 (save $124)
+  - Backend bundle support in payments.py
+  - Auto-grants access to all courses on bundle purchase
+  - Beautiful bundle CTA on courses page
+- [x] **Landing Page Feminine Redesign**:
+  - Full-screen yoga hero with mountain backdrop
+  - "Shamanic Elements Soul Temple" elegant typography
+  - Feature sections: Yoga, Sacred Rites, Sound Healing, Feminine Embodiment
+  - Auth modal with Google + email login
+- [x] **Menu Page Feminine Redesign**:
+  - Featured "Sacred Rites & Initiations" banner
+  - Organized sections with warm icon colors
+  - Sign in button with soft styling
 
 ## Remaining Backlog
 - **P1**: Add real YouTube video IDs to video tutorials (currently placeholders)

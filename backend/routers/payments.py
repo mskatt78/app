@@ -28,7 +28,18 @@ SUBSCRIPTION_PLANS = {
 }
 
 # Products for one-time purchase
-PRODUCT_TYPES = ["retreat", "course", "live_session", "book"]
+PRODUCT_TYPES = ["retreat", "course", "live_session", "book", "bundle"]
+
+# Course bundle pricing
+COURSE_BUNDLES = {
+    "sacred-rites-bundle": {
+        "name": "All Sacred Rites Bundle",
+        "description": "Get all 3 Sacred Rites courses: Munay Ki, Nusta Karpay, and 13th Rite of the Womb",
+        "price": 397.00,
+        "courses": ["munay-ki", "nusta-karpay", "13th-rite-womb"],
+        "savings": 124.00
+    }
+}
 
 # ============ MODELS ============
 
@@ -90,6 +101,15 @@ async def create_checkout_session(
         product_name = plan["name"]
         metadata["plan_id"] = payment_request.plan_id
         metadata["interval"] = plan["interval"]
+    elif payment_request.product_type == "bundle":
+        # Handle course bundles
+        if not payment_request.product_id or payment_request.product_id not in COURSE_BUNDLES:
+            raise HTTPException(status_code=400, detail="Invalid bundle ID")
+        bundle = COURSE_BUNDLES[payment_request.product_id]
+        amount = bundle["price"]
+        product_name = bundle["name"]
+        metadata["product_id"] = payment_request.product_id
+        metadata["bundle_courses"] = ",".join(bundle["courses"])
     else:
         if not payment_request.product_id:
             raise HTTPException(status_code=400, detail="Product ID required")
@@ -212,12 +232,27 @@ async def get_payment_status(
                     )
                 
                 elif transaction.get("product_type") in PRODUCT_TYPES:
-                    await db.user_purchases.insert_one({
-                        "user_id": current_user.user_id,
-                        "product_type": transaction.get("product_type"),
-                        "product_id": transaction.get("product_id"),
-                        "purchased_at": datetime.now(timezone.utc).isoformat()
-                    })
+                    # Check if it's a bundle purchase
+                    if transaction.get("product_type") == "bundle":
+                        bundle_courses = transaction.get("metadata", {}).get("bundle_courses", "")
+                        if bundle_courses:
+                            course_ids = bundle_courses.split(",")
+                            # Grant access to each course in the bundle
+                            for course_id in course_ids:
+                                await db.user_purchases.insert_one({
+                                    "user_id": current_user.user_id,
+                                    "product_type": "course",
+                                    "product_id": course_id.strip(),
+                                    "bundle_id": transaction.get("product_id"),
+                                    "purchased_at": datetime.now(timezone.utc).isoformat()
+                                })
+                    else:
+                        await db.user_purchases.insert_one({
+                            "user_id": current_user.user_id,
+                            "product_type": transaction.get("product_type"),
+                            "product_id": transaction.get("product_id"),
+                            "purchased_at": datetime.now(timezone.utc).isoformat()
+                        })
         
         return {
             "status": status.status,
@@ -652,6 +687,21 @@ async def get_subscription_plans():
         ],
         "payment_methods": ["stripe", "paypal"]
     }
+
+@router.get("/bundles")
+async def get_bundles():
+    """Get available course bundles."""
+    bundles = []
+    for bundle_id, bundle_data in COURSE_BUNDLES.items():
+        bundles.append({
+            "id": bundle_id,
+            "name": bundle_data["name"],
+            "description": bundle_data["description"],
+            "price": bundle_data["price"],
+            "courses": bundle_data["courses"],
+            "savings": bundle_data["savings"]
+        })
+    return bundles
 
 # ============ WEBHOOK ROUTES ============
 

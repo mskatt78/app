@@ -171,5 +171,159 @@ VIDEO_TUTORIALS = [
         "duration": "25:00",
         "level": "beginner",
         "tradition": "Somatic / Movement"
+    },
+    # ============ CHAKRA HEALING ============
+    {
+        "id": "vid-chakra-1",
+        "title": "20-Minute Chakra Healing & Balancing Meditation",
+        "description": "Release stagnant energy and promote flow through all 7 chakras. A gentle guided meditation perfect for daily practice to restore energetic balance.",
+        "category": "chakra",
+        "video_url": "https://www.youtube.com/watch?v=6CPzzVvNg34",
+        "duration": "20:00",
+        "level": "beginner",
+        "tradition": "Energy Healing"
+    },
+    {
+        "id": "vid-chakra-2",
+        "title": "7 Chakra Meditation — 30 Minutes Full Journey",
+        "description": "Journey through each chakra from root to crown for cleansing and alignment. By Ally Boothroyd, this meditation guides you through all energy centres.",
+        "category": "chakra",
+        "video_url": "https://www.youtube.com/watch?v=lUNHBzWUCQY",
+        "duration": "30:00",
+        "level": "beginner",
+        "tradition": "Chakra System"
+    },
+    {
+        "id": "vid-chakra-3",
+        "title": "Powerful Meditation on the 7 Chakras — Gurudev",
+        "description": "Gurudev Sri Sri Ravi Shankar guides an exploration of chakras along the spine for physical, emotional, and spiritual well-being and awakening.",
+        "category": "chakra",
+        "video_url": "https://www.youtube.com/watch?v=Kzr0R5YYtys",
+        "duration": "25:00",
+        "level": "intermediate",
+        "tradition": "Yogic / Vedic"
+    },
+    {
+        "id": "vid-chakra-4",
+        "title": "10-Minute Meditation for Chakra Healing",
+        "description": "Quick realignment, energy reset, and emotional release. By Boho Beautiful — perfect for mornings or when you need a quick energetic tune-up.",
+        "category": "chakra",
+        "video_url": "https://www.youtube.com/watch?v=e73jBm5L8bk",
+        "duration": "10:00",
+        "level": "beginner",
+        "tradition": "Modern Yoga"
+    },
+    # ============ KUNDALINI ============
+    {
+        "id": "vid-kundalini-1",
+        "title": "Powerful Kundalini Awakening Meditation",
+        "description": "A potent activation meditation using 432Hz music, breathwork, and visualization to awaken your Kundalini energy. Use headphones for best results. By Jess Shepherd.",
+        "category": "kundalini",
+        "video_url": "https://www.youtube.com/watch?v=7DVOzQ6xtWA",
+        "duration": "30:00",
+        "level": "intermediate",
+        "tradition": "Kundalini Yoga"
+    },
+    {
+        "id": "vid-kundalini-2",
+        "title": "Kundalini — The Mothering Energy (Sahaja Yoga)",
+        "description": "Deep teaching on Kundalini as the pure desire within us to ascend. Guided practices for nourishment, purification, and enlightenment from the 21-Day Course.",
+        "category": "kundalini",
+        "video_url": "https://www.youtube.com/watch?v=GPpy0VpXMqQ",
+        "duration": "45:00",
+        "level": "beginner",
+        "tradition": "Sahaja Yoga"
+    },
+    {
+        "id": "vid-kundalini-3",
+        "title": "Amplify Your Projection — Kundalini Yoga & Breathwork",
+        "description": "Combines kriya, Sat Nam chants, breath holds, and zero-point meditation to release negatives and energize your field. By Pritam Siri.",
+        "category": "kundalini",
+        "video_url": "https://www.youtube.com/watch?v=2UGmMausCAw",
+        "duration": "35:00",
+        "level": "intermediate",
+        "tradition": "Kundalini Yoga"
+    },
+    # ============ FEMININE EMBODIMENT ============
+    {
+        "id": "vid-feminine-1",
+        "title": "15-Minute Feminine Guided Dance Embodiment",
+        "description": "Focus on pleasure, playfulness, hip and foot movements. Seduce your pleasure through breath and intuitive dance. At-home practice for connecting with feminine energy.",
+        "category": "feminine",
+        "video_url": "https://www.youtube.com/watch?v=ZMXtFo2rkDs",
+        "duration": "15:00",
+        "level": "beginner",
+        "tradition": "Embodiment Practice"
+    },
+    {
+        "id": "vid-feminine-2",
+        "title": "Feminine Embodiment Dance — Connect with Body Energy",
+        "description": "Simple intuitive morning practice for feeling emotions fluidly. No structured steps — ideal for daily rituals to awaken feminine flow.",
+        "category": "feminine",
+        "video_url": "https://www.youtube.com/watch?v=CAZpniMqnn8",
+        "duration": "12:00",
+        "level": "beginner",
+        "tradition": "Intuitive Movement"
+    },
+    {
+        "id": "vid-feminine-3",
+        "title": "Feminine Energy Ecstatic Dance — Sacral Ritual",
+        "description": "Sacral ritual embracing femininity, moon dance, and emotional expression through free movement. Led by a Yin yoga teacher for deep feminine awakening.",
+        "category": "feminine",
+        "video_url": "https://www.youtube.com/watch?v=N-eNl847a14",
+        "duration": "20:00",
+        "level": "beginner",
+        "tradition": "Ecstatic Dance"
+    },
+    {
+        "id": "vid-feminine-4",
+        "title": "Awakening the Divine Feminine — Sacred Mystical Dance",
+        "description": "Slow, breath-connected moving meditation building Shakti energy. A sacred practice for awakening the divine feminine within.",
+        "category": "feminine",
+        "video_url": "https://www.youtube.com/watch?v=irpbA3K00Eo",
+        "duration": "25:00",
+        "level": "intermediate",
+        "tradition": "Sacred Dance"
+    },
+    {
+        "id": "vid-feminine-5",
+        "title": "Sensual Flow — Beginner-Friendly Movements",
+        "description": "Slow-building sensual dance to tap into feminine energy, self-expression, and body connection. Perfect for newcomers to embodiment practice.",
+        "category": "feminine",
+        "video_url": "https://www.youtube.com/watch?v=FHs5Gty9_E8",
+        "duration": "18:00",
+        "level": "beginner",
+        "tradition": "Sensual Movement"
+    },
+    # ============ SHAMANIC DRUMMING ============
+    {
+        "id": "vid-drums-1",
+        "title": "Shamanic Drum Music — 528 Hz Deep Meditation",
+        "description": "Native American drums and flute at 528 Hz for inner journeys, relaxation, and enlightenment. Ideal for energy work and profound spiritual experiences.",
+        "category": "drumming",
+        "video_url": "https://www.youtube.com/watch?v=tWxqJIzvSVs",
+        "duration": "60:00",
+        "level": "beginner",
+        "tradition": "Native American"
+    },
+    {
+        "id": "vid-drums-2",
+        "title": "Grounding Shamanic Drumming — Breathing Roots",
+        "description": "Pure shamanic drumming with steel tongue drum for deep meditation journeys. Promotes grounding and trance states. By Calm Whale.",
+        "category": "drumming",
+        "video_url": "https://www.youtube.com/watch?v=A_JNACMvkEs",
+        "duration": "45:00",
+        "level": "beginner",
+        "tradition": "Shamanic Drumming"
+    },
+    {
+        "id": "vid-drums-3",
+        "title": "Heart Beat of Mother Earth — Pure Shamanic Journey",
+        "description": "Warm, clean drum beats mimicking Earth's heartbeat for grounding, sacred journeys, breathwork, and reconnection. Includes callback after 30 minutes.",
+        "category": "drumming",
+        "video_url": "https://www.youtube.com/watch?v=tnFudeKEhYk",
+        "duration": "35:00",
+        "level": "beginner",
+        "tradition": "Earth-Based Shamanism"
     }
 ]
