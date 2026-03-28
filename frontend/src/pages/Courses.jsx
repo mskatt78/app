@@ -22,14 +22,14 @@ const colors = {
   success: "#6B8E73",
 };
 
-// Course images from design guidelines
+// Course images - Shamanic Feminine Soul Temple
 const COURSE_IMAGES = {
-  "munay-ki": "https://images.unsplash.com/photo-1738058235723-b8f91a40f638?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA4Mzl8MHwxfHNlYXJjaHwzfHx3b21lbiUyMHNwaXJpdHVhbCUyMHJldHJlYXQlMjBuYXR1cmV8ZW58MHx8fHwxNzc0NjQ5OTkzfDA&ixlib=rb-4.1.0&q=85",
-  "nusta-karpay": "https://images.pexels.com/photos/13354024/pexels-photo-13354024.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
-  "13th-rite-womb": "https://images.pexels.com/photos/11435367/pexels-photo-11435367.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+  "munay-ki": "https://images.unsplash.com/photo-1674612418301-8075420ffa7e?w=800&q=80", // Woman with flower crown in forest - goddess nature vibe
+  "nusta-karpay": "https://images.pexels.com/photos/5696527/pexels-photo-5696527.jpeg?auto=compress&cs=tinysrgb&w=800", // Woman in spiritual ritual with candles
+  "13th-rite-womb": "https://images.pexels.com/photos/7303259/pexels-photo-7303259.jpeg?auto=compress&cs=tinysrgb&w=800", // Singing bowl, rose petals, crystals, candle
 };
 
-const HERO_BG = "https://images.unsplash.com/photo-1752924477629-d6f5f6e6c40b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2Njd8MHwxfHNlYXJjaHwxfHxnb2RkZXNzJTIwZmVtaW5pbmUlMjBiZWF1dGlmdWwlMjBmbG93ZXJzfGVufDB8fHx8MTc3NDY1MDA0Mnww&ixlib=rb-4.1.0&q=85";
+const HERO_BG = "https://images.pexels.com/photos/5696535/pexels-photo-5696535.jpeg?auto=compress&cs=tinysrgb&w=1600"; // Woman mystical ritual with candles
 
 export default function Courses() {
   const navigate = useNavigate();
