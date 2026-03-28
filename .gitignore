@@ -81,3 +81,7 @@ ENV/
 .emergent/
 memory/test_credentials.md
 frontend/node_modules/.cache/default-development/6.pack
+-e 
+# Environment files
+*.env
+*.env.*
