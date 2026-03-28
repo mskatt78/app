@@ -5,7 +5,7 @@ import {
   Sparkles, Wind, Gem, Music2, Hand, Brain, Heart, Flame, TreePine, 
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
   Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins, Droplets, Dna,
-  BarChart3, Calculator, MessageCircle, Feather, Volume2, NotebookPen, ChevronRight, ArrowRight
+  BarChart3, Calculator, MessageCircle, Feather, Volume2, NotebookPen, ChevronRight, ArrowRight, Play
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
@@ -170,6 +170,7 @@ const MainMenu = ({ user }) => {
       title: "Community & Learning",
       items: [
         { path: "/courses", icon: BookOpen, label: "Sacred Courses", color: "text-violet-400", desc: "Live & recorded teachings", highlight: true },
+        { path: "/videos", icon: Play, label: "Video Library", color: "text-rose-400", desc: "31 curated tutorials", highlight: true },
         { path: "/community", icon: Users, label: "Sacred Circle", color: "text-rose-400", desc: "Shared wisdom & journeys" },
         { path: "/retreats", icon: Globe, label: "Retreats", color: "text-emerald-400", desc: "Sacred gatherings" },
         { path: "/reviews", icon: MessageCircle, label: "Testimonials", color: "text-amber-400", desc: "Community voices" },

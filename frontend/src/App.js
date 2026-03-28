@@ -77,6 +77,7 @@ const SomaticYoga = lazy(() => import("./pages/SomaticYoga"));
 const ChakraCleansing = lazy(() => import("./pages/ChakraCleansing"));
 const DailySacredPractice = lazy(() => import("./pages/DailySacredPractice"));
 const PracticeJournal = lazy(() => import("./pages/PracticeJournal"));
+const VideosLibrary = lazy(() => import("./pages/VideosLibrary"));
 // Notifications
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 
@@ -810,6 +811,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <PracticeJournal user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/videos"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <VideosLibrary user={user} api={api} />}
           </PublicRoute>
         }
       />
