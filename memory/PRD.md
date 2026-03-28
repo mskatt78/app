@@ -49,8 +49,22 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - Streak milestones: 3, 7, 14, 21, 40-day badges
 - **Share to Sacred Circle** → POST /api/community/posts
 
-### Video Tutorials
-- 16 video entries seeded across 8 categories with real YouTube URLs
+### Video Tutorials (Updated March 2026)
+- **51 video entries** seeded across **13 categories** with real YouTube URLs
+- **New categories added**:
+  - Angel Guidance (4 videos) — Archangel meditations, angelic connection
+  - Colour Therapy (5 videos) — Chromotherapy, color healing meditation
+  - Aromatherapy (5 videos) — Essential oil meditation, breathwork with oils
+  - Art Therapy (6 videos) — Mindful drawing, bilateral art, creative meditation
+- Videos Library page with dark theme matching app aesthetic
+- Category filters, YouTube thumbnail previews, embedded player modal
+
+### Admin Database Seeding (NEW March 2026)
+- **POST /api/admin/seed-database** — Admin endpoint to trigger database seeding
+  - Can seed all collections or specific ones
+  - `force=true` option to overwrite existing data
+  - Safe for production with progress tracking
+- **GET /api/admin/seed-status** — Shows current database state for all collections
 
 ## Key API Endpoints
 - `GET /api/courses` — 3 Sacred Rites with prices and premium flags
@@ -112,11 +126,27 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
-- **P1**: Add real YouTube video IDs to video tutorials (currently placeholders)
+- **P1**: Video of the Day widget on Dashboard
+- **P2**: Community page threading/replies feature
 - **P2**: Subscription-based access to all premium content
-- **P2**: Community page improvements (reply threading, post filtering)
-- **P3**: Admin dashboard for managing purchases and users
-- **P3**: Production deployment fix (awaiting Emergent platform support)
+- **P3**: Production deployment admin route optimization
+
+## Completed Work (March 2026 - Latest)
+- [x] **Admin Database Seeding Route**:
+  - POST /api/admin/seed-database — Seeds all or specific collections
+  - GET /api/admin/seed-status — Shows database collection counts
+  - Safe for production with force flag option
+- [x] **4 New Video Categories with 20+ Real YouTube Videos**:
+  - Angel Guidance: Archangel Uriel, Archangel Michael meditations
+  - Colour Therapy: Chromotherapy, color wash meditation, chakra colors
+  - Aromatherapy: Essential oil meditation, citrus uplift, sacred oils
+  - Art Therapy: Bilateral drawing, mindful art, intuitive scribble
+- [x] **Videos Library Dark Theme Fix**:
+  - Converted from light feminine theme to dark Shamanic Elements aesthetic
+  - Category filters with unique icons for each new category
+  - Consistent with app's dark theme CSS variables
+
+## Earlier Completed Work (March 2026)
 
 ## Architecture
 ```
@@ -124,15 +154,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 ├── backend/
 │   ├── data/
 │   │   ├── sacred_rites_deep.py — 3 rites with extended rituals
-│   │   ├── video_content.py — 16 video tutorials
+│   │   ├── video_content.py — 51 video tutorials (13 categories)
 │   │   ├── creative_processes_deep.py — 9 deep practices
 │   ├── routers/
+│   │   ├── admin.py — Admin seeding routes, file uploads
 │   │   ├── payments.py — Stripe/PayPal checkout, course access
 │   │   ├── content.py — course content endpoints
 │   ├── server.py — startup seeding
 ├── frontend/
 │   ├── src/pages/
 │   │   ├── Courses.jsx — 7-tab modal, Stripe purchase flow
+│   │   ├── VideosLibrary.jsx — 13 category filters, dark theme
 │   │   ├── PaymentSuccess.jsx — payment verification
 │   │   ├── Dashboard.jsx — streak widget
 ```

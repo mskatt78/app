@@ -325,5 +325,209 @@ VIDEO_TUTORIALS = [
         "duration": "35:00",
         "level": "beginner",
         "tradition": "Earth-Based Shamanism"
+    },
+    # ============ ANGEL GUIDANCE ============
+    {
+        "id": "vid-angel-1",
+        "title": "Psychic Vision Sleep Meditation with Archangel Uriel",
+        "description": "A 54-minute guided session to awaken inner sight, connect with divine wisdom, and receive clarity through deep relaxation and visualization. Perfect for psychic guidance and restful sleep.",
+        "category": "angel_guidance",
+        "video_url": "https://www.youtube.com/watch?v=GJrlp090z5A",
+        "duration": "54:00",
+        "level": "beginner",
+        "tradition": "Angelic Healing"
+    },
+    {
+        "id": "vid-angel-2",
+        "title": "Show Me What To Do Next — Archangel Michael Meditation",
+        "description": "A 40-minute meditation to enhance intuition, clear energetic blockages, and gain divine direction from Archangel Michael's protective light for your highest purpose.",
+        "category": "angel_guidance",
+        "video_url": "https://www.youtube.com/watch?v=7HaqpGKZfvA",
+        "duration": "40:00",
+        "level": "beginner",
+        "tradition": "Archangel Work"
+    },
+    {
+        "id": "vid-angel-3",
+        "title": "3 Powerful Ways to Work with Angels",
+        "description": "An 18-minute practical guide with daily routines, recognizing angelic signs, and intention-setting for stronger divine bonds. Includes guided meditation techniques.",
+        "category": "angel_guidance",
+        "video_url": "https://www.youtube.com/watch?v=ttX2nDcv6Yo",
+        "duration": "18:00",
+        "level": "beginner",
+        "tradition": "Angel Communication"
+    },
+    {
+        "id": "vid-angel-4",
+        "title": "Angel Guidance — Navigating Your Path with Divine Support",
+        "description": "Focus on angelic support for abundance and insight, with guided elements for deeper connection to your guardian angels and celestial guides.",
+        "category": "angel_guidance",
+        "video_url": "https://www.youtube.com/watch?v=FBt7WYzLds0",
+        "duration": "30:00",
+        "level": "beginner",
+        "tradition": "Angelic Healing"
+    },
+    # ============ COLOUR THERAPY (CHROMOTHERAPY) ============
+    {
+        "id": "vid-colour-1",
+        "title": "Color Therapy Meditation — Healing with Color Visualization",
+        "description": "A 22-minute guided session progressing through healing colors (yellow for calm, green for nature healing), ending with choosing your personal calming color. Ideal for depression or unwinding.",
+        "category": "colour_therapy",
+        "video_url": "https://www.youtube.com/watch?v=bY-sxwsL-UA",
+        "duration": "22:00",
+        "level": "beginner",
+        "tradition": "Chromotherapy"
+    },
+    {
+        "id": "vid-colour-2",
+        "title": "Guided Color Healing — Deep Relaxation",
+        "description": "Learn color healing properties and select colors for your personal meditation. Focus on deep relaxation without traditional meditation effort. By The Honest Guys.",
+        "category": "colour_therapy",
+        "video_url": "https://www.youtube.com/watch?v=ickweP4UeIQ",
+        "duration": "25:00",
+        "level": "beginner",
+        "tradition": "Color Healing"
+    },
+    {
+        "id": "vid-colour-3",
+        "title": "8-Minute Guided Color Meditation with Healing Frequencies",
+        "description": "Short audio exploring red, yellow, and blue with soundscapes aligned to healing frequencies. Reflects on emotional effects of colors like ocean blue or forest green. By MoMA.",
+        "category": "colour_therapy",
+        "video_url": "https://www.youtube.com/watch?v=EErVEoz13no",
+        "duration": "8:00",
+        "level": "beginner",
+        "tradition": "Sound & Color Healing"
+    },
+    {
+        "id": "vid-colour-4",
+        "title": "10-Minute Healing Color Wash Meditation",
+        "description": "A full-spectrum color wash meditation paired with soothing nature imagery for deep relaxation and chakra balancing. By EXPLORE.org.",
+        "category": "colour_therapy",
+        "video_url": "https://www.youtube.com/watch?v=LwN7G2bx84E",
+        "duration": "10:00",
+        "level": "beginner",
+        "tradition": "Chromotherapy"
+    },
+    {
+        "id": "vid-colour-5",
+        "title": "Color Therapy Chakra Guided Meditation",
+        "description": "Vivid colors swirl through your energy centres for equilibrium and possibility visualization. Focuses on chakra-balanced chromotherapy healing.",
+        "category": "colour_therapy",
+        "video_url": "https://www.youtube.com/watch?v=LeXipk1cK-w",
+        "duration": "20:00",
+        "level": "beginner",
+        "tradition": "Chakra Chromotherapy"
+    },
+    # ============ AROMATHERAPY ============
+    {
+        "id": "vid-aroma-1",
+        "title": "Guided Meditation for Relaxation with Essential Oil Aroma Therapy",
+        "description": "Inhale a peace blend from your palms for three deep breaths to unwind anxiety. Extends into slow breathing for grounding and calm. By Jen Hilman.",
+        "category": "aromatherapy",
+        "video_url": "https://www.youtube.com/watch?v=yzo3tNilQJg",
+        "duration": "15:00",
+        "level": "beginner",
+        "tradition": "Essential Oil Healing"
+    },
+    {
+        "id": "vid-aroma-2",
+        "title": "How To Meditate Using Essential Oils",
+        "description": "Covers aromatic inhalation from palms or diffuser, topical application, and top oils like grounding blends (tree and root oils) for emotional healing and focus via the limbic system.",
+        "category": "aromatherapy",
+        "video_url": "https://www.youtube.com/watch?v=CQuQtj3IXsY",
+        "duration": "12:00",
+        "level": "beginner",
+        "tradition": "Aromatherapy Basics"
+    },
+    {
+        "id": "vid-aroma-3",
+        "title": "Aromatherapy Meditation to Shift and Uplift",
+        "description": "Use uplifting citrus oils (grapefruit, lemon, wild orange) on temples and chest. Inhale deeply to boost mood and energy, then meditate seated or standing. By Jamie Wozny.",
+        "category": "aromatherapy",
+        "video_url": "https://www.youtube.com/watch?v=xK2xByL9Dyo",
+        "duration": "18:00",
+        "level": "beginner",
+        "tradition": "Citrus Aromatherapy"
+    },
+    {
+        "id": "vid-aroma-4",
+        "title": "Guided Meditation for Flow Using Essential Oils",
+        "description": "Apply frankincense, myrrh, cedarwood, and bergamot blend to neck and ears. Visualize Earth's energy while breathing deeply for revitalization. By Michelle McCoy.",
+        "category": "aromatherapy",
+        "video_url": "https://www.youtube.com/watch?v=OnGSpHFuJl8",
+        "duration": "20:00",
+        "level": "intermediate",
+        "tradition": "Sacred Oil Meditation"
+    },
+    {
+        "id": "vid-aroma-5",
+        "title": "Meditation and Breathing Exercises with Essential Oils",
+        "description": "Rub wild orange or any uplifting oil on hands, inhale over nose and mouth for stress relief. Pair with breathwork techniques that work even without oils.",
+        "category": "aromatherapy",
+        "video_url": "https://www.youtube.com/watch?v=qiqFcuGQp9A",
+        "duration": "10:00",
+        "level": "beginner",
+        "tradition": "Breathwork & Aromatherapy"
+    },
+    # ============ ART THERAPY ============
+    {
+        "id": "vid-art-1",
+        "title": "15-Minute Creative Meditation with an Art Therapist",
+        "description": "Led by art therapist Ashley from Discover Art Therapy. Mindfulness watercolor for nervous system support, deep breathing, and presence. Non-judgmental painting to calm and reconnect.",
+        "category": "art_therapy",
+        "video_url": "https://www.youtube.com/watch?v=Ru39AJm6SkI",
+        "duration": "15:00",
+        "level": "beginner",
+        "tradition": "Art Therapy"
+    },
+    {
+        "id": "vid-art-2",
+        "title": "Bilateral Drawing — Guided Meditation for Relaxation & Anxiety Relief",
+        "description": "Uses both hands for brain-balancing, rhythmic drawing to reduce anxiety and enter flow state. Engages both brain hemispheres for focus and stress release. By Jayme.",
+        "category": "art_therapy",
+        "video_url": "https://www.youtube.com/watch?v=b6hHuqqojTo",
+        "duration": "11:00",
+        "level": "beginner",
+        "tradition": "Bilateral Art Therapy"
+    },
+    {
+        "id": "vid-art-3",
+        "title": "10-Minute Mindfulness Drawing Meditation",
+        "description": "Verbal guided drawing with breathing for mental clarity and emotional awareness. Flexible for any time or place. By Catherine from Artfully, Mindfully.",
+        "category": "art_therapy",
+        "video_url": "https://www.youtube.com/watch?v=0kcAFq7C_CA",
+        "duration": "10:00",
+        "level": "beginner",
+        "tradition": "Mindful Art"
+    },
+    {
+        "id": "vid-art-4",
+        "title": "Guided Body Scan Drawing Meditation",
+        "description": "Starts with body scan meditation, then simple drawing. Part of a 30-day challenge for de-stressing. No prior art experience needed — just paper and your favorite supplies.",
+        "category": "art_therapy",
+        "video_url": "https://www.youtube.com/watch?v=i47lr-nbq-o",
+        "duration": "24:00",
+        "level": "beginner",
+        "tradition": "Somatic Art Therapy"
+    },
+    {
+        "id": "vid-art-5",
+        "title": "Intuitive Scribble Art Meditation",
+        "description": "Step-by-step scribbling, coloring, and doodling for present-moment awareness and playful flow. Beginner-friendly with timestamps. By Jayme from Create & Meditate.",
+        "category": "art_therapy",
+        "video_url": "https://www.youtube.com/watch?v=-pDU8Cj1ST0",
+        "duration": "17:00",
+        "level": "beginner",
+        "tradition": "Intuitive Art"
+    },
+    {
+        "id": "vid-art-6",
+        "title": "Guided Meditation to Inspire Creativity",
+        "description": "A 10-minute visualization to clear creative blocks before art-making. Perfect warm-up for any creative practice or art therapy session.",
+        "category": "art_therapy",
+        "video_url": "https://www.youtube.com/watch?v=_o9pSpGLWYg",
+        "duration": "10:00",
+        "level": "beginner",
+        "tradition": "Creative Visualization"
     }
 ]

@@ -17,7 +17,7 @@ import os
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 if not BASE_URL:
-    BASE_URL = "https://deep-practice-portal.preview.emergentagent.com"
+    BASE_URL = "https://temple-preview-4.preview.emergentagent.com"
 
 class TestHeartPracticesCategories:
     """Test Heart Practices API with all 6 category filters"""

@@ -1,0 +1,15 @@
+<analysis>all_content.pysacred_rites_deep.pybackend/data/all_content.pybackend/data/sacred_rites_deep.pyfrontend/src/pages/Dashboard.jsxbackend/routers/content.pycommunity_postsCommunity.jsx/videosApp.jsCourses.jsx.gitignore.envLandingPageMainMenuDashboardPracticeJournalSoundFrequenciesCourses.jsx.gitignore.gitignore
+/app/
+├── backend/
+│   ├── data/
+│   │   ├── video_content.py, all_content.py, sacred_rites_deep.py (Seed data)
+│   ├── routers/
+│   │   ├── payments.py (Stripe Webhooks & logic)
+│   ├── server.py (Startup data seeding)
+├── frontend/
+│   ├── src/
+│   │   ├── pages/
+│   │   │   ├── Courses.jsx (Stripe bundle logic & modal)
+│   │   │   ├── VideosLibrary.jsx (Check if survived rollback)
+│   │   │   ├── Dashboard.jsx, Community.jsx
+server.pybackend/data/user_purchases{user_id, product_id, product_type, status, amount}courses{id, title, price, ...}videos{id, title, duration, video_url, category}/app/backend/data/all_content.py/app/backend/data/sacred_rites_deep.py/app/frontend/src/pages/Courses.jsx/app/backend/routers/payments.py/app/memory/test_credentials.mdserver.pyPOST /api/payments/create-checkoutGET /api/payments/course-accessGET /api/videosCourses.jsxgit checkoutVideosLibrary.jsxApp.js/app/memory/test_credentials.md/app/test_reports/iteration_49.json/app/memory/PRD.md/app/memory/test_credentials.md/app/test_reports/iteration_49.jsonVideosLibrary.jsx/app/memory/test_credentials.md</analysis>

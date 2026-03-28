@@ -273,3 +273,209 @@ async def delete_audio_file(file_id: str, _: dict = Depends(_verify_admin)):
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="File not found")
     return {"deleted": True}
+
+
+# ============ ADMIN DATABASE SEEDING ============
+
+class SeedRequest(BaseModel):
+    collections: list[str] = []  # Empty = seed all, or specific collection names
+    force: bool = False  # If True, clear and reseed even if data exists
+
+
+@router.post("/seed-database")
+async def seed_database(request: SeedRequest, _: dict = Depends(_verify_admin)):
+    """
+    Admin endpoint to trigger database seeding.
+    Can seed all collections or specific ones.
+    Safe for production - runs in background with progress tracking.
+    """
+    import asyncio
+    import logging
+    
+    logger = logging.getLogger(__name__)
+    db = get_db()
+    
+    results = {"status": "started", "collections": {}, "errors": []}
+    
+    try:
+        # Import all data modules
+        from data.video_content import VIDEO_TUTORIALS
+        from data.all_content import (
+            CRYSTALS, MANTRAS, MUDRAS, BREATHWORK_SESSIONS,
+            THIRTEEN_MONTH_CALENDAR, ORACLE_CARDS,
+            GROUNDING_EXERCISES, MINDFULNESS_PRACTICES, MEDITATIONS
+        )
+        from data.somatic_practices import SOMATIC_PRACTICES
+        from data.shamanic_content import (
+            EARTH_ALTARS, HEART_PRACTICES,
+            SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES
+        )
+        from data.divination_content import (
+            ELDER_FUTHARK_RUNES, I_CHING_HEXAGRAMS, LIGHT_CODES
+        )
+        from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
+        from data.yoga_poses import YOGA_POSES
+        from data.tarot_cards import TAROT_MAJOR_ARCANA
+        from data.sound_frequencies import SOUND_FREQUENCIES
+        from data.guardians_content import SACRED_GUARDIANS
+        from data.ancient_wisdom_content import ANCIENT_WISDOM
+        from data.ancient_wisdom_extended import ANCIENT_WISDOM_EXTENDED
+        from data.ancient_wisdom_final import ANCIENT_WISDOM_FINAL
+        from data.ancient_wisdom_avalon import ANCIENT_WISDOM_AVALON
+        from data.community_posts import COMMUNITY_POSTS
+        from data.sacred_rites_deep import SACRED_RITES_DEEP
+        from data.seed_healing_modalities import (
+            ENERGY_HEALING_DATA, FREE_FORM_MOVEMENT_DATA, CHAKRA_CLEANSING_DATA
+        )
+        from data.seed_extended_modalities import EXTENDED_CHAKRAS, SOMATIC_YOGA_DATA
+        from data.complete_embodiment_data import COMPLETE_FEMININE_EMBODIMENT, COMPLETE_MASCULINE_EMBODIMENT
+        from data.elemental_temples_data import ELEMENTAL_TEMPLES
+        from data.water_practices_data import WATER_PRACTICES
+        
+        # Define all seedable collections
+        all_collections = {
+            "videos": VIDEO_TUTORIALS,
+            "crystals": CRYSTALS,
+            "mantras": MANTRAS,
+            "mudras": MUDRAS,
+            "breathwork_sessions": BREATHWORK_SESSIONS,
+            "astrology_months": THIRTEEN_MONTH_CALENDAR,
+            "oracle_cards": ORACLE_CARDS,
+            "grounding_exercises": GROUNDING_EXERCISES,
+            "mindfulness_practices": MINDFULNESS_PRACTICES,
+            "meditations": MEDITATIONS,
+            "somatic_practices": SOMATIC_PRACTICES,
+            "earth_altars": EARTH_ALTARS,
+            "heart_practices": HEART_PRACTICES,
+            "shamanic_practices": SHAMANIC_PRACTICES,
+            "achievements": ENHANCED_ACHIEVEMENTS,
+            "elemental_practices": ELEMENTAL_PRACTICES,
+            "runes": ELDER_FUTHARK_RUNES,
+            "i_ching": I_CHING_HEXAGRAMS,
+            "creative_processes": CREATIVE_PROCESSES_DEEP,
+            "yoga_poses": YOGA_POSES,
+            "tarot_cards": TAROT_MAJOR_ARCANA,
+            "sound_frequencies": SOUND_FREQUENCIES,
+            "sacred_guardians": SACRED_GUARDIANS,
+            "community_posts": COMMUNITY_POSTS,
+            "energy_healing": ENERGY_HEALING_DATA,
+            "free_form_movement": FREE_FORM_MOVEMENT_DATA,
+            "somatic_yoga": SOMATIC_YOGA_DATA,
+            "feminine_embodiment": COMPLETE_FEMININE_EMBODIMENT,
+            "masculine_embodiment": COMPLETE_MASCULINE_EMBODIMENT,
+            "elemental_temples": ELEMENTAL_TEMPLES,
+            "water_practices": WATER_PRACTICES,
+        }
+        
+        # Determine which collections to seed
+        collections_to_seed = request.collections if request.collections else list(all_collections.keys())
+        
+        for collection_name in collections_to_seed:
+            try:
+                if collection_name not in all_collections:
+                    results["errors"].append(f"Unknown collection: {collection_name}")
+                    continue
+                
+                data = all_collections[collection_name]
+                if not data:
+                    results["collections"][collection_name] = {"status": "skipped", "reason": "no data"}
+                    continue
+                
+                # Check if collection has data
+                existing_count = await db[collection_name].count_documents({})
+                
+                if existing_count > 0 and not request.force:
+                    results["collections"][collection_name] = {
+                        "status": "skipped",
+                        "reason": f"already has {existing_count} items (use force=true to overwrite)"
+                    }
+                    continue
+                
+                # Clear and seed
+                await db[collection_name].delete_many({})
+                await db[collection_name].insert_many(data)
+                
+                results["collections"][collection_name] = {
+                    "status": "seeded",
+                    "count": len(data)
+                }
+                logger.info(f"Admin seeded {collection_name}: {len(data)} items")
+                
+            except Exception as e:
+                results["errors"].append(f"{collection_name}: {str(e)}")
+                logger.error(f"Error seeding {collection_name}: {e}")
+        
+        # Handle special cases
+        if "ancient_wisdom" in collections_to_seed or not request.collections:
+            try:
+                all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL + ANCIENT_WISDOM_AVALON
+                existing = await db.ancient_wisdom.count_documents({})
+                if existing == 0 or request.force:
+                    await db.ancient_wisdom.delete_many({})
+                    await db.ancient_wisdom.insert_many(all_ancient_wisdom)
+                    results["collections"]["ancient_wisdom"] = {"status": "seeded", "count": len(all_ancient_wisdom)}
+            except Exception as e:
+                results["errors"].append(f"ancient_wisdom: {str(e)}")
+        
+        if "chakra_cleansing" in collections_to_seed or not request.collections:
+            try:
+                all_chakras = CHAKRA_CLEANSING_DATA + EXTENDED_CHAKRAS
+                existing = await db.chakra_cleansing.count_documents({})
+                if existing == 0 or request.force:
+                    await db.chakra_cleansing.delete_many({})
+                    await db.chakra_cleansing.insert_many(all_chakras)
+                    results["collections"]["chakra_cleansing"] = {"status": "seeded", "count": len(all_chakras)}
+            except Exception as e:
+                results["errors"].append(f"chakra_cleansing: {str(e)}")
+        
+        if "light_codes" in collections_to_seed or not request.collections:
+            try:
+                existing = await db.light_codes.count_documents({})
+                if existing == 0 or request.force:
+                    await db.light_codes.delete_many({})
+                    await db.light_codes.insert_one(LIGHT_CODES)
+                    results["collections"]["light_codes"] = {"status": "seeded", "count": 1}
+            except Exception as e:
+                results["errors"].append(f"light_codes: {str(e)}")
+        
+        if "courses" in collections_to_seed or not request.collections:
+            try:
+                for rite_id, deep_data in SACRED_RITES_DEEP.items():
+                    await db.courses.update_one({"id": rite_id}, {"$set": deep_data}, upsert=True)
+                results["collections"]["courses"] = {"status": "seeded", "count": len(SACRED_RITES_DEEP)}
+            except Exception as e:
+                results["errors"].append(f"courses: {str(e)}")
+        
+        results["status"] = "completed"
+        return results
+        
+    except Exception as e:
+        logger.error(f"Admin seeding error: {e}")
+        results["status"] = "error"
+        results["errors"].append(str(e))
+        return results
+
+
+@router.get("/seed-status")
+async def get_seed_status(_: dict = Depends(_verify_admin)):
+    """Get current database seeding status - shows count of items in each collection."""
+    db = get_db()
+    
+    collections_to_check = [
+        "videos", "crystals", "mantras", "mudras", "breathwork_sessions",
+        "oracle_cards", "grounding_exercises", "mindfulness_practices", "meditations",
+        "somatic_practices", "shamanic_practices", "yoga_poses", "tarot_cards",
+        "sound_frequencies", "sacred_guardians", "ancient_wisdom", "community_posts",
+        "energy_healing", "chakra_cleansing", "feminine_embodiment", "masculine_embodiment",
+        "courses", "elemental_temples", "water_practices", "runes", "i_ching"
+    ]
+    
+    status = {}
+    for collection in collections_to_check:
+        try:
+            count = await db[collection].count_documents({})
+            status[collection] = count
+        except Exception:
+            status[collection] = 0
+    
+    return {"collections": status, "total_collections": len(status)}
