@@ -113,6 +113,7 @@ const MainMenu = ({ user }) => {
       items: [
         { path: "/tarot", icon: Star, label: "Tarot Reading", color: "text-indigo-400", desc: "Major Arcana wisdom" },
         { path: "/oracle", icon: Eye, label: "Oracle Cards", color: "text-purple-400", desc: "Spirit guidance" },
+        { path: "/archangels", icon: Feather, label: "Archangel Oracle", color: "text-amber-400", desc: "Divine angelic guidance" },
         { path: "/rune-readings", icon: Star, label: "Rune Readings", color: "text-amber-400", desc: "Elder Futhark wisdom" },
         { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
         { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400", desc: "Life path numbers" },

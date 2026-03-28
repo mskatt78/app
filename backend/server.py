@@ -136,6 +136,13 @@ async def do_database_seeding():
     try:
         from data.divination_content import LIGHT_CODES
         from data.all_content import MEDITATIONS
+        from data.archangel_oracle import ARCHANGEL_ORACLE
+
+        # Always reseed archangel_oracle so new angels are applied
+        logger.info("Refreshing archangel_oracle collection...")
+        await db.archangel_oracle.delete_many({})
+        await db.archangel_oracle.insert_many(ARCHANGEL_ORACLE)
+        logger.info(f"archangel_oracle refreshed — {len(ARCHANGEL_ORACLE)} archangels.")
 
         # Always reseed light_codes so content updates in divination_content.py are applied
         logger.info("Refreshing light_codes collection with latest data...")

@@ -132,6 +132,16 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **P3**: Production deployment admin route optimization
 
 ## Completed Work (March 2026 - Latest)
+- [x] **Archangel Oracle System** (NEW - Full Divination Feature):
+  - 15 Archangels with deep spiritual content matching Oracle/Tarot depth
+  - Each archangel includes: Domain, Message, Love Guidance, Invocation, Prayer, Affirmation, Signs of Presence
+  - Single Archangel and Trinity (3-card) reading spreads
+  - AI-powered divine interpretations using Claude
+  - Browse All feature to learn about each archangel
+  - Shadow/reversed meanings for deeper guidance
+  - Crystal, color, element, and chakra associations
+  - Frontend page at `/archangels` with dark theme
+  - Added to Main Menu under "Divination & Guidance"
 - [x] **Admin Database Seeding Route**:
   - POST /api/admin/seed-database — Seeds all or specific collections
   - GET /api/admin/seed-status — Shows database collection counts
@@ -155,9 +165,11 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 │   ├── data/
 │   │   ├── sacred_rites_deep.py — 3 rites with extended rituals
 │   │   ├── video_content.py — 51 video tutorials (13 categories)
+│   │   ├── archangel_oracle.py — 15 Archangels with deep content (NEW)
 │   │   ├── creative_processes_deep.py — 9 deep practices
 │   ├── routers/
 │   │   ├── admin.py — Admin seeding routes, file uploads
+│   │   ├── oracle.py — Oracle + Archangel Oracle endpoints
 │   │   ├── payments.py — Stripe/PayPal checkout, course access
 │   │   ├── content.py — course content endpoints
 │   ├── server.py — startup seeding
@@ -165,6 +177,7 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 │   ├── src/pages/
 │   │   ├── Courses.jsx — 7-tab modal, Stripe purchase flow
 │   │   ├── VideosLibrary.jsx — 13 category filters, dark theme
+│   │   ├── ArchangelOracle.jsx — Archangel readings & browse (NEW)
 │   │   ├── PaymentSuccess.jsx — payment verification
 │   │   ├── Dashboard.jsx — streak widget
 ```

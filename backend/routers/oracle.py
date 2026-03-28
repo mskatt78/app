@@ -11,6 +11,7 @@ import copy
 
 from .dependencies import get_db, get_current_user, User
 from data.all_content import ORACLE_CARDS
+from data.archangel_oracle import ARCHANGEL_ORACLE
 
 router = APIRouter(prefix="/oracle", tags=["oracle"])
 logger = logging.getLogger(__name__)
@@ -177,3 +178,192 @@ def generate_fallback_interpretation(cards: List[dict], question: Optional[str])
     }
     
     return f"{intro}\n\n{' '.join(card_readings)}\n\n{element_message.get(dominant_element, '')}"
+
+
+# ============ ARCHANGEL ORACLE ENDPOINTS ============
+
+class ArchangelReadingRequest(BaseModel):
+    question: Optional[str] = None
+    spread_type: str = "single"  # single, three_card
+
+
+@router.get("/archangels")
+async def get_archangel_cards():
+    """Get all archangel oracle cards."""
+    db = get_db()
+    # Try database first
+    cards = await db.archangel_oracle.find({}, {"_id": 0}).to_list(length=50)
+    if not cards:
+        return ARCHANGEL_ORACLE
+    return cards
+
+
+@router.get("/archangels/{archangel_id}")
+async def get_archangel_by_id(archangel_id: str):
+    """Get a specific archangel by ID."""
+    db = get_db()
+    card = await db.archangel_oracle.find_one({"id": archangel_id}, {"_id": 0})
+    if not card:
+        # Fall back to static data
+        for archangel in ARCHANGEL_ORACLE:
+            if archangel["id"] == archangel_id:
+                return archangel
+        raise HTTPException(status_code=404, detail="Archangel not found")
+    return card
+
+
+@router.post("/archangels/reading/guest")
+async def create_guest_archangel_reading(data: ArchangelReadingRequest):
+    """Create an archangel oracle reading without authentication."""
+    num_cards = {"single": 1, "three_card": 3}.get(data.spread_type, 1)
+    
+    # Use static data to avoid ObjectId issues
+    selected_cards = [copy.deepcopy(c) for c in random.sample(ARCHANGEL_ORACLE, min(num_cards, len(ARCHANGEL_ORACLE)))]
+    
+    for i, card in enumerate(selected_cards):
+        card["is_reversed"] = random.choice([True, False])
+        card["position"] = i + 1
+        # Remove any potential MongoDB fields
+        card.pop("_id", None)
+    
+    # Generate AI interpretation
+    interpretation = await generate_archangel_interpretation(selected_cards, data.question, data.spread_type)
+    
+    reading = {
+        "id": str(uuid.uuid4()),
+        "question": data.question,
+        "spread_type": data.spread_type,
+        "cards": selected_cards,
+        "interpretation": interpretation,
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    return reading
+
+
+@router.post("/archangels/reading")
+async def create_archangel_reading(
+    data: ArchangelReadingRequest,
+    user: User = Depends(get_current_user)
+):
+    """Create an archangel oracle reading (authenticated - saves to history)."""
+    db = get_db()
+    
+    num_cards = {"single": 1, "three_card": 3}.get(data.spread_type, 1)
+    
+    # Use static data to avoid ObjectId issues
+    selected_cards = [copy.deepcopy(c) for c in random.sample(ARCHANGEL_ORACLE, min(num_cards, len(ARCHANGEL_ORACLE)))]
+    
+    for i, card in enumerate(selected_cards):
+        card["is_reversed"] = random.choice([True, False])
+        card["position"] = i + 1
+        # Remove any potential MongoDB fields
+        card.pop("_id", None)
+    
+    # Generate AI interpretation
+    interpretation = await generate_archangel_interpretation(selected_cards, data.question, data.spread_type)
+    
+    reading = {
+        "id": str(uuid.uuid4()),
+        "user_id": user.user_id,
+        "question": data.question,
+        "spread_type": data.spread_type,
+        "cards": selected_cards,
+        "interpretation": interpretation,
+        "reading_type": "archangel",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.archangel_readings.insert_one(reading)
+    reading.pop("_id", None)
+    return reading
+
+
+@router.get("/archangels/readings/history")
+async def get_archangel_readings(user: User = Depends(get_current_user)):
+    """Get user's archangel reading history."""
+    db = get_db()
+    readings = await db.archangel_readings.find(
+        {"user_id": user.user_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    return readings
+
+
+async def generate_archangel_interpretation(cards: List[dict], question: Optional[str], spread_type: str) -> str:
+    """Generate AI interpretation for archangel oracle reading."""
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        
+        api_key = os.environ.get('EMERGENT_LLM_KEY')
+        if not api_key:
+            return generate_archangel_fallback(cards, question)
+        
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"archangel_{uuid.uuid4().hex[:8]}",
+            system_message="""You are a loving angelic oracle reader who channels messages from the Archangels. 
+            Your readings are filled with divine love, compassion, and gentle guidance. You speak with the 
+            voice of heavenly wisdom while being practical and encouraging. Keep interpretations between 
+            200-350 words. Include specific guidance on how to work with the archangel(s) who appeared."""
+        ).with_model("anthropic", "claude-sonnet-4-5-20250929")
+        
+        cards_info = "\n".join([
+            f"Position {i+1}: {c['name']} - {c['title']} {'(Reversed/Shadow)' if c.get('is_reversed') else '(Upright)'}"
+            for i, c in enumerate(cards)
+        ])
+        
+        prompt = f"""Please provide a loving archangel oracle reading interpretation.
+
+Spread Type: {spread_type}
+{"Question: " + question if question else "General divine guidance reading"}
+
+Archangels who appeared:
+{cards_info}
+
+Archangel information for reference:
+{chr(10).join([f"- {c['name']}: Domain: {c['domain'][:200]}... Message: {c['message'][:200]}..." for c in cards])}
+
+{'For reversed cards, incorporate the shadow meaning: ' + chr(10).join([f"- {c['name']} shadow: {c['reversed_meaning']}" for c in cards if c.get('is_reversed')]) if any(c.get('is_reversed') for c in cards) else ''}
+
+Provide a loving, encouraging interpretation that:
+1. Weaves together the archangels' messages for the seeker
+2. Gives practical guidance on invoking and working with these archangels
+3. Includes any crystals, colors, or practices that would help
+4. Ends with an uplifting affirmation or blessing"""
+
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        return response
+        
+    except Exception as e:
+        logger.error(f"AI archangel interpretation failed: {e}")
+        return generate_archangel_fallback(cards, question)
+
+
+def generate_archangel_fallback(cards: List[dict], question: Optional[str]) -> str:
+    """Generate a basic archangel interpretation without AI."""
+    intro = "The Archangels have come forward with loving guidance for you.\n\n"
+    if question:
+        intro += f"Regarding your question about {question[:80]}...\n\n"
+    
+    card_readings = []
+    for card in cards:
+        if card.get("is_reversed"):
+            reading = f"**{card['name']}** appears in shadow, gently reminding you: {card['reversed_meaning']}"
+        else:
+            reading = f"**{card['name']}** ({card['title']}) comes forward with this message: \"{card['message'][:300]}...\""
+        card_readings.append(reading)
+    
+    guidance = "\n\n".join(card_readings)
+    
+    # Add practical guidance
+    crystals = ", ".join([c["crystal"] for c in cards])
+    colors = ", ".join([c["color"] for c in cards])
+    
+    practical = f"\n\n**To work with {'these Archangels' if len(cards) > 1 else 'this Archangel'}:**\n"
+    practical += f"• Crystals: {crystals}\n"
+    practical += f"• Colors to wear or visualize: {colors}\n"
+    practical += f"• Affirmation: \"{cards[0]['affirmation']}\""
+    
+    return intro + guidance + practical
