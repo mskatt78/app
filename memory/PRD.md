@@ -100,6 +100,16 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - Featured "Sacred Rites & Initiations" banner
   - Organized sections with warm icon colors
   - Sign in button with soft styling
+- [x] **Videos Library Page** (NEW):
+  - Beautiful feminine aesthetic with mountain hero
+  - 9 category filters: All, Feminine Embodiment, Chakra, Kundalini, Shamanic Drums, etc.
+  - Video cards with YouTube thumbnails, duration, level badges
+  - Embedded YouTube player modal with video info
+  - "YouTube" external link button
+- [x] **Deployment Fix**:
+  - Fixed corrupted .gitignore (removed *.env patterns and -e artifacts)
+  - Added test_credentials.md to .gitignore for security
+  - All deployment checks now pass
 
 ## Remaining Backlog
 - **P1**: Add real YouTube video IDs to video tutorials (currently placeholders)
