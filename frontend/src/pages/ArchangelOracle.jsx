@@ -136,19 +136,31 @@ const ArchangelOracle = ({ user, api }) => {
                   key={angel.id}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedArchangel(angel)}
-                  className={`p-4 rounded-xl bg-gradient-to-br ${elementColors[angel.element]} border cursor-pointer transition-all hover:shadow-lg hover:shadow-primary/10`}
+                  className={`rounded-xl bg-gradient-to-br ${elementColors[angel.element]} border cursor-pointer transition-all hover:shadow-lg hover:shadow-primary/10 overflow-hidden`}
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <Feather className={`w-5 h-5 ${elementTextColors[angel.element]}`} />
-                    <h3 className="font-serif text-lg">{angel.name}</h3>
-                  </div>
-                  <p className="text-sm text-muted-foreground">{angel.title}</p>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {angel.keywords?.slice(0, 3).map((kw, i) => (
-                      <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-muted-foreground">
-                        {kw}
-                      </span>
-                    ))}
+                  {/* Archangel Image */}
+                  {angel.image_url && (
+                    <div className="aspect-square overflow-hidden">
+                      <img 
+                        src={angel.image_url} 
+                        alt={angel.name}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Feather className={`w-5 h-5 ${elementTextColors[angel.element]}`} />
+                      <h3 className="font-serif text-lg">{angel.name}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{angel.title}</p>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {angel.keywords?.slice(0, 3).map((kw, i) => (
+                        <span key={i} className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-muted-foreground">
+                          {kw}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -167,25 +179,37 @@ const ArchangelOracle = ({ user, api }) => {
               <ArrowLeft className="w-4 h-4 mr-1" /> Back to All
             </Button>
             
-            <div className={`rounded-2xl bg-gradient-to-br ${elementColors[selectedArchangel.element]} border p-6`}>
-              <div className="flex items-start gap-4 mb-6">
-                <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
-                  <Feather className={`w-8 h-8 ${elementTextColors[selectedArchangel.element]}`} />
+            <div className={`rounded-2xl bg-gradient-to-br ${elementColors[selectedArchangel.element]} border overflow-hidden`}>
+              {/* Hero Image */}
+              {selectedArchangel.image_url && (
+                <div className="aspect-video overflow-hidden">
+                  <img 
+                    src={selectedArchangel.image_url} 
+                    alt={selectedArchangel.name}
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-serif">{selectedArchangel.name}</h2>
-                  <p className="text-primary">{selectedArchangel.title}</p>
-                  <div className="flex gap-2 mt-2 text-sm text-muted-foreground">
-                    <span>Element: {selectedArchangel.element}</span>
-                    <span>•</span>
-                    <span>Color: {selectedArchangel.color}</span>
-                    <span>•</span>
-                    <span>Crystal: {selectedArchangel.crystal}</span>
+              )}
+              
+              <div className="p-6">
+                <div className="flex items-start gap-4 mb-6">
+                  <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center">
+                    <Feather className={`w-8 h-8 ${elementTextColors[selectedArchangel.element]}`} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-serif">{selectedArchangel.name}</h2>
+                    <p className="text-primary">{selectedArchangel.title}</p>
+                    <div className="flex gap-2 mt-2 text-sm text-muted-foreground flex-wrap">
+                      <span>Element: {selectedArchangel.element}</span>
+                      <span>•</span>
+                      <span>Color: {selectedArchangel.color}</span>
+                      <span>•</span>
+                      <span>Crystal: {selectedArchangel.crystal}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-6">
+                <div className="space-y-6">
                 <div>
                   <h3 className="font-medium text-primary mb-2 flex items-center gap-2">
                     <Star className="w-4 h-4" /> Domain
@@ -237,6 +261,7 @@ const ArchangelOracle = ({ user, api }) => {
                       </li>
                     ))}
                   </ul>
+                </div>
                 </div>
               </div>
             </div>
@@ -361,27 +386,35 @@ const ArchangelOracle = ({ user, api }) => {
                         initial={{ opacity: 0, rotateY: 180, scale: 0.8 }}
                         animate={{ opacity: 1, rotateY: 0, scale: 1 }}
                         transition={{ delay: index * 0.3, duration: 0.6 }}
-                        className={`rounded-2xl bg-gradient-to-br ${elementColors[card.element]} border p-5 relative overflow-hidden`}
+                        className={`rounded-2xl bg-gradient-to-br ${elementColors[card.element]} border relative overflow-hidden`}
                         data-testid={`archangel-card-${index}`}
                       >
                         {/* Position indicator */}
                         {reading.cards.length > 1 && (
-                          <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-sm">
+                          <div className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center text-sm">
                             {index + 1}
                           </div>
                         )}
 
                         {/* Reversed indicator */}
                         {card.is_reversed && (
-                          <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-xs">
+                          <div className="absolute top-3 left-3 z-10 px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-xs">
                             Shadow
                           </div>
                         )}
 
-                        <div className="text-center pt-4">
-                          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-white/10 flex items-center justify-center">
-                            <Feather className={`w-8 h-8 ${elementTextColors[card.element]}`} />
+                        {/* Archangel Image */}
+                        {card.image_url && (
+                          <div className="aspect-square overflow-hidden">
+                            <img 
+                              src={card.image_url} 
+                              alt={card.name}
+                              className="w-full h-full object-cover"
+                            />
                           </div>
+                        )}
+
+                        <div className="p-5 text-center">
                           <h3 className="text-xl font-serif mb-1">{card.name}</h3>
                           <p className="text-sm text-primary mb-3">{card.title}</p>
                           
@@ -395,16 +428,15 @@ const ArchangelOracle = ({ user, api }) => {
 
                           <div className="text-sm text-muted-foreground space-y-1">
                             <p>Element: {card.element}</p>
-                            <p>Color: {card.color}</p>
                             <p>Crystal: {card.crystal}</p>
                           </div>
                         </div>
 
-                        <div className="mt-4 pt-4 border-t border-white/10">
+                        <div className="px-5 pb-5 pt-2 border-t border-white/10">
                           <p className="text-sm italic text-center">
                             {card.is_reversed 
                               ? `"${card.reversed_meaning}"` 
-                              : `"${card.message?.slice(0, 150)}..."`
+                              : `"${card.message?.slice(0, 120)}..."`
                             }
                           </p>
                         </div>

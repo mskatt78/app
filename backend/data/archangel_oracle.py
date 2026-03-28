@@ -21,7 +21,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I am protected by divine light. I walk my path with courage and clarity. Archangel Michael guards my every step.",
         "prayer": "Beloved Archangel Michael, wrap me in your cloak of protection. Let your flaming sword cut away all fear, doubt, and negativity. Guide me to my highest purpose and give me the courage to fulfill my divine mission. I trust in your eternal protection. Amen.",
         "signs_of_presence": ["Flashes of blue or purple light", "Feeling suddenly warm or protected", "Finding feathers", "Recurring dreams of swords or shields", "Sudden courage in difficult situations"],
-        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/3ef56d866678906213e0fe6cdc0a404ad3cf9f7e4e0adcf9bd3699a7159ad0cc.png"
     },
     {
         "id": "archangel-raphael",
@@ -42,7 +42,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I am whole, healthy, and healed. Divine healing light flows through every cell of my being. I am restored to perfect health.",
         "prayer": "Beloved Archangel Raphael, master healer of the angelic realm, I ask for your healing touch. Pour your emerald light into my body, washing away all illness, pain, and dis-ease. Restore me to wholeness on every level. Guide my hands if I am a healer, and guide me to healers if I need help. Thank you for your gentle, powerful healing. Amen.",
         "signs_of_presence": ["Seeing emerald green light or sparkles", "Unexpected improvements in health", "Finding yourself drawn to healing modalities", "Synchronicities involving doctors or healers", "Dreams of green landscapes"],
-        "image_url": "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/9be1d19275a84ec7c14a3fa235a1e576f7ad9e1a2d0a4d3667f9a79899f88145.png"
     },
     {
         "id": "archangel-gabriel",
@@ -63,7 +63,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I communicate with clarity and love. My creative gifts flow freely. I am a divine messenger, sharing light with the world.",
         "prayer": "Beloved Archangel Gabriel, divine messenger, please help me find my voice. Clear any blocks to my communication and creativity. Help me speak, write, and create with authenticity and grace. If there are messages I need to hear, please deliver them clearly. Guide me to express my soul's truth. Amen.",
         "signs_of_presence": ["Sudden creative inspiration", "White feathers", "Hearing your name called", "Dreams with messages", "Copper-colored light", "Synchronicities involving communication"],
-        "image_url": "https://images.unsplash.com/photo-1490730141103-6cac27abb37f?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/020b635934b446faa0486300c815505d3f8dd6d9354053711bedd296c904bcbb.png"
     },
     {
         "id": "archangel-uriel",
@@ -84,7 +84,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "Divine wisdom flows through me. I see clearly, think clearly, and act wisely. I am illuminated by the light of truth.",
         "prayer": "Beloved Archangel Uriel, keeper of divine wisdom, please shine your light into my mind. Dispel confusion and illuminate truth. Grant me insight, creativity, and practical wisdom. Help me access the higher knowledge that guides all things toward good. I open myself to receive your illumination. Amen.",
         "signs_of_presence": ["Sudden 'aha' moments", "Solutions appearing in dreams", "Red or gold light", "Finding books or information you need", "Brilliant ideas arriving unexpectedly"],
-        "image_url": "https://images.unsplash.com/photo-1464802686167-b939a6910659?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/95056875278fa6bc0446262ee4dde78360fbf201a87b406ed7a372376d075ae5.png"
     },
     {
         "id": "archangel-chamuel",
@@ -105,7 +105,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I am worthy of divine love. My heart is open to give and receive. Loving relationships flow to me naturally and effortlessly.",
         "prayer": "Beloved Archangel Chamuel, keeper of divine love, please fill my heart with your gentle presence. Help me see love all around me. Attract into my life relationships that honor my highest self. Heal any wounds that keep me from love. Teach me to love myself as the Divine loves me. I open my heart to receive your blessings. Amen.",
         "signs_of_presence": ["Finding lost items", "Meeting new people unexpectedly", "Feeling waves of love for no reason", "Pink light or roses appearing in meditation", "Reconciliation with estranged loved ones"],
-        "image_url": "https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/f08387a0e3bb8ea091cab19b02e4f2b6f316ba1db78063f8428f367648c02a9c.png"
     },
     {
         "id": "archangel-jophiel",
@@ -126,7 +126,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I see beauty everywhere I look. Joy flows through me naturally. I create beauty in my life and in the world.",
         "prayer": "Beloved Archangel Jophiel, angel of divine beauty, please open my eyes to the beauty that surrounds me. Clear my mind of negative thoughts and fill it with light. Help me create beauty in my home, my work, my relationships. Remind me that I am beautiful, a reflection of the Divine. Let your golden light illuminate my life. Amen.",
         "signs_of_presence": ["Sudden appreciation of beauty", "Creative inspiration", "Yellow butterflies or birds", "Shift from negative to positive mood", "Noticing beauty you'd previously missed"],
-        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/57a1041aa886137fb3f999cefff7ee09810f5c9f190e719bd3e82885a4b423b3.png"
     },
     {
         "id": "archangel-zadkiel",
@@ -147,7 +147,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I forgive myself and others completely. I am free from the past. The violet flame transmutes all negativity into light.",
         "prayer": "Beloved Archangel Zadkiel, keeper of the violet flame, please help me forgive. Pour your mercy into my heart. Transmute my pain into wisdom, my resentment into compassion. Free me from the prison of the past. Help me remember my true nature as a divine being of light. I release all into your violet flame. Amen.",
         "signs_of_presence": ["Seeing violet or purple light", "Sudden ability to forgive", "Memories surfacing for healing", "Feeling lighter after releasing the past", "Amethyst crystals appearing in your life"],
-        "image_url": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/19f72f754a647763ffb86c9d8fdc8555aa5bbd9ae97e3adcae23f7da8ae356f1.png"
     },
     {
         "id": "archangel-metatron",
@@ -168,7 +168,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I am a sacred pattern of divine light. I am aligned with my soul's highest purpose. Ancient wisdom flows through me.",
         "prayer": "Beloved Archangel Metatron, scribe of heaven, please help me understand my soul's journey. Open the Akashic Records that I may learn what I need. Surround me with your sacred geometries, attuning every cell to divine frequency. Guide the children of Earth, especially those who feel different. Help me remember who I truly am. Amen.",
         "signs_of_presence": ["Geometric patterns in meditation", "Flashbacks to other lives", "Children saying profound things", "Synchronicities in numbers (especially 11:11)", "Sense of ancient knowing"],
-        "image_url": "https://images.unsplash.com/photo-1545987796-200677ee1011?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/c7c86e5e3359759ecade25eda5d93439bcd3e71aa2046ea7e182c20b9888d9b0.png"
     },
     {
         "id": "archangel-sandalphon",
@@ -189,7 +189,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "My prayers are heard and answered. I am grounded and connected to Earth. Music and joy flow through my life.",
         "prayer": "Beloved Archangel Sandalphon, carrier of prayers, please take my hopes and needs to the Divine. Bring me clear answers and guidance. Help me stay grounded while I reach for the stars. Fill my life with music and beauty. Connect me to the heartbeat of Mother Earth. Thank you for bridging heaven and earth. Amen.",
         "signs_of_presence": ["Music that moves you unexpectedly", "Answered prayers", "Feeling more grounded", "Turquoise objects or stones appearing", "Desire to make music or dance"],
-        "image_url": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/bfc1bbe503cc6db8940640c16c65d0dcb08b05ad9b4eb89d9ab23dc7d8860c6f.png"
     },
     {
         "id": "archangel-ariel",
@@ -210,7 +210,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I am one with nature. Animals and plants are my allies. I have the courage of a lion within me.",
         "prayer": "Beloved Archangel Ariel, guardian of nature, please heal my connection to the Earth. Help me protect and honor all living beings. Fill me with your lion-hearted courage. Guide me to abundance through alignment with natural law. Bless the animals in my care and all creatures everywhere. Amen.",
         "signs_of_presence": ["Animal encounters or unusual animal behavior", "Strong urge to be in nature", "Finding feathers, stones, or gifts from nature", "Courage arising when needed", "Lions appearing in dreams or images"],
-        "image_url": "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/0f4e2af34e8439d8778ed1643f58782276b575c33902bdc8a77089905c2bf207.png"
     },
     {
         "id": "archangel-azrael",
@@ -231,7 +231,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I release the past with love. I embrace change as the doorway to new blessings. I am comforted and supported through all transitions.",
         "prayer": "Beloved Archangel Azrael, gentlest of angels, please comfort me in my grief. Help me release what has ended with love and grace. Guide the souls of those who have passed into the light. Give me strength to support others who mourn. Remind me that love is eternal and nothing real is ever lost. Amen.",
         "signs_of_presence": ["Feeling comforted during grief", "Signs from deceased loved ones", "Dreams of those who have passed", "Peaceful acceptance of endings", "Unexpected support appearing"],
-        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/059009b1796891e98792bd26ed9d5e1bce761b52d9a6d37a5b4d41994bdf630b.png"
     },
     {
         "id": "archangel-haniel",
@@ -252,7 +252,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I trust my intuition completely. I honor my natural cycles. Divine feminine wisdom flows through me with grace.",
         "prayer": "Beloved Archangel Haniel, keeper of the moon mysteries, please awaken my intuition. Help me honor my cycles — times of action and times of rest. Fill me with grace and feminine wisdom. Heal my relationship with the divine feminine. Under your silver light, I remember my magic. Amen.",
         "signs_of_presence": ["Strong connection to moon phases", "Heightened intuition", "Seeing silver or blue-white light", "Dreams that prove prophetic", "Feeling more graceful and flowing"],
-        "image_url": "https://images.unsplash.com/photo-1532767153582-b1a0e5145009?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/c21680eaab8268cb3f65c81a86cac7ddc9a1b8ade9f4853fbbf7b88f053804ad.png"
     },
     {
         "id": "archangel-raziel",
@@ -273,7 +273,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "Divine mysteries are revealed to me in perfect timing. My psychic abilities awaken safely. I am guided through the unseen realms.",
         "prayer": "Beloved Archangel Raziel, keeper of cosmic secrets, please be my guide through the mysteries. Open my third eye to see truly. Help me understand my dreams and decode the symbols around me. Reveal my past lives as needed for healing. Protect me as I develop spiritually. Share with me the secrets I am meant to know. Amen.",
         "signs_of_presence": ["Rainbow light or colors appearing", "Profound dreams with clear messages", "Sudden psychic insights", "Finding esoteric books or teachers", "Déjà vu or past-life memories surfacing"],
-        "image_url": "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/a81bfbb52463b3cd8021ee86f15c8b3fd3156130827cd30cb350c1c49d811b63.png"
     },
     {
         "id": "archangel-jeremiel",
@@ -294,7 +294,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "I review my life with love and mercy. I see clearly and choose wisely. Prophetic visions guide my path.",
         "prayer": "Beloved Archangel Jeremiel, keeper of mercy, please help me see my life clearly. Show me where I have grown and where I can still grow. Send me dreams of guidance and visions of the future. Help me change with compassion, not judgment. I am ready to learn from my past and step forward in wisdom. Amen.",
         "signs_of_presence": ["Vivid meaningful dreams", "Desire to reflect and journal", "Seeing your life patterns clearly", "Purple light in meditation", "Sense of mercy toward yourself"],
-        "image_url": "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/e223bd7e4444c33516725e5bb93b211201f5a58de85980025515e35b5b8af106.png"
     },
     {
         "id": "archangel-raguel",
@@ -315,7 +315,7 @@ ARCHANGEL_ORACLE = [
         "affirmation": "Harmony flows through all my relationships. I communicate with fairness and listen with openness. Justice prevails.",
         "prayer": "Beloved Archangel Raguel, friend of God and peacemaker, please bring harmony to my relationships. Help me resolve conflicts with grace. Where there is unfairness, restore justice. Help me speak my truth kindly and hear others with openness. Surround my relationships with your peaceful blue light. Amen.",
         "signs_of_presence": ["Conflicts resolving unexpectedly", "Feeling suddenly peaceful in tense situations", "Blue light or objects", "Desire for fairness and balance", "Apologies or reconciliations occurring"],
-        "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/e5ddee08-3085-4190-8c8d-fc8c94ac5bc2/images/a9a785d7c1e50e403d6e85b006f49e60f49cc1fe6271afc5b2477b61afd51aea.png"
     }
 ]
 
