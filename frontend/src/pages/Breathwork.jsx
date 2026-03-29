@@ -5,6 +5,54 @@ import { ArrowLeft, Wind, Play, Pause, RotateCcw, Filter, Volume2, VolumeX } fro
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Progress } from "../components/ui/progress";
+import { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
+
+const createBrownNoise = (audioContext) => {
+  const bufferSize = 2 * audioContext.sampleRate;
+  const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+  const output = noiseBuffer.getChannelData(0);
+
+  let lastOut = 0;
+  for (let i = 0; i < bufferSize; i += 1) {
+    const white = Math.random() * 2 - 1;
+    output[i] = (lastOut + (0.02 * white)) / 1.02;
+    lastOut = output[i];
+    output[i] *= 3.5;
+  }
+
+  const source = audioContext.createBufferSource();
+  source.buffer = noiseBuffer;
+  source.loop = true;
+  return source;
+};
+
+const createFilteredNoise = (audioContext, frequency, Q = 1) => {
+  const noise = createBrownNoise(audioContext);
+  const filter = audioContext.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = frequency;
+  filter.Q.value = Q;
+  noise.connect(filter);
+  return { source: noise, output: filter };
+};
+
+const BREATHWORK_SOUND_OPTIONS = [
+  { id: "tone", label: "Healing Frequency Tone" },
+  { id: "ocean", label: AMBIENT_SOUNDS.ocean.name },
+  { id: "rain", label: AMBIENT_SOUNDS.rain.name },
+  { id: "nature", label: AMBIENT_SOUNDS.nature.name },
+  { id: "wind", label: AMBIENT_SOUNDS.wind.name },
+  { id: "fire", label: AMBIENT_SOUNDS.fire.name },
+  { id: "silence", label: "Silence" },
+];
+
+const ELEMENT_DEFAULT_SOUNDS = {
+  Earth: "nature",
+  Water: "ocean",
+  Fire: "fire",
+  Air: "wind",
+  Spirit: "rain",
+};
 
 const Breathwork = ({ user, api }) => {
   const navigate = useNavigate();
@@ -18,6 +66,7 @@ const Breathwork = ({ user, api }) => {
   const [phaseProgress, setPhaseProgress] = useState(0);
   const [cycleCount, setCycleCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [selectedSound, setSelectedSound] = useState("tone");
   
   const intervalRef = useRef(null);
   const phaseRef = useRef(breathPhase);
@@ -25,6 +74,7 @@ const Breathwork = ({ user, api }) => {
   const audioContextRef = useRef(null);
   const oscillatorRef = useRef(null);
   const gainNodeRef = useRef(null);
+  const ambientSourcesRef = useRef([]);
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
@@ -58,6 +108,11 @@ const Breathwork = ({ user, api }) => {
           gainNodeRef.current.disconnect();
           gainNodeRef.current = null;
         }
+        ambientSourcesRef.current.forEach((source) => {
+          try { source.stop?.(); } catch (_) {}
+          try { source.disconnect?.(); } catch (_) {}
+        });
+        ambientSourcesRef.current = [];
       } catch (_) {}
       // Close AudioContext to fully release audio resources
       if (audioContextRef.current) {
@@ -106,6 +161,54 @@ const Breathwork = ({ user, api }) => {
     }
   };
 
+  const initAmbientSound = (soundId) => {
+    try {
+      if (!audioContextRef.current) {
+        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      if (audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+
+      gainNodeRef.current = audioContextRef.current.createGain();
+      gainNodeRef.current.gain.setValueAtTime(0.18, audioContextRef.current.currentTime);
+      gainNodeRef.current.connect(audioContextRef.current.destination);
+
+      const ctx = audioContextRef.current;
+      const sources = [];
+
+      if (soundId === 'ocean') {
+        const { source: low, output: lowOut } = createFilteredNoise(ctx, 200, 1);
+        const { source: mid, output: midOut } = createFilteredNoise(ctx, 800, 0.5);
+        lowOut.connect(gainNodeRef.current);
+        midOut.connect(gainNodeRef.current);
+        low.start();
+        mid.start();
+        sources.push(low, mid);
+      } else if (soundId === 'rain') {
+        const { source, output } = createFilteredNoise(ctx, 400, 2);
+        output.connect(gainNodeRef.current);
+        source.start();
+        sources.push(source);
+      } else if (soundId === 'nature' || soundId === 'fire') {
+        const { source, output } = createFilteredNoise(ctx, 500, 0.5);
+        output.connect(gainNodeRef.current);
+        source.start();
+        sources.push(source);
+      } else if (soundId === 'wind') {
+        const { source, output } = createFilteredNoise(ctx, 650, 3);
+        output.connect(gainNodeRef.current);
+        source.start();
+        sources.push(source);
+      }
+
+      ambientSourcesRef.current = sources;
+    } catch (error) {
+      console.error('Ambient sound init failed:', error);
+    }
+  };
+
   const stopSound = () => {
     try {
       if (oscillatorRef.current) {
@@ -117,20 +220,45 @@ const Breathwork = ({ user, api }) => {
         gainNodeRef.current.disconnect();
         gainNodeRef.current = null;
       }
+      ambientSourcesRef.current.forEach((source) => {
+        try { source.stop?.(); } catch (_) {}
+        try { source.disconnect?.(); } catch (_) {}
+      });
+      ambientSourcesRef.current = [];
     } catch (error) {
       // Ignore errors when stopping
     }
   };
 
+  const playSelectedSound = (session, soundId = selectedSound) => {
+    if (!soundEnabled || soundId === 'silence') return;
+    stopSound();
+    if (soundId === 'tone' && session?.frequency) {
+      initAudio(extractFrequency(session));
+      return;
+    }
+    initAmbientSound(soundId);
+  };
+
   const toggleSound = () => {
     if (soundEnabled && oscillatorRef.current) {
       stopSound();
+    } else if (soundEnabled && ambientSourcesRef.current.length > 0) {
+      stopSound();
     } else if (!soundEnabled && isPlaying && activeSession) {
-      const freq = extractFrequency(activeSession);
-      initAudio(freq);
+      playSelectedSound(activeSession, selectedSound);
     }
     setSoundEnabled(!soundEnabled);
   };
+
+  useEffect(() => {
+    if (isPlaying && activeSession && soundEnabled) {
+      playSelectedSound(activeSession, selectedSound);
+    }
+    if (selectedSound === 'silence') {
+      stopSound();
+    }
+  }, [selectedSound]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     phaseRef.current = breathPhase;
@@ -166,6 +294,8 @@ const Breathwork = ({ user, api }) => {
     setPhaseProgress(0);
     setCycleCount(0);
     setIsPlaying(false);
+    setSoundEnabled(true);
+    setSelectedSound(ELEMENT_DEFAULT_SOUNDS[session.element] || "tone");
   };
 
   const togglePlay = () => {
@@ -177,11 +307,7 @@ const Breathwork = ({ user, api }) => {
       setIsPlaying(false);
     } else {
       setIsPlaying(true);
-      // Start frequency sound if enabled
-      if (soundEnabled && activeSession.frequency) {
-        const freq = extractFrequency(activeSession);
-        initAudio(freq);
-      }
+      playSelectedSound(activeSession, selectedSound);
       runBreathCycle();
     }
   };
@@ -349,19 +475,36 @@ const Breathwork = ({ user, api }) => {
               >
                 <RotateCcw className="w-5 h-5" />
               </Button>
-              {activeSession.frequency && (
-                <Button
-                  data-testid="sound-toggle-btn"
-                  onClick={toggleSound}
-                  variant="outline"
-                  size="icon"
-                  className={`rounded-full border-white/10 ${soundEnabled ? 'text-primary' : 'text-muted-foreground'}`}
-                  title={soundEnabled ? 'Sound On' : 'Sound Off'}
-                >
-                  {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-                </Button>
-              )}
+              <Button
+                data-testid="sound-toggle-btn"
+                onClick={toggleSound}
+                variant="outline"
+                size="icon"
+                className={`rounded-full border-white/10 ${soundEnabled ? 'text-primary' : 'text-muted-foreground'}`}
+                title={soundEnabled ? 'Sound On' : 'Sound Off'}
+              >
+                {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+              </Button>
             </div>
+
+              <div className="w-full max-w-sm mb-8" data-testid="breathwork-sound-selector">
+                <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-3 text-center">Breath soundscape</p>
+                <Select value={selectedSound} onValueChange={setSelectedSound}>
+                  <SelectTrigger className="w-full bg-card border-white/10" data-testid="breathwork-sound-select">
+                    <SelectValue placeholder="Choose sound" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {BREATHWORK_SOUND_OPTIONS.filter((option) => option.id !== 'tone' || activeSession.frequency).map((option) => (
+                      <SelectItem key={option.id} value={option.id} data-testid={`breathwork-sound-option-${option.id}`}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground mt-3 text-center">
+                  Choose a nature sound, stay with the healing frequency tone, or practice in silence.
+                </p>
+              </div>
 
             {/* Cycle Counter */}
             <p className="text-muted-foreground">
@@ -387,12 +530,18 @@ const Breathwork = ({ user, api }) => {
                 )}
                 {activeSession.frequency && (
                   <p className="text-sm text-primary">
-                    {activeSession.frequency}
-                    {soundEnabled && isPlaying && (
+                    Frequency: {activeSession.frequency}
+                    {soundEnabled && isPlaying && selectedSound === 'tone' && (
                       <span className="ml-2 text-xs text-emerald-400">(Playing)</span>
                     )}
                   </p>
                 )}
+                <p className="text-xs text-muted-foreground">
+                  Selected sound: <span className="text-primary">{BREATHWORK_SOUND_OPTIONS.find((option) => option.id === selectedSound)?.label || 'Silence'}</span>
+                  {soundEnabled && isPlaying && selectedSound !== 'tone' && selectedSound !== 'silence' && (
+                    <span className="ml-2 text-xs text-emerald-400">(Playing)</span>
+                  )}
+                </p>
                 {activeSession.full_instructions && (
                   <div>
                     <h4 className="text-sm font-medium text-violet-400 mb-2">Full Instructions</h4>
