@@ -79,7 +79,7 @@
     }
   },
   "test_environment": {
-    "app_url": "https://shamanic-soul-temple-2.preview.emergentagent.com",
+    "app_url": "https://shamanic-soul-temple-3.preview.emergentagent.com",
     "viewport": "375x812 (mobile)"
   },
   "console_errors_observed": [

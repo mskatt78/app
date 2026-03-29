@@ -100,7 +100,7 @@
     }
   },
   "test_environment": {
-    "app_url": "https://shamanic-soul-temple-2.preview.emergentagent.com",
+    "app_url": "https://shamanic-soul-temple-3.preview.emergentagent.com",
     "birth_chart_page": "/birth-chart",
     "backend_tests": "pytest /app/backend/tests/test_birth_chart.py",
     "viewport": "1920x1080 (desktop)"

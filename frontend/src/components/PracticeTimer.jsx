@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Play, Pause, RotateCcw, Volume2, VolumeX, SkipForward, Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
@@ -60,7 +60,7 @@ const PracticeTimer = ({
   const [tempo, setTempo] = useState("normal");
   const [ttsLoading, setTtsLoading] = useState(false);
   const [ttsAudioUrl, setTtsAudioUrl] = useState(null);
-  const tempoMultipliers = { slow: 1.5, normal: 1.0, fast: 0.7 };
+  const tempoPlaybackRates = { slow: 0.9, normal: 1.0, fast: 1.12 };
   const intervalRef = useRef(null);
   const audioContextRef = useRef(null);
   const gainNodeRef = useRef(null);
@@ -70,33 +70,68 @@ const PracticeTimer = ({
   const autoStartedRef = useRef(false);
   const ttsAudioRef = useRef(null);
   const ttsAbortRef = useRef(null);
+  const timerStartedAtRef = useRef(null);
+  const lastSegmentIndexRef = useRef(0);
+  const hasCompletedRef = useRef(false);
 
   // Calculate total duration from segments or use provided
   // Support both duration_seconds and duration field names
   // Use totalDuration prop as authoritative source when provided, so the
   // display always matches the duration shown on practice cards exactly.
   // Fall back to segment sum only when no totalDuration is given.
-  const segmentsTotal = segments.length > 0
-    ? segments.reduce((sum, seg) => sum + (seg.duration_seconds || seg.duration || 60), 0)
+  const normalizedSegments = useMemo(() => {
+    if (!segments.length) return [];
+
+    const prepared = segments.map((segment) => ({
+      ...segment,
+      duration_seconds: segment.duration_seconds || segment.duration || 60,
+    }));
+    const preparedTotal = prepared.reduce((sum, segment) => sum + segment.duration_seconds, 0);
+
+    if (!totalDuration || totalDuration <= 0 || preparedTotal === 0 || preparedTotal === totalDuration) {
+      return prepared;
+    }
+
+    const difference = totalDuration - preparedTotal;
+    const lastIndex = prepared.length - 1;
+    prepared[lastIndex] = {
+      ...prepared[lastIndex],
+      duration_seconds: Math.max(1, prepared[lastIndex].duration_seconds + difference),
+    };
+
+    return prepared;
+  }, [segments, totalDuration]);
+
+  const segmentsTotal = normalizedSegments.length > 0
+    ? normalizedSegments.reduce((sum, segment) => sum + segment.duration_seconds, 0)
     : 0;
   const calculatedTotal = (totalDuration && totalDuration > 0)
     ? totalDuration
     : (segmentsTotal || 300);
+  const segmentEndTimes = useMemo(() => {
+    let runningTotal = 0;
+    return normalizedSegments.map((segment) => {
+      runningTotal += segment.duration_seconds;
+      return runningTotal;
+    });
+  }, [normalizedSegments]);
 
-  const currentSegment = segments[currentSegmentIndex];
+  const currentSegment = normalizedSegments[currentSegmentIndex];
 
   // Auto-start timer and audio if requested
   useEffect(() => {
-    if (autoStartAudio && !autoStartedRef.current && segments.length > 0) {
+    if (autoStartAudio && !autoStartedRef.current && (normalizedSegments.length > 0 || calculatedTotal > 0)) {
       autoStartedRef.current = true;
+      timerStartedAtRef.current = Date.now();
+      hasCompletedRef.current = false;
       setIsRunning(true);
     }
-  }, [autoStartAudio, segments.length]);
+  }, [autoStartAudio, normalizedSegments.length, calculatedTotal]);
 
   // TTS auto-narration: generate and play audio for each step
   useEffect(() => {
     if (!autoNarrate) return;
-    const segment = segments[currentSegmentIndex];
+    const segment = normalizedSegments[currentSegmentIndex];
     if (!segment) return;
     const text = (segment.description || segment.name || '').trim();
     if (!text) return;
@@ -113,7 +148,7 @@ const PracticeTimer = ({
     }
 
     setTtsLoading(true);
-    const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
     fetch(`${backendUrl}/api/tts/generate-base64`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -131,15 +166,22 @@ const PracticeTimer = ({
       })
       .catch(() => {})
       .finally(() => setTtsLoading(false));
-  }, [currentSegmentIndex, autoNarrate]); // eslint-disable-line
+  }, [currentSegmentIndex, autoNarrate, normalizedSegments]); // eslint-disable-line
 
   // Play TTS audio automatically when URL is ready
   useEffect(() => {
     if (ttsAudioUrl && ttsAudioRef.current) {
       ttsAudioRef.current.src = ttsAudioUrl;
+      ttsAudioRef.current.playbackRate = tempoPlaybackRates[tempo] || 1;
       ttsAudioRef.current.play().catch(() => {});
     }
-  }, [ttsAudioUrl]);
+  }, [ttsAudioUrl, tempo]);
+
+  useEffect(() => {
+    if (ttsAudioRef.current) {
+      ttsAudioRef.current.playbackRate = tempoPlaybackRates[tempo] || 1;
+    }
+  }, [tempo]);
 
   // Cleanup TTS on unmount
   useEffect(() => {
@@ -390,48 +432,62 @@ const PracticeTimer = ({
     return () => {
       cleanupAudio();
       if (intervalRef.current) clearInterval(intervalRef.current);
+      timerStartedAtRef.current = null;
+      hasCompletedRef.current = false;
     };
   }, [cleanupAudio]);
 
+  const syncElapsedFromClock = useCallback(() => {
+    if (!timerStartedAtRef.current) return;
+
+    const nextElapsed = Math.min(
+      calculatedTotal,
+      Math.floor((Date.now() - timerStartedAtRef.current) / 1000)
+    );
+
+    setTotalElapsed((prev) => (prev === nextElapsed ? prev : nextElapsed));
+
+    if (normalizedSegments.length > 0) {
+      const foundIndex = segmentEndTimes.findIndex((segmentEnd) => nextElapsed < segmentEnd);
+      const nextSegmentIndex = foundIndex === -1 ? normalizedSegments.length - 1 : foundIndex;
+      const segmentStart = nextSegmentIndex > 0 ? segmentEndTimes[nextSegmentIndex - 1] : 0;
+      const nextSegmentTime = Math.min(
+        normalizedSegments[nextSegmentIndex].duration_seconds,
+        Math.max(0, nextElapsed - segmentStart)
+      );
+
+      if (nextSegmentIndex !== lastSegmentIndexRef.current && nextElapsed < calculatedTotal) {
+        if (!isMuted) playTransitionBell();
+        lastSegmentIndexRef.current = nextSegmentIndex;
+      }
+
+      setCurrentSegmentIndex((prev) => (prev === nextSegmentIndex ? prev : nextSegmentIndex));
+      setSegmentTime((prev) => (prev === nextSegmentTime ? prev : nextSegmentTime));
+    }
+
+    if (nextElapsed >= calculatedTotal && !hasCompletedRef.current) {
+      hasCompletedRef.current = true;
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      timerStartedAtRef.current = null;
+      setIsRunning(false);
+      cleanupAudio();
+      if (!isMuted) playTransitionBell();
+      onComplete?.();
+    }
+  }, [
+    calculatedTotal,
+    cleanupAudio,
+    isMuted,
+    normalizedSegments,
+    onComplete,
+    playTransitionBell,
+    segmentEndTimes,
+  ]);
+
   useEffect(() => {
     if (isRunning) {
-      // Adjust interval based on tempo (slow = longer intervals = slower practice)
-      const intervalMs = 1000 * tempoMultipliers[tempo];
-      
-      intervalRef.current = setInterval(() => {
-        setSegmentTime(prev => {
-          const newTime = prev + 1;
-          
-          // Check if segment is complete
-          const segmentDuration = currentSegment.duration_seconds || currentSegment.duration || 60;
-          if (currentSegment && newTime >= segmentDuration) {
-            // Move to next segment
-            if (currentSegmentIndex < segments.length - 1) {
-              setCurrentSegmentIndex(prev => prev + 1);
-              if (!isMuted) playTransitionBell();
-              return 0;
-            } else {
-              // Practice complete
-              setIsRunning(false);
-              cleanupAudio();
-              if (!isMuted) playTransitionBell();
-              onComplete?.();
-              return prev;
-            }
-          }
-          
-          return newTime;
-        });
-        
-        setTotalElapsed(prev => {
-          if (prev + 1 >= calculatedTotal) {
-            setIsRunning(false);
-            cleanupAudio();
-            onComplete?.();
-          }
-          return prev + 1;
-        });
-      }, intervalMs);
+      intervalRef.current = setInterval(syncElapsedFromClock, 250);
+      syncElapsedFromClock();
     }
 
     return () => {
@@ -439,7 +495,7 @@ const PracticeTimer = ({
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, currentSegment, currentSegmentIndex, segments.length, calculatedTotal, onComplete, tempo]);
+  }, [isRunning, syncElapsedFromClock]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -462,8 +518,17 @@ const PracticeTimer = ({
           window.__warmAudioCtx = c;
         }
       } catch(e) {}
+
+      timerStartedAtRef.current = Date.now() - (totalElapsed * 1000);
+      lastSegmentIndexRef.current = currentSegmentIndex;
+      hasCompletedRef.current = false;
+      setIsRunning(true);
+      return;
     }
-    setIsRunning(!isRunning);
+
+    syncElapsedFromClock();
+    timerStartedAtRef.current = null;
+    setIsRunning(false);
   };
 
   const handleReset = () => {
@@ -471,21 +536,29 @@ const PracticeTimer = ({
     setCurrentSegmentIndex(0);
     setSegmentTime(0);
     setTotalElapsed(0);
+    timerStartedAtRef.current = null;
+    lastSegmentIndexRef.current = 0;
+    hasCompletedRef.current = false;
     cleanupAudio();
   };
 
   const handleSkipSegment = () => {
-    if (currentSegmentIndex < segments.length - 1) {
-      const segmentDuration = currentSegment.duration_seconds || currentSegment.duration || 60;
-      setTotalElapsed(prev => prev + (segmentDuration - segmentTime));
+    if (currentSegmentIndex < normalizedSegments.length - 1) {
+      const nextElapsed = segmentEndTimes[currentSegmentIndex];
+      if (timerStartedAtRef.current) {
+        timerStartedAtRef.current = Date.now() - (nextElapsed * 1000);
+      }
+      setTotalElapsed(nextElapsed);
       setCurrentSegmentIndex(prev => prev + 1);
       setSegmentTime(0);
+      lastSegmentIndexRef.current = currentSegmentIndex + 1;
+      if (!isMuted) playTransitionBell();
     }
   };
 
   const overallProgress = (totalElapsed / calculatedTotal) * 100;
   const currentSegmentDuration = currentSegment 
-    ? (currentSegment.duration_seconds || currentSegment.duration || 60)
+    ? currentSegment.duration_seconds
     : 60;
   const segmentProgress = currentSegment 
     ? (segmentTime / currentSegmentDuration) * 100 
@@ -529,7 +602,7 @@ const PracticeTimer = ({
         <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-4">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm text-muted-foreground">
-              Step {currentSegmentIndex + 1} of {segments.length}
+              Step {currentSegmentIndex + 1} of {normalizedSegments.length}
             </span>
             <span className="text-sm text-primary">
               {formatTime(currentSegmentDuration - segmentTime)}
@@ -595,12 +668,12 @@ const PracticeTimer = ({
           {isRunning ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
         </Button>
 
-        {segments.length > 1 && (
+        {normalizedSegments.length > 1 && (
           <Button
             variant="outline"
             size="icon"
             onClick={handleSkipSegment}
-            disabled={currentSegmentIndex >= segments.length - 1}
+            disabled={currentSegmentIndex >= normalizedSegments.length - 1}
             className="rounded-full border-white/10"
             data-testid="timer-skip"
           >
@@ -670,9 +743,9 @@ const PracticeTimer = ({
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            {tempo === "slow" ? "50% slower - for breathing conditions or deep relaxation" : 
-             tempo === "fast" ? "30% faster - for energizing practice" : 
-             "Standard pace"}
+            {tempo === "slow" ? "Softer narration pace while the full timer still stays exact" : 
+             tempo === "fast" ? "Brighter narration pace while the full timer still stays exact" : 
+             "Balanced narration pace with precise timing"}
           </p>
         </div>
       )}
