@@ -845,7 +845,7 @@ export default function Courses() {
                 {selectedCourse.price && (
                   <div className="p-4 pt-0">
                     <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-between">
-                      <span className="text-violet-300 text-lg font-medium">{selectedCourse.price}</span>
+                      <span className="text-violet-300 text-lg font-medium">${selectedCourse.price}</span>
                       {selectedCourse.registration_link ? (
                         <a
                           href={selectedCourse.registration_link}

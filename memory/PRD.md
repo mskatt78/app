@@ -126,12 +126,24 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
-- **P1**: Video of the Day widget on Dashboard
 - **P2**: Community page threading/replies feature
 - **P2**: Subscription-based access to all premium content
+- **P3**: Add more crystal profiles (Moonstone, Turquoise, Malachite, etc. — 15 done)
 - **P3**: Production deployment admin route optimization
 
-## Completed Work (March 2026 - Latest)
+## Completed Work (March 2026 - Latest - Fork Session)
+- [x] **40-Day Journey now visible in Courses UI** (was P0 bug):
+  - Added 3 missing tabs to course detail modal: Daily Practice, 40-Day Journey, Safety
+  - 40-Day Journey tab: Phase 1 (teaser) always visible, Phases 2-4 locked for non-purchasers with blur + Unlock CTA
+  - Daily Practice tab: First 3 steps visible as teaser, remaining locked for non-purchasers
+  - Safety tab: Always fully visible (public precautions content)
+  - All 3 tabs use existing backend data (already in DB from `sacred_rites_deep.py`)
+- [x] **Chakra Guided Meditation Audio Narration** (was P1):
+  - Volume2 "Listen" button added to every expandable section in Chakra Cleansing modal
+  - Calls `/api/tts/generate-base64` with section text via Emergent LLM Key (OpenAI TTS nova voice)
+  - Audio renders as inline HTML audio player when ready; toggle clicks stop playback
+  - Blob URLs cleaned up on modal close
+
 - [x] **Archangel Oracle System** (NEW - Full Divination Feature):
   - 15 Archangels with deep spiritual content matching Oracle/Tarot depth
   - Each archangel includes: Domain, Message, Love Guidance, Invocation, Prayer, Affirmation, Signs of Presence
