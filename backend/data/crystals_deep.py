@@ -120,7 +120,7 @@ CRYSTALS_DEEP = [
         ],
         "warnings": ["Clear quartz amplifies ALL energy - including negative. Cleanse regularly.", "May intensify dreams. Remove from bedroom if sleep is disturbed."],
         "affirmation": "I am a clear channel for divine light and wisdom. Clarity is my natural state.",
-        "image_url": "https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?w=800"
+        "image_url": "https://images.unsplash.com/photo-1743448111530-3654e7b66f26?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85"
     },
     {
         "id": "amethyst",
@@ -219,7 +219,7 @@ CRYSTALS_DEEP = [
         ],
         "warnings": ["May cause very vivid or intense dreams initially", "Avoid prolonged sunlight exposure - colors may fade", "Some people find it too stimulating for sleep - if so, remove from bedroom"],
         "affirmation": "I trust my intuition. I am connected to divine wisdom. My mind is clear and my spirit is protected.",
-        "image_url": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800"
+        "image_url": "https://images.unsplash.com/photo-1626470408813-f0059745d58b?crop=entropy&cs=srgb&fm=jpg&ixlib=rb-4.1.0&q=85"
     },
     {
         "id": "rose-quartz",

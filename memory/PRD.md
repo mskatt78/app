@@ -12,8 +12,10 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
-- **Meditations.jsx**: Replaced inline timer with full-screen `GuidedPracticeOverlay`. Timer now shows exact countdown matching card duration (e.g. 15:00 for 15-min meditation). TTS narration and element-appropriate ambient audio included.
-- **Production Optimizations**: GZip compression middleware (avg 58% size reduction), MongoDB indexes for users/practice_history/community_posts/content collections, Service Worker upgraded to v2 with smarter cache-first (static) + network-first (API) strategies.
+- **Crystal Guide Deep Content**: All 27 crystals now have full depth matching the rest of the app — `why_this_heals` (philosophical/scientific explanation), `extended_teachings` (historical/cultural context across ancient Egypt, Greek, Roman, Indigenous etc.), `practice_guide` (step-by-step ritual instructions). Frontend switched from basic `/api/crystals` to `/api/crystals/deep`, rendering all rich content: healing properties (physical/emotional/spiritual), cleansing methods, chakra work, rituals, crystal combinations, zodiac/origins, warnings, and a "Begin Guided Crystal Practice" button launching GuidedPracticeOverlay.
+- **Meditations.jsx**: Replaced inline timer with full-screen `GuidedPracticeOverlay`. Timer now shows exact countdown matching card duration.
+- **SomaticMovement.jsx**: Same fix — replaced old elapsed-timer with `GuidedPracticeOverlay`.
+- **Production Optimizations**: GZip compression middleware (avg 58% size reduction), MongoDB indexes for users/practice_history/community/content, Service Worker upgraded to v2.
 
 ## Core Features (All Implemented)
 

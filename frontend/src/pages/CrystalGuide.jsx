@@ -184,7 +184,9 @@ const CrystalGuide = ({ user, api }) => {
               <Gem className="w-12 h-12 text-primary mx-auto mb-4" />
               <h2 className="text-3xl font-serif mb-2">Sacred <span className="italic text-primary">Crystal Library</span></h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
-                27 crystals, each carrying deep wisdom, healing properties, and guided practices for transformation.
+                {filteredCrystals.length === crystals.length
+                  ? `${crystals.length} crystals, each carrying deep wisdom, healing properties, and guided practices for transformation.`
+                  : `Showing ${filteredCrystals.length} ${selectedElement} crystals.`}
               </p>
             </motion.div>
 
