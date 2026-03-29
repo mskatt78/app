@@ -533,6 +533,347 @@ CRYSTALS_DEEP = [
         "warnings": ["Most commercial 'citrine' is heat-treated amethyst - still works but natural citrine is more powerful", "May cause overstimulation in sensitive individuals"],
         "affirmation": "I am a magnet for abundance. Prosperity flows to me from all directions. I am worthy of success.",
         "image_url": "https://images.unsplash.com/photo-1551122089-4e3e72477432?w=800"
+    },
+    {
+        "id": "selenite",
+        "name": "Selenite",
+        "title": "The Angel Stone",
+        "element": "Spirit",
+        "chakra": "Crown, Third Eye",
+        "zodiac": ["Taurus", "Cancer"],
+        "planet": "Moon",
+        "vibration_number": 8,
+        "hardness": 2,
+        "crystal_system": "Monoclinic",
+        "color": "White, Clear, Peach",
+        "rarity": "Common",
+        "origin": ["Mexico", "Morocco", "Madagascar", "USA"],
+        "description": "Selenite is named after Selene, the Greek goddess of the moon. This ethereal crystal carries a very high vibration and provides clarity of mind while opening the crown and higher chakras. It is one of the few crystals that never needs cleansing - it actually cleanses other crystals and spaces. Selenite creates a protective grid and connects you to angelic realms.",
+        "healing_properties": {
+            "physical": ["Aligns the spine and skeletal system", "Promotes flexibility", "Supports cellular structure", "Aids in fertility and pregnancy", "Soothes nerves"],
+            "emotional": ["Brings deep peace and calm", "Clears confusion and mental fog", "Dispels worry and fear", "Promotes clarity in decision-making", "Instills profound peace"],
+            "spiritual": ["Opens crown and higher chakras", "Facilitates angelic communication", "Accesses past and future lives", "Enhances telepathy", "Creates protective grid", "Cleanses aura and other crystals"]
+        },
+        "cleansing_methods": [
+            {"method": "Self-Cleansing", "description": "Selenite never needs cleansing - it cleanses itself and others", "duration": "N/A"},
+            {"method": "Moonlight", "description": "Placing under full moon amplifies its energy", "duration": "8-12 hours"},
+            {"method": "Sound", "description": "High-frequency sound can enhance vibration", "duration": "5 minutes"}
+        ],
+        "meditation_guidance": {
+            "technique": "Angelic Connection Meditation",
+            "preparation": "Lie down. Place selenite wand above your crown. Create a peaceful, dimly lit space.",
+            "steps": [
+                "Close your eyes and take slow, deep breaths",
+                "Feel the selenite creating a column of light above your head",
+                "Visualize white light descending through the crystal into your crown",
+                "This light fills your entire body, cell by cell",
+                "Invite your guardian angels or guides to draw near",
+                "Ask any question and remain open to receive",
+                "You may see images, hear words, or simply feel peace",
+                "Thank your guides for their presence",
+                "Slowly return, feeling protected and connected"
+            ],
+            "duration_minutes": 20,
+            "timer_segments": [
+                {"name": "Relaxation", "duration": 180},
+                {"name": "Light Descent", "duration": 300},
+                {"name": "Angelic Connection", "duration": 420},
+                {"name": "Integration", "duration": 300}
+            ],
+            "affirmation": "I am connected to the angelic realms. Divine guidance flows to me effortlessly."
+        },
+        "chakra_work": {
+            "primary": "Crown",
+            "secondary": "Third Eye, Soul Star (above crown)",
+            "placement": "Above head, on third eye, or along spine",
+            "technique": "Create a selenite grid by placing wands along your body's central axis, from above head to below feet, activating the entire chakra column."
+        },
+        "rituals": [
+            {"name": "Crystal Cleansing Station", "purpose": "Cleanse and charge other crystals", "timing": "Ongoing", "steps": ["Create a selenite charging plate or bowl", "Place crystals needing cleansing on or near selenite", "Leave for 4-8 hours", "Crystals emerge cleared and charged"]},
+            {"name": "Space Clearing", "purpose": "Clear and protect a room", "timing": "New Moon or move-in", "steps": ["Walk through space with selenite wand", "Trace doorways and windows", "Place selenite in corners", "Set protective intention"]}
+        ],
+        "combinations": [
+            {"crystal": "Black Tourmaline", "purpose": "Protection + cleansing"},
+            {"crystal": "Amethyst", "purpose": "Deep meditation and spiritual access"},
+            {"crystal": "Clear Quartz", "purpose": "Amplified high vibration"}
+        ],
+        "warnings": ["WATER SOLUBLE - never cleanse with water, it will dissolve", "Very soft and fragile - handle gently", "Can be overly stimulating for some - remove if causing insomnia"],
+        "affirmation": "I am a clear channel for divine light. Angels guide my path. Peace flows through me.",
+        "image_url": "https://images.unsplash.com/photo-1601379329542-31c59347e2b3?w=800"
+    },
+    {
+        "id": "labradorite",
+        "name": "Labradorite",
+        "title": "The Stone of Magic",
+        "element": "Water",
+        "chakra": "Third Eye, Crown",
+        "zodiac": ["Leo", "Scorpio", "Sagittarius"],
+        "planet": "Uranus, Moon",
+        "vibration_number": 6,
+        "hardness": 6,
+        "crystal_system": "Triclinic",
+        "color": "Gray with iridescent flashes of blue, green, gold, purple",
+        "rarity": "Uncommon",
+        "origin": ["Madagascar", "Finland", "Canada", "Russia"],
+        "description": "Labradorite is a stone of transformation and magic. Its stunning iridescence (labradorescence) reflects all colors of the aurora borealis, representing the many possibilities that exist in every moment. This stone awakens psychic abilities, protects the aura, and helps you navigate change. It is the shaman's stone, bridging the seen and unseen worlds.",
+        "healing_properties": {
+            "physical": ["Supports eyes and brain", "Helps with digestive issues", "Reduces anxiety and stress effects", "Supports hormonal balance", "Aids in recovery from addiction"],
+            "emotional": ["Banishes fears and insecurities", "Strengthens faith in self and trust in universe", "Calms overactive mind", "Reduces anti-social behavior", "Stimulates imagination"],
+            "spiritual": ["Awakens magical/psychic abilities", "Protects aura from energy leaks", "Facilitates shamanic journeying", "Reveals hidden truths", "Assists in transformation/change"]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Full moon cleansing and charging", "duration": "8-12 hours"},
+            {"method": "Smudging", "description": "Pass through sage or palo santo smoke", "duration": "5 minutes"},
+            {"method": "Sound", "description": "Singing bowls or bells", "duration": "5-10 minutes"},
+            {"method": "Earth", "description": "Brief earth burial for grounding", "duration": "24 hours"}
+        ],
+        "meditation_guidance": {
+            "technique": "Shamanic Journey Meditation",
+            "preparation": "Sit in dim lighting. Hold labradorite or place on third eye. Have drum music playing softly.",
+            "steps": [
+                "Close your eyes and breathe deeply",
+                "Gaze at the labradorite's flash in your mind's eye",
+                "Allow the colors to become a doorway",
+                "Step through into the imaginal realm",
+                "Ask to meet a guide or power animal",
+                "Receive whatever teaching is offered",
+                "When the drum calls you back, return through the doorway",
+                "Thank your guide and the stone",
+                "Ground by touching the earth"
+            ],
+            "duration_minutes": 25,
+            "timer_segments": [
+                {"name": "Entering", "duration": 180},
+                {"name": "Journey", "duration": 720},
+                {"name": "Return", "duration": 300},
+                {"name": "Grounding", "duration": 300}
+            ],
+            "affirmation": "I embrace change as transformation. Magic flows through me. I see beyond the veil."
+        },
+        "chakra_work": {
+            "primary": "Third Eye",
+            "secondary": "Crown, Throat",
+            "placement": "Third eye, throat, or held in hands",
+            "technique": "Place labradorite on third eye and breathe deeply into the stone. Watch the inner colors shift and change like aurora borealis, opening your psychic vision."
+        },
+        "rituals": [
+            {"name": "Psychic Shield", "purpose": "Protect aura and prevent energy drain", "timing": "Daily, before leaving home", "steps": ["Hold labradorite to third eye", "Visualize its iridescent shield expanding around your entire aura", "Set intention that only positive energy may enter", "Carry the stone with you"]},
+            {"name": "Change Ceremony", "purpose": "Navigate major life transitions", "timing": "During any significant change", "steps": ["Create sacred space", "Hold labradorite and name the change", "Ask for courage and guidance", "Visualize successful outcome", "Carry stone until transition complete"]}
+        ],
+        "combinations": [
+            {"crystal": "Moonstone", "purpose": "Enhanced intuition and lunar connection"},
+            {"crystal": "Amethyst", "purpose": "Psychic protection and development"},
+            {"crystal": "Obsidian", "purpose": "Deep transformation and shadow work"}
+        ],
+        "warnings": ["Can intensify dreams - keep away from bed if dreams become too intense", "Some find it overstimulating - pair with grounding stones if needed"],
+        "affirmation": "I embrace transformation. I see magic in all things. My psychic gifts awaken safely.",
+        "image_url": "https://images.unsplash.com/photo-1590722804520-73b7068ca951?w=800"
+    },
+    {
+        "id": "obsidian",
+        "name": "Black Obsidian",
+        "title": "The Mirror Stone",
+        "element": "Fire, Earth",
+        "chakra": "Root",
+        "zodiac": ["Scorpio", "Sagittarius"],
+        "planet": "Saturn, Pluto",
+        "vibration_number": 1,
+        "hardness": 5,
+        "crystal_system": "Amorphous (volcanic glass)",
+        "color": "Black, sometimes with rainbow sheen or golden sheen",
+        "rarity": "Common",
+        "origin": ["Mexico", "USA", "Japan", "Iceland"],
+        "description": "Black Obsidian is volcanic glass, formed when lava cools rapidly. It is a powerful stone of truth and protection. Like a mirror, it reflects what needs to be seen - including shadow aspects of the self. This is not a gentle stone; it works quickly and deeply. Used by shamans for scrying and by healers for cord-cutting. Obsidian demands truth and offers transformation.",
+        "healing_properties": {
+            "physical": ["Helps with digestion", "Relieves tension and pain", "Supports detoxification", "Aids circulation", "May help with arthritis"],
+            "emotional": ["Brings hidden emotions to surface for healing", "Releases old trauma", "Cuts energetic cords", "Grounds scattered energy", "Forces honesty with self"],
+            "spiritual": ["Creates protective shield", "Facilitates scrying and divination", "Reveals truth and illusion", "Assists shadow work", "Grounds spiritual energy into body"]
+        },
+        "cleansing_methods": [
+            {"method": "Running Water", "description": "Hold under cool running water", "duration": "2-3 minutes"},
+            {"method": "Earth Burial", "description": "Bury in earth - obsidian loves to return to the earth", "duration": "24-48 hours"},
+            {"method": "Smudging", "description": "Pass through sage, cedar, or juniper smoke", "duration": "5 minutes"},
+            {"method": "Moonlight", "description": "Place under dark moon (new moon) for cleansing", "duration": "Overnight"}
+        ],
+        "meditation_guidance": {
+            "technique": "Shadow Integration Meditation",
+            "preparation": "This is powerful work. Ensure you feel grounded and safe. Hold obsidian in receiving hand. Have black tourmaline nearby for grounding.",
+            "steps": [
+                "Close your eyes and take grounding breaths",
+                "Feel the obsidian's cool weight in your hand",
+                "Gaze into the blackness in your mind's eye",
+                "Ask: 'What part of myself have I been avoiding?'",
+                "Allow images, memories, or feelings to arise",
+                "DO NOT JUDGE what you see - simply witness",
+                "Say to any shadow aspect: 'I see you. You belong to me.'",
+                "Breathe acceptance into the shadow",
+                "Thank the shadow for its protection until now",
+                "Invite integration: 'You are welcome home'",
+                "Ground deeply when complete - touch the earth"
+            ],
+            "duration_minutes": 30,
+            "timer_segments": [
+                {"name": "Grounding", "duration": 180},
+                {"name": "Gazing", "duration": 300},
+                {"name": "Shadow Encounter", "duration": 600},
+                {"name": "Integration", "duration": 420},
+                {"name": "Grounding Return", "duration": 300}
+            ],
+            "affirmation": "I embrace all parts of myself. My shadow holds gifts for me. I am whole."
+        },
+        "chakra_work": {
+            "primary": "Root",
+            "secondary": "Earth Star (below feet)",
+            "placement": "At feet, base of spine, or held in hand",
+            "technique": "Place obsidian at your feet while lying down. Visualize any negative energy draining down through obsidian into the earth for transmutation."
+        },
+        "rituals": [
+            {"name": "Cord Cutting", "purpose": "Release unhealthy attachments", "timing": "Waning Moon", "steps": ["Hold obsidian over solar plexus", "Visualize the cord connecting you to person/situation", "See obsidian's edge cutting the cord", "Feel the release", "Fill the space with your own light", "Bury or cleanse the obsidian after"]},
+            {"name": "Scrying", "purpose": "Divination and insight", "timing": "Dark Moon, quiet night", "steps": ["Obtain an obsidian sphere or mirror", "Sit in candlelight with the black surface before you", "Soften your gaze", "Ask your question", "Watch for images, symbols, or knowing to arise"]}
+        ],
+        "combinations": [
+            {"crystal": "Black Tourmaline", "purpose": "Double protection and grounding"},
+            {"crystal": "Clear Quartz", "purpose": "Amplified clearing"},
+            {"crystal": "Rose Quartz", "purpose": "Softens obsidian's intensity with love"}
+        ],
+        "warnings": ["This is powerful shadow work - not for beginners or those in fragile emotional states", "Can bring up intense emotions - have support available", "Always ground thoroughly after use", "May cause vivid or disturbing dreams initially"],
+        "affirmation": "I face my truth with courage. My shadow is my teacher. I integrate all that I am.",
+        "image_url": "https://images.unsplash.com/photo-1598430772299-8412a84149d5?w=800"
+    },
+    {
+        "id": "carnelian",
+        "name": "Carnelian",
+        "title": "The Stone of Creativity & Courage",
+        "element": "Fire",
+        "chakra": "Sacral, Root",
+        "zodiac": ["Taurus", "Cancer", "Leo", "Virgo"],
+        "planet": "Sun, Mars",
+        "vibration_number": 5,
+        "hardness": 7,
+        "crystal_system": "Trigonal",
+        "color": "Orange, Red-Orange, Reddish-Brown",
+        "rarity": "Common",
+        "origin": ["Brazil", "India", "Madagascar", "USA"],
+        "description": "Carnelian is a stone of life force, creativity, and courage. The ancient Egyptians called it 'the setting sun' and believed it captured the energy of Ra. This warm, vibrant stone activates the sacral and root chakras, igniting passion, sexuality, confidence, and creative expression. It transforms lethargy into motivation and fear into action.",
+        "healing_properties": {
+            "physical": ["Stimulates metabolism", "Supports reproductive organs", "Aids in fertility", "Improves blood circulation", "Assists with lower back pain", "Boosts energy and vitality"],
+            "emotional": ["Overcomes fear and encourages action", "Builds confidence and self-worth", "Ignites passion and desire", "Dispels apathy and motivates", "Supports public speaking"],
+            "spiritual": ["Awakens creativity and artistic expression", "Connects to life force energy", "Grounds spiritual energy into action", "Protects against envy and rage"]
+        },
+        "cleansing_methods": [
+            {"method": "Sunlight", "description": "Carnelian loves the sun! Brief sun bath energizes it", "duration": "1-2 hours"},
+            {"method": "Running Water", "description": "Hold under cool running water", "duration": "2-3 minutes"},
+            {"method": "Earth", "description": "Brief earth burial", "duration": "24 hours"},
+            {"method": "Citrine", "description": "Place with citrine for mutual charging", "duration": "4 hours"}
+        ],
+        "meditation_guidance": {
+            "technique": "Creative Fire Activation",
+            "preparation": "Sit comfortably. Place carnelian on sacral chakra (below navel). Have creative tools nearby.",
+            "steps": [
+                "Close your eyes and breathe into your lower belly",
+                "Feel the carnelian warming on your sacral center",
+                "Visualize orange fire awakening in your pelvis",
+                "This creative fire expands, filling your belly with warmth",
+                "Ask: 'What wants to be created through me?'",
+                "Allow images, ideas, or urges to arise",
+                "Feel courage and confidence building",
+                "Say: 'I am a creative being. I birth new realities.'",
+                "When complete, channel this energy into creative action"
+            ],
+            "duration_minutes": 15,
+            "timer_segments": [
+                {"name": "Belly Breathing", "duration": 120},
+                {"name": "Fire Activation", "duration": 300},
+                {"name": "Creative Vision", "duration": 300},
+                {"name": "Empowerment", "duration": 180}
+            ],
+            "affirmation": "I am a creative force. Passion and courage flow through me. I create my reality."
+        },
+        "chakra_work": {
+            "primary": "Sacral",
+            "secondary": "Root",
+            "placement": "Below navel or at base of spine",
+            "technique": "Create a ring of carnelian around your pelvis while lying down. Visualize orange light activating your creative and sexual energy centers."
+        },
+        "rituals": [
+            {"name": "Morning Energy Ritual", "purpose": "Start day with vitality", "timing": "Morning, sunrise", "steps": ["Hold carnelian while watching sunrise", "Breathe in the sun's energy", "State intentions for the day", "Carry carnelian with you"]},
+            {"name": "Creativity Unblocking", "purpose": "Overcome creative blocks", "timing": "When feeling stuck", "steps": ["Hold carnelian", "Dance, move, shake your hips", "Make sounds - let sound become voice", "Pick up creative tools and begin without judgment"]}
+        ],
+        "combinations": [
+            {"crystal": "Citrine", "purpose": "Creative manifestation and abundance"},
+            {"crystal": "Red Jasper", "purpose": "Grounded creative action"},
+            {"crystal": "Orange Calcite", "purpose": "Amplified sacral activation"}
+        ],
+        "warnings": ["May increase sexual energy - be mindful", "Can be overly stimulating for some - pair with calming stones", "Avoid if experiencing excessive anger"],
+        "affirmation": "I am alive with creative fire. I take bold action on my dreams. I am passionate and empowered.",
+        "image_url": "https://images.unsplash.com/photo-1600298881974-6be191ceeda1?w=800"
+    },
+    {
+        "id": "lapis-lazuli",
+        "name": "Lapis Lazuli",
+        "title": "The Stone of Royalty & Truth",
+        "element": "Water",
+        "chakra": "Third Eye, Throat",
+        "zodiac": ["Sagittarius", "Libra", "Taurus"],
+        "planet": "Jupiter, Venus",
+        "vibration_number": 3,
+        "hardness": 5,
+        "crystal_system": "Isometric (rock composed of lazurite, calcite, pyrite)",
+        "color": "Deep Blue with gold pyrite flecks",
+        "rarity": "Uncommon",
+        "origin": ["Afghanistan", "Chile", "Russia", "USA"],
+        "description": "Lapis Lazuli has been treasured since ancient Mesopotamia and Egypt, where it was reserved for royalty and priests. The deep blue represents the night sky; the gold pyrite flecks are the stars. This stone opens the third eye and throat, enhancing psychic ability and honest communication. It was ground into powder to make ultramarine paint for sacred art. Lapis speaks truth to power.",
+        "healing_properties": {
+            "physical": ["Supports thyroid and larynx", "Helps with migraines and headaches", "Supports immune system", "Reduces inflammation", "Aids nervous system"],
+            "emotional": ["Encourages honest self-expression", "Releases repressed anger", "Helps overcome depression", "Builds confidence in truth-speaking", "Supports healthy boundaries"],
+            "spiritual": ["Opens third eye for psychic vision", "Enhances dream recall and lucid dreaming", "Connects to ancient Egyptian mysteries", "Facilitates contact with spirit guides", "Supports journeying to Akashic Records"]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Place under full moon for cleansing", "duration": "8-12 hours"},
+            {"method": "Sound", "description": "Use singing bowls or bells", "duration": "5-10 minutes"},
+            {"method": "Smudging", "description": "Pass through sage or frankincense smoke", "duration": "5 minutes"}
+        ],
+        "meditation_guidance": {
+            "technique": "Akashic Records Meditation",
+            "preparation": "Lie down. Place lapis lazuli on third eye. Light frankincense incense if available.",
+            "steps": [
+                "Close your eyes and relax deeply",
+                "Feel the weight of lapis on your third eye",
+                "Visualize deep indigo light filling your inner vision",
+                "See a great library with infinite halls",
+                "Ask permission to enter: 'May I access the Records?'",
+                "If granted, feel yourself drawn to a particular book",
+                "Open it and receive what is shown",
+                "When complete, thank the keepers",
+                "Return slowly and ground"
+            ],
+            "duration_minutes": 30,
+            "timer_segments": [
+                {"name": "Relaxation", "duration": 180},
+                {"name": "Third Eye Activation", "duration": 300},
+                {"name": "Journey", "duration": 900},
+                {"name": "Return & Grounding", "duration": 420}
+            ],
+            "affirmation": "I speak my truth with power and grace. I access ancient wisdom. I see clearly."
+        },
+        "chakra_work": {
+            "primary": "Third Eye",
+            "secondary": "Throat",
+            "placement": "Center of forehead or at throat",
+            "technique": "Place lapis on third eye and a second piece at throat. This activates the 'vision-to-voice' channel, helping you speak what you see."
+        },
+        "rituals": [
+            {"name": "Truth-Speaking Ritual", "purpose": "Prepare for difficult conversations", "timing": "Before important communication", "steps": ["Hold lapis at throat", "Breathe deeply and feel throat open", "Speak your truth aloud to the stone first", "Ask for courage and clarity", "Carry lapis to the conversation"]},
+            {"name": "Egyptian Connection", "purpose": "Connect with ancient Egyptian wisdom", "timing": "Dark moon, midnight", "steps": ["Create altar with Egyptian imagery", "Place lapis at center", "Call upon Isis, Thoth, or preferred deity", "Enter meditation and journey", "Record any messages received"]}
+        ],
+        "combinations": [
+            {"crystal": "Clear Quartz", "purpose": "Amplified third eye activation"},
+            {"crystal": "Turquoise", "purpose": "Enhanced throat and truth-speaking"},
+            {"crystal": "Amethyst", "purpose": "Deep psychic development"}
+        ],
+        "warnings": ["Contains sulfur - avoid water cleansing", "Can bring up uncomfortable truths - be ready", "May intensify dreams significantly"],
+        "affirmation": "I speak my truth. I see clearly through the veil. Ancient wisdom flows through me.",
+        "image_url": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800"
     }
 ]
 
