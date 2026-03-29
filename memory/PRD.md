@@ -12,6 +12,10 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **PracticeTimer Precision Fix**: Rewrote `PracticeTimer.jsx` to use a real-clock session countdown instead of step math that could freeze or finish early. This now keeps advertised durations exact across Shamanic, Grounding, Elemental, and Sunrise/Sunset guided timers, while still supporting skip, pause, ambient audio, and auto-narration.
+- **GuidedPracticeOverlay Precision + Autostart**: Updated `GuidedPracticeOverlay.jsx` to use a real end-time countdown, auto-start the guided session, and let ambient audio continue after TTS finishes so the session remains active for the full advertised duration.
+- **Light Codes Deep Content Expansion**: Enriched backend `LIGHT_CODES` entries with `why_this_heals`, `ancient_traditions`, `extended_teachings`, `practice_guide`, `lineage`, and `healing_lens`, with especially deep content for DNA Activation Helix and core sacred geometry symbols.
+- **Light Codes UI Redesign**: Rebuilt `LightCodes.jsx` with richer category philosophy panels, deeper symbol cards, and a multi-tab modal experience (Essence, Why It Heals, Ancient Traditions, Practice Guide) to bring Light Codes in line with Crystals and 5 Elements.
 - **Crystal Guide Deep Content**: All 27 crystals now have full depth matching the rest of the app — `why_this_heals` (philosophical/scientific explanation), `extended_teachings` (historical/cultural context across ancient Egypt, Greek, Roman, Indigenous etc.), `practice_guide` (step-by-step ritual instructions). Frontend switched from basic `/api/crystals` to `/api/crystals/deep`, rendering all rich content: healing properties (physical/emotional/spiritual), cleansing methods, chakra work, rituals, crystal combinations, zodiac/origins, warnings, and a "Begin Guided Crystal Practice" button launching GuidedPracticeOverlay.
 - **Meditations.jsx**: Replaced inline timer with full-screen `GuidedPracticeOverlay`. Timer now shows exact countdown matching card duration.
 - **SomaticMovement.jsx**: Same fix — replaced old elapsed-timer with `GuidedPracticeOverlay`.
@@ -135,7 +139,9 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
+- **P1**: Review Mantras, Mudras, and any other lighter sections for the same deep-content parity now achieved in Crystals, Elements, and Light Codes
 - **P2**: Subscription-based access to all premium content (all-in-one membership)
+- **P2**: Add a Sacred Journey Progress tracker to the dashboard if approved
 - **P3**: Add more crystal profiles (at 27, can expand to 30+)
 - **P3**: Production deployment optimization
 
@@ -225,6 +231,7 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 │   │   ├── video_content.py — 51 video tutorials (13 categories)
 │   │   ├── archangel_oracle.py — 15 Archangels with deep content (NEW)
 │   │   ├── creative_processes_deep.py — 9 deep practices
+│   │   ├── divination_content.py — Light Codes and symbolic systems, now enriched with deep teachings
 │   ├── routers/
 │   │   ├── admin.py — Admin seeding routes, file uploads
 │   │   ├── oracle.py — Oracle + Archangel Oracle endpoints
@@ -232,10 +239,14 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 │   │   ├── content.py — course content endpoints
 │   ├── server.py — startup seeding
 ├── frontend/
+│   ├── src/components/
+│   │   ├── GuidedPracticeOverlay.jsx — full-screen continuous guided sessions with exact countdown
+│   │   ├── PracticeTimer.jsx — shared guided timer for inline practice pages with exact duration handling
 │   ├── src/pages/
 │   │   ├── Courses.jsx — 7-tab modal, Stripe purchase flow
 │   │   ├── VideosLibrary.jsx — 13 category filters, dark theme
 │   │   ├── ArchangelOracle.jsx — Archangel readings & browse (NEW)
+│   │   ├── LightCodes.jsx — deep symbolic teachings, category panels, and multi-tab modal redesign
 │   │   ├── PaymentSuccess.jsx — payment verification
 │   │   ├── Dashboard.jsx — streak widget
 ```
