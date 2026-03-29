@@ -6,20 +6,19 @@ import { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
 import MeditationVisualizer from "./MeditationVisualizer";
 import BreathingVisualizer from "./BreathingVisualizer";
 
-// Web Audio sound generation functions
 const createBrownNoise = (audioContext) => {
   const bufferSize = 2 * audioContext.sampleRate;
   const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
   const output = noiseBuffer.getChannelData(0);
-  
-  let lastOut = 0.0;
-  for (let i = 0; i < bufferSize; i++) {
+
+  let lastOut = 0;
+  for (let i = 0; i < bufferSize; i += 1) {
     const white = Math.random() * 2 - 1;
     output[i] = (lastOut + (0.02 * white)) / 1.02;
     lastOut = output[i];
     output[i] *= 3.5;
   }
-  
+
   const whiteNoise = audioContext.createBufferSource();
   whiteNoise.buffer = noiseBuffer;
   whiteNoise.loop = true;
@@ -36,9 +35,17 @@ const createFilteredNoise = (audioContext, frequency, Q = 1) => {
   return { source: noise, output: filter };
 };
 
-const PracticeTimer = ({ 
-  segments = [], 
-  totalDuration = 300, 
+const formatTime = (seconds) => {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.max(0, seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, "0")}`;
+};
+
+const tempoPlaybackRates = { slow: 0.9, normal: 1.0, fast: 1.12 };
+
+const PracticeTimer = ({
+  segments = [],
+  totalDuration = 300,
   onComplete,
   backgroundAudio = "silence",
   practiceType = "general",
@@ -50,8 +57,6 @@ const PracticeTimer = ({
   autoNarrate = false,
 }) => {
   const [isRunning, setIsRunning] = useState(false);
-  const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
-  const [segmentTime, setSegmentTime] = useState(0);
   const [totalElapsed, setTotalElapsed] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [showVisuals, setShowVisuals] = useState(true);
@@ -60,25 +65,21 @@ const PracticeTimer = ({
   const [tempo, setTempo] = useState("normal");
   const [ttsLoading, setTtsLoading] = useState(false);
   const [ttsAudioUrl, setTtsAudioUrl] = useState(null);
-  const tempoPlaybackRates = { slow: 0.9, normal: 1.0, fast: 1.12 };
+
   const intervalRef = useRef(null);
+  const sessionEndRef = useRef(null);
+  const completionRef = useRef(false);
+  const autoStartedRef = useRef(false);
+  const lastSegmentIndexRef = useRef(0);
   const audioContextRef = useRef(null);
   const gainNodeRef = useRef(null);
   const sourcesRef = useRef([]);
   const drumIntervalRef = useRef(null);
   const bowlIntervalRef = useRef(null);
-  const autoStartedRef = useRef(false);
   const ttsAudioRef = useRef(null);
   const ttsAbortRef = useRef(null);
-  const timerStartedAtRef = useRef(null);
-  const lastSegmentIndexRef = useRef(0);
-  const hasCompletedRef = useRef(false);
+  const ttsUrlRef = useRef(null);
 
-  // Calculate total duration from segments or use provided
-  // Support both duration_seconds and duration field names
-  // Use totalDuration prop as authoritative source when provided, so the
-  // display always matches the duration shown on practice cards exactly.
-  // Fall back to segment sum only when no totalDuration is given.
   const normalizedSegments = useMemo(() => {
     if (!segments.length) return [];
 
@@ -102,12 +103,9 @@ const PracticeTimer = ({
     return prepared;
   }, [segments, totalDuration]);
 
-  const segmentsTotal = normalizedSegments.length > 0
-    ? normalizedSegments.reduce((sum, segment) => sum + segment.duration_seconds, 0)
-    : 0;
-  const calculatedTotal = (totalDuration && totalDuration > 0)
-    ? totalDuration
-    : (segmentsTotal || 300);
+  const segmentsTotal = normalizedSegments.reduce((sum, segment) => sum + segment.duration_seconds, 0);
+  const calculatedTotal = totalDuration && totalDuration > 0 ? totalDuration : (segmentsTotal || 300);
+
   const segmentEndTimes = useMemo(() => {
     let runningTotal = 0;
     return normalizedSegments.map((segment) => {
@@ -116,82 +114,22 @@ const PracticeTimer = ({
     });
   }, [normalizedSegments]);
 
+  const currentSegmentIndex = useMemo(() => {
+    if (!normalizedSegments.length) return 0;
+    const foundIndex = segmentEndTimes.findIndex((segmentEnd) => totalElapsed < segmentEnd);
+    return foundIndex === -1 ? normalizedSegments.length - 1 : foundIndex;
+  }, [normalizedSegments, segmentEndTimes, totalElapsed]);
+
   const currentSegment = normalizedSegments[currentSegmentIndex];
+  const currentSegmentStart = currentSegmentIndex > 0 ? segmentEndTimes[currentSegmentIndex - 1] : 0;
+  const currentSegmentDuration = currentSegment?.duration_seconds || 60;
+  const segmentTime = currentSegment
+    ? Math.min(currentSegmentDuration, Math.max(0, totalElapsed - currentSegmentStart))
+    : 0;
+  const remainingTime = Math.max(0, calculatedTotal - totalElapsed);
+  const overallProgress = (totalElapsed / calculatedTotal) * 100;
+  const segmentProgress = currentSegment ? (segmentTime / currentSegmentDuration) * 100 : 0;
 
-  // Auto-start timer and audio if requested
-  useEffect(() => {
-    if (autoStartAudio && !autoStartedRef.current && (normalizedSegments.length > 0 || calculatedTotal > 0)) {
-      autoStartedRef.current = true;
-      timerStartedAtRef.current = Date.now();
-      hasCompletedRef.current = false;
-      setIsRunning(true);
-    }
-  }, [autoStartAudio, normalizedSegments.length, calculatedTotal]);
-
-  // TTS auto-narration: generate and play audio for each step
-  useEffect(() => {
-    if (!autoNarrate) return;
-    const segment = normalizedSegments[currentSegmentIndex];
-    if (!segment) return;
-    const text = (segment.description || segment.name || '').trim();
-    if (!text) return;
-
-    // Cancel any in-flight TTS request
-    if (ttsAbortRef.current) ttsAbortRef.current.abort();
-    const controller = new AbortController();
-    ttsAbortRef.current = controller;
-
-    // Revoke previous URL
-    if (ttsAudioUrl) {
-      URL.revokeObjectURL(ttsAudioUrl);
-      setTtsAudioUrl(null);
-    }
-
-    setTtsLoading(true);
-    const backendUrl = process.env.REACT_APP_BACKEND_URL;
-    fetch(`${backendUrl}/api/tts/generate-base64`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text.slice(0, 3800), voice: 'nova', speed: 0.85 }),
-      signal: controller.signal,
-    })
-      .then(r => r.json())
-      .then(data => {
-        if (!data.audio_base64) return;
-        const binary = atob(data.audio_base64);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-        const blob = new Blob([bytes], { type: 'audio/mpeg' });
-        setTtsAudioUrl(URL.createObjectURL(blob));
-      })
-      .catch(() => {})
-      .finally(() => setTtsLoading(false));
-  }, [currentSegmentIndex, autoNarrate, normalizedSegments]); // eslint-disable-line
-
-  // Play TTS audio automatically when URL is ready
-  useEffect(() => {
-    if (ttsAudioUrl && ttsAudioRef.current) {
-      ttsAudioRef.current.src = ttsAudioUrl;
-      ttsAudioRef.current.playbackRate = tempoPlaybackRates[tempo] || 1;
-      ttsAudioRef.current.play().catch(() => {});
-    }
-  }, [ttsAudioUrl, tempo]);
-
-  useEffect(() => {
-    if (ttsAudioRef.current) {
-      ttsAudioRef.current.playbackRate = tempoPlaybackRates[tempo] || 1;
-    }
-  }, [tempo]);
-
-  // Cleanup TTS on unmount
-  useEffect(() => {
-    return () => {
-      if (ttsAbortRef.current) ttsAbortRef.current.abort();
-      if (ttsAudioUrl) URL.revokeObjectURL(ttsAudioUrl);
-    };
-  }, []); // eslint-disable-line
-
-  // Map practice type to visualization
   const getVisualization = () => {
     switch (practiceType) {
       case "heart": return "mandala";
@@ -203,7 +141,6 @@ const PracticeTimer = ({
     }
   };
 
-  // Cleanup audio resources
   const cleanupAudio = useCallback(() => {
     if (drumIntervalRef.current) {
       clearInterval(drumIntervalRef.current);
@@ -213,12 +150,12 @@ const PracticeTimer = ({
       clearInterval(bowlIntervalRef.current);
       bowlIntervalRef.current = null;
     }
-    sourcesRef.current.forEach(source => {
-      try { source.stop?.(); } catch (e) {}
-      try { source.disconnect?.(); } catch (e) {}
+    sourcesRef.current.forEach((source) => {
+      try { source.stop?.(); } catch (_) {}
+      try { source.disconnect?.(); } catch (_) {}
     });
     sourcesRef.current = [];
-    if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
+    if (audioContextRef.current && audioContextRef.current.state !== "closed") {
       audioContextRef.current.close();
     }
     audioContextRef.current = null;
@@ -226,31 +163,28 @@ const PracticeTimer = ({
     setAudioPlaying(false);
   }, []);
 
-  // Start audio
   const startAudio = useCallback(() => {
     if (backgroundAudio === "silence" || isMuted) return;
-    
+
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
-      // Reuse warmed AudioContext from user tap if available (mobile requirement)
       let ctx;
-      if (window.__warmAudioCtx && window.__warmAudioCtx.state !== 'closed') {
+      if (window.__warmAudioCtx && window.__warmAudioCtx.state !== "closed") {
         ctx = window.__warmAudioCtx;
         window.__warmAudioCtx = null;
-        if (ctx.state === 'suspended') ctx.resume();
+        if (ctx.state === "suspended") ctx.resume();
       } else {
         ctx = new AudioContext();
-        if (ctx.state === 'suspended') ctx.resume();
+        if (ctx.state === "suspended") ctx.resume();
       }
+
       audioContextRef.current = ctx;
-      
       const gainNode = ctx.createGain();
       gainNode.gain.value = Math.max(audioVolume * 1.5, 0.6);
       gainNode.connect(ctx.destination);
       gainNodeRef.current = gainNode;
-      
+
       const sound = AMBIENT_SOUNDS[backgroundAudio];
-      
       switch (sound?.type) {
         case "rain":
         case "water": {
@@ -286,12 +220,10 @@ const PracticeTimer = ({
           break;
         }
         case "drums": {
-          // Shamanic drumming - deep resonant frame drum at ~4.5 Hz journey tempo
           const playDrum = () => {
-            if (!audioContextRef.current || audioContextRef.current.state === 'closed') return;
+            if (!audioContextRef.current || audioContextRef.current.state === "closed") return;
             const now = ctx.currentTime;
-            
-            // Low drum body - deep resonant hit
+
             const drumBody = ctx.createOscillator();
             const drumGain = ctx.createGain();
             drumBody.type = "sine";
@@ -303,12 +235,11 @@ const PracticeTimer = ({
             drumGain.connect(gainNode);
             drumBody.start(now);
             drumBody.stop(now + 0.35);
-            
-            // Drum skin slap - noise burst for realism
+
             const bufferSize = ctx.sampleRate * 0.05;
             const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
             const data = noiseBuffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
+            for (let i = 0; i < bufferSize; i += 1) {
               data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
             }
             const noise = ctx.createBufferSource();
@@ -324,8 +255,7 @@ const PracticeTimer = ({
             noiseFilter.connect(noiseGain);
             noiseGain.connect(gainNode);
             noise.start(now);
-            
-            // Low sub-resonance for depth
+
             const sub = ctx.createOscillator();
             const subGain = ctx.createGain();
             sub.type = "sine";
@@ -338,7 +268,6 @@ const PracticeTimer = ({
             sub.stop(now + 0.25);
           };
           playDrum();
-          // 222ms = ~4.5 Hz, traditional shamanic journey drumming tempo
           drumIntervalRef.current = setInterval(playDrum, 222);
           break;
         }
@@ -346,14 +275,14 @@ const PracticeTimer = ({
         case "singing_bowls": {
           const playBowl = () => {
             if (!audioContextRef.current) return;
-            [528, 1056, 1584].forEach((freq, i) => {
+            [528, 1056, 1584].forEach((freq, index) => {
               const osc = ctx.createOscillator();
               const oscGain = ctx.createGain();
               osc.type = "sine";
               osc.frequency.value = freq;
-              const vol = 0.15 / (i + 1);
+              const volume = 0.15 / (index + 1);
               oscGain.gain.setValueAtTime(0, ctx.currentTime);
-              oscGain.gain.linearRampToValueAtTime(vol, ctx.currentTime + 0.5);
+              oscGain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 0.5);
               oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 8);
               osc.connect(oscGain);
               oscGain.connect(gainNode);
@@ -365,42 +294,24 @@ const PracticeTimer = ({
           bowlIntervalRef.current = setInterval(playBowl, 10000);
           break;
         }
+        default:
+          break;
       }
+
       setAudioPlaying(true);
-    } catch (e) {
-      console.warn('Web Audio API error:', e);
+    } catch (error) {
+      console.warn("Web Audio API error:", error);
     }
-  }, [backgroundAudio, audioVolume, isMuted]);
+  }, [audioVolume, backgroundAudio, isMuted]);
 
-  // Handle audio when timer state changes
-  useEffect(() => {
-    if (isRunning && !isMuted && backgroundAudio !== "silence") {
-      if (!audioPlaying) {
-        startAudio();
-      }
-    } else {
-      cleanupAudio();
-    }
-  }, [isRunning, isMuted, backgroundAudio, startAudio, cleanupAudio, audioPlaying]);
-
-  // Update volume
-  useEffect(() => {
-    if (gainNodeRef.current) {
-      gainNodeRef.current.gain.value = isMuted ? 0 : audioVolume * 0.5;
-    }
-  }, [audioVolume, isMuted]);
-
-  // Play a gentle bell sound for segment transitions
   const playTransitionBell = useCallback(() => {
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       const ctx = new AudioContext();
-      
-      // Bell tone - gentle chime
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = "sine";
-      osc.frequency.setValueAtTime(880, ctx.currentTime); // A5
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(440, ctx.currentTime + 0.8);
       gain.gain.setValueAtTime(0.3, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
@@ -408,165 +319,205 @@ const PracticeTimer = ({
       gain.connect(ctx.destination);
       osc.start();
       osc.stop(ctx.currentTime + 1.5);
-      
-      // Secondary harmonic for richer bell sound
+
       const osc2 = ctx.createOscillator();
       const gain2 = ctx.createGain();
       osc2.type = "sine";
-      osc2.frequency.setValueAtTime(1320, ctx.currentTime); // E6
+      osc2.frequency.setValueAtTime(1320, ctx.currentTime);
       gain2.gain.setValueAtTime(0.15, ctx.currentTime);
       gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.0);
       osc2.connect(gain2);
       gain2.connect(ctx.destination);
       osc2.start();
       osc2.stop(ctx.currentTime + 1.0);
-      
       setTimeout(() => ctx.close(), 2000);
-    } catch (e) {
-      // Audio not available - silent fallback
-    }
+    } catch (_) {}
   }, []);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      cleanupAudio();
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      timerStartedAtRef.current = null;
-      hasCompletedRef.current = false;
-    };
-  }, [cleanupAudio]);
-
   const syncElapsedFromClock = useCallback(() => {
-    if (!timerStartedAtRef.current) return;
+    if (!sessionEndRef.current) return;
 
-    const nextElapsed = Math.min(
-      calculatedTotal,
-      Math.floor((Date.now() - timerStartedAtRef.current) / 1000)
-    );
-
-    setTotalElapsed((prev) => (prev === nextElapsed ? prev : nextElapsed));
+    const nextRemaining = Math.max(0, Math.ceil((sessionEndRef.current - Date.now()) / 1000));
+    const nextElapsed = Math.min(calculatedTotal, calculatedTotal - nextRemaining);
 
     if (normalizedSegments.length > 0) {
       const foundIndex = segmentEndTimes.findIndex((segmentEnd) => nextElapsed < segmentEnd);
       const nextSegmentIndex = foundIndex === -1 ? normalizedSegments.length - 1 : foundIndex;
-      const segmentStart = nextSegmentIndex > 0 ? segmentEndTimes[nextSegmentIndex - 1] : 0;
-      const nextSegmentTime = Math.min(
-        normalizedSegments[nextSegmentIndex].duration_seconds,
-        Math.max(0, nextElapsed - segmentStart)
-      );
-
       if (nextSegmentIndex !== lastSegmentIndexRef.current && nextElapsed < calculatedTotal) {
         if (!isMuted) playTransitionBell();
         lastSegmentIndexRef.current = nextSegmentIndex;
       }
-
-      setCurrentSegmentIndex((prev) => (prev === nextSegmentIndex ? prev : nextSegmentIndex));
-      setSegmentTime((prev) => (prev === nextSegmentTime ? prev : nextSegmentTime));
     }
 
-    if (nextElapsed >= calculatedTotal && !hasCompletedRef.current) {
-      hasCompletedRef.current = true;
+    setTotalElapsed(nextElapsed);
+
+    if (nextElapsed >= calculatedTotal && !completionRef.current) {
+      completionRef.current = true;
+      sessionEndRef.current = null;
       if (intervalRef.current) clearInterval(intervalRef.current);
-      timerStartedAtRef.current = null;
       setIsRunning(false);
       cleanupAudio();
+      ttsAudioRef.current?.pause();
       if (!isMuted) playTransitionBell();
       onComplete?.();
     }
-  }, [
-    calculatedTotal,
-    cleanupAudio,
-    isMuted,
-    normalizedSegments,
-    onComplete,
-    playTransitionBell,
-    segmentEndTimes,
-  ]);
+  }, [calculatedTotal, cleanupAudio, isMuted, normalizedSegments.length, onComplete, playTransitionBell, segmentEndTimes]);
 
   useEffect(() => {
     if (isRunning) {
       intervalRef.current = setInterval(syncElapsedFromClock, 250);
       syncElapsedFromClock();
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, [isRunning, syncElapsedFromClock]);
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  useEffect(() => {
+    if (autoStartAudio && !autoStartedRef.current && calculatedTotal > 0) {
+      autoStartedRef.current = true;
+      completionRef.current = false;
+      lastSegmentIndexRef.current = currentSegmentIndex;
+      sessionEndRef.current = Date.now() + ((calculatedTotal - totalElapsed) * 1000);
+      setIsRunning(true);
+    }
+  }, [autoStartAudio, calculatedTotal, currentSegmentIndex, totalElapsed]);
+
+  useEffect(() => {
+    if (isRunning && !isMuted && backgroundAudio !== "silence") {
+      if (!audioPlaying) startAudio();
+    } else {
+      cleanupAudio();
+    }
+  }, [audioPlaying, backgroundAudio, cleanupAudio, isMuted, isRunning, startAudio]);
+
+  useEffect(() => {
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = isMuted ? 0 : audioVolume * 0.5;
+    }
+  }, [audioVolume, isMuted]);
+
+  useEffect(() => {
+    if (!autoNarrate || !currentSegment) return;
+
+    const text = (currentSegment.description || currentSegment.name || "").trim();
+    if (!text) return;
+
+    if (ttsAbortRef.current) ttsAbortRef.current.abort();
+    const controller = new AbortController();
+    ttsAbortRef.current = controller;
+
+    if (ttsUrlRef.current) {
+      URL.revokeObjectURL(ttsUrlRef.current);
+      ttsUrlRef.current = null;
+      setTtsAudioUrl(null);
+    }
+
+    setTtsLoading(true);
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    fetch(`${backendUrl}/api/tts/generate-base64`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: text.slice(0, 3800), voice: "nova", speed: 0.85 }),
+      signal: controller.signal,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (!data.audio_base64) return;
+        const binary = atob(data.audio_base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+        const blob = new Blob([bytes], { type: "audio/mpeg" });
+        const url = URL.createObjectURL(blob);
+        ttsUrlRef.current = url;
+        setTtsAudioUrl(url);
+      })
+      .catch(() => {})
+      .finally(() => setTtsLoading(false));
+  }, [autoNarrate, currentSegment]);
+
+  useEffect(() => {
+    if (ttsAudioUrl && ttsAudioRef.current) {
+      ttsAudioRef.current.src = ttsAudioUrl;
+      ttsAudioRef.current.playbackRate = tempoPlaybackRates[tempo] || 1;
+      if (isRunning) ttsAudioRef.current.play().catch(() => {});
+    }
+  }, [isRunning, tempo, ttsAudioUrl]);
+
+  useEffect(() => {
+    if (ttsAudioRef.current) {
+      ttsAudioRef.current.playbackRate = tempoPlaybackRates[tempo] || 1;
+      ttsAudioRef.current.muted = isMuted;
+    }
+  }, [isMuted, tempo]);
+
+  useEffect(() => () => {
+    if (ttsAbortRef.current) ttsAbortRef.current.abort();
+    if (ttsUrlRef.current) URL.revokeObjectURL(ttsUrlRef.current);
+    cleanupAudio();
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  }, [cleanupAudio]);
+
+  const warmAudioContext = () => {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!window.__warmAudioCtx || window.__warmAudioCtx.state === "closed") {
+        const ctx = new AC();
+        const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.1, ctx.sampleRate);
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
+        source.connect(ctx.destination);
+        source.start(0);
+        window.__warmAudioCtx = ctx;
+      }
+    } catch (_) {}
   };
 
   const handlePlayPause = () => {
-    if (!isRunning) {
-      // Play silent buffer to unlock audio on mobile
-      try { 
-        const AC = window.AudioContext || window.webkitAudioContext;
-        if (!window.__warmAudioCtx || window.__warmAudioCtx.state === 'closed') {
-          const c = new AC();
-          const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate);
-          const s = c.createBufferSource();
-          s.buffer = b;
-          s.connect(c.destination);
-          s.start(0);
-          window.__warmAudioCtx = c;
-        }
-      } catch(e) {}
-
-      timerStartedAtRef.current = Date.now() - (totalElapsed * 1000);
-      lastSegmentIndexRef.current = currentSegmentIndex;
-      hasCompletedRef.current = false;
-      setIsRunning(true);
+    if (isRunning) {
+      syncElapsedFromClock();
+      sessionEndRef.current = null;
+      setIsRunning(false);
+      ttsAudioRef.current?.pause();
+      cleanupAudio();
       return;
     }
 
-    syncElapsedFromClock();
-    timerStartedAtRef.current = null;
-    setIsRunning(false);
+    warmAudioContext();
+    completionRef.current = false;
+    lastSegmentIndexRef.current = currentSegmentIndex;
+    sessionEndRef.current = Date.now() + ((calculatedTotal - totalElapsed) * 1000);
+    setIsRunning(true);
+    if (ttsAudioRef.current?.paused) ttsAudioRef.current.play().catch(() => {});
   };
 
   const handleReset = () => {
-    setIsRunning(false);
-    setCurrentSegmentIndex(0);
-    setSegmentTime(0);
-    setTotalElapsed(0);
-    timerStartedAtRef.current = null;
+    sessionEndRef.current = null;
+    completionRef.current = false;
     lastSegmentIndexRef.current = 0;
-    hasCompletedRef.current = false;
+    setIsRunning(false);
+    setTotalElapsed(0);
+    ttsAudioRef.current?.pause();
     cleanupAudio();
   };
 
   const handleSkipSegment = () => {
-    if (currentSegmentIndex < normalizedSegments.length - 1) {
-      const nextElapsed = segmentEndTimes[currentSegmentIndex];
-      if (timerStartedAtRef.current) {
-        timerStartedAtRef.current = Date.now() - (nextElapsed * 1000);
-      }
-      setTotalElapsed(nextElapsed);
-      setCurrentSegmentIndex(prev => prev + 1);
-      setSegmentTime(0);
-      lastSegmentIndexRef.current = currentSegmentIndex + 1;
-      if (!isMuted) playTransitionBell();
-    }
-  };
+    if (currentSegmentIndex >= normalizedSegments.length - 1) return;
 
-  const overallProgress = (totalElapsed / calculatedTotal) * 100;
-  const currentSegmentDuration = currentSegment 
-    ? currentSegment.duration_seconds
-    : 60;
-  const segmentProgress = currentSegment 
-    ? (segmentTime / currentSegmentDuration) * 100 
-    : 0;
+    const nextElapsed = segmentEndTimes[currentSegmentIndex];
+    setTotalElapsed(nextElapsed);
+    lastSegmentIndexRef.current = currentSegmentIndex + 1;
+    if (isRunning) {
+      sessionEndRef.current = Date.now() + ((calculatedTotal - nextElapsed) * 1000);
+    }
+    if (!isMuted) playTransitionBell();
+  };
 
   return (
     <div className="relative bg-card/50 border border-white/10 rounded-2xl p-6 space-y-6 overflow-hidden">
-      {/* Background Visualization */}
       {showVisuals && (
         <MeditationVisualizer
           type={getVisualization()}
@@ -577,7 +528,6 @@ const PracticeTimer = ({
         />
       )}
 
-      {/* Breathing Visualizer (if pattern provided) */}
       {breathingPattern && isRunning && (
         <div className="flex justify-center py-4">
           <BreathingVisualizer
@@ -589,30 +539,24 @@ const PracticeTimer = ({
         </div>
       )}
 
-      {/* Main Timer Display */}
       <div className="relative z-10 text-center">
-        <div className="text-6xl font-light tracking-wider mb-2">
-          {formatTime(calculatedTotal - totalElapsed)}
+        <div className="text-6xl font-light tracking-wider mb-2" data-testid="practice-timer-remaining">
+          {formatTime(remainingTime)}
         </div>
         <p className="text-sm text-muted-foreground">remaining</p>
       </div>
 
-      {/* Current Segment */}
       {currentSegment && (
-        <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-4">
+        <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-4" data-testid="practice-timer-current-segment">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm text-muted-foreground">
               Step {currentSegmentIndex + 1} of {normalizedSegments.length}
             </span>
-            <span className="text-sm text-primary">
-              {formatTime(currentSegmentDuration - segmentTime)}
-            </span>
+            <span className="text-sm text-primary">{formatTime(currentSegmentDuration - segmentTime)}</span>
           </div>
           <h4 className="font-medium text-lg mb-2">{currentSegment.name}</h4>
           {currentSegment.description && (
-            <p className="text-sm text-muted-foreground leading-relaxed mb-2">
-              {currentSegment.description}
-            </p>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-2">{currentSegment.description}</p>
           )}
           <Progress value={segmentProgress} className="h-2" />
           {currentSegment.has_audio && !isMuted && audioPlaying && (
@@ -638,7 +582,6 @@ const PracticeTimer = ({
         </div>
       )}
 
-      {/* Overall Progress */}
       <div className="relative z-10">
         <div className="flex justify-between text-xs text-muted-foreground mb-2">
           <span>Overall Progress</span>
@@ -647,22 +590,15 @@ const PracticeTimer = ({
         <Progress value={overallProgress} className="h-1" />
       </div>
 
-      {/* Controls */}
       <div className="relative z-10 flex items-center justify-center gap-3">
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={handleReset}
-          className="rounded-full border-white/10"
-          data-testid="timer-reset"
-        >
+        <Button variant="outline" size="icon" onClick={handleReset} className="rounded-full border-white/10" data-testid="timer-reset">
           <RotateCcw className="w-4 h-4" />
         </Button>
 
         <Button
           size="lg"
           onClick={handlePlayPause}
-          className={`rounded-full w-16 h-16 ${isRunning ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary'}`}
+          className={`rounded-full w-16 h-16 ${isRunning ? "bg-orange-500 hover:bg-orange-600" : "bg-primary"}`}
           data-testid="timer-play-pause"
         >
           {isRunning ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
@@ -681,80 +617,48 @@ const PracticeTimer = ({
           </Button>
         )}
 
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setIsMuted(!isMuted)}
-          className="rounded-full border-white/10"
-          data-testid="timer-mute"
-        >
+        <Button variant="outline" size="icon" onClick={() => setIsMuted((current) => !current)} className="rounded-full border-white/10" data-testid="timer-mute">
           {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
         </Button>
 
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setShowVisuals(!showVisuals)}
-          className="rounded-full border-white/10"
-          data-testid="timer-visuals"
-        >
+        <Button variant="outline" size="icon" onClick={() => setShowVisuals((current) => !current)} className="rounded-full border-white/10" data-testid="timer-visuals">
           {showVisuals ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
         </Button>
       </div>
 
-      {/* Speed/Tempo Control for Health Reasons */}
       {allowSpeedControl && (
         <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-3">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">
-              Practice Speed
-            </span>
+            <span className="text-xs uppercase tracking-wider text-muted-foreground">Practice Speed</span>
             <span className="text-xs text-primary">
               {tempo === "slow" ? "Slow (Relaxed)" : tempo === "fast" ? "Fast (Energizing)" : "Normal"}
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => !isRunning && setTempo("slow")}
-              disabled={isRunning}
-              className={`flex-1 text-xs ${tempo === "slow" ? "bg-blue-500/20 text-blue-400" : ""}`}
-            >
+            <Button variant="ghost" size="sm" onClick={() => !isRunning && setTempo("slow")} disabled={isRunning} className={`flex-1 text-xs ${tempo === "slow" ? "bg-blue-500/20 text-blue-400" : ""}`}>
               Slow
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => !isRunning && setTempo("normal")}
-              disabled={isRunning}
-              className={`flex-1 text-xs ${tempo === "normal" ? "bg-primary/20 text-primary" : ""}`}
-            >
+            <Button variant="ghost" size="sm" onClick={() => !isRunning && setTempo("normal")} disabled={isRunning} className={`flex-1 text-xs ${tempo === "normal" ? "bg-primary/20 text-primary" : ""}`}>
               Normal
             </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => !isRunning && setTempo("fast")}
-              disabled={isRunning}
-              className={`flex-1 text-xs ${tempo === "fast" ? "bg-orange-500/20 text-orange-400" : ""}`}
-            >
+            <Button variant="ghost" size="sm" onClick={() => !isRunning && setTempo("fast")} disabled={isRunning} className={`flex-1 text-xs ${tempo === "fast" ? "bg-orange-500/20 text-orange-400" : ""}`}>
               Fast
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-2 text-center">
-            {tempo === "slow" ? "Softer narration pace while the full timer still stays exact" : 
-             tempo === "fast" ? "Brighter narration pace while the full timer still stays exact" : 
-             "Balanced narration pace with precise timing"}
+            {tempo === "slow"
+              ? "Softer narration pace while the full timer still stays exact"
+              : tempo === "fast"
+                ? "Brighter narration pace while the full timer still stays exact"
+                : "Balanced narration pace with precise timing"}
           </p>
         </div>
       )}
 
-      {/* Background Audio Indicator */}
       {backgroundAudio && backgroundAudio !== "silence" && (
         <div className="relative z-10">
           <p className="text-xs text-center text-muted-foreground mb-2">
-            Background: {AMBIENT_SOUNDS[backgroundAudio]?.name || backgroundAudio.replace(/_/g, ' ')}
+            Background: {AMBIENT_SOUNDS[backgroundAudio]?.name || backgroundAudio.replace(/_/g, " ")}
           </p>
           {!isMuted && isRunning && (
             <div className="flex items-center justify-center gap-2">
@@ -764,15 +668,16 @@ const PracticeTimer = ({
                 min="0"
                 max="100"
                 value={audioVolume * 100}
-                onChange={(e) => setAudioVolume(e.target.value / 100)}
+                onChange={(event) => setAudioVolume(event.target.value / 100)}
                 className="w-24 h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
+                data-testid="timer-volume-slider"
               />
             </div>
           )}
         </div>
       )}
-      {/* Hidden TTS audio element */}
-      {autoNarrate && <audio ref={ttsAudioRef} style={{ display: 'none' }} />}
+
+      {autoNarrate && <audio ref={ttsAudioRef} style={{ display: "none" }} />}
     </div>
   );
 };
