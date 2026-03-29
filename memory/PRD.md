@@ -127,10 +127,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 
 ## Remaining Backlog
 - **P2**: Subscription-based access to all premium content (all-in-one membership)
-- **P3**: Add more crystal profiles (now at 20, can expand to 30+)
+- **P3**: Add more crystal profiles (at 27, can expand to 30+)
 - **P3**: Production deployment optimization
 
-## Completed Work (March 2026 - Session 2)
+## Completed Work (March 2026 - Session 3)
+- [x] **27 Deep Crystal Profiles** (up from 20): Added Aquamarine, Kunzite, Iolite, Amazonite, Howlite, Kyanite, Angelite — each with full meditation, ritual, chakra, cleansing, and combination guidance
+- [x] **"Share to Sacred Circle" button** on Chakra Cleansing and Courses modals:
+  - Reusable `ShareToCircle.jsx` component with reflection textarea, author name, element selector
+  - Posts to `/api/community/posts` with element, author_name, and tags now correctly persisted
+  - Success toast + modal auto-close on submit
+
+
 - [x] **Community Threading & Replies (P2)**:
   - Post cards show live like count + reply count badges
   - Post detail modal: Like button, toggle replies section, full replies list, reply form (name + content + submit)
