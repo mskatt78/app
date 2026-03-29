@@ -130,7 +130,23 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **P3**: Add more crystal profiles (at 27, can expand to 30+)
 - **P3**: Production deployment optimization
 
-## Completed Work (March 2026 - Session 3)
+## Completed Work (March 2026 - Session 4 — Guided Practice Player)
+- [x] **Full-Screen Guided Practice Player** (all practices):
+  - `GuidedPracticeOverlay.jsx` — full-screen immersive player (z-200, covers TopNav)
+  - Session timer (e.g. "14:56 remaining") + step counter ("Step 1 of 8") + per-step countdown
+  - Step instruction text, step progress bar, overall progress bar
+  - 5 controls: Restart, Play/Pause (large amber), Skip, Mute, Eye toggle
+  - Practice Speed: Slow / Normal / Fast
+  - Exit Practice button at bottom + X close at top
+  - Element-themed gradient background (earth=emerald, water=blue, fire=orange, air=sky, spirit=violet)
+- [x] **Auto TTS Narration per step** — each step auto-generates OpenAI TTS (nova voice) and plays automatically. Shows "Narrating step..." indicator. Added `autoNarrate` prop to `PracticeTimer.jsx`.
+- [x] **Integrated into all practice pages:**
+  - Chakra Cleansing: "Guided Practice" button in modal → parses `cleansing_guide` into steps
+  - Water Practices: "Start Guided Practice" button → uses `steps` array directly  
+  - Elemental Practices: sparkle button for full-screen mode (in addition to inline PracticeTimer)
+  - Courses — Daily Practice tab: "Start Guided Practice" button (for purchased courses)
+
+
 - [x] **27 Deep Crystal Profiles** (up from 20): Added Aquamarine, Kunzite, Iolite, Amazonite, Howlite, Kyanite, Angelite — each with full meditation, ritual, chakra, cleansing, and combination guidance
 - [x] **"Share to Sacred Circle" button** on Chakra Cleansing and Courses modals:
   - Reusable `ShareToCircle.jsx` component with reflection textarea, author name, element selector

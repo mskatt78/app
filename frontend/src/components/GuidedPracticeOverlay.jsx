@@ -27,11 +27,11 @@ export function parseStepsFromPractice(input) {
 }
 
 const ELEMENT_BG = {
-  fire:   "from-orange-950/90 to-black",
-  water:  "from-blue-950/90 to-black",
-  earth:  "from-emerald-950/90 to-black",
-  air:    "from-sky-950/90 to-black",
-  spirit: "from-violet-950/90 to-black",
+  fire:   "from-orange-950 to-black",
+  water:  "from-blue-950 to-black",
+  earth:  "from-emerald-950 to-black",
+  air:    "from-sky-950 to-black",
+  spirit: "from-violet-950 to-black",
 };
 
 const ELEMENT_AUDIO = {
@@ -78,7 +78,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={`fixed inset-0 z-[70] bg-gradient-to-b ${bgGradient} flex flex-col overflow-hidden`}
+      className={`fixed inset-0 z-[200] bg-gradient-to-b ${bgGradient} flex flex-col overflow-hidden`}
       data-testid="guided-practice-overlay"
     >
       {/* Header */}
