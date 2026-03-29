@@ -12,6 +12,10 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Single Admin Link UX**: `/admin` is now the main owner entry point, surfaced from the app with admin shortcuts in the navigation and dashboard for allowlisted owner emails. `/admin/login` remains as a hidden fallback.
+- **Polished Demo Experience**: Added a public `/demo` route with a presentation-ready showcase of live spaces, courses, crystals, and Light Codes so the app can be shown without making viewers sign in first.
+- **App-Store Readiness Polish**: Added a public `/support` center, improved install prompt copy and iOS handling, updated manifest shortcuts and mobile viewport behavior, and added signed-in account tools for privacy export and account deletion requests from Settings.
+- **Account Compliance Tools**: Added backend endpoints for `/api/account/export`, `/api/account/deletion-status`, and `/api/account/delete-request`, plus admin visibility for `account_deletion_requests`.
 - **Direct Admin Access for App Owner**: `/admin` now supports session-based admin access for allowlisted emails, including `mskatt78@gmail.com`, while still preserving the fallback password login at `/admin/login`.
 - **Whole-App Admin Dashboard Upgrade**: Expanded admin quick access for Courses, 13 Moon Paths, Yoga Library, Live Client Spaces, and media management. Added admin collection support for `live_sessions` and `astrology_months`.
 - **Live Client Spaces Added**: Added public live session APIs and frontend experiences for live yoga, workshops, and Q&A rooms with embedded video support via admin-provided embed URLs, RSVP capture, chat, and Q&A threads.
@@ -142,9 +146,9 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
-- **P1**: Create a dedicated public demo flow / demo mode so the app can be shown to prospective clients without touching live data
-- **P1**: Run a focused app-store readiness pass across mobile installability, legal/policy surfaces, account management, and compliance polish
 - **P1**: Review Mantras, Mudras, and any other lighter sections for the same deep-content parity now achieved in Crystals, Elements, and Light Codes
+- **P1**: Build a richer guided demo account layer if you want a seeded faux dashboard / onboarding journey beyond the current public polished demo route
+- **P1**: Final app-store submission assets pass (review copy, screenshots, icon pack review, store listing text)
 - **P2**: Subscription-based access to all premium content (all-in-one membership)
 - **P2**: Add a Sacred Journey Progress tracker to the dashboard if approved
 - **P2**: Add a dedicated real-time video provider if true two-way in-app conferencing is desired beyond embed URLs + in-app RSVP/chat/Q&A
@@ -243,18 +247,23 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 │   │   ├── content.py — public content + live session APIs + Light Codes
 │   │   ├── oracle.py — Oracle + Archangel Oracle endpoints
 │   │   ├── payments.py — Stripe/PayPal checkout, course access
+│   │   ├── user.py — settings, rituals, favorites, account export, and deletion requests
 │   ├── server.py — startup seeding
 ├── frontend/
 │   ├── src/components/
 │   │   ├── admin/adminSession.js — owner /admin session bootstrap helper
+│   │   ├── AppFooter.jsx — support/privacy/legal links
 │   │   ├── GuidedPracticeOverlay.jsx — full-screen continuous guided sessions with exact countdown
+│   │   ├── InstallPrompt.jsx — improved install messaging and iOS guidance
 │   │   ├── PracticeTimer.jsx — shared guided timer for inline practice pages with exact duration handling
 │   ├── src/pages/
 │   │   ├── AdminDashboard.jsx — owner dashboard for whole-app content access
 │   │   ├── AdminSection.jsx — collection editor for courses, moon paths, live sessions, yoga, and more
 │   │   ├── Courses.jsx — 7-tab modal, Stripe purchase flow
+│   │   ├── DemoExperience.jsx — polished public demo showcase
 │   │   ├── LiveSessions.jsx — public live room listing with filters and stats
 │   │   ├── LiveSessionRoom.jsx — embedded live room, RSVP, chat, and Q&A
+│   │   ├── SupportCenter.jsx — install, privacy, support, and account action guidance
 │   │   ├── VideosLibrary.jsx — 13 category filters, dark theme
 │   │   ├── ArchangelOracle.jsx — Archangel readings & browse (NEW)
 │   │   ├── LightCodes.jsx — deep symbolic teachings, category panels, and multi-tab modal redesign
