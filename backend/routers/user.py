@@ -47,6 +47,11 @@ class ReminderSettings(BaseModel):
     message: Optional[str] = None
 
 
+class AccountDeletionRequest(BaseModel):
+    reason: Optional[str] = None
+    feedback: Optional[str] = None
+
+
 class JournalEntryCreate(BaseModel):
     title: Optional[str] = None
     content: str
@@ -456,6 +461,79 @@ async def get_reminder_settings(user: User = Depends(get_current_user)):
             "message": "Time for your sacred practice"
         }
     return settings
+
+
+# ============ ACCOUNT MANAGEMENT ============
+
+@router.get("/account/export")
+async def export_account_data(user: User = Depends(get_current_user)):
+    """Export a user's core account data for privacy/compliance needs."""
+    db = get_db()
+
+    reminders = await db.reminder_settings.find_one({"user_id": user.user_id}, {"_id": 0})
+    favorites = await db.favorites.find({"user_id": user.user_id}, {"_id": 0}).to_list(500)
+    practice_history = await db.practice_history.find({"user_id": user.user_id}, {"_id": 0}).sort("completed_at", -1).to_list(1000)
+    rituals = await db.rituals.find({"user_id": user.user_id}, {"_id": 0}).sort("updated_at", -1).to_list(200)
+    journal_entries = await db.journal.find({"user_id": user.user_id}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    custom_mantras = await db.user_mantras.find({"user_id": user.user_id}, {"_id": 0}).sort("created_at", -1).to_list(200)
+    purchases = await db.user_purchases.find({"user_id": user.user_id}, {"_id": 0}).sort("purchased_at", -1).to_list(200)
+    deletion_status = await db.account_deletion_requests.find_one({"user_id": user.user_id}, {"_id": 0}, sort=[("requested_at", -1)])
+
+    return {
+        "exported_at": datetime.now(timezone.utc).isoformat(),
+        "profile": {
+            "user_id": user.user_id,
+            "name": user.name,
+            "email": user.email,
+            "picture": user.picture,
+            "provider": getattr(user, "provider", "email"),
+            "created_at": user.created_at,
+        },
+        "reminder_settings": reminders,
+        "favorites": favorites,
+        "practice_history": practice_history,
+        "rituals": rituals,
+        "journal_entries": journal_entries,
+        "custom_mantras": custom_mantras,
+        "purchases": purchases,
+        "latest_account_deletion_request": deletion_status,
+    }
+
+
+@router.get("/account/deletion-status")
+async def get_account_deletion_status(user: User = Depends(get_current_user)):
+    """Get the latest account deletion request status for the signed-in user."""
+    db = get_db()
+    latest = await db.account_deletion_requests.find_one({"user_id": user.user_id}, {"_id": 0}, sort=[("requested_at", -1)])
+    return latest or {
+        "status": "none",
+        "message": "No account deletion request has been submitted.",
+    }
+
+
+@router.post("/account/delete-request")
+async def request_account_deletion(data: AccountDeletionRequest, user: User = Depends(get_current_user)):
+    """Create or refresh an account deletion request for compliance flows."""
+    db = get_db()
+    now = datetime.now(timezone.utc).isoformat()
+    request_record = {
+        "request_id": f"delete_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "email": user.email,
+        "name": user.name,
+        "reason": data.reason,
+        "feedback": data.feedback,
+        "status": "requested",
+        "requested_at": now,
+        "updated_at": now,
+    }
+    await db.account_deletion_requests.insert_one(request_record.copy())
+    return {
+        "success": True,
+        "status": "requested",
+        "requested_at": now,
+        "message": "Your deletion request has been received. We will review and process it from the admin dashboard.",
+    }
 
 
 @router.put("/settings/reminders")

@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Shield, Heart, ExternalLink } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { useNavigate } from "react-router-dom";
+import { Shield, Heart } from "lucide-react";
+import { Dialog, DialogContent } from "./ui/dialog";
 import { FullDisclaimer } from "./HealthDisclaimer";
 
 const AppFooter = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
+  const navigate = useNavigate();
   
   return (
     <>
@@ -20,21 +22,24 @@ const AppFooter = () => {
               <button 
                 onClick={() => setShowDisclaimer(true)}
                 className="hover:text-primary transition-colors flex items-center gap-1"
+                data-testid="footer-health-disclaimer-btn"
               >
                 <Shield className="w-3 h-3" />
                 Health Disclaimer
               </button>
               <span className="text-white/20">|</span>
               <button 
-                onClick={() => setShowDisclaimer(true)}
+                onClick={() => navigate('/support')}
                 className="hover:text-primary transition-colors"
+                data-testid="footer-support-btn"
               >
-                Terms of Use
+                Support Center
               </button>
               <span className="text-white/20">|</span>
               <button 
-                onClick={() => setShowDisclaimer(true)}
+                onClick={() => navigate('/privacy')}
                 className="hover:text-primary transition-colors"
+                data-testid="footer-privacy-btn"
               >
                 Privacy Policy
               </button>

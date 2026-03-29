@@ -113,7 +113,7 @@ ALLOWED_COLLECTIONS = {
     "creative_processes", "elemental_practices", "yoga_poses",
     "community_posts", "sacred_geometry", "energy_healing",
     "free_form_movement", "chakra_cleansing", "live_sessions",
-    "astrology_months",
+    "astrology_months", "account_deletion_requests",
 }
 
 COLLECTION_META = [
@@ -122,6 +122,7 @@ COLLECTION_META = [
     {"id": "retreats", "name": "Retreats", "icon": "🏔️"},
     {"id": "videos", "name": "Practice Videos", "icon": "🎬"},
     {"id": "live_sessions", "name": "Live Client Spaces", "icon": "📡"},
+    {"id": "account_deletion_requests", "name": "Account Deletion Requests", "icon": "🗑️"},
     {"id": "community_posts", "name": "Community Posts", "icon": "💬"},
     {"id": "meditations", "name": "Meditations", "icon": "🌙"},
     {"id": "breathwork_sessions", "name": "Breathwork Sessions", "icon": "🌬️"},

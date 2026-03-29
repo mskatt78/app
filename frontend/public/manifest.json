@@ -82,7 +82,7 @@
       "purpose": "any"
     }
   ],
-  "start_url": "/",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "id": "/",
   "display": "standalone",
@@ -130,6 +130,20 @@
       "short_name": "Retreats",
       "description": "Healing retreats and experiences",
       "url": "/retreats",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Polished Demo",
+      "short_name": "Demo",
+      "description": "Open the presentation-ready temple demo",
+      "url": "/demo",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Live Spaces",
+      "short_name": "Live",
+      "description": "Open live yoga, workshops, and Q&A rooms",
+      "url": "/live",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {

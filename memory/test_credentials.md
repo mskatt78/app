@@ -10,6 +10,11 @@
 - **Live Session Manager:** `/admin/manage/live_sessions`
 - **13 Moon Paths Manager:** `/admin/manage/astrology_months`
 
+## Temporary QA User (March 2026)
+- **Email:** `demoqa_740fefc1@example.com`
+- **Password:** `DemoPass123!`
+- **Use for:** `/settings` account export + deletion request verification, general authenticated smoke testing
+
 ## User Testing
 - No login required for most features (public access)
 - Google OAuth available for account creation

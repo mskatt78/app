@@ -13,6 +13,7 @@ const AUDIO_COLLECTION = "audio_files";
 
 const FIELD_CONFIG = {
   courses: ["title", "category", "level", "description", "instructor", "duration", "lessons", "format", "price", "status", "highlights", "image_url", "video_url", "registration_link"],
+  account_deletion_requests: ["email", "name", "status", "reason", "feedback", "requested_at", "updated_at"],
   astrology_months: ["name", "month_number", "season", "description", "teaching", "practice", "image_url"],
   community_posts: ["author_name", "title", "type", "content", "element", "tags", "status", "image_url"],
   live_sessions: ["title", "session_type", "status", "description", "facilitator", "scheduled_at", "duration_minutes", "price", "capacity", "embed_url", "join_url", "stream_url", "what_to_bring", "client_instructions", "image_url"],
@@ -344,6 +345,7 @@ export default function AdminSection() {
   const api = process.env.REACT_APP_BACKEND_URL;
   const isAudio = collection === AUDIO_COLLECTION;
   const meta = {
+    account_deletion_requests: { name: "Account Deletion Requests", icon: "🗑️" },
     astrology_months: { name: "13 Moon Paths", icon: "🌕" },
     oracle_cards: { name: "Oracle Cards", icon: "🔮" },
     tarot_cards: { name: "Tarot Cards", icon: "🃏" },

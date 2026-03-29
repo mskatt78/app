@@ -254,6 +254,8 @@ const VideoOfDayWidget = ({ api, onViewAll }) => {
   );
 };
 
+const adminEmails = new Set(["mskatt78@gmail.com", "skywatersacredembodiments@gmail.com"]);
+
 // ─── Today's Sacred Practice Widget ────────────────────────────────────────
 const SacredPracticeWidget = ({ api, navigate }) => {
   const [practice, setPractice] = useState(null);
@@ -332,6 +334,7 @@ const SacredPracticeWidget = ({ api, navigate }) => {
 const Dashboard = ({ user, api }) => {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isAdminUser = user?.email && adminEmails.has(user.email.toLowerCase());
   const [dailyData, setDailyData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -457,6 +460,16 @@ const Dashboard = ({ user, api }) => {
         </nav>
 
         <div className="p-4 border-t border-white/5 space-y-2">
+          {isAdminUser && (
+            <button
+              data-testid="dashboard-admin-btn"
+              onClick={() => navigate("/admin")}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-primary hover:bg-primary/10 transition-all duration-300"
+            >
+              <Shield className="w-5 h-5" strokeWidth={1.5} />
+              <span className="text-sm">Temple Admin</span>
+            </button>
+          )}
           <button
             data-testid="settings-btn"
             onClick={() => navigate("/settings")}
@@ -553,6 +566,11 @@ const Dashboard = ({ user, api }) => {
             </div>
             
             <div className="flex items-center gap-4">
+              {isAdminUser && (
+                <Button variant="outline" onClick={() => navigate('/admin')} className="hidden sm:flex" data-testid="dashboard-header-admin-btn">
+                  <Shield className="w-4 h-4 mr-2" /> Admin
+                </Button>
+              )}
               <Avatar className="w-10 h-10 border-2 border-primary/20">
                 <AvatarImage src={user?.picture} alt={user?.name} />
                 <AvatarFallback className="bg-primary/10 text-primary">
@@ -723,7 +741,11 @@ const Dashboard = ({ user, api }) => {
               <div>
                 <h3 className="text-2xl font-serif mb-6">Sacred <span className="italic text-primary">Practices</span></h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {navItems.slice(0, 8).map((item, index) => (
+                  {[
+                    ...navItems.slice(0, 7),
+                    { path: '/demo', label: 'Demo', icon: Sparkles, element: 'spirit' },
+                    ...(isAdminUser ? [{ path: '/admin', label: 'Admin', icon: Shield, element: 'spirit' }] : []),
+                  ].map((item, index) => (
                     <motion.button
                       key={item.path}
                       initial={{ opacity: 0, scale: 0.9 }}

@@ -64,6 +64,7 @@ export default function LiveSessionRoom({ api }) {
     try {
       const response = await api.post(`/live-sessions/${sessionId}/messages`, {
         ...messageForm,
+        email: messageForm.email.trim() || null,
         kind,
       });
       setMessages((current) => [...current, response.data]);

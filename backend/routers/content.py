@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import Literal, Optional
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, field_validator
 
 from .dependencies import get_db
 
@@ -20,6 +20,13 @@ class LiveSessionMessageRequest(BaseModel):
     email: Optional[EmailStr] = None
     message: str
     kind: Literal["chat", "question"] = "chat"
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def empty_email_to_none(cls, value):
+        if value in ("", None):
+            return None
+        return value
 
 
 async def _build_live_session(session: dict, db) -> dict:

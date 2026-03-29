@@ -32,6 +32,8 @@ const TopNav = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
+  const adminEmails = new Set(["mskatt78@gmail.com", "skywatersacredembodiments@gmail.com"]);
+  const isAdminUser = user?.email && adminEmails.has(user.email.toLowerCase());
 
   const menuItems = [
     { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400" },
@@ -100,14 +102,34 @@ const TopNav = ({ user }) => {
           {/* User/Sign In */}
           <div className="flex items-center gap-2">
             {user && <NotificationBell />}
+            <button
+              onClick={() => navigate("/demo")}
+              className="hidden sm:flex items-center gap-2 text-primary/80 hover:text-primary transition-colors"
+              data-testid="topnav-demo-btn"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span className="text-sm">Demo</span>
+            </button>
             {user ? (
-              <button
-                onClick={() => navigate("/dashboard")}
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <User className="w-5 h-5" />
-                <span className="text-sm hidden sm:inline">Dashboard</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {isAdminUser && (
+                  <button
+                    onClick={() => navigate("/admin")}
+                    className="hidden sm:flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                    data-testid="topnav-admin-btn"
+                  >
+                    <Shield className="w-4 h-4" />
+                    <span className="text-sm">Admin</span>
+                  </button>
+                )}
+                <button
+                  onClick={() => navigate("/dashboard")}
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <User className="w-5 h-5" />
+                  <span className="text-sm hidden sm:inline">Dashboard</span>
+                </button>
+              </div>
             ) : (
               <button
                 onClick={() => navigate("/")}
@@ -197,7 +219,7 @@ const TopNav = ({ user }) => {
 
                 {/* Quick Actions */}
                 <div className="mt-8 pt-6 border-t border-white/10 max-w-4xl mx-auto">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <button
                       onClick={() => {
                         navigate("/");
@@ -231,6 +253,17 @@ const TopNav = ({ user }) => {
                         <span className="font-medium">Sign In</span>
                       </button>
                     )}
+                    <button
+                      onClick={() => {
+                        navigate("/demo");
+                        setShowMenu(false);
+                      }}
+                      className="flex items-center justify-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+                      data-testid="topnav-demo-menu-btn"
+                    >
+                      <Sparkles className="w-5 h-5 text-primary" />
+                      <span className="font-medium">Demo</span>
+                    </button>
                   </div>
                 </div>
               </div>

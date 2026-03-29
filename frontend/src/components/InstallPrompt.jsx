@@ -7,6 +7,7 @@ const InstallPrompt = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [isIos, setIsIos] = useState(false);
 
   useEffect(() => {
     // Check if already installed
@@ -14,6 +15,11 @@ const InstallPrompt = () => {
       setIsInstalled(true);
       return;
     }
+
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const iosDevice = /iphone|ipad|ipod/.test(userAgent);
+    const standalone = window.navigator.standalone;
+    setIsIos(Boolean(iosDevice && !standalone));
 
     // Check if dismissed recently
     const dismissed = localStorage.getItem('installPromptDismissed');
@@ -32,6 +38,10 @@ const InstallPrompt = () => {
       // Show prompt after 5 seconds on the site
       setTimeout(() => setShowPrompt(true), 5000);
     };
+
+    if (iosDevice && !standalone) {
+      setTimeout(() => setShowPrompt(true), 5000);
+    }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
 
@@ -74,7 +84,8 @@ const InstallPrompt = () => {
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 100 }}
-        className="fixed bottom-4 left-4 right-4 z-[200] max-w-md mx-auto"
+        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-4 right-4 z-[200] max-w-md mx-auto"
+        data-testid="install-prompt"
       >
         <div className="bg-card/95 backdrop-blur-xl border border-primary/30 rounded-2xl p-4 shadow-2xl">
           <div className="flex items-start gap-4">
@@ -84,22 +95,38 @@ const InstallPrompt = () => {
             <div className="flex-1">
               <h3 className="font-semibold text-foreground mb-1">Install App</h3>
               <p className="text-sm text-muted-foreground mb-3">
-                Add Shamanic Elements Soul Temple 2.0 to your home screen for quick access Add Shamanic Elements to your home screen for quick access & offline use. offline use.
+                {isIos && !deferredPrompt
+                  ? "On iPhone or iPad, tap Share and then Add to Home Screen for the full app feel."
+                  : "Add Shamanic Elements Soul Temple 2.0 to your home screen for quick access, immersive launches, and an app-like mobile experience."}
               </p>
               <div className="flex gap-2">
-                <Button
-                  onClick={handleInstall}
-                  size="sm"
-                  className="bg-primary hover:bg-primary/90"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  Install
-                </Button>
+                {deferredPrompt ? (
+                  <Button
+                    onClick={handleInstall}
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90"
+                    data-testid="install-prompt-install-btn"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Install
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => window.location.href = '/support'}
+                    size="sm"
+                    className="bg-primary hover:bg-primary/90"
+                    data-testid="install-prompt-guide-btn"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Open install guide
+                  </Button>
+                )}
                 <Button
                   onClick={handleDismiss}
                   variant="ghost"
                   size="sm"
                   className="text-muted-foreground"
+                  data-testid="install-prompt-dismiss-btn"
                 >
                   Maybe Later
                 </Button>
@@ -108,6 +135,7 @@ const InstallPrompt = () => {
             <button
               onClick={handleDismiss}
               className="p-1 hover:bg-white/10 rounded-full transition-colors"
+              data-testid="install-prompt-close-btn"
             >
               <X className="w-4 h-4 text-muted-foreground" />
             </button>

@@ -43,6 +43,8 @@ const ElementalPractices = lazy(() => import("./pages/ElementalPractices"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const LiveSessions = lazy(() => import("./pages/LiveSessions"));
 const LiveSessionRoom = lazy(() => import("./pages/LiveSessionRoom"));
+const DemoExperience = lazy(() => import("./pages/DemoExperience"));
+const SupportCenter = lazy(() => import("./pages/SupportCenter"));
 const Retreats = lazy(() => import("./pages/Retreats"));
 const Courses = lazy(() => import("./pages/Courses"));
 const Community = lazy(() => import("./pages/Community"));
@@ -345,6 +347,15 @@ function AppRouter() {
       />
       {/* PUBLIC ROUTES - Can view without login */}
       <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/support" element={<SupportCenter />} />
+      <Route
+        path="/demo"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <DemoExperience user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
       <Route path="/links" element={<LinksPage />} />
       <Route
         path="/yoga"
