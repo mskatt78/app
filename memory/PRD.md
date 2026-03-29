@@ -12,6 +12,8 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Breathwork Soundscape Selector**: Breathwork now includes an in-player sound choice instead of only the healing pitch/tone. Added simple V1 nature sound options — Ocean Waves, Forest Rain, Forest & Birds, Gentle Wind, Crackling Fire, plus Silence — while keeping the original healing frequency tone available.
+- **Element-Based Breathwork Defaults**: Active breathwork sessions now auto-suggest a soundscape by element (Earth=nature, Water=ocean, Fire=fire, Air=wind, Spirit=rain) and keep mute/play/pause/reset behavior working cleanly.
 - **Single Admin Link UX**: `/admin` is now the main owner entry point, surfaced from the app with admin shortcuts in the navigation and dashboard for allowlisted owner emails. `/admin/login` remains as a hidden fallback.
 - **Polished Demo Experience**: Added a public `/demo` route with a presentation-ready showcase of live spaces, courses, crystals, and Light Codes so the app can be shown without making viewers sign in first.
 - **App-Store Readiness Polish**: Added a public `/support` center, improved install prompt copy and iOS handling, updated manifest shortcuts and mobile viewport behavior, and added signed-in account tools for privacy export and account deletion requests from Settings.
@@ -253,12 +255,14 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 │   ├── src/components/
 │   │   ├── admin/adminSession.js — owner /admin session bootstrap helper
 │   │   ├── AppFooter.jsx — support/privacy/legal links
+│   │   ├── AmbientSoundPlayer.jsx — shared sound catalog used by Breathwork soundscape selector
 │   │   ├── GuidedPracticeOverlay.jsx — full-screen continuous guided sessions with exact countdown
 │   │   ├── InstallPrompt.jsx — improved install messaging and iOS guidance
 │   │   ├── PracticeTimer.jsx — shared guided timer for inline practice pages with exact duration handling
 │   ├── src/pages/
 │   │   ├── AdminDashboard.jsx — owner dashboard for whole-app content access
 │   │   ├── AdminSection.jsx — collection editor for courses, moon paths, live sessions, yoga, and more
+│   │   ├── Breathwork.jsx — now includes in-player nature sound selection
 │   │   ├── Courses.jsx — 7-tab modal, Stripe purchase flow
 │   │   ├── DemoExperience.jsx — polished public demo showcase
 │   │   ├── LiveSessions.jsx — public live room listing with filters and stats
