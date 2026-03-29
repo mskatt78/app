@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Clock, Heart, Sun, ChevronDown, ChevronUp, Loader2, Zap, Moon, Flame, Volume2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Clock, Heart, Sun, ChevronDown, ChevronUp, Loader2, Zap, Moon, Flame, Volume2, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
 import AddToJournal from "../components/AddToJournal";
+import ShareToCircle from "../components/ShareToCircle";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -33,6 +34,7 @@ export default function ChakraCleansing() {
   const [filterChakra, setFilterChakra] = useState("all");
   const [expandedSection, setExpandedSection] = useState("guide");
   const [audioState, setAudioState] = useState({ loading: false, audioUrl: null, sectionKey: null });
+  const [showShare, setShowShare] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -340,11 +342,31 @@ export default function ChakraCleansing() {
                     buttonVariant="outline"
                     buttonSize="default"
                   />
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowShare(true)}
+                    className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10 flex items-center gap-1.5"
+                    data-testid="chakra-share-btn"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />Share
+                  </Button>
                   <Button variant="ghost" onClick={() => { setSelectedPractice(null); setAudioState({ loading: false, audioUrl: null, sectionKey: null }); }} className="flex-1">Close</Button>
                 </div>
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Share to Sacred Circle Modal */}
+      <AnimatePresence>
+        {showShare && selectedPractice && (
+          <ShareToCircle
+            practiceTitle={`${selectedPractice.chakra || selectedPractice.name} Chakra Cleansing`}
+            practiceType="journey"
+            defaultElement={selectedPractice.element || "Spirit"}
+            onClose={() => setShowShare(false)}
+          />
         )}
       </AnimatePresence>
     </div>

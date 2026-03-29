@@ -1768,6 +1768,424 @@ CRYSTALS_DEEP = [
         "warnings": ["Can be too stimulating if you are already in a high-energy or manic state", "Balance its fire with Moonstone or Lepidolite"],
         "affirmation": "I am the sun's emissary. I radiate warmth, joy, and generous light to all I meet.",
         "image_url": "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800"
+    },
+    {
+        "id": "aquamarine",
+        "name": "Aquamarine",
+        "title": "The Stone of the Sea & Courage",
+        "element": "Water",
+        "chakra": "Throat, Heart",
+        "zodiac": ["Pisces", "Gemini", "Aries"],
+        "planet": "Neptune, Moon",
+        "vibration_number": 1,
+        "hardness": 7.5,
+        "crystal_system": "Hexagonal",
+        "color": "Blue-Green, Sea Blue",
+        "rarity": "Common",
+        "origin": ["Brazil", "Pakistan", "Russia", "Madagascar"],
+        "description": "Aquamarine — named for the Latin 'aqua marina,' meaning water of the sea — is a crystal of courage, clarity, and calming flow. Ancient mariners carried it as a talisman for safe passage across stormy waters. Today it offers the same protection: safe passage through emotional storms, courageous truth-telling, and the deep calm of vast, open waters. It is one of the finest crystals for throat healing and fearless authentic expression.",
+        "healing_properties": {
+            "physical": ["Soothes sore throats, thyroid, and jaw tension", "Calms overreactive immune conditions", "Eases hay fever and allergies", "Supports the liver, kidneys, and lymphatic system", "Calms nausea and motion sickness (travel protection)"],
+            "emotional": ["Dissolves fear of speaking one's truth", "Soothes anger and overwhelm", "Encourages emotional responsibility", "Releases old grief held in the throat", "Inspires courage during communication conflicts"],
+            "spiritual": ["Opens the throat chakra to clear, compassionate expression", "Connects to oceanic goddess energies", "Supports deep meditation and inner stillness", "Clears the aura of emotional debris", "Assists prophetic dreams and sea-spirit communication"]
+        },
+        "cleansing_methods": [
+            {"method": "Full Moon Ocean Water", "description": "If near the ocean, charge in moonlit seawater (rinse with fresh water after)", "duration": "1 hour"},
+            {"method": "Running Water", "description": "Hold under cool running water — Aquamarine loves water cleansing", "duration": "3 minutes"},
+            {"method": "Moonlight", "description": "Leave under full moon especially during water signs (Cancer, Pisces, Scorpio)", "duration": "Overnight"},
+            {"method": "Sound", "description": "Bowls tuned to 741Hz (expression frequency)", "duration": "10 minutes"},
+            {"method": "Selenite", "description": "Place on selenite plate for regular maintenance", "duration": "6 hours"}
+        ],
+        "programming_ritual": {
+            "preparation": "Sit near water if possible. Take 5 deep breaths imagining ocean waves with each exhale.",
+            "steps": ["Hold Aquamarine at your throat with both hands", "Feel the ocean energy radiating from the stone", "Speak your intention aloud over water: 'I speak my truth with courage and grace'", "Visualize sea-blue light flooding your throat, dissolving all tightness", "Seal by breathing out fully — like a wave releasing onto shore"],
+            "duration_minutes": 8
+        },
+        "meditation_guidance": {
+            "preparation": "Sit or lie near water (or visualize the ocean). Hold Aquamarine at your throat.",
+            "technique": "Aquamarine Ocean Stillness Meditation",
+            "steps": ["Breathe as if you are the ocean — deep, slow, expansive", "Feel the crystal cooling and opening your throat", "Visualize standing at the edge of a vast, calm sea", "Let your thoughts be like waves — arising and receding without grasping", "Ask: 'What truth do I need to speak into being?'", "Hear the answer in the silence between waves", "Breathe it into the crystal", "Return carrying the courage of the sea"],
+            "duration_minutes": 20,
+            "timer_segments": [{"name": "Ocean Breathing", "duration": 180}, {"name": "Stillness", "duration": 420}, {"name": "Truth Inquiry", "duration": 540}, {"name": "Integration", "duration": 120}],
+            "affirmation": "I speak my truth clearly and with courage. My voice flows like water — powerful and free."
+        },
+        "chakra_work": {
+            "primary": "Throat",
+            "works_with": "Heart — bridges emotional truth to vocal expression, same as Chrysocolla",
+            "placement": "Place at throat for voice healing; hold during difficult conversations",
+            "technique": "Hold Aquamarine to your throat. Breathe deeply and imagine every exhale releasing words that have been trapped there. Feel the stone drawing them out gently with the tide."
+        },
+        "rituals": [
+            {"name": "Courage Communication Ritual", "purpose": "Before a difficult conversation", "timing": "Before speaking truth", "steps": ["Hold Aquamarine to throat for 5 minutes", "State: 'I speak with clarity, courage, and compassion'", "Place in left pocket during the conversation", "Afterward: hold the stone and thank it for its support"]},
+            {"name": "Ocean Grief Release", "purpose": "Release emotional grief", "timing": "Full Moon in Water Sign", "steps": ["Sit near water or a bowl of water", "Hold Aquamarine and breathe deeply", "Allow tears if they come — Aquamarine loves tears", "Whisper what you are releasing into the water", "Pour the water into the earth afterward"]}
+        ],
+        "combinations": [
+            {"crystal": "Chrysocolla", "purpose": "Sacred voice and feminine expression"},
+            {"crystal": "Moonstone", "purpose": "Deep water feminine wisdom"},
+            {"crystal": "Lapis Lazuli", "purpose": "Royal truth and divine communication"},
+            {"crystal": "Rose Quartz", "purpose": "Expressing love with courage"}
+        ],
+        "warnings": ["May bring up tears and suppressed emotions — this is healing, not weakness", "Avoid prolonged direct sunlight — may fade color"],
+        "affirmation": "I am the ocean — vast, powerful, calm, and free. My truth flows fearlessly.",
+        "image_url": "https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=800"
+    },
+    {
+        "id": "kunzite",
+        "name": "Kunzite",
+        "title": "The Stone of Unconditional Love",
+        "element": "Water",
+        "chakra": "Heart, Crown",
+        "zodiac": ["Taurus", "Leo", "Scorpio"],
+        "planet": "Venus, Pluto",
+        "vibration_number": 7,
+        "hardness": 6.5,
+        "crystal_system": "Monoclinic",
+        "color": "Pale Pink to Lavender-Pink",
+        "rarity": "Uncommon",
+        "origin": ["USA", "Brazil", "Afghanistan", "Madagascar"],
+        "description": "Kunzite is one of the highest vibrational love stones on Earth — a crystal of divine, unconditional love that radiates a soft, luminous pink-violet light. It was discovered in 1902 and named after the famous gemologist George Frederick Kunz. Kunzite holds the vibration of angelic love — love untouched by ego, expectation, or condition. It is the crystal of the loving mother, the healed heart, and the open soul.",
+        "healing_properties": {
+            "physical": ["Strengthens the heart muscle and circulatory system", "Calms anxiety-driven heart palpitations", "Supports the shoulders and upper back (burden-holding areas)", "Eases tension headaches caused by emotional stress", "Supports the nervous system in deep healing"],
+            "emotional": ["Opens the heart that has been closed by grief or betrayal", "Dissolves walls built to protect from being hurt again", "Encourages vulnerability as strength, not weakness", "Restores the ability to give and receive love freely", "Brings deep peace to the emotional body"],
+            "spiritual": ["Activates the high heart chakra (thymus) between heart and throat", "Connects to angelic love frequencies", "Facilitates communication with spirit guides and deceased loved ones", "Raises vibration to states of pure joy and gratitude", "Assists in past-life healing of love wounds"]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Full moon under a clear sky — Kunzite is deeply lunar", "duration": "Overnight"},
+            {"method": "Rose Quartz", "description": "Place with rose quartz cluster to hold its vibration high", "duration": "8 hours"},
+            {"method": "Sound", "description": "432Hz music or crystal singing bowls (love frequency)", "duration": "10 minutes"},
+            {"method": "Smudging", "description": "Rose petal incense, sandalwood, or rose essential oil diffusion", "duration": "5 minutes"},
+            {"method": "Visualization", "description": "Hold and visualize divine pink light flooding the crystal", "duration": "5 minutes"}
+        ],
+        "programming_ritual": {
+            "preparation": "Sit quietly with both hands over your heart. Take 5 slow breaths into the heart space. Feel any armor you carry and consciously set it aside.",
+            "steps": ["Hold Kunzite at your heart with both hands", "Feel its softness — it responds to gentleness", "Whisper: 'I open my heart. I am worthy of love. I am love.'", "Visualize pale pink light radiating from the crystal into every chamber of your heart", "Feel the walls softening", "Sit in stillness for 5 minutes, receiving", "Wear near the heart — it needs proximity to work its full magic"],
+            "duration_minutes": 12
+        },
+        "meditation_guidance": {
+            "preparation": "Lie down. Place Kunzite on your heart chakra. Play soft 432Hz music. Dim the lights.",
+            "technique": "Kunzite Heart Opening Meditation",
+            "steps": ["Close your eyes and place both hands over the crystal", "Breathe into your heart — feel it expanding with each breath", "Visualize your heart as a rose bud, slowly opening", "As it opens, feel love pouring in — from the universe, from all beings who love you", "Rest in this love without condition or reason", "When complete, feel love radiating outward from your heart to all beings", "Seal: 'May all beings be loved. May I be loved. May I love fully.'"],
+            "duration_minutes": 25,
+            "timer_segments": [{"name": "Heart Breathing", "duration": 180}, {"name": "Rose Opening", "duration": 360}, {"name": "Receiving Love", "duration": 600}, {"name": "Radiating Love", "duration": 360}],
+            "affirmation": "My heart is open, healed, and radiant. I am worthy of infinite love."
+        },
+        "chakra_work": {
+            "primary": "Heart, High Heart (Thymus)",
+            "works_with": "Crown — bridges earthly love with divine/cosmic love",
+            "placement": "Place on heart for healing; between heart and throat for the high heart chakra",
+            "technique": "Lie with Kunzite on your heart. Place clear quartz above your crown. Breathe light through the line from crystal to crown, allowing yourself to be filled with divine love from above and human love from within."
+        },
+        "rituals": [
+            {"name": "Heart Armor Release Ritual", "purpose": "Dismantle emotional protection walls", "timing": "New Moon", "steps": ["Hold Kunzite to heart", "Name each protection wall you have built", "Say: 'I release you. I am safe to love.'", "Breathe deeply into any constriction", "Continue until the heart feels softer", "Sleep with Kunzite under pillow to continue healing overnight"]},
+            {"name": "Love Letter Ritual", "purpose": "Restore self-love", "timing": "Any time, especially after heartbreak", "steps": ["Hold Kunzite while writing yourself a love letter", "Write what you wish a perfect lover would say to you", "Hold the crystal to your heart and read it aloud to yourself", "Receive it as truth — because it is"]}
+        ],
+        "combinations": [
+            {"crystal": "Rose Quartz", "purpose": "Amplified heart healing and self-love"},
+            {"crystal": "Rhodonite", "purpose": "Forgiveness and deep heart wound healing"},
+            {"crystal": "Amethyst", "purpose": "Spiritual love and divine connection"},
+            {"crystal": "Lepidolite", "purpose": "Calm, safe, open heart"}
+        ],
+        "warnings": ["Very sensitive to sunlight — fades quickly, keep away from direct sun", "May bring up grief before opening to love — trust the process"],
+        "affirmation": "My heart is my greatest strength. I love and am loved beyond measure.",
+        "image_url": "https://images.unsplash.com/photo-1567748157439-651aca2ff064?w=800"
+    },
+    {
+        "id": "iolite",
+        "name": "Iolite",
+        "title": "The Viking Compass Stone",
+        "element": "Air, Water",
+        "chakra": "Third Eye, Crown",
+        "zodiac": ["Sagittarius", "Libra", "Taurus"],
+        "planet": "Saturn",
+        "vibration_number": 5,
+        "hardness": 7,
+        "crystal_system": "Orthorhombic",
+        "color": "Deep Blue-Violet to Indigo",
+        "rarity": "Uncommon",
+        "origin": ["India", "Sri Lanka", "Brazil", "Norway"],
+        "description": "Iolite — known as the Viking Compass Stone — was used by Norse navigators to find the sun on overcast days, using its unique polarizing properties to locate direction. Its spiritual gift is identical: it helps you find your true north when life is cloudy, helping you navigate your inner landscape with precision and wisdom. Iolite is a stone of vision, inner knowing, and sobriety — it clears addiction, confusion, and all that clouds the spiritual sight.",
+        "healing_properties": {
+            "physical": ["Supports the liver, gallbladder, and detoxification pathways", "Aids in recovery from addiction and substance dependency", "Reduces fatty deposits and supports healthy cholesterol", "Strengthens the eyes and improves night vision", "Supports the vestibular system and sense of balance"],
+            "emotional": ["Dissolves confusion, indecision, and directionlessness", "Releases codependency and the need for external validation", "Encourages self-sufficiency and inner authority", "Assists in taking responsibility for one's own choices", "Builds the courage to follow one's own inner compass"],
+            "spiritual": ["One of the most powerful third eye activators in the mineral kingdom", "Facilitates deep shamanic journeys and vision quests", "Opens multi-dimensional perception and past-life vision", "Enhances astral travel and lucid dreaming", "Connects to the higher self's navigation wisdom"]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Leave under full moon especially in air signs (Gemini, Libra, Aquarius)", "duration": "Overnight"},
+            {"method": "Sound", "description": "963Hz Solfeggio frequency (crown/higher consciousness)", "duration": "10 minutes"},
+            {"method": "Smudging", "description": "Frankincense or mugwort smoke for vision/clarity cleansing", "duration": "3-5 minutes"},
+            {"method": "Breath", "description": "Hold and breathe three long, slow breaths of pure intention over the stone", "duration": "5 minutes"},
+            {"method": "Earth", "description": "Bury in dry earth at the start of a new moon cycle", "duration": "3 days"}
+        ],
+        "programming_ritual": {
+            "preparation": "Sit in darkness or dimly lit space. Place Iolite on your third eye. Take 10 slow breaths.",
+            "steps": ["Hold Iolite at your third eye", "Ask: 'Show me my true direction. Help me see clearly.'", "Visualize deep indigo light expanding from the crystal into your third eye", "Feel your inner compass awakening — your own knowing beyond confusion", "Stay in stillness for 10 minutes, observing any images, impulses, or clarity", "Record what arose immediately after"],
+            "duration_minutes": 15
+        },
+        "meditation_guidance": {
+            "preparation": "Sit in darkness or with minimal light. Hold or place Iolite at third eye. Good before sleep for prophetic dreams.",
+            "technique": "Iolite Vision Quest Meditation",
+            "steps": ["Close eyes. Breathe deeply until mind quiets.", "Place Iolite at third eye and feel its weight", "Visualize a deep indigo night sky — stars forming constellations", "Ask your higher self to show you your true north", "Watch without grasping — let images arise naturally", "If you see a direction, a symbol, or a knowing — hold it", "Return slowly and write everything immediately"],
+            "duration_minutes": 20,
+            "timer_segments": [{"name": "Mind Quieting", "duration": 240}, {"name": "Vision Opening", "duration": 480}, {"name": "Receiving", "duration": 420}, {"name": "Recording", "duration": 120}],
+            "affirmation": "My inner compass is true. I see clearly and navigate my path with wisdom and certainty."
+        },
+        "chakra_work": {
+            "primary": "Third Eye",
+            "works_with": "Crown — bridges cosmic vision with earthly direction",
+            "placement": "Place on third eye for vision work; hold during decision-making meditation",
+            "technique": "Lie down and place Iolite on your third eye. With each breath, feel the indigo light expanding your inner sight. Ask one clear question and then enter deep silence. The answer will arrive as a knowing rather than a thought."
+        },
+        "rituals": [
+            {"name": "Vision Quest Ritual", "purpose": "Seek direction and clarity on a life question", "timing": "New Moon or Dark Moon", "steps": ["Light a dark blue or black candle", "Hold Iolite and state your question clearly", "Meditate for 20 minutes in silence", "Record all images, symbols, and knowings", "Sleep with Iolite under pillow for 3 consecutive nights", "Patterns that repeat are your answer"]},
+            {"name": "Sobriety Support Ritual", "purpose": "Support clarity and freedom from addictive patterns", "timing": "Daily, especially during cravings", "steps": ["Hold Iolite to third eye", "Breathe deeply for 5 minutes", "Ask: 'What am I truly seeking?' (beneath the craving)", "The true need (love, peace, connection) will surface", "Address the true need directly"]}
+        ],
+        "combinations": [
+            {"crystal": "Amethyst", "purpose": "Deep spiritual vision and sobriety"},
+            {"crystal": "Labradorite", "purpose": "Expanded multi-dimensional perception"},
+            {"crystal": "Clear Quartz", "purpose": "Amplified clarity and vision"},
+            {"crystal": "Black Tourmaline", "purpose": "Grounded vision — seeing clearly with feet on earth"}
+        ],
+        "warnings": ["May induce powerful dreams and visions — journal immediately upon waking", "Not recommended for those in acute psychosis or unstable mental states"],
+        "affirmation": "I see my path with perfect clarity. My inner compass always leads me home.",
+        "image_url": "https://images.unsplash.com/photo-1516575150278-77136aed6920?w=800"
+    },
+    {
+        "id": "amazonite",
+        "name": "Amazonite",
+        "title": "The Stone of Truth & Authenticity",
+        "element": "Earth, Water",
+        "chakra": "Heart, Throat",
+        "zodiac": ["Virgo", "Aries"],
+        "planet": "Uranus",
+        "vibration_number": 5,
+        "hardness": 6,
+        "crystal_system": "Triclinic",
+        "color": "Turquoise-Green, Teal",
+        "rarity": "Common",
+        "origin": ["Russia", "USA", "Brazil", "Ethiopia"],
+        "description": "Amazonite is the Stone of Truth and Authenticity — a powerful communicator of personal truth, boundaries, and integrity. Named after the Amazon River, it carries the wild, unbridled energy of the great feminine forces of nature. Amazonite helps you live and speak your truth fearlessly — not from aggression but from the quiet, unshakeable knowing of who you truly are.",
+        "healing_properties": {
+            "physical": ["Filters geopathic stress and electromagnetic pollution", "Soothes muscle spasms and supports the nervous system", "Supports cellular regeneration and wound healing", "Aids thyroid and thymus function", "Eases tooth and bone issues"],
+            "emotional": ["Dissipates worry, fear, and self-doubt", "Encourages healthy boundary-setting without guilt", "Helps distinguish between your truth and others' projections", "Soothes emotional trauma and shock", "Supports those recovering from emotional abuse"],
+            "spiritual": ["Bridges the heart and throat for authentic self-expression", "Assists in living in alignment with one's highest values", "Filters negative psychic energy and ill intentions", "Supports manifestation of dreams through authentic action", "Connects to Amazonian earth goddess energies"]
+        },
+        "cleansing_methods": [
+            {"method": "Running Water", "description": "Hold under cool running water — Amazonite loves water", "duration": "3 minutes"},
+            {"method": "Earth", "description": "Bury in earth for one full moon cycle for deep cleansing", "duration": "28 days"},
+            {"method": "Smudging", "description": "Cedar or sage smoke for clearing inauthentic energy", "duration": "3-5 minutes"},
+            {"method": "Moonlight", "description": "Full moon in earth or water signs", "duration": "Overnight"},
+            {"method": "Sound", "description": "741Hz tuning fork or crystal bowl", "duration": "10 minutes"}
+        ],
+        "programming_ritual": {
+            "preparation": "Place your hand on your heart. Ask yourself: 'What is my truth right now?' Sit with whatever arises.",
+            "steps": ["Hold Amazonite at your throat or heart", "State one truth you have been afraid to live fully", "Feel the resistance — and breathe through it", "Say: 'I commit to living my truth. No more hiding.'", "Visualize teal-green light flooding both your heart and throat simultaneously", "Carry Amazonite as a reminder of this commitment"],
+            "duration_minutes": 10
+        },
+        "meditation_guidance": {
+            "preparation": "Sit comfortably. Hold Amazonite with one hand at heart and one at throat.",
+            "technique": "Amazonite Authenticity Activation",
+            "steps": ["Breathe deeply, feeling both hands — heart and throat", "Visualize a green-teal bridge forming between these two chakras", "Feel your heart's deepest truth rising up through this bridge", "As it reaches your throat, feel it wanting to be spoken", "Whisper it aloud — even here, even now, just to yourself", "Notice the relief, the rightness", "Commit: 'I will honor this truth in my life'"],
+            "duration_minutes": 15,
+            "timer_segments": [{"name": "Centering", "duration": 120}, {"name": "Bridge Building", "duration": 300}, {"name": "Truth Rising", "duration": 420}, {"name": "Commitment", "duration": 240}],
+            "affirmation": "I live my truth with courage and grace. My authentic self is my greatest gift."
+        },
+        "chakra_work": {
+            "primary": "Throat, Heart",
+            "works_with": "Heart and Throat together — unique ability to bridge both chakras simultaneously",
+            "placement": "One hand at throat, one at heart — feel the connection forming between them",
+            "technique": "Hold Amazonite at throat and breathe slowly. Ask: 'Am I living in alignment with my heart's truth?' Then listen honestly — not to what you wish were true, but to what you know is true."
+        },
+        "rituals": [
+            {"name": "Boundary Clarity Ritual", "purpose": "Establish clear personal boundaries", "timing": "When feeling manipulated or overwhelmed", "steps": ["Hold Amazonite to your throat", "Name the boundary you need to set", "Practice saying it aloud: 'I am not available for [this]. My boundary is [that].'", "Feel the ground beneath you supporting this truth", "Carry Amazonite when boundary conversations are needed"]},
+            {"name": "Values Alignment Ritual", "purpose": "Realign your life with your true values", "timing": "New Moon or at life crossroads", "steps": ["Hold Amazonite and write your 5 highest values", "For each value, ask: 'Is my life currently reflecting this?'", "Mark where misalignment exists", "Choose one concrete action for each misalignment", "Carry Amazonite as your accountability crystal"]}
+        ],
+        "combinations": [
+            {"crystal": "Chrysocolla", "purpose": "Sacred feminine truth and voice"},
+            {"crystal": "Rose Quartz", "purpose": "Speaking truth from love"},
+            {"crystal": "Black Tourmaline", "purpose": "Boundary protection with truth"},
+            {"crystal": "Lapis Lazuli", "purpose": "Higher wisdom with authentic expression"}
+        ],
+        "warnings": ["Can be challenging for those who have deeply suppressed their truth — emotions may surface", "Contains copper — avoid prolonged water contact"],
+        "affirmation": "I am authentic, aligned, and free. My truth is my liberation.",
+        "image_url": "https://images.unsplash.com/photo-1585409677983-0f6c41ca9c3b?w=800"
+    },
+    {
+        "id": "howlite",
+        "name": "Howlite",
+        "title": "The Stone of Patience & Stillness",
+        "element": "Air",
+        "chakra": "Crown, Third Eye",
+        "zodiac": ["Gemini", "Virgo"],
+        "planet": "Moon",
+        "vibration_number": 2,
+        "hardness": 3.5,
+        "crystal_system": "Monoclinic",
+        "color": "White with Grey Veins",
+        "rarity": "Common",
+        "origin": ["Canada", "USA", "Germany", "Mexico"],
+        "description": "Howlite is the Stone of Patience and Stillness — a deceptively simple white stone with grey veins that resembles a quiet mind finding peace in the spaces between thoughts. Often mistaken for turquoise when dyed, its natural form is humble, calm, and profoundly powerful. It is one of the best crystals for insomnia, over-thinking, anger, and the impatient, restless mind that cannot seem to stop.",
+        "healing_properties": {
+            "physical": ["One of the finest crystals for insomnia and sleep disturbances", "Calms the nervous system and overactive adrenal response", "Balances calcium levels and supports teeth, bones, and joints", "Eases muscle tension from stress and anger-holding", "Supports pain management through nervous system regulation"],
+            "emotional": ["Calms rage, anger, and emotional volatility instantly", "Dissolves selfishness and self-centred behavior patterns", "Teaches patience — with others and with the timing of life", "Reduces anxiety-driven impatience and frustration", "Encourages emotional maturity and equanimity"],
+            "spiritual": ["Opens the crown to peaceful spiritual connection without striving", "Facilitates deep meditation for those who find stillness difficult", "Assists in accessing subconscious wisdom held in dreams", "Supports gentle shadow work without overwhelm", "Connects to pure, clear white light and divine silence"]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Full moon for 1-2 nights — Howlite loves lunar energy", "duration": "1-2 nights"},
+            {"method": "Sound", "description": "Soft, high bowls, bells, or 528Hz music", "duration": "10 minutes"},
+            {"method": "Smudging", "description": "White sage, lavender, or white copal", "duration": "3 minutes"},
+            {"method": "Selenite", "description": "Place alongside selenite overnight", "duration": "8 hours"},
+            {"method": "Visualization", "description": "Visualize pure white light washing through the stone", "duration": "5 minutes"}
+        ],
+        "programming_ritual": {
+            "preparation": "Choose a moment of genuine stillness. No rushing. This crystal will not work if forced.",
+            "steps": ["Hold Howlite gently in both hands", "Take 10 slow breaths until the mind quiets slightly", "Whisper: 'I release urgency. I trust divine timing. I am at peace.'", "Visualize pure white light filling the crystal", "Place it under your pillow for sleep support or on your desk for patience through the day"],
+            "duration_minutes": 10
+        },
+        "meditation_guidance": {
+            "preparation": "Lie down for sleep preparation or sit in quiet. Hold Howlite or place on pillow/forehead.",
+            "technique": "Howlite Stillness Meditation",
+            "steps": ["Hold Howlite and begin slowing your breath to 4-count inhale, 8-count exhale", "With each exhale, let one thought go", "Feel the grey veins in the stone — like rivers of thought being released", "Follow the white spaces — the silence between thoughts", "Rest there — longer and longer", "When sleep comes, let it", "In sitting practice: simply hold the silence for as long as possible"],
+            "duration_minutes": 15,
+            "timer_segments": [{"name": "Breath Slowing", "duration": 180}, {"name": "Thought Release", "duration": 420}, {"name": "White Space", "duration": 480}, {"name": "Rest", "duration": 240}],
+            "affirmation": "I am patient. I am still. I trust the timing of all things."
+        },
+        "chakra_work": {
+            "primary": "Crown",
+            "works_with": "Third eye — calms the mental over-activity that blocks crown connection",
+            "placement": "Place on crown during meditation or on forehead/third eye to calm mental chatter",
+            "technique": "Place Howlite on your forehead or crown before sleep. Breathe slowly. With each exhale, feel your mind becoming quieter, your body heavier, your spirit lighter. Sleep comes naturally."
+        },
+        "rituals": [
+            {"name": "Sleep Preparation Ritual", "purpose": "Ensure deep, restful sleep", "timing": "Nightly before sleep", "steps": ["Place Howlite under your pillow", "Before sleep, hold it and take 10 deep breaths", "Write any remaining thoughts in a journal to 'park' them", "Say: 'I release the day. I sleep deeply and wake renewed'", "Keep phone away from bed while sleeping"]},
+            {"name": "Anger Release Ritual", "purpose": "Transmute anger into understanding", "timing": "When feeling rage or impatience", "steps": ["Hold Howlite tightly in your fist", "Take 10 very slow, very deep breaths", "Feel the anger slowly transferring into the stone", "When calmer, open your palm and look at the stone", "Ask: 'What is beneath this anger?' — answer honestly"]}
+        ],
+        "combinations": [
+            {"crystal": "Amethyst", "purpose": "Deep peaceful sleep and dream work"},
+            {"crystal": "Lepidolite", "purpose": "Anxiety and insomnia release"},
+            {"crystal": "Blue Lace Agate", "purpose": "Calm communication and patience"},
+            {"crystal": "Clear Quartz", "purpose": "Amplified clarity and stillness"}
+        ],
+        "warnings": ["Very soft — no salt or harsh chemical cleansing", "Often sold dyed as turquoise — natural white form is the most healing"],
+        "affirmation": "I breathe. I wait. I trust. All unfolds in perfect divine timing.",
+        "image_url": "https://images.unsplash.com/photo-1548502032-5843b66d3d7f?w=800"
+    },
+    {
+        "id": "kyanite",
+        "name": "Kyanite",
+        "title": "The Stone of Alignment",
+        "element": "Air, Spirit",
+        "chakra": "Throat, Third Eye (All Chakras)",
+        "zodiac": ["Taurus", "Libra", "Aries"],
+        "planet": "Jupiter, Neptune",
+        "vibration_number": 4,
+        "hardness": 6.5,
+        "crystal_system": "Triclinic",
+        "color": "Blue, Black, Green (Blue most common)",
+        "rarity": "Uncommon",
+        "origin": ["Brazil", "USA", "Switzerland", "Russia", "India"],
+        "description": "Kyanite is one of the most extraordinary crystals in the mineral kingdom for one remarkable reason: it never retains negative energy and therefore never needs cleansing. It is also one of the few crystals that automatically aligns all chakras simultaneously — bringing the entire energy body into perfect attunement with a single touch. Blue Kyanite is a crystal of alignment, mediation, and highest truth.",
+        "healing_properties": {
+            "physical": ["Supports the throat, larynx, and vocal cords", "Assists in healing after surgery or injury — bridges severed energy pathways", "Lowers blood pressure through nervous system regulation", "Supports cerebellum function, balance, and motor coordination", "Eases adrenal fatigue and burnout recovery"],
+            "emotional": ["Dissolves confusion and indecision instantly", "Encourages logical and linear thinking alongside intuition", "Releases anger held in communication patterns", "Helps resolve conflict through mediation energy", "Builds inner alignment between feelings, thoughts, and actions"],
+            "spiritual": ["Automatically aligns all chakras without effort", "The ultimate stone for energy workers — protects and clarifies the channel", "Facilitates telepathic communication and channeling", "Assists in multi-dimensional and past-life retrieval", "Builds the antahkarana (rainbow bridge between lower and higher self)"]
+        },
+        "cleansing_methods": [
+            {"method": "No Cleansing Needed", "description": "Kyanite is one of the few crystals that never absorbs negative energy and never needs cleansing", "duration": "N/A"},
+            {"method": "Optional Moonlight", "description": "If you wish to charge it or honor it with ceremony, moonlight is ideal", "duration": "Overnight"},
+            {"method": "Optional Sound", "description": "Sound cleansing is always welcome for any crystal", "duration": "5 minutes"}
+        ],
+        "programming_ritual": {
+            "preparation": "Simply hold Kyanite. Breathe. It is already doing its work.",
+            "steps": ["Hold Kyanite along its length — feel the energy moving through it like a current", "State any intention — Kyanite receives it immediately", "Run the crystal slowly down each arm and leg to clear your meridians", "Hold at each chakra for 30 seconds to align them in sequence", "You will feel a subtle shift, a quieting, a settling into alignment"],
+            "duration_minutes": 10
+        },
+        "meditation_guidance": {
+            "preparation": "Hold or place blue Kyanite along your spine or at your throat. Lie down.",
+            "technique": "Kyanite Full Alignment Meditation",
+            "steps": ["Lie flat with Kyanite placed at throat or held", "Take 7 deep breaths", "Feel your body becoming heavy — fully surrendering to gravity", "Imagine a line of blue light running from your root to your crown", "Feel each chakra along this line softly brightening and aligning", "Experience the peace of full alignment — without effort, without striving", "Rest in this aligned state as long as desired"],
+            "duration_minutes": 20,
+            "timer_segments": [{"name": "Breath & Surrender", "duration": 180}, {"name": "Light Channel", "duration": 420}, {"name": "Chakra Alignment", "duration": 480}, {"name": "Resting in Alignment", "duration": 360}],
+            "affirmation": "All aspects of my being are in perfect alignment. I am a clear, open channel for divine light."
+        },
+        "chakra_work": {
+            "primary": "All Chakras (automatic alignment)",
+            "works_with": "Every chakra — it works throughout the entire system simultaneously",
+            "placement": "Hold along the spine or at each chakra in sequence; ideal for healers working on others",
+            "technique": "As an energy healer: hold Kyanite at each chakra of the person you are working with for 30 seconds each. Watch how the energy field settles and brightens without any other intervention needed."
+        },
+        "rituals": [
+            {"name": "Full Body Alignment Ritual", "purpose": "Bring the entire energy body into alignment", "timing": "Morning or after intense events", "steps": ["Hold Kyanite and run it slowly down each arm from shoulder to hand", "Then down each leg from hip to foot", "Then slowly down the front of your torso from crown to root", "Then across each shoulder", "You will feel centered, aligned, and clear"]},
+            {"name": "Conflict Mediation Ritual", "purpose": "Bring clarity to conflict", "timing": "Before difficult conversations", "steps": ["Hold Kyanite at throat before the conversation", "State: 'I speak truth. I hear truth. We find alignment.'", "Keep Kyanite in your non-dominant hand during the conversation", "Its mediation energy assists in finding common ground"]}
+        ],
+        "combinations": [
+            {"crystal": "Clear Quartz", "purpose": "Amplified alignment and clarity"},
+            {"crystal": "Selenite", "purpose": "Complete energetic clearing and alignment"},
+            {"crystal": "Black Tourmaline", "purpose": "Grounded alignment with protection"},
+            {"crystal": "Labradorite", "purpose": "Aligned multi-dimensional awareness"}
+        ],
+        "warnings": ["Fragile along its length — do not drop", "Black Kyanite is for root chakra and grounding specifically — different energy to blue"],
+        "affirmation": "I am aligned — in my body, my mind, my heart, and my soul.",
+        "image_url": "https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?w=800"
+    },
+    {
+        "id": "angelite",
+        "name": "Angelite",
+        "title": "The Stone of Angelic Communication",
+        "element": "Air, Spirit",
+        "chakra": "Throat, Third Eye, Crown",
+        "zodiac": ["Aquarius"],
+        "planet": "Uranus",
+        "vibration_number": 1,
+        "hardness": 3.5,
+        "crystal_system": "Orthorhombic",
+        "color": "Pale Blue to Periwinkle, White spots",
+        "rarity": "Uncommon",
+        "origin": ["Peru", "Mexico", "Germany", "Libya"],
+        "description": "Angelite is compressed celestite that formed millions of years ago — a crystal so closely aligned with angelic frequencies that many practitioners consider it the definitive stone for communicating with guardian angels, spirit guides, and the higher realms. Its pale, dreamy blue carries the quality of sky, cloud, and cosmic peace. It is a stone of compassion, tranquility, and awakened cosmic consciousness.",
+        "healing_properties": {
+            "physical": ["Supports the throat, thyroid, and vocal communication", "Eases headaches caused by tension and spiritual sensitivity", "Supports weight regulation and fluid balance", "Assists those with heightened sensitivity to their environment", "Calms the nervous system of highly sensitive people (HSPs)"],
+            "emotional": ["Brings profound peace to anxious, fearful, or grieving states", "Encourages acceptance of what cannot be changed", "Dissolves resentment through compassionate perspective", "Opens the heart to forgiveness of self and others", "Soothes the pain of separation from loved ones who have passed"],
+            "spiritual": ["Opens direct channels to angels and spirit guides", "Facilitates conscious communication with the deceased", "Raises vibration to access Akashic records", "Protects the energy field while working in high frequency states", "Enhances telepathy, channeling, and spiritual clairaudience"]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight Only", "description": "Full moon or any moonlit night — it loves gentle lunar energy", "duration": "Overnight"},
+            {"method": "Sound", "description": "High-frequency bowls, bells, or angelic music at 963Hz", "duration": "10 minutes"},
+            {"method": "Smudging", "description": "White sage or frankincense smoke", "duration": "3 minutes"},
+            {"method": "Selenite", "description": "Place on selenite — they work beautifully together", "duration": "8 hours"},
+            {"method": "No Water", "description": "Angelite is water-soluble — NEVER use water, salt, or damp cleansing", "duration": "N/A"}
+        ],
+        "programming_ritual": {
+            "preparation": "Create sacred space — light a candle, burn incense. This crystal responds to reverence.",
+            "steps": ["Hold Angelite to your heart and speak aloud to your angels", "Ask them to infuse the crystal with their presence", "State: 'May this crystal be a clear line of communication to the highest love'", "Sit in expectant, peaceful silence for 5-10 minutes", "You may feel warmth, tingling, or a sense of being surrounded and held", "This crystal is now attuned to your personal angelic team"],
+            "duration_minutes": 15
+        },
+        "meditation_guidance": {
+            "preparation": "Lie down in a peaceful space. Place Angelite on your throat or over your heart. Light a white candle if possible.",
+            "technique": "Angelite Divine Communication Meditation",
+            "steps": ["Take 10 slow, deep breaths and feel your body fully relax", "Visualize yourself surrounded by soft pale blue light", "Invite your angels or spirit guides to draw close", "Feel or sense their presence — a warmth, a knowing, a shift in the air", "Ask any question you carry and then enter deep silence", "Receive answers as feelings, images, words, or deep inner knowing", "Thank your guides and return slowly to ordinary awareness"],
+            "duration_minutes": 25,
+            "timer_segments": [{"name": "Relaxation", "duration": 300}, {"name": "Inviting Presence", "duration": 300}, {"name": "Dialogue", "duration": 600}, {"name": "Receiving", "duration": 420}, {"name": "Gratitude", "duration": 180}],
+            "affirmation": "I am in constant communion with the divine. My angels are near and I hear their guidance."
+        },
+        "chakra_work": {
+            "primary": "Crown, Third Eye, Throat",
+            "works_with": "The upper three chakras together — opens the full spiritual communication triad",
+            "placement": "Place on crown for angelic connection; throat for channeled speech; third eye for visionary guidance",
+            "technique": "Lie with Angelite on your crown. Place Clear Quartz at your feet for grounding. Breathe slowly and simply invite: 'Angels, I am open to your guidance.' Then listen in the spaces between thoughts."
+        },
+        "rituals": [
+            {"name": "Angelic Guidance Ritual", "purpose": "Receive guidance from your angels and spirit guides", "timing": "Any time, especially at dusk or dawn", "steps": ["Light a white candle", "Hold Angelite in both hands", "Call in your highest guidance by name if known, or simply 'my angels'", "Ask your question or ask for guidance", "Sit in silence for 15-20 minutes", "Write everything you sense, feel, or think immediately after"]},
+            {"name": "Grief & Connection Ritual", "purpose": "Connect with deceased loved ones or find peace in loss", "timing": "On anniversaries or during active grief", "steps": ["Hold a photo of the person you miss", "Place Angelite nearby", "Speak to them directly — say everything you wish you had said", "Breathe slowly and feel their love returning to you through the crystal", "Know that love does not end with death"]}
+        ],
+        "combinations": [
+            {"crystal": "Selenite", "purpose": "Amplified angelic connection and high-frequency light"},
+            {"crystal": "Celestite", "purpose": "The most powerful angelic communication combination"},
+            {"crystal": "Clear Quartz", "purpose": "Amplified divine messages and clarity"},
+            {"crystal": "Amethyst", "purpose": "Spiritual protection during high-vibrational work"}
+        ],
+        "warnings": ["NEVER place in water — it is water-soluble and will disintegrate", "Very soft — handle gently", "May open psychic sensitivity — ground after use with Black Tourmaline or Hematite"],
+        "affirmation": "I am loved, guided, and protected by angels and ancestors who walk with me always.",
+        "image_url": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800"
     }
 ]
 

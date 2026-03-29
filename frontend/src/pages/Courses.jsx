@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, BookOpen, Clock, Star, Users, Play, ChevronRight, ExternalLink, Loader2, Heart, ChevronDown, Flame, Wind, Sparkles, Leaf, Scroll, Lock, Calendar, Shield, CreditCard, CheckCircle2, Unlock } from "lucide-react";
+import { ArrowLeft, BookOpen, Clock, Star, Users, Play, ChevronRight, ExternalLink, Loader2, Heart, ChevronDown, Flame, Wind, Sparkles, Leaf, Scroll, Lock, Calendar, Shield, CreditCard, CheckCircle2, Unlock, Share2 } from "lucide-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
+import ShareToCircle from "../components/ShareToCircle";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -43,6 +44,7 @@ export default function Courses() {
   const [hasSubscription, setHasSubscription] = useState(false);
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [checkingPayment, setCheckingPayment] = useState(false);
+  const [showShare, setShowShare] = useState(false);
 
   const getAuthToken = () => localStorage.getItem("auth_token");
   const isLoggedIn = () => !!getAuthToken();
@@ -391,6 +393,14 @@ export default function Courses() {
                   data-testid="close-course-modal"
                 >
                   <ChevronRight className="w-4 h-4 rotate-180" />
+                </button>
+                <button
+                  onClick={() => setShowShare(true)}
+                  className="absolute top-3 right-14 w-9 h-9 rounded-full bg-black/60 flex items-center justify-center hover:bg-rose-500/20 transition-colors"
+                  title="Share your experience to Sacred Circle"
+                  data-testid="course-share-btn"
+                >
+                  <Share2 className="w-4 h-4 text-rose-300" />
                 </button>
                 <div className="absolute bottom-3 left-4 right-4">
                   <div className="flex gap-2 flex-wrap mb-1">
@@ -865,6 +875,18 @@ export default function Courses() {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Share to Sacred Circle Modal */}
+      <AnimatePresence>
+        {showShare && selectedCourse && (
+          <ShareToCircle
+            practiceTitle={selectedCourse.title}
+            practiceType="journey"
+            defaultElement="Spirit"
+            onClose={() => setShowShare(false)}
+          />
         )}
       </AnimatePresence>
     </div>
