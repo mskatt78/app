@@ -73,9 +73,15 @@ const PracticeTimer = ({
 
   // Calculate total duration from segments or use provided
   // Support both duration_seconds and duration field names
-  const calculatedTotal = segments.length > 0 
+  // Use totalDuration prop as authoritative source when provided, so the
+  // display always matches the duration shown on practice cards exactly.
+  // Fall back to segment sum only when no totalDuration is given.
+  const segmentsTotal = segments.length > 0
     ? segments.reduce((sum, seg) => sum + (seg.duration_seconds || seg.duration || 60), 0)
-    : totalDuration;
+    : 0;
+  const calculatedTotal = (totalDuration && totalDuration > 0)
+    ? totalDuration
+    : (segmentsTotal || 300);
 
   const currentSegment = segments[currentSegmentIndex];
 

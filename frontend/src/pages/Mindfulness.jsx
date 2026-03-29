@@ -108,9 +108,9 @@ const Mindfulness = ({ user, api }) => {
     setBreathCount(1);
     setBreathProgress(0);
 
-    // Calculate step duration for auto-advance
+    // Calculate step duration for auto-advance — distribute remainder to last step via caller
     const stepCount = selectedPractice?.instructions?.length || 1;
-    const stepDuration = Math.floor(totalSeconds / stepCount);
+    const stepDuration = Math.round(totalSeconds / stepCount);
     setStepTimeRemaining(stepDuration);
 
     // Start breathing animation for breathing practices
@@ -206,7 +206,7 @@ const Mindfulness = ({ user, api }) => {
         startBreathAnimation();
       }
       const stepCount = selectedPractice?.instructions?.length || 1;
-      const stepDuration = Math.floor(totalTime / stepCount);
+      const stepDuration = Math.round(totalTime / stepCount);
       startStepAutoAdvance(stepDuration, stepCount);
     }
   };
