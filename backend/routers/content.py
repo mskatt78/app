@@ -836,15 +836,6 @@ async def add_community_reply(post_id: str, reply_data: dict):
     return reply
 
 
-
-    """Get a specific community post."""
-    db = get_db()
-    post = await db.community_posts.find_one({"id": post_id}, {"_id": 0})
-    if not post:
-        raise HTTPException(status_code=404, detail="Post not found")
-    return post
-
-
 # ============ SACRED GEOMETRY ROUTES ============
 
 @router.get("/sacred-geometry")

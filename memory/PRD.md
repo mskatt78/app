@@ -126,12 +126,26 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
-- **P2**: Community page threading/replies feature
-- **P2**: Subscription-based access to all premium content
-- **P3**: Add more crystal profiles (Moonstone, Turquoise, Malachite, etc. — 15 done)
-- **P3**: Production deployment admin route optimization
+- **P2**: Subscription-based access to all premium content (all-in-one membership)
+- **P3**: Add more crystal profiles (now at 20, can expand to 30+)
+- **P3**: Production deployment optimization
 
-## Completed Work (March 2026 - Latest - Fork Session)
+## Completed Work (March 2026 - Session 2)
+- [x] **Community Threading & Replies (P2)**:
+  - Post cards show live like count + reply count badges
+  - Post detail modal: Like button, toggle replies section, full replies list, reply form (name + content + submit)
+  - Backend: `POST /api/community/posts/{post_id}/replies` — pushes to MongoDB comments array
+  - Real-time UI update (no page reload needed)
+- [x] **Today's Sacred Practice Widget (Dashboard Enhancement)**:
+  - New `SacredPracticeWidget` component in `Dashboard.jsx` (authenticated users)
+  - Fetches `/api/daily-practice` — shows moon phase, day theme, morning/evening practice cards
+  - Each card navigates to relevant practice page
+- [x] **20 Deep Crystal Profiles (P3 expanded)**:
+  - Added 5 new full profiles: Lepidolite, Rhodonite, Fluorite, Chrysocolla, Sunstone
+  - Total: 20 deep crystals with complete meditation, ritual, chakra, and combination guidance
+  - Auto-seeded on backend startup from `crystals_deep.py`
+
+
 - [x] **40-Day Journey now visible in Courses UI** (was P0 bug):
   - Added 3 missing tabs to course detail modal: Daily Practice, 40-Day Journey, Safety
   - 40-Day Journey tab: Phase 1 (teaser) always visible, Phases 2-4 locked for non-purchasers with blur + Unlock CTA
