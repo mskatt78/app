@@ -12,6 +12,9 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Direct Admin Access for App Owner**: `/admin` now supports session-based admin access for allowlisted emails, including `mskatt78@gmail.com`, while still preserving the fallback password login at `/admin/login`.
+- **Whole-App Admin Dashboard Upgrade**: Expanded admin quick access for Courses, 13 Moon Paths, Yoga Library, Live Client Spaces, and media management. Added admin collection support for `live_sessions` and `astrology_months`.
+- **Live Client Spaces Added**: Added public live session APIs and frontend experiences for live yoga, workshops, and Q&A rooms with embedded video support via admin-provided embed URLs, RSVP capture, chat, and Q&A threads.
 - **PracticeTimer Precision Fix**: Rewrote `PracticeTimer.jsx` to use a real-clock session countdown instead of step math that could freeze or finish early. This now keeps advertised durations exact across Shamanic, Grounding, Elemental, and Sunrise/Sunset guided timers, while still supporting skip, pause, ambient audio, and auto-narration.
 - **GuidedPracticeOverlay Precision + Autostart**: Updated `GuidedPracticeOverlay.jsx` to use a real end-time countdown, auto-start the guided session, and let ambient audio continue after TTS finishes so the session remains active for the full advertised duration.
 - **Light Codes Deep Content Expansion**: Enriched backend `LIGHT_CODES` entries with `why_this_heals`, `ancient_traditions`, `extended_teachings`, `practice_guide`, `lineage`, and `healing_lens`, with especially deep content for DNA Activation Helix and core sacred geometry symbols.
@@ -139,9 +142,12 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
+- **P1**: Create a dedicated public demo flow / demo mode so the app can be shown to prospective clients without touching live data
+- **P1**: Run a focused app-store readiness pass across mobile installability, legal/policy surfaces, account management, and compliance polish
 - **P1**: Review Mantras, Mudras, and any other lighter sections for the same deep-content parity now achieved in Crystals, Elements, and Light Codes
 - **P2**: Subscription-based access to all premium content (all-in-one membership)
 - **P2**: Add a Sacred Journey Progress tracker to the dashboard if approved
+- **P2**: Add a dedicated real-time video provider if true two-way in-app conferencing is desired beyond embed URLs + in-app RSVP/chat/Q&A
 - **P3**: Add more crystal profiles (at 27, can expand to 30+)
 - **P3**: Production deployment optimization
 
@@ -233,17 +239,22 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 │   │   ├── creative_processes_deep.py — 9 deep practices
 │   │   ├── divination_content.py — Light Codes and symbolic systems, now enriched with deep teachings
 │   ├── routers/
-│   │   ├── admin.py — Admin seeding routes, file uploads
+│   │   ├── admin.py — Admin auth, content CRUD, uploads, and owner access
+│   │   ├── content.py — public content + live session APIs + Light Codes
 │   │   ├── oracle.py — Oracle + Archangel Oracle endpoints
 │   │   ├── payments.py — Stripe/PayPal checkout, course access
-│   │   ├── content.py — course content endpoints
 │   ├── server.py — startup seeding
 ├── frontend/
 │   ├── src/components/
+│   │   ├── admin/adminSession.js — owner /admin session bootstrap helper
 │   │   ├── GuidedPracticeOverlay.jsx — full-screen continuous guided sessions with exact countdown
 │   │   ├── PracticeTimer.jsx — shared guided timer for inline practice pages with exact duration handling
 │   ├── src/pages/
+│   │   ├── AdminDashboard.jsx — owner dashboard for whole-app content access
+│   │   ├── AdminSection.jsx — collection editor for courses, moon paths, live sessions, yoga, and more
 │   │   ├── Courses.jsx — 7-tab modal, Stripe purchase flow
+│   │   ├── LiveSessions.jsx — public live room listing with filters and stats
+│   │   ├── LiveSessionRoom.jsx — embedded live room, RSVP, chat, and Q&A
 │   │   ├── VideosLibrary.jsx — 13 category filters, dark theme
 │   │   ├── ArchangelOracle.jsx — Archangel readings & browse (NEW)
 │   │   ├── LightCodes.jsx — deep symbolic teachings, category panels, and multi-tab modal redesign

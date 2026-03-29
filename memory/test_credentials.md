@@ -2,9 +2,13 @@
 
 ## Admin Access
 - **Admin Panel:** `/admin`
+- **Direct Admin Access:** sign in with the allowlisted app account `mskatt78@gmail.com`, then open `/admin`
+- **Fallback Admin Login:** `/admin/login`
 - **Password:** `ShamanicAdmin2026!`
 - **Admin Seeding API:** `POST /api/admin/seed-database` (requires admin JWT token)
 - **Seed Status API:** `GET /api/admin/seed-status` (requires admin JWT token)
+- **Live Session Manager:** `/admin/manage/live_sessions`
+- **13 Moon Paths Manager:** `/admin/manage/astrology_months`
 
 ## User Testing
 - No login required for most features (public access)
