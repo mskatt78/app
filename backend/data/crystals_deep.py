@@ -874,6 +874,352 @@ CRYSTALS_DEEP = [
         "warnings": ["Contains sulfur - avoid water cleansing", "Can bring up uncomfortable truths - be ready", "May intensify dreams significantly"],
         "affirmation": "I speak my truth. I see clearly through the veil. Ancient wisdom flows through me.",
         "image_url": "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800"
+    },
+    {
+        "id": "moonstone",
+        "name": "Moonstone",
+        "title": "The Stone of New Beginnings",
+        "element": "Water",
+        "chakra": "Third Eye, Crown, Sacral",
+        "zodiac": ["Cancer", "Libra", "Scorpio"],
+        "planet": "Moon",
+        "vibration_number": 4,
+        "hardness": 6,
+        "crystal_system": "Monoclinic",
+        "color": "White, Peach, Gray, Rainbow (with blue flash)",
+        "rarity": "Common to Uncommon (rainbow moonstone is rarer)",
+        "origin": ["Sri Lanka", "India", "Madagascar", "Australia"],
+        "description": "Moonstone embodies the energy of the moon — cycles, intuition, the divine feminine, and new beginnings. Its ethereal glow (adularescence) resembles moonlight captured in stone. This crystal has been sacred to moon goddesses across cultures: Selene, Diana, Isis, and Hecate. It enhances intuition, promotes emotional balance, and supports women through all life transitions.",
+        "healing_properties": {
+            "physical": ["Balances hormones and menstrual cycles", "Supports fertility and pregnancy", "Aids in childbirth", "Helps with PMS and menopause", "Supports digestive system", "Assists with fluid retention"],
+            "emotional": ["Soothes emotional instability", "Enhances intuition and empathy", "Calms overreaction to situations", "Supports during emotional transitions", "Nurtures self-acceptance"],
+            "spiritual": ["Connects to lunar energy and cycles", "Enhances psychic abilities", "Facilitates lucid dreaming", "Opens to goddess energy", "Supports new beginnings", "Aids in past-life recall"]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Ideal cleansing! Place under full moon", "duration": "8-12 hours"},
+            {"method": "Selenite", "description": "Rest on selenite plate", "duration": "4-8 hours"},
+            {"method": "Sound", "description": "Use singing bowls or bells", "duration": "5 minutes"},
+            {"method": "Spring Water", "description": "Brief rinse under pure water", "duration": "1-2 minutes"}
+        ],
+        "meditation_guidance": {
+            "technique": "Lunar Goddess Meditation",
+            "preparation": "Best done on full moon. Lie down and place moonstone on third eye or sacral. Dim lights.",
+            "steps": [
+                "Close your eyes and breathe in rhythm with the tides",
+                "Feel the moonstone awakening your intuitive centers",
+                "Visualize silver-white moonlight pouring down onto you",
+                "Call to the moon goddess by whatever name you know her",
+                "Feel her presence — nurturing, mysterious, powerful",
+                "Ask for guidance about cycles in your life",
+                "Receive her message through feeling, image, or knowing",
+                "Thank the goddess for her presence",
+                "Return slowly, carrying her blessing"
+            ],
+            "duration_minutes": 20,
+            "timer_segments": [
+                {"name": "Attunement", "duration": 180},
+                {"name": "Moon Connection", "duration": 300},
+                {"name": "Goddess Communion", "duration": 420},
+                {"name": "Integration", "duration": 300}
+            ],
+            "affirmation": "I flow with life's cycles. My intuition guides me truly. The goddess walks with me."
+        },
+        "chakra_work": {
+            "primary": "Third Eye",
+            "secondary": "Crown, Sacral",
+            "placement": "Third eye, crown, or sacral (for fertility/creativity)",
+            "technique": "Create a moon circuit: moonstone at crown, one at third eye, one at sacral. Visualize silver light connecting all three, awakening intuitive and creative powers."
+        },
+        "rituals": [
+            {"name": "New Moon Intention", "purpose": "Plant seeds for new cycle", "timing": "New Moon", "steps": ["Cleanse moonstone under new moon sky", "Hold and state new intention", "Write intention on paper", "Sleep with moonstone until full moon", "At full moon, burn paper and release"]},
+            {"name": "Fertility Blessing", "purpose": "Support conception", "timing": "Full Moon", "steps": ["Charge moonstone under full moon", "Sleep with it under pillow", "Each morning, hold to sacral and visualize", "Continue through lunar cycle"]}
+        ],
+        "combinations": [
+            {"crystal": "Labradorite", "purpose": "Enhanced intuition and magic"},
+            {"crystal": "Sunstone", "purpose": "Balance of masculine and feminine"},
+            {"crystal": "Amethyst", "purpose": "Psychic development and dreams"}
+        ],
+        "warnings": ["Can intensify emotional sensitivity during full moon", "May not be suitable during highly emotional periods", "Some find it overly stimulating for sleep"],
+        "affirmation": "I honor my cycles. I trust my intuition. I embrace new beginnings with grace.",
+        "image_url": "https://images.unsplash.com/photo-1602751584552-8ba73aad10e1?w=800"
+    },
+    {
+        "id": "turquoise",
+        "name": "Turquoise",
+        "title": "The Master Healer Stone",
+        "element": "Earth, Air, Water",
+        "chakra": "Throat, Third Eye",
+        "zodiac": ["Sagittarius", "Scorpio", "Pisces"],
+        "planet": "Jupiter, Neptune, Venus",
+        "vibration_number": 1,
+        "hardness": 5,
+        "crystal_system": "Triclinic",
+        "color": "Blue-Green, Robin's Egg Blue",
+        "rarity": "Uncommon (high-quality increasingly rare)",
+        "origin": ["Iran", "USA (Arizona, New Mexico)", "Tibet", "Egypt"],
+        "description": "Turquoise is one of the oldest stones in human history, treasured by virtually every ancient culture. The Egyptians, Persians, Native Americans, and Tibetans all considered it sacred. It is a master healer, uniting heaven and earth, and is considered a stone of wholeness, truth, and protection. Turquoise changes color based on the wearer's health, serving as an early warning system.",
+        "healing_properties": {
+            "physical": ["Master healer for entire body", "Supports immune system", "Anti-inflammatory properties", "Aids in nutrient absorption", "Supports eyes and respiratory system", "Detoxifies the body"],
+            "emotional": ["Brings inner calm and peace", "Dispels negative energy", "Promotes honest communication", "Balances mood swings", "Instills sense of serenity"],
+            "spiritual": ["Bridges heaven and earth", "Enhances spiritual attunement", "Protects during spiritual work", "Supports past-life exploration", "Facilitates communication with spirit guides"]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Gentle full moon cleansing", "duration": "4-6 hours"},
+            {"method": "Smudging", "description": "Sage or sweetgrass smoke", "duration": "3-5 minutes"},
+            {"method": "Sound", "description": "Singing bowls or bells", "duration": "5 minutes"},
+            {"method": "Brown Rice", "description": "Bury in dry brown rice", "duration": "24 hours"}
+        ],
+        "meditation_guidance": {
+            "technique": "Sky-Earth Bridge Meditation",
+            "preparation": "Sit or lie comfortably. Hold turquoise at throat or place on body.",
+            "steps": [
+                "Close eyes and take deep, slow breaths",
+                "Feel the turquoise connecting you to sky above and earth below",
+                "Visualize turquoise light extending up to the sky",
+                "And down deep into the earth",
+                "You are the bridge between Father Sky and Mother Earth",
+                "Feel wisdom flowing down from sky through you",
+                "Feel grounding energy rising from earth through you",
+                "At your throat, they meet and merge",
+                "Speak aloud: 'I am the bridge. I speak truth.'",
+                "Rest in this unified state"
+            ],
+            "duration_minutes": 20,
+            "timer_segments": [
+                {"name": "Centering", "duration": 120},
+                {"name": "Sky Connection", "duration": 240},
+                {"name": "Earth Connection", "duration": 240},
+                {"name": "Bridge Integration", "duration": 360},
+                {"name": "Rest", "duration": 240}
+            ],
+            "affirmation": "I bridge heaven and earth. I speak truth with love. I am whole and protected."
+        },
+        "chakra_work": {
+            "primary": "Throat",
+            "secondary": "Third Eye",
+            "placement": "At throat for communication, third eye for vision",
+            "technique": "Wear turquoise at throat while speaking difficult truths. It will support honest, compassionate communication."
+        },
+        "rituals": [
+            {"name": "Protection Amulet", "purpose": "Create protective talisman", "timing": "Any time, especially before travel", "steps": ["Cleanse turquoise thoroughly", "Hold in sunlight at dawn", "Speak protection prayers/intentions", "Wear close to body", "Recharge monthly under full moon"]},
+            {"name": "Healing Ceremony", "purpose": "Full-body healing", "timing": "When ill or depleted", "steps": ["Place turquoise at throat", "Additional pieces at any areas needing healing", "Visualize turquoise light filling body", "State: 'I call upon the master healer'", "Rest for 20-30 minutes"]}
+        ],
+        "combinations": [
+            {"crystal": "Lapis Lazuli", "purpose": "Truth-speaking and vision"},
+            {"crystal": "Coral", "purpose": "Traditional protection combination"},
+            {"crystal": "Clear Quartz", "purpose": "Amplified healing"}
+        ],
+        "warnings": ["Porous stone - avoid water, oils, perfumes, chemicals", "Color may change with wearer's health (this is a feature, not a flaw)", "Much commercial turquoise is dyed howlite - seek authentic stone"],
+        "affirmation": "I am protected and whole. Truth flows through me. Heaven and earth unite in my being.",
+        "image_url": "https://images.unsplash.com/photo-1589739900875-52cebd9e5731?w=800"
+    },
+    {
+        "id": "malachite",
+        "name": "Malachite",
+        "title": "The Stone of Transformation",
+        "element": "Earth",
+        "chakra": "Heart, Solar Plexus",
+        "zodiac": ["Scorpio", "Capricorn"],
+        "planet": "Venus",
+        "vibration_number": 9,
+        "hardness": 3.5,
+        "crystal_system": "Monoclinic",
+        "color": "Green with banded patterns",
+        "rarity": "Common",
+        "origin": ["Congo", "Russia", "Australia", "USA"],
+        "description": "Malachite is a powerful stone of transformation and change. Its striking green bands represent the layers of healing that must be traversed for true transformation. This stone absorbs negative energy and pollutants from the body and atmosphere, making it valuable for protection. It amplifies both positive and negative energies, so it must be used with intention and cleansed frequently.",
+        "healing_properties": {
+            "physical": ["Supports liver and detoxification", "Helps with menstrual cramps and childbirth", "Lowers blood pressure", "Supports immune system", "Relieves arthritis and joint pain", "Draws out physical impurities"],
+            "emotional": ["Encourages risk-taking and change", "Breaks unwanted patterns", "Draws out deep feelings for processing", "Supports emotional transformation", "Releases inhibitions and develops empathy"],
+            "spiritual": ["Amplifies energy and intention", "Clears and activates all chakras", "Facilitates deep energy clearing", "Supports shadow work", "Guards against psychic attack"]
+        },
+        "cleansing_methods": [
+            {"method": "Sage/Smudging", "description": "REQUIRED frequently - absorbs much negativity", "duration": "5-10 minutes"},
+            {"method": "Selenite", "description": "Rest on selenite plate", "duration": "4-8 hours"},
+            {"method": "Earth Burial", "description": "Return to earth for deep cleansing", "duration": "24-48 hours"},
+            {"method": "Sound", "description": "Sound cleansing with bells or bowls", "duration": "10 minutes"}
+        ],
+        "meditation_guidance": {
+            "technique": "Heart Transformation Meditation",
+            "preparation": "Use only when ready for change. Place malachite on heart chakra. Ground firmly first.",
+            "steps": [
+                "Ground deeply - visualize roots into earth",
+                "Feel the malachite's weight on your heart",
+                "See its green bands as layers of your being",
+                "Say: 'I am ready to transform'",
+                "Allow what needs to surface to rise",
+                "Watch patterns, beliefs, or emotions emerge",
+                "See malachite absorbing and transmuting them",
+                "Feel your heart becoming lighter, clearer",
+                "See yourself renewed, transformed",
+                "Ground again before opening eyes"
+            ],
+            "duration_minutes": 25,
+            "timer_segments": [
+                {"name": "Grounding", "duration": 180},
+                {"name": "Heart Opening", "duration": 300},
+                {"name": "Transformation", "duration": 600},
+                {"name": "Integration", "duration": 240},
+                {"name": "Grounding Return", "duration": 180}
+            ],
+            "affirmation": "I embrace transformation. I release what no longer serves me. I am renewed."
+        },
+        "chakra_work": {
+            "primary": "Heart",
+            "secondary": "Solar Plexus, Third Eye",
+            "placement": "Heart for emotional transformation, solar plexus for power, third eye for vision",
+            "technique": "Place malachite on heart and visualize its green energy spiraling through all chakras, clearing and activating each one."
+        },
+        "rituals": [
+            {"name": "Pattern Breaking", "purpose": "Break unwanted habits or patterns", "timing": "Waning Moon", "steps": ["Write the pattern you wish to break", "Place malachite on paper", "Each day, hold malachite and state: 'I release this pattern'", "At new moon, burn paper", "Cleanse malachite thoroughly after"]},
+            {"name": "EMF Protection Grid", "purpose": "Protect from electromagnetic pollution", "timing": "Ongoing", "steps": ["Place malachite near computers and electronics", "Cleanse weekly - it absorbs heavily", "Combine with black tourmaline for enhanced protection"]}
+        ],
+        "combinations": [
+            {"crystal": "Rose Quartz", "purpose": "Heart healing with love"},
+            {"crystal": "Azurite", "purpose": "Transformation of consciousness (azurite-malachite naturally combines)"},
+            {"crystal": "Black Tourmaline", "purpose": "Protection during transformation"}
+        ],
+        "warnings": ["TOXIC if ingested - never make gem water with malachite", "Requires very frequent cleansing", "Can amplify negative energy if not cleansed", "Not for children or animals to handle", "Dust from raw malachite is toxic - use polished stones only"],
+        "affirmation": "I welcome transformation. Change is my ally. I emerge renewed and empowered.",
+        "image_url": "https://images.unsplash.com/photo-1599707367072-cd6ada2bc375?w=800"
+    },
+    {
+        "id": "green-aventurine",
+        "name": "Green Aventurine",
+        "title": "The Stone of Opportunity",
+        "element": "Earth, Water",
+        "chakra": "Heart",
+        "zodiac": ["Aries", "Leo"],
+        "planet": "Mercury, Venus",
+        "vibration_number": 3,
+        "hardness": 7,
+        "crystal_system": "Trigonal",
+        "color": "Green with sparkly inclusions (aventurescence)",
+        "rarity": "Common",
+        "origin": ["India", "Brazil", "Russia", "Tanzania"],
+        "description": "Green Aventurine is known as the 'Stone of Opportunity' and is considered the luckiest of all crystals, especially for manifesting prosperity and wealth. Its sparkling inclusions represent possibilities glittering on the horizon. This optimistic stone releases old patterns, habits, and disappointments, making room for new growth. It comforts and heals the heart while attracting luck.",
+        "healing_properties": {
+            "physical": ["Supports heart health", "Lowers cholesterol", "Helps with allergies", "Supports adrenal glands", "Soothes skin irritations", "Aids in recovery from illness"],
+            "emotional": ["Releases anxiety and calms", "Brings optimism and hope", "Dissolves negative emotions", "Stabilizes state of mind", "Encourages perseverance"],
+            "spiritual": ["Attracts luck and opportunity", "Manifests prosperity", "Protects against environmental pollution", "Aligns conditions for highest good", "Supports heart-centered living"]
+        },
+        "cleansing_methods": [
+            {"method": "Running Water", "description": "Hold under cool running water", "duration": "2-3 minutes"},
+            {"method": "Earth", "description": "Bury in garden or plant pot", "duration": "24 hours"},
+            {"method": "Moonlight", "description": "Full moon cleansing", "duration": "8-12 hours"},
+            {"method": "Sunlight", "description": "Brief morning sun exposure", "duration": "1-2 hours"}
+        ],
+        "meditation_guidance": {
+            "technique": "Luck & Opportunity Meditation",
+            "preparation": "Sit comfortably. Hold green aventurine in left hand (receiving hand). Have a green candle lit if possible.",
+            "steps": [
+                "Close eyes and take deep, heart-centered breaths",
+                "Feel the aventurine's sparkly energy in your hand",
+                "Visualize green light radiating from the stone",
+                "This light surrounds you in a bubble of luck",
+                "See opportunities sparkling like stars in this green space",
+                "Say: 'I am open to receiving all good things'",
+                "Visualize a specific opportunity you desire",
+                "See it manifesting easily and joyfully",
+                "Feel gratitude as if it has already happened",
+                "Carry this feeling throughout your day"
+            ],
+            "duration_minutes": 15,
+            "timer_segments": [
+                {"name": "Heart Opening", "duration": 180},
+                {"name": "Luck Activation", "duration": 300},
+                {"name": "Visualization", "duration": 300},
+                {"name": "Gratitude", "duration": 120}
+            ],
+            "affirmation": "Luck and opportunity flow to me easily. I am open to infinite possibilities."
+        },
+        "chakra_work": {
+            "primary": "Heart",
+            "secondary": "Solar Plexus",
+            "placement": "On heart for emotional healing, solar plexus for confidence",
+            "technique": "Place green aventurine on heart while visualizing your heart as a garden. See old weeds (fears, doubts) composting into fertile soil. Plant seeds of new intentions."
+        },
+        "rituals": [
+            {"name": "Luck in Games/Contests", "purpose": "Increase luck for specific event", "timing": "Before the event", "steps": ["Hold aventurine to heart", "Visualize winning or succeeding", "Feel the joy of success", "Carry stone to the event", "Afterward, cleanse and thank the stone"]},
+            {"name": "Prosperity Corner", "purpose": "Attract wealth to home", "timing": "New Moon", "steps": ["Identify wealth corner (far left from entrance)", "Place green aventurine there", "Add a living plant", "State prosperity intention monthly", "Keep area clean and beautiful"]}
+        ],
+        "combinations": [
+            {"crystal": "Citrine", "purpose": "Abundance manifestation"},
+            {"crystal": "Rose Quartz", "purpose": "Luck in love"},
+            {"crystal": "Tiger's Eye", "purpose": "Confident action on opportunities"}
+        ],
+        "warnings": ["Very gentle stone with few contraindications", "May need to be paired with grounding stones for those who become 'spacy'"],
+        "affirmation": "I am a magnet for luck and opportunity. Success comes to me naturally and easily.",
+        "image_url": "https://images.unsplash.com/photo-1582562475147-5f0a0ec7cf35?w=800"
+    },
+    {
+        "id": "tigers-eye",
+        "name": "Tiger's Eye",
+        "title": "The Stone of Courage & Confidence",
+        "element": "Fire, Earth",
+        "chakra": "Solar Plexus, Root",
+        "zodiac": ["Leo", "Capricorn"],
+        "planet": "Sun, Mars",
+        "vibration_number": 4,
+        "hardness": 7,
+        "crystal_system": "Trigonal",
+        "color": "Golden brown with chatoyant bands",
+        "rarity": "Common",
+        "origin": ["South Africa", "Australia", "India", "USA"],
+        "description": "Tiger's Eye combines the energy of the earth with the energy of the sun. Its chatoyant bands resemble a cat's eye, representing the ability to see everything, including what's hidden. Roman soldiers carried it for protection in battle. This stone builds courage, willpower, and the confidence to take action. It helps you see clearly through complex situations and make decisions from a place of power.",
+        "healing_properties": {
+            "physical": ["Supports endocrine system", "Helps with broken bones", "Strengthens alignment of spine", "Aids in night vision", "Supports vitality"],
+            "emotional": ["Builds courage and confidence", "Balances extremes", "Helps overcome fear and anxiety", "Promotes mental clarity", "Reduces stubbornness"],
+            "spiritual": ["Enhances practical perception", "Provides protection", "Grounds spiritual energies", "Balances yin-yang energies", "Helps manifest goals"]
+        },
+        "cleansing_methods": [
+            {"method": "Sunlight", "description": "Tiger's Eye loves the sun!", "duration": "2-4 hours"},
+            {"method": "Earth", "description": "Bury briefly to ground", "duration": "12-24 hours"},
+            {"method": "Smudging", "description": "Pass through sage or palo santo smoke", "duration": "5 minutes"},
+            {"method": "Sound", "description": "Use drums or rattles", "duration": "5-10 minutes"}
+        ],
+        "meditation_guidance": {
+            "technique": "Warrior Confidence Meditation",
+            "preparation": "Stand or sit with spine straight. Hold tiger's eye at solar plexus or in dominant hand.",
+            "steps": [
+                "Take three deep, powerful breaths",
+                "Feel the tiger's eye warming in your hand",
+                "See its golden energy filling your solar plexus",
+                "Feel your personal power activating",
+                "Visualize yourself as a confident warrior",
+                "Whatever challenge you face, see yourself handling it",
+                "Say: 'I have the courage to act. I am powerful.'",
+                "Feel fear transforming into excitement",
+                "Embody this power as you open your eyes",
+                "Take one bold action today"
+            ],
+            "duration_minutes": 15,
+            "timer_segments": [
+                {"name": "Power Breathing", "duration": 120},
+                {"name": "Solar Plexus Activation", "duration": 300},
+                {"name": "Warrior Visualization", "duration": 360},
+                {"name": "Integration", "duration": 120}
+            ],
+            "affirmation": "I am courageous and confident. I act with power and clarity. I trust myself completely."
+        },
+        "chakra_work": {
+            "primary": "Solar Plexus",
+            "secondary": "Root",
+            "placement": "Solar plexus for power, root for grounding",
+            "technique": "Hold tiger's eye at solar plexus before any challenging situation - interview, difficult conversation, competition. Let its power flow into your center."
+        },
+        "rituals": [
+            {"name": "Before Battle/Challenge", "purpose": "Build courage for difficult situations", "timing": "Before the event", "steps": ["Hold tiger's eye to solar plexus", "Take 3 deep breaths", "State: 'I am brave. I am capable. I will succeed.'", "Carry the stone with you", "Touch it whenever you need courage"]},
+            {"name": "Decision Making", "purpose": "See clearly through confusion", "timing": "When facing choices", "steps": ["Hold tiger's eye before eyes (not touching)", "State your question or dilemma", "Close eyes and feel the answer in your gut", "Trust the first impression", "Act on it"]}
+        ],
+        "combinations": [
+            {"crystal": "Red Jasper", "purpose": "Grounded action and endurance"},
+            {"crystal": "Citrine", "purpose": "Confident manifestation"},
+            {"crystal": "Hematite", "purpose": "Strong grounding with courage"}
+        ],
+        "warnings": ["Very energizing - may be too stimulating for some", "Not ideal for sleep", "Those with excessive fire energy should use sparingly"],
+        "affirmation": "I see clearly and act courageously. I have the power to achieve my goals.",
+        "image_url": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?w=800"
     }
 ]
 
