@@ -15,6 +15,9 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **Crystal Guide Deep Content**: All 27 crystals now have full depth matching the rest of the app — `why_this_heals` (philosophical/scientific explanation), `extended_teachings` (historical/cultural context across ancient Egypt, Greek, Roman, Indigenous etc.), `practice_guide` (step-by-step ritual instructions). Frontend switched from basic `/api/crystals` to `/api/crystals/deep`, rendering all rich content: healing properties (physical/emotional/spiritual), cleansing methods, chakra work, rituals, crystal combinations, zodiac/origins, warnings, and a "Begin Guided Crystal Practice" button launching GuidedPracticeOverlay.
 - **Meditations.jsx**: Replaced inline timer with full-screen `GuidedPracticeOverlay`. Timer now shows exact countdown matching card duration.
 - **SomaticMovement.jsx**: Same fix — replaced old elapsed-timer with `GuidedPracticeOverlay`.
+- **Creative Processes Bug Fix**: Replaced inline PracticeTimer-inside-modal with GuidedPracticeOverlay. No more blank screen trap. All 12 processes now launch full-screen guided mode.
+- **5 Elements Deep Content**: Added "Why It Heals" (scientific: earthing, vagus nerve, Bohr Effect, separation wound) + "Ancient Traditions" (cross-cultural: Egyptian, Chinese, Vedic, Celtic, Indigenous, Norse, Sufi) to all 5 elemental temples. Both tabs appear first in the navigation.
+
 - **Production Optimizations**: GZip compression middleware (avg 58% size reduction), MongoDB indexes for users/practice_history/community/content, Service Worker upgraded to v2.
 
 ## Core Features (All Implemented)
