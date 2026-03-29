@@ -1,15 +1,18 @@
-<analysis>all_content.pysacred_rites_deep.pybackend/data/all_content.pybackend/data/sacred_rites_deep.pyfrontend/src/pages/Dashboard.jsxbackend/routers/content.pycommunity_postsCommunity.jsx/videosApp.jsCourses.jsx.gitignore.envLandingPageMainMenuDashboardPracticeJournalSoundFrequenciesCourses.jsx.gitignore.gitignore
+<analysis>/coursesfrontend/src/pages/Courses.jsxbackend/data/sacred_rites_deep.pybackend/routers/tts.pytts_routerfrontend/src/pages/ChakraCleansing.jsxbackend/routers/content.pycommunity_postsCommunity.jsxPOST /api/admin/seed-databaseVideosLibrary.jsxcrystals_deep.pyMainMenu.jsx
 /app/
 ├── backend/
 │   ├── data/
-│   │   ├── video_content.py, all_content.py, sacred_rites_deep.py (Seed data)
+│   │   ├── archangel_oracle.py (New)
+│   │   ├── crystals_deep.py (New)
+│   │   ├── sacred_rites_deep.py (Contains course data)
 │   ├── routers/
-│   │   ├── payments.py (Stripe Webhooks & logic)
+│   │   ├── oracle.py
+│   │   ├── tts.py (Text-to-speech)
 │   ├── server.py (Startup data seeding)
 ├── frontend/
 │   ├── src/
 │   │   ├── pages/
-│   │   │   ├── Courses.jsx (Stripe bundle logic & modal)
-│   │   │   ├── VideosLibrary.jsx (Check if survived rollback)
-│   │   │   ├── Dashboard.jsx, Community.jsx
-server.pybackend/data/user_purchases{user_id, product_id, product_type, status, amount}courses{id, title, price, ...}videos{id, title, duration, video_url, category}/app/backend/data/all_content.py/app/backend/data/sacred_rites_deep.py/app/frontend/src/pages/Courses.jsx/app/backend/routers/payments.py/app/memory/test_credentials.mdserver.pyPOST /api/payments/create-checkoutGET /api/payments/course-accessGET /api/videosCourses.jsxgit checkoutVideosLibrary.jsxApp.js/app/memory/test_credentials.md/app/test_reports/iteration_49.json/app/memory/PRD.md/app/memory/test_credentials.md/app/test_reports/iteration_49.jsonVideosLibrary.jsx/app/memory/test_credentials.md</analysis>
+│   │   │   ├── Courses.jsx (Check for 40-day journey UI)
+│   │   │   ├── ArchangelOracle.jsx (New)
+│   │   │   ├── VideosLibrary.jsx
+archangel_oracle{id, name, title, element, image_url, domain, message_for_you, ...}crystals_deep{id, name, properties, description, rituals, cleansing_methods, ...}courses{id, title, price, 40_day_journey(check exact structure), ...}/app/frontend/src/pages/Courses.jsx/app/backend/data/sacred_rites_deep.py/app/backend/routers/tts.py/app/backend/data/archangel_oracle.py/app/backend/data/crystals_deep.pyserver.pyPOST /api/admin/seed-databaseGET /api/oracle/archangel/readingGET /api/content/crystalssacred_rites_deep.pyCourses.jsxtts.pyChakraCleansing.jsx/app/memory/PRD.md/app/memory/test_credentials.md/app/memory/test_credentials.md</analysis>

@@ -157,7 +157,7 @@ class TestPaymentRoutesWithAuth:
             json={
                 "product_type": "subscription",
                 "plan_id": "monthly",
-                "origin_url": "https://temple-preview-4.preview.emergentagent.com",
+                "origin_url": "https://chakra-guide-3.preview.emergentagent.com",
                 "payment_method": "stripe"
             }
         )
@@ -180,7 +180,7 @@ class TestPaymentRoutesWithAuth:
             json={
                 "product_type": "subscription",
                 "plan_id": "monthly",
-                "origin_url": "https://temple-preview-4.preview.emergentagent.com",
+                "origin_url": "https://chakra-guide-3.preview.emergentagent.com",
                 "payment_method": "paypal"
             }
         )
