@@ -251,7 +251,7 @@ VIDEO_TUTORIALS = [
         "description": "Focus on pleasure, playfulness, hip and foot movements. Seduce your pleasure through breath and intuitive dance. At-home practice for connecting with feminine energy.",
         "category": "feminine",
         "video_url": "https://www.youtube.com/watch?v=ZMXtFo2rkDs",
-        "duration": "15:00",
+        "duration": "16:00",
         "level": "beginner",
         "tradition": "Embodiment Practice"
     },

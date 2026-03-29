@@ -73,6 +73,31 @@ async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = No
     return crystals
 
 
+@router.get("/crystals/deep")
+async def get_deep_crystals():
+    """Get deep crystal healing data with rituals, meditations, and comprehensive guidance."""
+    db = get_db()
+    crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=50)
+    if not crystals:
+        from data.crystals_deep import CRYSTALS_DEEP
+        return CRYSTALS_DEEP
+    return crystals
+
+
+@router.get("/crystals/deep/{crystal_id}")
+async def get_deep_crystal(crystal_id: str):
+    """Get a specific deep crystal by ID."""
+    db = get_db()
+    crystal = await db.crystals_deep.find_one({"id": crystal_id}, {"_id": 0})
+    if not crystal:
+        from data.crystals_deep import CRYSTALS_DEEP
+        for c in CRYSTALS_DEEP:
+            if c["id"] == crystal_id:
+                return c
+        raise HTTPException(status_code=404, detail="Crystal not found")
+    return crystal
+
+
 @router.get("/crystals/{crystal_id}")
 async def get_crystal(crystal_id: str):
     """Get a specific crystal from database."""

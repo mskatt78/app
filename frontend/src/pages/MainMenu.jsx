@@ -90,7 +90,7 @@ const MainMenu = ({ user }) => {
       items: [
         { path: "/rose-temple", icon: Flower2, label: "Rose Temple", color: "text-rose-400", desc: "Divine feminine embodiment" },
         { path: "/masculine-temple", icon: Shield, label: "Masculine Temple", color: "text-amber-400", desc: "Sacred masculine wisdom" },
-        { path: "/elemental-temples", icon: Globe, label: "Elemental Temples", color: "text-teal-400", desc: "Earth · Water · Fire · Air · Spirit" },
+        { path: "/elemental-temples", icon: Sparkles, label: "Five Elements Temple", color: "text-teal-400", desc: "Earth · Water · Fire · Air · Spirit" },
         { path: "/seasonal-temple", icon: Leaf, label: "Wheel of the Year", color: "text-orange-400", desc: "8 Sabbats · Earth cycles" },
         { path: "/sunrise-sunset", icon: Sunrise, label: "Sunrise & Sunset", color: "text-yellow-400", desc: "Sacred daily transitions" },
         { path: "/water-practices", icon: Droplets, label: "Water Practices", color: "text-blue-400", desc: "Blessing & cleansing rituals" },
@@ -102,7 +102,6 @@ const MainMenu = ({ user }) => {
         { path: "/shamanic", icon: Moon, label: "Shamanic Practices", color: "text-indigo-400", desc: "Journey & soul retrieval" },
         { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening ceremonies" },
         { path: "/sacred-guardians", icon: Feather, label: "Sacred Guardians", color: "text-amber-400", desc: "Animals, dragons & angels" },
-        { path: "/elemental", icon: Sparkles, label: "Five Elements", color: "text-teal-400", desc: "Elemental wisdom" },
         { path: "/ancient-wisdom", icon: Globe, label: "Ancient Traditions", color: "text-yellow-400", desc: "Egyptian, Celtic & Avalon" },
         { path: "/sound-frequencies", icon: Volume2, label: "Sound Healing", color: "text-cyan-400", desc: "Frequencies & vibration" },
         { path: "/creative", icon: Palette, label: "Sacred Art", color: "text-violet-400", desc: "Creative expression" },
