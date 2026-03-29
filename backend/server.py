@@ -155,6 +155,19 @@ async def do_database_seeding():
         await db.crystals_deep.insert_many(CRYSTALS_DEEP)
         logger.info(f"crystals_deep refreshed — {len(CRYSTALS_DEEP)} deep crystals.")
 
+        # Apply deep philosophical teachings to each crystal
+        from data.crystals_deep_teachings import CRYSTAL_DEEP_TEACHINGS
+        logger.info("Applying deep teachings to crystals_deep...")
+        updated_crystals = 0
+        for crystal_id, teachings in CRYSTAL_DEEP_TEACHINGS.items():
+            result = await db.crystals_deep.update_one(
+                {"id": crystal_id},
+                {"$set": teachings}
+            )
+            if result.modified_count:
+                updated_crystals += 1
+        logger.info(f"Deep teachings applied to {updated_crystals} crystals.")
+
         # Always reseed light_codes so content updates in divination_content.py are applied
         logger.info("Refreshing light_codes collection with latest data...")
         await db.light_codes.delete_many({})

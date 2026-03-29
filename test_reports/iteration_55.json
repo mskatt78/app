@@ -1,0 +1,71 @@
+{
+  "summary": "Comprehensive testing of Crystal Guide deep content feature. Backend /api/crystals/deep returns all 27 crystals with why_this_heals, extended_teachings, practice_guide. Frontend dialog shows all rich sections. GuidedPracticeOverlay launches correctly with timer matching crystal meditation duration.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Crystal Guide - Card Grid",
+        "issues": [
+          "MODERATE: Several crystal cards have irrelevant Unsplash images - Clear Quartz shows apples, Amethyst shows laptop keyboard. These are completely unrelated to crystals and reduce UX quality.",
+          "MINOR: Subtitle '27 crystals, each carrying deep wisdom...' does not update when element filter is applied (still shows '27 crystals' when only 2 Earth crystals are displayed after filtering)."
+        ]
+      }
+    ]
+  },
+  "feature_test_results": {
+    "crystals_page_loads": "PASS - data-testid=crystal-guide renders at /crystals",
+    "27_crystal_cards": "PASS - exactly 27 [data-testid^=crystal-card-] elements rendered",
+    "card_click_opens_dialog": "PASS - clicking crystal-card-clear-quartz opens Dialog",
+    "dialog_affirmation": "PASS - Affirmation shown: 'I am a clear channel for divine light and wisdom. Clarity is my natural state.'",
+    "dialog_stone_vitals": "PASS - Chakra (Crown/All Chakras), Planet (Sun), Vibration (#4), Hardness (7 Mohs), Color (Clear, White), Rarity (Common) all visible",
+    "dialog_why_this_heals": "PASS - 'WHY THIS CRYSTAL HEALS' section visible, open by default, shows deep philosophical text",
+    "dialog_healing_properties": "PASS - 'HEALING PROPERTIES' collapsible section visible",
+    "dialog_historical_wisdom": "PASS - 'HISTORICAL & ANCIENT WISDOM' section visible, expandable showing ancient Egypt content",
+    "dialog_cleanse_charge": "PASS - 'HOW TO CLEANSE & CHARGE' section shows methods (Sound, Smudging, Earth Burial, Selenite) with durations",
+    "dialog_sacred_rituals": "PASS - 'SACRED RITUALS' section visible (collapsible)",
+    "dialog_powerful_combinations": "PASS - 'POWERFUL COMBINATIONS' section visible (collapsible)",
+    "dialog_zodiac_origins": "PASS - Zodiac Signs (All Signs) and Origins (Brazil, Madagascar, USA, Alps) displayed",
+    "dialog_warnings": "PASS - 'IMPORTANT NOTES' amber warning box shown (e.g. clear quartz amplifies ALL energy)",
+    "begin_practice_button": "PASS - data-testid=begin-crystal-practice-btn visible and clickable",
+    "guided_practice_overlay_opens": "PASS - GuidedPracticeOverlay (data-testid=guided-practice-overlay) appears on button click",
+    "timer_clear_quartz_15min": "PASS - Clear Quartz shows '15:00 remaining' matching meditation_guidance.duration_minutes=15",
+    "timer_amethyst_20min": "PASS - Amethyst shows '20:00 remaining' matching meditation_guidance.duration_minutes=20",
+    "exit_buttons": "PASS - guided-exit-btn and guided-close-top both close overlay",
+    "element_filter": "PASS - Earth filter shows 2 cards (Black Tourmaline, Malachite); All Elements resets to 27",
+    "back_button": "PASS - data-testid=back-btn navigates away from crystals page"
+  },
+  "backend_tests": {
+    "test_file": "/app/backend/tests/test_crystals_deep.py",
+    "result": "17/17 PASSED",
+    "details": "All 27 crystals have: why_this_heals, extended_teachings, practice_guide, healing_properties (physical/emotional/spiritual), cleansing_methods, rituals, combinations, affirmation, stone vitals. No MongoDB _id leakage. Individual crystal endpoint /api/crystals/deep/{id} works."
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_crystals_deep.py",
+    "/app/test_reports/pytest/pytest_crystals_deep_iter55.xml"
+  ],
+  "action_items": [
+    "MODERATE: Fix irrelevant crystal images - Clear Quartz displays apple fruit image, Amethyst displays laptop keyboard. Update image_url fields in crystals_deep.py to use relevant crystal photos.",
+    "MINOR: Optionally update subtitle text in CrystalGuide.jsx to reflect filtered count (e.g. 'Showing 2 Earth crystals' when filtered) - currently static '27 crystals'."
+  ],
+  "critical_code_review_comments": [
+    "Crystal images from Unsplash appear to be generic/random - Clear Quartz shows apples, Amethyst shows a laptop. The image_url values in crystals_deep.py point to incorrect Unsplash photos that don't match the crystals.",
+    "CrystalGuide.jsx line 186: Hardcoded '27 crystals' subtitle text should dynamically show filteredCrystals.length for better UX.",
+    "GuidedPracticeOverlay correctly uses duration_minutes from practice object - timer accurately matches crystal meditation duration (15:00 for Clear Quartz, 20:00 for Amethyst)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_crystals_deep.py"
+  ],
+  "success_rate": {
+    "backend": "100% (17/17 tests passed)",
+    "frontend": "95% (all required features work; irrelevant images is design issue only)"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Crystal Guide fully tested. /api/crystals/deep returns 27 crystals each with why_this_heals, extended_teachings, practice_guide (deep teachings applied via startup seeding from crystals_deep_teachings.py). Dialog with all sections (Why This Heals, Healing Properties, Historical Wisdom, Cleanse/Charge, Sacred Rituals, Powerful Combinations) all working. GuidedPracticeOverlay launches from Begin Guided Crystal Practice button with correct timer (15:00 for ClearQuartz, 20:00 for Amethyst). Element filter works. Only outstanding issue is irrelevant crystal images (apples/laptop) in image_url fields."
+}
