@@ -103,26 +103,86 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Please verify the latest frontend behavior on https://shamanic-soul-temple-3.preview.emergentagent.com with focus on these flows:
-  
-  1) Light Codes deep content
-  - Open /light-codes
-  - Confirm page loads and category buttons work
-  - Click Light Language category
-  - Open DNA Activation Helix card (data-testid should include light-code-card-ll3)
-  - Verify modal opens and tabs exist: Essence, Why It Heals, Ancient Traditions, Practice Guide
-  - Check content is substantial, not minimal, and modal closes correctly
-  
-  2) GuidedPracticeOverlay timer
-  - Open a page using GuidedPracticeOverlay (for example /crystals)
-  - Launch a guided practice card that advertises 15 minutes if available
-  - Verify the overlay timer starts automatically, shows the advertised full duration, counts down correctly, and pause/resume works
-  
-  3) PracticeTimer regression fix
-  - Open /shamanic
-  - Enter a practice and click Begin Guided Shamanic Journey
-  - Confirm PracticeTimer is not stuck, starts counting down, overall progress moves, and current step timer decreases
-  - Spot check one additional PracticeTimer page if practical: /grounding, /elemental, or /sunrise-sunset
+  Please verify backend/API behavior for the current spiritual wellness app using the preview base URL https://shamanic-soul-temple-3.preview.emergentagent.com . Focus on these checks:
+
+  1) Light Codes API depth
+  - GET /api/light-codes
+  - Confirm response includes categories: sacred_geometry, ancient_alphabets, light_language_symbols, galactic_codes, chakra_codes
+  - Confirm representative entries include deep fields: why_this_heals, ancient_traditions, extended_teachings, practice_guide, lineage, healing_lens
+  - Specifically verify DNA Activation Helix (ll3) includes rich non-empty deep fields
+
+  2) General backend health
+  - GET /api/health should respond healthy
+  - Verify no obvious 500s or schema issues for the above endpoint
+
+  3) Optional sanity checks if quick
+  - Confirm data shape is JSON-safe and does not leak Mongo ObjectIds in the light-codes response
+
+  Context:
+  - Light Codes depth was enriched in backend/data/divination_content.py via post-processing of LIGHT_CODES entries.
+  - Frontend and prior self-tests already showed the page rendering; this backend pass is to confirm endpoint correctness only.
+  - No mocked APIs involved for these endpoint checks.
+
+backend:
+  - task: "Light Codes API endpoint returns all required categories"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/light-codes endpoint responding correctly. All 5 required categories present: sacred_geometry, ancient_alphabets, light_language_symbols, galactic_codes, chakra_codes. API returns 200 status."
+
+  - task: "Light Codes API includes deep fields for representative entries"
+    implemented: true
+    working: true
+    file: "/app/backend/data/divination_content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ All 5 categories contain entries with deep fields (why_this_heals, ancient_traditions, extended_teachings, practice_guide, lineage, healing_lens). Content enrichment from divination_content.py working correctly."
+
+  - task: "DNA Activation Helix (ll3) has rich non-empty deep fields"
+    implemented: true
+    working: true
+    file: "/app/backend/data/divination_content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ DNA Activation Helix (ll3) found in light_language_symbols with all required deep fields. Field lengths: why_this_heals (511 chars), ancient_traditions (401 chars), extended_teachings (400 chars), practice_guide (349 chars), lineage (88 chars), healing_lens (53 chars). All fields contain substantial content."
+
+  - task: "Backend health endpoint responds correctly"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/health endpoint responding with 200 status and 'healthy' status. No 500 errors or schema issues detected."
+
+  - task: "Light Codes API data is JSON-safe without MongoDB ObjectId leaks"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Light Codes API response is fully JSON serializable. No MongoDB ObjectId references or _id fields detected in response. Data shape is clean and safe for frontend consumption."
 
 frontend:
   - task: "Light Codes page loads and category buttons work"
@@ -187,14 +247,15 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 1
-  run_ui: true
+  version: "1.1"
+  test_sequence: 2
+  run_ui: false
   last_tested: "2026-03-29"
 
 test_plan:
   current_focus:
-    - "All requested flows tested and verified"
+    - "Backend API verification completed"
+    - "Light Codes API depth confirmed"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -202,27 +263,22 @@ test_plan:
 agent_communication:
   - agent: "testing"
     message: |
-      Comprehensive testing completed for all three requested flows:
+      Backend API verification completed successfully for spiritual wellness app:
       
-      1. ✓ Light Codes deep content - PASSED
-         - Page loads correctly
-         - Category buttons work (Light Language tested)
-         - DNA Activation Helix card (ll3) opens modal
-         - All 4 tabs present with substantial content (400+ chars each)
-         - Modal closes correctly
+      1. ✓ Light Codes API Depth - PASSED
+         - GET /api/light-codes returns all 5 required categories
+         - All categories contain entries with deep fields (why_this_heals, ancient_traditions, etc.)
+         - DNA Activation Helix (ll3) verified with rich content in all deep fields
+         - Field lengths range from 53-511 characters, all substantial
       
-      2. ✓ GuidedPracticeOverlay timer - PASSED
-         - Tested on /crystals page
-         - Timer auto-starts showing ~15 minutes (14:57)
-         - Countdown works correctly
-         - Pause/resume functionality verified
+      2. ✓ Backend Health - PASSED
+         - GET /api/health responds with 200 status and "healthy" status
+         - No 500 errors or schema issues detected
       
-      3. ✓ PracticeTimer regression fix - PASSED
-         - Tested on /shamanic page (30 min practice)
-         - Timer NOT stuck - counts down correctly
-         - Overall progress moves
-         - Current step timer decreases
-         - Spot check on /grounding page also passed
+      3. ✓ JSON Safety - PASSED
+         - Light Codes API response is fully JSON serializable
+         - No MongoDB ObjectId leaks or _id fields in response
+         - Data shape is clean and safe for frontend consumption
       
-      All major functionality working as expected. No critical issues found.
-      18 screenshots captured for verification.
+      All backend endpoints working correctly. No critical issues found.
+      Light Codes content enrichment from divination_content.py functioning as expected.
