@@ -5,7 +5,7 @@ import {
   Leaf, Eye, Wind, Moon, Sparkles, Heart, Waves, Mountain,
   LogOut, Menu, X, ChevronRight, Sun, User, Star, Clock, Trophy, BookOpen, Settings,
   Brain, Compass, Hash, Shield, BarChart3, Palette, Feather, Zap, Radio, MapPin, CreditCard,
-  Flame, Award
+  Flame, Award, Play, ExternalLink
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
@@ -104,6 +104,152 @@ const StreakWidget = ({ onJournalClick }) => {
       <Button size="sm" variant="outline" onClick={onJournalClick} className="text-amber-400 border-amber-500/30 hover:bg-amber-500/10 flex-shrink-0" data-testid="streak-journal-btn">
         <BookOpen className="w-3 h-3 mr-1" /> Journal
       </Button>
+    </motion.div>
+  );
+};
+
+// ─── Video of the Day Widget ────────────────────────────────────────────────
+const VideoOfDayWidget = ({ api, onViewAll }) => {
+  const [video, setVideo] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchVideoOfDay();
+  }, []);
+
+  const fetchVideoOfDay = async () => {
+    try {
+      const response = await api.get("/videos");
+      const videos = response.data || [];
+      if (videos.length > 0) {
+        // Get a "daily" video based on day of year
+        const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+        const videoIndex = dayOfYear % videos.length;
+        setVideo(videos[videoIndex]);
+      }
+    } catch (error) {
+      console.error("Failed to fetch video of the day:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getYouTubeId = (url) => {
+    if (!url) return null;
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+    return match ? match[1] : null;
+  };
+
+  const getThumbnail = (url) => {
+    const videoId = getYouTubeId(url);
+    return videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : null;
+  };
+
+  const categoryColors = {
+    angel_guidance: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
+    colour_therapy: { bg: "bg-purple-500/10", text: "text-purple-400", border: "border-purple-500/20" },
+    aromatherapy: { bg: "bg-emerald-500/10", text: "text-emerald-400", border: "border-emerald-500/20" },
+    art_therapy: { bg: "bg-rose-500/10", text: "text-rose-400", border: "border-rose-500/20" },
+    feminine: { bg: "bg-pink-500/10", text: "text-pink-400", border: "border-pink-500/20" },
+    chakra: { bg: "bg-violet-500/10", text: "text-violet-400", border: "border-violet-500/20" },
+    kundalini: { bg: "bg-orange-500/10", text: "text-orange-400", border: "border-orange-500/20" },
+    drumming: { bg: "bg-amber-500/10", text: "text-amber-400", border: "border-amber-500/20" },
+    meditation: { bg: "bg-indigo-500/10", text: "text-indigo-400", border: "border-indigo-500/20" },
+    default: { bg: "bg-primary/10", text: "text-primary", border: "border-primary/20" }
+  };
+
+  const getCategoryStyle = (category) => categoryColors[category] || categoryColors.default;
+
+  if (loading) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="p-6 rounded-2xl bg-card/50 border border-white/10 animate-pulse"
+      >
+        <div className="h-40 bg-white/5 rounded-xl mb-4" />
+        <div className="h-4 bg-white/5 rounded w-3/4 mb-2" />
+        <div className="h-3 bg-white/5 rounded w-1/2" />
+      </motion.div>
+    );
+  }
+
+  if (!video) return null;
+
+  const thumbnail = getThumbnail(video.video_url);
+  const catStyle = getCategoryStyle(video.category);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={`rounded-2xl overflow-hidden ${catStyle.bg} border ${catStyle.border} transition-all duration-500 hover:scale-[1.01]`}
+      data-testid="video-of-day"
+    >
+      {/* Thumbnail */}
+      <div className="relative aspect-video overflow-hidden group cursor-pointer"
+           onClick={() => window.open(video.video_url, '_blank')}>
+        {thumbnail ? (
+          <img 
+            src={thumbnail} 
+            alt={video.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-white/5 flex items-center justify-center">
+            <Play className={`w-12 h-12 ${catStyle.text}`} />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+        
+        {/* Play Button Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="w-16 h-16 rounded-full flex items-center justify-center backdrop-blur-sm bg-white/20">
+            <Play className="w-7 h-7 ml-1 text-white" fill="white" />
+          </div>
+        </div>
+
+        {/* Category Badge */}
+        <div className="absolute top-3 left-3">
+          <span className={`px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${catStyle.bg} ${catStyle.text}`}>
+            {video.category?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+          </span>
+        </div>
+
+        {/* Duration */}
+        {video.duration && (
+          <div className="absolute bottom-3 right-3">
+            <span className="px-2 py-1 rounded-full text-xs backdrop-blur-sm flex items-center gap-1 bg-black/60 text-white">
+              <Clock className="w-3 h-3" /> {video.duration}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Video of the Day</p>
+            <h4 className="text-lg font-serif mb-2 line-clamp-2">{video.title}</h4>
+            <p className="text-sm text-muted-foreground line-clamp-2">{video.description}</p>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/10">
+          <a
+            href={video.video_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center gap-2 text-sm font-medium ${catStyle.text} hover:underline`}
+          >
+            <Play className="w-4 h-4" /> Watch Now
+          </a>
+          <Button variant="ghost" size="sm" onClick={onViewAll} className="text-muted-foreground hover:text-primary">
+            View All <ChevronRight className="w-4 h-4 ml-1" />
+          </Button>
+        </div>
+      </div>
     </motion.div>
   );
 };

@@ -356,5 +356,140 @@ CREATIVE_PROCESSES_DEEP = [
         ],
         "integration": "Build a working relationship with a small collection of stones rather than acquiring many superficially. Five deeply-known stones are more powerful medicine than fifty strangers.",
         "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800"
+    },
+    {
+        "id": "10",
+        "name": "Colour Therapy (Chromotherapy)",
+        "category": "visual",
+        "element": "Light",
+        "tradition": "Ancient Egypt, Ayurveda, Chinese Medicine, Modern Chromotherapy",
+        "description": "Work with the healing frequencies of colour to restore balance to your energy body, emotions, and physical being. Colour is visible light — electromagnetic radiation at specific frequencies that your body receives, interprets, and responds to on cellular, emotional, and spiritual levels. The Egyptians built colour healing temples where specific chambers were saturated with coloured light for different ailments. Ayurveda maps colours to the chakras and doshas. Modern science confirms that colour affects hormone production, mood regulation, and even immune function. This practice teaches you to consciously work with colour as medicine.",
+        "why_this_heals": "Colour bypasses the conscious mind and speaks directly to the nervous system and energy body. Red light increases circulation and energy; blue light calms inflammation and anxiety; green light balances and restores. Your eyes contain photoreceptors that transmit colour information to the hypothalamus, which regulates hormones, sleep, and mood. Beyond physiology, colour carries archetypal meaning: red is life force and passion, blue is truth and peace, gold is divine wisdom, violet is spiritual transformation. When you consciously bathe your awareness in a colour, you are calling its medicine into your field.",
+        "spiritual_purpose": "To restore colour balance to the energy body, heal imbalances in specific chakras, and invoke the spiritual qualities that different colours carry.",
+        "duration_minutes": 30,
+        "materials": ["Coloured fabric scarves or cloths (red, orange, yellow, green, blue, indigo, violet, white)", "Coloured candles or LED colour-changing bulbs", "Coloured crystals corresponding to each colour", "Quiet space where you can control lighting", "Journal for colour meditation insights"],
+        "preparation": "Before beginning, assess your current state. What feels depleted? What feels overactive? If you are exhausted and cold, you may need warming colours (red, orange, yellow). If you are anxious or inflamed, you may need cooling colours (blue, indigo, violet). If you seek balance, begin with green — the centre of the spectrum.",
+        "colour_meanings": [
+            {"colour": "Red", "frequency": "Lowest visible frequency", "chakra": "Root", "heals": "Fatigue, low blood pressure, depression, lack of grounding, circulation issues", "caution": "Avoid with high blood pressure, anger, inflammation, fever"},
+            {"colour": "Orange", "frequency": "Second lowest", "chakra": "Sacral", "heals": "Creative blocks, sexual shame, grief held in the pelvis, digestive issues", "caution": "May increase appetite; avoid with hyperactivity"},
+            {"colour": "Yellow", "frequency": "Mid-low", "chakra": "Solar Plexus", "heals": "Low self-esteem, mental fog, digestive sluggishness, fear of power", "caution": "Avoid with anxiety; can increase nervous tension"},
+            {"colour": "Green", "frequency": "Centre of spectrum", "chakra": "Heart", "heals": "Heart grief, relationship wounds, jealousy, general imbalance", "caution": "Safe for all conditions; the great balancer"},
+            {"colour": "Blue", "frequency": "Mid-high", "chakra": "Throat", "heals": "Inflammation, fever, anxiety, insomnia, communication blocks", "caution": "Avoid with depression or coldness; can be too sedating"},
+            {"colour": "Indigo", "frequency": "Second highest", "chakra": "Third Eye", "heals": "Mental confusion, lack of intuition, headaches, sinus issues", "caution": "May intensify psychic sensitivity; ground well after use"},
+            {"colour": "Violet", "frequency": "Highest visible frequency", "chakra": "Crown", "heals": "Spiritual disconnection, grief, addiction, lack of purpose", "caution": "Avoid with dissociation or ungroundedness; always follow with red or green"}
+        ],
+        "process_steps": [
+            "Set your intention: 'I open myself to receive the healing medicine of [colour name].'",
+            "Create a colour-saturated environment. Drape coloured fabric around you, light a coloured candle, or use coloured lighting.",
+            "Sit or lie comfortably. Close your eyes. Begin with five deep breaths.",
+            "Visualize the colour entering your body with each inhale — filling your lungs, your blood, your cells with coloured light.",
+            "Direct the colour to where it is needed. If working with a specific chakra, see the colour saturating that energy centre.",
+            "With each exhale, release what the colour is clearing — gray, muddy, or stagnant energy leaving your body.",
+            "Remain in the colour bath for 10-15 minutes. You may experience sensations, emotions, images, or simply peace.",
+            "When complete, visualize a gentle white or gold light sealing in the healing.",
+            "If you used a stimulating colour (red, orange, yellow), close with a few breaths of green for balance.",
+            "If you used a calming colour (blue, indigo, violet), close with a few breaths of red or orange to ground.",
+            "Journal any insights, sensations, or shifts you experienced."
+        ],
+        "safety_precautions": "Colour therapy is generally safe but requires attention to contraindications listed above. Do not use red or orange if you have high blood pressure, fever, or acute inflammation. Do not use blue or violet if you are deeply depressed or dissociated. Always ground after working with high-frequency colours (indigo, violet) by visualising roots into the earth or holding a dark stone. Pregnant women should avoid prolonged exposure to red on the pelvic area. If you experience headache, nausea, or discomfort during colour work, stop and shift to green or neutral white light. Some people are highly colour-sensitive — start with brief sessions and observe your response before longer immersion.",
+        "therapeutic_benefits": [
+            "Balances the chakra system and restores energy flow",
+            "Provides non-verbal emotional processing through colour association",
+            "Regulates mood through physiological colour response",
+            "Offers a gentle, non-invasive form of healing for sensitive individuals",
+            "Supports other healing modalities as a complementary practice",
+            "Builds colour awareness that extends into daily life (clothing, food, environment)"
+        ],
+        "integration": "Once you know your colour needs, incorporate that medicine into your daily life: wear clothing in your healing colour, eat foods of that colour, surround yourself with objects in that shade. The body responds to colour continuously — make it conscious.",
+        "image_url": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=800"
+    },
+    {
+        "id": "11",
+        "name": "Art Therapy Medicine",
+        "category": "visual",
+        "element": "Fire",
+        "tradition": "Jungian Art Therapy, Indigenous Mark-Making, Somatic Art Practice",
+        "description": "Use art-making as a direct pathway to healing that bypasses verbal processing and reaches into the somatic and unconscious material that words cannot access. This is not about creating beautiful art — it is about letting the body and psyche speak through colour, line, shape, and texture. True art therapy differs from casual art-making in its therapeutic container: intention, presence, and integration. The image that emerges is not 'about' your feelings — it IS your feelings, made visible. Once visible, they can be witnessed, transformed, and released.",
+        "why_this_heals": "Art-making activates the right hemisphere of the brain — the seat of emotion, imagery, and non-linear knowing — while giving the overactive left hemisphere (verbal, analytical) something to do with the hands. This reduces rumination and overthinking. The physical act of mark-making is inherently regulating to the nervous system: the repetitive motion, the sensory engagement with materials, the focus required. When we create an image of our inner state, we externalise it — moving from being lost in an emotion to witnessing it from outside. This witnessing is the first step of all healing.",
+        "spiritual_purpose": "To make the invisible visible — to give form to formless feelings, to retrieve lost parts of the self through image, and to create sacred objects that carry healing medicine.",
+        "duration_minutes": 45,
+        "materials": ["Large paper (minimum 18x24 inches — small paper restricts expression)", "Oil pastels, crayons, or soft pastels (not pencils — too controlled)", "Acrylic or tempera paints and brushes of various sizes", "Collage materials: magazines, fabric scraps, natural objects", "Glue, scissors, tape", "Protective covering for your work surface", "Comfortable clothes you can get messy"],
+        "preparation": "Create a protected space and time — at least 45 minutes uninterrupted. Lay out all materials so you don't have to search during the process. Put on music without lyrics if desired. Set an intention: 'I allow my inner self to speak through image.' Release all expectations of the outcome — there is no good or bad art here, only authentic expression.",
+        "art_therapy_techniques": [
+            {"technique": "Bilateral Drawing", "description": "Use both hands simultaneously to draw on a large page. This engages both brain hemispheres and often produces surprising, non-planned imagery. Excellent for processing trauma and reducing anxiety.", "best_for": "Trauma, anxiety, integration"},
+            {"technique": "Body Mapping", "description": "Trace your body outline on large paper, then fill it with colours, images, and words representing your current inner state. Where do you hold tension? Joy? Grief?", "best_for": "Somatic awareness, chronic pain, body image"},
+            {"technique": "Scribble Drawing", "description": "Make a continuous scribble with eyes closed, then open eyes and find images within the lines. Colour and develop what you see.", "best_for": "Accessing unconscious material, creative blocks"},
+            {"technique": "Emotion Colour Field", "description": "Choose colours that represent your current emotional state. Cover the entire page with these colours, layering and blending. No forms — only colour.", "best_for": "Overwhelming emotions, when words fail"},
+            {"technique": "Collage Soul Portrait", "description": "Tear and cut images from magazines that call to you — do not think, only respond. Arrange them into a portrait of your inner self.", "best_for": "Identity exploration, life transitions"}
+        ],
+        "process_steps": [
+            "Sit quietly with your materials. Take five deep breaths.",
+            "Place your hands on the paper. Feel its texture. Ask: 'What wants to be expressed through me today?'",
+            "Begin without a plan. Pick up whatever material calls to you first — let your hand move before your mind decides.",
+            "Work in silence or with soft music. Avoid talking, even to yourself.",
+            "When you feel 'stuck,' make bigger movements — use your whole arm, not just your wrist.",
+            "If critical thoughts arise ('this is ugly,' 'I can't draw'), acknowledge them and return to sensation. What does the crayon feel like? What does this colour want?",
+            "Work until you feel complete — not when it 'looks finished,' but when your body feels done.",
+            "Step back and witness your creation from a distance. Notice your response without judgment.",
+            "Give your piece a title — the first words that arise, even if they seem strange.",
+            "Journal: 'What does this image tell me about my inner state right now?'"
+        ],
+        "safety_precautions": "Art therapy can surface intense emotions — grief, rage, terror. This is the practice working, not a sign to stop. However, if you feel overwhelmed, pause and ground: feel your feet, take slow breaths, hold a stone. Do not destroy artwork created during emotional flooding — keep it, even if you hate it. These images are medicine. If you consistently create very dark imagery (violence, death, despair), please work with a trained art therapist or counsellor who can hold space for this material. Art therapy is powerful precisely because it bypasses defences — respect that power. If you have experienced trauma, consider working with a professional art therapist before deep solo practice.",
+        "therapeutic_benefits": [
+            "Provides non-verbal processing for pre-verbal or unspeakable experiences",
+            "Regulates the nervous system through repetitive, sensory engagement",
+            "Externalises inner experience, creating witnessing distance",
+            "Reveals unconscious material not accessible through talk therapy",
+            "Builds tolerance for 'not knowing' and creative uncertainty",
+            "Creates tangible artifacts of healing journey"
+        ],
+        "integration": "Keep your art therapy pieces. Date them. Review them over time — you will see your journey. Consider creating a dedicated art therapy journal or portfolio. The images you create are not disposable — they are sacred documents of your healing.",
+        "image_url": "https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800"
+    },
+    {
+        "id": "12",
+        "name": "Sacred Aromatherapy",
+        "category": "sensory",
+        "element": "Air",
+        "tradition": "Ancient Egyptian Temple Rites, Ayurveda, Indigenous Smoke Medicine, Modern Aromatherapy",
+        "description": "Work with the sacred medicine of plant essences to heal body, mind, and spirit. Aromatherapy is not simply 'nice smells' — it is the direct transmission of plant intelligence through the most primal of senses. When you inhale an essential oil, volatile molecules travel to the olfactory bulb, which connects directly to the limbic system — the brain's emotional and memory centre. This is why scent can instantly transport you to another time, trigger deep emotion, or shift your entire state. The ancients knew this: Egyptian priests anointed with sacred oils, Indian temples filled with sandalwood smoke, Indigenous peoples burned sage and cedar for purification. This practice teaches you to work with plant essences as conscious allies.",
+        "why_this_heals": "Smell is our oldest sense — it developed before sight, before hearing. It bypasses the rational mind entirely and speaks directly to the emotional brain and body. Essential oils contain the concentrated life force of the plant — hundreds of chemical compounds that interact with human physiology in complex ways. Lavender actually increases alpha waves in the brain (calm alertness). Peppermint increases blood flow and alertness. Frankincense reduces inflammation and anxiety. Beyond chemistry, each plant carries a spirit — a consciousness that offers its medicine to those who approach with respect.",
+        "spiritual_purpose": "To receive the medicine of plant allies through the sacred portal of scent, to purify and protect sacred space, and to alter consciousness for meditation, ceremony, and healing work.",
+        "duration_minutes": 30,
+        "materials": ["High-quality essential oils (organic, therapeutic-grade)", "Diffuser or oil burner", "Carrier oil (jojoba, almond, or coconut) for topical use", "Small glass bottles for blending", "Cotton balls or inhalers for personal use", "Journal for recording your responses to different oils"],
+        "preparation": "Before working with any essential oil, meet it first. Open the bottle and inhale gently. Notice your immediate response — attraction, neutrality, or aversion. This response is information. Trust it. Oils you are drawn to often carry medicine you need; oils you dislike may carry medicine you resist.",
+        "sacred_oils": [
+            {"oil": "Frankincense (Boswellia)", "medicine": "The king of sacred oils. Opens the third eye, deepens meditation, connects to the divine. Anti-inflammatory, calming. Used in temples across cultures.", "use": "Meditation, prayer, ceremony, grief, anxiety"},
+            {"oil": "Lavender (Lavandula)", "medicine": "The great balancer. Calms without sedating, heals burns and wounds, eases anxiety and insomnia. Safe for most people.", "use": "Stress, insomnia, emotional upset, skin healing"},
+            {"oil": "Rose (Rosa damascena)", "medicine": "The oil of the heart. Heals grief, opens to love, connects to the divine feminine. Extremely precious — it takes 60,000 roses to make one ounce.", "use": "Heart healing, grief, self-love, ceremony"},
+            {"oil": "Sandalwood (Santalum album)", "medicine": "Sacred in Hindu and Buddhist traditions. Calms the mind, opens spiritual channels, supports dying and death rituals.", "use": "Meditation, spiritual work, death/dying support"},
+            {"oil": "Peppermint (Mentha piperita)", "medicine": "Awakens and clarifies. Increases alertness, eases headaches, supports digestion.", "use": "Mental clarity, headaches, energy, nausea"},
+            {"oil": "Eucalyptus (Eucalyptus globulus)", "medicine": "Clears respiratory system and stagnant energy. Protective and purifying.", "use": "Respiratory issues, purification, energy clearing"},
+            {"oil": "Cedarwood (Cedrus)", "medicine": "Grounding and protective. Used by Indigenous peoples for purification. Calms anxiety, supports sleep.", "use": "Grounding, protection, insomnia, ceremony"},
+            {"oil": "Ylang Ylang (Cananga odorata)", "medicine": "Deeply relaxing, euphoric, sensual. Balances heart rhythm, eases anxiety and depression.", "use": "Anxiety, depression, intimacy, heart healing"}
+        ],
+        "process_steps": [
+            "Set your intention: 'I open myself to receive the healing medicine of [plant name].'",
+            "Choose your oil based on your current need. Trust your nose — if you're drawn to it, it's calling you.",
+            "For inhalation: Add 3-5 drops to a diffuser, or place 1 drop on a cotton ball and inhale deeply.",
+            "For topical use: Always dilute essential oils in a carrier oil (5-10 drops essential oil per tablespoon carrier). Test on a small patch of skin first.",
+            "Close your eyes. Take slow, deep breaths through your nose. Let the scent fill you.",
+            "Notice what arises — emotions, memories, images, sensations. Scent is a time-traveller.",
+            "Speak to the plant spirit: 'Thank you for your medicine. Please show me what I need to see, heal what needs healing.'",
+            "Remain with the scent for 10-15 minutes. You may enter a meditative state.",
+            "When complete, thank the plant ally. Journal any insights or experiences.",
+            "Ground by drinking water and feeling your feet on the earth."
+        ],
+        "safety_precautions": "Essential oils are highly concentrated plant extracts — a single drop of peppermint oil equals 28 cups of peppermint tea. Never apply undiluted oils to skin (except lavender and tea tree for most people). Never ingest essential oils unless under guidance of a qualified practitioner. Keep oils away from eyes and mucous membranes. Some oils are phototoxic (bergamot, lemon, lime) — do not apply to skin before sun exposure. Pregnant women should avoid many oils (clary sage, rosemary, juniper, pennyroyal, and others). People with epilepsy should avoid rosemary, fennel, and hyssop. Always research contraindications before using any new oil. Store oils in dark glass bottles away from heat and light. Quality matters — use only pure, therapeutic-grade oils from reputable sources.",
+        "therapeutic_benefits": [
+            "Directly regulates the limbic system and emotional brain",
+            "Provides immediate shift in emotional and mental state",
+            "Supports physical healing through anti-inflammatory, antimicrobial, and other properties",
+            "Creates sacred atmosphere for meditation, ceremony, and healing work",
+            "Builds relationship with plant allies and the natural world",
+            "Anchors positive states through scent-memory association"
+        ],
+        "integration": "Create signature blends for different purposes: a meditation blend, a sleep blend, a focus blend. Use scent to anchor positive states — diffuse a specific oil whenever you feel peaceful, then use that oil to invoke peace in difficult moments. The body remembers.",
+        "image_url": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800"
     }
 ]
