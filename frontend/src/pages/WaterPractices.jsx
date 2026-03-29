@@ -7,12 +7,14 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 const WaterPractices = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [activeCategory, setActiveCategory] = useState("blessing");
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showGuided, setShowGuided] = useState(false);
   const [audioLoading, setAudioLoading] = useState(false);
   const audioRef = useRef(null);
 
@@ -462,9 +464,31 @@ const WaterPractices = ({ user, api }) => {
                 }} className="w-full" variant="outline">
                   Close
                 </Button>
+                <Button
+                  onClick={() => setShowGuided(true)}
+                  className="w-full bg-violet-500 hover:bg-violet-600 flex items-center justify-center gap-2"
+                  data-testid="water-guided-btn"
+                >
+                  <Play className="w-4 h-4" /> Start Guided Practice
+                </Button>
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Guided Practice Full-Screen Overlay */}
+      <AnimatePresence>
+        {showGuided && selectedPractice && (
+          <GuidedPracticeOverlay
+            practice={{
+              name: selectedPractice.name,
+              duration_minutes: selectedPractice.duration_minutes || 20,
+              element: "Water",
+              steps: selectedPractice.steps,
+            }}
+            onExit={() => setShowGuided(false)}
+          />
         )}
       </AnimatePresence>
     </div>

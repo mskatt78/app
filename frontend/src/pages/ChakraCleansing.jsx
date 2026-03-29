@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Clock, Heart, Sun, ChevronDown, ChevronUp, Loader2, Zap, Moon, Flame, Volume2, Share2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Clock, Heart, Sun, ChevronDown, ChevronUp, Loader2, Zap, Moon, Flame, Volume2, Share2, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
 import AddToJournal from "../components/AddToJournal";
 import ShareToCircle from "../components/ShareToCircle";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -35,6 +36,7 @@ export default function ChakraCleansing() {
   const [expandedSection, setExpandedSection] = useState("guide");
   const [audioState, setAudioState] = useState({ loading: false, audioUrl: null, sectionKey: null });
   const [showShare, setShowShare] = useState(false);
+  const [showGuided, setShowGuided] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -350,6 +352,13 @@ export default function ChakraCleansing() {
                   >
                     <Share2 className="w-3.5 h-3.5" />Share
                   </Button>
+                  <Button
+                    onClick={() => setShowGuided(true)}
+                    className="bg-violet-500 hover:bg-violet-600 flex items-center gap-1.5"
+                    data-testid="chakra-guided-btn"
+                  >
+                    <Play className="w-3.5 h-3.5" />Guided Practice
+                  </Button>
                   <Button variant="ghost" onClick={() => { setSelectedPractice(null); setAudioState({ loading: false, audioUrl: null, sectionKey: null }); }} className="flex-1">Close</Button>
                 </div>
               </div>
@@ -366,6 +375,21 @@ export default function ChakraCleansing() {
             practiceType="journey"
             defaultElement={selectedPractice.element || "Spirit"}
             onClose={() => setShowShare(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Guided Practice Full-Screen Overlay */}
+      <AnimatePresence>
+        {showGuided && selectedPractice && (
+          <GuidedPracticeOverlay
+            practice={{
+              name: `${selectedPractice.chakra || selectedPractice.name} Chakra — Self-Healing`,
+              duration_minutes: selectedPractice.duration_minutes || 20,
+              element: selectedPractice.element || "Spirit",
+              cleansing_guide: selectedPractice.cleansing_guide,
+            }}
+            onExit={() => setShowGuided(false)}
           />
         )}
       </AnimatePresence>

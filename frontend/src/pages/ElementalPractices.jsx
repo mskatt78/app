@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 const ElementalPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const ElementalPractices = ({ user, api }) => {
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [filter, setFilter] = useState("all");
   const [isPracticing, setIsPracticing] = useState(false);
+  const [showGuided, setShowGuided] = useState(false);
 
   const elementIcons = {
     Earth: Mountain,
@@ -351,6 +353,7 @@ const ElementalPractices = ({ user, api }) => {
                       totalDuration={(selectedPractice.duration_minutes || 20) * 60}
                       backgroundAudio={selectedPractice.element === "Fire" ? "fire" : selectedPractice.element === "Water" ? "ocean" : selectedPractice.element === "Air" ? "wind" : "nature"}
                       autoStartAudio={true}
+                      autoNarrate={true}
                       practiceType="elemental"
                       element={selectedPractice.element || "Earth"}
                       visualizationType="element"
@@ -389,20 +392,32 @@ const ElementalPractices = ({ user, api }) => {
               </div>
 
               {/* Fixed button at bottom */}
-              <div className="p-4 border-t border-white/10 bg-card rounded-b-2xl">
+              <div className="p-4 border-t border-white/10 bg-card rounded-b-2xl flex gap-2">
                 {!isPracticing ? (
-                  <Button 
-                    onClick={() => {
-                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) {}
-                      setIsPracticing(true);
-                    }}
-                    className="w-full py-4"
-                    style={{ minHeight: '56px' }}
-                    data-testid="begin-practice-btn"
-                  >
-                    <Play className="w-4 h-4 mr-2" />
-                    Begin Guided Elemental Practice
-                  </Button>
+                  <>
+                    <Button 
+                      onClick={() => {
+                        try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) {}
+                        setIsPracticing(true);
+                      }}
+                      className="flex-1 py-4"
+                      style={{ minHeight: '56px' }}
+                      data-testid="begin-practice-btn"
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Begin Guided Practice
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowGuided(true)}
+                      className="py-4 px-4 border-violet-500/30 text-violet-400 hover:bg-violet-500/10"
+                      style={{ minHeight: '56px' }}
+                      data-testid="elemental-fullscreen-btn"
+                      title="Open full-screen guided practice"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                    </Button>
+                  </>
                 ) : (
                   <Button 
                     variant="outline"
@@ -418,6 +433,21 @@ const ElementalPractices = ({ user, api }) => {
               </div>
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Full-Screen Guided Practice Overlay */}
+      <AnimatePresence>
+        {showGuided && selectedPractice && (
+          <GuidedPracticeOverlay
+            practice={{
+              name: selectedPractice.name,
+              duration_minutes: selectedPractice.duration_minutes || 20,
+              element: selectedPractice.element || "Earth",
+              steps: selectedPractice.instructions,
+            }}
+            onExit={() => setShowGuided(false)}
+          />
         )}
       </AnimatePresence>
     </div>

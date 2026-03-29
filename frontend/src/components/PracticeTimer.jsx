@@ -45,8 +45,9 @@ const PracticeTimer = ({
   element = "Spirit",
   breathingPattern = null,
   visualizationType = "particles",
-  allowSpeedControl = true, // Enable tempo/speed control for health reasons
-  autoStartAudio = false // Auto-start audio and timer when component mounts
+  allowSpeedControl = true,
+  autoStartAudio = false,
+  autoNarrate = false,
 }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
@@ -56,7 +57,9 @@ const PracticeTimer = ({
   const [showVisuals, setShowVisuals] = useState(true);
   const [audioVolume, setAudioVolume] = useState(0.5);
   const [audioPlaying, setAudioPlaying] = useState(false);
-  const [tempo, setTempo] = useState("normal"); // slow, normal, fast
+  const [tempo, setTempo] = useState("normal");
+  const [ttsLoading, setTtsLoading] = useState(false);
+  const [ttsAudioUrl, setTtsAudioUrl] = useState(null);
   const tempoMultipliers = { slow: 1.5, normal: 1.0, fast: 0.7 };
   const intervalRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -65,6 +68,8 @@ const PracticeTimer = ({
   const drumIntervalRef = useRef(null);
   const bowlIntervalRef = useRef(null);
   const autoStartedRef = useRef(false);
+  const ttsAudioRef = useRef(null);
+  const ttsAbortRef = useRef(null);
 
   // Calculate total duration from segments or use provided
   // Support both duration_seconds and duration field names
@@ -81,6 +86,62 @@ const PracticeTimer = ({
       setIsRunning(true);
     }
   }, [autoStartAudio, segments.length]);
+
+  // TTS auto-narration: generate and play audio for each step
+  useEffect(() => {
+    if (!autoNarrate) return;
+    const segment = segments[currentSegmentIndex];
+    if (!segment) return;
+    const text = (segment.description || segment.name || '').trim();
+    if (!text) return;
+
+    // Cancel any in-flight TTS request
+    if (ttsAbortRef.current) ttsAbortRef.current.abort();
+    const controller = new AbortController();
+    ttsAbortRef.current = controller;
+
+    // Revoke previous URL
+    if (ttsAudioUrl) {
+      URL.revokeObjectURL(ttsAudioUrl);
+      setTtsAudioUrl(null);
+    }
+
+    setTtsLoading(true);
+    const backendUrl = process.env.REACT_APP_BACKEND_URL || '';
+    fetch(`${backendUrl}/api/tts/generate-base64`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text.slice(0, 3800), voice: 'nova', speed: 0.85 }),
+      signal: controller.signal,
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (!data.audio_base64) return;
+        const binary = atob(data.audio_base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        setTtsAudioUrl(URL.createObjectURL(blob));
+      })
+      .catch(() => {})
+      .finally(() => setTtsLoading(false));
+  }, [currentSegmentIndex, autoNarrate]); // eslint-disable-line
+
+  // Play TTS audio automatically when URL is ready
+  useEffect(() => {
+    if (ttsAudioUrl && ttsAudioRef.current) {
+      ttsAudioRef.current.src = ttsAudioUrl;
+      ttsAudioRef.current.play().catch(() => {});
+    }
+  }, [ttsAudioUrl]);
+
+  // Cleanup TTS on unmount
+  useEffect(() => {
+    return () => {
+      if (ttsAbortRef.current) ttsAbortRef.current.abort();
+      if (ttsAudioUrl) URL.revokeObjectURL(ttsAudioUrl);
+    };
+  }, []); // eslint-disable-line
 
   // Map practice type to visualization
   const getVisualization = () => {
@@ -480,6 +541,16 @@ const PracticeTimer = ({
               <Volume2 className="w-3 h-3" /> Sound playing
             </p>
           )}
+          {autoNarrate && ttsLoading && (
+            <p className="text-xs text-violet-400/80 mt-2 flex items-center gap-1 animate-pulse">
+              <Volume2 className="w-3 h-3" /> Preparing narration...
+            </p>
+          )}
+          {autoNarrate && ttsAudioUrl && !ttsLoading && (
+            <p className="text-xs text-violet-400/80 mt-2 flex items-center gap-1">
+              <Volume2 className="w-3 h-3" /> Narrating step...
+            </p>
+          )}
           {!isMuted && backgroundAudio !== "silence" && !audioPlaying && (
             <p className="text-xs text-amber-400/70 mt-2 flex items-center gap-1">
               <Volume2 className="w-3 h-3" /> Tap play to start audio
@@ -621,6 +692,8 @@ const PracticeTimer = ({
           )}
         </div>
       )}
+      {/* Hidden TTS audio element */}
+      {autoNarrate && <audio ref={ttsAudioRef} style={{ display: 'none' }} />}
     </div>
   );
 };

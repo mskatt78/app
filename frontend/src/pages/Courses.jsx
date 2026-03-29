@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
 import ShareToCircle from "../components/ShareToCircle";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -45,6 +46,7 @@ export default function Courses() {
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [checkingPayment, setCheckingPayment] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [showGuided, setShowGuided] = useState(false);
 
   const getAuthToken = () => localStorage.getItem("auth_token");
   const isLoggedIn = () => !!getAuthToken();
@@ -763,6 +765,16 @@ export default function Courses() {
                         )}
                       </div>
                     )}
+                    {/* Start Guided Practice button for purchased courses */}
+                    {hasAccess(selectedCourse.id) && selectedCourse.daily_practice.steps?.length > 0 && (
+                      <Button
+                        onClick={() => setShowGuided(true)}
+                        className="w-full bg-emerald-500/80 hover:bg-emerald-500 flex items-center justify-center gap-2"
+                        data-testid="course-guided-btn"
+                      >
+                        <Play className="w-4 h-4" /> Start Guided Practice
+                      </Button>
+                    )}
                   </div>
                 )}
 
@@ -886,6 +898,21 @@ export default function Courses() {
             practiceType="journey"
             defaultElement="Spirit"
             onClose={() => setShowShare(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Guided Practice Full-Screen Overlay (Daily Practice) */}
+      <AnimatePresence>
+        {showGuided && selectedCourse?.daily_practice && (
+          <GuidedPracticeOverlay
+            practice={{
+              name: selectedCourse.daily_practice.name || `${selectedCourse.title} — Daily Practice`,
+              duration_minutes: selectedCourse.daily_practice.duration?.replace(/\D/g, '') * 1 || 20,
+              element: "Spirit",
+              steps: selectedCourse.daily_practice.steps,
+            }}
+            onExit={() => setShowGuided(false)}
           />
         )}
       </AnimatePresence>
