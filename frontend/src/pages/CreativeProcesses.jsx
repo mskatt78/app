@@ -1,45 +1,87 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
+import {
   ArrowLeft, Palette, Pen, Music, Camera, Sparkles,
-  ChevronRight, X, Clock, Play, CheckCircle2
+  Clock, Play,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
-import PracticeTimer from "../components/PracticeTimer";
-import GuidedAudioButton from "../components/GuidedAudioButton";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+
+const categoryIcons = {
+  visual: Palette,
+  writing: Pen,
+  movement: Music,
+  nature: Camera,
+  meditation: Sparkles,
+  ceremony: Sparkles,
+};
+
+const categoryColors = {
+  visual:    { text: "text-pink-400",   bg: "bg-pink-500/10",   border: "border-pink-500/20" },
+  writing:   { text: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/20" },
+  movement:  { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+  nature:    { text: "text-emerald-400",bg: "bg-emerald-500/10",border: "border-emerald-500/20" },
+  meditation:{ text: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/20" },
+  ceremony:  { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
+};
+
+const FILTER_CATS = ["all", "visual", "writing", "movement", "nature", "meditation", "ceremony"];
+
+function buildPractice(process) {
+  const steps = [];
+
+  if (process.description) {
+    steps.push(
+      `Welcome to ${process.name}. ${process.description} Take a few slow breaths and arrive fully in this creative space.`
+    );
+  }
+
+  if (process.process_steps?.length > 0) {
+    steps.push(...process.process_steps);
+  } else {
+    steps.push(
+      "Allow yourself to settle into creative stillness. There is no right or wrong — only your authentic expression.",
+      "Let your hands, voice, or body lead. Follow the impulse without editing or judging.",
+      "As you continue, notice what wants to emerge — a color, a word, a movement, a sound. Trust the first thing that comes.",
+      "Allow the practice to complete itself in its own time. Rest in the satisfaction of having expressed something true."
+    );
+  }
+
+  if (process.spiritual_purpose) {
+    steps.push(
+      `Hold this intention as you close: ${process.spiritual_purpose} Return to ordinary awareness gently, carrying your creative insight with you.`
+    );
+  } else {
+    steps.push(
+      "Gently return your awareness to the room. Take three grounding breaths. Notice how you feel — creative expression always changes us."
+    );
+  }
+
+  return {
+    name: process.name,
+    duration_minutes: process.duration_minutes || 30,
+    element: "Spirit",
+    id: process.id,
+    steps,
+  };
+}
 
 const CreativeProcesses = ({ user, api }) => {
   const navigate = useNavigate();
   const [processes, setProcesses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedProcess, setSelectedProcess] = useState(null);
   const [filter, setFilter] = useState("all");
-  const [isPracticing, setIsPracticing] = useState(false);
-
-  const categoryIcons = {
-    visual: Palette,
-    writing: Pen,
-    movement: Music,
-    nature: Camera,
-    meditation: Sparkles
-  };
-
-  const categoryColors = {
-    visual: { text: "text-pink-400", bg: "bg-pink-500/10", border: "border-pink-500/20" },
-    writing: { text: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
-    movement: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
-    nature: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
-    meditation: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
-    ceremony: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" }
-  };
+  const [selectedProcess, setSelectedProcess] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
 
   useEffect(() => {
     fetchProcesses();
   }, [filter]);
 
   const fetchProcesses = async () => {
+    setLoading(true);
     try {
       const url = filter === "all" ? "/creative-processes" : `/creative-processes?category=${filter}`;
       const response = await api.get(url);
@@ -52,32 +94,43 @@ const CreativeProcesses = ({ user, api }) => {
     }
   };
 
-  const logPractice = async (process) => {
-    try {
-      await api.post("/practice-history", {
-        practice_type: "creative_process",
-        practice_id: process.id,
-        duration_minutes: process.duration_minutes || 30,
-        element: "Spirit"
-      });
-      toast.success("Creative practice logged!");
-    } catch (error) {
-      console.error("Failed to log practice:", error);
-    }
+  const handleStartPractice = (process) => {
+    const practice = buildPractice(process);
+    setSelectedProcess(null); // close detail modal first
+    setGuidedPractice(practice);
   };
 
-  const categories = ["all", "visual", "writing", "movement", "nature", "meditation", "ceremony"];
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-      </div>
-    );
-  }
+  const handleExitPractice = async () => {
+    if (guidedPractice) {
+      try {
+        await api.post("/practice-history", {
+          practice_type: "creative_process",
+          practice_id: guidedPractice.id,
+          duration_minutes: guidedPractice.duration_minutes,
+          element: "Spirit",
+          notes: `Completed ${guidedPractice.name}`,
+        });
+        toast.success("Creative practice complete. Your spirit is expressed.");
+      } catch (e) {
+        // silent
+      }
+    }
+    setGuidedPractice(null);
+  };
 
   return (
     <div className="min-h-screen bg-background" data-testid="creative-processes">
+      {/* Full-screen Guided Practice Overlay */}
+      <AnimatePresence>
+        {guidedPractice && (
+          <GuidedPracticeOverlay
+            practice={guidedPractice}
+            stepsOverride={guidedPractice.steps}
+            onExit={handleExitPractice}
+          />
+        )}
+      </AnimatePresence>
+
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5 p-4">
         <div className="max-w-6xl mx-auto flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")} data-testid="back-btn">
@@ -93,87 +146,83 @@ const CreativeProcesses = ({ user, api }) => {
       <main className="max-w-6xl mx-auto p-6 space-y-8">
         {/* Category Filter */}
         <div className="flex flex-wrap gap-2">
-          {categories.map((cat) => {
+          {FILTER_CATS.map((cat) => {
             const Icon = categoryIcons[cat] || Sparkles;
             const colors = categoryColors[cat] || { text: "text-gray-400", bg: "bg-gray-500/10" };
             return (
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm transition-all ${
+                  filter === cat
+                    ? "bg-primary text-white"
+                    : `${colors.bg} ${colors.text} hover:opacity-80`
+                }`}
                 data-testid={`filter-${cat}`}
-                className={`px-4 py-2 rounded-xl flex items-center gap-2 transition-all
-                  ${filter === cat 
-                    ? `${colors.bg} ${colors.text} border ${colors.border || 'border-white/10'}` 
-                    : 'bg-card/50 text-muted-foreground hover:bg-card'}`}
               >
                 {cat !== "all" && <Icon className="w-4 h-4" />}
-                <span className="text-sm capitalize">{cat}</span>
+                {cat === "all" ? "All Processes" : cat.charAt(0).toUpperCase() + cat.slice(1)}
               </button>
             );
           })}
         </div>
 
-        {/* Process Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {processes.map((process, index) => {
-            const Icon = categoryIcons[process.category] || Palette;
-            const colors = categoryColors[process.category] || categoryColors.visual;
-            return (
-              <motion.div
-                key={process.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`group rounded-2xl overflow-hidden bg-card/50 border ${colors.border} 
-                           hover:border-opacity-50 transition-all duration-500 cursor-pointer`}
-                onClick={() => setSelectedProcess(process)}
-                data-testid={`process-${process.id}`}
-              >
-                {process.image_url && (
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={process.image_url}
-                      alt={process.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-                    <div className={`absolute top-4 right-4 px-3 py-1 rounded-full ${colors.bg} ${colors.text}`}>
-                      <span className="text-xs font-medium capitalize">{process.category}</span>
-                    </div>
-                  </div>
-                )}
-                <div className="p-6">
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className={`w-10 h-10 rounded-xl ${colors.bg} flex items-center justify-center flex-shrink-0`}>
-                      <Icon className={`w-5 h-5 ${colors.text}`} />
-                    </div>
-                    <div>
-                      <h3 className="font-serif text-lg group-hover:text-primary transition-colors">
-                        {process.name}
-                      </h3>
-                      <p className="text-xs text-muted-foreground">{process.tradition}</p>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                    {process.description}
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {process.duration_minutes || 30} min
-                    </span>
-                    <ChevronRight className={`w-4 h-4 ${colors.text} opacity-0 group-hover:opacity-100 transition-opacity`} />
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
-
-        {processes.length === 0 && (
-          <div className="text-center py-12">
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+          </div>
+        ) : processes.length === 0 ? (
+          <div className="text-center py-16">
             <Palette className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground">No creative processes found for this category.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {processes.map((process, index) => {
+              const colors = categoryColors[process.category] || categoryColors.visual;
+              const Icon = categoryIcons[process.category] || Sparkles;
+              return (
+                <motion.div
+                  key={process.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className={`rounded-2xl border ${colors.bg} ${colors.border} cursor-pointer hover:scale-[1.02] transition-all duration-300 overflow-hidden`}
+                  onClick={() => setSelectedProcess(process)}
+                  data-testid={`process-card-${process.id}`}
+                >
+                  {process.image_url && (
+                    <div className="relative h-36 overflow-hidden">
+                      <img src={process.image_url} alt={process.name} className="w-full h-full object-cover" loading="lazy" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    {!process.image_url && (
+                      <div className={`flex items-center justify-between mb-3`}>
+                        <div className={`p-2 rounded-xl ${colors.bg}`}>
+                          <Icon className={`w-5 h-5 ${colors.text}`} />
+                        </div>
+                        <span className={`px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
+                          {process.category}
+                        </span>
+                      </div>
+                    )}
+                    <h3 className="text-lg font-serif mb-2">{process.name}</h3>
+                    {process.tradition && (
+                      <p className={`text-xs ${colors.text} italic mb-2`}>{process.tradition}</p>
+                    )}
+                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{process.description}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {process.duration_minutes || 30} min
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </main>
@@ -186,253 +235,123 @@ const CreativeProcesses = ({ user, api }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={() => { setSelectedProcess(null); setIsPracticing(false); }}
+            onClick={() => setSelectedProcess(null)}
+            data-testid="process-backdrop"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col"
+              className="relative bg-card rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col"
               onClick={(e) => e.stopPropagation()}
               data-testid="process-modal"
             >
-              {/* Close button always visible */}
+              {/* Always-visible close button */}
               <button
-                onClick={() => { setSelectedProcess(null); setIsPracticing(false); }}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10"
-                data-testid="close-modal"
+                onClick={() => setSelectedProcess(null)}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors"
+                data-testid="close-modal-btn"
               >
-                <X className="w-5 h-5" />
+                <span className="sr-only">Close</span>
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
 
               {/* Scrollable content */}
-              <div className="flex-1 overflow-y-auto">
-                {!isPracticing ? (
-                  <>
-                    {selectedProcess.image_url && (
-                      <div className="relative h-48 sm:h-64">
-                        <img
-                          src={selectedProcess.image_url}
-                          alt={selectedProcess.name}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
-                      </div>
-                    )}
-                    
-                    <div className="p-6 space-y-6">
-                      <div>
-                        <h2 className="text-2xl font-serif mb-2">{selectedProcess.name}</h2>
-                        <p className="text-sm text-muted-foreground italic mb-4">{selectedProcess.tradition}</p>
-                        <p className="text-muted-foreground">{selectedProcess.description}</p>
-                      </div>
-
-                      <div className="flex items-center gap-4 p-4 rounded-xl bg-primary/10">
-                        <Clock className="w-5 h-5 text-primary" />
-                        <div>
-                          <p className="text-sm font-medium">Duration</p>
-                          <p className="text-muted-foreground">{selectedProcess.duration_minutes || 30} minutes</p>
-                        </div>
-                      </div>
-
-                      {selectedProcess.materials && (
-                        <div>
-                          <h3 className="font-medium mb-3">Materials Needed</h3>
-                          <div className="flex flex-wrap gap-2">
-                            {selectedProcess.materials.map((material, i) => (
-                              <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
-                                {material}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {selectedProcess.process_steps && (
-                        <div>
-                          <h3 className="font-medium mb-3">Creative Process</h3>
-                          <ol className="space-y-3">
-                            {selectedProcess.process_steps.map((step, i) => (
-                              <li key={i} className="flex items-start gap-3 text-sm">
-                                <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
-                                  {i + 1}
-                                </span>
-                                <span className="text-muted-foreground">{step}</span>
-                              </li>
-                            ))}
-                          </ol>
-                        </div>
-                      )}
-
-                      {selectedProcess.spiritual_purpose && (
-                        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-                          <h3 className="font-medium mb-2">Spiritual Purpose</h3>
-                          <p className="text-sm italic text-muted-foreground">{selectedProcess.spiritual_purpose}</p>
-                        </div>
-                      )}
-
-                      {selectedProcess.therapeutic_benefits && selectedProcess.therapeutic_benefits.length > 0 && (
-                        <div>
-                          <h3 className="font-medium mb-3">Therapeutic Benefits</h3>
-                          <div className="space-y-2">
-                            {selectedProcess.therapeutic_benefits.map((benefit, i) => (
-                              <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                                <CheckCircle2 className="w-4 h-4 text-green-400 mt-0.5 flex-shrink-0" />
-                                {benefit}
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {selectedProcess.herb_properties && (
-                        <div>
-                          <h3 className="font-medium mb-3">Sacred Plant Allies</h3>
-                          <div className="space-y-2">
-                            {selectedProcess.herb_properties.map((herb, i) => (
-                              <div key={i} className="p-3 rounded-lg bg-white/5">
-                                <span className="font-medium text-primary">{herb.herb}</span>
-                                <p className="text-xs text-muted-foreground mt-1">{herb.medicine}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {selectedProcess.why_this_heals && (
-                        <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-                          <h3 className="font-medium mb-2 text-emerald-400">Why This Heals</h3>
-                          <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.why_this_heals}</p>
-                        </div>
-                      )}
-
-                      {selectedProcess.preparation && (
-                        <div>
-                          <h3 className="font-medium mb-3">Preparation</h3>
-                          <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.preparation}</p>
-                        </div>
-                      )}
-
-                      {selectedProcess.safety_precautions && (
-                        <div className="p-4 rounded-xl bg-red-500/5 border border-red-500/20">
-                          <div className="flex items-center gap-2 mb-3">
-                            <span className="text-red-400 text-lg">⚠</span>
-                            <h3 className="font-medium text-red-400">Safety Precautions</h3>
-                          </div>
-                          <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.safety_precautions}</p>
-                        </div>
-                      )}
-
-                      {selectedProcess.integration && (
-                        <div className="p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
-                          <h3 className="font-medium mb-2 text-blue-400">Integration After Practice</h3>
-                          <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.integration}</p>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  /* Guided Creative Practice Mode with Timer */
-                  <div className="p-6 space-y-6">
-                    <div className="text-center mb-4">
-                      <div className={`w-16 h-16 mx-auto mb-4 rounded-full ${categoryColors[selectedProcess.category]?.bg || 'bg-primary/20'} flex items-center justify-center`}>
-                        {(() => {
-                          const Icon = categoryIcons[selectedProcess.category] || Sparkles;
-                          return <Icon className={`w-8 h-8 ${categoryColors[selectedProcess.category]?.text || 'text-primary'}`} />;
-                        })()}
-                      </div>
-                      <h2 className="text-2xl font-serif">{selectedProcess.name}</h2>
-                      <p className="text-sm text-muted-foreground mt-2">Guided Creative Practice</p>
-                    </div>
-
-                    {/* Guided Audio Narration */}
-                    <div className="flex justify-center">
-                      <GuidedAudioButton
-                        api={api}
-                        label="Play Guided Creative Narration"
-                        script={[
-                          `Welcome to this creative practice: ${selectedProcess.name}.`,
-                          selectedProcess.description || "",
-                          selectedProcess.spiritual_purpose ? `Your spiritual purpose today: ${selectedProcess.spiritual_purpose}` : "",
-                          selectedProcess.process_steps ? `Follow these steps: ` + selectedProcess.process_steps.map((s, i) => `Step ${i + 1}: ${s}`).join(". ") : "",
-                          "Allow your creativity to flow freely. Trust the process. Your expression is sacred.",
-                        ].filter(Boolean).join(" ")}
-                      />
-                    </div>
-
-                    <PracticeTimer
-                      segments={selectedProcess.process_steps?.map((step, i) => ({
-                        name: `Step ${i + 1}`,
-                        description: step,
-                        duration_seconds: Math.floor((selectedProcess.duration_minutes || 30) * 60 / (selectedProcess.process_steps?.length || 1)),
-                        has_audio: false
-                      })) || []}
-                      totalDuration={(selectedProcess.duration_minutes || 30) * 60}
-                      backgroundAudio="nature"
-                      autoStartAudio={true}
-                      practiceType="creative"
-                      element="Spirit"
-                      visualizationType="particles"
-                      onComplete={async () => {
-                        try {
-                          await api.post("/practice-history", {
-                            practice_type: "creative_process",
-                            practice_id: selectedProcess.id,
-                            duration_minutes: selectedProcess.duration_minutes || 30,
-                            element: "Spirit",
-                            notes: `Completed guided ${selectedProcess.name}`
-                          });
-                          toast.success("Creative practice complete! Your spirit is expressed.");
-                          setIsPracticing(false);
-                          setSelectedProcess(null);
-                        } catch (error) {
-                          console.error("Failed to log practice:", error);
-                          toast.success("Creative practice complete!");
-                          setIsPracticing(false);
-                          setSelectedProcess(null);
-                        }
-                      }}
-                    />
-
-                    {/* Spiritual purpose during practice */}
-                    {selectedProcess.spiritual_purpose && (
-                      <div className={`p-4 rounded-xl ${categoryColors[selectedProcess.category]?.bg || 'bg-primary/10'} border ${categoryColors[selectedProcess.category]?.border || 'border-primary/20'} text-center`}>
-                        <p className={`text-sm ${categoryColors[selectedProcess.category]?.text || 'text-primary'}`}>Remember your intention:</p>
-                        <p className="text-lg italic text-white/80 mt-2">"{selectedProcess.spiritual_purpose}"</p>
-                      </div>
-                    )}
+              <div className="overflow-y-auto flex-1 rounded-t-2xl">
+                {selectedProcess.image_url && (
+                  <div className="h-44 overflow-hidden rounded-t-2xl">
+                    <img src={selectedProcess.image_url} alt={selectedProcess.name} className="w-full h-full object-cover" />
                   </div>
                 )}
+                <div className="p-6 space-y-4">
+                  {(() => {
+                    const colors = categoryColors[selectedProcess.category] || categoryColors.visual;
+                    return (
+                      <>
+                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
+                          {selectedProcess.category}
+                        </div>
+                        <h2 className="text-2xl font-serif">{selectedProcess.name}</h2>
+                        {selectedProcess.tradition && (
+                          <p className={`text-sm italic ${colors.text}`}>{selectedProcess.tradition}</p>
+                        )}
+                        <p className="text-muted-foreground leading-relaxed">{selectedProcess.description}</p>
+
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Clock className="w-4 h-4" />
+                          {selectedProcess.duration_minutes || 30} minutes
+                        </div>
+
+                        {selectedProcess.materials?.length > 0 && (
+                          <div>
+                            <h4 className={`text-xs uppercase tracking-wider ${colors.text} mb-2`}>Materials Needed</h4>
+                            <ul className="space-y-1">
+                              {selectedProcess.materials.map((m, i) => (
+                                <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                                  <span className={`${colors.text} shrink-0`}>·</span>{m}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {selectedProcess.process_steps?.length > 0 && (
+                          <div>
+                            <h4 className={`text-xs uppercase tracking-wider ${colors.text} mb-2`}>Practice Steps</h4>
+                            <ol className="space-y-2">
+                              {selectedProcess.process_steps.map((step, i) => (
+                                <li key={i} className="text-sm text-muted-foreground flex gap-2">
+                                  <span className={`${colors.text} shrink-0 font-medium`}>{i + 1}.</span>
+                                  <span>{step}</span>
+                                </li>
+                              ))}
+                            </ol>
+                          </div>
+                        )}
+
+                        {selectedProcess.spiritual_purpose && (
+                          <div className={`${colors.bg} border ${colors.border} rounded-xl p-4`}>
+                            <p className={`text-xs uppercase tracking-wider ${colors.text} mb-1`}>Spiritual Purpose</p>
+                            <p className="text-sm italic text-muted-foreground">{selectedProcess.spiritual_purpose}</p>
+                          </div>
+                        )}
+
+                        {selectedProcess.why_this_heals && (
+                          <div>
+                            <h4 className={`text-xs uppercase tracking-wider ${colors.text} mb-2`}>Why This Heals</h4>
+                            <p className="text-sm text-muted-foreground leading-relaxed">{selectedProcess.why_this_heals}</p>
+                          </div>
+                        )}
+
+                        {selectedProcess.therapeutic_benefits?.length > 0 && (
+                          <div>
+                            <h4 className={`text-xs uppercase tracking-wider ${colors.text} mb-2`}>Benefits</h4>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedProcess.therapeutic_benefits.map((b, i) => (
+                                <span key={i} className={`px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>{b}</span>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
               </div>
 
-              {/* Fixed button at bottom */}
-              <div className="p-4 border-t border-white/10 bg-card rounded-b-2xl">
-                {!isPracticing ? (
-                  <button 
-                    type="button"
-                    onClick={() => {
-                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) {}
-                      setIsPracticing(true);
-                    }}
-                    className="w-full py-4 px-6 bg-primary hover:bg-primary/90 active:bg-primary/80 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
-                    style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
-                    data-testid="begin-practice-btn"
-                  >
-                    <Play className="w-5 h-5" />
-                    Begin Guided Creative Practice
-                  </button>
-                ) : (
-                  <button 
-                    type="button"
-                    onClick={() => setIsPracticing(false)}
-                    className="w-full py-4 px-6 bg-gray-600 hover:bg-gray-700 active:bg-gray-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
-                    style={{ WebkitTapHighlightColor: 'transparent', minHeight: '56px' }}
-                    data-testid="exit-practice-btn"
-                  >
-                    <X className="w-5 h-5" />
-                    Exit Practice
-                  </button>
-                )}
+              {/* Fixed bottom action */}
+              <div className="p-4 border-t border-white/10 rounded-b-2xl bg-card shrink-0">
+                <Button
+                  onClick={() => handleStartPractice(selectedProcess)}
+                  className="w-full"
+                  size="lg"
+                  data-testid="begin-practice-btn"
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                  Begin Guided Practice
+                </Button>
               </div>
             </motion.div>
           </motion.div>
