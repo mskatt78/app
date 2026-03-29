@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Clock, Heart, Sun, ChevronDown, ChevronUp, Loader2, Zap, Moon, Flame } from "lucide-react";
+import { ArrowLeft, Sparkles, Clock, Heart, Sun, ChevronDown, ChevronUp, Loader2, Zap, Moon, Flame, Volume2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -32,6 +32,13 @@ export default function ChakraCleansing() {
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [filterChakra, setFilterChakra] = useState("all");
   const [expandedSection, setExpandedSection] = useState("guide");
+  const [audioState, setAudioState] = useState({ loading: false, audioUrl: null, sectionKey: null });
+
+  useEffect(() => {
+    return () => {
+      if (audioState.audioUrl) URL.revokeObjectURL(audioState.audioUrl);
+    };
+  }, [audioState.audioUrl]);
 
   useEffect(() => { fetchPractices(); }, []);
 
@@ -41,6 +48,34 @@ export default function ChakraCleansing() {
       setPractices(data);
     } catch { toast.error("Failed to load practices"); }
     finally { setLoading(false); }
+  };
+
+  const generateAudio = async (text, sectionKey) => {
+    if (!text) return;
+    // Toggle off if same section already playing
+    if (audioState.sectionKey === sectionKey && audioState.audioUrl) {
+      URL.revokeObjectURL(audioState.audioUrl);
+      setAudioState({ loading: false, audioUrl: null, sectionKey: null });
+      return;
+    }
+    setAudioState({ loading: true, audioUrl: null, sectionKey });
+    try {
+      const safeText = typeof text === "string" ? text : text.join ? text.join(". ") : String(text);
+      const { data } = await api.post("/tts/generate-base64", {
+        text: safeText.slice(0, 3800),
+        voice: "nova",
+        speed: 0.85,
+      });
+      const binary = atob(data.audio_base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      const blob = new Blob([bytes], { type: "audio/mpeg" });
+      const url = URL.createObjectURL(blob);
+      setAudioState({ loading: false, audioUrl: url, sectionKey });
+    } catch {
+      toast.error("Could not generate audio narration");
+      setAudioState({ loading: false, audioUrl: null, sectionKey: null });
+    }
   };
 
   const chakras = ["all", ...Object.keys(CHAKRA_CONFIG)];
@@ -151,7 +186,7 @@ export default function ChakraCleansing() {
         {selectedPractice && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-            onClick={() => setSelectedPractice(null)}>
+            onClick={() => { setSelectedPractice(null); setAudioState({ loading: false, audioUrl: null, sectionKey: null }); }}>
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
               onClick={e => e.stopPropagation()}
               className="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-card border border-white/10"
@@ -200,16 +235,41 @@ export default function ChakraCleansing() {
                   { key: "crystals", label: "Supporting Crystals", icon: Sparkles, content: selectedPractice.crystals },
                 ].filter(s => s.content).map(section => (
                   <div key={section.key} className="mb-3 border border-white/10 rounded-xl overflow-hidden">
-                    <button onClick={() => setExpandedSection(expandedSection === section.key ? null : section.key)}
-                      className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors"
-                      data-testid={`section-${section.key}`}>
-                      <span className="flex items-center gap-2 text-sm font-medium">
+                    <div className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors">
+                      <button
+                        onClick={() => setExpandedSection(expandedSection === section.key ? null : section.key)}
+                        className="flex items-center gap-2 text-sm font-medium flex-1 text-left"
+                        data-testid={`section-${section.key}`}
+                      >
                         <section.icon className="w-4 h-4 text-violet-400" />{section.label}
-                      </span>
-                      {expandedSection === section.key ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                    </button>
+                      </button>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => generateAudio(section.content, section.key)}
+                          className={`p-1.5 rounded-full transition-all ${audioState.sectionKey === section.key ? "bg-violet-500/20 text-violet-300" : "hover:bg-white/10 text-muted-foreground"}`}
+                          title="Listen to narration"
+                          data-testid={`listen-${section.key}`}
+                        >
+                          {audioState.loading && audioState.sectionKey === section.key
+                            ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            : <Volume2 className="w-3.5 h-3.5" />
+                          }
+                        </button>
+                        <button onClick={() => setExpandedSection(expandedSection === section.key ? null : section.key)} className="p-1">
+                          {expandedSection === section.key ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
+                        </button>
+                      </div>
+                    </div>
                     {expandedSection === section.key && (
-                      <div className="px-4 pb-4 text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{section.content}</div>
+                      <div className="px-4 pb-4 text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                        {audioState.audioUrl && audioState.sectionKey === section.key && (
+                          <div className="mb-3 p-2 rounded-lg bg-violet-500/10 border border-violet-500/20">
+                            <p className="text-[10px] text-violet-400 mb-1.5 font-medium">Guided Narration</p>
+                            <audio controls autoPlay src={audioState.audioUrl} className="w-full" style={{ height: "36px" }} />
+                          </div>
+                        )}
+                        {section.content}
+                      </div>
                     )}
                   </div>
                 ))}
@@ -280,7 +340,7 @@ export default function ChakraCleansing() {
                     buttonVariant="outline"
                     buttonSize="default"
                   />
-                  <Button variant="ghost" onClick={() => setSelectedPractice(null)} className="flex-1">Close</Button>
+                  <Button variant="ghost" onClick={() => { setSelectedPractice(null); setAudioState({ loading: false, audioUrl: null, sectionKey: null }); }} className="flex-1">Close</Button>
                 </div>
               </div>
             </motion.div>

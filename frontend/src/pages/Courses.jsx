@@ -441,7 +441,7 @@ export default function Courses() {
               )}
 
               {/* Tabs - only if deep content exists */}
-              {(selectedCourse.rites?.length > 0 || selectedCourse.rituals?.length > 0 || selectedCourse.embodiment_practices?.length > 0) && (
+              {(selectedCourse.rites?.length > 0 || selectedCourse.rituals?.length > 0 || selectedCourse.embodiment_practices?.length > 0 || selectedCourse.daily_practice || selectedCourse.forty_day_integration || selectedCourse.safety_precautions) && (
                 <div className="flex gap-1 px-4 pb-2 flex-shrink-0 border-b border-white/10 overflow-x-auto">
                   {selectedCourse.rites?.length > 0 && (
                     <button
@@ -477,6 +477,33 @@ export default function Courses() {
                       data-testid="tab-prepare"
                     >
                       <Leaf className="w-3 h-3 inline mr-1" />Prepare & Integrate
+                    </button>
+                  )}
+                  {selectedCourse.daily_practice && (
+                    <button
+                      onClick={() => setActiveTab("daily")}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${activeTab === "daily" ? "bg-emerald-500 text-white" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`}
+                      data-testid="tab-daily"
+                    >
+                      <Sparkles className="w-3 h-3 inline mr-1" />Daily Practice
+                    </button>
+                  )}
+                  {selectedCourse.forty_day_integration && (
+                    <button
+                      onClick={() => setActiveTab("journey")}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${activeTab === "journey" ? "bg-amber-500 text-white" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`}
+                      data-testid="tab-journey"
+                    >
+                      <Calendar className="w-3 h-3 inline mr-1" />40-Day Journey
+                    </button>
+                  )}
+                  {selectedCourse.safety_precautions && (
+                    <button
+                      onClick={() => setActiveTab("safety")}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${activeTab === "safety" ? "bg-red-500 text-white" : "bg-white/5 text-muted-foreground hover:bg-white/10"}`}
+                      data-testid="tab-safety"
+                    >
+                      <Shield className="w-3 h-3 inline mr-1" />Safety
                     </button>
                   )}
                   {!selectedCourse.rites?.length && selectedCourse.highlights && (
@@ -678,6 +705,123 @@ export default function Courses() {
                         <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedCourse.integration_guidance}</p>
                       </div>
                     )}
+                  </div>
+                )}
+
+                {/* DAILY PRACTICE TAB */}
+                {activeTab === "daily" && selectedCourse.daily_practice && (
+                  <div className="p-4 space-y-4" data-testid="daily-tab-content">
+                    <div className="flex items-center gap-3 mb-1">
+                      <Sparkles className="w-5 h-5 text-emerald-400" />
+                      <h3 className="font-serif text-emerald-200">{selectedCourse.daily_practice.name}</h3>
+                      {selectedCourse.daily_practice.duration && (
+                        <span className="text-xs text-muted-foreground">{selectedCourse.daily_practice.duration}</span>
+                      )}
+                    </div>
+                    {selectedCourse.daily_practice.description && (
+                      <p className="text-sm text-muted-foreground leading-relaxed">{selectedCourse.daily_practice.description}</p>
+                    )}
+                    {selectedCourse.daily_practice.steps?.length > 0 && (
+                      <div className="space-y-2">
+                        {(hasAccess(selectedCourse.id)
+                          ? selectedCourse.daily_practice.steps
+                          : selectedCourse.daily_practice.steps.slice(0, 3)
+                        ).map((step, si) => (
+                          <div key={si} className="flex items-start gap-2 text-sm text-muted-foreground p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
+                            <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{si + 1}</span>
+                            <span className="leading-relaxed">{step}</span>
+                          </div>
+                        ))}
+                        {!hasAccess(selectedCourse.id) && selectedCourse.daily_practice.steps.length > 3 && (
+                          <div className="relative rounded-xl overflow-hidden">
+                            <div className="space-y-2 opacity-25 blur-[2px] pointer-events-none select-none">
+                              {selectedCourse.daily_practice.steps.slice(3, 5).map((step, si) => (
+                                <div key={si} className="flex items-start gap-2 text-sm p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
+                                  <span className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{si + 4}</span>
+                                  <span>{step}</span>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 backdrop-blur-[1px] rounded-xl gap-2">
+                              <Lock className="w-5 h-5 text-amber-400" />
+                              <p className="text-xs text-amber-300 font-medium">Purchase to unlock all steps</p>
+                              <Button size="sm" onClick={() => handlePurchase(selectedCourse)} disabled={purchaseLoading} className="bg-violet-500 hover:bg-violet-600 text-xs px-4">
+                                Unlock — ${selectedCourse.price}
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* 40-DAY JOURNEY TAB */}
+                {activeTab === "journey" && selectedCourse.forty_day_integration && (
+                  <div className="p-4 space-y-4" data-testid="journey-tab-content">
+                    {selectedCourse.forty_day_integration.overview && (
+                      <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+                        <p className="text-sm text-muted-foreground leading-relaxed">{selectedCourse.forty_day_integration.overview}</p>
+                      </div>
+                    )}
+                    {selectedCourse.forty_day_integration.phases?.map((phase, idx) => {
+                      const isLocked = idx > 0 && !hasAccess(selectedCourse.id);
+                      return (
+                        <div key={idx} className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+                          <div className="p-4">
+                            <div className="flex items-center justify-between gap-2 mb-2">
+                              <span className="text-xs text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded-full">{phase.days}</span>
+                              {isLocked && <Lock className="w-4 h-4 text-amber-400/60" />}
+                            </div>
+                            <h4 className="font-serif text-amber-100 mb-2">{phase.title}</h4>
+                            {isLocked ? (
+                              <div className="text-center py-3 space-y-2">
+                                <p className="text-xs text-muted-foreground">{phase.focus?.slice(0, 80)}...</p>
+                                <Button size="sm" onClick={() => handlePurchase(selectedCourse)} disabled={purchaseLoading} className="bg-violet-500 hover:bg-violet-600 text-xs">
+                                  <Lock className="w-3 h-3 mr-1" />Unlock Course — ${selectedCourse.price}
+                                </Button>
+                              </div>
+                            ) : (
+                              <>
+                                <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{phase.focus}</p>
+                                {phase.daily_focus && (
+                                  <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 mb-3">
+                                    <p className="text-xs text-amber-300 font-medium mb-1">Daily Practice</p>
+                                    <p className="text-xs text-muted-foreground">{phase.daily_focus}</p>
+                                  </div>
+                                )}
+                                {phase.journaling_prompts?.length > 0 && (
+                                  <div>
+                                    <p className="text-xs text-amber-300 font-medium mb-2">Journal Prompts</p>
+                                    <ul className="space-y-1.5">
+                                      {phase.journaling_prompts.map((prompt, pi) => (
+                                        <li key={pi} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                          <span className="text-amber-400 mt-0.5 flex-shrink-0">•</span>
+                                          <span className="leading-relaxed">{prompt}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* SAFETY TAB */}
+                {activeTab === "safety" && selectedCourse.safety_precautions && (
+                  <div className="p-4" data-testid="safety-tab-content">
+                    <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Shield className="w-4 h-4 text-red-400" />
+                        <h3 className="font-medium text-red-300 text-sm">Safety & Precautions</h3>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedCourse.safety_precautions}</p>
+                    </div>
                   </div>
                 )}
 
