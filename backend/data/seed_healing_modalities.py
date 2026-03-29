@@ -398,6 +398,7 @@ CHAKRA_CLEANSING_DATA = [
         "name": "Throat Chakra Cleansing",
         "chakra": "Throat",
         "sanskrit_name": "Vishuddha",
+        "duration_minutes": 15,
         "description": "Speak your truth clearly and authentically by clearing the throat chakra—your center of communication, self-expression, and creative voice.",
         "image_url": IMAGES["chakra_throat"],
         "location": "Throat",

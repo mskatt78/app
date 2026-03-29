@@ -62,12 +62,16 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
 
   const element = (practice.element || "Spirit").toLowerCase();
   const durationSecs = (practice.duration_minutes || 20) * 60;
-  const secsPerStep = Math.max(30, Math.floor(durationSecs / steps.length));
+  const baseSecsPerStep = Math.max(30, Math.floor(durationSecs / steps.length));
+  const remainder = durationSecs - (baseSecsPerStep * steps.length);
 
   const segments = steps.map((step, i) => ({
     name: `Step ${i + 1}`,
     description: step,
-    duration_seconds: secsPerStep,
+    // Last step absorbs any remainder to make total exactly match duration_minutes
+    duration_seconds: i === steps.length - 1
+      ? Math.max(30, baseSecsPerStep + remainder)
+      : baseSecsPerStep,
   }));
 
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
