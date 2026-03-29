@@ -1,40 +1,84 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Settings, LogOut, Plus, Search, ChevronRight, Database, Upload } from "lucide-react";
+import { Settings, LogOut, ChevronRight, Database, Upload, CalendarDays, Sparkles, BookOpen, Radio } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { clearStoredAdminToken, ensureAdminToken } from "../components/admin/adminSession";
 
-export default function AdminDashboard() {
+const quickActions = [
+  {
+    id: "courses",
+    title: "Courses & Paths",
+    description: "Manage your course library, program structure, and long-form learning journeys.",
+    icon: BookOpen,
+    cta: "Open courses",
+  },
+  {
+    id: "astrology_months",
+    title: "13 Moon Paths",
+    description: "Edit your 13-month path content and seasonal spiritual rhythms.",
+    icon: CalendarDays,
+    cta: "Open moon paths",
+  },
+  {
+    id: "live_sessions",
+    title: "Live Client Spaces",
+    description: "Create live yoga, workshops, Q&A rooms, and embedded client session experiences.",
+    icon: Radio,
+    cta: "Open live sessions",
+  },
+  {
+    id: "yoga_poses",
+    title: "Yoga Library",
+    description: "Keep your yoga teachings, postures, and sacred movement descriptions in one place.",
+    icon: Sparkles,
+    cta: "Open yoga library",
+  },
+];
+
+export default function AdminDashboard({ api: providedApi }) {
   const navigate = useNavigate();
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
-  const api = process.env.REACT_APP_BACKEND_URL;
-
-  const token = localStorage.getItem("admin_token");
+  const api = providedApi?.defaults?.baseURL?.replace(/\/api$/, "") || process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    if (!token) { navigate("/admin/login"); return; }
-    fetchCollections();
-  }, []);
+    bootstrapAdminAccess();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fetchCollections = async () => {
+  const bootstrapAdminAccess = async () => {
+    setLoading(true);
     try {
-      const res = await fetch(`${api}/api/admin/collections`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.status === 401) { localStorage.removeItem("admin_token"); navigate("/admin/login"); return; }
-      setCollections(await res.json());
+      const token = await ensureAdminToken(api);
+      await fetchCollections(token);
     } catch {
-      toast.error("Failed to load collections");
+      toast.error("Please sign in with your admin account to continue");
+      navigate("/dashboard");
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchCollections = async (token) => {
+    try {
+      const res = await fetch(`${api}/api/admin/collections`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 401) {
+        clearStoredAdminToken();
+        throw new Error("expired-admin-token");
+      }
+      setCollections(await res.json());
+    } catch {
+      toast.error("Failed to load collections");
+      throw new Error("collections-load-failed");
+    }
+  };
+
   const logout = () => {
-    localStorage.removeItem("admin_token");
-    navigate("/admin/login");
+    clearStoredAdminToken();
+    navigate("/dashboard");
     toast.success("Logged out");
   };
 
@@ -64,10 +108,37 @@ export default function AdminDashboard() {
       <main className="max-w-5xl mx-auto px-6 py-10">
         <div className="mb-8">
           <h2 className="text-3xl font-serif mb-2">Content Manager</h2>
-          <p className="text-muted-foreground">Manage all content across the platform — add, edit, and upload media.</p>
+          <p className="text-muted-foreground" data-testid="admin-dashboard-description">Manage the whole temple from one place — courses, 13 moon paths, yoga, live events, media, and sacred content collections.</p>
         </div>
 
-        {/* Quick Upload Card */}
+        <div className="grid gap-4 md:grid-cols-2 mb-8" data-testid="admin-dashboard-quick-actions">
+          {quickActions.map((action, index) => {
+            const Icon = action.icon;
+            return (
+              <motion.button
+                key={action.id}
+                type="button"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+                onClick={() => navigate(`/admin/manage/${action.id}`)}
+                className="rounded-[1.5rem] border border-white/10 bg-card/70 p-5 text-left hover:border-primary/30 hover:-translate-y-0.5 transition-all"
+                data-testid={`admin-quick-action-${action.id}`}
+              >
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                    <Icon className="w-5 h-5 text-primary" />
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <h3 className="font-serif text-xl mb-2">{action.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4">{action.description}</p>
+                <span className="text-sm text-primary">{action.cta}</span>
+              </motion.button>
+            );
+          })}
+        </div>
+
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}

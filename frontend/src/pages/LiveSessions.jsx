@@ -1,280 +1,199 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { 
-  ArrowLeft, Radio, Calendar, Clock, Users, ExternalLink, 
-  Play, Video, MessageCircle, Sparkles
-} from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Radio, Sparkles, Users, Video } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 
-const LiveSessions = ({ user, api }) => {
+const filters = ["all", "live", "scheduled", "completed"];
+
+const formatSchedule = (scheduledAt) => {
+  if (!scheduledAt) return "Scheduling soon";
+  const date = new Date(scheduledAt);
+  if (Number.isNaN(date.getTime())) return scheduledAt;
+  return date.toLocaleString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+};
+
+const statusStyles = {
+  live: "bg-red-500 text-white",
+  scheduled: "bg-emerald-500/20 text-emerald-200 border border-emerald-400/20",
+  completed: "bg-white/10 text-white/70 border border-white/10",
+};
+
+export default function LiveSessions({ api }) {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const response = await api.get("/live-sessions");
+        setSessions(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch live sessions:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchSessions();
-  }, []);
+  }, [api]);
 
-  const fetchSessions = async () => {
-    try {
-      const response = await api.get("/live-sessions");
-      setSessions(response.data || []);
-    } catch (error) {
-      console.error("Failed to fetch live sessions:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const filteredSessions = useMemo(() => {
+    if (filter === "all") return sessions;
+    return sessions.filter((session) => session.status === filter);
+  }, [filter, sessions]);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "live": return "bg-red-500 animate-pulse";
-      case "scheduled": return "bg-primary";
-      case "completed": return "bg-muted-foreground";
-      case "cancelled": return "bg-destructive/50";
-      default: return "bg-muted";
-    }
-  };
-
-  const getSessionIcon = (type) => {
-    switch (type) {
-      case "youtube_live": return Video;
-      case "zoom": return Users;
-      case "group_meditation": return Sparkles;
-      case "q_and_a": return MessageCircle;
-      default: return Radio;
-    }
-  };
-
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("en-US", { 
-      weekday: "long", 
-      month: "long", 
-      day: "numeric",
-      year: "numeric"
-    });
-  };
-
-  const filteredSessions = sessions.filter(session => {
-    if (filter === "all") return true;
-    return session.status === filter;
-  });
-
-  const liveSessions = sessions.filter(s => s.status === "live");
-  const upcomingSessions = sessions.filter(s => s.status === "scheduled");
+  const liveCount = sessions.filter((session) => session.status === "live").length;
 
   return (
     <div className="min-h-screen bg-background" data-testid="live-sessions-page">
-      {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto p-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/dashboard")}
               className="p-2 rounded-full hover:bg-white/5 transition-colors"
-              data-testid="back-btn"
+              data-testid="live-sessions-back-btn"
             >
               <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </button>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Connect</p>
-              <h1 className="text-xl font-serif">Live <span className="italic text-primary">Sessions</span></h1>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Full client interaction</p>
+              <h1 className="text-xl font-serif" data-testid="live-sessions-heading">Live <span className="italic text-primary">Yoga • Workshops • Q&A</span></h1>
             </div>
           </div>
-          
-          {liveSessions.length > 0 && (
-            <Badge className="bg-red-500 text-white animate-pulse">
-              <Radio className="w-3 h-3 mr-1" /> LIVE NOW
+
+          {liveCount > 0 && (
+            <Badge className="bg-red-500 text-white animate-pulse" data-testid="live-sessions-live-badge">
+              <Radio className="w-3 h-3 mr-1" /> {liveCount} live now
             </Badge>
           )}
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-6 space-y-8">
-        {/* Live Now Section */}
-        {liveSessions.length > 0 && (
-          <section className="space-y-4">
-            <h2 className="text-2xl font-serif flex items-center gap-2">
-              <Radio className="w-6 h-6 text-red-500 animate-pulse" />
-              Happening Now
-            </h2>
-            <div className="grid gap-4">
-              {liveSessions.map((session) => {
-                const SessionIcon = getSessionIcon(session.session_type);
-                return (
-                  <motion.div
-                    key={session.id}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="relative"
-                  >
-                    <Card className="bg-gradient-to-r from-red-500/20 to-primary/20 border-red-500/30 overflow-hidden">
-                      <div className="absolute top-0 left-0 w-full h-1 bg-red-500 animate-pulse" />
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <SessionIcon className="w-5 h-5 text-red-400" />
-                              <Badge variant="secondary" className="capitalize">
-                                {session.session_type?.replace("_", " ")}
-                              </Badge>
-                            </div>
-                            <h3 className="text-2xl font-serif">{session.title}</h3>
-                            <p className="text-muted-foreground">{session.description}</p>
-                          </div>
-                          {session.stream_url && (
-                            <Button
-                              onClick={() => window.open(session.stream_url, "_blank")}
-                              className="bg-red-500 hover:bg-red-600"
-                              data-testid="join-live-btn"
-                            >
-                              <Play className="w-4 h-4 mr-2" />
-                              Join Live
-                            </Button>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
+      <main className="max-w-6xl mx-auto px-6 py-8 space-y-8">
+        <section className="rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(34,197,94,0.16),_transparent_35%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(135deg,rgba(10,14,22,0.94),rgba(4,7,12,0.92))] p-8" data-testid="live-sessions-hero">
+          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+            <div className="space-y-4">
+              <p className="text-xs uppercase tracking-[0.3em] text-white/40">Teach, hold space, and meet clients live</p>
+              <h2 className="text-4xl sm:text-5xl font-serif leading-[1.05] max-w-3xl">Run live yoga, workshops, Q&A circles, and sacred client rooms <span className="italic text-primary">inside the temple</span>.</h2>
+              <p className="text-sm sm:text-base text-white/70 max-w-2xl leading-relaxed" data-testid="live-sessions-hero-description">
+                Each session can include an embedded livestream, RSVP list, what-to-bring notes, and a shared interaction space for client chat and questions.
+              </p>
             </div>
-          </section>
-        )}
 
-        {/* Filter Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
-          {["all", "scheduled", "completed"].map((status) => (
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4" data-testid="live-sessions-stat-total">
+                <p className="text-xs uppercase tracking-[0.22em] text-white/40 mb-2">Spaces</p>
+                <p className="text-2xl font-serif">{sessions.length}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4" data-testid="live-sessions-stat-live">
+                <p className="text-xs uppercase tracking-[0.22em] text-white/40 mb-2">Live now</p>
+                <p className="text-2xl font-serif">{liveCount}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4" data-testid="live-sessions-stat-client-tools">
+                <p className="text-xs uppercase tracking-[0.22em] text-white/40 mb-2">Interaction</p>
+                <p className="text-sm text-white/75">Embedded video, RSVP, chat, and Q&A</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="flex flex-wrap gap-2" data-testid="live-sessions-filters">
+          {filters.map((status) => (
             <Button
               key={status}
               variant={filter === status ? "default" : "outline"}
               onClick={() => setFilter(status)}
-              className="capitalize whitespace-nowrap"
-              data-testid={`filter-${status}`}
+              className="capitalize"
+              data-testid={`live-sessions-filter-${status}`}
             >
-              {status === "all" ? "All Sessions" : status}
+              {status === "all" ? "All rooms" : status}
             </Button>
           ))}
         </div>
 
-        {/* Sessions Grid */}
         {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="h-80 rounded-[1.75rem] bg-card/40 animate-pulse" />
+            ))}
           </div>
         ) : filteredSessions.length === 0 ? (
-          <div className="text-center py-16">
-            <Radio className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
-            <p className="text-muted-foreground">No sessions found</p>
-            <p className="text-sm text-muted-foreground/70 mt-2">
-              Check back soon for upcoming live events!
-            </p>
+          <div className="rounded-[2rem] border border-dashed border-white/10 bg-card/40 p-12 text-center" data-testid="live-sessions-empty">
+            <Video className="w-14 h-14 mx-auto mb-4 text-white/25" />
+            <h3 className="text-2xl font-serif mb-2">No live spaces here yet</h3>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">Once you add live yoga, workshops, or Q&A rooms from your admin dashboard, they’ll appear here for clients to join.</p>
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSessions.map((session, index) => {
-              const SessionIcon = getSessionIcon(session.session_type);
-              return (
-                <motion.div
-                  key={session.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <Card className="bg-card/50 border-white/10 hover:border-primary/30 transition-all h-full flex flex-col">
-                    {session.image_url && (
-                      <div className="aspect-video relative overflow-hidden rounded-t-lg">
-                        <img 
-                          src={session.image_url} 
-                          alt={session.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-2 right-2">
-                          <Badge className={`${getStatusColor(session.status)} text-white`}>
-                            {session.status === "live" && <Radio className="w-3 h-3 mr-1" />}
-                            {session.status}
-                          </Badge>
-                        </div>
-                      </div>
-                    )}
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <SessionIcon className="w-4 h-4" />
-                        <span className="capitalize">{session.session_type?.replace("_", " ")}</span>
-                      </div>
-                      <CardTitle className="text-lg font-serif">{session.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-1 flex flex-col">
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                        {session.description}
-                      </p>
-                      
-                      <div className="mt-auto space-y-2 text-sm">
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Calendar className="w-4 h-4" />
-                          {formatDate(session.scheduled_date)}
-                        </div>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                          <Clock className="w-4 h-4" />
-                          {session.scheduled_time} • {session.duration_minutes} min
-                        </div>
-                        {session.price > 0 && (
-                          <div className="text-primary font-medium">
-                            ${session.price}
-                          </div>
-                        )}
-                      </div>
-
-                      {session.stream_url && session.status !== "completed" && (
-                        <Button
-                          variant="outline"
-                          className="w-full mt-4"
-                          onClick={() => window.open(session.stream_url, "_blank")}
-                          data-testid={`join-${session.id}`}
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          {session.status === "live" ? "Join Now" : "Get Link"}
-                        </Button>
-                      )}
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Upcoming Sessions Summary */}
-        {upcomingSessions.length > 0 && filter === "all" && (
-          <section className="mt-12 p-6 rounded-2xl bg-card/30 border border-white/10">
-            <h3 className="text-lg font-serif mb-4">
-              <Calendar className="w-5 h-5 inline mr-2 text-primary" />
-              {upcomingSessions.length} Upcoming {upcomingSessions.length === 1 ? "Session" : "Sessions"}
-            </h3>
-            <div className="space-y-3">
-              {upcomingSessions.slice(0, 3).map((session) => (
-                <div key={session.id} className="flex items-center justify-between p-3 rounded-lg bg-white/5">
-                  <div>
-                    <p className="font-medium">{session.title}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {formatDate(session.scheduled_date)} at {session.scheduled_time}
-                    </p>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-testid="live-sessions-grid">
+            {filteredSessions.map((session, index) => (
+              <motion.article
+                key={session.id}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.04 }}
+                className="rounded-[1.75rem] overflow-hidden border border-white/10 bg-card/70 flex flex-col"
+                data-testid={`live-session-card-${session.id}`}
+              >
+                <div className="relative aspect-[4/3] overflow-hidden bg-white/5">
+                  {session.image_url ? (
+                    <img src={session.image_url} alt={session.title} className="w-full h-full object-cover" data-testid={`live-session-image-${session.id}`} />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-[radial-gradient(circle_at_center,_rgba(34,197,94,0.18),_transparent_42%),radial-gradient(circle_at_top_right,_rgba(59,130,246,0.16),_transparent_34%),rgba(255,255,255,0.03)]">
+                      <Sparkles className="w-12 h-12 text-primary/60" />
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent" />
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <Badge className={statusStyles[session.status] || statusStyles.completed} data-testid={`live-session-status-${session.id}`}>
+                      {session.status}
+                    </Badge>
+                    <Badge variant="secondary" className="capitalize border border-white/10 bg-black/40 text-white/75" data-testid={`live-session-type-${session.id}`}>
+                      {String(session.session_type || "session").replaceAll("_", " ")}
+                    </Badge>
                   </div>
-                  <Badge variant="secondary">{session.session_type?.replace("_", " ")}</Badge>
                 </div>
-              ))}
-            </div>
-          </section>
+
+                <div className="p-5 flex flex-col gap-4 flex-1">
+                  <div>
+                    <h3 className="text-2xl font-serif mb-2" data-testid={`live-session-title-${session.id}`}>{session.title}</h3>
+                    <p className="text-sm text-white/70 leading-relaxed line-clamp-3" data-testid={`live-session-description-${session.id}`}>{session.description}</p>
+                  </div>
+
+                  <div className="grid gap-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      <span>{formatSchedule(session.scheduled_at)}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4" />
+                      <span>{session.duration_minutes || 60} min</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-4 h-4" />
+                      <span>{session.attendee_count || 0} RSVPs • {session.question_count || 0} questions</span>
+                    </div>
+                  </div>
+
+                  <Button onClick={() => navigate(`/live/${session.id}`)} className="mt-auto" data-testid={`live-session-open-${session.id}`}>
+                    Open client space
+                  </Button>
+                </div>
+              </motion.article>
+            ))}
+          </div>
         )}
       </main>
     </div>
   );
-};
-
-export default LiveSessions;
+}

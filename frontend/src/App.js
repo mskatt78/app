@@ -42,6 +42,7 @@ const ShamanicPractices = lazy(() => import("./pages/ShamanicPractices"));
 const ElementalPractices = lazy(() => import("./pages/ElementalPractices"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const LiveSessions = lazy(() => import("./pages/LiveSessions"));
+const LiveSessionRoom = lazy(() => import("./pages/LiveSessionRoom"));
 const Retreats = lazy(() => import("./pages/Retreats"));
 const Courses = lazy(() => import("./pages/Courses"));
 const Community = lazy(() => import("./pages/Community"));
@@ -192,6 +193,12 @@ const AdminRoute = ({ children }) => {
 
   useEffect(() => {
     const checkAdmin = async () => {
+      const storedAdminToken = localStorage.getItem("admin_token");
+      if (storedAdminToken) {
+        setIsAuthorized(true);
+        return;
+      }
+
       try {
         const response = await api.get("/auth/me");
         const userData = response.data;
@@ -472,6 +479,14 @@ function AppRouter() {
         element={
           <PublicRoute>
             {({ user, api }) => <LiveSessions user={user} api={api} />}
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/live/:sessionId"
+        element={
+          <PublicRoute>
+            {({ user, api }) => <LiveSessionRoom user={user} api={api} />}
           </PublicRoute>
         }
       />
@@ -831,10 +846,24 @@ function AppRouter() {
           </PublicRoute>
         }
       />
-      {/* Admin Routes - Password protected (no Google Auth needed) */}
+      {/* Admin Routes */}
       <Route path="/admin/login" element={<AdminLogin />} />
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/admin/manage/:collection" element={<AdminSection />} />
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            {({ user, api }) => <AdminDashboard user={user} api={api} />}
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/manage/:collection"
+        element={
+          <AdminRoute>
+            {({ user, api }) => <AdminSection user={user} api={api} />}
+          </AdminRoute>
+        }
+      />
       {/* Legacy Admin CMS */}
       <Route
         path="/admin-legacy"

@@ -7,12 +7,15 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { clearStoredAdminToken, ensureAdminToken } from "../components/admin/adminSession";
 
 const AUDIO_COLLECTION = "audio_files";
 
 const FIELD_CONFIG = {
   courses: ["title", "category", "level", "description", "instructor", "duration", "lessons", "format", "price", "status", "highlights", "image_url", "video_url", "registration_link"],
+  astrology_months: ["name", "month_number", "season", "description", "teaching", "practice", "image_url"],
   community_posts: ["author_name", "title", "type", "content", "element", "tags", "status", "image_url"],
+  live_sessions: ["title", "session_type", "status", "description", "facilitator", "scheduled_at", "duration_minutes", "price", "capacity", "embed_url", "join_url", "stream_url", "what_to_bring", "client_instructions", "image_url"],
   sacred_geometry: ["name", "element", "description", "symbolism", "how_to_draw", "image_url"],
   oracle_cards: ["name", "element", "meaning", "reversed_meaning", "image_url", "keywords"],
   tarot_cards: ["name", "arcana", "number", "upright_meaning", "reversed_meaning", "description", "image_url"],
@@ -47,12 +50,12 @@ const TEXTAREA_FIELDS = new Set([
   "content", "visualization", "journey_steps", "steps", "affirmations",
   "materials", "how_to_draw", "symbolism", "lessons",
   "self_healing_guide", "how_it_works", "history", "contraindications",
-  "guidance", "blockage_signs", "cleansing_practice"
+  "guidance", "blockage_signs", "cleansing_practice", "client_instructions", "what_to_bring"
 ]);
 
 const IMAGE_FIELDS = new Set(["image_url", "thumbnail_url"]);
 const AUDIO_FIELDS = new Set(["audio_url"]);
-const VIDEO_FIELDS = new Set(["video_url"]);
+const VIDEO_FIELDS = new Set(["video_url", "embed_url", "join_url", "stream_url"]);
 
 function FieldInput({ field, value, onChange, onUpload, uploadLoading }) {
   const isTextarea = TEXTAREA_FIELDS.has(field);
@@ -218,7 +221,9 @@ function AudioLibrary({ api, token }) {
   const [copied, setCopied] = useState(null);
   const fileRef = useRef();
 
-  useEffect(() => { fetchFiles(); }, []);
+  useEffect(() => {
+    if (token) fetchFiles();
+  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchFiles = async () => {
     try {
@@ -330,15 +335,16 @@ export default function AdminSection() {
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(localStorage.getItem("admin_token"));
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [modalItem, setModalItem] = useState(undefined); // undefined=closed, null=new, obj=edit
   const [deleting, setDeleting] = useState(null);
 
   const api = process.env.REACT_APP_BACKEND_URL;
-  const token = localStorage.getItem("admin_token");
   const isAudio = collection === AUDIO_COLLECTION;
   const meta = {
+    astrology_months: { name: "13 Moon Paths", icon: "🌕" },
     oracle_cards: { name: "Oracle Cards", icon: "🔮" },
     tarot_cards: { name: "Tarot Cards", icon: "🃏" },
     ancient_wisdom: { name: "Ancient Wisdom", icon: "📿" },
@@ -352,27 +358,47 @@ export default function AdminSection() {
     sacred_guardians: { name: "Sacred Guardians", icon: "🦁" },
     retreats: { name: "Retreats", icon: "🏔️" },
     videos: { name: "Practice Videos", icon: "🎬" },
+    live_sessions: { name: "Live Client Spaces", icon: "📡" },
     audio_files: { name: "Audio & Media Library", icon: "🎧" },
   }[collection] || { name: collection, icon: "📁" };
 
   useEffect(() => {
-    if (!token) { navigate("/admin/login"); return; }
-    if (!isAudio) fetchItems();
-  }, [collection, page, search]);
+    bootstrapAdminAccess();
+  }, [collection, page, search]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const fetchItems = async () => {
+  const bootstrapAdminAccess = async () => {
     setLoading(true);
+    try {
+      const resolvedToken = await ensureAdminToken(api);
+      setToken(resolvedToken);
+      if (!isAudio) {
+        await fetchItems(resolvedToken);
+      }
+    } catch {
+      toast.error("Please sign in with your admin account to continue");
+      navigate("/dashboard");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchItems = async (activeToken = token) => {
     try {
       const params = new URLSearchParams({ page, limit: 30, ...(search ? { search } : {}) });
       const res = await fetch(`${api}/api/admin/${collection}/items?${params}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${activeToken}` },
       });
-      if (res.status === 401) { localStorage.removeItem("admin_token"); navigate("/admin/login"); return; }
+      if (res.status === 401) {
+        clearStoredAdminToken();
+        throw new Error("expired-admin-token");
+      }
       const data = await res.json();
       setItems(data.items || []);
       setTotal(data.total || 0);
-    } catch { toast.error("Failed to load items"); }
-    finally { setLoading(false); }
+    } catch {
+      toast.error("Failed to load items");
+      throw new Error("load-items-failed");
+    }
   };
 
   const handleSave = async (formData) => {
@@ -438,7 +464,7 @@ export default function AdminSection() {
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         {isAudio ? (
-          <AudioLibrary api={api} token={token} />
+          token ? <AudioLibrary api={api} token={token} /> : <div className="space-y-2">{Array(4).fill(0).map((_, i) => <div key={i} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
         ) : (
           <>
             {/* Toolbar */}
@@ -518,7 +544,7 @@ export default function AdminSection() {
 
       {/* Edit/Create Modal */}
       <AnimatePresence>
-        {modalItem !== undefined && (
+        {modalItem !== undefined && token && (
           <ItemModal
             collection={collection}
             item={modalItem}

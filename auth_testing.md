@@ -64,3 +64,20 @@ await page.goto("https://shamanic-soul-temple-3.preview.emergentagent.com/dashbo
 - [ ] All queries use `{"_id": 0}` projection
 - [ ] API returns user data with user_id field
 - [ ] Browser loads dashboard (not login page)
+
+## Step 4: Admin Session Access
+```bash
+curl -b cookies.txt -X POST "https://shamanic-soul-temple-3.preview.emergentagent.com/api/admin/session-login"
+
+curl -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  "https://shamanic-soul-temple-3.preview.emergentagent.com/api/admin/collections"
+```
+
+## Step 5: Live Sessions API
+```bash
+curl "https://shamanic-soul-temple-3.preview.emergentagent.com/api/live-sessions"
+
+curl -X POST "https://shamanic-soul-temple-3.preview.emergentagent.com/api/live-sessions/YOUR_SESSION_ID/messages" \
+  -H "Content-Type: application/json" \
+  -d '{"display_name":"Test Client","message":"Is there a replay?","kind":"question"}'
+```

@@ -4,12 +4,14 @@ import { motion } from "framer-motion";
 import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { ensureAdminToken } from "../components/admin/adminSession";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [sessionLoading, setSessionLoading] = useState(false);
   const api = process.env.REACT_APP_BACKEND_URL;
 
   const handleLogin = async (e) => {
@@ -33,6 +35,19 @@ export default function AdminLogin() {
     }
   };
 
+  const handleSessionAccess = async () => {
+    setSessionLoading(true);
+    try {
+      await ensureAdminToken(api);
+      toast.success("Admin access granted");
+      navigate("/admin");
+    } catch {
+      toast.error("Please sign in to the app first with your admin account");
+    } finally {
+      setSessionLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4">
       <motion.div
@@ -47,6 +62,17 @@ export default function AdminLogin() {
           <h1 className="text-2xl font-serif mb-1">Admin Portal</h1>
           <p className="text-sm text-muted-foreground">Shamanic Elements Soul Temple 2.0</p>
         </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleSessionAccess}
+          disabled={sessionLoading}
+          className="w-full py-3 rounded-xl font-medium mb-4"
+          data-testid="admin-session-access-btn"
+        >
+          {sessionLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Checking account...</> : "Use my signed-in admin account"}
+        </Button>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div className="relative">

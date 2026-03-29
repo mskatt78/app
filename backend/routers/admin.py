@@ -8,11 +8,12 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 import jwt
 
+from .dependencies import User, get_current_user
+
 router = APIRouter(prefix="/admin", tags=["admin"])
 security = HTTPBearer()
 
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
-JWT_SECRET = os.environ.get("EMERGENT_LLM_KEY", "admin-fallback-secret")
 STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
 EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY")
 APP_NAME = "shamanic-soul-temple"
@@ -54,16 +55,39 @@ def _get_object(path: str):
 
 
 def _create_admin_token():
-    secret = os.environ.get("EMERGENT_LLM_KEY", "admin-fallback-secret")
+    secret = os.environ["JWT_SECRET"]
     payload = {
         "role": "admin",
+        "issued_at": datetime.now(timezone.utc).isoformat(),
+        "exp": datetime.now(timezone.utc) + timedelta(hours=24),
+    }
+    return jwt.encode(payload, secret, algorithm="HS256")
+
+
+def _get_admin_emails() -> set[str]:
+    raw = os.environ["ADMIN_EMAILS"]
+    return {email.strip().lower() for email in raw.split(",") if email.strip()}
+
+
+def _is_admin_email(email: str) -> bool:
+    return email.strip().lower() in _get_admin_emails()
+
+
+def _create_session_admin_token(user: User):
+    secret = os.environ["JWT_SECRET"]
+    payload = {
+        "role": "admin",
+        "email": user.email,
+        "user_id": user.user_id,
+        "name": user.name,
+        "issued_at": datetime.now(timezone.utc).isoformat(),
         "exp": datetime.now(timezone.utc) + timedelta(hours=24),
     }
     return jwt.encode(payload, secret, algorithm="HS256")
 
 
 def _verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    secret = os.environ.get("EMERGENT_LLM_KEY", "admin-fallback-secret")
+    secret = os.environ["JWT_SECRET"]
     try:
         payload = jwt.decode(credentials.credentials, secret, algorithms=["HS256"])
         if payload.get("role") != "admin":
@@ -88,13 +112,16 @@ ALLOWED_COLLECTIONS = {
     "mindfulness_practices", "grounding_exercises", "heart_practices",
     "creative_processes", "elemental_practices", "yoga_poses",
     "community_posts", "sacred_geometry", "energy_healing",
-    "free_form_movement", "chakra_cleansing",
+    "free_form_movement", "chakra_cleansing", "live_sessions",
+    "astrology_months",
 }
 
 COLLECTION_META = [
     {"id": "courses", "name": "Courses", "icon": "🎓"},
+    {"id": "astrology_months", "name": "13 Moon Paths", "icon": "🌕"},
     {"id": "retreats", "name": "Retreats", "icon": "🏔️"},
     {"id": "videos", "name": "Practice Videos", "icon": "🎬"},
+    {"id": "live_sessions", "name": "Live Client Spaces", "icon": "📡"},
     {"id": "community_posts", "name": "Community Posts", "icon": "💬"},
     {"id": "meditations", "name": "Meditations", "icon": "🌙"},
     {"id": "breathwork_sessions", "name": "Breathwork Sessions", "icon": "🌬️"},
@@ -125,6 +152,18 @@ COLLECTION_META = [
 
 class LoginRequest(BaseModel):
     password: str
+
+
+@router.post("/session-login")
+async def admin_session_login(user: User = Depends(get_current_user)):
+    if not _is_admin_email(user.email):
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return {
+        "token": _create_session_admin_token(user),
+        "role": "admin",
+        "email": user.email,
+        "name": user.name,
+    }
 
 
 @router.post("/login")
@@ -174,9 +213,10 @@ async def list_items(
     if search:
         query["$or"] = [
             {"name": {"$regex": search, "$options": "i"}},
+            {"title": {"$regex": search, "$options": "i"}},
             {"description": {"$regex": search, "$options": "i"}},
         ]
-    items = await db[collection].find(query, {"_id": 0}).skip((page - 1) * limit).to_list(limit)
+    items = await db[collection].find(query, {"_id": 0}).sort("created_at", -1).skip((page - 1) * limit).to_list(limit)
     total = await db[collection].count_documents(query)
     return {"items": items, "total": total, "page": page, "limit": limit}
 

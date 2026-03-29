@@ -1,10 +1,55 @@
 """Content routes for yoga, breathwork, crystals, mantras, mudras, meditations, etc."""
+from datetime import datetime, timezone
+from typing import Literal, Optional
+
 from fastapi import APIRouter, HTTPException
-from typing import Optional
+from pydantic import BaseModel, EmailStr
 
 from .dependencies import get_db
 
 router = APIRouter(tags=["content"])
+
+
+class LiveSessionRsvpRequest(BaseModel):
+    display_name: str
+    email: EmailStr
+
+
+class LiveSessionMessageRequest(BaseModel):
+    display_name: str
+    email: Optional[EmailStr] = None
+    message: str
+    kind: Literal["chat", "question"] = "chat"
+
+
+async def _build_live_session(session: dict, db) -> dict:
+    if not session:
+        return session
+
+    session_id = session["id"]
+    attendee_count = await db.live_session_rsvps.count_documents({"session_id": session_id})
+    message_count = await db.live_session_messages.count_documents({"session_id": session_id, "kind": "chat"})
+    question_count = await db.live_session_messages.count_documents({"session_id": session_id, "kind": "question"})
+
+    scheduled_date = ""
+    scheduled_time = ""
+    scheduled_at = session.get("scheduled_at")
+    if scheduled_at:
+        try:
+            dt = datetime.fromisoformat(scheduled_at.replace("Z", "+00:00"))
+            scheduled_date = dt.date().isoformat()
+            scheduled_time = dt.strftime("%H:%M")
+        except ValueError:
+            scheduled_date = scheduled_at[:10]
+
+    return {
+        **session,
+        "scheduled_date": scheduled_date,
+        "scheduled_time": scheduled_time,
+        "attendee_count": attendee_count,
+        "message_count": message_count,
+        "question_count": question_count,
+    }
 
 
 # ============ YOGA ROUTES ============
@@ -533,6 +578,99 @@ async def get_light_language():
     return data.get("light_language_symbols", []) if data else []
 
 
+# ============ LIVE SESSIONS ROUTES ============
+
+@router.get("/live-sessions")
+async def get_live_sessions(status: Optional[str] = None, session_type: Optional[str] = None):
+    db = get_db()
+    query = {}
+    if status:
+        query["status"] = {"$regex": f"^{status}$", "$options": "i"}
+    if session_type:
+        query["session_type"] = {"$regex": f"^{session_type}$", "$options": "i"}
+
+    sessions = await db.live_sessions.find(query, {"_id": 0}).sort("scheduled_at", 1).to_list(length=100)
+    return [await _build_live_session(session, db) for session in sessions]
+
+
+@router.get("/live-sessions/{session_id}")
+async def get_live_session(session_id: str):
+    db = get_db()
+    session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=404, detail="Live session not found")
+    return await _build_live_session(session, db)
+
+
+@router.post("/live-sessions/{session_id}/rsvp")
+async def rsvp_live_session(session_id: str, payload: LiveSessionRsvpRequest):
+    db = get_db()
+    session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=404, detail="Live session not found")
+
+    now = datetime.now(timezone.utc).isoformat()
+    email = payload.email.lower()
+    record = {
+        "session_id": session_id,
+        "display_name": payload.display_name.strip(),
+        "email": email,
+        "updated_at": now,
+    }
+
+    existing = await db.live_session_rsvps.find_one({"session_id": session_id, "email": email}, {"_id": 0})
+    if existing:
+        await db.live_session_rsvps.update_one({"session_id": session_id, "email": email}, {"$set": record})
+    else:
+        await db.live_session_rsvps.insert_one({**record, "created_at": now})
+
+    attendee_count = await db.live_session_rsvps.count_documents({"session_id": session_id})
+    return {
+        "success": True,
+        "session_id": session_id,
+        "display_name": payload.display_name.strip(),
+        "attendee_count": attendee_count,
+    }
+
+
+@router.get("/live-sessions/{session_id}/messages")
+async def get_live_session_messages(session_id: str, kind: Optional[str] = None):
+    db = get_db()
+    session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=404, detail="Live session not found")
+
+    query = {"session_id": session_id}
+    if kind:
+        query["kind"] = kind
+
+    return await db.live_session_messages.find(query, {"_id": 0}).sort("created_at", 1).to_list(length=500)
+
+
+@router.post("/live-sessions/{session_id}/messages")
+async def post_live_session_message(session_id: str, payload: LiveSessionMessageRequest):
+    db = get_db()
+    session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
+    if not session:
+        raise HTTPException(status_code=404, detail="Live session not found")
+
+    message = payload.message.strip()
+    if len(message) < 2:
+        raise HTTPException(status_code=400, detail="Message is too short")
+
+    record = {
+        "id": f"msg_{int(datetime.now(timezone.utc).timestamp() * 1000)}",
+        "session_id": session_id,
+        "display_name": payload.display_name.strip(),
+        "email": payload.email.lower() if payload.email else None,
+        "message": message,
+        "kind": payload.kind,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.live_session_messages.insert_one(record.copy())
+    return record
+
+
 # ============ SACRED GUARDIANS & ALLIES ============
 
 @router.get("/sacred-guardians")
@@ -963,14 +1101,21 @@ async def get_daily_practice(focus: Optional[str] = None):
         days_since = (datetime.now() - known_new_moon).days
         moon_age = days_since % 29.5
         
-        if moon_age < 1.85: return "new_moon"
-        elif moon_age < 7.38: return "waxing_crescent"
-        elif moon_age < 9.23: return "first_quarter"
-        elif moon_age < 14.77: return "waxing_gibbous"
-        elif moon_age < 16.61: return "full_moon"
-        elif moon_age < 22.15: return "waning_gibbous"
-        elif moon_age < 23.99: return "last_quarter"
-        else: return "waning_crescent"
+        if moon_age < 1.85:
+            return "new_moon"
+        if moon_age < 7.38:
+            return "waxing_crescent"
+        if moon_age < 9.23:
+            return "first_quarter"
+        if moon_age < 14.77:
+            return "waxing_gibbous"
+        if moon_age < 16.61:
+            return "full_moon"
+        if moon_age < 22.15:
+            return "waning_gibbous"
+        if moon_age < 23.99:
+            return "last_quarter"
+        return "waning_crescent"
     
     moon_phase = get_moon_phase()
     day_of_week = datetime.now().strftime("%A").lower()
