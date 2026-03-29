@@ -11,6 +11,10 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **Integrations:** OpenAI TTS, Gemini Image Gen (Nano Banana), Emergent Object Storage
 - **PWA:** Full manifest with app store ready icons
 
+## Latest Changes (March 2026)
+- **Meditations.jsx**: Replaced inline timer with full-screen `GuidedPracticeOverlay`. Timer now shows exact countdown matching card duration (e.g. 15:00 for 15-min meditation). TTS narration and element-appropriate ambient audio included.
+- **Production Optimizations**: GZip compression middleware (avg 58% size reduction), MongoDB indexes for users/practice_history/community_posts/content collections, Service Worker upgraded to v2 with smarter cache-first (static) + network-first (API) strategies.
+
 ## Core Features (All Implemented)
 
 ### Sacred Rites — Premium Courses (Updated March 2026)
