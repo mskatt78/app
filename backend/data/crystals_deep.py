@@ -1220,6 +1220,554 @@ CRYSTALS_DEEP = [
         "warnings": ["Very energizing - may be too stimulating for some", "Not ideal for sleep", "Those with excessive fire energy should use sparingly"],
         "affirmation": "I see clearly and act courageously. I have the power to achieve my goals.",
         "image_url": "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?w=800"
+    },
+    {
+        "id": "lepidolite",
+        "name": "Lepidolite",
+        "title": "The Stone of Calm & Transition",
+        "element": "Water",
+        "chakra": "Heart, Third Eye, Crown",
+        "zodiac": ["Libra", "Pisces"],
+        "planet": "Jupiter",
+        "vibration_number": 8,
+        "hardness": 2.5,
+        "crystal_system": "Monoclinic",
+        "color": "Lilac, Pink, Purple",
+        "rarity": "Uncommon",
+        "origin": ["Brazil", "Russia", "USA", "Zimbabwe"],
+        "description": "Lepidolite is a lithium-rich mica crystal often called the 'Stone of Transition.' Its high lithium content makes it one of the most powerful crystals for anxiety, stress, and emotional imbalance. It brings deep calm, aids restful sleep, and gently supports transformation through life's most challenging passages.",
+        "healing_properties": {
+            "physical": [
+                "Soothes the nervous system and reduces anxiety at a cellular level",
+                "Aids insomnia, sleep disorders, and restlessness",
+                "Relieves tension headaches and stress-related ailments",
+                "Supports the immune and endocrine systems",
+                "Eases neuralgia, joint problems, and allergies"
+            ],
+            "emotional": [
+                "Dissolves anxiety, depression, and obsessive patterns",
+                "Encourages independence and achieving goals without outside help",
+                "Halts unwanted intrusive thoughts",
+                "Brings deep emotional peace during upheaval",
+                "Supports grief, loss, and life transitions with grace"
+            ],
+            "spiritual": [
+                "Opens the crown chakra to cosmic wisdom",
+                "Enhances dream work and astral travel",
+                "Clears electromagnetic pollution from the energy field",
+                "Connects you to higher self during difficult transitions",
+                "Assists in releasing old behavioral patterns held in the soul"
+            ]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Place under full moon — especially ideal for Lepidolite", "duration": "Overnight"},
+            {"method": "Sound", "description": "Singing bowls at 528Hz (transformation frequency)", "duration": "5-10 minutes"},
+            {"method": "Smudging", "description": "Pass through lavender smoke or sage", "duration": "3 minutes"},
+            {"method": "Selenite", "description": "Place on selenite charging plate overnight", "duration": "8 hours"},
+            {"method": "Breath", "description": "Hold and breathe conscious breath over the stone with intention", "duration": "5 minutes"}
+        ],
+        "programming_ritual": {
+            "preparation": "Cleanse first. Sit in a quiet space. Take 7 deep breaths to enter a calm state.",
+            "steps": [
+                "Hold Lepidolite over your heart chakra",
+                "Speak to it softly — it responds to gentle energy",
+                "Say: 'I program you with peaceful transformation and calm strength'",
+                "Visualize soft purple light surrounding both you and the crystal",
+                "Feel your nervous system relax as the crystal accepts your intention",
+                "Hold for 5 minutes in stillness",
+                "Thank the crystal and carry it with you"
+            ],
+            "duration_minutes": 10
+        },
+        "meditation_guidance": {
+            "preparation": "Lie down. Place Lepidolite on your heart or third eye. Play soft theta wave music.",
+            "technique": "Lepidolite Anxiety Release Meditation",
+            "steps": [
+                "Take 10 slow deep breaths, exhaling tension",
+                "Feel the weight of the crystal on your chest or forehead",
+                "Visualize its soft purple light entering your body",
+                "With each exhale, release a worry or fear",
+                "Let the crystal hold what you release — it transforms it",
+                "Feel your body becoming lighter with each breath",
+                "When peaceful, receive any messages or images that arise",
+                "Slowly return to awareness, carrying the calm with you"
+            ],
+            "duration_minutes": 20,
+            "timer_segments": [
+                {"name": "Breath Settling", "duration": 180},
+                {"name": "Crystal Connection", "duration": 240},
+                {"name": "Anxiety Release", "duration": 480},
+                {"name": "Deep Peace", "duration": 300}
+            ],
+            "affirmation": "I am calm, safe, and held. All transitions bring me to greater wholeness."
+        },
+        "chakra_work": {
+            "primary": "Heart, Third Eye",
+            "works_with": "Helps balance an overactive or anxious mind by softening the third eye and grounding emotions in the heart",
+            "placement": "Place on heart for emotional release; place on third eye for mental calm",
+            "technique": "Lie down with Lepidolite on your heart. Breathe deeply. Visualize a soft violet cocoon forming around you — safe, warm, completely held."
+        },
+        "rituals": [
+            {
+                "name": "Anxiety Release Ritual",
+                "purpose": "Release anxiety and invite calm",
+                "timing": "Full Moon or before sleep",
+                "steps": ["Hold Lepidolite to your heart", "Write down all fears on paper", "Burn or tear the paper", "Hold crystal and breathe deeply for 10 minutes", "Sleep with it under your pillow"]
+            },
+            {
+                "name": "Transition Blessing",
+                "purpose": "Support during major life changes",
+                "timing": "During transitions or Waning Moon",
+                "steps": ["Place Lepidolite on an altar", "Light lavender incense", "Speak the transition aloud: what is ending, what is beginning", "Ask Lepidolite to guide you through", "Carry it daily during the transition period"]
+            }
+        ],
+        "combinations": [
+            {"crystal": "Amethyst", "purpose": "Deep spiritual calm and dream work"},
+            {"crystal": "Black Tourmaline", "purpose": "Grounding anxious energy"},
+            {"crystal": "Rose Quartz", "purpose": "Self-compassion during transition"},
+            {"crystal": "Selenite", "purpose": "Amplified peace and clarity"}
+        ],
+        "warnings": ["Very soft (2.5 hardness) — handle gently, no water cleansing", "May bring emotions to the surface before peace settles"],
+        "affirmation": "I release what no longer serves me. I move through all changes with grace and calm.",
+        "image_url": "https://images.unsplash.com/photo-1600096194534-95cf5ece04cf?w=800"
+    },
+    {
+        "id": "rhodonite",
+        "name": "Rhodonite",
+        "title": "The Stone of Compassion & Forgiveness",
+        "element": "Fire",
+        "chakra": "Heart",
+        "zodiac": ["Taurus", "Sagittarius"],
+        "planet": "Venus",
+        "vibration_number": 9,
+        "hardness": 6,
+        "crystal_system": "Triclinic",
+        "color": "Rose Pink with Black Manganese",
+        "rarity": "Common",
+        "origin": ["Russia", "Australia", "Canada", "Brazil"],
+        "description": "Rhodonite is a powerful heart healer known as the 'Stone of Compassion.' Its distinctive rose pink with black manganese markings symbolize the balance of love and shadow — wounds held and wounds healed. It is one of the most powerful crystals for forgiveness work, helping release resentment and open the heart fully after betrayal or heartbreak.",
+        "healing_properties": {
+            "physical": [
+                "Supports the heart muscle and cardiovascular system",
+                "Aids recovery from physical wounds and traumas",
+                "Helps with arthritis, inflammation, and autoimmune conditions",
+                "Stimulates fertility and emotional readiness for motherhood",
+                "Supports hearing and inner ear balance"
+            ],
+            "emotional": [
+                "Heals emotional wounds from abandonment and betrayal",
+                "Releases bitterness, resentment, and the urge for revenge",
+                "Builds emotional confidence and self-worth",
+                "Opens the heart to give and receive love after hurt",
+                "Encourages forgiveness as an act of self-liberation"
+            ],
+            "spiritual": [
+                "Activates the heart chakra for unconditional love",
+                "Helps recognize and fulfill one's unique soul purpose",
+                "Bridges earthly love with divine compassion",
+                "Supports shadow work in the heart space",
+                "Assists in healing ancestral heart wounds through the lineage"
+            ]
+        },
+        "cleansing_methods": [
+            {"method": "Running Water", "description": "Hold under cool running water while releasing all that the crystal has absorbed", "duration": "3 minutes"},
+            {"method": "Rose Quartz Cluster", "description": "Place on a rose quartz cluster overnight", "duration": "8 hours"},
+            {"method": "Sound", "description": "639Hz (heart frequency) crystal bowls or tuning forks", "duration": "10 minutes"},
+            {"method": "Smudging", "description": "Pass through rose petal smoke or rose incense", "duration": "3 minutes"},
+            {"method": "Moonlight", "description": "Full moon for deep emotional cleansing", "duration": "Overnight"}
+        ],
+        "programming_ritual": {
+            "preparation": "Sit quietly with hand over your heart. Breathe into any pain you carry. Be honest with yourself.",
+            "steps": [
+                "Hold Rhodonite to your heart with both hands",
+                "Acknowledge any hurt you have been carrying",
+                "Say aloud: 'I am willing to forgive. I release the poison of resentment.'",
+                "Visualize rose-pink light flooding your heart space",
+                "Feel the crystal absorbing what you release",
+                "After 5 minutes, breathe in fresh love and exhale old pain",
+                "Commit to carrying this crystal during your forgiveness journey"
+            ],
+            "duration_minutes": 15
+        },
+        "meditation_guidance": {
+            "preparation": "Sit or lie down. Place Rhodonite on your heart chakra. Breathe slowly.",
+            "technique": "Rhodonite Heart Opening Meditation",
+            "steps": [
+                "Close your eyes and place both hands over the crystal on your heart",
+                "With each inhale, breathe in compassion — for yourself first",
+                "Bring to mind anyone or anything that has wounded your heart",
+                "See them through eyes of compassion, not judgment",
+                "Breathe out the resentment — let it dissolve",
+                "Fill the space with warm rose-pink light",
+                "Feel your heart expand with each breath",
+                "Set an intention for the love you wish to create going forward"
+            ],
+            "duration_minutes": 20,
+            "timer_segments": [
+                {"name": "Heart Opening", "duration": 180},
+                {"name": "Forgiveness Work", "duration": 360},
+                {"name": "Compassion Fill", "duration": 360},
+                {"name": "Love Intention", "duration": 300}
+            ],
+            "affirmation": "I forgive freely and completely. My heart is healed, whole, and wide open."
+        },
+        "chakra_work": {
+            "primary": "Heart",
+            "works_with": "Root chakra for grounding heart healing into the body",
+            "placement": "Place directly on the heart center for forgiveness and wound healing",
+            "technique": "Pair Rhodonite on the heart with Black Tourmaline at the feet — this grounds the emotional healing so it becomes embodied transformation rather than just mental forgiveness."
+        },
+        "rituals": [
+            {
+                "name": "Forgiveness Fire Ritual",
+                "purpose": "Release resentment and open the heart",
+                "timing": "Full Moon or Waning Moon",
+                "steps": ["Write names or situations where you hold resentment", "Hold Rhodonite as you read each name and say 'I forgive you. I release you.'", "Burn the paper safely", "Hold crystal to heart for 5 minutes", "Wash hands in cold water to seal the release"]
+            },
+            {
+                "name": "Self-Compassion Bath",
+                "purpose": "Rebuild self-worth and heart confidence",
+                "timing": "New Moon",
+                "steps": ["Run a warm bath with rose petals", "Place Rhodonite near the bath (not in water)", "Soak for 20 minutes breathing deeply", "Affirm: 'I am worthy of love exactly as I am'", "After bath, hold crystal to heart for 5 minutes"]
+            }
+        ],
+        "combinations": [
+            {"crystal": "Rose Quartz", "purpose": "Deep heart healing and self-love"},
+            {"crystal": "Malachite", "purpose": "Transforming deep emotional wounds"},
+            {"crystal": "Black Tourmaline", "purpose": "Grounding heart healing into the body"},
+            {"crystal": "Amethyst", "purpose": "Forgiveness with spiritual perspective"}
+        ],
+        "warnings": ["May bring up grief and old heartache before healing begins — trust the process", "Not for those unwilling to do genuine forgiveness work"],
+        "affirmation": "I open my heart. I forgive and am forgiven. Love flows freely through me.",
+        "image_url": "https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=800"
+    },
+    {
+        "id": "fluorite",
+        "name": "Fluorite",
+        "title": "The Genius Stone",
+        "element": "Air, Water",
+        "chakra": "Heart, Throat, Third Eye",
+        "zodiac": ["Capricorn", "Pisces"],
+        "planet": "Mercury, Neptune",
+        "vibration_number": 7,
+        "hardness": 4,
+        "crystal_system": "Isometric (Cubic)",
+        "color": "Purple, Green, Blue, Rainbow, Clear",
+        "rarity": "Common",
+        "origin": ["China", "Mexico", "USA", "UK", "South Africa"],
+        "description": "Fluorite is the 'Genius Stone' — the world's most colourful mineral and one of the most powerful crystals for mental clarity, focus, and psychic protection. It cleanses the aura of confusion and chaos, brings order to scattered thought, and is beloved by students, artists, and spiritual seekers who need crystalline clarity. Rainbow fluorite contains all colours and works on multiple chakras simultaneously.",
+        "healing_properties": {
+            "physical": [
+                "Improves concentration, focus, and decision-making",
+                "Strengthens bone tissue, teeth, and cell structure",
+                "Supports posture, balance, and coordination",
+                "Aids with viruses, colds, and infections",
+                "Calms overactive mental activity that disrupts sleep"
+            ],
+            "emotional": [
+                "Clears mental fog, confusion, and scattered thinking",
+                "Releases anxiety caused by overthinking",
+                "Dissolves emotional manipulation and chaotic relationships",
+                "Encourages objective thinking and rational decision-making",
+                "Brings order and structure to overwhelming emotions"
+            ],
+            "spiritual": [
+                "Provides psychic protection against manipulation and chaos",
+                "Enhances intuition and third eye clarity",
+                "Cleanses the aura of negative attachments",
+                "Facilitates spiritual awakening with grounded logic",
+                "Assists in multi-dimensional awareness and astral work"
+            ]
+        },
+        "cleansing_methods": [
+            {"method": "Sound", "description": "Singing bowls or tuning forks at 741Hz (expression/consciousness)", "duration": "5-10 minutes"},
+            {"method": "Smudging", "description": "Pass through sage, frankincense, or cedar smoke", "duration": "3 minutes"},
+            {"method": "Moonlight", "description": "Place under full moon — especially powerful for purple fluorite", "duration": "Overnight"},
+            {"method": "Selenite", "description": "Place on selenite for regular maintenance cleansing", "duration": "4-6 hours"},
+            {"method": "Visualization", "description": "Hold and visualize white light streaming through, washing away all absorbed energy", "duration": "5 minutes"}
+        ],
+        "programming_ritual": {
+            "preparation": "Find a quiet space. Have a clear intention in mind — particularly around mental clarity, a project, or study.",
+            "steps": [
+                "Hold Fluorite at your third eye (between eyebrows)",
+                "Take 5 deep breaths while visualizing your mind becoming clear",
+                "State your intention: 'I program you to support my [study/creativity/clarity/protection]'",
+                "Visualize the crystal's colour flooding your mind with that quality",
+                "Feel your thoughts organizing and clarifying",
+                "Place on your desk or workspace for ongoing support"
+            ],
+            "duration_minutes": 8
+        },
+        "meditation_guidance": {
+            "preparation": "Sit at a desk or altar. Place Fluorite in front of you or hold it. Light incense if desired.",
+            "technique": "Fluorite Mental Clarity Meditation",
+            "steps": [
+                "Gaze softly into the fluorite for 2 minutes (soften your focus)",
+                "Close your eyes and hold the afterimage of its colour",
+                "Breathe deeply and let thoughts arise without grasping them",
+                "Observe each thought passing like clouds — you are the clear sky",
+                "Feel your mind becoming ordered and crystalline",
+                "Ask: 'What do I need to see clearly right now?'",
+                "Receive insights without forcing them",
+                "Open eyes and immediately write down any insights"
+            ],
+            "duration_minutes": 15,
+            "timer_segments": [
+                {"name": "Crystal Gazing", "duration": 120},
+                {"name": "Mental Clearing", "duration": 300},
+                {"name": "Insight Receiving", "duration": 480},
+                {"name": "Integration Writing", "duration": 120}
+            ],
+            "affirmation": "My mind is clear, focused, and brilliant. I receive divine insight with ease."
+        },
+        "chakra_work": {
+            "primary": "Third Eye",
+            "works_with": "Green fluorite for heart, blue for throat, purple for third eye and crown",
+            "placement": "Place on third eye for clarity; hold during study or creative work",
+            "technique": "Place rainbow fluorite on your third eye while lying down. Breathe deeply and allow all the colours to wash through your energy field — each colour healing its corresponding chakra naturally."
+        },
+        "rituals": [
+            {
+                "name": "Study & Focus Ritual",
+                "purpose": "Enhance mental clarity for study or creative work",
+                "timing": "Before important work sessions",
+                "steps": ["Place Fluorite on your desk", "Light a white candle", "Take 5 centering breaths", "State your focus intention", "Work with the crystal present — clear your phone first"]
+            },
+            {
+                "name": "Aura Cleansing Ritual",
+                "purpose": "Clear psychic debris and mental fog",
+                "timing": "Weekly or after difficult interactions",
+                "steps": ["Hold Fluorite above your crown and slowly move it down your body", "Imagine it absorbing all confusion and chaos from your field", "When complete, place it under running water to cleanse", "Shake your hands to release residual energy"]
+            }
+        ],
+        "combinations": [
+            {"crystal": "Clear Quartz", "purpose": "Amplified clarity and focus"},
+            {"crystal": "Black Tourmaline", "purpose": "Psychic protection with mental clarity"},
+            {"crystal": "Amethyst", "purpose": "Spiritual insight with mental order"},
+            {"crystal": "Citrine", "purpose": "Creative clarity and motivated action"}
+        ],
+        "warnings": ["Can overstimulate an already racing mind — use blue or green fluorite if anxious", "Relatively soft — no salt water cleansing"],
+        "affirmation": "I think clearly, choose wisely, and act with brilliant precision.",
+        "image_url": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800"
+    },
+    {
+        "id": "chrysocolla",
+        "name": "Chrysocolla",
+        "title": "The Goddess Stone",
+        "element": "Water",
+        "chakra": "Throat, Heart, Root",
+        "zodiac": ["Gemini", "Virgo", "Taurus"],
+        "planet": "Venus",
+        "vibration_number": 5,
+        "hardness": 2.5,
+        "crystal_system": "Amorphous",
+        "color": "Blue-Green (turquoise-teal)",
+        "rarity": "Uncommon",
+        "origin": ["Peru", "USA (Arizona)", "DR Congo", "Chile"],
+        "description": "Chrysocolla is the Goddess Stone — a powerful crystal of feminine wisdom, communication, and sacred power. Its stunning turquoise-blue-green colour carries the energy of water and earth combined. It has been revered by women healers, teachers, and leaders throughout history. Cleopatra was known to carry Chrysocolla for its power of persuasion and calm authority.",
+        "healing_properties": {
+            "physical": [
+                "Supports the thyroid and regulation of the throat/voice",
+                "Eases menstrual pain and hormonal fluctuations",
+                "Reduces inflammation, fever, and burns",
+                "Supports the lungs and breathing",
+                "Alleviates stress-related digestive conditions"
+            ],
+            "emotional": [
+                "Calms intense emotions and reactive responses",
+                "Invites the divine feminine to speak with calm authority",
+                "Dissolves guilt, shame, and self-criticism",
+                "Encourages the expression of truth with compassion",
+                "Strengthens women's inner knowing and intuitive voice"
+            ],
+            "spiritual": [
+                "Activates the divine feminine within all genders",
+                "Opens the throat to sacred sound, song, and ceremonial speech",
+                "Connects to earth goddess energies and ancient wisdom",
+                "Supports feminine leadership and wise counsel",
+                "Awakens the medicine woman/man within"
+            ]
+        },
+        "cleansing_methods": [
+            {"method": "Moonlight", "description": "Especially powerful under the full moon or new moon — Chrysocolla is deeply lunar", "duration": "Overnight"},
+            {"method": "Sound", "description": "Singing, toning, or crystal bowls — it loves the vibration of voice", "duration": "10 minutes"},
+            {"method": "Earth Burial", "description": "Return to earth for deep cleansing in soil", "duration": "24 hours"},
+            {"method": "Smudging", "description": "Pass through cedar or white sage smoke", "duration": "3-5 minutes"},
+            {"method": "Selenite", "description": "Place on selenite plate overnight", "duration": "8 hours"}
+        ],
+        "programming_ritual": {
+            "preparation": "This crystal responds to sound — begin with a tone, a hum, or a note from your own voice. This awakens its full energy.",
+            "steps": [
+                "Hum or tone gently to activate the crystal",
+                "Hold at your throat chakra with both hands",
+                "Breathe deeply and feel the vibration of your voice settling into the crystal",
+                "Say or sing: 'I speak my sacred truth with grace and power'",
+                "Visualize blue-green light flowing into your throat",
+                "Feel the freedom to speak fully and authentically",
+                "Wear or carry near the throat or heart"
+            ],
+            "duration_minutes": 10
+        },
+        "meditation_guidance": {
+            "preparation": "Sit comfortably. Hold Chrysocolla at your throat. You may wish to play ocean sounds or earth music.",
+            "technique": "Chrysocolla Sacred Voice Meditation",
+            "steps": [
+                "Begin with a gentle hum — feel it resonate through your throat",
+                "Place Chrysocolla at your throat and feel the vibration merge",
+                "Breathe slowly and deeply — feel the water energy of the stone",
+                "Ask: 'What truth am I afraid to speak?'",
+                "Let the answer arise without judgment",
+                "Visualize yourself speaking that truth with calm power",
+                "Feel the Goddess energy supporting your sacred voice",
+                "Close with gratitude for your unique wisdom and medicine"
+            ],
+            "duration_minutes": 20,
+            "timer_segments": [
+                {"name": "Voice Activation (Humming)", "duration": 180},
+                {"name": "Throat Opening", "duration": 300},
+                {"name": "Truth Inquiry", "duration": 420},
+                {"name": "Sacred Voice Embodiment", "duration": 300}
+            ],
+            "affirmation": "My voice is sacred medicine. I speak truth with grace, power, and compassion."
+        },
+        "chakra_work": {
+            "primary": "Throat",
+            "works_with": "Heart — bridges emotional truth to vocal expression",
+            "placement": "Place at throat for communication healing; at heart for feminine emotional healing",
+            "technique": "Place Chrysocolla at your throat. Breathe slowly. With each exhale, allow one truth to surface and be whispered — even just to yourself. This gradual truth-telling practice heals the throat chakra deeply over time."
+        },
+        "rituals": [
+            {
+                "name": "Sacred Voice Ceremony",
+                "purpose": "Reclaim your voice and truth",
+                "timing": "New Moon or when feeling silenced",
+                "steps": ["Hold Chrysocolla at your throat", "Hum, tone, or sing for 5 minutes", "Write a truth you have been afraid to speak", "Speak it aloud to the crystal", "Commit to one action that honors your voice this week"]
+            },
+            {
+                "name": "Goddess Altar Blessing",
+                "purpose": "Invoke divine feminine wisdom",
+                "timing": "Full Moon",
+                "steps": ["Place Chrysocolla on your altar with moonlight access", "Light blue or green candles", "Offer flowers, water, or sacred herbs", "Ask the Goddess for guidance and wisdom", "Sleep with crystal under pillow to receive dreams"]
+            }
+        ],
+        "combinations": [
+            {"crystal": "Lapis Lazuli", "purpose": "Sacred truth and royal wisdom"},
+            {"crystal": "Moonstone", "purpose": "Divine feminine power amplified"},
+            {"crystal": "Rose Quartz", "purpose": "Speaking truth from a place of love"},
+            {"crystal": "Aquamarine", "purpose": "Throat healing and flow of expression"}
+        ],
+        "warnings": ["Very soft — no water or salt cleansing", "Handle with great gentleness", "May bring up unexpressed emotions that need voicing"],
+        "affirmation": "The Goddess speaks through me. My voice is sacred and my truth is my power.",
+        "image_url": "https://images.unsplash.com/photo-1573408301185-9519f94e4f04?w=800"
+    },
+    {
+        "id": "sunstone",
+        "name": "Sunstone",
+        "title": "The Stone of Joy & Leadership",
+        "element": "Fire",
+        "chakra": "Sacral, Solar Plexus",
+        "zodiac": ["Leo", "Libra"],
+        "planet": "Sun",
+        "vibration_number": 1,
+        "hardness": 6.5,
+        "crystal_system": "Triclinic",
+        "color": "Golden Orange, Red-Brown with Glittery Sparkle",
+        "rarity": "Uncommon",
+        "origin": ["Norway", "India", "USA (Oregon)", "Canada"],
+        "description": "Sunstone is a crystal of joy, leadership, and benevolent abundance. Like captured sunlight, it carries the warmth, vitality, and generosity of the sun itself. It is a stone of personal power that clears codependency and illuminates your unique gifts. Sunstone empowers you to lead with joy — to shine without apology and to serve without self-sacrifice.",
+        "healing_properties": {
+            "physical": [
+                "Energizes the body and combats chronic fatigue and SAD (seasonal depression)",
+                "Warms cold constitutions and supports the autonomic nervous system",
+                "Stimulates self-healing and metabolism",
+                "Supports the throat, stomach, and spinal health",
+                "Increases vitality and physical enthusiasm"
+            ],
+            "emotional": [
+                "Dissolves depression, self-doubt, and feelings of being unseen",
+                "Encourages optimism, enthusiasm, and joie de vivre",
+                "Releases codependent patterns and people-pleasing",
+                "Builds self-worth and confidence to be seen",
+                "Encourages the expression of your authentic gifts to the world"
+            ],
+            "spiritual": [
+                "Aligns you with your divine purpose and soul mission",
+                "Opens the solar plexus to personal power rooted in love",
+                "Connects to solar deities and masculine sun wisdom",
+                "Dispels negative energies of self-doubt and unworthiness",
+                "Encourages benevolent leadership and inspired service"
+            ]
+        },
+        "cleansing_methods": [
+            {"method": "Sunlight", "description": "Morning sunlight especially — Sunstone loves direct solar energy", "duration": "2-4 hours"},
+            {"method": "Sound", "description": "High frequency sounds, drums, and uplifting music", "duration": "10 minutes"},
+            {"method": "Smudging", "description": "Pass through frankincense or copal smoke", "duration": "3 minutes"},
+            {"method": "Running Water", "description": "Hold under warm running water with gratitude", "duration": "2 minutes"},
+            {"method": "Earth", "description": "Leave on dry earth in sunlight", "duration": "Several hours"}
+        ],
+        "programming_ritual": {
+            "preparation": "Stand in sunlight if possible, or face a window. Feel the sun's warmth on your skin. This awakens Sunstone's full power.",
+            "steps": [
+                "Hold Sunstone in your dominant hand and lift it toward the sun",
+                "Feel the light entering both you and the crystal simultaneously",
+                "Say aloud: 'I am a gift to this world. I shine my light fearlessly.'",
+                "Visualize golden light expanding from the crystal into your solar plexus",
+                "Feel your personal power activating without ego — pure service through joy",
+                "Keep this crystal in your pocket or on your desk where you work"
+            ],
+            "duration_minutes": 10
+        },
+        "meditation_guidance": {
+            "preparation": "Sit facing a window or outdoors. Hold Sunstone at your solar plexus. Close your eyes.",
+            "technique": "Sunstone Solar Power Activation",
+            "steps": [
+                "Feel warmth from the sun (or visualize it) entering through the crystal",
+                "Breathe golden light into your solar plexus with each inhale",
+                "With each exhale, release self-doubt, smallness, and fear of being seen",
+                "Imagine yourself shining — your gifts, your joy, your medicine",
+                "Ask: 'How am I called to lead and serve from joy?'",
+                "Let the answer rise naturally — no forcing",
+                "Commit to one action this week that expresses your gifts",
+                "Seal with a smile — joy is the most powerful prayer"
+            ],
+            "duration_minutes": 15,
+            "timer_segments": [
+                {"name": "Solar Activation", "duration": 180},
+                {"name": "Self-Doubt Release", "duration": 240},
+                {"name": "Gift Recognition", "duration": 360},
+                {"name": "Joy Commitment", "duration": 120}
+            ],
+            "affirmation": "I shine brilliantly. My joy is my gift to the world. I lead with love and light."
+        },
+        "chakra_work": {
+            "primary": "Solar Plexus",
+            "works_with": "Sacral chakra for creative joy and authentic expression",
+            "placement": "Place on solar plexus to build confidence and personal power; sacral for creative vitality",
+            "technique": "Place Sunstone on your solar plexus while lying in morning sun or near a window. Breathe light into your center. Feel your personal power expanding — not as dominance, but as radiant, warm, generous presence."
+        },
+        "rituals": [
+            {
+                "name": "Solar Dawn Ritual",
+                "purpose": "Energize and activate personal power for the day",
+                "timing": "Morning, sunrise",
+                "steps": ["Hold Sunstone during sunrise (or face east at sunrise time)", "Take 9 deep breaths while absorbing the morning light", "State one intention for how you will shine today", "Carry it with you throughout the day", "At sunset, hold it and acknowledge how you shone"]
+            },
+            {
+                "name": "Leadership Activation",
+                "purpose": "Step into your gifts and leadership",
+                "timing": "Before presentations, performances, or leadership moments",
+                "steps": ["Hold Sunstone for 5 minutes before the event", "Breathe deeply and feel solar energy filling your spine", "Affirm: 'I am worthy to lead. My gifts serve all.'", "Place in your left pocket during the event"]
+            }
+        ],
+        "combinations": [
+            {"crystal": "Citrine", "purpose": "Joy-filled abundance and confidence"},
+            {"crystal": "Carnelian", "purpose": "Creative vitality and passionate action"},
+            {"crystal": "Clear Quartz", "purpose": "Amplified solar energy and clarity"},
+            {"crystal": "Labradorite", "purpose": "Grounded intuition with radiant expression"}
+        ],
+        "warnings": ["Can be too stimulating if you are already in a high-energy or manic state", "Balance its fire with Moonstone or Lepidolite"],
+        "affirmation": "I am the sun's emissary. I radiate warmth, joy, and generous light to all I meet.",
+        "image_url": "https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=800"
     }
 ]
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Heart, MessageCircle, Feather, Flame, Droplets, Wind, Mountain, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Feather, Flame, Droplets, Wind, Mountain, Sparkles, Loader2, Send, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -29,6 +29,10 @@ export default function Community() {
   const [loading, setLoading] = useState(true);
   const [filterType, setFilterType] = useState("all");
   const [selectedPost, setSelectedPost] = useState(null);
+  const [replyAuthor, setReplyAuthor] = useState("");
+  const [replyContent, setReplyContent] = useState("");
+  const [replyLoading, setReplyLoading] = useState(false);
+  const [showReplies, setShowReplies] = useState(false);
 
   useEffect(() => {
     fetchPosts();
@@ -46,8 +50,41 @@ export default function Community() {
   };
 
   const filtered = filterType === "all" ? posts : posts.filter(p => p.type?.toLowerCase() === filterType);
-
   const getColors = (el) => ELEMENT_COLORS[el?.toLowerCase()] || ELEMENT_COLORS.spirit;
+
+  const handleLike = async (e, post) => {
+    e.stopPropagation();
+    try {
+      await api.post(`/community/posts/${post.id}/like`);
+      setPosts(prev => prev.map(p => p.id === post.id ? { ...p, likes: (p.likes || 0) + 1 } : p));
+      if (selectedPost?.id === post.id) setSelectedPost(prev => ({ ...prev, likes: (prev.likes || 0) + 1 }));
+    } catch { toast.error("Could not like post"); }
+  };
+
+  const handleReply = async () => {
+    if (!replyContent.trim()) { toast.error("Please write something before posting"); return; }
+    setReplyLoading(true);
+    try {
+      const { data } = await api.post(`/community/posts/${selectedPost.id}/replies`, {
+        author_name: replyAuthor.trim() || "Sacred Seeker",
+        content: replyContent.trim(),
+      });
+      const updatedComments = [...(selectedPost.comments || []), data];
+      setSelectedPost(prev => ({ ...prev, comments: updatedComments }));
+      setPosts(prev => prev.map(p => p.id === selectedPost.id ? { ...p, comments: updatedComments } : p));
+      setReplyContent("");
+      setReplyAuthor("");
+      toast.success("Your reflection has been shared");
+    } catch { toast.error("Could not post reply"); }
+    finally { setReplyLoading(false); }
+  };
+
+  const openPost = (post) => {
+    setSelectedPost(post);
+    setShowReplies(false);
+    setReplyContent("");
+    setReplyAuthor("");
+  };
 
   return (
     <div className="min-h-screen bg-background" data-testid="community-page">
@@ -123,7 +160,7 @@ export default function Community() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   className={`p-6 rounded-2xl border backdrop-blur-xl ${colors.border} bg-white/[0.02] cursor-pointer hover:bg-white/[0.04] transition-all`}
-                  onClick={() => setSelectedPost(post)}
+                  onClick={() => openPost(post)}
                   data-testid={`community-post-${post.id}`}
                 >
                   <div className="flex items-start gap-4">
@@ -155,6 +192,19 @@ export default function Community() {
                           ))}
                         </div>
                       )}
+                      {/* Like + comments row */}
+                      <div className="flex items-center gap-4 mt-3 pt-3 border-t border-white/5">
+                        <button
+                          onClick={(e) => handleLike(e, post)}
+                          className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-rose-400 transition-colors"
+                          data-testid={`like-btn-${post.id}`}
+                        >
+                          <Heart className="w-3.5 h-3.5" /> {post.likes || 0}
+                        </button>
+                        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <MessageCircle className="w-3.5 h-3.5" /> {post.comments?.length || 0} {post.comments?.length === 1 ? "reply" : "replies"}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -179,7 +229,7 @@ export default function Community() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={e => e.stopPropagation()}
-              className="w-full max-w-xl max-h-[80vh] overflow-y-auto rounded-2xl bg-card border border-white/10 p-6"
+              className="w-full max-w-xl max-h-[85vh] overflow-y-auto rounded-2xl bg-card border border-white/10 p-6"
               data-testid="community-post-detail"
             >
               {selectedPost.image_url && (
@@ -199,8 +249,91 @@ export default function Community() {
               {selectedPost.author_name && (
                 <p className="text-sm text-muted-foreground mb-4">Shared by {selectedPost.author_name}</p>
               )}
-              <div className="text-muted-foreground whitespace-pre-line leading-relaxed">{selectedPost.content}</div>
-              <Button variant="ghost" onClick={() => setSelectedPost(null)} className="w-full mt-6">
+              <div className="text-muted-foreground whitespace-pre-line leading-relaxed mb-4">{selectedPost.content}</div>
+
+              {/* Like row */}
+              <div className="flex items-center gap-4 pb-4 border-b border-white/10">
+                <button
+                  onClick={(e) => handleLike(e, selectedPost)}
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-rose-400 transition-colors"
+                  data-testid="modal-like-btn"
+                >
+                  <Heart className="w-4 h-4" /> {selectedPost.likes || 0} {selectedPost.likes === 1 ? "blessing" : "blessings"}
+                </button>
+                <button
+                  onClick={() => setShowReplies(!showReplies)}
+                  className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-violet-400 transition-colors"
+                  data-testid="toggle-replies-btn"
+                >
+                  <MessageCircle className="w-4 h-4" /> {selectedPost.comments?.length || 0} {selectedPost.comments?.length === 1 ? "reply" : "replies"}
+                  {showReplies ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                </button>
+              </div>
+
+              {/* Replies section */}
+              <AnimatePresence>
+                {showReplies && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="py-4 space-y-3" data-testid="replies-section">
+                      {selectedPost.comments?.length > 0 ? (
+                        selectedPost.comments.map((comment, i) => (
+                          <div key={comment.id || i} className="p-3 rounded-xl bg-violet-500/5 border border-violet-500/10" data-testid={`reply-${i}`}>
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs font-medium text-violet-300">{comment.author_name || "Sacred Seeker"}</span>
+                              {comment.created_at && (
+                                <span className="text-[10px] text-muted-foreground ml-auto">
+                                  {new Date(comment.created_at).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-muted-foreground leading-relaxed">{comment.content}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-sm text-muted-foreground/60 text-center py-2">Be the first to share a reflection</p>
+                      )}
+
+                      {/* Reply form */}
+                      <div className="mt-4 space-y-2" data-testid="reply-form">
+                        <input
+                          type="text"
+                          placeholder="Your name (optional)"
+                          value={replyAuthor}
+                          onChange={e => setReplyAuthor(e.target.value)}
+                          className="w-full px-3 py-2 text-sm rounded-lg bg-white/5 border border-white/10 focus:outline-none focus:border-violet-500/50 text-foreground placeholder:text-muted-foreground/50"
+                          data-testid="reply-author-input"
+                        />
+                        <div className="flex gap-2">
+                          <textarea
+                            placeholder="Share your reflection..."
+                            value={replyContent}
+                            onChange={e => setReplyContent(e.target.value)}
+                            rows={2}
+                            className="flex-1 px-3 py-2 text-sm rounded-lg bg-white/5 border border-white/10 focus:outline-none focus:border-violet-500/50 text-foreground placeholder:text-muted-foreground/50 resize-none"
+                            data-testid="reply-content-input"
+                          />
+                          <Button
+                            size="sm"
+                            onClick={handleReply}
+                            disabled={replyLoading || !replyContent.trim()}
+                            className="bg-violet-500 hover:bg-violet-600 self-end"
+                            data-testid="reply-submit-btn"
+                          >
+                            {replyLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <Button variant="ghost" onClick={() => setSelectedPost(null)} className="w-full mt-4">
                 Close
               </Button>
             </motion.div>

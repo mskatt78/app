@@ -813,8 +813,30 @@ async def like_community_post(post_id: str):
     return {"success": True}
 
 
-@router.get("/community/posts/{post_id}")
-async def get_community_post(post_id: str):
+@router.post("/community/posts/{post_id}/replies")
+async def add_community_reply(post_id: str, reply_data: dict):
+    """Add a reply/comment to a community post."""
+    from datetime import datetime, timezone
+    import uuid
+    db = get_db()
+    reply = {
+        "id": str(uuid.uuid4())[:8],
+        "author_name": reply_data.get("author_name", "Sacred Seeker"),
+        "content": reply_data.get("content", "").strip(),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    if not reply["content"]:
+        raise HTTPException(status_code=400, detail="Reply content cannot be empty")
+    result = await db.community_posts.update_one(
+        {"id": post_id},
+        {"$push": {"comments": reply}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Post not found")
+    return reply
+
+
+
     """Get a specific community post."""
     db = get_db()
     post = await db.community_posts.find_one({"id": post_id}, {"_id": 0})
