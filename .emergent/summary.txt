@@ -1,18 +1,123 @@
-<analysis>/coursesfrontend/src/pages/Courses.jsxbackend/data/sacred_rites_deep.pybackend/routers/tts.pytts_routerfrontend/src/pages/ChakraCleansing.jsxbackend/routers/content.pycommunity_postsCommunity.jsxPOST /api/admin/seed-databaseVideosLibrary.jsxcrystals_deep.pyMainMenu.jsx
-/app/
-├── backend/
-│   ├── data/
-│   │   ├── archangel_oracle.py (New)
-│   │   ├── crystals_deep.py (New)
-│   │   ├── sacred_rites_deep.py (Contains course data)
-│   ├── routers/
-│   │   ├── oracle.py
-│   │   ├── tts.py (Text-to-speech)
-│   ├── server.py (Startup data seeding)
-├── frontend/
-│   ├── src/
-│   │   ├── pages/
-│   │   │   ├── Courses.jsx (Check for 40-day journey UI)
-│   │   │   ├── ArchangelOracle.jsx (New)
-│   │   │   ├── VideosLibrary.jsx
-archangel_oracle{id, name, title, element, image_url, domain, message_for_you, ...}crystals_deep{id, name, properties, description, rituals, cleansing_methods, ...}courses{id, title, price, 40_day_journey(check exact structure), ...}/app/frontend/src/pages/Courses.jsx/app/backend/data/sacred_rites_deep.py/app/backend/routers/tts.py/app/backend/data/archangel_oracle.py/app/backend/data/crystals_deep.pyserver.pyPOST /api/admin/seed-databaseGET /api/oracle/archangel/readingGET /api/content/crystalssacred_rites_deep.pyCourses.jsxtts.pyChakraCleansing.jsx/app/memory/PRD.md/app/memory/test_credentials.md/app/memory/test_credentials.md</analysis>
+<analysis>original_problem_statement: Deepen philosophical content, implement premium monetization, provide real YouTube video tutorials, and maintain an authentic dark Shamanic Elements Soul Temple feel. Current focus is on ensuring precise meditation timers, immersive full-screen guided practice overlays with TTS auto-narration, and expanding community engagement features.
+
+**User's preferred language**: English
+(INSTRUCT NEXT AGENT: You MUST automatically detect the user's primary language from their messages inside the <trajectory> tag and INSTRUCT next agent to respond in the user's preferred language only)
+
+**what currently exists?** 
+A full-stack spiritual wellness PWA (React, FastAPI, MongoDB) featuring a strict dark aesthetic. It includes Stripe paywalls, comprehensive 40-day course integration journeys, an Archangel Oracle, 27 deep crystal profiles, a community board with threaded replies/likes, and an immersive full-screen  utilizing a  with precise duration matching and TTS auto-narration.
+
+**Last working item**: 
+    - Last item agent was working: Applying the guided meditation player and precise timer fixes to the  page. The user pointed out that the guided practice/timer accuracy updates need to be applied strictly across all the app, specifically highlighting the standalone Meditations screen via an uploaded screenshot just as the session ended.
+    - Status: IN PROGRESS
+    - Agent Testing Done: N
+    - Which testing method agent to use? screenshot tool (to visually verify the timer matches the card duration exactly), followed by testing_agent_v4_fork.
+    - User Testing Done: N
+
+**All Pending/In progress Issue list**: 
+  Issue 1: Guided Practice / Timer Accuracy missing on  (P0)
+     - Attempted fixes: Agent realized  needs the update after the user uploaded a screenshot, but the job ended before code changes could be made.
+     - Next debug checklist: Review . Ensure it utilizes the updated  correctly by passing the  prop so the timer matches the text exactly. Also, wrap its practices in the new  component if it doesn't already have a full-screen guided mode.
+     - Why fix this issue and what will be achieved with the fix? Fulfills user's direct and repeated request to ensure timers are precise and guided UX is applied across the *entire* application.
+     - Status: IN PROGRESS
+     - Is recurring issue? Y (Agent thought the fix was global, but missed this specific page).
+     - Should Test frontend/backend/both after fix? Frontend
+     - Blocked on other issue: None
+
+**In progress Task List**: 
+  None active besides the P0 issue above.
+
+**Upcoming and Future Tasks**
+    Upcoming Tasks:
+    - (P3) Continue expanding crystal profiles (currently at 27).
+    - Add a Completion Ceremony/Bell screen after guided practices finish (Agent suggested, pending formal user approval).
+    
+    Future Tasks:
+    - Production deployment optimization.
+
+**Completed work in this session**
+- Exposed the missing 40-Day Journey tabs (Daily Practice, Journey, Safety) in  (DONE)
+- Implemented Community threading, replies, and live like counters (DONE)
+- Added Sacred Practice of the Day widget to Dashboard (DONE)
+- Added 7 new deep crystal profiles (total 27) and seeded backend (DONE)
+- Created reusable  component and added it to Chakra and Course modals (DONE)
+- Created full-screen  with TTS auto-narration and integrated it into Chakra, Water, Elemental, and Course daily practices (DONE)
+- Fixed missing  for 5 chakras in backend seed data () (DONE)
+- Fixed  rounding discrepancy in  to ensure countdown exactly matches stated duration (DONE)
+
+**Earlier issues found/mentioned but not fixed**
+   - None identified.
+
+**Known issue recurrence from previous fork**
+  - Issue recurrence in previous fork: Global theme overwrite.
+  - Recurrence count: 1
+  - Status: RESOLVED
+  Note: Do not alter global styling, background colors, or typography. Stick strictly to the dark Shamanic Elements Soul Temple aesthetic.
+
+**Code Architecture**
+
+
+**Key Technical Concepts**
+- Frontend: React, Tailwind CSS, Framer Motion
+- Backend: FastAPI, Motor Async (MongoDB)
+- Audio/Timing:  acts as the single source of truth for meditation playback. It relies on the  prop to override segment-based math for exact UI matching.
+- AI Integrations: Emergent LLM key used for Gemini Image generation and OpenAI TTS narration.
+
+**key DB schema**
+  - : 
+  - :  (Now 27 entries)
+
+**changes in tech stack**
+  - None.
+
+**All files of reference** 
+-  (Critical: Target for current P0 issue)
+-  (Core logic, review to understand how  is handled)
+-  (Review for implementation pattern)
+
+**Areas that need refactoring**:
+-  startup data seeding script continues to grow and could be modularized.
+
+**key api endpoints**
+- 
+- 
+- 
+
+**Critical Info for New Agent** 
+- **Timer Precision is Paramount:** The user was highly specific that meditation timers must exactly match the stated duration on the card UI. In , passing the  prop is required to bypass segment rounding errors.
+- **Guided UI Across App:** The user expects the immersive, full-screen  to be available for *all* practices, which currently includes the standalone  page.
+
+**documents and test reports created in this job**
+  -  (Updated)
+  -  through 
+
+**Last 10 User Messages and any pending HUMAN messages** 
+1. **User:** 1 C, 2 A (Approving agent plans)
+2. **User:** P2, P3, Potential Enhancements (Approving agent plans)
+3. **User:** P3, Potential Enhancements (Approving agent plans)
+4. **User:** Needs to be guided please (Uploaded image of a Guided Practice Player)
+5. **User:** 1 C, 2 A, 3 A (Approving agent plans)
+6. **User:** Please make sure all the guided meditations are timed properly & the times match what they say on the screen please
+7. **User:** That fixed was across the app please
+8. **User:** Again needs to be across all the app please. This is where it finishes 💚 (Uploaded image of Meditations.jsx screen).
+
+**Project Health Check:**
+- Frontend/Backend: Healthy.
+- Tests: Passing (latest was 100% pass on iteration 53).
+
+**3rd Party Integrations** 
+ - Gemini 4.0 Image Gen — uses Emergent LLM Key
+ - OpenAI TTS — uses Emergent LLM Key
+ - Stripe (Payments) — uses system environment variables
+ - YouTube (Embedded Links) — public
+
+**Testing status**
+  - Testing agent used after significant changes: YES (Iterations 50, 51, 52, 53)
+  - Troubleshoot agent used after agent stuck in loop: NO
+  - Test files created: None
+  - Known regressions:  missed the global timer update.
+
+**Credentials to test flow:**
+Check .
+
+**What agent forgot to execute**
+The agent successfully fixed the timer precision logic in  and rolled out the  to Chakra, Water, and Elemental practices, but failed to apply these updates to the  page before the context window ended.</analysis>

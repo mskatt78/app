@@ -5,6 +5,7 @@ configures CORS, connects to MongoDB, and includes all modular routers.
 """
 from fastapi import FastAPI, APIRouter
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.gzip import GZipMiddleware
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -80,6 +81,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# GZip compression for all responses >= 500 bytes
+app.add_middleware(GZipMiddleware, minimum_size=500)
 
 # Include the API router
 app.include_router(api_router)
@@ -449,13 +453,31 @@ async def do_database_seeding():
         logger.error(traceback.format_exc())
 
 
+async def ensure_indexes():
+    """Create MongoDB indexes for performance-critical queries."""
+    try:
+        # Users — fast auth lookups
+        await db.users.create_index("email", unique=True, background=True)
+        # Practice history — per-user queries sorted by date
+        await db.practice_history.create_index([("user_id", 1), ("created_at", -1)], background=True)
+        # Community posts — sorted by creation date
+        await db.community_posts.create_index([("created_at", -1)], background=True)
+        # Content collections — id lookups
+        for col in ["meditations", "crystals_deep", "chakra_cleansing", "breathwork_sessions",
+                    "yoga_poses", "elemental_temples", "archangel_oracle"]:
+            await db[col].create_index("id", unique=True, background=True)
+        logger.info("MongoDB indexes ensured.")
+    except Exception as e:
+        logger.warning(f"Index creation warning (non-fatal): {e}")
+
+
 @app.on_event("startup")
 async def startup_seed_database():
     """Seed database with content on startup."""
     import asyncio
-    # Run seeding in background to not block startup
+    asyncio.create_task(ensure_indexes())
     asyncio.create_task(do_database_seeding())
-    logger.info("Database seeding started in background...")
+    logger.info("Database seeding and indexing started in background...")
 
 
 async def seed_all_content():
