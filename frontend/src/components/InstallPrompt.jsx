@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 const InstallPrompt = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showPrompt, setShowPrompt] = useState(false);
+  const [showReopenChip, setShowReopenChip] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [isIos, setIsIos] = useState(false);
 
@@ -25,9 +26,9 @@ const InstallPrompt = () => {
     const dismissed = localStorage.getItem('installPromptDismissed');
     if (dismissed) {
       const dismissedTime = parseInt(dismissed);
-      // Show again after 7 days
-      if (Date.now() - dismissedTime < 7 * 24 * 60 * 60 * 1000) {
-        return;
+      // Keep a small persistent reopen chip while waiting
+      if (Date.now() - dismissedTime < 24 * 60 * 60 * 1000) {
+        setShowReopenChip(true);
       }
     }
 
@@ -35,6 +36,7 @@ const InstallPrompt = () => {
     const handleBeforeInstall = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      setShowReopenChip(false);
       // Show prompt after 5 seconds on the site
       setTimeout(() => setShowPrompt(true), 5000);
     };
@@ -49,6 +51,7 @@ const InstallPrompt = () => {
     window.addEventListener('appinstalled', () => {
       setIsInstalled(true);
       setShowPrompt(false);
+      setShowReopenChip(false);
       setDeferredPrompt(null);
     });
 
@@ -73,10 +76,29 @@ const InstallPrompt = () => {
 
   const handleDismiss = () => {
     setShowPrompt(false);
+    setShowReopenChip(true);
     localStorage.setItem('installPromptDismissed', Date.now().toString());
   };
 
-  if (isInstalled || !showPrompt) return null;
+  const handleReopen = () => {
+    setShowPrompt(true);
+    setShowReopenChip(false);
+  };
+
+  if (isInstalled) return null;
+
+  if (!showPrompt && showReopenChip) {
+    return (
+      <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[200]" data-testid="install-reopen-chip">
+        <Button onClick={handleReopen} size="sm" className="bg-primary hover:bg-primary/90 shadow-lg" data-testid="install-reopen-chip-btn">
+          <Download className="w-4 h-4 mr-2" />
+          Install App
+        </Button>
+      </div>
+    );
+  }
+
+  if (!showPrompt) return null;
 
   return (
     <AnimatePresence>

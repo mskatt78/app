@@ -23,6 +23,7 @@ import {
   Globe,
   Users,
   Leaf
+  ,Download
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -102,6 +103,14 @@ const TopNav = ({ user }) => {
           {/* User/Sign In */}
           <div className="flex items-center gap-2">
             {user && <NotificationBell />}
+            <button
+              onClick={() => navigate("/support")}
+              className="hidden sm:flex items-center gap-2 text-primary/80 hover:text-primary transition-colors"
+              data-testid="topnav-install-btn"
+            >
+              <Download className="w-4 h-4" />
+              <span className="text-sm">Install</span>
+            </button>
             <button
               onClick={() => navigate("/demo")}
               className="hidden sm:flex items-center gap-2 text-primary/80 hover:text-primary transition-colors"

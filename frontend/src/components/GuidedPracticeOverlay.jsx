@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Play, Pause, Volume2, VolumeX, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 const ELEMENT_AMBIENT = {
   fire: { freq: 120, Q: 2, gain: 0.12, label: "Sacred Fire" },
@@ -30,6 +31,7 @@ const MINIMUM_NARRATION_MINUTES = 7;
 const TARGET_WORDS_PER_MINUTE = 120;
 const SEGMENT_TARGET_WORDS = 220;
 const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 function formatTime(secs) {
   const minutes = Math.floor(secs / 60);
@@ -329,6 +331,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   const [narrationSegments, setNarrationSegments] = useState(narrationPlan.segments);
   const [narrationReady, setNarrationReady] = useState(false);
   const [scriptLoading, setScriptLoading] = useState(false);
+  const [audioTapRequired, setAudioTapRequired] = useState(false);
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
@@ -341,6 +344,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   const ttsPendingRef = useRef(new Map());
   const currentSegmentIndexRef = useRef(0);
   const scriptAbortRef = useRef(null);
+  const hasStartedRef = useRef(false);
 
   const element = (practice?.element || "spirit").toLowerCase();
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
@@ -349,6 +353,10 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   useEffect(() => {
     isPlayingRef.current = isPlaying;
   }, [isPlaying]);
+
+  useEffect(() => {
+    hasStartedRef.current = hasStarted;
+  }, [hasStarted]);
 
   const stopAmbient = useCallback(() => {
     try {
@@ -398,9 +406,10 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     setTtsLoading(false);
     setTtsPlaying(false);
     setHasStarted(false);
+    setAudioTapRequired(false);
     setNarrationParagraphs(narrationPlan.paragraphs);
     setNarrationSegments(narrationPlan.segments);
-    setNarrationReady(false);
+    setNarrationReady(true);
     setScriptLoading(Boolean(practice));
   }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient, narrationPlan, practice]);
 
@@ -473,7 +482,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
         const nextParagraphs = Array.isArray(data?.paragraphs) ? data.paragraphs.filter(Boolean) : [];
         const nextSegments = Array.isArray(data?.segments) ? data.segments.filter(Boolean) : [];
 
-        if (nextParagraphs.length > 0 && nextSegments.length > 0) {
+        if (nextParagraphs.length > 0 && nextSegments.length > 0 && !hasStartedRef.current && !isPlayingRef.current) {
           setNarrationParagraphs(nextParagraphs);
           setNarrationSegments(nextSegments);
           currentSegmentIndexRef.current = 0;
@@ -540,13 +549,21 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
 
     const promise = (async () => {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
-      const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: narrationSegments[segmentIndex], voice: "nova", speed: 0.88 }),
-      });
-      const data = await response.json();
-      if (!data.audio_base64) return null;
+      let data = null;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: narrationSegments[segmentIndex], voice: "nova", speed: 0.88 }),
+        });
+        if (response.ok) {
+          data = await response.json();
+          if (data?.audio_base64) break;
+        }
+        await wait(300 * (attempt + 1));
+      }
+
+      if (!data?.audio_base64) return null;
       const binary = atob(data.audio_base64);
       const bytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
@@ -583,6 +600,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       audio.currentTime = 0;
       audio.onplay = () => {
         setTtsPlaying(true);
+        setAudioTapRequired(false);
         generateSegmentUrl(segmentIndex + 1).catch(() => {});
       };
       audio.onpause = () => setTtsPlaying(false);
@@ -595,7 +613,11 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
           playNarrationSegment(nextIndex);
         }
       };
-      await audio.play().catch(() => {});
+      const started = await audio.play().then(() => true).catch(() => false);
+      if (!started) {
+        setAudioTapRequired(true);
+        toast.info("Tap play once to enable guidance audio.");
+      }
     } catch (_) {
       setTtsPlaying(false);
     } finally {
@@ -756,6 +778,11 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
               {scriptLoading && (
                 <div className={`text-center text-xs ${elColor} mb-4`} data-testid="guided-script-expanding-status">
                   Weaving an expanded guided script for your full session...
+                </div>
+              )}
+              {audioTapRequired && (
+                <div className={`text-center text-xs ${elColor} mb-4`} data-testid="guided-audio-tap-required-status">
+                  Audio is ready — tap play once to begin voice guidance.
                 </div>
               )}
               {ttsPlaying && !ttsLoading && (

@@ -5,6 +5,7 @@ import { Progress } from "./ui/progress";
 import { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
 import MeditationVisualizer from "./MeditationVisualizer";
 import BreathingVisualizer from "./BreathingVisualizer";
+import { toast } from "sonner";
 
 const createBrownNoise = (audioContext) => {
   const bufferSize = 2 * audioContext.sampleRate;
@@ -42,6 +43,42 @@ const formatTime = (seconds) => {
 };
 
 const tempoPlaybackRates = { slow: 0.9, normal: 1.0, fast: 1.12 };
+const MIN_NARRATION_MINUTES = 7;
+const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const splitSentences = (text) =>
+  String(text || "")
+    .split(/(?<=[.!?])\s+/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 10);
+
+const fallbackNarrationSegments = (normalizedSegments) => {
+  const sentences = normalizedSegments
+    .flatMap((segment) => [segment.name, segment.description])
+    .flatMap((value) => splitSentences(value))
+    .filter(Boolean);
+
+  if (!sentences.length) return [];
+
+  const chunks = [];
+  let buffer = [];
+  let words = 0;
+
+  sentences.forEach((sentence) => {
+    const sentenceWords = sentence.split(/\s+/).filter(Boolean).length;
+    if (words >= 160 && buffer.length) {
+      chunks.push(buffer.join(" "));
+      buffer = [];
+      words = 0;
+    }
+    buffer.push(sentence);
+    words += sentenceWords;
+  });
+
+  if (buffer.length) chunks.push(buffer.join(" "));
+  return chunks;
+};
 
 const PracticeTimer = ({
   segments = [],
@@ -64,7 +101,10 @@ const PracticeTimer = ({
   const [audioPlaying, setAudioPlaying] = useState(false);
   const [tempo, setTempo] = useState("normal");
   const [ttsLoading, setTtsLoading] = useState(false);
-  const [ttsAudioUrl, setTtsAudioUrl] = useState(null);
+  const [narrationSegments, setNarrationSegments] = useState([]);
+  const [narrationPreparing, setNarrationPreparing] = useState(false);
+  const [narrationSegmentIndex, setNarrationSegmentIndex] = useState(0);
+  const [audioTapRequired, setAudioTapRequired] = useState(false);
 
   const intervalRef = useRef(null);
   const sessionEndRef = useRef(null);
@@ -78,7 +118,9 @@ const PracticeTimer = ({
   const bowlIntervalRef = useRef(null);
   const ttsAudioRef = useRef(null);
   const ttsAbortRef = useRef(null);
-  const ttsUrlRef = useRef(null);
+  const ttsCacheRef = useRef(new Map());
+  const ttsPendingRef = useRef(new Map());
+  const narrationIndexRef = useRef(0);
 
   const normalizedSegments = useMemo(() => {
     if (!segments.length) return [];
@@ -162,6 +204,125 @@ const PracticeTimer = ({
     gainNodeRef.current = null;
     setAudioPlaying(false);
   }, []);
+
+  const clearNarrationCache = useCallback(() => {
+    ttsPendingRef.current.clear();
+    ttsCacheRef.current.forEach((url) => {
+      if (typeof url === "string" && url.startsWith("blob:")) {
+        URL.revokeObjectURL(url);
+      }
+    });
+    ttsCacheRef.current.clear();
+  }, []);
+
+  const stopNarrationPlayback = useCallback((resetIndex = false) => {
+    if (ttsAbortRef.current) {
+      ttsAbortRef.current.abort();
+      ttsAbortRef.current = null;
+    }
+    ttsAudioRef.current?.pause();
+    if (ttsAudioRef.current) ttsAudioRef.current.onended = null;
+    if (resetIndex) {
+      narrationIndexRef.current = 0;
+      setNarrationSegmentIndex(0);
+    }
+  }, []);
+
+  const fetchNarrationAudioUrl = useCallback(async (index, text, controller) => {
+    const cacheKey = `${index}::${text}`;
+    if (ttsCacheRef.current.has(cacheKey)) return ttsCacheRef.current.get(cacheKey);
+
+    if (ttsPendingRef.current.has(cacheKey)) {
+      return ttsPendingRef.current.get(cacheKey);
+    }
+
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    const pending = (async () => {
+      let data = null;
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, voice: "nova", speed: 0.88 }),
+          signal: controller.signal,
+        });
+        if (response.ok) {
+          data = await response.json();
+          if (data?.audio_base64) break;
+        }
+        if (controller.signal.aborted) break;
+        await wait(300 * (attempt + 1));
+      }
+      return data;
+    })()
+      .then((data) => {
+        if (!data?.audio_base64) throw new Error("No audio payload");
+        const binary = atob(data.audio_base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let position = 0; position < binary.length; position += 1) {
+          bytes[position] = binary.charCodeAt(position);
+        }
+        const blob = new Blob([bytes], { type: "audio/mpeg" });
+        const url = URL.createObjectURL(blob);
+        ttsCacheRef.current.set(cacheKey, url);
+        return url;
+      })
+      .finally(() => {
+        ttsPendingRef.current.delete(cacheKey);
+      });
+
+    ttsPendingRef.current.set(cacheKey, pending);
+    return pending;
+  }, []);
+
+  const playNarrationSegment = useCallback(async (index) => {
+    if (!autoNarrate || !narrationSegments.length || index >= narrationSegments.length) return;
+
+    const text = String(narrationSegments[index] || "").trim();
+    if (!text) {
+      narrationIndexRef.current = index + 1;
+      setNarrationSegmentIndex(index + 1);
+      if (isRunning) playNarrationSegment(index + 1);
+      return;
+    }
+
+    if (ttsAbortRef.current) ttsAbortRef.current.abort();
+    const controller = new AbortController();
+    ttsAbortRef.current = controller;
+    setTtsLoading(true);
+
+    try {
+      const url = await fetchNarrationAudioUrl(index, text, controller);
+      if (controller.signal.aborted || !isRunning) return;
+
+      narrationIndexRef.current = index;
+      setNarrationSegmentIndex(index);
+
+      const player = ttsAudioRef.current;
+      if (!player) return;
+      player.src = url;
+      player.playbackRate = tempoPlaybackRates[tempo] || 1;
+      player.muted = isMuted;
+      player.onended = () => {
+        const nextIndex = narrationIndexRef.current + 1;
+        narrationIndexRef.current = nextIndex;
+        setNarrationSegmentIndex(nextIndex);
+        if (isRunning) playNarrationSegment(nextIndex);
+      };
+      const started = await player.play().then(() => true).catch(() => false);
+      if (!started) {
+        setAudioTapRequired(true);
+        toast.info("Tap play once to enable voice guidance.");
+      } else {
+        setAudioTapRequired(false);
+      }
+    } catch (_) {
+      // Ignore transient narration errors.
+    } finally {
+      if (ttsAbortRef.current === controller) ttsAbortRef.current = null;
+      setTtsLoading(false);
+    }
+  }, [autoNarrate, fetchNarrationAudioUrl, isMuted, isRunning, narrationSegments, tempo]);
 
   const startAudio = useCallback(() => {
     if (backgroundAudio === "silence" || isMuted) return;
@@ -358,6 +519,8 @@ const PracticeTimer = ({
       setIsRunning(false);
       cleanupAudio();
       ttsAudioRef.current?.pause();
+      narrationIndexRef.current = 0;
+      setNarrationSegmentIndex(0);
       if (!isMuted) playTransitionBell();
       onComplete?.();
     }
@@ -401,51 +564,90 @@ const PracticeTimer = ({
   }, [audioVolume, isMuted]);
 
   useEffect(() => {
-    if (!autoNarrate || !currentSegment) return;
-
-    const text = (currentSegment.description || currentSegment.name || "").trim();
-    if (!text) return;
-
-    if (ttsAbortRef.current) ttsAbortRef.current.abort();
-    const controller = new AbortController();
-    ttsAbortRef.current = controller;
-
-    if (ttsUrlRef.current) {
-      URL.revokeObjectURL(ttsUrlRef.current);
-      ttsUrlRef.current = null;
-      setTtsAudioUrl(null);
+    if (!autoNarrate) {
+      setNarrationSegments([]);
+      setNarrationPreparing(false);
+      setAudioTapRequired(false);
+      narrationIndexRef.current = 0;
+      setNarrationSegmentIndex(0);
+      return;
     }
 
-    setTtsLoading(true);
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
-    fetch(`${backendUrl}/api/tts/generate-base64`, {
+    const steps = normalizedSegments
+      .map((segment) => [segment.name, segment.description].filter(Boolean).join(": "))
+      .filter(Boolean)
+      .slice(0, 48);
+    const sourceTexts = normalizedSegments
+      .flatMap((segment) => [segment.description, segment.name])
+      .flatMap((value) => splitSentences(value))
+      .filter(Boolean)
+      .slice(0, 96);
+
+    const fallback = fallbackNarrationSegments(normalizedSegments);
+    if (!steps.length && !sourceTexts.length && !fallback.length) {
+      setNarrationSegments([]);
+      setNarrationPreparing(false);
+      setAudioTapRequired(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), SCRIPT_EXPANSION_TIMEOUT_MS);
+
+    clearNarrationCache();
+    stopNarrationPlayback(true);
+    setNarrationSegments(fallback);
+    setNarrationPreparing(true);
+    setTtsLoading(false);
+    setAudioTapRequired(false);
+
+    fetch(`${backendUrl}/api/content/expand-script`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: text.slice(0, 3800), voice: "nova", speed: 0.85 }),
       signal: controller.signal,
+      body: JSON.stringify({
+        practice_name: normalizedSegments[0]?.name || `${practiceType} practice`,
+        element,
+        duration_minutes: Math.max(MIN_NARRATION_MINUTES, Math.ceil(calculatedTotal / 60)),
+        use_ai: true,
+        steps,
+        source_texts: sourceTexts,
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
-        if (!data.audio_base64) return;
-        const binary = atob(data.audio_base64);
-        const bytes = new Uint8Array(binary.length);
-        for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
-        const blob = new Blob([bytes], { type: "audio/mpeg" });
-        const url = URL.createObjectURL(blob);
-        ttsUrlRef.current = url;
-        setTtsAudioUrl(url);
+        if (controller.signal.aborted) return;
+        const expanded = Array.isArray(data?.segments) ? data.segments.filter(Boolean) : [];
+        if (expanded.length && narrationIndexRef.current <= 0) {
+          clearNarrationCache();
+          stopNarrationPlayback(true);
+          setNarrationSegments(expanded);
+        }
       })
-      .catch(() => {})
-      .finally(() => setTtsLoading(false));
-  }, [autoNarrate, currentSegment]);
+      .catch(() => {
+        if (controller.signal.aborted) return;
+        // Keep already-loaded fallback narration when expansion fails.
+      })
+      .finally(() => {
+        window.clearTimeout(timeoutId);
+        if (!controller.signal.aborted) setNarrationPreparing(false);
+      });
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
+  }, [autoNarrate, calculatedTotal, clearNarrationCache, element, normalizedSegments, practiceType, stopNarrationPlayback]);
 
   useEffect(() => {
-    if (ttsAudioUrl && ttsAudioRef.current) {
-      ttsAudioRef.current.src = ttsAudioUrl;
-      ttsAudioRef.current.playbackRate = tempoPlaybackRates[tempo] || 1;
-      if (isRunning) ttsAudioRef.current.play().catch(() => {});
+    if (!autoNarrate || narrationPreparing) return;
+    if (isRunning && narrationSegments.length > 0) {
+      playNarrationSegment(Math.min(narrationIndexRef.current, narrationSegments.length - 1));
+      return;
     }
-  }, [isRunning, tempo, ttsAudioUrl]);
+    ttsAudioRef.current?.pause();
+  }, [autoNarrate, isRunning, narrationPreparing, narrationSegments, playNarrationSegment]);
 
   useEffect(() => {
     if (ttsAudioRef.current) {
@@ -456,10 +658,11 @@ const PracticeTimer = ({
 
   useEffect(() => () => {
     if (ttsAbortRef.current) ttsAbortRef.current.abort();
-    if (ttsUrlRef.current) URL.revokeObjectURL(ttsUrlRef.current);
+    stopNarrationPlayback(true);
+    clearNarrationCache();
     cleanupAudio();
     if (intervalRef.current) clearInterval(intervalRef.current);
-  }, [cleanupAudio]);
+  }, [cleanupAudio, clearNarrationCache, stopNarrationPlayback]);
 
   const warmAudioContext = () => {
     try {
@@ -481,7 +684,7 @@ const PracticeTimer = ({
       syncElapsedFromClock();
       sessionEndRef.current = null;
       setIsRunning(false);
-      ttsAudioRef.current?.pause();
+      stopNarrationPlayback(false);
       cleanupAudio();
       return;
     }
@@ -491,7 +694,6 @@ const PracticeTimer = ({
     lastSegmentIndexRef.current = currentSegmentIndex;
     sessionEndRef.current = Date.now() + ((calculatedTotal - totalElapsed) * 1000);
     setIsRunning(true);
-    if (ttsAudioRef.current?.paused) ttsAudioRef.current.play().catch(() => {});
   };
 
   const handleReset = () => {
@@ -500,7 +702,8 @@ const PracticeTimer = ({
     lastSegmentIndexRef.current = 0;
     setIsRunning(false);
     setTotalElapsed(0);
-    ttsAudioRef.current?.pause();
+    stopNarrationPlayback(true);
+    setAudioTapRequired(false);
     cleanupAudio();
   };
 
@@ -569,9 +772,19 @@ const PracticeTimer = ({
               <Volume2 className="w-3 h-3" /> Preparing narration...
             </p>
           )}
-          {autoNarrate && ttsAudioUrl && !ttsLoading && (
+          {autoNarrate && narrationPreparing && (
+            <p className="text-xs text-violet-400/80 mt-2 flex items-center gap-1 animate-pulse">
+              <Volume2 className="w-3 h-3" /> Weaving long-form script...
+            </p>
+          )}
+          {autoNarrate && audioTapRequired && (
+            <p className="text-xs text-violet-300/80 mt-2 flex items-center gap-1" data-testid="timer-audio-tap-required-status">
+              <Volume2 className="w-3 h-3" /> Audio ready — tap play once to enable narration.
+            </p>
+          )}
+          {autoNarrate && !narrationPreparing && narrationSegments.length > 0 && !ttsLoading && (
             <p className="text-xs text-violet-400/80 mt-2 flex items-center gap-1">
-              <Volume2 className="w-3 h-3" /> Narrating step...
+              <Volume2 className="w-3 h-3" /> Narrating section {Math.min(narrationSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
             </p>
           )}
           {!isMuted && backgroundAudio !== "silence" && !audioPlaying && (
