@@ -610,7 +610,7 @@ const PracticeTimer = ({
         practice_name: normalizedSegments[0]?.name || `${practiceType} practice`,
         element,
         duration_minutes: Math.max(MIN_NARRATION_MINUTES, Math.ceil(calculatedTotal / 60)),
-        use_ai: true,
+        use_ai: false,
         steps,
         source_texts: sourceTexts,
       }),

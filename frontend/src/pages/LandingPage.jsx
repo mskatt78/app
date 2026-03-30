@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  Sun, Moon, Sparkles, Star, LogIn, Mail, Lock, User, Eye, EyeOff, ArrowRight
+  Sun, Moon, Sparkles, Star, LogIn, Mail, Lock, User, Eye, EyeOff, ArrowRight, Download
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -164,6 +164,15 @@ const LandingPage = ({ onLoginSuccess }) => {
                 data-testid="landing-support-btn"
               >
                 Support & install info
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/support')}
+                className="text-white/70 hover:text-primary"
+                data-testid="landing-install-btn"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Install App
               </Button>
             </div>
             

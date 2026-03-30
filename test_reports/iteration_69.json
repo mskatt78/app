@@ -1,0 +1,48 @@
+{
+  "summary": "Iteration 69 - Retest after fixes for user-reported issues: no audible guidance + install option vanished. ALL CRITICAL ISSUES FIXED. GuidedPracticeOverlay audio starts within 1.4 seconds (was 25+ seconds). Install buttons visible on landing page and TopNav. Expand-script uses use_ai=false for fast fallback mode.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_69.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "test_results": {
+    "landing_page_install_button": "PASS - Install App button visible with data-testid='landing-install-btn'",
+    "landing_page_support_button": "PASS - Support & install info button visible",
+    "topnav_install_button": "PASS - Install button visible on inner pages (somatic, meditations)",
+    "guided_practice_overlay_audio_start": "PASS - Audio started within 1.4 seconds (was 25+ seconds in iteration 68)",
+    "guided_practice_narration_playing": "PASS - Shows 'Guided narration playing • section 1 of 5' status",
+    "expand_script_use_ai_false": "PASS - All frontend components use use_ai: false for fast fallback",
+    "meditation_guided_practice": "PASS - Inner Peace Journey shows 'Guided narration playing • section 1 of 12'",
+    "tts_endpoint": "PASS - TTS generates audio in ~2.4 seconds for short segments"
+  },
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "test_credentials": {
+    "admin_password": "ShamanicAdmin2026!",
+    "qa_user_email": "demoqa_740fefc1@example.com"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 69 verified all fixes from iteration 68. Audio playback now starts within 1.4 seconds (was 25+ seconds). Install buttons are visible on landing page and TopNav. All expand-script calls use use_ai=false for fast fallback mode. No issues found.",
+  "rca_of_the_issue": {
+    "original_issue_1": "Guided sections show script but no audible guidance",
+    "fix_applied_1": "Changed use_ai: true to use_ai: false in GuidedPracticeOverlay.jsx, GuidedAudioButton.jsx, and PracticeTimer.jsx. Reduced FIRST_SEGMENT_TARGET_WORDS to 55 for faster first TTS playback.",
+    "verification_1": "Audio now starts within 1.4 seconds. 'Guided narration playing' status confirmed.",
+    "original_issue_2": "Install option vanished",
+    "fix_applied_2": "Added explicit Install App button on landing page (data-testid='landing-install-btn') and TopNav (data-testid='topnav-install-btn')",
+    "verification_2": "Both Install buttons visible and clickable on landing page and inner pages."
+  }
+}

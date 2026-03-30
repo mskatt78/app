@@ -131,7 +131,7 @@ const GuidedAudioButton = ({
       practice_name: practiceName || label || "Guided Practice",
       element,
       duration_minutes: estimateMinutes(script, durationMinutes),
-      use_ai: true,
+      use_ai: false,
       source_texts: mergedSources,
       steps: mergedSteps,
     };

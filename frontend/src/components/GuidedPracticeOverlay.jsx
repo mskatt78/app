@@ -30,7 +30,7 @@ const ELEMENT_COLOR = {
 const MINIMUM_NARRATION_MINUTES = 7;
 const TARGET_WORDS_PER_MINUTE = 120;
 const SEGMENT_TARGET_WORDS = 220;
-const FIRST_SEGMENT_TARGET_WORDS = 90;
+const FIRST_SEGMENT_TARGET_WORDS = 55;
 const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -473,7 +473,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
             practice_name: practice.name || "Guided Practice",
             element: practice.element || "Spirit",
             duration_minutes: practice.duration_minutes || MINIMUM_NARRATION_MINUTES,
-            use_ai: true,
+            use_ai: false,
             steps,
             source_texts: sourceTexts,
           }),

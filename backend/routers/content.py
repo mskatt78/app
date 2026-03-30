@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 MIN_NARRATION_MINUTES = 7
 TARGET_WORDS_PER_MINUTE = 120
 SEGMENT_TARGET_WORDS = 220
-FIRST_SEGMENT_TARGET_WORDS = 90
+FIRST_SEGMENT_TARGET_WORDS = 55
 
 
 class LiveSessionRsvpRequest(BaseModel):
@@ -47,7 +47,7 @@ class ExpandScriptRequest(BaseModel):
     duration_minutes: Optional[float] = None
     steps: list[str] = Field(default_factory=list)
     source_texts: list[str] = Field(default_factory=list)
-    use_ai: bool = True
+    use_ai: bool = False
 
 
 class ExpandScriptResponse(BaseModel):
