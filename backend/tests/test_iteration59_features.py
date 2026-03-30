@@ -6,7 +6,7 @@ import pytest
 import requests
 import os
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://shamanic-soul-temple-3.preview.emergentagent.com")
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://breathwork-sanctuary.preview.emergentagent.com")
 ADMIN_PASSWORD = "ShamanicAdmin2026!"
 QA_USER_EMAIL = "demoqa_740fefc1@example.com"
 QA_USER_PASSWORD = "DemoPass123!"

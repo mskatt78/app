@@ -13,7 +13,7 @@ from datetime import datetime
 import uuid
 
 # Get the backend URL from environment
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://shamanic-soul-temple-3.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://breathwork-sanctuary.preview.emergentagent.com')
 
 # Test credentials
 TEST_EMAIL = f"test_iter14_{uuid.uuid4().hex[:8]}@example.com"

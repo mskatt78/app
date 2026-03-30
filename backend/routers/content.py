@@ -1,13 +1,23 @@
 """Content routes for yoga, breathwork, crystals, mantras, mudras, meditations, etc."""
 from datetime import datetime, timezone
+import asyncio
+import logging
+import os
+import re
 from typing import Literal, Optional
+import uuid
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from .dependencies import get_db
 
 router = APIRouter(tags=["content"])
+logger = logging.getLogger(__name__)
+
+MIN_NARRATION_MINUTES = 7
+TARGET_WORDS_PER_MINUTE = 120
+SEGMENT_TARGET_WORDS = 220
 
 
 class LiveSessionRsvpRequest(BaseModel):
@@ -27,6 +37,268 @@ class LiveSessionMessageRequest(BaseModel):
         if value in ("", None):
             return None
         return value
+
+
+class ExpandScriptRequest(BaseModel):
+    practice_id: Optional[str] = None
+    practice_name: str
+    element: Optional[str] = None
+    duration_minutes: Optional[float] = None
+    steps: list[str] = Field(default_factory=list)
+    source_texts: list[str] = Field(default_factory=list)
+    use_ai: bool = False
+
+
+class ExpandScriptResponse(BaseModel):
+    practice_name: str
+    target_minutes: int
+    target_word_count: int
+    word_count: int
+    used_ai: bool
+    paragraphs: list[str]
+    segments: list[str]
+
+
+def _count_words(text: str) -> int:
+    return len(re.findall(r"\S+", str(text or "").strip()))
+
+
+def _flatten_text(value) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        trimmed = value.strip()
+        return [trimmed] if trimmed else []
+    if isinstance(value, list):
+        result: list[str] = []
+        for item in value:
+            result.extend(_flatten_text(item))
+        return result
+    if isinstance(value, dict):
+        result: list[str] = []
+        for item in value.values():
+            result.extend(_flatten_text(item))
+        return result
+    converted = str(value).strip()
+    return [converted] if converted else []
+
+
+def _split_sentences(text: str) -> list[str]:
+    normalized = re.sub(r"\s+", " ", str(text or "")).strip()
+    if not normalized:
+        return []
+    chunks = re.split(r"(?<=[.!?])\s+", normalized)
+    return [chunk.strip() for chunk in chunks if len(chunk.strip()) > 20]
+
+
+def _sanitize_llm_text(raw_text: str) -> str:
+    text = str(raw_text or "").strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z0-9_-]*\n?", "", text)
+        text = re.sub(r"```$", "", text).strip()
+    return text
+
+
+def _segment_paragraphs(paragraphs: list[str]) -> list[str]:
+    segments: list[str] = []
+    current: list[str] = []
+    running_words = 0
+
+    for paragraph in paragraphs:
+        paragraph_text = paragraph.strip()
+        if not paragraph_text:
+            continue
+        paragraph_words = _count_words(paragraph_text)
+        if running_words >= SEGMENT_TARGET_WORDS and current:
+            segments.append("\n\n".join(current))
+            current = []
+            running_words = 0
+        current.append(paragraph_text)
+        running_words += paragraph_words
+
+    if current:
+        segments.append("\n\n".join(current))
+
+    if not segments:
+        segments = ["Take a slow breath in. Take a longer breath out. You are safe here."]
+
+    return segments
+
+
+def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) -> list[str]:
+    practice_name = request.practice_name.strip() or "This practice"
+    element = (request.element or "spirit").lower().strip() or "spirit"
+
+    sentence_pool = list(
+        {
+            sentence.strip()
+            for sentence in (
+                part
+                for text in (request.source_texts + request.steps)
+                for part in _split_sentences(text)
+            )
+            if sentence.strip()
+        }
+    )
+
+    if not sentence_pool:
+        sentence_pool = [
+            f"{practice_name} is a sacred return to your breath, body, and inner wisdom.",
+            "Move slowly and gently, giving your nervous system enough space to soften and trust.",
+        ]
+
+    reflection_prompts = [
+        "Breathe slowly here and let this moment stretch without rushing to the next part.",
+        "If your mind wanders, guide your awareness back with kindness and no self-judgment.",
+        "Notice sensation, emotion, and breath with curiosity, as if each one is a living teacher.",
+        "Stay with this phase long enough for your body to understand that it is safe to soften.",
+        "Allow each exhale to release unnecessary effort while your spine remains steady and relaxed.",
+        "Receive what is unfolding instead of forcing it; this is where deeper healing starts.",
+    ]
+
+    paragraphs = [
+        f"Welcome to {practice_name}. Settle into a comfortable position and take three slow breaths. Let your shoulders soften, your jaw unclench, and your attention arrive fully in the present moment.",
+        f"This is a {element} practice. Let this quality guide your pace: steady, receptive, and spacious. There is nothing to prove. You are here to listen, feel, and gently deepen.",
+    ]
+
+    if request.steps:
+        first_steps = [step for step in request.steps if step.strip()][:4]
+        if first_steps:
+            step_intro = " ".join(
+                [f"Step {idx + 1}: {step.strip()}" for idx, step in enumerate(first_steps)]
+            )
+            paragraphs.append(
+                f"We will move through this sequence with presence and care. {step_intro}. Let each phase unfold in rhythm with your breath."
+            )
+
+    running_words = _count_words(" ".join(paragraphs))
+    index = 0
+
+    while running_words < max(target_words - 160, 0):
+        primary = sentence_pool[index % len(sentence_pool)]
+        secondary = sentence_pool[(index + 2) % len(sentence_pool)]
+        reflection = reflection_prompts[index % len(reflection_prompts)]
+
+        paragraph = (
+            f"Stay with {practice_name} now and allow this phase to deepen. "
+            f"{primary} "
+            f"Return to this emphasis: {secondary} "
+            f"{reflection}"
+        )
+        paragraphs.append(paragraph)
+        running_words += _count_words(paragraph)
+        index += 1
+
+    paragraphs.extend(
+        [
+            "As this practice begins to close, do not leave abruptly. Keep breathing slowly and notice what has shifted in your body, your emotions, and your inner landscape.",
+            "When you are ready, take three grounding breaths, gently open your eyes, and carry this medicine into the rest of your day. Well done.",
+        ]
+    )
+
+    return [paragraph.strip() for paragraph in paragraphs if paragraph.strip()]
+
+
+async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> Optional[list[str]]:
+    api_key = os.environ.get("EMERGENT_LLM_KEY")
+    if not api_key:
+        return None
+
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+    except Exception as exc:
+        logger.warning("Could not import LLM chat for script expansion: %s", exc)
+        return None
+
+    context_lines = [line for line in _flatten_text(request.source_texts + request.steps) if line]
+    trimmed_context = "\n".join(context_lines[:60])
+
+    prompt = f"""
+Create a deeply detailed guided meditation narration script.
+
+Practice name: {request.practice_name}
+Element: {request.element or 'spirit'}
+Duration target (minutes): {max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))}
+Minimum target words: {target_words}
+
+Source context:
+{trimmed_context if trimmed_context else 'No extra context provided.'}
+
+Requirements:
+1) Write long-form spoken guidance that feels warm, immersive, and therapeutic.
+2) Include breath pacing, body awareness, somatic language, and gentle integration prompts.
+3) Keep the flow continuous with no headings, no bullets, no markdown, and no labels.
+4) Return only plain narration text.
+5) Ensure the output is at least {target_words} words.
+""".strip()
+
+    try:
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"guided_script_{uuid.uuid4().hex[:12]}",
+            system_message=(
+                "You are an expert meditation guide writing high-quality long-form voice scripts. "
+                "Your output must be emotionally grounded, practical, and deeply calming."
+            ),
+        ).with_model("openai", "gpt-5.2")
+
+        response = await asyncio.wait_for(
+            chat.send_message(UserMessage(text=prompt)),
+            timeout=12,
+        )
+        text = _sanitize_llm_text(response)
+        if _count_words(text) < int(target_words * 0.55):
+            return None
+
+        paragraphs = [p.strip() for p in re.split(r"\n{2,}", text) if p.strip()]
+        if not paragraphs:
+            paragraphs = [
+                paragraph.strip()
+                for paragraph in re.split(r"(?<=[.!?])\s+(?=[A-Z])", text)
+                if paragraph.strip()
+            ]
+        return paragraphs or None
+    except Exception as exc:
+        logger.warning("AI script expansion failed: %s", exc)
+        return None
+
+
+@router.post("/content/expand-script", response_model=ExpandScriptResponse)
+async def expand_guided_script(request: ExpandScriptRequest):
+    """Expand guided practice text into long-form narration suitable for 7+ minute audio."""
+    practice_name = request.practice_name.strip() if request.practice_name else "Guided Practice"
+    target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
+    target_words = max(MIN_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, target_minutes * TARGET_WORDS_PER_MINUTE)
+
+    fallback_paragraphs = _build_fallback_paragraphs(request, target_words)
+    selected_paragraphs = fallback_paragraphs.copy()
+    used_ai = False
+
+    if request.use_ai:
+        ai_paragraphs = await _expand_with_llm(request, target_words)
+        if ai_paragraphs:
+            selected_paragraphs = ai_paragraphs
+            used_ai = True
+
+    current_word_count = _count_words(" ".join(selected_paragraphs))
+    if current_word_count < target_words:
+        for paragraph in fallback_paragraphs:
+            if current_word_count >= target_words:
+                break
+            selected_paragraphs.append(paragraph)
+            current_word_count = _count_words(" ".join(selected_paragraphs))
+
+    segments = _segment_paragraphs(selected_paragraphs)
+
+    return ExpandScriptResponse(
+        practice_name=practice_name,
+        target_minutes=target_minutes,
+        target_word_count=target_words,
+        word_count=_count_words(" ".join(selected_paragraphs)),
+        used_ai=used_ai,
+        paragraphs=selected_paragraphs,
+        segments=segments,
+    )
 
 
 async def _build_live_session(session: dict, db) -> dict:

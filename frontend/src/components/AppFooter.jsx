@@ -43,6 +43,14 @@ const AppFooter = () => {
               >
                 Privacy Policy
               </button>
+              <span className="text-white/20">|</span>
+              <button
+                onClick={() => navigate('/terms')}
+                className="hover:text-primary transition-colors"
+                data-testid="footer-terms-btn"
+              >
+                Terms
+              </button>
             </div>
             
             <div className="text-xs text-center md:text-right">

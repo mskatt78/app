@@ -27,17 +27,17 @@ print('User ID: ' + userId);
 ## Step 2: Test Backend API
 ```bash
 # Test auth endpoint
-curl -X GET "https://shamanic-soul-temple-3.preview.emergentagent.com/api/auth/me" \
+curl -X GET "https://breathwork-sanctuary.preview.emergentagent.com/api/auth/me" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 
 # Test yoga poses
-curl -X GET "https://shamanic-soul-temple-3.preview.emergentagent.com/api/yoga/poses"
+curl -X GET "https://breathwork-sanctuary.preview.emergentagent.com/api/yoga/poses"
 
 # Test crystals
-curl -X GET "https://shamanic-soul-temple-3.preview.emergentagent.com/api/crystals"
+curl -X GET "https://breathwork-sanctuary.preview.emergentagent.com/api/crystals"
 
 # Test oracle (requires auth)
-curl -X POST "https://shamanic-soul-temple-3.preview.emergentagent.com/api/oracle/reading" \
+curl -X POST "https://breathwork-sanctuary.preview.emergentagent.com/api/oracle/reading" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
   -d '{"question": "What guidance do I need?", "spread_type": "single"}'
@@ -55,7 +55,7 @@ await page.context.add_cookies([{
     "secure": true,
     "sameSite": "None"
 }]);
-await page.goto("https://shamanic-soul-temple-3.preview.emergentagent.com/dashboard");
+await page.goto("https://breathwork-sanctuary.preview.emergentagent.com/dashboard");
 ```
 
 ## Checklist
@@ -67,17 +67,17 @@ await page.goto("https://shamanic-soul-temple-3.preview.emergentagent.com/dashbo
 
 ## Step 4: Admin Session Access
 ```bash
-curl -b cookies.txt -X POST "https://shamanic-soul-temple-3.preview.emergentagent.com/api/admin/session-login"
+curl -b cookies.txt -X POST "https://breathwork-sanctuary.preview.emergentagent.com/api/admin/session-login"
 
 curl -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
-  "https://shamanic-soul-temple-3.preview.emergentagent.com/api/admin/collections"
+  "https://breathwork-sanctuary.preview.emergentagent.com/api/admin/collections"
 ```
 
 ## Step 5: Live Sessions API
 ```bash
-curl "https://shamanic-soul-temple-3.preview.emergentagent.com/api/live-sessions"
+curl "https://breathwork-sanctuary.preview.emergentagent.com/api/live-sessions"
 
-curl -X POST "https://shamanic-soul-temple-3.preview.emergentagent.com/api/live-sessions/YOUR_SESSION_ID/messages" \
+curl -X POST "https://breathwork-sanctuary.preview.emergentagent.com/api/live-sessions/YOUR_SESSION_ID/messages" \
   -H "Content-Type: application/json" \
   -d '{"display_name":"Test Client","message":"Is there a replay?","kind":"question"}'
 ```

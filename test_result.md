@@ -103,7 +103,7 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Please verify backend/API behavior for the current spiritual wellness app using the preview base URL https://shamanic-soul-temple-3.preview.emergentagent.com . Focus on these checks:
+  Please verify backend/API behavior for the current spiritual wellness app using the preview base URL https://breathwork-sanctuary.preview.emergentagent.com . Focus on these checks:
 
   1) Light Codes API depth
   - GET /api/light-codes

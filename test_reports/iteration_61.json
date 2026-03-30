@@ -1,0 +1,115 @@
+{
+  "summary": "Iteration 61 - Comprehensive testing of guided narration expansion, retreats cleanup, and app-store polish routes. All 21 backend tests passed. All frontend features working correctly. The backend /api/content/expand-script endpoint correctly enforces minimum 7-minute narration with word count aligned to duration (120 words/min). Retreats page shows empty state after cleanup. Terms, Privacy, and Support Center pages all render correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration61_features.py",
+    "/app/test_reports/pytest/pytest_iteration61.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration61_features.py"
+  ],
+  "success_rate": {
+    "backend": "100% (21/21 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": {
+    "admin_password": "ShamanicAdmin2026!",
+    "qa_user_email": "demoqa_740fefc1@example.com"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All features from iteration 61 are working correctly. Backend expand-script endpoint enforces minimum 7-minute narration (840+ words) and scales with duration (120 words/min). GuidedPracticeOverlay fetches expanded script from backend and auto-starts playback. Retreats collection is empty after cleanup (owner can add their own). App-store polish routes (/terms, /privacy, /support) all render correctly with proper content.",
+  "features_tested": {
+    "expand_script_endpoint": {
+      "status": "PASS",
+      "details": "POST /api/content/expand-script returns long-form script with target_minutes >= 7, word_count aligned to duration (120 words/min), paragraphs and segments arrays populated"
+    },
+    "expand_script_minimum_7_minutes": {
+      "status": "PASS",
+      "details": "When duration_minutes < 7, endpoint enforces minimum 7 minutes (840 words target)"
+    },
+    "expand_script_word_alignment": {
+      "status": "PASS",
+      "details": "15-minute practice returns 1800 words (15 × 120), actual word count matches target"
+    },
+    "tts_generate_base64": {
+      "status": "PASS",
+      "details": "POST /api/tts/generate-base64 works with expanded segment text, returns audio_base64"
+    },
+    "retreats_cleanup": {
+      "status": "PASS",
+      "details": "GET /api/retreats returns empty list after cleanup, no dummy/placeholder retreats"
+    },
+    "retreats_page_ui": {
+      "status": "PASS",
+      "details": "Retreats page shows 'New retreats coming soon' empty state"
+    },
+    "terms_of_service_page": {
+      "status": "PASS",
+      "details": "/terms route renders with all 7 sections (Acceptance, Wellness Use, Account, Payments, Content, Availability, Contact)"
+    },
+    "privacy_policy_page": {
+      "status": "PASS",
+      "details": "/privacy route renders with complete privacy policy content"
+    },
+    "support_center_page": {
+      "status": "PASS",
+      "details": "/support route renders with Contact, Install, Privacy, Terms, and Account actions cards"
+    },
+    "footer_links": {
+      "status": "PASS",
+      "details": "Footer has Support, Privacy, and Terms buttons that navigate correctly"
+    },
+    "guided_practice_overlay": {
+      "status": "PASS",
+      "details": "GuidedPracticeOverlay fetches expanded script from backend, shows timer, play button, and long-form narration content"
+    },
+    "guided_practice_autostart": {
+      "status": "PASS",
+      "details": "Overlay auto-starts after script expansion completes (~2.5 seconds)"
+    },
+    "chakra_cleansing_page": {
+      "status": "PASS",
+      "details": "Shows all 13 chakras with cards, detail view has Why This Heals, Deeper Teaching, Self-Healing Guide sections"
+    },
+    "landing_page": {
+      "status": "PASS",
+      "details": "Landing page loads with Enter Temple, View Polished Demo, and Support & install info buttons"
+    },
+    "health_check": {
+      "status": "PASS",
+      "details": "GET /api/health returns healthy status"
+    },
+    "core_content_endpoints": {
+      "status": "PASS",
+      "details": "yoga/poses, breathwork/sessions, crystals, meditations, chakra-cleansing all return 200 with data"
+    }
+  },
+  "api_verification": {
+    "expand_script_response_example": {
+      "practice_name": "Root Chakra Cleansing",
+      "target_minutes": 15,
+      "target_word_count": 1800,
+      "word_count": 1800,
+      "segments": 8,
+      "paragraphs": 42
+    },
+    "minimum_enforcement_example": {
+      "requested_minutes": 3,
+      "enforced_target_minutes": 7,
+      "target_word_count": 840,
+      "actual_word_count": 889
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, HeartHandshake, Mail, ShieldCheck, Smartphone, Trash2 } from "lucide-react";
+import { ArrowLeft, Download, FileText, HeartHandshake, Mail, ShieldCheck, Smartphone, Trash2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 export default function SupportCenter() {
@@ -48,7 +48,14 @@ export default function SupportCenter() {
             <Button variant="outline" onClick={() => navigate("/privacy")} data-testid="support-center-privacy-btn">Open privacy policy</Button>
           </section>
 
-          <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-account-card">
+          <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-terms-card">
+            <FileText className="w-6 h-6 text-primary mb-4" />
+            <h3 className="text-2xl font-serif mb-3">Terms of service</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">Review usage terms, wellness scope, and account responsibilities for app-store compliance.</p>
+            <Button variant="outline" onClick={() => navigate("/terms")} data-testid="support-center-terms-btn">Open terms</Button>
+          </section>
+
+          <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6 md:col-span-2" data-testid="support-center-account-card">
             <HeartHandshake className="w-6 h-6 text-primary mb-4" />
             <h3 className="text-2xl font-serif mb-3">Account actions</h3>
             <ul className="space-y-3 text-sm text-muted-foreground leading-relaxed">

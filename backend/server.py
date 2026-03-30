@@ -12,6 +12,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
+from datetime import datetime, timezone
 
 # Import router dependencies module
 from routers import dependencies as router_deps
@@ -484,11 +485,64 @@ async def ensure_indexes():
         logger.warning(f"Index creation warning (non-fatal): {e}")
 
 
+async def cleanup_legacy_retreats_once():
+    """Remove legacy placeholder retreats a single time without affecting future user-created entries."""
+    marker_id = "retreats_cleanup_2026_03"
+
+    try:
+        marker = await db.app_meta.find_one({"id": marker_id}, {"_id": 0})
+        if marker:
+            return
+
+        retreats = await db.retreats.find({}, {"_id": 0, "title": 1}).to_list(length=50)
+        titles = [str(item.get("title", "")).strip().lower() for item in retreats]
+
+        def is_placeholder(title: str) -> bool:
+            return (
+                title.startswith("test")
+                or title.startswith("test_")
+                or title.startswith("test-")
+                or title.startswith("pytest")
+                or title == "sacred journey retreat"
+            )
+
+        placeholder_flags = [is_placeholder(title) for title in titles]
+        should_clear = bool(retreats) and (
+            all(placeholder_flags)
+            or (len(retreats) <= 5 and sum(placeholder_flags) >= max(1, len(retreats) - 1))
+        )
+
+        deleted_count = 0
+        if should_clear:
+            result = await db.retreats.delete_many({})
+            deleted_count = result.deleted_count
+            logger.info(f"Legacy retreats cleanup executed — removed {deleted_count} placeholder retreats.")
+        else:
+            logger.info("Legacy retreats cleanup skipped — existing retreats appear user-authored.")
+
+        await db.app_meta.update_one(
+            {"id": marker_id},
+            {
+                "$set": {
+                    "id": marker_id,
+                    "executed_at": datetime.now(timezone.utc).isoformat(),
+                    "retreat_count_seen": len(retreats),
+                    "deleted_count": deleted_count,
+                    "placeholder_flags": placeholder_flags,
+                }
+            },
+            upsert=True,
+        )
+    except Exception as e:
+        logger.warning(f"Legacy retreats cleanup warning (non-fatal): {e}")
+
+
 @app.on_event("startup")
 async def startup_seed_database():
     """Seed database with content on startup."""
     import asyncio
     asyncio.create_task(ensure_indexes())
+    asyncio.create_task(cleanup_legacy_retreats_once())
     asyncio.create_task(do_database_seeding())
     logger.info("Database seeding and indexing started in background...")
 

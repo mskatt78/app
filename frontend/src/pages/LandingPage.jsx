@@ -121,7 +121,7 @@ const LandingPage = ({ onLoginSuccess }) => {
 
             <div className="flex items-center justify-center gap-3 mb-6 flex-wrap">
               <Badge className="bg-primary/15 text-primary border border-primary/20" data-testid="landing-demo-badge">Polished demo ready</Badge>
-              <Badge variant="outline" className="border-white/10 text-white/70">App-store polish in progress</Badge>
+              <Badge variant="outline" className="border-white/10 text-white/70" data-testid="landing-appstore-ready-badge">Submission-ready mobile experience</Badge>
             </div>
 
             {/* BIG ENTER BUTTON - Goes to main menu */}

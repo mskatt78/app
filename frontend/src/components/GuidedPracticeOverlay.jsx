@@ -29,6 +29,7 @@ const ELEMENT_COLOR = {
 const MINIMUM_NARRATION_MINUTES = 7;
 const TARGET_WORDS_PER_MINUTE = 120;
 const SEGMENT_TARGET_WORDS = 220;
+const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
 
 function formatTime(secs) {
   const minutes = Math.floor(secs / 60);
@@ -204,6 +205,10 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   const [muted, setMuted] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
+  const [narrationParagraphs, setNarrationParagraphs] = useState(narrationPlan.paragraphs);
+  const [narrationSegments, setNarrationSegments] = useState(narrationPlan.segments);
+  const [narrationReady, setNarrationReady] = useState(false);
+  const [scriptLoading, setScriptLoading] = useState(false);
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
@@ -215,12 +220,11 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   const ttsCacheRef = useRef(new Map());
   const ttsPendingRef = useRef(new Map());
   const currentSegmentIndexRef = useRef(0);
+  const scriptAbortRef = useRef(null);
 
   const element = (practice?.element || "spirit").toLowerCase();
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
   const elColor = ELEMENT_COLOR[element] || ELEMENT_COLOR.spirit;
-  const narrationParagraphs = narrationPlan.paragraphs;
-  const narrationSegments = narrationPlan.segments;
 
   useEffect(() => {
     isPlayingRef.current = isPlaying;
@@ -265,6 +269,8 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     setCurrentSegmentIndex(0);
     ttsRef.current?.pause();
     clearNarrationCache();
+    scriptAbortRef.current?.abort?.();
+    scriptAbortRef.current = null;
     stopAmbient();
     setIsPlaying(false);
     setTimeRemaining(totalDuration);
@@ -272,7 +278,112 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     setTtsLoading(false);
     setTtsPlaying(false);
     setHasStarted(false);
-  }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient]);
+    setNarrationParagraphs(narrationPlan.paragraphs);
+    setNarrationSegments(narrationPlan.segments);
+    setNarrationReady(false);
+    setScriptLoading(Boolean(practice));
+  }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient, narrationPlan, practice]);
+
+  useEffect(() => {
+    if (!practice) {
+      setScriptLoading(false);
+      setNarrationReady(false);
+      return undefined;
+    }
+
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    if (!backendUrl) {
+      setScriptLoading(false);
+      setNarrationReady(true);
+      return undefined;
+    }
+
+    const controller = new AbortController();
+    scriptAbortRef.current?.abort?.();
+    scriptAbortRef.current = controller;
+    const timeoutId = window.setTimeout(() => controller.abort(), SCRIPT_EXPANSION_TIMEOUT_MS);
+
+    const expandScript = async () => {
+      const sourceTexts = Array.from(new Set(
+        [
+          practice.description,
+          practice.why_this_heals,
+          practice.practice_guide,
+          practice.guidance,
+          practice.spiritual_purpose,
+          practice.extended_teachings,
+          practice.meditation,
+          practice.visualization,
+          practice.activation,
+          practice.affirmations,
+          practice.benefits,
+          practice.therapeutic_benefits,
+          stepsOverride,
+          practice.steps,
+          practice.process_steps,
+          practice.cleansing_guide,
+          practice.instructions,
+        ].flatMap(flattenTextValue).filter(Boolean)
+      )).slice(0, 80);
+
+      const steps = Array.from(new Set(
+        [stepsOverride, practice.steps, practice.process_steps, practice.cleansing_guide, practice.instructions]
+          .flatMap(flattenTextValue)
+          .filter(Boolean)
+      )).slice(0, 40);
+
+      try {
+        const response = await fetch(`${backendUrl}/api/content/expand-script`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            practice_id: practice.id || null,
+            practice_name: practice.name || "Guided Practice",
+            element: practice.element || "Spirit",
+            duration_minutes: practice.duration_minutes || MINIMUM_NARRATION_MINUTES,
+            steps,
+            source_texts: sourceTexts,
+          }),
+        });
+
+        if (!response.ok || controller.signal.aborted) return;
+        const data = await response.json();
+        const nextParagraphs = Array.isArray(data?.paragraphs) ? data.paragraphs.filter(Boolean) : [];
+        const nextSegments = Array.isArray(data?.segments) ? data.segments.filter(Boolean) : [];
+
+        if (nextParagraphs.length > 0 && nextSegments.length > 0) {
+          setNarrationParagraphs(nextParagraphs);
+          setNarrationSegments(nextSegments);
+          currentSegmentIndexRef.current = 0;
+          setCurrentSegmentIndex(0);
+          clearNarrationCache();
+          ttsRef.current?.pause();
+        }
+      } catch (_) {
+        // Keep local fallback narration plan when expansion fails or times out.
+      } finally {
+        window.clearTimeout(timeoutId);
+        if (!controller.signal.aborted) {
+          setScriptLoading(false);
+          setNarrationReady(true);
+        }
+        if (scriptAbortRef.current === controller) {
+          scriptAbortRef.current = null;
+        }
+      }
+    };
+
+    expandScript();
+
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+      if (scriptAbortRef.current === controller) {
+        scriptAbortRef.current = null;
+      }
+    };
+  }, [practice, stepsOverride, clearNarrationCache]);
 
   useEffect(() => {
     if (isPlaying && !isComplete) {
@@ -295,6 +406,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   useEffect(() => () => {
     clearInterval(timerRef.current);
     ttsRef.current?.pause();
+    scriptAbortRef.current?.abort?.();
     stopAmbient();
     clearNarrationCache();
     if (audioCtxRef.current?.state !== "closed") audioCtxRef.current?.close();
@@ -412,11 +524,11 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   }, [isComplete, isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock, timeRemaining]);
 
   useEffect(() => {
-    if (practice && !autoStartRef.current && !isComplete) {
+    if (practice && narrationReady && !autoStartRef.current && !isComplete) {
       autoStartRef.current = true;
       handlePlay();
     }
-  }, [practice, isComplete, handlePlay]);
+  }, [practice, narrationReady, isComplete, handlePlay]);
 
   if (!practice) return null;
 
@@ -488,7 +600,11 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
                   <span data-testid="guided-practice-timer">{formatTime(timeRemaining)}</span>
                 </p>
                 <p className="text-white/40 text-xs mt-1 uppercase tracking-widest">
-                  {hasStarted ? "remaining" : `${Math.max(MINIMUM_NARRATION_MINUTES, practice.duration_minutes || MINIMUM_NARRATION_MINUTES)} min · ${(ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label}`}
+                  {hasStarted
+                    ? "remaining"
+                    : scriptLoading
+                      ? "Preparing long-form guidance..."
+                      : `${Math.max(MINIMUM_NARRATION_MINUTES, practice.duration_minutes || MINIMUM_NARRATION_MINUTES)} min · ${(ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label}`}
                 </p>
               </div>
 
@@ -514,6 +630,11 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
                 <div className={`text-center text-xs ${elColor} mb-4 flex items-center justify-center gap-2`}>
                   <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   Preparing your guide...
+                </div>
+              )}
+              {scriptLoading && (
+                <div className={`text-center text-xs ${elColor} mb-4`} data-testid="guided-script-expanding-status">
+                  Weaving an expanded guided script for your full session...
                 </div>
               )}
               {ttsPlaying && !ttsLoading && (
