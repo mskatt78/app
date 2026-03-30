@@ -1,0 +1,93 @@
+{
+  "summary": "Iteration 62 - Frontend testing of guided-practice parity and therapeutic depth cards for Mantras and Mudras sections. All features working correctly. Both sections now have 'Why this heals' and 'Integration' depth cards, CTA buttons for guided practice, and GuidedPracticeOverlay opens with timer and autoplay behavior without crashes.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Mudras Dialog",
+        "issues": ["Console warning: DialogContent requires DialogTitle for accessibility - minor a11y improvement needed"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_62.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: MudrasLibrary.jsx Dialog missing DialogTitle for accessibility (console warning)"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only test)",
+    "frontend": "100%"
+  },
+  "test_credentials": {
+    "admin_password": "ShamanicAdmin2026!",
+    "qa_user_email": "demoqa_740fefc1@example.com"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All guided-practice parity features for Mantras and Mudras are working correctly. Both sections have depth cards ('Why this heals' and 'Integration'), CTA buttons that open GuidedPracticeOverlay, and the overlay shows timer with autoplay behavior. No crashes observed.",
+  "features_tested": {
+    "mantras_why_this_heals_card": {
+      "status": "PASS",
+      "details": "data-testid='mantra-why-this-heals' present with therapeutic content about rhythm, fight-or-flight, and vagal tone"
+    },
+    "mantras_integration_card": {
+      "status": "PASS",
+      "details": "data-testid='mantra-integration-guide' present with guidance to sit in silence 1-3 minutes after chanting"
+    },
+    "mantras_guided_practice_cta": {
+      "status": "PASS",
+      "details": "data-testid='start-mantra-guided-practice-btn' present and clickable"
+    },
+    "mantras_guided_overlay_opens": {
+      "status": "PASS",
+      "details": "GuidedPracticeOverlay opens with title 'Om Guided Journey', timer (11:58), play button, and visualization guide"
+    },
+    "mantras_overlay_autoplay": {
+      "status": "PASS",
+      "details": "Overlay shows 'Guided narration playing • section 1 of 6' indicating autoplay behavior"
+    },
+    "mantras_overlay_stability": {
+      "status": "PASS",
+      "details": "Overlay stable after 3+ seconds, no crashes"
+    },
+    "mantras_audio_timer_regression": {
+      "status": "PASS",
+      "details": "Chanting timer play button (data-testid='chant-play-btn') still present - no regression"
+    },
+    "mudras_why_this_heals_card": {
+      "status": "PASS",
+      "details": "data-testid='mudra-why-this-heals' present with content about sensory-motor pathways and interoceptive awareness"
+    },
+    "mudras_integration_card": {
+      "status": "PASS",
+      "details": "data-testid='mudra-integration-guide' present with guidance to place palm on heart and belly for five slow breaths"
+    },
+    "mudras_guided_practice_cta": {
+      "status": "PASS",
+      "details": "data-testid='start-mudra-guided-practice-btn' present and clickable"
+    },
+    "mudras_guided_overlay_opens": {
+      "status": "PASS",
+      "details": "GuidedPracticeOverlay opens with title 'Gyan Mudra Guided Practice', timer (9:58), play button, and visualization guide"
+    },
+    "mudras_overlay_stability": {
+      "status": "PASS",
+      "details": "Overlay stable after 3+ seconds, no crashes"
+    }
+  },
+  "screenshots": {
+    "mantra_detail_dialog": ".screenshots/mantra_detail_dialog.png",
+    "mantra_guided_overlay": ".screenshots/mantra_guided_overlay.png",
+    "mudra_detail_dialog": ".screenshots/mudra_detail_dialog.png",
+    "mudra_guided_overlay": ".screenshots/mudra_guided_overlay.png"
+  }
+}

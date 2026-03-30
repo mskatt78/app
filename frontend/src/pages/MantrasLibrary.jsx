@@ -9,6 +9,7 @@ import { Progress } from "../components/ui/progress";
 import { Slider } from "../components/ui/slider";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
 import { 
   createMantraAudioContext, 
@@ -25,6 +26,7 @@ const MantrasLibrary = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [selectedElement, setSelectedElement] = useState("all");
   const [selectedMantra, setSelectedMantra] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   
   // User custom mantras
@@ -473,6 +475,53 @@ const MantrasLibrary = ({ user, api }) => {
     if (audioRef.current) {
       audioRef.current.pause();
     }
+  };
+
+  const getElementGuidance = (element) => {
+    const key = (element || "Spirit").toLowerCase();
+    if (key === "earth") return "stabilize your body and nervous system through grounded repetition";
+    if (key === "water") return "soften emotional holding and restore compassionate flow";
+    if (key === "fire") return "transform old patterns and awaken focused life force";
+    if (key === "air") return "clear mental turbulence and strengthen inner witnessing";
+    return "expand spiritual connection and return to sacred stillness";
+  };
+
+  const createGuidedMantraPractice = (mantra) => {
+    const perRep = Math.max(6, Number(mantra?.duration_seconds || 10));
+    const repsForGuidance = Math.max(21, Math.min(Number(mantra?.repetitions || 54), 72));
+    const estimatedMinutes = Math.max(7, Math.ceil((perRep * repsForGuidance) / 60));
+    const coreIntention = mantra?.translation || mantra?.practice_tips || "Return to breath and sacred sound.";
+    const benefits = Array.isArray(mantra?.benefits) ? mantra.benefits : [];
+
+    return {
+      id: `guided-mantra-${mantra.id}`,
+      name: `${mantra.name} Guided Journey`,
+      element: mantra.element || "Spirit",
+      duration_minutes: estimatedMinutes,
+      description: `A continuous guided mantra immersion with breath pacing, repetition cycles, and integration cues for ${mantra.name}.`,
+      instructions: [
+        `Begin with steady breath and softly introduce the mantra: ${mantra.name}.`,
+        `Repeat at a gentle rhythm while relaxing jaw, throat, and shoulders.`,
+        `On each cycle, let the mantra carry attention inward instead of forcing concentration.`,
+        `Use pauses to feel resonance in the ${mantra.chakra || "energy body"}.`,
+      ],
+      steps: [
+        `Settle and breathe into the ${mantra.element || "spirit"} field.`,
+        `Repeat ${mantra.name} with awareness of sound and vibration.`,
+        `Receive the mantra medicine: ${coreIntention}.`,
+        `Integrate the vibration through stillness and gratitude.`,
+      ],
+      guidance: `${mantra.name} can ${getElementGuidance(mantra.element)}. ${coreIntention}`,
+      practice_guide: mantra.practice_tips || coreIntention,
+      affirmations: [
+        coreIntention,
+        `I stay present with each repetition of ${mantra.name}.`,
+        `Sacred sound is reshaping my breath, mind, and heart.`,
+      ],
+      benefits,
+      why_this_heals: `${mantra.name} uses rhythmic repetition, breath entrainment, and attentional focus to regulate stress response and deepen embodied presence.`,
+      extended_teachings: `${mantra.name} has traditionally been practiced as vibrational medicine. Consistent repetition over time trains the mind toward steadiness and devotional attention.`,
+    };
   };
 
   return (
@@ -1010,11 +1059,42 @@ const MantrasLibrary = ({ user, api }) => {
                     and your ${selectedMantra.chakra} chakra.`}
                   </p>
                 </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="mantra-why-this-heals">
+                    <h4 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h4>
+                    <p className="text-sm text-emerald-100/80 leading-relaxed">
+                      Repetition at stable rhythm helps settle fight-or-flight activation, while vocal resonance supports vagal tone and emotional regulation.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="mantra-integration-guide">
+                    <h4 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration</h4>
+                    <p className="text-sm text-violet-100/80 leading-relaxed">
+                      After chanting, sit in silence for 1-3 minutes. Let the vibration settle before returning to activity.
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => setGuidedPractice(createGuidedMantraPractice(selectedMantra))}
+                  className="w-full py-6 rounded-xl bg-gradient-to-r from-primary to-amber-400 text-black hover:opacity-90"
+                  data-testid="start-mantra-guided-practice-btn"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Begin Guided Mantra Practice
+                </Button>
               </div>
             </>
           )}
         </DialogContent>
       </Dialog>
+
+      {guidedPractice && (
+        <GuidedPracticeOverlay
+          practice={guidedPractice}
+          onExit={() => setGuidedPractice(null)}
+        />
+      )}
 
       {/* Create/Edit Custom Mantra Dialog */}
       <Dialog open={isCreatingMantra} onOpenChange={(open) => {

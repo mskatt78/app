@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Hand, Filter, X, Check } from "lucide-react";
+import { ArrowLeft, Hand, Filter, X, Check, Sparkles } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent } from "../components/ui/dialog";
+import { Button } from "../components/ui/button";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 const MudrasLibrary = ({ user, api }) => {
   const navigate = useNavigate();
@@ -12,6 +14,7 @@ const MudrasLibrary = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [selectedElement, setSelectedElement] = useState("all");
   const [selectedMudra, setSelectedMudra] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const [imageErrors, setImageErrors] = useState(new Set());
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
@@ -52,6 +55,44 @@ const MudrasLibrary = ({ user, api }) => {
 
   const handleImageError = (mudraId) => {
     setImageErrors(prev => new Set([...prev, mudraId]));
+  };
+
+  const getElementFocus = (element) => {
+    const key = (element || "Spirit").toLowerCase();
+    if (key === "earth") return "grounding and physical steadiness";
+    if (key === "water") return "emotional regulation and fluidity";
+    if (key === "fire") return "metabolic fire and transformative momentum";
+    if (key === "air") return "clarity, breath flow, and cognitive spaciousness";
+    return "devotional presence and spiritual coherence";
+  };
+
+  const createGuidedMudraPractice = (mudra) => {
+    const baseMinutes = Math.max(7, Math.min(18, Math.round((mudra?.benefits?.length || 4) * 2)));
+
+    return {
+      id: `guided-mudra-${mudra.id}`,
+      name: `${mudra.name} Guided Practice`,
+      element: mudra.element || "Spirit",
+      duration_minutes: baseMinutes,
+      description: `An immersive mudra meditation focused on ${mudra.name}, with breath pacing and somatic integration prompts.`,
+      instructions: [
+        mudra.instructions || `Form ${mudra.name} gently in both hands.`,
+        "Relax shoulders and jaw while maintaining a soft upright spine.",
+        "Breathe slowly and sense subtle energetic changes in palms, chest, and belly.",
+        "Close with gratitude and slow reintegration.",
+      ],
+      steps: [
+        `Set your hands in ${mudra.name}.`,
+        "Establish a calm nasal breathing rhythm.",
+        `Hold attention on ${getElementFocus(mudra.element)}.`,
+        "Complete with stillness and embodied reflection.",
+      ],
+      guidance: `${mudra.name} supports ${getElementFocus(mudra.element)} while deepening meditative concentration through hand-based energy circuitry.`,
+      practice_guide: mudra.instructions,
+      benefits: mudra.benefits || [],
+      why_this_heals: `${mudra.name} combines tactile feedback, intentional posture, and breath pacing to calm the nervous system and improve interoceptive awareness.`,
+      extended_teachings: `In traditional practice, mudras are subtle energetic seals. Sustained, relaxed holding can refine attention, reduce cognitive scattering, and deepen spiritual embodiment.`,
+    };
   };
 
   return (
@@ -231,11 +272,42 @@ const MudrasLibrary = ({ user, api }) => {
                     }.
                   </p>
                 </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mudra-why-this-heals">
+                    <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Why this heals</h4>
+                    <p className="text-sm text-cyan-100/80 leading-relaxed">
+                      Mudras engage sensory-motor pathways that help anchor awareness, calm internal agitation, and reinforce intentional breathing.
+                    </p>
+                  </div>
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mudra-integration-guide">
+                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Integration</h4>
+                    <p className="text-sm text-amber-100/80 leading-relaxed">
+                      After release, place one palm on heart and one on belly for five slow breaths to integrate the energetic shift.
+                    </p>
+                  </div>
+                </div>
+
+                <Button
+                  onClick={() => setGuidedPractice(createGuidedMudraPractice(selectedMudra))}
+                  className="w-full py-6 rounded-xl bg-gradient-to-r from-primary to-orange-300 text-black hover:opacity-90"
+                  data-testid="start-mudra-guided-practice-btn"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Begin Guided Mudra Practice
+                </Button>
               </div>
             </DialogContent>
           </Dialog>
         )}
       </AnimatePresence>
+
+      {guidedPractice && (
+        <GuidedPracticeOverlay
+          practice={guidedPractice}
+          onExit={() => setGuidedPractice(null)}
+        />
+      )}
     </div>
   );
 };
