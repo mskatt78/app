@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Play, Pause, Volume2, VolumeX, CheckCircle2 } from "lucide-react";
 
@@ -26,10 +26,18 @@ const ELEMENT_COLOR = {
   spirit: "text-violet-400",
 };
 
+const MINIMUM_NARRATION_MINUTES = 7;
+const TARGET_WORDS_PER_MINUTE = 120;
+const SEGMENT_TARGET_WORDS = 220;
+
 function formatTime(secs) {
   const minutes = Math.floor(secs / 60);
   const seconds = Math.floor(secs % 60);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}
+
+function countWords(text) {
+  return String(text || "").trim().split(/\s+/).filter(Boolean).length;
 }
 
 function buildBrownNoise(ctx) {
@@ -68,28 +76,126 @@ function startAmbient(ctx, element) {
   return { src: source, gain };
 }
 
-function buildNarration(practice, stepsOverride) {
-  const raw = stepsOverride
-    || practice.steps
-    || practice.cleansing_guide
-    || practice.instructions
-    || practice.visualization
-    || practice.description
-    || "";
+function flattenTextValue(value) {
+  if (!value) return [];
+  if (typeof value === "string") return [value.trim()];
+  if (Array.isArray(value)) return value.flatMap(flattenTextValue);
+  if (typeof value === "object") return Object.values(value).flatMap(flattenTextValue);
+  return [String(value).trim()];
+}
 
-  const body = Array.isArray(raw) ? raw.map(String).join(" ... ") : String(raw).trim();
-  const enrichedBody = body.length < 100 && practice.description
-    ? `${practice.description} ... ${body}`
-    : body;
+function splitIntoSentences(text) {
+  return String(text || "")
+    .replace(/\s+/g, " ")
+    .split(/(?<=[.!?])\s+/)
+    .map((sentence) => sentence.trim())
+    .filter((sentence) => sentence.length > 20);
+}
 
-  const intro = `Welcome to ${practice.name}. Find a comfortable position and allow yourself to arrive fully in this sacred space.`;
-  const closing = "When you feel complete, gently return your awareness to the present moment. Take three slow, grounding breaths. Well done. Namaste.";
+function buildNarrationPlan(practice, stepsOverride) {
+  const targetMinutes = Math.max(MINIMUM_NARRATION_MINUTES, Number(practice?.duration_minutes || 0) || MINIMUM_NARRATION_MINUTES);
+  const targetWords = Math.max(MINIMUM_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, targetMinutes * TARGET_WORDS_PER_MINUTE);
 
-  return [intro, enrichedBody, closing].filter(Boolean).join("\n\n");
+  const sources = [
+    stepsOverride,
+    practice.steps,
+    practice.process_steps,
+    practice.cleansing_guide,
+    practice.instructions,
+    practice.visualization,
+    practice.description,
+    practice.why_this_heals,
+    practice.practice_guide,
+    practice.guidance,
+    practice.spiritual_purpose,
+    practice.extended_teachings,
+    practice.meditation,
+    practice.activation,
+    practice.affirmations,
+    practice.benefits,
+    practice.therapeutic_benefits,
+  ];
+
+  const contentPool = Array.from(new Set(
+    sources
+      .flatMap(flattenTextValue)
+      .flatMap(splitIntoSentences)
+      .map((sentence) => sentence.replace(/\s+/g, " ").trim())
+      .filter(Boolean)
+  ));
+
+  const fallbackSentence = `${practice.name || "This practice"} is a sacred return to the body, the breath, and the deeper intelligence already living within you.`;
+  const richSentences = contentPool.length > 0 ? contentPool : [fallbackSentence];
+  const benefits = flattenTextValue(practice.benefits || practice.therapeutic_benefits).filter(Boolean);
+  const affirmations = flattenTextValue(practice.affirmations).filter(Boolean);
+
+  const reflectionPrompts = [
+    "Breathe slowly here. Let the pace soften so your body does not feel rushed. There is nowhere else you need to be right now.",
+    "Notice the smallest shifts as they arise: warmth, tingling, emotion, memory, or a subtle sense of spaciousness opening within you.",
+    "If your mind wanders, come back gently. This is not a performance. It is a return to the truth already living inside your body.",
+    "Stay with the practice a little longer than feels convenient. Let patience become part of the medicine.",
+    "Keep the breath low and steady. Allow each exhale to lengthen the feeling of safety, grounding, and inner permission.",
+    "Receive this moment instead of trying to force it. The practice deepens when you soften enough to listen.",
+  ];
+
+  const paragraphs = [
+    `Welcome to ${practice.name}. Settle into a comfortable position and let your breath begin to slow. Allow the outer world to soften at the edges so your awareness can gather here, in this sacred practice, with your full and willing presence.`,
+    `Begin by arriving deliberately. Feel the surface beneath you. Notice your jaw, your shoulders, your belly, and your heart. Let yourself unclench in any place that has been carrying too much. This practice belongs to the ${practice.element || "spirit"} element, inviting you into steadiness, receptivity, and deeper inner contact.`,
+  ];
+
+  if (practice.description) {
+    paragraphs.push(`${practice.description} Let these words become an atmosphere around you, not something to rush through. Breathe with them. Feel them. Let them open slowly in your own timing.`);
+  }
+
+  let runningWords = paragraphs.reduce((total, paragraph) => total + countWords(paragraph), 0);
+  let index = 0;
+  while (runningWords < targetWords - 180) {
+    const primary = richSentences[index % richSentences.length] || fallbackSentence;
+    const secondary = richSentences[(index + 2) % richSentences.length] || fallbackSentence;
+    const reflection = reflectionPrompts[index % reflectionPrompts.length];
+    const benefit = benefits[index % Math.max(benefits.length, 1)];
+    const affirmation = affirmations[index % Math.max(affirmations.length, 1)];
+
+    const paragraph = [
+      `Stay with ${practice.name} now. Let this next phase deepen instead of hurrying forward.`,
+      primary,
+      `Return again to this focus: ${secondary}`,
+      benefit ? `Allow this work to support ${benefit}.` : "Allow this work to support the places within you that are ready for healing, truth, and integration.",
+      affirmation ? `Quietly repeat to yourself: ${affirmation}.` : "Quietly remind yourself that you are safe enough to stay present with what is unfolding.",
+      reflection,
+    ].join(" ... ");
+
+    paragraphs.push(paragraph);
+    runningWords += countWords(paragraph);
+    index += 1;
+  }
+
+  paragraphs.push(
+    `As this guided practice begins to close, do not leave it too quickly. Let the medicine settle. Notice what has changed in your breath, your body, your feeling state, or your inner images. Honor even the smallest shift. It matters.`,
+    "When you feel complete, gently return your awareness to the present moment. Take three slow, grounding breaths. Carry the truth of this practice with you. Well done. Namaste."
+  );
+
+  const segments = [];
+  let currentSegment = [];
+  let currentSegmentWords = 0;
+  paragraphs.forEach((paragraph) => {
+    const paragraphWords = countWords(paragraph);
+    if (currentSegmentWords >= SEGMENT_TARGET_WORDS && currentSegment.length > 0) {
+      segments.push(currentSegment.join("\n\n"));
+      currentSegment = [];
+      currentSegmentWords = 0;
+    }
+    currentSegment.push(paragraph);
+    currentSegmentWords += paragraphWords;
+  });
+  if (currentSegment.length > 0) segments.push(currentSegment.join("\n\n"));
+
+  return { paragraphs, segments, targetMinutes };
 }
 
 export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit }) {
-  const totalDuration = Math.max(60, Number(practice?.duration_minutes || 20) * 60);
+  const narrationPlan = useMemo(() => buildNarrationPlan(practice || {}, stepsOverride), [practice, stepsOverride]);
+  const totalDuration = Math.max(MINIMUM_NARRATION_MINUTES * 60, Number(practice?.duration_minutes || 20) * 60);
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(totalDuration);
   const [isComplete, setIsComplete] = useState(false);
@@ -97,26 +203,42 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   const [ttsPlaying, setTtsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
   const audioCtxRef = useRef(null);
   const ambientRef = useRef(null);
-  const ttsStartedRef = useRef(false);
   const sessionEndRef = useRef(null);
   const autoStartRef = useRef(false);
-  const ttsUrlRef = useRef(null);
+  const isPlayingRef = useRef(false);
+  const ttsCacheRef = useRef(new Map());
+  const ttsPendingRef = useRef(new Map());
+  const currentSegmentIndexRef = useRef(0);
 
   const element = (practice?.element || "spirit").toLowerCase();
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
   const elColor = ELEMENT_COLOR[element] || ELEMENT_COLOR.spirit;
-  const narration = buildNarration(practice, stepsOverride);
+  const narrationParagraphs = narrationPlan.paragraphs;
+  const narrationSegments = narrationPlan.segments;
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+  }, [isPlaying]);
 
   const stopAmbient = useCallback(() => {
     try {
       ambientRef.current?.src?.stop?.();
     } catch (_) {}
     ambientRef.current = null;
+  }, []);
+
+  const clearNarrationCache = useCallback(() => {
+    ttsPendingRef.current.clear();
+    ttsCacheRef.current.forEach((url) => {
+      try { URL.revokeObjectURL(url); } catch (_) {}
+    });
+    ttsCacheRef.current.clear();
   }, []);
 
   const syncRemainingFromClock = useCallback(() => {
@@ -139,12 +261,10 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     clearInterval(timerRef.current);
     sessionEndRef.current = null;
     autoStartRef.current = false;
-    ttsStartedRef.current = false;
+    currentSegmentIndexRef.current = 0;
+    setCurrentSegmentIndex(0);
     ttsRef.current?.pause();
-    if (ttsUrlRef.current) {
-      URL.revokeObjectURL(ttsUrlRef.current);
-      ttsUrlRef.current = null;
-    }
+    clearNarrationCache();
     stopAmbient();
     setIsPlaying(false);
     setTimeRemaining(totalDuration);
@@ -152,7 +272,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     setTtsLoading(false);
     setTtsPlaying(false);
     setHasStarted(false);
-  }, [practice?.id, practice?.name, totalDuration, narration, stopAmbient]);
+  }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient]);
 
   useEffect(() => {
     if (isPlaying && !isComplete) {
@@ -176,47 +296,79 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     clearInterval(timerRef.current);
     ttsRef.current?.pause();
     stopAmbient();
-    if (ttsUrlRef.current) URL.revokeObjectURL(ttsUrlRef.current);
+    clearNarrationCache();
     if (audioCtxRef.current?.state !== "closed") audioCtxRef.current?.close();
-  }, [stopAmbient]);
+  }, [clearNarrationCache, stopAmbient]);
 
-  const generateTTS = useCallback(async () => {
-    if (ttsStartedRef.current) return;
-    ttsStartedRef.current = true;
-    setTtsLoading(true);
+  const generateSegmentUrl = useCallback(async (segmentIndex) => {
+    if (!narrationSegments[segmentIndex]) return null;
+    if (ttsCacheRef.current.has(segmentIndex)) return ttsCacheRef.current.get(segmentIndex);
+    if (ttsPendingRef.current.has(segmentIndex)) return ttsPendingRef.current.get(segmentIndex);
 
-    try {
+    const promise = (async () => {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: narration, voice: "nova", speed: 0.9 }),
+        body: JSON.stringify({ text: narrationSegments[segmentIndex], voice: "nova", speed: 0.88 }),
       });
       const data = await response.json();
-      if (data.audio_base64) {
-        const binary = atob(data.audio_base64);
-        const bytes = new Uint8Array(binary.length);
-        for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
-        const blob = new Blob([bytes], { type: "audio/mpeg" });
-        const url = URL.createObjectURL(blob);
-        ttsUrlRef.current = url;
+      if (!data.audio_base64) return null;
+      const binary = atob(data.audio_base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+      const blob = new Blob([bytes], { type: "audio/mpeg" });
+      const url = URL.createObjectURL(blob);
+      ttsCacheRef.current.set(segmentIndex, url);
+      return url;
+    })().finally(() => {
+      ttsPendingRef.current.delete(segmentIndex);
+    });
 
-        const audio = new Audio(url);
-        audio.muted = muted;
+    ttsPendingRef.current.set(segmentIndex, promise);
+    return promise;
+  }, [narrationSegments]);
+
+  const playNarrationSegment = useCallback(async (segmentIndex) => {
+    if (!narrationSegments[segmentIndex]) return;
+
+    setTtsLoading(!ttsCacheRef.current.has(segmentIndex));
+    try {
+      const url = await generateSegmentUrl(segmentIndex);
+      if (!url || !isPlayingRef.current) return;
+
+      let audio = ttsRef.current;
+      if (!audio) {
+        audio = new Audio();
         ttsRef.current = audio;
-
-        audio.addEventListener("play", () => setTtsPlaying(true));
-        audio.addEventListener("pause", () => setTtsPlaying(false));
-        audio.addEventListener("ended", () => setTtsPlaying(false));
-
-        await audio.play().catch(() => {});
       }
+
+      currentSegmentIndexRef.current = segmentIndex;
+      setCurrentSegmentIndex(segmentIndex);
+      audio.muted = muted;
+      audio.src = url;
+      audio.currentTime = 0;
+      audio.onplay = () => {
+        setTtsPlaying(true);
+        generateSegmentUrl(segmentIndex + 1).catch(() => {});
+      };
+      audio.onpause = () => setTtsPlaying(false);
+      audio.onended = () => {
+        setTtsPlaying(false);
+        const nextIndex = segmentIndex + 1;
+        currentSegmentIndexRef.current = nextIndex;
+        setCurrentSegmentIndex(nextIndex);
+        if (sessionEndRef.current && isPlayingRef.current && narrationSegments[nextIndex]) {
+          playNarrationSegment(nextIndex);
+        }
+      };
+      await audio.play().catch(() => {});
     } catch (_) {
-      ttsStartedRef.current = false;
+      setTtsPlaying(false);
     } finally {
       setTtsLoading(false);
     }
-  }, [muted, narration]);
+  }, [generateSegmentUrl, muted, narrationSegments]);
 
   const startAmbientTrack = useCallback(() => {
     if (!audioCtxRef.current) {
@@ -251,14 +403,13 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     setHasStarted(true);
     startAmbientTrack();
 
-    if (ttsRef.current?.paused) {
+    if (ttsRef.current?.paused && ttsRef.current?.src) {
       ttsRef.current.play().catch(() => {});
+      return;
     }
 
-    if (!ttsStartedRef.current) {
-      generateTTS();
-    }
-  }, [generateTTS, isComplete, isPlaying, startAmbientTrack, syncRemainingFromClock, timeRemaining]);
+    playNarrationSegment(currentSegmentIndexRef.current);
+  }, [isComplete, isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock, timeRemaining]);
 
   useEffect(() => {
     if (practice && !autoStartRef.current && !isComplete) {
@@ -320,7 +471,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
                 <p className="text-white/60 text-sm">{practice.name}</p>
               </div>
               <p className="text-white/50 text-sm max-w-xs">
-                You have completed {practice.duration_minutes} minutes of sacred practice. Carry this energy with you.
+                You have completed {Math.max(MINIMUM_NARRATION_MINUTES, practice.duration_minutes || MINIMUM_NARRATION_MINUTES)} minutes of sacred practice. Carry this energy with you.
               </p>
               <button
                 onClick={onExit}
@@ -337,7 +488,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
                   <span data-testid="guided-practice-timer">{formatTime(timeRemaining)}</span>
                 </p>
                 <p className="text-white/40 text-xs mt-1 uppercase tracking-widest">
-                  {hasStarted ? "remaining" : `${practice.duration_minutes} min · ${(ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label}`}
+                  {hasStarted ? "remaining" : `${Math.max(MINIMUM_NARRATION_MINUTES, practice.duration_minutes || MINIMUM_NARRATION_MINUTES)} min · ${(ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label}`}
                 </p>
               </div>
 
@@ -367,14 +518,14 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
               )}
               {ttsPlaying && !ttsLoading && (
                 <div className={`text-center text-xs ${elColor} mb-4`}>
-                  Guided narration playing
+                  Guided narration playing • section {Math.min(currentSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
                 </div>
               )}
 
               <div className="flex-1 overflow-y-auto rounded-2xl bg-white/5 p-5 mb-6" data-testid="guided-practice-description">
                 <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Visualization Guide</p>
                 <div className="space-y-3">
-                  {narration.split(/\n\n+/).map((paragraph, index) => (
+                  {narrationParagraphs.map((paragraph, index) => (
                     <p key={`${practice.id || practice.name}-${index}`} className="text-sm text-white/70 leading-relaxed">{paragraph.trim()}</p>
                   ))}
                 </div>
