@@ -12,6 +12,10 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Final App-Readiness Command Center Added:** New public `/app-readiness` route with persistent launch checklist (localStorage), progress tracking, reset flow, and direct links to Demo/Support/Privacy/Terms.
+- **Submission Placeholder Workflow Enabled:** Added explicit asset-prep checklist items (icon, iPhone/iPad screenshots, listing copy, legal URLs, reviewer demo flow) so store submission requirements are tracked in-app.
+- **Navigation Coverage for Launch Ops:** Linked app-readiness from Support Center and Footer to ensure owner/admin can quickly access launch status from anywhere.
+- **PWA Manifest Polish:** Added maskable purpose to 1024 icon and added App Readiness shortcut entry.
 - **Guided Parity Upgrade — Mantras + Mudras:** Added immersive "Begin Guided Practice" flows in both Mantras and Mudras detail dialogs, now launching the same full-screen `GuidedPracticeOverlay` used across core healing modules.
 - **Therapeutic Depth Cards Added:** Both sections now include explicit `Why this heals` and `Integration` cards for stronger philosophical and practical alignment with deep-content standards.
 - **Accessibility Polish:** Fixed Mudras dialog accessibility warning by adding required dialog title semantics.

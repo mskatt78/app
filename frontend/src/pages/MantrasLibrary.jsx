@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Heart, Filter, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward, Gauge, Minus, Plus, PenLine, Trash2, Edit2, Sparkles } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Progress } from "../components/ui/progress";
 import { Slider } from "../components/ui/slider";
 import { Input } from "../components/ui/input";
@@ -781,6 +781,9 @@ const MantrasLibrary = ({ user, api }) => {
                   </Button>
                 </div>
                 <DialogTitle className="text-2xl font-serif">{selectedMantra.name}</DialogTitle>
+                <DialogDescription className="sr-only">
+                  Mantra details, guided practice controls, and therapeutic context.
+                </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
