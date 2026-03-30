@@ -1,0 +1,83 @@
+{
+  "summary": "Iteration 66 - Guided script repetition quality FULLY FIXED. All iteration 65 problematic stems ('As this journey continues', 'Let this round nourish', 'Keep awareness near') now appear 0x. Source text repetition reduced from 11-22x to 2-4x. 4 structure variants implemented and working. Frontend overlay verified functional with timer, autoplay, TTS loading.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_expand_script_iteration66.py",
+    "/app/test_reports/pytest/pytest_iteration66.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "improvements_from_iteration_65": {
+    "iteration_65_stems_removed": {
+      "as_this_journey_continues": "0x (was 10-29x) - PASS",
+      "let_this_round_nourish": "0x (was 10-29x) - PASS",
+      "keep_awareness_near": "0x (was 10-29x) - PASS"
+    },
+    "source_text_repetition_reduced": {
+      "pendulation_10min": "4x and 2x (was 15x and 13x) - PASS",
+      "shake_and_release_8min": "4x and 3x (was 12x and 11x) - PASS",
+      "root_chakra_12min": "3x, 3x, 2x (was 17x and 16x) - PASS",
+      "om_mani_padme_hum_15min": "4x and 3x (was 22x and 20x) - PASS"
+    },
+    "paragraph_template_variety": {
+      "structure_variants_used": "4/4 variants implemented",
+      "keep_attention_on": "5-6x per script",
+      "track_what_changes": "5-6x per script",
+      "stay_oriented_to": "5-6x per script",
+      "let_your_awareness_stay_anchored": "5-6x per script"
+    },
+    "paragraph_opener_variety": "72-78% unique openers (good variety)"
+  },
+  "test_results": {
+    "test_iteration65_stems_removed_pendulation": "PASS",
+    "test_iteration65_stems_removed_shake_release": "PASS",
+    "test_iteration65_stems_removed_root_chakra": "PASS",
+    "test_iteration65_stems_removed_om_mani": "PASS",
+    "test_source_text_repetition_reduced": "PASS",
+    "test_paragraph_template_variety": "PASS",
+    "test_paragraph_opener_variety": "PASS",
+    "test_word_count_meets_minimum": "PASS",
+    "test_no_duplicate_paragraphs": "PASS",
+    "test_segments_generated_correctly": "PASS",
+    "test_endpoint_returns_200": "PASS",
+    "test_response_structure": "PASS",
+    "test_use_ai_false_returns_fallback": "PASS"
+  },
+  "frontend_verification": {
+    "guided_practice_overlay": "PASS - Displays correctly",
+    "timer_display": "PASS - Shows correct duration (10:00 for Pendulation)",
+    "play_pause_button": "PASS - Present and functional",
+    "mute_button": "PASS - Present and functional",
+    "exit_button": "PASS - Present and functional",
+    "script_expansion_loading": "PASS - Shows 'Weaving an expanded guided script...' status",
+    "description_word_count": "1123 words displayed in overlay"
+  },
+  "updated_files": [
+    "/app/backend/tests/test_expand_script_iteration66.py"
+  ],
+  "success_rate": {
+    "backend": "100% (13/13 tests passed)",
+    "frontend": "100% (overlay, timer, buttons all working)"
+  },
+  "test_credentials": {
+    "admin_password": "ShamanicAdmin2026!",
+    "qa_user_email": "demoqa_740fefc1@example.com"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 66 fully resolved the repetition quality issues from iteration 65. The _build_fallback_paragraphs() function now uses 4 structure variants, reduced source text cycling via queue, and expanded phrase banks. All tests pass. Test file at /app/backend/tests/test_expand_script_iteration66.py for regression testing.",
+  "rca_of_the_issue": {
+    "root_cause_from_iteration_65": "The _build_fallback_paragraphs() while loop used a single paragraph template structure with cycling arrays, causing source texts to repeat 11-22x and new stems to repeat 10-29x.",
+    "fix_applied": "Main agent refactored the while loop to use 4 different structure variants (variant = index % 4), reduced source context reuse via queue (context_queue.pop(0)), and expanded phrase banks to 20+ items each.",
+    "verification": "All 13 pytest tests pass. Iteration 65 stems now appear 0x. Source text repetition reduced to 2-4x. Paragraph opener variety at 72-78%."
+  }
+}

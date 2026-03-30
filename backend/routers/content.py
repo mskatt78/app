@@ -248,16 +248,22 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
         "the rise and fall of your ribs", "your diaphragm and belly", "your lower back and sacrum", "your hips and pelvis",
         "the weight in your legs", "your feet touching the ground", "the back of your heart", "the rhythm of your pulse",
         "the temperature of your skin", "the subtle movement of breath", "your emotional edges", "your sense of internal space",
+        "your shoulder blades resting", "the inside of your palms", "your pelvic floor", "your spine lengthening",
+        "your heartbeat against stillness", "the bridge between breath and emotion", "your forehead softening", "your belly wall relaxing",
     ]
     breath_cues = [
         "Keep your exhale slightly longer than your inhale", "Let the inhale arrive naturally without pulling", "Allow pauses to be soft rather than rigid",
         "Breathe through your nose with a quiet, even cadence", "Let each breath round off unnecessary tension", "Stay with a comfortable breath volume",
         "Allow your breath to move lower toward the belly", "Maintain a steady rhythm that your nervous system can trust", "Let breath and body synchronize gently",
         "Feel the breath as an anchor, not a demand", "Breathe as if you have plenty of time", "Soften around each exhale",
+        "Give each exhale enough length to signal safety", "Let your ribcage expand and settle without force", "Allow the breath to stay low and warm",
+        "Keep the breathing rhythm simple and sustainable", "Let your breathing soften the edges of effort", "Stay with a steady cadence you can easily maintain",
+        "Breathe as though you are being gently supported from within", "Relax your throat and let breath move cleanly",
     ]
     integration_targets = [
         "nervous system regulation", "emotional steadiness", "inner trust", "embodied clarity", "somatic safety",
         "grounded awareness", "gentle resilience", "self-compassion", "present-moment stability", "deeper self-connection",
+        "energetic coherence", "relational softness", "mental spaciousness", "body-based confidence", "subtle emotional release",
     ]
     imagery_prompts = [
         "Imagine this practice moving through you like a calm tide", "Feel this process settling like warm light through the body",
@@ -265,21 +271,52 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
         "Receive each breath as a quiet message of safety", "Notice that stillness can coexist with movement",
         "Allow your body to become both soft and strong", "Let the mind become spacious while the body stays grounded",
         "Feel yourself held by the moment rather than pushed by it", "Allow presence to deepen with each cycle",
+        "Picture tension loosening like knots in warm water", "Feel your awareness becoming clear and spacious",
+        "Imagine each exhale polishing the mind toward stillness", "Sense the body returning to its natural rhythm",
+        "Let this moment feel like an inner sanctuary", "Feel your system organizing itself around calm clarity",
+    ]
+    narrative_openers = [
+        "In this next interval, stay slow and attentive", "Continue with patience and soft concentration", "As you settle deeper, keep your awareness embodied",
+        "Let this minute unfold with steadiness and ease", "Take this phase as an invitation to listen inwardly", "From this point onward, move with deliberate care",
+        "Remain present as subtle shifts reveal themselves", "Allow this layer of practice to mature gradually", "Keep your attention honest and unforced",
+        "Notice how depth appears when urgency fades", "Continue with gentle discipline and curiosity", "Let this section become a lived experience, not a concept",
     ]
 
     running_words = _count_words(" ".join(paragraphs))
     index = 0
+    context_queue = context_sentences[12:]
     while running_words < max(target_words - 180, 0):
-        context_line = context_sentences[index % len(context_sentences)]
+        opener = narrative_openers[index % len(narrative_openers)]
         awareness = awareness_points[index % len(awareness_points)]
         breath_cue = breath_cues[(index * 2 + 1) % len(breath_cues)]
         target = integration_targets[(index * 3 + 2) % len(integration_targets)]
         imagery = imagery_prompts[(index * 5 + 3) % len(imagery_prompts)]
+        optional_context = ""
+        if context_queue and index % 6 == 0:
+            optional_context = f"{context_queue.pop(0)}. "
 
-        paragraph = (
-            f"As this journey continues, keep awareness near {awareness}. {breath_cue}. "
-            f"{context_line}. {imagery}. Let this round nourish {target} without urgency or strain."
-        )
+        variant = index % 4
+        if variant == 0:
+            paragraph = (
+                f"{opener}. Keep attention on {awareness}. {breath_cue}. "
+                f"{optional_context}{imagery}. Let this support {target} without urgency or strain."
+            )
+        elif variant == 1:
+            paragraph = (
+                f"{opener}. {imagery}. {breath_cue}. "
+                f"Track what changes around {awareness}, and allow this to build {target}."
+            )
+        elif variant == 2:
+            paragraph = (
+                f"{opener}. Stay oriented to {awareness} while you breathe. "
+                f"{optional_context}Let this moment remain uncomplicated and clear. "
+                f"{breath_cue}. This phase can restore {target}."
+            )
+        else:
+            paragraph = (
+                f"{opener}. {breath_cue}. Let your awareness stay anchored in {awareness}. "
+                f"{imagery}. Give this time to cultivate {target}."
+            )
         paragraphs.append(paragraph)
         running_words += _count_words(paragraph)
         index += 1
@@ -310,22 +347,31 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
         ]
 
     openers = [
-        "Continue with this same patience and care", "Stay with the process as it unfolds naturally", "Keep your awareness spacious and grounded",
-        "Let this next minute remain steady and unrushed", "Allow the body to keep learning from the breath", "Remain connected to the present sensation",
+        "Continue with patience and care", "Stay with the process as it unfolds naturally", "Keep your awareness spacious and grounded",
+        "Let this next minute remain steady and unrushed", "Allow the body to keep learning from the breath", "Remain connected to present sensation",
+        "Keep this phase simple and embodied", "Let the rhythm stay calm and sustainable", "Continue with gentle attentiveness",
     ]
     closers = [
         "Nothing is missing in this moment", "Depth comes through consistency, not force", "Your pace is enough",
         "Gentleness is part of the medicine", "Trust the process as it reveals itself", "Keep listening from within",
+        "Steadiness is more valuable than intensity", "Let this settle before moving ahead", "Presence is the practice",
     ]
 
     generated: list[str] = []
     words = 0
     index = start_index
+    context_queue = context_sentences[:]
     while words < required_words + 40:
         opener = openers[index % len(openers)]
-        context = context_sentences[index % len(context_sentences)]
         closer = closers[(index * 2 + 1) % len(closers)]
-        paragraph = f"{opener}. {context}. {closer}."
+        optional_context = ""
+        if context_queue and index % 4 == 0:
+            optional_context = f" {context_queue.pop(0)}."
+
+        if index % 2 == 0:
+            paragraph = f"{opener}. Keep your breathing even and unforced.{optional_context} {closer}."
+        else:
+            paragraph = f"{opener}. Let your body stay receptive while attention remains clear.{optional_context} {closer}."
         generated.append(paragraph)
         words += _count_words(paragraph)
         index += 1
