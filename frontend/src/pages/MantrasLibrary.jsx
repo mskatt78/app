@@ -10,6 +10,7 @@ import { Slider } from "../components/ui/slider";
 import { Input } from "../components/ui/input";
 import { Textarea } from "../components/ui/textarea";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
 import { toast } from "sonner";
 import { 
   createMantraAudioContext, 
@@ -18,6 +19,25 @@ import {
   playMantraSound,
   ELEMENT_FREQUENCIES 
 } from "../components/audio/MantraAudio";
+
+const NATURAL_SOUND_OPTIONS = [
+  { id: "ocean", label: AMBIENT_SOUNDS.ocean.name },
+  { id: "rain", label: AMBIENT_SOUNDS.rain.name },
+  { id: "nature", label: AMBIENT_SOUNDS.nature.name },
+  { id: "wind", label: AMBIENT_SOUNDS.wind.name },
+  { id: "fire", label: AMBIENT_SOUNDS.fire.name },
+  { id: "silence", label: "Silence" },
+];
+
+const ELEMENT_NATURAL_DEFAULT = {
+  Earth: "nature",
+  Water: "ocean",
+  Fire: "fire",
+  Air: "wind",
+  Spirit: "rain",
+};
+
+const PREFERRED_NATURAL_SOUND_KEY = "preferred-natural-sound";
 
 const MantrasLibrary = ({ user, api }) => {
   const navigate = useNavigate();
@@ -67,6 +87,13 @@ const MantrasLibrary = ({ user, api }) => {
   const mantraGainRef = useRef(null);
   const mantraIntervalRef = useRef(null);
   const [useGeneratedSound, setUseGeneratedSound] = useState(true); // Default to generated sound
+  const [selectedNaturalSound, setSelectedNaturalSound] = useState(() => {
+    try {
+      return localStorage.getItem(PREFERRED_NATURAL_SOUND_KEY) || "ocean";
+    } catch {
+      return "ocean";
+    }
+  });
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
   
@@ -191,6 +218,14 @@ const MantrasLibrary = ({ user, api }) => {
       setFilteredMantras(mantras.filter(m => m.element === selectedElement));
     }
   }, [selectedElement, mantras]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(PREFERRED_NATURAL_SOUND_KEY, selectedNaturalSound);
+    } catch {
+      // ignore storage errors
+    }
+  }, [selectedNaturalSound]);
 
   // Audio setup when mantra is selected
   useEffect(() => {
@@ -477,6 +512,17 @@ const MantrasLibrary = ({ user, api }) => {
     }
   };
 
+  const handleNaturalSoundChange = (soundId) => {
+    setSelectedNaturalSound(soundId);
+  };
+
+  const ensureElementNaturalDefault = (mantra) => {
+    const saved = selectedNaturalSound;
+    if (saved && NATURAL_SOUND_OPTIONS.some((option) => option.id === saved)) return;
+    const next = ELEMENT_NATURAL_DEFAULT[mantra?.element] || "ocean";
+    setSelectedNaturalSound(next);
+  };
+
   const getElementGuidance = (element) => {
     const key = (element || "Spirit").toLowerCase();
     if (key === "earth") return "stabilize your body and nervous system through grounded repetition";
@@ -706,7 +752,10 @@ const MantrasLibrary = ({ user, api }) => {
                   transition={{ delay: index * 0.05 }}
                   className={`p-6 rounded-2xl border backdrop-blur-xl cursor-pointer relative group
                              ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
-                  onClick={() => setSelectedMantra(mantra)}
+                  onClick={() => {
+                    ensureElementNaturalDefault(mantra);
+                    setSelectedMantra(mantra);
+                  }}
                   data-testid={`mantra-card-${mantra.id}`}
                 >
                   {/* Audio Badge */}
@@ -879,6 +928,37 @@ const MantrasLibrary = ({ user, api }) => {
                       />
                     </div>
 
+                    <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs uppercase tracking-wider text-muted-foreground">Natural Soundscape</span>
+                        <span className="text-xs text-primary">{NATURAL_SOUND_OPTIONS.find((option) => option.id === selectedNaturalSound)?.label || "Ocean Waves"}</span>
+                      </div>
+                      <Select value={selectedNaturalSound} onValueChange={handleNaturalSoundChange}>
+                        <SelectTrigger className="bg-card/50 border-white/10" data-testid="mantra-natural-sound-select-trigger">
+                          <SelectValue placeholder="Select sound" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {NATURAL_SOUND_OPTIONS.map((option) => (
+                            <SelectItem key={option.id} value={option.id} data-testid={`mantra-natural-sound-option-${option.id}`}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+
+                      {selectedNaturalSound !== "silence" && isPlaying && (
+                        <div className="mt-3" data-testid="mantra-natural-sound-player">
+                          <AmbientSoundPlayer
+                            key={`mantra-audio-ambient-${selectedNaturalSound}-${isPlaying ? "on" : "off"}`}
+                            soundType={selectedNaturalSound}
+                            autoPlay={isPlaying}
+                            showControls
+                            volume={Math.max(volume, 0.45)}
+                          />
+                        </div>
+                      )}
+                    </div>
+
                     <p className="text-xs text-muted-foreground text-center mt-4">
                       {isLooping ? "Audio will loop continuously. Count your repetitions mentally." : "Audio will play once per repetition."}
                     </p>
@@ -952,11 +1032,51 @@ const MantrasLibrary = ({ user, api }) => {
                         variant={useGeneratedSound ? "default" : "ghost"}
                         size="sm"
                         onClick={() => setUseGeneratedSound(!useGeneratedSound)}
+                        data-testid="mantra-sound-mode-toggle"
                         className={useGeneratedSound ? "bg-primary text-primary-foreground" : "text-muted-foreground"}
                       >
-                        {useGeneratedSound ? "ON - Bells & Om" : "OFF - Silent"}
+                        {useGeneratedSound ? "ON - Bells & Om" : "ON - Natural"}
                       </Button>
                     </div>
+
+                    {!useGeneratedSound && (
+                      <div className="mb-4 p-3 rounded-lg bg-white/5 border border-white/10">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs uppercase tracking-wider text-muted-foreground">Natural Soundscape</span>
+                          <span className="text-xs text-primary">{NATURAL_SOUND_OPTIONS.find((option) => option.id === selectedNaturalSound)?.label || "Ocean Waves"}</span>
+                        </div>
+                        <Select value={selectedNaturalSound} onValueChange={handleNaturalSoundChange}>
+                          <SelectTrigger className="bg-card/50 border-white/10" data-testid="mantra-natural-sound-select-trigger">
+                            <SelectValue placeholder="Select sound" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {NATURAL_SOUND_OPTIONS.map((option) => (
+                              <SelectItem key={option.id} value={option.id} data-testid={`mantra-natural-sound-option-${option.id}`}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+
+                        {selectedNaturalSound !== "silence" && isChanting && (
+                          <div className="mt-3" data-testid="mantra-natural-sound-player">
+                            <AmbientSoundPlayer
+                              key={`mantra-timer-ambient-${selectedNaturalSound}-${isChanting ? "on" : "off"}`}
+                              soundType={selectedNaturalSound}
+                              autoPlay={isChanting}
+                              showControls
+                              volume={Math.max(volume, 0.45)}
+                            />
+                          </div>
+                        )}
+
+                        {selectedNaturalSound === "silence" && (
+                          <p className="text-xs text-muted-foreground mt-2 text-center" data-testid="mantra-natural-sound-silence-note">
+                            Silence selected — chants run without background nature audio.
+                          </p>
+                        )}
+                      </div>
+                    )}
                     
                     {/* Sound Info */}
                     {useGeneratedSound && (
@@ -1008,7 +1128,7 @@ const MantrasLibrary = ({ user, api }) => {
                     <p className="text-xs text-muted-foreground text-center mt-4">
                       {useGeneratedSound 
                         ? `Om tones & bells accompany your ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])}s cycles.`
-                        : `Chant along with each ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])} second cycle.`
+                        : `${NATURAL_SOUND_OPTIONS.find((option) => option.id === selectedNaturalSound)?.label || "Natural sound"} accompanies your ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])} second cycles.`
                       }
                     </p>
                   </div>

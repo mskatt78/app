@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Play, Pause, RotateCcw, Volume2, VolumeX, SkipForward, Eye, EyeOff } from "lucide-react";
 import { Button } from "./ui/button";
 import { Progress } from "./ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
 import MeditationVisualizer from "./MeditationVisualizer";
 import BreathingVisualizer from "./BreathingVisualizer";
@@ -46,6 +47,16 @@ const tempoPlaybackRates = { slow: 0.9, normal: 1.0, fast: 1.12 };
 const MIN_NARRATION_MINUTES = 7;
 const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const PREFERRED_NATURAL_SOUND_KEY = "preferred-natural-sound";
+
+const NATURAL_SOUND_OPTIONS = [
+  { id: "ocean", label: AMBIENT_SOUNDS.ocean.name },
+  { id: "rain", label: AMBIENT_SOUNDS.rain.name },
+  { id: "nature", label: AMBIENT_SOUNDS.nature.name },
+  { id: "wind", label: AMBIENT_SOUNDS.wind.name },
+  { id: "fire", label: AMBIENT_SOUNDS.fire.name },
+  { id: "silence", label: "Silence" },
+];
 
 const splitSentences = (text) =>
   String(text || "")
@@ -105,6 +116,17 @@ const PracticeTimer = ({
   const [narrationPreparing, setNarrationPreparing] = useState(false);
   const [narrationSegmentIndex, setNarrationSegmentIndex] = useState(0);
   const [audioTapRequired, setAudioTapRequired] = useState(false);
+  const [selectedBackgroundAudio, setSelectedBackgroundAudio] = useState(() => {
+    try {
+      const saved = localStorage.getItem(PREFERRED_NATURAL_SOUND_KEY);
+      if (saved && NATURAL_SOUND_OPTIONS.some((option) => option.id === saved)) {
+        return saved;
+      }
+    } catch {
+      // ignore localStorage errors
+    }
+    return backgroundAudio || "silence";
+  });
 
   const intervalRef = useRef(null);
   const sessionEndRef = useRef(null);
@@ -171,6 +193,31 @@ const PracticeTimer = ({
   const remainingTime = Math.max(0, calculatedTotal - totalElapsed);
   const overallProgress = (totalElapsed / calculatedTotal) * 100;
   const segmentProgress = currentSegment ? (segmentTime / currentSegmentDuration) * 100 : 0;
+
+  useEffect(() => {
+    if (!selectedBackgroundAudio && backgroundAudio) {
+      setSelectedBackgroundAudio(backgroundAudio);
+      return;
+    }
+
+    if (
+      selectedBackgroundAudio === "silence"
+      && backgroundAudio
+      && backgroundAudio !== "silence"
+      && !NATURAL_SOUND_OPTIONS.some((option) => option.id === selectedBackgroundAudio)
+    ) {
+      setSelectedBackgroundAudio(backgroundAudio);
+    }
+  }, [backgroundAudio, selectedBackgroundAudio]);
+
+  useEffect(() => {
+    if (!NATURAL_SOUND_OPTIONS.some((option) => option.id === selectedBackgroundAudio)) return;
+    try {
+      localStorage.setItem(PREFERRED_NATURAL_SOUND_KEY, selectedBackgroundAudio);
+    } catch {
+      // ignore localStorage errors
+    }
+  }, [selectedBackgroundAudio]);
 
   const getVisualization = () => {
     switch (practiceType) {
@@ -325,7 +372,7 @@ const PracticeTimer = ({
   }, [autoNarrate, fetchNarrationAudioUrl, isMuted, isRunning, narrationSegments, tempo]);
 
   const startAudio = useCallback(() => {
-    if (backgroundAudio === "silence" || isMuted) return;
+    if (selectedBackgroundAudio === "silence" || isMuted) return;
 
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -345,7 +392,7 @@ const PracticeTimer = ({
       gainNode.connect(ctx.destination);
       gainNodeRef.current = gainNode;
 
-      const sound = AMBIENT_SOUNDS[backgroundAudio];
+      const sound = AMBIENT_SOUNDS[selectedBackgroundAudio];
       switch (sound?.type) {
         case "rain":
         case "water": {
@@ -463,7 +510,7 @@ const PracticeTimer = ({
     } catch (error) {
       console.warn("Web Audio API error:", error);
     }
-  }, [audioVolume, backgroundAudio, isMuted]);
+  }, [audioVolume, isMuted, selectedBackgroundAudio]);
 
   const playTransitionBell = useCallback(() => {
     try {
@@ -550,12 +597,12 @@ const PracticeTimer = ({
   }, [autoStartAudio, calculatedTotal, currentSegmentIndex, totalElapsed]);
 
   useEffect(() => {
-    if (isRunning && !isMuted && backgroundAudio !== "silence") {
+    if (isRunning && !isMuted && selectedBackgroundAudio !== "silence") {
       if (!audioPlaying) startAudio();
     } else {
       cleanupAudio();
     }
-  }, [audioPlaying, backgroundAudio, cleanupAudio, isMuted, isRunning, startAudio]);
+  }, [audioPlaying, cleanupAudio, isMuted, isRunning, selectedBackgroundAudio, startAudio]);
 
   useEffect(() => {
     if (gainNodeRef.current) {
@@ -787,7 +834,7 @@ const PracticeTimer = ({
               <Volume2 className="w-3 h-3" /> Narrating section {Math.min(narrationSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
             </p>
           )}
-          {!isMuted && backgroundAudio !== "silence" && !audioPlaying && (
+          {!isMuted && selectedBackgroundAudio !== "silence" && !audioPlaying && (
             <p className="text-xs text-amber-400/70 mt-2 flex items-center gap-1">
               <Volume2 className="w-3 h-3" /> Tap play to start audio
             </p>
@@ -868,10 +915,31 @@ const PracticeTimer = ({
         </div>
       )}
 
-      {backgroundAudio && backgroundAudio !== "silence" && (
+      <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-3" data-testid="timer-natural-sound-selector">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs uppercase tracking-wider text-muted-foreground">Natural Soundscape</span>
+          <span className="text-xs text-primary">
+            {NATURAL_SOUND_OPTIONS.find((option) => option.id === selectedBackgroundAudio)?.label || AMBIENT_SOUNDS[selectedBackgroundAudio]?.name || "Custom"}
+          </span>
+        </div>
+        <Select value={selectedBackgroundAudio} onValueChange={setSelectedBackgroundAudio}>
+          <SelectTrigger className="bg-card/50 border-white/10" data-testid="timer-natural-sound-select-trigger">
+            <SelectValue placeholder="Select sound" />
+          </SelectTrigger>
+          <SelectContent>
+            {NATURAL_SOUND_OPTIONS.map((option) => (
+              <SelectItem key={option.id} value={option.id} data-testid={`timer-natural-sound-option-${option.id}`}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {selectedBackgroundAudio && selectedBackgroundAudio !== "silence" && (
         <div className="relative z-10">
           <p className="text-xs text-center text-muted-foreground mb-2">
-            Background: {AMBIENT_SOUNDS[backgroundAudio]?.name || backgroundAudio.replace(/_/g, " ")}
+            Background: {AMBIENT_SOUNDS[selectedBackgroundAudio]?.name || selectedBackgroundAudio.replace(/_/g, " ")}
           </p>
           {!isMuted && isRunning && (
             <div className="flex items-center justify-center gap-2">
