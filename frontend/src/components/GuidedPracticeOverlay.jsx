@@ -30,6 +30,7 @@ const ELEMENT_COLOR = {
 const MINIMUM_NARRATION_MINUTES = 7;
 const TARGET_WORDS_PER_MINUTE = 120;
 const SEGMENT_TARGET_WORDS = 220;
+const FIRST_SEGMENT_TARGET_WORDS = 90;
 const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -303,7 +304,8 @@ function buildNarrationPlan(practice, stepsOverride) {
   let currentSegmentWords = 0;
   paragraphs.forEach((paragraph) => {
     const paragraphWords = countWords(paragraph);
-    if (currentSegmentWords >= SEGMENT_TARGET_WORDS && currentSegment.length > 0) {
+    const currentTarget = segments.length === 0 ? FIRST_SEGMENT_TARGET_WORDS : SEGMENT_TARGET_WORDS;
+    if (currentSegment.length > 0 && (currentSegmentWords + paragraphWords) > currentTarget) {
       segments.push(currentSegment.join("\n\n"));
       currentSegment = [];
       currentSegmentWords = 0;

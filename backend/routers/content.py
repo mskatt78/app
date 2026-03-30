@@ -18,6 +18,7 @@ logger = logging.getLogger(__name__)
 MIN_NARRATION_MINUTES = 7
 TARGET_WORDS_PER_MINUTE = 120
 SEGMENT_TARGET_WORDS = 220
+FIRST_SEGMENT_TARGET_WORDS = 90
 
 
 class LiveSessionRsvpRequest(BaseModel):
@@ -109,7 +110,8 @@ def _segment_paragraphs(paragraphs: list[str]) -> list[str]:
         if not paragraph_text:
             continue
         paragraph_words = _count_words(paragraph_text)
-        if running_words >= SEGMENT_TARGET_WORDS and current:
+        current_target = FIRST_SEGMENT_TARGET_WORDS if len(segments) == 0 else SEGMENT_TARGET_WORDS
+        if current and (running_words + paragraph_words) > current_target:
             segments.append("\n\n".join(current))
             current = []
             running_words = 0
