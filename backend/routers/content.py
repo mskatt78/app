@@ -46,7 +46,7 @@ class ExpandScriptRequest(BaseModel):
     duration_minutes: Optional[float] = None
     steps: list[str] = Field(default_factory=list)
     source_texts: list[str] = Field(default_factory=list)
-    use_ai: bool = False
+    use_ai: bool = True
 
 
 class ExpandScriptResponse(BaseModel):
@@ -125,66 +125,169 @@ def _segment_paragraphs(paragraphs: list[str]) -> list[str]:
     return segments
 
 
+def _normalize_text_for_repeat_check(text: str) -> str:
+    normalized = re.sub(r"\s+", " ", str(text or "")).strip().lower()
+    normalized = re.sub(r"[^a-z0-9 ]+", "", normalized)
+    return normalized
+
+
+def _dedupe_paragraphs(paragraphs: list[str]) -> list[str]:
+    cleaned: list[str] = []
+    previous_normalized = ""
+
+    for paragraph in paragraphs:
+        text = re.sub(r"\s+", " ", str(paragraph or "")).strip()
+        if not text or _count_words(text) < 8:
+            continue
+
+        normalized = _normalize_text_for_repeat_check(text)
+        if normalized == previous_normalized:
+            continue
+
+        cleaned.append(text)
+        previous_normalized = normalized
+
+    return cleaned
+
+
 def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) -> list[str]:
     practice_name = request.practice_name.strip() or "This practice"
     element = (request.element or "spirit").lower().strip() or "spirit"
 
-    sentence_pool = list(
-        {
-            sentence.strip()
-            for sentence in (
-                part
-                for text in (request.source_texts + request.steps)
-                for part in _split_sentences(text)
-            )
-            if sentence.strip()
-        }
-    )
+    raw_sentences = [
+        sentence.strip()
+        for text in (request.source_texts + request.steps)
+        for sentence in _split_sentences(text)
+        if sentence.strip()
+    ]
+
+    sentence_pool: list[str] = []
+    seen_sentences: set[str] = set()
+    for sentence in raw_sentences:
+        key = _normalize_text_for_repeat_check(sentence)
+        if not key or key in seen_sentences:
+            continue
+        sentence_pool.append(sentence)
+        seen_sentences.add(key)
 
     if not sentence_pool:
         sentence_pool = [
             f"{practice_name} is a sacred return to your breath, body, and inner wisdom.",
             "Move slowly and gently, giving your nervous system enough space to soften and trust.",
+            "Let your attention settle into sensation so the practice becomes embodied, not only conceptual.",
+            "Allow this moment to unfold with patience, kindness, and honest listening.",
         ]
 
-    reflection_prompts = [
-        "Breathe slowly here and let this moment stretch without rushing to the next part.",
-        "If your mind wanders, guide your awareness back with kindness and no self-judgment.",
-        "Notice sensation, emotion, and breath with curiosity, as if each one is a living teacher.",
-        "Stay with this phase long enough for your body to understand that it is safe to soften.",
-        "Allow each exhale to release unnecessary effort while your spine remains steady and relaxed.",
-        "Receive what is unfolding instead of forcing it; this is where deeper healing starts.",
+    step_focuses = [
+        re.sub(r"\s+", " ", step.strip().rstrip("."))
+        for step in request.steps
+        if step and step.strip()
     ]
+    if not step_focuses:
+        step_focuses = sentence_pool[:6]
+
+    reflection_prompts = [
+        "Let your exhale be slightly longer than your inhale so your body receives the signal of safety.",
+        "If attention drifts, return gently to sensation and breath without criticism.",
+        "Notice subtle changes in temperature, pulse, emotion, and spaciousness.",
+        "Allow this phase to continue long enough for your nervous system to trust it.",
+        "Soften your jaw, your tongue, and your shoulders as you remain present.",
+        "Receive the practice instead of performing it; depth arrives through receptivity.",
+    ]
+
+    phase_openers = [
+        "Now settle into the next movement with deliberate slowness.",
+        "As the practice deepens, keep your awareness close to the breath.",
+        "From here, let your focus become quieter and more intimate.",
+        "In this phase, choose ease over force and presence over speed.",
+        "Continue with gentle attention and a grounded rhythm.",
+        "Let this next layer unfold naturally inside your body.",
+        "Keep breathing steadily as you move into a deeper round.",
+        "Allow your body to teach you from the inside out.",
+    ]
+
+    focus_leads = [
+        "Bring your attention to",
+        "Let your next point of focus be",
+        "Center this phase around",
+        "Gently return to",
+        "Keep awareness anchored in",
+    ]
+
+    continuity_leads = [
+        "Carry this thread through the next breaths",
+        "Let this continue shaping your inner rhythm",
+        "Stay connected to this as you keep moving",
+        "Allow this to remain quietly active",
+    ]
+
+    integration_leads = [
+        "Let this support",
+        "Allow this medicine to nourish",
+        "Feel this working gently with",
+        "Notice how this begins to restore",
+    ]
+
+    element_themes = {
+        "earth": "grounded, stable, and rooted",
+        "water": "fluid, receptive, and emotionally spacious",
+        "fire": "clear, transformative, and courageous",
+        "air": "light, aware, and mentally open",
+        "spirit": "sacred, expansive, and quietly luminous",
+    }
+    element_theme = element_themes.get(element, element_themes["spirit"])
 
     paragraphs = [
         f"Welcome to {practice_name}. Settle into a comfortable position and take three slow breaths. Let your shoulders soften, your jaw unclench, and your attention arrive fully in the present moment.",
-        f"This is a {element} practice. Let this quality guide your pace: steady, receptive, and spacious. There is nothing to prove. You are here to listen, feel, and gently deepen.",
+        f"This is a {element} practice, so let your pace become {element_theme}. There is nothing to prove. You are here to listen, feel, and gently deepen.",
     ]
 
-    if request.steps:
-        first_steps = [step for step in request.steps if step.strip()][:4]
-        if first_steps:
-            step_intro = " ".join(
-                [f"Step {idx + 1}: {step.strip()}" for idx, step in enumerate(first_steps)]
-            )
-            paragraphs.append(
-                f"We will move through this sequence with presence and care. {step_intro}. Let each phase unfold in rhythm with your breath."
-            )
+    if step_focuses:
+        preview = " ".join([f"Step {idx + 1}: {step_focuses[idx]}." for idx in range(min(4, len(step_focuses)))])
+        paragraphs.append(
+            f"We will move through this sequence with presence and continuity. {preview} Let each phase unfold in rhythm with your breath and body awareness."
+        )
 
     running_words = _count_words(" ".join(paragraphs))
     index = 0
 
     while running_words < max(target_words - 160, 0):
-        primary = sentence_pool[index % len(sentence_pool)]
-        secondary = sentence_pool[(index + 2) % len(sentence_pool)]
+        opener = phase_openers[index % len(phase_openers)]
+        focus = step_focuses[index % len(step_focuses)]
+        context_line = sentence_pool[(index * 2 + 1) % len(sentence_pool)]
         reflection = reflection_prompts[index % len(reflection_prompts)]
+        companion_line = sentence_pool[(index * 3 + 2) % len(sentence_pool)]
+        focus_lead = focus_leads[index % len(focus_leads)]
+        continuity_lead = continuity_leads[index % len(continuity_leads)]
+        integration_lead = integration_leads[index % len(integration_leads)]
 
-        paragraph = (
-            f"Stay with {practice_name} now and allow this phase to deepen. "
-            f"{primary} "
-            f"Return to this emphasis: {secondary} "
-            f"{reflection}"
-        )
+        variant = index % 3
+        if variant == 0:
+            paragraph = (
+                f"{opener} "
+                f"{focus_lead} {focus}. "
+                f"{context_line} "
+                f"{continuity_lead}: {companion_line}. "
+                f"{integration_lead} your body's natural regulation and trust. "
+                f"{reflection}"
+            )
+        elif variant == 1:
+            paragraph = (
+                f"{opener} "
+                f"{context_line} "
+                f"{focus_lead} {focus} while the breath remains smooth and unforced. "
+                f"{integration_lead} emotional steadiness and inner coherence. "
+                f"{reflection}"
+            )
+        else:
+            paragraph = (
+                f"{opener} "
+                f"{continuity_lead}: {context_line}. "
+                f"{focus_lead} {focus}. "
+                f"{companion_line} "
+                f"{integration_lead} the parts of you asking for gentleness and integration. "
+                f"{reflection}"
+            )
         paragraphs.append(paragraph)
         running_words += _count_words(paragraph)
         index += 1
@@ -196,7 +299,7 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
         ]
     )
 
-    return [paragraph.strip() for paragraph in paragraphs if paragraph.strip()]
+    return _dedupe_paragraphs(paragraphs)
 
 
 async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> Optional[list[str]]:
@@ -230,6 +333,7 @@ Requirements:
 3) Keep the flow continuous with no headings, no bullets, no markdown, and no labels.
 4) Return only plain narration text.
 5) Ensure the output is at least {target_words} words.
+6) Avoid repetitive sentence stems (do not keep reusing the same opening phrase repeatedly).
 """.strip()
 
     try:
@@ -280,12 +384,15 @@ async def expand_guided_script(request: ExpandScriptRequest):
             selected_paragraphs = ai_paragraphs
             used_ai = True
 
+    selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+
     current_word_count = _count_words(" ".join(selected_paragraphs))
     if current_word_count < target_words:
         for paragraph in fallback_paragraphs:
             if current_word_count >= target_words:
                 break
             selected_paragraphs.append(paragraph)
+            selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
             current_word_count = _count_words(" ".join(selected_paragraphs))
 
     segments = _segment_paragraphs(selected_paragraphs)

@@ -139,6 +139,30 @@ function buildNarrationPlan(practice, stepsOverride) {
     "Receive this moment instead of trying to force it. The practice deepens when you soften enough to listen.",
   ];
 
+  const phaseOpeners = [
+    "Now settle into the next layer of the practice with calm, deliberate pacing.",
+    "As you continue, keep your awareness close to breath and sensation.",
+    "From here, let your focus become quieter, steadier, and more embodied.",
+    "Move through this phase with gentleness, precision, and trust.",
+    "Let the next moments unfold with patience rather than urgency.",
+    "Continue in a way that feels grounded, receptive, and sustainable.",
+  ];
+
+  const focusLeads = [
+    "Bring your attention to",
+    "Let your next point of focus be",
+    "Center this phase around",
+    "Gently return to",
+    "Keep awareness anchored in",
+  ];
+
+  const continuityLeads = [
+    "Carry this thread through the next breaths",
+    "Let this continue shaping your inner rhythm",
+    "Stay connected to this as you continue",
+    "Allow this to remain softly active",
+  ];
+
   const paragraphs = [
     `Welcome to ${practice.name}. Settle into a comfortable position and let your breath begin to slow. Allow the outer world to soften at the edges so your awareness can gather here, in this sacred practice, with your full and willing presence.`,
     `Begin by arriving deliberately. Feel the surface beneath you. Notice your jaw, your shoulders, your belly, and your heart. Let yourself unclench in any place that has been carrying too much. This practice belongs to the ${practice.element || "spirit"} element, inviting you into steadiness, receptivity, and deeper inner contact.`,
@@ -151,20 +175,40 @@ function buildNarrationPlan(practice, stepsOverride) {
   let runningWords = paragraphs.reduce((total, paragraph) => total + countWords(paragraph), 0);
   let index = 0;
   while (runningWords < targetWords - 180) {
+    const opener = phaseOpeners[index % phaseOpeners.length];
     const primary = richSentences[index % richSentences.length] || fallbackSentence;
     const secondary = richSentences[(index + 2) % richSentences.length] || fallbackSentence;
     const reflection = reflectionPrompts[index % reflectionPrompts.length];
     const benefit = benefits[index % Math.max(benefits.length, 1)];
     const affirmation = affirmations[index % Math.max(affirmations.length, 1)];
+    const focusLead = focusLeads[index % focusLeads.length];
+    const continuityLead = continuityLeads[index % continuityLeads.length];
 
-    const paragraph = [
-      `Stay with ${practice.name} now. Let this next phase deepen instead of hurrying forward.`,
-      primary,
-      `Return again to this focus: ${secondary}`,
-      benefit ? `Allow this work to support ${benefit}.` : "Allow this work to support the places within you that are ready for healing, truth, and integration.",
-      affirmation ? `Quietly repeat to yourself: ${affirmation}.` : "Quietly remind yourself that you are safe enough to stay present with what is unfolding.",
-      reflection,
-    ].join(" ... ");
+    const variant = index % 3;
+    const paragraph = variant === 0
+      ? [
+          opener,
+          `${focusLead} ${primary}`,
+          `${continuityLead}: ${secondary}`,
+          benefit ? `Allow this work to support ${benefit}.` : "Allow this work to support the places within you ready for healing and integration.",
+          affirmation ? `Quietly repeat: ${affirmation}.` : "Quietly remind yourself that you are safe enough to stay present.",
+          reflection,
+        ].join(" ")
+      : variant === 1
+        ? [
+            opener,
+            primary,
+            `${focusLead} ${secondary} while breath remains smooth and unforced.`,
+            affirmation ? `Carry this inward statement softly: ${affirmation}.` : "Stay gentle and receptive as this phase opens.",
+            reflection,
+          ].join(" ")
+        : [
+            opener,
+            `${continuityLead}: ${primary}.`,
+            `${focusLead} ${secondary}.`,
+            benefit ? `Notice how this begins to restore ${benefit}.` : "Notice how this begins to restore steadiness and trust.",
+            reflection,
+          ].join(" ");
 
     paragraphs.push(paragraph);
     runningWords += countWords(paragraph);
@@ -342,6 +386,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
             practice_name: practice.name || "Guided Practice",
             element: practice.element || "Spirit",
             duration_minutes: practice.duration_minutes || MINIMUM_NARRATION_MINUTES,
+            use_ai: true,
             steps,
             source_texts: sourceTexts,
           }),

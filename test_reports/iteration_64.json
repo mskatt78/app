@@ -1,0 +1,146 @@
+{
+  "summary": "Iteration 64 - Bug verification: Guided script repetition issue CONFIRMED. The /api/content/expand-script endpoint produces highly repetitive content with step phrases repeated 6-16 times and template stems repeated 2-4 times each. Duplicate paragraphs also found at end of scripts. Timer/autoplay functionality verified working (no regression).",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "/api/content/expand-script",
+        "issue": "Step phrases repeated excessively (6-16x per script). Example: 'Find a comfortable seated position' appears 16x in Pendulation script",
+        "priority": "HIGH"
+      },
+      {
+        "endpoint": "/api/content/expand-script",
+        "issue": "Template stems repeated 2-4x each: 'Bring your attention to', 'Let your next point of focus be', 'Center this phase around', etc.",
+        "priority": "HIGH"
+      },
+      {
+        "endpoint": "/api/content/expand-script",
+        "issue": "Duplicate paragraphs at end of script (welcome paragraphs appear 2x)",
+        "priority": "MEDIUM"
+      },
+      {
+        "endpoint": "/api/content/expand-script",
+        "issue": "Awkward sentence construction: 'Bring your attention to Find a comfortable seated position. Find a comfortable seated position Carry this thread...'",
+        "priority": "HIGH"
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_expand_script_repetition.py",
+    "/app/test_reports/iteration_64.json"
+  ],
+  "action_items": [
+    "CRITICAL: Refactor _build_fallback_paragraphs() in /app/backend/routers/content.py to avoid cycling through same step phrases repeatedly",
+    "Remove duplicate paragraph insertion at end of script (lines 391-396 in content.py append fallback paragraphs that may duplicate)",
+    "Improve sentence construction to avoid verbatim step insertion like 'Bring your attention to [step text]'",
+    "Consider using step phrases only once or twice, then paraphrasing or expanding on them",
+    "Add deduplication logic that checks for repeated sentence stems, not just exact paragraph matches",
+    "Frontend buildNarrationPlan() in GuidedPracticeOverlay.jsx has similar issues - sync fixes"
+  ],
+  "critical_code_review_comments": [
+    "Backend _build_fallback_paragraphs() uses index % len(array) cycling which causes same phrases to repeat every N paragraphs",
+    "step_focuses array is cycled through repeatedly: step_focuses[index % len(step_focuses)] causes same steps to appear 10+ times",
+    "focus_leads, continuity_leads, integration_leads arrays are too small (4-5 items) causing rapid cycling",
+    "_dedupe_paragraphs() only removes consecutive duplicates, not repeated content throughout script",
+    "Lines 391-396 append fallback_paragraphs to selected_paragraphs which can duplicate welcome paragraphs"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_expand_script_repetition.py"
+  ],
+  "success_rate": {
+    "backend": "100% (endpoint returns 200, but content quality is poor)",
+    "frontend": "100% (overlay displays, timer works)"
+  },
+  "test_credentials": {
+    "admin_password": "ShamanicAdmin2026!",
+    "qa_user_email": "demoqa_740fefc1@example.com"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Bug confirmed: expand-script produces repetitive content. Main agent needs to refactor _build_fallback_paragraphs() to avoid cycling through same phrases. Timer/autoplay works correctly. Test file created at /app/backend/tests/test_expand_script_repetition.py for regression testing.",
+  "repetition_analysis": {
+    "pendulation_10min": {
+      "word_count": 1207,
+      "paragraph_count": 22,
+      "step_repetitions": {
+        "Find a comfortable seated position": 16,
+        "Allow your attention to pendulate": 15
+      },
+      "duplicate_paragraphs": 2
+    },
+    "root_chakra_12min": {
+      "word_count": 1468,
+      "paragraph_count": 26,
+      "step_repetitions": {
+        "Sit comfortably with your spine straight": 10,
+        "Visualize a red glowing sphere": 11,
+        "Breathe into this area": 10,
+        "Chant LAM": 10
+      },
+      "duplicate_paragraphs": 3
+    },
+    "shake_and_release_8min": {
+      "word_count": 973,
+      "paragraph_count": 19,
+      "step_repetitions": {
+        "Stand with feet hip-width apart": 7,
+        "Begin to shake your hands": 7,
+        "Let the shaking spread": 6,
+        "Allow your whole body to shake": 7
+      },
+      "duplicate_paragraphs": 3
+    },
+    "om_mani_padme_hum_15min": {
+      "word_count": 1809,
+      "paragraph_count": 32,
+      "step_repetitions": {
+        "Find a comfortable meditation posture": 12,
+        "Take three deep breaths": 12,
+        "Begin chanting Om Mani Padme Hum": 12,
+        "Let the vibration fill": 12
+      },
+      "duplicate_paragraphs": 2
+    }
+  },
+  "problematic_stems_found": [
+    "Bring your attention to (3x per script)",
+    "Let your next point of focus be (3x)",
+    "Center this phase around (3x)",
+    "Gently return to (3x)",
+    "Keep awareness anchored in (3x)",
+    "Carry this thread through the next breaths (3x)",
+    "Let this support (4x)",
+    "Allow this medicine to nourish (4x)",
+    "Feel this working gently with (4x)",
+    "Notice how this begins to restore (3x)"
+  ],
+  "no_regression_verified": {
+    "timer_countdown": "PASS - Timer counts down correctly (6:55 after 5 seconds)",
+    "play_pause_button": "PASS - Button toggles between play/pause",
+    "mute_button": "PASS - Mute button present and functional",
+    "exit_button": "PASS - Exit button present",
+    "overlay_display": "PASS - GuidedPracticeOverlay renders correctly"
+  },
+  "rca_of_the_issue": {
+    "root_cause": "The _build_fallback_paragraphs() function in /app/backend/routers/content.py uses modulo cycling (index % len(array)) to select phrases from small arrays (4-8 items). When generating 15-30 paragraphs for a 7-15 minute script, the same phrases cycle through 3-4 times. Additionally, step_focuses array contains the raw step text which gets inserted verbatim multiple times.",
+    "reproduction_steps": [
+      "1. Call POST /api/content/expand-script with use_ai=false",
+      "2. Provide 3-5 steps in the steps array",
+      "3. Set duration_minutes to 10+",
+      "4. Observe that step phrases appear 10+ times in output"
+    ],
+    "mitigation": [
+      "1. Expand template arrays to 15-20 unique phrases each",
+      "2. Use step phrases only once, then paraphrase or expand",
+      "3. Add sentence-level deduplication that checks for repeated stems",
+      "4. Remove the fallback paragraph appending logic that causes duplicates",
+      "5. Consider using AI expansion more aggressively when available"
+    ]
+  }
+}
