@@ -93,6 +93,14 @@ function splitIntoSentences(text) {
     .filter((sentence) => sentence.length > 20);
 }
 
+function normalizeForRepeatCheck(text) {
+  return String(text || "")
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/[^a-z0-9 ]+/g, "")
+    .trim();
+}
+
 function buildNarrationPlan(practice, stepsOverride) {
   const targetMinutes = Math.max(MINIMUM_NARRATION_MINUTES, Number(practice?.duration_minutes || 0) || MINIMUM_NARRATION_MINUTES);
   const targetWords = Math.max(MINIMUM_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, targetMinutes * TARGET_WORDS_PER_MINUTE);
@@ -125,8 +133,29 @@ function buildNarrationPlan(practice, stepsOverride) {
       .filter(Boolean)
   ));
 
+  const stepPool = Array.from(new Set(
+    [stepsOverride, practice.steps, practice.process_steps, practice.cleansing_guide, practice.instructions]
+      .flatMap(flattenTextValue)
+      .flatMap(splitIntoSentences)
+      .map((sentence) => sentence.replace(/\s+/g, " ").trim())
+      .filter(Boolean)
+  ));
+
+  const stepKeys = new Set(stepPool.map((line) => normalizeForRepeatCheck(line)));
+  const contextPool = contentPool.filter((line) => !stepKeys.has(normalizeForRepeatCheck(line)));
+
   const fallbackSentence = `${practice.name || "This practice"} is a sacred return to the body, the breath, and the deeper intelligence already living within you.`;
   const richSentences = contentPool.length > 0 ? contentPool : [fallbackSentence];
+  const usableContextBase = contextPool.length > 0 ? contextPool : richSentences;
+  const expansionContext = [
+    "Allow this experience to unfold without needing immediate results.",
+    "Your breath can be both anchor and medicine in this moment.",
+    "Stay in relationship with sensation instead of fighting it.",
+    "Let your awareness stay wide and your effort stay light.",
+    "You can move slowly and still go very deep.",
+    "This phase is about receiving, not performing.",
+  ];
+  const usableContext = Array.from(new Set([...usableContextBase, ...expansionContext]));
   const benefits = flattenTextValue(practice.benefits || practice.therapeutic_benefits).filter(Boolean);
   const affirmations = flattenTextValue(practice.affirmations).filter(Boolean);
 
@@ -146,21 +175,42 @@ function buildNarrationPlan(practice, stepsOverride) {
     "Move through this phase with gentleness, precision, and trust.",
     "Let the next moments unfold with patience rather than urgency.",
     "Continue in a way that feels grounded, receptive, and sustainable.",
+    "Allow this next chapter to open gradually from inside your body.",
+    "Keep listening to the subtle signals beneath the surface of movement.",
+    "Let your breath and body keep meeting in one shared rhythm.",
+    "Stay present with simplicity and let depth come naturally.",
+    "Give this phase enough time to become truly embodied.",
+    "Remain patient while your system reorganizes toward steadiness.",
   ];
 
   const focusLeads = [
-    "Bring your attention to",
-    "Let your next point of focus be",
-    "Center this phase around",
-    "Gently return to",
-    "Keep awareness anchored in",
+    "Place awareness near",
+    "Let this moment center on",
+    "Allow your attention to rest with",
+    "Re-orient gently toward",
+    "Keep your internal focus with",
   ];
 
   const continuityLeads = [
-    "Carry this thread through the next breaths",
-    "Let this continue shaping your inner rhythm",
-    "Stay connected to this as you continue",
-    "Allow this to remain softly active",
+    "Let this quality continue through your next breaths",
+    "Allow this insight to keep shaping your inner rhythm",
+    "Remain connected to this while the practice evolves",
+    "Keep this quietly active in the background of awareness",
+    "Carry this into the next exhale without effort",
+    "Let this spread gently through the whole body",
+    "Sustain this awareness while you keep moving",
+    "Keep this perspective present without strain",
+  ];
+
+  const breathCues = [
+    "Keep your exhale slightly longer than your inhale.",
+    "Let the inhale arrive naturally without pulling.",
+    "Allow each breath cycle to soften unnecessary tension.",
+    "Breathe in a way that feels sustainable for your nervous system.",
+    "Stay with smooth nasal breathing and relaxed shoulders.",
+    "Let your ribcage move gently while jaw and tongue soften.",
+    "Receive each inhale as support and each exhale as release.",
+    "Stay with a quiet cadence that keeps you grounded.",
   ];
 
   const paragraphs = [
@@ -172,17 +222,40 @@ function buildNarrationPlan(practice, stepsOverride) {
     paragraphs.push(`${practice.description} Let these words become an atmosphere around you, not something to rush through. Breathe with them. Feel them. Let them open slowly in your own timing.`);
   }
 
+  if (stepPool.length > 0) {
+    const stepFrames = [
+      "Enter this phase through",
+      "Now explore",
+      "Let this stage begin with",
+      "Move gently into",
+    ];
+    const somaticPrompts = [
+      "Keep your breath smooth while tracking subtle sensation.",
+      "Stay curious about what shifts in your body as you continue.",
+      "Let the instruction become embodied instead of rushed.",
+      "Use each exhale to release effort and return to presence.",
+    ];
+
+    stepPool.slice(0, 4).forEach((stepLine, idx) => {
+      const frame = stepFrames[idx % stepFrames.length];
+      const prompt = somaticPrompts[idx % somaticPrompts.length];
+      const paragraph = `${frame} ${stepLine}. ${prompt}`;
+      paragraphs.push(paragraph);
+    });
+  }
+
   let runningWords = paragraphs.reduce((total, paragraph) => total + countWords(paragraph), 0);
   let index = 0;
   while (runningWords < targetWords - 180) {
     const opener = phaseOpeners[index % phaseOpeners.length];
-    const primary = richSentences[index % richSentences.length] || fallbackSentence;
-    const secondary = richSentences[(index + 2) % richSentences.length] || fallbackSentence;
+    const primary = usableContext[index % usableContext.length] || fallbackSentence;
+    const secondary = usableContext[(index + 3) % usableContext.length] || fallbackSentence;
     const reflection = reflectionPrompts[index % reflectionPrompts.length];
     const benefit = benefits[index % Math.max(benefits.length, 1)];
     const affirmation = affirmations[index % Math.max(affirmations.length, 1)];
     const focusLead = focusLeads[index % focusLeads.length];
     const continuityLead = continuityLeads[index % continuityLeads.length];
+    const breathCue = breathCues[(index * 2 + 1) % breathCues.length];
 
     const variant = index % 3;
     const paragraph = variant === 0
@@ -190,6 +263,7 @@ function buildNarrationPlan(practice, stepsOverride) {
           opener,
           `${focusLead} ${primary}`,
           `${continuityLead}: ${secondary}`,
+          breathCue,
           benefit ? `Allow this work to support ${benefit}.` : "Allow this work to support the places within you ready for healing and integration.",
           affirmation ? `Quietly repeat: ${affirmation}.` : "Quietly remind yourself that you are safe enough to stay present.",
           reflection,
@@ -199,6 +273,7 @@ function buildNarrationPlan(practice, stepsOverride) {
             opener,
             primary,
             `${focusLead} ${secondary} while breath remains smooth and unforced.`,
+            breathCue,
             affirmation ? `Carry this inward statement softly: ${affirmation}.` : "Stay gentle and receptive as this phase opens.",
             reflection,
           ].join(" ")
@@ -206,6 +281,7 @@ function buildNarrationPlan(practice, stepsOverride) {
             opener,
             `${continuityLead}: ${primary}.`,
             `${focusLead} ${secondary}.`,
+            breathCue,
             benefit ? `Notice how this begins to restore ${benefit}.` : "Notice how this begins to restore steadiness and trust.",
             reflection,
           ].join(" ");
