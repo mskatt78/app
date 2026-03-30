@@ -12,6 +12,8 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Guided Script Repetition Fully Resolved (Iteration 66):** Refactored backend fallback generator to use 4 structural paragraph variants, context queue consumption (instead of hard cycling), expanded phrase banks, and stronger de-duplication. Result: prior repetitive stems reduced to `0x`, source text repetition reduced from `11–22x` to `2–4x`, and long-form quality stabilized.
+- **Frontend Narration Fallback Quality Upgrade:** Upgraded local `GuidedPracticeOverlay` narration planner with better step/context separation and less template-like repetition during pre-expansion display states.
 - **Final App-Readiness Command Center Added:** New public `/app-readiness` route with persistent launch checklist (localStorage), progress tracking, reset flow, and direct links to Demo/Support/Privacy/Terms.
 - **Submission Placeholder Workflow Enabled:** Added explicit asset-prep checklist items (icon, iPhone/iPad screenshots, listing copy, legal URLs, reviewer demo flow) so store submission requirements are tracked in-app.
 - **Navigation Coverage for Launch Ops:** Linked app-readiness from Support Center and Footer to ensure owner/admin can quickly access launch status from anywhere.
