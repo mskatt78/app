@@ -12,6 +12,9 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Guided Parity Upgrade — Mantras + Mudras:** Added immersive "Begin Guided Practice" flows in both Mantras and Mudras detail dialogs, now launching the same full-screen `GuidedPracticeOverlay` used across core healing modules.
+- **Therapeutic Depth Cards Added:** Both sections now include explicit `Why this heals` and `Integration` cards for stronger philosophical and practical alignment with deep-content standards.
+- **Accessibility Polish:** Fixed Mudras dialog accessibility warning by adding required dialog title semantics.
 - **Guided Narration Backend Expansion Route (P0 fix):** Added `POST /api/content/expand-script` to generate long-form guided narration payloads (paragraphs + segments) with strict duration alignment at `120 words/min` and a hard floor of `7 minutes` minimum. This prevents short 1–2 minute scripts on longer practice cards.
 - **GuidedPracticeOverlay Stability Refactor:** Moved script expansion orchestration out of heavy frontend-only generation flow. Overlay now requests backend-expanded narration before auto-start, then streams segmented TTS continuously. This reduces UI blocking risk and keeps auto-guided flow fully hands-free.
 - **Retreat Cleanup for Owner Control:** Legacy placeholder retreats were cleared so `/api/retreats` starts empty for owner-managed entries in admin.
@@ -152,7 +155,7 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
-- **P1**: Continue guided-section parity pass (Mantras, Mudras, and remaining lighter sections) to match deep-content tone used in Crystals/Elements/Light Codes
+- **P1**: Continue guided-section parity pass for remaining lighter sections (beyond Mantras/Mudras) to match deep-content tone used in Crystals/Elements/Light Codes
 - **P1**: Build a richer guided demo account layer if you want a seeded faux dashboard / onboarding journey beyond the current public polished demo route
 - **P1**: Final app-store submission assets pass (store screenshots, icon pack QA, listing copy)
 - **P2**: Subscription-based access to all premium content (all-in-one membership)

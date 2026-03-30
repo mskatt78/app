@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Hand, Filter, X, Check, Sparkles } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
@@ -195,6 +195,9 @@ const MudrasLibrary = ({ user, api }) => {
         {selectedMudra && (
           <Dialog open={!!selectedMudra} onOpenChange={() => setSelectedMudra(null)}>
             <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto p-0">
+              <DialogHeader className="sr-only">
+                <DialogTitle>{selectedMudra.name} details</DialogTitle>
+              </DialogHeader>
               {/* Hero Image */}
               <div className="relative h-56">
                 <img
