@@ -12,6 +12,8 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Critical Audio Reliability Fix (Iteration 69):** Resolved "scripts visible but no audible guidance" by switching frontend expansion calls to `use_ai: false` for fast fallback mode, reducing first narration segment size for faster TTS startup, and adding playback retries/tap-to-enable fallback states. Verified narration starts in ~1.4s (previously 25+ seconds).
+- **Install Option Restored Across Entry Points:** Added explicit `Install App` CTA on Landing page and persistent `Install` action in TopNav so install access no longer disappears even when install prompt is dismissed.
 - **Guided Script Repetition Fully Resolved (Iteration 66):** Refactored backend fallback generator to use 4 structural paragraph variants, context queue consumption (instead of hard cycling), expanded phrase banks, and stronger de-duplication. Result: prior repetitive stems reduced to `0x`, source text repetition reduced from `11–22x` to `2–4x`, and long-form quality stabilized.
 - **Frontend Narration Fallback Quality Upgrade:** Upgraded local `GuidedPracticeOverlay` narration planner with better step/context separation and less template-like repetition during pre-expansion display states.
 - **Final App-Readiness Command Center Added:** New public `/app-readiness` route with persistent launch checklist (localStorage), progress tracking, reset flow, and direct links to Demo/Support/Privacy/Terms.
