@@ -5,7 +5,6 @@ import {
   Sun, Moon, Sparkles, Star, LogIn, Mail, Lock, User, Eye, EyeOff, ArrowRight, Download
 } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Badge } from "../components/ui/badge";
 import { Input } from "../components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { toast } from "sonner";
@@ -119,11 +118,6 @@ const LandingPage = ({ onLoginSuccess }) => {
               Journey through the sacred elements. Transform your practice with shamanic traditions.
             </p>
 
-            <div className="flex items-center justify-center gap-3 mb-6 flex-wrap">
-              <Badge className="bg-primary/15 text-primary border border-primary/20" data-testid="landing-demo-badge">Polished demo ready</Badge>
-              <Badge variant="outline" className="border-white/10 text-white/70" data-testid="landing-appstore-ready-badge">Submission-ready mobile experience</Badge>
-            </div>
-
             {/* BIG ENTER BUTTON - Goes to main menu */}
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -148,15 +142,6 @@ const LandingPage = ({ onLoginSuccess }) => {
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
-              <Button
-                variant="outline"
-                onClick={() => navigate('/demo')}
-                className="rounded-full px-6 py-5 border-white/15 bg-black/20 hover:bg-white/10"
-                data-testid="landing-demo-btn"
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                View Polished Demo
-              </Button>
               <Button
                 variant="ghost"
                 onClick={() => navigate('/support')}
