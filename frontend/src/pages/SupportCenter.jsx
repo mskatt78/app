@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, FileText, HeartHandshake, Mail, ShieldCheck, Smartphone, Trash2 } from "lucide-react";
+import { ArrowLeft, Download, FileCheck2, FileText, HeartHandshake, Mail, ShieldCheck, Smartphone, Trash2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 export default function SupportCenter() {
@@ -39,6 +39,13 @@ export default function SupportCenter() {
             <h3 className="text-2xl font-serif mb-3">Install the app</h3>
             <p className="text-sm text-muted-foreground leading-relaxed mb-4">Use your browser’s “Add to Home Screen” or install prompt to save the temple like an app. On iPhone, tap Share → Add to Home Screen.</p>
             <Button variant="outline" onClick={() => navigate("/demo")} data-testid="support-center-demo-btn">Open the polished demo</Button>
+          </section>
+
+          <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-readiness-card">
+            <FileCheck2 className="w-6 h-6 text-primary mb-4" />
+            <h3 className="text-2xl font-serif mb-3">App readiness checklist</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">Track final submission assets and listing prep with a dedicated launch checklist.</p>
+            <Button variant="outline" onClick={() => navigate("/app-readiness")} data-testid="support-center-readiness-btn">Open readiness center</Button>
           </section>
 
           <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-privacy-card">

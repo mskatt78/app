@@ -79,7 +79,7 @@
       "src": "app-icon-1024.png",
       "type": "image/png",
       "sizes": "1024x1024",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/?source=pwa",
@@ -144,6 +144,13 @@
       "short_name": "Live",
       "description": "Open live yoga, workshops, and Q&A rooms",
       "url": "/live",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "App Readiness",
+      "short_name": "Ready",
+      "description": "Open launch checklist and store prep",
+      "url": "/app-readiness",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {

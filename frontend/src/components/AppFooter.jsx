@@ -36,6 +36,14 @@ const AppFooter = () => {
                 Support Center
               </button>
               <span className="text-white/20">|</span>
+              <button
+                onClick={() => navigate('/app-readiness')}
+                className="hover:text-primary transition-colors"
+                data-testid="footer-app-readiness-btn"
+              >
+                App Readiness
+              </button>
+              <span className="text-white/20">|</span>
               <button 
                 onClick={() => navigate('/privacy')}
                 className="hover:text-primary transition-colors"

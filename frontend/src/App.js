@@ -46,6 +46,7 @@ const LiveSessions = lazy(() => import("./pages/LiveSessions"));
 const LiveSessionRoom = lazy(() => import("./pages/LiveSessionRoom"));
 const DemoExperience = lazy(() => import("./pages/DemoExperience"));
 const SupportCenter = lazy(() => import("./pages/SupportCenter"));
+const AppStoreReadiness = lazy(() => import("./pages/AppStoreReadiness"));
 const Retreats = lazy(() => import("./pages/Retreats"));
 const Courses = lazy(() => import("./pages/Courses"));
 const Community = lazy(() => import("./pages/Community"));
@@ -350,6 +351,7 @@ function AppRouter() {
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/terms" element={<TermsOfService />} />
       <Route path="/support" element={<SupportCenter />} />
+      <Route path="/app-readiness" element={<AppStoreReadiness />} />
       <Route
         path="/demo"
         element={

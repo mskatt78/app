@@ -1,0 +1,184 @@
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft, CheckCircle2, ClipboardList, ExternalLink, RotateCcw, Smartphone } from "lucide-react";
+import { Checkbox } from "../components/ui/checkbox";
+import { Button } from "../components/ui/button";
+import { Progress } from "../components/ui/progress";
+
+const STORAGE_KEY = "appStoreReadinessChecklistV1";
+
+const assetChecklist = [
+  {
+    id: "icon-1024",
+    title: "App icon 1024×1024 final brand-approved",
+    hint: "Replace /frontend/public/app-icon-1024.png if final branding changes.",
+  },
+  {
+    id: "iphone-screenshots",
+    title: "iPhone screenshots prepared (6.7" + String.fromCharCode(34) + " and 6.5" + String.fromCharCode(34) + ")",
+    hint: "Capture core flows: landing, dashboard, guided session, admin/demo proof.",
+  },
+  {
+    id: "ipad-screenshots",
+    title: "iPad screenshots prepared",
+    hint: "Capture at least 2–4 key views for tablet moderation review.",
+  },
+  {
+    id: "store-description",
+    title: "Store listing copy finalized",
+    hint: "Short description, long description, keywords, support contact.",
+  },
+  {
+    id: "policy-links",
+    title: "Public legal links verified",
+    hint: "Ensure /privacy, /terms, and /support are reachable on production domain.",
+  },
+  {
+    id: "demo-review-mode",
+    title: "Demo path verified for reviewer walkthrough",
+    hint: "Use /demo for an account-free product tour when helpful.",
+  },
+];
+
+function readSavedChecklist() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return typeof parsed === "object" && parsed ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+export default function AppStoreReadiness() {
+  const navigate = useNavigate();
+  const [checks, setChecks] = useState(() => readSavedChecklist());
+
+  const completed = useMemo(
+    () => assetChecklist.filter((item) => checks[item.id]).length,
+    [checks],
+  );
+  const percent = Math.round((completed / assetChecklist.length) * 100);
+
+  const updateCheck = (id, value) => {
+    setChecks((prev) => {
+      const next = { ...prev, [id]: Boolean(value) };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const resetChecklist = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setChecks({});
+  };
+
+  return (
+    <div className="min-h-screen bg-background text-foreground" data-testid="app-readiness-page">
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-5xl mx-auto p-4 flex items-center gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 rounded-full hover:bg-white/5 transition-colors"
+            data-testid="app-readiness-back-btn"
+          >
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+          </button>
+          <div>
+            <p className="text-xs text-muted-foreground uppercase tracking-wider">Final launch operations</p>
+            <h1 className="text-xl font-serif">App Store <span className="italic text-primary">Readiness</span></h1>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-6 py-10 space-y-6">
+        <section className="rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(250,204,21,0.2),_transparent_40%),linear-gradient(135deg,rgba(8,10,14,0.96),rgba(6,8,12,0.92))] p-8" data-testid="app-readiness-hero">
+          <p className="text-xs uppercase tracking-[0.28em] text-white/45 mb-3">Submission command center</p>
+          <h2 className="text-4xl sm:text-5xl font-serif leading-[1.05] max-w-3xl">Track every final item before App Store and Play review.</h2>
+          <p className="text-sm sm:text-base text-white/75 mt-5 max-w-2xl leading-relaxed">
+            Technical readiness is complete. Use this checklist to confirm your final assets and listing materials are fully packaged before submission.
+          </p>
+        </section>
+
+        <section className="rounded-[1.75rem] border border-white/10 bg-card/70 p-6" data-testid="app-readiness-progress-card">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-2">
+              <ClipboardList className="w-5 h-5 text-primary" />
+              <h3 className="text-xl font-serif">Submission asset checklist</h3>
+            </div>
+            <span className="text-sm text-muted-foreground" data-testid="app-readiness-progress-text">
+              {completed}/{assetChecklist.length} complete ({percent}%)
+            </span>
+          </div>
+          <Progress value={percent} className="h-2.5" data-testid="app-readiness-progress-bar" />
+
+          <div className="mt-6 space-y-4">
+            {assetChecklist.map((item) => (
+              <label
+                key={item.id}
+                className="flex items-start gap-3 rounded-xl border border-white/10 bg-black/20 p-4"
+                data-testid={`app-readiness-item-${item.id}`}
+              >
+                <Checkbox
+                  checked={Boolean(checks[item.id])}
+                  onCheckedChange={(value) => updateCheck(item.id, value)}
+                  data-testid={`app-readiness-checkbox-${item.id}`}
+                />
+                <div className="flex-1">
+                  <p className="text-sm sm:text-base font-medium text-foreground">{item.title}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">{item.hint}</p>
+                </div>
+                {checks[item.id] ? <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-1" /> : null}
+              </label>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-3 mt-6">
+            <Button
+              variant="outline"
+              onClick={resetChecklist}
+              className="border-white/15"
+              data-testid="app-readiness-reset-btn"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Reset checklist
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/support")}
+              className="border-white/15"
+              data-testid="app-readiness-open-support-btn"
+            >
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Open support center
+            </Button>
+          </div>
+        </section>
+
+        <section className="grid gap-5 md:grid-cols-3" data-testid="app-readiness-links-grid">
+          <article className="rounded-[1.5rem] border border-white/10 bg-card/60 p-5">
+            <Smartphone className="w-5 h-5 text-primary mb-3" />
+            <h4 className="font-serif text-lg mb-2">Demo for reviewers</h4>
+            <p className="text-sm text-muted-foreground mb-4">Showcase the app without requiring login friction.</p>
+            <Button variant="outline" onClick={() => navigate("/demo")} data-testid="app-readiness-open-demo-btn">Open demo</Button>
+          </article>
+
+          <article className="rounded-[1.5rem] border border-white/10 bg-card/60 p-5">
+            <CheckCircle2 className="w-5 h-5 text-primary mb-3" />
+            <h4 className="font-serif text-lg mb-2">Privacy policy</h4>
+            <p className="text-sm text-muted-foreground mb-4">Required link for App Store and Play Console metadata.</p>
+            <Button variant="outline" onClick={() => navigate("/privacy")} data-testid="app-readiness-open-privacy-btn">Open privacy</Button>
+          </article>
+
+          <article className="rounded-[1.5rem] border border-white/10 bg-card/60 p-5">
+            <CheckCircle2 className="w-5 h-5 text-primary mb-3" />
+            <h4 className="font-serif text-lg mb-2">Terms of service</h4>
+            <p className="text-sm text-muted-foreground mb-4">Legal scope and user agreement reference for store review.</p>
+            <Button variant="outline" onClick={() => navigate("/terms")} data-testid="app-readiness-open-terms-btn">Open terms</Button>
+          </article>
+        </section>
+      </main>
+    </div>
+  );
+}
