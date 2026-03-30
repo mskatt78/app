@@ -100,22 +100,23 @@ const CreativeProcesses = ({ user, api }) => {
     setGuidedPractice(practice);
   };
 
-  const handleExitPractice = async () => {
-    if (guidedPractice) {
-      try {
-        await api.post("/practice-history", {
-          practice_type: "creative_process",
-          practice_id: guidedPractice.id,
-          duration_minutes: guidedPractice.duration_minutes,
-          element: "Spirit",
-          notes: `Completed ${guidedPractice.name}`,
-        });
-        toast.success("Creative practice complete. Your spirit is expressed.");
-      } catch (e) {
-        // silent
-      }
-    }
+  const handleExitPractice = () => {
+    const practiceToLog = guidedPractice;
     setGuidedPractice(null);
+
+    if (practiceToLog) {
+      api.post("/practice-history", {
+        practice_type: "creative_process",
+        practice_id: practiceToLog.id,
+        duration_minutes: practiceToLog.duration_minutes,
+        element: "Spirit",
+        notes: `Completed ${practiceToLog.name}`,
+      })
+        .then(() => toast.success("Creative practice complete. Your spirit is expressed."))
+        .catch(() => {
+          // silent
+        });
+    }
   };
 
   return (

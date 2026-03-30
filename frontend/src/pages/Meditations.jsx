@@ -126,21 +126,22 @@ const Meditations = ({ user, api }) => {
     setGuidedPractice(practice);
   };
 
-  const handleExitPractice = async () => {
-    if (guidedPractice) {
-      try {
-        await api.post("/practice-history", {
-          practice_type: "meditation",
-          practice_id: guidedPractice.id,
-          duration_minutes: guidedPractice.duration_minutes,
-          notes: `Completed ${guidedPractice.name}`,
-        });
-        toast.success("Meditation complete. Namaste.");
-      } catch (e) {
-        // silent — don't block exit
-      }
-    }
+  const handleExitPractice = () => {
+    const practiceToLog = guidedPractice;
     setGuidedPractice(null);
+
+    if (practiceToLog) {
+      api.post("/practice-history", {
+        practice_type: "meditation",
+        practice_id: practiceToLog.id,
+        duration_minutes: practiceToLog.duration_minutes,
+        notes: `Completed ${practiceToLog.name}`,
+      })
+        .then(() => toast.success("Meditation complete. Namaste."))
+        .catch(() => {
+          // silent — don't block exit
+        });
+    }
   };
 
   return (

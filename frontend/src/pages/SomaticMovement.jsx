@@ -59,21 +59,22 @@ const SomaticMovement = ({ user, api }) => {
     setGuidedPractice(practice);
   };
 
-  const handleExitPractice = async () => {
-    if (guidedPractice) {
-      try {
-        await api.post("/practice-history", {
-          practice_type: "somatic",
-          practice_id: guidedPractice.id,
-          duration_minutes: guidedPractice.duration_minutes,
-          notes: `Completed ${guidedPractice.name}`,
-        });
-        toast.success("Practice complete. Well done.");
-      } catch (e) {
-        // silent
-      }
-    }
+  const handleExitPractice = () => {
+    const practiceToLog = guidedPractice;
     setGuidedPractice(null);
+
+    if (practiceToLog) {
+      api.post("/practice-history", {
+        practice_type: "somatic",
+        practice_id: practiceToLog.id,
+        duration_minutes: practiceToLog.duration_minutes,
+        notes: `Completed ${practiceToLog.name}`,
+      })
+        .then(() => toast.success("Practice complete. Well done."))
+        .catch(() => {
+          // silent
+        });
+    }
   };
 
   return (

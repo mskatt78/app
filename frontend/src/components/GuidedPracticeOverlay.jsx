@@ -712,7 +712,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-5 flex flex-col">
+      <div className="flex-1 min-h-0 px-5 flex flex-col">
         <AnimatePresence mode="wait">
           {isComplete ? (
             <motion.div
@@ -739,7 +739,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
               </button>
             </motion.div>
           ) : (
-            <motion.div key="player" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 flex flex-col">
+            <motion.div key="player" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 min-h-0 flex flex-col">
               <div className="text-center mt-6 mb-4">
                 <p className={`text-7xl font-serif font-light ${elColor} tabular-nums`}>
                   <span data-testid="guided-practice-timer">{formatTime(timeRemaining)}</span>
@@ -793,7 +793,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
                 </div>
               )}
 
-              <div className="flex-1 overflow-y-auto rounded-2xl bg-white/5 p-5 mb-6" data-testid="guided-practice-description">
+              <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl bg-white/5 p-5 mb-6" data-testid="guided-practice-description">
                 <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Visualization Guide</p>
                 <div className="space-y-3">
                   {narrationParagraphs.map((paragraph, index) => (
