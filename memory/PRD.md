@@ -12,6 +12,10 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Guided Narration Backend Expansion Route (P0 fix):** Added `POST /api/content/expand-script` to generate long-form guided narration payloads (paragraphs + segments) with strict duration alignment at `120 words/min` and a hard floor of `7 minutes` minimum. This prevents short 1–2 minute scripts on longer practice cards.
+- **GuidedPracticeOverlay Stability Refactor:** Moved script expansion orchestration out of heavy frontend-only generation flow. Overlay now requests backend-expanded narration before auto-start, then streams segmented TTS continuously. This reduces UI blocking risk and keeps auto-guided flow fully hands-free.
+- **Retreat Cleanup for Owner Control:** Legacy placeholder retreats were cleared so `/api/retreats` starts empty for owner-managed entries in admin.
+- **App-Store Readiness Legal Sweep:** Added dedicated `/terms` page, wired Terms links in footer and support center, and refined mobile meta viewport/format-detection for stronger submission readiness.
 - **Breathwork Soundscape Selector**: Breathwork now includes an in-player sound choice instead of only the healing pitch/tone. Added simple V1 nature sound options — Ocean Waves, Forest Rain, Forest & Birds, Gentle Wind, Crackling Fire, plus Silence — while keeping the original healing frequency tone available.
 - **Element-Based Breathwork Defaults**: Active breathwork sessions now auto-suggest a soundscape by element (Earth=nature, Water=ocean, Fire=fire, Air=wind, Spirit=rain) and keep mute/play/pause/reset behavior working cleanly.
 - **Single Admin Link UX**: `/admin` is now the main owner entry point, surfaced from the app with admin shortcuts in the navigation and dashboard for allowlisted owner emails. `/admin/login` remains as a hidden fallback.
@@ -148,9 +152,9 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
-- **P1**: Review Mantras, Mudras, and any other lighter sections for the same deep-content parity now achieved in Crystals, Elements, and Light Codes
+- **P1**: Continue guided-section parity pass (Mantras, Mudras, and remaining lighter sections) to match deep-content tone used in Crystals/Elements/Light Codes
 - **P1**: Build a richer guided demo account layer if you want a seeded faux dashboard / onboarding journey beyond the current public polished demo route
-- **P1**: Final app-store submission assets pass (review copy, screenshots, icon pack review, store listing text)
+- **P1**: Final app-store submission assets pass (store screenshots, icon pack QA, listing copy)
 - **P2**: Subscription-based access to all premium content (all-in-one membership)
 - **P2**: Add a Sacred Journey Progress tracker to the dashboard if approved
 - **P2**: Add a dedicated real-time video provider if true two-way in-app conferencing is desired beyond embed URLs + in-app RSVP/chat/Q&A
