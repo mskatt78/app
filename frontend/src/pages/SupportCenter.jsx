@@ -37,7 +37,16 @@ export default function SupportCenter() {
           <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-install-card">
             <Smartphone className="w-6 h-6 text-primary mb-4" />
             <h3 className="text-2xl font-serif mb-3">Install the app</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-4">Use your browser’s “Add to Home Screen” or install prompt to save the temple like an app. On iPhone, tap Share → Add to Home Screen.</p>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">Use your browser’s install flow to save the temple like an app. For Apple users, installation must be completed from Safari.</p>
+            <div className="rounded-xl border border-white/10 bg-black/25 p-4 mb-4" data-testid="support-center-ios-install-steps">
+              <p className="text-xs uppercase tracking-wider text-primary mb-2">iPhone / iPad install steps</p>
+              <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
+                <li>Open this app in <span className="text-foreground">Safari</span>.</li>
+                <li>Tap the <span className="text-foreground">Share</span> icon.</li>
+                <li>Select <span className="text-foreground">Add to Home Screen</span>.</li>
+                <li>Tap <span className="text-foreground">Add</span>.</li>
+              </ol>
+            </div>
             <Button variant="outline" onClick={() => navigate("/demo")} data-testid="support-center-demo-btn">Open the polished demo</Button>
           </section>
 
