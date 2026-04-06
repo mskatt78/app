@@ -9,6 +9,39 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
+const normalizeWaterCategory = (value) => {
+  const raw = String(value || "").trim().toLowerCase();
+  if (!raw) return "blessing";
+
+  const compact = raw
+    .replace(/&/g, "and")
+    .replace(/\s+/g, "_")
+    .replace(/-/g, "_");
+
+  const categoryAliases = {
+    blessing: "blessing",
+    blessings: "blessing",
+    ceremony: "ceremony",
+    ceremonies: "ceremony",
+    ritual: "ritual",
+    rituals: "ritual",
+    frequency: "frequency",
+    frequencies: "frequency",
+    frequency_and_sound: "frequency",
+    sound: "frequency",
+    sound_healing: "frequency",
+    crystalline: "crystalline",
+    crystalline_charging: "crystalline",
+    crystal: "crystalline",
+    cleansing: "cleansing",
+    energy_cleansing: "cleansing",
+    moon: "moon",
+    moon_water: "moon",
+  };
+
+  return categoryAliases[compact] || categoryAliases[raw] || raw;
+};
+
 const WaterPractices = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPractice, setSelectedPractice] = useState(null);
@@ -100,7 +133,7 @@ const WaterPractices = ({ user, api }) => {
     { id: "moon", name: "Moon Water", icon: Moon, color: "text-purple-400" },
   ];
 
-  const [waterPractices, setWaterPractices] = useState({});
+  const [waterPractices, setWaterPractices] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch from API
@@ -109,21 +142,46 @@ const WaterPractices = ({ user, api }) => {
     api.get("/water-practices")
       .then(res => {
         if (res.data && res.data.length > 0) {
-          // Group by category
-          const grouped = {};
-          res.data.forEach(practice => {
-            const cat = practice.category || 'blessing';
-            if (!grouped[cat]) grouped[cat] = [];
-            grouped[cat].push(practice);
-          });
-          setWaterPractices(grouped);
+          const normalized = res.data.map((practice) => ({
+            ...practice,
+            category: normalizeWaterCategory(practice.category),
+          }));
+          setWaterPractices(normalized);
         }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, [api]);
 
-  const currentPractices = waterPractices[activeCategory] || [];
+  useEffect(() => {
+    if (!api || loading) return;
+    const alreadyLoaded = waterPractices.some((practice) => normalizeWaterCategory(practice.category) === activeCategory);
+    if (alreadyLoaded) return;
+
+    api.get(`/water-practices?category=${activeCategory}`)
+      .then((res) => {
+        if (!Array.isArray(res.data) || res.data.length === 0) return;
+        const normalized = res.data.map((practice) => ({
+          ...practice,
+          category: normalizeWaterCategory(practice.category || activeCategory),
+        }));
+        setWaterPractices((prev) => {
+          const existingIds = new Set(prev.map((item) => item.id));
+          const next = [...prev];
+          normalized.forEach((item) => {
+            if (!existingIds.has(item.id)) next.push(item);
+          });
+          return next;
+        });
+      })
+      .catch(() => {
+        // silent fallback
+      });
+  }, [activeCategory, api, loading, waterPractices]);
+
+  const currentPractices = waterPractices.filter(
+    (practice) => normalizeWaterCategory(practice.category) === activeCategory
+  );
   const currentCategory = categories.find(c => c.id === activeCategory);
 
   return (
