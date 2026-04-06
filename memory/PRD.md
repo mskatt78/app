@@ -12,6 +12,7 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Downloadable App Store Submission Kit Created:** Added `/app/submission_kit/` with complete ready-to-use docs (store copy, screenshot shotlist, legal/reviewer notes, forms cheatsheet, release QA script, and asset tracker) and packaged as `/app/app_store_submission_kit.zip` for one-click handoff.
 - **Natural Sound Options Restored (Iteration 72):** Reintroduced Breathwork-style natural sound set in Mantras (`Ocean Waves`, `Forest Rain`, `Forest & Birds`, `Gentle Wind`, `Crackling Fire`, `Silence`) and added matching selector to shared `PracticeTimer` where picker was missing.
 - **Last-Used Sound Persistence:** Implemented persistent natural sound preference via `localStorage` key `preferred-natural-sound` (works across close/reopen and page reload).
 - **Landing Cover Demo Script Removed (Iteration 71):** Removed all demo-related script elements from Landing cover per owner request — deleted demo badge/label and demo button while preserving core CTA (`Enter the Temple`) plus Support/Install actions. `/demo` route remains available separately.
