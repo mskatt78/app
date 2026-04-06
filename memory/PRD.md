@@ -12,6 +12,7 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Apple Install Flow Hardened (Iteration 73):** Fixed iPhone/iPad install friction with robust iOS + iPadOS desktop-mode detection, Safari-vs-non-Safari handling, copy-link helper for non-Safari iOS browsers, persistent reopen install chip after dismiss, and explicit 4-step Apple install instructions in Support Center.
 - **Downloadable App Store Submission Kit Created:** Added `/app/submission_kit/` with complete ready-to-use docs (store copy, screenshot shotlist, legal/reviewer notes, forms cheatsheet, release QA script, and asset tracker) and packaged as `/app/app_store_submission_kit.zip` for one-click handoff.
 - **Natural Sound Options Restored (Iteration 72):** Reintroduced Breathwork-style natural sound set in Mantras (`Ocean Waves`, `Forest Rain`, `Forest & Birds`, `Gentle Wind`, `Crackling Fire`, `Silence`) and added matching selector to shared `PracticeTimer` where picker was missing.
 - **Last-Used Sound Persistence:** Implemented persistent natural sound preference via `localStorage` key `preferred-natural-sound` (works across close/reopen and page reload).
