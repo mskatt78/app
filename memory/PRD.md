@@ -12,6 +12,11 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Route-Layer Decomposition Completed (Iteration 79):** Split monolithic `App.js` into dedicated routing modules:
+  - `frontend/src/routes/AppRoutes.jsx` (all route definitions)
+  - `frontend/src/routes/routeGuards.jsx` (`AuthCallback`, `PublicRoute`, `ProtectedRoute`, `AdminRoute`)
+  - `App.js` now focuses on app shell + nav visibility + providers only.
+- **Full Regression Post-Split:** Iteration 79 passed 100% (backend 10/10, frontend 10/10) with no route regressions.
 - **Full Continuation Pass Completed (Iteration 78):** Added CI security guardrails (`/app/security/security_guardrails.py` + `.github/workflows/security-guardrails.yml`) to automatically block MD5, `shell=True` subprocess, hardcoded test secret patterns, and unsafe token localStorage usage.
 - **Oversized Component Modularization (Phase Progress):**
   - Extracted Guided narration helpers into `components/guided/guidedNarrationUtils.js`
