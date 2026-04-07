@@ -7,89 +7,17 @@ import { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
 import MeditationVisualizer from "./MeditationVisualizer";
 import BreathingVisualizer from "./BreathingVisualizer";
 import { toast } from "sonner";
-
-const createBrownNoise = (audioContext) => {
-  const bufferSize = 2 * audioContext.sampleRate;
-  const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-  const output = noiseBuffer.getChannelData(0);
-
-  let lastOut = 0;
-  for (let i = 0; i < bufferSize; i += 1) {
-    const white = Math.random() * 2 - 1;
-    output[i] = (lastOut + (0.02 * white)) / 1.02;
-    lastOut = output[i];
-    output[i] *= 3.5;
-  }
-
-  const whiteNoise = audioContext.createBufferSource();
-  whiteNoise.buffer = noiseBuffer;
-  whiteNoise.loop = true;
-  return whiteNoise;
-};
-
-const createFilteredNoise = (audioContext, frequency, Q = 1) => {
-  const noise = createBrownNoise(audioContext);
-  const filter = audioContext.createBiquadFilter();
-  filter.type = "lowpass";
-  filter.frequency.value = frequency;
-  filter.Q.value = Q;
-  noise.connect(filter);
-  return { source: noise, output: filter };
-};
-
-const formatTime = (seconds) => {
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.max(0, seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, "0")}`;
-};
-
-const tempoPlaybackRates = { slow: 0.9, normal: 1.0, fast: 1.12 };
-const MIN_NARRATION_MINUTES = 7;
-const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const PREFERRED_NATURAL_SOUND_KEY = "preferred-natural-sound";
-
-const NATURAL_SOUND_OPTIONS = [
-  { id: "ocean", label: AMBIENT_SOUNDS.ocean.name },
-  { id: "rain", label: AMBIENT_SOUNDS.rain.name },
-  { id: "nature", label: AMBIENT_SOUNDS.nature.name },
-  { id: "wind", label: AMBIENT_SOUNDS.wind.name },
-  { id: "fire", label: AMBIENT_SOUNDS.fire.name },
-  { id: "silence", label: "Silence" },
-];
-
-const splitSentences = (text) =>
-  String(text || "")
-    .split(/(?<=[.!?])\s+/)
-    .map((line) => line.trim())
-    .filter((line) => line.length > 10);
-
-const fallbackNarrationSegments = (normalizedSegments) => {
-  const sentences = normalizedSegments
-    .flatMap((segment) => [segment.name, segment.description])
-    .flatMap((value) => splitSentences(value))
-    .filter(Boolean);
-
-  if (!sentences.length) return [];
-
-  const chunks = [];
-  let buffer = [];
-  let words = 0;
-
-  sentences.forEach((sentence) => {
-    const sentenceWords = sentence.split(/\s+/).filter(Boolean).length;
-    if (words >= 160 && buffer.length) {
-      chunks.push(buffer.join(" "));
-      buffer = [];
-      words = 0;
-    }
-    buffer.push(sentence);
-    words += sentenceWords;
-  });
-
-  if (buffer.length) chunks.push(buffer.join(" "));
-  return chunks;
-};
+import {
+  createFilteredNoise,
+  fallbackNarrationSegments,
+  formatTime,
+  MIN_NARRATION_MINUTES,
+  NATURAL_SOUND_OPTIONS,
+  PREFERRED_NATURAL_SOUND_KEY,
+  SCRIPT_EXPANSION_TIMEOUT_MS,
+  tempoPlaybackRates,
+  wait,
+} from "./timer/practiceTimerUtils";
 
 const PracticeTimer = ({
   segments = [],

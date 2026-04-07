@@ -17,6 +17,7 @@ import { toast } from "sonner";
 
 // Import admin config
 import { 
+  ADMIN_TABS,
   ELEMENTS, DIFFICULTIES, CHAKRAS, 
   HEART_CATEGORIES, CREATIVE_CATEGORIES, SHAMANIC_CATEGORIES, ELEMENTAL_CATEGORIES,
   getEndpoint, getDefaultFormData 
@@ -33,24 +34,27 @@ const AdminCMS = ({ user, api }) => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Tab definitions with icons
-  const tabs = [
-    { id: "yoga", label: "Yoga", icon: Sparkles, group: "practices" },
-    { id: "mudras", label: "Mudras", icon: Sparkles, group: "practices" },
-    { id: "breathwork", label: "Breathwork", icon: Wind, group: "practices" },
-    { id: "crystals", label: "Crystals", icon: Mountain, group: "tools" },
-    { id: "mantras", label: "Mantras", icon: Sparkles, group: "tools" },
-    { id: "earth-altars", label: "Altars", icon: Mountain, group: "shamanic" },
-    { id: "elemental-practices", label: "Elemental", icon: Zap, group: "shamanic" },
-    { id: "heart-practices", label: "Heart", icon: Heart, group: "shamanic" },
-    { id: "creative-processes", label: "Creative", icon: Palette, group: "shamanic" },
-    { id: "shamanic-practices", label: "Shamanic", icon: Feather, group: "shamanic" },
-    { id: "retreats", label: "Retreats", icon: MapPin, group: "commerce" },
-    { id: "books", label: "Books", icon: BookOpen, group: "commerce" },
-    { id: "custom-oracle-cards", label: "Oracle", icon: CreditCard, group: "commerce" },
-    { id: "live-sessions", label: "Live", icon: Radio, group: "commerce" },
-    { id: "preset-rituals", label: "Rituals", icon: Sparkles, group: "tools" },
-  ];
+  const tabIcons = {
+    yoga: Sparkles,
+    mudras: Sparkles,
+    breathwork: Wind,
+    crystals: Mountain,
+    mantras: Sparkles,
+    "earth-altars": Mountain,
+    "elemental-practices": Zap,
+    "heart-practices": Heart,
+    "creative-processes": Palette,
+    "shamanic-practices": Feather,
+    retreats: MapPin,
+    books: BookOpen,
+    "custom-oracle-cards": CreditCard,
+    "live-sessions": Radio,
+    "preset-rituals": Sparkles,
+  };
+
+  const tabs = ADMIN_TABS
+    .filter((tab) => tab.id !== "workshops" && tab.id !== "events" && tab.id !== "courses")
+    .map((tab) => ({ ...tab, icon: tabIcons[tab.id] || Sparkles }));
 
   useEffect(() => {
     fetchItems();
