@@ -12,6 +12,16 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Full Continuation Pass Completed (Iteration 78):** Added CI security guardrails (`/app/security/security_guardrails.py` + `.github/workflows/security-guardrails.yml`) to automatically block MD5, `shell=True` subprocess, hardcoded test secret patterns, and unsafe token localStorage usage.
+- **Oversized Component Modularization (Phase Progress):**
+  - Extracted Guided narration helpers into `components/guided/guidedNarrationUtils.js`
+  - Extracted PracticeTimer helper logic into `components/timer/practiceTimerUtils.js`
+  - Extracted Courses constants into `pages/courses/courseConstants.js`
+  - Extracted BirthChart utility logic into `pages/birthchart/birthChartUtils.js`
+  - Added shared client storage utility `utils/clientStorage.js`
+- **Frontend Security Hardening Expanded:** Migrated auth-token retrieval to session-first secure storage utility with localStorage backward migration path; integrated across Admin and Courses flows.
+- **Hook Dependency Quality Sweep (additional):** Refactored `AdminCMS` and `BirthChart` fetch effects to `useCallback`-backed patterns with explicit dependencies.
+- **Broad Regression Validation:** Iteration 78 completed with backend `45/45` and frontend `8/8` passes (no regressions).
 - **Code Review Security Pass (Iteration 76):** Implemented all critical recommended fixes from static review:
   - Circular import removed (`routers/admin.py` now uses `routers/dependencies.get_db`)
   - Shell-injection risk removed in `tests/test_reviews.py` (`subprocess` now uses list args, `shell=False`, JSON-escaped payloads)
