@@ -50,6 +50,22 @@ export default function SupportCenter() {
             <Button variant="outline" onClick={() => navigate("/demo")} data-testid="support-center-demo-btn">Open the polished demo</Button>
           </section>
 
+          <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-android-install-card">
+            <Smartphone className="w-6 h-6 text-primary mb-4" />
+            <h3 className="text-2xl font-serif mb-3">Android install steps</h3>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">For Android users, use Chrome’s install prompt or browser menu to add the app to home screen.</p>
+            <div className="rounded-xl border border-white/10 bg-black/25 p-4 mb-4" data-testid="support-center-android-install-steps">
+              <p className="text-xs uppercase tracking-wider text-primary mb-2">Android quick install</p>
+              <ol className="list-decimal list-inside space-y-1 text-sm text-muted-foreground">
+                <li>Open this app in <span className="text-foreground">Chrome</span>.</li>
+                <li>Tap browser menu (<span className="text-foreground">⋮</span>).</li>
+                <li>Select <span className="text-foreground">Install app</span> or <span className="text-foreground">Add to Home screen</span>.</li>
+                <li>Confirm installation.</li>
+              </ol>
+            </div>
+            <Button variant="outline" onClick={() => navigate("/app-readiness")} data-testid="support-center-android-readiness-btn">Open release checklist</Button>
+          </section>
+
           <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-readiness-card">
             <FileCheck2 className="w-6 h-6 text-primary mb-4" />
             <h3 className="text-2xl font-serif mb-3">App readiness checklist</h3>

@@ -76,6 +76,7 @@ const TopNav = ({ user }) => {
           <button
             onClick={() => navigate("/")}
             className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+            data-testid="topnav-home-btn"
           >
             <Home className="w-5 h-5" />
             <span className="text-sm font-medium hidden sm:inline">Home</span>
@@ -85,6 +86,7 @@ const TopNav = ({ user }) => {
           <button
             onClick={() => setShowMenu(true)}
             className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+            data-testid="topnav-open-menu-btn"
           >
             {currentPage ? (
               <>
@@ -134,6 +136,7 @@ const TopNav = ({ user }) => {
                 <button
                   onClick={() => navigate("/dashboard")}
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                  data-testid="topnav-dashboard-btn"
                 >
                   <User className="w-5 h-5" />
                   <span className="text-sm hidden sm:inline">Dashboard</span>
@@ -143,6 +146,7 @@ const TopNav = ({ user }) => {
               <button
                 onClick={() => navigate("/")}
                 className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                data-testid="topnav-signin-btn"
               >
                 <User className="w-5 h-5" />
                 <span className="text-sm hidden sm:inline">Sign In</span>
@@ -168,6 +172,7 @@ const TopNav = ({ user }) => {
                 <button 
                   onClick={() => setShowMenu(false)}
                   className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                  data-testid="topnav-close-menu-btn"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -189,6 +194,7 @@ const TopNav = ({ user }) => {
                         key={item.path}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => { navigate(item.path); setShowMenu(false); }}
+                        data-testid={`topnav-sacred-temple-item-${item.path.replace(/\//g, "-").replace(/^-+/, "")}`}
                         className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all ${
                           isActive(item.path)
                             ? "bg-primary/20 border-2 border-primary/50"
@@ -214,6 +220,7 @@ const TopNav = ({ user }) => {
                         navigate(item.path);
                         setShowMenu(false);
                       }}
+                      data-testid={`topnav-practice-item-${item.path.replace(/\//g, "-").replace(/^-+/, "")}`}
                       className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all ${
                         isActive(item.path) 
                           ? "bg-primary/20 border-2 border-primary/50" 
@@ -235,6 +242,7 @@ const TopNav = ({ user }) => {
                         setShowMenu(false);
                       }}
                       className="flex items-center justify-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
+                      data-testid="topnav-overlay-home-btn"
                     >
                       <Home className="w-5 h-5 text-primary" />
                       <span className="font-medium">Home</span>
@@ -246,6 +254,7 @@ const TopNav = ({ user }) => {
                           setShowMenu(false);
                         }}
                         className="flex items-center justify-center gap-3 p-4 rounded-xl bg-primary/20 border border-primary/30 transition-all"
+                        data-testid="topnav-overlay-dashboard-btn"
                       >
                         <User className="w-5 h-5 text-primary" />
                         <span className="font-medium">My Dashboard</span>
@@ -257,6 +266,7 @@ const TopNav = ({ user }) => {
                           setShowMenu(false);
                         }}
                         className="flex items-center justify-center gap-3 p-4 rounded-xl bg-primary/20 border border-primary/30 transition-all"
+                        data-testid="topnav-overlay-signin-btn"
                       >
                         <User className="w-5 h-5 text-primary" />
                         <span className="font-medium">Sign In</span>

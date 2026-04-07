@@ -40,6 +40,34 @@ const assetChecklist = [
   },
 ];
 
+const qaChecklist = [
+  {
+    id: "ios-safari-install",
+    title: "iOS install tested in Safari",
+    hint: "Confirm Add to Home Screen flow works from iPhone/iPad Safari.",
+  },
+  {
+    id: "android-install",
+    title: "Android install tested in Chrome",
+    hint: "Confirm browser install prompt appears and launches standalone mode.",
+  },
+  {
+    id: "legal-routes-mobile",
+    title: "Legal routes verified on mobile",
+    hint: "Open /privacy, /terms, and /support on a phone-sized viewport.",
+  },
+  {
+    id: "guided-session-pass",
+    title: "Guided session parity smoke test passed",
+    hint: "Validate a guided practice starts and timer UI remains stable through playback.",
+  },
+  {
+    id: "offline-fallback",
+    title: "Offline fallback tested",
+    hint: "Confirm service worker fallback page is reachable when connection drops.",
+  },
+];
+
 function readSavedChecklist() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -59,7 +87,15 @@ export default function AppStoreReadiness() {
     () => assetChecklist.filter((item) => checks[item.id]).length,
     [checks],
   );
+  const qaCompleted = useMemo(
+    () => qaChecklist.filter((item) => checks[item.id]).length,
+    [checks],
+  );
   const percent = Math.round((completed / assetChecklist.length) * 100);
+  const qaPercent = Math.round((qaCompleted / qaChecklist.length) * 100);
+  const totalComplete = completed + qaCompleted;
+  const totalChecks = assetChecklist.length + qaChecklist.length;
+  const totalPercent = Math.round((totalComplete / totalChecks) * 100);
 
   const updateCheck = (id, value) => {
     setChecks((prev) => {
@@ -154,6 +190,55 @@ export default function AppStoreReadiness() {
               Open support center
             </Button>
           </div>
+        </section>
+
+        <section className="rounded-[1.75rem] border border-white/10 bg-card/70 p-6" data-testid="app-readiness-qa-card">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-5 h-5 text-primary" />
+              <h3 className="text-xl font-serif">Release QA checklist</h3>
+            </div>
+            <span className="text-sm text-muted-foreground" data-testid="app-readiness-qa-progress-text">
+              {qaCompleted}/{qaChecklist.length} complete ({qaPercent}%)
+            </span>
+          </div>
+          <Progress value={qaPercent} className="h-2.5" data-testid="app-readiness-qa-progress-bar" />
+
+          <div className="mt-6 space-y-4">
+            {qaChecklist.map((item) => (
+              <label
+                key={item.id}
+                className="flex items-start gap-3 rounded-xl border border-white/10 bg-black/20 p-4"
+                data-testid={`app-readiness-qa-item-${item.id}`}
+              >
+                <Checkbox
+                  checked={Boolean(checks[item.id])}
+                  onCheckedChange={(value) => updateCheck(item.id, value)}
+                  data-testid={`app-readiness-qa-checkbox-${item.id}`}
+                />
+                <div className="flex-1">
+                  <p className="text-sm sm:text-base font-medium text-foreground">{item.title}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">{item.hint}</p>
+                </div>
+                {checks[item.id] ? <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-1" /> : null}
+              </label>
+            ))}
+          </div>
+        </section>
+
+        <section
+          className="rounded-[1.5rem] border border-primary/30 bg-primary/10 p-5 flex flex-wrap items-center justify-between gap-4"
+          data-testid="app-readiness-launch-status"
+        >
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-primary/80">Launch status</p>
+            <h3 className="text-xl font-serif mt-1">Submission Confidence: {totalPercent}%</h3>
+            <p className="text-sm text-muted-foreground mt-1">{totalComplete}/{totalChecks} readiness checks completed.</p>
+          </div>
+          <Button variant="outline" onClick={() => navigate("/support")} data-testid="app-readiness-launch-support-btn">
+            <ExternalLink className="w-4 h-4 mr-2" />
+            Review support checklist
+          </Button>
         </section>
 
         <section className="grid gap-5 md:grid-cols-3" data-testid="app-readiness-links-grid">
