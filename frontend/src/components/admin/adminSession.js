@@ -1,6 +1,51 @@
-export const getStoredAdminToken = () => localStorage.getItem("admin_token");
+const ADMIN_TOKEN_KEY = "admin_token";
 
-export const clearStoredAdminToken = () => localStorage.removeItem("admin_token");
+const getSessionStorage = () => {
+  try {
+    return window.sessionStorage;
+  } catch {
+    return null;
+  }
+};
+
+const getLocalStorage = () => {
+  try {
+    return window.localStorage;
+  } catch {
+    return null;
+  }
+};
+
+export const getStoredAdminToken = () => {
+  const sessionStorage = getSessionStorage();
+  const localStorage = getLocalStorage();
+  const sessionToken = sessionStorage?.getItem(ADMIN_TOKEN_KEY);
+  if (sessionToken) return sessionToken;
+
+  // Backward-compatible migration from localStorage -> sessionStorage
+  const legacyToken = localStorage?.getItem(ADMIN_TOKEN_KEY);
+  if (legacyToken && sessionStorage) {
+    sessionStorage.setItem(ADMIN_TOKEN_KEY, legacyToken);
+    localStorage?.removeItem(ADMIN_TOKEN_KEY);
+    return legacyToken;
+  }
+  return legacyToken || null;
+};
+
+export const setStoredAdminToken = (token) => {
+  if (!token) return;
+  const sessionStorage = getSessionStorage();
+  const localStorage = getLocalStorage();
+  sessionStorage?.setItem(ADMIN_TOKEN_KEY, token);
+  localStorage?.removeItem(ADMIN_TOKEN_KEY);
+};
+
+export const clearStoredAdminToken = () => {
+  const sessionStorage = getSessionStorage();
+  const localStorage = getLocalStorage();
+  sessionStorage?.removeItem(ADMIN_TOKEN_KEY);
+  localStorage?.removeItem(ADMIN_TOKEN_KEY);
+};
 
 export async function ensureAdminToken(apiBase) {
   const existing = getStoredAdminToken();
@@ -16,6 +61,6 @@ export async function ensureAdminToken(apiBase) {
   }
 
   const data = await response.json();
-  localStorage.setItem("admin_token", data.token);
+  setStoredAdminToken(data.token);
   return data.token;
 }

@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
-import { clearStoredAdminToken, ensureAdminToken } from "../components/admin/adminSession";
+import { clearStoredAdminToken, ensureAdminToken, getStoredAdminToken } from "../components/admin/adminSession";
 
 const AUDIO_COLLECTION = "audio_files";
 
@@ -336,7 +336,7 @@ export default function AdminSection() {
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(localStorage.getItem("admin_token"));
+  const [token, setToken] = useState(getStoredAdminToken());
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [modalItem, setModalItem] = useState(undefined); // undefined=closed, null=new, obj=edit

@@ -48,7 +48,7 @@ async def generate_narration(request: NarrationRequest):
             raise HTTPException(status_code=400, detail="Text too long. Maximum 4096 characters.")
         
         # Create cache key based on text, voice, and speed
-        cache_key = hashlib.md5(f"{request.text}{request.voice}{request.speed}".encode()).hexdigest()
+        cache_key = hashlib.sha256(f"{request.text}{request.voice}{request.speed}".encode()).hexdigest()
         
         # Check cache first
         if cache_key in audio_cache:
@@ -119,7 +119,7 @@ async def generate_step_narration(practice_type: str, step_number: int, step_tex
         # Add meditation-appropriate formatting
         formatted_text = f"Step {step_number}. {step_text}"
         
-        cache_key = hashlib.md5(f"step_{practice_type}_{step_number}_{step_text}_{voice}".encode()).hexdigest()
+        cache_key = hashlib.sha256(f"step_{practice_type}_{step_number}_{step_text}_{voice}".encode()).hexdigest()
         
         if cache_key in audio_cache:
             return {"audio_base64": audio_cache[cache_key], "cached": True}

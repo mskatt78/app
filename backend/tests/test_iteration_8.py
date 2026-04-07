@@ -9,8 +9,8 @@ Test iteration 8 - Testing new features:
 import pytest
 import requests
 import os
+from test_security_config import BASE_URL, TEST_EMAIL, TEST_PASSWORD, TEST_NAME
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://breathwork-sanctuary.preview.emergentagent.com').rstrip('/')
 
 
 class TestGroundingPracticesTimerSegments:
@@ -199,9 +199,20 @@ class TestAdminPresetRitualsCRUD:
         """Login and get authenticated session"""
         session = requests.Session()
         login_response = session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "test@example.com",
-            "password": "password123"
+            "email": TEST_EMAIL,
+            "password": TEST_PASSWORD
         })
+        if login_response.status_code == 401:
+            register_response = session.post(f"{BASE_URL}/api/auth/register", json={
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD,
+                "name": TEST_NAME,
+            })
+            assert register_response.status_code in [200, 201, 400]
+            login_response = session.post(f"{BASE_URL}/api/auth/login", json={
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD
+            })
         
         if login_response.status_code != 200:
             pytest.skip("Could not authenticate - skipping admin tests")

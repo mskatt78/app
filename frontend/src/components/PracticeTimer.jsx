@@ -587,14 +587,14 @@ const PracticeTimer = ({
   }, [isRunning, syncElapsedFromClock]);
 
   useEffect(() => {
-    if (autoStartAudio && !autoStartedRef.current && calculatedTotal > 0) {
+    if (autoStartAudio && !isRunning && !autoStartedRef.current && calculatedTotal > 0) {
       autoStartedRef.current = true;
       completionRef.current = false;
       lastSegmentIndexRef.current = currentSegmentIndex;
       sessionEndRef.current = Date.now() + ((calculatedTotal - totalElapsed) * 1000);
       setIsRunning(true);
     }
-  }, [autoStartAudio, calculatedTotal, currentSegmentIndex, totalElapsed]);
+  }, [autoStartAudio, calculatedTotal, currentSegmentIndex, isRunning, totalElapsed]);
 
   useEffect(() => {
     if (isRunning && !isMuted && selectedBackgroundAudio !== "silence") {

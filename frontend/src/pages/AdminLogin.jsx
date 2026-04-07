@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
-import { ensureAdminToken } from "../components/admin/adminSession";
+import { ensureAdminToken, setStoredAdminToken } from "../components/admin/adminSession";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -25,7 +25,7 @@ export default function AdminLogin() {
       });
       if (!res.ok) throw new Error("Invalid password");
       const data = await res.json();
-      localStorage.setItem("admin_token", data.token);
+      setStoredAdminToken(data.token);
       toast.success("Welcome, Administrator");
       navigate("/admin");
     } catch {

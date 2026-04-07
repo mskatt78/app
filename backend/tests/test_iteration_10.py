@@ -11,8 +11,8 @@ Features tested:
 import pytest
 import requests
 import os
+from test_security_config import BASE_URL, TEST_EMAIL, TEST_PASSWORD, TEST_NAME
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 class TestEarthAltarsTherapeuticApplications:
     """Test Earth Altars with therapeutic_applications field"""
@@ -181,22 +181,22 @@ class TestPushNotificationEndpoints:
         """Get authenticated session"""
         session = requests.Session()
         login_response = session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "test@example.com",
-            "password": "password123"
+            "email": TEST_EMAIL,
+            "password": TEST_PASSWORD
         })
         if login_response.status_code == 401:
             # User doesn't exist, register first
             register_response = session.post(f"{BASE_URL}/api/auth/register", json={
-                "email": "test@example.com",
-                "password": "password123",
-                "name": "Test User"
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD,
+                "name": TEST_NAME
             })
             if register_response.status_code not in [200, 201, 400]:
                 pytest.skip("Could not register test user")
             # Try login again
             login_response = session.post(f"{BASE_URL}/api/auth/login", json={
-                "email": "test@example.com",
-                "password": "password123"
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD
             })
         
         if login_response.status_code != 200:

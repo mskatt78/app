@@ -5,9 +5,14 @@ Tests: CRUD operations for yoga, mudras, breathwork, crystals, mantras, workshop
 import pytest
 import requests
 import os
+from test_security_config import BASE_URL, TEST_SESSION_TOKEN
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
-SESSION_TOKEN = "admin_session_1773542315182"
+SESSION_TOKEN = TEST_SESSION_TOKEN
+
+
+def _require_session_token():
+    if not SESSION_TOKEN:
+        pytest.skip("Set TEST_SESSION_TOKEN to run admin CMS authenticated tests")
 
 class TestPublicEndpoints:
     """Test public endpoints that serve content from MongoDB"""
@@ -126,6 +131,7 @@ class TestAdminCRUDOperations:
     
     @pytest.fixture
     def auth_headers(self):
+        _require_session_token()
         return {"Authorization": f"Bearer {SESSION_TOKEN}"}
     
     # --- Workshop CRUD ---
@@ -530,6 +536,7 @@ class TestCleanup:
     
     @pytest.fixture
     def auth_headers(self):
+        _require_session_token()
         return {"Authorization": f"Bearer {SESSION_TOKEN}"}
     
     def test_cleanup_test_data(self, auth_headers):

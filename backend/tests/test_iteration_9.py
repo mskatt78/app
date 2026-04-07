@@ -8,8 +8,8 @@ Tests:
 import pytest
 import requests
 import os
+from test_security_config import BASE_URL, TEST_EMAIL, TEST_PASSWORD, TEST_NAME
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 class TestMantrasEnhancedFields:
     """Test Mantras API returns all enhanced audio/pronunciation fields"""
@@ -141,7 +141,7 @@ class TestShamanicPracticesExpanded:
         practice_names = [p['name'] for p in data]
         for original in original_practices:
             assert original in practice_names, f"Original practice '{original}' missing"
-        print(f"✓ All 8 original shamanic practices present")
+        print("✓ All 8 original shamanic practices present")
     
     def test_new_medicine_wheel_ceremony(self):
         """Test Medicine Wheel Ceremony is present with correct data"""
@@ -269,7 +269,7 @@ class TestShamanicPracticesExpanded:
                 has_steps = 'ceremony_steps' in practice or 'journey_steps' in practice
                 assert has_steps, f"Practice '{practice['name']}' missing steps field"
         
-        print(f"✓ All 8 new ceremonies have required fields")
+        print("✓ All 8 new ceremonies have required fields")
 
 
 class TestGroundingPracticesTimer:
@@ -292,7 +292,7 @@ class TestGroundingPracticesTimer:
         
         for exercise in data:
             assert 'duration_minutes' in exercise, f"Exercise '{exercise.get('name', 'unknown')}' missing duration_minutes"
-        print(f"✓ All grounding exercises have duration_minutes field")
+        print("✓ All grounding exercises have duration_minutes field")
     
     def test_grounding_has_instructions(self):
         """Test grounding exercises have instructions for timer"""
@@ -303,7 +303,7 @@ class TestGroundingPracticesTimer:
         for exercise in data:
             assert 'instructions' in exercise, f"Exercise '{exercise.get('name', 'unknown')}' missing instructions"
             assert isinstance(exercise['instructions'], list)
-        print(f"✓ All grounding exercises have instructions array")
+        print("✓ All grounding exercises have instructions array")
 
 
 class TestAuthenticationFlow:
@@ -313,14 +313,25 @@ class TestAuthenticationFlow:
         """Test login with test credentials"""
         session = requests.Session()
         response = session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "test@example.com",
-            "password": "password123"
+            "email": TEST_EMAIL,
+            "password": TEST_PASSWORD
         })
+        if response.status_code == 401:
+            register_response = session.post(f"{BASE_URL}/api/auth/register", json={
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD,
+                "name": TEST_NAME
+            })
+            assert register_response.status_code in [200, 201, 400]
+            response = session.post(f"{BASE_URL}/api/auth/login", json={
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD
+            })
         assert response.status_code == 200
         data = response.json()
         assert data['message'] == 'Login successful'
         assert 'user_id' in data
-        assert data['email'] == 'test@example.com'
+        assert data['email'] == TEST_EMAIL
         print(f"✓ Login successful for {data['email']}")
     
     def test_get_user_with_session(self):
@@ -328,9 +339,20 @@ class TestAuthenticationFlow:
         session = requests.Session()
         # First login to get session cookie
         login_response = session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "test@example.com",
-            "password": "password123"
+            "email": TEST_EMAIL,
+            "password": TEST_PASSWORD
         })
+        if login_response.status_code == 401:
+            register_response = session.post(f"{BASE_URL}/api/auth/register", json={
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD,
+                "name": TEST_NAME
+            })
+            assert register_response.status_code in [200, 201, 400]
+            login_response = session.post(f"{BASE_URL}/api/auth/login", json={
+                "email": TEST_EMAIL,
+                "password": TEST_PASSWORD
+            })
         assert login_response.status_code == 200
         
         # Then get user (using same session with cookies)

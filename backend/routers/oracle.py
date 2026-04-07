@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime, timezone
 import uuid
-import random
+import secrets
 import logging
 import os
 import copy
@@ -15,6 +15,26 @@ from data.archangel_oracle import ARCHANGEL_ORACLE
 
 router = APIRouter(prefix="/oracle", tags=["oracle"])
 logger = logging.getLogger(__name__)
+
+
+def _secure_choice(items):
+    if not items:
+        return None
+    return items[secrets.randbelow(len(items))]
+
+
+def _secure_sample(items, count: int):
+    pool = list(items)
+    result = []
+    for _ in range(min(count, len(pool))):
+        idx = secrets.randbelow(len(pool))
+        result.append(pool.pop(idx))
+    return result
+
+
+def _secure_bool(probability: float = 0.5):
+    threshold = max(0, min(10000, int(probability * 10000)))
+    return secrets.randbelow(10000) < threshold
 
 
 class OracleReadingRequest(BaseModel):
@@ -31,10 +51,10 @@ async def create_oracle_reading(
     db = get_db()
     
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
-    selected_cards = [copy.deepcopy(c) for c in random.sample(ORACLE_CARDS, min(num_cards, len(ORACLE_CARDS)))]
+    selected_cards = [copy.deepcopy(c) for c in _secure_sample(ORACLE_CARDS, num_cards)]
     
     for i, card in enumerate(selected_cards):
-        card["is_reversed"] = random.choice([True, False])
+        card["is_reversed"] = _secure_bool(0.5)
         card["position"] = i + 1
     
     # Generate AI interpretation using Claude
@@ -59,10 +79,10 @@ async def create_oracle_reading(
 async def create_guest_oracle_reading(data: OracleReadingRequest):
     """Create an oracle reading without authentication (doesn't save to history)."""
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
-    selected_cards = [copy.deepcopy(c) for c in random.sample(ORACLE_CARDS, min(num_cards, len(ORACLE_CARDS)))]
+    selected_cards = [copy.deepcopy(c) for c in _secure_sample(ORACLE_CARDS, num_cards)]
     
     for i, card in enumerate(selected_cards):
-        card["is_reversed"] = random.choice([True, False])
+        card["is_reversed"] = _secure_bool(0.5)
         card["position"] = i + 1
     
     # Generate AI interpretation using Claude
@@ -218,10 +238,10 @@ async def create_guest_archangel_reading(data: ArchangelReadingRequest):
     num_cards = {"single": 1, "three_card": 3}.get(data.spread_type, 1)
     
     # Use static data to avoid ObjectId issues
-    selected_cards = [copy.deepcopy(c) for c in random.sample(ARCHANGEL_ORACLE, min(num_cards, len(ARCHANGEL_ORACLE)))]
+    selected_cards = [copy.deepcopy(c) for c in _secure_sample(ARCHANGEL_ORACLE, num_cards)]
     
     for i, card in enumerate(selected_cards):
-        card["is_reversed"] = random.choice([True, False])
+        card["is_reversed"] = _secure_bool(0.5)
         card["position"] = i + 1
         # Remove any potential MongoDB fields
         card.pop("_id", None)
@@ -252,10 +272,10 @@ async def create_archangel_reading(
     num_cards = {"single": 1, "three_card": 3}.get(data.spread_type, 1)
     
     # Use static data to avoid ObjectId issues
-    selected_cards = [copy.deepcopy(c) for c in random.sample(ARCHANGEL_ORACLE, min(num_cards, len(ARCHANGEL_ORACLE)))]
+    selected_cards = [copy.deepcopy(c) for c in _secure_sample(ARCHANGEL_ORACLE, num_cards)]
     
     for i, card in enumerate(selected_cards):
-        card["is_reversed"] = random.choice([True, False])
+        card["is_reversed"] = _secure_bool(0.5)
         card["position"] = i + 1
         # Remove any potential MongoDB fields
         card.pop("_id", None)

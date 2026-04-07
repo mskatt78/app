@@ -4,6 +4,7 @@ import asyncio
 import logging
 import os
 import re
+import secrets
 from typing import Literal, Optional
 import uuid
 
@@ -90,6 +91,26 @@ def _split_sentences(text: str) -> list[str]:
         return []
     chunks = re.split(r"(?<=[.!?])\s+", normalized)
     return [chunk.strip() for chunk in chunks if len(chunk.strip()) > 20]
+
+
+def _secure_choice(items):
+    if not items:
+        return None
+    return items[secrets.randbelow(len(items))]
+
+
+def _secure_sample(items, count: int):
+    pool = list(items)
+    result = []
+    for _ in range(min(count, len(pool))):
+        idx = secrets.randbelow(len(pool))
+        result.append(pool.pop(idx))
+    return result
+
+
+def _secure_bool(probability: float = 0.5):
+    threshold = max(0, min(10000, int(probability * 10000)))
+    return secrets.randbelow(10000) < threshold
 
 
 def _sanitize_llm_text(raw_text: str) -> str:
@@ -882,30 +903,28 @@ async def get_rune(rune_id: str):
 @router.get("/runes/draw/single")
 async def draw_single_rune():
     """Draw a single rune for daily guidance."""
-    import random
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
     if not runes:
         raise HTTPException(status_code=404, detail="No runes found")
-    rune = random.choice(runes)
-    rune["is_reversed"] = random.random() < 0.3  # 30% chance reversed
+    rune = _secure_choice(runes)
+    rune["is_reversed"] = _secure_bool(0.3)  # 30% chance reversed
     return rune
 
 
 @router.get("/runes/draw/three")
 async def draw_three_runes():
     """Draw three runes for past/present/future spread."""
-    import random
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
     if not runes or len(runes) < 3:
         raise HTTPException(status_code=404, detail="Not enough runes found")
-    selected = random.sample(runes, 3)
+    selected = _secure_sample(runes, 3)
     positions = ["past", "present", "future"]
     result = []
     for i, rune in enumerate(selected):
         rune["position"] = positions[i]
-        rune["is_reversed"] = random.random() < 0.3
+        rune["is_reversed"] = _secure_bool(0.3)
         result.append(rune)
     return result
 
@@ -913,12 +932,11 @@ async def draw_three_runes():
 @router.get("/runes/draw/celtic-cross")
 async def draw_celtic_cross():
     """Draw 10 runes for a full Celtic Cross spread."""
-    import random
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
     if not runes or len(runes) < 10:
         raise HTTPException(status_code=404, detail="Not enough runes found")
-    selected = random.sample(runes, 10)
+    selected = _secure_sample(runes, 10)
     positions = [
         "present", "challenge", "past", "future", 
         "above", "below", "advice", "external",
@@ -940,7 +958,7 @@ async def draw_celtic_cross():
     for i, rune in enumerate(selected):
         rune["position"] = positions[i]
         rune["position_meaning"] = position_meanings[i]
-        rune["is_reversed"] = random.random() < 0.3
+        rune["is_reversed"] = _secure_bool(0.3)
         result.append(rune)
     return result
 
@@ -968,7 +986,6 @@ async def get_hexagram(hexagram_number: int):
 @router.get("/i-ching/cast/coins")
 async def cast_i_ching():
     """Cast I Ching using the three coin method."""
-    import random
     db = get_db()
     
     # Simulate 6 coin tosses (3 coins each)
@@ -977,7 +994,7 @@ async def cast_i_ching():
     
     for i in range(6):
         # Each coin: heads=3, tails=2
-        toss = sum(random.choice([2, 3]) for _ in range(3))
+        toss = sum(2 + secrets.randbelow(2) for _ in range(3))
         # 6 = old yin (changing), 7 = young yang, 8 = young yin, 9 = old yang (changing)
         lines.append(toss)
         if toss == 6 or toss == 9:
@@ -1235,7 +1252,6 @@ async def get_tarot_card(card_id: str):
 @router.get("/tarot/reading")
 async def get_tarot_reading(spread: str = "single"):
     """Get a random tarot reading. Spreads: single, three, celtic_cross"""
-    import random
     db = get_db()
     cards = await db.tarot_cards.find({}, {"_id": 0}).to_list(length=100)
     
@@ -1243,23 +1259,23 @@ async def get_tarot_reading(spread: str = "single"):
         raise HTTPException(status_code=404, detail="No tarot cards found")
     
     if spread == "single":
-        selected = random.sample(cards, 1)
+        selected = _secure_sample(cards, 1)
         positions = ["Present Situation"]
     elif spread == "three":
-        selected = random.sample(cards, 3)
+        selected = _secure_sample(cards, 3)
         positions = ["Past", "Present", "Future"]
     elif spread == "celtic_cross":
-        selected = random.sample(cards, min(10, len(cards)))
+        selected = _secure_sample(cards, min(10, len(cards)))
         positions = ["Present", "Challenge", "Past", "Future", "Above", "Below", 
                     "Advice", "External Influences", "Hopes/Fears", "Outcome"]
     else:
-        selected = random.sample(cards, 1)
+        selected = _secure_sample(cards, 1)
         positions = ["Message"]
     
     # Add reversed status randomly
     reading = []
     for i, card in enumerate(selected):
-        is_reversed = random.choice([True, False])
+        is_reversed = _secure_bool(0.5)
         reading.append({
             "position": positions[i] if i < len(positions) else f"Card {i+1}",
             "card": card,
@@ -1556,7 +1572,6 @@ async def get_daily_practice(focus: Optional[str] = None):
     Get a daily sacred practice based on moon phase, day of week, and optional focus area.
     Returns morning and evening practice pair.
     """
-    import random
     from datetime import datetime
     import math
     
@@ -1674,7 +1689,7 @@ async def get_daily_practice(focus: Optional[str] = None):
     morning_candidates = [p for p in all_practices if any(kw in str(p).lower() for kw in morning_keywords)]
     if not morning_candidates:
         morning_candidates = all_practices
-    morning_practice = random.choice(morning_candidates) if morning_candidates else None
+    morning_practice = _secure_choice(morning_candidates)
     
     # Select evening practice (more restful/reflective)
     evening_keywords = ["rest", "release", "healing", "moon", "womb", "heart", "grief", "restorative"]
@@ -1684,7 +1699,7 @@ async def get_daily_practice(focus: Optional[str] = None):
     # Avoid same practice as morning
     if morning_practice:
         evening_candidates = [p for p in evening_candidates if p.get("id") != morning_practice.get("id")]
-    evening_practice = random.choice(evening_candidates) if evening_candidates else None
+    evening_practice = _secure_choice(evening_candidates)
     
     return {
         "date": datetime.now().strftime("%Y-%m-%d"),

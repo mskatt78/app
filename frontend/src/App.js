@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import AppFooter from "./components/AppFooter";
 import TopNav from "./components/TopNav";
 import InstallPrompt from "./components/InstallPrompt";
+import { getStoredAdminToken } from "./components/admin/adminSession";
 
 // Eager load: landing & main menu (first things user sees)
 import LandingPage from "./pages/LandingPage";
@@ -197,7 +198,7 @@ const AdminRoute = ({ children }) => {
 
   useEffect(() => {
     const checkAdmin = async () => {
-      const storedAdminToken = localStorage.getItem("admin_token");
+      const storedAdminToken = getStoredAdminToken();
       if (storedAdminToken) {
         setIsAuthorized(true);
         return;

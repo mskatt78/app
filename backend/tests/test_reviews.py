@@ -12,6 +12,16 @@ import json
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 
+def _run_mongosh(eval_script: str):
+    return subprocess.run(
+        ["mongosh", "test_database", "--quiet", "--eval", eval_script],
+        shell=False,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
 def create_test_session():
     """Create a test user and session in MongoDB for authentication testing."""
     user_id = f"test-reviews-user-{int(time.time())}"
@@ -19,38 +29,36 @@ def create_test_session():
     email = f"test.reviews.{int(time.time())}@example.com"
 
     script = f"""
-mongosh test_database --eval "
 db.users.insertOne({{
-  user_id: '{user_id}',
-  email: '{email}',
-  name: 'Test Reviewer',
-  picture: 'https://via.placeholder.com/150',
+  user_id: {json.dumps(user_id)},
+  email: {json.dumps(email)},
+  name: "Test Reviewer",
+  picture: "https://via.placeholder.com/150",
   created_at: new Date()
 }});
 db.sessions.insertOne({{
-  user_id: '{user_id}',
-  session_token: '{session_token}',
+  user_id: {json.dumps(user_id)},
+  session_token: {json.dumps(session_token)},
   expires_at: new Date(Date.now() + 7*24*60*60*1000),
   created_at: new Date()
 }});
 print('done');
-"
 """
-    result = subprocess.run(script, shell=True, capture_output=True, text=True)
+    result = _run_mongosh(script)
+    if result.returncode != 0:
+        raise RuntimeError(f"Failed to seed test review user/session: {result.stderr}")
     return session_token, user_id
 
 
 def cleanup_test_data(user_id: str, session_token: str):
     """Remove test user, session, and review from MongoDB."""
     script = f"""
-mongosh test_database --eval "
-db.users.deleteMany({{ user_id: '{user_id}' }});
-db.sessions.deleteMany({{ session_token: '{session_token}' }});
-db.reviews.deleteMany({{ user_id: '{user_id}' }});
+db.users.deleteMany({{ user_id: {json.dumps(user_id)} }});
+db.sessions.deleteMany({{ session_token: {json.dumps(session_token)} }});
+db.reviews.deleteMany({{ user_id: {json.dumps(user_id)} }});
 print('cleaned');
-"
 """
-    subprocess.run(script, shell=True, capture_output=True, text=True)
+    _run_mongosh(script)
 
 
 class TestReviewsPublicEndpoints:
@@ -209,7 +217,7 @@ class TestReviewsAuthenticated:
         review = test_reviews[0]
         assert review["rating"] == 4
         assert review["practice_area"] == "Shamanic Practices"
-        print(f"PASS: Review appears in GET /api/reviews with correct data")
+        print("PASS: Review appears in GET /api/reviews with correct data")
 
     def test_get_my_review_returns_data(self):
         """GET /api/reviews/my-review should return the user's review."""
@@ -289,7 +297,7 @@ class TestReviewsAuthenticated:
             json={"rating": 5, "text": "Short", "practice_area": None}
         )
         assert response.status_code == 422, f"Expected 422 for short text, got {response.status_code}: {response.text}"
-        print(f"PASS: Short text review returns 422 validation error")
+        print("PASS: Short text review returns 422 validation error")
 
     def test_review_validation_invalid_rating(self):
         """POST /api/reviews with rating=6 (out of range) should return 422."""
@@ -303,4 +311,4 @@ class TestReviewsAuthenticated:
             json={"rating": 6, "text": "This text is long enough for validation purposes", "practice_area": None}
         )
         assert response.status_code == 422, f"Expected 422 for invalid rating, got {response.status_code}: {response.text}"
-        print(f"PASS: Invalid rating=6 returns 422 validation error")
+        print("PASS: Invalid rating=6 returns 422 validation error")

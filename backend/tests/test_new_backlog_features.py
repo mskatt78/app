@@ -10,9 +10,8 @@ import pytest
 import requests
 import os
 import uuid
+from test_security_config import BASE_URL, ADMIN_PASSWORD
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
-ADMIN_PASSWORD = "ShamanicAdmin2026!"
 
 class TestPublicEndpoints:
     """Test public endpoints for new features - should return empty lists initially"""
@@ -68,14 +67,14 @@ class TestAdminAuthentication:
         data = response.json()
         assert "token" in data
         assert data.get("role") == "admin"
-        print(f"✓ Admin login successful, token received")
+        print("✓ Admin login successful, token received")
         return data["token"]
     
     def test_admin_login_invalid_password(self):
         """POST /api/admin/login with wrong password"""
         response = requests.post(f"{BASE_URL}/api/admin/login", json={"password": "wrongpassword"})
         assert response.status_code == 401
-        print(f"✓ Admin login correctly rejects invalid password")
+        print("✓ Admin login correctly rejects invalid password")
 
 
 class TestAdminCollections:
@@ -109,7 +108,7 @@ class TestAdminCollections:
         
         # Verify total count is 25
         assert len(data) == 25, f"Expected 25 collections, got {len(data)}"
-        print(f"✓ Total collections count: 25")
+        print("✓ Total collections count: 25")
 
 
 class TestAdminCoursesCRUD:
@@ -164,7 +163,7 @@ class TestAdminCoursesCRUD:
         courses = get_response.json()
         found = next((c for c in courses if c["id"] == test_id), None)
         assert found is not None, "Created course not found in public endpoint"
-        print(f"✓ Course visible in public /api/courses endpoint")
+        print("✓ Course visible in public /api/courses endpoint")
         
         # Cleanup
         delete_response = requests.delete(
@@ -218,7 +217,7 @@ class TestAdminCommunityPostsCRUD:
         posts = get_response.json()
         found = next((p for p in posts if p["id"] == test_id), None)
         assert found is not None, "Created post not found in public endpoint"
-        print(f"✓ Post visible in public /api/community/posts endpoint")
+        print("✓ Post visible in public /api/community/posts endpoint")
         
         # Cleanup
         delete_response = requests.delete(
@@ -327,7 +326,7 @@ class TestAdminSacredGeometryCRUD:
         guides = get_response.json()
         found = next((g for g in guides if g["id"] == test_id), None)
         assert found is not None, "Created guide not found in public endpoint"
-        print(f"✓ Guide visible in public /api/sacred-geometry endpoint")
+        print("✓ Guide visible in public /api/sacred-geometry endpoint")
         
         # Cleanup
         delete_response = requests.delete(
@@ -456,7 +455,7 @@ class TestSoundFrequenciesAudioUrl:
         assert get_response.status_code == 200
         fetched = get_response.json()
         assert fetched["audio_url"] == freq_data["audio_url"]
-        print(f"✓ audio_url field persisted and retrievable")
+        print("✓ audio_url field persisted and retrievable")
         
         # Cleanup
         requests.delete(

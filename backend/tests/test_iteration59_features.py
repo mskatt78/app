@@ -5,11 +5,8 @@ Tests for: Demo page, Support page, Settings account tools, Admin collections, L
 import pytest
 import requests
 import os
+from test_security_config import BASE_URL, ADMIN_PASSWORD, QA_USER_EMAIL, QA_USER_PASSWORD
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://breathwork-sanctuary.preview.emergentagent.com")
-ADMIN_PASSWORD = "ShamanicAdmin2026!"
-QA_USER_EMAIL = "demoqa_740fefc1@example.com"
-QA_USER_PASSWORD = "DemoPass123!"
 
 
 class TestPublicEndpoints:
@@ -53,7 +50,7 @@ class TestPublicEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, dict)
-        print(f"PASS: /api/light-codes returns data")
+        print("PASS: /api/light-codes returns data")
 
 
 class TestAdminLogin:
@@ -69,7 +66,7 @@ class TestAdminLogin:
         data = response.json()
         assert "token" in data
         assert data.get("role") == "admin"
-        print(f"PASS: Admin fallback login works with password")
+        print("PASS: Admin fallback login works with password")
         return data["token"]
     
     def test_admin_fallback_login_wrong_password(self):
@@ -79,7 +76,7 @@ class TestAdminLogin:
             json={"password": "wrongpassword"}
         )
         assert response.status_code == 401
-        print(f"PASS: Admin login correctly rejects wrong password")
+        print("PASS: Admin login correctly rejects wrong password")
 
 
 class TestAdminCollections:
@@ -112,7 +109,7 @@ class TestAdminCollections:
         assert "astrology_months" in collection_ids, "astrology_months collection missing"
         assert "account_deletion_requests" in collection_ids, "account_deletion_requests collection missing"
         
-        print(f"PASS: Admin collections includes live_sessions, astrology_months, account_deletion_requests")
+        print("PASS: Admin collections includes live_sessions, astrology_months, account_deletion_requests")
         print(f"Total collections: {len(data)}")
     
     def test_admin_live_sessions_items(self, admin_token):
@@ -182,7 +179,7 @@ class TestUserAccountEndpoints:
         assert "rituals" in data
         assert "journal_entries" in data
         
-        print(f"PASS: Account export returns complete data structure")
+        print("PASS: Account export returns complete data structure")
         print(f"Profile email: {data['profile'].get('email')}")
     
     def test_account_deletion_status_endpoint(self, user_session):
@@ -193,7 +190,7 @@ class TestUserAccountEndpoints:
         
         # Should return either existing request or "none" status
         assert "status" in data or "message" in data
-        print(f"PASS: Account deletion status endpoint works")
+        print("PASS: Account deletion status endpoint works")
         print(f"Status: {data.get('status', 'none')}")
     
     def test_account_delete_request_endpoint(self, user_session):
@@ -205,8 +202,8 @@ class TestUserAccountEndpoints:
         assert response.status_code == 200
         data = response.json()
         
-        assert data.get("success") == True or data.get("status") == "requested"
-        print(f"PASS: Account deletion request endpoint works")
+        assert data.get("success") or data.get("status") == "requested"
+        print("PASS: Account deletion request endpoint works")
         print(f"Response: {data}")
 
 
@@ -227,7 +224,7 @@ class TestLiveSessionsPublic:
             assert "title" in session or "name" in session
             print(f"PASS: Live sessions list returns {len(data)} sessions")
         else:
-            print(f"PASS: Live sessions list returns empty (no sessions created)")
+            print("PASS: Live sessions list returns empty (no sessions created)")
     
     def test_live_session_rsvp(self):
         """Test RSVP to a live session"""
@@ -252,8 +249,8 @@ class TestLiveSessionsPublic:
         )
         assert rsvp_response.status_code == 200
         data = rsvp_response.json()
-        assert data.get("success") == True
-        print(f"PASS: RSVP to live session works")
+        assert data.get("success")
+        print("PASS: RSVP to live session works")
     
     def test_live_session_messages(self):
         """Test posting messages to a live session"""
@@ -281,7 +278,7 @@ class TestLiveSessionsPublic:
         data = msg_response.json()
         assert "id" in data
         assert data.get("message") == "Test message from iteration 59"
-        print(f"PASS: Posting messages to live session works")
+        print("PASS: Posting messages to live session works")
 
 
 if __name__ == "__main__":

@@ -12,12 +12,10 @@ import requests
 import os
 from datetime import datetime, timezone, timedelta
 import uuid
-
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+from test_security_config import BASE_URL, TEST_PASSWORD
 
 # Test credentials
 TEST_EMAIL = f"test_paypal_{uuid.uuid4().hex[:8]}@example.com"
-TEST_PASSWORD = "TestPassword123!"
 TEST_NAME = "PayPal Test User"
 
 
@@ -169,7 +167,7 @@ class TestPaymentRoutesWithAuth:
             assert "checkout_url" in data, "Should have 'checkout_url'"
             assert "session_id" in data, "Should have 'session_id'"
             assert data.get("payment_method") == "stripe", "Payment method should be 'stripe'"
-            print(f"✓ Stripe checkout URL generated")
+            print("✓ Stripe checkout URL generated")
         else:
             print(f"✓ Stripe checkout returned error (expected - test key): {response.json()}")
 
@@ -191,7 +189,7 @@ class TestPaymentRoutesWithAuth:
         detail = data.get("detail", "")
         assert "PayPal not configured" in detail, f"Error should mention 'PayPal not configured', got: {detail}"
         
-        print(f"✓ PayPal checkout correctly returns 'not configured' error")
+        print("✓ PayPal checkout correctly returns 'not configured' error")
 
     def test_my_purchases_with_auth(self):
         """Verify /api/payments/my-purchases works with auth"""

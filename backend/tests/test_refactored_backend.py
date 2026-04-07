@@ -8,12 +8,12 @@ import requests
 import os
 import uuid
 import time
+from test_security_config import BASE_URL, TEST_EMAIL, TEST_PASSWORD
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://breathwork-sanctuary.preview.emergentagent.com')
 
-# Test credentials
-TEST_EMAIL = "testuser123@example.com"
-TEST_PASSWORD = "test123456"
+def _require_login_creds():
+    if not TEST_EMAIL or not TEST_PASSWORD:
+        pytest.skip("Set TEST_EMAIL and TEST_PASSWORD to run auth-login tests")
 
 
 class TestHealthCheck:
@@ -35,6 +35,7 @@ class TestAuthRouter:
     
     def test_login_success(self):
         """Test successful email/password login."""
+        _require_login_creds()
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
             "email": TEST_EMAIL,
             "password": TEST_PASSWORD
@@ -58,9 +59,10 @@ class TestAuthRouter:
     
     def test_register_existing_email(self):
         """Test registration with already existing email."""
+        _require_login_creds()
         response = requests.post(f"{BASE_URL}/api/auth/register", json={
             "email": TEST_EMAIL,
-            "password": "test123456",
+            "password": TEST_PASSWORD,
             "name": "Test User"
         })
         assert response.status_code == 400
@@ -316,7 +318,7 @@ class TestPaymentsRouter:
             assert "id" in plan
             assert "price" in plan
             assert "features" in plan
-        print(f"✓ Plan structure validated")
+        print("✓ Plan structure validated")
 
 
 class TestGiftsRouter:

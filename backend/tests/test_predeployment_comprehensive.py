@@ -5,6 +5,7 @@ Tests all public content endpoints, guest Oracle reading, and TTS functionality.
 import pytest
 import requests
 import os
+from test_security_config import TEST_PASSWORD
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -262,7 +263,7 @@ class TestAuthEndpoints:
             f"{BASE_URL}/api/auth/register",
             json={
                 "email": test_email,
-                "password": "TestPass123!",
+                "password": TEST_PASSWORD,
                 "name": "Test User"
             }
         )
@@ -272,7 +273,7 @@ class TestAuthEndpoints:
             assert "user" in data or "email" in data
             print(f"✓ Registration: Success for {test_email}")
         else:
-            print(f"⚠ Registration: User may already exist")
+            print("⚠ Registration: User may already exist")
     
     def test_login_invalid_credentials(self):
         """Test login with invalid credentials returns 401"""

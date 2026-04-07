@@ -83,7 +83,7 @@ async def generate_speech(request: TTSRequest):
         text = request.text
     
     # Create cache key
-    cache_key = hashlib.md5(f"{text}:{request.voice}:{request.speed}".encode()).hexdigest()
+    cache_key = hashlib.sha256(f"{text}:{request.voice}:{request.speed}".encode()).hexdigest()
     
     # Check cache
     if cache_key in audio_cache:
@@ -129,7 +129,7 @@ async def generate_speech_base64(request: TTSRequest):
         raise HTTPException(status_code=500, detail="TTS not configured")
     
     # Create cache key from full text
-    cache_key = hashlib.md5(f"{request.text}:{request.voice}:{request.speed}:base64".encode()).hexdigest()
+    cache_key = hashlib.sha256(f"{request.text}:{request.voice}:{request.speed}:base64".encode()).hexdigest()
     
     # Check cache
     if cache_key in audio_cache:
@@ -206,7 +206,7 @@ Let your breath return to its natural rhythm. Nothing to control. Nothing to for
 
 Allow yourself to deepen into this space.""".strip(),
 
-        2: f"""We now move through your body, releasing any remaining tension.
+        2: """We now move through your body, releasing any remaining tension.
 
 Bring attention to the top of your head. Feel any tightness... and let it dissolve. Your scalp softening... relaxing...
 
@@ -282,7 +282,7 @@ Namaste. The light in me honors the light in you.""".strip(),
     }
     
     if part not in scripts:
-        raise HTTPException(status_code=400, detail=f"Invalid part number. Use 1-4.")
+        raise HTTPException(status_code=400, detail="Invalid part number. Use 1-4.")
     
     script = scripts[part]
     logger.info(f"Generating meditation {meditation_id} part {part}: {len(script)} chars")
@@ -309,7 +309,6 @@ async def generate_somatic_audio(practice_id: str, voice: str = "nova"):
     element = practice.get('element', 'Earth')
     instructions = practice.get('instructions', [])
     benefits = practice.get('benefits', [])
-    category = practice.get('category', 'Movement')
     
     # Build comprehensive guided somatic practice script
     instructions_text = " ".join([f"Step {i+1}: {inst}" for i, inst in enumerate(instructions)])

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check, Users, Accessibility } from "lucide-react";
@@ -37,10 +37,32 @@ const YogaLibrary = ({ user, api }) => {
     Advanced: "bg-red-500/20 text-red-400",
   };
 
+  const fetchPoses = useCallback(async () => {
+    try {
+      const response = await api.get("/yoga/poses");
+      setPoses(response.data);
+      setFilteredPoses(response.data);
+    } catch (error) {
+      console.error("Failed to fetch poses:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [api]);
+
+  const fetchFavorites = useCallback(async () => {
+    try {
+      const response = await api.get("/favorites?item_type=pose");
+      const favIds = new Set(response.data.map(f => f.item_id));
+      setFavorites(favIds);
+    } catch (error) {
+      console.error("Failed to fetch favorites:", error);
+    }
+  }, [api]);
+
   useEffect(() => {
     fetchPoses();
     fetchFavorites();
-  }, []);
+  }, [fetchFavorites, fetchPoses]);
 
   useEffect(() => {
     let filtered = poses;
@@ -71,28 +93,6 @@ const YogaLibrary = ({ user, api }) => {
       }
     }
   }, [searchParams, poses]);
-
-  const fetchPoses = async () => {
-    try {
-      const response = await api.get("/yoga/poses");
-      setPoses(response.data);
-      setFilteredPoses(response.data);
-    } catch (error) {
-      console.error("Failed to fetch poses:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFavorites = async () => {
-    try {
-      const response = await api.get("/favorites?item_type=pose");
-      const favIds = new Set(response.data.map(f => f.item_id));
-      setFavorites(favIds);
-    } catch (error) {
-      console.error("Failed to fetch favorites:", error);
-    }
-  };
 
   const toggleFavorite = async (poseId, e) => {
     e.stopPropagation();

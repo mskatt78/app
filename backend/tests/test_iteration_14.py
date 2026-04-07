@@ -11,13 +11,10 @@ import requests
 import os
 from datetime import datetime
 import uuid
-
-# Get the backend URL from environment
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://breathwork-sanctuary.preview.emergentagent.com')
+from test_security_config import BASE_URL, TEST_PASSWORD
 
 # Test credentials
 TEST_EMAIL = f"test_iter14_{uuid.uuid4().hex[:8]}@example.com"
-TEST_PASSWORD = "TestPass123!"
 TEST_NAME = "Test User Iter14"
 
 
@@ -95,7 +92,7 @@ class TestAuthRoutes:
         
         data = response.json()
         assert "user" in data or "user_id" in data, "Response should contain user data"
-        print(f"✓ Login successful")
+        print("✓ Login successful")
     
     def test_auth_me_unauthorized(self):
         """Test GET /api/auth/me without auth returns 401"""
@@ -134,7 +131,7 @@ class TestShamanicPractices:
         assert img_response.status_code == 200, f"Image should be accessible, got {img_response.status_code}"
         
         print(f"✓ Power Animal Journey image URL: {image_url}")
-        print(f"✓ Image is accessible")
+        print("✓ Image is accessible")
     
     def test_get_shamanic_practices_by_category(self):
         """Test filtering shamanic practices by category"""
@@ -211,7 +208,7 @@ class TestPaymentsAuthenticated:
             f"{BASE_URL}/api/auth/register",
             json={
                 "email": email,
-                "password": "PaymentTest123!",
+                "password": TEST_PASSWORD,
                 "name": "Payment Test User"
             }
         )
@@ -225,7 +222,7 @@ class TestPaymentsAuthenticated:
                 f"{BASE_URL}/api/auth/login",
                 json={
                     "email": email,
-                    "password": "PaymentTest123!"
+                    "password": TEST_PASSWORD
                 }
             )
             if login_response.status_code == 200:
@@ -266,7 +263,7 @@ class TestPaymentsAuthenticated:
         data = response.json()
         assert "purchases" in data, "Response should have purchases field"
         assert "transactions" in data, "Response should have transactions field"
-        print(f"✓ Purchases endpoint working")
+        print("✓ Purchases endpoint working")
 
 
 class TestBackendRouterRefactoring:

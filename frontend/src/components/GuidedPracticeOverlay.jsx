@@ -352,6 +352,47 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
   const elColor = ELEMENT_COLOR[element] || ELEMENT_COLOR.spirit;
 
+  const scriptExpansionContext = useMemo(() => {
+    if (!practice) return null;
+
+    const sourceTexts = Array.from(new Set(
+      [
+        practice.description,
+        practice.why_this_heals,
+        practice.practice_guide,
+        practice.guidance,
+        practice.spiritual_purpose,
+        practice.extended_teachings,
+        practice.meditation,
+        practice.visualization,
+        practice.activation,
+        practice.affirmations,
+        practice.benefits,
+        practice.therapeutic_benefits,
+        stepsOverride,
+        practice.steps,
+        practice.process_steps,
+        practice.cleansing_guide,
+        practice.instructions,
+      ].flatMap(flattenTextValue).filter(Boolean)
+    )).slice(0, 80);
+
+    const steps = Array.from(new Set(
+      [stepsOverride, practice.steps, practice.process_steps, practice.cleansing_guide, practice.instructions]
+        .flatMap(flattenTextValue)
+        .filter(Boolean)
+    )).slice(0, 40);
+
+    return {
+      practiceId: practice.id || null,
+      practiceName: practice.name || "Guided Practice",
+      element: practice.element || "Spirit",
+      durationMinutes: practice.duration_minutes || MINIMUM_NARRATION_MINUTES,
+      sourceTexts,
+      steps,
+    };
+  }, [practice, stepsOverride]);
+
   useEffect(() => {
     isPlayingRef.current = isPlaying;
   }, [isPlaying]);
@@ -412,11 +453,11 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     setNarrationParagraphs(narrationPlan.paragraphs);
     setNarrationSegments(narrationPlan.segments);
     setNarrationReady(true);
-    setScriptLoading(Boolean(practice));
-  }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient, narrationPlan, practice]);
+    setScriptLoading(Boolean(practice?.id || practice?.name));
+  }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient, narrationPlan]);
 
   useEffect(() => {
-    if (!practice) {
+    if (!scriptExpansionContext) {
       setScriptLoading(false);
       setNarrationReady(false);
       return undefined;
@@ -435,47 +476,19 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     const timeoutId = window.setTimeout(() => controller.abort(), SCRIPT_EXPANSION_TIMEOUT_MS);
 
     const expandScript = async () => {
-      const sourceTexts = Array.from(new Set(
-        [
-          practice.description,
-          practice.why_this_heals,
-          practice.practice_guide,
-          practice.guidance,
-          practice.spiritual_purpose,
-          practice.extended_teachings,
-          practice.meditation,
-          practice.visualization,
-          practice.activation,
-          practice.affirmations,
-          practice.benefits,
-          practice.therapeutic_benefits,
-          stepsOverride,
-          practice.steps,
-          practice.process_steps,
-          practice.cleansing_guide,
-          practice.instructions,
-        ].flatMap(flattenTextValue).filter(Boolean)
-      )).slice(0, 80);
-
-      const steps = Array.from(new Set(
-        [stepsOverride, practice.steps, practice.process_steps, practice.cleansing_guide, practice.instructions]
-          .flatMap(flattenTextValue)
-          .filter(Boolean)
-      )).slice(0, 40);
-
       try {
         const response = await fetch(`${backendUrl}/api/content/expand-script`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           signal: controller.signal,
           body: JSON.stringify({
-            practice_id: practice.id || null,
-            practice_name: practice.name || "Guided Practice",
-            element: practice.element || "Spirit",
-            duration_minutes: practice.duration_minutes || MINIMUM_NARRATION_MINUTES,
+            practice_id: scriptExpansionContext.practiceId,
+            practice_name: scriptExpansionContext.practiceName,
+            element: scriptExpansionContext.element,
+            duration_minutes: scriptExpansionContext.durationMinutes,
             use_ai: false,
-            steps,
-            source_texts: sourceTexts,
+            steps: scriptExpansionContext.steps,
+            source_texts: scriptExpansionContext.sourceTexts,
           }),
         });
 
@@ -515,7 +528,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
         scriptAbortRef.current = null;
       }
     };
-  }, [practice, stepsOverride, clearNarrationCache]);
+  }, [scriptExpansionContext, clearNarrationCache]);
 
   useEffect(() => {
     if (isPlaying && !isComplete) {

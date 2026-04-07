@@ -6,12 +6,12 @@ import pytest
 import requests
 import os
 import uuid
+from test_security_config import BASE_URL, TEST_EMAIL, TEST_PASSWORD
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
-# Test credentials
-TEST_EMAIL = "test@example.com"
-TEST_PASSWORD = "password123"
+def _require_auth_creds():
+    if not TEST_EMAIL or not TEST_PASSWORD:
+        pytest.skip("Set TEST_EMAIL and TEST_PASSWORD to run authenticated tests")
 
 
 class TestAuthentication:
@@ -20,6 +20,7 @@ class TestAuthentication:
     @pytest.fixture(scope="class")
     def auth_session(self):
         """Get authenticated session"""
+        _require_auth_creds()
         session = requests.Session()
         session.headers.update({"Content-Type": "application/json"})
         
@@ -36,6 +37,7 @@ class TestAuthentication:
     
     def test_login_success(self):
         """Test login works"""
+        _require_auth_creds()
         session = requests.Session()
         response = session.post(f"{BASE_URL}/api/auth/login", json={
             "email": TEST_EMAIL,
@@ -50,6 +52,7 @@ class TestAuthentication:
 @pytest.fixture(scope="module")
 def auth_session():
     """Module-level authenticated session"""
+    _require_auth_creds()
     session = requests.Session()
     session.headers.update({"Content-Type": "application/json"})
     

@@ -7,6 +7,7 @@ import requests
 import os
 import uuid
 from datetime import datetime
+from test_security_config import TEST_PASSWORD
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -18,7 +19,7 @@ class TestEmailPasswordAuth:
         """Setup test data"""
         self.unique_id = uuid.uuid4().hex[:8]
         self.test_email = f"TEST_auth_{self.unique_id}@test.com"
-        self.test_password = "testpass123"
+        self.test_password = TEST_PASSWORD or f"AuthPass_{self.unique_id}!"
         self.test_name = "Test Auth User"
         self.session = requests.Session()
     
@@ -74,7 +75,7 @@ class TestEmailPasswordAuth:
         assert response.status_code == 400, f"Expected 400 for duplicate, got {response.status_code}"
         data = response.json()
         assert "already registered" in data["detail"].lower(), f"Error message should mention already registered: {data}"
-        print(f"✓ Duplicate email registration correctly rejected")
+        print("✓ Duplicate email registration correctly rejected")
     
     def test_login_valid_credentials(self):
         """Test login with valid credentials"""
@@ -168,7 +169,7 @@ class TestEmailPasswordAuth:
         assert data["email"] == self.test_email.lower()
         assert data["name"] == self.test_name
         assert "user_id" in data
-        print(f"✓ /auth/me returned correct user data")
+        print("✓ /auth/me returned correct user data")
     
     def test_auth_me_without_session(self):
         """Test /auth/me returns 401 when not authenticated"""
@@ -258,7 +259,7 @@ class TestSessionManagement:
     def setup(self):
         self.unique_id = uuid.uuid4().hex[:8]
         self.test_email = f"TEST_session_{self.unique_id}@test.com"
-        self.test_password = "sessiontest123"
+        self.test_password = TEST_PASSWORD or f"SessionPass_{self.unique_id}!"
         self.session = requests.Session()
     
     def test_session_cookie_attributes(self):
@@ -285,8 +286,8 @@ class TestSessionManagement:
         
         if session_cookie:
             # Check httponly (should be True for security)
-            print(f"Session cookie found with expiry")
-            print(f"✓ Session cookie set correctly")
+            print("Session cookie found with expiry")
+            print("✓ Session cookie set correctly")
         else:
             # Cookie might be set differently in requests library
             print("✓ Session established (cookie handling may differ)")

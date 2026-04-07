@@ -8,9 +8,12 @@ Test P1 Features: Star Lineage Quiz, Retreats, Videos
 import pytest
 import requests
 import os
+from test_security_config import BASE_URL, ADMIN_PASSWORD
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
-ADMIN_PASSWORD = "ShamanicAdmin2026!"
+
+def _require_admin_password():
+    if not ADMIN_PASSWORD:
+        pytest.skip("Set ADMIN_PASSWORD to run admin-authenticated tests")
 
 
 class TestHealthCheck:
@@ -93,6 +96,7 @@ class TestAdminLogin:
     
     def test_admin_login_success(self):
         """POST /api/admin/login with correct password"""
+        _require_admin_password()
         response = requests.post(
             f"{BASE_URL}/api/admin/login",
             json={"password": ADMIN_PASSWORD}
@@ -101,7 +105,7 @@ class TestAdminLogin:
         data = response.json()
         assert "token" in data
         assert data.get("role") == "admin"
-        print(f"✓ Admin login successful, token received")
+        print("✓ Admin login successful, token received")
         return data["token"]
     
     def test_admin_login_failure(self):
@@ -111,7 +115,7 @@ class TestAdminLogin:
             json={"password": "wrongpassword"}
         )
         assert response.status_code == 401
-        print(f"✓ Admin login correctly rejected wrong password")
+        print("✓ Admin login correctly rejected wrong password")
 
 
 class TestAdminCollections:
@@ -119,6 +123,7 @@ class TestAdminCollections:
     
     @pytest.fixture
     def admin_token(self):
+        _require_admin_password()
         response = requests.post(
             f"{BASE_URL}/api/admin/login",
             json={"password": ADMIN_PASSWORD}
@@ -137,7 +142,7 @@ class TestAdminCollections:
         data = response.json()
         collection_ids = [c["id"] for c in data]
         assert "retreats" in collection_ids, "retreats not in admin collections"
-        print(f"✓ Admin collections include 'retreats'")
+        print("✓ Admin collections include 'retreats'")
     
     def test_collections_include_videos(self, admin_token):
         """Admin collections should include videos"""
@@ -149,7 +154,7 @@ class TestAdminCollections:
         data = response.json()
         collection_ids = [c["id"] for c in data]
         assert "videos" in collection_ids, "videos not in admin collections"
-        print(f"✓ Admin collections include 'videos'")
+        print("✓ Admin collections include 'videos'")
     
     def test_retreats_items_endpoint(self, admin_token):
         """GET /api/admin/retreats/items works"""
@@ -181,6 +186,7 @@ class TestAdminCRUD:
     
     @pytest.fixture
     def admin_token(self):
+        _require_admin_password()
         response = requests.post(
             f"{BASE_URL}/api/admin/login",
             json={"password": ADMIN_PASSWORD}
@@ -220,7 +226,7 @@ class TestAdminCRUD:
             headers={"Authorization": f"Bearer {admin_token}"}
         )
         assert delete_response.status_code == 200
-        print(f"✓ Cleaned up test retreat")
+        print("✓ Cleaned up test retreat")
     
     def test_create_video(self, admin_token):
         """Create a test video via admin API"""
@@ -258,7 +264,7 @@ class TestAdminCRUD:
             headers={"Authorization": f"Bearer {admin_token}"}
         )
         assert delete_response.status_code == 200
-        print(f"✓ Cleaned up test video")
+        print("✓ Cleaned up test video")
 
 
 if __name__ == "__main__":

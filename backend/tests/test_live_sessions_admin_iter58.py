@@ -9,9 +9,12 @@ Tests:
 import os
 import pytest
 import requests
+from test_security_config import BASE_URL, ADMIN_PASSWORD
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/")
-ADMIN_PASSWORD = "ShamanicAdmin2026!"
+
+def _require_admin_password():
+    if not ADMIN_PASSWORD:
+        pytest.skip("Set ADMIN_PASSWORD to run admin-authenticated tests")
 
 
 class TestAdminLogin:
@@ -19,6 +22,7 @@ class TestAdminLogin:
 
     def test_admin_login_success(self):
         """Admin login with correct password returns token"""
+        _require_admin_password()
         response = requests.post(
             f"{BASE_URL}/api/admin/login",
             json={"password": ADMIN_PASSWORD},
@@ -28,7 +32,7 @@ class TestAdminLogin:
         data = response.json()
         assert "token" in data, "Response should contain token"
         assert data.get("role") == "admin", "Role should be admin"
-        print(f"✓ Admin login successful, token received")
+        print("✓ Admin login successful, token received")
 
     def test_admin_login_wrong_password(self):
         """Admin login with wrong password returns 401"""
@@ -38,7 +42,7 @@ class TestAdminLogin:
             timeout=10
         )
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        print(f"✓ Wrong password correctly rejected with 401")
+        print("✓ Wrong password correctly rejected with 401")
 
 
 class TestAdminCollections:
@@ -47,6 +51,7 @@ class TestAdminCollections:
     @pytest.fixture
     def admin_token(self):
         """Get admin token for authenticated requests"""
+        _require_admin_password()
         response = requests.post(
             f"{BASE_URL}/api/admin/login",
             json={"password": ADMIN_PASSWORD},
@@ -78,7 +83,7 @@ class TestAdminCollections:
         data = response.json()
         collection_ids = [c["id"] for c in data]
         assert "live_sessions" in collection_ids, f"live_sessions not in collections: {collection_ids}"
-        print(f"✓ live_sessions found in admin collections")
+        print("✓ live_sessions found in admin collections")
 
     def test_admin_collections_includes_astrology_months(self, admin_token):
         """Admin collections includes astrology_months"""
@@ -91,7 +96,7 @@ class TestAdminCollections:
         data = response.json()
         collection_ids = [c["id"] for c in data]
         assert "astrology_months" in collection_ids, f"astrology_months not in collections: {collection_ids}"
-        print(f"✓ astrology_months found in admin collections")
+        print("✓ astrology_months found in admin collections")
 
     def test_admin_collections_unauthorized(self):
         """Admin collections without token returns 401/403"""
@@ -100,7 +105,7 @@ class TestAdminCollections:
             timeout=10
         )
         assert response.status_code in [401, 403, 422], f"Expected auth error, got {response.status_code}"
-        print(f"✓ Unauthorized request correctly rejected")
+        print("✓ Unauthorized request correctly rejected")
 
 
 class TestLiveSessionsPublicEndpoints:
@@ -138,7 +143,7 @@ class TestLiveSessionsPublicEndpoints:
         """GET /api/live-sessions/{id} returns 404 for non-existent session"""
         response = requests.get(f"{BASE_URL}/api/live-sessions/nonexistent123", timeout=10)
         assert response.status_code == 404, f"Expected 404, got {response.status_code}"
-        print(f"✓ Non-existent session correctly returns 404")
+        print("✓ Non-existent session correctly returns 404")
 
 
 class TestLiveSessionRSVP:
@@ -166,7 +171,7 @@ class TestLiveSessionRSVP:
         )
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         data = response.json()
-        assert data.get("success") == True, "RSVP should succeed"
+        assert data.get("success"), "RSVP should succeed"
         assert "attendee_count" in data, "Response should include attendee_count"
         # Check no ObjectId serialization issues (check for actual _id key, not substring)
         assert "_id" not in data.keys(), "Response should not contain _id key"
@@ -184,7 +189,7 @@ class TestLiveSessionRSVP:
             timeout=10
         )
         assert response.status_code == 404, f"Expected 404, got {response.status_code}"
-        print(f"✓ RSVP to non-existent session correctly returns 404")
+        print("✓ RSVP to non-existent session correctly returns 404")
 
 
 class TestLiveSessionMessages:
@@ -247,7 +252,7 @@ class TestLiveSessionMessages:
         assert data.get("kind") == "question", "Message kind should be question"
         # Check no ObjectId serialization issues (check for actual _id key, not substring)
         assert "_id" not in data.keys(), "Response should not contain _id key"
-        print(f"✓ Question message posted successfully")
+        print("✓ Question message posted successfully")
 
     def test_get_session_messages(self):
         """GET /api/live-sessions/{id}/messages returns messages"""

@@ -8,7 +8,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 import jwt
 
-from .dependencies import User, get_current_user
+from .dependencies import User, get_current_user, get_db as get_router_db
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 security = HTTPBearer()
@@ -99,11 +99,6 @@ def _verify_admin(credentials: HTTPAuthorizationCredentials = Depends(security))
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-def get_db():
-    from server import db
-    return db
-
-
 ALLOWED_COLLECTIONS = {
     "oracle_cards", "tarot_cards", "ancient_wisdom", "somatic_practices",
     "sound_frequencies", "crystals", "mantras", "meditations",
@@ -179,7 +174,7 @@ async def admin_login(data: LoginRequest):
 
 @router.get("/collections")
 async def get_collections(_: dict = Depends(_verify_admin)):
-    db = get_db()
+    db = get_router_db()
     result = []
     for meta in COLLECTION_META:
         if meta["id"] == "audio_files":
@@ -198,7 +193,7 @@ async def list_items(
     search: Optional[str] = None,
     _: dict = Depends(_verify_admin),
 ):
-    db = get_db()
+    db = get_router_db()
     if collection == "audio_files":
         query = {"is_deleted": False}
         if search:
@@ -224,7 +219,7 @@ async def list_items(
 
 @router.post("/{collection}/items")
 async def create_item(collection: str, data: dict, _: dict = Depends(_verify_admin)):
-    db = get_db()
+    db = get_router_db()
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
     if "id" not in data or not data["id"]:
@@ -237,7 +232,7 @@ async def create_item(collection: str, data: dict, _: dict = Depends(_verify_adm
 
 @router.put("/{collection}/items/{item_id}")
 async def update_item(collection: str, item_id: str, data: dict, _: dict = Depends(_verify_admin)):
-    db = get_db()
+    db = get_router_db()
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
     data.pop("_id", None)
@@ -251,7 +246,7 @@ async def update_item(collection: str, item_id: str, data: dict, _: dict = Depen
 
 @router.delete("/{collection}/items/{item_id}")
 async def delete_item(collection: str, item_id: str, _: dict = Depends(_verify_admin)):
-    db = get_db()
+    db = get_router_db()
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
     result = await db[collection].delete_one({"id": item_id})
@@ -265,7 +260,7 @@ async def upload_file(
     file: UploadFile = File(...),
     _: dict = Depends(_verify_admin),
 ):
-    db = get_db()
+    db = get_router_db()
     ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else "bin"
     file_id = str(uuid.uuid4())
     path = f"{APP_NAME}/uploads/{file_id}.{ext}"
@@ -306,7 +301,7 @@ async def serve_file(path: str):
 
 @router.delete("/audio_files/items/{file_id}")
 async def delete_audio_file(file_id: str, _: dict = Depends(_verify_admin)):
-    db = get_db()
+    db = get_router_db()
     result = await db.admin_audio.update_one(
         {"id": file_id},
         {"$set": {"is_deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}}
@@ -334,7 +329,7 @@ async def seed_database(request: SeedRequest, _: dict = Depends(_verify_admin)):
     import logging
     
     logger = logging.getLogger(__name__)
-    db = get_db()
+    db = get_router_db()
     
     results = {"status": "started", "collections": {}, "errors": []}
     
@@ -500,7 +495,7 @@ async def seed_database(request: SeedRequest, _: dict = Depends(_verify_admin)):
 @router.get("/seed-status")
 async def get_seed_status(_: dict = Depends(_verify_admin)):
     """Get current database seeding status - shows count of items in each collection."""
-    db = get_db()
+    db = get_router_db()
     
     collections_to_check = [
         "videos", "crystals", "mantras", "mudras", "breathwork_sessions",

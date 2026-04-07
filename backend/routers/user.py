@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime, timezone, timedelta
 import uuid
+import secrets
 
 from .dependencies import get_db, get_current_user, User
 
@@ -83,8 +84,12 @@ class UserMantraUpdate(BaseModel):
 @router.get("/dashboard/daily")
 async def get_daily_guidance(user: User = Depends(get_current_user)):
     """Get personalized daily guidance."""
-    import random
     db = get_db()
+
+    def secure_choice(items):
+        if not items:
+            return None
+        return items[secrets.randbelow(len(items))]
     
     # Import here to avoid circular imports
     from .numerology import get_current_month
@@ -96,10 +101,10 @@ async def get_daily_guidance(user: User = Depends(get_current_user)):
     mantras = await db.mantras.find({}, {"_id": 0}).to_list(length=50)
     breathwork_sessions = await db.breathwork_sessions.find({}, {"_id": 0}).to_list(length=20)
     
-    daily_pose = random.choice(yoga_poses) if yoga_poses else None
-    daily_crystal = random.choice(crystals) if crystals else None
-    daily_mantra = random.choice(mantras) if mantras else None
-    daily_breathwork = random.choice(breathwork_sessions) if breathwork_sessions else None
+    daily_pose = secure_choice(yoga_poses)
+    daily_crystal = secure_choice(crystals)
+    daily_mantra = secure_choice(mantras)
+    daily_breathwork = secure_choice(breathwork_sessions)
     
     return {
         "greeting": f"Blessed day, {user.name.split()[0]}",
