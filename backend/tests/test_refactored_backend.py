@@ -349,39 +349,39 @@ class TestGiftsRouter:
 
 
 class TestAdminPublicEndpoints:
-    """Test admin public endpoints - retreats, books, live sessions."""
+    """Test public content endpoints - retreats, videos, live sessions, courses."""
     
     def test_get_retreats(self):
         """Get all retreats."""
-        response = requests.get(f"{BASE_URL}/api/admin/retreats")
+        response = requests.get(f"{BASE_URL}/api/retreats")
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
         print(f"✓ Retreats: {len(data)} retreats returned")
     
-    def test_get_books(self):
-        """Get all books."""
-        response = requests.get(f"{BASE_URL}/api/admin/books")
+    def test_get_videos(self):
+        """Get all videos."""
+        response = requests.get(f"{BASE_URL}/api/videos")
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        print(f"✓ Books: {len(data)} books returned")
+        print(f"✓ Videos: {len(data)} videos returned")
     
     def test_get_live_sessions(self):
         """Get live sessions."""
-        response = requests.get(f"{BASE_URL}/api/admin/live-sessions")
+        response = requests.get(f"{BASE_URL}/api/live-sessions")
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
         print(f"✓ Live sessions: {len(data)} sessions returned")
     
-    def test_get_custom_oracle_cards(self):
-        """Get custom oracle cards."""
-        response = requests.get(f"{BASE_URL}/api/admin/custom-oracle-cards")
+    def test_get_courses(self):
+        """Get all courses."""
+        response = requests.get(f"{BASE_URL}/api/courses")
         assert response.status_code == 200
         data = response.json()
         assert isinstance(data, list)
-        print(f"✓ Custom oracle cards: {len(data)} cards returned")
+        print(f"✓ Courses: {len(data)} courses returned")
 
 
 class TestAstrologyEndpoints:

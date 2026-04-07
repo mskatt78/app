@@ -12,6 +12,16 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Code Review Security Pass (Iteration 76):** Implemented all critical recommended fixes from static review:
+  - Circular import removed (`routers/admin.py` now uses `routers/dependencies.get_db`)
+  - Shell-injection risk removed in `tests/test_reviews.py` (`subprocess` now uses list args, `shell=False`, JSON-escaped payloads)
+  - Hardcoded test credentials replaced with env-backed shared config (`backend/tests/test_security_config.py`) and updated priority test files
+  - React hook dependency hardening in high-priority UI files (`YogaLibrary.jsx`, `GuidedPracticeOverlay.jsx`, `PracticeTimer.jsx`)
+- **Additional Security Hardening:**
+  - Replaced MD5 cache keys with SHA-256 in `routers/tts.py` and `routers/audio.py`
+  - Replaced insecure `random` usage with `secrets`-backed helpers in `routers/user.py`, `routers/oracle.py`, `routers/content.py`
+  - Migrated admin token storage from `localStorage` to safer `sessionStorage` with backward-compatible migration in `adminSession.js`, plus corresponding usage updates in `AdminLogin`, `AdminSection`, and `App.js`
+- **Test Suite Cleanup:** Fixed stale endpoint paths in `test_refactored_backend.py` (`/api/retreats`, `/api/videos`, `/api/live-sessions`, `/api/courses`).
 - **Water Practices Empty-State Recurrence Fixed (Iteration 74):** Implemented robust frontend category normalization aliases (`rituals→ritual`, `moon water→moon`, etc.) and category-specific fallback refetch when a selected tab appears empty. Verified all 7 categories load correctly on desktop + mobile.
 - **Apple Install Flow Hardened (Iteration 73):** Fixed iPhone/iPad install friction with robust iOS + iPadOS desktop-mode detection, Safari-vs-non-Safari handling, copy-link helper for non-Safari iOS browsers, persistent reopen install chip after dismiss, and explicit 4-step Apple install instructions in Support Center.
 - **Downloadable App Store Submission Kit Created:** Added `/app/submission_kit/` with complete ready-to-use docs (store copy, screenshot shotlist, legal/reviewer notes, forms cheatsheet, release QA script, and asset tracker) and packaged as `/app/app_store_submission_kit.zip` for one-click handoff.
