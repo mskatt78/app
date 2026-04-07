@@ -12,6 +12,15 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March 2026)
+- **Final App Store Polish Sweep Completed (Iteration 80):**
+  - Expanded `/app-readiness` into a two-track launch command center with both **Submission Asset Checklist** and **Release QA Checklist** (iOS Safari install, Android install, legal/mobile checks, guided-session smoke check, offline fallback).
+  - Added persistent launch confidence summary and improved release navigation links to support final submission workflow.
+  - Upgraded `/support` with dedicated **Android install instructions** in addition to iOS install guidance.
+  - Refined `/privacy` layout and content structure for cleaner store-review readability and added explicit account export/deletion guidance.
+  - Added final PWA metadata polish in `public/index.html` (`color-scheme: dark`, `apple-touch-fullscreen`) and global overflow safeguards in `index.css` to prevent horizontal clipping on mobile.
+  - Navigation testability hardening: added missing `data-testid` coverage for critical `TopNav` interactions and menu actions.
+  - Validation: **Iteration 80 passed 100% frontend checks** (App readiness, localStorage persistence, support/privacy flows, nav interactions, mobile/desktop overflow, PWA metadata).
+
 - **Route-Layer Decomposition Completed (Iteration 79):** Split monolithic `App.js` into dedicated routing modules:
   - `frontend/src/routes/AppRoutes.jsx` (all route definitions)
   - `frontend/src/routes/routeGuards.jsx` (`AuthCallback`, `PublicRoute`, `ProtectedRoute`, `AdminRoute`)
