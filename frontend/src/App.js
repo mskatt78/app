@@ -90,6 +90,10 @@ import { NotificationProvider, NotificationCenter } from "./components/Notificat
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
+const ADMIN_EMAILS = [
+  "skywatersacredembodiments@gmail.com",
+  "mskatt78@gmail.com",
+].map((email) => email.toLowerCase());
 
 // Create axios instance with credentials
 const api = axios.create({
@@ -189,12 +193,6 @@ const AdminRoute = ({ children }) => {
   const location = useLocation();
   const [isAuthorized, setIsAuthorized] = useState(null);
   const [user, setUser] = useState(location.state?.user || null);
-
-  // Admin emails list - add your admin email(s) here
-  const ADMIN_EMAILS = [
-    "skywatersacredembodiments@gmail.com",
-    "mskatt78@gmail.com",
-  ].map(e => e.toLowerCase());
 
   useEffect(() => {
     const checkAdmin = async () => {

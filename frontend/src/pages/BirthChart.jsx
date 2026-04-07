@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -57,23 +57,16 @@ const BirthChart = ({ user, api }) => {
     }
   }, [birthYear, birthMonth, birthDay, birthHour, birthMinute]);
 
-  useEffect(() => {
-    fetchZodiacSigns();
-    if (user) {
-      fetchSavedChart();
-    }
-  }, [user]);
-
-  const fetchZodiacSigns = async () => {
+  const fetchZodiacSigns = useCallback(async () => {
     try {
       const response = await api.get("/birth-chart/zodiac-signs");
       setZodiacSigns(response.data);
     } catch (error) {
       console.error("Failed to fetch zodiac signs:", error);
     }
-  };
+  }, [api]);
 
-  const fetchSavedChart = async () => {
+  const fetchSavedChart = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.get("/birth-chart/my-chart");
@@ -83,7 +76,14 @@ const BirthChart = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchZodiacSigns();
+    if (user) {
+      fetchSavedChart();
+    }
+  }, [fetchSavedChart, fetchZodiacSigns, user]);
 
   const calculateChart = async () => {
     if (!formData.birth_date || !formData.birth_city || !formData.birth_country) {

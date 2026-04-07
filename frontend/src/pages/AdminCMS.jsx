@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -56,11 +56,7 @@ const AdminCMS = ({ user, api }) => {
     .filter((tab) => tab.id !== "workshops" && tab.id !== "events" && tab.id !== "courses")
     .map((tab) => ({ ...tab, icon: tabIcons[tab.id] || Sparkles }));
 
-  useEffect(() => {
-    fetchItems();
-  }, [activeTab]);
-
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     setLoading(true);
     try {
       const response = await api.get(getEndpoint(activeTab));
@@ -71,7 +67,11 @@ const AdminCMS = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeTab, api]);
+
+  useEffect(() => {
+    fetchItems();
+  }, [fetchItems]);
 
   const handleCreate = () => {
     setEditingItem(null);
