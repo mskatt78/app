@@ -1,15 +1,16 @@
 // Service Worker for Temple of the Soul - Offline Support
-const CACHE_NAME = 'temple-soul-v1';
-const STATIC_CACHE = 'temple-static-v1';
-const DYNAMIC_CACHE = 'temple-dynamic-v1';
+const CACHE_VERSION = 'v3';
+const STATIC_CACHE = `temple-static-${CACHE_VERSION}`;
+const DYNAMIC_CACHE = `temple-dynamic-${CACHE_VERSION}`;
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/logo192.png',
-  '/logo512.png',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png',
   '/offline.html'
 ];
 
@@ -32,9 +33,15 @@ self.addEventListener('install', (event) => {
   console.log('[SW] Installing service worker...');
   event.waitUntil(
     caches.open(STATIC_CACHE)
-      .then((cache) => {
+      .then(async (cache) => {
         console.log('[SW] Caching static assets');
-        return cache.addAll(STATIC_ASSETS);
+        const cacheJobs = STATIC_ASSETS.map((assetPath) =>
+          cache.add(assetPath).catch((error) => {
+            console.warn('[SW] Static asset cache skipped:', assetPath, error?.message || error);
+            return null;
+          })
+        );
+        await Promise.allSettled(cacheJobs);
       })
       .then(() => self.skipWaiting())
   );

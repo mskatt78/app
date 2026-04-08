@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, FileCheck2, FileText, HeartHandshake, Mail, ShieldCheck, Smartphone, Trash2 } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, FileCheck2, FileText, HeartHandshake, Mail, ShieldCheck, Smartphone, Trash2, TriangleAlert } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 export default function SupportCenter() {
@@ -64,6 +64,35 @@ export default function SupportCenter() {
               </ol>
             </div>
             <Button variant="outline" onClick={() => navigate("/app-readiness")} data-testid="support-center-android-readiness-btn">Open release checklist</Button>
+          </section>
+
+          <section className="rounded-[1.75rem] border border-amber-400/20 bg-amber-500/5 p-6 md:col-span-2" data-testid="support-center-install-troubleshoot-card">
+            <TriangleAlert className="w-6 h-6 text-amber-300 mb-4" />
+            <h3 className="text-2xl font-serif mb-3">Install troubleshooting (if icon won’t add)</h3>
+            <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground leading-relaxed" data-testid="support-center-install-troubleshoot-steps">
+              <li>Open the shared link in your default browser — avoid Instagram/Facebook/Messenger in-app browsers.</li>
+              <li>iPhone/iPad: use Safari only, then Share → Add to Home Screen.</li>
+              <li>Android: use Chrome, then menu (⋮) → Install app / Add to Home screen.</li>
+              <li>If install still fails, close tab and reopen the link from Support Center once, then retry install.</li>
+            </ol>
+            <div className="flex flex-wrap gap-3 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = window.location.origin}
+                data-testid="support-center-open-home-btn"
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
+                Re-open app home
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => window.location.href = window.location.origin + "/support"}
+                data-testid="support-center-refresh-support-btn"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Reload install guide
+              </Button>
+            </div>
           </section>
 
           <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-readiness-card">

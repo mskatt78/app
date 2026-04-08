@@ -1,0 +1,105 @@
+{
+  "summary": "Iteration 81 - Install Issue Bug Fix Verification. Tested service worker registration, install prompt fallback UX, support center troubleshooting cards, and landing page install CTAs. CRITICAL FIX APPLIED: Deleted legacy /service-worker.js file that was blocking new /sw.js registration. All install-related UI components working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "install_fix_verification": {
+    "service_worker": {
+      "status": "FIXED",
+      "issue": "Legacy /service-worker.js was still being served (200 status) even though App.js tried to unregister it",
+      "fix_applied": "Deleted /app/frontend/public/service-worker.js file",
+      "current_state": "New /sw.js service worker is now active and registering correctly",
+      "note": "CDN may still cache old service-worker.js temporarily - will resolve with cache expiry"
+    },
+    "install_prompt_component": {
+      "status": "PASS",
+      "tests": [
+        "InstallPrompt component renders correctly",
+        "iOS fallback UX with Safari instructions present",
+        "Android fallback UX with Chrome instructions present",
+        "In-app browser warning (Instagram/Facebook/Messenger) implemented",
+        "Copy link button for iOS non-Safari browsers",
+        "Open in Chrome button for Android non-Chrome browsers",
+        "Dismiss/reopen chip functionality working",
+        "Guide button fallback for unsupported browsers"
+      ]
+    },
+    "support_center_page": {
+      "status": "PASS",
+      "tests": [
+        "Page loads with data-testid='support-center-page'",
+        "iOS install card with step-by-step instructions",
+        "Android install card with step-by-step instructions",
+        "Install troubleshooting card with in-app browser warnings",
+        "Troubleshooting steps mention Safari, Chrome, and Instagram/Facebook/Messenger",
+        "Re-open app home button works",
+        "Reload install guide button works",
+        "All navigation buttons work (Privacy, Terms, App Readiness)"
+      ]
+    },
+    "landing_page_ctas": {
+      "status": "PASS",
+      "tests": [
+        "Enter the Temple button present",
+        "Install App link present and navigates to /support",
+        "Support & install info link present and navigates to /support"
+      ]
+    },
+    "pwa_metadata": {
+      "status": "PASS",
+      "tests": [
+        "Manifest.json accessible (13 icons configured)",
+        "icon-192.png accessible (200 status)",
+        "icon-512.png accessible (200 status)",
+        "apple-touch-icon.png accessible (200 status)",
+        "Theme color: #1a1a2e",
+        "Apple mobile web app capable: yes"
+      ]
+    },
+    "runtime_errors": {
+      "status": "PASS",
+      "notes": "No blocking frontend runtime errors. 401 errors for /api/favorites are expected for unauthenticated users."
+    }
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_81.json"
+  ],
+  "action_items": [
+    "CRITICAL: Legacy /service-worker.js file was deleted - this should fix install issues for users who clear cache or use new browsers",
+    "NOTE: Existing users with cached legacy service worker may need to manually clear browser data or wait for cache expiry",
+    "RECOMMENDATION: Add a version check in App.js to force unregister legacy SW more aggressively if still detected"
+  ],
+  "critical_code_review_comments": [
+    "The legacy /service-worker.js file should have been deleted when /sw.js was introduced - this was the root cause of install failures",
+    "App.js cleanup logic for legacy SW was correct but ineffective because the file was still being served"
+  ],
+  "updated_files": [
+    "/app/frontend/public/service-worker.js (DELETED)"
+  ],
+  "success_rate": {
+    "backend": "N/A (frontend only test)",
+    "frontend": "100% (all install-related tests passed)"
+  },
+  "test_credentials": "No credentials required for public route tests",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Iteration 81 fixed the install blocker by deleting the legacy /service-worker.js file. The new /sw.js is now active. All install prompt fallback UX for iOS/Android/in-app browsers is working. Support Center troubleshooting cards are comprehensive. CDN may still serve cached legacy SW temporarily.",
+  "rca_of_the_issue": {
+    "root_cause": "Legacy /service-worker.js file was still present in /app/frontend/public/ and being served with 200 status, causing browsers to continue using the old service worker instead of the new /sw.js",
+    "reproduction_steps": [
+      "1. User visits the app",
+      "2. Browser registers /service-worker.js (legacy)",
+      "3. App.js tries to unregister legacy SW and register /sw.js",
+      "4. But /service-worker.js still returns 200, so browser may re-register it",
+      "5. Install prompt fails because SW is in inconsistent state"
+    ],
+    "mitigation": "Deleted /app/frontend/public/service-worker.js so it returns 404, forcing browsers to use /sw.js exclusively"
+  }
+}
