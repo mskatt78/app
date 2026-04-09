@@ -7,7 +7,7 @@ import {
   ChevronDown, ChevronUp, Gem, Layers, Sun, Globe, Play
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
@@ -283,6 +283,9 @@ const CrystalGuide = ({ user, api }) => {
             return (
               <>
                 <DialogHeader>
+                  <DialogDescription className="sr-only" data-testid="crystal-dialog-description">
+                    Detailed crystal profile with healing properties, practices, and spiritual correspondences.
+                  </DialogDescription>
                   {selectedCrystal.image_url && (
                     <div className="relative h-48 rounded-xl overflow-hidden mb-3 -mx-2">
                       <img src={selectedCrystal.image_url} alt={selectedCrystal.name} className="w-full h-full object-cover" />
