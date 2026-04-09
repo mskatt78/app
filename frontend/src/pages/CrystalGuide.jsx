@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Sparkles, Filter, Heart, Volume2, Music, Quote,
@@ -19,6 +19,12 @@ const elementColors = {
   Air: { text: "text-cyan-400", bg: "bg-cyan-500/10", border: "border-cyan-500/20", glow: "shadow-cyan-500/20" },
   Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", glow: "shadow-purple-500/20" },
 };
+
+const toSlug = (value) =>
+  (value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 function Section({ title, icon: Icon, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -53,12 +59,14 @@ function Section({ title, icon: Icon, children, defaultOpen = false }) {
 
 const CrystalGuide = ({ user, api }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [crystals, setCrystals] = useState([]);
   const [filteredCrystals, setFilteredCrystals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedElement, setSelectedElement] = useState("all");
   const [selectedCrystal, setSelectedCrystal] = useState(null);
   const [guidedPractice, setGuidedPractice] = useState(null);
+  const [resolvedDeepLink, setResolvedDeepLink] = useState(false);
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
@@ -68,6 +76,26 @@ const CrystalGuide = ({ user, api }) => {
     if (selectedElement === "all") setFilteredCrystals(crystals);
     else setFilteredCrystals(crystals.filter(c => c.element === selectedElement));
   }, [selectedElement, crystals]);
+
+  useEffect(() => {
+    if (!crystals.length || resolvedDeepLink) return;
+
+    const params = new URLSearchParams(location.search);
+    const highlight = params.get("highlight");
+
+    if (!highlight) {
+      setResolvedDeepLink(true);
+      return;
+    }
+
+    const normalized = toSlug(highlight);
+    const found = crystals.find((item) => toSlug(item.name) === normalized);
+    if (found) {
+      setSelectedCrystal(found);
+    }
+
+    setResolvedDeepLink(true);
+  }, [crystals, location.search, resolvedDeepLink]);
 
   const fetchCrystals = async () => {
     try {

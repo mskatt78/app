@@ -64,27 +64,7 @@ function AppRouter() {
 function App() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
-      const setupServiceWorker = async () => {
-        try {
-          const registrations = await navigator.serviceWorker.getRegistrations();
-          const cleanupJobs = registrations.map((registration) => {
-            const scriptUrl = registration.active?.scriptURL
-              || registration.waiting?.scriptURL
-              || registration.installing?.scriptURL
-              || "";
-            if (scriptUrl.includes("/service-worker.js")) {
-              return registration.unregister();
-            }
-            return Promise.resolve(true);
-          });
-          await Promise.allSettled(cleanupJobs);
-          await navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" });
-        } catch {
-          // silent fail
-        }
-      };
-
-      setupServiceWorker();
+      navigator.serviceWorker.register("/service-worker.js", { updateViaCache: "none" }).catch(() => {});
     }
   }, []);
 

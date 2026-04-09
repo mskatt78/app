@@ -32,12 +32,28 @@ const ELEMENTS = [
 
 // ── Crystals by element ───────────────────────────────────────────────────────
 const CRYSTALS = {
-  Earth:  ["Obsidian", "Smoky Quartz", "Moss Agate", "Red Jasper", "Garnet", "Black Tourmaline", "Shungite"],
-  Water:  ["Moonstone", "Aquamarine", "Blue Lace Agate", "Selenite", "Labradorite", "Pearl", "Blue Calcite"],
-  Fire:   ["Carnelian", "Citrine", "Sunstone", "Tiger's Eye", "Amber", "Fire Opal", "Red Garnet"],
-  Air:    ["Clear Quartz", "Amethyst", "Celestite", "Blue Kyanite", "Sodalite", "Fluorite", "Apophyllite"],
-  Spirit: ["Rainbow Moonstone", "Moldavite", "Sugilite", "Charoite", "Lepidolite", "Opal", "Phenacite"],
+  Earth:  ["Black Tourmaline", "Black Obsidian", "Green Aventurine", "Tiger's Eye", "Malachite", "Howlite", "Fluorite"],
+  Water:  ["Moonstone", "Aquamarine", "Chrysocolla", "Amazonite", "Angelite", "Turquoise", "Labradorite"],
+  Fire:   ["Carnelian", "Citrine", "Sunstone", "Tiger's Eye", "Iolite", "Lapis Lazuli", "Kunzite"],
+  Air:    ["Clear Quartz", "Amethyst", "Kyanite", "Fluorite", "Aquamarine", "Angelite", "Iolite"],
+  Spirit: ["Labradorite", "Selenite", "Lepidolite", "Amethyst", "Moonstone", "Kunzite", "Clear Quartz"],
 };
+
+const PLANET_DAY_WISDOM = {
+  Sun: "Sunday (Sun) is about vitality, confidence, and radiant self-expression.",
+  Moon: "Monday (Moon) supports emotional healing, intuition, and gentle restoration.",
+  Mars: "Tuesday (Mars) carries focused action, courage, and healthy boundaries.",
+  Mercury: "Wednesday (Mercury) favors communication, learning, and clear thinking.",
+  Jupiter: "Thursday (Jupiter) is linked to expansion, wisdom, abundance, and spiritual trust.",
+  Venus: "Friday (Venus) nurtures love, beauty, harmony, and heart-centered connection.",
+  Saturn: "Saturday (Saturn) strengthens structure, discipline, grounding, and long-term devotion.",
+};
+
+const toSlug = (value) =>
+  (value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 // ── Practice by moon phase ────────────────────────────────────────────────────
 const PRACTICES = {
@@ -132,6 +148,7 @@ const DailyPracticeWidget = ({ hemisphere = "south" }) => {
   const crystal     = crystalList[dayOfYear % crystalList.length];
   const oracle      = ORACLE_MESSAGES[dayOfYear % ORACLE_MESSAGES.length];
   const practice    = PRACTICES[moonPhase.name];
+  const planetaryMeaning = PLANET_DAY_WISDOM[elementData.planet] || "Each planetary day carries a unique spiritual tone for practice.";
 
   const dateStr = today.toLocaleDateString("en-AU", {
     weekday: "long", day: "numeric", month: "long", year: "numeric"
@@ -187,6 +204,9 @@ const DailyPracticeWidget = ({ hemisphere = "south" }) => {
             <div>
               <p className={`text-xs uppercase tracking-wider ${elementData.color}`}>{elementData.planet}'s Day</p>
               <p className="font-serif text-sm">{elementData.element}</p>
+              <p className="text-xs text-muted-foreground mt-1" data-testid="planetary-day-explanation">
+                {planetaryMeaning}
+              </p>
             </div>
           </div>
 
@@ -196,6 +216,13 @@ const DailyPracticeWidget = ({ hemisphere = "south" }) => {
             <div>
               <p className="text-xs text-muted-foreground uppercase tracking-wider">Crystal</p>
               <p className="font-serif text-sm">{crystal}</p>
+              <button
+                onClick={() => navigate(`/crystals?highlight=${encodeURIComponent(toSlug(crystal))}&source=daily-practice`)}
+                className="text-xs text-primary hover:text-primary/80 transition-colors mt-1"
+                data-testid="daily-crystal-open-link"
+              >
+                Open {crystal} profile →
+              </button>
             </div>
           </div>
         </div>
