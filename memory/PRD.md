@@ -11,7 +11,32 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **Integrations:** OpenAI TTS, Gemini Image Gen (Nano Banana), Emergent Object Storage
 - **PWA:** Full manifest with app store ready icons
 
-## Latest Changes (March 2026)
+## Latest Changes (March–April 2026)
+- **Code Quality + Security Remediation Pass Completed (Iteration 84 + final verification):**
+  - Replaced insecure Python randomness usage with `secrets` in:
+    - `backend/tests/test_predeployment_comprehensive.py`
+    - `backend/data/archangel_oracle.py`
+  - Hardened client-side storage usage in report-flagged files:
+    - `PracticeJournal.jsx`, `AddToJournal.jsx`, `AppStoreReadiness.jsx` now use session-oriented `clientStorage` helpers (with migration path)
+    - `MantrasLibrary.jsx`, `PracticeTimer.jsx`, `InstallPrompt.jsx` now use centralized storage wrappers instead of direct localStorage calls
+  - Hook/dependency stability hardening:
+    - `ShamanicPractices.jsx` fetch routines memoized with `useCallback` + effect dependency cleanup
+    - `Reviews.jsx` load routine memoized with `useCallback` + effect dependency cleanup
+  - Index-key/robust render updates:
+    - `WaterPractices.jsx`, `SeasonalTemple.jsx`, `YogaLibrary.jsx`, `ShamanicPractices.jsx` switched mapped keys to stable semantic keys
+  - Error-handling cleanup:
+    - Removed silent catch blocks in `WaterPractices.jsx`; added explicit logging for fetch failures
+    - Added explicit warning when shamanic audio warmup cannot initialize
+  - Modal interaction reliability:
+    - Increased shamanic practice modal z-index to avoid close-button click interception by top navigation overlays
+  - Validation status:
+    - Testing agent report: `/app/test_reports/iteration_84.json` (**backend 100%, frontend 100%**)
+    - Additional frontend testing agent run: 8/8 checks passed
+    - Additional backend deep test run: 31/31 checks passed
+  - Business-critical checks reconfirmed:
+    - Narration expansion endpoint still returns >7-minute equivalent scripts for long sessions
+    - `/api/retreats` returns empty set (no default placeholder retreats)
+
 - **Final App Store Polish Sweep Completed (Iteration 80):**
   - Expanded `/app-readiness` into a two-track launch command center with both **Submission Asset Checklist** and **Release QA Checklist** (iOS Safari install, Android install, legal/mobile checks, guided-session smoke check, offline fallback).
   - Added persistent launch confidence summary and improved release navigation links to support final submission workflow.
