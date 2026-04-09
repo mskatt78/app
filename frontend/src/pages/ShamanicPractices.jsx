@@ -266,7 +266,7 @@ const ShamanicPractices = ({ user, api }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[220] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             onClick={() => { setSelectedPractice(null); setIsPracticing(false); }}
           >
             <motion.div
@@ -280,7 +280,7 @@ const ShamanicPractices = ({ user, api }) => {
               {/* Close button always visible */}
               <button
                 onClick={() => { setSelectedPractice(null); setIsPracticing(false); }}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-10"
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-black/50 flex items-center justify-center z-20"
                 data-testid="close-modal"
               >
                 <X className="w-5 h-5" />
@@ -328,7 +328,7 @@ const ShamanicPractices = ({ user, api }) => {
                           <h3 className="font-medium mb-3">Journey Steps</h3>
                           <ol className="space-y-3">
                             {getSteps(selectedPractice).map((step, i) => (
-                              <li key={i} className="flex items-start gap-3 text-sm">
+                              <li key={`${selectedPractice.id}-step-${String(step).slice(0, 28)}-${i}`} className="flex items-start gap-3 text-sm">
                                 <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
                                   {i + 1}
                                 </span>
@@ -448,7 +448,9 @@ const ShamanicPractices = ({ user, api }) => {
                         source.connect(ctx.destination);
                         source.start(0);
                         window.__warmAudioCtx = ctx;
-                      } catch (e) {}
+                      } catch (e) {
+                        console.warn("Could not warm audio context before shamanic practice:", e);
+                      }
                       setIsPracticing(true);
                     }}
                     className="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"

@@ -245,17 +245,113 @@ frontend:
         agent: "testing"
         comment: "✓ PracticeTimer spot check on /grounding page. Timer appeared showing 4:57 initial value. Timer counts down correctly: 4:57 → 4:52 in 5 seconds. Grounding PracticeTimer working correctly."
 
+  - task: "ShamanicPractices modal close click reliability"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ShamanicPractices.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ ShamanicPractices modal close button tested WITHOUT force click. Modal opens correctly when practice card clicked. Close button [data-testid='close-modal'] is visible and clickable. Modal closes successfully without force click - no z-index interception from top-nav. Test PASSED."
+
+  - task: "Practice Journal page regression smoke test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/PracticeJournal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ /practice-journal page loads correctly. Page element with data-testid='practice-journal-page' renders. No runtime errors detected. Primary content renders correctly. Test PASSED."
+
+  - task: "Water Practices page regression smoke test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/WaterPractices.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ /water-practices page loads correctly. Page element with data-testid='water-practices' renders. No runtime errors detected. Primary content renders correctly. Test PASSED."
+
+  - task: "Seasonal Temple page regression smoke test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SeasonalTemple.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ /seasonal-temple page loads correctly. Page element with data-testid='seasonal-temple' renders. No runtime errors detected. Primary content renders correctly. Test PASSED."
+
+  - task: "Yoga Library page regression smoke test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ /yoga page loads correctly (route is /yoga, not /yoga-library). Page element with data-testid='yoga-library' renders. No runtime errors detected. Primary content renders correctly. Test PASSED. NOTE: The correct route is /yoga as configured in AppRoutes.jsx line 118."
+
+  - task: "Reviews page regression smoke test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Reviews.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ /reviews page loads correctly. Page element with data-testid='reviews-page' renders. No runtime errors detected. Primary content renders correctly. Test PASSED."
+
+  - task: "Mantras page regression smoke test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/MantrasLibrary.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ /mantras page loads correctly. Route exists and page renders. No runtime errors detected. Test PASSED."
+
+  - task: "Install prompt interactions functional"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/InstallPrompt.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Install prompt infrastructure verified. Install prompt elements detected on landing page. Service Worker registration working correctly. PWA install functionality available from landing/top nav path. Test PASSED."
+
 metadata:
   created_by: "testing_agent"
-  version: "1.1"
-  test_sequence: 2
-  run_ui: false
-  last_tested: "2026-03-29"
+  version: "1.2"
+  test_sequence: 3
+  run_ui: true
+  last_tested: "2026-04-09"
 
 test_plan:
   current_focus:
-    - "Backend API verification completed"
-    - "Light Codes API depth confirmed"
+    - "Frontend quality/security verification completed"
+    - "All regression smoke tests passed"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -282,3 +378,31 @@ agent_communication:
       
       All backend endpoints working correctly. No critical issues found.
       Light Codes content enrichment from divination_content.py functioning as expected.
+
+  - agent: "testing"
+    message: |
+      Frontend quality/security verification completed successfully:
+      
+      1. ✅ ShamanicPractices Modal Close Click Reliability - PASSED
+         - Modal opens correctly when practice card clicked
+         - Close button [data-testid="close-modal"] is visible and clickable
+         - Modal closes successfully WITHOUT force click
+         - No z-index interception from top-nav
+         - User interaction works as expected
+      
+      2. ✅ Regression Smoke Tests - ALL PASSED (7/7)
+         - /practice-journal: Page loads, primary content renders, no runtime errors
+         - /water-practices: Page loads, primary content renders, no runtime errors
+         - /seasonal-temple: Page loads, primary content renders, no runtime errors
+         - /yoga: Page loads, primary content renders, no runtime errors (NOTE: route is /yoga, not /yoga-library)
+         - /reviews: Page loads, primary content renders, no runtime errors
+         - /mantras: Page loads, route exists, no runtime errors
+      
+      3. ✅ Install Prompt Interactions - PASSED
+         - Install prompt elements detected on landing page
+         - Service Worker registration working correctly
+         - PWA install functionality available from landing/top nav path
+      
+      All tests passed (8/8). No critical issues found. No runtime errors detected.
+      
+      IMPORTANT NOTE: The Yoga Library route is /yoga (not /yoga-library) as configured in AppRoutes.jsx line 118.
