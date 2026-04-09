@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Star, Send, Sparkles, MessageCircle, Share2 } from "lucide-react";
@@ -58,11 +58,7 @@ const Reviews = ({ user, api }) => {
 
   const [form, setForm] = useState({ rating: 5, text: "", practice_area: "" });
 
-  useEffect(() => {
-    loadData();
-  }, [user]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       const [reviewsRes, statsRes] = await Promise.all([
@@ -79,8 +75,8 @@ const Reviews = ({ user, api }) => {
             setMyReview(myRes.data);
             setForm({ rating: myRes.data.rating, text: myRes.data.text, practice_area: myRes.data.practice_area || "" });
           }
-        } catch {
-          // no review yet
+        } catch (error) {
+          console.info("No existing personal review found for current user:", error?.response?.status || error?.message);
         }
       }
     } catch (err) {
@@ -88,7 +84,11 @@ const Reviews = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api, user]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const submitReview = async (e) => {
     e.preventDefault();

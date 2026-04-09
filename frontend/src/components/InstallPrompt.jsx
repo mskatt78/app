@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Check, Copy, Download, ExternalLink, TriangleAlert, X, Smartphone } from "lucide-react";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { getLocalItem, removeLocalItem, setLocalItem } from "../utils/clientStorage";
 
 const InstallPrompt = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -43,7 +44,7 @@ const InstallPrompt = () => {
     setIsInAppBrowser(Boolean(inAppBrowser));
 
     // Dismissed users keep a small reopen chip until installed
-    const dismissed = localStorage.getItem(dismissKey) === "1";
+    const dismissed = getLocalItem(dismissKey) === "1";
     if (dismissed) {
       setShowReopenChip(true);
     }
@@ -71,7 +72,7 @@ const InstallPrompt = () => {
       setShowPrompt(false);
       setShowReopenChip(false);
       setDeferredPrompt(null);
-      localStorage.removeItem(dismissKey);
+      removeLocalItem(dismissKey);
     };
 
     window.addEventListener("appinstalled", handleInstalled);
@@ -90,7 +91,7 @@ const InstallPrompt = () => {
     
     if (outcome === 'accepted') {
       setIsInstalled(true);
-      localStorage.removeItem(dismissKey);
+      removeLocalItem(dismissKey);
     }
     
     setShowPrompt(false);
@@ -100,7 +101,7 @@ const InstallPrompt = () => {
   const handleDismiss = () => {
     setShowPrompt(false);
     setShowReopenChip(true);
-    localStorage.setItem(dismissKey, "1");
+    setLocalItem(dismissKey, "1");
   };
 
   const handleReopen = () => {

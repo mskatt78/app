@@ -254,9 +254,9 @@ class TestAuthEndpoints:
     
     def test_register_new_user(self):
         """Test email/password registration"""
-        import random
+        import secrets
         import string
-        random_suffix = ''.join(random.choices(string.ascii_lowercase, k=6))
+        random_suffix = ''.join(secrets.choice(string.ascii_lowercase) for _ in range(6))
         test_email = f"test_predeployment_{random_suffix}@testmail.com"
         
         response = requests.post(

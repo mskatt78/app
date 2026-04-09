@@ -19,6 +19,7 @@ import {
   playMantraSound,
   ELEMENT_FREQUENCIES 
 } from "../components/audio/MantraAudio";
+import { getLocalItem, setLocalItem } from "../utils/clientStorage";
 
 const NATURAL_SOUND_OPTIONS = [
   { id: "ocean", label: AMBIENT_SOUNDS.ocean.name },
@@ -89,7 +90,7 @@ const MantrasLibrary = ({ user, api }) => {
   const [useGeneratedSound, setUseGeneratedSound] = useState(true); // Default to generated sound
   const [selectedNaturalSound, setSelectedNaturalSound] = useState(() => {
     try {
-      return localStorage.getItem(PREFERRED_NATURAL_SOUND_KEY) || "ocean";
+      return getLocalItem(PREFERRED_NATURAL_SOUND_KEY) || "ocean";
     } catch {
       return "ocean";
     }
@@ -221,7 +222,7 @@ const MantrasLibrary = ({ user, api }) => {
 
   useEffect(() => {
     try {
-      localStorage.setItem(PREFERRED_NATURAL_SOUND_KEY, selectedNaturalSound);
+      setLocalItem(PREFERRED_NATURAL_SOUND_KEY, selectedNaturalSound);
     } catch {
       // ignore storage errors
     }

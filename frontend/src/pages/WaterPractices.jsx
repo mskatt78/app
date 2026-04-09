@@ -149,7 +149,9 @@ const WaterPractices = ({ user, api }) => {
           setWaterPractices(normalized);
         }
       })
-      .catch(() => {})
+      .catch((error) => {
+        console.error("Failed to load water practices:", error);
+      })
       .finally(() => setLoading(false));
   }, [api]);
 
@@ -174,8 +176,8 @@ const WaterPractices = ({ user, api }) => {
           return next;
         });
       })
-      .catch(() => {
-        // silent fallback
+      .catch((error) => {
+        console.warn(`Could not load additional water practices for category '${activeCategory}':`, error);
       });
   }, [activeCategory, api, loading, waterPractices]);
 
@@ -254,8 +256,8 @@ const WaterPractices = ({ user, api }) => {
         {/* Practice Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {loading ? (
-            Array.from({length: 4}).map((_, i) => (
-              <div key={i} className="rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 p-6 animate-pulse">
+            ["water-skeleton-1", "water-skeleton-2", "water-skeleton-3", "water-skeleton-4"].map((skeletonKey) => (
+              <div key={skeletonKey} className="rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/5 p-6 animate-pulse">
                 <div className="w-12 h-12 rounded-xl bg-blue-500/20 mb-4" />
                 <div className="h-5 bg-blue-500/20 rounded mb-2 w-3/4" />
                 <div className="h-3 bg-white/10 rounded mb-1 w-full" />
@@ -301,7 +303,7 @@ const WaterPractices = ({ user, api }) => {
                 {practice.benefits && (
                   <div className="flex flex-wrap gap-2">
                     {practice.benefits.slice(0, 3).map((benefit, i) => (
-                      <span key={i} className="px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs">
+                      <span key={`${practice.id}-benefit-${String(benefit).toLowerCase()}-${i}`} className="px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs">
                         {benefit}
                       </span>
                     ))}
@@ -380,7 +382,7 @@ const WaterPractices = ({ user, api }) => {
                     <h3 className="font-medium mb-2 text-blue-300">Materials Needed</h3>
                     <ul className="text-sm text-muted-foreground space-y-1">
                       {selectedPractice.materials.map((item, i) => (
-                        <li key={i} className="flex items-center gap-2">
+                        <li key={`${selectedPractice.id}-material-${String(item).toLowerCase()}-${i}`} className="flex items-center gap-2">
                           <Droplets className="w-3 h-3 text-blue-400" />
                           {item}
                         </li>
@@ -394,7 +396,7 @@ const WaterPractices = ({ user, api }) => {
                   <h3 className="font-medium mb-3">Practice Steps</h3>
                   <ol className="space-y-3">
                     {selectedPractice.steps.map((step, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm">
+                      <li key={`${selectedPractice.id}-step-${String(step).slice(0, 28)}-${i}`} className="flex items-start gap-3 text-sm">
                         <span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-xs flex-shrink-0">
                           {i + 1}
                         </span>
@@ -410,7 +412,7 @@ const WaterPractices = ({ user, api }) => {
                     <h3 className="font-medium mb-3 text-purple-300">Sacred Words for Water</h3>
                     <div className="space-y-2">
                       {selectedPractice.sacred_words.map((word, i) => (
-                        <div key={i} className="p-3 rounded-lg bg-white/5">
+                        <div key={`${selectedPractice.id}-word-${word.word}-${i}`} className="p-3 rounded-lg bg-white/5">
                           <p className="font-serif text-lg mb-1">{word.word}</p>
                           <p className="text-xs text-purple-300">{word.meaning}</p>
                           <p className="text-xs text-muted-foreground">Effect: {word.effect}</p>
@@ -426,7 +428,7 @@ const WaterPractices = ({ user, api }) => {
                     <h3 className="font-medium mb-3">Chakra Water Guide</h3>
                     <div className="grid grid-cols-1 gap-2">
                       {selectedPractice.chakra_waters.map((cw, i) => (
-                        <div key={i} className="p-2 rounded-lg bg-white/5 flex items-center gap-3">
+                        <div key={`${selectedPractice.id}-chakra-water-${cw.chakra}-${i}`} className="p-2 rounded-lg bg-white/5 flex items-center gap-3">
                           <div className={`w-4 h-4 rounded-full`} style={{backgroundColor: cw.color.toLowerCase()}} />
                           <div className="flex-1">
                             <p className="text-sm font-medium">{cw.chakra}</p>
@@ -445,7 +447,7 @@ const WaterPractices = ({ user, api }) => {
                     <h3 className="font-medium mb-3 text-cyan-300">Healing Frequencies</h3>
                     <div className="grid grid-cols-2 gap-2">
                       {selectedPractice.frequencies.map((freq, i) => (
-                        <div key={i} className="p-3 rounded-lg bg-white/5">
+                        <div key={`${selectedPractice.id}-frequency-${freq.hz}-${i}`} className="p-3 rounded-lg bg-white/5">
                           <p className="font-mono text-lg text-cyan-300">{freq.hz} Hz</p>
                           <p className="text-sm">{freq.name}</p>
                           <p className="text-xs text-muted-foreground">{freq.effect}</p>
@@ -461,7 +463,7 @@ const WaterPractices = ({ user, api }) => {
                     <h3 className="font-medium mb-2">Uses</h3>
                     <ul className="text-sm text-muted-foreground space-y-1">
                       {selectedPractice.uses.map((use, i) => (
-                        <li key={i} className="flex items-center gap-2">
+                        <li key={`${selectedPractice.id}-use-${String(use).toLowerCase()}-${i}`} className="flex items-center gap-2">
                           <Star className="w-3 h-3 text-amber-400" />
                           {use}
                         </li>

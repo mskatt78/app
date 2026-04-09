@@ -637,7 +637,7 @@ const SeasonalTemple = ({ user }) => {
                       <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">Traditions from Around the World</p>
                       <ul className="space-y-2">
                         {selectedSabbat.traditions.map((t, i) => (
-                          <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <li key={`${selectedSabbat.id}-tradition-${String(t).slice(0, 30)}-${i}`} className="flex items-start gap-2 text-sm text-muted-foreground">
                             <Star className={`w-3 h-3 ${selectedSabbat.color.text} flex-shrink-0 mt-1`} />
                             {t}
                           </li>
@@ -646,7 +646,7 @@ const SeasonalTemple = ({ user }) => {
                     </div>
                     <div className="flex flex-wrap gap-2 pt-2">
                       {selectedSabbat.colors.map((c, i) => (
-                        <span key={i} className={`px-2 py-1 rounded-full text-xs ${selectedSabbat.color.bg} ${selectedSabbat.color.text} border ${selectedSabbat.color.border}`}>{c}</span>
+                        <span key={`${selectedSabbat.id}-color-${String(c).toLowerCase()}-${i}`} className={`px-2 py-1 rounded-full text-xs ${selectedSabbat.color.bg} ${selectedSabbat.color.text} border ${selectedSabbat.color.border}`}>{c}</span>
                       ))}
                     </div>
                   </div>
@@ -656,7 +656,7 @@ const SeasonalTemple = ({ user }) => {
                     <h3 className="font-serif text-lg">{selectedSabbat.ritual.name}</h3>
                     <ol className="space-y-3">
                       {selectedSabbat.ritual.steps.map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                        <li key={`${selectedSabbat.id}-ritual-step-${String(step).slice(0, 24)}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                           <span className={`w-6 h-6 rounded-full ${selectedSabbat.color.bg} border ${selectedSabbat.color.border} flex items-center justify-center text-xs ${selectedSabbat.color.text} flex-shrink-0`}>{i + 1}</span>
                           {step}
                         </li>
@@ -675,7 +675,7 @@ const SeasonalTemple = ({ user }) => {
                       <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Crystals</p>
                       <div className="flex flex-wrap gap-2">
                         {selectedSabbat.crystals.map((c, i) => (
-                          <span key={i} className={`px-3 py-1 rounded-full text-xs border ${selectedSabbat.color.bg} ${selectedSabbat.color.text} ${selectedSabbat.color.border}`}>{c}</span>
+                          <span key={`${selectedSabbat.id}-crystal-${String(c).toLowerCase()}-${i}`} className={`px-3 py-1 rounded-full text-xs border ${selectedSabbat.color.bg} ${selectedSabbat.color.text} ${selectedSabbat.color.border}`}>{c}</span>
                         ))}
                       </div>
                     </div>
@@ -683,7 +683,7 @@ const SeasonalTemple = ({ user }) => {
                       <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Sacred Plants & Herbs</p>
                       <div className="flex flex-wrap gap-2">
                         {selectedSabbat.herbs.map((h, i) => (
-                          <span key={i} className="px-3 py-1 rounded-full text-xs border bg-green-500/10 text-green-300 border-green-500/25">{h}</span>
+                          <span key={`${selectedSabbat.id}-herb-${String(h).toLowerCase()}-${i}`} className="px-3 py-1 rounded-full text-xs border bg-green-500/10 text-green-300 border-green-500/25">{h}</span>
                         ))}
                       </div>
                     </div>
@@ -720,7 +720,7 @@ const SeasonalTemple = ({ user }) => {
               <div className="p-6 space-y-4">
                 <ol className="space-y-3">
                   {selectedCraft.steps.map((step, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                    <li key={`${selectedCraft.id}-step-${String(step).slice(0, 24)}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                       <span className={`w-7 h-7 rounded-full ${selectedCraft.color.bg} border ${selectedCraft.color.border} flex items-center justify-center text-xs ${selectedCraft.color.text} flex-shrink-0`}>{i + 1}</span>
                       {step}
                     </li>

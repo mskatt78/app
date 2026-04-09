@@ -4,6 +4,7 @@ import { ArrowLeft, CheckCircle2, ClipboardList, ExternalLink, RotateCcw, Smartp
 import { Checkbox } from "../components/ui/checkbox";
 import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
+import { migrateLocalToSession, removeSessionItem, setSessionItem } from "../utils/clientStorage";
 
 const STORAGE_KEY = "appStoreReadinessChecklistV1";
 
@@ -70,7 +71,7 @@ const qaChecklist = [
 
 function readSavedChecklist() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = migrateLocalToSession(STORAGE_KEY);
     if (!raw) return {};
     const parsed = JSON.parse(raw);
     return typeof parsed === "object" && parsed ? parsed : {};
@@ -100,13 +101,13 @@ export default function AppStoreReadiness() {
   const updateCheck = (id, value) => {
     setChecks((prev) => {
       const next = { ...prev, [id]: Boolean(value) };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setSessionItem(STORAGE_KEY, JSON.stringify(next));
       return next;
     });
   };
 
   const resetChecklist = () => {
-    localStorage.removeItem(STORAGE_KEY);
+    removeSessionItem(STORAGE_KEY);
     setChecks({});
   };
 

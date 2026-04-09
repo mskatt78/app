@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -38,12 +38,7 @@ const ShamanicPractices = ({ user, api }) => {
     shadow: { text: "text-slate-400", bg: "bg-slate-500/10", border: "border-slate-500/20" }
   };
 
-  useEffect(() => {
-    fetchPractices();
-    fetchUnlockedContent();
-  }, [filter]);
-
-  const fetchPractices = async () => {
+  const fetchPractices = useCallback(async () => {
     try {
       const url = filter === "all" ? "/shamanic-practices" : `/shamanic-practices?category=${filter}`;
       const response = await api.get(url);
@@ -54,9 +49,9 @@ const ShamanicPractices = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api, filter]);
 
-  const fetchUnlockedContent = async () => {
+  const fetchUnlockedContent = useCallback(async () => {
     try {
       const response = await api.get("/achievements");
       const unlocked = response.data.unlocked_content || [];
@@ -64,7 +59,12 @@ const ShamanicPractices = ({ user, api }) => {
     } catch (error) {
       console.error("Failed to fetch unlocked content:", error);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchPractices();
+    fetchUnlockedContent();
+  }, [fetchPractices, fetchUnlockedContent]);
 
   const isLocked = (practice) => {
     if (practice.requires_unlock) {

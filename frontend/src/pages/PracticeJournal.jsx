@@ -8,6 +8,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { migrateLocalToSession, setSessionItem } from "../utils/clientStorage";
 
 // Moon phase calculation
 const getMoonPhase = (date = new Date()) => {
@@ -64,7 +65,7 @@ const STORAGE_KEY = "shamanic_journal_entries";
 
 const getEntries = () => {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = migrateLocalToSession(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch {
     return [];
@@ -72,7 +73,7 @@ const getEntries = () => {
 };
 
 const saveEntries = (entries) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  setSessionItem(STORAGE_KEY, JSON.stringify(entries));
 };
 
 export default function PracticeJournal({ user, api }) {

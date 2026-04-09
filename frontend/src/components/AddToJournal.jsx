@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, X, Moon, Heart, Sparkles, Clock } from "lucide-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import { migrateLocalToSession, setSessionItem } from "../utils/clientStorage";
 
 // Moon phase calculation
 const getMoonPhase = (date = new Date()) => {
@@ -43,7 +44,7 @@ const STORAGE_KEY = "shamanic_journal_entries";
 
 const getEntries = () => {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = migrateLocalToSession(STORAGE_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch {
     return [];
@@ -51,7 +52,7 @@ const getEntries = () => {
 };
 
 const saveEntries = (entries) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  setSessionItem(STORAGE_KEY, JSON.stringify(entries));
 };
 
 /**

@@ -423,7 +423,7 @@ const YogaLibrary = ({ user, api }) => {
                     <div className="space-y-3 pl-10">
                       {selectedPose.instructions.map((instruction, idx) => (
                         <motion.div
-                          key={idx}
+                          key={`${selectedPose.id || selectedPose.name}-instruction-${String(instruction).slice(0, 24)}-${idx}`}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: idx * 0.05 }}

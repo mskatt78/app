@@ -18,6 +18,7 @@ import {
   tempoPlaybackRates,
   wait,
 } from "./timer/practiceTimerUtils";
+import { getLocalItem, setLocalItem } from "../utils/clientStorage";
 
 const PracticeTimer = ({
   segments = [],
@@ -46,7 +47,7 @@ const PracticeTimer = ({
   const [audioTapRequired, setAudioTapRequired] = useState(false);
   const [selectedBackgroundAudio, setSelectedBackgroundAudio] = useState(() => {
     try {
-      const saved = localStorage.getItem(PREFERRED_NATURAL_SOUND_KEY);
+      const saved = getLocalItem(PREFERRED_NATURAL_SOUND_KEY);
       if (saved && NATURAL_SOUND_OPTIONS.some((option) => option.id === saved)) {
         return saved;
       }
@@ -141,7 +142,7 @@ const PracticeTimer = ({
   useEffect(() => {
     if (!NATURAL_SOUND_OPTIONS.some((option) => option.id === selectedBackgroundAudio)) return;
     try {
-      localStorage.setItem(PREFERRED_NATURAL_SOUND_KEY, selectedBackgroundAudio);
+      setLocalItem(PREFERRED_NATURAL_SOUND_KEY, selectedBackgroundAudio);
     } catch {
       // ignore localStorage errors
     }
