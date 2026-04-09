@@ -26,6 +26,28 @@ const toSlug = (value) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+const DEFAULT_FALLBACK_IMAGE = "https://images.unsplash.com/photo-1562162115-54cc44600875?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHw0fHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85";
+
+const ELEMENT_FALLBACK_IMAGES = {
+  Earth: "https://images.unsplash.com/photo-1755375478369-f0d865a7937d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwyfHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
+  Water: "https://images.unsplash.com/photo-1591150584397-1b94f5b8a174?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwxfHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
+  Fire: "https://images.unsplash.com/photo-1679669693237-74d556d6b5ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwzfHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
+  Air: "https://images.unsplash.com/photo-1562162115-54cc44600875?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHw0fHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
+  Spirit: "https://images.unsplash.com/photo-1679669693237-74d556d6b5ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwzfHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
+};
+
+const isLikelyBrokenLegacyImage = (url) => {
+  if (!url) return true;
+  try {
+    const parsed = new URL(url);
+    const isUnsplash = parsed.hostname.includes("images.unsplash.com");
+    const onlyWidthParam = parsed.searchParams.has("w") && [...parsed.searchParams.keys()].length === 1;
+    return isUnsplash && onlyWidthParam;
+  } catch {
+    return true;
+  }
+};
+
 function Section({ title, icon: Icon, children, defaultOpen = false }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
@@ -67,6 +89,8 @@ const CrystalGuide = ({ user, api }) => {
   const [selectedCrystal, setSelectedCrystal] = useState(null);
   const [guidedPractice, setGuidedPractice] = useState(null);
   const [resolvedDeepLink, setResolvedDeepLink] = useState(false);
+  const [brokenPrimaryImages, setBrokenPrimaryImages] = useState({});
+  const [brokenFallbackImages, setBrokenFallbackImages] = useState({});
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
@@ -151,6 +175,33 @@ const CrystalGuide = ({ user, api }) => {
 
   const handleExitPractice = () => setGuidedPractice(null);
 
+  const getImageConfig = (crystal) => {
+    const id = crystal?.id;
+    if (!id) return { src: null, sourceType: null };
+
+    if (crystal.image_url && !brokenPrimaryImages[id] && !isLikelyBrokenLegacyImage(crystal.image_url)) {
+      return { src: crystal.image_url, sourceType: "primary" };
+    }
+
+    const fallback = ELEMENT_FALLBACK_IMAGES[crystal.element] || DEFAULT_FALLBACK_IMAGE;
+    if (fallback && !brokenFallbackImages[id]) {
+      return { src: fallback, sourceType: "fallback" };
+    }
+
+    return { src: null, sourceType: null };
+  };
+
+  const handleImageError = (crystalId, sourceType) => {
+    if (!crystalId) return;
+    if (sourceType === "primary") {
+      setBrokenPrimaryImages((prev) => ({ ...prev, [crystalId]: true }));
+      return;
+    }
+    if (sourceType === "fallback") {
+      setBrokenFallbackImages((prev) => ({ ...prev, [crystalId]: true }));
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="crystal-guide">
       {/* Guided Practice Overlay */}
@@ -221,6 +272,7 @@ const CrystalGuide = ({ user, api }) => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCrystals.map((crystal, index) => {
                 const colors = elementColors[crystal.element] || elementColors.Spirit;
+                const imageConfig = getImageConfig(crystal);
                 return (
                   <motion.div
                     key={crystal.id}
@@ -232,9 +284,16 @@ const CrystalGuide = ({ user, api }) => {
                     onClick={() => setSelectedCrystal(crystal)}
                     data-testid={`crystal-card-${crystal.id}`}
                   >
-                    {crystal.image_url && (
+                    {imageConfig.src && (
                       <div className="relative h-36 overflow-hidden">
-                        <img src={crystal.image_url} alt={crystal.name} className="w-full h-full object-cover" loading="lazy" />
+                        <img
+                          src={imageConfig.src}
+                          alt={crystal.name}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          onError={() => handleImageError(crystal.id, imageConfig.sourceType)}
+                          data-testid={`crystal-image-${crystal.id}`}
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                         <span className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm`}>
                           {crystal.element}
@@ -242,7 +301,7 @@ const CrystalGuide = ({ user, api }) => {
                       </div>
                     )}
                     <div className="p-5">
-                      {!crystal.image_url && (
+                      {!imageConfig.src && (
                         <div className="flex items-start justify-between mb-3">
                           <div className={`p-2 rounded-xl ${colors.bg}`}>
                             <Sparkles className={`w-5 h-5 ${colors.text}`} />
@@ -280,16 +339,34 @@ const CrystalGuide = ({ user, api }) => {
         <DialogContent className="bg-card border-white/10 max-w-2xl max-h-[92vh] overflow-y-auto">
           {selectedCrystal && (() => {
             const colors = elementColors[selectedCrystal.element] || elementColors.Spirit;
+            const selectedImageConfig = getImageConfig(selectedCrystal);
             return (
               <>
                 <DialogHeader>
                   <DialogDescription className="sr-only" data-testid="crystal-dialog-description">
                     Detailed crystal profile with healing properties, practices, and spiritual correspondences.
                   </DialogDescription>
-                  {selectedCrystal.image_url && (
+                  {selectedImageConfig.src && (
                     <div className="relative h-48 rounded-xl overflow-hidden mb-3 -mx-2">
-                      <img src={selectedCrystal.image_url} alt={selectedCrystal.name} className="w-full h-full object-cover" />
+                      <img
+                        src={selectedImageConfig.src}
+                        alt={selectedCrystal.name}
+                        className="w-full h-full object-cover"
+                        onError={() => handleImageError(selectedCrystal.id, selectedImageConfig.sourceType)}
+                        data-testid="crystal-dialog-image"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    </div>
+                  )}
+                  {!selectedImageConfig.src && (
+                    <div
+                      className="h-40 rounded-xl mb-3 -mx-2 border border-white/10 bg-gradient-to-br from-white/5 to-primary/10 flex items-center justify-center"
+                      data-testid="crystal-dialog-image-fallback"
+                    >
+                      <div className="text-center">
+                        <Gem className={`w-8 h-8 ${colors.text} mx-auto mb-2`} />
+                        <p className="text-xs text-muted-foreground">Crystal visual loading unavailable</p>
+                      </div>
                     </div>
                   )}
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs mb-2 w-fit ${colors.bg} ${colors.text}`}>
