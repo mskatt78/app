@@ -48,26 +48,36 @@ export const ProtectedRoute = ({ children, api }) => {
   const location = useLocation();
   const [isAuthenticated, setIsAuthenticated] = useState(location.state?.user ? true : null);
   const [user, setUser] = useState(location.state?.user || null);
+  const [hasAuthError, setHasAuthError] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (location.state?.user) {
       setUser(location.state.user);
       setIsAuthenticated(true);
-      return;
     }
 
     const checkAuth = async () => {
       try {
         const response = await api.get("/auth/me");
+        if (!isMounted) return;
         setUser(response.data);
+        setHasAuthError(false);
         setIsAuthenticated(true);
       } catch {
+        if (!isMounted) return;
+        setHasAuthError(true);
         setIsAuthenticated(false);
         navigate("/", { replace: true });
       }
     };
 
     checkAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, [api, location.state, navigate]);
 
   if (isAuthenticated === null) {
@@ -81,7 +91,18 @@ export const ProtectedRoute = ({ children, api }) => {
     );
   }
 
-  if (!isAuthenticated) return null;
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-6" data-testid="protected-route-redirect-screen">
+        <div className="text-center max-w-sm space-y-3">
+          <p className="text-lg font-serif">Session expired</p>
+          <p className="text-sm text-muted-foreground">
+            {hasAuthError ? "Please reopen the app from the latest link and sign in again." : "Redirecting to sign in..."}
+          </p>
+        </div>
+      </div>
+    );
+  }
   return children({ user, api });
 };
 
@@ -145,23 +166,30 @@ export const PublicRoute = ({ children, api }) => {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     if (location.state?.user) {
       setUser(location.state.user);
-      setChecked(true);
-      return;
     }
 
     const checkAuth = async () => {
       try {
         const response = await api.get("/auth/me");
+        if (!isMounted) return;
         setUser(response.data);
       } catch {
+        if (!isMounted) return;
         setUser(null);
       }
+      if (!isMounted) return;
       setChecked(true);
     };
 
     checkAuth();
+
+    return () => {
+      isMounted = false;
+    };
   }, [api, location.state]);
 
   if (!checked) {

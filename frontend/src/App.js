@@ -61,17 +61,24 @@ function AppRouter() {
   );
 }
 
-function App() {
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/service-worker.js", { updateViaCache: "none" }).catch(() => {});
-    }
-  }, []);
+function RouteScrollManager() {
+  const location = useLocation();
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location.pathname]);
+
+  return null;
+}
+
+function App() {
   return (
     <NotificationProvider>
       <div className="App grain-overlay min-h-screen flex flex-col">
         <BrowserRouter>
+          <RouteScrollManager />
           <div className="flex-1">
             <AppRouter />
           </div>

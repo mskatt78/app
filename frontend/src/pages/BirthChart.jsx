@@ -93,10 +93,29 @@ const BirthChart = ({ user, api }) => {
 
     setCalculating(true);
     try {
-      const endpoint = user ? "/birth-chart/save" : "/birth-chart/calculate";
-      const response = await api.post(endpoint, formData);
+      let response;
+
+      if (user) {
+        try {
+          response = await api.post("/birth-chart/save", formData);
+        } catch (error) {
+          const status = error?.response?.status;
+          if (status === 401 || status === 403) {
+            response = await api.post("/birth-chart/calculate", formData);
+            toast.success("Birth chart calculated. Please sign in again to save it.");
+          } else {
+            throw error;
+          }
+        }
+      } else {
+        response = await api.post("/birth-chart/calculate", formData);
+      }
+
       setChart(response.data);
-      toast.success("Birth chart calculated with Swiss Ephemeris precision!");
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      if (!user) {
+        toast.success("Birth chart calculated with Swiss Ephemeris precision!");
+      }
     } catch (error) {
       console.error("Chart calculation error:", error);
       toast.error(error.response?.data?.detail || "Failed to calculate chart");

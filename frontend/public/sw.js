@@ -1,5 +1,5 @@
 // Service Worker for Temple of the Soul - Offline Support
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const STATIC_CACHE = `temple-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `temple-dynamic-${CACHE_VERSION}`;
 
@@ -121,33 +121,55 @@ async function handleApiRequest(request) {
 
 // Handle static requests - Cache first, network fallback
 async function handleStaticRequest(request) {
+  const url = new URL(request.url);
+  const isSameOrigin = url.origin === self.location.origin;
+  const isNavigation = request.mode === 'navigate';
+
+  // Navigation requests should be network-first to avoid stale SPA shell black screens
+  if (isNavigation) {
+    try {
+      const networkResponse = await fetch(request, { cache: 'no-store' });
+      if (networkResponse.ok && isSameOrigin) {
+        const cache = await caches.open(DYNAMIC_CACHE);
+        cache.put('/index.html', networkResponse.clone());
+      }
+      return networkResponse;
+    } catch (error) {
+      console.log('[SW] Navigation network failed, trying cached shell for:', request.url);
+      const cachedShell = await caches.match('/index.html') || await caches.match(request);
+      if (cachedShell) return cachedShell;
+
+      const offlinePage = await caches.match('/offline.html');
+      if (offlinePage) return offlinePage;
+
+      return new Response('Offline', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+    }
+  }
+
+  // Static assets: stale-while-revalidate
   const cachedResponse = await caches.match(request);
-  
   if (cachedResponse) {
-    // Return cached version, but also update cache in background
-    fetchAndCache(request);
+    if (isSameOrigin) {
+      fetchAndCache(request);
+    }
     return cachedResponse;
   }
 
   try {
     const networkResponse = await fetch(request);
-    
-    // Cache successful responses
-    if (networkResponse.ok) {
+
+    // Cache successful same-origin static responses
+    if (networkResponse.ok && isSameOrigin) {
       const cache = await caches.open(DYNAMIC_CACHE);
       cache.put(request, networkResponse.clone());
     }
-    
+
     return networkResponse;
   } catch (error) {
-    console.log('[SW] Both cache and network failed for:', request.url);
-    
-    // For navigation requests, return offline page
-    if (request.mode === 'navigate') {
-      const offlinePage = await caches.match('/offline.html');
-      if (offlinePage) return offlinePage;
-    }
-    
+    console.log('[SW] Static request failed for:', request.url);
     return new Response('Offline', { status: 503 });
   }
 }
@@ -155,13 +177,16 @@ async function handleStaticRequest(request) {
 // Fetch and update cache in background
 async function fetchAndCache(request) {
   try {
+    const url = new URL(request.url);
+    if (url.origin !== self.location.origin) return;
+
     const response = await fetch(request);
     if (response.ok) {
       const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, response);
+      cache.put(request, response.clone());
     }
   } catch (error) {
-    // Silent fail - we already served from cache
+    console.log('[SW] Background cache refresh skipped for:', request.url);
   }
 }
 
