@@ -12,6 +12,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–April 2026)
+- **User Feedback Stabilization Pass Completed (Iteration 85):**
+  - Fixed reported black-screen risk in installed/PWA flow by upgrading `sw.js` navigation handling to **network-first** and bumping cache version to `v4` (prevents stale SPA shell/chunk mismatch behavior).
+  - Removed duplicate service-worker registration path from `App.js` to reduce registration race/stale-client edge cases.
+  - Added global `RouteScrollManager` in `App.js` so navigating between subject pages now reliably lands at the top (no mid-page entry).
+  - Hardened auth route behavior in `routeGuards.jsx`:
+    - Protected route now always verifies `/auth/me` even with optimistic location state
+    - Added non-blank session-expired fallback screen (`data-testid="protected-route-redirect-screen"`) before redirect.
+  - Fixed astrology chart failure mode in `BirthChart.jsx`:
+    - If signed-in chart save (`/birth-chart/save`) returns 401/403, app now auto-falls back to guest calculation (`/birth-chart/calculate`) and informs user to re-sign in for saving.
+  - Validation status: `/app/test_reports/iteration_85.json` confirms all reported issues fixed (frontend 100%, no critical backend regressions).
+
 - **Code Quality + Security Remediation Pass Completed (Iteration 84 + final verification):**
   - Replaced insecure Python randomness usage with `secrets` in:
     - `backend/tests/test_predeployment_comprehensive.py`
