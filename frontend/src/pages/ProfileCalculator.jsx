@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { ShareButton } from "../components/ShareModal";
 import { toast } from "sonner";
+import { calculateHumanDesignChart } from "../utils/humanDesignCalculator";
 
 // Gene Keys Gate Mapping (simplified - maps solar longitude to gates)
 // The 64 gates are distributed around the zodiac wheel
@@ -126,6 +127,15 @@ const HUMAN_DESIGN_TYPES = {
   }
 };
 
+const PROFILE_LINE_NAMES = {
+  1: "Investigator",
+  2: "Hermit",
+  3: "Martyr",
+  4: "Opportunist",
+  5: "Heretic",
+  6: "Role Model",
+};
+
 // Calculate solar longitude from date
 const calculateSolarLongitude = (date) => {
   // Simplified calculation - approximates sun position
@@ -203,58 +213,6 @@ const calculateGeneKeysProfile = (birthDate) => {
   };
 };
 
-// Calculate Human Design type (simplified)
-const calculateHumanDesignType = (birthDate, birthTime) => {
-  // This is a simplified calculation for demonstration
-  // Real Human Design requires precise planetary positions
-  const date = new Date(birthDate);
-  const dayOfYear = Math.floor((date - new Date(date.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
-  
-  // Use birth time if provided to add more variation
-  let timeOffset = 0;
-  if (birthTime) {
-    const [hours, minutes] = birthTime.split(':').map(Number);
-    timeOffset = (hours * 60 + minutes) / 1440; // Fraction of day
-  }
-  
-  const seed = (dayOfYear + timeOffset * 365) % 100;
-  
-  // Distribution based on actual HD statistics
-  if (seed < 1) return "reflector";
-  if (seed < 10) return "manifestor";
-  if (seed < 30) return "projector";
-  if (seed < 63) return "manifestingGenerator";
-  return "generator";
-};
-
-// Calculate profile lines (1-6 lines) for Human Design
-const calculateHDProfile = (birthDate) => {
-  const date = new Date(birthDate);
-  const personalitySunLong = calculateSolarLongitude(date);
-  const designDate = new Date(date);
-  designDate.setDate(designDate.getDate() - 88);
-  const designSunLong = calculateSolarLongitude(designDate);
-  
-  const personalityLine = getLineFromLongitude(personalitySunLong);
-  const designLine = getLineFromLongitude(designSunLong);
-  
-  const profileNames = {
-    1: "Investigator",
-    2: "Hermit",
-    3: "Martyr",
-    4: "Opportunist",
-    5: "Heretic",
-    6: "Role Model"
-  };
-  
-  return {
-    conscious: personalityLine,
-    unconscious: designLine,
-    name: `${personalityLine}/${designLine}`,
-    fullName: `${profileNames[personalityLine]}/${profileNames[designLine]}`
-  };
-};
-
 const ProfileCalculator = ({ user, api }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("genekeys");
@@ -265,31 +223,64 @@ const ProfileCalculator = ({ user, api }) => {
   const [humanDesignProfile, setHumanDesignProfile] = useState(null);
   const [calculating, setCalculating] = useState(false);
 
-  const calculateProfile = () => {
-    if (!birthDate) {
-      toast.error("Please enter your birth date");
+  const calculateProfile = async () => {
+    if (!birthDate || !birthTime || !birthPlace) {
+      toast.error("Please enter birth date, exact birth time, and birth place (City, Country)");
+      return;
+    }
+
+    const [birthCity, ...countryParts] = birthPlace.split(",").map((part) => part.trim()).filter(Boolean);
+    const birthCountry = countryParts.join(", ");
+    if (!birthCity || !birthCountry) {
+      toast.error("Use Birth Place format: City, Country");
       return;
     }
 
     setCalculating(true);
-    
-    // Simulate calculation delay for UX
-    setTimeout(() => {
+
+    try {
       const gkProfile = calculateGeneKeysProfile(birthDate);
       setGeneKeysProfile(gkProfile);
-      
-      const hdType = calculateHumanDesignType(birthDate, birthTime);
+
+      const strictChart = await calculateHumanDesignChart(api, {
+        birth_date: birthDate,
+        birth_time: birthTime,
+        birth_city: birthCity,
+        birth_country: birthCountry,
+      });
+
+      const typeKeyMap = {
+        "manifesting-generator": "manifestingGenerator",
+        manifestor: "manifestor",
+        generator: "generator",
+        projector: "projector",
+        reflector: "reflector",
+      };
+
+      const normalizedTypeKey = typeKeyMap[strictChart.typeKey] || "projector";
+      const [consciousLine, unconsciousLine] = strictChart.profile.split("/").map((part) => Number(part));
+
       const hdProfile = {
-        type: HUMAN_DESIGN_TYPES[hdType],
-        typeKey: hdType,
-        profile: calculateHDProfile(birthDate),
+        type: HUMAN_DESIGN_TYPES[normalizedTypeKey],
+        typeKey: normalizedTypeKey,
+        authority: strictChart.authority,
+        profile: {
+          conscious: consciousLine,
+          unconscious: unconsciousLine,
+          name: strictChart.profile,
+          fullName: `${PROFILE_LINE_NAMES[consciousLine]}/${PROFILE_LINE_NAMES[unconsciousLine]}`,
+        },
         birthData: { date: birthDate, time: birthTime, place: birthPlace }
       };
       setHumanDesignProfile(hdProfile);
-      
+
+      toast.success("Profile calculated from exact birth data.");
+    } catch (error) {
+      console.error("Profile calculation failed:", error);
+      toast.error(error?.response?.data?.detail || "Could not calculate profile from birth data.");
+    } finally {
       setCalculating(false);
-      toast.success("Profile calculated!");
-    }, 1500);
+    }
   };
 
   const tabs = [
@@ -354,7 +345,7 @@ const ProfileCalculator = ({ user, api }) => {
             <div>
               <label className="text-sm text-muted-foreground mb-1 block">
                 <Clock className="w-4 h-4 inline mr-1" />
-                Birth Time (optional)
+                Birth Time *
               </label>
               <Input
                 type="time"
@@ -362,12 +353,13 @@ const ProfileCalculator = ({ user, api }) => {
                 onChange={(e) => setBirthTime(e.target.value)}
                 className="bg-white/5 border-white/10"
                 placeholder="HH:MM"
+                data-testid="profile-birth-time"
               />
             </div>
             <div>
               <label className="text-sm text-muted-foreground mb-1 block">
                 <MapPin className="w-4 h-4 inline mr-1" />
-                Birth Place (optional)
+                Birth Place *
               </label>
               <Input
                 type="text"
@@ -375,18 +367,18 @@ const ProfileCalculator = ({ user, api }) => {
                 onChange={(e) => setBirthPlace(e.target.value)}
                 className="bg-white/5 border-white/10"
                 placeholder="City, Country"
+                data-testid="profile-birth-place"
               />
             </div>
           </div>
 
           <p className="text-xs text-muted-foreground">
-            * Birth date is required. Birth time improves Human Design accuracy. 
-            For the most precise results, use your exact birth time from your birth certificate.
+            Strict mode: date, exact birth time, and place are required for calculation-based Human Design outputs.
           </p>
 
           <Button 
             onClick={calculateProfile}
-            disabled={calculating || !birthDate}
+            disabled={calculating || !birthDate || !birthTime || !birthPlace}
             className="w-full bg-violet-500/20 hover:bg-violet-500/30 border border-violet-500/30"
           >
             {calculating ? (
@@ -554,6 +546,10 @@ const ProfileCalculator = ({ user, api }) => {
                       <p className="text-xs text-violet-400 uppercase tracking-wider mb-1">Profile</p>
                       <p className="font-medium text-sm">{humanDesignProfile.profile.fullName}</p>
                     </div>
+                    <div className="p-4 rounded-xl bg-sky-500/10 border border-sky-500/20 text-center">
+                      <p className="text-xs text-sky-400 uppercase tracking-wider mb-1">Authority</p>
+                      <p className="font-medium text-sm">{humanDesignProfile.authority}</p>
+                    </div>
                   </div>
 
                   {/* Profile Lines */}
@@ -573,9 +569,7 @@ const ProfileCalculator = ({ user, api }) => {
 
                   <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
                     <p className="text-sm text-muted-foreground">
-                      <strong>Note:</strong> This is a simplified calculation. For a complete and accurate 
-                      Human Design chart with all centers, channels, and gates, we recommend getting a 
-                      professional reading with your exact birth time.
+                      <strong>Calculation mode:</strong> This result is generated from your entered birth date, exact time, and place (not intuitive type selection).
                     </p>
                   </div>
 

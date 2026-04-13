@@ -75,6 +75,7 @@ const DailySacredPractice = lazy(() => import("../pages/DailySacredPractice"));
 const PracticeJournal = lazy(() => import("../pages/PracticeJournal"));
 const VideosLibrary = lazy(() => import("../pages/VideosLibrary"));
 const ArchangelOracle = lazy(() => import("../pages/ArchangelOracle"));
+const SmartRouteResolver = lazy(() => import("../pages/SmartRouteResolver"));
 
 const routeLoader = (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -171,6 +172,11 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/star-lineage" element={publicElement(StarLineageQuiz, PublicRoute, api)} />
       <Route path="/star-lineage/result/:lineageId" element={publicElement(StarLineageQuiz, PublicRoute, api)} />
       <Route path="/daily-practice" element={publicElement(DailySacredPractice, PublicRoute, api)} />
+      <Route path="/dailypractice" element={publicElement(DailySacredPractice, PublicRoute, api)} />
+      <Route path="/daily_practice" element={publicElement(DailySacredPractice, PublicRoute, api)} />
+      <Route path="/daily-guidance" element={publicElement(DailySacredPractice, PublicRoute, api)} />
+      <Route path="/todays-guidance" element={publicElement(DailySacredPractice, PublicRoute, api)} />
+      <Route path="/today-guidance" element={publicElement(DailySacredPractice, PublicRoute, api)} />
       <Route path="/energy-healing" element={publicElement(EnergyHealing, PublicRoute, api)} />
       <Route path="/free-form-movement" element={publicElement(FreeFormMovement, PublicRoute, api)} />
       <Route path="/somatic-yoga" element={publicElement(SomaticYoga, PublicRoute, api)} />
@@ -184,6 +190,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/practice-log" element={protectedElement(PracticeLog, ProtectedRoute, api)} />
       <Route path="/payment/success" element={protectedElement(PaymentSuccess, ProtectedRoute, api)} />
       <Route path="/payment/cancel" element={<PaymentCancel />} />
+      <Route path="*" element={<SmartRouteResolver />} />
     </Routes>
   </Suspense>
 );

@@ -8,31 +8,9 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-const SOLAR_WHEEL = [
-  41,19,13,49,30,55,37,63,22,36,25,17,21,51,42,3,
-  27,24,2,23,8,20,16,35,45,12,15,52,39,53,62,56,
-  31,33,7,4,29,59,40,64,47,6,46,18,48,57,32,50,
-  28,44,1,43,14,34,9,5,26,11,10,58,38,54,61,60
-];
-function getDayOfYear(d) {
-  return Math.floor((d - new Date(d.getFullYear(),0,0)) / 86400000);
-}
-function getSolarPos(date) {
-  const adj = ((getDayOfYear(date) - 22) + 365) % 365;
-  const pos = Math.floor(adj * 64 / 365) % 64;
-  const line = Math.max(1, Math.min(6, Math.floor(((adj*64/365)-pos)*6)+1));
-  return { gate: SOLAR_WHEEL[pos], pos, line };
-}
-function calcHDProfile(birthDate) {
-  const date = new Date(birthDate + "T12:00:00");
-  const { gate: sunGate, line: sunLine } = getSolarPos(date);
-  const earthGate = SOLAR_WHEEL[(SOLAR_WHEEL.indexOf(sunGate)+32)%64] || sunGate;
-  const designDate = new Date(date.getTime() - 88*24*60*60*1000);
-  const { gate: dGate, line: dLine } = getSolarPos(designDate);
-  const dEarthGate = SOLAR_WHEEL[(SOLAR_WHEEL.indexOf(dGate)+32)%64] || dGate;
-  return { sunGate, earthGate, dGate, dEarthGate,
-           profile: `${sunLine}/${dLine}`, sunLine, dLine };
-}
+import { Input } from "../components/ui/input";
+import { toast } from "sonner";
+import { calculateHumanDesignChart } from "../utils/humanDesignCalculator";
 
 const PROFILE_LINES = {
   1:{name:"Investigator",desc:"Foundation-seeker. You need deep knowledge and security before you shine."},
@@ -369,9 +347,15 @@ const HumanDesign = ({ user, api }) => {
   const [birthYear, setBirthYear]   = useState("");
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay]     = useState("");
+  const [birthTime, setBirthTime] = useState("12:00");
+  const [birthCity, setBirthCity] = useState("");
+  const [birthCountry, setBirthCountry] = useState("");
   const [hdProfile, setHdProfile]   = useState(null);
   const [chosenType, setChosenType] = useState(null);
-  const [phase, setPhase] = useState(1); // 1=DOB, 2=type-pick, 3=results
+  const [calculatedAuthority, setCalculatedAuthority] = useState("");
+  const [definedCenterCount, setDefinedCenterCount] = useState(0);
+  const [calculatingChart, setCalculatingChart] = useState(false);
+  const [phase, setPhase] = useState(1); // 1=Birth Input, 3=Calculated Results
 
   const currentYear = new Date().getFullYear();
   const years  = Array.from({length: currentYear - 1899}, (_,i) => currentYear - i);
@@ -383,19 +367,55 @@ const HumanDesign = ({ user, api }) => {
   ];
   const days = Array.from({length:31},(_,i)=>String(i+1).padStart(2,"0"));
 
-  const handleCalcProfile = () => {
-    if (!birthYear||!birthMonth||!birthDay) return;
-    const p = calcHDProfile(`${birthYear}-${birthMonth}-${birthDay}`);
-    setHdProfile(p);
-    setPhase(2);
+  const handleCalcProfile = async () => {
+    if (!birthYear || !birthMonth || !birthDay || !birthTime || !birthCity || !birthCountry) {
+      toast.error("Please provide date, exact birth time, city, and country.");
+      return;
+    }
+
+    setCalculatingChart(true);
+    try {
+      const birthDate = `${birthYear}-${birthMonth}-${birthDay}`;
+      const result = await calculateHumanDesignChart(api, {
+        birth_date: birthDate,
+        birth_time: birthTime,
+        birth_city: birthCity,
+        birth_country: birthCountry,
+      });
+
+      setHdProfile({
+        profile: result.profile,
+        sunLine: result.personalitySun.line,
+        dLine: result.designSun.line,
+        sunGate: result.personalitySun.gate,
+        dGate: result.designSun.gate,
+      });
+      setChosenType(humanDesignTypes.find((type) => type.id === result.typeKey) || null);
+      setCalculatedAuthority(result.authority);
+      setDefinedCenterCount(result.definedCenters.length);
+      setPhase(3);
+      toast.success("Human Design chart calculated from birth data.");
+    } catch (error) {
+      console.error("Human Design chart calculation failed:", error);
+      toast.error(error?.response?.data?.detail || "Could not calculate chart from birth data.");
+    } finally {
+      setCalculatingChart(false);
+    }
   };
 
-  const handleSelectType = (typeId) => {
-    setChosenType(humanDesignTypes.find(t=>t.id===typeId));
-    setPhase(3);
+  const resetChart = () => {
+    setPhase(1);
+    setHdProfile(null);
+    setChosenType(null);
+    setBirthYear("");
+    setBirthMonth("");
+    setBirthDay("");
+    setBirthTime("12:00");
+    setBirthCity("");
+    setBirthCountry("");
+    setCalculatedAuthority("");
+    setDefinedCenterCount(0);
   };
-
-  const resetChart = () => { setPhase(1); setHdProfile(null); setChosenType(null); setBirthYear(""); setBirthMonth(""); setBirthDay(""); };
 
   const tabs = [
     { id: "chart",    label: "My Chart" },
@@ -485,7 +505,7 @@ const HumanDesign = ({ user, api }) => {
                     </div>
                     <h3 className="text-2xl font-serif mb-2">Your <span className="italic text-primary">Human Design Chart</span></h3>
                     <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-                      Enter your birth date to discover your Profile and then identify your Energy Type for a personalised Human Design reading.
+                      Enter your exact birth details. Your Profile and Type are calculated directly from birth data (no intuitive type-picking).
                     </p>
                   </div>
 
@@ -522,65 +542,57 @@ const HumanDesign = ({ user, api }) => {
                         </Select>
                       </div>
                     </div>
-                    <Button onClick={handleCalcProfile} disabled={!birthYear||!birthMonth||!birthDay} className="w-full" data-testid="hd-calculate-btn">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div>
+                        <label className="block text-sm text-muted-foreground mb-2">Birth Time</label>
+                        <Input
+                          type="time"
+                          value={birthTime}
+                          onChange={(event) => setBirthTime(event.target.value)}
+                          className="bg-card/50 border-white/10"
+                          data-testid="hd-birth-time"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-muted-foreground mb-2">Birth City</label>
+                        <Input
+                          value={birthCity}
+                          onChange={(event) => setBirthCity(event.target.value)}
+                          placeholder="e.g. London"
+                          className="bg-card/50 border-white/10"
+                          data-testid="hd-birth-city"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm text-muted-foreground mb-2">Birth Country</label>
+                        <Input
+                          value={birthCountry}
+                          onChange={(event) => setBirthCountry(event.target.value)}
+                          placeholder="e.g. UK"
+                          className="bg-card/50 border-white/10"
+                          data-testid="hd-birth-country"
+                        />
+                      </div>
+                    </div>
+                    <Button
+                      onClick={handleCalcProfile}
+                      disabled={
+                        calculatingChart ||
+                        !birthYear ||
+                        !birthMonth ||
+                        !birthDay ||
+                        !birthTime ||
+                        !birthCity ||
+                        !birthCountry
+                      }
+                      className="w-full"
+                      data-testid="hd-calculate-btn"
+                    >
                       <Sparkles className="w-4 h-4 mr-2" />
-                      Reveal My Profile
+                      {calculatingChart ? "Calculating from Birth Data..." : "Calculate My Human Design"}
                     </Button>
                   </div>
                 </div>
-              )}
-
-              {/* Phase 2 — Type selection */}
-              {phase === 2 && hdProfile && (
-                <motion.div initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} className="space-y-6">
-                  {/* Profile revealed */}
-                  <div className="p-5 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-center">
-                    <p className="text-xs uppercase tracking-wider text-indigo-400 mb-1">Your Human Design Profile</p>
-                    <p className="text-3xl font-serif text-indigo-300">{hdProfile.profile}</p>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {PROFILE_LINES[hdProfile.sunLine]?.name} / {PROFILE_LINES[hdProfile.dLine]?.name}
-                    </p>
-                    <div className="mt-3 grid grid-cols-2 gap-3 text-left">
-                      <div className="p-3 rounded-xl bg-white/5 text-xs">
-                        <p className="text-indigo-400 mb-1">Conscious Sun Gate</p>
-                        <p className="font-mono text-lg text-foreground">{hdProfile.sunGate}</p>
-                      </div>
-                      <div className="p-3 rounded-xl bg-white/5 text-xs">
-                        <p className="text-violet-400 mb-1">Design Sun Gate</p>
-                        <p className="font-mono text-lg text-foreground">{hdProfile.dGate}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-center">
-                    <p className="text-sm font-medium mb-1">Now select your Energy Type</p>
-                    <p className="text-xs text-muted-foreground">Choose the description that resonates most deeply with your lived experience</p>
-                  </div>
-
-                  <div className="space-y-3">
-                    {humanDesignTypes.map(t => {
-                      const s = getTypeColor(t.color);
-                      const Icon = t.icon;
-                      return (
-                        <motion.button key={t.id} whileTap={{scale:0.98}}
-                          onClick={()=>handleSelectType(t.id)}
-                          className={`w-full text-left p-4 rounded-2xl bg-gradient-to-r ${s.split(' ').slice(0,2).join(' ')} border ${s.split(' ')[2]} hover:scale-[1.01] transition-all`}
-                          data-testid={`hd-type-select-${t.id}`}>
-                          <div className="flex items-center gap-3 mb-1">
-                            <Icon className={`w-5 h-5 ${s.split(' ')[3]}`} />
-                            <span className="font-serif text-lg">{t.name}</span>
-                            <span className="text-xs text-muted-foreground ml-auto">{t.population}</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground line-clamp-2">{t.description}</p>
-                          <p className={`text-xs mt-1 ${s.split(' ')[3]}`}>Strategy: {t.strategy}</p>
-                        </motion.button>
-                      );
-                    })}
-                  </div>
-                  <Button variant="outline" className="w-full border-white/10 text-xs" onClick={()=>setPhase(1)}>
-                    ← Change Birth Date
-                  </Button>
-                </motion.div>
               )}
 
               {/* Phase 3 — Full results */}
@@ -615,9 +627,11 @@ const HumanDesign = ({ user, api }) => {
                     <div className="space-y-3">
                       {[
                         {label:"Strategy", value:chosenType.strategy, color:"green"},
+                        {label:"Authority", value:calculatedAuthority || "—", color:"violet"},
                         {label:"Aura",     value:chosenType.aura,     color:"blue"},
                         {label:"Signature",value:chosenType.signature, color:"amber"},
                         {label:"Not-Self", value:chosenType.notSelf,   color:"red"},
+                        {label:"Defined Centers", value:String(definedCenterCount), color:"indigo"},
                       ].map(({label,value,color})=>(
                         <div key={label} className={`p-3 rounded-xl bg-${color}-500/10 border border-${color}-500/20`}>
                           <p className={`text-xs text-${color}-400 uppercase tracking-wider mb-0.5`}>{label}</p>
