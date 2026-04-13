@@ -48,9 +48,8 @@ const Pricing = ({ user, api }) => {
     try {
       const subRes = await api.get("/payments/subscription-status");
       setSubscription(subRes.data);
-    } catch (error) {
-      // Expected to fail for unauthenticated users - that's OK
-      console.log("Subscription status not available (not logged in)");
+    } catch {
+      // Expected to fail for unauthenticated users.
     }
     
     setLoading(false);

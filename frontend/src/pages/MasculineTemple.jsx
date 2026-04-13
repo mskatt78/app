@@ -204,8 +204,8 @@ const MasculineTemple = ({ user, api }) => {
       try {
         const { data } = await apiClient.get("/masculine-embodiment");
         setEmbodimentPractices(data);
-      } catch (err) {
-        console.log("Embodiment practices not loaded");
+      } catch {
+        // Keep fallback experience when practices are unavailable.
       } finally {
         setLoadingPractices(false);
       }

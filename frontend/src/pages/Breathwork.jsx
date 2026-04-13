@@ -155,7 +155,6 @@ const Breathwork = ({ user, api }) => {
       gainNodeRef.current.connect(audioContextRef.current.destination);
 
       oscillatorRef.current.start();
-      console.log(`Playing ${frequency} Hz tone`);
     } catch (error) {
       console.error('Audio init failed:', error);
     }

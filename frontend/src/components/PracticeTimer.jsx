@@ -1,20 +1,18 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { Play, Pause, RotateCcw, Volume2, VolumeX, SkipForward, Eye, EyeOff } from "lucide-react";
-import { Button } from "./ui/button";
-import { Progress } from "./ui/progress";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
 import MeditationVisualizer from "./MeditationVisualizer";
 import BreathingVisualizer from "./BreathingVisualizer";
 import { toast } from "sonner";
+import { TimerStatusPanel } from "./timer/TimerStatusPanel";
+import { TimerControlsPanel } from "./timer/TimerControlsPanel";
+import { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
 import {
   createFilteredNoise,
   fallbackNarrationSegments,
-  formatTime,
   MIN_NARRATION_MINUTES,
   NATURAL_SOUND_OPTIONS,
   PREFERRED_NATURAL_SOUND_KEY,
   SCRIPT_EXPANSION_TIMEOUT_MS,
+  splitSentences,
   tempoPlaybackRates,
   wait,
 } from "./timer/practiceTimerUtils";
@@ -718,174 +716,46 @@ const PracticeTimer = ({
         </div>
       )}
 
-      <div className="relative z-10 text-center">
-        <div className="text-6xl font-light tracking-wider mb-2" data-testid="practice-timer-remaining">
-          {formatTime(remainingTime)}
-        </div>
-        <p className="text-sm text-muted-foreground">remaining</p>
-      </div>
+      <TimerStatusPanel
+        remainingTime={remainingTime}
+        currentSegment={currentSegment}
+        currentSegmentIndex={currentSegmentIndex}
+        normalizedSegments={normalizedSegments}
+        currentSegmentDuration={currentSegmentDuration}
+        segmentTime={segmentTime}
+        segmentProgress={segmentProgress}
+        overallProgress={overallProgress}
+        isMuted={isMuted}
+        audioPlaying={audioPlaying}
+        autoNarrate={autoNarrate}
+        ttsLoading={ttsLoading}
+        narrationPreparing={narrationPreparing}
+        audioTapRequired={audioTapRequired}
+        narrationSegmentIndex={narrationSegmentIndex}
+        narrationSegments={narrationSegments}
+        selectedBackgroundAudio={selectedBackgroundAudio}
+      />
 
-      {currentSegment && (
-        <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-4" data-testid="practice-timer-current-segment">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-muted-foreground">
-              Step {currentSegmentIndex + 1} of {normalizedSegments.length}
-            </span>
-            <span className="text-sm text-primary">{formatTime(currentSegmentDuration - segmentTime)}</span>
-          </div>
-          <h4 className="font-medium text-lg mb-2">{currentSegment.name}</h4>
-          {currentSegment.description && (
-            <p className="text-sm text-muted-foreground leading-relaxed mb-2">{currentSegment.description}</p>
-          )}
-          <Progress value={segmentProgress} className="h-2" />
-          {currentSegment.has_audio && !isMuted && audioPlaying && (
-            <p className="text-xs text-primary/70 mt-2 flex items-center gap-1 animate-pulse">
-              <Volume2 className="w-3 h-3" /> Sound playing
-            </p>
-          )}
-          {autoNarrate && ttsLoading && (
-            <p className="text-xs text-violet-400/80 mt-2 flex items-center gap-1 animate-pulse">
-              <Volume2 className="w-3 h-3" /> Preparing narration...
-            </p>
-          )}
-          {autoNarrate && narrationPreparing && (
-            <p className="text-xs text-violet-400/80 mt-2 flex items-center gap-1 animate-pulse">
-              <Volume2 className="w-3 h-3" /> Weaving long-form script...
-            </p>
-          )}
-          {autoNarrate && audioTapRequired && (
-            <p className="text-xs text-violet-300/80 mt-2 flex items-center gap-1" data-testid="timer-audio-tap-required-status">
-              <Volume2 className="w-3 h-3" /> Audio ready — tap play once to enable narration.
-            </p>
-          )}
-          {autoNarrate && !narrationPreparing && narrationSegments.length > 0 && !ttsLoading && (
-            <p className="text-xs text-violet-400/80 mt-2 flex items-center gap-1">
-              <Volume2 className="w-3 h-3" /> Narrating section {Math.min(narrationSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
-            </p>
-          )}
-          {!isMuted && selectedBackgroundAudio !== "silence" && !audioPlaying && (
-            <p className="text-xs text-amber-400/70 mt-2 flex items-center gap-1">
-              <Volume2 className="w-3 h-3" /> Tap play to start audio
-            </p>
-          )}
-        </div>
-      )}
-
-      <div className="relative z-10">
-        <div className="flex justify-between text-xs text-muted-foreground mb-2">
-          <span>Overall Progress</span>
-          <span>{Math.round(overallProgress)}%</span>
-        </div>
-        <Progress value={overallProgress} className="h-1" />
-      </div>
-
-      <div className="relative z-10 flex items-center justify-center gap-3">
-        <Button variant="outline" size="icon" onClick={handleReset} className="rounded-full border-white/10" data-testid="timer-reset">
-          <RotateCcw className="w-4 h-4" />
-        </Button>
-
-        <Button
-          size="lg"
-          onClick={handlePlayPause}
-          className={`rounded-full w-16 h-16 ${isRunning ? "bg-orange-500 hover:bg-orange-600" : "bg-primary"}`}
-          data-testid="timer-play-pause"
-        >
-          {isRunning ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
-        </Button>
-
-        {normalizedSegments.length > 1 && (
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={handleSkipSegment}
-            disabled={currentSegmentIndex >= normalizedSegments.length - 1}
-            className="rounded-full border-white/10"
-            data-testid="timer-skip"
-          >
-            <SkipForward className="w-4 h-4" />
-          </Button>
-        )}
-
-        <Button variant="outline" size="icon" onClick={() => setIsMuted((current) => !current)} className="rounded-full border-white/10" data-testid="timer-mute">
-          {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-        </Button>
-
-        <Button variant="outline" size="icon" onClick={() => setShowVisuals((current) => !current)} className="rounded-full border-white/10" data-testid="timer-visuals">
-          {showVisuals ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-        </Button>
-      </div>
-
-      {allowSpeedControl && (
-        <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs uppercase tracking-wider text-muted-foreground">Practice Speed</span>
-            <span className="text-xs text-primary">
-              {tempo === "slow" ? "Slow (Relaxed)" : tempo === "fast" ? "Fast (Energizing)" : "Normal"}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => !isRunning && setTempo("slow")} disabled={isRunning} className={`flex-1 text-xs ${tempo === "slow" ? "bg-blue-500/20 text-blue-400" : ""}`}>
-              Slow
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => !isRunning && setTempo("normal")} disabled={isRunning} className={`flex-1 text-xs ${tempo === "normal" ? "bg-primary/20 text-primary" : ""}`}>
-              Normal
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => !isRunning && setTempo("fast")} disabled={isRunning} className={`flex-1 text-xs ${tempo === "fast" ? "bg-orange-500/20 text-orange-400" : ""}`}>
-              Fast
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground mt-2 text-center">
-            {tempo === "slow"
-              ? "Softer narration pace while the full timer still stays exact"
-              : tempo === "fast"
-                ? "Brighter narration pace while the full timer still stays exact"
-                : "Balanced narration pace with precise timing"}
-          </p>
-        </div>
-      )}
-
-      <div className="relative z-10 bg-white/5 backdrop-blur-sm rounded-xl p-3" data-testid="timer-natural-sound-selector">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs uppercase tracking-wider text-muted-foreground">Natural Soundscape</span>
-          <span className="text-xs text-primary">
-            {NATURAL_SOUND_OPTIONS.find((option) => option.id === selectedBackgroundAudio)?.label || AMBIENT_SOUNDS[selectedBackgroundAudio]?.name || "Custom"}
-          </span>
-        </div>
-        <Select value={selectedBackgroundAudio} onValueChange={setSelectedBackgroundAudio}>
-          <SelectTrigger className="bg-card/50 border-white/10" data-testid="timer-natural-sound-select-trigger">
-            <SelectValue placeholder="Select sound" />
-          </SelectTrigger>
-          <SelectContent>
-            {NATURAL_SOUND_OPTIONS.map((option) => (
-              <SelectItem key={option.id} value={option.id} data-testid={`timer-natural-sound-option-${option.id}`}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {selectedBackgroundAudio && selectedBackgroundAudio !== "silence" && (
-        <div className="relative z-10">
-          <p className="text-xs text-center text-muted-foreground mb-2">
-            Background: {AMBIENT_SOUNDS[selectedBackgroundAudio]?.name || selectedBackgroundAudio.replace(/_/g, " ")}
-          </p>
-          {!isMuted && isRunning && (
-            <div className="flex items-center justify-center gap-2">
-              <Volume2 className="w-3 h-3 text-muted-foreground" />
-              <input
-                type="range"
-                min="0"
-                max="100"
-                value={audioVolume * 100}
-                onChange={(event) => setAudioVolume(event.target.value / 100)}
-                className="w-24 h-1 bg-white/10 rounded-full appearance-none cursor-pointer"
-                data-testid="timer-volume-slider"
-              />
-            </div>
-          )}
-        </div>
-      )}
+      <TimerControlsPanel
+        isRunning={isRunning}
+        handleReset={handleReset}
+        handlePlayPause={handlePlayPause}
+        normalizedSegments={normalizedSegments}
+        currentSegmentIndex={currentSegmentIndex}
+        handleSkipSegment={handleSkipSegment}
+        isMuted={isMuted}
+        setIsMuted={setIsMuted}
+        showVisuals={showVisuals}
+        setShowVisuals={setShowVisuals}
+        allowSpeedControl={allowSpeedControl}
+        tempo={tempo}
+        setTempo={setTempo}
+        selectedBackgroundAudio={selectedBackgroundAudio}
+        setSelectedBackgroundAudio={setSelectedBackgroundAudio}
+        NATURAL_SOUND_OPTIONS={NATURAL_SOUND_OPTIONS}
+        audioVolume={audioVolume}
+        setAudioVolume={setAudioVolume}
+      />
 
       {autoNarrate && <audio ref={ttsAudioRef} style={{ display: "none" }} />}
     </div>

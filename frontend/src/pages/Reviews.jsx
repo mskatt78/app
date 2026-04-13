@@ -75,8 +75,8 @@ const Reviews = ({ user, api }) => {
             setMyReview(myRes.data);
             setForm({ rating: myRes.data.rating, text: myRes.data.text, practice_area: myRes.data.practice_area || "" });
           }
-        } catch (error) {
-          console.info("No existing personal review found for current user:", error?.response?.status || error?.message);
+        } catch {
+          // User has no existing personal review yet.
         }
       }
     } catch (err) {
