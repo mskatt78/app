@@ -300,7 +300,7 @@ const RoseTemple = ({ user, api }) => {
                 <p className="text-muted-foreground mt-4 mb-6 leading-relaxed">{templeIntro.description}</p>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {templeIntro.principles.map((principle, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-black/20 border border-rose-500/10">
+                    <div key={`${principle.title}-${i}`} className="p-4 rounded-xl bg-black/20 border border-rose-500/10">
                       <h4 className="font-serif text-rose-300 mb-2">{principle.title}</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">{principle.text}</p>
                     </div>
@@ -507,7 +507,7 @@ const RoseTemple = ({ user, api }) => {
               <div className="p-6 space-y-4">
                 {selectedTeaching.content.map((section, i) => (
                   <motion.div
-                    key={i}
+                    key={`${selectedTeaching.id}-section-${section.heading}-${i}`}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.05 }}
@@ -623,7 +623,7 @@ const RoseTemple = ({ user, api }) => {
                     <h3 className="text-sm font-medium mb-2">Benefits</h3>
                     <div className="flex flex-wrap gap-2">
                       {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((b, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
+                        <span key={`${selectedPractice.id}-benefit-${String(b).slice(0, 24)}-${i}`} className="px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
                       ))}
                     </div>
                   </div>

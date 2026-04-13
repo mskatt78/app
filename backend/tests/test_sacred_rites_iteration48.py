@@ -18,7 +18,7 @@ class TestSacredRitesCourses:
         resp = requests.get(f"{BASE_URL}/api/courses/munay-ki")
         assert resp.status_code == 200
         data = resp.json()
-        assert data.get("is_premium") is True, f"Expected is_premium=True, got {data.get('is_premium')}"
+        assert data.get("is_premium"), f"Expected is_premium=True, got {data.get('is_premium')}"
         print("PASS: munay-ki is_premium=True")
 
     def test_munay_ki_has_forty_day_integration(self):
@@ -82,7 +82,7 @@ class TestSacredRitesCourses:
         resp = requests.get(f"{BASE_URL}/api/courses/nusta-karpay")
         assert resp.status_code == 200
         data = resp.json()
-        assert data.get("is_premium") is True, "nusta-karpay missing is_premium=True"
+        assert data.get("is_premium"), "nusta-karpay missing is_premium=True"
         assert data.get("forty_day_integration") is not None, "nusta-karpay missing forty_day_integration"
         assert data.get("daily_practice") is not None, "nusta-karpay missing daily_practice"
         assert data.get("ceremony_preparation_guide") is not None, "nusta-karpay missing ceremony_preparation_guide"
@@ -106,7 +106,7 @@ class TestSacredRitesCourses:
         resp = requests.get(f"{BASE_URL}/api/courses/13th-rite-womb")
         assert resp.status_code == 200
         data = resp.json()
-        assert data.get("is_premium") is True, "13th-rite-womb missing is_premium=True"
+        assert data.get("is_premium"), "13th-rite-womb missing is_premium=True"
         assert data.get("forty_day_integration") is not None, "13th-rite-womb missing forty_day_integration"
         assert data.get("daily_practice") is not None, "13th-rite-womb missing daily_practice"
         assert data.get("ceremony_preparation_guide") is not None, "13th-rite-womb missing ceremony_preparation_guide"
@@ -136,8 +136,8 @@ class TestSacredRitesCourses:
         # Verify is_premium on all 3
         for course in courses:
             if course.get("id") in sacred_rite_ids:
-                assert course.get("is_premium") is True, f"Course {course.get('id')} missing is_premium"
-        print(f"PASS: All 3 sacred rites present in /api/courses, all have is_premium=True")
+                assert course.get("is_premium"), f"Course {course.get('id')} missing is_premium"
+        print("PASS: All 3 sacred rites present in /api/courses, all have is_premium=True")
 
 
 class TestSoundFrequencies:

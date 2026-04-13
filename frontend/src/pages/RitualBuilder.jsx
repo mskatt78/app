@@ -340,7 +340,7 @@ const RitualBuilder = ({ user, api }) => {
                 
                 return (
                   <div
-                    key={index}
+                    key={`${activeRitual.ritual_id || activeRitual.id || activeRitual.name}-practice-${practice.id || practice.name}-${index}`}
                     className={`p-4 rounded-xl flex items-center gap-4 transition-all
                                ${isActive ? 'bg-primary/20 border border-primary/30' : 
                                  isComplete ? 'bg-emerald-500/10 border border-emerald-500/20' : 
@@ -419,7 +419,7 @@ const RitualBuilder = ({ user, api }) => {
                       const Icon = practiceIcons[practice.type] || Leaf;
                       return (
                         <motion.div
-                          key={index}
+                          key={`${newRitual.name || 'ritual'}-${practice.id || practice.name}-${index}`}
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           className="p-4 rounded-xl bg-card/50 border border-white/5 flex items-center gap-4"
@@ -585,7 +585,7 @@ const RitualBuilder = ({ user, api }) => {
                       {ritual.practices?.slice(0, 4).map((p, i) => {
                         const Icon = practiceIcons[p.type] || Leaf;
                         return (
-                          <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-xs flex items-center gap-1">
+                          <span key={`${ritual.ritual_id}-practice-chip-${p.id || p.name}-${i}`} className="px-3 py-1 rounded-full bg-white/5 text-xs flex items-center gap-1">
                             <Icon className="w-3 h-3" />
                             {p.name}
                           </span>

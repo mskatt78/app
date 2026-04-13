@@ -528,6 +528,126 @@ async def get_aspect_meanings():
     return ASPECTS
 
 
+def _parse_birth_datetime(request: BirthChartRequest) -> tuple[int, int, int, int, int, int]:
+    date_parts = request.birth_date.split("-")
+    year = int(date_parts[0])
+    month = int(date_parts[1])
+    day = int(date_parts[2])
+
+    time_parts = request.birth_time.split(":")
+    hour = int(time_parts[0])
+    minute = int(time_parts[1]) if len(time_parts) > 1 else 0
+    second = int(time_parts[2]) if len(time_parts) > 2 else 0
+    return year, month, day, hour, minute, second
+
+
+def _resolve_location_and_timezone(request: BirthChartRequest) -> tuple[float, float, str]:
+    if request.latitude is not None and request.longitude is not None:
+        latitude = request.latitude
+        longitude = request.longitude
+        timezone_name = request.timezone_name or "UTC"
+        return latitude, longitude, timezone_name
+
+    coords = get_city_coordinates(request.birth_city, request.birth_country)
+    latitude = coords["lat"]
+    longitude = coords["lon"]
+    timezone_name = request.timezone_name or coords["tz"]
+    return latitude, longitude, timezone_name
+
+
+def _calculate_chart_planets(jd: float) -> list[dict]:
+    planets: list[dict] = []
+    core_planets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "North Node"]
+
+    for planet_name in core_planets:
+        try:
+            planets.append(calculate_planet_position(planet_name, jd))
+        except Exception as error:
+            logger.warning(f"Error calculating {planet_name}: {error}")
+
+    north_node = next((planet for planet in planets if planet["name"] == "North Node"), None)
+    if not north_node:
+        return planets
+
+    south_node_lon = (north_node["longitude"] + 180) % 360
+    south_sign, south_pos = get_zodiac_sign(south_node_lon)
+    planets.append({
+        "name": "South Node",
+        "longitude": round(south_node_lon, 4),
+        "latitude": 0,
+        "sign": south_sign,
+        "sign_symbol": ZODIAC_SIGNS[south_sign]["symbol"],
+        "sign_position": south_pos,
+        "degree": int(south_pos),
+        "minute": int((south_pos % 1) * 60),
+        "retrograde": False,
+        "symbol": "☋",
+        "meaning": PLANET_DATA["South Node"]["meaning"],
+        "keywords": PLANET_DATA["South Node"]["keywords"],
+        "house": 0,
+    })
+    return planets
+
+
+def _build_birth_chart_payload(
+    request: BirthChartRequest,
+    year: int,
+    month: int,
+    day: int,
+    hour: int,
+    minute: int,
+    latitude: float,
+    longitude: float,
+    timezone_name: str,
+    jd: float,
+    planets: list[dict],
+    houses: list[dict],
+    ascendant: dict,
+    midheaven: dict,
+    aspects: list[dict],
+    elements: dict,
+    qualities: dict,
+) -> dict:
+    sun_planet = next((planet for planet in planets if planet["name"] == "Sun"), {})
+    sun_sign = sun_planet.get("sign", "Unknown")
+    moon_planet = next((planet for planet in planets if planet["name"] == "Moon"), {})
+
+    return {
+        "id": f"chart_{year}{month:02d}{day:02d}_{hour:02d}{minute:02d}",
+        "calculation_method": "Swiss Ephemeris",
+        "precision": "0.0001 degrees",
+        "birth_data": {
+            "date": request.birth_date,
+            "time": request.birth_time,
+            "city": request.birth_city,
+            "country": request.birth_country,
+            "latitude": latitude,
+            "longitude": longitude,
+            "timezone": timezone_name,
+            "julian_day": round(jd, 6),
+        },
+        "sun_sign": sun_sign,
+        "sun_sign_info": ZODIAC_SIGNS.get(sun_sign, {}),
+        "moon_sign": moon_planet.get("sign", "Unknown"),
+        "moon_sign_info": ZODIAC_SIGNS.get(moon_planet.get("sign", ""), {}),
+        "rising_sign": ascendant["sign"],
+        "rising_sign_info": ZODIAC_SIGNS.get(ascendant["sign"], {}),
+        "ascendant": ascendant,
+        "midheaven": midheaven,
+        "planets": planets,
+        "houses": houses,
+        "aspects": aspects,
+        "elements": elements,
+        "qualities": qualities,
+        "big_three": {
+            "sun": {"sign": sun_sign, "symbol": ZODIAC_SIGNS.get(sun_sign, {}).get("symbol", "")},
+            "moon": {"sign": moon_planet.get("sign", "Unknown"), "symbol": moon_planet.get("sign_symbol", "")},
+            "rising": {"sign": ascendant["sign"], "symbol": ascendant["sign_symbol"]},
+        },
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
 @router.post("/calculate")
 async def calculate_birth_chart(request: BirthChartRequest):
     """Calculate a complete birth chart using Swiss Ephemeris.
@@ -540,62 +660,11 @@ async def calculate_birth_chart(request: BirthChartRequest):
         raise HTTPException(status_code=500, detail="Swiss Ephemeris not available")
     
     try:
-        # Parse birth date and time
-        date_parts = request.birth_date.split("-")
-        year = int(date_parts[0])
-        month = int(date_parts[1])
-        day = int(date_parts[2])
-        
-        time_parts = request.birth_time.split(":")
-        hour = int(time_parts[0])
-        minute = int(time_parts[1]) if len(time_parts) > 1 else 0
-        second = int(time_parts[2]) if len(time_parts) > 2 else 0
-        
-        # Get coordinates and timezone
-        if request.latitude is not None and request.longitude is not None:
-            lat = request.latitude
-            lon = request.longitude
-            tz_name = request.timezone_name or "UTC"
-        else:
-            coords = get_city_coordinates(request.birth_city, request.birth_country)
-            lat = coords["lat"]
-            lon = coords["lon"]
-            tz_name = request.timezone_name or coords["tz"]
-        
-        # Create datetime and convert to Julian Day
+        year, month, day, hour, minute, second = _parse_birth_datetime(request)
+        lat, lon, tz_name = _resolve_location_and_timezone(request)
         birth_dt = datetime(year, month, day, hour, minute, second)
         jd = datetime_to_julian(birth_dt, tz_name)
-        
-        # Calculate all planets (excluding Chiron which requires extra ephemeris files)
-        planets = []
-        core_planets = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Pluto", "North Node"]
-        for planet_name in core_planets:
-            try:
-                planet_data = calculate_planet_position(planet_name, jd)
-                planets.append(planet_data)
-            except Exception as e:
-                logger.warning(f"Error calculating {planet_name}: {e}")
-        
-        # Calculate South Node (opposite of North Node)
-        north_node = next((p for p in planets if p["name"] == "North Node"), None)
-        if north_node:
-            south_node_lon = (north_node["longitude"] + 180) % 360
-            south_sign, south_pos = get_zodiac_sign(south_node_lon)
-            planets.append({
-                "name": "South Node",
-                "longitude": round(south_node_lon, 4),
-                "latitude": 0,
-                "sign": south_sign,
-                "sign_symbol": ZODIAC_SIGNS[south_sign]["symbol"],
-                "sign_position": south_pos,
-                "degree": int(south_pos),
-                "minute": int((south_pos % 1) * 60),
-                "retrograde": False,
-                "symbol": "☋",
-                "meaning": PLANET_DATA["South Node"]["meaning"],
-                "keywords": PLANET_DATA["South Node"]["keywords"],
-                "house": 0
-            })
+        planets = _calculate_chart_planets(jd)
         
         # Calculate houses and angles
         houses, ascendant, midheaven = calculate_houses(jd, lat, lon)
@@ -611,47 +680,25 @@ async def calculate_birth_chart(request: BirthChartRequest):
         elements = calculate_element_balance(planets + [ascendant])
         qualities = calculate_quality_balance(planets + [ascendant])
         
-        # Build the complete chart
-        sun_planet = next((p for p in planets if p["name"] == "Sun"), {})
-        sun_sign = sun_planet.get("sign", "Unknown")
-        moon_planet = next((p for p in planets if p["name"] == "Moon"), {})
-        
-        birth_chart = {
-            "id": f"chart_{year}{month:02d}{day:02d}_{hour:02d}{minute:02d}",
-            "calculation_method": "Swiss Ephemeris",
-            "precision": "0.0001 degrees",
-            "birth_data": {
-                "date": request.birth_date,
-                "time": request.birth_time,
-                "city": request.birth_city,
-                "country": request.birth_country,
-                "latitude": lat,
-                "longitude": lon,
-                "timezone": tz_name,
-                "julian_day": round(jd, 6)
-            },
-            "sun_sign": sun_sign,
-            "sun_sign_info": ZODIAC_SIGNS.get(sun_sign, {}),
-            "moon_sign": moon_planet.get("sign", "Unknown"),
-            "moon_sign_info": ZODIAC_SIGNS.get(moon_planet.get("sign", ""), {}),
-            "rising_sign": ascendant["sign"],
-            "rising_sign_info": ZODIAC_SIGNS.get(ascendant["sign"], {}),
-            "ascendant": ascendant,
-            "midheaven": midheaven,
-            "planets": planets,
-            "houses": houses,
-            "aspects": aspects,
-            "elements": elements,
-            "qualities": qualities,
-            "big_three": {
-                "sun": {"sign": sun_sign, "symbol": ZODIAC_SIGNS.get(sun_sign, {}).get("symbol", "")},
-                "moon": {"sign": moon_planet.get("sign", "Unknown"), "symbol": moon_planet.get("sign_symbol", "")},
-                "rising": {"sign": ascendant["sign"], "symbol": ascendant["sign_symbol"]}
-            },
-            "created_at": datetime.now(timezone.utc).isoformat()
-        }
-        
-        return birth_chart
+        return _build_birth_chart_payload(
+            request=request,
+            year=year,
+            month=month,
+            day=day,
+            hour=hour,
+            minute=minute,
+            latitude=lat,
+            longitude=lon,
+            timezone_name=tz_name,
+            jd=jd,
+            planets=planets,
+            houses=houses,
+            ascendant=ascendant,
+            midheaven=midheaven,
+            aspects=aspects,
+            elements=elements,
+            qualities=qualities,
+        )
         
     except Exception as e:
         logger.error(f"Birth chart calculation error: {e}")

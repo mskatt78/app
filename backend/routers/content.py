@@ -179,51 +179,50 @@ def _dedupe_paragraphs(paragraphs: list[str]) -> list[str]:
     return cleaned
 
 
-def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) -> list[str]:
-    practice_name = request.practice_name.strip() or "This practice"
-    element = (request.element or "spirit").lower().strip() or "spirit"
+def _unique_preserve(items: list[str]) -> list[str]:
+    seen: set[str] = set()
+    ordered: list[str] = []
+    for item in items:
+        cleaned = re.sub(r"\s+", " ", str(item or "")).strip().rstrip(".")
+        key = _normalize_text_for_repeat_check(cleaned)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        ordered.append(cleaned)
+    return ordered
 
-    def unique_preserve(items: list[str]) -> list[str]:
-        seen: set[str] = set()
-        ordered: list[str] = []
-        for item in items:
-            cleaned = re.sub(r"\s+", " ", str(item or "")).strip().rstrip(".")
-            key = _normalize_text_for_repeat_check(cleaned)
-            if not key or key in seen:
-                continue
-            seen.add(key)
-            ordered.append(cleaned)
-        return ordered
 
-    context_sentences = unique_preserve([
+def _resolve_context_sentences(request: ExpandScriptRequest, practice_name: str) -> list[str]:
+    context_sentences = _unique_preserve([
         sentence
         for text in request.source_texts
         for sentence in _split_sentences(text)
     ])
+    if context_sentences:
+        return context_sentences
+    return [
+        f"{practice_name} is a sacred return to your breath, body, and inner wisdom",
+        "Move slowly and gently, giving your nervous system enough space to soften and trust",
+        "Let your attention settle into sensation so this practice becomes deeply embodied",
+        "Allow this moment to unfold with patience, kindness, and honest listening",
+    ]
 
-    if not context_sentences:
-        context_sentences = [
-            f"{practice_name} is a sacred return to your breath, body, and inner wisdom",
-            "Move slowly and gently, giving your nervous system enough space to soften and trust",
-            "Let your attention settle into sensation so this practice becomes deeply embodied",
-            "Allow this moment to unfold with patience, kindness, and honest listening",
-        ]
 
-    unique_steps = unique_preserve(request.steps)
-
+def _filter_context_by_steps(context_sentences: list[str], unique_steps: list[str]) -> list[str]:
     step_keys = [_normalize_text_for_repeat_check(step) for step in unique_steps]
     filtered_context: list[str] = []
     for sentence in context_sentences:
         normalized_sentence = _normalize_text_for_repeat_check(sentence)
         overlaps_step = any(
-            (step_key and (step_key in normalized_sentence or normalized_sentence in step_key))
+            step_key and (step_key in normalized_sentence or normalized_sentence in step_key)
             for step_key in step_keys
         )
         if not overlaps_step:
             filtered_context.append(sentence)
+    return filtered_context or context_sentences
 
-    if filtered_context:
-        context_sentences = filtered_context
+
+def _build_fallback_intro(practice_name: str, element: str) -> list[str]:
     element_themes = {
         "earth": "stable, rooted, and quietly resilient",
         "water": "fluid, receptive, and emotionally spacious",
@@ -232,12 +231,13 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
         "spirit": "expansive, devotional, and deeply present",
     }
     element_theme = element_themes.get(element, element_themes["spirit"])
-
-    paragraphs = [
+    return [
         f"Welcome to {practice_name}. Settle into a comfortable position and take three slow breaths. Let your shoulders soften, your jaw unclench, and your awareness arrive fully in the present moment.",
         f"This is a {element} practice, so let your pace become {element_theme}. There is nothing to perform and nothing to force. You are here to listen, feel, and integrate.",
     ]
 
+
+def _build_step_paragraphs(unique_steps: list[str], context_sentences: list[str]) -> list[str]:
     step_frames = [
         "Enter this phase through", "Now explore", "Let this stage begin with", "Move gently into",
         "For this sequence, work with", "Settle into", "Allow your body to try", "Open this section with",
@@ -252,20 +252,26 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
         "Use each exhale to release strain and re-center your awareness.",
         "Keep your shoulders and face relaxed as this phase unfolds.",
     ]
-
+    paragraphs: list[str] = []
     for index, step in enumerate(unique_steps[:8]):
         support = context_sentences[index % len(context_sentences)]
         frame = step_frames[index % len(step_frames)]
         somatic = somatic_prompts[index % len(somatic_prompts)]
-        paragraphs.append(
-            f"{frame} {step}. {somatic} {support}."
-        )
+        paragraphs.append(f"{frame} {step}. {somatic} {support}.")
+    return paragraphs
 
-    for sentence in context_sentences[:12]:
-        paragraphs.append(
-            f"Take a moment to absorb this guidance: {sentence}. Let it land gradually, and notice what shifts in your breath quality, emotional tone, and inner steadiness."
-        )
 
+def _build_context_absorption_paragraphs(context_sentences: list[str]) -> list[str]:
+    return [
+        (
+            f"Take a moment to absorb this guidance: {sentence}. "
+            "Let it land gradually, and notice what shifts in your breath quality, emotional tone, and inner steadiness."
+        )
+        for sentence in context_sentences[:12]
+    ]
+
+
+def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: int, seed_words: int) -> list[str]:
     awareness_points = [
         "the space behind your eyes", "your jaw and tongue", "your throat and collarbones", "the center of your chest",
         "the rise and fall of your ribs", "your diaphragm and belly", "your lower back and sacrum", "your hips and pelvis",
@@ -305,8 +311,9 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
         "Notice how depth appears when urgency fades", "Continue with gentle discipline and curiosity", "Let this section become a lived experience, not a concept",
     ]
 
-    running_words = _count_words(" ".join(paragraphs))
+    running_words = seed_words
     index = 0
+    body: list[str] = []
     context_queue = context_sentences[12:]
     while running_words < max(target_words - 180, 0):
         opener = narrative_openers[index % len(narrative_openers)]
@@ -314,41 +321,60 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
         breath_cue = breath_cues[(index * 2 + 1) % len(breath_cues)]
         target = integration_targets[(index * 3 + 2) % len(integration_targets)]
         imagery = imagery_prompts[(index * 5 + 3) % len(imagery_prompts)]
-        optional_context = ""
-        if context_queue and index % 6 == 0:
-            optional_context = f"{context_queue.pop(0)}. "
+        optional_context = f"{context_queue.pop(0)}. " if context_queue and index % 6 == 0 else ""
 
-        variant = index % 4
-        if variant == 0:
-            paragraph = (
+        paragraph_variants = [
+            (
                 f"{opener}. Keep attention on {awareness}. {breath_cue}. "
                 f"{optional_context}{imagery}. Let this support {target} without urgency or strain."
-            )
-        elif variant == 1:
-            paragraph = (
+            ),
+            (
                 f"{opener}. {imagery}. {breath_cue}. "
                 f"Track what changes around {awareness}, and allow this to build {target}."
-            )
-        elif variant == 2:
-            paragraph = (
+            ),
+            (
                 f"{opener}. Stay oriented to {awareness} while you breathe. "
                 f"{optional_context}Let this moment remain uncomplicated and clear. "
                 f"{breath_cue}. This phase can restore {target}."
-            )
-        else:
-            paragraph = (
+            ),
+            (
                 f"{opener}. {breath_cue}. Let your awareness stay anchored in {awareness}. "
                 f"{imagery}. Give this time to cultivate {target}."
-            )
-        paragraphs.append(paragraph)
+            ),
+        ]
+
+        paragraph = paragraph_variants[index % 4]
+        body.append(paragraph)
         running_words += _count_words(paragraph)
         index += 1
 
-    paragraphs.extend([
+    return body
+
+
+def _build_fallback_closing() -> list[str]:
+    return [
         "As this practice begins to close, do not rush out of it. Stay for a few extra breaths and notice what has changed in your body, your emotions, and your sense of inner orientation.",
         "When you are ready, take three grounding breaths, gently open your eyes, and carry this medicine into the next part of your day with steadiness and kindness.",
-    ])
+    ]
 
+
+def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) -> list[str]:
+    practice_name = request.practice_name.strip() or "This practice"
+    element = (request.element or "spirit").lower().strip() or "spirit"
+
+    unique_steps = _unique_preserve(request.steps)
+    context_sentences = _resolve_context_sentences(request, practice_name)
+    context_sentences = _filter_context_by_steps(context_sentences, unique_steps)
+
+    intro = _build_fallback_intro(practice_name, element)
+    step_content = _build_step_paragraphs(unique_steps, context_sentences)
+    context_content = _build_context_absorption_paragraphs(context_sentences)
+
+    paragraphs = [*intro, *step_content, *context_content]
+    seed_words = _count_words(" ".join(paragraphs))
+    adaptive_body = _build_adaptive_body_paragraphs(context_sentences, target_words, seed_words)
+    paragraphs.extend(adaptive_body)
+    paragraphs.extend(_build_fallback_closing())
     return _dedupe_paragraphs(paragraphs)
 
 

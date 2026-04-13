@@ -471,7 +471,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
                       <h3 className="font-medium mb-3">Benefits</h3>
                       <div className="flex flex-wrap gap-2">
                         {selectedPractice.benefits.map((benefit, i) => (
-                          <span key={i} className={`px-3 py-1 rounded-full text-sm ${elementColors[selectedPractice.element]?.bg} ${elementColors[selectedPractice.element]?.text}`}>
+                          <span key={`${selectedPractice.id}-benefit-${String(benefit).slice(0, 24)}-${i}`} className={`px-3 py-1 rounded-full text-sm ${elementColors[selectedPractice.element]?.bg} ${elementColors[selectedPractice.element]?.text}`}>
                             {benefit}
                           </span>
                         ))}
@@ -483,7 +483,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
                       <h3 className="font-medium mb-3">Practice Steps</h3>
                       <ol className="space-y-3">
                         {selectedPractice.steps.map((step, i) => (
-                          <li key={i} className="flex items-start gap-3 text-sm">
+                          <li key={`${selectedPractice.id}-step-${String(step).slice(0, 24)}-${i}`} className="flex items-start gap-3 text-sm">
                             <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
                               {i + 1}
                             </span>
@@ -559,7 +559,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
                 {!isPracticing ? (
                   <Button 
                     onClick={() => {
-                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) {}
+                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) { toast.error("Audio warm-up failed. Tap again to start."); }
                       setIsPracticing(true);
                     }}
                     className={`w-full py-4 ${

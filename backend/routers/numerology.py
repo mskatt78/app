@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime, timezone
 import logging
+import uuid
 
 from .dependencies import get_db, get_current_user, User
 
@@ -361,7 +362,7 @@ async def create_numerology_reading(
         
         # Full record to save
         record = {
-            "reading_id": str(__import__('uuid').uuid4())[:8],
+            "reading_id": str(uuid.uuid4())[:8],
             "user_id": user.user_id,
             "birth_date": request.birth_date,
             "full_name": request.full_name,

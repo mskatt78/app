@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Settings, LogOut, ChevronRight, Database, Upload, CalendarDays, Sparkles, BookOpen, Radio } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
-import { clearStoredAdminToken, ensureAdminToken } from "../components/admin/adminSession";
+import { ensureAdminToken, logoutAdminSession } from "../components/admin/adminSession";
 
 const quickActions = [
   {
@@ -50,8 +50,8 @@ export default function AdminDashboard({ api: providedApi }) {
   const bootstrapAdminAccess = async () => {
     setLoading(true);
     try {
-      const token = await ensureAdminToken(api);
-      await fetchCollections(token);
+      await ensureAdminToken(api);
+      await fetchCollections();
     } catch {
       toast.error("Please sign in with your admin account to continue");
       navigate("/dashboard");
@@ -60,13 +60,12 @@ export default function AdminDashboard({ api: providedApi }) {
     }
   };
 
-  const fetchCollections = async (token) => {
+  const fetchCollections = async () => {
     try {
       const res = await fetch(`${api}/api/admin/collections`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       if (res.status === 401) {
-        clearStoredAdminToken();
         throw new Error("expired-admin-token");
       }
       setCollections(await res.json());
@@ -76,8 +75,12 @@ export default function AdminDashboard({ api: providedApi }) {
     }
   };
 
-  const logout = () => {
-    clearStoredAdminToken();
+  const logout = async () => {
+    try {
+      await logoutAdminSession(api);
+    } catch {
+      // no-op
+    }
     navigate("/dashboard");
     toast.success("Logged out");
   };

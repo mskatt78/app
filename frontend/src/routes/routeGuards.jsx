@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { getStoredAdminToken } from "../components/admin/adminSession";
 
 export const AuthCallback = ({ api }) => {
   const navigate = useNavigate();
@@ -114,12 +113,6 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
 
   useEffect(() => {
     const checkAdmin = async () => {
-      const storedAdminToken = getStoredAdminToken();
-      if (storedAdminToken) {
-        setIsAuthorized(true);
-        return;
-      }
-
       try {
         const response = await api.get("/auth/me");
         const userData = response.data;
@@ -129,6 +122,19 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
         const isAdmin = adminEmails.includes(userEmail) || userData.is_admin === true;
 
         if (isAdmin) {
+          setIsAuthorized(true);
+          return;
+        }
+      } catch {
+        // Continue with cookie-session admin validation below.
+      }
+
+      try {
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
+        const response = await fetch(`${backendUrl}/api/admin/collections`, {
+          credentials: "include",
+        });
+        if (response.ok) {
           setIsAuthorized(true);
         } else {
           setIsAuthorized(false);

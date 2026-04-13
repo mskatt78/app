@@ -39,8 +39,8 @@ export default function Courses() {
       });
       setPurchasedCourses(data.purchased_courses || []);
       setHasSubscription(data.has_subscription || false);
-    } catch (err) {
-      console.log("Could not fetch course access:", err);
+    } catch {
+      // ignore unavailable access status for guests
     }
   }, []);
 

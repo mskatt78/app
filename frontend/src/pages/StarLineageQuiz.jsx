@@ -428,7 +428,7 @@ export default function StarLineageQuiz() {
             <div className="space-y-3">
               {question.answers.map((answer, i) => (
                 <motion.button
-                  key={i}
+                  key={`${question.id}-answer-${String(answer.text).slice(0, 24)}-${i}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.06 }}
@@ -481,7 +481,7 @@ export default function StarLineageQuiz() {
                 <h3 className={`font-serif text-lg mb-3 ${primaryLineage.accent}`}>Your Star Gifts</h3>
                 <ul className="space-y-2">
                   {primaryLineage.gifts.map((g, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <li key={`${primaryLineage.id}-gift-${String(g).slice(0, 24)}-${i}`} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <Sparkles className={`w-3 h-3 mt-0.5 flex-shrink-0 ${primaryLineage.accent}`} />
                       {g}
                     </li>
@@ -492,7 +492,7 @@ export default function StarLineageQuiz() {
                 <h3 className={`font-serif text-lg mb-3 ${primaryLineage.accent}`}>Recommended Practices</h3>
                 <ul className="space-y-2">
                   {primaryLineage.practices.map((p, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <li key={`${primaryLineage.id}-practice-${String(p).slice(0, 24)}-${i}`} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <Star className={`w-3 h-3 mt-0.5 flex-shrink-0 ${primaryLineage.accent}`} />
                       {p}
                     </li>

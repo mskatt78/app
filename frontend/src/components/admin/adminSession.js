@@ -1,55 +1,18 @@
-const ADMIN_TOKEN_KEY = "admin_token";
+export const getStoredAdminToken = () => null;
 
-const getSessionStorage = () => {
-  try {
-    return window.sessionStorage;
-  } catch {
-    return null;
-  }
-};
+export const setStoredAdminToken = () => {};
 
-const getLocalStorage = () => {
-  try {
-    return window.localStorage;
-  } catch {
-    return null;
-  }
-};
-
-export const getStoredAdminToken = () => {
-  const sessionStorage = getSessionStorage();
-  const localStorage = getLocalStorage();
-  const sessionToken = sessionStorage?.getItem(ADMIN_TOKEN_KEY);
-  if (sessionToken) return sessionToken;
-
-  // Backward-compatible migration from localStorage -> sessionStorage
-  const legacyToken = localStorage?.getItem(ADMIN_TOKEN_KEY);
-  if (legacyToken && sessionStorage) {
-    sessionStorage.setItem(ADMIN_TOKEN_KEY, legacyToken);
-    localStorage?.removeItem(ADMIN_TOKEN_KEY);
-    return legacyToken;
-  }
-  return legacyToken || null;
-};
-
-export const setStoredAdminToken = (token) => {
-  if (!token) return;
-  const sessionStorage = getSessionStorage();
-  const localStorage = getLocalStorage();
-  sessionStorage?.setItem(ADMIN_TOKEN_KEY, token);
-  localStorage?.removeItem(ADMIN_TOKEN_KEY);
-};
-
-export const clearStoredAdminToken = () => {
-  const sessionStorage = getSessionStorage();
-  const localStorage = getLocalStorage();
-  sessionStorage?.removeItem(ADMIN_TOKEN_KEY);
-  localStorage?.removeItem(ADMIN_TOKEN_KEY);
-};
+export const clearStoredAdminToken = () => {};
 
 export async function ensureAdminToken(apiBase) {
-  const existing = getStoredAdminToken();
-  if (existing) return existing;
+  const existingSession = await fetch(`${apiBase}/api/admin/collections`, {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (existingSession.ok) {
+    return "cookie-admin-session";
+  }
 
   const response = await fetch(`${apiBase}/api/admin/session-login`, {
     method: "POST",
@@ -60,7 +23,12 @@ export async function ensureAdminToken(apiBase) {
     throw new Error("admin-session-login-failed");
   }
 
-  const data = await response.json();
-  setStoredAdminToken(data.token);
-  return data.token;
+  return "cookie-admin-session";
+}
+
+export async function logoutAdminSession(apiBase) {
+  await fetch(`${apiBase}/api/admin/logout`, {
+    method: "POST",
+    credentials: "include",
+  });
 }

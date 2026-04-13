@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
-import { clearStoredAdminToken, ensureAdminToken, getStoredAdminToken } from "../components/admin/adminSession";
+import { clearStoredAdminToken, ensureAdminToken } from "../components/admin/adminSession";
 
 const AUDIO_COLLECTION = "audio_files";
 
@@ -135,7 +135,7 @@ function FieldInput({ field, value, onChange, onUpload, uploadLoading }) {
   );
 }
 
-function ItemModal({ collection, item, onClose, onSave, api, token }) {
+function ItemModal({ collection, item, onClose, onSave, api }) {
   const fields = FIELD_CONFIG[collection] || Object.keys(item || {}).filter(k => k !== "id" && k !== "_id" && k !== "created_at" && k !== "updated_at");
   const [formData, setFormData] = useState(() => {
     const base = {};
@@ -153,7 +153,7 @@ function ItemModal({ collection, item, onClose, onSave, api, token }) {
       fd.append("file", file);
       const res = await fetch(`${api}/api/admin/upload`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
         body: fd,
       });
       if (!res.ok) throw new Error("Upload failed");
@@ -215,7 +215,7 @@ function ItemModal({ collection, item, onClose, onSave, api, token }) {
   );
 }
 
-function AudioLibrary({ api, token }) {
+function AudioLibrary({ api }) {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -223,13 +223,13 @@ function AudioLibrary({ api, token }) {
   const fileRef = useRef();
 
   useEffect(() => {
-    if (token) fetchFiles();
-  }, [token]); // eslint-disable-line react-hooks/exhaustive-deps
+    fetchFiles();
+  }, []);
 
   const fetchFiles = async () => {
     try {
       const res = await fetch(`${api}/api/admin/audio_files/items`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       const data = await res.json();
       setFiles(data.items || []);
@@ -246,7 +246,7 @@ function AudioLibrary({ api, token }) {
       fd.append("file", file);
       const res = await fetch(`${api}/api/admin/upload`, {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
         body: fd,
       });
       if (!res.ok) throw new Error("Upload failed");
@@ -262,7 +262,7 @@ function AudioLibrary({ api, token }) {
     try {
       await fetch(`${api}/api/admin/audio_files/items/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       setFiles(p => p.filter(f => f.id !== id));
       toast.success("File removed");
@@ -336,7 +336,7 @@ export default function AdminSection() {
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(getStoredAdminToken());
+  const [hasAdminSession, setHasAdminSession] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [modalItem, setModalItem] = useState(undefined); // undefined=closed, null=new, obj=edit
@@ -372,9 +372,9 @@ export default function AdminSection() {
     setLoading(true);
     try {
       const resolvedToken = await ensureAdminToken(api);
-      setToken(resolvedToken);
+      setHasAdminSession(Boolean(resolvedToken));
       if (!isAudio) {
-        await fetchItems(resolvedToken);
+        await fetchItems();
       }
     } catch {
       toast.error("Please sign in with your admin account to continue");
@@ -384,11 +384,11 @@ export default function AdminSection() {
     }
   };
 
-  const fetchItems = async (activeToken = token) => {
+  const fetchItems = async () => {
     try {
       const params = new URLSearchParams({ page, limit: 30, ...(search ? { search } : {}) });
       const res = await fetch(`${api}/api/admin/${collection}/items?${params}`, {
-        headers: { Authorization: `Bearer ${activeToken}` },
+        credentials: "include",
       });
       if (res.status === 401) {
         clearStoredAdminToken();
@@ -412,7 +412,8 @@ export default function AdminSection() {
       const method = isNew ? "POST" : "PUT";
       const res = await fetch(url, {
         method,
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
       if (!res.ok) throw new Error("Save failed");
@@ -433,7 +434,7 @@ export default function AdminSection() {
     try {
       const res = await fetch(`${api}/api/admin/${collection}/items/${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "include",
       });
       if (!res.ok) throw new Error();
       setItems(p => p.filter(i => i.id !== id));
@@ -466,7 +467,7 @@ export default function AdminSection() {
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         {isAudio ? (
-          token ? <AudioLibrary api={api} token={token} /> : <div className="space-y-2">{Array(4).fill(0).map((_, i) => <div key={i} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
+          hasAdminSession ? <AudioLibrary api={api} /> : <div className="space-y-2">{Array(4).fill(0).map((_, i) => <div key={i} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
         ) : (
           <>
             {/* Toolbar */}
@@ -546,14 +547,13 @@ export default function AdminSection() {
 
       {/* Edit/Create Modal */}
       <AnimatePresence>
-        {modalItem !== undefined && token && (
+        {modalItem !== undefined && hasAdminSession && (
           <ItemModal
             collection={collection}
             item={modalItem}
             onClose={() => setModalItem(undefined)}
             onSave={handleSave}
             api={api}
-            token={token}
           />
         )}
       </AnimatePresence>
