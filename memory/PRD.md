@@ -12,6 +12,18 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–April 2026)
+- **Backlog Refactor Sprint (Iteration 89):**
+  - Reduced `PracticeTimer.jsx` complexity by extracting focused UI components:
+    - `components/timer/TimerStatusPanel.jsx`
+    - `components/timer/TimerControlsPanel.jsx`
+    - Parent timer logic retained in `PracticeTimer.jsx` to preserve behavior while shrinking component size.
+  - Reduced `GuidedPracticeOverlay.jsx` complexity by extracting presentation layer:
+    - `components/guided/GuidedPracticeContent.jsx`
+    - Core timing/audio logic remains in overlay container.
+  - Completed console cleanup sweep for `console.log/info/debug` across frontend/backend source (retained only warning/error pathways where needed).
+  - Fixed additional key-stability warning in `RoseTemple.jsx` by hardening mapped keys with stable+index fallback.
+  - Verification: `/app/test_reports/iteration_89.json` reports refactor flow healthy and UI regression checks passing after extraction.
+
 - **Code Review Remediation Pass (Iterations 87–88):**
   - **Security hardening completed:**
     - Removed dynamic import in numerology (`routers/numerology.py`) by replacing `__import__('uuid')` with explicit `import uuid`.

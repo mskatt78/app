@@ -328,7 +328,7 @@ const RoseTemple = ({ user, api }) => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {embodimentPractices.map((practice, index) => (
                 <motion.div
-                  key={practice.id}
+                  key={`${practice.id || practice.name}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
@@ -368,7 +368,7 @@ const RoseTemple = ({ user, api }) => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {sacredRites.map((rite, index) => (
                 <motion.div
-                  key={rite.id}
+                  key={`${rite.id || rite.title}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
@@ -407,7 +407,7 @@ const RoseTemple = ({ user, api }) => {
             const Icon = teaching.icon;
             return (
               <motion.div
-                key={teaching.id}
+                key={`${teaching.id || teaching.title}-${index}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
