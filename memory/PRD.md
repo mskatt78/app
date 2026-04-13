@@ -12,6 +12,21 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–April 2026)
+- **Live Tester Error Remediation (Iteration 86):**
+  - **Email/legacy deep-link reliability fixed**:
+    - Added Daily Practice aliases: `/dailypractice`, `/daily_practice`, `/daily-guidance`, `/todays-guidance`
+    - Added wildcard `SmartRouteResolver` fallback route for old/unknown email paths, auto-redirecting users to the nearest valid destination (`/daily-practice` for daily-practice-like links, otherwise `/menu`).
+  - **Human Design strict mode implemented (no intuitive guessing):**
+    - Added shared calculator utility: `frontend/src/utils/humanDesignCalculator.js`
+    - Human Design "My Chart" now requires **birth date + exact birth time + city + country** and computes Profile/Type/Authority from birth-data-driven calculations using `POST /api/birth-chart/calculate` (personality + design chart at 88 days pre-birth).
+    - Removed manual "choose the type that resonates" flow.
+  - **Profile Calculator upgraded to strict mode:**
+    - Requires **date + time + place** and computes Human Design from calculation pipeline (not distribution/guess logic).
+    - Added explicit strict-mode UI messaging and authority display.
+  - **Validation status:**
+    - `/app/test_reports/iteration_86.json` passed with backend `100% (24/24)` and frontend `100%`.
+    - User-reported issues marked fixed: deep links, dead old links, Human Design misclassification flow.
+
 - **User Feedback Stabilization Pass Completed (Iteration 85):**
   - Fixed reported black-screen risk in installed/PWA flow by upgrading `sw.js` navigation handling to **network-first** and bumping cache version to `v4` (prevents stale SPA shell/chunk mismatch behavior).
   - Removed duplicate service-worker registration path from `App.js` to reduce registration race/stale-client edge cases.
