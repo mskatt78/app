@@ -12,6 +12,29 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–April 2026)
+- **Code Review Remediation Pass (Iterations 87–88):**
+  - **Security hardening completed:**
+    - Removed dynamic import in numerology (`routers/numerology.py`) by replacing `__import__('uuid')` with explicit `import uuid`.
+    - Migrated admin web session flow away from browser token storage to **httpOnly cookie-based admin session**:
+      - Backend: `routers/admin.py` now supports cookie auth in `_verify_admin`, sets/clears `admin_session` cookie in `/admin/login`, `/admin/session-login`, and `/admin/logout`.
+      - Frontend: `components/admin/adminSession.js` no longer uses session/local storage; now validates existing cookie session first, then falls back to session-login.
+      - Fixed critical cookie-login regression (Iteration 88): password admin login now works end-to-end to `/admin` dashboard.
+  - **Backend complexity reduction completed (critical functions):**
+    - Refactored `seed_database()` in `routers/admin.py` into composable helpers:
+      - `_load_seed_payloads`, `_seed_single_collection`, `_seed_standard_collections`, `_seed_special_collections`, `_seed_courses_collection`, `_resolve_collections_to_seed`.
+    - Refactored `calculate_birth_chart()` in `routers/birth_chart.py` via helper extraction:
+      - `_parse_birth_datetime`, `_resolve_location_and_timezone`, `_calculate_chart_planets`, `_build_birth_chart_payload`.
+    - Refactored `_build_fallback_paragraphs()` in `routers/content.py` into intro/body/closing builders and context/step preprocessors.
+  - **Frontend quality fixes completed:**
+    - Replaced index-based keys in report-flagged pages:
+      - `SunriseSunsetPractices.jsx`, `StarLineageQuiz.jsx`, `RoseTemple.jsx`, `RitualBuilder.jsx`.
+    - Removed/cleaned key console debug usage in touched payment access flow (`Courses.jsx`).
+    - Fixed empty catch in `SunriseSunsetPractices.jsx` with user feedback toast for audio warm-up failure.
+  - **Testing and verification:**
+    - Iteration 87: backend 17/17 passed; frontend checks passed; identified and isolated one critical admin cookie dashboard issue.
+    - Iteration 88: critical issue fully fixed and verified.
+    - `/app/test_reports/iteration_88.json`: backend **14/14** passed, frontend **10/10** passed.
+
 - **Live Tester Error Remediation (Iteration 86):**
   - **Email/legacy deep-link reliability fixed**:
     - Added Daily Practice aliases: `/dailypractice`, `/daily_practice`, `/daily-guidance`, `/todays-guidance`
