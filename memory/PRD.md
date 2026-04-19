@@ -12,6 +12,18 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–April 2026)
+- **Live UX Feedback Fix Pack (Iteration 90):**
+  - Addressed user-reported guidance/sound/content issues:
+    - Enabled narration by default for timer-based guided sessions (`PracticeTimer autoNarrate=true`).
+    - Expanded breathwork sound palette with clearly distinct options: `whale`, `dolphin`, `chimes`, `drums_gentle`.
+    - Added mobile-safe scrollable sound dropdown (`max-h` + overflow) in Breathwork selector.
+    - Added fallback water practices for missing categories (`ceremony`, `ritual`) so sections are no longer empty.
+    - Added guided audio support directly in Yoga pose dialog via `GuidedAudioButton` so users can listen instead of reading constantly.
+    - Replaced Rose Temple embodiment imagery with curated feminine-focused visuals and ensured modal uses the same curated image set.
+  - Validation status:
+    - `/app/test_reports/iteration_90.json`: backend **100%**, frontend **100%**.
+    - Verified on desktop and mobile viewport (390x844).
+
 - **Backlog Refactor Sprint (Iteration 89):**
   - Reduced `PracticeTimer.jsx` complexity by extracting focused UI components:
     - `components/timer/TimerStatusPanel.jsx`
