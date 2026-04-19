@@ -42,6 +42,45 @@ const normalizeWaterCategory = (value) => {
   return categoryAliases[compact] || categoryAliases[raw] || raw;
 };
 
+const WATER_CATEGORY_FALLBACKS = {
+  ceremony: [
+    {
+      id: "water-ceremony-fallback",
+      name: "Sacred Water Ceremony",
+      description: "A complete ceremonial structure for blessing, charging, and sharing water with intention.",
+      duration_minutes: 20,
+      category: "ceremony",
+      benefits: ["Ceremonial grounding", "Community coherence", "Energetic clarity"],
+      materials: ["Glass bowl", "Fresh water", "Candle", "Journal"],
+      steps: [
+        "Create a quiet altar space with water and candlelight.",
+        "State your intention aloud and breathe slowly for three cycles.",
+        "Bless the water with gratitude, then hold a full minute of silence.",
+        "Speak a clear dedication for healing, truth, and balance.",
+        "Drink or share the water slowly, closing with thanks.",
+      ],
+      affirmation: "This water carries peace, wisdom, and sacred coherence.",
+    },
+  ],
+  ritual: [
+    {
+      id: "water-ritual-fallback",
+      name: "Daily Water Ritual",
+      description: "A structured daily ritual to reset your nervous system and hydrate with intention.",
+      duration_minutes: 12,
+      category: "ritual",
+      benefits: ["Daily reset", "Intentional hydration", "Emotional steadiness"],
+      steps: [
+        "Prepare one glass of clean water and sit comfortably.",
+        "Place one hand on heart and one hand around the glass.",
+        "Take five breaths with a longer exhale.",
+        "Speak one intention for the day into the water.",
+        "Drink slowly and feel your body receive the ritual.",
+      ],
+    },
+  ],
+};
+
 const WaterPractices = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPractice, setSelectedPractice] = useState(null);
@@ -184,6 +223,8 @@ const WaterPractices = ({ user, api }) => {
   const currentPractices = waterPractices.filter(
     (practice) => normalizeWaterCategory(practice.category) === activeCategory
   );
+  const fallbackPractices = WATER_CATEGORY_FALLBACKS[activeCategory] || [];
+  const displayPractices = currentPractices.length > 0 ? currentPractices : fallbackPractices;
   const currentCategory = categories.find(c => c.id === activeCategory);
 
   return (
@@ -264,12 +305,12 @@ const WaterPractices = ({ user, api }) => {
                 <div className="h-3 bg-white/10 rounded w-2/3" />
               </div>
             ))
-          ) : currentPractices.length === 0 ? (
+          ) : displayPractices.length === 0 ? (
             <div className="col-span-2 text-center py-12 text-muted-foreground">
               <Droplets className="w-12 h-12 mx-auto mb-3 opacity-30" />
               <p>No practices in this category yet.</p>
             </div>
-          ) : currentPractices.map((practice, index) => (
+          ) : displayPractices.map((practice, index) => (
             <motion.div
               key={practice.id}
               initial={{ opacity: 0, y: 20 }}

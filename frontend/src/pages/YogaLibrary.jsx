@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Dialog, DialogContent } from "../components/ui/dialog";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const YogaLibrary = ({ user, api }) => {
   const navigate = useNavigate();
@@ -436,6 +437,19 @@ const YogaLibrary = ({ user, api }) => {
                         </motion.div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {selectedPose && (
+                  <div className="pl-10">
+                    <GuidedAudioButton
+                      api={api}
+                      script={`Welcome to ${selectedPose.name}. ${selectedPose.description}. ${selectedPose.instructions?.join(". ") || "Move gently and breathe naturally."} Keep your awareness in the body and soften your jaw and shoulders as you hold the posture.`}
+                      title={`Guided ${selectedPose.name}`}
+                      element={selectedPose.element || "Spirit"}
+                      duration={Math.max(8, selectedPose.duration_minutes || 8)}
+                      practiceName={selectedPose.name}
+                    />
                   </div>
                 )}
 

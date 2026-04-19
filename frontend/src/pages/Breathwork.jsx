@@ -41,8 +41,12 @@ const BREATHWORK_SOUND_OPTIONS = [
   { id: "ocean", label: AMBIENT_SOUNDS.ocean.name },
   { id: "rain", label: AMBIENT_SOUNDS.rain.name },
   { id: "nature", label: AMBIENT_SOUNDS.nature.name },
+  { id: "whale", label: AMBIENT_SOUNDS.whale.name },
+  { id: "dolphin", label: AMBIENT_SOUNDS.dolphin.name },
   { id: "wind", label: AMBIENT_SOUNDS.wind.name },
   { id: "fire", label: AMBIENT_SOUNDS.fire.name },
+  { id: "chimes", label: AMBIENT_SOUNDS.chimes.name },
+  { id: "drums_gentle", label: AMBIENT_SOUNDS.drums_gentle.name },
   { id: "silence", label: "Silence" },
 ];
 
@@ -492,7 +496,7 @@ const Breathwork = ({ user, api }) => {
                   <SelectTrigger className="w-full bg-card border-white/10" data-testid="breathwork-sound-select">
                     <SelectValue placeholder="Choose sound" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-56 overflow-y-auto">
                     {BREATHWORK_SOUND_OPTIONS.filter((option) => option.id !== 'tone' || activeSession.frequency).map((option) => (
                       <SelectItem key={option.id} value={option.id} data-testid={`breathwork-sound-option-${option.id}`}>
                         {option.label}

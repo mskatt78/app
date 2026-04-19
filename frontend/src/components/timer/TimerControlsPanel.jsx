@@ -101,7 +101,7 @@ export const TimerControlsPanel = ({
           <SelectTrigger className="bg-card/50 border-white/10" data-testid="timer-natural-sound-select-trigger">
             <SelectValue placeholder="Select sound" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="max-h-56 overflow-y-auto">
             {NATURAL_SOUND_OPTIONS.map((option) => (
               <SelectItem key={option.id} value={option.id} data-testid={`timer-natural-sound-option-${option.id}`}>
                 {option.label}

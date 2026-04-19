@@ -21,6 +21,15 @@ const templeIntro = {
   ]
 };
 
+const ROSE_FEMININE_IMAGES = [
+  "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/3759657/pexels-photo-3759657.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6015070/pexels-photo-6015070.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/7252509/pexels-photo-7252509.jpeg?auto=compress&cs=tinysrgb&w=1200",
+  "https://images.pexels.com/photos/6931767/pexels-photo-6931767.jpeg?auto=compress&cs=tinysrgb&w=1200",
+];
+
 const teachings = [
   {
     id: "rose-lineage",
@@ -327,25 +336,28 @@ const RoseTemple = ({ user, api }) => {
             
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {embodimentPractices.map((practice, index) => (
+                (() => {
+                  const displayImage = practice?._display_image || ROSE_FEMININE_IMAGES[index % ROSE_FEMININE_IMAGES.length];
+                  return (
                 <motion.div
                   key={`${practice.id || practice.name}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
-                  onClick={() => setSelectedPractice(practice)}
+                  onClick={() => setSelectedPractice({ ...practice, _display_image: displayImage })}
                   className="p-5 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 cursor-pointer hover:scale-[1.02] transition-all group"
                   data-testid={`embodiment-${practice.id}`}
                 >
-                  {practice.image_url && (
-                    <div className="relative h-32 rounded-lg overflow-hidden mb-4">
-                      <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    </div>
-                  )}
+                  <div className="relative h-32 rounded-lg overflow-hidden mb-4">
+                    <img src={displayImage} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  </div>
                   <span className="text-xs text-fuchsia-300 uppercase tracking-wider">{practice.category}</span>
                   <h4 className="font-serif text-lg mt-1 group-hover:text-fuchsia-300 transition-colors">{practice.name}</h4>
                   <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{practice.description}</p>
                 </motion.div>
+                  );
+                })()
               ))}
             </div>
           </motion.div>
@@ -570,12 +582,14 @@ const RoseTemple = ({ user, api }) => {
               className="bg-card rounded-2xl max-w-2xl w-full my-8"
               data-testid="embodiment-modal"
             >
-              {selectedPractice.image_url && (
-                <div className="relative h-48 rounded-t-2xl overflow-hidden">
-                  <img src={selectedPractice.image_url} alt={selectedPractice.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                </div>
-              )}
+              <div className="relative h-48 rounded-t-2xl overflow-hidden">
+                <img
+                  src={selectedPractice._display_image || ROSE_FEMININE_IMAGES[0]}
+                  alt={selectedPractice.name}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+              </div>
               <div className="p-6">
                 <div className="flex items-center gap-2 mb-2">
                   <span className="px-3 py-1 rounded-full bg-fuchsia-500/20 text-fuchsia-300 text-xs">{selectedPractice.category}</span>
