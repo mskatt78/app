@@ -7,6 +7,31 @@ import App from "@/App";
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
+      .then((registration) => {
+        registration.update();
+
+        if (registration.waiting) {
+          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+        }
+
+        registration.addEventListener('updatefound', () => {
+          const installingWorker = registration.installing;
+          if (!installingWorker) return;
+
+          installingWorker.addEventListener('statechange', () => {
+            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              installingWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          });
+        });
+
+        let hasRefreshed = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+          if (hasRefreshed) return;
+          hasRefreshed = true;
+          window.location.reload();
+        });
+      })
       .catch(() => {});
   });
 }

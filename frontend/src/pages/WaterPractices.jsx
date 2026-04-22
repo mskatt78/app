@@ -43,6 +43,21 @@ const normalizeWaterCategory = (value) => {
 };
 
 const WATER_CATEGORY_FALLBACKS = {
+  blessing: [
+    {
+      id: "water-blessing-fallback",
+      name: "Morning Water Blessing",
+      description: "A simple morning blessing practice to attune your water with intention and gratitude.",
+      duration_minutes: 8,
+      category: "blessing",
+      benefits: ["Gentle grounding", "Morning clarity", "Heart coherence"],
+      steps: [
+        "Hold your glass with both hands and breathe slowly.",
+        "Name one quality you want to embody today.",
+        "Bless the water with gratitude and receive it slowly.",
+      ],
+    },
+  ],
   ceremony: [
     {
       id: "water-ceremony-fallback",
@@ -76,6 +91,70 @@ const WATER_CATEGORY_FALLBACKS = {
         "Take five breaths with a longer exhale.",
         "Speak one intention for the day into the water.",
         "Drink slowly and feel your body receive the ritual.",
+      ],
+    },
+  ],
+  frequency: [
+    {
+      id: "water-frequency-fallback",
+      name: "Frequency Water Resonance",
+      description: "Use gentle tone and breath pacing to imprint calming coherence into your hydration ritual.",
+      duration_minutes: 15,
+      category: "frequency",
+      benefits: ["Mental clarity", "Nervous-system ease", "Energetic attunement"],
+      steps: [
+        "Sit comfortably with a bowl or glass of water.",
+        "Play a soft resonance tone and breathe 4-in/6-out.",
+        "Hold awareness at the heart center for two minutes.",
+        "Drink slowly while maintaining calm attention.",
+      ],
+    },
+  ],
+  crystalline: [
+    {
+      id: "water-crystalline-fallback",
+      name: "Crystalline Water Charging",
+      description: "A crystal-aligned hydration practice for focus, tenderness, and energetic reset.",
+      duration_minutes: 10,
+      category: "crystalline",
+      benefits: ["Focused intention", "Emotional softness", "Clear hydration ritual"],
+      steps: [
+        "Place a safe crystal beside your water vessel.",
+        "Set one sentence of intention aloud.",
+        "Breathe slowly and hold the intention for 90 seconds.",
+        "Drink the water with full attention.",
+      ],
+    },
+  ],
+  cleansing: [
+    {
+      id: "water-cleansing-fallback",
+      name: "Energy Cleansing Water Reset",
+      description: "A quick cleanse sequence for emotional release and energetic clarity.",
+      duration_minutes: 12,
+      category: "cleansing",
+      benefits: ["Release stagnation", "Emotional reset", "Energetic clarity"],
+      steps: [
+        "Wash hands intentionally while exhaling tension.",
+        "Sprinkle or anoint pulse points with water.",
+        "Repeat: I release what is not mine to carry.",
+        "Close with three grounding breaths.",
+      ],
+    },
+  ],
+  moon: [
+    {
+      id: "water-moon-fallback",
+      name: "Moon Water Reflection",
+      description: "A lunar-aligned evening practice for intuition, softness, and integration.",
+      duration_minutes: 14,
+      category: "moon",
+      benefits: ["Intuitive listening", "Emotional integration", "Calm evening descent"],
+      steps: [
+        "Sit with moon water and dim lighting.",
+        "Name one emotion you are ready to honor.",
+        "Sip slowly while journaling short reflections.",
+        "Close with gratitude and rest intention.",
       ],
     },
   ],

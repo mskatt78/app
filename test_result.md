@@ -335,6 +335,21 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✓ /water-practices page loads correctly. Page element with data-testid='water-practices' renders. No runtime errors detected. Primary content renders correctly. Test PASSED."
+      - working: true
+        agent: "testing"
+        comment: "✓ Mobile category filtering verified (390x844 viewport). Frequency & Sound: 3 practice cards visible, NO empty state. Ceremonies: 3 practice cards visible, NO empty state. Rituals: 3 practice cards visible, NO empty state. API returns 19 practices across 7 categories. Service Worker active and updated. User-reported issue NOT reproducible - RESOLVED."
+
+  - task: "Water Practices mobile category display - Frequency & Sound"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/WaterPractices.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ User-reported issue: 'Frequency & Sound category shows empty state on mobile' - VERIFIED FIXED. Mobile viewport (390x844) tested. Frequency & Sound category displays 3 practice cards correctly. First practice: 'Charging Water with Loving Words & Intentions'. No empty state message visible. API returns frequency category data. Service worker properly updated (no stale cache). Issue RESOLVED in current build."
 
   - task: "Seasonal Temple page regression smoke test"
     implemented: true
@@ -405,8 +420,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Backend API security and quality verification completed"
-    - "All narration expansion, TTS, retreat cleanup, and randomness checks passed"
+    - "Mobile Water Practices category filtering verification completed"
+    - "User-reported Frequency & Sound empty state issue verified as RESOLVED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -481,6 +496,43 @@ agent_communication:
       3. ✅ Retreat Seeding Cleanup - PASSED
          - GET /retreats returns empty array []
          - No default placeholder retreats seeded
+
+  - agent: "testing"
+    message: |
+      Mobile Water Practices Category Filtering Verification - ISSUE RESOLVED:
+      
+      User Report: "On mobile Water Practices showed empty state under Frequency & Sound"
+      
+      ✅ VERIFICATION RESULTS - ALL PASSED:
+      
+      1. Frequency & Sound Category (Mobile 390x844):
+         - ✓ 3 practice cards displayed correctly
+         - ✓ NO empty state message visible
+         - ✓ First practice: "Charging Water with Loving Words & Intentions"
+         - ✓ Category button clickable and responsive
+      
+      2. Ceremonies Category (Mobile 390x844):
+         - ✓ 3 practice cards displayed correctly
+         - ✓ NO empty state message visible
+         - ✓ First practice: "Sacred Water Gratitude Ceremony"
+      
+      3. Rituals Category (Mobile 390x844):
+         - ✓ 3 practice cards displayed correctly
+         - ✓ NO empty state message visible
+         - ✓ First practice: "Sacred Morning Water Ritual"
+      
+      4. Backend API Health:
+         - ✓ GET /api/water-practices returns 200 status
+         - ✓ 19 total practices returned
+         - ✓ All 7 categories present: blessing, crystalline, cleansing, moon, ceremony, ritual, frequency
+      
+      5. Service Worker Status:
+         - ✓ Service Worker active and in 'activated' state
+         - ✓ No stale page shell behavior detected
+         - ✓ Latest build loaded correctly
+      
+      CONCLUSION: User-reported issue NOT reproducible in current build. All categories display practice cards correctly on mobile. Issue appears to have been resolved in a previous deployment. No action needed.
+
          - Cleanup verification successful
       
       4. ✅ Security Randomness Spot-Check - PASSED

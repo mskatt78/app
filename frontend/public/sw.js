@@ -1,5 +1,5 @@
 // Service Worker for Temple of the Soul - Offline Support
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const STATIC_CACHE = `temple-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `temple-dynamic-${CACHE_VERSION}`;
 
@@ -62,6 +62,12 @@ self.addEventListener('activate', (event) => {
       );
     }).then(() => self.clients.claim())
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // Fetch event - serve from cache, fallback to network
