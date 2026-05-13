@@ -2190,7 +2190,7 @@ CRYSTALS_DEEP = [
 ]
 
 # Helper function to get crystal by ID
-def get_crystal_by_id(crystal_id):
+def get_crystal_by_id(crystal_id: str) -> dict | None:
     for crystal in CRYSTALS_DEEP:
         if crystal["id"] == crystal_id:
             return crystal

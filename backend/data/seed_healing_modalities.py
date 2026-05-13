@@ -494,65 +494,46 @@ CHAKRA_CLEANSING_DATA = [
     },
 ]
 
+def _stamp_healing_dataset(dataset: list[dict], timestamp: str) -> None:
+    for item in dataset:
+        item["created_at"] = timestamp
+        item["updated_at"] = timestamp
+
+
+async def _healing_existing_ids(db, collection_name: str) -> set[str]:
+    ids: set[str] = set()
+    async for doc in db[collection_name].find({}, {"id": 1}):
+        if doc.get("id"):
+            ids.add(doc.get("id"))
+    return ids
+
+
+async def _seed_healing_collection(db, collection_name: str, dataset: list[dict], success_label: str) -> None:
+    existing_ids = await _healing_existing_ids(db, collection_name)
+    new_items = [item for item in dataset if item["id"] not in existing_ids]
+    if new_items:
+        await db[collection_name].insert_many(new_items)
+        print(f"✓ Added {len(new_items)} {success_label}")
+    else:
+        print(f"→ {success_label}: No new entries to add")
+
+
 async def seed_all():
     """Seed all healing modality data to MongoDB."""
     mongo_url = os.environ.get("MONGO_URL")
-    db_name = os.environ.get("DB_NAME", "shamanic_elements")
-    
+    db_name = os.environ.get("DB_NAME")
+
     client = AsyncIOMotorClient(mongo_url)
     db = client[db_name]
-    
+
     timestamp = datetime.now(timezone.utc).isoformat()
-    
-    # Add timestamps
-    for item in ENERGY_HEALING_DATA:
-        item["created_at"] = timestamp
-        item["updated_at"] = timestamp
-    
-    for item in FREE_FORM_MOVEMENT_DATA:
-        item["created_at"] = timestamp
-        item["updated_at"] = timestamp
-    
-    for item in CHAKRA_CLEANSING_DATA:
-        item["created_at"] = timestamp
-        item["updated_at"] = timestamp
-    
-    # Seed Energy Healing (append to existing)
-    existing_ids = set()
-    async for doc in db.energy_healing.find({}, {"id": 1}):
-        existing_ids.add(doc.get("id"))
-    
-    new_energy = [e for e in ENERGY_HEALING_DATA if e["id"] not in existing_ids]
-    if new_energy:
-        await db.energy_healing.insert_many(new_energy)
-        print(f"✓ Added {len(new_energy)} new energy healing modalities")
-    else:
-        print("→ Energy healing: No new modalities to add")
-    
-    # Seed Free Form Movement
-    existing_ids = set()
-    async for doc in db.free_form_movement.find({}, {"id": 1}):
-        existing_ids.add(doc.get("id"))
-    
-    new_movement = [m for m in FREE_FORM_MOVEMENT_DATA if m["id"] not in existing_ids]
-    if new_movement:
-        await db.free_form_movement.insert_many(new_movement)
-        print(f"✓ Added {len(new_movement)} free form movement practices")
-    else:
-        print("→ Free form movement: No new practices to add")
-    
-    # Seed Chakra Cleansing
-    existing_ids = set()
-    async for doc in db.chakra_cleansing.find({}, {"id": 1}):
-        existing_ids.add(doc.get("id"))
-    
-    new_chakra = [c for c in CHAKRA_CLEANSING_DATA if c["id"] not in existing_ids]
-    if new_chakra:
-        await db.chakra_cleansing.insert_many(new_chakra)
-        print(f"✓ Added {len(new_chakra)} chakra cleansing practices")
-    else:
-        print("→ Chakra cleansing: No new practices to add")
-    
+    for dataset in [ENERGY_HEALING_DATA, FREE_FORM_MOVEMENT_DATA, CHAKRA_CLEANSING_DATA]:
+        _stamp_healing_dataset(dataset, timestamp)
+
+    await _seed_healing_collection(db, "energy_healing", ENERGY_HEALING_DATA, "new energy healing modalities")
+    await _seed_healing_collection(db, "free_form_movement", FREE_FORM_MOVEMENT_DATA, "free form movement practices")
+    await _seed_healing_collection(db, "chakra_cleansing", CHAKRA_CLEANSING_DATA, "chakra cleansing practices")
+
     client.close()
     print("\n✨ Healing modalities seeding complete!")
 

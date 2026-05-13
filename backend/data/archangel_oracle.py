@@ -320,12 +320,12 @@ ARCHANGEL_ORACLE = [
 ]
 
 # Helper function to get a random archangel for oracle readings
-def get_archangel_reading():
+def get_archangel_reading() -> dict:
     import secrets
     return ARCHANGEL_ORACLE[secrets.randbelow(len(ARCHANGEL_ORACLE))]
 
 # Helper function to get specific archangel by ID
-def get_archangel_by_id(archangel_id):
+def get_archangel_by_id(archangel_id: str) -> dict | None:
     for archangel in ARCHANGEL_ORACLE:
         if archangel["id"] == archangel_id:
             return archangel

@@ -271,6 +271,7 @@ export default function Courses() {
                 const courseImage = getCourseImage(course);
                 return (
                   <CourseCard
+                    key={course.id}
                     course={course}
                     index={index}
                     userHasAccess={userHasAccess}

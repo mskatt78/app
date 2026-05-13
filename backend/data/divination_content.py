@@ -1389,7 +1389,7 @@ LIGHT_CODE_DEEP_TEACHINGS = {
 }
 
 
-def _compose_light_code_practice(entry, context):
+def _compose_light_code_practice(entry: dict, context: dict) -> str:
     practice_parts = [context["practice_frame"]]
     if entry.get("activation"):
         practice_parts.append(entry["activation"])
@@ -1404,7 +1404,7 @@ def _compose_light_code_practice(entry, context):
     return " ".join(part.strip() for part in practice_parts if part).strip()
 
 
-def _enrich_light_code_entry(category_id, entry):
+def _enrich_light_code_entry(category_id: str, entry: dict) -> dict:
     context = LIGHT_CODE_CATEGORY_CONTEXT[category_id]
     override = LIGHT_CODE_DEEP_TEACHINGS.get(entry["id"], {})
     core_meaning = entry.get("meaning") or entry.get("purpose") or "sacred coherence"
