@@ -12,6 +12,20 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–April 2026)
+- **Code Quality Remediation Sweep (Iteration 92):**
+  - Completed critical frontend quality fixes requested in report:
+    - Hook dependency hardening in key reported files (`routeGuards.jsx`, `VideosLibrary.jsx`, `TarotReading.jsx`, `Courses.jsx`, related pages)
+    - Replaced silent catch blocks in touched files with explicit `console.error` logging (per user preference: console-only)
+    - Replaced index-based React keys in priority pages:
+      - `SomaticYoga.jsx`, `SacredGuardians.jsx`, `Retreats.jsx`, `ProgressDashboard.jsx`, `PartnerYoga.jsx`, `MasculineTemple.jsx`, plus additional updates in `Courses.jsx` and `BirthChart.jsx`
+  - Began P2 refactor work across all requested areas with backend helper extraction:
+    - `auth.py`: extracted session/auth helpers (`_now_iso`, `_build_session`, `_set_session_cookie`, `_upsert_google_user`, `_fetch_emergent_session_user`) and simplified `create_session`, `google_auth`, `register_user`, `login_user`
+    - `content.py`: reduced branch density by extracting prompt/parsing helpers and paragraph builder function paths in extension/LLM expansion
+    - `seed_extended_modalities.py`: split monolithic `seed_all()` into focused helpers (`_stamp_dataset`, `_existing_ids`, `_seed_collection`, `_apply_chakra_image_updates`, `_print_seed_summary`) and removed local fallback env defaults
+  - Verification status:
+    - `/app/test_reports/iteration_92.json` passed with backend **100%** and frontend **100%**
+    - No critical regressions; all action items in test report resolved.
+
 - **Guided Narration Humanization Pass (Iteration 91):**
   - Applied user-selected narration profile globally across guided meditations:
     - Tone: **Adaptive** (graceful opening → stronger empowering middle → soft close)
