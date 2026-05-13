@@ -12,6 +12,23 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–April 2026)
+- **Guided Narration Humanization Pass (Iteration 91):**
+  - Applied user-selected narration profile globally across guided meditations:
+    - Tone: **Adaptive** (graceful opening → stronger empowering middle → soft close)
+    - Repetition control: **Strong** (stem-based anti-repetition tightened)
+    - Pace: **Slightly slower, more expressive** (`DEFAULT_GUIDED_TTS_SPEED=0.84`)
+    - First pause behavior: tuned to **medium** with larger initial narration chunk (`FIRST_SEGMENT_TARGET_WORDS=95`) to reduce early dead-air feel.
+  - Backend improvements (`backend/routers/content.py`):
+    - Strengthened paragraph de-duplication threshold and recent-stem tracking in adaptive generation loops
+    - Updated fallback intro/body/closing language for more human, less repetitive flow
+    - Updated AI expansion prompt constraints to enforce adaptive arc + non-repetitive sentence stems
+  - Frontend guided playback improvements:
+    - `GuidedPracticeOverlay`, `PracticeTimer`, and `GuidedAudioButton` now prefetch the next TTS segment earlier to reduce pause between segment 1→2
+    - Synced slower expressive speed constant across guided components
+  - Validation:
+    - `/app/test_reports/iteration_91.json` passed with backend **100%** and frontend **100%**
+    - Verified: adaptive arc language present, reduced repeated stems, functional guided controls, and improved first-transition pacing.
+
 - **Live UX Feedback Fix Pack (Iteration 90):**
   - Addressed user-reported guidance/sound/content issues:
     - Enabled narration by default for timer-based guided sessions (`PracticeTimer autoNarrate=true`).
