@@ -10,6 +10,7 @@ from typing import Optional, List, Dict, Tuple
 from datetime import datetime, timezone
 import logging
 import math
+from dataclasses import dataclass
 
 try:
     import swisseph as swe
@@ -589,60 +590,63 @@ def _calculate_chart_planets(jd: float) -> list[dict]:
     return planets
 
 
-def _build_birth_chart_payload(
-    request: BirthChartRequest,
-    year: int,
-    month: int,
-    day: int,
-    hour: int,
-    minute: int,
-    latitude: float,
-    longitude: float,
-    timezone_name: str,
-    jd: float,
-    planets: list[dict],
-    houses: list[dict],
-    ascendant: dict,
-    midheaven: dict,
-    aspects: list[dict],
-    elements: dict,
-    qualities: dict,
-) -> dict:
-    sun_planet = next((planet for planet in planets if planet["name"] == "Sun"), {})
+@dataclass
+class BirthChartComputation:
+    request: BirthChartRequest
+    year: int
+    month: int
+    day: int
+    hour: int
+    minute: int
+    latitude: float
+    longitude: float
+    timezone_name: str
+    jd: float
+    planets: list[dict]
+    houses: list[dict]
+    ascendant: dict
+    midheaven: dict
+    aspects: list[dict]
+    elements: dict
+    qualities: dict
+
+
+def _build_birth_chart_payload(computation: BirthChartComputation) -> dict:
+    sun_planet = next((planet for planet in computation.planets if planet["name"] == "Sun"), {})
     sun_sign = sun_planet.get("sign", "Unknown")
-    moon_planet = next((planet for planet in planets if planet["name"] == "Moon"), {})
+    moon_planet = next((planet for planet in computation.planets if planet["name"] == "Moon"), {})
 
     return {
-        "id": f"chart_{year}{month:02d}{day:02d}_{hour:02d}{minute:02d}",
+        "id": f"chart_{computation.year}{computation.month:02d}{computation.day:02d}_{computation.hour:02d}{computation.minute:02d}",
         "calculation_method": "Swiss Ephemeris",
         "precision": "0.0001 degrees",
         "birth_data": {
-            "date": request.birth_date,
-            "time": request.birth_time,
-            "city": request.birth_city,
-            "country": request.birth_country,
-            "latitude": latitude,
-            "longitude": longitude,
-            "timezone": timezone_name,
-            "julian_day": round(jd, 6),
+            "date": computation.request.birth_date,
+            "time": computation.request.birth_time,
+            "city": computation.request.birth_city,
+            "country": computation.request.birth_country,
+            "latitude": computation.latitude,
+            "longitude": computation.longitude,
+            "timezone": computation.timezone_name,
+            "julian_day": round(computation.jd, 6),
         },
         "sun_sign": sun_sign,
         "sun_sign_info": ZODIAC_SIGNS.get(sun_sign, {}),
         "moon_sign": moon_planet.get("sign", "Unknown"),
         "moon_sign_info": ZODIAC_SIGNS.get(moon_planet.get("sign", ""), {}),
-        "rising_sign": ascendant["sign"],
-        "rising_sign_info": ZODIAC_SIGNS.get(ascendant["sign"], {}),
-        "ascendant": ascendant,
-        "midheaven": midheaven,
-        "planets": planets,
-        "houses": houses,
-        "aspects": aspects,
-        "elements": elements,
-        "qualities": qualities,
+        "rising_sign": computation.ascendant["sign"],
+        "rising_sign_info": ZODIAC_SIGNS.get(computation.ascendant["sign"], {}),
+        "ascendant": computation.ascendant,
+        "midheaven": computation.midheaven,
+        "planets": computation.planets,
+        "houses": computation.houses,
+        "aspects": computation.aspects,
+        "elements": computation.elements,
+        "qualities": computation.qualities,
         "big_three": {
             "sun": {"sign": sun_sign, "symbol": ZODIAC_SIGNS.get(sun_sign, {}).get("symbol", "")},
             "moon": {"sign": moon_planet.get("sign", "Unknown"), "symbol": moon_planet.get("sign_symbol", "")},
-            "rising": {"sign": ascendant["sign"], "symbol": ascendant["sign_symbol"]},
+            "rising": {"sign": computation.ascendant["sign"], "symbol": computation.ascendant["sign_symbol"]},
         },
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -680,7 +684,7 @@ async def calculate_birth_chart(request: BirthChartRequest):
         elements = calculate_element_balance(planets + [ascendant])
         qualities = calculate_quality_balance(planets + [ascendant])
         
-        return _build_birth_chart_payload(
+        computation = BirthChartComputation(
             request=request,
             year=year,
             month=month,
@@ -699,6 +703,7 @@ async def calculate_birth_chart(request: BirthChartRequest):
             elements=elements,
             qualities=qualities,
         )
+        return _build_birth_chart_payload(computation)
         
     except Exception as e:
         logger.error(f"Birth chart calculation error: {e}")
