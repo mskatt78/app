@@ -168,8 +168,8 @@ const PracticeTimer = ({
       bowlIntervalRef.current = null;
     }
     sourcesRef.current.forEach((source) => {
-      try { source.stop?.(); } catch (_) {}
-      try { source.disconnect?.(); } catch (_) {}
+      try { source.stop?.(); } catch (error) { console.error("PracticeTimer source stop failed:", error); }
+      try { source.disconnect?.(); } catch (error) { console.error("PracticeTimer source disconnect failed:", error); }
     });
     sourcesRef.current = [];
     if (audioContextRef.current && audioContextRef.current.state !== "closed") {
@@ -472,7 +472,9 @@ const PracticeTimer = ({
       osc2.start();
       osc2.stop(ctx.currentTime + 1.0);
       setTimeout(() => ctx.close(), 2000);
-    } catch (_) {}
+    } catch (error) {
+      console.error("PracticeTimer completion chime failed:", error);
+    }
   }, []);
 
   const syncElapsedFromClock = useCallback(() => {
@@ -656,7 +658,9 @@ const PracticeTimer = ({
         source.start(0);
         window.__warmAudioCtx = ctx;
       }
-    } catch (_) {}
+    } catch (error) {
+      console.error("PracticeTimer audio warm-up failed:", error);
+    }
   };
 
   const handlePlayPause = () => {

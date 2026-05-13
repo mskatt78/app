@@ -24,7 +24,8 @@ export const AuthCallback = ({ api }) => {
         const response = await api.post("/auth/session", { session_id: sessionId });
         window.history.replaceState(null, "", window.location.pathname);
         navigate("/dashboard", { state: { user: response.data }, replace: true });
-      } catch {
+      } catch (error) {
+        console.error("Auth callback processing failed:", error);
         navigate("/", { replace: true });
       }
     };
@@ -64,8 +65,9 @@ export const ProtectedRoute = ({ children, api }) => {
         setUser(response.data);
         setHasAuthError(false);
         setIsAuthenticated(true);
-      } catch {
+      } catch (error) {
         if (!isMounted) return;
+        console.error("Protected route auth check failed:", error);
         setHasAuthError(true);
         setIsAuthenticated(false);
         navigate("/", { replace: true });
@@ -125,8 +127,8 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
           setIsAuthorized(true);
           return;
         }
-      } catch {
-        // Continue with cookie-session admin validation below.
+      } catch (error) {
+        console.error("Admin route /auth/me check failed, trying cookie fallback:", error);
       }
 
       try {
@@ -141,7 +143,8 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
           toast.error("Admin access required");
           navigate("/dashboard", { replace: true });
         }
-      } catch {
+      } catch (error) {
+        console.error("Admin route cookie validation failed:", error);
         setIsAuthorized(false);
         toast.error("Please sign in to access admin");
         navigate("/", { replace: true });
@@ -183,8 +186,9 @@ export const PublicRoute = ({ children, api }) => {
         const response = await api.get("/auth/me");
         if (!isMounted) return;
         setUser(response.data);
-      } catch {
+      } catch (error) {
         if (!isMounted) return;
+        console.error("Public route auth check failed:", error);
         setUser(null);
       }
       if (!isMounted) return;

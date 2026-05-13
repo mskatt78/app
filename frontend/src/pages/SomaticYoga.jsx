@@ -197,7 +197,7 @@ export default function SomaticYoga() {
                     <h3 className="text-sm font-medium mb-2">Benefits</h3>
                     <div className="flex flex-wrap gap-2">
                       {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((b, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
+                        <span key={`${selectedPractice.id || selectedPractice.name}-benefit-${String(b).slice(0, 24)}-${i}`} className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
                       ))}
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -24,11 +24,7 @@ const TarotReading = ({ user, api }) => {
   const [selectedSpread, setSelectedSpread] = useState(null);
   const [showDeck, setShowDeck] = useState(true);
 
-  useEffect(() => {
-    fetchCards();
-  }, []);
-
-  const fetchCards = async () => {
+  const fetchCards = useCallback(async () => {
     try {
       const response = await api.get("/tarot/cards");
       setCards(response.data);
@@ -37,7 +33,11 @@ const TarotReading = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchCards();
+  }, [fetchCards]);
 
   const getReading = async (spread) => {
     setSelectedSpread(spread);

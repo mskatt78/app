@@ -343,7 +343,7 @@ const ProgressDashboard = ({ user, api }) => {
               { name: "Element Explorer", desc: "Try all 5 elements", icon: Sparkles },
               { name: "Moon Child", desc: "Practice on full moon", icon: Moon }
             ].map((achievement, i) => (
-              <div key={i} className="flex-shrink-0 w-24 text-center">
+              <div key={`${achievement.name}-${i}`} className="flex-shrink-0 w-24 text-center">
                 <div className="w-16 h-16 mx-auto rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center mb-2">
                   <achievement.icon className="w-8 h-8 text-amber-400" />
                 </div>
@@ -370,7 +370,7 @@ const ProgressDashboard = ({ user, api }) => {
             ].map((milestone, i) => {
               const progress = Math.min((milestone.current / milestone.target) * 100, 100);
               return (
-                <div key={i}>
+                <div key={`${milestone.label}-${i}`}>
                   <div className="flex justify-between text-sm mb-1">
                     <span className="text-muted-foreground">{milestone.label}</span>
                     <span>{milestone.current} / {milestone.target}</span>

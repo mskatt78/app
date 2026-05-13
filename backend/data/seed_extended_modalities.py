@@ -660,71 +660,31 @@ MASCULINE_EMBODIMENT_DATA = [
 ]
 
 
-async def seed_all():
-    """Seed all extended modality data to MongoDB."""
-    mongo_url = os.environ.get("MONGO_URL", "mongodb://localhost:27017")
-    db_name = os.environ.get("DB_NAME", "test_database")
-    
-    client = AsyncIOMotorClient(mongo_url)
-    db = client[db_name]
-    
-    timestamp = datetime.now(timezone.utc).isoformat()
-    
-    # Add timestamps to all data
-    for dataset in [EXTENDED_CHAKRAS, SOMATIC_YOGA_DATA, FEMININE_EMBODIMENT_DATA, MASCULINE_EMBODIMENT_DATA]:
-        for item in dataset:
-            item["created_at"] = timestamp
-            item["updated_at"] = timestamp
-    
-    # Seed Extended Chakras (append to existing)
-    existing_ids = set()
-    async for doc in db.chakra_cleansing.find({}, {"id": 1}):
-        existing_ids.add(doc.get("id"))
-    
-    new_chakras = [c for c in EXTENDED_CHAKRAS if c["id"] not in existing_ids]
-    if new_chakras:
-        await db.chakra_cleansing.insert_many(new_chakras)
-        print(f"✓ Added {len(new_chakras)} new chakras (extended 13-chakra system)")
+def _stamp_dataset(dataset: list[dict], timestamp: str) -> None:
+    for item in dataset:
+        item["created_at"] = timestamp
+        item["updated_at"] = timestamp
+
+
+async def _existing_ids(db, collection_name: str) -> set[str]:
+    ids: set[str] = set()
+    async for doc in db[collection_name].find({}, {"id": 1}):
+        if doc.get("id"):
+            ids.add(doc.get("id"))
+    return ids
+
+
+async def _seed_collection(db, collection_name: str, dataset: list[dict], success_label: str) -> None:
+    existing_ids = await _existing_ids(db, collection_name)
+    new_items = [item for item in dataset if item["id"] not in existing_ids]
+    if new_items:
+        await db[collection_name].insert_many(new_items)
+        print(f"✓ Added {len(new_items)} {success_label}")
     else:
-        print("→ Extended chakras already exist")
-    
-    # Seed Somatic Yoga (new collection)
-    existing_ids = set()
-    async for doc in db.somatic_yoga.find({}, {"id": 1}):
-        existing_ids.add(doc.get("id"))
-    
-    new_somatic = [s for s in SOMATIC_YOGA_DATA if s["id"] not in existing_ids]
-    if new_somatic:
-        await db.somatic_yoga.insert_many(new_somatic)
-        print(f"✓ Added {len(new_somatic)} somatic yoga practices")
-    else:
-        print("→ Somatic yoga practices already exist")
-    
-    # Seed Feminine Embodiment
-    existing_ids = set()
-    async for doc in db.feminine_embodiment.find({}, {"id": 1}):
-        existing_ids.add(doc.get("id"))
-    
-    new_feminine = [f for f in FEMININE_EMBODIMENT_DATA if f["id"] not in existing_ids]
-    if new_feminine:
-        await db.feminine_embodiment.insert_many(new_feminine)
-        print(f"✓ Added {len(new_feminine)} feminine embodiment practices")
-    else:
-        print("→ Feminine embodiment practices already exist")
-    
-    # Seed Masculine Embodiment
-    existing_ids = set()
-    async for doc in db.masculine_embodiment.find({}, {"id": 1}):
-        existing_ids.add(doc.get("id"))
-    
-    new_masculine = [m for m in MASCULINE_EMBODIMENT_DATA if m["id"] not in existing_ids]
-    if new_masculine:
-        await db.masculine_embodiment.insert_many(new_masculine)
-        print(f"✓ Added {len(new_masculine)} masculine embodiment practices")
-    else:
-        print("→ Masculine embodiment practices already exist")
-    
-    # Update existing chakras with unique images (throat, third eye, crown)
+        print(f"→ {success_label} already exist")
+
+
+async def _apply_chakra_image_updates(db, timestamp: str) -> None:
     updates = [
         ("throat-chakra-cleanse", IMAGES["chakra_throat"]),
         ("third-eye-chakra-cleanse", IMAGES["chakra_third_eye"]),
@@ -732,17 +692,40 @@ async def seed_all():
     for chakra_id, new_image in updates:
         result = await db.chakra_cleansing.update_one(
             {"id": chakra_id},
-            {"$set": {"image_url": new_image, "updated_at": timestamp}}
+            {"$set": {"image_url": new_image, "updated_at": timestamp}},
         )
         if result.modified_count:
             print(f"✓ Updated image for {chakra_id}")
-    
-    client.close()
+
+
+def _print_seed_summary() -> None:
     print("\n✨ Extended modalities seeding complete!")
-    print(f"   - 13-chakra system (Earth Star → Universal Gateway)")
+    print("   - 13-chakra system (Earth Star → Universal Gateway)")
     print(f"   - {len(SOMATIC_YOGA_DATA)} Somatic Yoga practices")
     print(f"   - {len(FEMININE_EMBODIMENT_DATA)} Feminine Embodiment practices")
     print(f"   - {len(MASCULINE_EMBODIMENT_DATA)} Masculine Embodiment practices")
+
+
+async def seed_all():
+    """Seed all extended modality data to MongoDB."""
+    mongo_url = os.environ.get("MONGO_URL")
+    db_name = os.environ.get("DB_NAME")
+
+    client = AsyncIOMotorClient(mongo_url)
+    db = client[db_name]
+
+    timestamp = datetime.now(timezone.utc).isoformat()
+    for dataset in [EXTENDED_CHAKRAS, SOMATIC_YOGA_DATA, FEMININE_EMBODIMENT_DATA, MASCULINE_EMBODIMENT_DATA]:
+        _stamp_dataset(dataset, timestamp)
+
+    await _seed_collection(db, "chakra_cleansing", EXTENDED_CHAKRAS, "new chakras (extended 13-chakra system)")
+    await _seed_collection(db, "somatic_yoga", SOMATIC_YOGA_DATA, "somatic yoga practices")
+    await _seed_collection(db, "feminine_embodiment", FEMININE_EMBODIMENT_DATA, "feminine embodiment practices")
+    await _seed_collection(db, "masculine_embodiment", MASCULINE_EMBODIMENT_DATA, "masculine embodiment practices")
+
+    await _apply_chakra_image_updates(db, timestamp)
+    client.close()
+    _print_seed_summary()
 
 
 if __name__ == "__main__":

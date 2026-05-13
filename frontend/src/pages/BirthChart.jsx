@@ -477,7 +477,7 @@ const BirthChart = ({ user, api }) => {
                       <div className="space-y-2 max-h-96 overflow-y-auto">
                         {chart.aspects?.map((aspect, index) => (
                           <div
-                            key={index}
+                            key={`${aspect.planet1}-${aspect.aspect}-${aspect.planet2}-${index}`}
                             className={`p-3 rounded-lg ${getAspectColor(aspect.aspect)} flex items-center justify-between`}
                           >
                             <div className="flex items-center gap-2">

@@ -390,7 +390,7 @@ const PartnerYoga = ({ user, api }) => {
                   </h3>
                   <ol className="space-y-2">
                     {selectedPose.instructions.map((step, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                      <li key={`${selectedPose.id || selectedPose.name}-instruction-${String(step).slice(0, 24)}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                         <span className={`w-6 h-6 rounded-full ${selectedPose.color.bg} border ${selectedPose.color.border} flex items-center justify-center text-xs ${selectedPose.color.text} flex-shrink-0`}>
                           {i + 1}
                         </span>
@@ -404,7 +404,7 @@ const PartnerYoga = ({ user, api }) => {
                   <h3 className="font-serif mb-3">Benefits</h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedPose.benefits.map((b, i) => (
-                      <span key={i} className={`px-3 py-1 rounded-full text-xs ${selectedPose.color.bg} ${selectedPose.color.text} border ${selectedPose.color.border}`}>
+                      <span key={`${selectedPose.id || selectedPose.name}-benefit-${String(b).slice(0, 24)}-${i}`} className={`px-3 py-1 rounded-full text-xs ${selectedPose.color.bg} ${selectedPose.color.text} border ${selectedPose.color.border}`}>
                         {b}
                       </span>
                     ))}
@@ -415,7 +415,7 @@ const PartnerYoga = ({ user, api }) => {
                   <h3 className="font-serif text-sm mb-2 text-muted-foreground">Modifications</h3>
                   <ul className="space-y-1">
                     {selectedPose.modifications.map((m, i) => (
-                      <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
+                      <li key={`${selectedPose.id || selectedPose.name}-mod-${String(m).slice(0, 24)}-${i}`} className="text-sm text-muted-foreground flex items-start gap-2">
                         <span className="text-primary mt-0.5">•</span>
                         {m}
                       </li>

@@ -265,7 +265,7 @@ const SacredGuardians = ({ user, api }) => {
                     </h4>
                     <div className="flex flex-wrap gap-2">
                       {selected.symbolism.map((s, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-xs text-muted-foreground border border-white/10">
+                        <span key={`${selected.id || selected.name}-symbol-${String(s).slice(0, 24)}-${i}`} className="px-3 py-1 rounded-full bg-white/5 text-xs text-muted-foreground border border-white/10">
                           {s}
                         </span>
                       ))}
@@ -282,7 +282,7 @@ const SacredGuardians = ({ user, api }) => {
                     </h4>
                     <div className="grid grid-cols-2 gap-2">
                       {selected.spiritual_gifts.map((gift, i) => (
-                        <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-amber-500/5 border border-amber-500/10">
+                        <div key={`${selected.id || selected.name}-gift-${String(gift).slice(0, 24)}-${i}`} className="flex items-start gap-2 p-2 rounded-lg bg-amber-500/5 border border-amber-500/10">
                           <ChevronRight className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
                           <span className="text-xs text-muted-foreground">{gift}</span>
                         </div>
@@ -300,7 +300,7 @@ const SacredGuardians = ({ user, api }) => {
                     </h4>
                     <ol className="space-y-2">
                       {selected.how_to_connect.map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                        <li key={`${selected.id || selected.name}-step-${String(step).slice(0, 24)}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                           <span className="w-6 h-6 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-xs text-rose-400 flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>

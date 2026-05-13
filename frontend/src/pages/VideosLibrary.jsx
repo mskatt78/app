@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -41,19 +41,7 @@ const VideosLibrary = ({ api }) => {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [filteredVideos, setFilteredVideos] = useState([]);
 
-  useEffect(() => {
-    fetchVideos();
-  }, []);
-
-  useEffect(() => {
-    if (activeCategory === "all") {
-      setFilteredVideos(videos);
-    } else {
-      setFilteredVideos(videos.filter(v => v.category === activeCategory));
-    }
-  }, [activeCategory, videos]);
-
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
     try {
       const response = await api.get("/videos");
       setVideos(response.data);
@@ -64,7 +52,19 @@ const VideosLibrary = ({ api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchVideos();
+  }, [fetchVideos]);
+
+  useEffect(() => {
+    if (activeCategory === "all") {
+      setFilteredVideos(videos);
+    } else {
+      setFilteredVideos(videos.filter(v => v.category === activeCategory));
+    }
+  }, [activeCategory, videos]);
 
   const getYouTubeId = (url) => {
     if (!url) return null;

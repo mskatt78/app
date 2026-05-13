@@ -419,22 +419,21 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
         "Steadiness is more valuable than intensity", "Let this settle before moving ahead", "Presence is the practice",
     ]
 
+    def build_paragraph(idx: int, context_queue_ref: list[str]) -> str:
+        opener = openers[idx % len(openers)]
+        closer = closers[(idx * 2 + 1) % len(closers)]
+        optional_context = f" {context_queue_ref.pop(0)}." if context_queue_ref and idx % 4 == 0 else ""
+        if idx % 2 == 0:
+            return f"{opener}. Keep your breathing even and unforced.{optional_context} {closer}."
+        return f"{opener}. Let your body stay receptive while attention remains clear.{optional_context} {closer}."
+
     generated: list[str] = []
     words = 0
     index = start_index
     context_queue = context_sentences[:]
     recent_stems: list[str] = []
     while words < required_words + 40:
-        opener = openers[index % len(openers)]
-        closer = closers[(index * 2 + 1) % len(closers)]
-        optional_context = ""
-        if context_queue and index % 4 == 0:
-            optional_context = f" {context_queue.pop(0)}."
-
-        if index % 2 == 0:
-            paragraph = f"{opener}. Keep your breathing even and unforced.{optional_context} {closer}."
-        else:
-            paragraph = f"{opener}. Let your body stay receptive while attention remains clear.{optional_context} {closer}."
+        paragraph = build_paragraph(index, context_queue)
         stem = " ".join(_normalize_text_for_repeat_check(paragraph).split()[:10])
         if stem and stem in recent_stems:
             index += 1
@@ -462,15 +461,16 @@ async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> O
         logger.warning("Could not import LLM chat for script expansion: %s", exc)
         return None
 
-    context_lines = [line for line in _flatten_text(request.source_texts + request.steps) if line]
-    trimmed_context = "\n".join(context_lines[:60])
-
-    prompt = f"""
+    def build_prompt() -> str:
+        context_lines = [line for line in _flatten_text(request.source_texts + request.steps) if line]
+        trimmed_context = "\n".join(context_lines[:60])
+        target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
+        return f"""
 Create a deeply detailed guided meditation narration script.
 
 Practice name: {request.practice_name}
 Element: {request.element or 'spirit'}
-Duration target (minutes): {max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))}
+Duration target (minutes): {target_minutes}
 Minimum target words: {target_words}
 
 Source context:
@@ -486,6 +486,18 @@ Requirements:
 7) Use an adaptive arc: graceful opening, stronger empowering middle, soft integrative close.
 8) Keep first spoken transition concise (no prolonged opening silence language).
 """.strip()
+
+    def parse_paragraphs(text: str) -> list[str]:
+        paragraphs = [p.strip() for p in re.split(r"\n{2,}", text) if p.strip()]
+        if paragraphs:
+            return paragraphs
+        return [
+            paragraph.strip()
+            for paragraph in re.split(r"(?<=[.!?])\s+(?=[A-Z])", text)
+            if paragraph.strip()
+        ]
+
+    prompt = build_prompt()
 
     try:
         chat = LlmChat(
@@ -505,13 +517,7 @@ Requirements:
         if _count_words(text) < int(target_words * 0.55):
             return None
 
-        paragraphs = [p.strip() for p in re.split(r"\n{2,}", text) if p.strip()]
-        if not paragraphs:
-            paragraphs = [
-                paragraph.strip()
-                for paragraph in re.split(r"(?<=[.!?])\s+(?=[A-Z])", text)
-                if paragraph.strip()
-            ]
+        paragraphs = parse_paragraphs(text)
         return paragraphs or None
     except Exception as exc:
         logger.warning("AI script expansion failed: %s", exc)

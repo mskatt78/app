@@ -39,8 +39,8 @@ export default function Courses() {
       });
       setPurchasedCourses(data.purchased_courses || []);
       setHasSubscription(data.has_subscription || false);
-    } catch {
-      // ignore unavailable access status for guests
+    } catch (error) {
+      console.error("Failed to fetch course access:", error);
     }
   }, []);
 
@@ -71,7 +71,8 @@ export default function Courses() {
         return;
       }
       setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), 2000);
-    } catch {
+    } catch (error) {
+      console.error("Payment status polling failed:", error);
       if (attempts < 9) setTimeout(() => pollPaymentStatus(sessionId, attempts + 1), 2000);
       else { setCheckingPayment(false); toast.error("Error verifying payment."); }
     }
@@ -85,21 +86,22 @@ export default function Courses() {
     }
   }, [searchParams, pollPaymentStatus]);
 
-  useEffect(() => {
-    fetchCourses();
-    fetchCourseAccess();
-  }, [fetchCourseAccess]);
-
-  const fetchCourses = async () => {
+  const fetchCourses = useCallback(async () => {
     try {
       const { data } = await api.get("/courses");
       setCourses(data);
-    } catch {
+    } catch (error) {
+      console.error("Failed loading courses:", error);
       toast.error("Failed to load courses");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchCourses();
+    fetchCourseAccess();
+  }, [fetchCourseAccess, fetchCourses]);
 
   const handlePurchase = async (course) => {
     if (!isLoggedIn()) {
@@ -514,7 +516,7 @@ export default function Courses() {
                 {activeTab === "rites" && selectedCourse.rites?.length > 0 && (
                   <div className="p-4 space-y-3" data-testid="rites-tab-content">
                     {selectedCourse.rites.map((rite, i) => (
-                      <div key={i} className="rounded-xl border border-violet-500/20 bg-violet-500/5 overflow-hidden">
+                      <div key={`${selectedCourse.id}-rite-${rite.name || i}`} className="rounded-xl border border-violet-500/20 bg-violet-500/5 overflow-hidden">
                         <button
                           onClick={() => setExpandedRite(expandedRite === i ? null : i)}
                           className="w-full flex items-start justify-between p-4 text-left hover:bg-violet-500/10 transition-colors"
@@ -556,7 +558,7 @@ export default function Courses() {
                                     </p>
                                     <ol className="space-y-1.5">
                                       {rite.embodiment_practice.steps?.map((step, si) => (
-                                        <li key={si} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                        <li key={`${selectedCourse.id}-rite-step-${i}-${String(step).slice(0, 24)}-${si}`} className="flex items-start gap-2 text-xs text-muted-foreground">
                                           <span className="w-4 h-4 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{si + 1}</span>
                                           <span>{step}</span>
                                         </li>
@@ -577,7 +579,7 @@ export default function Courses() {
                 {activeTab === "rituals" && selectedCourse.rituals?.length > 0 && (
                   <div className="p-4 space-y-4" data-testid="rituals-tab-content">
                     {selectedCourse.rituals.map((ritual, i) => (
-                      <div key={i} className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+                      <div key={`${selectedCourse.id}-ritual-${ritual.name || i}`} className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
                         <button
                           onClick={() => setExpandedRitual(expandedRitual === i ? null : i)}
                           className="w-full flex items-start justify-between p-4 text-left hover:bg-amber-500/10 transition-colors"
@@ -608,7 +610,7 @@ export default function Courses() {
                                     <p className="text-xs text-amber-300 font-medium mb-2">You will need:</p>
                                     <ul className="space-y-1">
                                       {ritual.what_you_need.map((item, wi) => (
-                                        <li key={wi} className="text-xs text-muted-foreground flex items-center gap-2">
+                                        <li key={`${selectedCourse.id}-ritual-need-${i}-${String(item).slice(0, 24)}-${wi}`} className="text-xs text-muted-foreground flex items-center gap-2">
                                           <span className="w-1 h-1 rounded-full bg-amber-400/60 flex-shrink-0" />
                                           {item}
                                         </li>
@@ -621,7 +623,7 @@ export default function Courses() {
                                     <p className="text-xs text-amber-300 font-medium mb-2">Steps:</p>
                                     <ol className="space-y-2">
                                       {ritual.steps.map((step, si) => (
-                                        <li key={si} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                        <li key={`${selectedCourse.id}-ritual-step-${i}-${String(step).slice(0, 24)}-${si}`} className="flex items-start gap-2 text-xs text-muted-foreground">
                                           <span className="w-4 h-4 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{si + 1}</span>
                                           <span>{step}</span>
                                         </li>
@@ -648,7 +650,7 @@ export default function Courses() {
                 {activeTab === "embodiment" && selectedCourse.embodiment_practices?.length > 0 && (
                   <div className="p-4 space-y-4" data-testid="embodiment-tab-content">
                     {selectedCourse.embodiment_practices.map((practice, i) => (
-                      <div key={i} className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-4 space-y-3">
+                      <div key={`${selectedCourse.id}-embodiment-${practice.name || i}`} className="rounded-xl border border-rose-500/20 bg-rose-500/5 p-4 space-y-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <p className="font-medium text-sm text-rose-100">{practice.name}</p>
@@ -663,7 +665,7 @@ export default function Courses() {
                         {practice.steps?.length > 0 && (
                           <ol className="space-y-2">
                             {practice.steps.map((step, si) => (
-                              <li key={si} className="flex items-start gap-2 text-xs text-muted-foreground">
+                              <li key={`${selectedCourse.id}-embodiment-step-${i}-${String(step).slice(0, 24)}-${si}`} className="flex items-start gap-2 text-xs text-muted-foreground">
                                 <span className="w-4 h-4 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{si + 1}</span>
                                 <span>{step}</span>
                               </li>
@@ -718,7 +720,7 @@ export default function Courses() {
                           ? selectedCourse.daily_practice.steps
                           : selectedCourse.daily_practice.steps.slice(0, 3)
                         ).map((step, si) => (
-                          <div key={si} className="flex items-start gap-2 text-sm text-muted-foreground p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
+                          <div key={`${selectedCourse.id}-daily-step-${String(step).slice(0, 24)}-${si}`} className="flex items-start gap-2 text-sm text-muted-foreground p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
                             <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{si + 1}</span>
                             <span className="leading-relaxed">{step}</span>
                           </div>
@@ -727,7 +729,7 @@ export default function Courses() {
                           <div className="relative rounded-xl overflow-hidden">
                             <div className="space-y-2 opacity-25 blur-[2px] pointer-events-none select-none">
                               {selectedCourse.daily_practice.steps.slice(3, 5).map((step, si) => (
-                                <div key={si} className="flex items-start gap-2 text-sm p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
+                                <div key={`${selectedCourse.id}-daily-blur-${String(step).slice(0, 24)}-${si}`} className="flex items-start gap-2 text-sm p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/10">
                                   <span className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{si + 4}</span>
                                   <span>{step}</span>
                                 </div>
@@ -768,7 +770,7 @@ export default function Courses() {
                     {selectedCourse.forty_day_integration.phases?.map((phase, idx) => {
                       const isLocked = idx > 0 && !hasAccess(selectedCourse.id);
                       return (
-                        <div key={idx} className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+                        <div key={`${selectedCourse.id}-phase-${phase.title || idx}`} className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
                           <div className="p-4">
                             <div className="flex items-center justify-between gap-2 mb-2">
                               <span className="text-xs text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded-full">{phase.days}</span>
@@ -796,7 +798,7 @@ export default function Courses() {
                                     <p className="text-xs text-amber-300 font-medium mb-2">Journal Prompts</p>
                                     <ul className="space-y-1.5">
                                       {phase.journaling_prompts.map((prompt, pi) => (
-                                        <li key={pi} className="flex items-start gap-2 text-xs text-muted-foreground">
+                                        <li key={`${selectedCourse.id}-prompt-${idx}-${String(prompt).slice(0, 24)}-${pi}`} className="flex items-start gap-2 text-xs text-muted-foreground">
                                           <span className="text-amber-400 mt-0.5 flex-shrink-0">•</span>
                                           <span className="leading-relaxed">{prompt}</span>
                                         </li>

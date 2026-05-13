@@ -292,7 +292,7 @@ const MasculineTemple = ({ user, api }) => {
                 <p className="text-muted-foreground mt-4 mb-6 leading-relaxed">{templeIntro.description}</p>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {templeIntro.principles.map((principle, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-black/20 border border-amber-500/10">
+                    <div key={`${principle.title}-${i}`} className="p-4 rounded-xl bg-black/20 border border-amber-500/10">
                       <h4 className="font-serif text-amber-300 mb-2">{principle.title}</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed">{principle.text}</p>
                     </div>
@@ -474,7 +474,7 @@ const MasculineTemple = ({ user, api }) => {
                 {activeTab === "teachings" && (
                   <div className="space-y-4">
                     {selectedArchetype.teachings.map((t, i) => (
-                      <div key={i} className={`p-5 rounded-xl ${selectedArchetype.color.bg} border ${selectedArchetype.color.border}`}>
+                      <div key={`${selectedArchetype.id}-teaching-${t.heading}-${i}`} className={`p-5 rounded-xl ${selectedArchetype.color.bg} border ${selectedArchetype.color.border}`}>
                         <h4 className="font-serif mb-2">{t.heading}</h4>
                         <p className="text-sm text-muted-foreground leading-relaxed">{t.body}</p>
                       </div>
@@ -484,7 +484,7 @@ const MasculineTemple = ({ user, api }) => {
                 {activeTab === "practices" && (
                   <div className="space-y-4">
                     {selectedArchetype.practices.map((p, i) => (
-                      <div key={i} className="p-5 rounded-xl bg-white/5 border border-white/10">
+                      <div key={`${selectedArchetype.id}-practice-${p.name}-${i}`} className="p-5 rounded-xl bg-white/5 border border-white/10">
                         <h4 className="font-serif mb-2 flex items-center gap-2">
                           <Star className={`w-4 h-4 ${selectedArchetype.color.text}`} />
                           {p.name}
@@ -508,7 +508,7 @@ const MasculineTemple = ({ user, api }) => {
                     </div>
                     <ol className="space-y-3">
                       {selectedArchetype.ritual.steps.map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                        <li key={`${selectedArchetype.id}-ritual-step-${String(step).slice(0, 24)}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                           <span className={`w-7 h-7 rounded-full ${selectedArchetype.color.bg} border ${selectedArchetype.color.border} flex items-center justify-center text-xs ${selectedArchetype.color.text} flex-shrink-0`}>{i + 1}</span>
                           {step}
                         </li>
@@ -601,7 +601,7 @@ const MasculineTemple = ({ user, api }) => {
                     <h3 className="text-sm font-medium mb-2">Benefits</h3>
                     <div className="flex flex-wrap gap-2">
                       {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((b, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
+                        <span key={`${selectedPractice.id || selectedPractice.name}-benefit-${String(b).slice(0, 24)}-${i}`} className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
                       ))}
                     </div>
                   </div>

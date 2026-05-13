@@ -598,8 +598,8 @@ const AmbientSoundPlayer = ({
     
     // Stop sources
     sourcesRef.current.forEach(source => {
-      try { source.stop?.(); } catch (e) {}
-      try { source.disconnect?.(); } catch (e) {}
+      try { source.stop?.(); } catch (error) { console.error("Ambient cleanup stop failed:", error); }
+      try { source.disconnect?.(); } catch (error) { console.error("Ambient cleanup disconnect failed:", error); }
     });
     sourcesRef.current = [];
     

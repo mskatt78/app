@@ -6,6 +6,7 @@ import hashlib
 import secrets
 import uuid
 import logging
+from typing import Optional
 
 from .dependencies import get_db, get_current_user, User
 
@@ -40,32 +41,82 @@ def verify_password(password: str, password_hash: str, salt: str) -> bool:
     computed_hash = hashlib.sha256(f"{password}{salt}".encode()).hexdigest()
     return computed_hash == password_hash
 
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _build_session(user_id: str, days: int, session_token: Optional[str] = None) -> dict:
+    token = session_token or secrets.token_urlsafe(32)
+    return {
+        "session_token": token,
+        "user_id": user_id,
+        "created_at": _now_iso(),
+        "expires_at": (datetime.now(timezone.utc) + timedelta(days=days)).isoformat(),
+    }
+
+
+def _set_session_cookie(response: Response, session_token: str, days: int) -> None:
+    response.set_cookie(
+        key="session_token",
+        value=session_token,
+        httponly=True,
+        secure=True,
+        samesite="none",
+        path="/",
+        max_age=days * 24 * 60 * 60,
+    )
+
+
+async def _upsert_google_user(db, email: str, name: str, picture: Optional[str], fallback_user_id: Optional[str] = None) -> str:
+    existing_user = await db.users.find_one({"email": email}, {"_id": 0})
+    if existing_user:
+        await db.users.update_one(
+            {"email": email},
+            {"$set": {"name": name, "picture": picture, "last_login": _now_iso()}},
+        )
+        return existing_user["user_id"]
+
+    user_id = fallback_user_id or f"user_{uuid.uuid4().hex[:12]}"
+    await db.users.insert_one(
+        {
+            "user_id": user_id,
+            "email": email,
+            "name": name,
+            "picture": picture,
+            "auth_type": "google",
+            "created_at": _now_iso(),
+            "last_login": _now_iso(),
+        }
+    )
+    return user_id
+
+
+async def _fetch_emergent_session_user(session_id: str) -> dict:
+    import httpx
+
+    try:
+        async with httpx.AsyncClient() as client:
+            emergent_response = await client.get(
+                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+                headers={"X-Session-ID": session_id},
+                timeout=10.0,
+            )
+            if emergent_response.status_code != 200:
+                logger.error(f"Emergent auth failed: {emergent_response.text}")
+                raise HTTPException(status_code=400, detail="Invalid session. Please sign in with Google.")
+            return emergent_response.json()
+    except httpx.RequestError as error:
+        logger.error(f"Emergent auth request failed: {error}")
+        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+
 # ============ GOOGLE OAUTH ROUTES ============
 
 @router.post("/session")
 async def create_session(data: SessionCreate, response: Response):
     """Create or update user session from Emergent Google OAuth."""
-    import httpx
-    import uuid
     db = get_db()
-    
-    # Call Emergent Auth's session-data endpoint to get user info
-    try:
-        async with httpx.AsyncClient() as client:
-            emergent_response = await client.get(
-                "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
-                headers={"X-Session-ID": data.session_id},
-                timeout=10.0
-            )
-            
-            if emergent_response.status_code != 200:
-                logger.error(f"Emergent auth failed: {emergent_response.text}")
-                raise HTTPException(status_code=400, detail="Invalid session. Please sign in with Google.")
-            
-            google_user = emergent_response.json()
-    except httpx.RequestError as e:
-        logger.error(f"Emergent auth request failed: {e}")
-        raise HTTPException(status_code=500, detail="Authentication service unavailable")
+    google_user = await _fetch_emergent_session_user(data.session_id)
     
     # Extract user data from Emergent response
     email = google_user.get("email")
@@ -76,57 +127,15 @@ async def create_session(data: SessionCreate, response: Response):
     if not email:
         raise HTTPException(status_code=400, detail="Invalid user data from Google")
     
-    # Check if user exists
-    existing_user = await db.users.find_one({"email": email}, {"_id": 0})
-    
-    if existing_user:
-        # Update existing user
-        await db.users.update_one(
-            {"email": email},
-            {"$set": {
-                "name": name,
-                "picture": picture,
-                "last_login": datetime.now(timezone.utc).isoformat()
-            }}
-        )
-        user_id = existing_user["user_id"]
-    else:
-        # Create new user with custom user_id
-        user_id = f"user_{uuid.uuid4().hex[:12]}"
-        new_user = {
-            "user_id": user_id,
-            "email": email,
-            "name": name,
-            "picture": picture,
-            "auth_type": "google",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "last_login": datetime.now(timezone.utc).isoformat()
-        }
-        await db.users.insert_one(new_user)
+    user_id = await _upsert_google_user(db, email, name, picture)
     
     # Create session in our database
-    session_token = emergent_session_token or secrets.token_urlsafe(32)
-    session = {
-        "session_token": session_token,
-        "user_id": user_id,
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "expires_at": (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()
-    }
+    session = _build_session(user_id, days=7, session_token=emergent_session_token)
     
     # Remove old sessions for this user and insert new one
     await db.sessions.delete_many({"user_id": user_id})
     await db.sessions.insert_one(session)
-    
-    # Set session cookie
-    response.set_cookie(
-        key="session_token",
-        value=session_token,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        path="/",
-        max_age=7 * 24 * 60 * 60  # 7 days
-    )
+    _set_session_cookie(response, session["session_token"], days=7)
     
     # Get user data to return
     user_data = await db.users.find_one({"user_id": user_id}, {"_id": 0})
@@ -156,52 +165,10 @@ async def google_auth(request: Request, response: Response):
     name = google_user.get("name", email.split("@")[0])
     picture = google_user.get("picture")
     
-    # Check if user exists
-    existing_user = await db.users.find_one({"email": email})
-    
-    if existing_user:
-        # Update user
-        await db.users.update_one(
-            {"email": email},
-            {"$set": {
-                "name": name,
-                "picture": picture,
-                "last_login": datetime.now(timezone.utc).isoformat()
-            }}
-        )
-        user_id = existing_user["user_id"]
-    else:
-        # Create new user
-        new_user = {
-            "user_id": user_id,
-            "email": email,
-            "name": name,
-            "picture": picture,
-            "auth_type": "google",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "last_login": datetime.now(timezone.utc).isoformat()
-        }
-        await db.users.insert_one(new_user)
-    
-    # Create session
-    session_token = secrets.token_urlsafe(32)
-    session = {
-        "session_token": session_token,
-        "user_id": user_id,
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "expires_at": (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
-    }
+    user_id = await _upsert_google_user(db, email, name, picture, fallback_user_id=user_id)
+    session = _build_session(user_id, days=30)
     await db.sessions.insert_one(session)
-    
-    # Set cookie
-    response.set_cookie(
-        key="session_token",
-        value=session_token,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        max_age=30 * 24 * 60 * 60
-    )
+    _set_session_cookie(response, session["session_token"], days=30)
     
     return {
         "user": {
@@ -210,7 +177,7 @@ async def google_auth(request: Request, response: Response):
             "name": name,
             "picture": picture
         },
-        "session_token": session_token
+        "session_token": session["session_token"]
     }
 
 @router.get("/me")
@@ -264,24 +231,9 @@ async def register_user(data: UserRegister, response: Response):
     await db.users.insert_one(new_user)
     
     # Create session
-    session_token = secrets.token_urlsafe(32)
-    session = {
-        "session_token": session_token,
-        "user_id": user_id,
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "expires_at": (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
-    }
+    session = _build_session(user_id, days=30)
     await db.sessions.insert_one(session)
-    
-    # Set cookie
-    response.set_cookie(
-        key="session_token",
-        value=session_token,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        max_age=30 * 24 * 60 * 60
-    )
+    _set_session_cookie(response, session["session_token"], days=30)
     
     return {
         "user": {
@@ -290,7 +242,7 @@ async def register_user(data: UserRegister, response: Response):
             "name": data.name,
             "picture": None
         },
-        "session_token": session_token
+        "session_token": session["session_token"]
     }
 
 @router.post("/login")
@@ -318,24 +270,9 @@ async def login_user(data: UserLogin, response: Response):
     )
     
     # Create session
-    session_token = secrets.token_urlsafe(32)
-    session = {
-        "session_token": session_token,
-        "user_id": user["user_id"],
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "expires_at": (datetime.now(timezone.utc) + timedelta(days=30)).isoformat()
-    }
+    session = _build_session(user["user_id"], days=30)
     await db.sessions.insert_one(session)
-    
-    # Set cookie
-    response.set_cookie(
-        key="session_token",
-        value=session_token,
-        httponly=True,
-        secure=True,
-        samesite="none",
-        max_age=30 * 24 * 60 * 60
-    )
+    _set_session_cookie(response, session["session_token"], days=30)
     
     return {
         "user": {
@@ -344,5 +281,5 @@ async def login_user(data: UserLogin, response: Response):
             "name": user["name"],
             "picture": user.get("picture")
         },
-        "session_token": session_token
+        "session_token": session["session_token"]
     }

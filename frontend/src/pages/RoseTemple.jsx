@@ -210,8 +210,8 @@ const RoseTemple = ({ user, api }) => {
       try {
         const { data } = await apiClient.get("/feminine-embodiment");
         setEmbodimentPractices(data);
-      } catch {
-        // Keep fallback experience when practices are unavailable.
+      } catch (error) {
+        console.error("Failed loading feminine embodiment practices:", error);
       } finally {
         setLoadingPractices(false);
       }
@@ -221,8 +221,8 @@ const RoseTemple = ({ user, api }) => {
       try {
         const { data } = await apiClient.get("/sacred-rites");
         setSacredRites(data);
-      } catch {
-        // Keep fallback experience when sacred rites are unavailable.
+      } catch (error) {
+        console.error("Failed loading sacred rites:", error);
       }
     };
     

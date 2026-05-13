@@ -113,14 +113,18 @@ const Breathwork = ({ user, api }) => {
           gainNodeRef.current = null;
         }
         ambientSourcesRef.current.forEach((source) => {
-          try { source.stop?.(); } catch (_) {}
-          try { source.disconnect?.(); } catch (_) {}
+          try { source.stop?.(); } catch (error) { console.error("Failed stopping ambient source during cleanup:", error); }
+          try { source.disconnect?.(); } catch (error) { console.error("Failed disconnecting ambient source during cleanup:", error); }
         });
         ambientSourcesRef.current = [];
-      } catch (_) {}
+      } catch (error) {
+        console.error("Breathwork audio cleanup failed:", error);
+      }
       // Close AudioContext to fully release audio resources
       if (audioContextRef.current) {
-        audioContextRef.current.close().catch(() => {});
+        audioContextRef.current.close().catch((error) => {
+          console.error("Failed closing breathwork audio context:", error);
+        });
         audioContextRef.current = null;
       }
     };
@@ -224,12 +228,12 @@ const Breathwork = ({ user, api }) => {
         gainNodeRef.current = null;
       }
       ambientSourcesRef.current.forEach((source) => {
-        try { source.stop?.(); } catch (_) {}
-        try { source.disconnect?.(); } catch (_) {}
+        try { source.stop?.(); } catch (stopError) { console.error("Failed stopping ambient source:", stopError); }
+        try { source.disconnect?.(); } catch (disconnectError) { console.error("Failed disconnecting ambient source:", disconnectError); }
       });
       ambientSourcesRef.current = [];
     } catch (error) {
-      // Ignore errors when stopping
+      console.error("Breathwork stopAudio failed:", error);
     }
   };
 

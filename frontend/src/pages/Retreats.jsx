@@ -165,7 +165,7 @@ const Retreats = ({ user, api }) => {
                     >
                       <div className="pt-4 border-t border-white/10 space-y-2">
                         {mod.practices.map((p, i) => (
-                          <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <div key={`${mod.id}-practice-${String(p).slice(0, 24)}-${i}`} className="flex items-start gap-2 text-sm text-muted-foreground">
                             <Sparkles className={`w-3 h-3 mt-1 flex-shrink-0 ${mod.accent}`} />
                             <span>{p}</span>
                           </div>
@@ -367,7 +367,7 @@ const Retreats = ({ user, api }) => {
                     </h4>
                     <ul className="space-y-2">
                       {parseHighlights(selectedRetreat.highlights).map((h, i) => (
-                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                        <li key={`${selectedRetreat.id}-highlight-${String(h).slice(0, 24)}-${i}`} className="flex items-start gap-2 text-sm text-muted-foreground">
                           <Check className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                           {h}
                         </li>
@@ -382,7 +382,7 @@ const Retreats = ({ user, api }) => {
                     <h4 className="font-medium mb-3">What's Included</h4>
                     <ul className="grid grid-cols-2 gap-2">
                       {parseHighlights(selectedRetreat.includes).map((item, i) => (
-                        <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <li key={`${selectedRetreat.id}-include-${String(item).slice(0, 24)}-${i}`} className="flex items-center gap-2 text-sm text-muted-foreground">
                           <Check className="w-4 h-4 text-primary" />
                           {item}
                         </li>

@@ -101,14 +101,16 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   const stopAmbient = useCallback(() => {
     try {
       ambientRef.current?.src?.stop?.();
-    } catch (_) {}
+    } catch (error) {
+      console.error("Guided overlay ambient stop failed:", error);
+    }
     ambientRef.current = null;
   }, []);
 
   const clearNarrationCache = useCallback(() => {
     ttsPendingRef.current.clear();
     ttsCacheRef.current.forEach((url) => {
-      try { URL.revokeObjectURL(url); } catch (_) {}
+      try { URL.revokeObjectURL(url); } catch (error) { console.error("Guided overlay URL revoke failed:", error); }
     });
     ttsCacheRef.current.clear();
   }, []);
