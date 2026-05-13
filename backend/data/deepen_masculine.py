@@ -717,7 +717,7 @@ Make wild nature a non-negotiable part of your schedule. Weekly is ideal. The cu
 }
 
 
-async def update_masculine():
+async def update_masculine() -> None:
     """Add deeper teachings to all masculine embodiment practices."""
     client = AsyncIOMotorClient("mongodb://localhost:27017")
     db = client["test_database"]

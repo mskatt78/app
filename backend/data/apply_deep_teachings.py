@@ -7,7 +7,7 @@ import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from deep_teachings_complete import FEMININE_DEEP_TEACHINGS, MASCULINE_DEEP_TEACHINGS
 
-async def apply_deep_teachings():
+async def apply_deep_teachings() -> None:
     client = AsyncIOMotorClient('mongodb://localhost:27017')
     db = client['test_database']
     

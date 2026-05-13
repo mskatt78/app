@@ -1,12 +1,12 @@
 """Authentication routes for Google OAuth and Email/Password."""
 from fastapi import APIRouter, HTTPException, Response, Request, Depends
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime, timezone, timedelta
 import hashlib
 import secrets
 import uuid
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 from .dependencies import get_db, get_current_user, User
 
@@ -27,6 +27,18 @@ class UserLogin(BaseModel):
     email: str
     password: str
 
+
+class GoogleUserPayload(BaseModel):
+    id: Optional[str] = None
+    sub: Optional[str] = None
+    email: Optional[str] = None
+    name: Optional[str] = None
+    picture: Optional[str] = None
+
+
+class GoogleAuthPayload(BaseModel):
+    user: GoogleUserPayload = Field(default_factory=GoogleUserPayload)
+
 # ============ HELPERS ============
 
 def hash_password(password: str, salt: str = None) -> tuple[str, str]:
@@ -44,6 +56,10 @@ def verify_password(password: str, password_hash: str, salt: str) -> bool:
 
 def _now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _resolve_display_name(email: str, name: Optional[str]) -> str:
+    return name or email.split("@")[0]
 
 
 def _build_session(user_id: str, days: int, session_token: Optional[str] = None) -> dict:
@@ -92,6 +108,50 @@ async def _upsert_google_user(db, email: str, name: str, picture: Optional[str],
     return user_id
 
 
+def _extract_emergent_profile(google_user: dict[str, Any]) -> tuple[str, str, Optional[str], Optional[str]]:
+    email = google_user.get("email")
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid user data from Google")
+
+    name = _resolve_display_name(email, google_user.get("name"))
+    picture = google_user.get("picture")
+    emergent_session_token = google_user.get("session_token")
+    return email, name, picture, emergent_session_token
+
+
+def _extract_google_payload(payload: GoogleAuthPayload) -> tuple[Optional[str], str, str, Optional[str]]:
+    email = payload.user.email
+    if not email:
+        raise HTTPException(status_code=400, detail="Invalid Google user data")
+
+    source_user_id = payload.user.id or payload.user.sub
+    name = _resolve_display_name(email, payload.user.name)
+    picture = payload.user.picture
+    return source_user_id, email, name, picture
+
+
+async def _store_session(db, user_id: str, session: dict[str, str], replace_existing: bool = False) -> None:
+    if replace_existing:
+        await db.sessions.delete_many({"user_id": user_id})
+    await db.sessions.insert_one(session)
+
+
+def _public_user_payload(user_data: dict[str, Any]) -> dict[str, Optional[str]]:
+    return {
+        "user_id": user_data.get("user_id"),
+        "email": user_data.get("email"),
+        "name": user_data.get("name"),
+        "picture": user_data.get("picture"),
+    }
+
+
+async def _fetch_public_user_by_id(db, user_id: str) -> dict[str, Optional[str]]:
+    user_data = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+    if not user_data:
+        raise HTTPException(status_code=404, detail="User not found")
+    return _public_user_payload(user_data)
+
+
 async def _fetch_emergent_session_user(session_id: str) -> dict:
     import httpx
 
@@ -117,66 +177,31 @@ async def create_session(data: SessionCreate, response: Response):
     """Create or update user session from Emergent Google OAuth."""
     db = get_db()
     google_user = await _fetch_emergent_session_user(data.session_id)
-    
-    # Extract user data from Emergent response
-    email = google_user.get("email")
-    name = google_user.get("name", email.split("@")[0] if email else "User")
-    picture = google_user.get("picture")
-    emergent_session_token = google_user.get("session_token")
-    
-    if not email:
-        raise HTTPException(status_code=400, detail="Invalid user data from Google")
-    
+    email, name, picture, emergent_session_token = _extract_emergent_profile(google_user)
+
     user_id = await _upsert_google_user(db, email, name, picture)
-    
-    # Create session in our database
+
     session = _build_session(user_id, days=7, session_token=emergent_session_token)
-    
-    # Remove old sessions for this user and insert new one
-    await db.sessions.delete_many({"user_id": user_id})
-    await db.sessions.insert_one(session)
+    await _store_session(db, user_id, session, replace_existing=True)
     _set_session_cookie(response, session["session_token"], days=7)
-    
-    # Get user data to return
-    user_data = await db.users.find_one({"user_id": user_id}, {"_id": 0})
-    
-    return {
-        "user": {
-            "user_id": user_data["user_id"],
-            "email": user_data["email"],
-            "name": user_data["name"],
-            "picture": user_data.get("picture")
-        }
-    }
+
+    return {"user": await _fetch_public_user_by_id(db, user_id)}
 
 @router.post("/google")
-async def google_auth(request: Request, response: Response):
+async def google_auth(payload: GoogleAuthPayload, response: Response):
     """Handle Google OAuth callback - create/update user and session."""
     db = get_db()
-    
-    data = await request.json()
-    google_user = data.get("user", {})
-    
-    if not google_user.get("email"):
-        raise HTTPException(status_code=400, detail="Invalid Google user data")
-    
-    user_id = google_user.get("id") or google_user.get("sub")
-    email = google_user.get("email")
-    name = google_user.get("name", email.split("@")[0])
-    picture = google_user.get("picture")
-    
-    user_id = await _upsert_google_user(db, email, name, picture, fallback_user_id=user_id)
+
+    source_user_id, email, name, picture = _extract_google_payload(payload)
+    user_id = await _upsert_google_user(db, email, name, picture, fallback_user_id=source_user_id)
     session = _build_session(user_id, days=30)
-    await db.sessions.insert_one(session)
+    await _store_session(db, user_id, session)
     _set_session_cookie(response, session["session_token"], days=30)
-    
+
     return {
-        "user": {
-            "user_id": user_id,
-            "email": email,
-            "name": name,
-            "picture": picture
-        },
+        "user": _public_user_payload(
+            {"user_id": user_id, "email": email, "name": name, "picture": picture}
+        ),
         "session_token": session["session_token"]
     }
 

@@ -409,7 +409,7 @@ The deepest integration: holding the absolute truth of oneness AND the relative 
 }
 
 
-async def update_chakras():
+async def update_chakras() -> None:
     """Add deeper teachings to the remaining extended chakras."""
     client = AsyncIOMotorClient("mongodb://localhost:27017")
     db = client["test_database"]

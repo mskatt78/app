@@ -706,7 +706,7 @@ def _print_seed_summary() -> None:
     print(f"   - {len(MASCULINE_EMBODIMENT_DATA)} Masculine Embodiment practices")
 
 
-async def seed_all():
+async def seed_all() -> None:
     """Seed all extended modality data to MongoDB."""
     mongo_url = os.environ.get("MONGO_URL")
     db_name = os.environ.get("DB_NAME")

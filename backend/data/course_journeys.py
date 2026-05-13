@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 # 40-Day Sacred Journey Structure for Courses
 # Each course has 40 days of structured practices
 
@@ -266,7 +268,7 @@ MUNAY_KI_40_DAY_JOURNEY = [
 ]
 
 # Add to courses
-def get_journey_day(course_id: str, day: int):
+def get_journey_day(course_id: str, day: int) -> Optional[dict[str, Any]]:
     """Get a specific day from a course journey."""
     if course_id == "munay-ki":
         for journey_day in MUNAY_KI_40_DAY_JOURNEY:
@@ -274,7 +276,7 @@ def get_journey_day(course_id: str, day: int):
                 return journey_day
     return None
 
-def get_course_journey(course_id: str):
+def get_course_journey(course_id: str) -> list[dict[str, Any]]:
     """Get the full 40-day journey for a course."""
     if course_id == "munay-ki":
         return MUNAY_KI_40_DAY_JOURNEY

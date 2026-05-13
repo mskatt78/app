@@ -518,7 +518,7 @@ async def _seed_healing_collection(db, collection_name: str, dataset: list[dict]
         print(f"→ {success_label}: No new entries to add")
 
 
-async def seed_all():
+async def seed_all() -> None:
     """Seed all healing modality data to MongoDB."""
     mongo_url = os.environ.get("MONGO_URL")
     db_name = os.environ.get("DB_NAME")

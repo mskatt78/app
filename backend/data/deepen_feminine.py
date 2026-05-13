@@ -830,7 +830,7 @@ The wild woman doesn't return to the cage. Once awakened, she needs regular expr
 }
 
 
-async def update_feminine():
+async def update_feminine() -> None:
     """Add deeper teachings to all feminine embodiment practices."""
     client = AsyncIOMotorClient("mongodb://localhost:27017")
     db = client["test_database"]

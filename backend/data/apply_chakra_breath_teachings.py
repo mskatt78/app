@@ -6,7 +6,7 @@ import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient
 from deep_teachings_chakras_breath import CHAKRA_DEEP_TEACHINGS, BREATHWORK_DEEP_TEACHINGS
 
-async def apply_chakra_breath_teachings():
+async def apply_chakra_breath_teachings() -> None:
     client = AsyncIOMotorClient('mongodb://localhost:27017')
     db = client['test_database']
     
