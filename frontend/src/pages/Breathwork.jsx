@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Wind, Play, Pause, RotateCcw, Filter, Volume2, VolumeX } from "lucide-react";
+import { ArrowLeft, Wind, Filter } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Progress } from "../components/ui/progress";
 import { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
+import { BreathworkControls } from "../components/breathwork/BreathworkControls";
+import { BreathworkSoundSelector } from "../components/breathwork/BreathworkSoundSelector";
 
 const createBrownNoise = (audioContext) => {
   const bufferSize = 2 * audioContext.sampleRate;
@@ -461,57 +463,26 @@ const Breathwork = ({ user, api }) => {
               <Progress value={phaseProgress} className="h-2" />
             </div>
 
-            {/* Controls */}
-            <div className="flex items-center gap-4 mb-8">
-              <Button
-                data-testid="play-pause-btn"
-                onClick={togglePlay}
-                size="lg"
-                className={`rounded-full w-16 h-16 ${
-                  isPlaying ? 'bg-destructive hover:bg-destructive/90' : 'bg-primary hover:bg-primary/90'
-                }`}
-              >
-                {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
-              </Button>
-              <Button
-                data-testid="reset-btn"
-                onClick={resetSession}
-                variant="outline"
-                size="icon"
-                className="rounded-full border-white/10"
-              >
-                <RotateCcw className="w-5 h-5" />
-              </Button>
-              <Button
-                data-testid="sound-toggle-btn"
-                onClick={toggleSound}
-                variant="outline"
-                size="icon"
-                className={`rounded-full border-white/10 ${soundEnabled ? 'text-primary' : 'text-muted-foreground'}`}
-                title={soundEnabled ? 'Sound On' : 'Sound Off'}
-              >
-                {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
-              </Button>
-            </div>
+            <BreathworkControls
+              isPlaying={isPlaying}
+              togglePlay={togglePlay}
+              resetSession={resetSession}
+              soundEnabled={soundEnabled}
+              toggleSound={toggleSound}
+            />
 
-              <div className="w-full max-w-sm mb-8" data-testid="breathwork-sound-selector">
-                <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-3 text-center">Breath soundscape</p>
-                <Select value={selectedSound} onValueChange={setSelectedSound}>
-                  <SelectTrigger className="w-full bg-card border-white/10" data-testid="breathwork-sound-select">
-                    <SelectValue placeholder="Choose sound" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-56 overflow-y-auto">
-                    {BREATHWORK_SOUND_OPTIONS.filter((option) => option.id !== 'tone' || activeSession.frequency).map((option) => (
-                      <SelectItem key={option.id} value={option.id} data-testid={`breathwork-sound-option-${option.id}`}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-muted-foreground mt-3 text-center">
-                  Choose a nature sound, stay with the healing frequency tone, or practice in silence.
-                </p>
-              </div>
+            <div className="w-full max-w-sm mb-8">
+              <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-3 text-center">Breath soundscape</p>
+              <BreathworkSoundSelector
+                selectedSound={selectedSound}
+                setSelectedSound={setSelectedSound}
+                options={BREATHWORK_SOUND_OPTIONS.filter((option) => option.id !== 'tone' || activeSession.frequency)}
+                soundEnabled={soundEnabled}
+              />
+              <p className="text-xs text-muted-foreground mt-3 text-center">
+                Choose a nature sound, stay with the healing frequency tone, or practice in silence.
+              </p>
+            </div>
 
             {/* Cycle Counter */}
             <p className="text-muted-foreground">

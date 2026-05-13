@@ -14,6 +14,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
+import { AdminCMSTabBar } from "../components/admin/AdminCMSTabBar";
+import { AdminCMSItemCard } from "../components/admin/AdminCMSItemCard";
 
 // Import admin config
 import { 
@@ -473,27 +475,7 @@ const AdminCMS = ({ user, api }) => {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-6">
-        {/* Tabs */}
-        <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
-          {tabs.map(tab => {
-            const Icon = tab.icon;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm whitespace-nowrap transition-colors ${
-                  activeTab === tab.id
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-white/5 hover:bg-white/10"
-                }`}
-                data-testid={`tab-${tab.id}`}
-              >
-                <Icon className="w-4 h-4" />
-                {tab.label}
-              </button>
-            );
-          })}
-        </div>
+        <AdminCMSTabBar tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
 
         {/* Items Grid */}
         {loading ? (
@@ -507,42 +489,13 @@ const AdminCMS = ({ user, api }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {items.map(item => (
-              <motion.div
+              <AdminCMSItemCard
                 key={item.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-card/50 border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition-colors"
-              >
-                {(item.image_url || item.cover_image) && (
-                  <div className="h-32 overflow-hidden">
-                    <img src={item.image_url || item.cover_image} alt={item.name || item.title} className="w-full h-full object-cover" />
-                  </div>
-                )}
-                <div className="p-4">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <div>
-                      <h3 className="font-medium text-sm line-clamp-1">{item.name || item.title}</h3>
-                      {item.sanskrit_name && <p className="text-xs text-muted-foreground italic">{item.sanskrit_name}</p>}
-                    </div>
-                    {item.element && <Badge className={getElementColor(item.element)}>{item.element}</Badge>}
-                  </div>
-                  {item.description && <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{item.description}</p>}
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {item.difficulty && <Badge variant="outline" className="text-xs">{item.difficulty}</Badge>}
-                    {item.duration_minutes && <Badge variant="outline" className="text-xs">{item.duration_minutes} min</Badge>}
-                    {item.price > 0 && <Badge variant="outline" className="text-xs">${item.price}</Badge>}
-                    {item.category && <Badge variant="outline" className="text-xs capitalize">{item.category.replace(/_/g, " ")}</Badge>}
-                  </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => handleEdit(item)} className="flex-1" data-testid={`edit-${item.id}`}>
-                      <Pencil className="w-3 h-3 mr-1" /> Edit
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => handleDelete(item)} className="text-red-400 hover:bg-red-500/10" data-testid={`delete-${item.id}`}>
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
+                item={item}
+                getElementColor={getElementColor}
+                onEdit={() => handleEdit(item)}
+                onDelete={() => handleDelete(item)}
+              />
             ))}
           </div>
         )}
