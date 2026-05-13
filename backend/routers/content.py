@@ -1040,49 +1040,53 @@ async def get_hexagram(hexagram_number: int):
     return hexagram
 
 
+def _cast_coin_lines() -> tuple[list[int], list[int]]:
+    lines: list[int] = []
+    changing_lines: list[int] = []
+    for i in range(6):
+        toss = sum(2 + secrets.randbelow(2) for _ in range(3))
+        lines.append(toss)
+        if toss in (6, 9):
+            changing_lines.append(i + 1)
+    return lines, changing_lines
+
+
+def _resolve_hexagram_number(lines: list[int]) -> int:
+    binary_lines = [1 if line in [7, 9] else 0 for line in lines]
+    hexagram_number = int("".join(str(bit) for bit in reversed(binary_lines)), 2) + 1
+    return min(hexagram_number, 8)
+
+
+async def _fetch_hexagram_or_fallback(db, hexagram_number: int) -> dict:
+    hexagram = await db.i_ching.find_one({"number": hexagram_number}, {"_id": 0})
+    if hexagram:
+        return hexagram
+    return await db.i_ching.find_one({"number": 1}, {"_id": 0})
+
+
+def _append_changing_line_meanings(hexagram: dict, changing_lines: list[int]) -> dict:
+    result = dict(hexagram or {})
+    changing_lines_text = result.get("changing_lines_text", {})
+    result["changing_lines"] = changing_lines
+    result["line_meanings"] = []
+
+    for line_num in changing_lines:
+        line_key = str(line_num)
+        if line_key in changing_lines_text:
+            result["line_meanings"].append({"line": line_num, "meaning": changing_lines_text[line_key]})
+    return result
+
+
 @router.get("/i-ching/cast/coins")
 async def cast_i_ching():
     """Cast I Ching using the three coin method."""
     db = get_db()
-    
-    # Simulate 6 coin tosses (3 coins each)
-    lines = []
-    changing_lines = []
-    
-    for i in range(6):
-        # Each coin: heads=3, tails=2
-        toss = sum(2 + secrets.randbelow(2) for _ in range(3))
-        # 6 = old yin (changing), 7 = young yang, 8 = young yin, 9 = old yang (changing)
-        lines.append(toss)
-        if toss == 6 or toss == 9:
-            changing_lines.append(i + 1)
-    
-    # Convert to binary (yang=1, yin=0)
-    binary_lines = [1 if line in [7, 9] else 0 for line in lines]
-    hexagram_number = int(''.join(str(b) for b in reversed(binary_lines)), 2) + 1
-    
-    # Cap at 8 for our sample data (in full implementation, all 64 would be available)
-    hexagram_number = min(hexagram_number, 8)
-    
-    hexagram = await db.i_ching.find_one({"number": hexagram_number}, {"_id": 0})
-    if not hexagram:
-        # Fallback to hexagram 1 if not found
-        hexagram = await db.i_ching.find_one({"number": 1}, {"_id": 0})
-    
-    # Add casting details
+    lines, changing_lines = _cast_coin_lines()
+    hexagram_number = _resolve_hexagram_number(lines)
+    hexagram = await _fetch_hexagram_or_fallback(db, hexagram_number)
+
     hexagram["lines_cast"] = lines
-    hexagram["changing_lines"] = changing_lines
-    hexagram["line_meanings"] = []
-    
-    if hexagram.get("changing_lines_text"):
-        for line_num in changing_lines:
-            if str(line_num) in hexagram.get("changing_lines", {}):
-                hexagram["line_meanings"].append({
-                    "line": line_num,
-                    "meaning": hexagram["changing_lines"][str(line_num)]
-                })
-    
-    return hexagram
+    return _append_changing_line_meanings(hexagram, changing_lines)
 
 
 # ============ LIGHT CODES ROUTES ============
