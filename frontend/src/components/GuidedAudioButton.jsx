@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Play, Square, Loader2, Volume2 } from "lucide-react";
 import { toast } from "sonner";
+import { DEFAULT_GUIDED_TTS_SPEED } from "./guided/guidedNarrationUtils";
 
 const MIN_NARRATION_MINUTES = 7;
 
@@ -94,7 +95,7 @@ const GuidedAudioButton = ({
       try {
         response = await api.post(
           "/tts/generate-base64",
-          { text: segmentText, voice, speed: 0.88 },
+          { text: segmentText, voice, speed: DEFAULT_GUIDED_TTS_SPEED },
           { signal: controller.signal }
         );
         if (response?.data?.audio_base64) break;
@@ -175,6 +176,11 @@ const GuidedAudioButton = ({
 
       const audioUrl = await getSegmentAudio(segmentText, controller);
       if (isStoppedRef.current || controller.signal.aborted) return;
+
+      const nextText = String(segments[index + 1] || "").trim();
+      if (nextText) {
+        getSegmentAudio(nextText, controller).catch(() => {});
+      }
 
       const audio = new Audio(audioUrl);
       audioRef.current = audio;

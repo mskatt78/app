@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 MIN_NARRATION_MINUTES = 7
 TARGET_WORDS_PER_MINUTE = 120
 SEGMENT_TARGET_WORDS = 220
-FIRST_SEGMENT_TARGET_WORDS = 55
+FIRST_SEGMENT_TARGET_WORDS = 95
 
 
 class LiveSessionRsvpRequest(BaseModel):
@@ -170,7 +170,7 @@ def _dedupe_paragraphs(paragraphs: list[str]) -> list[str]:
 
         stem = " ".join(normalized.split()[:12])
         stem_counts[stem] = stem_counts.get(stem, 0) + 1
-        if stem_counts[stem] > 2:
+        if stem_counts[stem] > 1:
             continue
 
         cleaned.append(text)
@@ -232,8 +232,8 @@ def _build_fallback_intro(practice_name: str, element: str) -> list[str]:
     }
     element_theme = element_themes.get(element, element_themes["spirit"])
     return [
-        f"Welcome to {practice_name}. Settle into a comfortable position and take three slow breaths. Let your shoulders soften, your jaw unclench, and your awareness arrive fully in the present moment.",
-        f"This is a {element} practice, so let your pace become {element_theme}. There is nothing to perform and nothing to force. You are here to listen, feel, and integrate.",
+        f"Welcome to {practice_name}. Begin with one steady inhale and one long exhale, then arrive fully in your body without rushing.",
+        f"This is a {element} practice, so let your pace stay {element_theme}. Start gracefully, build clear inner power through the middle, and soften again as you integrate.",
     ]
 
 
@@ -309,12 +309,15 @@ def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: 
         "Let this minute unfold with steadiness and ease", "Take this phase as an invitation to listen inwardly", "From this point onward, move with deliberate care",
         "Remain present as subtle shifts reveal themselves", "Allow this layer of practice to mature gradually", "Keep your attention honest and unforced",
         "Notice how depth appears when urgency fades", "Continue with gentle discipline and curiosity", "Let this section become a lived experience, not a concept",
+        "Let calm precision and grounded strength move together here", "Stay graceful while your inner focus becomes more powerful",
+        "Allow this part of the journey to feel both tender and strong",
     ]
 
     running_words = seed_words
     index = 0
     body: list[str] = []
     context_queue = context_sentences[12:]
+    recent_stems: list[str] = []
     while running_words < max(target_words - 180, 0):
         opener = narrative_openers[index % len(narrative_openers)]
         awareness = awareness_points[index % len(awareness_points)]
@@ -344,8 +347,17 @@ def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: 
         ]
 
         paragraph = paragraph_variants[index % 4]
+        stem = " ".join(_normalize_text_for_repeat_check(paragraph).split()[:10])
+        if stem and stem in recent_stems:
+            index += 1
+            continue
+
         body.append(paragraph)
         running_words += _count_words(paragraph)
+        if stem:
+            recent_stems.append(stem)
+            if len(recent_stems) > 20:
+                recent_stems.pop(0)
         index += 1
 
     return body
@@ -353,8 +365,8 @@ def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: 
 
 def _build_fallback_closing() -> list[str]:
     return [
-        "As this practice begins to close, do not rush out of it. Stay for a few extra breaths and notice what has changed in your body, your emotions, and your sense of inner orientation.",
-        "When you are ready, take three grounding breaths, gently open your eyes, and carry this medicine into the next part of your day with steadiness and kindness.",
+        "As this practice begins to close, stay for a few final breaths and notice the shift in your body, your emotions, and your inner clarity.",
+        "When you are ready, return gently. Carry this blend of grace and grounded power into the rest of your day.",
     ]
 
 
@@ -399,6 +411,7 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
         "Continue with patience and care", "Stay with the process as it unfolds naturally", "Keep your awareness spacious and grounded",
         "Let this next minute remain steady and unrushed", "Allow the body to keep learning from the breath", "Remain connected to present sensation",
         "Keep this phase simple and embodied", "Let the rhythm stay calm and sustainable", "Continue with gentle attentiveness",
+        "Stay graceful while your inner signal grows stronger", "Allow steady power to rise without force",
     ]
     closers = [
         "Nothing is missing in this moment", "Depth comes through consistency, not force", "Your pace is enough",
@@ -410,6 +423,7 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
     words = 0
     index = start_index
     context_queue = context_sentences[:]
+    recent_stems: list[str] = []
     while words < required_words + 40:
         opener = openers[index % len(openers)]
         closer = closers[(index * 2 + 1) % len(closers)]
@@ -421,8 +435,17 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
             paragraph = f"{opener}. Keep your breathing even and unforced.{optional_context} {closer}."
         else:
             paragraph = f"{opener}. Let your body stay receptive while attention remains clear.{optional_context} {closer}."
+        stem = " ".join(_normalize_text_for_repeat_check(paragraph).split()[:10])
+        if stem and stem in recent_stems:
+            index += 1
+            continue
+
         generated.append(paragraph)
         words += _count_words(paragraph)
+        if stem:
+            recent_stems.append(stem)
+            if len(recent_stems) > 20:
+                recent_stems.pop(0)
         index += 1
 
     return _dedupe_paragraphs(generated)
@@ -454,12 +477,14 @@ Source context:
 {trimmed_context if trimmed_context else 'No extra context provided.'}
 
 Requirements:
-1) Write long-form spoken guidance that feels warm, immersive, and therapeutic.
+1) Write long-form spoken guidance that feels warm, immersive, therapeutic, and human.
 2) Include breath pacing, body awareness, somatic language, and gentle integration prompts.
 3) Keep the flow continuous with no headings, no bullets, no markdown, and no labels.
 4) Return only plain narration text.
 5) Ensure the output is at least {target_words} words.
 6) Avoid repetitive sentence stems (do not keep reusing the same opening phrase repeatedly).
+7) Use an adaptive arc: graceful opening, stronger empowering middle, soft integrative close.
+8) Keep first spoken transition concise (no prolonged opening silence language).
 """.strip()
 
     try:

@@ -3,6 +3,7 @@ import { AMBIENT_SOUNDS } from "../AmbientSoundPlayer";
 export const tempoPlaybackRates = { slow: 0.9, normal: 1.0, fast: 1.12 };
 export const MIN_NARRATION_MINUTES = 7;
 export const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
+export const DEFAULT_GUIDED_TTS_SPEED = 0.84;
 export const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export const PREFERRED_NATURAL_SOUND_KEY = "preferred-natural-sound";
 

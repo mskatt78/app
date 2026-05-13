@@ -5,6 +5,7 @@ import {
   ELEMENT_AMBIENT,
   ELEMENT_BG,
   ELEMENT_COLOR,
+  DEFAULT_GUIDED_TTS_SPEED,
   MINIMUM_NARRATION_MINUTES,
   SCRIPT_EXPANSION_TIMEOUT_MS,
   wait,
@@ -265,7 +266,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
         const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: narrationSegments[segmentIndex], voice: "nova", speed: 0.88 }),
+          body: JSON.stringify({ text: narrationSegments[segmentIndex], voice: "nova", speed: DEFAULT_GUIDED_TTS_SPEED }),
         });
         if (response.ok) {
           data = await response.json();
@@ -297,6 +298,8 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     try {
       const url = await generateSegmentUrl(segmentIndex);
       if (!url || !isPlayingRef.current) return;
+
+      generateSegmentUrl(segmentIndex + 1).catch(() => {});
 
       let audio = ttsRef.current;
       if (!audio) {

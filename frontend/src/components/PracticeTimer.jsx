@@ -6,6 +6,7 @@ import { TimerStatusPanel } from "./timer/TimerStatusPanel";
 import { TimerControlsPanel } from "./timer/TimerControlsPanel";
 import { AMBIENT_SOUNDS } from "./AmbientSoundPlayer";
 import {
+  DEFAULT_GUIDED_TTS_SPEED,
   createFilteredNoise,
   fallbackNarrationSegments,
   MIN_NARRATION_MINUTES,
@@ -217,7 +218,7 @@ const PracticeTimer = ({
         const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, voice: "nova", speed: 0.88 }),
+          body: JSON.stringify({ text, voice: "nova", speed: DEFAULT_GUIDED_TTS_SPEED }),
           signal: controller.signal,
         });
         if (response.ok) {
@@ -268,6 +269,11 @@ const PracticeTimer = ({
     try {
       const url = await fetchNarrationAudioUrl(index, text, controller);
       if (controller.signal.aborted || !isRunning) return;
+
+      const nextText = String(narrationSegments[index + 1] || "").trim();
+      if (nextText) {
+        fetchNarrationAudioUrl(index + 1, nextText, controller).catch(() => {});
+      }
 
       narrationIndexRef.current = index;
       setNarrationSegmentIndex(index);

@@ -25,8 +25,9 @@ export const ELEMENT_COLOR = {
 export const MINIMUM_NARRATION_MINUTES = 7;
 export const TARGET_WORDS_PER_MINUTE = 120;
 export const SEGMENT_TARGET_WORDS = 220;
-export const FIRST_SEGMENT_TARGET_WORDS = 55;
+export const FIRST_SEGMENT_TARGET_WORDS = 95;
 export const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
+export const DEFAULT_GUIDED_TTS_SPEED = 0.84;
 
 export const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -95,6 +96,8 @@ const normalizeForRepeatCheck = (text) =>
     .replace(/\s+/g, " ")
     .replace(/[^a-z0-9 ]+/g, "")
     .trim();
+
+const stemKey = (text) => normalizeForRepeatCheck(text).split(" ").slice(0, 10).join(" ");
 
 export function buildNarrationPlan(practice, stepsOverride) {
   const targetMinutes = Math.max(MINIMUM_NARRATION_MINUTES, Number(practice?.duration_minutes || 0) || MINIMUM_NARRATION_MINUTES);
@@ -209,8 +212,8 @@ export function buildNarrationPlan(practice, stepsOverride) {
   ];
 
   const paragraphs = [
-    `Welcome to ${practice.name}. Settle into a comfortable position and let your breath begin to slow. Allow the outer world to soften at the edges so your awareness can gather here, in this sacred practice, with your full and willing presence.`,
-    `Begin by arriving deliberately. Feel the surface beneath you. Notice your jaw, your shoulders, your belly, and your heart. Let yourself unclench in any place that has been carrying too much. This practice belongs to the ${practice.element || "spirit"} element, inviting you into steadiness, receptivity, and deeper inner contact.`,
+    `Welcome to ${practice.name}. Begin with one steady inhale and one long exhale, then arrive fully in this moment.`,
+    `Feel your jaw, shoulders, belly, and heart. This ${practice.element || "spirit"} practice opens gracefully, gathers grounded power through the middle, and closes in a softer integration.`,
   ];
 
   if (practice.description) {
@@ -233,6 +236,7 @@ export function buildNarrationPlan(practice, stepsOverride) {
     });
   }
 
+  const usedStems = new Set(paragraphs.map((paragraph) => stemKey(paragraph)).filter(Boolean));
   let runningWords = paragraphs.reduce((total, paragraph) => total + countWords(paragraph), 0);
   let index = 0;
   while (runningWords < targetWords - 180) {
@@ -275,14 +279,21 @@ export function buildNarrationPlan(practice, stepsOverride) {
             reflection,
           ].join(" ");
 
+    const paragraphStem = stemKey(paragraph);
+    if (paragraphStem && usedStems.has(paragraphStem)) {
+      index += 1;
+      continue;
+    }
+
     paragraphs.push(paragraph);
     runningWords += countWords(paragraph);
+    if (paragraphStem) usedStems.add(paragraphStem);
     index += 1;
   }
 
   paragraphs.push(
-    `As this guided practice begins to close, do not leave it too quickly. Let the medicine settle. Notice what has changed in your breath, your body, your feeling state, or your inner images. Honor even the smallest shift. It matters.`,
-    "When you feel complete, gently return your awareness to the present moment. Take three slow, grounding breaths. Carry the truth of this practice with you. Well done. Namaste."
+    `As this guided practice begins to close, stay for a few final breaths and notice the shift in your body, your emotional tone, and your inner clarity.`,
+    "When you feel complete, return gently. Carry this blend of grace and grounded power into the rest of your day."
   );
 
   const segments = [];
