@@ -1,83 +1,84 @@
-# Auth Testing Playbook for Shamanic Elemental Yoga App
+# Auth Testing Playbook (Cookie Session Flow)
 
-## Step 1: Create Test User & Session
+## Base URL
+Use `REACT_APP_BACKEND_URL` from `/app/frontend/.env`.
+
 ```bash
-mongosh --eval "
-use('test_database');
-var userId = 'test-user-' + Date.now();
-var sessionToken = 'test_session_' + Date.now();
-db.users.insertOne({
-  user_id: userId,
-  email: 'test.user.' + Date.now() + '@example.com',
-  name: 'Test Shaman',
-  picture: 'https://via.placeholder.com/150',
-  created_at: new Date()
-});
-db.user_sessions.insertOne({
-  user_id: userId,
-  session_token: sessionToken,
-  expires_at: new Date(Date.now() + 7*24*60*60*1000),
-  created_at: new Date()
-});
-print('Session token: ' + sessionToken);
-print('User ID: ' + userId);
-"
+BASE_URL=$(grep REACT_APP_BACKEND_URL /app/frontend/.env | cut -d'=' -f2-)
 ```
 
-## Step 2: Test Backend API
+## 1) Register + Cookie Creation
 ```bash
-# Test auth endpoint
-curl -X GET "https://breathwork-sanctuary.preview.emergentagent.com/api/auth/me" \
-  -H "Authorization: Bearer YOUR_SESSION_TOKEN"
+EMAIL="authtest_$(date +%s)@example.com"
+PASS="TestPass123!"
 
-# Test yoga poses
-curl -X GET "https://breathwork-sanctuary.preview.emergentagent.com/api/yoga/poses"
-
-# Test crystals
-curl -X GET "https://breathwork-sanctuary.preview.emergentagent.com/api/crystals"
-
-# Test oracle (requires auth)
-curl -X POST "https://breathwork-sanctuary.preview.emergentagent.com/api/oracle/reading" \
+curl -s -c /tmp/auth.cookies -X POST "$BASE_URL/api/auth/register" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_SESSION_TOKEN" \
-  -d '{"question": "What guidance do I need?", "spread_type": "single"}'
+  -d "{\"email\":\"$EMAIL\",\"password\":\"$PASS\",\"name\":\"Auth Test\"}"
 ```
 
-## Step 3: Browser Testing
-```javascript
-// Set cookie and navigate
-await page.context.add_cookies([{
-    "name": "session_token",
-    "value": "YOUR_SESSION_TOKEN",
-    "domain": "energy-grounding.preview.emergentagent.com",
-    "path": "/",
-    "httpOnly": true,
-    "secure": true,
-    "sameSite": "None"
-}]);
-await page.goto("https://breathwork-sanctuary.preview.emergentagent.com/dashboard");
-```
+Expected:
+- HTTP 200
+- Response includes `user` and `session_token`
+- `session_token` cookie set
 
-## Checklist
-- [ ] User document has user_id field
-- [ ] Session user_id matches user's user_id exactly  
-- [ ] All queries use `{"_id": 0}` projection
-- [ ] API returns user data with user_id field
-- [ ] Browser loads dashboard (not login page)
-
-## Step 4: Admin Session Access
+## 2) Session Validation (`/auth/me`)
 ```bash
-curl -b cookies.txt -X POST "https://breathwork-sanctuary.preview.emergentagent.com/api/admin/session-login"
-
-curl -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
-  "https://breathwork-sanctuary.preview.emergentagent.com/api/admin/collections"
+curl -s -b /tmp/auth.cookies "$BASE_URL/api/auth/me"
 ```
 
-## Step 5: Live Sessions API
-```bash
-curl "https://breathwork-sanctuary.preview.emergentagent.com/api/live-sessions"
+Expected:
+- HTTP 200
+- Returns same user email created in Step 1
 
-curl -X POST "https://breathwork-sanctuary.preview.emergentagent.com/api/live-sessions/YOUR_SESSION_ID/messages" \
+## 3) Logout + Session Invalidation
+```bash
+curl -s -b /tmp/auth.cookies -c /tmp/auth.cookies -X POST "$BASE_URL/api/auth/logout"
+curl -s -o /tmp/me_after_logout.json -w "%{http_code}" -b /tmp/auth.cookies "$BASE_URL/api/auth/me"
+```
+
+Expected:
+- Logout HTTP 200
+- Subsequent `/auth/me` returns HTTP 401
+
+## 4) Login Flow
+```bash
+curl -s -c /tmp/auth_login.cookies -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"display_name":"Test Client","message":"Is there a replay?","kind":"question"}'
+  -d "{\"email\":\"$EMAIL\",\"password\":\"$PASS\"}"
 ```
+
+Expected:
+- HTTP 200
+- `session_token` cookie set
+- User payload returned
+
+## 5) Google Payload Endpoint
+```bash
+curl -s -c /tmp/auth_google.cookies -X POST "$BASE_URL/api/auth/google" \
+  -H "Content-Type: application/json" \
+  -d '{"user":{"id":"google_test_user","email":"google_auth_test@example.com","name":"Google Test User"}}'
+```
+
+Expected:
+- HTTP 200
+- Returns `user` + `session_token`
+
+## 6) Invalid Session Exchange Safety
+```bash
+curl -s -o /tmp/session_invalid.json -w "%{http_code}" -X POST "$BASE_URL/api/auth/session" \
+  -H "Content-Type: application/json" \
+  -d '{"session_id":"invalid-session-id"}'
+```
+
+Expected:
+- HTTP 400 (controlled validation error)
+- No 500/unhandled exception
+
+## 7) Admin Gate Check (Unauthenticated)
+```bash
+curl -I "$BASE_URL/admin"
+```
+
+Expected:
+- Frontend route accessible, but admin data/actions require authenticated admin session in app.

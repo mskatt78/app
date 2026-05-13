@@ -11,7 +11,16 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **Integrations:** OpenAI TTS, Gemini Image Gen (Nano Banana), Emergent Object Storage
 - **PWA:** Full manifest with app store ready icons
 
-## Latest Changes (March–April 2026)
+## Latest Changes (March–May 2026)
+- **Auth Refactor Completion (Iteration 98, May 2026):**
+  - Completed Module 5 backend auth decomposition in `backend/routers/auth.py`:
+    - Added typed payload models: `GoogleUserPayload`, `GoogleAuthPayload`
+    - Extracted focused helpers for profile parsing, session persistence, and public-user serialization
+    - Refactored `create_session` and `google_auth` to use helper-driven flow while preserving secure `httpOnly` cookie behavior
+  - Added missing return type hints across flagged data scripts in `backend/data/` (including seed/apply/deepen utilities and journey helpers).
+  - Verified P2 operator check status: no remaining `is`-literal comparison bugs in `backend/tests`.
+  - Validation: `/app/test_reports/iteration_98.json` passed (**backend 100%, frontend 100%**) with full auth regression coverage.
+
 - **Large-File Decomposition Sprint (Iteration 93):**
   - Completed structural splits (with minor readability polish) across all four requested pages:
     - `Courses.jsx` → extracted `components/courses/CourseCard.jsx`
@@ -350,6 +359,7 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **P1**: Continue guided-section parity pass for remaining lighter sections (beyond Mantras/Mudras) to match deep-content tone used in Crystals/Elements/Light Codes
 - **P1**: Build a richer guided demo account layer if you want a seeded faux dashboard / onboarding journey beyond the current public polished demo route
 - **P1**: Final app-store submission assets pass (store screenshots, icon pack QA, listing copy)
+- **P1**: Extend strict type-hint coverage beyond `backend/data/` into remaining backend routers/utilities for consistency
 - **P2**: Subscription-based access to all premium content (all-in-one membership)
 - **P2**: Add a Sacred Journey Progress tracker to the dashboard if approved
 - **P2**: Add a dedicated real-time video provider if true two-way in-app conferencing is desired beyond embed URLs + in-app RSVP/chat/Q&A
