@@ -12,6 +12,21 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–April 2026)
+- **Large-File Decomposition Sprint (Iteration 93):**
+  - Completed structural splits (with minor readability polish) across all four requested pages:
+    - `Courses.jsx` → extracted `components/courses/CourseCard.jsx`
+    - `BirthChart.jsx` → extracted `components/birthchart/BigThreeCard.jsx`
+    - `Breathwork.jsx` → extracted `components/breathwork/BreathworkControls.jsx` and `components/breathwork/BreathworkSoundSelector.jsx`
+    - `AdminCMS.jsx` → extracted `components/admin/AdminCMSTabBar.jsx` and `components/admin/AdminCMSItemCard.jsx`
+  - Quality follow-ups in same pass:
+    - Added robust dependency-safe fetch flow in `Courses.jsx`
+    - Expanded key-stability replacements in `Courses.jsx` and `BirthChart.jsx`
+    - Continued P0/P1 cleanup alignment (hook safety, catch logging, maintainability)
+  - Verification status:
+    - `/app/test_reports/iteration_93.json` passed
+    - Frontend regression checks: **100% pass** across all extracted components and routes
+    - Lint checks for all newly extracted and updated files: **pass**.
+
 - **Code Quality Remediation Sweep (Iteration 92):**
   - Completed critical frontend quality fixes requested in report:
     - Hook dependency hardening in key reported files (`routeGuards.jsx`, `VideosLibrary.jsx`, `TarotReading.jsx`, `Courses.jsx`, related pages)
