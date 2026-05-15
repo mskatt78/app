@@ -12,6 +12,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Fix-All Continuation Pass (Iteration 99, May 2026):**
+  - **Guided parity upgrades:**
+    - `PartnerYoga.jsx`: added therapeutic depth cards (`Why this heals`, `Integration`) and direct launch into full-screen `GuidedPracticeOverlay`.
+    - `SunriseSunsetPractices.jsx`: added depth cards in practice modal with cycle-aware healing/integration context while preserving timer flow.
+  - **App Store readiness polish:**
+    - `AppStoreReadiness.jsx`: added submission metadata pack with copy actions for package name and required review/legal paths.
+    - Added checklist coverage for package identifier verification (`com.skywater.soultemple`).
+  - **Backend type-hint expansion:**
+    - Added explicit return typing and stronger signatures in `auth.py`, `dependencies.py`, `reviews.py`, `audio.py`, and `tts.py`.
+  - Validation: `/app/test_reports/iteration_99.json` confirms frontend **100%** and no regressions in targeted backend flows.
+
 - **Auth Refactor Completion (Iteration 98, May 2026):**
   - Completed Module 5 backend auth decomposition in `backend/routers/auth.py`:
     - Added typed payload models: `GoogleUserPayload`, `GoogleAuthPayload`
@@ -356,10 +367,10 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
   - All deployment checks now pass
 
 ## Remaining Backlog
-- **P1**: Continue guided-section parity pass for remaining lighter sections (beyond Mantras/Mudras) to match deep-content tone used in Crystals/Elements/Light Codes
+- **P1**: Continue guided-section parity pass for remaining lighter sections (beyond Mantras/Mudras/Partner Yoga/Sunrise-Sunset) to match deep-content tone used in Crystals/Elements/Light Codes
 - **P1**: Build a richer guided demo account layer if you want a seeded faux dashboard / onboarding journey beyond the current public polished demo route
 - **P1**: Final app-store submission assets pass (store screenshots, icon pack QA, listing copy)
-- **P1**: Extend strict type-hint coverage beyond `backend/data/` into remaining backend routers/utilities for consistency
+- **P1**: Extend strict type-hint coverage to remaining large routers (`content.py`, `user.py`, `admin.py`, `payments.py`, `gifts.py`, `oracle.py`, `numerology.py`, `birth_chart.py`)
 - **P2**: Subscription-based access to all premium content (all-in-one membership)
 - **P2**: Add a Sacred Journey Progress tracker to the dashboard if approved
 - **P2**: Add a dedicated real-time video provider if true two-way in-app conferencing is desired beyond embed URLs + in-app RSVP/chat/Q&A
