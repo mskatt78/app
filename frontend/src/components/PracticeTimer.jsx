@@ -18,7 +18,7 @@ import {
   wait,
 } from "./timer/practiceTimerUtils";
 import { getLocalItem, setLocalItem } from "../utils/clientStorage";
-import { getGuidedNarrationMode } from "../utils/guidedNarrationSettings";
+import { getEffectiveGuidedNarrationMode } from "../utils/guidedNarrationSettings";
 
 const PracticeTimer = ({
   segments = [],
@@ -594,7 +594,13 @@ const PracticeTimer = ({
         element,
         duration_minutes: Math.max(MIN_NARRATION_MINUTES, Math.ceil(calculatedTotal / 60)),
         use_ai: false,
-        anti_repetition_mode: getGuidedNarrationMode(),
+        anti_repetition_mode: getEffectiveGuidedNarrationMode({
+          practiceName: normalizedSegments[0]?.name,
+          practiceType,
+          element,
+          sourceTexts,
+          steps,
+        }),
         steps,
         source_texts: sourceTexts,
       }),

@@ -16,6 +16,7 @@ import {
 } from "./guided/guidedNarrationUtils";
 import {
   getGuidedNarrationMode,
+  getEffectiveGuidedNarrationMode,
   setGuidedNarrationMode,
 } from "../utils/guidedNarrationSettings";
 
@@ -105,8 +106,16 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
 
   useEffect(() => {
     const handleStorage = (event) => {
-      if (event.key === "guided_narration_mode") {
-        setAntiRepetitionModeState(getGuidedNarrationMode());
+      if (event.key === "guided_narration_mode" || event.key === "guided_narration_manual_override") {
+        setAntiRepetitionModeState((current) => {
+          if (!scriptExpansionContext) return current;
+          return getEffectiveGuidedNarrationMode({
+            practiceName: scriptExpansionContext.practiceName,
+            element: scriptExpansionContext.element,
+            sourceTexts: scriptExpansionContext.sourceTexts,
+            steps: scriptExpansionContext.steps,
+          });
+        });
       }
     };
 
@@ -119,6 +128,17 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
     setAntiRepetitionModeState(nextMode);
     toast.success(`Narration mode: ${nextMode === "strict" ? "Strict" : "Balanced"}`);
   }, []);
+
+  useEffect(() => {
+    if (!scriptExpansionContext) return;
+    const nextMode = getEffectiveGuidedNarrationMode({
+      practiceName: scriptExpansionContext.practiceName,
+      element: scriptExpansionContext.element,
+      sourceTexts: scriptExpansionContext.sourceTexts,
+      steps: scriptExpansionContext.steps,
+    });
+    setAntiRepetitionModeState(nextMode);
+  }, [scriptExpansionContext]);
 
   const stopAmbient = useCallback(() => {
     try {

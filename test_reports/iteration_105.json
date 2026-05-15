@@ -1,0 +1,97 @@
+{
+  "summary": "Iteration 105 - Guided Narration Category Defaults & Manual Override Testing. CRITICAL BUG FIXED: `getGuidedNarrationMode is not defined` error in GuidedPracticeOverlay.jsx was blocking all guided meditations. Added missing import. Backend tests: 23/23 passed (100%). Frontend: GuidedPracticeOverlay now works correctly with mode switching.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration105_narration_modes.py",
+    "/app/test_reports/pytest/pytest_iteration105.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "FIXED: Missing import `getGuidedNarrationMode` in GuidedPracticeOverlay.jsx caused ReferenceError blocking all guided meditations",
+    "VERIFIED: /api/content/expand-script accepts anti_repetition_mode parameter (strict/balanced)",
+    "VERIFIED: Invalid mode values return 422 validation error",
+    "VERIFIED: Default mode is strict when not specified",
+    "VERIFIED: Word count floors (>=80%) met for all durations (7, 10, 15, 20, 25 min) in both modes",
+    "VERIFIED: Repetition quality maintained (stem repeat ratio <=0.12 for strict, <=0.15 for balanced)",
+    "VERIFIED: GuidedPracticeOverlay mode buttons work (Strict anti-repeat / Balanced flow)",
+    "VERIFIED: Mode switching shows visual feedback and toast notification",
+    "VERIFIED: Category keyword detection logic in guidedNarrationSettings.js is correct"
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/GuidedPracticeOverlay.jsx",
+    "/app/backend/tests/test_iteration105_narration_modes.py"
+  ],
+  "success_rate": {
+    "backend": "100% (23 passed, 0 failed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "No auth required for expand-script endpoint or meditations page",
+  "seed_data_creation": "None - used dynamic test data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 105 fixed a critical bug where `getGuidedNarrationMode` was not imported in GuidedPracticeOverlay.jsx, causing all guided meditations to crash with ReferenceError. The fix was adding the missing import. Category defaults logic (sunrise_sunset=balanced, deep_healing=strict, general=strict) is implemented in guidedNarrationSettings.js and works correctly. Manual override via Settings or overlay quick selector persists to localStorage and applies globally.",
+  "tests_executed": {
+    "backend_tests": [
+      "TestHealthCheck::test_health_check - PASSED",
+      "TestExpandScriptEndpoint::test_expand_script_strict_mode - PASSED",
+      "TestExpandScriptEndpoint::test_expand_script_balanced_mode - PASSED",
+      "TestExpandScriptEndpoint::test_expand_script_invalid_mode_rejected - PASSED",
+      "TestExpandScriptEndpoint::test_expand_script_default_mode_is_strict - PASSED",
+      "TestCategoryKeywordDetection::test_sunrise_sunset_keywords_detected - PASSED",
+      "TestCategoryKeywordDetection::test_deep_healing_keywords_detected - PASSED",
+      "TestAntiRepetitionQuality::test_strict_mode_low_repetition - PASSED",
+      "TestAntiRepetitionQuality::test_balanced_mode_allows_more_repetition - PASSED",
+      "TestWordCountFloors::test_strict_mode_word_floor[7,10,15,20,25] - ALL PASSED",
+      "TestWordCountFloors::test_balanced_mode_word_floor[7,10,15,20,25] - ALL PASSED",
+      "TestSegmentGeneration::test_segments_generated - PASSED",
+      "TestSegmentGeneration::test_first_segment_concise - PASSED",
+      "TestModeConsistency::test_strict_mode_consistent_quality - PASSED",
+      "TestModeConsistency::test_balanced_mode_consistent_quality - PASSED"
+    ],
+    "frontend_tests": [
+      "Meditations page loads - PASSED",
+      "6 meditation cards found - PASSED",
+      "Click meditation card opens GuidedPracticeOverlay - PASSED (after fix)",
+      "Strict anti-repeat button found - PASSED",
+      "Balanced flow button found - PASSED",
+      "Mode switching works with visual feedback - PASSED",
+      "Timer displays correctly - PASSED",
+      "Play/Pause button works - PASSED",
+      "Exit Practice button works - PASSED",
+      "Narration playing indicator shows - PASSED"
+    ]
+  },
+  "bug_fixed": {
+    "issue": "ReferenceError: getGuidedNarrationMode is not defined",
+    "location": "/app/frontend/src/components/GuidedPracticeOverlay.jsx:38",
+    "root_cause": "Function `getGuidedNarrationMode` was used but not imported from guidedNarrationSettings.js",
+    "fix_applied": "Added `getGuidedNarrationMode` to the import statement on line 17-20",
+    "verification": "GuidedPracticeOverlay now opens correctly without errors, mode buttons work, narration plays"
+  },
+  "features_verified": {
+    "category_defaults": {
+      "status": "IMPLEMENTED",
+      "details": "guidedNarrationSettings.js defines CATEGORY_DEFAULTS: sunrise_sunset=balanced, deep_healing=strict, general=strict. inferGuidedNarrationCategory() detects keywords and returns appropriate category."
+    },
+    "manual_override": {
+      "status": "IMPLEMENTED",
+      "details": "setGuidedNarrationMode() sets both mode and manual_override flag in localStorage. isGuidedNarrationManualOverrideEnabled() checks if manual override is active. getEffectiveGuidedNarrationMode() returns manual mode if override enabled, otherwise category default."
+    },
+    "expand_script_api": {
+      "status": "WORKING",
+      "details": "POST /api/content/expand-script accepts anti_repetition_mode parameter. Both strict and balanced modes produce valid output meeting word count floors."
+    },
+    "guided_overlay_quick_selector": {
+      "status": "WORKING",
+      "details": "GuidedPracticeContent.jsx displays mode buttons with data-testid='guided-mode-strict-btn' and 'guided-mode-balanced-btn'. Clicking switches mode and shows toast notification."
+    }
+  }
+}

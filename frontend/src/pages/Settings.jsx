@@ -335,7 +335,7 @@ const Settings = ({ user, api }) => {
                 Guided Narration Style
               </h2>
               <p className="text-sm text-muted-foreground mb-4" data-testid="settings-guided-narration-description">
-                Controls anti-repetition intensity across all guided meditations app-wide.
+                Controls anti-repetition intensity across all guided meditations app-wide. Without manual selection, category defaults apply (Sunrise/Sunset = Balanced, Deep Healing = Strict).
               </p>
 
               <Select
