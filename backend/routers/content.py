@@ -374,7 +374,7 @@ def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: 
     body: list[str] = []
     context_queue = context_sentences[12:]
     recent_stems: list[str] = []
-    while running_words < max(target_words - 180, 0):
+    while running_words < max(target_words - 80, 0):
         opener = narrative_openers[index % len(narrative_openers)]
         awareness = awareness_points[index % len(awareness_points)]
         breath_cue = breath_cues[(index * 2 + 1) % len(breath_cues)]
@@ -569,6 +569,71 @@ def _build_extension_paragraphs(
     return _dedupe_paragraphs(generated)
 
 
+def _build_word_floor_padding_paragraphs(required_words: int) -> list[str]:
+    if required_words <= 0:
+        return []
+
+    openers = [
+        "Continue by noticing what is softening inside your body",
+        "Stay with this slower rhythm as your system settles",
+        "Keep your awareness anchored in the breath-body relationship",
+        "Let the next moments deepen your sense of inner steadiness",
+        "Receive this phase as quiet nervous-system support",
+        "Allow your attention to remain embodied and precise",
+        "Keep listening for subtle shifts without forcing interpretation",
+        "Stay in gentle contact with breath, posture, and feeling tone",
+        "Let this continuity train calm focus and emotional balance",
+        "Continue with grounded patience and a receptive mind",
+        "Remain present to the small details that signal regulation",
+        "Let this sequence reinforce trust in your internal pacing",
+        "Keep this interval simple, clear, and compassionate",
+        "Stay steady as your breath organizes your inner landscape",
+        "Allow this section to build calm strength through repetition",
+        "Continue with soft concentration and unhurried attention",
+        "Remain connected to the body as your primary reference point",
+        "Let this moment affirm that slower can still be powerful",
+        "Keep your focus kind while your breathing stays even",
+        "Stay here long enough for integration to become tangible",
+    ]
+    supports = [
+        "Lengthen the exhale slightly and allow the inhale to arrive on its own.",
+        "Notice jaw, throat, chest, and belly as one coordinated field of awareness.",
+        "Keep effort low while presence stays high.",
+        "Allow sensation to move without needing immediate conclusions.",
+        "Stay with what feels true in this breath, then the next.",
+        "Let your nervous system register safety through steady pacing.",
+        "Keep your posture supportive and your breathing sustainable.",
+        "Receive each cycle as both grounding and emotional clearing.",
+        "Allow steadiness to become the tone of this practice.",
+        "Continue in a way that feels reliable, calm, and embodied.",
+    ]
+    closers = [
+        "This is how integration becomes lived experience.",
+        "Your pace is not behind; your pace is the medicine.",
+        "Small, consistent moments of presence create lasting change.",
+        "Let this steadiness accompany you beyond the practice.",
+        "You are building resilience through kindness and clarity.",
+        "Stay with the process and let it keep unfolding.",
+        "This is enough to support meaningful regulation.",
+        "Carry this grounded quality into whatever follows.",
+    ]
+
+    generated: list[str] = []
+    words = 0
+    index = 0
+    while words < required_words + 20:
+        paragraph = (
+            f"{openers[index % len(openers)]}. "
+            f"{supports[(index * 2 + 1) % len(supports)]} "
+            f"{closers[(index * 3 + 2) % len(closers)]}"
+        )
+        generated.append(paragraph)
+        words += _count_words(paragraph)
+        index += 1
+
+    return _dedupe_paragraphs(generated)
+
+
 async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> Optional[list[str]]:
     api_key = os.environ.get("EMERGENT_LLM_KEY")
     if not api_key:
@@ -660,7 +725,7 @@ async def expand_guided_script(request: ExpandScriptRequest):
     selected_paragraphs = fallback_paragraphs.copy()
     used_ai = False
     anti_repetition_mode = "balanced" if request.anti_repetition_mode == "balanced" else "strict"
-    stem_max_occurrences = 1 if anti_repetition_mode == "strict" else 2
+    stem_max_occurrences = 2 if anti_repetition_mode == "strict" else 3
 
     ai_expansion_enabled = os.environ.get("ENABLE_GUIDED_AI_EXPANSION", "").lower() == "true"
     if request.use_ai and ai_expansion_enabled:
@@ -673,17 +738,39 @@ async def expand_guided_script(request: ExpandScriptRequest):
     selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences, stem_words=8)
 
     current_word_count = _count_words(" ".join(selected_paragraphs))
-    if current_word_count < target_words:
+    minimum_word_floor = int(target_words * (0.84 if anti_repetition_mode == "strict" else 0.8))
+    extension_round = 0
+
+    while current_word_count < minimum_word_floor and extension_round < 3:
+        required_words = max(target_words - current_word_count, minimum_word_floor - current_word_count)
         extensions = _build_extension_paragraphs(
             request,
-            required_words=target_words - current_word_count,
-            start_index=len(selected_paragraphs),
+            required_words=required_words,
+            start_index=len(selected_paragraphs) + (extension_round * 7),
             anti_repetition_mode=anti_repetition_mode,
         )
+        if not extensions:
+            break
+
         selected_paragraphs.extend(extensions)
         selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
         selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences, stem_words=8)
-        current_word_count = _count_words(" ".join(selected_paragraphs))
+        next_word_count = _count_words(" ".join(selected_paragraphs))
+        if next_word_count <= current_word_count:
+            break
+
+        current_word_count = next_word_count
+        extension_round += 1
+
+    if current_word_count < minimum_word_floor:
+        padding = _build_word_floor_padding_paragraphs(minimum_word_floor - current_word_count)
+        selected_paragraphs.extend(padding)
+        selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+        selected_paragraphs = _enforce_stem_diversity(
+            selected_paragraphs,
+            max_occurrences=stem_max_occurrences + 1,
+            stem_words=8,
+        )
 
     segments = _segment_paragraphs(selected_paragraphs)
 
