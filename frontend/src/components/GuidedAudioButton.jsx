@@ -141,7 +141,7 @@ const GuidedAudioButton = ({
     try {
       let timerId;
       const timeoutPromise = new Promise((_, reject) => {
-        timerId = window.setTimeout(() => reject(new Error("Script expansion timeout")), 12000);
+        timerId = window.setTimeout(() => reject(new Error("Script expansion timeout")), 16000);
       });
 
       const response = await Promise.race([

@@ -1,6 +1,7 @@
 """Content routes for yoga, breathwork, crystals, mantras, mudras, meditations, etc."""
 from datetime import datetime, timezone
 import asyncio
+from collections import Counter
 import logging
 import os
 import re
@@ -20,6 +21,7 @@ MIN_NARRATION_MINUTES = 7
 TARGET_WORDS_PER_MINUTE = 120
 SEGMENT_TARGET_WORDS = 220
 FIRST_SEGMENT_TARGET_WORDS = 95
+MAX_PARAGRAPH_STEM_REPEAT_RATIO = 0.12
 
 
 class LiveSessionRsvpRequest(BaseModel):
@@ -154,6 +156,37 @@ def _normalize_text_for_repeat_check(text: str) -> str:
     return normalized
 
 
+def _paragraph_stem(text: str, words: int = 8) -> str:
+    return " ".join(_normalize_text_for_repeat_check(text).split()[:words])
+
+
+def _paragraph_stem_repeat_ratio(paragraphs: list[str], stem_words: int = 8) -> float:
+    stems = [_paragraph_stem(paragraph, words=stem_words) for paragraph in paragraphs if paragraph]
+    stems = [stem for stem in stems if stem]
+    if not stems:
+        return 0.0
+
+    stem_counts = Counter(stems)
+    repeated = sum(count - 1 for count in stem_counts.values() if count > 1)
+    return repeated / len(stems)
+
+
+def _enforce_stem_diversity(paragraphs: list[str], max_occurrences: int = 1, stem_words: int = 8) -> list[str]:
+    stem_counts: dict[str, int] = {}
+    filtered: list[str] = []
+
+    for paragraph in paragraphs:
+        stem = _paragraph_stem(paragraph, words=stem_words)
+        if not stem:
+            continue
+        if stem_counts.get(stem, 0) >= max_occurrences:
+            continue
+        stem_counts[stem] = stem_counts.get(stem, 0) + 1
+        filtered.append(paragraph)
+
+    return filtered or paragraphs
+
+
 def _dedupe_paragraphs(paragraphs: list[str]) -> list[str]:
     cleaned: list[str] = []
     seen_normalized: set[str] = set()
@@ -168,7 +201,7 @@ def _dedupe_paragraphs(paragraphs: list[str]) -> list[str]:
         if not normalized or normalized in seen_normalized:
             continue
 
-        stem = " ".join(normalized.split()[:12])
+        stem = _paragraph_stem(normalized, words=8)
         stem_counts[stem] = stem_counts.get(stem, 0) + 1
         if stem_counts[stem] > 1:
             continue
@@ -281,13 +314,26 @@ def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: 
         "your heartbeat against stillness", "the bridge between breath and emotion", "your forehead softening", "your belly wall relaxing",
     ]
     breath_cues = [
-        "Keep your exhale slightly longer than your inhale", "Let the inhale arrive naturally without pulling", "Allow pauses to be soft rather than rigid",
-        "Breathe through your nose with a quiet, even cadence", "Let each breath round off unnecessary tension", "Stay with a comfortable breath volume",
-        "Allow your breath to move lower toward the belly", "Maintain a steady rhythm that your nervous system can trust", "Let breath and body synchronize gently",
-        "Feel the breath as an anchor, not a demand", "Breathe as if you have plenty of time", "Soften around each exhale",
-        "Give each exhale enough length to signal safety", "Let your ribcage expand and settle without force", "Allow the breath to stay low and warm",
-        "Keep the breathing rhythm simple and sustainable", "Let your breathing soften the edges of effort", "Stay with a steady cadence you can easily maintain",
-        "Breathe as though you are being gently supported from within", "Relax your throat and let breath move cleanly",
+        "Lengthen your exhale slightly beyond your inhale",
+        "Receive the inhale naturally, without pulling",
+        "Keep the pauses soft instead of rigid",
+        "Breathe through your nose with an even, quiet cadence",
+        "Round off unnecessary tension on each breath cycle",
+        "Maintain a breath volume that feels sustainable",
+        "Guide the breath lower toward the belly",
+        "Hold a rhythm your nervous system can trust",
+        "Synchronize breath and body without forcing",
+        "Use breath as an anchor rather than a demand",
+        "Breathe as if there is ample time",
+        "Soften around the edge of each exhale",
+        "Give every exhale enough length to signal safety",
+        "Let ribcage expansion and release stay effortless",
+        "Keep the breath low, warm, and steady",
+        "Choose a breathing rhythm that remains simple",
+        "Ease the edges of effort through steady breathing",
+        "Stay with a cadence that feels clear and manageable",
+        "Breathe as though support is rising from within",
+        "Relax the throat so breath can move cleanly",
     ]
     integration_targets = [
         "nervous system regulation", "emotional steadiness", "inner trust", "embodied clarity", "somatic safety",
@@ -305,12 +351,21 @@ def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: 
         "Let this moment feel like an inner sanctuary", "Feel your system organizing itself around calm clarity",
     ]
     narrative_openers = [
-        "In this next interval, stay slow and attentive", "Continue with patience and soft concentration", "As you settle deeper, keep your awareness embodied",
-        "Let this minute unfold with steadiness and ease", "Take this phase as an invitation to listen inwardly", "From this point onward, move with deliberate care",
-        "Remain present as subtle shifts reveal themselves", "Allow this layer of practice to mature gradually", "Keep your attention honest and unforced",
-        "Notice how depth appears when urgency fades", "Continue with gentle discipline and curiosity", "Let this section become a lived experience, not a concept",
-        "Let calm precision and grounded strength move together here", "Stay graceful while your inner focus becomes more powerful",
-        "Allow this part of the journey to feel both tender and strong",
+        "In this next interval, stay slow and attentive",
+        "Continue with patience and soft concentration",
+        "As you settle deeper, keep your awareness embodied",
+        "This minute can unfold with steadiness and ease",
+        "Take this phase as an invitation to listen inwardly",
+        "From this point onward, move with deliberate care",
+        "Remain present as subtle shifts reveal themselves",
+        "This layer of practice can mature gradually",
+        "Keep your attention honest and unforced",
+        "Notice how depth appears when urgency fades",
+        "Continue with gentle discipline and curiosity",
+        "Treat this section as lived experience, not concept",
+        "Bring calm precision and grounded strength together here",
+        "Stay graceful while your inner focus becomes more powerful",
+        "Hold this part of the journey as both tender and strong",
     ]
 
     running_words = seed_words
@@ -408,10 +463,20 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
         ]
 
     openers = [
-        "Continue with patience and care", "Stay with the process as it unfolds naturally", "Keep your awareness spacious and grounded",
-        "Let this next minute remain steady and unrushed", "Allow the body to keep learning from the breath", "Remain connected to present sensation",
-        "Keep this phase simple and embodied", "Let the rhythm stay calm and sustainable", "Continue with gentle attentiveness",
-        "Stay graceful while your inner signal grows stronger", "Allow steady power to rise without force",
+        "Continue with patience and care",
+        "Stay with the process as it unfolds naturally",
+        "Keep your awareness spacious and grounded",
+        "Keep this next minute steady and unrushed",
+        "Support your body in learning through breath",
+        "Remain connected to present sensation",
+        "Keep this phase simple and embodied",
+        "Maintain a calm and sustainable rhythm",
+        "Continue with gentle attentiveness",
+        "Stay graceful while your inner signal grows stronger",
+        "Let steady power rise without force",
+        "Track subtle shifts while keeping your pace humane",
+        "Hold the posture of listening, not performing",
+        "Keep your focus soft, clear, and grounded",
     ]
     closers = [
         "Nothing is missing in this moment", "Depth comes through consistency, not force", "Your pace is enough",
@@ -423,9 +488,11 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
         opener = openers[idx % len(openers)]
         closer = closers[(idx * 2 + 1) % len(closers)]
         optional_context = f" {context_queue_ref.pop(0)}." if context_queue_ref and idx % 4 == 0 else ""
-        if idx % 2 == 0:
+        if idx % 3 == 0:
             return f"{opener}. Keep your breathing even and unforced.{optional_context} {closer}."
-        return f"{opener}. Let your body stay receptive while attention remains clear.{optional_context} {closer}."
+        if idx % 3 == 1:
+            return f"{opener}. Keep your body receptive while attention remains clear.{optional_context} {closer}."
+        return f"{opener}. Stay connected to sensation while your breath remains calm.{optional_context} {closer}."
 
     generated: list[str] = []
     words = 0
@@ -485,6 +552,8 @@ Requirements:
 6) Avoid repetitive sentence stems (do not keep reusing the same opening phrase repeatedly).
 7) Use an adaptive arc: graceful opening, stronger empowering middle, soft integrative close.
 8) Keep first spoken transition concise (no prolonged opening silence language).
+9) Do NOT overuse repeated lead-ins such as "let", "allow", "now", "breathe" at the start of consecutive sentences.
+10) Keep lexical variety high: sentence openings should feel naturally varied and human.
 """.strip()
 
     def parse_paragraphs(text: str) -> list[str]:
@@ -511,13 +580,17 @@ Requirements:
 
         response = await asyncio.wait_for(
             chat.send_message(UserMessage(text=prompt)),
-            timeout=12,
+            timeout=20,
         )
         text = _sanitize_llm_text(response)
         if _count_words(text) < int(target_words * 0.55):
             return None
 
         paragraphs = parse_paragraphs(text)
+        paragraphs = _dedupe_paragraphs(paragraphs)
+        paragraphs = _enforce_stem_diversity(paragraphs, max_occurrences=1, stem_words=8)
+        if _paragraph_stem_repeat_ratio(paragraphs, stem_words=8) > MAX_PARAGRAPH_STEM_REPEAT_RATIO:
+            return None
         return paragraphs or None
     except Exception as exc:
         logger.warning("AI script expansion failed: %s", exc)
@@ -542,6 +615,7 @@ async def expand_guided_script(request: ExpandScriptRequest):
             used_ai = True
 
     selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+    selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=1, stem_words=8)
 
     current_word_count = _count_words(" ".join(selected_paragraphs))
     if current_word_count < target_words:
@@ -552,6 +626,7 @@ async def expand_guided_script(request: ExpandScriptRequest):
         )
         selected_paragraphs.extend(extensions)
         selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+        selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=1, stem_words=8)
         current_word_count = _count_words(" ".join(selected_paragraphs))
 
     segments = _segment_paragraphs(selected_paragraphs)
