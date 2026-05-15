@@ -1,7 +1,7 @@
 """Community Reviews router — users can submit star ratings and written reviews."""
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Any, Optional, List
 from datetime import datetime, timezone
 import logging
 
@@ -38,7 +38,7 @@ def _make_initials(name: str) -> str:
     return name[:2].upper() if name else "??"
 
 
-def _doc_to_out(doc: dict) -> dict:
+def _doc_to_out(doc: dict[str, Any]) -> dict[str, Any]:
     return {
         "review_id": doc["review_id"],
         "user_name": doc["user_name"],
@@ -53,7 +53,7 @@ def _doc_to_out(doc: dict) -> dict:
 # ── Routes ───────────────────────────────────────────────────────────────────
 
 @router.get("", response_model=List[ReviewOut])
-async def get_reviews(db=Depends(get_db)):
+async def get_reviews(db: Any = Depends(get_db)) -> list[dict[str, Any]]:
     """Return all approved reviews, newest first."""
     cursor = db.reviews.find({"approved": True}, {"_id": 0}).sort("created_at", -1).limit(100)
     docs = await cursor.to_list(length=100)
@@ -61,7 +61,7 @@ async def get_reviews(db=Depends(get_db)):
 
 
 @router.get("/stats")
-async def get_review_stats(db=Depends(get_db)):
+async def get_review_stats(db: Any = Depends(get_db)) -> dict[str, Any]:
     """Return average rating, total count, and breakdown by star."""
     cursor = db.reviews.find({"approved": True}, {"_id": 0, "rating": 1})
     docs = await cursor.to_list(length=1000)
@@ -87,9 +87,9 @@ async def get_review_stats(db=Depends(get_db)):
 async def create_review(
     body: ReviewCreate,
     request: Request,
-    db=Depends(get_db),
+    db: Any = Depends(get_db),
     current_user: User = Depends(get_current_user),
-):
+) -> dict[str, Any]:
     """Submit a review. One review per user (updates if already submitted)."""
     import uuid
 
@@ -128,9 +128,9 @@ async def create_review(
 @router.get("/my-review", response_model=Optional[ReviewOut])
 async def get_my_review(
     request: Request,
-    db=Depends(get_db),
+    db: Any = Depends(get_db),
     current_user: User = Depends(get_current_user),
-):
+) -> Optional[dict[str, Any]]:
     """Get the current user's review if it exists."""
     doc = await db.reviews.find_one({"user_id": current_user.user_id}, {"_id": 0})
     if not doc:

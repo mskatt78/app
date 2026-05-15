@@ -41,7 +41,7 @@ class GoogleAuthPayload(BaseModel):
 
 # ============ HELPERS ============
 
-def hash_password(password: str, salt: str = None) -> tuple[str, str]:
+def hash_password(password: str, salt: Optional[str] = None) -> tuple[str, str]:
     """Hash password with salt."""
     if not salt:
         salt = secrets.token_hex(16)
@@ -62,7 +62,7 @@ def _resolve_display_name(email: str, name: Optional[str]) -> str:
     return name or email.split("@")[0]
 
 
-def _build_session(user_id: str, days: int, session_token: Optional[str] = None) -> dict:
+def _build_session(user_id: str, days: int, session_token: Optional[str] = None) -> dict[str, str]:
     token = session_token or secrets.token_urlsafe(32)
     return {
         "session_token": token,
@@ -152,7 +152,7 @@ async def _fetch_public_user_by_id(db, user_id: str) -> dict[str, Optional[str]]
     return _public_user_payload(user_data)
 
 
-async def _fetch_emergent_session_user(session_id: str) -> dict:
+async def _fetch_emergent_session_user(session_id: str) -> dict[str, Any]:
     import httpx
 
     try:
@@ -173,7 +173,7 @@ async def _fetch_emergent_session_user(session_id: str) -> dict:
 # ============ GOOGLE OAUTH ROUTES ============
 
 @router.post("/session")
-async def create_session(data: SessionCreate, response: Response):
+async def create_session(data: SessionCreate, response: Response) -> dict[str, dict[str, Optional[str]]]:
     """Create or update user session from Emergent Google OAuth."""
     db = get_db()
     google_user = await _fetch_emergent_session_user(data.session_id)
@@ -188,7 +188,7 @@ async def create_session(data: SessionCreate, response: Response):
     return {"user": await _fetch_public_user_by_id(db, user_id)}
 
 @router.post("/google")
-async def google_auth(payload: GoogleAuthPayload, response: Response):
+async def google_auth(payload: GoogleAuthPayload, response: Response) -> dict[str, Any]:
     """Handle Google OAuth callback - create/update user and session."""
     db = get_db()
 
@@ -206,12 +206,12 @@ async def google_auth(payload: GoogleAuthPayload, response: Response):
     }
 
 @router.get("/me")
-async def get_me(user: User = Depends(get_current_user)):
+async def get_me(user: User = Depends(get_current_user)) -> User:
     """Get current user info."""
     return user
 
 @router.post("/logout")
-async def logout(request: Request, response: Response):
+async def logout(request: Request, response: Response) -> dict[str, str]:
     """Logout user and clear session."""
     db = get_db()
     session_token = request.cookies.get("session_token")
@@ -225,7 +225,7 @@ async def logout(request: Request, response: Response):
 # ============ EMAIL/PASSWORD AUTH ============
 
 @router.post("/register")
-async def register_user(data: UserRegister, response: Response):
+async def register_user(data: UserRegister, response: Response) -> dict[str, Any]:
     """Register a new user with email/password."""
     db = get_db()
     
@@ -271,7 +271,7 @@ async def register_user(data: UserRegister, response: Response):
     }
 
 @router.post("/login")
-async def login_user(data: UserLogin, response: Response):
+async def login_user(data: UserLogin, response: Response) -> dict[str, Any]:
     """Login user with email/password."""
     db = get_db()
     

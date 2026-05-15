@@ -240,7 +240,30 @@ const SunriseSunsetPractices = ({ user, api }) => {
     }
   ];
 
-  const currentPractices = activeTab === "sunrise" ? sunrisePractices : sunsetPractices;
+  const enrichPracticeDepth = (practice, cycle) => {
+    const defaults = cycle === "sunrise"
+      ? {
+          why_this_heals:
+            "Sunrise practices heal by aligning circadian rhythm, breath chemistry, and intention-setting while the nervous system is naturally receptive to activation.",
+          integration:
+            "Anchor one sunrise insight into action before noon so the practice shapes your full day, not just the morning moment.",
+        }
+      : {
+          why_this_heals:
+            "Sunset practices heal by signaling safety to the body, completing stress cycles, and helping emotional residue leave before sleep.",
+          integration:
+            "Close your evening by naming one thing fully released and one quality you are carrying into tomorrow.",
+        };
+
+    return {
+      ...practice,
+      why_this_heals: practice.why_this_heals || defaults.why_this_heals,
+      integration: practice.integration || defaults.integration,
+    };
+  };
+
+  const currentPractices = (activeTab === "sunrise" ? sunrisePractices : sunsetPractices)
+    .map((practice) => enrichPracticeDepth(practice, activeTab));
 
   const logPractice = async (practice) => {
     if (!user) return;
@@ -476,6 +499,21 @@ const SunriseSunsetPractices = ({ user, api }) => {
                           </span>
                         ))}
                       </div>
+                    </div>
+
+                    <div className="grid gap-4 md:grid-cols-2" data-testid="sunrise-sunset-depth-cards">
+                      <article
+                        className={`p-4 rounded-xl ${elementColors[selectedPractice.element]?.bg} border ${elementColors[selectedPractice.element]?.border}`}
+                        data-testid="sunrise-sunset-why-this-heals"
+                      >
+                        <h3 className="font-medium mb-2">Why this heals</h3>
+                        <p className="text-sm text-muted-foreground">{selectedPractice.why_this_heals}</p>
+                      </article>
+
+                      <article className="p-4 rounded-xl bg-white/5 border border-white/10" data-testid="sunrise-sunset-integration">
+                        <h3 className="font-medium mb-2">Integration</h3>
+                        <p className="text-sm text-muted-foreground">{selectedPractice.integration}</p>
+                      </article>
                     </div>
 
                     {/* Steps */}

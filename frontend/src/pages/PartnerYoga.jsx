@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Users, Heart, Star, ChevronDown, Clock } from "lucide-react";
+import { Button } from "../components/ui/button";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 const partnerPoses = [
   {
@@ -183,6 +185,7 @@ const PartnerYoga = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPose, setSelectedPose] = useState(null);
   const [difficultyFilter, setDifficultyFilter] = useState("all");
+  const [showGuided, setShowGuided] = useState(false);
 
   const difficulties = ["all", "Beginner", "Intermediate", "Advanced"];
 
@@ -195,6 +198,35 @@ const PartnerYoga = ({ user, api }) => {
     Intermediate: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
     Advanced: "bg-red-500/20 text-red-400 border-red-500/30",
   };
+
+  const getWhyThisHeals = (pose) => {
+    const elementInsights = {
+      Water: "shared breath and co-regulation of the nervous system",
+      Fire: "mutual activation of courage, focus, and embodied confidence",
+      Earth: "relational safety, grounded balance, and trust through contact",
+      Air: "heart opening and emotional spaciousness through synchronized movement",
+    };
+
+    const lens = elementInsights[pose.element] || "coherent movement and relational presence";
+    return `This pose heals through ${lens}. Partner awareness helps each person soften protective patterns, communicate boundaries, and stay present in the body instead of overthinking.`;
+  };
+
+  const getIntegrationPrompt = (pose) => {
+    if (pose.element === "Fire") return "After practice, each partner names one courageous action they will take this week.";
+    if (pose.element === "Water") return "After practice, drink water together and share one feeling that moved during the pose.";
+    if (pose.element === "Earth") return "After practice, hold eye contact for five breaths and state one grounded intention for your connection.";
+    return "After practice, take a short silent walk together and notice what has softened in your body and heart.";
+  };
+
+  const buildGuidedPosePractice = (pose) => ({
+    id: `partner-guided-${pose.id}`,
+    name: pose.name,
+    description: pose.description,
+    element: pose.element,
+    duration_minutes: pose.duration,
+    steps: pose.instructions,
+    affirmation: `We move as partners with presence, trust, and care in ${pose.name}.`,
+  });
 
   return (
     <div className="min-h-screen bg-background" data-testid="partner-yoga">
@@ -422,11 +454,41 @@ const PartnerYoga = ({ user, api }) => {
                     ))}
                   </ul>
                 </div>
+
+                <div className="grid gap-4 md:grid-cols-2" data-testid="partner-yoga-depth-cards">
+                  <article className="p-4 rounded-xl bg-primary/10 border border-primary/25" data-testid="partner-yoga-why-this-heals">
+                    <h3 className="font-serif text-sm mb-2 text-primary">Why this heals</h3>
+                    <p className="text-sm text-muted-foreground">{getWhyThisHeals(selectedPose)}</p>
+                  </article>
+                  <article className="p-4 rounded-xl bg-white/5 border border-white/10" data-testid="partner-yoga-integration-card">
+                    <h3 className="font-serif text-sm mb-2 text-foreground">Integration</h3>
+                    <p className="text-sm text-muted-foreground">{getIntegrationPrompt(selectedPose)}</p>
+                  </article>
+                </div>
+
+                <Button
+                  type="button"
+                  onClick={() => setShowGuided(true)}
+                  className="w-full"
+                  data-testid="partner-yoga-begin-guided-practice-btn"
+                >
+                  Begin Guided Partner Practice
+                </Button>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {showGuided && selectedPose && (
+        <GuidedPracticeOverlay
+          practice={buildGuidedPosePractice(selectedPose)}
+          onClose={() => setShowGuided(false)}
+          autoStart={true}
+          showAudioControls={true}
+          autoNarrate={true}
+        />
+      )}
     </div>
   );
 };

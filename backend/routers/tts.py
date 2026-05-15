@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import Response
 from pydantic import BaseModel
 from emergentintegrations.llm.openai import OpenAITextToSpeech
+from typing import Any
 import os
 import hashlib
 import logging
@@ -13,7 +14,7 @@ router = APIRouter(prefix="/tts", tags=["tts"])
 logger = logging.getLogger(__name__)
 
 # Cache for generated audio to save API calls
-audio_cache = {}
+audio_cache: dict[str, bytes | str] = {}
 
 class TTSRequest(BaseModel):
     text: str
@@ -69,7 +70,7 @@ async def generate_long_audio(text: str, voice: str, speed: float, api_key: str)
     return combined
 
 @router.post("/generate")
-async def generate_speech(request: TTSRequest):
+async def generate_speech(request: TTSRequest) -> Response:
     """Generate TTS audio from text."""
     api_key = os.getenv("EMERGENT_LLM_KEY")
     if not api_key:
@@ -121,7 +122,7 @@ async def generate_speech(request: TTSRequest):
         raise HTTPException(status_code=500, detail=f"Failed to generate audio: {str(e)}")
 
 @router.post("/generate-base64")
-async def generate_speech_base64(request: TTSRequest):
+async def generate_speech_base64(request: TTSRequest) -> dict[str, str]:
     """Generate TTS audio and return as base64 for embedding."""
     
     api_key = os.getenv("EMERGENT_LLM_KEY")
@@ -156,14 +157,14 @@ async def generate_speech_base64(request: TTSRequest):
         raise HTTPException(status_code=500, detail=f"Failed to generate audio: {str(e)}")
 
 @router.get("/meditation/{meditation_id}/parts")
-async def get_meditation_parts_info(meditation_id: str):
+async def get_meditation_parts_info(meditation_id: str) -> dict[str, Any]:
     """Return the number of audio parts available for a meditation."""
     return {"meditation_id": meditation_id, "total_parts": 4}
 
 
 # Meditation-specific endpoint with prepared guidance
 @router.post("/meditation/{meditation_id}")
-async def generate_meditation_audio(meditation_id: str, voice: str = "nova", part: int = 1):
+async def generate_meditation_audio(meditation_id: str, voice: str = "nova", part: int = 1) -> dict[str, str]:
     """Generate guided meditation audio in 4 parts to stay within proxy timeout.
     Part 1: Welcome + Breathing (~2-3 min)
     Part 2: Body Scan (~2-3 min)
@@ -293,7 +294,7 @@ Namaste. The light in me honors the light in you.""".strip(),
 
 # Somatic Movement-specific endpoint with guided instructions
 @router.post("/somatic/{practice_id}")
-async def generate_somatic_audio(practice_id: str, voice: str = "nova"):
+async def generate_somatic_audio(practice_id: str, voice: str = "nova") -> dict[str, str]:
     """Generate guided audio for a specific somatic practice."""
     from .dependencies import get_db
     

@@ -1,7 +1,7 @@
 """Audio narration routes for generating guided meditation audio."""
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Any, Optional
 import os
 import hashlib
 import logging
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/audio", tags=["audio"])
 logger = logging.getLogger(__name__)
 
 # In-memory cache for audio (in production, use Redis or file storage)
-audio_cache = {}
+audio_cache: dict[str, str] = {}
 
 
 class NarrationRequest(BaseModel):
@@ -31,7 +31,7 @@ class NarrationResponse(BaseModel):
 
 
 @router.post("/generate-narration")
-async def generate_narration(request: NarrationRequest):
+async def generate_narration(request: NarrationRequest) -> NarrationResponse:
     """
     Generate audio narration for guided meditations using OpenAI TTS.
     Returns base64 encoded audio for direct playback in browser.
@@ -88,7 +88,7 @@ async def generate_narration(request: NarrationRequest):
 
 
 @router.get("/voices")
-async def get_available_voices():
+async def get_available_voices() -> dict[str, Any]:
     """Get list of available voices for narration."""
     return {
         "voices": [
@@ -104,7 +104,7 @@ async def get_available_voices():
 
 
 @router.post("/generate-step-narration")
-async def generate_step_narration(practice_type: str, step_number: int, step_text: str, voice: str = "nova"):
+async def generate_step_narration(practice_type: str, step_number: int, step_text: str, voice: str = "nova") -> dict[str, Any]:
     """
     Generate narration for a single practice step.
     Adds gentle pauses and meditation-appropriate pacing.
@@ -179,7 +179,7 @@ MEDITATION_SCRIPTS = {
 
 
 @router.get("/meditation-scripts")
-async def get_meditation_scripts():
+async def get_meditation_scripts() -> dict[str, Any]:
     """Get pre-defined meditation scripts."""
     return {
         "scripts": [
@@ -191,7 +191,7 @@ async def get_meditation_scripts():
 
 
 @router.post("/generate-meditation/{script_id}")
-async def generate_meditation_audio(script_id: str, voice: str = "nova"):
+async def generate_meditation_audio(script_id: str, voice: str = "nova") -> NarrationResponse:
     """Generate audio for a pre-defined meditation script."""
     if script_id not in MEDITATION_SCRIPTS:
         raise HTTPException(status_code=404, detail="Script not found")

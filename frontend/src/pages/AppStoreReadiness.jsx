@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, ClipboardList, ExternalLink, RotateCcw, Smartphone } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ClipboardList, Copy, ExternalLink, RotateCcw, Smartphone } from "lucide-react";
 import { Checkbox } from "../components/ui/checkbox";
 import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
 import { migrateLocalToSession, removeSessionItem, setSessionItem } from "../utils/clientStorage";
+import { toast } from "sonner";
 
 const STORAGE_KEY = "appStoreReadinessChecklistV1";
 
@@ -28,6 +29,11 @@ const assetChecklist = [
     id: "store-description",
     title: "Store listing copy finalized",
     hint: "Short description, long description, keywords, support contact.",
+  },
+  {
+    id: "package-identifier",
+    title: "Package identifier verified",
+    hint: "Confirm package name is com.skywater.soultemple in submission forms.",
   },
   {
     id: "policy-links",
@@ -66,6 +72,39 @@ const qaChecklist = [
     id: "offline-fallback",
     title: "Offline fallback tested",
     hint: "Confirm service worker fallback page is reachable when connection drops.",
+  },
+];
+
+const submissionMetadata = [
+  {
+    id: "package-name",
+    label: "Package name",
+    value: "com.skywater.soultemple",
+  },
+  {
+    id: "support-url",
+    label: "Support URL",
+    value: "/support",
+  },
+  {
+    id: "privacy-url",
+    label: "Privacy URL",
+    value: "/privacy",
+  },
+  {
+    id: "terms-url",
+    label: "Terms URL",
+    value: "/terms",
+  },
+  {
+    id: "reviewer-demo-path",
+    label: "Reviewer demo path",
+    value: "/demo",
+  },
+  {
+    id: "admin-entry",
+    label: "Admin entry path",
+    value: "/admin",
   },
 ];
 
@@ -109,6 +148,16 @@ export default function AppStoreReadiness() {
   const resetChecklist = () => {
     removeSessionItem(STORAGE_KEY);
     setChecks({});
+  };
+
+  const copyMetadataValue = async (label, value) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      toast.success(`${label} copied`);
+    } catch (error) {
+      console.error("Clipboard copy failed", error);
+      toast.error("Could not copy value");
+    }
   };
 
   return (
@@ -223,6 +272,44 @@ export default function AppStoreReadiness() {
                 </div>
                 {checks[item.id] ? <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-1" /> : null}
               </label>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-[1.75rem] border border-white/10 bg-card/70 p-6" data-testid="app-readiness-metadata-card">
+          <div className="flex items-center gap-2 mb-4">
+            <ClipboardList className="w-5 h-5 text-primary" />
+            <h3 className="text-xl font-serif">Submission metadata pack</h3>
+          </div>
+          <p className="text-sm text-muted-foreground mb-5" data-testid="app-readiness-metadata-note">
+            Keep these values consistent in App Store Connect and Google Play Console forms.
+          </p>
+
+          <div className="grid gap-3 md:grid-cols-2" data-testid="app-readiness-metadata-grid">
+            {submissionMetadata.map((item) => (
+              <div
+                key={item.id}
+                className="rounded-xl border border-white/10 bg-black/20 p-4"
+                data-testid={`app-readiness-metadata-${item.id}`}
+              >
+                <p className="text-xs uppercase tracking-wider text-white/55 mb-2">{item.label}</p>
+                <div className="flex items-center justify-between gap-3">
+                  <code className="text-sm text-foreground break-all" data-testid={`app-readiness-metadata-value-${item.id}`}>
+                    {item.value}
+                  </code>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className="border-white/15"
+                    onClick={() => copyMetadataValue(item.label, item.value)}
+                    data-testid={`app-readiness-copy-${item.id}`}
+                  >
+                    <Copy className="w-3.5 h-3.5 mr-1" />
+                    Copy
+                  </Button>
+                </div>
+              </div>
             ))}
           </div>
         </section>

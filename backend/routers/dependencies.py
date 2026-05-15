@@ -2,7 +2,7 @@
 from fastapi import Request, HTTPException, Depends
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Any, Optional
 from datetime import datetime, timezone
 import os
 import logging
@@ -11,14 +11,14 @@ import logging
 logger = logging.getLogger(__name__)
 
 # MongoDB connection (initialized in main server.py)
-db = None
+db: Any = None
 
-def set_db(database):
+def set_db(database: Any) -> None:
     """Set the database instance from server.py"""
     global db
     db = database
 
-def get_db():
+def get_db() -> Any:
     """Get database instance"""
     global db
     if db is None:
