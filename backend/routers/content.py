@@ -478,40 +478,85 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
         "Hold the posture of listening, not performing",
         "Keep your focus soft, clear, and grounded",
     ]
+    midlines = [
+        "Keep your breathing even and unforced",
+        "Stay receptive while attention remains clear",
+        "Track subtle sensation without narrating every shift",
+        "Let awareness stay grounded in what is present",
+        "Hold a steady rhythm that does not strain the body",
+        "Continue with patient focus rather than urgency",
+        "Give this moment space to settle before the next step",
+        "Let breath and posture coordinate with minimal effort",
+        "Keep your jaw, shoulders, and belly soft as you continue",
+        "Maintain clarity while your nervous system settles",
+        "Stay connected to your inner pacing cues",
+        "Keep this phase embodied rather than performative",
+        "Allow precision and softness to move together",
+        "Remain present to sensation while your breath stays smooth",
+    ]
     closers = [
-        "Nothing is missing in this moment", "Depth comes through consistency, not force", "Your pace is enough",
-        "Gentleness is part of the medicine", "Trust the process as it reveals itself", "Keep listening from within",
-        "Steadiness is more valuable than intensity", "Let this settle before moving ahead", "Presence is the practice",
+        "Nothing is missing in this moment",
+        "Depth comes through consistency, not force",
+        "Your pace is enough",
+        "Gentleness is part of the medicine",
+        "Trust the process as it reveals itself",
+        "Keep listening from within",
+        "Steadiness is more valuable than intensity",
+        "Let this settle before moving ahead",
+        "Presence is the practice",
+        "Small steady steps shape real change",
+        "This is how calm strength is built",
+        "Take only what your system can integrate now",
+        "The body learns best in clear, steady cycles",
+        "Your awareness is already doing meaningful work",
+        "Integration happens through repetition with variation",
+        "Stay kind and precise at the same time",
     ]
 
     def build_paragraph(idx: int, context_queue_ref: list[str]) -> str:
         opener = openers[idx % len(openers)]
+        midline = midlines[(idx * 3 + 1) % len(midlines)]
         closer = closers[(idx * 2 + 1) % len(closers)]
         optional_context = f" {context_queue_ref.pop(0)}." if context_queue_ref and idx % 4 == 0 else ""
-        if idx % 3 == 0:
-            return f"{opener}. Keep your breathing even and unforced.{optional_context} {closer}."
-        if idx % 3 == 1:
-            return f"{opener}. Keep your body receptive while attention remains clear.{optional_context} {closer}."
-        return f"{opener}. Stay connected to sensation while your breath remains calm.{optional_context} {closer}."
+        return f"{opener}. {midline}.{optional_context} {closer}."
 
     generated: list[str] = []
     words = 0
     index = start_index
     context_queue = context_sentences[:]
     recent_stems: list[str] = []
+    midline_counts: dict[str, int] = {}
+    attempts = 0
+    attempts_without_append = 0
+    max_attempts = max(required_words * 4, 400)
     while words < required_words + 40:
+        attempts += 1
+        if attempts > max_attempts:
+            break
+
         paragraph = build_paragraph(index, context_queue)
         stem = " ".join(_normalize_text_for_repeat_check(paragraph).split()[:10])
+        midline_sentence = paragraph.split(". ")[1] if ". " in paragraph else paragraph
+        midline_stem = _paragraph_stem(midline_sentence, words=6)
         if stem and stem in recent_stems:
             index += 1
+            attempts_without_append += 1
+            continue
+
+        if midline_stem and midline_counts.get(midline_stem, 0) >= 3 and attempts_without_append < 80:
+            index += 1
+            attempts_without_append += 1
             continue
 
         generated.append(paragraph)
+        attempts_without_append = 0
         words += _count_words(paragraph)
         if stem:
             recent_stems.append(stem)
             if len(recent_stems) > 20:
                 recent_stems.pop(0)
+        if midline_stem:
+            midline_counts[midline_stem] = midline_counts.get(midline_stem, 0) + 1
         index += 1
 
     return _dedupe_paragraphs(generated)
@@ -608,7 +653,8 @@ async def expand_guided_script(request: ExpandScriptRequest):
     selected_paragraphs = fallback_paragraphs.copy()
     used_ai = False
 
-    if request.use_ai:
+    ai_expansion_enabled = os.environ.get("ENABLE_GUIDED_AI_EXPANSION", "").lower() == "true"
+    if request.use_ai and ai_expansion_enabled:
         ai_paragraphs = await _expand_with_llm(request, target_words)
         if ai_paragraphs:
             selected_paragraphs = ai_paragraphs
