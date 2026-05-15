@@ -12,6 +12,12 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Humanized Guided Tone Pass (Iteration 106, May 2026):**
+  - Reworked guided narration language across backend expansion generators to sound softer and intuitively spoken (less command-like, more compassionate/human cadence).
+  - Updated fallback frontend narration language to match softer human tone and reduced default guided TTS speed to `0.82` for more natural delivery.
+  - Preserved anti-repetition + word-floor guarantees while improving delivery quality.
+  - Validation: `/app/test_reports/iteration_106.json` => backend **100% (17/17)**, frontend **100%**.
+
 - **User-Controlled Anti-Repetition Modes (Iteration 102–104, May 2026):**
   - Added global guided narration mode preference with default **Strict** and optional **Balanced**:
     - New shared utility: `frontend/src/utils/guidedNarrationSettings.js`
