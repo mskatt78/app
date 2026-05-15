@@ -771,6 +771,12 @@ async def expand_guided_script(request: ExpandScriptRequest):
             max_occurrences=stem_max_occurrences + 1,
             stem_words=8,
         )
+        current_word_count = _count_words(" ".join(selected_paragraphs))
+
+    if current_word_count < minimum_word_floor:
+        final_padding = _build_word_floor_padding_paragraphs((minimum_word_floor - current_word_count) + 40)
+        selected_paragraphs.extend(final_padding)
+        current_word_count = _count_words(" ".join(selected_paragraphs))
 
     segments = _segment_paragraphs(selected_paragraphs)
 
