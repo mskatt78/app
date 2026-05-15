@@ -1,0 +1,150 @@
+{
+  "summary": "Iteration 106 - Softer Tone & Human-Like Guidance Testing. All tests PASSED. Backend narration now uses significantly softer, more intuitive language (37:1 to 54:1 softer-to-mechanical phrase ratio). Anti-repetition quality preserved. Word floors met for all durations. TTS speed correctly set to 0.82. Frontend guided overlay works with no regressions.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration106_softer_tone.py",
+    "/app/test_reports/pytest/pytest_iteration106.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "VERIFIED: Narration tone is now significantly softer and more human-like",
+    "VERIFIED: Softer phrases outnumber mechanical phrases by 37:1 to 54:1 ratio across all durations",
+    "VERIFIED: 44+ softer phrases per 1000 words (well above 5 minimum threshold)",
+    "VERIFIED: Only 1-2 mechanical phrases detected per narration (minimal)",
+    "VERIFIED: Anti-repetition quality preserved - strict mode stem ratio <=0.12, balanced <=0.15",
+    "VERIFIED: Word count floors met for 7/15/20/25 minute durations (>=84% of target)",
+    "VERIFIED: TTS speed correctly updated to 0.82 in guidedNarrationUtils.js and practiceTimerUtils.js",
+    "VERIFIED: GuidedAudioButton.jsx uses DEFAULT_GUIDED_TTS_SPEED constant",
+    "VERIFIED: Frontend guided overlay loads and plays without errors",
+    "VERIFIED: Mode selector buttons (Strict anti-repeat / Balanced flow) present and functional",
+    "VERIFIED: Timer displays correctly and counts down",
+    "VERIFIED: Narration text visible with softer language patterns"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration106_softer_tone.py"
+  ],
+  "success_rate": {
+    "backend": "100% (17 passed, 0 failed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "No auth required for expand-script endpoint or meditations page",
+  "seed_data_creation": "None - used dynamic test data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 106 verified that the softer tone updates are working correctly. The narration now uses phrases like 'whenever you're ready', 'if it feels supportive', 'gently', 'let yourself settle' instead of mechanical commands. TTS speed is 0.82 (slower for more natural pacing). All guided sections app-wide should now sound more intuitive and human-like.",
+  "tests_executed": {
+    "backend_tests": [
+      "TestHealthCheck::test_health_check - PASSED",
+      "TestSofterToneQuality::test_expand_script_softer_tone_7min - PASSED (37 softer vs 1 mechanical)",
+      "TestSofterToneQuality::test_expand_script_softer_tone_15min - PASSED (83 softer vs 2 mechanical)",
+      "TestSofterToneQuality::test_expand_script_softer_tone_20min - PASSED (94 softer vs 2 mechanical)",
+      "TestSofterToneQuality::test_expand_script_softer_tone_25min - PASSED (109 softer vs 2 mechanical)",
+      "TestAntiRepetitionPreserved::test_strict_mode_low_repetition - PASSED",
+      "TestAntiRepetitionPreserved::test_balanced_mode_acceptable_repetition - PASSED",
+      "TestWordFloorValid::test_word_floor_met[7-705.6] - PASSED (826 words)",
+      "TestWordFloorValid::test_word_floor_met[15-1512.0] - PASSED (1848 words)",
+      "TestWordFloorValid::test_word_floor_met[20-2016.0] - PASSED (2178 words)",
+      "TestWordFloorValid::test_word_floor_met[25-2520.0] - PASSED (2562 words)",
+      "TestTTSSpeedDefault::test_tts_generate_base64_works - PASSED",
+      "TestSpecificPhraseImprovements::test_intro_paragraphs_softer - PASSED",
+      "TestSpecificPhraseImprovements::test_step_frames_softer - PASSED",
+      "TestSpecificPhraseImprovements::test_closing_paragraphs_softer - PASSED",
+      "TestNoRegressions::test_segments_generated - PASSED",
+      "TestNoRegressions::test_response_structure_intact - PASSED"
+    ],
+    "frontend_tests": [
+      "Meditations page loads - PASSED",
+      "6 meditation cards visible - PASSED",
+      "Click meditation card opens GuidedPracticeOverlay - PASSED",
+      "Timer displays correctly (14:56 REMAINING) - PASSED",
+      "Strict anti-repeat button found - PASSED",
+      "Balanced flow button found - PASSED",
+      "Narration text visible with softer language - PASSED",
+      "Play/Pause button works - PASSED",
+      "Exit Practice button visible - PASSED",
+      "No JavaScript errors in console - PASSED"
+    ]
+  },
+  "tone_quality_metrics": {
+    "7_minute": {
+      "word_count": 826,
+      "mechanical_phrases": 1,
+      "softer_phrases": 37,
+      "softer_per_1000_words": 44.8,
+      "ratio": "37:1"
+    },
+    "15_minute": {
+      "word_count": 1848,
+      "mechanical_phrases": 2,
+      "softer_phrases": 83,
+      "softer_per_1000_words": 44.9,
+      "ratio": "41.5:1"
+    },
+    "20_minute": {
+      "word_count": 2178,
+      "mechanical_phrases": 2,
+      "softer_phrases": 94,
+      "softer_per_1000_words": 43.2,
+      "ratio": "47:1"
+    },
+    "25_minute": {
+      "word_count": 2562,
+      "mechanical_phrases": 2,
+      "softer_phrases": 109,
+      "softer_per_1000_words": 42.5,
+      "ratio": "54.5:1"
+    }
+  },
+  "softer_phrases_detected": [
+    "whenever you're ready",
+    "if it feels",
+    "if it helps",
+    "let yourself",
+    "allow",
+    "gently",
+    "softly",
+    "patient",
+    "trust",
+    "compassion",
+    "embodied",
+    "grounded",
+    "steady",
+    "safe",
+    "supported",
+    "ease",
+    "permission",
+    "soften",
+    "settle",
+    "receive"
+  ],
+  "features_verified": {
+    "softer_tone": {
+      "status": "WORKING",
+      "details": "Narration uses significantly softer, more intuitive language. Mechanical command-style phrases reduced to near-zero. Softer phrases like 'whenever you're ready', 'if it helps', 'gently', 'let yourself settle' are prevalent throughout."
+    },
+    "anti_repetition": {
+      "status": "PRESERVED",
+      "details": "Strict mode maintains stem repeat ratio <=0.12, balanced mode <=0.15. No regression in repetition quality."
+    },
+    "word_floors": {
+      "status": "VALID",
+      "details": "All durations (7/15/20/25 min) meet >=84% word count floor. 7min=826 words, 15min=1848 words, 20min=2178 words, 25min=2562 words."
+    },
+    "tts_speed": {
+      "status": "UPDATED",
+      "details": "DEFAULT_GUIDED_TTS_SPEED set to 0.82 (slower for more natural pacing). Used in GuidedPracticeOverlay, PracticeTimer, and GuidedAudioButton."
+    },
+    "guided_overlay": {
+      "status": "WORKING",
+      "details": "Frontend guided overlay loads correctly, timer displays, mode selector works, narration text visible, no runtime errors."
+    }
+  }
+}

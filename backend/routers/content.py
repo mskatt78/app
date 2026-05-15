@@ -258,33 +258,45 @@ def _filter_context_by_steps(context_sentences: list[str], unique_steps: list[st
 
 def _build_fallback_intro(practice_name: str, element: str) -> list[str]:
     element_themes = {
-        "earth": "stable, rooted, and quietly resilient",
+        "earth": "steady, grounded, and quietly reassuring",
         "water": "fluid, receptive, and emotionally spacious",
-        "fire": "focused, transformative, and courageous",
-        "air": "clear, light, and mentally open",
+        "fire": "clear, brave, and gently energizing",
+        "air": "light, open, and mentally spacious",
         "spirit": "expansive, devotional, and deeply present",
     }
     element_theme = element_themes.get(element, element_themes["spirit"])
     return [
-        f"Welcome to {practice_name}. Begin with one steady inhale and one long exhale, then arrive fully in your body without rushing.",
-        f"This is a {element} practice, so let your pace stay {element_theme}. Start gracefully, build clear inner power through the middle, and soften again as you integrate.",
+        (
+            f"Welcome to {practice_name}. Take one easy breath with me, then another. "
+            "There is nothing to perform here—you can simply arrive as you are."
+        ),
+        (
+            f"This is a {element} practice, with a tone that feels {element_theme}. "
+            "We begin gently, gather grounded strength through the middle, and close in a soft integration."
+        ),
     ]
 
 
 def _build_step_paragraphs(unique_steps: list[str], context_sentences: list[str]) -> list[str]:
     step_frames = [
-        "Enter this phase through", "Now explore", "Let this stage begin with", "Move gently into",
-        "For this sequence, work with", "Settle into", "Allow your body to try", "Open this section with",
+        "Whenever you're ready, begin with",
+        "If it feels supportive, explore",
+        "This next moment can open through",
+        "Gently move toward",
+        "For this part, stay with",
+        "Let yourself settle into",
+        "Try this softly:",
+        "You can open this section through",
     ]
     somatic_prompts = [
-        "Keep your breath smooth while tracking sensation in chest, belly, and jaw.",
-        "Notice how your body responds rather than forcing a perfect outcome.",
-        "Let your nervous system absorb the instruction at a patient pace.",
-        "Soften the effort while keeping your attention precise and kind.",
-        "Stay curious about temperature, pulse, and subtle emotional movement.",
-        "Allow the movement to become more embodied than performative.",
-        "Use each exhale to release strain and re-center your awareness.",
-        "Keep your shoulders and face relaxed as this phase unfolds.",
+        "Keep your breath smooth and notice what shifts in jaw, chest, and belly.",
+        "Let your body respond in its own timing—no need to force precision.",
+        "Give your nervous system a patient pace it can actually trust.",
+        "Soften effort while staying clear and kind with your attention.",
+        "Stay curious about small signals: warmth, pulse, emotion, and release.",
+        "Let this feel embodied and human, not performative.",
+        "Use each exhale to loosen strain and come back to yourself.",
+        "Keep shoulders, face, and throat relaxed as this unfolds.",
     ]
     paragraphs: list[str] = []
     for index, step in enumerate(unique_steps[:8]):
@@ -296,12 +308,18 @@ def _build_step_paragraphs(unique_steps: list[str], context_sentences: list[str]
 
 
 def _build_context_absorption_paragraphs(context_sentences: list[str]) -> list[str]:
+    lead_ins = [
+        "Let this guidance land softly",
+        "Take a quiet moment with this",
+        "If it helps, stay with this line",
+        "Let these words settle into your body",
+    ]
     return [
         (
-            f"Take a moment to absorb this guidance: {sentence}. "
-            "Let it land gradually, and notice what shifts in your breath quality, emotional tone, and inner steadiness."
+            f"{lead_ins[index % len(lead_ins)]}: {sentence}. "
+            "Notice what shifts in your breath, emotional tone, and inner steadiness."
         )
-        for sentence in context_sentences[:12]
+        for index, sentence in enumerate(context_sentences[:12])
     ]
 
 
@@ -353,20 +371,22 @@ def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: 
     ]
     narrative_openers = [
         "In this next interval, stay slow and attentive",
-        "Continue with patience and soft concentration",
-        "As you settle deeper, keep your awareness embodied",
+        "Continue with patience and a softer focus",
+        "As you settle deeper, let awareness feel embodied",
         "This minute can unfold with steadiness and ease",
         "Take this phase as an invitation to listen inwardly",
-        "From this point onward, move with deliberate care",
-        "Remain present as subtle shifts reveal themselves",
-        "This layer of practice can mature gradually",
-        "Keep your attention honest and unforced",
+        "From here, move with gentle care",
+        "Remain present while subtle shifts reveal themselves",
+        "This layer of practice can ripen gradually",
+        "Keep attention honest and unforced",
         "Notice how depth appears when urgency fades",
-        "Continue with gentle discipline and curiosity",
-        "Treat this section as lived experience, not concept",
-        "Bring calm precision and grounded strength together here",
-        "Stay graceful while your inner focus becomes more powerful",
-        "Hold this part of the journey as both tender and strong",
+        "Continue with curiosity and kind discipline",
+        "Treat this section as lived experience, not theory",
+        "Let calm precision and grounded strength move together",
+        "Stay graceful as your inner focus grows clearer",
+        "Hold this part of the journey as tender and strong",
+        "If you need to slow down, that is part of the practice",
+        "Let this feel more like conversation than command",
     ]
 
     running_words = seed_words
@@ -384,21 +404,21 @@ def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: 
 
         paragraph_variants = [
             (
-                f"{opener}. Keep attention on {awareness}. {breath_cue}. "
-                f"{optional_context}{imagery}. Let this support {target} without urgency or strain."
+                f"{opener}. Keep a gentle awareness near {awareness}. {breath_cue}. "
+                f"{optional_context}{imagery}. Let this support {target} without pressure."
             ),
             (
                 f"{opener}. {imagery}. {breath_cue}. "
-                f"Track what changes around {awareness}, and allow this to build {target}."
+                f"You might notice small changes around {awareness}; let that quietly build {target}."
             ),
             (
                 f"{opener}. Stay oriented to {awareness} while you breathe. "
-                f"{optional_context}Let this moment remain uncomplicated and clear. "
+                f"{optional_context}Keep this moment simple and clear. "
                 f"{breath_cue}. This phase can restore {target}."
             ),
             (
-                f"{opener}. {breath_cue}. Let your awareness stay anchored in {awareness}. "
-                f"{imagery}. Give this time to cultivate {target}."
+                f"{opener}. {breath_cue}. Let awareness stay anchored in {awareness}. "
+                f"{imagery}. Give this enough time to cultivate {target}."
             ),
         ]
 
@@ -471,34 +491,38 @@ def _build_extension_paragraphs(
     openers = [
         "Continue with patience and care",
         "Stay with the process as it unfolds naturally",
-        "Keep your awareness spacious and grounded",
-        "Keep this next minute steady and unrushed",
+        "Keep awareness spacious and grounded",
+        "Let this next minute stay steady and unrushed",
         "Support your body in learning through breath",
         "Remain connected to present sensation",
         "Keep this phase simple and embodied",
-        "Maintain a calm and sustainable rhythm",
+        "Maintain a calm, sustainable rhythm",
         "Continue with gentle attentiveness",
-        "Stay graceful while your inner signal grows stronger",
+        "Stay graceful as your inner signal grows clearer",
         "Let steady power rise without force",
-        "Track subtle shifts while keeping your pace humane",
+        "Track subtle shifts while keeping your pace human",
         "Hold the posture of listening, not performing",
         "Keep your focus soft, clear, and grounded",
+        "If needed, take this section slower and kinder",
+        "Let this feel like guidance from a trusted voice",
     ]
     midlines = [
         "Keep your breathing even and unforced",
         "Stay receptive while attention remains clear",
-        "Track subtle sensation without narrating every shift",
+        "Track subtle sensation without over-analyzing every shift",
         "Let awareness stay grounded in what is present",
-        "Hold a steady rhythm that does not strain the body",
-        "Continue with patient focus rather than urgency",
-        "Give this moment space to settle before the next step",
+        "Hold a rhythm that does not strain the body",
+        "Continue with patient focus instead of urgency",
+        "Give this moment room to settle before moving on",
         "Let breath and posture coordinate with minimal effort",
-        "Keep your jaw, shoulders, and belly soft as you continue",
+        "Keep jaw, shoulders, and belly soft as you continue",
         "Maintain clarity while your nervous system settles",
         "Stay connected to your inner pacing cues",
         "Keep this phase embodied rather than performative",
         "Allow precision and softness to move together",
-        "Remain present to sensation while your breath stays smooth",
+        "Stay present to sensation while breath remains smooth",
+        "If emotion rises, let it move through you without rushing",
+        "Keep returning to the body as your most honest anchor",
     ]
     closers = [
         "Nothing is missing in this moment",
@@ -517,6 +541,10 @@ def _build_extension_paragraphs(
         "Your awareness is already doing meaningful work",
         "Integration happens through repetition with variation",
         "Stay kind and precise at the same time",
+        "You can trust what your body is telling you",
+        "Softness and strength can live together here",
+        "You are allowed to be held while you heal",
+        "Let this guidance meet you exactly where you are",
     ]
 
     def build_paragraph(idx: int, context_queue_ref: list[str]) -> str:
@@ -524,7 +552,11 @@ def _build_extension_paragraphs(
         midline = midlines[(idx * 3 + 1) % len(midlines)]
         closer = closers[(idx * 2 + 1) % len(closers)]
         optional_context = f" {context_queue_ref.pop(0)}." if context_queue_ref and idx % 4 == 0 else ""
-        return f"{opener}. {midline}.{optional_context} {closer}."
+        if idx % 3 == 0:
+            return f"{opener}. {midline}.{optional_context} {closer}."
+        if idx % 3 == 1:
+            return f"{opener}. {optional_context.strip()} {midline}. {closer}.".strip()
+        return f"{midline}. {opener}.{optional_context} {closer}."
 
     generated: list[str] = []
     words = 0
@@ -576,36 +608,40 @@ def _build_word_floor_padding_paragraphs(required_words: int) -> list[str]:
     openers = [
         "Continue by noticing what is softening inside your body",
         "Stay with this slower rhythm as your system settles",
-        "Keep your awareness anchored in the breath-body relationship",
-        "Let the next moments deepen your sense of inner steadiness",
+        "Keep awareness anchored in the breath-body relationship",
+        "Let the next moments deepen your inner steadiness",
         "Receive this phase as quiet nervous-system support",
-        "Allow your attention to remain embodied and precise",
-        "Keep listening for subtle shifts without forcing interpretation",
+        "Allow attention to remain embodied and precise",
+        "Keep listening for subtle shifts without forcing meaning",
         "Stay in gentle contact with breath, posture, and feeling tone",
         "Let this continuity train calm focus and emotional balance",
         "Continue with grounded patience and a receptive mind",
         "Remain present to the small details that signal regulation",
         "Let this sequence reinforce trust in your internal pacing",
         "Keep this interval simple, clear, and compassionate",
-        "Stay steady as your breath organizes your inner landscape",
+        "Stay steady as breath organizes your inner landscape",
         "Allow this section to build calm strength through repetition",
         "Continue with soft concentration and unhurried attention",
-        "Remain connected to the body as your primary reference point",
-        "Let this moment affirm that slower can still be powerful",
-        "Keep your focus kind while your breathing stays even",
-        "Stay here long enough for integration to become tangible",
+        "Remain connected to the body as your primary reference",
+        "Let this moment remind you that slower can still be powerful",
+        "Keep your focus kind while breathing stays even",
+        "Stay here long enough for integration to feel tangible",
+        "If you need a gentler pace, trust that instinct",
+        "Let this feel like you are being guided, not pushed",
     ]
     supports = [
         "Lengthen the exhale slightly and allow the inhale to arrive on its own.",
         "Notice jaw, throat, chest, and belly as one coordinated field of awareness.",
         "Keep effort low while presence stays high.",
-        "Allow sensation to move without needing immediate conclusions.",
+        "Allow sensation to move without rushing to conclusions.",
         "Stay with what feels true in this breath, then the next.",
         "Let your nervous system register safety through steady pacing.",
-        "Keep your posture supportive and your breathing sustainable.",
+        "Keep posture supportive and breathing sustainable.",
         "Receive each cycle as both grounding and emotional clearing.",
-        "Allow steadiness to become the tone of this practice.",
+        "Let steadiness become the tone of this practice.",
         "Continue in a way that feels reliable, calm, and embodied.",
+        "If your mind races, return to one kind breath at a time.",
+        "Give yourself permission to be human while you heal.",
     ]
     closers = [
         "This is how integration becomes lived experience.",
@@ -616,6 +652,8 @@ def _build_word_floor_padding_paragraphs(required_words: int) -> list[str]:
         "Stay with the process and let it keep unfolding.",
         "This is enough to support meaningful regulation.",
         "Carry this grounded quality into whatever follows.",
+        "You are allowed to soften and still be strong.",
+        "Let this guidance meet you exactly where you are.",
     ]
 
     generated: list[str] = []
@@ -671,6 +709,8 @@ Requirements:
 8) Keep first spoken transition concise (no prolonged opening silence language).
 9) Do NOT overuse repeated lead-ins such as "let", "allow", "now", "breathe" at the start of consecutive sentences.
 10) Keep lexical variety high: sentence openings should feel naturally varied and human.
+11) Tone should sound like an intuitive human guide speaking with compassion, not a mechanical script.
+12) Use occasional natural phrasing (e.g., "if it helps", "whenever you're ready") without overusing any single phrase.
 """.strip()
 
     def parse_paragraphs(text: str) -> list[str]:
@@ -691,7 +731,7 @@ Requirements:
             session_id=f"guided_script_{uuid.uuid4().hex[:12]}",
             system_message=(
                 "You are an expert meditation guide writing high-quality long-form voice scripts. "
-                "Your output must be emotionally grounded, practical, and deeply calming."
+                "Your output must sound emotionally grounded, intuitive, and naturally human."
             ),
         ).with_model("openai", "gpt-5.2")
 

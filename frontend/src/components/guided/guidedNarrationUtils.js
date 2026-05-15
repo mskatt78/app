@@ -27,7 +27,7 @@ export const TARGET_WORDS_PER_MINUTE = 120;
 export const SEGMENT_TARGET_WORDS = 220;
 export const FIRST_SEGMENT_TARGET_WORDS = 95;
 export const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
-export const DEFAULT_GUIDED_TTS_SPEED = 0.84;
+export const DEFAULT_GUIDED_TTS_SPEED = 0.82;
 
 export const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -158,27 +158,31 @@ export function buildNarrationPlan(practice, stepsOverride) {
   const affirmations = flattenTextValue(practice.affirmations).filter(Boolean);
 
   const reflectionPrompts = [
-    "Breathe slowly here. Let the pace soften so your body does not feel rushed. There is nowhere else you need to be right now.",
-    "Notice the smallest shifts as they arise: warmth, tingling, emotion, memory, or a subtle sense of spaciousness opening within you.",
-    "If your mind wanders, come back gently. This is not a performance. It is a return to the truth already living inside your body.",
-    "Stay with the practice a little longer than feels convenient. Let patience become part of the medicine.",
-    "Keep the breath low and steady. Allow each exhale to lengthen the feeling of safety, grounding, and inner permission.",
-    "Receive this moment instead of trying to force it. The practice deepens when you soften enough to listen.",
+    "Take a slower breath here. Let your pace soften so your body feels safe, not hurried.",
+    "Notice the small shifts as they arise—warmth, emotion, memory, or a subtle sense of space opening within you.",
+    "If your mind wanders, come back gently. Nothing has gone wrong; this is part of being human.",
+    "Stay with this practice a little longer than is convenient. Patience is part of the medicine.",
+    "Keep the breath low and steady. Let each exhale deepen safety, grounding, and permission.",
+    "Receive this moment instead of forcing it. Depth appears when you soften enough to listen.",
+    "If it helps, imagine you're being guided by a calm trusted presence.",
+    "Whenever you're ready, let this next breath be a small reset.",
   ];
 
   const phaseOpeners = [
-    "Now settle into the next layer of the practice with calm, deliberate pacing.",
-    "As you continue, keep your awareness close to breath and sensation.",
-    "From here, let your focus become quieter, steadier, and more embodied.",
+    "Settle into this next layer with calm, deliberate pacing.",
+    "As you continue, keep awareness close to breath and sensation.",
+    "From here, let focus become quieter, steadier, and more embodied.",
     "Move through this phase with gentleness, precision, and trust.",
-    "Let the next moments unfold with patience rather than urgency.",
+    "Let the next moments unfold with patience instead of urgency.",
     "Continue in a way that feels grounded, receptive, and sustainable.",
     "Allow this next chapter to open gradually from inside your body.",
-    "Keep listening to the subtle signals beneath the surface of movement.",
-    "Let your breath and body keep meeting in one shared rhythm.",
+    "Keep listening to the subtle signals beneath movement.",
+    "Let breath and body keep meeting in one shared rhythm.",
     "Stay present with simplicity and let depth come naturally.",
-    "Give this phase enough time to become truly embodied.",
+    "Give this phase enough time to become embodied.",
     "Remain patient while your system reorganizes toward steadiness.",
+    "If you need to slow down, that is wisdom, not failure.",
+    "Whenever you're ready, continue with a softer inner tone.",
   ];
 
   const focusLeads = [
@@ -212,22 +216,22 @@ export function buildNarrationPlan(practice, stepsOverride) {
   ];
 
   const paragraphs = [
-    `Welcome to ${practice.name}. Begin with one steady inhale and one long exhale, then arrive fully in this moment.`,
-    `Feel your jaw, shoulders, belly, and heart. This ${practice.element || "spirit"} practice opens gracefully, gathers grounded power through the middle, and closes in a softer integration.`,
+    `Welcome to ${practice.name}. Take one easy inhale and a slow exhale, then let yourself arrive fully in this moment.`,
+    `Feel jaw, shoulders, belly, and heart. This ${practice.element || "spirit"} practice opens gently, gathers grounded strength through the middle, and closes in soft integration.`,
   ];
 
   if (practice.description) {
-    paragraphs.push(`${practice.description} Let these words become an atmosphere around you, not something to rush through. Breathe with them. Feel them. Let them open slowly in your own timing.`);
+      paragraphs.push(`${practice.description} Let these words become an atmosphere around you, not something to rush. Breathe with them and let them open in your own timing.`);
   }
 
   if (stepPool.length > 0) {
     const stepFrames = ["Enter this phase through", "Now explore", "Let this stage begin with", "Move gently into"];
-    const somaticPrompts = [
-      "Keep your breath smooth while tracking subtle sensation.",
-      "Stay curious about what shifts in your body as you continue.",
-      "Let the instruction become embodied instead of rushed.",
-      "Use each exhale to release effort and return to presence.",
-    ];
+      const somaticPrompts = [
+        "Keep your breath smooth while tracking subtle sensation.",
+        "Stay curious about what shifts in your body as you continue.",
+        "Let the instruction become embodied rather than rushed.",
+        "Use each exhale to release effort and return to presence.",
+      ];
 
     stepPool.slice(0, 4).forEach((stepLine, idx) => {
       const frame = stepFrames[idx % stepFrames.length];
