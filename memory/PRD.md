@@ -12,6 +12,21 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **User-Controlled Anti-Repetition Modes (Iteration 102–104, May 2026):**
+  - Added global guided narration mode preference with default **Strict** and optional **Balanced**:
+    - New shared utility: `frontend/src/utils/guidedNarrationSettings.js`
+    - New settings control in `Settings.jsx` (app-wide persistence via local storage)
+    - New in-session quick selector inside `GuidedPracticeOverlay` (`Strict anti-repeat` / `Balanced flow`)
+  - Wired mode payload propagation across all guided callers:
+    - `GuidedPracticeOverlay`, `PracticeTimer`, and `GuidedAudioButton` now send `anti_repetition_mode`.
+  - Backend enhancements in `content.py`:
+    - `ExpandScriptRequest` now supports `anti_repetition_mode: Literal["strict","balanced"]`.
+    - Strict/balanced-aware repetition controls and multi-pass word-floor logic.
+    - Final word-floor top-up guard to guarantee long-session depth while preserving anti-repetition quality.
+  - Validation:
+    - `/app/test_reports/iteration_104.json` => backend **100% (20/20)**, frontend **100%**.
+    - All tested durations (7/10/15/20/25 min) pass 80% word-floor in both modes.
+
 - **Guided Repetition Quality Fix (Iteration 100–101, May 2026):**
   - Resolved user-reported repetitive guided narration across long practices by improving backend extension generation (`content.py`):
     - Expanded midline + closer phrase pools and added sentence-level repetition counters.
