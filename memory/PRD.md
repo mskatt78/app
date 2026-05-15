@@ -12,6 +12,18 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Guided Repetition Quality Fix (Iteration 100–101, May 2026):**
+  - Resolved user-reported repetitive guided narration across long practices by improving backend extension generation (`content.py`):
+    - Expanded midline + closer phrase pools and added sentence-level repetition counters.
+    - Added loop safeguards to prevent long-generation lockups.
+    - Preserved strong paragraph-level diversity (`_dedupe_paragraphs` + `_enforce_stem_diversity`).
+  - Stabilized runtime behavior under strict anti-repetition mode:
+    - `use_ai=true` now only attempts LLM expansion when `ENABLE_GUIDED_AI_EXPANSION=true`; otherwise returns fast template expansion (non-blocking).
+    - Frontend guided callers (`GuidedPracticeOverlay`, `PracticeTimer`, `GuidedAudioButton`) use stable non-AI expansion by default.
+  - Validation evidence:
+    - `/app/test_reports/iteration_101.json`: backend **100% (12/12)**, frontend **100%**.
+    - Previously repeated phrases reduced from 11x/9x to **0x/0x** in long-practice tests.
+
 - **Fix-All Continuation Pass (Iteration 99, May 2026):**
   - **Guided parity upgrades:**
     - `PartnerYoga.jsx`: added therapeutic depth cards (`Why this heals`, `Integration`) and direct launch into full-screen `GuidedPracticeOverlay`.
