@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Play, Square, Loader2, Volume2 } from "lucide-react";
 import { toast } from "sonner";
 import { DEFAULT_GUIDED_TTS_SPEED } from "./guided/guidedNarrationUtils";
+import { getGuidedNarrationMode } from "../utils/guidedNarrationSettings";
 
 const MIN_NARRATION_MINUTES = 7;
 
@@ -133,6 +134,7 @@ const GuidedAudioButton = ({
       element,
       duration_minutes: estimateMinutes(script, durationMinutes),
       use_ai: false,
+      anti_repetition_mode: getGuidedNarrationMode(),
       source_texts: mergedSources,
       steps: mergedSteps,
     };

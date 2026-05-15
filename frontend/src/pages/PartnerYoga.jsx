@@ -483,10 +483,7 @@ const PartnerYoga = ({ user, api }) => {
       {showGuided && selectedPose && (
         <GuidedPracticeOverlay
           practice={buildGuidedPosePractice(selectedPose)}
-          onClose={() => setShowGuided(false)}
-          autoStart={true}
-          showAudioControls={true}
-          autoNarrate={true}
+          onExit={() => setShowGuided(false)}
         />
       )}
     </div>

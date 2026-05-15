@@ -51,6 +51,7 @@ class ExpandScriptRequest(BaseModel):
     steps: list[str] = Field(default_factory=list)
     source_texts: list[str] = Field(default_factory=list)
     use_ai: bool = False
+    anti_repetition_mode: Literal["strict", "balanced"] = "strict"
 
 
 class ExpandScriptResponse(BaseModel):
@@ -445,7 +446,12 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
     return _dedupe_paragraphs(paragraphs)
 
 
-def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: int, start_index: int = 0) -> list[str]:
+def _build_extension_paragraphs(
+    request: ExpandScriptRequest,
+    required_words: int,
+    start_index: int = 0,
+    anti_repetition_mode: str = "strict",
+) -> list[str]:
     if required_words <= 0:
         return []
 
@@ -526,6 +532,7 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
     context_queue = context_sentences[:]
     recent_stems: list[str] = []
     midline_counts: dict[str, int] = {}
+    max_midline_reuse = 2 if anti_repetition_mode == "strict" else 4
     attempts = 0
     attempts_without_append = 0
     max_attempts = max(required_words * 4, 400)
@@ -543,7 +550,7 @@ def _build_extension_paragraphs(request: ExpandScriptRequest, required_words: in
             attempts_without_append += 1
             continue
 
-        if midline_stem and midline_counts.get(midline_stem, 0) >= 3 and attempts_without_append < 80:
+        if midline_stem and midline_counts.get(midline_stem, 0) >= max_midline_reuse and attempts_without_append < 80:
             index += 1
             attempts_without_append += 1
             continue
@@ -652,6 +659,8 @@ async def expand_guided_script(request: ExpandScriptRequest):
     fallback_paragraphs = _build_fallback_paragraphs(request, target_words)
     selected_paragraphs = fallback_paragraphs.copy()
     used_ai = False
+    anti_repetition_mode = "balanced" if request.anti_repetition_mode == "balanced" else "strict"
+    stem_max_occurrences = 1 if anti_repetition_mode == "strict" else 2
 
     ai_expansion_enabled = os.environ.get("ENABLE_GUIDED_AI_EXPANSION", "").lower() == "true"
     if request.use_ai and ai_expansion_enabled:
@@ -661,7 +670,7 @@ async def expand_guided_script(request: ExpandScriptRequest):
             used_ai = True
 
     selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
-    selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=1, stem_words=8)
+    selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences, stem_words=8)
 
     current_word_count = _count_words(" ".join(selected_paragraphs))
     if current_word_count < target_words:
@@ -669,10 +678,11 @@ async def expand_guided_script(request: ExpandScriptRequest):
             request,
             required_words=target_words - current_word_count,
             start_index=len(selected_paragraphs),
+            anti_repetition_mode=anti_repetition_mode,
         )
         selected_paragraphs.extend(extensions)
         selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
-        selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=1, stem_words=8)
+        selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences, stem_words=8)
         current_word_count = _count_words(" ".join(selected_paragraphs))
 
     segments = _segment_paragraphs(selected_paragraphs)

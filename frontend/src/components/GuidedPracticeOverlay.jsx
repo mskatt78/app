@@ -14,6 +14,10 @@ import {
   flattenTextValue,
   buildNarrationPlan,
 } from "./guided/guidedNarrationUtils";
+import {
+  getGuidedNarrationMode,
+  setGuidedNarrationMode,
+} from "../utils/guidedNarrationSettings";
 
 export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit }) {
   const narrationPlan = useMemo(() => buildNarrationPlan(practice || {}, stepsOverride), [practice, stepsOverride]);
@@ -31,6 +35,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   const [narrationReady, setNarrationReady] = useState(false);
   const [scriptLoading, setScriptLoading] = useState(false);
   const [audioTapRequired, setAudioTapRequired] = useState(false);
+  const [antiRepetitionMode, setAntiRepetitionModeState] = useState(() => getGuidedNarrationMode());
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
@@ -97,6 +102,23 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
   useEffect(() => {
     hasStartedRef.current = hasStarted;
   }, [hasStarted]);
+
+  useEffect(() => {
+    const handleStorage = (event) => {
+      if (event.key === "guided_narration_mode") {
+        setAntiRepetitionModeState(getGuidedNarrationMode());
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  const handleAntiRepetitionModeChange = useCallback((mode) => {
+    const nextMode = setGuidedNarrationMode(mode);
+    setAntiRepetitionModeState(nextMode);
+    toast.success(`Narration mode: ${nextMode === "strict" ? "Strict" : "Balanced"}`);
+  }, []);
 
   const stopAmbient = useCallback(() => {
     try {
@@ -186,6 +208,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
             element: scriptExpansionContext.element,
             duration_minutes: scriptExpansionContext.durationMinutes,
             use_ai: false,
+            anti_repetition_mode: antiRepetitionMode,
             steps: scriptExpansionContext.steps,
             source_texts: scriptExpansionContext.sourceTexts,
           }),
@@ -227,7 +250,7 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
         scriptAbortRef.current = null;
       }
     };
-  }, [scriptExpansionContext, clearNarrationCache]);
+  }, [scriptExpansionContext, clearNarrationCache, antiRepetitionMode]);
 
   useEffect(() => {
     if (isPlaying && !isComplete) {
@@ -418,6 +441,8 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       formatTime={formatTime}
       minimumNarrationMinutes={MINIMUM_NARRATION_MINUTES}
       ambientLabel={(ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label}
+      antiRepetitionMode={antiRepetitionMode}
+      onAntiRepetitionModeChange={handleAntiRepetitionModeChange}
     />
   );
 }

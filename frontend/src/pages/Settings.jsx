@@ -12,6 +12,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { toast } from "sonner";
 import { useNotifications } from "../components/NotificationSystem";
+import {
+  GUIDED_NARRATION_MODES,
+  getGuidedNarrationMode,
+  setGuidedNarrationMode,
+} from "../utils/guidedNarrationSettings";
 
 const Settings = ({ user, api }) => {
   const navigate = useNavigate();
@@ -38,6 +43,7 @@ const Settings = ({ user, api }) => {
     ritual_id: null,
     message: "Time for your sacred practice",
   });
+  const [guidedNarrationMode, setGuidedNarrationModeState] = useState(() => getGuidedNarrationMode());
 
   const daysOfWeek = [
     { value: "monday", label: "Mon" },
@@ -140,6 +146,13 @@ const Settings = ({ user, api }) => {
     } finally {
       setRequestingDeletion(false);
     }
+  };
+
+  const updateGuidedNarrationMode = (mode) => {
+    const nextMode = setGuidedNarrationMode(mode);
+    setGuidedNarrationModeState(nextMode);
+    const modeLabel = GUIDED_NARRATION_MODES[nextMode]?.label || "Strict";
+    toast.success(`Guided narration mode set to ${modeLabel}`);
   };
 
   return (
@@ -308,6 +321,43 @@ const Settings = ({ user, api }) => {
                   </>
                 )}
               </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+              className="p-6 rounded-2xl bg-card/50 border border-white/5"
+              data-testid="settings-guided-narration-card"
+            >
+              <h2 className="text-xl font-serif mb-3 flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary" />
+                Guided Narration Style
+              </h2>
+              <p className="text-sm text-muted-foreground mb-4" data-testid="settings-guided-narration-description">
+                Controls anti-repetition intensity across all guided meditations app-wide.
+              </p>
+
+              <Select
+                value={guidedNarrationMode}
+                onValueChange={updateGuidedNarrationMode}
+              >
+                <SelectTrigger className="bg-card/50 border-white/10" data-testid="settings-guided-narration-select">
+                  <SelectValue placeholder="Select narration mode" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={GUIDED_NARRATION_MODES.strict.id} data-testid="settings-guided-mode-strict">
+                    {GUIDED_NARRATION_MODES.strict.label}
+                  </SelectItem>
+                  <SelectItem value={GUIDED_NARRATION_MODES.balanced.id} data-testid="settings-guided-mode-balanced">
+                    {GUIDED_NARRATION_MODES.balanced.label}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+
+              <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-narration-active-note">
+                {GUIDED_NARRATION_MODES[guidedNarrationMode]?.description}
+              </p>
             </motion.div>
 
             {/* Save Button */}
