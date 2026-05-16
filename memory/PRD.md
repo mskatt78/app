@@ -12,6 +12,13 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Large Frontend Structural Sweep (Iteration 108, May 2026):**
+  - **BirthChart split:** extracted chart-results rendering into `pages/birthchart/BirthChartResults.jsx`; moved planet icon mapping into `birthChartUtils.js`.
+  - **CrystalGuide split:** extracted heavy detail modal/sections into `pages/crystal-guide/CrystalDetailDialog.jsx`.
+  - **Courses refactor:** extracted payment/session checkout logic into `pages/courses/useCoursePayments.js` hook.
+  - **PracticeTimer refactor:** extracted ambient audio/chime generation into `components/timer/timerAudioEngine.js`.
+  - Validation: `/app/test_reports/iteration_108.json` => backend **100% (12/12)**, frontend **100%**, no regressions.
+
 - **Code Quality Remediation Pass (Iteration 107, May 2026):**
   - **Security (tests):** removed fixed auth-test password usage by introducing dynamic `_generated_password()` in `backend/tests/test_iteration98_auth_refactor.py`.
   - **Backend complexity reduction (`routers/content.py`):**
