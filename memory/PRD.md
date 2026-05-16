@@ -12,6 +12,15 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Code Quality Remediation Pass (Iteration 107, May 2026):**
+  - **Security (tests):** removed fixed auth-test password usage by introducing dynamic `_generated_password()` in `backend/tests/test_iteration98_auth_refactor.py`.
+  - **Backend complexity reduction (`routers/content.py`):**
+    - Extracted helper-driven daily practice pipeline (`_collect_daily_practice_pool`, `_apply_focus_filter`, `_select_morning_evening_practices`, `_daily_guidance_text`, `_daily_reflection_prompts`, `_build_daily_practice_response`).
+    - Reduced complexity in narration builders by extracting phrase-bank/composer helpers for adaptive and extension generation.
+  - **Type hints:** added return type hints to all flagged seed/add scripts:
+    - `seed_database.py`, `seed_content.py`, `add_chair_yoga.py`, `add_crystals.py`, `add_more_crystals.py`, `add_more_tai_chi_qigong.py`, `add_tai_chi_qigong.py`.
+  - **Verification:** `/app/test_reports/iteration_107.json` => backend **100% (22/22)**, frontend **100%**, no regressions.
+
 - **Humanized Guided Tone Pass (Iteration 106, May 2026):**
   - Reworked guided narration language across backend expansion generators to sound softer and intuitively spoken (less command-like, more compassionate/human cadence).
   - Updated fallback frontend narration language to match softer human tone and reduced default guided TTS speed to `0.82` for more natural delivery.
