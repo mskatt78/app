@@ -1,0 +1,119 @@
+{
+  "summary": "Iteration 113 - Tested new Day-by-Day Timeline (1-40) feature for 40-day courses. Found and FIXED critical localStorage persistence bug. All features now working: checkbox toggles, journal notes, progress bar, locked days for non-purchased users, and data persistence across modal close/reopen.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_113.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "FIXED: localStorage persistence bug in CourseJourneyTimeline.jsx - data was being overwritten on component mount due to useEffect race condition",
+    "VERIFIED: Day-by-Day Timeline (1-40) component displays correctly in Journey tab for all 3 courses",
+    "VERIFIED: Per-day checkbox toggles work correctly (Day 1, Day 2 tested)",
+    "VERIFIED: Per-day journal notes input works and persists after modal close/reopen",
+    "VERIFIED: Progress count (X/40 complete) updates correctly when checkboxes are toggled",
+    "VERIFIED: Progress bar updates correctly with visual feedback",
+    "VERIFIED: Locked behavior works for non-purchased users - Days beyond first phase are disabled with lock icon and 'Unlock full course to journal this day' placeholder",
+    "VERIFIED: Days 21-40 are visible in the timeline for all courses",
+    "VERIFIED: No regression in existing journey phase chips and phase content blocks",
+    "VERIFIED: No regression in course modal open/close/tab switching (all 7 tabs work)"
+  ],
+  "updated_files": [
+    "/app/frontend/src/components/courses/CourseJourneyTimeline.jsx"
+  ],
+  "success_rate": {
+    "backend": "100% (API /api/courses returns correct data for all 3 courses)",
+    "frontend": "100% (all Day-by-Day Timeline features working, persistence fixed)"
+  },
+  "test_credentials": "Admin: mskatt78@gmail.com / ShamanicAdmin2026!",
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 113 tested and fixed the new Day-by-Day Timeline feature. The localStorage persistence bug was fixed by using useEffect to load data when courseId changes, and saving data synchronously in the toggle/update callbacks. All 3 courses (13th Rite of Womb, Nusta Karpay, Munay Ki) now have working day-by-day tracking with checkboxes, notes, and progress bar. Data persists across modal close/reopen.",
+  "features_tested": {
+    "day_by_day_timeline_component": {
+      "status": "VERIFIED",
+      "details": [
+        "Day-by-Day Timeline (1-40) header with progress count",
+        "Progress bar showing completion percentage",
+        "40 day rows with checkboxes, phase labels, and journal note textareas",
+        "Phase title displayed for each day (e.g., 'Awakening — Making Contact')"
+      ]
+    },
+    "checkbox_toggle_functionality": {
+      "status": "VERIFIED",
+      "details": [
+        "Day 1 checkbox toggles correctly",
+        "Day 2 checkbox toggles correctly",
+        "Progress count updates from 0/40 to 1/40 to 2/40",
+        "CheckCircle2 icon appears when day is completed"
+      ]
+    },
+    "journal_notes_functionality": {
+      "status": "VERIFIED",
+      "details": [
+        "Journal note textarea accepts input",
+        "Notes persist after modal close/reopen (FIXED)",
+        "Placeholder text shows 'Journal note for this day...'"
+      ]
+    },
+    "data_persistence": {
+      "status": "FIXED AND VERIFIED",
+      "details": [
+        "BUG FOUND: Data was not persisting after modal close/reopen",
+        "ROOT CAUSE: useEffect race condition - save effect ran before load effect completed",
+        "FIX: Changed to load data in useEffect when courseId changes, save synchronously in callbacks",
+        "VERIFIED: Checkboxes, notes, and progress now persist correctly"
+      ]
+    },
+    "locked_days_behavior": {
+      "status": "VERIFIED",
+      "details": [
+        "Days beyond first phase are disabled for non-purchased users",
+        "Lock icon displayed for locked days",
+        "Checkbox is disabled for locked days",
+        "Note textarea shows 'Unlock full course to journal this day' placeholder"
+      ]
+    },
+    "days_21_40_visibility": {
+      "status": "VERIFIED",
+      "details": [
+        "Day 40 row is present in the timeline",
+        "All 40 days are rendered in the scrollable list",
+        "Days 21-40 show correct phase labels"
+      ]
+    },
+    "no_regression_phase_chips": {
+      "status": "VERIFIED",
+      "details": [
+        "Journey phase chips still display correctly",
+        "Nusta Karpay shows 3 phase chips",
+        "40-Day Journey Map section still present"
+      ]
+    },
+    "no_regression_tab_switching": {
+      "status": "VERIFIED",
+      "details": [
+        "All 7 tabs work: The Rites, Rituals, Embodiment, Prepare & Integrate, Daily Practice, 40-Day Journey, Safety",
+        "Modal open/close works correctly"
+      ]
+    }
+  },
+  "api_endpoints_verified": [
+    "GET /api/courses - 200 OK (3 courses with correct forty_day_integration phases)"
+  ],
+  "bug_fix_details": {
+    "file": "/app/frontend/src/components/courses/CourseJourneyTimeline.jsx",
+    "issue": "localStorage persistence not working - data lost after modal close/reopen",
+    "root_cause": "Race condition between two useEffect hooks - save effect ran with initial empty state before load effect completed, overwriting stored data",
+    "fix_applied": "1) Initialize state with empty object, 2) Load from localStorage in useEffect when courseId changes, 3) Save synchronously in toggleDay and updateNote callbacks using saveProgress helper",
+    "verification": "Tested checkbox toggle, note input, modal close/reopen - all data persists correctly"
+  }
+}

@@ -15,6 +15,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { Button } from "../ui/button";
+import { CourseJourneyTimeline } from "./CourseJourneyTimeline";
 
 export const CourseModalContent = ({
   activeTab,
@@ -183,6 +184,11 @@ export const CourseModalContent = ({
 
     {activeTab === "journey" && selectedCourse.forty_day_integration && (
       <div className="p-4 space-y-4" data-testid="journey-tab-content">
+        <CourseJourneyTimeline
+          selectedCourse={selectedCourse}
+          hasAccess={hasAccess(selectedCourse.id)}
+        />
+
         <div className="rounded-xl border border-amber-500/20 bg-black/20 p-3" data-testid="journey-days-map">
           <div className="flex items-center justify-between gap-2 mb-2">
             <p className="text-xs uppercase tracking-wider text-amber-300 flex items-center gap-1">
