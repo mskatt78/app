@@ -1,7 +1,7 @@
 """Gift and notification routes with Stripe/PayPal payment integration."""
 from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
-from typing import Optional
+from typing import Any, Optional
 from datetime import datetime, timezone, timedelta
 import uuid
 import os
@@ -56,7 +56,7 @@ class GiftRedeem(BaseModel):
 # ============ PUSH NOTIFICATIONS ============
 
 @router.post("/notifications/subscribe")
-async def subscribe_to_notifications(subscription: PushSubscription):
+async def subscribe_to_notifications(subscription: PushSubscription) -> dict[str, str]:
     """Subscribe to push notifications."""
     db = get_db()
     await db.push_subscriptions.update_one(
@@ -68,7 +68,7 @@ async def subscribe_to_notifications(subscription: PushSubscription):
 
 
 @router.post("/notifications/unsubscribe")
-async def unsubscribe_from_notifications(subscription: PushSubscription):
+async def unsubscribe_from_notifications(subscription: PushSubscription) -> dict[str, str]:
     """Unsubscribe from push notifications."""
     db = get_db()
     await db.push_subscriptions.delete_one({"endpoint": subscription.endpoint})
@@ -78,7 +78,7 @@ async def unsubscribe_from_notifications(subscription: PushSubscription):
 # ============ GIFTING FEATURE ============
 
 @router.post("/gifts/create")
-async def create_gift(gift: GiftCreate):
+async def create_gift(gift: GiftCreate) -> dict[str, Any]:
     """Create a gift for someone (pending payment)."""
     db = get_db()
     
@@ -143,7 +143,7 @@ async def pay_for_gift(
     request: Request,
     payment: GiftPaymentRequest,
     current_user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Create a payment session for a gift (Stripe or PayPal)."""
     db = get_db()
     
@@ -168,7 +168,14 @@ async def pay_for_gift(
         return await _create_stripe_gift_checkout(request, gift, amount, product_name, origin_url, current_user)
 
 
-async def _create_stripe_gift_checkout(request, gift, amount, product_name, origin_url, current_user):
+async def _create_stripe_gift_checkout(
+    request: Request,
+    gift: dict[str, Any],
+    amount: float,
+    product_name: str,
+    origin_url: str,
+    current_user: User,
+) -> dict[str, Any]:
     """Create Stripe checkout for gift."""
     db = get_db()
     
@@ -239,15 +246,21 @@ async def _create_stripe_gift_checkout(request, gift, amount, product_name, orig
         raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
 
 
-async def _create_paypal_gift_order(gift, amount, product_name, origin_url, current_user):
+async def _create_paypal_gift_order(
+    gift: dict[str, Any],
+    amount: float,
+    product_name: str,
+    origin_url: str,
+    current_user: User,
+) -> dict[str, Any]:
     """Create PayPal order for gift."""
     db = get_db()
     
     paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
     paypal_secret = os.environ.get("PAYPAL_SECRET")
-    paypal_mode = os.environ.get("PAYPAL_MODE", "sandbox")
+    paypal_mode = os.environ.get("PAYPAL_MODE")
     
-    if not paypal_client_id or not paypal_secret:
+    if not paypal_client_id or not paypal_secret or not paypal_mode:
         raise HTTPException(status_code=500, detail="PayPal not configured")
     
     base_url = "https://api-m.paypal.com" if paypal_mode == "live" else "https://api-m.sandbox.paypal.com"
@@ -344,7 +357,7 @@ async def _create_paypal_gift_order(gift, amount, product_name, origin_url, curr
 
 
 @router.post("/gifts/confirm-payment")
-async def confirm_gift_payment(gift_code: str, session_id: Optional[str] = None):
+async def confirm_gift_payment(gift_code: str, session_id: Optional[str] = None) -> dict[str, Any]:
     """Confirm gift payment after successful checkout (called from frontend)."""
     db = get_db()
     
@@ -366,7 +379,7 @@ async def confirm_gift_payment(gift_code: str, session_id: Optional[str] = None)
         return await _verify_stripe_gift_payment(gift, stored_session_id or session_id)
 
 
-async def _verify_stripe_gift_payment(gift, session_id):
+async def _verify_stripe_gift_payment(gift: dict[str, Any], session_id: Optional[str]) -> dict[str, Any]:
     """Verify Stripe payment and update gift status."""
     db = get_db()
     
@@ -396,7 +409,9 @@ async def _verify_stripe_gift_payment(gift, session_id):
             
             # Send email notification to recipient
             try:
-                base_url = os.environ.get("FRONTEND_URL", "https://breathwork-sanctuary.preview.emergentagent.com")
+                base_url = os.environ.get("FRONTEND_URL")
+                if not base_url:
+                    raise RuntimeError("FRONTEND_URL is not configured")
                 await send_gift_notification_email(
                     recipient_email=gift["recipient_email"],
                     recipient_name=gift["recipient_name"],
@@ -428,15 +443,15 @@ async def _verify_stripe_gift_payment(gift, session_id):
         raise HTTPException(status_code=500, detail="Payment verification failed")
 
 
-async def _capture_paypal_gift_order(gift, order_id):
+async def _capture_paypal_gift_order(gift: dict[str, Any], order_id: Optional[str]) -> dict[str, Any]:
     """Capture PayPal order and update gift status."""
     db = get_db()
     
     paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
     paypal_secret = os.environ.get("PAYPAL_SECRET")
-    paypal_mode = os.environ.get("PAYPAL_MODE", "sandbox")
+    paypal_mode = os.environ.get("PAYPAL_MODE")
     
-    if not paypal_client_id or not paypal_secret or not order_id:
+    if not paypal_client_id or not paypal_secret or not paypal_mode or not order_id:
         raise HTTPException(status_code=400, detail="Cannot capture payment")
     
     base_url = "https://api-m.paypal.com" if paypal_mode == "live" else "https://api-m.sandbox.paypal.com"
@@ -483,7 +498,9 @@ async def _capture_paypal_gift_order(gift, order_id):
                 
                 # Send email notification to recipient
                 try:
-                    frontend_url = os.environ.get("FRONTEND_URL", "https://breathwork-sanctuary.preview.emergentagent.com")
+                    frontend_url = os.environ.get("FRONTEND_URL")
+                    if not frontend_url:
+                        raise RuntimeError("FRONTEND_URL is not configured")
                     await send_gift_notification_email(
                         recipient_email=gift["recipient_email"],
                         recipient_name=gift["recipient_name"],
@@ -513,7 +530,7 @@ async def _capture_paypal_gift_order(gift, order_id):
 
 
 @router.get("/gifts/{gift_code}")
-async def get_gift(gift_code: str):
+async def get_gift(gift_code: str) -> dict[str, Any]:
     """Get gift details by code."""
     db = get_db()
     gift = await db.gifts.find_one({"gift_code": gift_code}, {"_id": 0})
@@ -523,7 +540,7 @@ async def get_gift(gift_code: str):
 
 
 @router.post("/gifts/redeem")
-async def redeem_gift(data: GiftRedeem, current_user: User = Depends(get_current_user)):
+async def redeem_gift(data: GiftRedeem, current_user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Redeem a gift code (requires authentication)."""
     db = get_db()
     
@@ -607,7 +624,7 @@ async def redeem_gift(data: GiftRedeem, current_user: User = Depends(get_current
 
 
 @router.get("/gifts/my/sent")
-async def get_my_sent_gifts(current_user: User = Depends(get_current_user)):
+async def get_my_sent_gifts(current_user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
     """Get gifts sent by the current user."""
     db = get_db()
     
@@ -628,7 +645,7 @@ async def get_my_sent_gifts(current_user: User = Depends(get_current_user)):
 
 
 @router.get("/gifts/my/received")
-async def get_my_received_gifts(current_user: User = Depends(get_current_user)):
+async def get_my_received_gifts(current_user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
     """Get gifts received by the current user's email."""
     db = get_db()
     gifts = await db.gifts.find(

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -9,6 +9,15 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
 const HeartPractices = ({ user, api }) => {
+  const stableHeartKey = (prefix, value) => {
+    const slug = String(value || "item")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80);
+    return `${prefix}-${slug || "item"}`;
+  };
+
   const navigate = useNavigate();
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,11 +43,7 @@ const HeartPractices = ({ user, api }) => {
     healing: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" }
   };
 
-  useEffect(() => {
-    fetchPractices();
-  }, [filter]);
-
-  const fetchPractices = async () => {
+  const fetchPractices = useCallback(async () => {
     try {
       const url = filter === "all" ? "/heart-practices" : `/heart-practices?category=${filter}`;
       const response = await api.get(url);
@@ -49,7 +54,11 @@ const HeartPractices = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api, filter]);
+
+  useEffect(() => {
+    fetchPractices();
+  }, [fetchPractices]);
 
   const logPractice = async (practice) => {
     try {
@@ -241,8 +250,8 @@ const HeartPractices = ({ user, api }) => {
                         <div>
                           <h3 className="font-medium mb-3">Benefits</h3>
                           <div className="flex flex-wrap gap-2">
-                            {selectedPractice.benefits.map((benefit, i) => (
-                              <span key={i} className="px-3 py-1 rounded-full bg-pink-500/10 text-pink-400 text-sm">
+                      {selectedPractice.benefits.map((benefit) => (
+                              <span key={stableHeartKey(`benefit-${selectedPractice.id}`, benefit)} className="px-3 py-1 rounded-full bg-pink-500/10 text-pink-400 text-sm">
                                 {benefit}
                               </span>
                             ))}
@@ -255,7 +264,7 @@ const HeartPractices = ({ user, api }) => {
                           <h3 className="font-medium mb-3">Practice Steps</h3>
                           <ol className="space-y-3">
                             {practiceSteps.map((step, i) => (
-                              <li key={i} className="flex items-start gap-3 text-sm">
+                              <li key={stableHeartKey(`practice-step-${selectedPractice.id}`, step)} className="flex items-start gap-3 text-sm">
                                 <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0 mt-0.5">
                                   {i + 1}
                                 </span>
@@ -297,7 +306,7 @@ const HeartPractices = ({ user, api }) => {
                         <h3 className="font-medium mb-4 text-pink-300">Follow these steps:</h3>
                         <div className="space-y-3">
                           {practiceSteps.map((step, i) => (
-                            <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-pink-500/10">
+                            <div key={stableHeartKey(`guided-step-${selectedPractice.id}`, step)} className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-pink-500/10">
                               <span className="w-7 h-7 rounded-full bg-pink-500/20 text-pink-400 flex items-center justify-center text-sm font-medium flex-shrink-0 mt-0.5">
                                 {i + 1}
                               </span>

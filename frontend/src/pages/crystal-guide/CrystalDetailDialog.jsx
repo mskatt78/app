@@ -55,6 +55,15 @@ function Section({ title, icon: Icon, children, defaultOpen = false }) {
   );
 }
 
+const stableCrystalKey = (prefix, value) => {
+  const slug = String(value || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 100);
+  return `${prefix}-${slug || "item"}`;
+};
+
 export const CrystalDetailDialog = ({
   selectedCrystal,
   onClose,
@@ -189,8 +198,8 @@ export const CrystalDetailDialog = ({
 
           {selectedCrystal.why_this_heals && (
             <Section title="Why This Crystal Heals" icon={BookOpen} defaultOpen>
-              {selectedCrystal.why_this_heals.split(/\n\n+/).map((para, i) => (
-                <p key={i} className="text-sm text-muted-foreground leading-relaxed">{para.trim()}</p>
+              {selectedCrystal.why_this_heals.split(/\n\n+/).map((para) => (
+                <p key={stableCrystalKey(`why-heals-${selectedCrystal.id}`, para)} className="text-sm text-muted-foreground leading-relaxed">{para.trim()}</p>
               ))}
             </Section>
           )}
@@ -201,9 +210,9 @@ export const CrystalDetailDialog = ({
                 <div>
                   <p className="text-xs text-orange-400 uppercase tracking-wider mb-2">Physical</p>
                   <ul className="space-y-1">
-                    {selectedCrystal.healing_properties.physical.map((p, i) => (
-                      <li key={`${p}-${i}`} className="text-sm text-muted-foreground flex gap-2">
-                        <span className="text-primary mt-1 shrink-0">·</span>{p}
+                    {selectedCrystal.healing_properties.physical.map((property) => (
+                      <li key={stableCrystalKey(`physical-${selectedCrystal.id}`, property)} className="text-sm text-muted-foreground flex gap-2">
+                        <span className="text-primary mt-1 shrink-0">·</span>{property}
                       </li>
                     ))}
                   </ul>
@@ -213,9 +222,9 @@ export const CrystalDetailDialog = ({
                 <div className="mt-3">
                   <p className="text-xs text-pink-400 uppercase tracking-wider mb-2">Emotional</p>
                   <ul className="space-y-1">
-                    {selectedCrystal.healing_properties.emotional.map((p, i) => (
-                      <li key={`${p}-${i}`} className="text-sm text-muted-foreground flex gap-2">
-                        <span className="text-primary mt-1 shrink-0">·</span>{p}
+                    {selectedCrystal.healing_properties.emotional.map((property) => (
+                      <li key={stableCrystalKey(`emotional-${selectedCrystal.id}`, property)} className="text-sm text-muted-foreground flex gap-2">
+                        <span className="text-primary mt-1 shrink-0">·</span>{property}
                       </li>
                     ))}
                   </ul>
@@ -225,9 +234,9 @@ export const CrystalDetailDialog = ({
                 <div className="mt-3">
                   <p className="text-xs text-purple-400 uppercase tracking-wider mb-2">Spiritual</p>
                   <ul className="space-y-1">
-                    {selectedCrystal.healing_properties.spiritual.map((p, i) => (
-                      <li key={`${p}-${i}`} className="text-sm text-muted-foreground flex gap-2">
-                        <span className="text-primary mt-1 shrink-0">·</span>{p}
+                    {selectedCrystal.healing_properties.spiritual.map((property) => (
+                      <li key={stableCrystalKey(`spiritual-${selectedCrystal.id}`, property)} className="text-sm text-muted-foreground flex gap-2">
+                        <span className="text-primary mt-1 shrink-0">·</span>{property}
                       </li>
                     ))}
                   </ul>
@@ -238,8 +247,8 @@ export const CrystalDetailDialog = ({
 
           {selectedCrystal.extended_teachings && (
             <Section title="Historical & Ancient Wisdom" icon={Star}>
-              {selectedCrystal.extended_teachings.split(/\n\n+/).map((para, i) => (
-                <p key={i} className="text-sm text-muted-foreground leading-relaxed">{para.trim()}</p>
+              {selectedCrystal.extended_teachings.split(/\n\n+/).map((para) => (
+                <p key={stableCrystalKey(`extended-${selectedCrystal.id}`, para)} className="text-sm text-muted-foreground leading-relaxed">{para.trim()}</p>
               ))}
             </Section>
           )}
@@ -263,8 +272,8 @@ export const CrystalDetailDialog = ({
           {selectedCrystal.cleansing_methods?.length > 0 && (
             <Section title="How to Cleanse & Charge" icon={Droplets}>
               <div className="space-y-3">
-                {selectedCrystal.cleansing_methods.map((method, i) => (
-                  <div key={`${method.method}-${i}`} className="flex gap-3 p-3 bg-white/5 rounded-lg">
+                {selectedCrystal.cleansing_methods.map((method) => (
+                  <div key={stableCrystalKey(`cleanse-${selectedCrystal.id}`, `${method.method}-${method.duration || ""}`)} className="flex gap-3 p-3 bg-white/5 rounded-lg">
                     <div className={`p-2 rounded-lg ${colors.bg} shrink-0`}>
                       <Moon className={`w-4 h-4 ${colors.text}`} />
                     </div>
@@ -286,8 +295,8 @@ export const CrystalDetailDialog = ({
           {selectedCrystal.rituals?.length > 0 && (
             <Section title="Sacred Rituals" icon={Sparkles}>
               <div className="space-y-4">
-                {selectedCrystal.rituals.map((ritual, i) => (
-                  <div key={`${ritual.name}-${i}`} className="p-3 bg-white/5 rounded-lg">
+                {selectedCrystal.rituals.map((ritual) => (
+                  <div key={stableCrystalKey(`ritual-${selectedCrystal.id}`, `${ritual.name}-${ritual.timing || ""}`)} className="p-3 bg-white/5 rounded-lg">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <p className="text-sm font-medium">{ritual.name}</p>
                       {ritual.timing && (
@@ -299,9 +308,9 @@ export const CrystalDetailDialog = ({
                     {ritual.purpose && <p className="text-xs text-muted-foreground mb-2">{ritual.purpose}</p>}
                     {ritual.steps?.length > 0 && (
                       <ol className="space-y-1">
-                        {ritual.steps.map((step, j) => (
-                          <li key={`${step}-${j}`} className="text-xs text-muted-foreground flex gap-2">
-                            <span className={`${colors.text} shrink-0`}>{j + 1}.</span>{step}
+                        {ritual.steps.map((step, stepIndex) => (
+                          <li key={stableCrystalKey(`ritual-step-${selectedCrystal.id}-${ritual.name}`, step)} className="text-xs text-muted-foreground flex gap-2">
+                            <span className={`${colors.text} shrink-0`}>{stepIndex + 1}.</span>{step}
                           </li>
                         ))}
                       </ol>
@@ -315,8 +324,8 @@ export const CrystalDetailDialog = ({
           {selectedCrystal.combinations?.length > 0 && (
             <Section title="Powerful Combinations" icon={Layers}>
               <div className="space-y-2">
-                {selectedCrystal.combinations.map((combo, i) => (
-                  <div key={`${combo.crystal}-${i}`} className="flex items-start gap-2 text-sm">
+                {selectedCrystal.combinations.map((combo) => (
+                  <div key={stableCrystalKey(`combo-${selectedCrystal.id}`, `${combo.crystal}-${combo.purpose || ""}`)} className="flex items-start gap-2 text-sm">
                     <span className={`${colors.text} mt-1 shrink-0`}>+</span>
                     <div>
                       <span className="font-medium">{combo.crystal}</span>
@@ -360,8 +369,8 @@ export const CrystalDetailDialog = ({
                 <AlertTriangle className="w-4 h-4" /> Important Notes
               </h4>
               <ul className="space-y-1">
-                {selectedCrystal.warnings.map((warning, i) => (
-                  <li key={`${warning}-${i}`} className="text-xs text-muted-foreground flex gap-2">
+                {selectedCrystal.warnings.map((warning) => (
+                  <li key={stableCrystalKey(`warning-${selectedCrystal.id}`, warning)} className="text-xs text-muted-foreground flex gap-2">
                     <span className="text-amber-400 shrink-0">·</span>{warning}
                   </li>
                 ))}
@@ -371,8 +380,8 @@ export const CrystalDetailDialog = ({
 
           {selectedCrystal.practice_guide && (
             <Section title="Guided Practice Instructions" icon={BookOpen}>
-              {selectedCrystal.practice_guide.split(/\n\n+/).map((para, i) => (
-                <p key={i} className="text-sm text-muted-foreground leading-relaxed">{para.trim()}</p>
+              {selectedCrystal.practice_guide.split(/\n\n+/).map((para) => (
+                <p key={stableCrystalKey(`practice-guide-${selectedCrystal.id}`, para)} className="text-sm text-muted-foreground leading-relaxed">{para.trim()}</p>
               ))}
             </Section>
           )}
@@ -387,9 +396,9 @@ export const CrystalDetailDialog = ({
               )}
               {selectedCrystal.meditation_guidance.steps?.length > 0 && (
                 <ol className="space-y-2">
-                  {selectedCrystal.meditation_guidance.steps.map((step, i) => (
-                    <li key={`${step}-${i}`} className="text-sm text-muted-foreground flex gap-3">
-                      <span className={`${colors.text} shrink-0 font-medium`}>{i + 1}.</span>
+                  {selectedCrystal.meditation_guidance.steps.map((step, stepIndex) => (
+                    <li key={stableCrystalKey(`meditation-step-${selectedCrystal.id}`, step)} className="text-sm text-muted-foreground flex gap-3">
+                      <span className={`${colors.text} shrink-0 font-medium`}>{stepIndex + 1}.</span>
                       <span>{step}</span>
                     </li>
                   ))}

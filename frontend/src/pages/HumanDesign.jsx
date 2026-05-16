@@ -39,6 +39,15 @@ const UNDEFINED_COLOR = "transparent";
 const STROKE_COLOR = "#ffffff22";
 const DEFINED_STROKE = "#ffffff55";
 
+const stableHumanDesignKey = (prefix, value) => {
+  const slug = String(value || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+  return `${prefix}-${slug || "item"}`;
+};
+
 const BodyGraph = ({ typId }) => {
   const defined = DEFINED_CENTERS_BY_TYPE[typId] || [];
   const def = (name) => defined.includes(name);
@@ -64,8 +73,8 @@ const BodyGraph = ({ typId }) => {
   return (
     <svg viewBox="0 0 200 310" className="w-full max-w-[220px] mx-auto drop-shadow-lg">
       {/* Channels */}
-      {channels.map(([[x1,y1],[x2,y2]], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+      {channels.map(([[x1,y1],[x2,y2]]) => (
+        <line key={`channel-${x1}-${y1}-${x2}-${y2}`} x1={x1} y1={y1} x2={x2} y2={y2}
           stroke="#ffffff18" strokeWidth="4" />
       ))}
 
@@ -654,10 +663,10 @@ const HumanDesign = ({ user, api }) => {
                       Key Traits
                     </h4>
                     <div className="space-y-2">
-                      {chosenType.keyTraits.map((t,i)=>(
-                        <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      {chosenType.keyTraits.map((trait) => (
+                        <div key={stableHumanDesignKey(`chart-trait-${chosenType.id}`, trait)} className="flex items-start gap-2 text-sm text-muted-foreground">
                           <CheckCircle2 className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
-                          {t}
+                          {trait}
                         </div>
                       ))}
                     </div>
@@ -865,7 +874,7 @@ const HumanDesign = ({ user, api }) => {
                     "Don't try to change everything at once. Small experiments lead to big realizations.",
                     "Be patient. Deconditioning takes approximately 7 years - the time for all cells to regenerate."
                   ].map((step, i) => (
-                    <li key={i} className="flex items-start gap-3">
+                    <li key={stableHumanDesignKey("experiment-step", step)} className="flex items-start gap-3">
                       <span className="w-6 h-6 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-xs text-indigo-300 flex-shrink-0">
                         {i + 1}
                       </span>
@@ -959,8 +968,8 @@ const HumanDesign = ({ user, api }) => {
                 <div>
                   <h4 className="font-medium mb-3">Key Traits</h4>
                   <ul className="space-y-2">
-                    {selectedType.keyTraits.map((trait, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    {selectedType.keyTraits.map((trait) => (
+                      <li key={stableHumanDesignKey(`modal-trait-${selectedType.id}`, trait)} className="flex items-start gap-2 text-sm text-muted-foreground">
                         <Star className="w-4 h-4 text-indigo-400 flex-shrink-0 mt-0.5" />
                         {trait}
                       </li>

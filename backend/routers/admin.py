@@ -2,7 +2,7 @@ import os
 import uuid
 import requests
 from datetime import datetime, timezone, timedelta
-from typing import Optional
+from typing import Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response, Request
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
@@ -57,7 +57,7 @@ def _get_object(path: str):
     return resp.content, resp.headers.get("Content-Type", "application/octet-stream")
 
 
-def _create_admin_token():
+def _create_admin_token() -> str:
     secret = os.environ["JWT_SECRET"]
     payload = {
         "role": "admin",
@@ -67,7 +67,7 @@ def _create_admin_token():
     return jwt.encode(payload, secret, algorithm="HS256")
 
 
-def _set_admin_cookie(response: Response, token: str):
+def _set_admin_cookie(response: Response, token: str) -> None:
     response.set_cookie(
         key=ADMIN_SESSION_COOKIE,
         value=token,
@@ -79,7 +79,7 @@ def _set_admin_cookie(response: Response, token: str):
     )
 
 
-def _clear_admin_cookie(response: Response):
+def _clear_admin_cookie(response: Response) -> None:
     response.delete_cookie(key=ADMIN_SESSION_COOKIE, path="/")
 
 
@@ -92,7 +92,7 @@ def _is_admin_email(email: str) -> bool:
     return email.strip().lower() in _get_admin_emails()
 
 
-def _create_session_admin_token(user: User):
+def _create_session_admin_token(user: User) -> str:
     secret = os.environ["JWT_SECRET"]
     payload = {
         "role": "admin",
@@ -108,7 +108,7 @@ def _create_session_admin_token(user: User):
 def _verify_admin(
     request: Request,
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(security),
-):
+) -> dict[str, Any]:
     secret = os.environ["JWT_SECRET"]
     token = request.cookies.get(ADMIN_SESSION_COOKIE)
     if not token and credentials:
@@ -356,7 +356,7 @@ class SeedRequest(BaseModel):
     force: bool = False  # If True, clear and reseed even if data exists
 
 
-def _load_seed_payloads():
+def _load_seed_payloads() -> tuple[dict[str, list[dict[str, Any]]], dict[str, list[dict[str, Any]]], dict[str, dict[str, Any]]]:
     from data.video_content import VIDEO_TUTORIALS
     from data.all_content import (
         CRYSTALS, MANTRAS, MUDRAS, BREATHWORK_SESSIONS,
@@ -431,7 +431,14 @@ def _load_seed_payloads():
     return standard_collections, special_collections, SACRED_RITES_DEEP
 
 
-async def _seed_single_collection(db, collection_name: str, payload: list, force: bool, results: dict, logger):
+async def _seed_single_collection(
+    db,
+    collection_name: str,
+    payload: list[dict[str, Any]],
+    force: bool,
+    results: dict[str, Any],
+    logger,
+) -> None:
     if not payload:
         results["collections"][collection_name] = {"status": "skipped", "reason": "no data"}
         return
@@ -450,7 +457,14 @@ async def _seed_single_collection(db, collection_name: str, payload: list, force
     logger.info(f"Admin seeded {collection_name}: {len(payload)} items")
 
 
-async def _seed_standard_collections(db, collections_to_seed: list[str], standard_collections: dict, force: bool, results: dict, logger):
+async def _seed_standard_collections(
+    db,
+    collections_to_seed: list[str],
+    standard_collections: dict[str, list[dict[str, Any]]],
+    force: bool,
+    results: dict[str, Any],
+    logger,
+) -> None:
     for collection_name in collections_to_seed:
         if collection_name not in standard_collections:
             results["errors"].append(f"Unknown collection: {collection_name}")
@@ -470,7 +484,14 @@ async def _seed_standard_collections(db, collections_to_seed: list[str], standar
             logger.error(f"Error seeding {collection_name}: {error}")
 
 
-async def _seed_special_collections(db, collections_to_seed: list[str], special_collections: dict, force: bool, results: dict, logger):
+async def _seed_special_collections(
+    db,
+    collections_to_seed: list[str],
+    special_collections: dict[str, list[dict[str, Any]]],
+    force: bool,
+    results: dict[str, Any],
+    logger,
+) -> None:
     for name, payload in special_collections.items():
         if name not in collections_to_seed:
             continue
@@ -481,7 +502,13 @@ async def _seed_special_collections(db, collections_to_seed: list[str], special_
             logger.error(f"Error seeding {name}: {error}")
 
 
-async def _seed_courses_collection(db, collections_to_seed: list[str], courses_payload: dict, results: dict, logger):
+async def _seed_courses_collection(
+    db,
+    collections_to_seed: list[str],
+    courses_payload: dict[str, dict[str, Any]],
+    results: dict[str, Any],
+    logger,
+) -> None:
     if "courses" not in collections_to_seed:
         return
 
@@ -495,7 +522,11 @@ async def _seed_courses_collection(db, collections_to_seed: list[str], courses_p
         logger.error(f"Error seeding courses: {error}")
 
 
-def _resolve_collections_to_seed(request: SeedRequest, standard_collections: dict, special_collections: dict):
+def _resolve_collections_to_seed(
+    request: SeedRequest,
+    standard_collections: dict[str, list[dict[str, Any]]],
+    special_collections: dict[str, list[dict[str, Any]]],
+) -> list[str]:
     if request.collections:
         return request.collections
     return [

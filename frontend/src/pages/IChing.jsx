@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Coins, RotateCcw, BookOpen, Info, X, Sparkles, Share2 } from "lucide-react";
@@ -16,11 +16,9 @@ const IChing = ({ user, api }) => {
   const [selectedHexagram, setSelectedHexagram] = useState(null);
   const [coinAnimation, setCoinAnimation] = useState([]);
 
-  useEffect(() => {
-    fetchHexagrams();
-  }, []);
+  const COIN_SLOTS = ["left", "center", "right"];
 
-  const fetchHexagrams = async () => {
+  const fetchHexagrams = useCallback(async () => {
     try {
       const response = await api.get("/i-ching");
       setHexagrams(response.data);
@@ -29,7 +27,11 @@ const IChing = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchHexagrams();
+  }, [fetchHexagrams]);
 
   const castCoins = async () => {
     setCasting(true);
@@ -39,7 +41,13 @@ const IChing = ({ user, api }) => {
     // Animate 6 coin tosses
     for (let i = 0; i < 6; i++) {
       await new Promise(resolve => setTimeout(resolve, 400));
-      setCoinAnimation(prev => [...prev, Math.random() > 0.5 ? "yang" : "yin"]);
+      setCoinAnimation((prev) => [
+        ...prev,
+        {
+          id: `coin-toss-${i + 1}`,
+          type: Math.random() > 0.5 ? "yang" : "yin",
+        },
+      ]);
     }
 
     try {
@@ -55,16 +63,16 @@ const IChing = ({ user, api }) => {
     }
   };
 
-  const renderLine = (value, index, isChanging) => {
+  const renderLine = (value, lineNumber, isChanging) => {
     const isYang = value === 7 || value === 9;
     const isOld = value === 6 || value === 9;
     
     return (
       <motion.div
-        key={index}
+        key={`hexagram-line-${lineNumber}`}
         initial={{ opacity: 0, scaleX: 0 }}
         animate={{ opacity: 1, scaleX: 1 }}
-        transition={{ delay: index * 0.1 }}
+        transition={{ delay: lineNumber * 0.1 }}
         className="flex items-center justify-center gap-2 my-1"
       >
         {isYang ? (
@@ -131,9 +139,9 @@ const IChing = ({ user, api }) => {
             {/* Coin Animation */}
             {casting && (
               <div className="flex justify-center gap-4 mb-6">
-                {[0, 1, 2].map((i) => (
+                {COIN_SLOTS.map((slot, index) => (
                   <motion.div
-                    key={i}
+                    key={`casting-coin-${slot}`}
                     animate={{ 
                       rotateY: [0, 360, 720, 1080],
                       y: [0, -30, 0]
@@ -141,7 +149,7 @@ const IChing = ({ user, api }) => {
                     transition={{ 
                       duration: 0.8, 
                       repeat: Infinity,
-                      delay: i * 0.2
+                      delay: index * 0.2
                     }}
                     className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 
                              flex items-center justify-center text-xl font-bold text-amber-900"
@@ -157,13 +165,13 @@ const IChing = ({ user, api }) => {
               <div className="mb-6">
                 <p className="text-sm text-muted-foreground mb-3">Building hexagram...</p>
                 <div className="flex flex-col-reverse items-center">
-                  {coinAnimation.map((type, i) => (
+                  {coinAnimation.map((animationItem) => (
                     <motion.div
-                      key={i}
+                      key={animationItem.id}
                       initial={{ opacity: 0, y: -20 }}
                       animate={{ opacity: 1, y: 0 }}
                       className={`h-3 my-1 rounded-full ${
-                        type === "yang" ? "w-24 bg-white" : "w-10 bg-white mx-1 inline-block"
+                        animationItem.type === "yang" ? "w-24 bg-white" : "w-10 bg-white mx-1 inline-block"
                       }`}
                     />
                   ))}
@@ -195,7 +203,7 @@ const IChing = ({ user, api }) => {
             <div className="p-8 rounded-2xl bg-card border border-white/10 text-center">
               <div className="flex flex-col-reverse items-center mb-6">
                 {result.lines_cast?.map((value, index) => 
-                  renderLine(value, index, result.changing_lines?.includes(index + 1))
+                  renderLine(value, index + 1, result.changing_lines?.includes(index + 1))
                 )}
               </div>
               
@@ -237,8 +245,8 @@ const IChing = ({ user, api }) => {
               <div className="p-6 rounded-2xl bg-red-500/10 border border-red-500/20">
                 <h3 className="font-serif text-xl mb-4 text-red-300">Changing Lines</h3>
                 <div className="space-y-4">
-                  {result.line_meanings.map((lm, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-white/5">
+                  {result.line_meanings.map((lm) => (
+                    <div key={`changing-line-${lm.line}-${String(lm.meaning || "").slice(0, 40)}`} className="p-4 rounded-xl bg-white/5">
                       <p className="text-sm text-red-400 mb-2">Line {lm.line}</p>
                       <p className="text-muted-foreground">{lm.meaning}</p>
                     </div>

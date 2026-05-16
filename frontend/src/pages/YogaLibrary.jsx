@@ -10,6 +10,15 @@ import HealthDisclaimer from "../components/HealthDisclaimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const YogaLibrary = ({ user, api }) => {
+  const stablePoseKey = (prefix, value) => {
+    const slug = String(value || "item")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 100);
+    return `${prefix}-${slug || "item"}`;
+  };
+
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [poses, setPoses] = useState([]);
@@ -424,7 +433,7 @@ const YogaLibrary = ({ user, api }) => {
                     <div className="space-y-3 pl-10">
                       {selectedPose.instructions.map((instruction, idx) => (
                         <motion.div
-                          key={`${selectedPose.id || selectedPose.name}-instruction-${String(instruction).slice(0, 24)}-${idx}`}
+                          key={stablePoseKey(`instruction-${selectedPose.id || selectedPose.name}`, instruction)}
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: idx * 0.05 }}

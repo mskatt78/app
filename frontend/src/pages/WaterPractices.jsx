@@ -160,6 +160,15 @@ const WATER_CATEGORY_FALLBACKS = {
   ],
 };
 
+const stableWaterKey = (prefix, value) => {
+  const slug = String(value || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 100);
+  return `${prefix}-${slug || "item"}`;
+};
+
 const WaterPractices = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPractice, setSelectedPractice] = useState(null);
@@ -422,8 +431,8 @@ const WaterPractices = ({ user, api }) => {
 
                 {practice.benefits && (
                   <div className="flex flex-wrap gap-2">
-                    {practice.benefits.slice(0, 3).map((benefit, i) => (
-                      <span key={`${practice.id}-benefit-${String(benefit).toLowerCase()}-${i}`} className="px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs">
+                    {practice.benefits.slice(0, 3).map((benefit) => (
+                      <span key={stableWaterKey(`benefit-${practice.id}`, benefit)} className="px-2 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs">
                         {benefit}
                       </span>
                     ))}
@@ -501,8 +510,8 @@ const WaterPractices = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
                     <h3 className="font-medium mb-2 text-blue-300">Materials Needed</h3>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      {selectedPractice.materials.map((item, i) => (
-                        <li key={`${selectedPractice.id}-material-${String(item).toLowerCase()}-${i}`} className="flex items-center gap-2">
+                      {selectedPractice.materials.map((item) => (
+                        <li key={stableWaterKey(`material-${selectedPractice.id}`, item)} className="flex items-center gap-2">
                           <Droplets className="w-3 h-3 text-blue-400" />
                           {item}
                         </li>
@@ -516,7 +525,7 @@ const WaterPractices = ({ user, api }) => {
                   <h3 className="font-medium mb-3">Practice Steps</h3>
                   <ol className="space-y-3">
                     {selectedPractice.steps.map((step, i) => (
-                      <li key={`${selectedPractice.id}-step-${String(step).slice(0, 28)}-${i}`} className="flex items-start gap-3 text-sm">
+                      <li key={stableWaterKey(`step-${selectedPractice.id}`, step)} className="flex items-start gap-3 text-sm">
                         <span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-xs flex-shrink-0">
                           {i + 1}
                         </span>
@@ -531,8 +540,8 @@ const WaterPractices = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
                     <h3 className="font-medium mb-3 text-purple-300">Sacred Words for Water</h3>
                     <div className="space-y-2">
-                      {selectedPractice.sacred_words.map((word, i) => (
-                        <div key={`${selectedPractice.id}-word-${word.word}-${i}`} className="p-3 rounded-lg bg-white/5">
+                      {selectedPractice.sacred_words.map((word) => (
+                        <div key={stableWaterKey(`sacred-word-${selectedPractice.id}`, word.word)} className="p-3 rounded-lg bg-white/5">
                           <p className="font-serif text-lg mb-1">{word.word}</p>
                           <p className="text-xs text-purple-300">{word.meaning}</p>
                           <p className="text-xs text-muted-foreground">Effect: {word.effect}</p>
@@ -547,8 +556,8 @@ const WaterPractices = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-gradient-to-r from-red-500/10 via-green-500/10 to-purple-500/10 border border-white/10">
                     <h3 className="font-medium mb-3">Chakra Water Guide</h3>
                     <div className="grid grid-cols-1 gap-2">
-                      {selectedPractice.chakra_waters.map((cw, i) => (
-                        <div key={`${selectedPractice.id}-chakra-water-${cw.chakra}-${i}`} className="p-2 rounded-lg bg-white/5 flex items-center gap-3">
+                      {selectedPractice.chakra_waters.map((cw) => (
+                        <div key={stableWaterKey(`chakra-water-${selectedPractice.id}`, `${cw.chakra}-${cw.crystal}`)} className="p-2 rounded-lg bg-white/5 flex items-center gap-3">
                           <div className={`w-4 h-4 rounded-full`} style={{backgroundColor: cw.color.toLowerCase()}} />
                           <div className="flex-1">
                             <p className="text-sm font-medium">{cw.chakra}</p>
@@ -566,8 +575,8 @@ const WaterPractices = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
                     <h3 className="font-medium mb-3 text-cyan-300">Healing Frequencies</h3>
                     <div className="grid grid-cols-2 gap-2">
-                      {selectedPractice.frequencies.map((freq, i) => (
-                        <div key={`${selectedPractice.id}-frequency-${freq.hz}-${i}`} className="p-3 rounded-lg bg-white/5">
+                      {selectedPractice.frequencies.map((freq) => (
+                        <div key={stableWaterKey(`frequency-${selectedPractice.id}`, `${freq.hz}-${freq.name}`)} className="p-3 rounded-lg bg-white/5">
                           <p className="font-mono text-lg text-cyan-300">{freq.hz} Hz</p>
                           <p className="text-sm">{freq.name}</p>
                           <p className="text-xs text-muted-foreground">{freq.effect}</p>
@@ -582,10 +591,10 @@ const WaterPractices = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-white/5">
                     <h3 className="font-medium mb-2">Uses</h3>
                     <ul className="text-sm text-muted-foreground space-y-1">
-                      {selectedPractice.uses.map((use, i) => (
-                        <li key={`${selectedPractice.id}-use-${String(use).toLowerCase()}-${i}`} className="flex items-center gap-2">
+                      {selectedPractice.uses.map((useCase) => (
+                        <li key={stableWaterKey(`use-${selectedPractice.id}`, useCase)} className="flex items-center gap-2">
                           <Star className="w-3 h-3 text-amber-400" />
-                          {use}
+                          {useCase}
                         </li>
                       ))}
                     </ul>

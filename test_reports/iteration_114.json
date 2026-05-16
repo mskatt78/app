@@ -1,0 +1,125 @@
+{
+  "summary": "Iteration 114 - Frontend regression testing after key-stability refactor. All 8 pages tested (I Ching, Human Design, Gene Keys, Elemental Temples, Crystal Guide, Water Practices, Heart Practices, Yoga Library) load correctly with no React key warnings in console. Key-stability changes using semantic keys instead of index-based keys are working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_114.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "VERIFIED: I Ching page loads, cast coins flow works, hexagram result with changing lines renders correctly",
+    "VERIFIED: Human Design page loads with all 5 tabs (chart, types, centers, gates, experiment), type cards render with stable keys",
+    "VERIFIED: Gene Keys page loads with all 5 tabs (profile, overview, keys, sequences, contemplation), 64 gene key cards render correctly",
+    "VERIFIED: Elemental Temples page loads with 5 temple cards, temple detail view with section tabs (rituals/ceremonies/blessings) works",
+    "VERIFIED: Crystal Guide page loads, crystal detail dialog renders long sections without crash",
+    "VERIFIED: Water Practices page loads with all 7 category tabs, modal renders materials/steps/frequencies/chakra sections correctly",
+    "VERIFIED: Heart Practices page loads with all 7 filter buttons, modal with guided-practice toggle works correctly",
+    "VERIFIED: Yoga Library page loads with 78 poses, pose detail dialog renders instructions correctly",
+    "VERIFIED: No React key warnings detected in console across all tested pages",
+    "VERIFIED: No render errors or crashes detected",
+    "KEY STABILITY: stableElementKey, stableWaterKey, stableHeartKey, stablePoseKey, stableCrystalKey, stableGeneKey, stableHumanDesignKey helper functions are working correctly to generate semantic keys"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only testing)",
+    "frontend": "100% (all 8 pages load and function correctly with no key warnings)"
+  },
+  "test_credentials": "Guest access (no auth required for tested pages)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 114 verified the key-stability refactor across 8 pages. All pages use semantic keys (stableXxxKey helper functions) instead of index-based keys. No React key warnings detected. The refactor preserves all existing functionality including: I Ching cast flow, Human Design chart calculation, Gene Keys profile calculation, Elemental Temples section tabs, Crystal Guide detail dialog, Water Practices modal sections, Heart Practices guided mode, and Yoga Library pose details.",
+  "features_tested": {
+    "i_ching": {
+      "status": "VERIFIED",
+      "details": [
+        "Page loads with data-testid='i-ching'",
+        "Cast coins button works",
+        "Hexagram result displays with lines",
+        "Changing lines section renders when applicable",
+        "64 Hexagrams modal accessible"
+      ]
+    },
+    "human_design": {
+      "status": "VERIFIED",
+      "details": [
+        "Page loads with data-testid='human-design'",
+        "All 5 tabs present and clickable (chart, types, centers, gates, experiment)",
+        "5 type cards render in Types tab",
+        "Type detail modal opens on click",
+        "Center detail modal opens on click"
+      ]
+    },
+    "gene_keys": {
+      "status": "VERIFIED",
+      "details": [
+        "Page loads with data-testid='gene-keys'",
+        "All 5 tabs present and clickable (profile, overview, keys, sequences, contemplation)",
+        "64 gene key cards render in Keys tab",
+        "Gene key detail modal opens on click",
+        "Sequence detail modal opens on click"
+      ]
+    },
+    "elemental_temples": {
+      "status": "VERIFIED",
+      "details": [
+        "Page loads with data-testid='elemental-temples'",
+        "5 temple cards render (Earth, Water, Fire, Air, Spirit)",
+        "Temple detail view opens with section tabs",
+        "Section tabs (Why It Heals, Ancient Traditions, Rituals, Ceremonies, Blessings, etc.) work"
+      ]
+    },
+    "crystal_guide": {
+      "status": "VERIFIED",
+      "details": [
+        "Page loads with crystal content",
+        "Crystal detail dialog opens",
+        "Long sections (why_this_heals, healing_properties, extended_teachings) render without crash",
+        "Begin Crystal Practice button present"
+      ]
+    },
+    "water_practices": {
+      "status": "VERIFIED",
+      "details": [
+        "Page loads with data-testid='water-practices'",
+        "All 7 category tabs present (blessing, ceremony, ritual, frequency, crystalline, cleansing, moon)",
+        "Practice modal opens with materials, steps, frequencies, chakra sections",
+        "Guided Practice button present"
+      ]
+    },
+    "heart_practices": {
+      "status": "VERIFIED",
+      "details": [
+        "Page loads with data-testid='heart-practices'",
+        "All 7 filter buttons present (all, self_love, compassion, forgiveness, gratitude, connection, healing)",
+        "10 heart practice cards render",
+        "Practice modal opens with Begin Guided Heart Practice button",
+        "Guided practice mode toggle works (Complete Practice button appears)"
+      ]
+    },
+    "yoga_library": {
+      "status": "VERIFIED",
+      "details": [
+        "Page loads with data-testid='yoga-library'",
+        "78 pose cards render",
+        "Element filter tabs work (Earth 13, Water 17, Fire 17, Air 16, Spirit 15)",
+        "Favorites filter button present",
+        "Accessible/Mobility filter button present",
+        "Pose detail dialog opens with instructions rendering correctly",
+        "Listen to Guided Practice button present"
+      ]
+    }
+  },
+  "console_analysis": {
+    "react_key_warnings": 0,
+    "render_errors": 0,
+    "auth_401_errors": "Expected for unauthenticated users (not a bug)"
+  }
+}

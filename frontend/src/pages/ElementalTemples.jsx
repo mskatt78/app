@@ -12,6 +12,15 @@ const ELEMENT_ICONS = {
   sparkles: Sparkles,
 };
 
+const stableElementKey = (prefix, value) => {
+  const slug = String(value || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 100);
+  return `${prefix}-${slug || "item"}`;
+};
+
 const STATIC_ELEMENTS = [
   {
     id: "earth",
@@ -1150,8 +1159,8 @@ const ElementalTemples = ({ user, api }) => {
                           <Zap className={`w-5 h-5 ${activeTemple.color.text}`} />
                           Why {activeTemple.element} Heals
                         </h3>
-                        {(activeTemple.why_it_heals || "").split(/\n\n+/).map((para, i) => (
-                          <p key={i} className="text-muted-foreground leading-relaxed mb-3 last:mb-0">{para.trim()}</p>
+                        {(activeTemple.why_it_heals || "").split(/\n\n+/).map((para) => (
+                          <p key={stableElementKey(`why-heals-${activeTemple.id}`, para)} className="text-muted-foreground leading-relaxed mb-3 last:mb-0">{para.trim()}</p>
                         ))}
                       </div>
                     </div>
@@ -1164,8 +1173,8 @@ const ElementalTemples = ({ user, api }) => {
                           <Globe className={`w-5 h-5 ${activeTemple.color.text}`} />
                           {activeTemple.element} Across Ancient Traditions
                         </h3>
-                        {(activeTemple.ancient_traditions || "").split(/\n\n+/).map((para, i) => (
-                          <p key={i} className="text-muted-foreground leading-relaxed mb-3 last:mb-0">{para.trim()}</p>
+                        {(activeTemple.ancient_traditions || "").split(/\n\n+/).map((para) => (
+                          <p key={stableElementKey(`ancient-${activeTemple.id}`, para)} className="text-muted-foreground leading-relaxed mb-3 last:mb-0">{para.trim()}</p>
                         ))}
                       </div>
                     </div>
@@ -1202,7 +1211,7 @@ const ElementalTemples = ({ user, api }) => {
                         <h4 className="font-medium mb-3">Nature Connection Practices</h4>
                         <ul className="space-y-3">
                           {activeTemple.nature_connection.map((practice, i) => (
-                            <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                            <li key={stableElementKey(`nature-practice-${activeTemple.id}`, practice)} className="flex items-start gap-3 text-sm text-muted-foreground">
                               <span className={`w-6 h-6 rounded-full ${activeTemple.color.bg} border ${activeTemple.color.border} flex items-center justify-center text-xs ${activeTemple.color.text} flex-shrink-0 mt-0.5`}>
                                 {i + 1}
                               </span>
@@ -1218,12 +1227,12 @@ const ElementalTemples = ({ user, api }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {activeTemple.practices.map((practice, i) => (
                         <motion.div
-                          key={i}
+                          key={stableElementKey(`practice-card-${activeTemple.id}`, `${practice.name}-${practice.type}`)}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.05 }}
                           className={`p-5 rounded-xl border ${activeTemple.color.bg} ${activeTemple.color.border}`}
-                          data-testid={`practice-card-${i}`}
+                          data-testid={`practice-card-${stableElementKey(activeTemple.id, practice.name)}`}
                         >
                           <span className={`text-xs ${activeTemple.color.text} uppercase tracking-wider`}>{practice.type}</span>
                           <h4 className="font-serif text-base mt-1 mb-2">{practice.name}</h4>
@@ -1238,12 +1247,12 @@ const ElementalTemples = ({ user, api }) => {
                       <p className="text-muted-foreground text-sm">Sacred ceremonies for embodying the {activeTemple.element} element in your life. 🙏</p>
                       {(activeTemple.rituals || []).map((ritual, i) => (
                         <motion.div
-                          key={i}
+                          key={stableElementKey(`ritual-${activeTemple.id}`, ritual.name)}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.1 }}
                           className={`rounded-2xl border overflow-hidden ${activeTemple.color.border}`}
-                          data-testid={`ritual-${i}`}
+                          data-testid={`ritual-${stableElementKey(activeTemple.id, ritual.name)}`}
                         >
                           <div className={`p-5 ${activeTemple.color.bg}`}>
                             <h3 className="text-lg font-serif mb-1">{ritual.name}</h3>
@@ -1257,7 +1266,7 @@ const ElementalTemples = ({ user, api }) => {
                               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">You Will Need</p>
                               <div className="flex flex-wrap gap-2">
                                 {ritual.what_you_need.map((item, j) => (
-                                  <span key={j} className={`px-2.5 py-1 rounded-full text-xs border ${activeTemple.color.bg} ${activeTemple.color.text} ${activeTemple.color.border}`}>{item}</span>
+                                  <span key={stableElementKey(`ritual-need-${ritual.name}`, item)} className={`px-2.5 py-1 rounded-full text-xs border ${activeTemple.color.bg} ${activeTemple.color.text} ${activeTemple.color.border}`}>{item}</span>
                                 ))}
                               </div>
                             </div>
@@ -1265,7 +1274,7 @@ const ElementalTemples = ({ user, api }) => {
                               <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">The Practice</p>
                               <ol className="space-y-3">
                                 {ritual.steps.map((step, j) => (
-                                  <li key={j} className="flex items-start gap-3 text-sm text-muted-foreground">
+                                  <li key={stableElementKey(`ritual-step-${ritual.name}`, step)} className="flex items-start gap-3 text-sm text-muted-foreground">
                                     <span className={`w-6 h-6 rounded-full ${activeTemple.color.bg} border ${activeTemple.color.border} flex items-center justify-center text-xs ${activeTemple.color.text} flex-shrink-0`}>{j + 1}</span>
                                     {step}
                                   </li>
@@ -1286,12 +1295,12 @@ const ElementalTemples = ({ user, api }) => {
                       <p className="text-muted-foreground text-sm">Group and communal ceremonies for honoring the {activeTemple.element} element together. 🙏</p>
                       {(activeTemple.ceremonies || []).map((ceremony, i) => (
                         <motion.div
-                          key={i}
+                          key={stableElementKey(`ceremony-${activeTemple.id}`, ceremony.name)}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.1 }}
                           className={`rounded-2xl border overflow-hidden ${activeTemple.color.border}`}
-                          data-testid={`ceremony-${i}`}
+                          data-testid={`ceremony-${stableElementKey(activeTemple.id, ceremony.name)}`}
                         >
                           <div className={`p-5 ${activeTemple.color.bg}`}>
                             <h3 className="text-lg font-serif mb-1">{ceremony.name}</h3>
@@ -1307,7 +1316,7 @@ const ElementalTemples = ({ user, api }) => {
                                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">You Will Need</p>
                                 <div className="flex flex-wrap gap-2">
                                   {ceremony.what_you_need.map((item, j) => (
-                                    <span key={j} className={`px-2.5 py-1 rounded-full text-xs border ${activeTemple.color.bg} ${activeTemple.color.text} ${activeTemple.color.border}`}>{item}</span>
+                                    <span key={stableElementKey(`ceremony-need-${ceremony.name}`, item)} className={`px-2.5 py-1 rounded-full text-xs border ${activeTemple.color.bg} ${activeTemple.color.text} ${activeTemple.color.border}`}>{item}</span>
                                   ))}
                                 </div>
                               </div>
@@ -1317,7 +1326,7 @@ const ElementalTemples = ({ user, api }) => {
                                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-3">Ceremony Flow</p>
                                 <ol className="space-y-3">
                                   {ceremony.flow.map((step, j) => (
-                                    <li key={j} className="flex items-start gap-3 text-sm text-muted-foreground">
+                                    <li key={stableElementKey(`ceremony-step-${ceremony.name}`, step)} className="flex items-start gap-3 text-sm text-muted-foreground">
                                       <span className={`w-6 h-6 rounded-full ${activeTemple.color.bg} border ${activeTemple.color.border} flex items-center justify-center text-xs ${activeTemple.color.text} flex-shrink-0`}>{j + 1}</span>
                                       {step}
                                     </li>
@@ -1342,12 +1351,12 @@ const ElementalTemples = ({ user, api }) => {
                       <p className="text-muted-foreground text-sm">Sacred blessings, prayers, and invocations for the {activeTemple.element} element. Speak them aloud, slowly, with full presence. 🙏</p>
                       {(activeTemple.blessings || []).map((blessing, i) => (
                         <motion.div
-                          key={i}
+                          key={stableElementKey(`blessing-${activeTemple.id}`, blessing.name)}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: i * 0.08 }}
                           className={`rounded-2xl border p-5 ${activeTemple.color.bg} ${activeTemple.color.border}`}
-                          data-testid={`blessing-${i}`}
+                          data-testid={`blessing-${stableElementKey(activeTemple.id, blessing.name)}`}
                         >
                           <div className="flex items-start justify-between mb-3">
                             <h4 className="font-serif text-base">{blessing.name}</h4>
@@ -1368,7 +1377,7 @@ const ElementalTemples = ({ user, api }) => {
                       <div className="space-y-4">
                         {activeTemple.affirmations.map((aff, i) => (
                           <motion.p
-                            key={i}
+                            key={stableElementKey(`affirmation-${activeTemple.id}`, aff)}
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}

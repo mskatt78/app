@@ -144,6 +144,15 @@ const sphereColors = {
 
 const KEY_ICONS = { amber: Sun, emerald: Dna, violet: Moon, rose: Heart };
 
+const stableGeneKey = (prefix, value) => {
+  const slug = String(value || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+  return `${prefix}-${slug || "item"}`;
+};
+
 // Three Sequences
 const sequences = [
   {
@@ -702,7 +711,7 @@ const GeneKeys = ({ user, api }) => {
                     "Return to it daily for at least a week. Let the contemplation deepen naturally.",
                     "Trust the process. The Gene Key is working on you even when you don't feel it."
                   ].map((step, i) => (
-                    <li key={i} className="flex items-start gap-3">
+                    <li key={stableGeneKey("contemplation-step", step)} className="flex items-start gap-3">
                       <span className="w-6 h-6 rounded-full bg-violet-500/20 border border-violet-500/30 flex items-center justify-center text-xs text-violet-300 flex-shrink-0">
                         {i + 1}
                       </span>
@@ -852,8 +861,8 @@ const GeneKeys = ({ user, api }) => {
                 <div>
                   <h4 className="font-medium mb-3">The Spheres</h4>
                   <div className="space-y-2">
-                    {selectedSequence.spheres.map((sphere, i) => (
-                      <div key={i} className="p-3 rounded-lg bg-white/5">
+                    {selectedSequence.spheres.map((sphere) => (
+                      <div key={stableGeneKey(`sequence-sphere-${selectedSequence.id}`, sphere.name)} className="p-3 rounded-lg bg-white/5">
                         <p className="font-medium">{sphere.name}</p>
                         <p className="text-sm text-muted-foreground">{sphere.desc}</p>
                       </div>
