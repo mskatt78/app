@@ -12,6 +12,14 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Frontend Modularization Continuation (Iteration 109–111, May 2026):**
+  - **Guided overlay split:** extracted orchestration/state logic into `components/guided/useGuidedPracticeEngine.js`; `GuidedPracticeOverlay.jsx` is now a thin presenter wrapper.
+  - **Courses deeper modularization:** extracted large modal tab body into `components/courses/CourseModalContent.jsx`; introduced `pages/courses/CourseDetailModal.jsx` alias wrapper and wired `Courses.jsx` to use it.
+  - **PracticeTimer modularization:** moved ambient audio/chime synthesis into `components/timer/timerAudioEngine.js`.
+  - **Cleanup pass:** resolved CrystalGuide hook dependency by wrapping `fetchCrystals` in `useCallback([api])`.
+  - Validation:
+    - `/app/test_reports/iteration_110.json` and `/app/test_reports/iteration_111.json` => backend **100%**, frontend **100%**, no regressions.
+
 - **Large Frontend Structural Sweep (Iteration 108, May 2026):**
   - **BirthChart split:** extracted chart-results rendering into `pages/birthchart/BirthChartResults.jsx`; moved planet icon mapping into `birthChartUtils.js`.
   - **CrystalGuide split:** extracted heavy detail modal/sections into `pages/crystal-guide/CrystalDetailDialog.jsx`.
