@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -59,7 +59,19 @@ const CrystalGuide = ({ user, api }) => {
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
-  useEffect(() => { fetchCrystals(); }, []);
+  const fetchCrystals = useCallback(async () => {
+    try {
+      const response = await api.get("/crystals/deep");
+      setCrystals(response.data);
+      setFilteredCrystals(response.data);
+    } catch (error) {
+      console.error("Failed to fetch crystals:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [api]);
+
+  useEffect(() => { fetchCrystals(); }, [fetchCrystals]);
 
   useEffect(() => {
     if (selectedElement === "all") setFilteredCrystals(crystals);
@@ -85,18 +97,6 @@ const CrystalGuide = ({ user, api }) => {
 
     setResolvedDeepLink(true);
   }, [crystals, location.search, resolvedDeepLink]);
-
-  const fetchCrystals = async () => {
-    try {
-      const response = await api.get("/crystals/deep");
-      setCrystals(response.data);
-      setFilteredCrystals(response.data);
-    } catch (error) {
-      console.error("Failed to fetch crystals:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const buildCrystalPractice = (crystal) => {
     const steps = [];
