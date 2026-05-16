@@ -275,7 +275,7 @@ CHAIR_YOGA_PRACTICES = [
     }
 ]
 
-async def add_chair_yoga():
+async def add_chair_yoga() -> None:
     """Add Chair Yoga to yoga poses collection."""
     print("Adding Chair Yoga practices...")
     

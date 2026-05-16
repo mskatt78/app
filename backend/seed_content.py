@@ -366,7 +366,7 @@ CREATIVE_PROCESSES = [
 ]
 
 
-async def seed_content():
+async def seed_content() -> None:
     """Seed all additional content into the database."""
     print("Starting content seeding...")
     
@@ -424,7 +424,7 @@ async def seed_content():
     elemental_count = await db.elemental_practices.count_documents({})
     creative_count = await db.creative_processes.count_documents({})
     
-    print(f"\nFinal counts:")
+    print("\nFinal counts:")
     print(f"  Yoga poses: {yoga_count}")
     print(f"  Breathwork sessions: {breathwork_count}")
     print(f"  Shamanic ceremonies: {shamanic_count}")

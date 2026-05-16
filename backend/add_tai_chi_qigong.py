@@ -277,7 +277,7 @@ QIGONG_PRACTICES = [
     }
 ]
 
-async def add_gentle_movements():
+async def add_gentle_movements() -> None:
     """Add Tai Chi and Qigong to somatic practices."""
     print("Adding Tai Chi and Qigong practices...")
     

@@ -229,7 +229,7 @@ ADDITIONAL_CRYSTALS = [
     }
 ]
 
-async def add_crystals():
+async def add_crystals() -> None:
     """Add additional crystals to database."""
     print("Adding more crystals...")
     

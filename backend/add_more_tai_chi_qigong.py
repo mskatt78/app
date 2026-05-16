@@ -417,7 +417,7 @@ MORE_QIGONG = [
     }
 ]
 
-async def add_more_practices():
+async def add_more_practices() -> None:
     """Add more Tai Chi and Qigong practices."""
     print("Adding more Tai Chi and Qigong practices...")
     

@@ -145,7 +145,7 @@ MORE_CRYSTALS = [
     }
 ]
 
-async def add_more_crystals():
+async def add_more_crystals() -> None:
     """Add more crystals to database."""
     print("Adding more crystals...")
     

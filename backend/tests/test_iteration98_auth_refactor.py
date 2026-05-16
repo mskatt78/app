@@ -13,7 +13,11 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
+BASE_URL = os.environ["REACT_APP_BACKEND_URL"].rstrip("/")
+
+
+def _generated_password(prefix: str = "AuthTest") -> str:
+    return f"{prefix}_{uuid.uuid4().hex[:12]}!Aa1"
 
 class TestAuthRegister:
     """Test POST /api/auth/register endpoint"""
@@ -23,7 +27,7 @@ class TestAuthRegister:
         unique_email = f"test_register_{uuid.uuid4().hex[:8]}@example.com"
         payload = {
             "email": unique_email,
-            "password": "TestPass123!",
+            "password": _generated_password("Register"),
             "name": "Test User"
         }
         
@@ -49,7 +53,7 @@ class TestAuthRegister:
         unique_email = f"test_dup_{uuid.uuid4().hex[:8]}@example.com"
         payload = {
             "email": unique_email,
-            "password": "TestPass123!",
+            "password": _generated_password("Duplicate"),
             "name": "Test User"
         }
         
@@ -83,7 +87,7 @@ class TestAuthLogin:
     def setup_test_user(self):
         """Create a test user for login tests"""
         self.test_email = f"test_login_{uuid.uuid4().hex[:8]}@example.com"
-        self.test_password = "LoginTestPass123!"
+        self.test_password = _generated_password("Login")
         
         # Register the user first
         payload = {
@@ -133,7 +137,7 @@ class TestAuthLogin:
         """Login should reject nonexistent user"""
         payload = {
             "email": "nonexistent_user_xyz@example.com",
-            "password": "SomePassword123!"
+            "password": _generated_password("Missing")
         }
         
         response = requests.post(f"{BASE_URL}/api/auth/login", json=payload)
@@ -150,7 +154,7 @@ class TestAuthMeAndLogout:
         unique_email = f"test_me_{uuid.uuid4().hex[:8]}@example.com"
         register_response = requests.post(f"{BASE_URL}/api/auth/register", json={
             "email": unique_email,
-            "password": "MeTestPass123!",
+            "password": _generated_password("Me"),
             "name": "Me Test User"
         })
         assert register_response.status_code == 200
@@ -181,7 +185,7 @@ class TestAuthMeAndLogout:
         unique_email = f"test_logout_{uuid.uuid4().hex[:8]}@example.com"
         register_response = requests.post(f"{BASE_URL}/api/auth/register", json={
             "email": unique_email,
-            "password": "LogoutTestPass123!",
+            "password": _generated_password("Logout"),
             "name": "Logout Test User"
         })
         assert register_response.status_code == 200
@@ -241,7 +245,7 @@ class TestAuthGoogle:
         
         # Cookie assertion
         assert "session_token" in response.cookies, "Response should set session_token cookie"
-        print(f"✓ POST /api/auth/google works with payload model")
+        print("✓ POST /api/auth/google works with payload model")
     
     def test_google_auth_with_sub_instead_of_id(self):
         """POST /api/auth/google should accept 'sub' field instead of 'id'"""
@@ -302,7 +306,7 @@ class TestAuthSession:
         response = requests.post(f"{BASE_URL}/api/auth/session", json=payload)
         
         # Should NOT be 500
-        assert response.status_code != 500, f"Should not return 500 for empty session_id"
+        assert response.status_code != 500, "Should not return 500 for empty session_id"
         print(f"✓ POST /api/auth/session handles empty session_id (returns {response.status_code})")
 
 

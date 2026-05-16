@@ -6,7 +6,7 @@ import logging
 import os
 import re
 import secrets
-from typing import Literal, Optional
+from typing import Any, Literal, Optional
 import uuid
 
 from fastapi import APIRouter, HTTPException
@@ -22,6 +22,39 @@ TARGET_WORDS_PER_MINUTE = 120
 SEGMENT_TARGET_WORDS = 220
 FIRST_SEGMENT_TARGET_WORDS = 95
 MAX_PARAGRAPH_STEM_REPEAT_RATIO = 0.12
+
+MOON_GUIDANCE = {
+    "new_moon": {"theme": "New Beginnings & Intention Setting", "energy": "introspective", "focus": ["womb", "shadow", "rest"]},
+    "waxing_crescent": {"theme": "Taking First Steps", "energy": "building", "focus": ["warrior", "solar", "action"]},
+    "first_quarter": {"theme": "Overcoming Challenges", "energy": "active", "focus": ["warrior", "boundaries", "strength"]},
+    "waxing_gibbous": {"theme": "Refinement & Adjustment", "energy": "refining", "focus": ["heart", "relationship", "healing"]},
+    "full_moon": {"theme": "Illumination & Release", "energy": "peak", "focus": ["crown", "release", "celebration"]},
+    "waning_gibbous": {"theme": "Gratitude & Sharing", "energy": "distributing", "focus": ["heart", "service", "teaching"]},
+    "last_quarter": {"theme": "Letting Go", "energy": "releasing", "focus": ["grief", "shadow", "forgiveness"]},
+    "waning_crescent": {"theme": "Rest & Surrender", "energy": "surrendering", "focus": ["rest", "womb", "intuition"]},
+}
+
+DAY_THEMES = {
+    "monday": {"ruler": "Moon", "theme": "Intuition & Emotions", "practices": ["lunar", "womb", "water"]},
+    "tuesday": {"ruler": "Mars", "theme": "Courage & Action", "practices": ["warrior", "fire", "strength"]},
+    "wednesday": {"ruler": "Mercury", "theme": "Communication & Learning", "practices": ["throat", "sage", "voice"]},
+    "thursday": {"ruler": "Jupiter", "theme": "Expansion & Abundance", "practices": ["crown", "spiritual", "gratitude"]},
+    "friday": {"ruler": "Venus", "theme": "Love & Beauty", "practices": ["heart", "sensuality", "self-love"]},
+    "saturday": {"ruler": "Saturn", "theme": "Structure & Discipline", "practices": ["root", "grounding", "boundaries"]},
+    "sunday": {"ruler": "Sun", "theme": "Vitality & Self-Expression", "practices": ["solar", "king", "radiance"]},
+}
+
+DAILY_PRACTICE_COLLECTIONS = [
+    ("chakra_cleansing", "chakra", "chakra_cleansing"),
+    ("feminine_embodiment", "feminine", "embodiment"),
+    ("masculine_embodiment", "masculine", "embodiment"),
+    ("energy_healing", "energy", "energy_healing"),
+    ("somatic_yoga", "somatic", "somatic_yoga"),
+    ("free_form_movement", "movement", "free_form_movement"),
+]
+
+MORNING_KEYWORDS = ["awakening", "warrior", "solar", "activation", "grounding", "breath", "movement"]
+EVENING_KEYWORDS = ["rest", "release", "healing", "moon", "womb", "heart", "grief", "restorative"]
 
 
 class LiveSessionRsvpRequest(BaseModel):
@@ -323,106 +356,115 @@ def _build_context_absorption_paragraphs(context_sentences: list[str]) -> list[s
     ]
 
 
-def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: int, seed_words: int) -> list[str]:
-    awareness_points = [
-        "the space behind your eyes", "your jaw and tongue", "your throat and collarbones", "the center of your chest",
-        "the rise and fall of your ribs", "your diaphragm and belly", "your lower back and sacrum", "your hips and pelvis",
-        "the weight in your legs", "your feet touching the ground", "the back of your heart", "the rhythm of your pulse",
-        "the temperature of your skin", "the subtle movement of breath", "your emotional edges", "your sense of internal space",
-        "your shoulder blades resting", "the inside of your palms", "your pelvic floor", "your spine lengthening",
-        "your heartbeat against stillness", "the bridge between breath and emotion", "your forehead softening", "your belly wall relaxing",
-    ]
-    breath_cues = [
-        "Lengthen your exhale slightly beyond your inhale",
-        "Receive the inhale naturally, without pulling",
-        "Keep the pauses soft instead of rigid",
-        "Breathe through your nose with an even, quiet cadence",
-        "Round off unnecessary tension on each breath cycle",
-        "Maintain a breath volume that feels sustainable",
-        "Guide the breath lower toward the belly",
-        "Hold a rhythm your nervous system can trust",
-        "Synchronize breath and body without forcing",
-        "Use breath as an anchor rather than a demand",
-        "Breathe as if there is ample time",
-        "Soften around the edge of each exhale",
-        "Give every exhale enough length to signal safety",
-        "Let ribcage expansion and release stay effortless",
-        "Keep the breath low, warm, and steady",
-        "Choose a breathing rhythm that remains simple",
-        "Ease the edges of effort through steady breathing",
-        "Stay with a cadence that feels clear and manageable",
-        "Breathe as though support is rising from within",
-        "Relax the throat so breath can move cleanly",
-    ]
-    integration_targets = [
-        "nervous system regulation", "emotional steadiness", "inner trust", "embodied clarity", "somatic safety",
-        "grounded awareness", "gentle resilience", "self-compassion", "present-moment stability", "deeper self-connection",
-        "energetic coherence", "relational softness", "mental spaciousness", "body-based confidence", "subtle emotional release",
-    ]
-    imagery_prompts = [
-        "Imagine this practice moving through you like a calm tide", "Feel this process settling like warm light through the body",
-        "Let awareness spread like roots finding stable ground", "Sense your attention widening without losing precision",
-        "Receive each breath as a quiet message of safety", "Notice that stillness can coexist with movement",
-        "Allow your body to become both soft and strong", "Let the mind become spacious while the body stays grounded",
-        "Feel yourself held by the moment rather than pushed by it", "Allow presence to deepen with each cycle",
-        "Picture tension loosening like knots in warm water", "Feel your awareness becoming clear and spacious",
-        "Imagine each exhale polishing the mind toward stillness", "Sense the body returning to its natural rhythm",
-        "Let this moment feel like an inner sanctuary", "Feel your system organizing itself around calm clarity",
-    ]
-    narrative_openers = [
-        "In this next interval, stay slow and attentive",
-        "Continue with patience and a softer focus",
-        "As you settle deeper, let awareness feel embodied",
-        "This minute can unfold with steadiness and ease",
-        "Take this phase as an invitation to listen inwardly",
-        "From here, move with gentle care",
-        "Remain present while subtle shifts reveal themselves",
-        "This layer of practice can ripen gradually",
-        "Keep attention honest and unforced",
-        "Notice how depth appears when urgency fades",
-        "Continue with curiosity and kind discipline",
-        "Treat this section as lived experience, not theory",
-        "Let calm precision and grounded strength move together",
-        "Stay graceful as your inner focus grows clearer",
-        "Hold this part of the journey as tender and strong",
-        "If you need to slow down, that is part of the practice",
-        "Let this feel more like conversation than command",
+def _adaptive_body_phrase_bank() -> dict[str, list[str]]:
+    return {
+        "awareness_points": [
+            "the space behind your eyes", "your jaw and tongue", "your throat and collarbones", "the center of your chest",
+            "the rise and fall of your ribs", "your diaphragm and belly", "your lower back and sacrum", "your hips and pelvis",
+            "the weight in your legs", "your feet touching the ground", "the back of your heart", "the rhythm of your pulse",
+            "the temperature of your skin", "the subtle movement of breath", "your emotional edges", "your sense of internal space",
+            "your shoulder blades resting", "the inside of your palms", "your pelvic floor", "your spine lengthening",
+            "your heartbeat against stillness", "the bridge between breath and emotion", "your forehead softening", "your belly wall relaxing",
+        ],
+        "breath_cues": [
+            "Lengthen your exhale slightly beyond your inhale",
+            "Receive the inhale naturally, without pulling",
+            "Keep the pauses soft instead of rigid",
+            "Breathe through your nose with an even, quiet cadence",
+            "Round off unnecessary tension on each breath cycle",
+            "Maintain a breath volume that feels sustainable",
+            "Guide the breath lower toward the belly",
+            "Hold a rhythm your nervous system can trust",
+            "Synchronize breath and body without forcing",
+            "Use breath as an anchor rather than a demand",
+            "Breathe as if there is ample time",
+            "Soften around the edge of each exhale",
+            "Give every exhale enough length to signal safety",
+            "Let ribcage expansion and release stay effortless",
+            "Keep the breath low, warm, and steady",
+            "Choose a breathing rhythm that remains simple",
+            "Ease the edges of effort through steady breathing",
+            "Stay with a cadence that feels clear and manageable",
+            "Breathe as though support is rising from within",
+            "Relax the throat so breath can move cleanly",
+        ],
+        "integration_targets": [
+            "nervous system regulation", "emotional steadiness", "inner trust", "embodied clarity", "somatic safety",
+            "grounded awareness", "gentle resilience", "self-compassion", "present-moment stability", "deeper self-connection",
+            "energetic coherence", "relational softness", "mental spaciousness", "body-based confidence", "subtle emotional release",
+        ],
+        "imagery_prompts": [
+            "Imagine this practice moving through you like a calm tide", "Feel this process settling like warm light through the body",
+            "Let awareness spread like roots finding stable ground", "Sense your attention widening without losing precision",
+            "Receive each breath as a quiet message of safety", "Notice that stillness can coexist with movement",
+            "Allow your body to become both soft and strong", "Let the mind become spacious while the body stays grounded",
+            "Feel yourself held by the moment rather than pushed by it", "Allow presence to deepen with each cycle",
+            "Picture tension loosening like knots in warm water", "Feel your awareness becoming clear and spacious",
+            "Imagine each exhale polishing the mind toward stillness", "Sense the body returning to its natural rhythm",
+            "Let this moment feel like an inner sanctuary", "Feel your system organizing itself around calm clarity",
+        ],
+        "narrative_openers": [
+            "In this next interval, stay slow and attentive",
+            "Continue with patience and a softer focus",
+            "As you settle deeper, let awareness feel embodied",
+            "This minute can unfold with steadiness and ease",
+            "Take this phase as an invitation to listen inwardly",
+            "From here, move with gentle care",
+            "Remain present while subtle shifts reveal themselves",
+            "This layer of practice can ripen gradually",
+            "Keep attention honest and unforced",
+            "Notice how depth appears when urgency fades",
+            "Continue with curiosity and kind discipline",
+            "Treat this section as lived experience, not theory",
+            "Let calm precision and grounded strength move together",
+            "Stay graceful as your inner focus grows clearer",
+            "Hold this part of the journey as tender and strong",
+            "If you need to slow down, that is part of the practice",
+            "Let this feel more like conversation than command",
+        ],
+    }
+
+
+def _compose_adaptive_paragraph(index: int, context_queue: list[str], phrase_bank: dict[str, list[str]]) -> str:
+    opener = phrase_bank["narrative_openers"][index % len(phrase_bank["narrative_openers"])]
+    awareness = phrase_bank["awareness_points"][index % len(phrase_bank["awareness_points"])]
+    breath_cue = phrase_bank["breath_cues"][(index * 2 + 1) % len(phrase_bank["breath_cues"])]
+    target = phrase_bank["integration_targets"][(index * 3 + 2) % len(phrase_bank["integration_targets"])]
+    imagery = phrase_bank["imagery_prompts"][(index * 5 + 3) % len(phrase_bank["imagery_prompts"])]
+    optional_context = f"{context_queue.pop(0)}. " if context_queue and index % 6 == 0 else ""
+
+    variants = [
+        (
+            f"{opener}. Keep a gentle awareness near {awareness}. {breath_cue}. "
+            f"{optional_context}{imagery}. Let this support {target} without pressure."
+        ),
+        (
+            f"{opener}. {imagery}. {breath_cue}. "
+            f"You might notice small changes around {awareness}; let that quietly build {target}."
+        ),
+        (
+            f"{opener}. Stay oriented to {awareness} while you breathe. "
+            f"{optional_context}Keep this moment simple and clear. "
+            f"{breath_cue}. This phase can restore {target}."
+        ),
+        (
+            f"{opener}. {breath_cue}. Let awareness stay anchored in {awareness}. "
+            f"{imagery}. Give this enough time to cultivate {target}."
+        ),
     ]
 
+    return variants[index % len(variants)]
+
+
+def _build_adaptive_body_paragraphs(context_sentences: list[str], target_words: int, seed_words: int) -> list[str]:
+    phrase_bank = _adaptive_body_phrase_bank()
     running_words = seed_words
     index = 0
     body: list[str] = []
     context_queue = context_sentences[12:]
     recent_stems: list[str] = []
     while running_words < max(target_words - 80, 0):
-        opener = narrative_openers[index % len(narrative_openers)]
-        awareness = awareness_points[index % len(awareness_points)]
-        breath_cue = breath_cues[(index * 2 + 1) % len(breath_cues)]
-        target = integration_targets[(index * 3 + 2) % len(integration_targets)]
-        imagery = imagery_prompts[(index * 5 + 3) % len(imagery_prompts)]
-        optional_context = f"{context_queue.pop(0)}. " if context_queue and index % 6 == 0 else ""
-
-        paragraph_variants = [
-            (
-                f"{opener}. Keep a gentle awareness near {awareness}. {breath_cue}. "
-                f"{optional_context}{imagery}. Let this support {target} without pressure."
-            ),
-            (
-                f"{opener}. {imagery}. {breath_cue}. "
-                f"You might notice small changes around {awareness}; let that quietly build {target}."
-            ),
-            (
-                f"{opener}. Stay oriented to {awareness} while you breathe. "
-                f"{optional_context}Keep this moment simple and clear. "
-                f"{breath_cue}. This phase can restore {target}."
-            ),
-            (
-                f"{opener}. {breath_cue}. Let awareness stay anchored in {awareness}. "
-                f"{imagery}. Give this enough time to cultivate {target}."
-            ),
-        ]
-
-        paragraph = paragraph_variants[index % 4]
+        paragraph = _compose_adaptive_paragraph(index, context_queue, phrase_bank)
         stem = " ".join(_normalize_text_for_repeat_check(paragraph).split()[:10])
         if stem and stem in recent_stems:
             index += 1
@@ -466,6 +508,86 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
     return _dedupe_paragraphs(paragraphs)
 
 
+def _extension_phrase_bank() -> dict[str, list[str]]:
+    return {
+        "openers": [
+            "Continue with patience and care",
+            "Stay with the process as it unfolds naturally",
+            "Keep awareness spacious and grounded",
+            "Let this next minute stay steady and unrushed",
+            "Support your body in learning through breath",
+            "Remain connected to present sensation",
+            "Keep this phase simple and embodied",
+            "Maintain a calm, sustainable rhythm",
+            "Continue with gentle attentiveness",
+            "Stay graceful as your inner signal grows clearer",
+            "Let steady power rise without force",
+            "Track subtle shifts while keeping your pace human",
+            "Hold the posture of listening, not performing",
+            "Keep your focus soft, clear, and grounded",
+            "If needed, take this section slower and kinder",
+            "Let this feel like guidance from a trusted voice",
+        ],
+        "midlines": [
+            "Keep your breathing even and unforced",
+            "Stay receptive while attention remains clear",
+            "Track subtle sensation without over-analyzing every shift",
+            "Let awareness stay grounded in what is present",
+            "Hold a rhythm that does not strain the body",
+            "Continue with patient focus instead of urgency",
+            "Give this moment room to settle before moving on",
+            "Let breath and posture coordinate with minimal effort",
+            "Keep jaw, shoulders, and belly soft as you continue",
+            "Maintain clarity while your nervous system settles",
+            "Stay connected to your inner pacing cues",
+            "Keep this phase embodied rather than performative",
+            "Allow precision and softness to move together",
+            "Stay present to sensation while breath remains smooth",
+            "If emotion rises, let it move through you without rushing",
+            "Keep returning to the body as your most honest anchor",
+        ],
+        "closers": [
+            "Nothing is missing in this moment",
+            "Depth comes through consistency, not force",
+            "Your pace is enough",
+            "Gentleness is part of the medicine",
+            "Trust the process as it reveals itself",
+            "Keep listening from within",
+            "Steadiness is more valuable than intensity",
+            "Let this settle before moving ahead",
+            "Presence is the practice",
+            "Small steady steps shape real change",
+            "This is how calm strength is built",
+            "Take only what your system can integrate now",
+            "The body learns best in clear, steady cycles",
+            "Your awareness is already doing meaningful work",
+            "Integration happens through repetition with variation",
+            "Stay kind and precise at the same time",
+            "You can trust what your body is telling you",
+            "Softness and strength can live together here",
+            "You are allowed to be held while you heal",
+            "Let this guidance meet you exactly where you are",
+        ],
+    }
+
+
+def _compose_extension_paragraph(index: int, context_queue: list[str], phrase_bank: dict[str, list[str]]) -> str:
+    openers = phrase_bank["openers"]
+    midlines = phrase_bank["midlines"]
+    closers = phrase_bank["closers"]
+
+    opener = openers[index % len(openers)]
+    midline = midlines[(index * 3 + 1) % len(midlines)]
+    closer = closers[(index * 2 + 1) % len(closers)]
+    optional_context = f" {context_queue.pop(0)}." if context_queue and index % 4 == 0 else ""
+
+    if index % 3 == 0:
+        return f"{opener}. {midline}.{optional_context} {closer}."
+    if index % 3 == 1:
+        return f"{opener}. {optional_context.strip()} {midline}. {closer}.".strip()
+    return f"{midline}. {opener}.{optional_context} {closer}."
+
+
 def _build_extension_paragraphs(
     request: ExpandScriptRequest,
     required_words: int,
@@ -487,76 +609,7 @@ def _build_extension_paragraphs(
             f"{practice_name} supports deeper embodiment through gentle repetition",
             "Stay present with your breath and soften around unnecessary effort",
         ]
-
-    openers = [
-        "Continue with patience and care",
-        "Stay with the process as it unfolds naturally",
-        "Keep awareness spacious and grounded",
-        "Let this next minute stay steady and unrushed",
-        "Support your body in learning through breath",
-        "Remain connected to present sensation",
-        "Keep this phase simple and embodied",
-        "Maintain a calm, sustainable rhythm",
-        "Continue with gentle attentiveness",
-        "Stay graceful as your inner signal grows clearer",
-        "Let steady power rise without force",
-        "Track subtle shifts while keeping your pace human",
-        "Hold the posture of listening, not performing",
-        "Keep your focus soft, clear, and grounded",
-        "If needed, take this section slower and kinder",
-        "Let this feel like guidance from a trusted voice",
-    ]
-    midlines = [
-        "Keep your breathing even and unforced",
-        "Stay receptive while attention remains clear",
-        "Track subtle sensation without over-analyzing every shift",
-        "Let awareness stay grounded in what is present",
-        "Hold a rhythm that does not strain the body",
-        "Continue with patient focus instead of urgency",
-        "Give this moment room to settle before moving on",
-        "Let breath and posture coordinate with minimal effort",
-        "Keep jaw, shoulders, and belly soft as you continue",
-        "Maintain clarity while your nervous system settles",
-        "Stay connected to your inner pacing cues",
-        "Keep this phase embodied rather than performative",
-        "Allow precision and softness to move together",
-        "Stay present to sensation while breath remains smooth",
-        "If emotion rises, let it move through you without rushing",
-        "Keep returning to the body as your most honest anchor",
-    ]
-    closers = [
-        "Nothing is missing in this moment",
-        "Depth comes through consistency, not force",
-        "Your pace is enough",
-        "Gentleness is part of the medicine",
-        "Trust the process as it reveals itself",
-        "Keep listening from within",
-        "Steadiness is more valuable than intensity",
-        "Let this settle before moving ahead",
-        "Presence is the practice",
-        "Small steady steps shape real change",
-        "This is how calm strength is built",
-        "Take only what your system can integrate now",
-        "The body learns best in clear, steady cycles",
-        "Your awareness is already doing meaningful work",
-        "Integration happens through repetition with variation",
-        "Stay kind and precise at the same time",
-        "You can trust what your body is telling you",
-        "Softness and strength can live together here",
-        "You are allowed to be held while you heal",
-        "Let this guidance meet you exactly where you are",
-    ]
-
-    def build_paragraph(idx: int, context_queue_ref: list[str]) -> str:
-        opener = openers[idx % len(openers)]
-        midline = midlines[(idx * 3 + 1) % len(midlines)]
-        closer = closers[(idx * 2 + 1) % len(closers)]
-        optional_context = f" {context_queue_ref.pop(0)}." if context_queue_ref and idx % 4 == 0 else ""
-        if idx % 3 == 0:
-            return f"{opener}. {midline}.{optional_context} {closer}."
-        if idx % 3 == 1:
-            return f"{opener}. {optional_context.strip()} {midline}. {closer}.".strip()
-        return f"{midline}. {opener}.{optional_context} {closer}."
+    phrase_bank = _extension_phrase_bank()
 
     generated: list[str] = []
     words = 0
@@ -573,7 +626,7 @@ def _build_extension_paragraphs(
         if attempts > max_attempts:
             break
 
-        paragraph = build_paragraph(index, context_queue)
+        paragraph = _compose_extension_paragraph(index, context_queue, phrase_bank)
         stem = " ".join(_normalize_text_for_repeat_check(paragraph).split()[:10])
         midline_sentence = paragraph.split(". ")[1] if ". " in paragraph else paragraph
         midline_stem = _paragraph_stem(midline_sentence, words=6)
@@ -1891,158 +1944,153 @@ async def get_feminine_embodiment(category: Optional[str] = None):
 
 # ============ DAILY SACRED PRACTICE ============
 
-@router.get("/daily-practice")
-async def get_daily_practice(focus: Optional[str] = None):
-    """
-    Get a daily sacred practice based on moon phase, day of week, and optional focus area.
-    Returns morning and evening practice pair.
-    """
-    from datetime import datetime
-    import math
-    
-    db = get_db()
-    
-    # Calculate moon phase (0-29.5 days cycle)
-    def get_moon_phase():
-        known_new_moon = datetime(2024, 1, 11)  # Known new moon date
-        days_since = (datetime.now() - known_new_moon).days
-        moon_age = days_since % 29.5
-        
-        if moon_age < 1.85:
-            return "new_moon"
-        if moon_age < 7.38:
-            return "waxing_crescent"
-        if moon_age < 9.23:
-            return "first_quarter"
-        if moon_age < 14.77:
-            return "waxing_gibbous"
-        if moon_age < 16.61:
-            return "full_moon"
-        if moon_age < 22.15:
-            return "waning_gibbous"
-        if moon_age < 23.99:
-            return "last_quarter"
-        return "waning_crescent"
-    
-    moon_phase = get_moon_phase()
-    day_of_week = datetime.now().strftime("%A").lower()
-    
-    # Moon phase practice recommendations
-    moon_guidance = {
-        "new_moon": {"theme": "New Beginnings & Intention Setting", "energy": "introspective", "focus": ["womb", "shadow", "rest"]},
-        "waxing_crescent": {"theme": "Taking First Steps", "energy": "building", "focus": ["warrior", "solar", "action"]},
-        "first_quarter": {"theme": "Overcoming Challenges", "energy": "active", "focus": ["warrior", "boundaries", "strength"]},
-        "waxing_gibbous": {"theme": "Refinement & Adjustment", "energy": "refining", "focus": ["heart", "relationship", "healing"]},
-        "full_moon": {"theme": "Illumination & Release", "energy": "peak", "focus": ["crown", "release", "celebration"]},
-        "waning_gibbous": {"theme": "Gratitude & Sharing", "energy": "distributing", "focus": ["heart", "service", "teaching"]},
-        "last_quarter": {"theme": "Letting Go", "energy": "releasing", "focus": ["grief", "shadow", "forgiveness"]},
-        "waning_crescent": {"theme": "Rest & Surrender", "energy": "surrendering", "focus": ["rest", "womb", "intuition"]}
-    }
-    
-    # Day of week themes
-    day_themes = {
-        "monday": {"ruler": "Moon", "theme": "Intuition & Emotions", "practices": ["lunar", "womb", "water"]},
-        "tuesday": {"ruler": "Mars", "theme": "Courage & Action", "practices": ["warrior", "fire", "strength"]},
-        "wednesday": {"ruler": "Mercury", "theme": "Communication & Learning", "practices": ["throat", "sage", "voice"]},
-        "thursday": {"ruler": "Jupiter", "theme": "Expansion & Abundance", "practices": ["crown", "spiritual", "gratitude"]},
-        "friday": {"ruler": "Venus", "theme": "Love & Beauty", "practices": ["heart", "sensuality", "self-love"]},
-        "saturday": {"ruler": "Saturn", "theme": "Structure & Discipline", "practices": ["root", "grounding", "boundaries"]},
-        "sunday": {"ruler": "Sun", "theme": "Vitality & Self-Expression", "practices": ["solar", "king", "radiance"]}
-    }
-    
-    current_moon = moon_guidance.get(moon_phase, moon_guidance["new_moon"])
-    current_day = day_themes.get(day_of_week, day_themes["monday"])
-    
-    # Fetch practices from all collections
-    all_practices = []
-    
-    # Chakra practices
-    chakras = await db.chakra_cleansing.find({}, {"_id": 0}).to_list(100)
-    for c in chakras:
-        c["source"] = "chakra"
-        c["practice_type"] = "chakra_cleansing"
-    all_practices.extend(chakras)
-    
-    # Feminine embodiment
-    feminine = await db.feminine_embodiment.find({}, {"_id": 0}).to_list(100)
-    for f in feminine:
-        f["source"] = "feminine"
-        f["practice_type"] = "embodiment"
-    all_practices.extend(feminine)
-    
-    # Masculine embodiment
-    masculine = await db.masculine_embodiment.find({}, {"_id": 0}).to_list(100)
-    for m in masculine:
-        m["source"] = "masculine"
-        m["practice_type"] = "embodiment"
-    all_practices.extend(masculine)
-    
-    # Energy healing
-    energy = await db.energy_healing.find({}, {"_id": 0}).to_list(100)
-    for e in energy:
-        e["source"] = "energy"
-        e["practice_type"] = "energy_healing"
-    all_practices.extend(energy)
-    
-    # Somatic yoga
-    somatic = await db.somatic_yoga.find({}, {"_id": 0}).to_list(100)
-    for s in somatic:
-        s["source"] = "somatic"
-        s["practice_type"] = "somatic_yoga"
-    all_practices.extend(somatic)
-    
-    # Free form movement
-    movement = await db.free_form_movement.find({}, {"_id": 0}).to_list(100)
-    for m in movement:
-        m["source"] = "movement"
-        m["practice_type"] = "free_form_movement"
-    all_practices.extend(movement)
-    
-    # Filter by focus if provided
-    if focus:
-        focus_lower = focus.lower()
-        filtered = [p for p in all_practices if 
-                    focus_lower in str(p.get("name", "")).lower() or
-                    focus_lower in str(p.get("description", "")).lower() or
-                    focus_lower in str(p.get("category", "")).lower() or
-                    focus_lower in str(p.get("chakra", "")).lower()]
-        if filtered:
-            all_practices = filtered
-    
-    # Select morning practice (more active/awakening)
-    morning_keywords = ["awakening", "warrior", "solar", "activation", "grounding", "breath", "movement"]
-    morning_candidates = [p for p in all_practices if any(kw in str(p).lower() for kw in morning_keywords)]
-    if not morning_candidates:
-        morning_candidates = all_practices
+def _get_moon_phase(now: datetime) -> str:
+    known_new_moon = datetime(2024, 1, 11, tzinfo=timezone.utc)
+    days_since = (now - known_new_moon).days
+    moon_age = days_since % 29.5
+
+    if moon_age < 1.85:
+        return "new_moon"
+    if moon_age < 7.38:
+        return "waxing_crescent"
+    if moon_age < 9.23:
+        return "first_quarter"
+    if moon_age < 14.77:
+        return "waxing_gibbous"
+    if moon_age < 16.61:
+        return "full_moon"
+    if moon_age < 22.15:
+        return "waning_gibbous"
+    if moon_age < 23.99:
+        return "last_quarter"
+    return "waning_crescent"
+
+
+async def _load_daily_collection(
+    db: Any,
+    collection_name: str,
+    source: str,
+    practice_type: str,
+    limit: int = 100,
+) -> list[dict[str, Any]]:
+    collection = getattr(db, collection_name)
+    docs = await collection.find({}, {"_id": 0}).to_list(limit)
+    for doc in docs:
+        doc["source"] = source
+        doc["practice_type"] = practice_type
+    return docs
+
+
+async def _collect_daily_practice_pool(db: Any) -> list[dict[str, Any]]:
+    batches = await asyncio.gather(
+        *[
+            _load_daily_collection(db, collection_name, source, practice_type)
+            for collection_name, source, practice_type in DAILY_PRACTICE_COLLECTIONS
+        ]
+    )
+    return [item for batch in batches for item in batch]
+
+
+def _practice_matches_focus(practice: dict[str, Any], focus_lower: str) -> bool:
+    return (
+        focus_lower in str(practice.get("name", "")).lower()
+        or focus_lower in str(practice.get("description", "")).lower()
+        or focus_lower in str(practice.get("category", "")).lower()
+        or focus_lower in str(practice.get("chakra", "")).lower()
+    )
+
+
+def _apply_focus_filter(practices: list[dict[str, Any]], focus: Optional[str]) -> list[dict[str, Any]]:
+    if not focus:
+        return practices
+    focus_lower = focus.lower()
+    filtered = [practice for practice in practices if _practice_matches_focus(practice, focus_lower)]
+    return filtered if filtered else practices
+
+
+def _filter_by_keywords(practices: list[dict[str, Any]], keywords: list[str]) -> list[dict[str, Any]]:
+    return [practice for practice in practices if any(keyword in str(practice).lower() for keyword in keywords)]
+
+
+def _select_morning_evening_practices(practices: list[dict[str, Any]]) -> tuple[Optional[dict[str, Any]], Optional[dict[str, Any]]]:
+    morning_candidates = _filter_by_keywords(practices, MORNING_KEYWORDS) or practices
     morning_practice = _secure_choice(morning_candidates)
-    
-    # Select evening practice (more restful/reflective)
-    evening_keywords = ["rest", "release", "healing", "moon", "womb", "heart", "grief", "restorative"]
-    evening_candidates = [p for p in all_practices if any(kw in str(p).lower() for kw in evening_keywords)]
-    if not evening_candidates:
-        evening_candidates = all_practices
-    # Avoid same practice as morning
+
+    evening_candidates = _filter_by_keywords(practices, EVENING_KEYWORDS) or practices
     if morning_practice:
-        evening_candidates = [p for p in evening_candidates if p.get("id") != morning_practice.get("id")]
+        evening_candidates = [candidate for candidate in evening_candidates if candidate.get("id") != morning_practice.get("id")]
     evening_practice = _secure_choice(evening_candidates)
-    
+    return morning_practice, evening_practice
+
+
+def _daily_guidance_text(day_of_week: str, current_day: dict[str, Any], moon_phase: str, current_moon: dict[str, Any]) -> str:
+    readable_moon = moon_phase.replace("_", " ")
+    return (
+        f"Today is {day_of_week.capitalize()}, ruled by {current_day['ruler']}, during the {readable_moon}. "
+        f"This is a powerful time for {current_moon['theme'].lower()}. "
+        f"Honor the {current_moon['energy']} energy by moving gently with the cosmic rhythm."
+    )
+
+
+def _daily_reflection_prompts(current_moon: dict[str, Any], current_day: dict[str, Any]) -> list[str]:
+    moon_energy = current_moon["energy"]
+    converted_energy = moon_energy.replace("ing", "ed") if moon_energy.endswith("ing") else moon_energy
+    return [
+        f"What wants to be {converted_energy} in my life right now?",
+        f"How can I honor the energy of {current_day['ruler']} today?",
+        "What is my body asking for in this moment?",
+    ]
+
+
+def _build_daily_practice_response(
+    now: datetime,
+    day_of_week: str,
+    moon_phase: str,
+    current_day: dict[str, Any],
+    current_moon: dict[str, Any],
+    morning_practice: Optional[dict[str, Any]],
+    evening_practice: Optional[dict[str, Any]],
+) -> dict[str, Any]:
     return {
-        "date": datetime.now().strftime("%Y-%m-%d"),
+        "date": now.strftime("%Y-%m-%d"),
         "day_of_week": day_of_week.capitalize(),
         "day_ruler": current_day["ruler"],
         "day_theme": current_day["theme"],
         "moon_phase": moon_phase.replace("_", " ").title(),
         "moon_theme": current_moon["theme"],
         "moon_energy": current_moon["energy"],
-        "guidance": f"Today is {day_of_week.capitalize()}, ruled by {current_day['ruler']}, during the {moon_phase.replace('_', ' ')}. This is a powerful time for {current_moon['theme'].lower()}. Honor the {current_moon['energy']} energy by moving gently with the cosmic rhythm.",
+        "guidance": _daily_guidance_text(day_of_week, current_day, moon_phase, current_moon),
         "morning_practice": morning_practice,
         "evening_practice": evening_practice,
-        "reflection_prompts": [
-            f"What wants to be {current_moon['energy'].replace('ing', 'ed') if current_moon['energy'].endswith('ing') else current_moon['energy']} in my life right now?",
-            f"How can I honor the energy of {current_day['ruler']} today?",
-            "What is my body asking for in this moment?"
-        ]
+        "reflection_prompts": _daily_reflection_prompts(current_moon, current_day),
     }
+
+
+@router.get("/daily-practice")
+async def get_daily_practice(focus: Optional[str] = None):
+    """Get a daily sacred practice with morning and evening guidance."""
+    db = get_db()
+
+    now = datetime.now(timezone.utc)
+    moon_phase = _get_moon_phase(now)
+    day_of_week = now.strftime("%A").lower()
+
+    current_moon = MOON_GUIDANCE.get(moon_phase, MOON_GUIDANCE["new_moon"])
+    current_day = DAY_THEMES.get(day_of_week, DAY_THEMES["monday"])
+
+    all_practices = await _collect_daily_practice_pool(db)
+    all_practices = _apply_focus_filter(all_practices, focus)
+    morning_practice, evening_practice = _select_morning_evening_practices(all_practices)
+
+    return _build_daily_practice_response(
+        now=now,
+        day_of_week=day_of_week,
+        moon_phase=moon_phase,
+        current_day=current_day,
+        current_moon=current_moon,
+        morning_practice=morning_practice,
+        evening_practice=evening_practice,
+    )
 
 
 # ============ MASCULINE EMBODIMENT ============

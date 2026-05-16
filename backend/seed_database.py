@@ -24,7 +24,7 @@ from data.shamanic_content import (
     SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES
 )
 
-async def seed_database():
+async def seed_database() -> None:
     """Seed MongoDB with all content data."""
     mongo_url = os.environ['MONGO_URL']
     db_name = os.environ['DB_NAME']
@@ -64,7 +64,7 @@ async def seed_database():
             await db[collection_name].insert_many(data)
             print(f"   ✓ Inserted {len(data)} items")
         else:
-            print(f"   ⚠ No data to insert")
+            print("   ⚠ No data to insert")
     
     # Create indexes
     print("\n🔍 Creating indexes...")
