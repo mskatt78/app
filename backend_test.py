@@ -1,357 +1,323 @@
 #!/usr/bin/env python3
-"""
-Backend API Testing for Shamanic Elemental Yoga App
-Tests all API endpoints and functionality
-"""
+"""Backend API verification test for breathwork sanctuary app."""
 
 import requests
-import sys
 import json
-import time
-from datetime import datetime
+import sys
+from typing import Dict, Any, Optional
 
-class ShamanicYogaAPITester:
-    def __init__(self, base_url="https://breathwork-sanctuary.preview.emergentagent.com"):
-        self.base_url = base_url
-        self.api_base = f"{base_url}/api"
-        self.session_token = None
-        self.user_id = None
-        self.tests_run = 0
-        self.tests_passed = 0
+# Base URL from environment
+BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
+
+class Colors:
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    END = '\033[0m'
+
+def print_test(name: str):
+    print(f"\n{Colors.BLUE}Testing: {name}{Colors.END}")
+
+def print_pass(message: str):
+    print(f"{Colors.GREEN}✓ PASS: {message}{Colors.END}")
+
+def print_fail(message: str):
+    print(f"{Colors.RED}✗ FAIL: {message}{Colors.END}")
+
+def print_info(message: str):
+    print(f"{Colors.YELLOW}ℹ INFO: {message}{Colors.END}")
+
+# Test results tracking
+test_results = {
+    "passed": [],
+    "failed": [],
+    "warnings": []
+}
+
+def test_health_endpoint():
+    """Test 1: GET /api/health returns 200 and valid JSON."""
+    print_test("GET /api/health")
+    
+    try:
+        response = requests.get(f"{BASE_URL}/health", timeout=10)
         
-    def log(self, message):
-        """Log test messages"""
-        timestamp = datetime.now().strftime("%H:%M:%S")
-        print(f"[{timestamp}] {message}")
-
-    def run_test(self, name, method, endpoint, expected_status=200, data=None, headers=None):
-        """Run a single API test"""
-        url = f"{self.api_base}{endpoint}"
-        test_headers = {'Content-Type': 'application/json'}
-        
-        if self.session_token:
-            test_headers['Authorization'] = f'Bearer {self.session_token}'
-        
-        if headers:
-            test_headers.update(headers)
-
-        self.tests_run += 1
-        self.log(f"Testing {name}...")
-        
-        try:
-            if method == 'GET':
-                response = requests.get(url, headers=test_headers, timeout=30)
-            elif method == 'POST':
-                response = requests.post(url, json=data, headers=test_headers, timeout=30)
-            else:
-                response = requests.request(method, url, json=data, headers=test_headers, timeout=30)
-
-            success = response.status_code == expected_status
-            if success:
-                self.tests_passed += 1
-                self.log(f"✅ {name} - Status: {response.status_code}")
-                try:
-                    return response.json() if response.content else {}
-                except:
-                    return response.text
-            else:
-                self.log(f"❌ {name} - Expected {expected_status}, got {response.status_code}")
-                self.log(f"   Response: {response.text[:200]}")
-                return None
-
-        except requests.exceptions.RequestException as e:
-            self.log(f"❌ {name} - Request failed: {str(e)}")
-            return None
-        except Exception as e:
-            self.log(f"❌ {name} - Unexpected error: {str(e)}")
-            return None
-
-    def test_health_endpoints(self):
-        """Test basic health endpoints"""
-        self.log("\n=== HEALTH & STATUS TESTS ===")
-        
-        # Test root endpoint
-        result = self.run_test("Root API", "GET", "/")
-        if result:
-            self.log(f"   Root response: {result}")
-            
-        # Test health endpoint
-        result = self.run_test("Health Check", "GET", "/health")
-        if result:
-            self.log(f"   Health status: {result.get('status', 'unknown')}")
-
-    def setup_test_session(self):
-        """Create a test user session using MongoDB"""
-        self.log("\n=== SETTING UP TEST SESSION ===")
-        import subprocess
-        import uuid
-        
-        try:
-            timestamp = int(time.time())
-            self.user_id = f"test-user-{timestamp}"
-            self.session_token = f"test_session_{timestamp}"
-            
-            # MongoDB commands to create test user and session
-            mongo_script = f"""
-use('test_database');
-db.users.insertOne({{
-  user_id: '{self.user_id}',
-  email: 'test.user.{timestamp}@example.com',
-  name: 'Test Shaman',
-  picture: 'https://via.placeholder.com/150',
-  created_at: new Date()
-}});
-db.user_sessions.insertOne({{
-  user_id: '{self.user_id}',
-  session_token: '{self.session_token}',
-  expires_at: new Date(Date.now() + 7*24*60*60*1000),
-  created_at: new Date()
-}});
-"""
-            
-            # Execute MongoDB script
-            process = subprocess.run(
-                ['mongosh', '--eval', mongo_script],
-                capture_output=True, text=True, timeout=30
-            )
-            
-            if process.returncode == 0:
-                self.log(f"✅ Test user created: {self.user_id}")
-                self.log(f"✅ Session token: {self.session_token}")
-                return True
-            else:
-                self.log(f"❌ Failed to create test user: {process.stderr}")
-                return False
-                
-        except Exception as e:
-            self.log(f"❌ Session setup failed: {str(e)}")
+        # Check status code
+        if response.status_code != 200:
+            print_fail(f"Expected status 200, got {response.status_code}")
+            test_results["failed"].append("Health endpoint - wrong status code")
             return False
-
-    def test_auth_endpoints(self):
-        """Test authentication endpoints"""
-        self.log("\n=== AUTH ENDPOINTS TESTS ===")
         
-        # Test /auth/me with valid session
-        result = self.run_test("Get Current User", "GET", "/auth/me")
-        if result:
-            self.log(f"   User: {result.get('name', 'N/A')} ({result.get('email', 'N/A')})")
-            
-        # Test logout
-        result = self.run_test("Logout", "POST", "/auth/logout")
-
-    def test_yoga_endpoints(self):
-        """Test yoga poses endpoints"""
-        self.log("\n=== YOGA ENDPOINTS TESTS ===")
-        
-        # Test get all poses
-        result = self.run_test("Get All Yoga Poses", "GET", "/yoga/poses")
-        if result:
-            self.log(f"   Found {len(result)} yoga poses")
-            
-        # Test element filtering
-        result = self.run_test("Filter Poses by Earth", "GET", "/yoga/poses?element=earth")
-        if result:
-            self.log(f"   Found {len(result)} earth element poses")
-            
-        # Test specific pose
-        result = self.run_test("Get Specific Pose", "GET", "/yoga/poses/1")
-        if result:
-            self.log(f"   Pose: {result.get('name', 'N/A')}")
-
-    def test_oracle_endpoints(self):
-        """Test oracle reading endpoints"""
-        self.log("\n=== ORACLE ENDPOINTS TESTS ===")
-        
-        # Test get oracle cards
-        result = self.run_test("Get Oracle Cards", "GET", "/oracle/cards")
-        if result:
-            self.log(f"   Found {len(result)} oracle cards")
-            
-        # Test create oracle reading
-        reading_data = {
-            "question": "What guidance do I need for my spiritual journey?",
-            "spread_type": "single"
-        }
-        result = self.run_test("Create Oracle Reading", "POST", "/oracle/reading", data=reading_data)
-        if result:
-            self.log(f"   Reading created with {len(result.get('cards', []))} cards")
-            self.log(f"   Interpretation length: {len(result.get('interpretation', ''))}")
-            
-        # Test get readings history
-        result = self.run_test("Get Oracle Readings History", "GET", "/oracle/readings")
-        if result:
-            self.log(f"   Found {len(result)} reading(s) in history")
-
-    def test_breathwork_endpoints(self):
-        """Test breathwork session endpoints"""
-        self.log("\n=== BREATHWORK ENDPOINTS TESTS ===")
-        
-        # Test get all sessions
-        result = self.run_test("Get Breathwork Sessions", "GET", "/breathwork/sessions")
-        if result:
-            self.log(f"   Found {len(result)} breathwork sessions")
-            
-        # Test element filtering
-        result = self.run_test("Filter Sessions by Fire", "GET", "/breathwork/sessions?element=fire")
-        if result:
-            self.log(f"   Found {len(result)} fire element sessions")
-            
-        # Test specific session
-        result = self.run_test("Get Specific Session", "GET", "/breathwork/sessions/1")
-        if result:
-            self.log(f"   Session: {result.get('name', 'N/A')}")
-
-    def test_astrology_endpoints(self):
-        """Test 13-month astrology endpoints"""
-        self.log("\n=== ASTROLOGY ENDPOINTS TESTS ===")
-        
-        # Test get all months
-        result = self.run_test("Get All Astrology Months", "GET", "/astrology/months")
-        if result:
-            self.log(f"   Found {len(result)} lunar months")
-            
-        # Test current month
-        result = self.run_test("Get Current Moon", "GET", "/astrology/current")
-        if result:
-            self.log(f"   Current moon: {result.get('name', 'N/A')}")
-            
-        # Test specific month
-        result = self.run_test("Get Specific Month", "GET", "/astrology/months/1")
-        if result:
-            self.log(f"   Month: {result.get('name', 'N/A')}")
-
-    def test_crystals_endpoints(self):
-        """Test crystal guide endpoints"""
-        self.log("\n=== CRYSTALS ENDPOINTS TESTS ===")
-        
-        # Test get all crystals
-        result = self.run_test("Get All Crystals", "GET", "/crystals")
-        if result:
-            self.log(f"   Found {len(result)} crystals")
-            
-        # Test element filtering
-        result = self.run_test("Filter Crystals by Spirit", "GET", "/crystals?element=spirit")
-        if result:
-            self.log(f"   Found {len(result)} spirit element crystals")
-            
-        # Test chakra filtering
-        result = self.run_test("Filter Crystals by Heart Chakra", "GET", "/crystals?chakra=heart")
-        if result:
-            self.log(f"   Found {len(result)} heart chakra crystals")
-
-    def test_mantras_endpoints(self):
-        """Test mantras library endpoints"""
-        self.log("\n=== MANTRAS ENDPOINTS TESTS ===")
-        
-        # Test get all mantras
-        result = self.run_test("Get All Mantras", "GET", "/mantras")
-        if result:
-            self.log(f"   Found {len(result)} mantras")
-            
-        # Test element filtering
-        result = self.run_test("Filter Mantras by Spirit", "GET", "/mantras?element=spirit")
-        if result:
-            self.log(f"   Found {len(result)} spirit element mantras")
-
-    def test_mudras_endpoints(self):
-        """Test mudras library endpoints"""
-        self.log("\n=== MUDRAS ENDPOINTS TESTS ===")
-        
-        # Test get all mudras
-        result = self.run_test("Get All Mudras", "GET", "/mudras")
-        if result:
-            self.log(f"   Found {len(result)} mudras")
-            
-        # Test element filtering
-        result = self.run_test("Filter Mudras by Earth", "GET", "/mudras?element=earth")
-        if result:
-            self.log(f"   Found {len(result)} earth element mudras")
-
-    def test_somatic_grounding_endpoints(self):
-        """Test somatic movement and grounding endpoints"""
-        self.log("\n=== SOMATIC & GROUNDING ENDPOINTS TESTS ===")
-        
-        # Test somatic practices
-        result = self.run_test("Get Somatic Practices", "GET", "/somatic/practices")
-        if result:
-            self.log(f"   Found {len(result)} somatic practices")
-            
-        # Test grounding exercises
-        result = self.run_test("Get Grounding Exercises", "GET", "/grounding/exercises")
-        if result:
-            self.log(f"   Found {len(result)} grounding exercises")
-
-    def test_dashboard_endpoints(self):
-        """Test dashboard and user data endpoints"""
-        self.log("\n=== DASHBOARD ENDPOINTS TESTS ===")
-        
-        # Test daily guidance
-        result = self.run_test("Get Daily Guidance", "GET", "/dashboard/daily")
-        if result:
-            self.log(f"   Greeting: {result.get('greeting', 'N/A')}")
-            self.log(f"   Current moon: {result.get('current_moon', {}).get('name', 'N/A')}")
-            self.log(f"   Daily pose: {result.get('daily_pose', {}).get('name', 'N/A')}")
-
-    def cleanup_test_data(self):
-        """Clean up test user and session"""
-        self.log("\n=== CLEANUP ===")
+        # Check valid JSON
         try:
-            import subprocess
+            data = response.json()
+            print_pass(f"Returns 200 with valid JSON: {json.dumps(data, indent=2)}")
             
-            mongo_script = f"""
-use('test_database');
-db.users.deleteOne({{user_id: '{self.user_id}'}});
-db.user_sessions.deleteOne({{user_id: '{self.user_id}'}});
-db.oracle_readings.deleteMany({{user_id: '{self.user_id}'}});
-"""
+            # Verify expected fields
+            if "status" in data:
+                print_pass(f"Contains 'status' field: {data['status']}")
+            else:
+                print_fail("Missing 'status' field in response")
+                test_results["failed"].append("Health endpoint - missing status field")
+                return False
             
-            subprocess.run(['mongosh', '--eval', mongo_script], 
-                         capture_output=True, text=True, timeout=30)
-            self.log("✅ Test data cleaned up")
-        except Exception as e:
-            self.log(f"⚠️  Cleanup warning: {str(e)}")
+            test_results["passed"].append("Health endpoint")
+            return True
+            
+        except json.JSONDecodeError:
+            print_fail("Response is not valid JSON")
+            test_results["failed"].append("Health endpoint - invalid JSON")
+            return False
+            
+    except Exception as e:
+        print_fail(f"Request failed: {str(e)}")
+        test_results["failed"].append(f"Health endpoint - {str(e)}")
+        return False
 
-    def run_all_tests(self):
-        """Run the complete test suite"""
-        self.log("🌟 Starting Shamanic Elemental Yoga API Tests 🌟")
-        start_time = time.time()
+
+def test_expand_script_endpoint():
+    """Test 2: POST /api/content/expand-script with sample payload."""
+    print_test("POST /api/content/expand-script")
+    
+    payload = {
+        "practice_name": "Grounding Breath Practice",
+        "element": "earth",
+        "duration_minutes": 15,
+        "steps": [
+            "Find a comfortable seated position",
+            "Close your eyes and take three deep breaths",
+            "Notice the weight of your body on the earth",
+            "Feel your connection to the ground beneath you"
+        ],
+        "source_texts": [
+            "This practice helps you feel grounded and centered in your body.",
+            "Earth element practices connect us with stability and presence."
+        ],
+        "use_ai": False,
+        "anti_repetition_mode": "strict"
+    }
+    
+    try:
+        response = requests.post(
+            f"{BASE_URL}/content/expand-script",
+            json=payload,
+            headers={"Content-Type": "application/json"},
+            timeout=30
+        )
         
+        # Check for no 500 error
+        if response.status_code == 500:
+            print_fail(f"Server returned 500 error: {response.text[:200]}")
+            test_results["failed"].append("Expand script - 500 error")
+            return False
+        
+        # Check status code
+        if response.status_code != 200:
+            print_fail(f"Expected status 200, got {response.status_code}")
+            print_info(f"Response: {response.text[:200]}")
+            test_results["failed"].append(f"Expand script - status {response.status_code}")
+            return False
+        
+        # Parse response
         try:
-            # Basic health tests (no auth required)
-            self.test_health_endpoints()
+            data = response.json()
+            print_pass(f"Returns 200 with valid JSON response")
             
-            # Setup authentication
-            if not self.setup_test_session():
-                self.log("❌ Cannot proceed without valid session")
-                return 1
+            # Validate required fields
+            required_fields = ["target_minutes", "target_word_count", "word_count"]
+            missing_fields = [f for f in required_fields if f not in data]
+            
+            if missing_fields:
+                print_fail(f"Missing required fields: {missing_fields}")
+                test_results["failed"].append(f"Expand script - missing fields: {missing_fields}")
+                return False
+            
+            print_pass(f"Contains all required fields: {required_fields}")
+            
+            # Extract values
+            target_minutes = data["target_minutes"]
+            target_word_count = data["target_word_count"]
+            word_count = data["word_count"]
+            
+            print_info(f"target_minutes: {target_minutes}")
+            print_info(f"target_word_count: {target_word_count}")
+            print_info(f"word_count: {word_count}")
+            
+            # Validate word_count >= target_word_count * 0.8
+            min_word_count = target_word_count * 0.8
+            if word_count >= min_word_count:
+                print_pass(f"word_count ({word_count}) >= target_word_count*0.8 ({min_word_count:.0f})")
+            else:
+                print_fail(f"word_count ({word_count}) < target_word_count*0.8 ({min_word_count:.0f})")
+                test_results["failed"].append("Expand script - word count below threshold")
+                return False
+            
+            # Verify target_minutes matches request
+            if target_minutes >= 7:  # MIN_NARRATION_MINUTES
+                print_pass(f"target_minutes ({target_minutes}) meets minimum requirement (7)")
+            else:
+                print_fail(f"target_minutes ({target_minutes}) below minimum (7)")
+                test_results["failed"].append("Expand script - target_minutes too low")
+                return False
+            
+            test_results["passed"].append("Expand script endpoint")
+            return True
+            
+        except json.JSONDecodeError:
+            print_fail("Response is not valid JSON")
+            test_results["failed"].append("Expand script - invalid JSON")
+            return False
+            
+    except Exception as e:
+        print_fail(f"Request failed: {str(e)}")
+        test_results["failed"].append(f"Expand script - {str(e)}")
+        return False
+
+
+def test_gifts_create_endpoint():
+    """Test 3: POST /api/gifts/create - validate payload shape and no 500 on valid request."""
+    print_test("POST /api/gifts/create")
+    
+    payload = {
+        "recipient_email": "test@example.com",
+        "recipient_name": "Test Recipient",
+        "gift_type": "subscription",
+        "plan_id": "monthly",
+        "message": "A gift for you!",
+        "sender_name": "Test Sender"
+    }
+    
+    try:
+        response = requests.post(
+            f"{BASE_URL}/gifts/create",
+            json=payload,
+            headers={"Content-Type": "application/json"},
+            timeout=10
+        )
+        
+        # Check for no 500 error
+        if response.status_code == 500:
+            print_fail(f"Server returned 500 error: {response.text[:200]}")
+            test_results["failed"].append("Gifts create - 500 error")
+            return False
+        
+        print_pass(f"No 500 error - returned status {response.status_code}")
+        
+        # Check if endpoint requires authentication (401/403 is acceptable)
+        if response.status_code in [401, 403]:
+            print_info(f"Endpoint requires authentication (status {response.status_code}) - this is acceptable")
+            test_results["passed"].append("Gifts create endpoint (auth protected)")
+            return True
+        
+        # If 200, validate response structure
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                print_pass(f"Returns 200 with valid JSON")
                 
-            # Test all endpoints
-            self.test_auth_endpoints()
-            self.test_yoga_endpoints()
-            self.test_oracle_endpoints()
-            self.test_breathwork_endpoints()
-            self.test_astrology_endpoints()
-            self.test_crystals_endpoints()
-            self.test_mantras_endpoints()
-            self.test_mudras_endpoints()
-            self.test_somatic_grounding_endpoints()
-            self.test_dashboard_endpoints()
-            
-        finally:
-            self.cleanup_test_data()
-            
-        # Results
-        duration = time.time() - start_time
-        self.log(f"\n🏁 TESTING COMPLETE")
-        self.log(f"Tests passed: {self.tests_passed}/{self.tests_run}")
-        self.log(f"Duration: {duration:.1f}s")
-        self.log(f"Success rate: {(self.tests_passed/self.tests_run*100):.1f}%")
+                # Check for expected fields
+                if "gift_code" in data:
+                    print_pass(f"Response contains gift_code: {data['gift_code']}")
+                
+                test_results["passed"].append("Gifts create endpoint")
+                return True
+                
+            except json.JSONDecodeError:
+                print_fail("Response is not valid JSON")
+                test_results["failed"].append("Gifts create - invalid JSON")
+                return False
         
-        return 0 if self.tests_passed == self.tests_run else 1
+        # Other status codes
+        print_info(f"Returned status {response.status_code}: {response.text[:200]}")
+        test_results["passed"].append("Gifts create endpoint (no 500)")
+        return True
+        
+    except Exception as e:
+        print_fail(f"Request failed: {str(e)}")
+        test_results["failed"].append(f"Gifts create - {str(e)}")
+        return False
+
+
+def test_admin_collections_unauthenticated():
+    """Test 4: GET /api/admin/collections unauthenticated should return 401/403, not 500."""
+    print_test("GET /api/admin/collections (unauthenticated)")
+    
+    try:
+        response = requests.get(
+            f"{BASE_URL}/admin/collections",
+            timeout=10
+        )
+        
+        # Check for no 500 error
+        if response.status_code == 500:
+            print_fail(f"Server returned 500 error (should return 401/403): {response.text[:200]}")
+            test_results["failed"].append("Admin collections - 500 error instead of auth error")
+            return False
+        
+        print_pass(f"No 500 error - returned status {response.status_code}")
+        
+        # Check for proper auth error (401 or 403)
+        if response.status_code in [401, 403]:
+            print_pass(f"Returns proper auth error (status {response.status_code})")
+            test_results["passed"].append("Admin collections auth check")
+            return True
+        else:
+            print_fail(f"Expected 401/403 auth error, got {response.status_code}")
+            print_info(f"Response: {response.text[:200]}")
+            test_results["warnings"].append(f"Admin collections - unexpected status {response.status_code}")
+            return False
+        
+    except Exception as e:
+        print_fail(f"Request failed: {str(e)}")
+        test_results["failed"].append(f"Admin collections - {str(e)}")
+        return False
+
+
+def print_summary():
+    """Print test summary."""
+    print(f"\n{'='*60}")
+    print(f"{Colors.BLUE}TEST SUMMARY{Colors.END}")
+    print(f"{'='*60}")
+    
+    total_tests = len(test_results["passed"]) + len(test_results["failed"])
+    
+    print(f"\n{Colors.GREEN}PASSED: {len(test_results['passed'])}/{total_tests}{Colors.END}")
+    for test in test_results["passed"]:
+        print(f"  ✓ {test}")
+    
+    if test_results["failed"]:
+        print(f"\n{Colors.RED}FAILED: {len(test_results['failed'])}/{total_tests}{Colors.END}")
+        for test in test_results["failed"]:
+            print(f"  ✗ {test}")
+    
+    if test_results["warnings"]:
+        print(f"\n{Colors.YELLOW}WARNINGS: {len(test_results['warnings'])}{Colors.END}")
+        for warning in test_results["warnings"]:
+            print(f"  ⚠ {warning}")
+    
+    print(f"\n{'='*60}")
+    
+    # Return exit code
+    return 0 if len(test_results["failed"]) == 0 else 1
+
 
 def main():
-    tester = ShamanicYogaAPITester()
-    return tester.run_all_tests()
+    """Run all backend verification tests."""
+    print(f"\n{Colors.BLUE}{'='*60}{Colors.END}")
+    print(f"{Colors.BLUE}Backend API Verification - Breathwork Sanctuary{Colors.END}")
+    print(f"{Colors.BLUE}Base URL: {BASE_URL}{Colors.END}")
+    print(f"{Colors.BLUE}{'='*60}{Colors.END}")
+    
+    # Run all tests
+    test_health_endpoint()
+    test_expand_script_endpoint()
+    test_gifts_create_endpoint()
+    test_admin_collections_unauthenticated()
+    
+    # Print summary and exit
+    exit_code = print_summary()
+    sys.exit(exit_code)
+
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

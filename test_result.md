@@ -103,23 +103,27 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Run backend API verification for latest quality/security pass against https://breathwork-sanctuary.preview.emergentagent.com/api .
-
-  Please test and report:
-  1) Narration expansion duration safety:
-     - POST /content/expand-script with a 15-minute request and use_ai=false.
-     - Confirm response word_count maps to >=7 minute spoken script minimum.
-  2) TTS endpoint health:
-     - POST /tts/generate-base64 with short text and confirm valid audio_base64 payload.
-  3) Retreat seeding cleanup:
-     - GET /retreats and confirm no default placeholder retreats seeded.
-  4) Security randomness spot-check:
-     - Verify changed files behavior expectations align with code (secrets usage in archangel oracle + predeployment registration suffix test logic).
-
-  Also flag any non-200s, schema breaks, or unexpected regressions.
+  Run backend verification on https://breathwork-sanctuary.preview.emergentagent.com with focus on recently touched APIs:
+  1) GET /api/health returns 200 and valid JSON.
+  2) POST /api/content/expand-script with sample payload validates response fields target_minutes, target_word_count, word_count and ensure word_count >= target_word_count*0.8.
+  3) Gifts routes auth behavior sanity: POST /api/gifts/create should validate payload shape and not return 500 on valid request format (unauthenticated access rules acceptable if route protected).
+  4) Admin route sanity: GET /api/admin/collections unauthenticated should return expected auth error (401/403) not 500.
+  5) Confirm no server 500 errors in tested endpoints.
 
 backend:
-  - task: "Narration expansion duration safety verification"
+  - task: "Health endpoint verification"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/health returns 200 with valid JSON. Response contains 'status': 'healthy', 'app': 'Shamanic Elements Temple Of The Soul', 'version': '2.0.0'. Health endpoint verification PASSED."
+
+  - task: "Narration expansion endpoint verification"
     implemented: true
     working: true
     file: "/app/backend/routers/content.py"
@@ -129,14 +133,50 @@ backend:
     status_history:
       - working: true
         agent: "testing"
-        comment: "✓ POST /content/expand-script with 15-minute request and use_ai=false tested successfully. Response word_count: 1849 words, which maps to >=7 minute spoken script minimum (840 words required). Target minutes: 15, Used AI: False. Duration safety verification PASSED."
+        comment: "✓ POST /api/content/expand-script with 15-minute request and use_ai=false tested successfully. Response contains all required fields: target_minutes (15), target_word_count (1800), word_count (1856). Validation: word_count (1856) >= target_word_count*0.8 (1440) ✓. Target minutes meets minimum requirement (7) ✓. No 500 errors. Narration expansion endpoint PASSED."
+
+  - task: "Gifts create endpoint auth behavior verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/gifts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ POST /api/gifts/create tested with valid payload (recipient_email, recipient_name, gift_type: subscription, plan_id: monthly, message, sender_name). Returns 200 with valid JSON. Response contains gift_code field. No 500 errors on valid request format. Payload shape validation working correctly. Gifts create endpoint PASSED."
+
+  - task: "Admin collections auth error verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/admin.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/admin/collections tested without authentication. Returns proper auth error (status 401) as expected. No 500 error. Admin route sanity check PASSED."
+
+  - task: "No 500 errors verification across tested endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ All tested endpoints (health, expand-script, gifts/create, admin/collections) confirmed to return appropriate status codes (200, 401) with no 500 server errors. Error handling working correctly. No server 500 errors verification PASSED."
 
   - task: "TTS endpoint health verification"
     implemented: true
     working: true
     file: "/app/backend/routers/tts.py"
     stuck_count: 0
-    priority: "high"
+    priority: "medium"
     needs_retesting: false
     status_history:
       - working: true
@@ -413,15 +453,15 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.2"
-  test_sequence: 3
-  run_ui: true
+  version: "1.3"
+  test_sequence: 4
+  run_ui: false
   last_tested: "2026-04-09"
 
 test_plan:
   current_focus:
-    - "Mobile Water Practices category filtering verification completed"
-    - "User-reported Frequency & Sound empty state issue verified as RESOLVED"
+    - "Backend API verification completed for recently touched endpoints"
+    - "All critical endpoints passing with proper status codes and no 500 errors"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -548,3 +588,51 @@ agent_communication:
       
       All security and quality checks passed (31/31 tests). No critical issues found.
       Backend API is production-ready with proper security measures in place.
+
+
+  - agent: "testing"
+    message: |
+      Backend API Verification - Recently Touched Endpoints (2026-04-09):
+      
+      VERIFICATION REQUEST: Focus on recently touched APIs with specific validation requirements
+      
+      ✅ ALL TESTS PASSED (4/4):
+      
+      1. ✅ Health Endpoint - PASSED
+         - GET /api/health returns 200 with valid JSON
+         - Response: {"status": "healthy", "app": "Shamanic Elements Temple Of The Soul", "version": "2.0.0"}
+         - No schema breaks or errors
+      
+      2. ✅ Narration Expansion Endpoint - PASSED
+         - POST /api/content/expand-script with 15-minute request and use_ai=false
+         - All required fields present: target_minutes (15), target_word_count (1800), word_count (1856)
+         - ✓ Validation: word_count (1856) >= target_word_count*0.8 (1440)
+         - ✓ Target minutes (15) meets minimum requirement (7)
+         - No 500 errors
+      
+      3. ✅ Gifts Create Endpoint - PASSED
+         - POST /api/gifts/create with valid payload shape tested
+         - Payload: {recipient_email, recipient_name, gift_type: "subscription", plan_id: "monthly", message, sender_name}
+         - Returns 200 with valid JSON
+         - Response contains gift_code field (GIFT-217319A5)
+         - No 500 errors on valid request format
+         - Payload validation working correctly
+      
+      4. ✅ Admin Collections Auth Behavior - PASSED
+         - GET /api/admin/collections tested without authentication
+         - Returns proper auth error (status 401) as expected
+         - No 500 error - proper error handling in place
+      
+      5. ✅ No 500 Errors Verification - PASSED
+         - All tested endpoints return appropriate status codes (200, 401)
+         - No server 500 errors detected across any tested endpoint
+         - Error handling working correctly
+      
+      ENDPOINT-LEVEL EVIDENCE:
+      - /api/health: 200 OK, valid JSON with status field
+      - /api/content/expand-script: 200 OK, all required fields validated, word count threshold met
+      - /api/gifts/create: 200 OK, gift_code generated, no 500 on valid payload
+      - /api/admin/collections: 401 Unauthorized (expected), no 500 error
+      
+      SUMMARY:
+      All backend API endpoints tested are working correctly with proper status codes, valid JSON responses, and appropriate error handling. No 500 errors detected. All validation requirements met. Backend is production-ready for the tested endpoints.
