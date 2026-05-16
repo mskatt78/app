@@ -12,6 +12,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Day-by-Day 40 Timeline + Notes (Iteration 113, May 2026):**
+  - Added dedicated Day 1–40 timeline tracker in course Journey tab for all 40-day courses:
+    - Per-day checkbox completion
+    - Per-day journal note field
+    - Progress count + progress bar
+  - Persistence mode implemented as requested: **browser/local storage only** (no DB writes).
+  - Locked-day behavior for non-purchased users:
+    - Days beyond first phase are disabled with lock indicator and upgrade placeholder.
+  - Resolved localStorage race condition found during QA (data now persists reliably across modal close/reopen).
+  - Validation: `/app/test_reports/iteration_113.json` => backend **100%**, frontend **100%**, Day 21–40 visibility and note persistence explicitly verified.
+
 - **40-Day Journey Visibility + Depth Fix (Iteration 112, May 2026):**
   - Resolved missing Day 21–40 visibility concern in Courses journey experience.
   - Backend content update (`sacred_rites_deep.py`): Nusta Karpay phase labels now explicitly read:
