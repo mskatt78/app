@@ -12,6 +12,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Code Quality Stabilization + Regression Verification (Iteration 114, May 2026):**
+  - Replaced remaining index-style React keys with semantic stable-key helpers across high-volume pages:
+    - `IChing.jsx`, `HumanDesign.jsx`, `GeneKeys.jsx`, `ElementalTemples.jsx`, `CrystalDetailDialog.jsx`, `WaterPractices.jsx`, `HeartPractices.jsx`, `YogaLibrary.jsx`
+  - Added hook-safety improvement in `HeartPractices.jsx` by memoizing fetch flow via `useCallback` and effect dependency cleanup.
+  - Backend quality hardening:
+    - Added explicit type hints across `routers/gifts.py` and key admin seeding helpers in `routers/admin.py`.
+    - Removed fallback defaults in touched gift notification/payment config lookups to align with fail-fast env behavior.
+  - Validation:
+    - `/app/test_reports/iteration_114.json` => frontend **100%** across all 8 targeted pages; **0 React key warnings**.
+    - Backend checks passed (`/api/health`, `/api/content/expand-script`, `/api/gifts/create`, `/api/admin/collections`) with no 500 regressions.
+
 - **Day-by-Day 40 Timeline + Notes (Iteration 113, May 2026):**
   - Added dedicated Day 1–40 timeline tracker in course Journey tab for all 40-day courses:
     - Per-day checkbox completion
