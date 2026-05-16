@@ -1,0 +1,89 @@
+{
+  "summary": "Iteration 112 - Verified Nusta Karpay 40-Day Journey fix: Days 21-40 now visible in modal journey map. All 3 sacred rites courses display correct phase labels with richer content (daily focus + journaling prompts). No regressions in other courses or modal functionality.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_112.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "VERIFIED: Nusta Karpay phases now correctly show Days 1-7, Days 8-20, Days 21-40 (was missing Days 21-40 before)",
+    "VERIFIED: Journey map chips display all phases in a visual timeline at top of journey tab",
+    "VERIFIED: Richer content includes Daily Focus section and Journaling Prompts for each phase",
+    "VERIFIED: Locked phases show teaser content with truncated focus text and 'Unlock Course' button",
+    "VERIFIED: All 7 tabs work correctly: The Rites, Rituals, Embodiment, Prepare & Integrate, Daily Practice, 40-Day Journey, Safety",
+    "VERIFIED: Modal open/close functionality works correctly"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (API /api/courses returns correct phase labels for all 3 courses)",
+    "frontend": "100% (all journey maps display correctly, tab switching works, modal close works)"
+  },
+  "test_credentials": "Admin: mskatt78@gmail.com / ShamanicAdmin2026!",
+  "seed_data_creation": "None - used existing data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 112 verified the Days 21-40 visibility fix for Nusta Karpay. All 3 sacred rites courses now display correct 40-day journey phases: Munay Ki (4 phases: Days 1-9, 10-19, 20-29, 30-40), Nusta Karpay (3 phases: Days 1-7, 8-20, 21-40), 13th Rite of Womb (4 phases: Days 1-10, 11-20, 21-30, 31-40). Journey tab shows phase chips at top and richer content blocks with Daily Focus and Journaling Prompts.",
+  "features_tested": {
+    "nusta_karpay_days_21_40_fix": {
+      "status": "VERIFIED - ISSUE RESOLVED",
+      "details": [
+        "Backend API returns 3 phases: Days 1-7, Days 8-20, Days 21-40",
+        "Frontend displays all 3 phase chips in journey map",
+        "Days 21-40 phase visible with title 'Embodiment — Living as the Temple'",
+        "Richer content: Daily Focus and 5 Journaling Prompts for Days 21-40 phase"
+      ]
+    },
+    "journey_map_chips": {
+      "status": "VERIFIED",
+      "details": [
+        "Journey map header shows '40-Day Journey Map' with 'Full integration timeline' subtitle",
+        "Phase chips displayed in flex container with amber styling",
+        "All phases visible at a glance before scrolling"
+      ]
+    },
+    "richer_journey_content": {
+      "status": "VERIFIED",
+      "details": [
+        "Unlocked phases show: phase title, focus description, Daily Focus box, Journaling Prompts list",
+        "Locked phases show: truncated teaser text, 'Unlock Course' button with price",
+        "Daily Focus has checkmark icon and amber styling",
+        "Journaling Prompts displayed as bullet list"
+      ]
+    },
+    "other_sacred_rites_no_regression": {
+      "status": "VERIFIED",
+      "details": [
+        "Munay Ki: 4 phases (Days 1-9, 10-19, 20-29, 30-40) - all display correctly",
+        "13th Rite of Womb: 4 phases (Days 1-10, 11-20, 21-30, 31-40) - all display correctly",
+        "All courses have working journey tabs with phase chips and content"
+      ]
+    },
+    "modal_functionality": {
+      "status": "VERIFIED",
+      "details": [
+        "Modal opens on course card click",
+        "All 7 tabs switch correctly: The Rites, Rituals, Embodiment, Prepare & Integrate, Daily Practice, 40-Day Journey, Safety",
+        "Modal close button (chevron) works correctly",
+        "Share button present and accessible"
+      ]
+    }
+  },
+  "api_endpoints_verified": [
+    "GET /api/courses - 200 OK (3 courses with correct forty_day_integration phases)"
+  ],
+  "screenshots": [
+    ".screenshots/nusta_journey_tab_full.png",
+    ".screenshots/munay_ki_journey.png",
+    ".screenshots/13th_rite_journey.png",
+    ".screenshots/tab_switching_test.png",
+    ".screenshots/modal_closed.png"
+  ]
+}

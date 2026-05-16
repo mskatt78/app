@@ -923,7 +923,7 @@ NUSTA_KARPAY_DEEP = {
                 ]
             },
             {
-                "days": "Days 8–21",
+                "days": "Days 8–20",
                 "title": "Deepening — Living with the Goddesses",
                 "focus": "Work with one goddess per 2-day period. Move through them all twice.",
                 "daily_focus": "Daily Goddess Body Prayer. Monthly cycle awareness. Moon phase tracking.",
@@ -934,14 +934,16 @@ NUSTA_KARPAY_DEEP = {
                 ]
             },
             {
-                "days": "Days 22–40",
+                "days": "Days 21–40",
                 "title": "Embodiment — Living as the Temple",
                 "focus": "The goddess frequencies become less about practice and more about how you move through life.",
                 "daily_focus": "Daily Goddess Body Prayer. One act of receiving per day (receiving a compliment, help, gift — fully).",
                 "journaling_prompts": [
                     "How has your relationship with receiving changed?",
                     "What is the gift you now carry that your lineage did not fully live?",
-                    "How does the world feel different to you now?"
+                    "How does the world feel different to you now?",
+                    "What specific feminine boundary now feels clear and natural in your body?",
+                    "How will you continue this devotion after Day 40 in a sustainable way?"
                 ]
             }
         ]

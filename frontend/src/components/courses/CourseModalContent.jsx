@@ -12,6 +12,7 @@ import {
   Shield,
   Sparkles,
   Wind,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "../ui/button";
 
@@ -182,6 +183,27 @@ export const CourseModalContent = ({
 
     {activeTab === "journey" && selectedCourse.forty_day_integration && (
       <div className="p-4 space-y-4" data-testid="journey-tab-content">
+        <div className="rounded-xl border border-amber-500/20 bg-black/20 p-3" data-testid="journey-days-map">
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <p className="text-xs uppercase tracking-wider text-amber-300 flex items-center gap-1">
+              <Calendar className="w-3.5 h-3.5" />
+              40-Day Journey Map
+            </p>
+            <span className="text-[11px] text-muted-foreground">Full integration timeline</span>
+          </div>
+          <div className="flex flex-wrap gap-2" data-testid="journey-phase-chips">
+            {selectedCourse.forty_day_integration.phases?.map((phase, idx) => (
+              <span
+                key={`${selectedCourse.id}-phase-chip-${phase.days || idx}`}
+                className="px-2 py-1 rounded-full text-[11px] bg-amber-500/10 border border-amber-500/30 text-amber-200"
+                data-testid={`journey-phase-chip-${idx}`}
+              >
+                {phase.days}
+              </span>
+            ))}
+          </div>
+        </div>
+
         {selectedCourse.forty_day_integration.overview && (
           <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
             <p className="text-sm text-muted-foreground leading-relaxed">{selectedCourse.forty_day_integration.overview}</p>
@@ -199,13 +221,42 @@ export const CourseModalContent = ({
                 <h4 className="font-serif text-amber-100 mb-2">{phase.title}</h4>
                 {isLocked ? (
                   <div className="text-center py-3 space-y-2">
-                    <p className="text-xs text-muted-foreground">{phase.focus?.slice(0, 80)}...</p>
+                    <p className="text-xs text-muted-foreground">{phase.focus?.slice(0, 120)}...</p>
+                    {phase.daily_focus && (
+                      <p className="text-[11px] text-amber-200/80">Daily focus: {phase.daily_focus.slice(0, 90)}...</p>
+                    )}
                     <Button size="sm" onClick={() => handlePurchase(selectedCourse)} disabled={purchaseLoading} className="bg-violet-500 hover:bg-violet-600 text-xs">
                       <Lock className="w-3 h-3 mr-1" />Unlock Course — ${selectedCourse.price}
                     </Button>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground mb-3 leading-relaxed">{phase.focus}</p>
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground leading-relaxed">{phase.focus}</p>
+                    {phase.daily_focus && (
+                      <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                        <p className="text-xs text-amber-300 font-medium mb-1 flex items-center gap-1">
+                          <CheckCircle2 className="w-3 h-3" /> Daily Focus
+                        </p>
+                        <p className="text-xs text-muted-foreground">{phase.daily_focus}</p>
+                      </div>
+                    )}
+                    {phase.journaling_prompts?.length > 0 && (
+                      <div>
+                        <p className="text-xs text-amber-300 font-medium mb-2">Journaling Prompts</p>
+                        <ul className="space-y-1.5">
+                          {phase.journaling_prompts.map((prompt, pi) => (
+                            <li
+                              key={`${selectedCourse.id}-journey-prompt-${idx}-${pi}`}
+                              className="flex items-start gap-2 text-xs text-muted-foreground"
+                            >
+                              <span className="text-amber-400 mt-0.5 flex-shrink-0">•</span>
+                              <span className="leading-relaxed">{prompt}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
