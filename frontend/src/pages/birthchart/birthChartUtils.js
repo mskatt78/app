@@ -1,3 +1,15 @@
+import {
+  Circle,
+  Hexagon,
+  Moon,
+  Sparkles,
+  Square,
+  Star,
+  Sun,
+  Triangle,
+  TrendingUp,
+} from "lucide-react";
+
 export const buildBirthDateOptions = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: currentYear - 1899 }, (_, i) => currentYear - i);
@@ -46,3 +58,23 @@ export const getAspectColor = (aspect) => {
 };
 
 export const formatDegree = (degree, minute) => `${degree}°${minute || 0}'`;
+
+export const getPlanetIcon = (planet) => {
+  const iconClass = "w-5 h-5";
+  switch (planet) {
+    case "Sun": return <Sun className={`${iconClass} text-yellow-400`} />;
+    case "Moon": return <Moon className={`${iconClass} text-slate-300`} />;
+    case "Mercury": return <Circle className={`${iconClass} text-amber-400`} />;
+    case "Venus": return <Circle className={`${iconClass} text-pink-400`} />;
+    case "Mars": return <Triangle className={`${iconClass} text-red-400`} />;
+    case "Jupiter": return <Hexagon className={`${iconClass} text-orange-300`} />;
+    case "Saturn": return <Square className={`${iconClass} text-amber-600`} />;
+    case "Uranus": return <Sparkles className={`${iconClass} text-cyan-400`} />;
+    case "Neptune": return <Sparkles className={`${iconClass} text-blue-400`} />;
+    case "Pluto": return <Circle className={`${iconClass} text-purple-400`} />;
+    case "North Node": return <TrendingUp className={`${iconClass} text-green-400`} />;
+    case "South Node": return <TrendingUp className={`${iconClass} text-gray-400 rotate-180`} />;
+    case "Chiron": return <Star className={`${iconClass} text-amber-400`} />;
+    default: return <Star className={`${iconClass} text-purple-400`} />;
+  }
+};
