@@ -12,6 +12,19 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **40-Day Journey Visibility + Depth Fix (Iteration 112, May 2026):**
+  - Resolved missing Day 21–40 visibility concern in Courses journey experience.
+  - Backend content update (`sacred_rites_deep.py`): Nusta Karpay phase labels now explicitly read:
+    - `Days 1–7`
+    - `Days 8–20`
+    - `Days 21–40`
+  - Expanded Nusta Karpay Day 21–40 phase depth with additional journaling prompts.
+  - Frontend update (`CourseModalContent.jsx`): added persistent **40-Day Journey Map** phase chips at top of journey tab so all ranges are visible at a glance.
+  - Added richer journey blocks:
+    - Unlocked phases show Focus + Daily Focus + Journaling Prompts.
+    - Locked phases show improved teaser copy + unlock CTA.
+  - Validation: `/app/test_reports/iteration_112.json` => backend **100%**, frontend **100%**, issue explicitly marked **RESOLVED**.
+
 - **Frontend Modularization Continuation (Iteration 109–111, May 2026):**
   - **Guided overlay split:** extracted orchestration/state logic into `components/guided/useGuidedPracticeEngine.js`; `GuidedPracticeOverlay.jsx` is now a thin presenter wrapper.
   - **Courses deeper modularization:** extracted large modal tab body into `components/courses/CourseModalContent.jsx`; introduced `pages/courses/CourseDetailModal.jsx` alias wrapper and wired `Courses.jsx` to use it.
