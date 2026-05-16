@@ -10,7 +10,7 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { COURSE_IMAGES, LEVEL_COLORS, FORMAT_ICONS } from "./courses/courseConstants";
 import { isLoggedIn } from "../utils/clientStorage";
 import { CourseCard } from "../components/courses/CourseCard";
-import { CourseModalContent } from "../components/courses/CourseModalContent";
+import { CourseDetailModal } from "./courses/CourseDetailModal";
 import { useCoursePayments } from "./courses/useCoursePayments";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
@@ -364,7 +364,7 @@ export default function Courses() {
                 </div>
               )}
 
-              <CourseModalContent
+              <CourseDetailModal
                 activeTab={activeTab}
                 selectedCourse={selectedCourse}
                 expandedRite={expandedRite}
