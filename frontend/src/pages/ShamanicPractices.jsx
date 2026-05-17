@@ -20,6 +20,13 @@ const ShamanicPractices = ({ user, api }) => {
   const [unlockedContent, setUnlockedContent] = useState([]);
   const [isPracticing, setIsPracticing] = useState(false);
 
+  const formatReviewedDate = (value) => {
+    if (!value) return null;
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toLocaleDateString();
+  };
+
   const categoryIcons = {
     journey: Compass,
     power_animal: Feather,
@@ -237,6 +244,16 @@ const ShamanicPractices = ({ user, api }) => {
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
                     {practice.description}
                   </p>
+                  <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`shamanic-integrity-${practice.id}`}>
+                    {practice.content_integrity?.verified
+                      ? `Verified references (${practice.content_integrity.references_count || 0})`
+                      : "Curated content"}
+                  </p>
+                  {formatReviewedDate(practice.content_integrity?.last_reviewed_at) && (
+                    <p className="text-[11px] text-muted-foreground mb-2" data-testid={`shamanic-reviewed-at-${practice.id}`}>
+                      Last reviewed: {formatReviewedDate(practice.content_integrity?.last_reviewed_at)}
+                    </p>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground flex items-center gap-1">
                       <Clock className="w-3 h-3" />

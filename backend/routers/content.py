@@ -1497,7 +1497,7 @@ async def get_heart_practices(category: Optional[str] = None):
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
     practices = await db.heart_practices.find(query, {"_id": 0}).to_list(length=50)
-    return practices
+    return [_enrich_content_integrity(practice, "hybrid-curated") for practice in practices]
 
 
 @router.get("/heart-practices/{practice_id}")
@@ -1507,7 +1507,7 @@ async def get_heart_practice(practice_id: str):
     practice = await db.heart_practices.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Heart practice not found")
-    return practice
+    return _enrich_content_integrity(practice, "hybrid-curated")
 
 
 # ============ SHAMANIC PRACTICES ============
@@ -1521,7 +1521,7 @@ async def get_shamanic_practices(category: Optional[str] = None):
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
     practices = await db.shamanic_practices.find(query, {"_id": 0}).to_list(length=50)
-    return practices
+    return [_enrich_content_integrity(practice, "hybrid-curated") for practice in practices]
 
 
 @router.get("/shamanic-practices/{practice_id}")
@@ -1531,7 +1531,7 @@ async def get_shamanic_practice(practice_id: str):
     practice = await db.shamanic_practices.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Shamanic practice not found")
-    return practice
+    return _enrich_content_integrity(practice, "hybrid-curated")
 
 
 # ============ ELEMENTAL PRACTICES ============
@@ -1545,7 +1545,7 @@ async def get_elemental_practices(element: Optional[str] = None):
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     practices = await db.elemental_practices.find(query, {"_id": 0}).to_list(length=50)
-    return practices
+    return [_enrich_content_integrity(practice, "hybrid-curated") for practice in practices]
 
 
 @router.get("/elemental-practices/{practice_id}")
@@ -1555,7 +1555,7 @@ async def get_elemental_practice(practice_id: str):
     practice = await db.elemental_practices.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Elemental practice not found")
-    return practice
+    return _enrich_content_integrity(practice, "hybrid-curated")
 
 
 # ============ CREATIVE PROCESSES ============
@@ -1915,7 +1915,7 @@ async def get_ancient_wisdom(tradition: Optional[str] = None):
     if tradition:
         query["tradition"] = {"$regex": f"^{tradition}$", "$options": "i"}
     entries = await db.ancient_wisdom.find(query, {"_id": 0}).to_list(length=200)
-    return entries
+    return [_enrich_content_integrity(entry, "hybrid-curated") for entry in entries]
 
 
 @router.get("/ancient-wisdom/{entry_id}")
@@ -1925,7 +1925,7 @@ async def get_ancient_wisdom_entry(entry_id: str):
     entry = await db.ancient_wisdom.find_one({"id": entry_id}, {"_id": 0})
     if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
-    return entry
+    return _enrich_content_integrity(entry, "hybrid-curated")
 
 
 

@@ -42,6 +42,13 @@ const AncientWisdom = ({ user, api }) => {
   const [activeTab, setActiveTab] = useState("all");
   const [selected, setSelected] = useState(null);
 
+  const formatReviewedDate = (value) => {
+    if (!value) return null;
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toLocaleDateString();
+  };
+
   useEffect(() => { fetchEntries(); }, []);
 
   useEffect(() => {
@@ -172,6 +179,11 @@ const AncientWisdom = ({ user, api }) => {
                       {entry.title && (
                         <p className="text-xs text-white/50 mt-0.5 line-clamp-1">{entry.title}</p>
                       )}
+                      <p className="text-[10px] text-cyan-300/90 mt-1" data-testid={`ancient-wisdom-integrity-${entry.id}`}>
+                        {entry.content_integrity?.verified
+                          ? `Verified references (${entry.content_integrity.references_count || 0})`
+                          : "Curated content"}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -229,6 +241,11 @@ const AncientWisdom = ({ user, api }) => {
                   <h2 className="text-3xl font-serif text-white">{selected.name}</h2>
                   {selected.title && <p className="text-sm text-white/60 mt-1 italic">{selected.title}</p>}
                   {selected.element && <p className="text-xs text-white/40 mt-0.5">Element: {selected.element}</p>}
+                  {formatReviewedDate(selected.content_integrity?.last_reviewed_at) && (
+                    <p className="text-xs text-cyan-300/90 mt-1" data-testid="ancient-wisdom-reviewed-at">
+                      Last reviewed: {formatReviewedDate(selected.content_integrity?.last_reviewed_at)}
+                    </p>
+                  )}
                 </div>
               </div>
 

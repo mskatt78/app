@@ -32,6 +32,10 @@ SOURCE_AWARE_COLLECTIONS = {
     "mantras",
     "mudras",
     "sacred_guardians",
+    "ancient_wisdom",
+    "shamanic_practices",
+    "elemental_practices",
+    "heart_practices",
 }
 
 

@@ -53,6 +53,57 @@ class GiftRedeem(BaseModel):
     gift_code: str
 
 
+def _resolve_paypal_base_url(paypal_mode: str) -> str:
+    return "https://api-m.paypal.com" if paypal_mode == "live" else "https://api-m.sandbox.paypal.com"
+
+
+async def _fetch_paypal_access_token(
+    client: httpx.AsyncClient,
+    base_url: str,
+    paypal_client_id: str,
+    paypal_secret: str,
+) -> str:
+    auth_response = await client.post(
+        f"{base_url}/v1/oauth2/token",
+        auth=(paypal_client_id, paypal_secret),
+        data={"grant_type": "client_credentials"},
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    if auth_response.status_code != 200:
+        raise HTTPException(status_code=500, detail="PayPal authentication failed")
+    payload = auth_response.json()
+    return str(payload["access_token"])
+
+
+async def _mark_gift_paid(db: Any, gift_code: str, session_id: str) -> None:
+    paid_at = datetime.now(timezone.utc).isoformat()
+    await db.gifts.update_one(
+        {"gift_code": gift_code},
+        {"$set": {"status": "paid", "paid_at": paid_at}},
+    )
+    await db.payment_transactions.update_one(
+        {"session_id": session_id},
+        {"$set": {"payment_status": "paid", "paid_at": paid_at}},
+    )
+
+
+async def _send_paid_gift_notification(gift: dict[str, Any]) -> bool:
+    base_url = os.environ.get("FRONTEND_URL")
+    if not base_url:
+        raise RuntimeError("FRONTEND_URL is not configured")
+
+    await send_gift_notification_email(
+        recipient_email=gift["recipient_email"],
+        recipient_name=gift["recipient_name"],
+        sender_name=gift["sender_name"],
+        gift_type=gift["gift_type"],
+        gift_code=gift["gift_code"],
+        message=gift.get("message"),
+        base_url=base_url,
+    )
+    return True
+
+
 # ============ PUSH NOTIFICATIONS ============
 
 @router.post("/notifications/subscribe")
@@ -263,21 +314,10 @@ async def _create_paypal_gift_order(
     if not paypal_client_id or not paypal_secret or not paypal_mode:
         raise HTTPException(status_code=500, detail="PayPal not configured")
     
-    base_url = "https://api-m.paypal.com" if paypal_mode == "live" else "https://api-m.sandbox.paypal.com"
+    base_url = _resolve_paypal_base_url(paypal_mode)
     
-    # Get access token
     async with httpx.AsyncClient() as client:
-        auth_response = await client.post(
-            f"{base_url}/v1/oauth2/token",
-            auth=(paypal_client_id, paypal_secret),
-            data={"grant_type": "client_credentials"},
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
-        )
-        
-        if auth_response.status_code != 200:
-            raise HTTPException(status_code=500, detail="PayPal authentication failed")
-        
-        access_token = auth_response.json()["access_token"]
+        access_token = await _fetch_paypal_access_token(client, base_url, paypal_client_id, paypal_secret)
         
         # Create order
         order_data = {
@@ -393,34 +433,11 @@ async def _verify_stripe_gift_payment(gift: dict[str, Any], session_id: Optional
         status = await stripe_checkout.get_checkout_status(session_id)
         
         if status.payment_status == "paid":
-            await db.gifts.update_one(
-                {"gift_code": gift["gift_code"]},
-                {"$set": {
-                    "status": "paid",
-                    "paid_at": datetime.now(timezone.utc).isoformat()
-                }}
-            )
-            
-            # Update transaction
-            await db.payment_transactions.update_one(
-                {"session_id": session_id},
-                {"$set": {"payment_status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
-            )
+            await _mark_gift_paid(db, gift["gift_code"], session_id)
             
             # Send email notification to recipient
             try:
-                base_url = os.environ.get("FRONTEND_URL")
-                if not base_url:
-                    raise RuntimeError("FRONTEND_URL is not configured")
-                await send_gift_notification_email(
-                    recipient_email=gift["recipient_email"],
-                    recipient_name=gift["recipient_name"],
-                    sender_name=gift["sender_name"],
-                    gift_type=gift["gift_type"],
-                    gift_code=gift["gift_code"],
-                    message=gift.get("message"),
-                    base_url=base_url
-                )
+                await _send_paid_gift_notification(gift)
                 logger.info(f"Gift notification email sent for {gift['gift_code']}")
             except Exception as e:
                 logger.error(f"Failed to send gift notification email: {e}")
@@ -454,21 +471,10 @@ async def _capture_paypal_gift_order(gift: dict[str, Any], order_id: Optional[st
     if not paypal_client_id or not paypal_secret or not paypal_mode or not order_id:
         raise HTTPException(status_code=400, detail="Cannot capture payment")
     
-    base_url = "https://api-m.paypal.com" if paypal_mode == "live" else "https://api-m.sandbox.paypal.com"
+    base_url = _resolve_paypal_base_url(paypal_mode)
     
     async with httpx.AsyncClient() as client:
-        # Get access token
-        auth_response = await client.post(
-            f"{base_url}/v1/oauth2/token",
-            auth=(paypal_client_id, paypal_secret),
-            data={"grant_type": "client_credentials"},
-            headers={"Content-Type": "application/x-www-form-urlencoded"}
-        )
-        
-        if auth_response.status_code != 200:
-            raise HTTPException(status_code=500, detail="PayPal authentication failed")
-        
-        access_token = auth_response.json()["access_token"]
+        access_token = await _fetch_paypal_access_token(client, base_url, paypal_client_id, paypal_secret)
         
         # Capture order
         capture_response = await client.post(
@@ -483,33 +489,11 @@ async def _capture_paypal_gift_order(gift: dict[str, Any], order_id: Optional[st
             capture_data = capture_response.json()
             
             if capture_data.get("status") == "COMPLETED":
-                await db.gifts.update_one(
-                    {"gift_code": gift["gift_code"]},
-                    {"$set": {
-                        "status": "paid",
-                        "paid_at": datetime.now(timezone.utc).isoformat()
-                    }}
-                )
-                
-                await db.payment_transactions.update_one(
-                    {"session_id": order_id},
-                    {"$set": {"payment_status": "paid", "paid_at": datetime.now(timezone.utc).isoformat()}}
-                )
+                await _mark_gift_paid(db, gift["gift_code"], order_id)
                 
                 # Send email notification to recipient
                 try:
-                    frontend_url = os.environ.get("FRONTEND_URL")
-                    if not frontend_url:
-                        raise RuntimeError("FRONTEND_URL is not configured")
-                    await send_gift_notification_email(
-                        recipient_email=gift["recipient_email"],
-                        recipient_name=gift["recipient_name"],
-                        sender_name=gift["sender_name"],
-                        gift_type=gift["gift_type"],
-                        gift_code=gift["gift_code"],
-                        message=gift.get("message"),
-                        base_url=frontend_url
-                    )
+                    await _send_paid_gift_notification(gift)
                     logger.info(f"Gift notification email sent for {gift['gift_code']}")
                 except Exception as e:
                     logger.error(f"Failed to send gift notification email: {e}")

@@ -1,0 +1,79 @@
+{
+  "summary": "Iteration 117 - Provenance/Review Workflow for Remaining Collections + Gifts Refactor Regression. All 4 new collections (ancient_wisdom, shamanic_practices, elemental_practices, heart_practices) correctly return content_integrity metadata and source_references lists. Frontend displays integrity labels on all cards. Modals open correctly. Gifts payment endpoints show proper non-500 behavior for unauthenticated requests.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration117_provenance_gifts.py",
+    "/app/test_reports/pytest/pytest_iteration117.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "VERIFIED: GET /api/ancient-wisdom returns 110 entries with content_integrity and source_references",
+    "VERIFIED: GET /api/shamanic-practices returns 21 practices with content_integrity and source_references",
+    "VERIFIED: GET /api/elemental-practices returns 15 practices with content_integrity and source_references",
+    "VERIFIED: GET /api/heart-practices returns 10 practices with content_integrity and source_references",
+    "VERIFIED: Frontend AncientWisdom displays 'Curated content' labels on 110 cards, modal opens",
+    "VERIFIED: Frontend ShamanicPractices displays 'Curated content' labels on 21 cards, modal opens",
+    "VERIFIED: Frontend ElementalPractices displays 'Curated content' labels on 15 cards, modal opens",
+    "VERIFIED: Frontend HeartPractices displays 'Curated content' labels on 10 cards, modal opens",
+    "VERIFIED: Gifts endpoints return proper 401/422/404 responses (no 500 errors after refactor)",
+    "VERIFIED: Notifications endpoints return proper 422 for missing body"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration117_provenance_gifts.py"
+  ],
+  "success_rate": {
+    "backend": "100% (20/20 tests passed)",
+    "frontend": "100% (all 4 pages load, integrity labels display, modals open)"
+  },
+  "test_credentials": "No auth required for public content routes",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 117 verified the provenance/review workflow expansion to remaining user-facing collections. All 4 collections (ancient_wisdom, shamanic_practices, elemental_practices, heart_practices) now return content_integrity metadata with source_type, verified flag, references_count, and last_reviewed_at. Frontend displays 'Curated content' or 'Verified references' labels on all library cards. Gifts payment helper refactor verified - no regression in endpoint behavior.",
+  "features_tested": {
+    "backend_content_integrity_pipeline": {
+      "status": "VERIFIED",
+      "endpoints_tested": [
+        "GET /api/ancient-wisdom - 110 entries with content_integrity",
+        "GET /api/shamanic-practices - 21 practices with content_integrity",
+        "GET /api/elemental-practices - 15 practices with content_integrity",
+        "GET /api/heart-practices - 10 practices with content_integrity"
+      ]
+    },
+    "frontend_integrity_labels": {
+      "status": "VERIFIED",
+      "pages_tested": [
+        "AncientWisdom - 110 cards with 'Curated content' labels, modal opens",
+        "ShamanicPractices - 21 cards with 'Curated content' labels, modal opens",
+        "ElementalPractices - 15 cards with 'Curated content' labels, modal opens",
+        "HeartPractices - 10 cards with 'Curated content' labels, modal opens"
+      ]
+    },
+    "gifts_refactor_regression": {
+      "status": "VERIFIED",
+      "endpoints_tested": [
+        "POST /api/gifts/create - returns 422 for empty body",
+        "POST /api/gifts/pay - returns 401 without auth",
+        "POST /api/gifts/redeem - returns 401 without auth",
+        "GET /api/gifts/{code} - returns 404 for non-existent code",
+        "GET /api/gifts/my/sent - returns 401 without auth",
+        "GET /api/gifts/my/received - returns 401 without auth"
+      ]
+    },
+    "notifications_endpoints": {
+      "status": "VERIFIED",
+      "endpoints_tested": [
+        "POST /api/notifications/subscribe - returns 422 for empty body",
+        "POST /api/notifications/unsubscribe - returns 422 for empty body"
+      ]
+    }
+  }
+}
