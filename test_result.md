@@ -170,6 +170,9 @@ user_problem_statement: |
       - working: true
         agent: "testing"
         comment: "✓ GET /api/crystals/deep/iolite returns 200 with verified image metadata. image_source=wikipedia_verified, image_validation.status=verified, image_validation.score=0.66, wikipedia_title='Cordierite' (non-empty), wikipedia_page_url='https://en.wikipedia.org/wiki/Cordierite', verified_image_url present. Iolite crystal spot-check verification PASSED."
+      - working: true
+        agent: "testing"
+        comment: "✅ CRYSTAL-TRUTH FIX VERIFIED (2026-05-17): GET /api/crystals/deep iolite record confirmed. image_url now points to Iolite-specific file (https://upload.wikimedia.org/wikipedia/commons/4/4b/Iolite.JPG), NOT old Cordierite cluster image. image_validation.status=verified with source references: wikipedia_title='File:Iolite.JPG', wikipedia_page_url='https://en.wikipedia.org/wiki/Cordierite'. All sanity checks passed: /api/health (200), /api/courses (200, 3 items), /api/meditations (200, 6 items). No 500 errors detected. Crystal-truth fix VERIFIED."
 
 backend:
   - task: "Health endpoint verification"
@@ -1338,5 +1341,56 @@ agent_communication:
       SUMMARY:
       🎉 RELEASE-LOCK PASS SUCCESS - NO BLOCKERS FOUND
       All 14 verification points passed successfully. Frontend is production-ready for release.
+
+
+  - agent: "testing"
+    message: |
+      Crystal-Truth Fix Backend Verification completed successfully (2026-05-17):
+      
+      VERIFICATION REQUEST: Run targeted backend verification for crystal-truth fix
+      Base URL: https://breathwork-sanctuary.preview.emergentagent.com/api
+      
+      ✅ ALL TESTS PASSED (4/4):
+      
+      1. ✅ IOLITE CRYSTAL IMAGE VERIFICATION - PASSED
+         - GET /api/crystals/deep returns 200 with 27 crystal records
+         - Iolite record found with ID: iolite, Name: Iolite
+         - ✓ image_url now points to Iolite-specific file: https://upload.wikimedia.org/wikipedia/commons/4/4b/Iolite.JPG
+         - ✓ Confirmed NOT using old Cordierite cluster image
+         - ✓ image_validation.status = "verified"
+         - ✓ Source references present in image_validation:
+           * wikipedia_title: "File:Iolite.JPG"
+           * wikipedia_page_url: "https://en.wikipedia.org/wiki/Cordierite"
+         - ✓ image_source = "wikipedia_verified"
+         - ✓ image_validation.score = 0.66
+         - Crystal-truth fix VERIFIED successfully
+      
+      2. ✅ HEALTH ENDPOINT SANITY CHECK - PASSED
+         - GET /api/health returns 200 with valid JSON
+         - Response: {"status": "healthy", "app": "Shamanic Elements Temple Of The Soul", "version": "2.0.0"}
+         - No errors detected
+      
+      3. ✅ COURSES ENDPOINT SANITY CHECK - PASSED
+         - GET /api/courses returns 200 with 3 courses
+         - Endpoint healthy and responding correctly
+      
+      4. ✅ MEDITATIONS ENDPOINT SANITY CHECK - PASSED
+         - GET /api/meditations returns 200 with 6 meditations
+         - Endpoint healthy and responding correctly
+      
+      ENDPOINT-LEVEL EVIDENCE:
+      - /api/crystals/deep: 200 OK, iolite image_url = Iolite.JPG (NOT Cordierite cluster)
+      - /api/health: 200 OK, status = healthy
+      - /api/courses: 200 OK, 3 items
+      - /api/meditations: 200 OK, 6 items
+      
+      NO 500 ERRORS DETECTED:
+      ✓ All tested endpoints return appropriate 200 status codes
+      ✓ No server errors encountered
+      ✓ All responses contain valid JSON
+      
+      SUMMARY:
+      Crystal-truth fix verified successfully. Iolite crystal now uses correct Iolite-specific image (Iolite.JPG) instead of old Cordierite cluster image. Image validation metadata includes verified status and source references. All sanity check endpoints healthy. No 500 errors detected. Backend is production-ready.
+
       No critical issues, crashes, or blocking bugs detected. All pages load correctly with
       proper content, filters, and user interactions working as expected.

@@ -95,14 +95,27 @@ async def get_daily_guidance(user: User = Depends(get_current_user)):
     from .numerology import get_current_month
     current_month = await get_current_month()
     
+    async def pick_daily_crystal() -> Optional[dict]:
+        from .content import _resolve_crystal_image
+
+        deep_crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=80)
+        if deep_crystals:
+            selected_crystal = secure_choice(deep_crystals)
+            if not selected_crystal:
+                return None
+            return await _resolve_crystal_image(selected_crystal, db)
+
+        fallback_crystals = await db.crystals.find({}, {"_id": 0}).to_list(length=50)
+        selected_fallback = secure_choice(fallback_crystals)
+        return selected_fallback
+
     # Fetch data from MongoDB
     yoga_poses = await db.yoga_poses.find({}, {"_id": 0}).to_list(length=100)
-    crystals = await db.crystals.find({}, {"_id": 0}).to_list(length=50)
     mantras = await db.mantras.find({}, {"_id": 0}).to_list(length=50)
     breathwork_sessions = await db.breathwork_sessions.find({}, {"_id": 0}).to_list(length=20)
     
     daily_pose = secure_choice(yoga_poses)
-    daily_crystal = secure_choice(crystals)
+    daily_crystal = await pick_daily_crystal()
     daily_mantra = secure_choice(mantras)
     daily_breathwork = secure_choice(breathwork_sessions)
     

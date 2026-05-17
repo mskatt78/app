@@ -50,7 +50,10 @@ const getImageValidationState = (crystal) => {
     return { label: "Unverified image", style: "text-amber-300 bg-amber-500/10 border-amber-500/30" };
   }
 
-  if (validation.status === "verified" && crystal?.image_source === "wikipedia_verified") {
+  if (
+    validation.status === "verified" &&
+    ["wikipedia_verified", "commons_verified"].includes(crystal?.image_source)
+  ) {
     return { label: "Verified image", style: "text-emerald-300 bg-emerald-500/10 border-emerald-500/30" };
   }
 
