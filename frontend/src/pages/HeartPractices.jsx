@@ -67,6 +67,19 @@ const HeartPractices = ({ user, api }) => {
     fetchPractices();
   }, [fetchPractices]);
 
+  useEffect(() => {
+    if (!selectedPractice) return undefined;
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setSelectedPractice(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [selectedPractice]);
+
   const logPractice = async (practice) => {
     try {
       await api.post("/practice-history", {

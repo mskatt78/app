@@ -729,6 +729,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✓ Elemental Practices page (/elemental-practices) tested successfully. 15 elemental practice cards loaded. All checked cards (5/5) display content integrity label 'Curated content'. Integrity labels visible with data-testid='elemental-integrity-{id}'. Optional reviewed date field present with data-testid='elemental-reviewed-at-{id}'. Clicking practice card opens detail modal successfully with data-testid='practice-modal'. Minor: Escape key doesn't close modal (but close button works). No crashes detected. Provenance rollout verified."
+      - working: true
+        agent: "testing"
+        comment: "✅ RETEST PASSED (2026-05-17): Modal Escape key behavior verified. Opened practice modal on /elemental-practices, pressed Escape key, modal closed successfully. Escape key handler working correctly (lines 58-69 in ElementalPractices.jsx). Previous minor issue resolved."
 
   - task: "Heart Practices page integrity labels and modal interactions"
     implemented: true
@@ -741,6 +744,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✓ Heart Practices page (/heart-practices) tested successfully. 10 heart practice cards loaded. All checked cards (5/5) display content integrity label 'Curated content'. Integrity labels visible with data-testid='heart-integrity-{id}'. Optional reviewed date field present with data-testid='heart-reviewed-at-{id}'. Clicking practice card opens detail modal successfully with data-testid='practice-modal'. Minor: Escape key doesn't close modal (but close button works). No crashes detected. Provenance rollout verified."
+      - working: true
+        agent: "testing"
+        comment: "✅ RETEST PASSED (2026-05-17): Modal Escape key behavior verified. Opened practice modal on /heart-practices, pressed Escape key, modal closed successfully. Escape key handler working correctly (lines 70-81 in HeartPractices.jsx). Previous minor issue resolved."
 
   - task: "Sanity check - Courses, Meditations, Breathwork pages still working"
     implemented: true
@@ -756,16 +762,15 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.6"
-  test_sequence: 7
+  version: "1.7"
+  test_sequence: 8
   run_ui: false
   last_tested: "2026-05-17"
 
 test_plan:
   current_focus:
-    - "Provenance rollout frontend verification completed"
-    - "All practice pages (ancient-wisdom, shamanic, elemental, heart) integrity labels working"
-    - "Sanity checks passed for courses, meditations, breathwork"
+    - "Modal Escape key behavior retest completed - PASSED"
+    - "Elemental Practices and Heart Practices modals close on Escape key"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -1197,3 +1202,45 @@ agent_communication:
       
       SUMMARY:
       All backend regression tests passed successfully. Payments and gifts routes are working correctly after complexity refactor with proper error handling (no 500 errors). Provenance expansion successfully added content_integrity and source_references to all practice endpoints (ancient-wisdom, shamanic-practices, elemental-practices, heart-practices). Backend is production-ready with no regressions detected.
+
+
+  - agent: "testing"
+    message: |
+      Modal Escape Key Behavior Retest completed successfully (2026-05-17):
+      
+      RETEST REQUEST: Focused frontend retest for modal Escape behavior on /elemental-practices and /heart-practices
+      Base URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (2/2):
+      
+      1. ✅ ELEMENTAL PRACTICES (/elemental-practices) - PASSED
+         - Navigated to /elemental-practices page
+         - Found 15 practice cards loaded
+         - Clicked first practice card to open modal
+         - Modal opened successfully (data-testid="practice-modal")
+         - Pressed Escape key
+         - ✓ Modal closed successfully
+         - Escape key handler working correctly (useEffect lines 58-69 in ElementalPractices.jsx)
+      
+      2. ✅ HEART PRACTICES (/heart-practices) - PASSED
+         - Navigated to /heart-practices page
+         - Found 10 practice cards loaded
+         - Clicked first practice card to open modal
+         - Modal opened successfully (data-testid="practice-modal")
+         - Pressed Escape key
+         - ✓ Modal closed successfully
+         - Escape key handler working correctly (useEffect lines 70-81 in HeartPractices.jsx)
+      
+      TECHNICAL DETAILS:
+      Both components implement identical Escape key handlers using useEffect hooks that:
+      - Listen for "keydown" events on window
+      - Check if event.key === "Escape"
+      - Call setSelectedPractice(null) to close modal
+      - Clean up event listener on unmount
+      
+      PREVIOUS ISSUE RESOLVED:
+      Previous test results (lines 731, 743) noted "Minor: Escape key doesn't close modal (but close button works)". 
+      This issue has been resolved. Both modals now properly respond to Escape key press.
+      
+      SUMMARY:
+      All modal Escape key behaviors verified and working correctly. Both Elemental Practices and Heart Practices modals close when Escape key is pressed. No blocking issues found. Frontend is production-ready with complete keyboard accessibility.

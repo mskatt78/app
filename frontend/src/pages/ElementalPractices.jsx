@@ -55,6 +55,19 @@ const ElementalPractices = ({ user, api }) => {
     fetchPractices();
   }, [filter]);
 
+  useEffect(() => {
+    if (!selectedPractice) return undefined;
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setSelectedPractice(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [selectedPractice]);
+
   const fetchPractices = async () => {
     try {
       const url = filter === "all" ? "/elemental-practices" : `/elemental-practices?element=${filter}`;
