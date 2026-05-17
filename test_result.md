@@ -762,15 +762,14 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.7"
-  test_sequence: 8
+  version: "1.8"
+  test_sequence: 9
   run_ui: false
   last_tested: "2026-05-17"
 
 test_plan:
   current_focus:
-    - "Modal Escape key behavior retest completed - PASSED"
-    - "Elemental Practices and Heart Practices modals close on Escape key"
+    - "Final release-lock frontend sanity pass completed - ALL PASSED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -1244,3 +1243,100 @@ agent_communication:
       
       SUMMARY:
       All modal Escape key behaviors verified and working correctly. Both Elemental Practices and Heart Practices modals close when Escape key is pressed. No blocking issues found. Frontend is production-ready with complete keyboard accessibility.
+
+
+
+  - agent: "testing"
+    message: |
+      Final Release-Lock Frontend Sanity Pass completed successfully (2026-05-17):
+      
+      VERIFICATION REQUEST: Quick sanity pass before release-lock
+      Base URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (14/14):
+      
+      1. ✅ LANDING PAGE & ENTER TEMPLE NAVIGATION - PASSED
+         - Landing page loads correctly with "Enter the Temple" button
+         - Navigation works: redirects to /menu on click
+         - No crashes or blocking issues
+      
+      2. ✅ CRYSTALS PAGE - PASSED
+         - Shows 27 crystal cards
+         - All 27 cards display "Verified image" badges
+         - Detail modal opens successfully when card clicked
+         - Modal closes properly with Escape key
+      
+      3. ✅ COURSES PAGE - PASSED
+         - Loads 3 course cards correctly
+         - Content displays with pricing and descriptions
+         - "Curated content" labels visible
+      
+      4. ✅ MEDITATIONS PAGE - PASSED
+         - Loads 6 meditation cards correctly
+         - Duration indicators visible (15min, 20min, 25min, etc.)
+         - "Curated content" labels visible
+      
+      5. ✅ BREATHWORK PAGE - PASSED
+         - Loads breathwork session cards correctly
+         - Content displays with session descriptions
+         - "Curated content" labels visible
+      
+      6. ✅ HEART PRACTICES PAGE - PASSED
+         - Loads heart practice cards correctly
+         - Filter buttons present and functional ("All" filter visible)
+         - "Curated content" labels visible
+      
+      7. ✅ ELEMENTAL PRACTICES PAGE - PASSED
+         - Loads elemental practice cards correctly
+         - Element filter buttons present ("Fire", "Water", "Earth", "Air")
+         - "Curated content" labels visible
+      
+      8. ✅ SHAMANIC PRACTICES PAGE - PASSED
+         - Loads shamanic practice cards correctly
+         - Category filter buttons present ("All" filter visible)
+         - "Curated content" labels visible
+      
+      9. ✅ ANCIENT WISDOM PAGE - PASSED
+         - Loads 110+ ancient wisdom cards correctly
+         - Rich content with Egyptian deities and traditions
+         - Category filter buttons present ("All", "Atlantean", "Galactic")
+         - "Curated content" labels visible
+      
+      10. ✅ YOGA PAGE - PASSED
+          - Loads yoga pose cards correctly
+          - Content displays with pose names and descriptions
+      
+      11. ✅ MANTRAS PAGE - PASSED
+          - Loads mantra cards correctly
+          - Content displays with mantra text and meanings
+      
+      12. ✅ MUDRAS PAGE - PASSED
+          - Loads mudra cards correctly
+          - Content displays with mudra names and descriptions
+      
+      13. ✅ SACRED GUARDIANS PAGE - PASSED
+          - Loads 37+ sacred guardian cards correctly
+          - Power animals visible (Wolf, Bear, Eagle, Owl, Fox, Snake, Horse, Deer, etc.)
+          - "Curated content" labels visible
+      
+      14. ✅ DASHBOARD ROUTE (UNAUTHENTICATED) - PASSED
+          - Graceful handling for unauthenticated users
+          - Redirects to home page (no crash or infinite loop)
+          - No React error boundary triggered
+      
+      CONSOLE ERRORS:
+      - Only expected 401 auth errors for unauthenticated users (normal behavior)
+      - No critical JavaScript errors
+      - No blocking issues detected
+      
+      VISUAL VERIFICATION:
+      - All pages render correctly with proper styling
+      - Images load successfully (crystals show verified Wikipedia images)
+      - Navigation works smoothly between pages
+      - No broken layouts or missing content
+      
+      SUMMARY:
+      🎉 RELEASE-LOCK PASS SUCCESS - NO BLOCKERS FOUND
+      All 14 verification points passed successfully. Frontend is production-ready for release.
+      No critical issues, crashes, or blocking bugs detected. All pages load correctly with
+      proper content, filters, and user interactions working as expected.
