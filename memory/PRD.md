@@ -12,6 +12,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Daily Guidance Crystal Truth Hotfix (Iteration 120, May 2026):**
+  - Root-cause identified: dashboard daily guidance crystal card used `users/dashboard/daily` crystal sourcing from `db.crystals` (legacy image set), not the verified deep-crystal resolver pipeline.
+  - Fixes applied:
+    - `backend/routers/user.py` (`/dashboard/daily`) now selects from `crystals_deep` and resolves image via shared crystal verification pipeline (`_resolve_crystal_image`).
+    - `backend/routers/content.py` crystal verifier upgraded with visual-form truth preferences and article image fallback via Wikipedia action API file lookup.
+    - Added strict visual validation for iolite path and tuned scoring so iolite resolves to `File:Iolite.JPG` instead of raw Cordierite cluster.
+    - Frontend `CrystalGuide.jsx` verification badge now treats both `wikipedia_verified` and `commons_verified` sources as verified.
+  - Verification:
+    - Targeted backend verification confirms iolite now resolves to `https://upload.wikimedia.org/wikipedia/commons/4/4b/Iolite.JPG` with `image_validation.status = verified`.
+    - Health/courses/meditations endpoints remained stable (no 500 regressions).
+
 - **Code Review Remediation Batch (Iteration 118, May 2026):**
   - **Critical hook-dependency hardening (targeted files):**
     - Refactored route guard async flows in `routeGuards.jsx` with callback-based guards to reduce stale-closure risk.
