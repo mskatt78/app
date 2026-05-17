@@ -609,6 +609,11 @@ const Breathwork = ({ user, api }) => {
                         ? `Verified references (${session.content_integrity.references_count || 0})`
                         : "Curated content"}
                     </p>
+                    {session.content_integrity?.last_reviewed_at && (
+                      <p className="text-[11px] text-muted-foreground" data-testid={`breathwork-reviewed-at-${session.id}`}>
+                        Last reviewed: {new Date(session.content_integrity.last_reviewed_at).toLocaleDateString()}
+                      </p>
+                    )}
                   </div>
                 </motion.div>
               );

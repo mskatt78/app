@@ -161,6 +161,10 @@ def _flatten_text(value) -> list[str]:
 
 
 def _normalize_source_references(value: Any) -> list[str]:
+    if isinstance(value, str):
+        chunks = re.split(r"[\n,]", value)
+        return _normalize_source_references(chunks)
+
     if isinstance(value, list):
         refs: list[str] = []
         seen: set[str] = set()
@@ -1000,7 +1004,7 @@ async def get_yoga_poses(element: Optional[str] = None, difficulty: Optional[str
         query["difficulty"] = {"$regex": f"^{difficulty}$", "$options": "i"}
     
     poses = await db.yoga_poses.find(query, {"_id": 0}).to_list(length=100)
-    return poses
+    return [_enrich_content_integrity(pose, "hybrid-curated") for pose in poses]
 
 
 @router.get("/yoga/poses/{pose_id}")
@@ -1010,7 +1014,7 @@ async def get_yoga_pose(pose_id: str):
     pose = await db.yoga_poses.find_one({"id": pose_id}, {"_id": 0})
     if not pose:
         raise HTTPException(status_code=404, detail="Pose not found")
-    return pose
+    return _enrich_content_integrity(pose, "hybrid-curated")
 
 
 # ============ BREATHWORK ROUTES ============
@@ -1371,7 +1375,7 @@ async def get_mantras(element: Optional[str] = None):
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     mantras = await db.mantras.find(query, {"_id": 0}).to_list(length=50)
-    return mantras
+    return [_enrich_content_integrity(mantra, "hybrid-curated") for mantra in mantras]
 
 
 # ============ MUDRAS ROUTES ============
@@ -1385,7 +1389,7 @@ async def get_mudras(element: Optional[str] = None):
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     mudras = await db.mudras.find(query, {"_id": 0}).to_list(length=50)
-    return mudras
+    return [_enrich_content_integrity(mudra, "hybrid-curated") for mudra in mudras]
 
 
 # ============ MINDFULNESS PRACTICES ============
@@ -1888,7 +1892,7 @@ async def get_sacred_guardians(category: Optional[str] = None):
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     guardians = await db.sacred_guardians.find(query, {"_id": 0}).to_list(length=100)
-    return guardians
+    return [_enrich_content_integrity(guardian, "hybrid-curated") for guardian in guardians]
 
 
 @router.get("/sacred-guardians/{guardian_id}")
@@ -1898,7 +1902,7 @@ async def get_sacred_guardian(guardian_id: str):
     guardian = await db.sacred_guardians.find_one({"id": guardian_id}, {"_id": 0})
     if not guardian:
         raise HTTPException(status_code=404, detail="Guardian not found")
-    return guardian
+    return _enrich_content_integrity(guardian, "hybrid-curated")
 
 
 # ============ ANCIENT WISDOM TRADITIONS ============

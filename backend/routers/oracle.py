@@ -1,7 +1,7 @@
 """Oracle routes for readings and cards."""
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Any, Optional, List
 from datetime import datetime, timezone
 import uuid
 import secrets
@@ -17,13 +17,13 @@ router = APIRouter(prefix="/oracle", tags=["oracle"])
 logger = logging.getLogger(__name__)
 
 
-def _secure_choice(items):
+def _secure_choice(items: list[Any]) -> Any | None:
     if not items:
         return None
     return items[secrets.randbelow(len(items))]
 
 
-def _secure_sample(items, count: int):
+def _secure_sample(items: list[Any], count: int) -> list[Any]:
     pool = list(items)
     result = []
     for _ in range(min(count, len(pool))):
@@ -32,7 +32,7 @@ def _secure_sample(items, count: int):
     return result
 
 
-def _secure_bool(probability: float = 0.5):
+def _secure_bool(probability: float = 0.5) -> bool:
     threshold = max(0, min(10000, int(probability * 10000)))
     return secrets.randbelow(10000) < threshold
 
@@ -46,7 +46,7 @@ class OracleReadingRequest(BaseModel):
 async def create_oracle_reading(
     data: OracleReadingRequest,
     user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Create a new oracle reading with AI interpretation (authenticated - saves to history)."""
     db = get_db()
     
@@ -76,7 +76,7 @@ async def create_oracle_reading(
 
 
 @router.post("/reading/guest")
-async def create_guest_oracle_reading(data: OracleReadingRequest):
+async def create_guest_oracle_reading(data: OracleReadingRequest) -> dict[str, Any]:
     """Create an oracle reading without authentication (doesn't save to history)."""
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
     selected_cards = [copy.deepcopy(c) for c in _secure_sample(ORACLE_CARDS, num_cards)]
@@ -101,7 +101,7 @@ async def create_guest_oracle_reading(data: OracleReadingRequest):
 
 
 @router.get("/readings")
-async def get_oracle_readings(user: User = Depends(get_current_user)):
+async def get_oracle_readings(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
     """Get user's oracle reading history."""
     db = get_db()
     readings = await db.oracle_readings.find(
@@ -112,7 +112,7 @@ async def get_oracle_readings(user: User = Depends(get_current_user)):
 
 
 @router.get("/cards")
-async def get_oracle_cards(element: Optional[str] = None):
+async def get_oracle_cards(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get oracle cards from database."""
     db = get_db()
     query = {}
@@ -128,7 +128,7 @@ async def get_oracle_cards(element: Optional[str] = None):
     return cards
 
 
-async def generate_oracle_interpretation(cards: List[dict], question: Optional[str], spread_type: str) -> str:
+async def generate_oracle_interpretation(cards: List[dict[str, Any]], question: Optional[str], spread_type: str) -> str:
     """Generate AI interpretation using Claude."""
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
@@ -174,7 +174,7 @@ elemental energies, and practical spiritual guidance for the seeker."""
         return generate_fallback_interpretation(cards, question)
 
 
-def generate_fallback_interpretation(cards: List[dict], question: Optional[str]) -> str:
+def generate_fallback_interpretation(cards: List[dict[str, Any]], question: Optional[str]) -> str:
     """Generate a basic interpretation without AI."""
     elements = [c["element"] for c in cards]
     dominant_element = max(set(elements), key=elements.count)
@@ -208,7 +208,7 @@ class ArchangelReadingRequest(BaseModel):
 
 
 @router.get("/archangels")
-async def get_archangel_cards():
+async def get_archangel_cards() -> list[dict[str, Any]]:
     """Get all archangel oracle cards."""
     db = get_db()
     # Try database first
@@ -219,7 +219,7 @@ async def get_archangel_cards():
 
 
 @router.get("/archangels/{archangel_id}")
-async def get_archangel_by_id(archangel_id: str):
+async def get_archangel_by_id(archangel_id: str) -> dict[str, Any]:
     """Get a specific archangel by ID."""
     db = get_db()
     card = await db.archangel_oracle.find_one({"id": archangel_id}, {"_id": 0})
@@ -233,7 +233,7 @@ async def get_archangel_by_id(archangel_id: str):
 
 
 @router.post("/archangels/reading/guest")
-async def create_guest_archangel_reading(data: ArchangelReadingRequest):
+async def create_guest_archangel_reading(data: ArchangelReadingRequest) -> dict[str, Any]:
     """Create an archangel oracle reading without authentication."""
     num_cards = {"single": 1, "three_card": 3}.get(data.spread_type, 1)
     
@@ -265,7 +265,7 @@ async def create_guest_archangel_reading(data: ArchangelReadingRequest):
 async def create_archangel_reading(
     data: ArchangelReadingRequest,
     user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Create an archangel oracle reading (authenticated - saves to history)."""
     db = get_db()
     
@@ -300,7 +300,7 @@ async def create_archangel_reading(
 
 
 @router.get("/archangels/readings/history")
-async def get_archangel_readings(user: User = Depends(get_current_user)):
+async def get_archangel_readings(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
     """Get user's archangel reading history."""
     db = get_db()
     readings = await db.archangel_readings.find(
@@ -310,7 +310,7 @@ async def get_archangel_readings(user: User = Depends(get_current_user)):
     return readings
 
 
-async def generate_archangel_interpretation(cards: List[dict], question: Optional[str], spread_type: str) -> str:
+async def generate_archangel_interpretation(cards: List[dict[str, Any]], question: Optional[str], spread_type: str) -> str:
     """Generate AI interpretation for archangel oracle reading."""
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
@@ -361,7 +361,7 @@ Provide a loving, encouraging interpretation that:
         return generate_archangel_fallback(cards, question)
 
 
-def generate_archangel_fallback(cards: List[dict], question: Optional[str]) -> str:
+def generate_archangel_fallback(cards: List[dict[str, Any]], question: Optional[str]) -> str:
     """Generate a basic archangel interpretation without AI."""
     intro = "The Archangels have come forward with loving guidance for you.\n\n"
     if question:

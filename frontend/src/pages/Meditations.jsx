@@ -284,6 +284,11 @@ const Meditations = ({ user, api }) => {
                           ? `Verified references (${meditation.content_integrity.references_count || 0})`
                           : "Curated content"}
                       </p>
+                      {meditation.content_integrity?.last_reviewed_at && (
+                        <p className="text-[11px] text-muted-foreground" data-testid={`meditation-reviewed-at-${meditation.id}`}>
+                          Last reviewed: {new Date(meditation.content_integrity.last_reviewed_at).toLocaleDateString()}
+                        </p>
+                      )}
                     </div>
                   </motion.div>
                 );

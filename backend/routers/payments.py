@@ -1,7 +1,7 @@
 """Payment routes for Stripe and PayPal integration."""
 from fastapi import APIRouter, HTTPException, Request, Depends
 from pydantic import BaseModel
-from typing import Optional
+from typing import Any, Optional
 from datetime import datetime, timezone, timedelta
 import os
 import uuid
@@ -69,7 +69,7 @@ async def create_checkout_session(
     request: Request,
     payment_request: PaymentRequest,
     current_user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Create a Stripe checkout session for subscription or one-time payment."""
     db = get_db()
     
@@ -182,7 +182,7 @@ async def create_checkout_session(
 async def get_payment_status(
     session_id: str,
     current_user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Get the status of a payment session."""
     db = get_db()
     
@@ -271,15 +271,15 @@ async def create_paypal_order(
     request: Request,
     payment_request: PaymentRequest,
     current_user: User
-):
+) -> dict[str, Any]:
     """Create a PayPal order for payment."""
     db = get_db()
     
     paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
     paypal_secret = os.environ.get("PAYPAL_SECRET")
-    paypal_mode = os.environ.get("PAYPAL_MODE", "sandbox")
+    paypal_mode = os.environ.get("PAYPAL_MODE")
     
-    if not paypal_client_id or not paypal_secret:
+    if not paypal_client_id or not paypal_secret or not paypal_mode:
         raise HTTPException(status_code=500, detail="PayPal not configured")
     
     # Determine PayPal API URL
@@ -419,15 +419,15 @@ async def create_paypal_order(
 async def capture_paypal_order(
     order_id: str,
     current_user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Capture a PayPal order after user approval."""
     db = get_db()
     
     paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
     paypal_secret = os.environ.get("PAYPAL_SECRET")
-    paypal_mode = os.environ.get("PAYPAL_MODE", "sandbox")
+    paypal_mode = os.environ.get("PAYPAL_MODE")
     
-    if not paypal_client_id or not paypal_secret:
+    if not paypal_client_id or not paypal_secret or not paypal_mode:
         raise HTTPException(status_code=500, detail="PayPal not configured")
     
     if paypal_mode == "live":
@@ -514,7 +514,7 @@ async def capture_paypal_order(
         "payment_method": "paypal"
     }
 
-async def get_paypal_order_status(order_id: str, current_user: User):
+async def get_paypal_order_status(order_id: str, current_user: User) -> dict[str, Any]:
     """Get PayPal order status."""
     db = get_db()
     
@@ -534,7 +534,7 @@ async def get_paypal_order_status(order_id: str, current_user: User):
 # ============ SUBSCRIPTION & PURCHASE ROUTES ============
 
 @router.get("/subscription-status")
-async def get_subscription_status(current_user: User = Depends(get_current_user)):
+async def get_subscription_status(current_user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Check user's subscription status."""
     db = get_db()
     subscription = await db.user_subscriptions.find_one(
@@ -567,7 +567,7 @@ async def get_subscription_status(current_user: User = Depends(get_current_user)
     )
 
 @router.get("/my-purchases")
-async def get_my_purchases(current_user: User = Depends(get_current_user)):
+async def get_my_purchases(current_user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get user's purchase history."""
     db = get_db()
     purchases = await db.user_purchases.find(
@@ -590,7 +590,7 @@ async def check_product_access(
     product_type: str,
     product_id: str,
     current_user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Check if user has access to a specific product (course, retreat, etc.)."""
     db = get_db()
     
@@ -620,7 +620,7 @@ async def check_product_access(
     return {"has_access": False, "access_type": None}
 
 @router.get("/course-access")
-async def get_all_course_access(current_user: User = Depends(get_current_user)):
+async def get_all_course_access(current_user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get access status for all premium courses."""
     db = get_db()
     
@@ -652,7 +652,7 @@ async def get_all_course_access(current_user: User = Depends(get_current_user)):
     }
 
 @router.get("/plans")
-async def get_subscription_plans():
+async def get_subscription_plans() -> dict[str, Any]:
     """Get available subscription plans."""
     return {
         "plans": [
@@ -689,7 +689,7 @@ async def get_subscription_plans():
     }
 
 @router.get("/bundles")
-async def get_bundles():
+async def get_bundles() -> list[dict[str, Any]]:
     """Get available course bundles."""
     bundles = []
     for bundle_id, bundle_data in COURSE_BUNDLES.items():
@@ -706,7 +706,7 @@ async def get_bundles():
 # ============ WEBHOOK ROUTES ============
 
 @router.post("/webhook/stripe")
-async def stripe_webhook(request: Request):
+async def stripe_webhook(request: Request) -> dict[str, Any]:
     """Handle Stripe webhooks."""
     db = get_db()
     stripe_api_key = os.environ.get("STRIPE_API_KEY")
@@ -733,7 +733,7 @@ async def stripe_webhook(request: Request):
         return {"status": "error", "message": str(e)}
 
 @router.post("/webhook/paypal")
-async def paypal_webhook(request: Request):
+async def paypal_webhook(request: Request) -> dict[str, Any]:
     """Handle PayPal webhooks."""
     db = get_db()
     try:

@@ -1,7 +1,7 @@
 """Numerology and 13-month astrology routes."""
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Any, Optional, List
 from datetime import datetime, timezone
 import logging
 import uuid
@@ -253,13 +253,13 @@ class NumerologyRequest(BaseModel):
 
 
 @router.get("/numerology/life-paths")
-async def get_life_paths():
+async def get_life_paths() -> dict[int, dict[str, Any]]:
     """Get all life path meanings."""
     return LIFE_PATHS
 
 
 @router.post("/numerology/calculate")
-async def calculate_numerology_public(request: NumerologyRequest):
+async def calculate_numerology_public(request: NumerologyRequest) -> dict[str, Any]:
     """Calculate numerology reading without saving (public endpoint)."""
     try:
         life_path_number = calculate_life_path(request.birth_date)
@@ -316,7 +316,7 @@ async def calculate_numerology_public(request: NumerologyRequest):
 async def create_numerology_reading(
     request: NumerologyRequest,
     user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Calculate and save a numerology reading."""
     db = get_db()
     try:
@@ -385,7 +385,7 @@ async def create_numerology_reading(
 
 
 @router.get("/numerology/readings")
-async def get_numerology_readings(user: User = Depends(get_current_user)):
+async def get_numerology_readings(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
     """Get user's numerology reading history."""
     db = get_db()
     readings = await db.numerology_readings.find(
@@ -398,7 +398,7 @@ async def get_numerology_readings(user: User = Depends(get_current_user)):
 # ============ 13-MONTH ASTROLOGY ROUTES ============
 
 @router.get("/astrology/months")
-async def get_astrology_months():
+async def get_astrology_months() -> list[dict[str, Any]]:
     """Get all 13 lunar months from database."""
     db = get_db()
     months = await db.astrology_months.find({}, {"_id": 0}).sort("month_number", 1).to_list(length=20)
@@ -406,7 +406,7 @@ async def get_astrology_months():
 
 
 @router.get("/astrology/months/{month_id}")
-async def get_astrology_month(month_id: str):
+async def get_astrology_month(month_id: str) -> dict[str, Any]:
     """Get a specific lunar month from database."""
     db = get_db()
     month = await db.astrology_months.find_one({"id": month_id}, {"_id": 0})
@@ -416,7 +416,7 @@ async def get_astrology_month(month_id: str):
 
 
 @router.get("/astrology/current")
-async def get_current_month():
+async def get_current_month() -> dict[str, Any]:
     """Get the current lunar month based on today's date."""
     db = get_db()
     today = datetime.now()

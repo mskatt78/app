@@ -13,6 +13,8 @@ export const CourseCard = ({
   const integrityLabel = integrity.verified
     ? `Verified references (${integrity.references_count || 0})`
     : "Curated content";
+  const reviewedAt = integrity.last_reviewed_at ? new Date(integrity.last_reviewed_at) : null;
+  const reviewedLabel = reviewedAt && !Number.isNaN(reviewedAt.getTime()) ? reviewedAt.toLocaleDateString() : null;
 
   return (
     <motion.div
@@ -72,6 +74,11 @@ export const CourseCard = ({
         >
           {integrityLabel}
         </p>
+        {reviewedLabel && (
+          <p className="text-[11px] text-muted-foreground" data-testid={`course-reviewed-at-${course.id}`}>
+            Last reviewed: {reviewedLabel}
+          </p>
+        )}
 
         {course.price && (
           <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">

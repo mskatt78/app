@@ -1,6 +1,7 @@
 import os
 import uuid
 import requests
+import re
 from datetime import datetime, timezone, timedelta
 from typing import Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response, Request
@@ -22,6 +23,57 @@ EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY")
 APP_NAME = "shamanic-soul-temple"
 
 _storage_key = None
+
+SOURCE_AWARE_COLLECTIONS = {
+    "courses",
+    "meditations",
+    "breathwork_sessions",
+    "yoga_poses",
+    "mantras",
+    "mudras",
+    "sacred_guardians",
+}
+
+
+def _normalize_source_references(value: Any) -> list[str]:
+    if isinstance(value, str):
+        chunks = re.split(r"[\n,]", value)
+    elif isinstance(value, list):
+        chunks = value
+    else:
+        return []
+
+    refs: list[str] = []
+    seen: set[str] = set()
+    for item in chunks:
+        ref = str(item or "").strip()
+        if not ref:
+            continue
+        if not (ref.startswith("http://") or ref.startswith("https://")):
+            continue
+        if ref in seen:
+            continue
+        seen.add(ref)
+        refs.append(ref)
+    return refs
+
+
+def _normalize_admin_item_payload(collection: str, data: dict[str, Any]) -> dict[str, Any]:
+    normalized = {k: v for k, v in data.items() if k != "_id"}
+
+    if collection not in SOURCE_AWARE_COLLECTIONS:
+        return normalized
+
+    normalized["source_references"] = _normalize_source_references(normalized.get("source_references"))
+    normalized["source_type"] = str(normalized.get("source_type") or "hybrid-curated")
+
+    review_status = str(normalized.get("review_status") or "draft").strip().lower()
+    normalized["review_status"] = review_status
+
+    if review_status in {"reviewed", "verified", "approved"} and not normalized.get("last_reviewed_at"):
+        normalized["last_reviewed_at"] = datetime.now(timezone.utc).isoformat()
+
+    return normalized
 
 
 def _init_storage():
@@ -260,10 +312,11 @@ async def create_item(collection: str, data: dict, _: dict = Depends(_verify_adm
     db = get_router_db()
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
-    if "id" not in data or not data["id"]:
-        data["id"] = str(uuid.uuid4())[:8]
-    data["created_at"] = datetime.now(timezone.utc).isoformat()
-    clean = {k: v for k, v in data.items() if k != "_id"}
+    normalized = _normalize_admin_item_payload(collection, data)
+    if "id" not in normalized or not normalized["id"]:
+        normalized["id"] = str(uuid.uuid4())[:8]
+    normalized["created_at"] = datetime.now(timezone.utc).isoformat()
+    clean = normalized
     await db[collection].insert_one(clean.copy())
     return clean
 
@@ -273,9 +326,9 @@ async def update_item(collection: str, item_id: str, data: dict, _: dict = Depen
     db = get_router_db()
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
-    data.pop("_id", None)
-    data["updated_at"] = datetime.now(timezone.utc).isoformat()
-    result = await db[collection].update_one({"id": item_id}, {"$set": data})
+    normalized = _normalize_admin_item_payload(collection, data)
+    normalized["updated_at"] = datetime.now(timezone.utc).isoformat()
+    result = await db[collection].update_one({"id": item_id}, {"$set": normalized})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Item not found")
     updated = await db[collection].find_one({"id": item_id}, {"_id": 0})
@@ -308,7 +361,9 @@ async def upload_file(
 
     result = _put_object(path, data, content_type)
 
-    backend_url = os.environ.get("REACT_APP_BACKEND_URL", "")
+    backend_url = os.environ.get("REACT_APP_BACKEND_URL")
+    if not backend_url:
+        raise RuntimeError("REACT_APP_BACKEND_URL is not configured")
     public_url = f"{backend_url}/api/admin/files/{path}"
 
     doc = {

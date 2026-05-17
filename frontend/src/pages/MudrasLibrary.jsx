@@ -29,6 +29,13 @@ const MudrasLibrary = ({ user, api }) => {
 
   const placeholderImage = "https://images.pexels.com/photos/6867682/pexels-photo-6867682.jpeg?auto=compress&cs=tinysrgb&w=800";
 
+  const formatReviewedDate = (value) => {
+    if (!value) return null;
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toLocaleDateString();
+  };
+
   useEffect(() => {
     fetchMudras();
   }, []);
@@ -182,6 +189,17 @@ const MudrasLibrary = ({ user, api }) => {
                         </span>
                       ))}
                     </div>
+
+                    <p className="mt-2 text-[11px] text-cyan-300/90" data-testid={`mudra-integrity-${mudra.id}`}>
+                      {mudra.content_integrity?.verified
+                        ? `Verified references (${mudra.content_integrity.references_count || 0})`
+                        : "Curated content"}
+                    </p>
+                    {formatReviewedDate(mudra.content_integrity?.last_reviewed_at) && (
+                      <p className="text-[11px] text-muted-foreground mt-1" data-testid={`mudra-reviewed-at-${mudra.id}`}>
+                        Last reviewed: {formatReviewedDate(mudra.content_integrity?.last_reviewed_at)}
+                      </p>
+                    )}
                   </div>
                 </motion.div>
               );

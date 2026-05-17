@@ -34,6 +34,13 @@ const SacredGuardians = ({ user, api }) => {
   const [activeCategory, setActiveCategory] = useState("all");
   const [selected, setSelected] = useState(null);
 
+  const formatReviewedDate = (value) => {
+    if (!value) return null;
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return null;
+    return parsed.toLocaleDateString();
+  };
+
   useEffect(() => {
     fetchGuardians();
   }, []);
@@ -175,6 +182,11 @@ const SacredGuardians = ({ user, api }) => {
                     <div className="absolute bottom-0 left-0 right-0 p-3">
                       <h3 className="text-sm font-serif text-white font-semibold leading-tight">{guardian.name}</h3>
                       <p className={`text-xs ${catInfo.color} mt-0.5`}>{catInfo.label}</p>
+                      <p className="text-[10px] text-cyan-300/90 mt-1" data-testid={`guardian-integrity-${guardian.id}`}>
+                        {guardian.content_integrity?.verified
+                          ? `Verified references (${guardian.content_integrity.references_count || 0})`
+                          : "Curated content"}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -238,6 +250,11 @@ const SacredGuardians = ({ user, api }) => {
                   <h2 className="text-3xl font-serif text-white">{selected.name}</h2>
                   {selected.element && (
                     <p className="text-sm text-white/60 mt-1">Element: {selected.element}</p>
+                  )}
+                  {formatReviewedDate(selected.content_integrity?.last_reviewed_at) && (
+                    <p className="text-xs text-cyan-300/90 mt-1" data-testid="guardian-reviewed-at">
+                      Last reviewed: {formatReviewedDate(selected.content_integrity?.last_reviewed_at)}
+                    </p>
                   )}
                 </div>
               </div>
