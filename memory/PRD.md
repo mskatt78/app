@@ -12,6 +12,23 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Code Quality & Stability Hardening (Iteration 122, May 2026):**
+  - Frontend quality fixes:
+    - Eliminated remaining index-key anti-patterns in flagged files: `AdminSection.jsx`, `MeditationVisualizer.jsx`, `AdminFormFields.jsx`, `LiveSessions.jsx`, `GroundingPractices.jsx`, `FreeFormMovement.jsx`, `AncientWisdom.jsx`.
+    - Tightened route guard hook dependency safety in `routeGuards.jsx` (mounted refs, dependency completeness, backend URL dependency wiring).
+    - Added production console-noise suppression guard in `frontend/src/index.js` (log/info/debug/warn muted in production runtime).
+  - Backend complexity reduction pass:
+    - `content.py`: extracted helper layers for extension paragraph generation, LLM output post-processing, script floor extension/padding, and Wikipedia/Commons scoring/parsing helpers.
+    - `admin.py`: split standard seed collection loading into foundational + advanced helper loaders.
+    - `gifts.py`: extracted helper functions for payment metadata/transaction payload creation, PayPal order payload, approval URL extraction, gift redemption grant/notify flow.
+    - `birth_chart.py`: extracted house/angle entry builders and chart computation helper (`_compute_birth_chart`).
+    - `audio.py`: extracted API-key/validation/cache-key/audio generation helper functions.
+  - Router/config hardening:
+    - Registered `audio_router` in `server.py` so `/api/audio/voices` and `/api/audio/meditation-scripts` are live.
+  - Verification:
+    - `/app/test_reports/iteration_121.json`: frontend 100%, backend 94% before audio-router registration (2 pre-existing 404s).
+    - Post-fix backend verification confirms `/api/audio/voices`, `/api/audio/meditation-scripts`, and `/api/health` all return 200 with no 500s.
+
 - **Comprehensive Content Truth & Depth Remedy (Iteration 121, May 2026):**
   - Executed full user-requested batch (all 8 scope items):
     1. **Mudra image truth:**
