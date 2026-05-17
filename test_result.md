@@ -341,6 +341,54 @@ backend:
         comment: "✓ Light Codes API response is fully JSON serializable. No MongoDB ObjectId references or _id fields detected in response. Data shape is clean and safe for frontend consumption."
 
 frontend:
+  - task: "Crystals page image verification badges and card interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/CrystalGuide.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Crystals page (/crystals) tested successfully. 27 crystal cards loaded. All checked cards (5/5) display images with 'Verified image' badge. Iolite crystal card found and clicked. Detail dialog opens with 'Begin Guided Crystal Practice' button. Image fallback handling works correctly. No crashes detected."
+
+  - task: "Meditations page content integrity labels and guided overlay"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Meditations.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Meditations page (/meditations) tested successfully. 6 meditation cards loaded. All cards (3/3 checked) display content integrity label 'Curated content'. Clicking meditation card starts guided overlay successfully. Exit functionality works safely. No crashes detected."
+
+  - task: "Breathwork page content integrity labels and session player"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Breathwork.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Breathwork page (/breathwork) tested successfully. 6 breathwork session cards loaded. All cards (3/3 checked) display content integrity label 'Curated content'. Clicking session card opens session player panel with breathing circle and controls. Navigation back works correctly. No crashes detected."
+
+  - task: "Courses page content integrity labels and modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Courses.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Courses page (/courses) tested successfully. 3 course cards loaded. All cards (3/3) display content integrity label 'Curated content'. Clicking course card opens course detail modal successfully. Modal close functionality works correctly. No crashes detected."
+
   - task: "Light Codes page loads and category buttons work"
     implemented: true
     working: true
@@ -514,18 +562,68 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.4"
-  test_sequence: 5
+  version: "1.5"
+  test_sequence: 6
   run_ui: false
-  last_tested: "2026-04-09"
+  last_tested: "2026-05-17"
 
 test_plan:
   current_focus:
-    - "Backend integrity metadata verification completed"
-    - "All content_integrity and image_validation endpoints passing"
+    - "Frontend precision fixes verification completed"
+    - "All content integrity metadata and image verification working"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+  - agent: "testing"
+    message: |
+      Frontend Precision Fixes Verification completed successfully (2026-05-17):
+      
+      VERIFICATION REQUEST: Test live frontend for recent precision fixes on /crystals, /meditations, /breathwork, /courses pages
+      
+      ✅ ALL TESTS PASSED (4/4 pages):
+      
+      1. ✅ CRYSTALS PAGE (/crystals) - PASSED
+         - 27 crystal cards loaded and rendered correctly
+         - All checked cards (5/5) display images successfully
+         - All checked cards (5/5) show 'Verified image' badge on cards with verified Wikipedia images
+         - Iolite crystal card found and clicked successfully
+         - Crystal detail dialog opens correctly
+         - "Begin Guided Crystal Practice" button present and functional in dialog
+         - Dialog closes properly (Escape key works)
+         - Image fallback handling works (no crashes when image fails)
+      
+      2. ✅ MEDITATIONS PAGE (/meditations) - PASSED
+         - 6 meditation cards loaded successfully
+         - All checked cards (3/3) display content integrity label text: "Curated content"
+         - Clicking meditation card starts guided overlay successfully
+         - Guided practice overlay renders and functions correctly
+         - Exit functionality works safely (Escape key)
+         - No crashes or blocking issues
+      
+      3. ✅ BREATHWORK PAGE (/breathwork) - PASSED
+         - 6 breathwork session cards loaded successfully
+         - All checked cards (3/3) display content integrity label text: "Curated content"
+         - Clicking session card opens session player panel successfully
+         - Breathing circle and controls render correctly
+         - Navigation back from session player works correctly
+         - No crashes or blocking issues
+      
+      4. ✅ COURSES PAGE (/courses) - PASSED
+         - 3 course cards loaded successfully
+         - All cards (3/3) display content integrity label text: "Curated content"
+         - Clicking course card opens course detail modal successfully
+         - Modal renders with all content correctly
+         - Modal close functionality works (both close button and Escape key)
+         - No crashes or blocking issues
+      
+      5. ✅ CONSOLE ERRORS - NO CRITICAL ISSUES
+         - No runtime errors detected
+         - No crashes or blocking console errors
+         - All user flows working smoothly
+      
+      SUMMARY:
+      All frontend precision fixes verified and working correctly. Image verification badges display on crystal cards. Content integrity labels show on all content types (meditations, breathwork, courses). All interactive elements (cards, dialogs, modals, overlays) function properly. No blocking issues found. Frontend is production-ready.
 
 agent_communication:
   - agent: "testing"
