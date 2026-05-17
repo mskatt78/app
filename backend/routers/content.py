@@ -8,8 +8,10 @@ import re
 import secrets
 from typing import Any, Literal, Optional
 import uuid
+from urllib.parse import quote, urlparse
 
 from fastapi import APIRouter, HTTPException
+import httpx
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
 from .dependencies import get_db
@@ -22,6 +24,43 @@ TARGET_WORDS_PER_MINUTE = 120
 SEGMENT_TARGET_WORDS = 220
 FIRST_SEGMENT_TARGET_WORDS = 95
 MAX_PARAGRAPH_STEM_REPEAT_RATIO = 0.12
+
+WIKIPEDIA_SUMMARY_ENDPOINT = "https://en.wikipedia.org/api/rest_v1/page/summary/{}"
+WIKIPEDIA_CLIENT_TIMEOUT_SECONDS = 8.0
+CRYSTAL_IMAGE_CACHE_TTL_HOURS = 72
+CRYSTAL_IMAGE_VALIDATION_COLLECTION = "crystal_image_validations"
+CRYSTAL_IMAGE_KEYWORDS = ("crystal", "mineral", "gem", "gemstone", "silicate", "rock")
+WIKIPEDIA_IMAGE_HOST_ALLOWLIST = ("upload.wikimedia.org", "commons.wikimedia.org", "wikipedia.org", "wikimedia.org")
+
+CRYSTAL_WIKIPEDIA_TITLE_MAP = {
+    "clear-quartz": "Quartz",
+    "amethyst": "Amethyst",
+    "rose-quartz": "Rose quartz",
+    "black-tourmaline": "Schorl",
+    "citrine": "Citrine",
+    "selenite": "Selenite (mineral)",
+    "labradorite": "Labradorite",
+    "obsidian": "Obsidian",
+    "carnelian": "Carnelian",
+    "lapis-lazuli": "Lapis lazuli",
+    "moonstone": "Moonstone (gemstone)",
+    "turquoise": "Turquoise",
+    "malachite": "Malachite",
+    "green-aventurine": "Aventurine",
+    "tigers-eye": "Tiger's eye",
+    "lepidolite": "Lepidolite",
+    "rhodonite": "Rhodonite",
+    "fluorite": "Fluorite",
+    "chrysocolla": "Chrysocolla",
+    "sunstone": "Sunstone (mineral)",
+    "aquamarine": "Aquamarine (gemstone)",
+    "kunzite": "Kunzite",
+    "iolite": "Cordierite",
+    "amazonite": "Amazonite",
+    "howlite": "Howlite",
+    "kyanite": "Kyanite",
+    "angelite": "Anhydrite",
+}
 
 MOON_GUIDANCE = {
     "new_moon": {"theme": "New Beginnings & Intention Setting", "energy": "introspective", "focus": ["womb", "shadow", "rest"]},
@@ -966,6 +1005,278 @@ async def get_breathwork_session(session_id: str):
 
 # ============ CRYSTALS ROUTES ============
 
+def _normalized_token_set(value: str) -> set[str]:
+    return set(re.findall(r"[a-z0-9]+", str(value or "").lower()))
+
+
+def _token_similarity(left: str, right: str) -> float:
+    left_tokens = _normalized_token_set(left)
+    right_tokens = _normalized_token_set(right)
+    if not left_tokens or not right_tokens:
+        return 0.0
+    overlap = len(left_tokens.intersection(right_tokens))
+    return overlap / max(len(left_tokens), len(right_tokens))
+
+
+def _looks_like_wikipedia_image(url: str | None) -> bool:
+    if not url:
+        return False
+    try:
+        parsed = urlparse(url)
+        host = parsed.netloc.lower()
+        if parsed.scheme not in {"https", "http"}:
+            return False
+        return any(host.endswith(allowed) for allowed in WIKIPEDIA_IMAGE_HOST_ALLOWLIST)
+    except Exception:
+        return False
+
+
+def _extract_wikipedia_image(summary: dict[str, Any]) -> str | None:
+    original = summary.get("originalimage") or {}
+    if isinstance(original, dict) and original.get("source"):
+        return str(original.get("source"))
+
+    thumbnail = summary.get("thumbnail") or {}
+    if isinstance(thumbnail, dict) and thumbnail.get("source"):
+        return str(thumbnail.get("source"))
+    return None
+
+
+def _build_wikipedia_title_candidates(crystal: dict[str, Any]) -> list[str]:
+    crystal_id = str(crystal.get("id") or "").strip().lower()
+    crystal_name = str(crystal.get("name") or "").strip()
+    mapped_title = CRYSTAL_WIKIPEDIA_TITLE_MAP.get(crystal_id)
+
+    candidates: list[str] = []
+    if mapped_title:
+        candidates.append(mapped_title)
+    if crystal_name:
+        candidates.append(crystal_name)
+    if crystal_id:
+        candidates.append(crystal_id.replace("-", " "))
+
+    de_duped: list[str] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        normalized = candidate.lower().strip()
+        if normalized and normalized not in seen:
+            seen.add(normalized)
+            de_duped.append(candidate)
+    return de_duped
+
+
+def _compute_wikipedia_match_score(crystal: dict[str, Any], summary: dict[str, Any], image_url: str | None) -> float:
+    crystal_name = str(crystal.get("name") or "")
+    crystal_id = str(crystal.get("id") or "").replace("-", " ")
+    summary_title = str(summary.get("title") or "")
+    summary_text = " ".join(
+        [
+            str(summary.get("description") or ""),
+            str(summary.get("extract") or ""),
+            str(summary.get("type") or ""),
+        ]
+    ).lower()
+
+    title_score = max(
+        _token_similarity(crystal_name, summary_title),
+        _token_similarity(crystal_id, summary_title),
+    )
+    context_score = 1.0 if any(keyword in summary_text for keyword in CRYSTAL_IMAGE_KEYWORDS) else 0.0
+    image_score = 1.0 if _looks_like_wikipedia_image(image_url) else 0.0
+    is_disambiguation = str(summary.get("type") or "").lower() == "disambiguation"
+
+    weighted = (title_score * 0.55) + (context_score * 0.25) + (image_score * 0.20)
+    if is_disambiguation:
+        weighted -= 0.35
+    return max(0.0, min(1.0, weighted))
+
+
+async def _fetch_wikipedia_summary(title: str) -> dict[str, Any] | None:
+    encoded_title = quote(title.replace(" ", "_"), safe="")
+    headers = {
+        "Accept": "application/json",
+        "User-Agent": "ShamanicSoulTempleCrystalVerifier/1.0 (support@shamanic-elements.app)",
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=WIKIPEDIA_CLIENT_TIMEOUT_SECONDS) as client:
+            response = await client.get(WIKIPEDIA_SUMMARY_ENDPOINT.format(encoded_title), headers=headers)
+            if response.status_code == 404:
+                return None
+            response.raise_for_status()
+            payload = response.json()
+            if isinstance(payload, dict):
+                return payload
+            return None
+    except Exception as exc:
+        logger.warning("Wikipedia summary fetch failed for %s: %s", title, exc)
+        return None
+
+
+def _build_image_validation_payload(
+    status: str,
+    score: float,
+    source_type: str,
+    wikipedia_title: str | None = None,
+    wikipedia_page_url: str | None = None,
+) -> dict[str, Any]:
+    return {
+        "status": status,
+        "score": round(score, 4),
+        "source_type": source_type,
+        "wikipedia_title": wikipedia_title,
+        "wikipedia_page_url": wikipedia_page_url,
+        "validated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def _apply_image_resolution(
+    crystal: dict[str, Any],
+    resolved_image_url: str | None,
+    source_type: str,
+    validation: dict[str, Any],
+) -> dict[str, Any]:
+    enriched = dict(crystal)
+    original_image_url = crystal.get("image_url")
+
+    enriched["image_url_original"] = original_image_url
+    enriched["image_url_resolved"] = resolved_image_url or original_image_url
+    enriched["verified_image_url"] = resolved_image_url if source_type == "wikipedia_verified" else None
+    enriched["image_source"] = source_type
+    enriched["image_validation"] = validation
+
+    if resolved_image_url:
+        enriched["image_url"] = resolved_image_url
+
+    return enriched
+
+
+async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
+    crystal_id = str(crystal.get("id") or "").strip().lower()
+    now = datetime.now(timezone.utc)
+    cache_collection = db[CRYSTAL_IMAGE_VALIDATION_COLLECTION]
+
+    if crystal_id:
+        cached = await cache_collection.find_one({"crystal_id": crystal_id}, {"_id": 0})
+        if cached:
+            cached_at = cached.get("updated_at")
+            if isinstance(cached_at, datetime):
+                if cached_at.tzinfo is None:
+                    cached_at = cached_at.replace(tzinfo=timezone.utc)
+                age_hours = (now - cached_at).total_seconds() / 3600
+                cached_validation = cached.get("validation") or {}
+                cached_status = str(cached_validation.get("status") or "")
+                cached_score = float(cached.get("score") or 0.0)
+                cached_source = str(cached.get("source_type") or "")
+                should_use_cache = (
+                    age_hours <= CRYSTAL_IMAGE_CACHE_TTL_HOURS
+                    and cached_score > 0.05
+                    and (cached_status == "verified" or cached_source == "wikipedia_verified")
+                )
+                if should_use_cache:
+                    validation = cached.get("validation") or _build_image_validation_payload(
+                        status="cached",
+                        score=float(cached.get("score") or 0.0),
+                        source_type=str(cached.get("source_type") or "catalog_original"),
+                        wikipedia_title=cached.get("wikipedia_title"),
+                        wikipedia_page_url=cached.get("wikipedia_page_url"),
+                    )
+                    return _apply_image_resolution(
+                        crystal,
+                        cached.get("resolved_image_url"),
+                        str(cached.get("source_type") or "catalog_original"),
+                        validation,
+                    )
+
+    candidates = _build_wikipedia_title_candidates(crystal)
+    mapped_title = CRYSTAL_WIKIPEDIA_TITLE_MAP.get(crystal_id)
+    best_match: dict[str, Any] | None = None
+    best_score = 0.0
+    best_has_image = False
+
+    for candidate_title in candidates:
+        summary = await _fetch_wikipedia_summary(candidate_title)
+        if not summary:
+            continue
+
+        image_url = _extract_wikipedia_image(summary)
+        score = _compute_wikipedia_match_score(crystal, summary, image_url)
+        if mapped_title and candidate_title.strip().lower() == mapped_title.strip().lower() and image_url:
+            score = max(score, 0.66)
+        candidate_has_image = bool(image_url)
+        if score > best_score or (candidate_has_image and not best_has_image and score >= (best_score - 0.12)):
+            best_score = score
+            best_has_image = candidate_has_image
+            best_match = {
+                "summary": summary,
+                "image_url": image_url,
+            }
+
+    source_type = "catalog_original"
+    resolved_image_url = crystal.get("image_url")
+    wikipedia_title: str | None = None
+    wikipedia_page_url: str | None = None
+    status = "review"
+
+    if best_match and best_match.get("image_url") and best_score >= 0.58:
+        summary = best_match["summary"]
+        source_type = "wikipedia_verified"
+        resolved_image_url = best_match.get("image_url")
+        wikipedia_title = summary.get("title")
+        desktop_urls = summary.get("content_urls", {}).get("desktop", {}) if isinstance(summary.get("content_urls"), dict) else {}
+        wikipedia_page_url = desktop_urls.get("page") if isinstance(desktop_urls, dict) else None
+        status = "verified"
+    elif not resolved_image_url:
+        source_type = "missing"
+        status = "missing"
+
+    validation = _build_image_validation_payload(
+        status=status,
+        score=best_score,
+        source_type=source_type,
+        wikipedia_title=wikipedia_title,
+        wikipedia_page_url=wikipedia_page_url,
+    )
+
+    if crystal_id:
+        await cache_collection.update_one(
+            {"crystal_id": crystal_id},
+            {
+                "$set": {
+                    "crystal_id": crystal_id,
+                    "source_type": source_type,
+                    "resolved_image_url": resolved_image_url,
+                    "wikipedia_title": wikipedia_title,
+                    "wikipedia_page_url": wikipedia_page_url,
+                    "score": round(best_score, 4),
+                    "validation": validation,
+                    "updated_at": now,
+                }
+            },
+            upsert=True,
+        )
+
+    return _apply_image_resolution(crystal, resolved_image_url, source_type, validation)
+
+
+async def _enrich_crystals_with_verified_images(crystals: list[dict[str, Any]], db) -> list[dict[str, Any]]:
+    semaphore = asyncio.Semaphore(6)
+
+    async def _enrich_single(crystal: dict[str, Any]) -> dict[str, Any]:
+        async with semaphore:
+            try:
+                return await _resolve_crystal_image(crystal, db)
+            except Exception as exc:
+                logger.warning("Crystal image enrichment failed for %s: %s", crystal.get("id"), exc)
+                fallback_validation = _build_image_validation_payload(
+                    status="fallback",
+                    score=0.0,
+                    source_type="catalog_original",
+                )
+                return _apply_image_resolution(crystal, crystal.get("image_url"), "catalog_original", fallback_validation)
+
+    return await asyncio.gather(*[_enrich_single(crystal) for crystal in crystals])
+
 @router.get("/crystals")
 async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = None):
     """Get crystals from database, optionally filtered by element or chakra."""
@@ -987,8 +1298,8 @@ async def get_deep_crystals():
     crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=50)
     if not crystals:
         from data.crystals_deep import CRYSTALS_DEEP
-        return CRYSTALS_DEEP
-    return crystals
+        crystals = CRYSTALS_DEEP
+    return await _enrich_crystals_with_verified_images(crystals, db)
 
 
 @router.get("/crystals/deep/{crystal_id}")
@@ -1000,9 +1311,9 @@ async def get_deep_crystal(crystal_id: str):
         from data.crystals_deep import CRYSTALS_DEEP
         for c in CRYSTALS_DEEP:
             if c["id"] == crystal_id:
-                return c
+                return await _resolve_crystal_image(c, db)
         raise HTTPException(status_code=404, detail="Crystal not found")
-    return crystal
+    return await _resolve_crystal_image(crystal, db)
 
 
 @router.get("/crystals/{crystal_id}")

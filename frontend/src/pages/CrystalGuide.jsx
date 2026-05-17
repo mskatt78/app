@@ -22,16 +22,6 @@ const toSlug = (value) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
-const DEFAULT_FALLBACK_IMAGE = "https://images.unsplash.com/photo-1562162115-54cc44600875?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHw0fHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85";
-
-const ELEMENT_FALLBACK_IMAGES = {
-  Earth: "https://images.unsplash.com/photo-1755375478369-f0d865a7937d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwyfHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
-  Water: "https://images.unsplash.com/photo-1591150584397-1b94f5b8a174?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwxfHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
-  Fire: "https://images.unsplash.com/photo-1679669693237-74d556d6b5ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwzfHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
-  Air: "https://images.unsplash.com/photo-1562162115-54cc44600875?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHw0fHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
-  Spirit: "https://images.unsplash.com/photo-1679669693237-74d556d6b5ba?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MTJ8MHwxfHNlYXJjaHwzfHxoZWFsaW5nJTIwY3J5c3RhbCUyMHN0b25lcyUyMGRhcmslMjBiYWNrZ3JvdW5kfGVufDB8fHx8MTc3NTcwNDUyOHww&ixlib=rb-4.1.0&q=85",
-};
-
 const isLikelyBrokenLegacyImage = (url) => {
   if (!url) return true;
   try {
@@ -42,6 +32,29 @@ const isLikelyBrokenLegacyImage = (url) => {
   } catch {
     return true;
   }
+};
+
+const isValidImageUrl = (url) => {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return ["http:", "https:"].includes(parsed.protocol);
+  } catch {
+    return false;
+  }
+};
+
+const getImageValidationState = (crystal) => {
+  const validation = crystal?.image_validation;
+  if (!validation) {
+    return { label: "Unverified image", style: "text-amber-300 bg-amber-500/10 border-amber-500/30" };
+  }
+
+  if (validation.status === "verified" && crystal?.image_source === "wikipedia_verified") {
+    return { label: "Verified image", style: "text-emerald-300 bg-emerald-500/10 border-emerald-500/30" };
+  }
+
+  return { label: "Needs review", style: "text-amber-300 bg-amber-500/10 border-amber-500/30" };
 };
 
 const CrystalGuide = ({ user, api }) => {
@@ -144,13 +157,19 @@ const CrystalGuide = ({ user, api }) => {
     const id = crystal?.id;
     if (!id) return { src: null, sourceType: null };
 
-    if (crystal.image_url && !brokenPrimaryImages[id] && !isLikelyBrokenLegacyImage(crystal.image_url)) {
-      return { src: crystal.image_url, sourceType: "primary" };
+    const resolvedImage = crystal.image_url_resolved || crystal.verified_image_url;
+    if (resolvedImage && !brokenPrimaryImages[id] && isValidImageUrl(resolvedImage)) {
+      return { src: resolvedImage, sourceType: "primary" };
     }
 
-    const fallback = ELEMENT_FALLBACK_IMAGES[crystal.element] || DEFAULT_FALLBACK_IMAGE;
-    if (fallback && !brokenFallbackImages[id]) {
-      return { src: fallback, sourceType: "fallback" };
+    const originalImage = crystal.image_url_original || crystal.image_url;
+    if (
+      originalImage &&
+      !brokenFallbackImages[id] &&
+      isValidImageUrl(originalImage) &&
+      !isLikelyBrokenLegacyImage(originalImage)
+    ) {
+      return { src: originalImage, sourceType: "fallback" };
     }
 
     return { src: null, sourceType: null };
@@ -238,6 +257,7 @@ const CrystalGuide = ({ user, api }) => {
               {filteredCrystals.map((crystal, index) => {
                 const colors = elementColors[crystal.element] || elementColors.Spirit;
                 const imageConfig = getImageConfig(crystal);
+                const imageValidation = getImageValidationState(crystal);
                 return (
                   <motion.div
                     key={crystal.id}
@@ -260,8 +280,14 @@ const CrystalGuide = ({ user, api }) => {
                           data-testid={`crystal-image-${crystal.id}`}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-                        <span className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm`}>
+                        <span className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm`} data-testid={`crystal-element-badge-${crystal.id}`}>
                           {crystal.element}
+                        </span>
+                        <span
+                          className={`absolute bottom-3 left-3 px-2 py-1 rounded-full text-[10px] border backdrop-blur-sm ${imageValidation.style}`}
+                          data-testid={`crystal-image-validation-${crystal.id}`}
+                        >
+                          {imageValidation.label}
                         </span>
                       </div>
                     )}
@@ -276,6 +302,11 @@ const CrystalGuide = ({ user, api }) => {
                       )}
                       <p className={`text-xs ${colors.text} mb-1`}>{crystal.title}</p>
                       <h3 className="text-lg font-serif mb-2">{crystal.name}</h3>
+                      {!imageConfig.src && (
+                        <p className="text-xs text-amber-300/90 mb-2" data-testid={`crystal-image-missing-${crystal.id}`}>
+                          Image unavailable — add or validate in Admin.
+                        </p>
+                      )}
                       {/* Chakra tags */}
                       <div className="flex flex-wrap gap-1 mb-2">
                         {(crystal.chakra ? [crystal.chakra] : []).slice(0, 2).map(c => (
