@@ -12,6 +12,32 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Comprehensive Content Truth & Depth Remedy (Iteration 121, May 2026):**
+  - Executed full user-requested batch (all 8 scope items):
+    1. **Mudra image truth:**
+       - Added verified-image pipeline for mudras with explicit status (`verified` vs `awaiting_verification`).
+       - Verified mudras now resolve to factual Wikipedia-hosted images; unverified mudras explicitly hide non-verified visuals and show review state.
+    2. **Light Codes expansion:**
+       - Added `linguistic_foundations` and `symbol_lineage_notes` to light-codes payload and rendered both sections in UI.
+    3. **Energy Healing depth:**
+       - Added `ritual_tools`, `meridian_functions`, and `body_ailment_connections` fields to energy-healing payload and displayed in modal.
+    4. **Ancient Wisdom depth:**
+       - Added `expanded_context` enrichment for entries and surfaced context in detail modal.
+    5. **Shamanic + Elemental linking:**
+       - Added `linked_practices` enrichment and visible pathway counters on cards.
+    6. **Mindfulness expansion + linkage:**
+       - Added supplemental mindfulness practices and linked-practice metadata.
+       - Added alias endpoint `/api/mindfulness-practices` alongside `/api/mindfulness`.
+    7. **Water practices expansion:**
+       - Added supplemental practices (auric rinse, meridian soak, moon infusion) with full step/benefit structures.
+    8. **Sunrise/Sunset and daily flow enrichment:**
+       - Expanded Sunrise/Sunset practice catalog in UI.
+       - Added dashboard daily response enrichments (`yoga_sequence_of_day`, `sunrise_sunset_guidance`).
+  - Additional stability carried forward:
+    - Iolite correction remains stable (`File:Iolite.JPG`) and no cluster mismatch regression.
+  - Validation:
+    - `/app/test_reports/iteration_120.json` => backend **100% (23/23)**, frontend **100%** across all targeted pages/features; no blockers.
+
 - **Daily Guidance Crystal Truth Hotfix (Iteration 120, May 2026):**
   - Root-cause identified: dashboard daily guidance crystal card used `users/dashboard/daily` crystal sourcing from `db.crystals` (legacy image set), not the verified deep-crystal resolver pipeline.
   - Fixes applied:
