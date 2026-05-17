@@ -693,17 +693,79 @@ frontend:
         agent: "testing"
         comment: "✓ Install prompt infrastructure verified. Install prompt elements detected on landing page. Service Worker registration working correctly. PWA install functionality available from landing/top nav path. Test PASSED."
 
+
+  - task: "Ancient Wisdom page integrity labels and modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AncientWisdom.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Ancient Wisdom page (/ancient-wisdom) tested successfully. 110 ancient wisdom entry cards loaded. All checked cards (5/5) display content integrity label 'Curated content'. Integrity labels visible with data-testid='ancient-wisdom-integrity-{id}'. Clicking entry card opens detail modal successfully with data-testid='wisdom-detail-modal'. Modal close functionality works correctly. No crashes detected. Provenance rollout verified."
+
+  - task: "Shamanic Practices page integrity labels and modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ShamanicPractices.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Shamanic Practices page (/shamanic-practices) tested successfully. 22 shamanic practice cards loaded. All checked cards (5/5) display content integrity label 'Curated content'. Integrity labels visible with data-testid='shamanic-integrity-{id}'. Optional reviewed date field present with data-testid='shamanic-reviewed-at-{id}' (no dates found in current data). Clicking practice card opens detail modal successfully with data-testid='practice-modal'. Modal close functionality works correctly. No crashes detected. Provenance rollout verified."
+
+  - task: "Elemental Practices page integrity labels and modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ElementalPractices.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Elemental Practices page (/elemental-practices) tested successfully. 15 elemental practice cards loaded. All checked cards (5/5) display content integrity label 'Curated content'. Integrity labels visible with data-testid='elemental-integrity-{id}'. Optional reviewed date field present with data-testid='elemental-reviewed-at-{id}'. Clicking practice card opens detail modal successfully with data-testid='practice-modal'. Minor: Escape key doesn't close modal (but close button works). No crashes detected. Provenance rollout verified."
+
+  - task: "Heart Practices page integrity labels and modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/HeartPractices.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Heart Practices page (/heart-practices) tested successfully. 10 heart practice cards loaded. All checked cards (5/5) display content integrity label 'Curated content'. Integrity labels visible with data-testid='heart-integrity-{id}'. Optional reviewed date field present with data-testid='heart-reviewed-at-{id}'. Clicking practice card opens detail modal successfully with data-testid='practice-modal'. Minor: Escape key doesn't close modal (but close button works). No crashes detected. Provenance rollout verified."
+
+  - task: "Sanity check - Courses, Meditations, Breathwork pages still working"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Courses.jsx, /app/frontend/src/pages/Meditations.jsx, /app/frontend/src/pages/Breathwork.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Sanity check completed for previously tested pages. /courses: 3 course cards loaded, integrity labels present. /meditations: 6 meditation cards loaded, integrity labels present. /breathwork: 6 breathwork session cards loaded, integrity labels present ('Curated content' found 6 times). All pages load correctly and display integrity labels. No regressions detected."
+
 metadata:
   created_by: "testing_agent"
-  version: "1.5"
-  test_sequence: 6
+  version: "1.6"
+  test_sequence: 7
   run_ui: false
   last_tested: "2026-05-17"
 
 test_plan:
   current_focus:
-    - "Frontend precision fixes verification completed"
-    - "All content integrity metadata and image verification working"
+    - "Provenance rollout frontend verification completed"
+    - "All practice pages (ancient-wisdom, shamanic, elemental, heart) integrity labels working"
+    - "Sanity checks passed for courses, meditations, breathwork"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -757,6 +819,74 @@ test_plan:
       
       SUMMARY:
       All frontend precision fixes verified and working correctly. Image verification badges display on crystal cards. Content integrity labels show on all content types (meditations, breathwork, courses). All interactive elements (cards, dialogs, modals, overlays) function properly. No blocking issues found. Frontend is production-ready.
+
+
+  - agent: "testing"
+    message: |
+      Frontend Provenance Rollout Verification completed successfully (2026-05-17):
+      
+      VERIFICATION REQUEST: Test pages after latest refactor/provenance rollout
+      Base URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (7/7 pages):
+      
+      1. ✅ ANCIENT WISDOM PAGE (/ancient-wisdom) - PASSED
+         - 110 ancient wisdom entry cards loaded successfully
+         - All checked cards (5/5) display content integrity label: "Curated content"
+         - Integrity labels correctly implemented with data-testid="ancient-wisdom-integrity-{id}"
+         - Card click opens detail modal successfully (data-testid="wisdom-detail-modal")
+         - Modal close functionality works correctly
+         - No UI crashes or blocking issues
+      
+      2. ✅ SHAMANIC PRACTICES PAGE (/shamanic-practices) - PASSED
+         - 22 shamanic practice cards loaded successfully
+         - All checked cards (5/5) display content integrity label: "Curated content"
+         - Integrity labels correctly implemented with data-testid="shamanic-integrity-{id}"
+         - Optional reviewed date field present (data-testid="shamanic-reviewed-at-{id}") - no dates in current data
+         - Card click opens detail panel/modal successfully (data-testid="practice-modal")
+         - Modal close functionality works correctly
+         - No UI crashes or blocking issues
+      
+      3. ✅ ELEMENTAL PRACTICES PAGE (/elemental-practices) - PASSED
+         - 15 elemental practice cards loaded successfully
+         - All checked cards (5/5) display content integrity label: "Curated content"
+         - Integrity labels correctly implemented with data-testid="elemental-integrity-{id}"
+         - Optional reviewed date field present (data-testid="elemental-reviewed-at-{id}")
+         - Card click opens detail modal successfully (data-testid="practice-modal")
+         - Minor: Escape key doesn't close modal (but close button works)
+         - No UI crashes or blocking issues
+      
+      4. ✅ HEART PRACTICES PAGE (/heart-practices) - PASSED
+         - 10 heart practice cards loaded successfully
+         - All checked cards (5/5) display content integrity label: "Curated content"
+         - Integrity labels correctly implemented with data-testid="heart-integrity-{id}"
+         - Optional reviewed date field present (data-testid="heart-reviewed-at-{id}")
+         - Card click opens detail modal successfully (data-testid="practice-modal")
+         - Minor: Escape key doesn't close modal (but close button works)
+         - No UI crashes or blocking issues
+      
+      5. ✅ SANITY CHECK - COURSES PAGE (/courses) - PASSED
+         - 3 course cards loaded successfully
+         - Integrity labels present: "Curated content"
+         - Page loads correctly, no regressions
+      
+      6. ✅ SANITY CHECK - MEDITATIONS PAGE (/meditations) - PASSED
+         - 6 meditation cards loaded successfully
+         - Integrity labels present: "Curated content"
+         - Page loads correctly, no regressions
+      
+      7. ✅ SANITY CHECK - BREATHWORK PAGE (/breathwork) - PASSED
+         - 6 breathwork session cards loaded successfully
+         - Integrity labels present: "Curated content" (found 6 times)
+         - All expected sessions visible (Earth Grounding Breath, Fire Breath, Ocean Breath, Wind Clearing Breath)
+         - Page loads correctly, no regressions
+      
+      MINOR ISSUES (NON-BLOCKING):
+      - Elemental and Heart practices modals don't respond to Escape key (but close button works)
+      - Console shows 401 auth errors (expected for unauthenticated public routes)
+      
+      SUMMARY:
+      All provenance rollout features verified and working correctly. Integrity labels display on all practice pages (ancient-wisdom, shamanic-practices, elemental-practices, heart-practices). All card interactions work (modals open successfully). Sanity checks passed for previously tested pages (courses, meditations, breathwork). No blocking issues found. Frontend is production-ready with complete provenance metadata implementation.
 
 agent_communication:
   - agent: "testing"
