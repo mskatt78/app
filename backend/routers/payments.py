@@ -62,6 +62,156 @@ class PayPalOrderRequest(BaseModel):
     plan_id: Optional[str] = None
     origin_url: str
 
+
+def _get_paypal_api_base(paypal_mode: str) -> str:
+    return "https://api-m.paypal.com" if paypal_mode == "live" else "https://api-m.sandbox.paypal.com"
+
+
+def _subscription_expiry_from_interval(interval: str) -> datetime:
+    days = 365 if interval == "year" else 30
+    return datetime.now(timezone.utc) + timedelta(days=days)
+
+
+def _is_subscription_active_record(subscription: Optional[dict[str, Any]]) -> bool:
+    if not subscription:
+        return False
+    expires_at = subscription.get("expires_at")
+    if not expires_at:
+        return False
+    expiry = datetime.fromisoformat(str(expires_at).replace("Z", "+00:00"))
+    return expiry > datetime.now(timezone.utc)
+
+
+async def _has_active_subscription(db: Any, user_id: str) -> bool:
+    subscription = await db.user_subscriptions.find_one({"user_id": user_id, "status": "active"}, {"_id": 0})
+    return _is_subscription_active_record(subscription)
+
+
+async def _activate_subscription(db: Any, user_id: str, plan_id: Optional[str], interval: str) -> None:
+    expires_at = _subscription_expiry_from_interval(interval)
+    await db.user_subscriptions.update_one(
+        {"user_id": user_id},
+        {
+            "$set": {
+                "user_id": user_id,
+                "plan_id": plan_id,
+                "status": "active",
+                "expires_at": expires_at.isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            }
+        },
+        upsert=True,
+    )
+
+
+async def _grant_purchase_access(db: Any, user_id: str, transaction: dict[str, Any]) -> None:
+    if transaction.get("product_type") == "bundle":
+        bundle_courses = str(transaction.get("metadata", {}).get("bundle_courses", ""))
+        if not bundle_courses:
+            return
+        for course_id in [c.strip() for c in bundle_courses.split(",") if c.strip()]:
+            await db.user_purchases.insert_one(
+                {
+                    "user_id": user_id,
+                    "product_type": "course",
+                    "product_id": course_id,
+                    "bundle_id": transaction.get("product_id"),
+                    "purchased_at": datetime.now(timezone.utc).isoformat(),
+                }
+            )
+        return
+
+    await db.user_purchases.insert_one(
+        {
+            "user_id": user_id,
+            "product_type": transaction.get("product_type"),
+            "product_id": transaction.get("product_id"),
+            "purchased_at": datetime.now(timezone.utc).isoformat(),
+        }
+    )
+
+
+async def _grant_transaction_entitlements(db: Any, user_id: str, transaction: dict[str, Any]) -> None:
+    if transaction.get("product_type") == "subscription":
+        interval = str(transaction.get("metadata", {}).get("interval", "month"))
+        await _activate_subscription(db, user_id, transaction.get("plan_id"), interval)
+        return
+
+    if transaction.get("product_type") in PRODUCT_TYPES:
+        await _grant_purchase_access(db, user_id, transaction)
+
+
+async def _resolve_payment_context(
+    db: Any,
+    payment_request: PaymentRequest,
+    current_user: User,
+) -> tuple[float, str, dict[str, Any]]:
+    amount = 0.0
+    product_name = ""
+    metadata: dict[str, Any] = {
+        "user_id": current_user.user_id,
+        "user_email": current_user.email,
+        "product_type": payment_request.product_type,
+    }
+
+    if payment_request.product_type == "subscription":
+        if payment_request.plan_id not in SUBSCRIPTION_PLANS:
+            raise HTTPException(status_code=400, detail="Invalid subscription plan")
+        plan = SUBSCRIPTION_PLANS[payment_request.plan_id]
+        amount = float(plan["price"])
+        product_name = str(plan["name"])
+        metadata["plan_id"] = payment_request.plan_id
+        metadata["interval"] = plan["interval"]
+        return amount, product_name, metadata
+
+    if payment_request.product_type == "bundle":
+        if not payment_request.product_id or payment_request.product_id not in COURSE_BUNDLES:
+            raise HTTPException(status_code=400, detail="Invalid bundle ID")
+        bundle = COURSE_BUNDLES[payment_request.product_id]
+        amount = float(bundle["price"])
+        product_name = str(bundle["name"])
+        metadata["product_id"] = payment_request.product_id
+        metadata["bundle_courses"] = ",".join(bundle["courses"])
+        return amount, product_name, metadata
+
+    if not payment_request.product_id:
+        raise HTTPException(status_code=400, detail="Product ID required")
+
+    collection_map = {
+        "retreat": "retreats",
+        "course": "courses",
+        "live_session": "live_sessions",
+        "book": "books",
+    }
+    collection = collection_map.get(payment_request.product_type)
+    if not collection:
+        raise HTTPException(status_code=400, detail="Invalid product type")
+
+    product = await db[collection].find_one({"id": payment_request.product_id}, {"_id": 0})
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+
+    amount = float(product.get("price", 0))
+    if amount <= 0:
+        raise HTTPException(status_code=400, detail="Product has no price set")
+
+    product_name = product.get("title") or product.get("name", "Product")
+    metadata["product_id"] = payment_request.product_id
+    return amount, str(product_name), metadata
+
+
+async def _create_paypal_access_token(paypal_api: str, client_id: str, secret: str) -> str:
+    async with httpx.AsyncClient() as client:
+        auth_response = await client.post(
+            f"{paypal_api}/v1/oauth2/token",
+            auth=(client_id, secret),
+            data={"grant_type": "client_credentials"},
+        )
+    if auth_response.status_code != 200:
+        logger.error("PayPal auth error: %s", auth_response.text)
+        raise HTTPException(status_code=500, detail="PayPal authentication failed")
+    return str(auth_response.json()["access_token"])
+
 # ============ STRIPE ROUTES ============
 
 @router.post("/create-checkout")
@@ -84,56 +234,7 @@ async def create_checkout_session(
     success_url = f"{origin_url}/payment/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{origin_url}/payment/cancel"
     
-    # Determine amount and metadata based on product type
-    amount = 0.0
-    product_name = ""
-    metadata = {
-        "user_id": current_user.user_id,
-        "user_email": current_user.email,
-        "product_type": payment_request.product_type
-    }
-    
-    if payment_request.product_type == "subscription":
-        if payment_request.plan_id not in SUBSCRIPTION_PLANS:
-            raise HTTPException(status_code=400, detail="Invalid subscription plan")
-        plan = SUBSCRIPTION_PLANS[payment_request.plan_id]
-        amount = plan["price"]
-        product_name = plan["name"]
-        metadata["plan_id"] = payment_request.plan_id
-        metadata["interval"] = plan["interval"]
-    elif payment_request.product_type == "bundle":
-        # Handle course bundles
-        if not payment_request.product_id or payment_request.product_id not in COURSE_BUNDLES:
-            raise HTTPException(status_code=400, detail="Invalid bundle ID")
-        bundle = COURSE_BUNDLES[payment_request.product_id]
-        amount = bundle["price"]
-        product_name = bundle["name"]
-        metadata["product_id"] = payment_request.product_id
-        metadata["bundle_courses"] = ",".join(bundle["courses"])
-    else:
-        if not payment_request.product_id:
-            raise HTTPException(status_code=400, detail="Product ID required")
-        
-        collection_map = {
-            "retreat": "retreats",
-            "course": "courses",
-            "live_session": "live_sessions",
-            "book": "books"
-        }
-        collection = collection_map.get(payment_request.product_type)
-        if not collection:
-            raise HTTPException(status_code=400, detail="Invalid product type")
-        
-        product = await db[collection].find_one({"id": payment_request.product_id}, {"_id": 0})
-        if not product:
-            raise HTTPException(status_code=404, detail="Product not found")
-        
-        amount = float(product.get("price", 0))
-        if amount <= 0:
-            raise HTTPException(status_code=400, detail="Product has no price set")
-        
-        product_name = product.get("title") or product.get("name", "Product")
-        metadata["product_id"] = payment_request.product_id
+    amount, product_name, metadata = await _resolve_payment_context(db, payment_request, current_user)
     
     # Initialize Stripe
     host_url = str(request.base_url).rstrip("/")
@@ -209,50 +310,7 @@ async def get_payment_status(
                         "paid_at": datetime.now(timezone.utc).isoformat()
                     }}
                 )
-                
-                if transaction.get("product_type") == "subscription":
-                    plan_id = transaction.get("plan_id")
-                    interval = transaction.get("metadata", {}).get("interval", "month")
-                    
-                    if interval == "year":
-                        expires_at = datetime.now(timezone.utc) + timedelta(days=365)
-                    else:
-                        expires_at = datetime.now(timezone.utc) + timedelta(days=30)
-                    
-                    await db.user_subscriptions.update_one(
-                        {"user_id": current_user.user_id},
-                        {"$set": {
-                            "user_id": current_user.user_id,
-                            "plan_id": plan_id,
-                            "status": "active",
-                            "expires_at": expires_at.isoformat(),
-                            "updated_at": datetime.now(timezone.utc).isoformat()
-                        }},
-                        upsert=True
-                    )
-                
-                elif transaction.get("product_type") in PRODUCT_TYPES:
-                    # Check if it's a bundle purchase
-                    if transaction.get("product_type") == "bundle":
-                        bundle_courses = transaction.get("metadata", {}).get("bundle_courses", "")
-                        if bundle_courses:
-                            course_ids = bundle_courses.split(",")
-                            # Grant access to each course in the bundle
-                            for course_id in course_ids:
-                                await db.user_purchases.insert_one({
-                                    "user_id": current_user.user_id,
-                                    "product_type": "course",
-                                    "product_id": course_id.strip(),
-                                    "bundle_id": transaction.get("product_id"),
-                                    "purchased_at": datetime.now(timezone.utc).isoformat()
-                                })
-                    else:
-                        await db.user_purchases.insert_one({
-                            "user_id": current_user.user_id,
-                            "product_type": transaction.get("product_type"),
-                            "product_id": transaction.get("product_id"),
-                            "purchased_at": datetime.now(timezone.utc).isoformat()
-                        })
+                await _grant_transaction_entitlements(db, current_user.user_id, transaction)
         
         return {
             "status": status.status,
@@ -282,66 +340,10 @@ async def create_paypal_order(
     if not paypal_client_id or not paypal_secret or not paypal_mode:
         raise HTTPException(status_code=500, detail="PayPal not configured")
     
-    # Determine PayPal API URL
-    if paypal_mode == "live":
-        paypal_api = "https://api-m.paypal.com"
-    else:
-        paypal_api = "https://api-m.sandbox.paypal.com"
+    paypal_api = _get_paypal_api_base(paypal_mode)
     
-    # Get access token
-    async with httpx.AsyncClient() as client:
-        auth_response = await client.post(
-            f"{paypal_api}/v1/oauth2/token",
-            auth=(paypal_client_id, paypal_secret),
-            data={"grant_type": "client_credentials"}
-        )
-        if auth_response.status_code != 200:
-            logger.error(f"PayPal auth error: {auth_response.text}")
-            raise HTTPException(status_code=500, detail="PayPal authentication failed")
-        
-        access_token = auth_response.json()["access_token"]
-    
-    # Determine amount
-    amount = 0.0
-    product_name = ""
-    metadata = {
-        "user_id": current_user.user_id,
-        "user_email": current_user.email,
-        "product_type": payment_request.product_type
-    }
-    
-    if payment_request.product_type == "subscription":
-        if payment_request.plan_id not in SUBSCRIPTION_PLANS:
-            raise HTTPException(status_code=400, detail="Invalid subscription plan")
-        plan = SUBSCRIPTION_PLANS[payment_request.plan_id]
-        amount = plan["price"]
-        product_name = plan["name"]
-        metadata["plan_id"] = payment_request.plan_id
-        metadata["interval"] = plan["interval"]
-    else:
-        if not payment_request.product_id:
-            raise HTTPException(status_code=400, detail="Product ID required")
-        
-        collection_map = {
-            "retreat": "retreats",
-            "course": "courses", 
-            "live_session": "live_sessions",
-            "book": "books"
-        }
-        collection = collection_map.get(payment_request.product_type)
-        if not collection:
-            raise HTTPException(status_code=400, detail="Invalid product type")
-        
-        product = await db[collection].find_one({"id": payment_request.product_id}, {"_id": 0})
-        if not product:
-            raise HTTPException(status_code=404, detail="Product not found")
-        
-        amount = float(product.get("price", 0))
-        if amount <= 0:
-            raise HTTPException(status_code=400, detail="Product has no price set")
-        
-        product_name = product.get("title") or product.get("name", "Product")
-        metadata["product_id"] = payment_request.product_id
+    amount, product_name, metadata = await _resolve_payment_context(db, payment_request, current_user)
+    access_token = await _create_paypal_access_token(paypal_api, paypal_client_id, paypal_secret)
     
     origin_url = payment_request.origin_url
     
@@ -430,22 +432,9 @@ async def capture_paypal_order(
     if not paypal_client_id or not paypal_secret or not paypal_mode:
         raise HTTPException(status_code=500, detail="PayPal not configured")
     
-    if paypal_mode == "live":
-        paypal_api = "https://api-m.paypal.com"
-    else:
-        paypal_api = "https://api-m.sandbox.paypal.com"
+    paypal_api = _get_paypal_api_base(paypal_mode)
     
-    # Get access token
-    async with httpx.AsyncClient() as client:
-        auth_response = await client.post(
-            f"{paypal_api}/v1/oauth2/token",
-            auth=(paypal_client_id, paypal_secret),
-            data={"grant_type": "client_credentials"}
-        )
-        if auth_response.status_code != 200:
-            raise HTTPException(status_code=500, detail="PayPal authentication failed")
-        
-        access_token = auth_response.json()["access_token"]
+    access_token = await _create_paypal_access_token(paypal_api, paypal_client_id, paypal_secret)
     
     # Capture the order
     async with httpx.AsyncClient() as client:
@@ -477,35 +466,7 @@ async def capture_paypal_order(
                 }}
             )
             
-            # Handle subscription or purchase
-            if transaction.get("product_type") == "subscription":
-                plan_id = transaction.get("plan_id")
-                interval = transaction.get("metadata", {}).get("interval", "month")
-                
-                if interval == "year":
-                    expires_at = datetime.now(timezone.utc) + timedelta(days=365)
-                else:
-                    expires_at = datetime.now(timezone.utc) + timedelta(days=30)
-                
-                await db.user_subscriptions.update_one(
-                    {"user_id": current_user.user_id},
-                    {"$set": {
-                        "user_id": current_user.user_id,
-                        "plan_id": plan_id,
-                        "status": "active",
-                        "expires_at": expires_at.isoformat(),
-                        "updated_at": datetime.now(timezone.utc).isoformat()
-                    }},
-                    upsert=True
-                )
-            
-            elif transaction.get("product_type") in PRODUCT_TYPES:
-                await db.user_purchases.insert_one({
-                    "user_id": current_user.user_id,
-                    "product_type": transaction.get("product_type"),
-                    "product_id": transaction.get("product_id"),
-                    "purchased_at": datetime.now(timezone.utc).isoformat()
-                })
+            await _grant_transaction_entitlements(db, current_user.user_id, transaction)
     
     return {
         "status": capture.get("status"),
@@ -549,15 +510,13 @@ async def get_subscription_status(current_user: User = Depends(get_current_user)
         )
     
     expires_at = subscription.get("expires_at")
-    if expires_at:
-        expiry = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
-        if expiry < datetime.now(timezone.utc):
-            return SubscriptionStatusResponse(
-                is_subscribed=False,
-                plan=subscription.get("plan_id"),
-                expires_at=expires_at,
-                status="expired"
-            )
+    if not _is_subscription_active_record(subscription):
+        return SubscriptionStatusResponse(
+            is_subscribed=False,
+            plan=subscription.get("plan_id"),
+            expires_at=expires_at,
+            status="expired"
+        )
     
     return SubscriptionStatusResponse(
         is_subscribed=True,
@@ -604,18 +563,8 @@ async def check_product_access(
     if purchase:
         return {"has_access": True, "access_type": "purchased"}
     
-    # Check for active subscription (subscriptions grant access to all courses)
-    subscription = await db.user_subscriptions.find_one({
-        "user_id": current_user.user_id,
-        "status": "active"
-    })
-    
-    if subscription:
-        expires_at = subscription.get("expires_at")
-        if expires_at:
-            expiry = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
-            if expiry > datetime.now(timezone.utc):
-                return {"has_access": True, "access_type": "subscription"}
+    if await _has_active_subscription(db, current_user.user_id):
+        return {"has_access": True, "access_type": "subscription"}
     
     return {"has_access": False, "access_type": None}
 
@@ -632,19 +581,7 @@ async def get_all_course_access(current_user: User = Depends(get_current_user)) 
     
     purchased_courses = [p["product_id"] for p in purchases]
     
-    # Check subscription status
-    has_subscription = False
-    subscription = await db.user_subscriptions.find_one({
-        "user_id": current_user.user_id,
-        "status": "active"
-    })
-    
-    if subscription:
-        expires_at = subscription.get("expires_at")
-        if expires_at:
-            expiry = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
-            if expiry > datetime.now(timezone.utc):
-                has_subscription = True
+    has_subscription = await _has_active_subscription(db, current_user.user_id)
     
     return {
         "purchased_courses": purchased_courses,

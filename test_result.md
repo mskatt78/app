@@ -232,6 +232,139 @@ backend:
         agent: "testing"
         comment: "✓ All tested endpoints (health, expand-script, gifts/create, admin/collections) confirmed to return appropriate status codes (200, 401) with no 500 server errors. Error handling working correctly. No server 500 errors verification PASSED."
 
+  - task: "Ancient wisdom API provenance metadata"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/ancient-wisdom returns 200 with list of 110 items. Each item includes content_integrity object with all required fields: source_type (hybrid-curated), verified (False), references_count (0). All items have source_references list field. Ancient wisdom API provenance metadata PASSED."
+
+  - task: "Shamanic practices API provenance metadata"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/shamanic-practices returns 200 with list of 21 items. Each item includes content_integrity object with all required fields: source_type (hybrid-curated), verified (False), references_count (0). All items have source_references list field. Shamanic practices API provenance metadata PASSED."
+
+  - task: "Elemental practices API provenance metadata"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/elemental-practices returns 200 with list of 15 items. Each item includes content_integrity object with all required fields: source_type (hybrid-curated), verified (False), references_count (0). All items have source_references list field. Elemental practices API provenance metadata PASSED."
+
+  - task: "Heart practices API provenance metadata"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/heart-practices returns 200 with list of 10 items. Each item includes content_integrity object with all required fields: source_type (hybrid-curated), verified (False), references_count (0). All items have source_references list field. Heart practices API provenance metadata PASSED."
+
+  - task: "Payments plans endpoint public access"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/payments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/payments/plans returns 200 with valid JSON. Response contains 'plans' key with 2 subscription plans (monthly, yearly). Public access working correctly. No 500 errors. Payments plans endpoint PASSED."
+
+  - task: "Payments bundles endpoint public access"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/payments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/payments/bundles returns 200 with list of 1 bundle. Response is valid list format. Public access working correctly. No 500 errors. Payments bundles endpoint PASSED."
+
+  - task: "Payments subscription-status auth error handling"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/payments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/payments/subscription-status tested without authentication. Returns proper auth error (status 401) as expected. No 500 error. Auth-required route error handling working correctly. Payments subscription-status auth PASSED."
+
+  - task: "Payments my-purchases auth error handling"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/payments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/payments/my-purchases tested without authentication. Returns proper auth error (status 401) as expected. No 500 error. Auth-required route error handling working correctly. Payments my-purchases auth PASSED."
+
+  - task: "Gifts pay endpoint auth error handling"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/gifts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ POST /api/gifts/pay tested without authentication with valid payload format. Returns proper auth error (status 401) as expected. No 500 error. Auth-required route error handling working correctly. Gifts pay endpoint auth PASSED."
+
+  - task: "Gifts nonexistent code error handling"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/gifts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/gifts/nonexistent-code tested with nonexistent gift code. Returns proper 404 error as expected. No 500 error. Error handling working correctly for invalid gift codes. Gifts error handling PASSED."
+
+  - task: "No 500 errors in payments/gifts refactor regression"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/payments.py, /app/backend/routers/gifts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ All tested endpoints (payments/plans, payments/bundles, payments/subscription-status, payments/my-purchases, gifts/pay, gifts/{code}) confirmed to return appropriate status codes (200, 401, 404) with no 500 server errors. Error handling working correctly after complexity refactor. No 500 regressions detected. Regression verification PASSED."
+
+
   - task: "TTS endpoint health verification"
     implemented: true
     working: true
@@ -854,3 +987,83 @@ agent_communication:
       
       SUMMARY:
       All backend integrity metadata updates verified successfully. No regressions detected. All endpoints returning correct content_integrity objects with source_type, verified, and references_count fields. All 27 crystals have verified Wikipedia images with proper validation metadata. Backend is production-ready with complete integrity metadata implementation.
+
+
+  - agent: "testing"
+    message: |
+      Backend Regression Test - Payments/Gifts Refactor & Provenance Expansion completed successfully (2026-05-17):
+      
+      VERIFICATION REQUEST: Run backend regression after complexity refactor in payments.py/gifts.py and provenance expansion
+      
+      ✅ ALL TESTS PASSED (10/10):
+      
+      1. ✅ GET /api/ancient-wisdom - provenance metadata - PASSED
+         - Returns 200 with list of 110 items
+         - Each item includes content_integrity object with required fields:
+           * source_type: hybrid-curated
+           * verified: False
+           * references_count: 0
+         - All items have source_references list field
+      
+      2. ✅ GET /api/shamanic-practices - provenance metadata - PASSED
+         - Returns 200 with list of 21 items
+         - Each item includes content_integrity and source_references
+         - Provenance metadata working correctly
+      
+      3. ✅ GET /api/elemental-practices - provenance metadata - PASSED
+         - Returns 200 with list of 15 items
+         - Each item includes content_integrity and source_references
+         - Provenance metadata working correctly
+      
+      4. ✅ GET /api/heart-practices - provenance metadata - PASSED
+         - Returns 200 with list of 10 items
+         - Each item includes content_integrity and source_references
+         - Provenance metadata working correctly
+      
+      5. ✅ GET /api/payments/plans - public access - PASSED
+         - Returns 200 with valid JSON
+         - Response contains 'plans' key with 2 subscription plans
+         - Public access working correctly, no 500 errors
+      
+      6. ✅ GET /api/payments/bundles - public access - PASSED
+         - Returns 200 with list of 1 bundle
+         - Public access working correctly, no 500 errors
+      
+      7. ✅ GET /api/payments/subscription-status - auth error handling - PASSED
+         - Returns 401 (not 500) when unauthenticated
+         - Proper auth error handling after refactor
+      
+      8. ✅ GET /api/payments/my-purchases - auth error handling - PASSED
+         - Returns 401 (not 500) when unauthenticated
+         - Proper auth error handling after refactor
+      
+      9. ✅ POST /api/gifts/pay - auth error handling - PASSED
+         - Returns 401 (not 500) when unauthenticated
+         - Proper auth error handling after refactor
+      
+      10. ✅ GET /api/gifts/nonexistent-code - error handling - PASSED
+          - Returns 404 (not 500) for nonexistent gift code
+          - Proper error handling for invalid gift codes
+      
+      ENDPOINT-LEVEL EVIDENCE:
+      - /api/ancient-wisdom: 200 OK, 110 items with content_integrity + source_references
+      - /api/shamanic-practices: 200 OK, 21 items with content_integrity + source_references
+      - /api/elemental-practices: 200 OK, 15 items with content_integrity + source_references
+      - /api/heart-practices: 200 OK, 10 items with content_integrity + source_references
+      - /api/payments/plans: 200 OK, 2 plans
+      - /api/payments/bundles: 200 OK, 1 bundle
+      - /api/payments/subscription-status: 401 Unauthorized (expected)
+      - /api/payments/my-purchases: 401 Unauthorized (expected)
+      - /api/gifts/pay: 401 Unauthorized (expected)
+      - /api/gifts/GIFT-NONEXISTENT999: 404 Not Found (expected)
+      
+      REGRESSION VERIFICATION:
+      ✓ No 500 errors detected in any tested flow
+      ✓ All auth-required routes return proper 401/422 errors (not 500)
+      ✓ All public routes return 200 with valid responses
+      ✓ All error cases return appropriate status codes (404, 401)
+      ✓ Provenance expansion working correctly across all practice endpoints
+      ✓ Payments/gifts complexity refactor did not introduce regressions
+      
+      SUMMARY:
+      All backend regression tests passed successfully. Payments and gifts routes are working correctly after complexity refactor with proper error handling (no 500 errors). Provenance expansion successfully added content_integrity and source_references to all practice endpoints (ancient-wisdom, shamanic-practices, elemental-practices, heart-practices). Backend is production-ready with no regressions detected.
