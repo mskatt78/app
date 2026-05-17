@@ -12,6 +12,24 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Payments/Gifts Complexity Reduction + Remaining P0 Provenance Follow-Through (Iteration 118, May 2026):**
+  - Deepened cyclomatic-complexity reduction in `payments.py` and `gifts.py`:
+    - Added reusable payment flow helpers in `payments.py`:
+      - `_resolve_payment_context`, `_grant_transaction_entitlements`, `_grant_purchase_access`, `_activate_subscription`, `_has_active_subscription`, `_is_subscription_active_record`, `_get_paypal_api_base`, `_create_paypal_access_token`.
+    - Rewired Stripe/PayPal flow paths to use shared helpers (reduced duplicated subscription/purchase and product-pricing logic).
+    - Continued gifts helper extraction usage for PayPal base resolution, auth token, paid-state updates, and recipient notifications.
+  - Completed requested provenance follow-through for remaining user-facing collections:
+    - Backend integrity enrichment applied to:
+      - `/api/ancient-wisdom`, `/api/shamanic-practices`, `/api/elemental-practices`, `/api/heart-practices` (plus item routes).
+    - Frontend integrity labels + reviewed-date visibility added to:
+      - `AncientWisdom.jsx`, `ShamanicPractices.jsx`, `ElementalPractices.jsx`, `HeartPractices.jsx`.
+    - Admin source governance field coverage extended for these collections in `AdminSection.jsx` and `admin.py` source-aware normalization.
+  - UX/accessibility polish:
+    - Added Escape-key modal close handling for `ElementalPractices` and `HeartPractices` detail modals.
+  - Validation:
+    - Frontend focused verification passed (Escape-key modal behavior fixed for both pages).
+    - Backend regression checks passed for payments/gifts route sanity (no 500 regressions).
+
 - **P0 Follow-Through + Gifts Refactor/Typing Continuation (Iteration 117, May 2026):**
   - Completed provenance/review workflow on remaining user-facing collections:
     - Backend integrity enrichment added for:
