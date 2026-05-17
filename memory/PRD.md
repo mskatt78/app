@@ -12,6 +12,29 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Code Review Remediation Batch (Iteration 118, May 2026):**
+  - **Critical hook-dependency hardening (targeted files):**
+    - Refactored route guard async flows in `routeGuards.jsx` with callback-based guards to reduce stale-closure risk.
+    - Hardened `useCoursePayments.js` token/login callback dependencies and polling dependencies.
+    - Added explicit `audioRef` dependency handling in `WaterPractices.jsx` cleanup effect.
+  - **Index-as-key remediation across flagged pages:**
+    - Replaced index keys with stable semantic keys in:
+      - `DailySacredPractice.jsx`, `EarthAltars.jsx`, `ElementalPractices.jsx`, `CreativeProcesses.jsx`, `ChakraCleansing.jsx`, `Dashboard.jsx`, `AstrologyCalendar.jsx`, `Books.jsx`.
+  - **Frontend performance improvements on flagged hotspots:**
+    - Added memoization and precomputed lists in:
+      - `AdminDashboard.jsx` (`visibleCollections`, loading placeholders)
+      - `ChakraCleansing.jsx` (memoized filtered list)
+      - `Dashboard.jsx` (memoized quick/deep nav collections)
+      - `Books.jsx` (memoized related books)
+  - **Backend complexity reductions (service-layer extraction):**
+    - `content.py`: split crystal image resolver internals into dedicated cache/match/persist helper functions; simplified `_resolve_crystal_image` orchestration.
+    - `content.py`: reduced monolithic script expansion flow by extracting prompt/parsing/LLM-call helpers and floor-extension/padding strategy helpers.
+    - `admin.py`: split seed-loading workflow into `_load_standard_seed_collections` and `_load_special_seed_collections` helpers.
+    - `gifts.py`: extracted gift pricing and gift-record builders (`_resolve_gift_pricing_context`, `_build_gift_record`) and reused existing payment helpers.
+    - `payments.py`: extended service-style helper layer for payment context, PayPal auth/base URL, entitlement grants, subscription status checks.
+  - **Validation:**
+    - `/app/test_reports/iteration_118.json` => backend **100% (33/33)** and frontend **100%** on targeted pages/endpoints.
+
 - **Payments/Gifts Complexity Reduction + Remaining P0 Provenance Follow-Through (Iteration 118, May 2026):**
   - Deepened cyclomatic-complexity reduction in `payments.py` and `gifts.py`:
     - Added reusable payment flow helpers in `payments.py`:
