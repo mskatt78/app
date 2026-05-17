@@ -9,6 +9,11 @@ export const CourseCard = ({
   levelColors,
   onSelect,
 }) => {
+  const integrity = course.content_integrity || {};
+  const integrityLabel = integrity.verified
+    ? `Verified references (${integrity.references_count || 0})`
+    : "Curated content";
+
   return (
     <motion.div
       key={course.id}
@@ -60,6 +65,13 @@ export const CourseCard = ({
             <span className="flex items-center gap-1"><Scroll className="w-3 h-3" />{course.rites.length} rites</span>
           )}
         </div>
+
+        <p
+          className="mt-2 text-[11px] text-cyan-300/90"
+          data-testid={`course-integrity-${course.id}`}
+        >
+          {integrityLabel}
+        </p>
 
         {course.price && (
           <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">

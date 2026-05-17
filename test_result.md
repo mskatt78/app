@@ -110,6 +110,67 @@ user_problem_statement: |
   4) Admin route sanity: GET /api/admin/collections unauthenticated should return expected auth error (401/403) not 500.
   5) Confirm no server 500 errors in tested endpoints.
 
+
+  - task: "Courses API content_integrity metadata"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/courses returns 200 with list of 3 courses. Each item includes content_integrity object with all required fields: source_type (hybrid-curated), verified (False), references_count (0). All 3 items have content_integrity object. Courses API content_integrity metadata PASSED."
+
+  - task: "Meditations API content_integrity metadata"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/meditations returns 200 with list of 6 meditations. Each item includes content_integrity object with all required fields: source_type (hybrid-curated), verified (False), references_count (0). All 6 items have content_integrity object. Meditations API content_integrity metadata PASSED."
+
+  - task: "Breathwork sessions API content_integrity metadata"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/breathwork/sessions returns 200 with list of 6 breathwork sessions. Each item includes content_integrity object with all required fields: source_type (hybrid-curated), verified (False), references_count (0). All 6 items have content_integrity object. Breathwork sessions API content_integrity metadata PASSED."
+
+  - task: "Crystals deep API image verification (27 records)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/crystals/deep returns 200 with exactly 27 crystal records. All 27 records have image_source=wikipedia_verified AND image_validation.status=verified. Wikipedia image verification working correctly for all crystals. Crystals deep API image verification PASSED."
+
+  - task: "Iolite crystal spot-check verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/crystals/deep/iolite returns 200 with verified image metadata. image_source=wikipedia_verified, image_validation.status=verified, image_validation.score=0.66, wikipedia_title='Cordierite' (non-empty), wikipedia_page_url='https://en.wikipedia.org/wiki/Cordierite', verified_image_url present. Iolite crystal spot-check verification PASSED."
+
 backend:
   - task: "Health endpoint verification"
     implemented: true
@@ -453,15 +514,15 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "1.3"
-  test_sequence: 4
+  version: "1.4"
+  test_sequence: 5
   run_ui: false
   last_tested: "2026-04-09"
 
 test_plan:
   current_focus:
-    - "Backend API verification completed for recently touched endpoints"
-    - "All critical endpoints passing with proper status codes and no 500 errors"
+    - "Backend integrity metadata verification completed"
+    - "All content_integrity and image_validation endpoints passing"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -636,3 +697,62 @@ agent_communication:
       
       SUMMARY:
       All backend API endpoints tested are working correctly with proper status codes, valid JSON responses, and appropriate error handling. No 500 errors detected. All validation requirements met. Backend is production-ready for the tested endpoints.
+
+
+  - agent: "testing"
+    message: |
+      Backend Integrity Metadata Verification completed successfully (2026-04-09):
+      
+      VERIFICATION REQUEST: Backend verification after latest integrity metadata updates
+      
+      ✅ ALL TESTS PASSED (5/5):
+      
+      1. ✅ GET /api/courses - content_integrity metadata - PASSED
+         - Returns 200 with list of 3 courses
+         - Each item includes content_integrity object with required fields:
+           * source_type: hybrid-curated
+           * verified: False
+           * references_count: 0
+         - All 3 items have content_integrity object
+      
+      2. ✅ GET /api/meditations - content_integrity metadata - PASSED
+         - Returns 200 with list of 6 meditations
+         - Each item includes content_integrity object with required fields:
+           * source_type: hybrid-curated
+           * verified: False
+           * references_count: 0
+         - All 6 items have content_integrity object
+      
+      3. ✅ GET /api/breathwork/sessions - content_integrity metadata - PASSED
+         - Returns 200 with list of 6 breathwork sessions
+         - Each item includes content_integrity object with required fields:
+           * source_type: hybrid-curated
+           * verified: False
+           * references_count: 0
+         - All 6 items have content_integrity object
+      
+      4. ✅ GET /api/crystals/deep - image verification (27 records) - PASSED
+         - Returns 200 with exactly 27 crystal records
+         - All 27 records have:
+           * image_source = wikipedia_verified
+           * image_validation.status = verified
+         - Wikipedia image verification working correctly for all crystals
+      
+      5. ✅ GET /api/crystals/deep/iolite - spot check - PASSED
+         - Returns 200 with verified image metadata
+         - image_source = wikipedia_verified
+         - image_validation.status = verified
+         - image_validation.score = 0.66
+         - wikipedia_title = 'Cordierite' (non-empty)
+         - wikipedia_page_url = 'https://en.wikipedia.org/wiki/Cordierite'
+         - verified_image_url present
+      
+      ENDPOINT-LEVEL EVIDENCE:
+      - /api/courses: 200 OK, 3 items, all with content_integrity object
+      - /api/meditations: 200 OK, 6 items, all with content_integrity object
+      - /api/breathwork/sessions: 200 OK, 6 items, all with content_integrity object
+      - /api/crystals/deep: 200 OK, 27 items, all with verified Wikipedia images
+      - /api/crystals/deep/iolite: 200 OK, verified image metadata with non-empty wikipedia_title
+      
+      SUMMARY:
+      All backend integrity metadata updates verified successfully. No regressions detected. All endpoints returning correct content_integrity objects with source_type, verified, and references_count fields. All 27 crystals have verified Wikipedia images with proper validation metadata. Backend is production-ready with complete integrity metadata implementation.

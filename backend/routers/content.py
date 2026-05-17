@@ -160,6 +160,40 @@ def _flatten_text(value) -> list[str]:
     return [converted] if converted else []
 
 
+def _normalize_source_references(value: Any) -> list[str]:
+    if isinstance(value, list):
+        refs: list[str] = []
+        seen: set[str] = set()
+        for item in value:
+            ref = str(item or "").strip()
+            if not ref:
+                continue
+            if not (ref.startswith("http://") or ref.startswith("https://")):
+                continue
+            if ref in seen:
+                continue
+            seen.add(ref)
+            refs.append(ref)
+        return refs
+    return []
+
+
+def _enrich_content_integrity(item: dict[str, Any], default_source_type: str) -> dict[str, Any]:
+    enriched = dict(item)
+    references = _normalize_source_references(item.get("source_references"))
+    source_type = str(item.get("source_type") or default_source_type)
+    verified = bool(references)
+
+    enriched["source_references"] = references
+    enriched["content_integrity"] = {
+        "source_type": source_type,
+        "verified": verified,
+        "references_count": len(references),
+        "last_reviewed_at": item.get("last_reviewed_at"),
+    }
+    return enriched
+
+
 def _split_sentences(text: str) -> list[str]:
     normalized = re.sub(r"\s+", " ", str(text or "")).strip()
     if not normalized:
@@ -990,7 +1024,7 @@ async def get_breathwork_sessions(element: Optional[str] = None):
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     sessions = await db.breathwork_sessions.find(query, {"_id": 0}).to_list(length=20)
-    return sessions
+    return [_enrich_content_integrity(session, "hybrid-curated") for session in sessions]
 
 
 @router.get("/breathwork/sessions/{session_id}")
@@ -1000,7 +1034,7 @@ async def get_breathwork_session(session_id: str):
     session = await db.breathwork_sessions.find_one({"id": session_id}, {"_id": 0})
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
-    return session
+    return _enrich_content_integrity(session, "hybrid-curated")
 
 
 # ============ CRYSTALS ROUTES ============
@@ -1032,13 +1066,13 @@ def _looks_like_wikipedia_image(url: str | None) -> bool:
 
 
 def _extract_wikipedia_image(summary: dict[str, Any]) -> str | None:
-    original = summary.get("originalimage") or {}
-    if isinstance(original, dict) and original.get("source"):
-        return str(original.get("source"))
-
     thumbnail = summary.get("thumbnail") or {}
     if isinstance(thumbnail, dict) and thumbnail.get("source"):
         return str(thumbnail.get("source"))
+
+    original = summary.get("originalimage") or {}
+    if isinstance(original, dict) and original.get("source"):
+        return str(original.get("source"))
     return None
 
 
@@ -1383,7 +1417,7 @@ async def get_meditations(category: Optional[str] = None, element: Optional[str]
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     meditations = await db.meditations.find(query, {"_id": 0}).to_list(length=50)
-    return meditations
+    return [_enrich_content_integrity(meditation, "hybrid-curated") for meditation in meditations]
 
 
 @router.get("/meditations/{meditation_id}")
@@ -1393,7 +1427,7 @@ async def get_meditation(meditation_id: str):
     meditation = await db.meditations.find_one({"id": meditation_id}, {"_id": 0})
     if not meditation:
         raise HTTPException(status_code=404, detail="Meditation not found")
-    return meditation
+    return _enrich_content_integrity(meditation, "hybrid-curated")
 
 
 # ============ SOMATIC PRACTICES ============
@@ -2034,7 +2068,7 @@ async def get_courses(category: Optional[str] = None, level: Optional[str] = Non
     if level:
         query["level"] = {"$regex": f"^{level}$", "$options": "i"}
     courses = await db.courses.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=100)
-    return courses
+    return [_enrich_content_integrity(course, "hybrid-curated") for course in courses]
 
 
 @router.get("/courses/{course_id}")
@@ -2044,7 +2078,7 @@ async def get_course(course_id: str):
     course = await db.courses.find_one({"id": course_id}, {"_id": 0})
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
-    return course
+    return _enrich_content_integrity(course, "hybrid-curated")
 
 
 # ============ SACRED RITES ROUTES ============

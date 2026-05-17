@@ -276,6 +276,14 @@ const Meditations = ({ user, api }) => {
                           {meditation.category}
                         </span>
                       </div>
+                      <p
+                        className="mt-2 text-[11px] text-cyan-300/90"
+                        data-testid={`meditation-integrity-${meditation.id}`}
+                      >
+                        {meditation.content_integrity?.verified
+                          ? `Verified references (${meditation.content_integrity.references_count || 0})`
+                          : "Curated content"}
+                      </p>
                     </div>
                   </motion.div>
                 );

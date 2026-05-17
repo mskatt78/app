@@ -600,6 +600,15 @@ const Breathwork = ({ user, api }) => {
                         <span className="text-primary">Frequency:</span> {session.frequency.split(' - ')[0]}
                       </div>
                     )}
+
+                    <p
+                      className="mt-2 text-[11px] text-cyan-300/90"
+                      data-testid={`breathwork-integrity-${session.id}`}
+                    >
+                      {session.content_integrity?.verified
+                        ? `Verified references (${session.content_integrity.references_count || 0})`
+                        : "Curated content"}
+                    </p>
                   </div>
                 </motion.div>
               );

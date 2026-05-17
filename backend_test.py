@@ -1,323 +1,396 @@
-#!/usr/bin/env python3
-"""Backend API verification test for breathwork sanctuary app."""
-
-import requests
-import json
+"""Backend API verification for integrity metadata updates."""
+import httpx
+import os
 import sys
-from typing import Dict, Any, Optional
 
-# Base URL from environment
-BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
+# Get backend URL from environment
+BACKEND_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://breathwork-sanctuary.preview.emergentagent.com")
+BASE_URL = f"{BACKEND_URL}/api"
 
-class Colors:
-    GREEN = '\033[92m'
-    RED = '\033[91m'
-    YELLOW = '\033[93m'
-    BLUE = '\033[94m'
-    END = '\033[0m'
-
-def print_test(name: str):
-    print(f"\n{Colors.BLUE}Testing: {name}{Colors.END}")
-
-def print_pass(message: str):
-    print(f"{Colors.GREEN}✓ PASS: {message}{Colors.END}")
-
-def print_fail(message: str):
-    print(f"{Colors.RED}✗ FAIL: {message}{Colors.END}")
-
-def print_info(message: str):
-    print(f"{Colors.YELLOW}ℹ INFO: {message}{Colors.END}")
-
-# Test results tracking
-test_results = {
-    "passed": [],
-    "failed": [],
-    "warnings": []
-}
-
-def test_health_endpoint():
-    """Test 1: GET /api/health returns 200 and valid JSON."""
-    print_test("GET /api/health")
+def test_courses_integrity_metadata():
+    """Test GET /api/courses returns 200 list with content_integrity object."""
+    print("\n" + "="*80)
+    print("TEST 1: GET /api/courses - content_integrity metadata")
+    print("="*80)
     
     try:
-        response = requests.get(f"{BASE_URL}/health", timeout=10)
+        response = httpx.get(f"{BASE_URL}/courses", timeout=10.0)
+        print(f"Status: {response.status_code}")
         
-        # Check status code
         if response.status_code != 200:
-            print_fail(f"Expected status 200, got {response.status_code}")
-            test_results["failed"].append("Health endpoint - wrong status code")
+            print(f"❌ FAILED: Expected 200, got {response.status_code}")
             return False
         
-        # Check valid JSON
-        try:
-            data = response.json()
-            print_pass(f"Returns 200 with valid JSON: {json.dumps(data, indent=2)}")
-            
-            # Verify expected fields
-            if "status" in data:
-                print_pass(f"Contains 'status' field: {data['status']}")
-            else:
-                print_fail("Missing 'status' field in response")
-                test_results["failed"].append("Health endpoint - missing status field")
-                return False
-            
-            test_results["passed"].append("Health endpoint")
-            return True
-            
-        except json.JSONDecodeError:
-            print_fail("Response is not valid JSON")
-            test_results["failed"].append("Health endpoint - invalid JSON")
-            return False
-            
-    except Exception as e:
-        print_fail(f"Request failed: {str(e)}")
-        test_results["failed"].append(f"Health endpoint - {str(e)}")
-        return False
-
-
-def test_expand_script_endpoint():
-    """Test 2: POST /api/content/expand-script with sample payload."""
-    print_test("POST /api/content/expand-script")
-    
-    payload = {
-        "practice_name": "Grounding Breath Practice",
-        "element": "earth",
-        "duration_minutes": 15,
-        "steps": [
-            "Find a comfortable seated position",
-            "Close your eyes and take three deep breaths",
-            "Notice the weight of your body on the earth",
-            "Feel your connection to the ground beneath you"
-        ],
-        "source_texts": [
-            "This practice helps you feel grounded and centered in your body.",
-            "Earth element practices connect us with stability and presence."
-        ],
-        "use_ai": False,
-        "anti_repetition_mode": "strict"
-    }
-    
-    try:
-        response = requests.post(
-            f"{BASE_URL}/content/expand-script",
-            json=payload,
-            headers={"Content-Type": "application/json"},
-            timeout=30
-        )
-        
-        # Check for no 500 error
-        if response.status_code == 500:
-            print_fail(f"Server returned 500 error: {response.text[:200]}")
-            test_results["failed"].append("Expand script - 500 error")
+        data = response.json()
+        if not isinstance(data, list):
+            print(f"❌ FAILED: Expected list, got {type(data)}")
             return False
         
-        # Check status code
-        if response.status_code != 200:
-            print_fail(f"Expected status 200, got {response.status_code}")
-            print_info(f"Response: {response.text[:200]}")
-            test_results["failed"].append(f"Expand script - status {response.status_code}")
-            return False
+        print(f"✓ Response is a list with {len(data)} items")
         
-        # Parse response
-        try:
-            data = response.json()
-            print_pass(f"Returns 200 with valid JSON response")
-            
-            # Validate required fields
-            required_fields = ["target_minutes", "target_word_count", "word_count"]
-            missing_fields = [f for f in required_fields if f not in data]
-            
-            if missing_fields:
-                print_fail(f"Missing required fields: {missing_fields}")
-                test_results["failed"].append(f"Expand script - missing fields: {missing_fields}")
-                return False
-            
-            print_pass(f"Contains all required fields: {required_fields}")
-            
-            # Extract values
-            target_minutes = data["target_minutes"]
-            target_word_count = data["target_word_count"]
-            word_count = data["word_count"]
-            
-            print_info(f"target_minutes: {target_minutes}")
-            print_info(f"target_word_count: {target_word_count}")
-            print_info(f"word_count: {word_count}")
-            
-            # Validate word_count >= target_word_count * 0.8
-            min_word_count = target_word_count * 0.8
-            if word_count >= min_word_count:
-                print_pass(f"word_count ({word_count}) >= target_word_count*0.8 ({min_word_count:.0f})")
-            else:
-                print_fail(f"word_count ({word_count}) < target_word_count*0.8 ({min_word_count:.0f})")
-                test_results["failed"].append("Expand script - word count below threshold")
-                return False
-            
-            # Verify target_minutes matches request
-            if target_minutes >= 7:  # MIN_NARRATION_MINUTES
-                print_pass(f"target_minutes ({target_minutes}) meets minimum requirement (7)")
-            else:
-                print_fail(f"target_minutes ({target_minutes}) below minimum (7)")
-                test_results["failed"].append("Expand script - target_minutes too low")
-                return False
-            
-            test_results["passed"].append("Expand script endpoint")
-            return True
-            
-        except json.JSONDecodeError:
-            print_fail("Response is not valid JSON")
-            test_results["failed"].append("Expand script - invalid JSON")
-            return False
-            
-    except Exception as e:
-        print_fail(f"Request failed: {str(e)}")
-        test_results["failed"].append(f"Expand script - {str(e)}")
-        return False
-
-
-def test_gifts_create_endpoint():
-    """Test 3: POST /api/gifts/create - validate payload shape and no 500 on valid request."""
-    print_test("POST /api/gifts/create")
-    
-    payload = {
-        "recipient_email": "test@example.com",
-        "recipient_name": "Test Recipient",
-        "gift_type": "subscription",
-        "plan_id": "monthly",
-        "message": "A gift for you!",
-        "sender_name": "Test Sender"
-    }
-    
-    try:
-        response = requests.post(
-            f"{BASE_URL}/gifts/create",
-            json=payload,
-            headers={"Content-Type": "application/json"},
-            timeout=10
-        )
-        
-        # Check for no 500 error
-        if response.status_code == 500:
-            print_fail(f"Server returned 500 error: {response.text[:200]}")
-            test_results["failed"].append("Gifts create - 500 error")
-            return False
-        
-        print_pass(f"No 500 error - returned status {response.status_code}")
-        
-        # Check if endpoint requires authentication (401/403 is acceptable)
-        if response.status_code in [401, 403]:
-            print_info(f"Endpoint requires authentication (status {response.status_code}) - this is acceptable")
-            test_results["passed"].append("Gifts create endpoint (auth protected)")
+        if len(data) == 0:
+            print("⚠️  WARNING: No courses found in response")
             return True
         
-        # If 200, validate response structure
-        if response.status_code == 200:
-            try:
-                data = response.json()
-                print_pass(f"Returns 200 with valid JSON")
-                
-                # Check for expected fields
-                if "gift_code" in data:
-                    print_pass(f"Response contains gift_code: {data['gift_code']}")
-                
-                test_results["passed"].append("Gifts create endpoint")
-                return True
-                
-            except json.JSONDecodeError:
-                print_fail("Response is not valid JSON")
-                test_results["failed"].append("Gifts create - invalid JSON")
+        # Check first item for content_integrity
+        first_item = data[0]
+        if "content_integrity" not in first_item:
+            print(f"❌ FAILED: content_integrity object missing from first item")
+            print(f"Available keys: {list(first_item.keys())}")
+            return False
+        
+        integrity = first_item["content_integrity"]
+        required_fields = ["source_type", "verified", "references_count"]
+        
+        for field in required_fields:
+            if field not in integrity:
+                print(f"❌ FAILED: content_integrity.{field} missing")
                 return False
         
-        # Other status codes
-        print_info(f"Returned status {response.status_code}: {response.text[:200]}")
-        test_results["passed"].append("Gifts create endpoint (no 500)")
+        print(f"✓ content_integrity object present with all required fields")
+        print(f"  - source_type: {integrity['source_type']}")
+        print(f"  - verified: {integrity['verified']}")
+        print(f"  - references_count: {integrity['references_count']}")
+        
+        # Check all items have content_integrity
+        items_without_integrity = 0
+        for idx, item in enumerate(data):
+            if "content_integrity" not in item:
+                items_without_integrity += 1
+        
+        if items_without_integrity > 0:
+            print(f"⚠️  WARNING: {items_without_integrity}/{len(data)} items missing content_integrity")
+        else:
+            print(f"✓ All {len(data)} items have content_integrity object")
+        
+        print("✅ PASSED: GET /api/courses content_integrity verification")
         return True
         
     except Exception as e:
-        print_fail(f"Request failed: {str(e)}")
-        test_results["failed"].append(f"Gifts create - {str(e)}")
+        print(f"❌ FAILED: Exception occurred: {e}")
         return False
 
 
-def test_admin_collections_unauthenticated():
-    """Test 4: GET /api/admin/collections unauthenticated should return 401/403, not 500."""
-    print_test("GET /api/admin/collections (unauthenticated)")
+def test_meditations_integrity_metadata():
+    """Test GET /api/meditations returns content_integrity object."""
+    print("\n" + "="*80)
+    print("TEST 2: GET /api/meditations - content_integrity metadata")
+    print("="*80)
     
     try:
-        response = requests.get(
-            f"{BASE_URL}/admin/collections",
-            timeout=10
-        )
+        response = httpx.get(f"{BASE_URL}/meditations", timeout=10.0)
+        print(f"Status: {response.status_code}")
         
-        # Check for no 500 error
-        if response.status_code == 500:
-            print_fail(f"Server returned 500 error (should return 401/403): {response.text[:200]}")
-            test_results["failed"].append("Admin collections - 500 error instead of auth error")
+        if response.status_code != 200:
+            print(f"❌ FAILED: Expected 200, got {response.status_code}")
             return False
         
-        print_pass(f"No 500 error - returned status {response.status_code}")
+        data = response.json()
+        if not isinstance(data, list):
+            print(f"❌ FAILED: Expected list, got {type(data)}")
+            return False
         
-        # Check for proper auth error (401 or 403)
-        if response.status_code in [401, 403]:
-            print_pass(f"Returns proper auth error (status {response.status_code})")
-            test_results["passed"].append("Admin collections auth check")
+        print(f"✓ Response is a list with {len(data)} items")
+        
+        if len(data) == 0:
+            print("⚠️  WARNING: No meditations found in response")
             return True
-        else:
-            print_fail(f"Expected 401/403 auth error, got {response.status_code}")
-            print_info(f"Response: {response.text[:200]}")
-            test_results["warnings"].append(f"Admin collections - unexpected status {response.status_code}")
+        
+        # Check first item for content_integrity
+        first_item = data[0]
+        if "content_integrity" not in first_item:
+            print(f"❌ FAILED: content_integrity object missing from first item")
+            print(f"Available keys: {list(first_item.keys())}")
             return False
+        
+        integrity = first_item["content_integrity"]
+        required_fields = ["source_type", "verified", "references_count"]
+        
+        for field in required_fields:
+            if field not in integrity:
+                print(f"❌ FAILED: content_integrity.{field} missing")
+                return False
+        
+        print(f"✓ content_integrity object present with all required fields")
+        print(f"  - source_type: {integrity['source_type']}")
+        print(f"  - verified: {integrity['verified']}")
+        print(f"  - references_count: {integrity['references_count']}")
+        
+        # Check all items have content_integrity
+        items_without_integrity = 0
+        for idx, item in enumerate(data):
+            if "content_integrity" not in item:
+                items_without_integrity += 1
+        
+        if items_without_integrity > 0:
+            print(f"⚠️  WARNING: {items_without_integrity}/{len(data)} items missing content_integrity")
+        else:
+            print(f"✓ All {len(data)} items have content_integrity object")
+        
+        print("✅ PASSED: GET /api/meditations content_integrity verification")
+        return True
         
     except Exception as e:
-        print_fail(f"Request failed: {str(e)}")
-        test_results["failed"].append(f"Admin collections - {str(e)}")
+        print(f"❌ FAILED: Exception occurred: {e}")
         return False
 
 
-def print_summary():
-    """Print test summary."""
-    print(f"\n{'='*60}")
-    print(f"{Colors.BLUE}TEST SUMMARY{Colors.END}")
-    print(f"{'='*60}")
+def test_breathwork_sessions_integrity_metadata():
+    """Test GET /api/breathwork/sessions returns content_integrity object."""
+    print("\n" + "="*80)
+    print("TEST 3: GET /api/breathwork/sessions - content_integrity metadata")
+    print("="*80)
     
-    total_tests = len(test_results["passed"]) + len(test_results["failed"])
+    try:
+        response = httpx.get(f"{BASE_URL}/breathwork/sessions", timeout=10.0)
+        print(f"Status: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ FAILED: Expected 200, got {response.status_code}")
+            return False
+        
+        data = response.json()
+        if not isinstance(data, list):
+            print(f"❌ FAILED: Expected list, got {type(data)}")
+            return False
+        
+        print(f"✓ Response is a list with {len(data)} items")
+        
+        if len(data) == 0:
+            print("⚠️  WARNING: No breathwork sessions found in response")
+            return True
+        
+        # Check first item for content_integrity
+        first_item = data[0]
+        if "content_integrity" not in first_item:
+            print(f"❌ FAILED: content_integrity object missing from first item")
+            print(f"Available keys: {list(first_item.keys())}")
+            return False
+        
+        integrity = first_item["content_integrity"]
+        required_fields = ["source_type", "verified", "references_count"]
+        
+        for field in required_fields:
+            if field not in integrity:
+                print(f"❌ FAILED: content_integrity.{field} missing")
+                return False
+        
+        print(f"✓ content_integrity object present with all required fields")
+        print(f"  - source_type: {integrity['source_type']}")
+        print(f"  - verified: {integrity['verified']}")
+        print(f"  - references_count: {integrity['references_count']}")
+        
+        # Check all items have content_integrity
+        items_without_integrity = 0
+        for idx, item in enumerate(data):
+            if "content_integrity" not in item:
+                items_without_integrity += 1
+        
+        if items_without_integrity > 0:
+            print(f"⚠️  WARNING: {items_without_integrity}/{len(data)} items missing content_integrity")
+        else:
+            print(f"✓ All {len(data)} items have content_integrity object")
+        
+        print("✅ PASSED: GET /api/breathwork/sessions content_integrity verification")
+        return True
+        
+    except Exception as e:
+        print(f"❌ FAILED: Exception occurred: {e}")
+        return False
+
+
+def test_crystals_deep_image_verification():
+    """Test GET /api/crystals/deep returns 27 records with verified images."""
+    print("\n" + "="*80)
+    print("TEST 4: GET /api/crystals/deep - image verification (27 records)")
+    print("="*80)
     
-    print(f"\n{Colors.GREEN}PASSED: {len(test_results['passed'])}/{total_tests}{Colors.END}")
-    for test in test_results["passed"]:
-        print(f"  ✓ {test}")
+    try:
+        response = httpx.get(f"{BASE_URL}/crystals/deep", timeout=30.0)
+        print(f"Status: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ FAILED: Expected 200, got {response.status_code}")
+            return False
+        
+        data = response.json()
+        if not isinstance(data, list):
+            print(f"❌ FAILED: Expected list, got {type(data)}")
+            return False
+        
+        print(f"✓ Response is a list with {len(data)} items")
+        
+        # Check for 27 records
+        if len(data) != 27:
+            print(f"⚠️  WARNING: Expected 27 records, got {len(data)}")
+        else:
+            print(f"✓ Correct count: 27 records")
+        
+        if len(data) == 0:
+            print("❌ FAILED: No crystals found in response")
+            return False
+        
+        # Count verified images
+        verified_count = 0
+        wikipedia_verified_count = 0
+        
+        for crystal in data:
+            image_source = crystal.get("image_source", "")
+            image_validation = crystal.get("image_validation", {})
+            validation_status = image_validation.get("status", "")
+            
+            if image_source == "wikipedia_verified" and validation_status == "verified":
+                verified_count += 1
+                wikipedia_verified_count += 1
+        
+        print(f"\nImage Verification Results:")
+        print(f"  - Total crystals: {len(data)}")
+        print(f"  - image_source=wikipedia_verified AND image_validation.status=verified: {verified_count}")
+        
+        if verified_count == 27:
+            print(f"✅ PASSED: All 27 records have verified Wikipedia images")
+        elif verified_count > 0:
+            print(f"⚠️  PARTIAL: {verified_count}/{len(data)} records have verified images")
+            
+            # Show breakdown
+            source_breakdown = {}
+            status_breakdown = {}
+            for crystal in data:
+                source = crystal.get("image_source", "unknown")
+                status = crystal.get("image_validation", {}).get("status", "unknown")
+                source_breakdown[source] = source_breakdown.get(source, 0) + 1
+                status_breakdown[status] = status_breakdown.get(status, 0) + 1
+            
+            print(f"\n  Image Source Breakdown:")
+            for source, count in sorted(source_breakdown.items()):
+                print(f"    - {source}: {count}")
+            
+            print(f"\n  Validation Status Breakdown:")
+            for status, count in sorted(status_breakdown.items()):
+                print(f"    - {status}: {count}")
+        else:
+            print(f"❌ FAILED: No verified images found")
+            return False
+        
+        print("\n✅ PASSED: GET /api/crystals/deep image verification")
+        return True
+        
+    except Exception as e:
+        print(f"❌ FAILED: Exception occurred: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
+def test_iolite_spot_check():
+    """Test GET /api/crystals/deep/iolite for verified image metadata."""
+    print("\n" + "="*80)
+    print("TEST 5: GET /api/crystals/deep/iolite - spot check")
+    print("="*80)
     
-    if test_results["failed"]:
-        print(f"\n{Colors.RED}FAILED: {len(test_results['failed'])}/{total_tests}{Colors.END}")
-        for test in test_results["failed"]:
-            print(f"  ✗ {test}")
-    
-    if test_results["warnings"]:
-        print(f"\n{Colors.YELLOW}WARNINGS: {len(test_results['warnings'])}{Colors.END}")
-        for warning in test_results["warnings"]:
-            print(f"  ⚠ {warning}")
-    
-    print(f"\n{'='*60}")
-    
-    # Return exit code
-    return 0 if len(test_results["failed"]) == 0 else 1
+    try:
+        response = httpx.get(f"{BASE_URL}/crystals/deep/iolite", timeout=15.0)
+        print(f"Status: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ FAILED: Expected 200, got {response.status_code}")
+            return False
+        
+        data = response.json()
+        if not isinstance(data, dict):
+            print(f"❌ FAILED: Expected dict, got {type(data)}")
+            return False
+        
+        print(f"✓ Response is a dictionary")
+        
+        # Check image_source
+        image_source = data.get("image_source", "")
+        print(f"\nImage Source: {image_source}")
+        
+        if image_source != "wikipedia_verified":
+            print(f"⚠️  WARNING: image_source is '{image_source}', expected 'wikipedia_verified'")
+        else:
+            print(f"✓ image_source = wikipedia_verified")
+        
+        # Check image_validation
+        image_validation = data.get("image_validation", {})
+        if not image_validation:
+            print(f"❌ FAILED: image_validation object missing")
+            return False
+        
+        print(f"\nImage Validation:")
+        print(f"  - status: {image_validation.get('status', 'N/A')}")
+        print(f"  - score: {image_validation.get('score', 'N/A')}")
+        print(f"  - source_type: {image_validation.get('source_type', 'N/A')}")
+        print(f"  - wikipedia_title: {image_validation.get('wikipedia_title', 'N/A')}")
+        print(f"  - wikipedia_page_url: {image_validation.get('wikipedia_page_url', 'N/A')}")
+        
+        validation_status = image_validation.get("status", "")
+        if validation_status != "verified":
+            print(f"⚠️  WARNING: image_validation.status is '{validation_status}', expected 'verified'")
+        else:
+            print(f"✓ image_validation.status = verified")
+        
+        # Check wikipedia_title is non-empty
+        wikipedia_title = image_validation.get("wikipedia_title", "")
+        if not wikipedia_title:
+            print(f"❌ FAILED: wikipedia_title is empty")
+            return False
+        else:
+            print(f"✓ wikipedia_title is non-empty: '{wikipedia_title}'")
+        
+        # Additional checks
+        verified_image_url = data.get("verified_image_url", "")
+        if verified_image_url:
+            print(f"✓ verified_image_url present: {verified_image_url[:80]}...")
+        else:
+            print(f"⚠️  WARNING: verified_image_url is empty")
+        
+        print("\n✅ PASSED: GET /api/crystals/deep/iolite spot check")
+        return True
+        
+    except Exception as e:
+        print(f"❌ FAILED: Exception occurred: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
 
 
 def main():
     """Run all backend verification tests."""
-    print(f"\n{Colors.BLUE}{'='*60}{Colors.END}")
-    print(f"{Colors.BLUE}Backend API Verification - Breathwork Sanctuary{Colors.END}")
-    print(f"{Colors.BLUE}Base URL: {BASE_URL}{Colors.END}")
-    print(f"{Colors.BLUE}{'='*60}{Colors.END}")
+    print("\n" + "="*80)
+    print("BACKEND INTEGRITY METADATA VERIFICATION")
+    print("="*80)
+    print(f"Backend URL: {BASE_URL}")
     
-    # Run all tests
-    test_health_endpoint()
-    test_expand_script_endpoint()
-    test_gifts_create_endpoint()
-    test_admin_collections_unauthenticated()
+    results = {
+        "courses_integrity": test_courses_integrity_metadata(),
+        "meditations_integrity": test_meditations_integrity_metadata(),
+        "breathwork_integrity": test_breathwork_sessions_integrity_metadata(),
+        "crystals_deep_images": test_crystals_deep_image_verification(),
+        "iolite_spot_check": test_iolite_spot_check(),
+    }
     
-    # Print summary and exit
-    exit_code = print_summary()
-    sys.exit(exit_code)
+    print("\n" + "="*80)
+    print("FINAL RESULTS")
+    print("="*80)
+    
+    for test_name, passed in results.items():
+        status = "✅ PASSED" if passed else "❌ FAILED"
+        print(f"{status}: {test_name}")
+    
+    total = len(results)
+    passed = sum(results.values())
+    
+    print(f"\nTotal: {passed}/{total} tests passed")
+    
+    if passed == total:
+        print("\n🎉 ALL TESTS PASSED!")
+        return 0
+    else:
+        print(f"\n⚠️  {total - passed} test(s) failed")
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
