@@ -31,7 +31,7 @@ export const AuthCallback = ({ api }) => {
     hasProcessed.current = true;
 
     processAuth();
-  }, [processAuth]);
+  }, [hasProcessed, processAuth]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -49,6 +49,7 @@ export const ProtectedRoute = ({ children, api }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(location.state?.user ? true : null);
   const [user, setUser] = useState(location.state?.user || null);
   const [hasAuthError, setHasAuthError] = useState(false);
+  const isMountedRef = useRef(true);
 
   const checkAuth = useCallback(async (isMountedRef) => {
     try {
@@ -67,7 +68,7 @@ export const ProtectedRoute = ({ children, api }) => {
   }, [api, navigate]);
 
   useEffect(() => {
-    const isMountedRef = { current: true };
+    isMountedRef.current = true;
 
     if (location.state?.user) {
       setUser(location.state.user);
@@ -79,7 +80,7 @@ export const ProtectedRoute = ({ children, api }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, location.state]);
+  }, [checkAuth, isMountedRef, location.state]);
 
   if (isAuthenticated === null) {
     return (
@@ -112,6 +113,7 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
   const location = useLocation();
   const [isAuthorized, setIsAuthorized] = useState(null);
   const [user, setUser] = useState(location.state?.user || null);
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const checkAdmin = useCallback(async () => {
     try {
@@ -131,7 +133,6 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
     }
 
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL;
       const response = await fetch(`${backendUrl}/api/admin/collections`, {
         credentials: "include",
       });
@@ -148,7 +149,7 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
       toast.error("Please sign in to access admin");
       navigate("/", { replace: true });
     }
-  }, [adminEmails, api, navigate]);
+  }, [adminEmails, api, backendUrl, navigate]);
 
   useEffect(() => {
     checkAdmin();
@@ -173,6 +174,7 @@ export const PublicRoute = ({ children, api }) => {
   const location = useLocation();
   const [user, setUser] = useState(location.state?.user || null);
   const [checked, setChecked] = useState(false);
+  const isMountedRef = useRef(true);
 
   const checkAuth = useCallback(async (isMountedRef) => {
     try {
@@ -189,7 +191,7 @@ export const PublicRoute = ({ children, api }) => {
   }, [api]);
 
   useEffect(() => {
-    const isMountedRef = { current: true };
+    isMountedRef.current = true;
 
     if (location.state?.user) {
       setUser(location.state.user);
@@ -200,7 +202,7 @@ export const PublicRoute = ({ children, api }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, location.state]);
+  }, [checkAuth, isMountedRef, location.state, user]);
 
   if (!checked) {
     return (

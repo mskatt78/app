@@ -140,7 +140,7 @@ export const ArrayField = ({ label, name, value, onChange, placeholder }) => {
       <label className="text-sm text-muted-foreground">{label}</label>
       <div className="space-y-2">
         {items.map((item, index) => (
-          <div key={index} className="flex gap-2">
+          <div key={`${name}-${String(item).slice(0, 40)}-${index}`} className="flex gap-2">
             <Input
               value={item}
               onChange={(e) => updateItem(index, e.target.value)}

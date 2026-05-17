@@ -170,8 +170,8 @@ export default function FreeFormMovement() {
                   <div className="mt-4">
                     <h3 className="text-sm font-medium mb-2">Benefits</h3>
                     <div className="flex flex-wrap gap-2">
-                      {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((b, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-fuchsia-500/10 text-fuchsia-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
+                      {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((benefit) => (
+                        <span key={`${selectedPractice.id}-benefit-${String(benefit).trim().toLowerCase()}`} className="px-3 py-1 rounded-full bg-fuchsia-500/10 text-fuchsia-300 text-xs">{typeof benefit === 'string' ? benefit.trim() : benefit}</span>
                       ))}
                     </div>
                   </div>

@@ -124,8 +124,8 @@ export default function LiveSessions({ api }) {
 
         {loading ? (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="h-80 rounded-[1.75rem] bg-card/40 animate-pulse" />
+            {Array.from({ length: 6 }, (_, idx) => `live-session-loading-${idx}`).map((placeholderKey) => (
+              <div key={placeholderKey} className="h-80 rounded-[1.75rem] bg-card/40 animate-pulse" />
             ))}
           </div>
         ) : filteredSessions.length === 0 ? (

@@ -360,8 +360,8 @@ const AncientWisdom = ({ user, api }) => {
                       Crystal Allies
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {selected.crystals.map((c, i) => (
-                        <span key={i} className="px-2 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-xs text-violet-300">{c}</span>
+                      {selected.crystals.map((crystal) => (
+                        <span key={`wisdom-crystal-${selected.id}-${String(crystal).toLowerCase()}`} className="px-2 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-xs text-violet-300">{crystal}</span>
                       ))}
                     </div>
                   </div>

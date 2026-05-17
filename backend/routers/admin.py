@@ -415,32 +415,16 @@ class SeedRequest(BaseModel):
     force: bool = False  # If True, clear and reseed even if data exists
 
 
-def _load_standard_seed_collections() -> dict[str, list[dict[str, Any]]]:
+def _load_standard_seed_foundational_collections() -> dict[str, list[dict[str, Any]]]:
     from data.video_content import VIDEO_TUTORIALS
     from data.all_content import (
         CRYSTALS, MANTRAS, MUDRAS, BREATHWORK_SESSIONS,
         THIRTEEN_MONTH_CALENDAR, ORACLE_CARDS,
         GROUNDING_EXERCISES, MINDFULNESS_PRACTICES, MEDITATIONS,
     )
-    from data.somatic_practices import SOMATIC_PRACTICES
-    from data.shamanic_content import (
-        EARTH_ALTARS, HEART_PRACTICES,
-        SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES,
-    )
-    from data.divination_content import ELDER_FUTHARK_RUNES, I_CHING_HEXAGRAMS, LIGHT_CODES
-    from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
+    from data.divination_content import ELDER_FUTHARK_RUNES, I_CHING_HEXAGRAMS
     from data.yoga_poses import YOGA_POSES
     from data.tarot_cards import TAROT_MAJOR_ARCANA
-    from data.sound_frequencies import SOUND_FREQUENCIES
-    from data.guardians_content import SACRED_GUARDIANS
-    from data.community_posts import COMMUNITY_POSTS
-    from data.seed_healing_modalities import (
-        ENERGY_HEALING_DATA, FREE_FORM_MOVEMENT_DATA, CHAKRA_CLEANSING_DATA,
-    )
-    from data.seed_extended_modalities import EXTENDED_CHAKRAS, SOMATIC_YOGA_DATA
-    from data.complete_embodiment_data import COMPLETE_FEMININE_EMBODIMENT, COMPLETE_MASCULINE_EMBODIMENT
-    from data.elemental_temples_data import ELEMENTAL_TEMPLES
-    from data.water_practices_data import WATER_PRACTICES
 
     return {
         "videos": VIDEO_TUTORIALS,
@@ -453,17 +437,37 @@ def _load_standard_seed_collections() -> dict[str, list[dict[str, Any]]]:
         "grounding_exercises": GROUNDING_EXERCISES,
         "mindfulness_practices": MINDFULNESS_PRACTICES,
         "meditations": MEDITATIONS,
+        "runes": ELDER_FUTHARK_RUNES,
+        "i_ching": I_CHING_HEXAGRAMS,
+        "yoga_poses": YOGA_POSES,
+        "tarot_cards": TAROT_MAJOR_ARCANA,
+    }
+
+
+def _load_standard_seed_advanced_collections() -> dict[str, list[dict[str, Any]]]:
+    from data.somatic_practices import SOMATIC_PRACTICES
+    from data.shamanic_content import (
+        EARTH_ALTARS, HEART_PRACTICES,
+        SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES,
+    )
+    from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
+    from data.sound_frequencies import SOUND_FREQUENCIES
+    from data.guardians_content import SACRED_GUARDIANS
+    from data.community_posts import COMMUNITY_POSTS
+    from data.seed_healing_modalities import ENERGY_HEALING_DATA, FREE_FORM_MOVEMENT_DATA
+    from data.seed_extended_modalities import SOMATIC_YOGA_DATA
+    from data.complete_embodiment_data import COMPLETE_FEMININE_EMBODIMENT, COMPLETE_MASCULINE_EMBODIMENT
+    from data.elemental_temples_data import ELEMENTAL_TEMPLES
+    from data.water_practices_data import WATER_PRACTICES
+
+    return {
         "somatic_practices": SOMATIC_PRACTICES,
         "earth_altars": EARTH_ALTARS,
         "heart_practices": HEART_PRACTICES,
         "shamanic_practices": SHAMANIC_PRACTICES,
         "achievements": ENHANCED_ACHIEVEMENTS,
         "elemental_practices": ELEMENTAL_PRACTICES,
-        "runes": ELDER_FUTHARK_RUNES,
-        "i_ching": I_CHING_HEXAGRAMS,
         "creative_processes": CREATIVE_PROCESSES_DEEP,
-        "yoga_poses": YOGA_POSES,
-        "tarot_cards": TAROT_MAJOR_ARCANA,
         "sound_frequencies": SOUND_FREQUENCIES,
         "sacred_guardians": SACRED_GUARDIANS,
         "community_posts": COMMUNITY_POSTS,
@@ -474,6 +478,13 @@ def _load_standard_seed_collections() -> dict[str, list[dict[str, Any]]]:
         "masculine_embodiment": COMPLETE_MASCULINE_EMBODIMENT,
         "elemental_temples": ELEMENTAL_TEMPLES,
         "water_practices": WATER_PRACTICES,
+    }
+
+
+def _load_standard_seed_collections() -> dict[str, list[dict[str, Any]]]:
+    return {
+        **_load_standard_seed_foundational_collections(),
+        **_load_standard_seed_advanced_collections(),
     }
 
 

@@ -199,7 +199,7 @@ const GroundingPractices = ({ user, api }) => {
                         <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Steps</h4>
                         <ul className="space-y-2">
                           {selectedExercise.instructions.map((step, i) => (
-                            <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                            <li key={`${selectedExercise.id}-step-${String(step).slice(0, 40)}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                               <span className="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs flex-shrink-0">
                                 {i + 1}
                               </span>

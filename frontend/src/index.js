@@ -3,6 +3,14 @@ import ReactDOM from "react-dom/client";
 import "@/index.css";
 import App from "@/App";
 
+if (process.env.NODE_ENV === "production") {
+  const noop = () => {};
+  window.console.log = noop;
+  window.console.info = noop;
+  window.console.debug = noop;
+  window.console.warn = noop;
+}
+
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

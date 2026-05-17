@@ -150,6 +150,138 @@ def _build_gift_record(gift: GiftCreate, gift_code: str, price: float, product_n
     }
 
 
+def _build_gift_payment_metadata(gift: dict[str, Any], current_user: User) -> dict[str, str]:
+    return {
+        "gift_code": gift["gift_code"],
+        "recipient_email": gift["recipient_email"],
+        "recipient_name": gift["recipient_name"],
+        "sender_name": gift["sender_name"],
+        "gift_type": gift["gift_type"],
+        "user_id": current_user.user_id,
+        "is_gift": "true",
+    }
+
+
+def _build_gift_transaction(
+    session_id: str,
+    amount: float,
+    payment_method: str,
+    product_name: str,
+    gift_code: str,
+    current_user: User,
+    metadata: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
+    transaction: dict[str, Any] = {
+        "id": str(uuid.uuid4())[:8],
+        "session_id": session_id,
+        "user_id": current_user.user_id,
+        "user_email": current_user.email,
+        "amount": amount,
+        "currency": "usd",
+        "product_type": "gift",
+        "gift_code": gift_code,
+        "product_name": f"Gift: {product_name}",
+        "payment_method": payment_method,
+        "payment_status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    if metadata:
+        transaction["metadata"] = metadata
+    return transaction
+
+
+def _build_paypal_gift_order_payload(gift: dict[str, Any], amount: float, product_name: str, origin_url: str) -> dict[str, Any]:
+    gift_code = gift["gift_code"]
+    return {
+        "intent": "CAPTURE",
+        "purchase_units": [{
+            "reference_id": gift_code,
+            "description": f"Gift: {product_name} for {gift['recipient_name']}",
+            "amount": {
+                "currency_code": "USD",
+                "value": f"{amount:.2f}"
+            },
+            "custom_id": gift_code,
+        }],
+        "application_context": {
+            "return_url": f"{origin_url}/gift/success?gift_code={gift_code}",
+            "cancel_url": f"{origin_url}/gift/cancel?gift_code={gift_code}",
+            "brand_name": "Shamanic Elements",
+            "user_action": "PAY_NOW",
+        },
+    }
+
+
+def _extract_paypal_approval_url(order: dict[str, Any]) -> str | None:
+    for link in order.get("links", []):
+        if isinstance(link, dict) and link.get("rel") == "approve":
+            return link.get("href")
+    return None
+
+
+async def _mark_gift_redeemed(db: Any, gift_code: str, user_id: str) -> None:
+    await db.gifts.update_one(
+        {"gift_code": gift_code},
+        {
+            "$set": {
+                "status": "redeemed",
+                "redeemed_at": datetime.now(timezone.utc).isoformat(),
+                "redeemed_by": user_id,
+            }
+        },
+    )
+
+
+async def _grant_redeemed_gift_access(db: Any, gift: dict[str, Any], gift_code: str, user_id: str) -> None:
+    if gift["gift_type"] == "subscription":
+        plan_id = gift.get("plan_id", "monthly")
+        interval = SUBSCRIPTION_PLANS.get(plan_id, {}).get("interval", "month")
+        expiry_days = 365 if interval == "year" else 30
+        expires_at = datetime.now(timezone.utc) + timedelta(days=expiry_days)
+
+        await db.user_subscriptions.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "user_id": user_id,
+                "plan_id": plan_id,
+                "status": "active",
+                "source": "gift",
+                "gift_code": gift_code,
+                "started_at": datetime.now(timezone.utc).isoformat(),
+                "expires_at": expires_at.isoformat(),
+            }},
+            upsert=True,
+        )
+        return
+
+    await db.user_purchases.insert_one({
+        "user_id": user_id,
+        "product_type": gift["gift_type"],
+        "product_id": gift.get("item_id"),
+        "source": "gift",
+        "gift_code": gift_code,
+        "purchased_at": datetime.now(timezone.utc).isoformat(),
+    })
+
+
+async def _notify_sender_of_redemption(db: Any, gift_code: str, gift: dict[str, Any]) -> None:
+    try:
+        transaction = await db.payment_transactions.find_one({"gift_code": gift_code})
+        sender_email = transaction.get("user_email") if transaction else None
+        if not sender_email:
+            return
+
+        await send_gift_redeemed_notification(
+            sender_email=sender_email,
+            sender_name=gift["sender_name"],
+            recipient_name=gift["recipient_name"],
+            gift_type=gift["gift_type"],
+        )
+        logger.info("Gift redemption notification sent for %s", gift_code)
+    except Exception as exc:
+        logger.error("Failed to send redemption notification: %s", exc)
+
+
 # ============ PUSH NOTIFICATIONS ============
 
 @router.post("/notifications/subscribe")
@@ -242,15 +374,7 @@ async def _create_stripe_gift_checkout(
     success_url = f"{origin_url}/gift/success?gift_code={gift['gift_code']}&session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{origin_url}/gift/cancel?gift_code={gift['gift_code']}"
     
-    metadata = {
-        "gift_code": gift["gift_code"],
-        "recipient_email": gift["recipient_email"],
-        "recipient_name": gift["recipient_name"],
-        "sender_name": gift["sender_name"],
-        "gift_type": gift["gift_type"],
-        "user_id": current_user.user_id,
-        "is_gift": "true"
-    }
+    metadata = _build_gift_payment_metadata(gift, current_user)
     
     host_url = str(request.base_url).rstrip("/")
     webhook_url = f"{host_url}/api/webhook/stripe"
@@ -273,22 +397,15 @@ async def _create_stripe_gift_checkout(
             {"$set": {"payment_session_id": session.session_id, "payment_method": "stripe"}}
         )
         
-        # Record transaction
-        transaction = {
-            "id": str(uuid.uuid4())[:8],
-            "session_id": session.session_id,
-            "user_id": current_user.user_id,
-            "user_email": current_user.email,
-            "amount": amount,
-            "currency": "usd",
-            "product_type": "gift",
-            "gift_code": gift["gift_code"],
-            "product_name": f"Gift: {product_name}",
-            "payment_method": "stripe",
-            "payment_status": "pending",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "metadata": metadata
-        }
+        transaction = _build_gift_transaction(
+            session.session_id,
+            amount,
+            "stripe",
+            product_name,
+            gift["gift_code"],
+            current_user,
+            metadata,
+        )
         await db.payment_transactions.insert_one(transaction)
         
         return {
@@ -324,25 +441,7 @@ async def _create_paypal_gift_order(
     async with httpx.AsyncClient() as client:
         access_token = await _fetch_paypal_access_token(client, base_url, paypal_client_id, paypal_secret)
         
-        # Create order
-        order_data = {
-            "intent": "CAPTURE",
-            "purchase_units": [{
-                "reference_id": gift["gift_code"],
-                "description": f"Gift: {product_name} for {gift['recipient_name']}",
-                "amount": {
-                    "currency_code": "USD",
-                    "value": f"{amount:.2f}"
-                },
-                "custom_id": gift["gift_code"]
-            }],
-            "application_context": {
-                "return_url": f"{origin_url}/gift/success?gift_code={gift['gift_code']}",
-                "cancel_url": f"{origin_url}/gift/cancel?gift_code={gift['gift_code']}",
-                "brand_name": "Shamanic Elements",
-                "user_action": "PAY_NOW"
-            }
-        }
+        order_data = _build_paypal_gift_order_payload(gift, amount, product_name, origin_url)
         
         order_response = await client.post(
             f"{base_url}/v2/checkout/orders",
@@ -360,12 +459,7 @@ async def _create_paypal_gift_order(
         order = order_response.json()
         order_id = order["id"]
         
-        # Find approval URL
-        approval_url = None
-        for link in order.get("links", []):
-            if link.get("rel") == "approve":
-                approval_url = link.get("href")
-                break
+        approval_url = _extract_paypal_approval_url(order)
         
         if not approval_url:
             raise HTTPException(status_code=500, detail="PayPal approval URL not found")
@@ -376,21 +470,14 @@ async def _create_paypal_gift_order(
             {"$set": {"payment_session_id": order_id, "payment_method": "paypal"}}
         )
         
-        # Record transaction
-        transaction = {
-            "id": str(uuid.uuid4())[:8],
-            "session_id": order_id,
-            "user_id": current_user.user_id,
-            "user_email": current_user.email,
-            "amount": amount,
-            "currency": "usd",
-            "product_type": "gift",
-            "gift_code": gift["gift_code"],
-            "product_name": f"Gift: {product_name}",
-            "payment_method": "paypal",
-            "payment_status": "pending",
-            "created_at": datetime.now(timezone.utc).isoformat()
-        }
+        transaction = _build_gift_transaction(
+            order_id,
+            amount,
+            "paypal",
+            product_name,
+            gift["gift_code"],
+            current_user,
+        )
         await db.payment_transactions.insert_one(transaction)
         
         return {
@@ -543,66 +630,9 @@ async def redeem_gift(data: GiftRedeem, current_user: User = Depends(get_current
     if gift["status"] != "paid":
         raise HTTPException(status_code=400, detail="Gift has not been paid for yet")
     
-    # Update gift as redeemed
-    await db.gifts.update_one(
-        {"gift_code": data.gift_code},
-        {
-            "$set": {
-                "status": "redeemed",
-                "redeemed_at": datetime.now(timezone.utc).isoformat(),
-                "redeemed_by": current_user.user_id
-            }
-        }
-    )
-    
-    # Grant the gift to user
-    if gift["gift_type"] == "subscription":
-        plan_id = gift.get("plan_id", "monthly")
-        interval = SUBSCRIPTION_PLANS.get(plan_id, {}).get("interval", "month")
-        
-        if interval == "year":
-            expires_at = datetime.now(timezone.utc) + timedelta(days=365)
-        else:
-            expires_at = datetime.now(timezone.utc) + timedelta(days=30)
-        
-        await db.user_subscriptions.update_one(
-            {"user_id": current_user.user_id},
-            {"$set": {
-                "user_id": current_user.user_id,
-                "plan_id": plan_id,
-                "status": "active",
-                "source": "gift",
-                "gift_code": data.gift_code,
-                "started_at": datetime.now(timezone.utc).isoformat(),
-                "expires_at": expires_at.isoformat()
-            }},
-            upsert=True
-        )
-    else:
-        # Grant one-time product access
-        await db.user_purchases.insert_one({
-            "user_id": current_user.user_id,
-            "product_type": gift["gift_type"],
-            "product_id": gift.get("item_id"),
-            "source": "gift",
-            "gift_code": data.gift_code,
-            "purchased_at": datetime.now(timezone.utc).isoformat()
-        })
-    
-    # Send notification to sender that gift was redeemed
-    try:
-        # Get sender's email from transaction
-        transaction = await db.payment_transactions.find_one({"gift_code": data.gift_code})
-        if transaction and transaction.get("user_email"):
-            await send_gift_redeemed_notification(
-                sender_email=transaction["user_email"],
-                sender_name=gift["sender_name"],
-                recipient_name=gift["recipient_name"],
-                gift_type=gift["gift_type"]
-            )
-            logger.info(f"Gift redemption notification sent for {data.gift_code}")
-    except Exception as e:
-        logger.error(f"Failed to send redemption notification: {e}")
+    await _mark_gift_redeemed(db, data.gift_code, current_user.user_id)
+    await _grant_redeemed_gift_access(db, gift, data.gift_code, current_user.user_id)
+    await _notify_sender_of_redemption(db, data.gift_code, gift)
     
     return {
         "message": "Gift redeemed successfully!",

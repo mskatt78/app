@@ -30,6 +30,35 @@ class NarrationResponse(BaseModel):
     cached: bool = False
 
 
+def _resolve_audio_api_key() -> str:
+    api_key = os.environ.get('EMERGENT_LLM_KEY')
+    if not api_key:
+        raise HTTPException(status_code=500, detail="Audio narration service not configured")
+    return api_key
+
+
+def _validate_narration_length(text: str) -> None:
+    if len(text) > 4096:
+        raise HTTPException(status_code=400, detail="Text too long. Maximum 4096 characters.")
+
+
+def _build_narration_cache_key(request: NarrationRequest) -> str:
+    return hashlib.sha256(f"{request.text}{request.voice}{request.speed}".encode()).hexdigest()
+
+
+async def _generate_narration_audio(api_key: str, request: NarrationRequest) -> str:
+    from emergentintegrations.llm.openai import OpenAITextToSpeech
+
+    tts = OpenAITextToSpeech(api_key=api_key)
+    return await tts.generate_speech_base64(
+        text=request.text,
+        model="tts-1-hd",
+        voice=request.voice,
+        speed=request.speed,
+        response_format="mp3",
+    )
+
+
 @router.post("/generate-narration")
 async def generate_narration(request: NarrationRequest) -> NarrationResponse:
     """
@@ -37,18 +66,9 @@ async def generate_narration(request: NarrationRequest) -> NarrationResponse:
     Returns base64 encoded audio for direct playback in browser.
     """
     try:
-        from emergentintegrations.llm.openai import OpenAITextToSpeech
-        
-        api_key = os.environ.get('EMERGENT_LLM_KEY')
-        if not api_key:
-            raise HTTPException(status_code=500, detail="Audio narration service not configured")
-        
-        # Check text length limit (4096 chars per request)
-        if len(request.text) > 4096:
-            raise HTTPException(status_code=400, detail="Text too long. Maximum 4096 characters.")
-        
-        # Create cache key based on text, voice, and speed
-        cache_key = hashlib.sha256(f"{request.text}{request.voice}{request.speed}".encode()).hexdigest()
+        api_key = _resolve_audio_api_key()
+        _validate_narration_length(request.text)
+        cache_key = _build_narration_cache_key(request)
         
         # Check cache first
         if cache_key in audio_cache:
@@ -59,15 +79,7 @@ async def generate_narration(request: NarrationRequest) -> NarrationResponse:
                 cached=True
             )
         
-        # Generate audio
-        tts = OpenAITextToSpeech(api_key=api_key)
-        audio_base64 = await tts.generate_speech_base64(
-            text=request.text,
-            model="tts-1-hd",  # HD quality for meditation
-            voice=request.voice,
-            speed=request.speed,
-            response_format="mp3"
-        )
+        audio_base64 = await _generate_narration_audio(api_key, request)
         
         # Cache the result
         audio_cache[cache_key] = audio_base64

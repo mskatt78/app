@@ -43,7 +43,7 @@ const MeditationVisualizer = ({
           
           return (
             <motion.div
-              key={i}
+              key={`particle-${i}`}
               className="absolute rounded-full"
               style={{
                 width: size,
@@ -80,7 +80,7 @@ const MeditationVisualizer = ({
       <div className="absolute inset-0 overflow-hidden">
         {[...Array(5)].map((_, i) => (
           <motion.div
-            key={i}
+            key={`aurora-band-${i}`}
             className="absolute w-full h-48 opacity-30"
             style={{
               background: `linear-gradient(180deg, transparent, ${colors.primary}40, ${colors.secondary}40, transparent)`,
@@ -279,7 +279,7 @@ const MeditationVisualizer = ({
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(10)].map((_, i) => (
               <motion.div
-                key={i}
+                key={`earth-fragment-${i}`}
                 className="absolute bg-emerald-500/30 rounded-lg"
                 style={{
                   width: 40 + Math.random() * 60,
@@ -306,7 +306,7 @@ const MeditationVisualizer = ({
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(5)].map((_, i) => (
               <motion.div
-                key={i}
+                key={`water-wave-${i}`}
                 className="absolute w-full h-20 bg-gradient-to-b from-blue-500/20 to-transparent"
                 style={{ top: `${20 + i * 15}%` }}
                 animate={{
@@ -328,7 +328,7 @@ const MeditationVisualizer = ({
           <div className="absolute inset-0 flex items-end justify-center overflow-hidden">
             {[...Array(15)].map((_, i) => (
               <motion.div
-                key={i}
+                key={`fire-flame-${i}`}
                 className="absolute bg-orange-500 rounded-full blur-md"
                 style={{
                   width: 20 + Math.random() * 40,
@@ -356,7 +356,7 @@ const MeditationVisualizer = ({
           <div className="absolute inset-0 overflow-hidden">
             {[...Array(20)].map((_, i) => (
               <motion.div
-                key={i}
+                key={`air-stream-${i}`}
                 className="absolute w-20 h-0.5 bg-cyan-400/40"
                 style={{
                   left: `${Math.random() * 100}%`,

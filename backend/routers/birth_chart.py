@@ -6,7 +6,7 @@ library (pyswisseph), which is the de-facto standard for astrological calculatio
 """
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Tuple
+from typing import Any, Optional, List, Dict, Tuple
 from datetime import datetime, timezone
 import logging
 import math
@@ -318,6 +318,36 @@ def calculate_planet_position(planet_name: str, jd: float) -> Dict:
     }
 
 
+def _build_house_entry(house_number: int, cusp_lon: float) -> Dict[str, Any]:
+    sign, sign_pos = get_zodiac_sign(cusp_lon)
+    return {
+        "number": house_number,
+        "longitude": round(cusp_lon, 4),
+        "sign": sign,
+        "sign_symbol": ZODIAC_SIGNS[sign]["symbol"],
+        "degree": int(sign_pos),
+        "minute": int((sign_pos % 1) * 60),
+        **HOUSE_MEANINGS.get(house_number, {}),
+    }
+
+
+def _build_angle_entry(angle_name: str, longitude: float, house: int, symbol: str) -> Dict[str, Any]:
+    sign, sign_pos = get_zodiac_sign(longitude)
+    return {
+        "name": angle_name,
+        "longitude": round(longitude, 4),
+        "sign": sign,
+        "sign_symbol": ZODIAC_SIGNS[sign]["symbol"],
+        "sign_position": sign_pos,
+        "degree": int(sign_pos),
+        "minute": int((sign_pos % 1) * 60),
+        "symbol": symbol,
+        "meaning": PLANET_DATA[angle_name]["meaning"],
+        "keywords": PLANET_DATA[angle_name]["keywords"],
+        "house": house,
+    }
+
+
 def calculate_houses(jd: float, lat: float, lon: float) -> Tuple[Dict, Dict, Dict]:
     """Calculate house cusps, ascendant, and midheaven using Placidus system."""
     if not SWISSEPH_AVAILABLE:
@@ -327,53 +357,13 @@ def calculate_houses(jd: float, lat: float, lon: float) -> Tuple[Dict, Dict, Dic
     cusps, ascmc = swe.houses(jd, lat, lon, b'P')
     
     # House cusps (1-12) - cusps is 0-indexed, where index 0 = house 1
-    houses = {}
-    for i in range(1, 13):
-        cusp_lon = cusps[i - 1]  # 0-indexed: house 1 = cusps[0]
-        sign, sign_pos = get_zodiac_sign(cusp_lon)
-        houses[i] = {
-            "number": i,
-            "longitude": round(cusp_lon, 4),
-            "sign": sign,
-            "sign_symbol": ZODIAC_SIGNS[sign]["symbol"],
-            "degree": int(sign_pos),
-            "minute": int((sign_pos % 1) * 60),
-            **HOUSE_MEANINGS.get(i, {})
-        }
+    houses = {house_number: _build_house_entry(house_number, cusps[house_number - 1]) for house_number in range(1, 13)}
     
     # Ascendant (ASC)
-    asc_lon = ascmc[0]
-    asc_sign, asc_pos = get_zodiac_sign(asc_lon)
-    ascendant = {
-        "name": "Ascendant",
-        "longitude": round(asc_lon, 4),
-        "sign": asc_sign,
-        "sign_symbol": ZODIAC_SIGNS[asc_sign]["symbol"],
-        "sign_position": asc_pos,
-        "degree": int(asc_pos),
-        "minute": int((asc_pos % 1) * 60),
-        "symbol": "AC",
-        "meaning": PLANET_DATA["Ascendant"]["meaning"],
-        "keywords": PLANET_DATA["Ascendant"]["keywords"],
-        "house": 1
-    }
+    ascendant = _build_angle_entry("Ascendant", ascmc[0], house=1, symbol="AC")
     
     # Midheaven (MC)
-    mc_lon = ascmc[1]
-    mc_sign, mc_pos = get_zodiac_sign(mc_lon)
-    midheaven = {
-        "name": "Midheaven",
-        "longitude": round(mc_lon, 4),
-        "sign": mc_sign,
-        "sign_symbol": ZODIAC_SIGNS[mc_sign]["symbol"],
-        "sign_position": mc_pos,
-        "degree": int(mc_pos),
-        "minute": int((mc_pos % 1) * 60),
-        "symbol": "MC",
-        "meaning": PLANET_DATA["Midheaven"]["meaning"],
-        "keywords": PLANET_DATA["Midheaven"]["keywords"],
-        "house": 10
-    }
+    midheaven = _build_angle_entry("Midheaven", ascmc[1], house=10, symbol="MC")
     
     return houses, ascendant, midheaven
 
@@ -652,6 +642,42 @@ def _build_birth_chart_payload(computation: BirthChartComputation) -> dict:
     }
 
 
+def _compute_birth_chart(request: BirthChartRequest) -> BirthChartComputation:
+    year, month, day, hour, minute, second = _parse_birth_datetime(request)
+    lat, lon, tz_name = _resolve_location_and_timezone(request)
+    birth_dt = datetime(year, month, day, hour, minute, second)
+    jd = datetime_to_julian(birth_dt, tz_name)
+    planets = _calculate_chart_planets(jd)
+    houses, ascendant, midheaven = calculate_houses(jd, lat, lon)
+
+    for planet in planets:
+        planet["house"] = determine_house(planet["longitude"], houses)
+
+    aspects = calculate_aspects(planets)
+    elements = calculate_element_balance(planets + [ascendant])
+    qualities = calculate_quality_balance(planets + [ascendant])
+
+    return BirthChartComputation(
+        request=request,
+        year=year,
+        month=month,
+        day=day,
+        hour=hour,
+        minute=minute,
+        latitude=lat,
+        longitude=lon,
+        timezone_name=tz_name,
+        jd=jd,
+        planets=planets,
+        houses=houses,
+        ascendant=ascendant,
+        midheaven=midheaven,
+        aspects=aspects,
+        elements=elements,
+        qualities=qualities,
+    )
+
+
 @router.post("/calculate")
 async def calculate_birth_chart(request: BirthChartRequest):
     """Calculate a complete birth chart using Swiss Ephemeris.
@@ -664,45 +690,7 @@ async def calculate_birth_chart(request: BirthChartRequest):
         raise HTTPException(status_code=500, detail="Swiss Ephemeris not available")
     
     try:
-        year, month, day, hour, minute, second = _parse_birth_datetime(request)
-        lat, lon, tz_name = _resolve_location_and_timezone(request)
-        birth_dt = datetime(year, month, day, hour, minute, second)
-        jd = datetime_to_julian(birth_dt, tz_name)
-        planets = _calculate_chart_planets(jd)
-        
-        # Calculate houses and angles
-        houses, ascendant, midheaven = calculate_houses(jd, lat, lon)
-        
-        # Assign houses to planets
-        for planet in planets:
-            planet["house"] = determine_house(planet["longitude"], houses)
-        
-        # Calculate aspects
-        aspects = calculate_aspects(planets)  # Only between planets, not angles
-        
-        # Calculate elemental and quality balance
-        elements = calculate_element_balance(planets + [ascendant])
-        qualities = calculate_quality_balance(planets + [ascendant])
-        
-        computation = BirthChartComputation(
-            request=request,
-            year=year,
-            month=month,
-            day=day,
-            hour=hour,
-            minute=minute,
-            latitude=lat,
-            longitude=lon,
-            timezone_name=tz_name,
-            jd=jd,
-            planets=planets,
-            houses=houses,
-            ascendant=ascendant,
-            midheaven=midheaven,
-            aspects=aspects,
-            elements=elements,
-            qualities=qualities,
-        )
+        computation = _compute_birth_chart(request)
         return _build_birth_chart_payload(computation)
         
     except Exception as e:

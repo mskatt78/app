@@ -292,7 +292,7 @@ function AudioLibrary({ api }) {
         <input ref={fileRef} type="file" accept="audio/*,image/*" className="hidden" onChange={handleUpload} />
       </div>
       {loading ? (
-        <div className="space-y-2">{Array(4).fill(0).map((_, i) => <div key={i} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
+        <div className="space-y-2">{Array.from({ length: 4 }, (_, idx) => `audio-loading-${idx}`).map((placeholderKey) => <div key={placeholderKey} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
       ) : files.length === 0 ? (
         <div className="py-16 text-center text-muted-foreground">
           <Upload className="w-10 h-10 mx-auto mb-3 opacity-30" />
@@ -467,7 +467,7 @@ export default function AdminSection() {
 
       <main className="max-w-4xl mx-auto px-6 py-8">
         {isAudio ? (
-          hasAdminSession ? <AudioLibrary api={api} /> : <div className="space-y-2">{Array(4).fill(0).map((_, i) => <div key={i} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
+          hasAdminSession ? <AudioLibrary api={api} /> : <div className="space-y-2">{Array.from({ length: 4 }, (_, idx) => `admin-audio-loading-${idx}`).map((placeholderKey) => <div key={placeholderKey} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
         ) : (
           <>
             {/* Toolbar */}
@@ -490,7 +490,7 @@ export default function AdminSection() {
 
             {/* Items List */}
             {loading ? (
-              <div className="space-y-2">{Array(8).fill(0).map((_, i) => <div key={i} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
+              <div className="space-y-2">{Array.from({ length: 8 }, (_, idx) => `items-loading-${idx}`).map((placeholderKey) => <div key={placeholderKey} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
             ) : items.length === 0 ? (
               <div className="py-16 text-center text-muted-foreground">
                 <p>No entries found</p>

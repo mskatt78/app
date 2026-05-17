@@ -682,73 +682,76 @@ def _build_context_absorption_paragraphs(context_sentences: list[str]) -> list[s
     ]
 
 
+ADAPTIVE_BODY_PHRASE_BANK: dict[str, list[str]] = {
+    "awareness_points": [
+        "the space behind your eyes", "your jaw and tongue", "your throat and collarbones", "the center of your chest",
+        "the rise and fall of your ribs", "your diaphragm and belly", "your lower back and sacrum", "your hips and pelvis",
+        "the weight in your legs", "your feet touching the ground", "the back of your heart", "the rhythm of your pulse",
+        "the temperature of your skin", "the subtle movement of breath", "your emotional edges", "your sense of internal space",
+        "your shoulder blades resting", "the inside of your palms", "your pelvic floor", "your spine lengthening",
+        "your heartbeat against stillness", "the bridge between breath and emotion", "your forehead softening", "your belly wall relaxing",
+    ],
+    "breath_cues": [
+        "Lengthen your exhale slightly beyond your inhale",
+        "Receive the inhale naturally, without pulling",
+        "Keep the pauses soft instead of rigid",
+        "Breathe through your nose with an even, quiet cadence",
+        "Round off unnecessary tension on each breath cycle",
+        "Maintain a breath volume that feels sustainable",
+        "Guide the breath lower toward the belly",
+        "Hold a rhythm your nervous system can trust",
+        "Synchronize breath and body without forcing",
+        "Use breath as an anchor rather than a demand",
+        "Breathe as if there is ample time",
+        "Soften around the edge of each exhale",
+        "Give every exhale enough length to signal safety",
+        "Let ribcage expansion and release stay effortless",
+        "Keep the breath low, warm, and steady",
+        "Choose a breathing rhythm that remains simple",
+        "Ease the edges of effort through steady breathing",
+        "Stay with a cadence that feels clear and manageable",
+        "Breathe as though support is rising from within",
+        "Relax the throat so breath can move cleanly",
+    ],
+    "integration_targets": [
+        "nervous system regulation", "emotional steadiness", "inner trust", "embodied clarity", "somatic safety",
+        "grounded awareness", "gentle resilience", "self-compassion", "present-moment stability", "deeper self-connection",
+        "energetic coherence", "relational softness", "mental spaciousness", "body-based confidence", "subtle emotional release",
+    ],
+    "imagery_prompts": [
+        "Imagine this practice moving through you like a calm tide", "Feel this process settling like warm light through the body",
+        "Let awareness spread like roots finding stable ground", "Sense your attention widening without losing precision",
+        "Receive each breath as a quiet message of safety", "Notice that stillness can coexist with movement",
+        "Allow your body to become both soft and strong", "Let the mind become spacious while the body stays grounded",
+        "Feel yourself held by the moment rather than pushed by it", "Allow presence to deepen with each cycle",
+        "Picture tension loosening like knots in warm water", "Feel your awareness becoming clear and spacious",
+        "Imagine each exhale polishing the mind toward stillness", "Sense the body returning to its natural rhythm",
+        "Let this moment feel like an inner sanctuary", "Feel your system organizing itself around calm clarity",
+    ],
+    "narrative_openers": [
+        "In this next interval, stay slow and attentive",
+        "Continue with patience and a softer focus",
+        "As you settle deeper, let awareness feel embodied",
+        "This minute can unfold with steadiness and ease",
+        "Take this phase as an invitation to listen inwardly",
+        "From here, move with gentle care",
+        "Remain present while subtle shifts reveal themselves",
+        "This layer of practice can ripen gradually",
+        "Keep attention honest and unforced",
+        "Notice how depth appears when urgency fades",
+        "Continue with curiosity and kind discipline",
+        "Treat this section as lived experience, not theory",
+        "Let calm precision and grounded strength move together",
+        "Stay graceful as your inner focus grows clearer",
+        "Hold this part of the journey as tender and strong",
+        "If you need to slow down, that is part of the practice",
+        "Let this feel more like conversation than command",
+    ],
+}
+
+
 def _adaptive_body_phrase_bank() -> dict[str, list[str]]:
-    return {
-        "awareness_points": [
-            "the space behind your eyes", "your jaw and tongue", "your throat and collarbones", "the center of your chest",
-            "the rise and fall of your ribs", "your diaphragm and belly", "your lower back and sacrum", "your hips and pelvis",
-            "the weight in your legs", "your feet touching the ground", "the back of your heart", "the rhythm of your pulse",
-            "the temperature of your skin", "the subtle movement of breath", "your emotional edges", "your sense of internal space",
-            "your shoulder blades resting", "the inside of your palms", "your pelvic floor", "your spine lengthening",
-            "your heartbeat against stillness", "the bridge between breath and emotion", "your forehead softening", "your belly wall relaxing",
-        ],
-        "breath_cues": [
-            "Lengthen your exhale slightly beyond your inhale",
-            "Receive the inhale naturally, without pulling",
-            "Keep the pauses soft instead of rigid",
-            "Breathe through your nose with an even, quiet cadence",
-            "Round off unnecessary tension on each breath cycle",
-            "Maintain a breath volume that feels sustainable",
-            "Guide the breath lower toward the belly",
-            "Hold a rhythm your nervous system can trust",
-            "Synchronize breath and body without forcing",
-            "Use breath as an anchor rather than a demand",
-            "Breathe as if there is ample time",
-            "Soften around the edge of each exhale",
-            "Give every exhale enough length to signal safety",
-            "Let ribcage expansion and release stay effortless",
-            "Keep the breath low, warm, and steady",
-            "Choose a breathing rhythm that remains simple",
-            "Ease the edges of effort through steady breathing",
-            "Stay with a cadence that feels clear and manageable",
-            "Breathe as though support is rising from within",
-            "Relax the throat so breath can move cleanly",
-        ],
-        "integration_targets": [
-            "nervous system regulation", "emotional steadiness", "inner trust", "embodied clarity", "somatic safety",
-            "grounded awareness", "gentle resilience", "self-compassion", "present-moment stability", "deeper self-connection",
-            "energetic coherence", "relational softness", "mental spaciousness", "body-based confidence", "subtle emotional release",
-        ],
-        "imagery_prompts": [
-            "Imagine this practice moving through you like a calm tide", "Feel this process settling like warm light through the body",
-            "Let awareness spread like roots finding stable ground", "Sense your attention widening without losing precision",
-            "Receive each breath as a quiet message of safety", "Notice that stillness can coexist with movement",
-            "Allow your body to become both soft and strong", "Let the mind become spacious while the body stays grounded",
-            "Feel yourself held by the moment rather than pushed by it", "Allow presence to deepen with each cycle",
-            "Picture tension loosening like knots in warm water", "Feel your awareness becoming clear and spacious",
-            "Imagine each exhale polishing the mind toward stillness", "Sense the body returning to its natural rhythm",
-            "Let this moment feel like an inner sanctuary", "Feel your system organizing itself around calm clarity",
-        ],
-        "narrative_openers": [
-            "In this next interval, stay slow and attentive",
-            "Continue with patience and a softer focus",
-            "As you settle deeper, let awareness feel embodied",
-            "This minute can unfold with steadiness and ease",
-            "Take this phase as an invitation to listen inwardly",
-            "From here, move with gentle care",
-            "Remain present while subtle shifts reveal themselves",
-            "This layer of practice can ripen gradually",
-            "Keep attention honest and unforced",
-            "Notice how depth appears when urgency fades",
-            "Continue with curiosity and kind discipline",
-            "Treat this section as lived experience, not theory",
-            "Let calm precision and grounded strength move together",
-            "Stay graceful as your inner focus grows clearer",
-            "Hold this part of the journey as tender and strong",
-            "If you need to slow down, that is part of the practice",
-            "Let this feel more like conversation than command",
-        ],
-    }
+    return ADAPTIVE_BODY_PHRASE_BANK
 
 
 def _compose_adaptive_paragraph(index: int, context_queue: list[str], phrase_bank: dict[str, list[str]]) -> str:
@@ -834,67 +837,70 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
     return _dedupe_paragraphs(paragraphs)
 
 
+EXTENSION_PHRASE_BANK: dict[str, list[str]] = {
+    "openers": [
+        "Continue with patience and care",
+        "Stay with the process as it unfolds naturally",
+        "Keep awareness spacious and grounded",
+        "Let this next minute stay steady and unrushed",
+        "Support your body in learning through breath",
+        "Remain connected to present sensation",
+        "Keep this phase simple and embodied",
+        "Maintain a calm, sustainable rhythm",
+        "Continue with gentle attentiveness",
+        "Stay graceful as your inner signal grows clearer",
+        "Let steady power rise without force",
+        "Track subtle shifts while keeping your pace human",
+        "Hold the posture of listening, not performing",
+        "Keep your focus soft, clear, and grounded",
+        "If needed, take this section slower and kinder",
+        "Let this feel like guidance from a trusted voice",
+    ],
+    "midlines": [
+        "Keep your breathing even and unforced",
+        "Stay receptive while attention remains clear",
+        "Track subtle sensation without over-analyzing every shift",
+        "Let awareness stay grounded in what is present",
+        "Hold a rhythm that does not strain the body",
+        "Continue with patient focus instead of urgency",
+        "Give this moment room to settle before moving on",
+        "Let breath and posture coordinate with minimal effort",
+        "Keep jaw, shoulders, and belly soft as you continue",
+        "Maintain clarity while your nervous system settles",
+        "Stay connected to your inner pacing cues",
+        "Keep this phase embodied rather than performative",
+        "Allow precision and softness to move together",
+        "Stay present to sensation while breath remains smooth",
+        "If emotion rises, let it move through you without rushing",
+        "Keep returning to the body as your most honest anchor",
+    ],
+    "closers": [
+        "Nothing is missing in this moment",
+        "Depth comes through consistency, not force",
+        "Your pace is enough",
+        "Gentleness is part of the medicine",
+        "Trust the process as it reveals itself",
+        "Keep listening from within",
+        "Steadiness is more valuable than intensity",
+        "Let this settle before moving ahead",
+        "Presence is the practice",
+        "Small steady steps shape real change",
+        "This is how calm strength is built",
+        "Take only what your system can integrate now",
+        "The body learns best in clear, steady cycles",
+        "Your awareness is already doing meaningful work",
+        "Integration happens through repetition with variation",
+        "Stay kind and precise at the same time",
+        "You can trust what your body is telling you",
+        "Softness and strength can live together here",
+        "You are allowed to be held while you heal",
+        "Let this guidance meet you exactly where you are",
+    ],
+}
+
+
 def _extension_phrase_bank() -> dict[str, list[str]]:
-    return {
-        "openers": [
-            "Continue with patience and care",
-            "Stay with the process as it unfolds naturally",
-            "Keep awareness spacious and grounded",
-            "Let this next minute stay steady and unrushed",
-            "Support your body in learning through breath",
-            "Remain connected to present sensation",
-            "Keep this phase simple and embodied",
-            "Maintain a calm, sustainable rhythm",
-            "Continue with gentle attentiveness",
-            "Stay graceful as your inner signal grows clearer",
-            "Let steady power rise without force",
-            "Track subtle shifts while keeping your pace human",
-            "Hold the posture of listening, not performing",
-            "Keep your focus soft, clear, and grounded",
-            "If needed, take this section slower and kinder",
-            "Let this feel like guidance from a trusted voice",
-        ],
-        "midlines": [
-            "Keep your breathing even and unforced",
-            "Stay receptive while attention remains clear",
-            "Track subtle sensation without over-analyzing every shift",
-            "Let awareness stay grounded in what is present",
-            "Hold a rhythm that does not strain the body",
-            "Continue with patient focus instead of urgency",
-            "Give this moment room to settle before moving on",
-            "Let breath and posture coordinate with minimal effort",
-            "Keep jaw, shoulders, and belly soft as you continue",
-            "Maintain clarity while your nervous system settles",
-            "Stay connected to your inner pacing cues",
-            "Keep this phase embodied rather than performative",
-            "Allow precision and softness to move together",
-            "Stay present to sensation while breath remains smooth",
-            "If emotion rises, let it move through you without rushing",
-            "Keep returning to the body as your most honest anchor",
-        ],
-        "closers": [
-            "Nothing is missing in this moment",
-            "Depth comes through consistency, not force",
-            "Your pace is enough",
-            "Gentleness is part of the medicine",
-            "Trust the process as it reveals itself",
-            "Keep listening from within",
-            "Steadiness is more valuable than intensity",
-            "Let this settle before moving ahead",
-            "Presence is the practice",
-            "Small steady steps shape real change",
-            "This is how calm strength is built",
-            "Take only what your system can integrate now",
-            "The body learns best in clear, steady cycles",
-            "Your awareness is already doing meaningful work",
-            "Integration happens through repetition with variation",
-            "Stay kind and precise at the same time",
-            "You can trust what your body is telling you",
-            "Softness and strength can live together here",
-            "You are allowed to be held while you heal",
-            "Let this guidance meet you exactly where you are",
-        ],
-    }
+    return EXTENSION_PHRASE_BANK
 
 
 def _compose_extension_paragraph(index: int, context_queue: list[str], phrase_bank: dict[str, list[str]]) -> str:
@@ -914,6 +920,47 @@ def _compose_extension_paragraph(index: int, context_queue: list[str], phrase_ba
     return f"{midline}. {opener}.{optional_context} {closer}."
 
 
+def _resolve_extension_context_sentences(request: ExpandScriptRequest, practice_name: str) -> list[str]:
+    context_sentences = [
+        sentence.strip()
+        for text in request.source_texts
+        for sentence in _split_sentences(text)
+        if sentence.strip()
+    ]
+    if context_sentences:
+        return context_sentences
+    return [
+        f"{practice_name} supports deeper embodiment through gentle repetition",
+        "Stay present with your breath and soften around unnecessary effort",
+    ]
+
+
+def _extension_generation_limits(required_words: int, anti_repetition_mode: str) -> tuple[int, int]:
+    max_midline_reuse = 2 if anti_repetition_mode == "strict" else 4
+    max_attempts = max(required_words * 4, 400)
+    return max_midline_reuse, max_attempts
+
+
+def _extract_midline_stem(paragraph: str) -> str:
+    midline_sentence = paragraph.split(". ")[1] if ". " in paragraph else paragraph
+    return _paragraph_stem(midline_sentence, words=6)
+
+
+def _should_skip_extension_candidate(
+    stem: str,
+    recent_stems: list[str],
+    midline_stem: str,
+    midline_counts: dict[str, int],
+    max_midline_reuse: int,
+    attempts_without_append: int,
+) -> bool:
+    if stem and stem in recent_stems:
+        return True
+    if midline_stem and midline_counts.get(midline_stem, 0) >= max_midline_reuse and attempts_without_append < 80:
+        return True
+    return False
+
+
 def _build_extension_paragraphs(
     request: ExpandScriptRequest,
     required_words: int,
@@ -924,17 +971,7 @@ def _build_extension_paragraphs(
         return []
 
     practice_name = request.practice_name.strip() or "This practice"
-    context_sentences = [
-        sentence.strip()
-        for text in request.source_texts
-        for sentence in _split_sentences(text)
-        if sentence.strip()
-    ]
-    if not context_sentences:
-        context_sentences = [
-            f"{practice_name} supports deeper embodiment through gentle repetition",
-            "Stay present with your breath and soften around unnecessary effort",
-        ]
+    context_sentences = _resolve_extension_context_sentences(request, practice_name)
     phrase_bank = _extension_phrase_bank()
 
     generated: list[str] = []
@@ -943,10 +980,10 @@ def _build_extension_paragraphs(
     context_queue = context_sentences[:]
     recent_stems: list[str] = []
     midline_counts: dict[str, int] = {}
-    max_midline_reuse = 2 if anti_repetition_mode == "strict" else 4
+    max_midline_reuse, max_attempts = _extension_generation_limits(required_words, anti_repetition_mode)
     attempts = 0
     attempts_without_append = 0
-    max_attempts = max(required_words * 4, 400)
+
     while words < required_words + 40:
         attempts += 1
         if attempts > max_attempts:
@@ -954,14 +991,15 @@ def _build_extension_paragraphs(
 
         paragraph = _compose_extension_paragraph(index, context_queue, phrase_bank)
         stem = " ".join(_normalize_text_for_repeat_check(paragraph).split()[:10])
-        midline_sentence = paragraph.split(". ")[1] if ". " in paragraph else paragraph
-        midline_stem = _paragraph_stem(midline_sentence, words=6)
-        if stem and stem in recent_stems:
-            index += 1
-            attempts_without_append += 1
-            continue
-
-        if midline_stem and midline_counts.get(midline_stem, 0) >= max_midline_reuse and attempts_without_append < 80:
+        midline_stem = _extract_midline_stem(paragraph)
+        if _should_skip_extension_candidate(
+            stem,
+            recent_stems,
+            midline_stem,
+            midline_counts,
+            max_midline_reuse,
+            attempts_without_append,
+        ):
             index += 1
             attempts_without_append += 1
             continue
@@ -980,75 +1018,162 @@ def _build_extension_paragraphs(
     return _dedupe_paragraphs(generated)
 
 
+WORD_FLOOR_PADDING_OPENERS = [
+    "Continue by noticing what is softening inside your body",
+    "Stay with this slower rhythm as your system settles",
+    "Keep awareness anchored in the breath-body relationship",
+    "Let the next moments deepen your inner steadiness",
+    "Receive this phase as quiet nervous-system support",
+    "Allow attention to remain embodied and precise",
+    "Keep listening for subtle shifts without forcing meaning",
+    "Stay in gentle contact with breath, posture, and feeling tone",
+    "Let this continuity train calm focus and emotional balance",
+    "Continue with grounded patience and a receptive mind",
+    "Remain present to the small details that signal regulation",
+    "Let this sequence reinforce trust in your internal pacing",
+    "Keep this interval simple, clear, and compassionate",
+    "Stay steady as breath organizes your inner landscape",
+    "Allow this section to build calm strength through repetition",
+    "Continue with soft concentration and unhurried attention",
+    "Remain connected to the body as your primary reference",
+    "Let this moment remind you that slower can still be powerful",
+    "Keep your focus kind while breathing stays even",
+    "Stay here long enough for integration to feel tangible",
+    "If you need a gentler pace, trust that instinct",
+    "Let this feel like you are being guided, not pushed",
+]
+
+WORD_FLOOR_PADDING_SUPPORTS = [
+    "Lengthen the exhale slightly and allow the inhale to arrive on its own.",
+    "Notice jaw, throat, chest, and belly as one coordinated field of awareness.",
+    "Keep effort low while presence stays high.",
+    "Allow sensation to move without rushing to conclusions.",
+    "Stay with what feels true in this breath, then the next.",
+    "Let your nervous system register safety through steady pacing.",
+    "Keep posture supportive and breathing sustainable.",
+    "Receive each cycle as both grounding and emotional clearing.",
+    "Let steadiness become the tone of this practice.",
+    "Continue in a way that feels reliable, calm, and embodied.",
+    "If your mind races, return to one kind breath at a time.",
+    "Give yourself permission to be human while you heal.",
+]
+
+WORD_FLOOR_PADDING_CLOSERS = [
+    "This is how integration becomes lived experience.",
+    "Your pace is not behind; your pace is the medicine.",
+    "Small, consistent moments of presence create lasting change.",
+    "Let this steadiness accompany you beyond the practice.",
+    "You are building resilience through kindness and clarity.",
+    "Stay with the process and let it keep unfolding.",
+    "This is enough to support meaningful regulation.",
+    "Carry this grounded quality into whatever follows.",
+    "You are allowed to soften and still be strong.",
+    "Let this guidance meet you exactly where you are.",
+]
+
+
 def _build_word_floor_padding_paragraphs(required_words: int) -> list[str]:
     if required_words <= 0:
         return []
-
-    openers = [
-        "Continue by noticing what is softening inside your body",
-        "Stay with this slower rhythm as your system settles",
-        "Keep awareness anchored in the breath-body relationship",
-        "Let the next moments deepen your inner steadiness",
-        "Receive this phase as quiet nervous-system support",
-        "Allow attention to remain embodied and precise",
-        "Keep listening for subtle shifts without forcing meaning",
-        "Stay in gentle contact with breath, posture, and feeling tone",
-        "Let this continuity train calm focus and emotional balance",
-        "Continue with grounded patience and a receptive mind",
-        "Remain present to the small details that signal regulation",
-        "Let this sequence reinforce trust in your internal pacing",
-        "Keep this interval simple, clear, and compassionate",
-        "Stay steady as breath organizes your inner landscape",
-        "Allow this section to build calm strength through repetition",
-        "Continue with soft concentration and unhurried attention",
-        "Remain connected to the body as your primary reference",
-        "Let this moment remind you that slower can still be powerful",
-        "Keep your focus kind while breathing stays even",
-        "Stay here long enough for integration to feel tangible",
-        "If you need a gentler pace, trust that instinct",
-        "Let this feel like you are being guided, not pushed",
-    ]
-    supports = [
-        "Lengthen the exhale slightly and allow the inhale to arrive on its own.",
-        "Notice jaw, throat, chest, and belly as one coordinated field of awareness.",
-        "Keep effort low while presence stays high.",
-        "Allow sensation to move without rushing to conclusions.",
-        "Stay with what feels true in this breath, then the next.",
-        "Let your nervous system register safety through steady pacing.",
-        "Keep posture supportive and breathing sustainable.",
-        "Receive each cycle as both grounding and emotional clearing.",
-        "Let steadiness become the tone of this practice.",
-        "Continue in a way that feels reliable, calm, and embodied.",
-        "If your mind races, return to one kind breath at a time.",
-        "Give yourself permission to be human while you heal.",
-    ]
-    closers = [
-        "This is how integration becomes lived experience.",
-        "Your pace is not behind; your pace is the medicine.",
-        "Small, consistent moments of presence create lasting change.",
-        "Let this steadiness accompany you beyond the practice.",
-        "You are building resilience through kindness and clarity.",
-        "Stay with the process and let it keep unfolding.",
-        "This is enough to support meaningful regulation.",
-        "Carry this grounded quality into whatever follows.",
-        "You are allowed to soften and still be strong.",
-        "Let this guidance meet you exactly where you are.",
-    ]
 
     generated: list[str] = []
     words = 0
     index = 0
     while words < required_words + 20:
         paragraph = (
-            f"{openers[index % len(openers)]}. "
-            f"{supports[(index * 2 + 1) % len(supports)]} "
-            f"{closers[(index * 3 + 2) % len(closers)]}"
+            f"{WORD_FLOOR_PADDING_OPENERS[index % len(WORD_FLOOR_PADDING_OPENERS)]}. "
+            f"{WORD_FLOOR_PADDING_SUPPORTS[(index * 2 + 1) % len(WORD_FLOOR_PADDING_SUPPORTS)]} "
+            f"{WORD_FLOOR_PADDING_CLOSERS[(index * 3 + 2) % len(WORD_FLOOR_PADDING_CLOSERS)]}"
         )
         generated.append(paragraph)
         words += _count_words(paragraph)
         index += 1
 
     return _dedupe_paragraphs(generated)
+
+
+def _postprocess_ai_paragraphs(text: str, target_words: int) -> list[str] | None:
+    if _count_words(text) < int(target_words * 0.55):
+        return None
+
+    paragraphs = [p.strip() for p in re.split(r"\n{2,}", text) if p.strip()]
+    if not paragraphs:
+        paragraphs = [
+            paragraph.strip()
+            for paragraph in re.split(r"(?<=[.!?])\s+(?=[A-Z])", text)
+            if paragraph.strip()
+        ]
+
+    paragraphs = _dedupe_paragraphs(paragraphs)
+    paragraphs = _enforce_stem_diversity(paragraphs, max_occurrences=1, stem_words=8)
+    if _paragraph_stem_repeat_ratio(paragraphs, stem_words=8) > MAX_PARAGRAPH_STEM_REPEAT_RATIO:
+        return None
+    return paragraphs or None
+
+
+def _extend_script_to_floor(
+    request: ExpandScriptRequest,
+    paragraphs: list[str],
+    current_word_count: int,
+    minimum_word_floor: int,
+    target_words: int,
+    anti_repetition_mode: str,
+    stem_max_occurrences: int,
+) -> tuple[list[str], int]:
+    extension_round = 0
+    selected = paragraphs[:]
+    current = current_word_count
+
+    while current < minimum_word_floor and extension_round < 3:
+        required_words = max(target_words - current, minimum_word_floor - current)
+        extensions = _build_extension_paragraphs(
+            request,
+            required_words=required_words,
+            start_index=len(selected) + (extension_round * 7),
+            anti_repetition_mode=anti_repetition_mode,
+        )
+        if not extensions:
+            break
+
+        selected.extend(extensions)
+        selected = _dedupe_paragraphs(selected)
+        selected = _enforce_stem_diversity(selected, max_occurrences=stem_max_occurrences, stem_words=8)
+        next_word_count = _count_words(" ".join(selected))
+        if next_word_count <= current:
+            break
+
+        current = next_word_count
+        extension_round += 1
+
+    return selected, current
+
+
+def _apply_script_padding(
+    paragraphs: list[str],
+    word_count: int,
+    minimum_word_floor: int,
+    stem_max_occurrences: int,
+) -> tuple[list[str], int]:
+    selected = paragraphs[:]
+    current = word_count
+
+    if current < minimum_word_floor:
+        padding = _build_word_floor_padding_paragraphs(minimum_word_floor - current)
+        selected.extend(padding)
+        selected = _dedupe_paragraphs(selected)
+        selected = _enforce_stem_diversity(
+            selected,
+            max_occurrences=stem_max_occurrences + 1,
+            stem_words=8,
+        )
+        current = _count_words(" ".join(selected))
+
+    if current < minimum_word_floor:
+        final_padding = _build_word_floor_padding_paragraphs((minimum_word_floor - current) + 40)
+        selected.extend(final_padding)
+        current = _count_words(" ".join(selected))
+
+    return selected, current
 
 
 async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> Optional[list[str]]:
@@ -1092,16 +1217,6 @@ Requirements:
 12) Use occasional natural phrasing (e.g., "if it helps", "whenever you're ready") without overusing any single phrase.
 """.strip()
 
-    def _parse_llm_paragraphs(text: str) -> list[str]:
-        paragraphs = [p.strip() for p in re.split(r"\n{2,}", text) if p.strip()]
-        if paragraphs:
-            return paragraphs
-        return [
-            paragraph.strip()
-            for paragraph in re.split(r"(?<=[.!?])\s+(?=[A-Z])", text)
-            if paragraph.strip()
-        ]
-
     async def _call_llm_api(prompt: str) -> str | None:
         chat = LlmChat(
             api_key=api_key,
@@ -1124,15 +1239,7 @@ Requirements:
         text = await _call_llm_api(prompt)
         if not text:
             return None
-        if _count_words(text) < int(target_words * 0.55):
-            return None
-
-        paragraphs = _parse_llm_paragraphs(text)
-        paragraphs = _dedupe_paragraphs(paragraphs)
-        paragraphs = _enforce_stem_diversity(paragraphs, max_occurrences=1, stem_words=8)
-        if _paragraph_stem_repeat_ratio(paragraphs, stem_words=8) > MAX_PARAGRAPH_STEM_REPEAT_RATIO:
-            return None
-        return paragraphs or None
+        return _postprocess_ai_paragraphs(text, target_words)
     except Exception as exc:
         logger.warning("AI script expansion failed: %s", exc)
         return None
@@ -1164,56 +1271,22 @@ async def expand_guided_script(request: ExpandScriptRequest):
     current_word_count = _count_words(" ".join(selected_paragraphs))
     minimum_word_floor = int(target_words * (0.84 if anti_repetition_mode == "strict" else 0.8))
 
-    def extend_to_floor(paragraphs: list[str], word_count: int) -> tuple[list[str], int]:
-        extension_round = 0
-        selected = paragraphs[:]
-        current = word_count
+    selected_paragraphs, current_word_count = _extend_script_to_floor(
+        request,
+        selected_paragraphs,
+        current_word_count,
+        minimum_word_floor,
+        target_words,
+        anti_repetition_mode,
+        stem_max_occurrences,
+    )
 
-        while current < minimum_word_floor and extension_round < 3:
-            required_words = max(target_words - current, minimum_word_floor - current)
-            extensions = _build_extension_paragraphs(
-                request,
-                required_words=required_words,
-                start_index=len(selected) + (extension_round * 7),
-                anti_repetition_mode=anti_repetition_mode,
-            )
-            if not extensions:
-                break
-
-            selected.extend(extensions)
-            selected = _dedupe_paragraphs(selected)
-            selected = _enforce_stem_diversity(selected, max_occurrences=stem_max_occurrences, stem_words=8)
-            next_word_count = _count_words(" ".join(selected))
-            if next_word_count <= current:
-                break
-
-            current = next_word_count
-            extension_round += 1
-
-        return selected, current
-
-    selected_paragraphs, current_word_count = extend_to_floor(selected_paragraphs, current_word_count)
-
-    def apply_padding_if_needed(paragraphs: list[str], word_count: int) -> tuple[list[str], int]:
-        if word_count < minimum_word_floor:
-            padding = _build_word_floor_padding_paragraphs(minimum_word_floor - word_count)
-            paragraphs.extend(padding)
-            paragraphs = _dedupe_paragraphs(paragraphs)
-            paragraphs = _enforce_stem_diversity(
-                paragraphs,
-                max_occurrences=stem_max_occurrences + 1,
-                stem_words=8,
-            )
-            word_count = _count_words(" ".join(paragraphs))
-
-        if word_count < minimum_word_floor:
-            final_padding = _build_word_floor_padding_paragraphs((minimum_word_floor - word_count) + 40)
-            paragraphs.extend(final_padding)
-            word_count = _count_words(" ".join(paragraphs))
-
-        return paragraphs, word_count
-
-    selected_paragraphs, current_word_count = apply_padding_if_needed(selected_paragraphs, current_word_count)
+    selected_paragraphs, current_word_count = _apply_script_padding(
+        selected_paragraphs,
+        current_word_count,
+        minimum_word_floor,
+        stem_max_occurrences,
+    )
 
     segments = _segment_paragraphs(selected_paragraphs)
 
@@ -1399,6 +1472,29 @@ def _build_wikipedia_title_candidates(crystal: dict[str, Any]) -> list[str]:
     return de_duped
 
 
+def _wikipedia_summary_text(summary: dict[str, Any]) -> str:
+    return " ".join(
+        [
+            str(summary.get("description") or ""),
+            str(summary.get("extract") or ""),
+            str(summary.get("type") or ""),
+        ]
+    ).lower()
+
+
+def _weighted_wikipedia_match_score(
+    title_score: float,
+    context_score: float,
+    image_score: float,
+    style_score: float,
+    is_disambiguation: bool,
+) -> float:
+    weighted = (title_score * 0.45) + (context_score * 0.22) + (image_score * 0.15) + (style_score * 0.18)
+    if is_disambiguation:
+        weighted -= 0.35
+    return max(0.0, min(1.0, weighted))
+
+
 def _compute_wikipedia_match_score(
     crystal: dict[str, Any],
     summary: dict[str, Any],
@@ -1408,13 +1504,7 @@ def _compute_wikipedia_match_score(
     crystal_name = str(crystal.get("name") or "")
     crystal_id = str(crystal.get("id") or "").replace("-", " ")
     summary_title = str(summary.get("title") or "")
-    summary_text = " ".join(
-        [
-            str(summary.get("description") or ""),
-            str(summary.get("extract") or ""),
-            str(summary.get("type") or ""),
-        ]
-    ).lower()
+    summary_text = _wikipedia_summary_text(summary)
 
     title_score = max(
         _token_similarity(crystal_name, summary_title),
@@ -1425,10 +1515,7 @@ def _compute_wikipedia_match_score(
     style_score = _visual_alignment_score(preferred_form, summary_title, summary_text, image_url or "")
     is_disambiguation = str(summary.get("type") or "").lower() == "disambiguation"
 
-    weighted = (title_score * 0.45) + (context_score * 0.22) + (image_score * 0.15) + (style_score * 0.18)
-    if is_disambiguation:
-        weighted -= 0.35
-    return max(0.0, min(1.0, weighted))
+    return _weighted_wikipedia_match_score(title_score, context_score, image_score, style_score, is_disambiguation)
 
 
 async def _fetch_wikipedia_summary(title: str) -> dict[str, Any] | None:
@@ -1475,6 +1562,10 @@ async def _fetch_wikipedia_page_images(title: str) -> list[str]:
         logger.warning("Wikipedia page-images lookup failed for %s: %s", title, exc)
         return []
 
+    return _extract_wikipedia_file_titles(payload)
+
+
+def _extract_wikipedia_file_titles(payload: dict[str, Any] | None) -> list[str]:
     pages = ((payload.get("query") or {}).get("pages") or {}) if isinstance(payload, dict) else {}
     if not isinstance(pages, dict):
         return []
@@ -1611,18 +1702,35 @@ async def _search_commons_image_for_crystal(crystal: dict[str, Any], preferred_f
         logger.warning("Commons image lookup failed for %s: %s", crystal.get("id"), exc)
         return None
 
-    query_payload = payload.get("query") if isinstance(payload, dict) else None
-    pages = query_payload.get("pages") if isinstance(query_payload, dict) else None
-    if not isinstance(pages, dict):
+    pages = _extract_commons_pages(payload)
+    if not pages:
         return None
 
     crystal_name = str(crystal.get("name") or crystal.get("id") or "")
+    best_candidate, best_score = _select_best_commons_candidate(pages, crystal_name, preferred_form)
+
+    if not best_candidate or best_score < 0.48:
+        return None
+    return best_candidate
+
+
+def _extract_commons_pages(payload: dict[str, Any] | None) -> list[dict[str, Any]]:
+    query_payload = payload.get("query") if isinstance(payload, dict) else None
+    pages = query_payload.get("pages") if isinstance(query_payload, dict) else None
+    if not isinstance(pages, dict):
+        return []
+    return [page for page in pages.values() if isinstance(page, dict)]
+
+
+def _select_best_commons_candidate(
+    pages: list[dict[str, Any]],
+    crystal_name: str,
+    preferred_form: str,
+) -> tuple[dict[str, Any] | None, float]:
     best_candidate: dict[str, Any] | None = None
     best_score = 0.0
 
-    for page in pages.values():
-        if not isinstance(page, dict):
-            continue
+    for page in pages:
         title = str(page.get("title") or "")
         image_info_list = page.get("imageinfo") if isinstance(page.get("imageinfo"), list) else []
         if not image_info_list:
@@ -1641,9 +1749,7 @@ async def _search_commons_image_for_crystal(crystal: dict[str, Any], preferred_f
                 "score": score,
             }
 
-    if not best_candidate or best_score < 0.48:
-        return None
-    return best_candidate
+    return best_candidate, best_score
 
 
 def _build_image_validation_payload(
