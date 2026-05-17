@@ -12,6 +12,22 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **P0/P1 Provenance Expansion + Admin Review Controls + Typing Progress (Iteration 116, May 2026):**
+  - Expanded content-integrity pipeline to additional user-facing libraries:
+    - Backend endpoints now enrich with normalized `source_references` + `content_integrity` for:
+      - `/api/yoga/poses`, `/api/mantras`, `/api/mudras`, `/api/sacred-guardians`
+      - (Previously done and retained: `/api/courses`, `/api/meditations`, `/api/breathwork/sessions`)
+  - App-wide provenance visibility upgraded:
+    - Added integrity labels + optional last-reviewed display in Yoga, Mantras, Mudras, Sacred Guardians, Courses, Meditations, and Breathwork cards.
+  - Admin source governance controls added:
+    - `AdminSection` field config now includes `source_type`, `source_references`, `review_status`, `last_reviewed_at` on key collections.
+    - `backend/routers/admin.py` now normalizes source references (string/list → validated URL list), auto-defaults `source_type`, and auto-sets `last_reviewed_at` when review status reaches reviewed/verified/approved.
+  - Code-quality backlog progress:
+    - Added/expanded return type hints in `numerology.py`, `oracle.py`, and `payments.py` public functions.
+    - Further reduced admin route complexity via payload-normalization helper extraction.
+  - Validation:
+    - `/app/test_reports/iteration_116.json`: backend **100% (17/17)**, frontend **100%** across all targeted library pages; no blocking regressions.
+
 - **Crystal Image Truth Layer + Content Integrity Metadata (Iteration 115, May 2026):**
   - Implemented strict per-crystal server-side verification pipeline in `backend/routers/content.py`:
     - Deterministic crystal→Wikipedia title mapping for all 27 deep crystals.
