@@ -12,6 +12,21 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **P0 Follow-Through + Gifts Refactor/Typing Continuation (Iteration 117, May 2026):**
+  - Completed provenance/review workflow on remaining user-facing collections:
+    - Backend integrity enrichment added for:
+      - `/api/ancient-wisdom`, `/api/shamanic-practices`, `/api/elemental-practices`, `/api/heart-practices`
+    - Frontend integrity labels and review-time visibility added to:
+      - `AncientWisdom.jsx`, `ShamanicPractices.jsx`, `ElementalPractices.jsx`, `HeartPractices.jsx`
+  - Expanded admin source governance coverage:
+    - `AdminSection` now exposes source fields for `ancient_wisdom`, `shamanic_practices`, `elemental_practices`, `heart_practices`.
+    - `admin.py` source-aware normalization now covers those collections too.
+  - Continued backend quality/refactor pass:
+    - `gifts.py` duplicated PayPal/auth/paid-state/email notification logic extracted into reusable helpers (`_resolve_paypal_base_url`, `_fetch_paypal_access_token`, `_mark_gift_paid`, `_send_paid_gift_notification`).
+    - Additional type-hint coverage continued in payments/oracle/numerology paths (non-breaking).
+  - Validation:
+    - `/app/test_reports/iteration_117.json`: backend **100% (20/20)**, frontend **100%** for all four newly expanded collections + gifts regression checks.
+
 - **P0/P1 Provenance Expansion + Admin Review Controls + Typing Progress (Iteration 116, May 2026):**
   - Expanded content-integrity pipeline to additional user-facing libraries:
     - Backend endpoints now enrich with normalized `source_references` + `content_integrity` for:
