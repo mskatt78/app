@@ -12,6 +12,23 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Crystal Image Truth Layer + Content Integrity Metadata (Iteration 115, May 2026):**
+  - Implemented strict per-crystal server-side verification pipeline in `backend/routers/content.py`:
+    - Deterministic crystal→Wikipedia title mapping for all 27 deep crystals.
+    - Wikipedia summary lookup + image extraction + confidence scoring + disambiguation penalties.
+    - Mongo cache collection (`crystal_image_validations`) with TTL-aware reuse and refresh behavior.
+    - Enriched crystal payload fields: `image_url_resolved`, `verified_image_url`, `image_source`, `image_validation`.
+  - Crystal guide frontend hardening in `CrystalGuide.jsx`:
+    - Image quality validator state (`Verified image` / `Needs review`) with explicit badges.
+    - Strict resolved-image usage, safer URL checks, and graceful unavailable-image fallback.
+  - Reduced Wikimedia rate-limit risk by prioritizing thumbnail images over full originals.
+  - Added factual-flow metadata for additional user-facing sections:
+    - `GET /api/courses`, `GET /api/meditations`, `GET /api/breathwork/sessions` now include `content_integrity` + normalized `source_references`.
+    - Frontend labels added in Courses, Meditations, Breathwork UIs (`Curated content` / `Verified references`).
+  - Validation evidence:
+    - `/app/test_reports/iteration_115.json`: backend and frontend checks passed; iolite regression verified fixed.
+    - Final backend verification confirms all 27 crystals currently return `image_source=wikipedia_verified` and `image_validation.status=verified`.
+
 - **Code Quality Stabilization + Regression Verification (Iteration 114, May 2026):**
   - Replaced remaining index-style React keys with semantic stable-key helpers across high-volume pages:
     - `IChing.jsx`, `HumanDesign.jsx`, `GeneKeys.jsx`, `ElementalTemples.jsx`, `CrystalDetailDialog.jsx`, `WaterPractices.jsx`, `HeartPractices.jsx`, `YogaLibrary.jsx`
