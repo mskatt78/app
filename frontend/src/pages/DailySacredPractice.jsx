@@ -30,6 +30,15 @@ const DAY_COLORS = {
   Sunday: { bg: "from-slate-900/50 to-amber-900/30", accent: "text-amber-300", icon: Sun },
 };
 
+const stableDailyKey = (prefix, value) => {
+  const slug = String(value || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+  return `${prefix}-${slug || "item"}`;
+};
+
 export default function DailySacredPractice({ user, api: userApi }) {
   const navigate = useNavigate();
   const [dailyData, setDailyData] = useState(null);
@@ -150,8 +159,8 @@ export default function DailySacredPractice({ user, api: userApi }) {
                   <div>
                     <h4 className="text-sm font-medium mb-2">Benefits</h4>
                     <div className="flex flex-wrap gap-2">
-                      {(typeof practice.benefits === 'string' ? practice.benefits.split(',') : practice.benefits).map((b, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
+                      {(typeof practice.benefits === 'string' ? practice.benefits.split(',') : practice.benefits).map((benefit) => (
+                        <span key={stableDailyKey(`daily-benefit-${practice.id}`, typeof benefit === 'string' ? benefit.trim() : benefit)} className="px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 text-xs">{typeof benefit === 'string' ? benefit.trim() : benefit}</span>
                       ))}
                     </div>
                   </div>
@@ -286,8 +295,8 @@ export default function DailySacredPractice({ user, api: userApi }) {
                   Reflection Prompts
                 </h2>
                 <ul className="space-y-3">
-                  {dailyData.reflection_prompts.map((prompt, i) => (
-                    <li key={i} className="flex gap-3 text-muted-foreground">
+                  {dailyData.reflection_prompts.map((prompt) => (
+                    <li key={stableDailyKey("daily-reflection", prompt)} className="flex gap-3 text-muted-foreground">
                       <span className="text-violet-400">•</span>
                       <span className="italic">{prompt}</span>
                     </li>

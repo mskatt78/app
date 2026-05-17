@@ -187,7 +187,7 @@ const WaterPractices = ({ user, api }) => {
         audioRef.current = null;
       }
     };
-  }, []);
+  }, [audioRef]);
 
   // Generate guided audio for water practice
   const generateGuidedAudio = async () => {

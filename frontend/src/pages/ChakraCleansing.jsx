@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Sparkles, Clock, Heart, Sun, ChevronDown, ChevronUp, Loader2, Zap, Moon, Flame, Volume2, Share2, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -25,6 +25,15 @@ const CHAKRA_CONFIG = {
   soul_star: { color: "bg-white", border: "border-white/30", text: "text-white", icon: "⭐", sanskrit: "Sutara", element: "Soul Light", location: "6 inches above crown", order: 10 },
   stellar: { color: "bg-amber-200", border: "border-amber-200/30", text: "text-amber-100", icon: "✨", sanskrit: "Stellar Gateway", element: "Galactic", location: "12 inches above crown", order: 11 },
   universal: { color: "bg-gradient-to-r from-violet-400 to-amber-300", border: "border-amber-300/30", text: "text-amber-200", icon: "🌌", sanskrit: "Universal Gateway", element: "Source", location: "18 inches above crown", order: 12 },
+};
+
+const stableChakraKey = (prefix, value) => {
+  const slug = String(value || "item")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 90);
+  return `${prefix}-${slug || "item"}`;
 };
 
 export default function ChakraCleansing() {
@@ -83,7 +92,11 @@ export default function ChakraCleansing() {
   };
 
   const chakras = ["all", ...Object.keys(CHAKRA_CONFIG)];
-  const filtered = filterChakra === "all" ? practices : practices.filter(p => p.chakra?.toLowerCase().replace(/[^a-z]/g, '_').includes(filterChakra));
+  const filtered = useMemo(() => (
+    filterChakra === "all"
+      ? practices
+      : practices.filter((p) => p.chakra?.toLowerCase().replace(/[^a-z]/g, '_').includes(filterChakra))
+  ), [filterChakra, practices]);
   
   const getChakraConfig = (chakra) => {
     const key = Object.keys(CHAKRA_CONFIG).find(k => chakra?.toLowerCase().includes(k));
@@ -313,9 +326,9 @@ export default function ChakraCleansing() {
                           <span className="text-xs text-muted-foreground">— {selectedPractice.daily_embodiment_ceremony.duration}</span>
                         </div>
                         <ol className="space-y-2">
-                          {(selectedPractice.daily_embodiment_ceremony.steps || []).map((step, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{i+1}</span>
+                          {(selectedPractice.daily_embodiment_ceremony.steps || []).map((step, stepIndex) => (
+                            <li key={stableChakraKey(`daily-ceremony-step-${selectedPractice.id}`, step)} className="flex items-start gap-2 text-sm text-muted-foreground">
+                              <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{stepIndex + 1}</span>
                               <span className="leading-relaxed">{step}</span>
                             </li>
                           ))}
@@ -329,8 +342,8 @@ export default function ChakraCleansing() {
                   <div className="mt-4">
                     <h3 className="text-sm font-medium mb-2">Benefits When Balanced</h3>
                     <div className="flex flex-wrap gap-2">
-                      {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((b, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
+                      {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((benefit) => (
+                        <span key={stableChakraKey(`chakra-benefit-${selectedPractice.id}`, typeof benefit === 'string' ? benefit.trim() : benefit)} className="px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 text-xs">{typeof benefit === 'string' ? benefit.trim() : benefit}</span>
                       ))}
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Settings, LogOut, ChevronRight, Database, Upload, CalendarDays, Sparkles, BookOpen, Radio } from "lucide-react";
@@ -42,6 +42,11 @@ export default function AdminDashboard({ api: providedApi }) {
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
   const api = providedApi?.defaults?.baseURL?.replace(/\/api$/, "") || process.env.REACT_APP_BACKEND_URL;
+  const loadingPlaceholders = useMemo(() => Array.from({ length: 9 }, (_, idx) => `placeholder-${idx}`), []);
+  const visibleCollections = useMemo(
+    () => collections.filter((collectionItem) => collectionItem.id !== "audio_files"),
+    [collections],
+  );
 
   useEffect(() => {
     bootstrapAdminAccess();
@@ -164,13 +169,13 @@ export default function AdminDashboard({ api: providedApi }) {
         {/* Collections Grid */}
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {Array(9).fill(0).map((_, i) => (
-              <div key={i} className="h-28 rounded-2xl bg-card/50 animate-pulse" />
+            {loadingPlaceholders.map((placeholderKey) => (
+              <div key={placeholderKey} className="h-28 rounded-2xl bg-card/50 animate-pulse" />
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {collections.filter(c => c.id !== "audio_files").map((coll, i) => (
+            {visibleCollections.map((coll, i) => (
               <motion.button
                 key={coll.id}
                 initial={{ opacity: 0, y: 10 }}

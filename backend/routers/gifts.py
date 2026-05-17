@@ -104,6 +104,52 @@ async def _send_paid_gift_notification(gift: dict[str, Any]) -> bool:
     return True
 
 
+async def _resolve_gift_pricing_context(db: Any, gift: GiftCreate) -> tuple[float, str]:
+    if gift.gift_type == "subscription":
+        if not gift.plan_id or gift.plan_id not in SUBSCRIPTION_PLANS:
+            raise HTTPException(status_code=400, detail="Invalid subscription plan for gift")
+        plan = SUBSCRIPTION_PLANS[gift.plan_id]
+        return float(plan["price"]), str(plan["name"])
+
+    collection_map = {
+        "retreat": "retreats",
+        "book": "books",
+        "session": "live_sessions",
+    }
+    collection = collection_map.get(gift.gift_type)
+    if not collection or not gift.item_id:
+        return 0.0, ""
+
+    product = await db[collection].find_one({"id": gift.item_id}, {"_id": 0})
+    if not product:
+        return 0.0, ""
+
+    price = float(product.get("price", 0))
+    name = product.get("title") or product.get("name", "Gift")
+    return price, str(name)
+
+
+def _build_gift_record(gift: GiftCreate, gift_code: str, price: float, product_name: str) -> dict[str, Any]:
+    return {
+        "gift_code": gift_code,
+        "recipient_email": gift.recipient_email,
+        "recipient_name": gift.recipient_name,
+        "sender_name": gift.sender_name,
+        "gift_type": gift.gift_type,
+        "item_id": gift.item_id,
+        "plan_id": gift.plan_id,
+        "message": gift.message,
+        "price": price,
+        "product_name": product_name,
+        "status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "paid_at": None,
+        "redeemed_at": None,
+        "redeemed_by": None,
+        "payment_session_id": None,
+    }
+
+
 # ============ PUSH NOTIFICATIONS ============
 
 @router.post("/notifications/subscribe")
@@ -132,56 +178,15 @@ async def unsubscribe_from_notifications(subscription: PushSubscription) -> dict
 async def create_gift(gift: GiftCreate) -> dict[str, Any]:
     """Create a gift for someone (pending payment)."""
     db = get_db()
-    
+
     gift_code = f"GIFT-{uuid.uuid4().hex[:8].upper()}"
-    
-    # Calculate price based on gift type
-    price = 0.0
-    product_name = ""
-    
-    if gift.gift_type == "subscription":
-        if gift.plan_id and gift.plan_id in SUBSCRIPTION_PLANS:
-            plan = SUBSCRIPTION_PLANS[gift.plan_id]
-            price = plan["price"]
-            product_name = plan["name"]
-        else:
-            raise HTTPException(status_code=400, detail="Invalid subscription plan for gift")
-    else:
-        # Look up product price
-        collection_map = {
-            "retreat": "retreats",
-            "book": "books",
-            "session": "live_sessions"
-        }
-        collection = collection_map.get(gift.gift_type)
-        if collection and gift.item_id:
-            product = await db[collection].find_one({"id": gift.item_id}, {"_id": 0})
-            if product:
-                price = float(product.get("price", 0))
-                product_name = product.get("title") or product.get("name", "Gift")
-    
-    gift_data = {
-        "gift_code": gift_code,
-        "recipient_email": gift.recipient_email,
-        "recipient_name": gift.recipient_name,
-        "sender_name": gift.sender_name,
-        "gift_type": gift.gift_type,
-        "item_id": gift.item_id,
-        "plan_id": gift.plan_id,
-        "message": gift.message,
-        "price": price,
-        "product_name": product_name,
-        "status": "pending",  # pending -> paid -> redeemed
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "paid_at": None,
-        "redeemed_at": None,
-        "redeemed_by": None,
-        "payment_session_id": None
-    }
-    
+
+    price, product_name = await _resolve_gift_pricing_context(db, gift)
+    gift_data = _build_gift_record(gift, gift_code, price, product_name)
+
     await db.gifts.insert_one(gift_data)
     gift_data.pop("_id", None)
-    
+
     return {
         "message": "Gift created successfully",
         "gift_code": gift_code,

@@ -813,7 +813,7 @@ async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> O
         logger.warning("Could not import LLM chat for script expansion: %s", exc)
         return None
 
-    def build_prompt() -> str:
+    def _prepare_llm_prompt() -> str:
         context_lines = [line for line in _flatten_text(request.source_texts + request.steps) if line]
         trimmed_context = "\n".join(context_lines[:60])
         target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
@@ -843,7 +843,7 @@ Requirements:
 12) Use occasional natural phrasing (e.g., "if it helps", "whenever you're ready") without overusing any single phrase.
 """.strip()
 
-    def parse_paragraphs(text: str) -> list[str]:
+    def _parse_llm_paragraphs(text: str) -> list[str]:
         paragraphs = [p.strip() for p in re.split(r"\n{2,}", text) if p.strip()]
         if paragraphs:
             return paragraphs
@@ -853,9 +853,7 @@ Requirements:
             if paragraph.strip()
         ]
 
-    prompt = build_prompt()
-
-    try:
+    async def _call_llm_api(prompt: str) -> str | None:
         chat = LlmChat(
             api_key=api_key,
             session_id=f"guided_script_{uuid.uuid4().hex[:12]}",
@@ -869,11 +867,18 @@ Requirements:
             chat.send_message(UserMessage(text=prompt)),
             timeout=20,
         )
-        text = _sanitize_llm_text(response)
+        return _sanitize_llm_text(response)
+
+    prompt = _prepare_llm_prompt()
+
+    try:
+        text = await _call_llm_api(prompt)
+        if not text:
+            return None
         if _count_words(text) < int(target_words * 0.55):
             return None
 
-        paragraphs = parse_paragraphs(text)
+        paragraphs = _parse_llm_paragraphs(text)
         paragraphs = _dedupe_paragraphs(paragraphs)
         paragraphs = _enforce_stem_diversity(paragraphs, max_occurrences=1, stem_words=8)
         if _paragraph_stem_repeat_ratio(paragraphs, stem_words=8) > MAX_PARAGRAPH_STEM_REPEAT_RATIO:
@@ -909,44 +914,57 @@ async def expand_guided_script(request: ExpandScriptRequest):
 
     current_word_count = _count_words(" ".join(selected_paragraphs))
     minimum_word_floor = int(target_words * (0.84 if anti_repetition_mode == "strict" else 0.8))
-    extension_round = 0
 
-    while current_word_count < minimum_word_floor and extension_round < 3:
-        required_words = max(target_words - current_word_count, minimum_word_floor - current_word_count)
-        extensions = _build_extension_paragraphs(
-            request,
-            required_words=required_words,
-            start_index=len(selected_paragraphs) + (extension_round * 7),
-            anti_repetition_mode=anti_repetition_mode,
-        )
-        if not extensions:
-            break
+    def extend_to_floor(paragraphs: list[str], word_count: int) -> tuple[list[str], int]:
+        extension_round = 0
+        selected = paragraphs[:]
+        current = word_count
 
-        selected_paragraphs.extend(extensions)
-        selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
-        selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences, stem_words=8)
-        next_word_count = _count_words(" ".join(selected_paragraphs))
-        if next_word_count <= current_word_count:
-            break
+        while current < minimum_word_floor and extension_round < 3:
+            required_words = max(target_words - current, minimum_word_floor - current)
+            extensions = _build_extension_paragraphs(
+                request,
+                required_words=required_words,
+                start_index=len(selected) + (extension_round * 7),
+                anti_repetition_mode=anti_repetition_mode,
+            )
+            if not extensions:
+                break
 
-        current_word_count = next_word_count
-        extension_round += 1
+            selected.extend(extensions)
+            selected = _dedupe_paragraphs(selected)
+            selected = _enforce_stem_diversity(selected, max_occurrences=stem_max_occurrences, stem_words=8)
+            next_word_count = _count_words(" ".join(selected))
+            if next_word_count <= current:
+                break
 
-    if current_word_count < minimum_word_floor:
-        padding = _build_word_floor_padding_paragraphs(minimum_word_floor - current_word_count)
-        selected_paragraphs.extend(padding)
-        selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
-        selected_paragraphs = _enforce_stem_diversity(
-            selected_paragraphs,
-            max_occurrences=stem_max_occurrences + 1,
-            stem_words=8,
-        )
-        current_word_count = _count_words(" ".join(selected_paragraphs))
+            current = next_word_count
+            extension_round += 1
 
-    if current_word_count < minimum_word_floor:
-        final_padding = _build_word_floor_padding_paragraphs((minimum_word_floor - current_word_count) + 40)
-        selected_paragraphs.extend(final_padding)
-        current_word_count = _count_words(" ".join(selected_paragraphs))
+        return selected, current
+
+    selected_paragraphs, current_word_count = extend_to_floor(selected_paragraphs, current_word_count)
+
+    def apply_padding_if_needed(paragraphs: list[str], word_count: int) -> tuple[list[str], int]:
+        if word_count < minimum_word_floor:
+            padding = _build_word_floor_padding_paragraphs(minimum_word_floor - word_count)
+            paragraphs.extend(padding)
+            paragraphs = _dedupe_paragraphs(paragraphs)
+            paragraphs = _enforce_stem_diversity(
+                paragraphs,
+                max_occurrences=stem_max_occurrences + 1,
+                stem_words=8,
+            )
+            word_count = _count_words(" ".join(paragraphs))
+
+        if word_count < minimum_word_floor:
+            final_padding = _build_word_floor_padding_paragraphs((minimum_word_floor - word_count) + 40)
+            paragraphs.extend(final_padding)
+            word_count = _count_words(" ".join(paragraphs))
+
+        return paragraphs, word_count
+
+    selected_paragraphs, current_word_count = apply_padding_if_needed(selected_paragraphs, current_word_count)
 
     segments = _segment_paragraphs(selected_paragraphs)
 
@@ -1189,43 +1207,62 @@ def _apply_image_resolution(
     return enriched
 
 
-async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
-    crystal_id = str(crystal.get("id") or "").strip().lower()
-    now = datetime.now(timezone.utc)
-    cache_collection = db[CRYSTAL_IMAGE_VALIDATION_COLLECTION]
+def _normalize_cached_datetime(value: Any) -> datetime | None:
+    if not isinstance(value, datetime):
+        return None
+    if value.tzinfo is None:
+        return value.replace(tzinfo=timezone.utc)
+    return value
 
-    if crystal_id:
-        cached = await cache_collection.find_one({"crystal_id": crystal_id}, {"_id": 0})
-        if cached:
-            cached_at = cached.get("updated_at")
-            if isinstance(cached_at, datetime):
-                if cached_at.tzinfo is None:
-                    cached_at = cached_at.replace(tzinfo=timezone.utc)
-                age_hours = (now - cached_at).total_seconds() / 3600
-                cached_validation = cached.get("validation") or {}
-                cached_status = str(cached_validation.get("status") or "")
-                cached_score = float(cached.get("score") or 0.0)
-                cached_source = str(cached.get("source_type") or "")
-                should_use_cache = (
-                    age_hours <= CRYSTAL_IMAGE_CACHE_TTL_HOURS
-                    and cached_score > 0.05
-                    and (cached_status == "verified" or cached_source == "wikipedia_verified")
-                )
-                if should_use_cache:
-                    validation = cached.get("validation") or _build_image_validation_payload(
-                        status="cached",
-                        score=float(cached.get("score") or 0.0),
-                        source_type=str(cached.get("source_type") or "catalog_original"),
-                        wikipedia_title=cached.get("wikipedia_title"),
-                        wikipedia_page_url=cached.get("wikipedia_page_url"),
-                    )
-                    return _apply_image_resolution(
-                        crystal,
-                        cached.get("resolved_image_url"),
-                        str(cached.get("source_type") or "catalog_original"),
-                        validation,
-                    )
 
+def _is_valid_cache_entry(cached: dict[str, Any], now: datetime) -> bool:
+    cached_at = _normalize_cached_datetime(cached.get("updated_at"))
+    if not cached_at:
+        return False
+
+    age_hours = (now - cached_at).total_seconds() / 3600
+    cached_validation = cached.get("validation") or {}
+    cached_status = str(cached_validation.get("status") or "")
+    cached_score = float(cached.get("score") or 0.0)
+    cached_source = str(cached.get("source_type") or "")
+    return (
+        age_hours <= CRYSTAL_IMAGE_CACHE_TTL_HOURS
+        and cached_score > 0.05
+        and (cached_status == "verified" or cached_source == "wikipedia_verified")
+    )
+
+
+def _build_cached_resolution(crystal: dict[str, Any], cached: dict[str, Any]) -> dict[str, Any]:
+    validation = cached.get("validation") or _build_image_validation_payload(
+        status="cached",
+        score=float(cached.get("score") or 0.0),
+        source_type=str(cached.get("source_type") or "catalog_original"),
+        wikipedia_title=cached.get("wikipedia_title"),
+        wikipedia_page_url=cached.get("wikipedia_page_url"),
+    )
+    return _apply_image_resolution(
+        crystal,
+        cached.get("resolved_image_url"),
+        str(cached.get("source_type") or "catalog_original"),
+        validation,
+    )
+
+
+async def _resolve_crystal_image_from_cache(
+    crystal: dict[str, Any],
+    crystal_id: str,
+    cache_collection: Any,
+    now: datetime,
+) -> dict[str, Any] | None:
+    if not crystal_id:
+        return None
+    cached = await cache_collection.find_one({"crystal_id": crystal_id}, {"_id": 0})
+    if not cached or not _is_valid_cache_entry(cached, now):
+        return None
+    return _build_cached_resolution(crystal, cached)
+
+
+async def _find_best_wikipedia_match(crystal: dict[str, Any], crystal_id: str) -> tuple[dict[str, Any] | None, float]:
     candidates = _build_wikipedia_title_candidates(crystal)
     mapped_title = CRYSTAL_WIKIPEDIA_TITLE_MAP.get(crystal_id)
     best_match: dict[str, Any] | None = None
@@ -1241,6 +1278,7 @@ async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
         score = _compute_wikipedia_match_score(crystal, summary, image_url)
         if mapped_title and candidate_title.strip().lower() == mapped_title.strip().lower() and image_url:
             score = max(score, 0.66)
+
         candidate_has_image = bool(image_url)
         if score > best_score or (candidate_has_image and not best_has_image and score >= (best_score - 0.12)):
             best_score = score
@@ -1250,6 +1288,14 @@ async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
                 "image_url": image_url,
             }
 
+    return best_match, best_score
+
+
+def _derive_image_resolution_state(
+    crystal: dict[str, Any],
+    best_match: dict[str, Any] | None,
+    best_score: float,
+) -> tuple[str, str | None, str | None, str | None, str]:
     source_type = "catalog_original"
     resolved_image_url = crystal.get("image_url")
     wikipedia_title: str | None = None
@@ -1261,12 +1307,63 @@ async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
         source_type = "wikipedia_verified"
         resolved_image_url = best_match.get("image_url")
         wikipedia_title = summary.get("title")
-        desktop_urls = summary.get("content_urls", {}).get("desktop", {}) if isinstance(summary.get("content_urls"), dict) else {}
+        content_urls = summary.get("content_urls")
+        desktop_urls = content_urls.get("desktop", {}) if isinstance(content_urls, dict) else {}
         wikipedia_page_url = desktop_urls.get("page") if isinstance(desktop_urls, dict) else None
         status = "verified"
     elif not resolved_image_url:
         source_type = "missing"
         status = "missing"
+
+    return source_type, resolved_image_url, wikipedia_title, wikipedia_page_url, status
+
+
+async def _persist_crystal_image_validation(
+    cache_collection: Any,
+    crystal_id: str,
+    source_type: str,
+    resolved_image_url: str | None,
+    wikipedia_title: str | None,
+    wikipedia_page_url: str | None,
+    best_score: float,
+    validation: dict[str, Any],
+    now: datetime,
+) -> None:
+    if not crystal_id:
+        return
+
+    await cache_collection.update_one(
+        {"crystal_id": crystal_id},
+        {
+            "$set": {
+                "crystal_id": crystal_id,
+                "source_type": source_type,
+                "resolved_image_url": resolved_image_url,
+                "wikipedia_title": wikipedia_title,
+                "wikipedia_page_url": wikipedia_page_url,
+                "score": round(best_score, 4),
+                "validation": validation,
+                "updated_at": now,
+            }
+        },
+        upsert=True,
+    )
+
+
+async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
+    crystal_id = str(crystal.get("id") or "").strip().lower()
+    now = datetime.now(timezone.utc)
+    cache_collection = db[CRYSTAL_IMAGE_VALIDATION_COLLECTION]
+    cached_resolution = await _resolve_crystal_image_from_cache(crystal, crystal_id, cache_collection, now)
+    if cached_resolution:
+        return cached_resolution
+
+    best_match, best_score = await _find_best_wikipedia_match(crystal, crystal_id)
+    source_type, resolved_image_url, wikipedia_title, wikipedia_page_url, status = _derive_image_resolution_state(
+        crystal,
+        best_match,
+        best_score,
+    )
 
     validation = _build_image_validation_payload(
         status=status,
@@ -1276,23 +1373,17 @@ async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
         wikipedia_page_url=wikipedia_page_url,
     )
 
-    if crystal_id:
-        await cache_collection.update_one(
-            {"crystal_id": crystal_id},
-            {
-                "$set": {
-                    "crystal_id": crystal_id,
-                    "source_type": source_type,
-                    "resolved_image_url": resolved_image_url,
-                    "wikipedia_title": wikipedia_title,
-                    "wikipedia_page_url": wikipedia_page_url,
-                    "score": round(best_score, 4),
-                    "validation": validation,
-                    "updated_at": now,
-                }
-            },
-            upsert=True,
-        )
+    await _persist_crystal_image_validation(
+        cache_collection,
+        crystal_id,
+        source_type,
+        resolved_image_url,
+        wikipedia_title,
+        wikipedia_page_url,
+        best_score,
+        validation,
+        now,
+    )
 
     return _apply_image_resolution(crystal, resolved_image_url, source_type, validation)
 

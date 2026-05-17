@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -6,32 +6,32 @@ export const AuthCallback = ({ api }) => {
   const navigate = useNavigate();
   const hasProcessed = useRef(false);
 
+  const processAuth = useCallback(async () => {
+    const hash = window.location.hash;
+    const sessionIdMatch = hash.match(/session_id=([^&]+)/);
+
+    if (!sessionIdMatch) {
+      navigate("/", { replace: true });
+      return;
+    }
+
+    const sessionId = sessionIdMatch[1];
+    try {
+      const response = await api.post("/auth/session", { session_id: sessionId });
+      window.history.replaceState(null, "", window.location.pathname);
+      navigate("/dashboard", { state: { user: response.data }, replace: true });
+    } catch (error) {
+      console.error("Auth callback processing failed:", error);
+      navigate("/", { replace: true });
+    }
+  }, [api, navigate]);
+
   useEffect(() => {
     if (hasProcessed.current) return;
     hasProcessed.current = true;
 
-    const processAuth = async () => {
-      const hash = window.location.hash;
-      const sessionIdMatch = hash.match(/session_id=([^&]+)/);
-
-      if (!sessionIdMatch) {
-        navigate("/", { replace: true });
-        return;
-      }
-
-      const sessionId = sessionIdMatch[1];
-      try {
-        const response = await api.post("/auth/session", { session_id: sessionId });
-        window.history.replaceState(null, "", window.location.pathname);
-        navigate("/dashboard", { state: { user: response.data }, replace: true });
-      } catch (error) {
-        console.error("Auth callback processing failed:", error);
-        navigate("/", { replace: true });
-      }
-    };
-
     processAuth();
-  }, [api, navigate]);
+  }, [processAuth]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -50,36 +50,36 @@ export const ProtectedRoute = ({ children, api }) => {
   const [user, setUser] = useState(location.state?.user || null);
   const [hasAuthError, setHasAuthError] = useState(false);
 
+  const checkAuth = useCallback(async (isMountedRef) => {
+    try {
+      const response = await api.get("/auth/me");
+      if (!isMountedRef.current) return;
+      setUser(response.data);
+      setHasAuthError(false);
+      setIsAuthenticated(true);
+    } catch (error) {
+      if (!isMountedRef.current) return;
+      console.error("Protected route auth check failed:", error);
+      setHasAuthError(true);
+      setIsAuthenticated(false);
+      navigate("/", { replace: true });
+    }
+  }, [api, navigate]);
+
   useEffect(() => {
-    let isMounted = true;
+    const isMountedRef = { current: true };
 
     if (location.state?.user) {
       setUser(location.state.user);
       setIsAuthenticated(true);
     }
 
-    const checkAuth = async () => {
-      try {
-        const response = await api.get("/auth/me");
-        if (!isMounted) return;
-        setUser(response.data);
-        setHasAuthError(false);
-        setIsAuthenticated(true);
-      } catch (error) {
-        if (!isMounted) return;
-        console.error("Protected route auth check failed:", error);
-        setHasAuthError(true);
-        setIsAuthenticated(false);
-        navigate("/", { replace: true });
-      }
-    };
-
-    checkAuth();
+    checkAuth(isMountedRef);
 
     return () => {
-      isMounted = false;
+      isMountedRef.current = false;
     };
-  }, [api, location.state, navigate]);
+  }, [checkAuth, location.state]);
 
   if (isAuthenticated === null) {
     return (
@@ -113,46 +113,46 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
   const [isAuthorized, setIsAuthorized] = useState(null);
   const [user, setUser] = useState(location.state?.user || null);
 
-  useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const response = await api.get("/auth/me");
-        const userData = response.data;
-        setUser(userData);
+  const checkAdmin = useCallback(async () => {
+    try {
+      const response = await api.get("/auth/me");
+      const userData = response.data;
+      setUser(userData);
 
-        const userEmail = (userData.email || "").toLowerCase();
-        const isAdmin = adminEmails.includes(userEmail) || userData.is_admin === true;
+      const userEmail = (userData.email || "").toLowerCase();
+      const isAdmin = adminEmails.includes(userEmail) || userData.is_admin === true;
 
-        if (isAdmin) {
-          setIsAuthorized(true);
-          return;
-        }
-      } catch (error) {
-        console.error("Admin route /auth/me check failed, trying cookie fallback:", error);
+      if (isAdmin) {
+        setIsAuthorized(true);
+        return;
       }
+    } catch (error) {
+      console.error("Admin route /auth/me check failed, trying cookie fallback:", error);
+    }
 
-      try {
-        const backendUrl = process.env.REACT_APP_BACKEND_URL;
-        const response = await fetch(`${backendUrl}/api/admin/collections`, {
-          credentials: "include",
-        });
-        if (response.ok) {
-          setIsAuthorized(true);
-        } else {
-          setIsAuthorized(false);
-          toast.error("Admin access required");
-          navigate("/dashboard", { replace: true });
-        }
-      } catch (error) {
-        console.error("Admin route cookie validation failed:", error);
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/admin/collections`, {
+        credentials: "include",
+      });
+      if (response.ok) {
+        setIsAuthorized(true);
+      } else {
         setIsAuthorized(false);
-        toast.error("Please sign in to access admin");
-        navigate("/", { replace: true });
+        toast.error("Admin access required");
+        navigate("/dashboard", { replace: true });
       }
-    };
-
-    checkAdmin();
+    } catch (error) {
+      console.error("Admin route cookie validation failed:", error);
+      setIsAuthorized(false);
+      toast.error("Please sign in to access admin");
+      navigate("/", { replace: true });
+    }
   }, [adminEmails, api, navigate]);
+
+  useEffect(() => {
+    checkAdmin();
+  }, [checkAdmin]);
 
   if (isAuthorized === null) {
     return (
@@ -174,33 +174,33 @@ export const PublicRoute = ({ children, api }) => {
   const [user, setUser] = useState(location.state?.user || null);
   const [checked, setChecked] = useState(false);
 
+  const checkAuth = useCallback(async (isMountedRef) => {
+    try {
+      const response = await api.get("/auth/me");
+      if (!isMountedRef.current) return;
+      setUser(response.data);
+    } catch (error) {
+      if (!isMountedRef.current) return;
+      console.error("Public route auth check failed:", error);
+      setUser(null);
+    }
+    if (!isMountedRef.current) return;
+    setChecked(true);
+  }, [api]);
+
   useEffect(() => {
-    let isMounted = true;
+    const isMountedRef = { current: true };
 
     if (location.state?.user) {
       setUser(location.state.user);
     }
 
-    const checkAuth = async () => {
-      try {
-        const response = await api.get("/auth/me");
-        if (!isMounted) return;
-        setUser(response.data);
-      } catch (error) {
-        if (!isMounted) return;
-        console.error("Public route auth check failed:", error);
-        setUser(null);
-      }
-      if (!isMounted) return;
-      setChecked(true);
-    };
-
-    checkAuth();
+    checkAuth(isMountedRef);
 
     return () => {
-      isMounted = false;
+      isMountedRef.current = false;
     };
-  }, [api, location.state]);
+  }, [checkAuth, location.state]);
 
   if (!checked) {
     return (

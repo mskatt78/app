@@ -69,6 +69,15 @@ function buildPractice(process) {
 }
 
 const CreativeProcesses = ({ user, api }) => {
+  const stableProcessKey = (prefix, value) => {
+    const slug = String(value || "item")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 90);
+    return `${prefix}-${slug || "item"}`;
+  };
+
   const navigate = useNavigate();
   const [processes, setProcesses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -289,9 +298,9 @@ const CreativeProcesses = ({ user, api }) => {
                           <div>
                             <h4 className={`text-xs uppercase tracking-wider ${colors.text} mb-2`}>Materials Needed</h4>
                             <ul className="space-y-1">
-                              {selectedProcess.materials.map((m, i) => (
-                                <li key={i} className="text-sm text-muted-foreground flex gap-2">
-                                  <span className={`${colors.text} shrink-0`}>·</span>{m}
+                              {selectedProcess.materials.map((material) => (
+                                <li key={stableProcessKey(`material-${selectedProcess.id}`, material)} className="text-sm text-muted-foreground flex gap-2">
+                                  <span className={`${colors.text} shrink-0`}>·</span>{material}
                                 </li>
                               ))}
                             </ul>
@@ -302,9 +311,9 @@ const CreativeProcesses = ({ user, api }) => {
                           <div>
                             <h4 className={`text-xs uppercase tracking-wider ${colors.text} mb-2`}>Practice Steps</h4>
                             <ol className="space-y-2">
-                              {selectedProcess.process_steps.map((step, i) => (
-                                <li key={i} className="text-sm text-muted-foreground flex gap-2">
-                                  <span className={`${colors.text} shrink-0 font-medium`}>{i + 1}.</span>
+                              {selectedProcess.process_steps.map((step, stepIndex) => (
+                                <li key={stableProcessKey(`process-step-${selectedProcess.id}`, step)} className="text-sm text-muted-foreground flex gap-2">
+                                  <span className={`${colors.text} shrink-0 font-medium`}>{stepIndex + 1}.</span>
                                   <span>{step}</span>
                                 </li>
                               ))}
@@ -330,8 +339,8 @@ const CreativeProcesses = ({ user, api }) => {
                           <div>
                             <h4 className={`text-xs uppercase tracking-wider ${colors.text} mb-2`}>Benefits</h4>
                             <div className="flex flex-wrap gap-2">
-                              {selectedProcess.therapeutic_benefits.map((b, i) => (
-                                <span key={i} className={`px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>{b}</span>
+                              {selectedProcess.therapeutic_benefits.map((benefit) => (
+                                <span key={stableProcessKey(`therapeutic-benefit-${selectedProcess.id}`, benefit)} className={`px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>{benefit}</span>
                               ))}
                             </div>
                           </div>

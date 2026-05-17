@@ -12,6 +12,15 @@ import GuidedAudioButton from "../components/GuidedAudioButton";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 const ElementalPractices = ({ user, api }) => {
+  const stableElementPracticeKey = (prefix, value) => {
+    const slug = String(value || "item")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 90);
+    return `${prefix}-${slug || "item"}`;
+  };
+
   const navigate = useNavigate();
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -291,8 +300,8 @@ const ElementalPractices = ({ user, api }) => {
                         <div>
                           <h3 className="font-medium mb-3">Benefits</h3>
                           <div className="flex flex-wrap gap-2">
-                            {selectedPractice.benefits.map((benefit, i) => (
-                              <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
+                            {selectedPractice.benefits.map((benefit) => (
+                              <span key={stableElementPracticeKey(`element-benefit-${selectedPractice.id}`, benefit)} className="px-3 py-1 rounded-full bg-white/5 text-sm text-muted-foreground">
                                 {benefit}
                               </span>
                             ))}
@@ -304,10 +313,10 @@ const ElementalPractices = ({ user, api }) => {
                         <div>
                           <h3 className="font-medium mb-3">Instructions</h3>
                           <ol className="space-y-3">
-                            {selectedPractice.instructions.map((step, i) => (
-                              <li key={i} className="flex items-start gap-3 text-sm">
+                            {selectedPractice.instructions.map((step, stepIndex) => (
+                              <li key={stableElementPracticeKey(`element-step-${selectedPractice.id}`, step)} className="flex items-start gap-3 text-sm">
                                 <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
-                                  {i + 1}
+                                  {stepIndex + 1}
                                 </span>
                                 <span className="text-muted-foreground">{step}</span>
                               </li>

@@ -42,6 +42,13 @@ const TIMEZONES = [
   { label: "☀️ Nairobi, KE (EAT UTC+3)", tz: "Africa/Nairobi", hemi: "north" },
 ];
 
+const getTimezoneOptionKey = (tz) => {
+  if (tz.group) {
+    return `tz-group-${String(tz.label).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  }
+  return `tz-option-${tz.tz}`;
+};
+
 const getLocalTime = (tz) => {
   try {
     return new Date().toLocaleTimeString("en-US", {
@@ -228,14 +235,14 @@ const AstrologyCalendar = ({ user, api }) => {
                     exit={{ opacity: 0, y: -8 }}
                     className="absolute right-0 top-full mt-2 w-80 max-h-80 overflow-y-auto bg-card border border-white/15 rounded-xl shadow-2xl z-50"
                   >
-                    {TIMEZONES.map((tz, i) => (
+                    {TIMEZONES.map((tz) => (
                       tz.group ? (
-                        <div key={i} className="px-3 pt-3 pb-1">
+                        <div key={getTimezoneOptionKey(tz)} className="px-3 pt-3 pb-1">
                           <p className="text-xs text-muted-foreground uppercase tracking-widest font-medium">{tz.label}</p>
                         </div>
                       ) : (
                         <button
-                          key={i}
+                          key={getTimezoneOptionKey(tz)}
                           onClick={() => handleTzSelect(tz)}
                           className={`w-full flex items-center justify-between px-3 py-2 text-xs hover:bg-white/5 transition-colors ${
                             selectedTz?.tz === tz.tz ? "text-primary bg-primary/10" : "text-muted-foreground"

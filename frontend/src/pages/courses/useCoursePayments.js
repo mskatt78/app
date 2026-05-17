@@ -8,10 +8,13 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [checkingPayment, setCheckingPayment] = useState(false);
 
+  const getToken = useCallback(() => getAuthToken(), []);
+  const isUserLoggedIn = useCallback(() => isLoggedIn(), []);
+
   const fetchCourseAccess = useCallback(async () => {
-    if (!isLoggedIn()) return;
+    if (!isUserLoggedIn()) return;
     try {
-      const token = getAuthToken();
+      const token = getToken();
       const { data } = await api.get("/payments/course-access", {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -20,7 +23,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
     } catch (error) {
       console.error("Failed to fetch course access:", error);
     }
-  }, [api]);
+  }, [api, getToken, isUserLoggedIn]);
 
   const hasAccess = useCallback(
     (courseId) => hasSubscription || purchasedCourses.includes(courseId),
@@ -36,7 +39,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
     }
 
     try {
-      const token = getAuthToken();
+      const token = getToken();
       const { data } = await api.get(`/payments/status/${sessionId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -66,18 +69,18 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
         toast.error("Error verifying payment.");
       }
     }
-  }, [api, fetchCourseAccess]);
+  }, [api, fetchCourseAccess, getToken]);
 
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
-    if (sessionId && isLoggedIn()) {
+    if (sessionId && isUserLoggedIn()) {
       setCheckingPayment(true);
       pollPaymentStatus(sessionId);
     }
-  }, [searchParams, pollPaymentStatus]);
+  }, [searchParams, pollPaymentStatus, isUserLoggedIn]);
 
   const handlePurchase = useCallback(async (course) => {
-    if (!isLoggedIn()) {
+    if (!isUserLoggedIn()) {
       toast.error("Please sign in to purchase courses");
       navigate("/");
       return;
@@ -85,7 +88,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
 
     setPurchaseLoading(true);
     try {
-      const token = getAuthToken();
+      const token = getToken();
       const { data } = await api.post(
         "/payments/create-checkout",
         {
@@ -107,10 +110,10 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
     } finally {
       setPurchaseLoading(false);
     }
-  }, [api, navigate]);
+  }, [api, getToken, isUserLoggedIn, navigate]);
 
   const handleBundlePurchase = useCallback(async () => {
-    if (!isLoggedIn()) {
+    if (!isUserLoggedIn()) {
       toast.error("Please sign in to purchase");
       navigate("/");
       return;
@@ -118,7 +121,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
 
     setPurchaseLoading(true);
     try {
-      const token = getAuthToken();
+      const token = getToken();
       const { data } = await api.post(
         "/payments/create-checkout",
         {
@@ -140,7 +143,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
     } finally {
       setPurchaseLoading(false);
     }
-  }, [api, navigate]);
+  }, [api, getToken, isUserLoggedIn, navigate]);
 
   return {
     purchasedCourses,

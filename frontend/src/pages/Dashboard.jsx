@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
@@ -55,7 +55,15 @@ const StreakWidget = ({ onJournalClick }) => {
     return { streak, milestone, thisWeek, weekDots };
   }, []);
 
-  const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
+  const DAYS = [
+    { id: "mon", label: "M", offset: 0 },
+    { id: "tue", label: "T", offset: 1 },
+    { id: "wed", label: "W", offset: 2 },
+    { id: "thu", label: "T", offset: 3 },
+    { id: "fri", label: "F", offset: 4 },
+    { id: "sat", label: "S", offset: 5 },
+    { id: "sun", label: "S", offset: 6 },
+  ];
 
   return (
     <motion.div
@@ -89,12 +97,12 @@ const StreakWidget = ({ onJournalClick }) => {
       <div className="flex-1 sm:text-center">
         <p className="text-xs text-muted-foreground mb-2 uppercase tracking-wider">This Week — {thisWeek}/7</p>
         <div className="flex gap-2">
-          {DAYS.map((day, i) => (
-            <div key={i} className="flex flex-col items-center gap-1">
-              <div className={`w-7 h-7 rounded-full border transition-all ${weekDots[i] ? "bg-amber-500/30 border-amber-500/60" : "bg-white/5 border-white/10"}`}>
-                {weekDots[i] && <Flame className="w-full h-full p-1.5 text-amber-400" />}
+          {DAYS.map((day) => (
+            <div key={day.id} className="flex flex-col items-center gap-1">
+              <div className={`w-7 h-7 rounded-full border transition-all ${weekDots[day.offset] ? "bg-amber-500/30 border-amber-500/60" : "bg-white/5 border-white/10"}`}>
+                {weekDots[day.offset] && <Flame className="w-full h-full p-1.5 text-amber-400" />}
               </div>
-              <span className="text-[9px] text-muted-foreground">{day}</span>
+              <span className="text-[9px] text-muted-foreground">{day.label}</span>
             </div>
           ))}
         </div>
@@ -113,11 +121,7 @@ const VideoOfDayWidget = ({ api, onViewAll }) => {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchVideoOfDay();
-  }, []);
-
-  const fetchVideoOfDay = async () => {
+  const fetchVideoOfDay = useCallback(async () => {
     try {
       const response = await api.get("/videos");
       const videos = response.data || [];
@@ -132,7 +136,11 @@ const VideoOfDayWidget = ({ api, onViewAll }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchVideoOfDay();
+  }, [fetchVideoOfDay]);
 
   const getYouTubeId = (url) => {
     if (!url) return null;
@@ -266,7 +274,7 @@ const SacredPracticeWidget = ({ api, navigate }) => {
       .then(r => setPractice(r.data))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [api]);
 
   if (loading) return (
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
@@ -398,11 +406,7 @@ const Dashboard = ({ user, api }) => {
     spirit: "bg-purple-500/10 border-purple-500/20",
   };
 
-  useEffect(() => {
-    fetchDailyData();
-  }, []);
-
-  const fetchDailyData = async () => {
+  const fetchDailyData = useCallback(async () => {
     try {
       const response = await api.get("/dashboard/daily");
       setDailyData(response.data);
@@ -412,7 +416,22 @@ const Dashboard = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchDailyData();
+  }, [fetchDailyData]);
+
+  const quickPracticeItems = useMemo(() => ([
+    ...navItems.slice(0, 7),
+    { path: '/demo', label: 'Demo', icon: Sparkles, element: 'spirit' },
+    ...(isAdminUser ? [{ path: '/admin', label: 'Admin', icon: Shield, element: 'spirit' }] : []),
+  ]), [isAdminUser, navItems]);
+
+  const deepJourneyItems = useMemo(
+    () => navItems.filter((item) => ['/elemental-practices', '/earth-altars', '/creative-processes', '/heart-practices', '/shamanic-practices'].includes(item.path)),
+    [navItems],
+  );
 
   const handleLogout = async () => {
     try {
@@ -741,11 +760,7 @@ const Dashboard = ({ user, api }) => {
               <div>
                 <h3 className="text-2xl font-serif mb-6">Sacred <span className="italic text-primary">Practices</span></h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[
-                    ...navItems.slice(0, 7),
-                    { path: '/demo', label: 'Demo', icon: Sparkles, element: 'spirit' },
-                    ...(isAdminUser ? [{ path: '/admin', label: 'Admin', icon: Shield, element: 'spirit' }] : []),
-                  ].map((item, index) => (
+                  {quickPracticeItems.map((item, index) => (
                     <motion.button
                       key={item.path}
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -770,7 +785,7 @@ const Dashboard = ({ user, api }) => {
                   <span className="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-medium">New</span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  {navItems.filter(item => ['/elemental-practices', '/earth-altars', '/creative-processes', '/heart-practices', '/shamanic-practices'].includes(item.path)).map((item, index) => (
+                  {deepJourneyItems.map((item, index) => (
                     <motion.button
                       key={item.path}
                       initial={{ opacity: 0, y: 20 }}

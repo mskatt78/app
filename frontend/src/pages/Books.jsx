@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
@@ -14,6 +14,20 @@ const Books = ({ user, api }) => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBook, setSelectedBook] = useState(null);
+
+  const stableBookKey = (prefix, value) => {
+    const slug = String(value || "item")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 90);
+    return `${prefix}-${slug || "item"}`;
+  };
+
+  const relatedBooks = useMemo(
+    () => books.filter((book) => book.id !== selectedBook?.id),
+    [books, selectedBook?.id],
+  );
 
   useEffect(() => {
     fetchBooks();
@@ -168,7 +182,7 @@ const Books = ({ user, api }) => {
                   <div className="space-y-2">
                     {selectedBook.chapters.map((chapter, index) => (
                       <div 
-                        key={index}
+                        key={stableBookKey(`chapter-${selectedBook.id}`, chapter.id || chapter.title || chapter.number || index + 1)}
                         className="p-4 rounded-lg bg-white/5 border border-white/10 hover:border-primary/30 transition-colors"
                       >
                         <div className="flex items-center justify-between">
@@ -197,8 +211,8 @@ const Books = ({ user, api }) => {
                     What Readers Say
                   </h3>
                   <div className="space-y-4">
-                    {selectedBook.testimonials.map((testimonial, index) => (
-                      <Card key={index} className="bg-white/5 border-white/10">
+                    {selectedBook.testimonials.map((testimonial) => (
+                      <Card key={stableBookKey(`testimonial-${selectedBook.id}`, testimonial.name || testimonial.quote)} className="bg-white/5 border-white/10">
                         <CardContent className="p-6">
                           <Quote className="w-8 h-8 text-primary/30 mb-3" />
                           <p className="italic text-muted-foreground mb-4">
@@ -220,7 +234,7 @@ const Books = ({ user, api }) => {
           <div className="mt-16">
             <h3 className="text-xl font-serif mb-6">More Books</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {books.filter(b => b.id !== selectedBook?.id).map((book) => (
+              {relatedBooks.map((book) => (
                 <motion.div
                   key={book.id}
                   whileHover={{ scale: 1.02 }}

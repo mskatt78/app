@@ -415,7 +415,7 @@ class SeedRequest(BaseModel):
     force: bool = False  # If True, clear and reseed even if data exists
 
 
-def _load_seed_payloads() -> tuple[dict[str, list[dict[str, Any]]], dict[str, list[dict[str, Any]]], dict[str, dict[str, Any]]]:
+def _load_standard_seed_collections() -> dict[str, list[dict[str, Any]]]:
     from data.video_content import VIDEO_TUTORIALS
     from data.all_content import (
         CRYSTALS, MANTRAS, MUDRAS, BREATHWORK_SESSIONS,
@@ -433,12 +433,7 @@ def _load_seed_payloads() -> tuple[dict[str, list[dict[str, Any]]], dict[str, li
     from data.tarot_cards import TAROT_MAJOR_ARCANA
     from data.sound_frequencies import SOUND_FREQUENCIES
     from data.guardians_content import SACRED_GUARDIANS
-    from data.ancient_wisdom_content import ANCIENT_WISDOM
-    from data.ancient_wisdom_extended import ANCIENT_WISDOM_EXTENDED
-    from data.ancient_wisdom_final import ANCIENT_WISDOM_FINAL
-    from data.ancient_wisdom_avalon import ANCIENT_WISDOM_AVALON
     from data.community_posts import COMMUNITY_POSTS
-    from data.sacred_rites_deep import SACRED_RITES_DEEP
     from data.seed_healing_modalities import (
         ENERGY_HEALING_DATA, FREE_FORM_MOVEMENT_DATA, CHAKRA_CLEANSING_DATA,
     )
@@ -447,7 +442,7 @@ def _load_seed_payloads() -> tuple[dict[str, list[dict[str, Any]]], dict[str, li
     from data.elemental_temples_data import ELEMENTAL_TEMPLES
     from data.water_practices_data import WATER_PRACTICES
 
-    standard_collections = {
+    return {
         "videos": VIDEO_TUTORIALS,
         "crystals": CRYSTALS,
         "mantras": MANTRAS,
@@ -481,13 +476,30 @@ def _load_seed_payloads() -> tuple[dict[str, list[dict[str, Any]]], dict[str, li
         "water_practices": WATER_PRACTICES,
     }
 
+
+def _load_special_seed_collections() -> tuple[dict[str, list[dict[str, Any]]], dict[str, dict[str, Any]]]:
+    from data.ancient_wisdom_content import ANCIENT_WISDOM
+    from data.ancient_wisdom_extended import ANCIENT_WISDOM_EXTENDED
+    from data.ancient_wisdom_final import ANCIENT_WISDOM_FINAL
+    from data.ancient_wisdom_avalon import ANCIENT_WISDOM_AVALON
+    from data.divination_content import LIGHT_CODES
+    from data.sacred_rites_deep import SACRED_RITES_DEEP
+    from data.seed_healing_modalities import CHAKRA_CLEANSING_DATA
+    from data.seed_extended_modalities import EXTENDED_CHAKRAS
+
     special_collections = {
         "ancient_wisdom": ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL + ANCIENT_WISDOM_AVALON,
         "chakra_cleansing": CHAKRA_CLEANSING_DATA + EXTENDED_CHAKRAS,
         "light_codes": [LIGHT_CODES],
     }
+    return special_collections, SACRED_RITES_DEEP
 
-    return standard_collections, special_collections, SACRED_RITES_DEEP
+
+def _load_seed_payloads() -> tuple[dict[str, list[dict[str, Any]]], dict[str, list[dict[str, Any]]], dict[str, dict[str, Any]]]:
+    standard_collections = _load_standard_seed_collections()
+    special_collections, sacred_rites_payload = _load_special_seed_collections()
+
+    return standard_collections, special_collections, sacred_rites_payload
 
 
 async def _seed_single_collection(

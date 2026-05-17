@@ -9,6 +9,15 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 
 const EarthAltars = ({ user, api }) => {
+  const stableAltarKey = (prefix, value) => {
+    const slug = String(value || "item")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 90);
+    return `${prefix}-${slug || "item"}`;
+  };
+
   const navigate = useNavigate();
   const [altars, setAltars] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -225,8 +234,8 @@ const EarthAltars = ({ user, api }) => {
                   <div>
                     <h3 className="font-medium mb-3">Sacred Items</h3>
                     <div className="space-y-2">
-                      {selectedAltar.items.map((item, i) => (
-                        <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-white/5">
+                      {selectedAltar.items.map((item) => (
+                        <div key={stableAltarKey(`altar-item-${selectedAltar.id}`, item.name)} className="flex items-start gap-3 p-3 rounded-lg bg-white/5">
                           <CheckCircle2 className="w-4 h-4 text-primary mt-0.5" />
                           <div>
                             <p className="font-medium text-sm">{item.name}</p>
@@ -242,10 +251,10 @@ const EarthAltars = ({ user, api }) => {
                   <div>
                     <h3 className="font-medium mb-3">Setup Ritual</h3>
                     <ol className="space-y-2">
-                      {selectedAltar.setup_ritual.map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm">
+                      {selectedAltar.setup_ritual.map((step, stepIndex) => (
+                        <li key={stableAltarKey(`altar-setup-${selectedAltar.id}`, step)} className="flex items-start gap-3 text-sm">
                           <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs flex-shrink-0">
-                            {i + 1}
+                            {stepIndex + 1}
                           </span>
                           <span className="text-muted-foreground">{step}</span>
                         </li>
@@ -268,8 +277,8 @@ const EarthAltars = ({ user, api }) => {
                       Therapeutic Applications
                     </h3>
                     <div className="space-y-3">
-                      {selectedAltar.therapeutic_applications.map((app, i) => (
-                        <div key={i} className="p-4 rounded-xl bg-white/5 border border-white/10">
+                      {selectedAltar.therapeutic_applications.map((app) => (
+                        <div key={stableAltarKey(`altar-therapy-${selectedAltar.id}`, `${app.condition}-${app.practice}`)} className="p-4 rounded-xl bg-white/5 border border-white/10">
                           <div className="font-medium text-sm text-rose-300 mb-1">{app.condition}</div>
                           <p className="text-xs text-muted-foreground mb-2">{app.how_it_helps}</p>
                           <div className="text-xs bg-white/5 rounded-lg p-2 text-foreground/80">
