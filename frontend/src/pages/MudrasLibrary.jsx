@@ -147,6 +147,7 @@ const MudrasLibrary = ({ user, api }) => {
             {filteredMudras.map((mudra, index) => {
               const colors = elementColors[mudra.element] || elementColors.Spirit;
               const hasImageError = imageErrors.has(mudra.id);
+              const hasVerifiedImage = mudra.image_validation?.status === "verified";
               
               return (
                 <motion.div
@@ -173,6 +174,12 @@ const MudrasLibrary = ({ user, api }) => {
                     <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs backdrop-blur-sm ${colors.bg} ${colors.text} border ${colors.border}`}>
                       {mudra.element}
                     </span>
+                    <span
+                      className={`absolute bottom-3 left-3 px-2 py-1 rounded-full text-[10px] border backdrop-blur-sm ${hasVerifiedImage ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30" : "text-amber-300 bg-amber-500/10 border-amber-500/30"}`}
+                      data-testid={`mudra-image-validation-${mudra.id}`}
+                    >
+                      {hasVerifiedImage ? "Verified image" : "Awaiting verified image"}
+                    </span>
                   </div>
                   
                   {/* Content */}
@@ -189,6 +196,12 @@ const MudrasLibrary = ({ user, api }) => {
                         </span>
                       ))}
                     </div>
+
+                    {!hasVerifiedImage && (
+                      <p className="mt-2 text-[11px] text-amber-300/90" data-testid={`mudra-unverified-note-${mudra.id}`}>
+                        We removed unverified visual references for this mudra until source confirmation.
+                      </p>
+                    )}
 
                     <p className="mt-2 text-[11px] text-cyan-300/90" data-testid={`mudra-integrity-${mudra.id}`}>
                       {mudra.content_integrity?.verified

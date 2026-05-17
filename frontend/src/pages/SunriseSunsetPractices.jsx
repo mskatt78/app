@@ -111,6 +111,37 @@ const SunriseSunsetPractices = ({ user, api }) => {
       ],
       affirmation: "I clear the channel between my conscious and unconscious mind. Wisdom flows through me.",
       note: "This practice is about process, not product. The writing itself is the medicine."
+    },
+    {
+      id: "sunrise-5",
+      name: "Solar Meridian Tapping",
+      description: "Activate morning energy channels with gentle tapping and breath synchronization to sharpen focus for the day.",
+      duration_minutes: 12,
+      element: "Fire",
+      best_time: "5-20 minutes after sunrise",
+      benefits: ["Meridian activation", "Mental focus", "Warmth circulation", "Motivation"],
+      steps: [
+        "Stand facing east and rub palms until warm.",
+        "Tap sternum, collarbone, and outer arm lines for 60 seconds each.",
+        "Inhale for 4, hold 2, exhale for 6 while tapping solar plexus.",
+        "Finish with both palms over navel and one clear intention sentence.",
+      ],
+      affirmation: "I welcome focused fire into this day."
+    },
+    {
+      id: "sunrise-6",
+      name: "Sunrise Voice Alignment",
+      description: "Use tone, humming, and breath to align throat-heart resonance before communication and service.",
+      duration_minutes: 10,
+      element: "Air",
+      best_time: "During early sunrise light",
+      benefits: ["Voice clarity", "Emotional regulation", "Heart-throat coherence"],
+      steps: [
+        "Sit upright and hum softly for 5 long exhales.",
+        "Vocalize three vowel tones (A-E-O), each over 3 breaths.",
+        "Name one truth you will speak clearly today.",
+      ],
+      affirmation: "My voice carries calm truth and aligned intention."
     }
   ];
 
@@ -237,6 +268,37 @@ const SunriseSunsetPractices = ({ user, api }) => {
       ],
       affirmation: "I shed what no longer serves - it will not return. Fire transforms my pain into light.",
       safety: "Always practice fire safety. Have water nearby. Never leave fire unattended."
+    },
+    {
+      id: "sunset-6",
+      name: "Parasympathetic Lantern Breath",
+      description: "A nervous-system downshift ritual to transition from performance mode into restoration and sleep readiness.",
+      duration_minutes: 12,
+      element: "Air",
+      best_time: "30-60 minutes before sleep",
+      benefits: ["Stress release", "Heart-rate calming", "Sleep readiness"],
+      steps: [
+        "Dim lights and sit with one low candle or warm lamp.",
+        "Breathe in for 4, out for 6 for 12 rounds.",
+        "On each exhale, whisper: 'I release this day'.",
+        "Close by placing one hand on heart and one on belly for 1 minute.",
+      ],
+      affirmation: "My body is safe to rest; I return to stillness."
+    },
+    {
+      id: "sunset-7",
+      name: "Twilight Integration Journal",
+      description: "A structured sunset reflection to turn the day into wisdom and prevent emotional carryover into sleep.",
+      duration_minutes: 10,
+      element: "Spirit",
+      best_time: "Immediately after sunset practice",
+      benefits: ["Emotional integration", "Behavioral learning", "Intentional closure"],
+      steps: [
+        "Write: What did I complete today?",
+        "Write: What did I carry that was not mine?",
+        "Write: What one quality do I choose for tomorrow morning?",
+      ],
+      affirmation: "I close this day with clarity, compassion, and completion."
     }
   ];
 

@@ -253,6 +253,13 @@ const AncientWisdom = ({ user, api }) => {
                 {/* Description */}
                 <p className="text-muted-foreground leading-relaxed">{selected.description}</p>
 
+                {selected.expanded_context && (
+                  <div className="p-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5">
+                    <p className="text-xs uppercase tracking-widest text-cyan-300 mb-2">Expanded Context</p>
+                    <p className="text-sm text-cyan-100/90 leading-relaxed">{selected.expanded_context}</p>
+                  </div>
+                )}
+
                 {/* Sacred Message / Invocation */}
                 {selected.message && (
                   <div className="p-5 rounded-2xl bg-primary/5 border border-primary/20">
@@ -291,8 +298,8 @@ const AncientWisdom = ({ user, api }) => {
                       Sacred Teachings
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {selected.teachings.map((t, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-white/5 text-xs text-muted-foreground border border-white/10">{t}</span>
+                      {selected.teachings.map((teaching) => (
+                        <span key={`teaching-${selected.id}-${teaching.slice(0, 40)}`} className="px-3 py-1 rounded-full bg-white/5 text-xs text-muted-foreground border border-white/10">{teaching}</span>
                       ))}
                     </div>
                   </div>
@@ -306,8 +313,8 @@ const AncientWisdom = ({ user, api }) => {
                       Sacred Tools & Offerings
                     </h4>
                     <div className="grid grid-cols-2 gap-2">
-                      {selected.sacred_tools.map((tool, i) => (
-                        <div key={i} className="flex items-start gap-2 p-2 rounded-lg bg-amber-500/5 border border-amber-500/10">
+                      {selected.sacred_tools.map((tool) => (
+                        <div key={`tool-${selected.id}-${tool.slice(0, 40)}`} className="flex items-start gap-2 p-2 rounded-lg bg-amber-500/5 border border-amber-500/10">
                           <ChevronRight className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
                           <span className="text-xs text-muted-foreground">{tool}</span>
                         </div>
@@ -325,7 +332,7 @@ const AncientWisdom = ({ user, api }) => {
                     </h4>
                     <ol className="space-y-2">
                       {selected.practice.map((step, i) => (
-                        <li key={i} className="flex items-start gap-3 text-sm text-muted-foreground">
+                        <li key={`practice-${selected.id}-${step.slice(0, 40)}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                           <span className="w-6 h-6 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-xs text-rose-400 flex-shrink-0 mt-0.5">
                             {i + 1}
                           </span>

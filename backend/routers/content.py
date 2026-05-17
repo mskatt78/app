@@ -104,6 +104,101 @@ CRYSTAL_VISUAL_FORM_MAP = {
 
 CRYSTAL_STRICT_VISUAL_VALIDATION_IDS = {"iolite"}
 
+MUDRA_VERIFIED_IMAGE_MAP = {
+    "anjali mudra": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Buddha_anjali_mudra.JPG",
+    "prithvi mudra": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Prithvi_mudra.jpg",
+    "varuna mudra": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Varuna-Mudra.webp",
+    "shuni mudra": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Ellora-Cave29-ShuniMudra.jpg",
+    "chin mudra": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Chin_Mudra.jpg",
+}
+
+WATER_PRACTICE_SUPPLEMENTS = [
+    {
+        "id": "water-practice-auric-rinse",
+        "name": "Auric River Rinse",
+        "category": "ritual",
+        "duration_minutes": 12,
+        "description": "A dawn-to-dusk energetic rinse using intentional water passes around the auric field.",
+        "materials": ["Bowl of clean water", "Sea salt pinch", "Blue candle"],
+        "steps": [
+            "Stand facing east and circle the bowl three times clockwise.",
+            "Dip fingertips and trace water across forehead, heart, and lower abdomen.",
+            "Whisper the release phrase and pour remaining water at plant roots.",
+        ],
+        "benefits": ["Emotional reset", "Nervous system calming", "Energetic boundary restoration"],
+    },
+    {
+        "id": "water-practice-meridian-soak",
+        "name": "Meridian Pulse Soak",
+        "category": "healing",
+        "duration_minutes": 18,
+        "description": "A warm hand-and-foot soak sequence aligned with kidney and bladder meridian balancing.",
+        "materials": ["Warm basin", "Epsom salt", "Lavender or cedar drop"],
+        "steps": [
+            "Soak palms for 4 minutes while breathing into lower back.",
+            "Soak feet for 8 minutes and trace along inner ankle line.",
+            "Close by patting dry and applying gentle acupressure at K1 points.",
+        ],
+        "benefits": ["Meridian support", "Grounding", "Sleep quality support"],
+    },
+    {
+        "id": "water-practice-moon-infusion",
+        "name": "Moon Vessel Infusion",
+        "category": "moon-water",
+        "duration_minutes": 9,
+        "description": "Short lunar charging ritual for intention-focused hydration and emotional coherence.",
+        "materials": ["Glass jar", "Spring water", "Written intention"],
+        "steps": [
+            "Place intention beneath the jar for one lunar hour.",
+            "Hold jar at heart center and breathe 12 slow breaths.",
+            "Drink in three sips while naming one aligned action.",
+        ],
+        "benefits": ["Intentional hydration", "Mental clarity", "Emotional coherence"],
+    },
+]
+
+MINDFULNESS_SUPPLEMENTS = [
+    {
+        "id": "mindful-threshold-walk",
+        "name": "Threshold Walking Meditation",
+        "category": "movement",
+        "element": "earth",
+        "duration_minutes": 10,
+        "description": "A doorway-to-doorway awareness practice for transitions and emotional resets.",
+        "linked_practices": ["yoga-sequence-grounding-flow", "water-practice-auric-rinse"],
+    },
+    {
+        "id": "mindful-dawn-breath",
+        "name": "Dawn Breath Witnessing",
+        "category": "breath",
+        "element": "air",
+        "duration_minutes": 7,
+        "description": "Observe breath texture at first light and journal one body sensation per minute.",
+        "linked_practices": ["yoga-sequence-sunrise-awakening"],
+    },
+]
+
+YOGA_SEQUENCE_OF_DAY_LIBRARY = [
+    {
+        "id": "yoga-sequence-sunrise-awakening",
+        "name": "Sunrise Awakening Flow",
+        "duration_minutes": 15,
+        "poses": ["Cat-Cow", "Low Lunge", "Half Sun Salutation", "Standing Forward Fold"],
+    },
+    {
+        "id": "yoga-sequence-grounding-flow",
+        "name": "Grounding Earth Sequence",
+        "duration_minutes": 18,
+        "poses": ["Mountain", "Warrior II", "Triangle", "Seated Fold"],
+    },
+    {
+        "id": "yoga-sequence-evening-unwind",
+        "name": "Evening Nervous System Unwind",
+        "duration_minutes": 14,
+        "poses": ["Child's Pose", "Supine Twist", "Happy Baby", "Legs-Up-The-Wall"],
+    },
+]
+
 MOON_GUIDANCE = {
     "new_moon": {"theme": "New Beginnings & Intention Setting", "energy": "introspective", "focus": ["womb", "shadow", "rest"]},
     "waxing_crescent": {"theme": "Taking First Steps", "energy": "building", "focus": ["warrior", "solar", "action"]},
@@ -238,6 +333,118 @@ def _enrich_content_integrity(item: dict[str, Any], default_source_type: str) ->
         "last_reviewed_at": item.get("last_reviewed_at"),
     }
     return enriched
+
+
+def _mudra_key(name: str) -> str:
+    return str(name or "").strip().lower()
+
+
+def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(mudra)
+    mudra_name = _mudra_key(mudra.get("name", ""))
+    verified_url = MUDRA_VERIFIED_IMAGE_MAP.get(mudra_name)
+
+    enriched["image_url_original"] = mudra.get("image_url")
+    if verified_url:
+        enriched["image_url"] = verified_url
+        enriched["image_source"] = "wikipedia_verified"
+        enriched["image_validation"] = {
+            "status": "verified",
+            "source_type": "wikipedia_verified",
+            "score": 0.9,
+            "verified_at": datetime.now(timezone.utc).isoformat(),
+        }
+    else:
+        enriched["image_url"] = None
+        enriched["image_source"] = "awaiting_verification"
+        enriched["image_validation"] = {
+            "status": "review",
+            "source_type": "awaiting_verification",
+            "score": 0.0,
+            "note": "Awaiting verified mudra reference image",
+        }
+
+    return enriched
+
+
+def _enrich_practice_links(item: dict[str, Any], domain: str) -> dict[str, Any]:
+    enriched = dict(item)
+    element = str(item.get("element") or "").lower()
+    links = [
+        {"type": "mindfulness", "route": "/mindfulness", "label": "Mindfulness Companion"},
+        {"type": "water", "route": "/water-practices", "label": "Water Regulation Practice"},
+    ]
+    if element in {"fire", "air", "water", "earth", "spirit"}:
+        links.append({"type": "yoga", "route": "/yoga", "label": f"{element.title()} yoga sequence"})
+    links.append({"type": domain, "route": f"/{domain}", "label": "Explore related teachings"})
+    enriched["linked_practices"] = links
+    return enriched
+
+
+def _enrich_light_code_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(payload or {})
+    enriched.setdefault("linguistic_foundations", [
+        {
+            "id": "phoneme-harmonics",
+            "title": "Phoneme Harmonics",
+            "description": "How vowel resonance and consonant impact shape felt energetic meaning in light-language style chanting.",
+            "practice": "Speak one symbol name slowly over six breaths and track vibratory shifts in chest/throat.",
+        },
+        {
+            "id": "glyph-semantics",
+            "title": "Glyph Semantics",
+            "description": "Symbol families are interpreted through stroke direction, angle, and repetition density.",
+            "practice": "Trace a chosen glyph clockwise and write three associated felt meanings.",
+        },
+    ])
+    enriched.setdefault("symbol_lineage_notes", [
+        "Cross-reference symbols with geometry traditions before interpretation.",
+        "Anchor interpretations in breath rhythm and body sensation logs.",
+        "Use repeated symbol journaling to detect stable semantic patterns.",
+    ])
+    return enriched
+
+
+def _enrich_energy_healing_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(entry)
+    enriched.setdefault("ritual_tools", ["journal", "breath timer", "clean water", "grounding stone"])
+    enriched.setdefault("meridian_functions", [
+        "Supports parasympathetic downshifting",
+        "Improves energetic flow perception along major channels",
+        "Helps identify emotional holding patterns in body zones",
+    ])
+    enriched.setdefault("body_ailment_connections", [
+        "Tension headaches and jaw clenching patterns",
+        "Digestive stress and lower belly holding",
+        "Upper-back guarding linked to emotional load",
+    ])
+    return enriched
+
+
+def _append_water_supplements(practices: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(practice.get("id")) for practice in practices}
+    additions = []
+    for item in WATER_PRACTICE_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if category and str(item.get("category", "")).lower() != str(category).lower():
+            continue
+        additions.append(item)
+    return practices + additions
+
+
+def _append_mindfulness_supplements(practices: list[dict[str, Any]], category: Optional[str], element: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(practice.get("id")) for practice in practices}
+    additions = []
+    for item in MINDFULNESS_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if category and str(item.get("category", "")).lower() != str(category).lower():
+            continue
+        if element and str(item.get("element", "")).lower() != str(element).lower():
+            continue
+        additions.append(item)
+    return practices + additions
 
 
 def _split_sentences(text: str) -> list[str]:
@@ -1832,7 +2039,8 @@ async def get_mudras(element: Optional[str] = None):
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     mudras = await db.mudras.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_content_integrity(mudra, "hybrid-curated") for mudra in mudras]
+    enriched_mudras = [_enrich_content_integrity(mudra, "hybrid-curated") for mudra in mudras]
+    return [_enrich_mudra_entry(mudra) for mudra in enriched_mudras]
 
 
 # ============ MINDFULNESS PRACTICES ============
@@ -1848,7 +2056,14 @@ async def get_mindfulness_practices(category: Optional[str] = None, element: Opt
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     practices = await db.mindfulness_practices.find(query, {"_id": 0}).to_list(length=50)
-    return practices
+    practices = _append_mindfulness_supplements(practices, category, element)
+    return [_enrich_content_integrity(_enrich_practice_links(practice, "mindfulness"), "hybrid-curated") for practice in practices]
+
+
+@router.get("/mindfulness-practices")
+async def get_mindfulness_practices_alias(category: Optional[str] = None, element: Optional[str] = None):
+    """Alias endpoint for clients expecting /mindfulness-practices."""
+    return await get_mindfulness_practices(category=category, element=element)
 
 
 # ============ GUIDED MEDITATIONS ============
@@ -1964,7 +2179,10 @@ async def get_shamanic_practices(category: Optional[str] = None):
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
     practices = await db.shamanic_practices.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_content_integrity(practice, "hybrid-curated") for practice in practices]
+    return [
+        _enrich_content_integrity(_enrich_practice_links(practice, "shamanic-practices"), "hybrid-curated")
+        for practice in practices
+    ]
 
 
 @router.get("/shamanic-practices/{practice_id}")
@@ -1988,7 +2206,10 @@ async def get_elemental_practices(element: Optional[str] = None):
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     practices = await db.elemental_practices.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_content_integrity(practice, "hybrid-curated") for practice in practices]
+    return [
+        _enrich_content_integrity(_enrich_practice_links(practice, "elemental-practices"), "hybrid-curated")
+        for practice in practices
+    ]
 
 
 @router.get("/elemental-practices/{practice_id}")
@@ -2205,7 +2426,7 @@ async def get_all_light_codes():
     """Get all light codes (sacred geometry, alphabets, light language)."""
     db = get_db()
     light_codes = await db.light_codes.find_one({}, {"_id": 0})
-    return light_codes or {}
+    return _enrich_light_code_payload(light_codes or {})
 
 
 @router.get("/light-codes/sacred-geometry")
@@ -2358,7 +2579,13 @@ async def get_ancient_wisdom(tradition: Optional[str] = None):
     if tradition:
         query["tradition"] = {"$regex": f"^{tradition}$", "$options": "i"}
     entries = await db.ancient_wisdom.find(query, {"_id": 0}).to_list(length=200)
-    return [_enrich_content_integrity(entry, "hybrid-curated") for entry in entries]
+    enriched_entries = []
+    for entry in entries:
+        entry_copy = dict(entry)
+        entry_copy.setdefault("expanded_context", f"Extended context: {entry_copy.get('teaching') or entry_copy.get('description') or 'Traditional teaching depth.'}")
+        entry_copy.setdefault("section_focus", entry_copy.get("tradition") or "cross-tradition")
+        enriched_entries.append(_enrich_content_integrity(entry_copy, "hybrid-curated"))
+    return enriched_entries
 
 
 @router.get("/ancient-wisdom/{entry_id}")
@@ -2650,7 +2877,7 @@ async def get_energy_healing(modality: Optional[str] = None):
     if modality:
         query["modality"] = {"$regex": f"^{modality}$", "$options": "i"}
     practices = await db.energy_healing.find(query, {"_id": 0}).to_list(length=100)
-    return practices
+    return [_enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated") for practice in practices]
 
 
 @router.get("/energy-healing/{practice_id}")
@@ -2659,7 +2886,7 @@ async def get_energy_healing_practice(practice_id: str):
     practice = await db.energy_healing.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Practice not found")
-    return practice
+    return _enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated")
 
 
 # ============ FREE FORM MOVEMENT ROUTES ============
@@ -2928,5 +3155,6 @@ async def get_water_practices(category: Optional[str] = None):
     if category:
         query["category"] = category
     practices = await db.water_practices.find(query, {"_id": 0}).to_list(length=100)
-    return practices
+    practices = _append_water_supplements(practices, category)
+    return [_enrich_content_integrity(practice, "hybrid-curated") for practice in practices]
 

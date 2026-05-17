@@ -202,6 +202,11 @@ const ElementalPractices = ({ user, api }) => {
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
                     {practice.description}
                   </p>
+                  {practice.linked_practices?.length > 0 && (
+                    <p className="text-[11px] text-cyan-300/90 mb-2" data-testid={`elemental-linked-practices-${practice.id}`}>
+                      Linked pathways: {practice.linked_practices.length}
+                    </p>
+                  )}
                   <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`elemental-integrity-${practice.id}`}>
                     {practice.content_integrity?.verified
                       ? `Verified references (${practice.content_integrity.references_count || 0})`

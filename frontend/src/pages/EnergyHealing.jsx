@@ -175,6 +175,45 @@ export default function EnergyHealing() {
                   </div>
                 )}
 
+                {selectedPractice.ritual_tools?.length > 0 && (
+                  <div className="mt-4">
+                    <h3 className="text-sm font-medium mb-2">Ritual Tools</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedPractice.ritual_tools.map((tool) => (
+                        <span key={tool} className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 text-xs">{tool}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {selectedPractice.meridian_functions?.length > 0 && (
+                  <div className="mt-4">
+                    <h3 className="text-sm font-medium mb-2">Meridian & Function Links</h3>
+                    <ul className="space-y-1">
+                      {selectedPractice.meridian_functions.map((item) => (
+                        <li key={item} className="text-xs text-muted-foreground flex gap-2">
+                          <span className="text-cyan-300">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {selectedPractice.body_ailment_connections?.length > 0 && (
+                  <div className="mt-4">
+                    <h3 className="text-sm font-medium mb-2">Body / Ailment Connections</h3>
+                    <ul className="space-y-1">
+                      {selectedPractice.body_ailment_connections.map((item) => (
+                        <li key={item} className="text-xs text-muted-foreground flex gap-2">
+                          <span className="text-amber-300">•</span>
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 <Button variant="ghost" onClick={() => setSelectedPractice(null)} className="w-full mt-4">Close</Button>
               </div>
             </motion.div>

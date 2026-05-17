@@ -118,6 +118,26 @@ async def get_daily_guidance(user: User = Depends(get_current_user)):
     daily_crystal = await pick_daily_crystal()
     daily_mantra = secure_choice(mantras)
     daily_breathwork = secure_choice(breathwork_sessions)
+
+    yoga_sequence_of_day = {
+        "id": "daily-yoga-sequence",
+        "name": "Daily Nervous System Alignment Flow",
+        "duration_minutes": 16,
+        "poses": ["Mountain", "Cat-Cow", "Low Lunge", "Seated Twist", "Legs-Up-The-Wall"],
+    }
+
+    sunrise_sunset_guidance = {
+        "sunrise": [
+            "Face first light for 3 deep breaths and set one embodied intention.",
+            "Hydrate before caffeine and journal one body sensation.",
+            "Move through a 5-minute spinal wake-up sequence.",
+        ],
+        "sunset": [
+            "Dim bright light 45 minutes before sleep prep.",
+            "Complete one gratitude + release journal line.",
+            "Use a 4-6 breath cycle for parasympathetic downshift.",
+        ],
+    }
     
     return {
         "greeting": f"Blessed day, {user.name.split()[0]}",
@@ -126,6 +146,8 @@ async def get_daily_guidance(user: User = Depends(get_current_user)):
         "daily_crystal": daily_crystal,
         "daily_mantra": daily_mantra,
         "daily_breathwork": daily_breathwork,
+        "yoga_sequence_of_day": yoga_sequence_of_day,
+        "sunrise_sunset_guidance": sunrise_sunset_guidance,
         "element_focus": current_month["element"] if current_month else "Spirit"
     }
 

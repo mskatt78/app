@@ -19,6 +19,15 @@ const Mindfulness = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPractice, setSelectedPractice] = useState(null);
+
+  const stableMindfulKey = (prefix, value) => {
+    const slug = String(value || "item")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 90);
+    return `${prefix}-${slug || "item"}`;
+  };
   const [currentStep, setCurrentStep] = useState(0);
   const [isPracticing, setIsPracticing] = useState(false);
   
@@ -358,6 +367,12 @@ const Mindfulness = ({ user, api }) => {
                         {practice.category}
                       </span>
                     </div>
+
+                    {practice.linked_practices?.length > 0 && (
+                      <p className="mt-2 text-[11px] text-cyan-300/90" data-testid={`mindfulness-links-count-${practice.id}`}>
+                        Linked practices: {practice.linked_practices.length}
+                      </p>
+                    )}
                   </div>
                 </motion.div>
               );
@@ -405,6 +420,22 @@ const Mindfulness = ({ user, api }) => {
                         ))}
                       </div>
                     </div>
+
+                    {selectedPractice.linked_practices?.length > 0 && (
+                      <div>
+                        <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Linked Practices</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedPractice.linked_practices.map((link) => (
+                            <span
+                              key={stableMindfulKey(`linked-${selectedPractice.id}`, `${link.type}-${link.route}`)}
+                              className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 text-xs"
+                            >
+                              {link.label}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     <Button
                       onClick={startPractice}
@@ -492,9 +523,9 @@ const Mindfulness = ({ user, api }) => {
                         Step {currentStep + 1} of {selectedPractice.instructions?.length}
                       </p>
                       <div className="flex justify-center gap-1 mb-4">
-                        {selectedPractice.instructions?.map((_, i) => (
+                        {selectedPractice.instructions?.map((instructionText, i) => (
                           <div 
-                            key={i} 
+                            key={stableMindfulKey(`step-indicator-${selectedPractice.id}`, instructionText || i)}
                             className={`w-2 h-2 rounded-full transition-colors ${i <= currentStep ? 'bg-primary' : 'bg-white/20'}`} 
                           />
                         ))}
