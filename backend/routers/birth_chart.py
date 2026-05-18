@@ -441,7 +441,7 @@ def calculate_element_balance(planets: List[Dict]) -> Dict:
             elements[element] += weight
     
     total = sum(elements.values()) or 1
-    dominant = max(elements, key=elements.get)
+    dominant = max(elements, key=lambda key: elements[key])
     
     return {
         "counts": elements,
@@ -464,7 +464,7 @@ def calculate_quality_balance(planets: List[Dict]) -> Dict:
             qualities[quality] += weight
     
     total = sum(qualities.values()) or 1
-    dominant = max(qualities, key=qualities.get)
+    dominant = max(qualities, key=lambda key: qualities[key])
     
     return {
         "counts": qualities,
@@ -657,6 +657,8 @@ def _compute_birth_chart(request: BirthChartRequest) -> BirthChartComputation:
     elements = calculate_element_balance(planets + [ascendant])
     qualities = calculate_quality_balance(planets + [ascendant])
 
+    normalized_houses = houses if isinstance(houses, list) else list(houses.values())
+
     return BirthChartComputation(
         request=request,
         year=year,
@@ -669,7 +671,7 @@ def _compute_birth_chart(request: BirthChartRequest) -> BirthChartComputation:
         timezone_name=tz_name,
         jd=jd,
         planets=planets,
-        houses=houses,
+        houses=normalized_houses,
         ascendant=ascendant,
         midheaven=midheaven,
         aspects=aspects,

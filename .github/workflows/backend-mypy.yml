@@ -27,14 +27,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
           pip install mypy
+          pip install types-requests types-pytz
 
       - name: Run mypy on typed routers
         run: |
-          mypy --config-file backend/mypy.ini backend/routers/user.py
-          mypy --config-file backend/mypy.ini backend/routers/admin.py \
-            --disable-error-code=import-untyped \
-            --disable-error-code=assignment \
-            --disable-error-code=attr-defined
-          mypy --config-file backend/mypy.ini backend/routers/birth_chart.py \
-            --disable-error-code=import-untyped \
-            --disable-error-code=arg-type
+          mypy --config-file backend/mypy.ini \
+            backend/routers/user.py \
+            backend/routers/admin.py \
+            backend/routers/birth_chart.py

@@ -289,7 +289,7 @@ async def list_items(
 ) -> dict[str, Any]:
     db = get_router_db()
     if collection == "audio_files":
-        query = {"is_deleted": False}
+        query: dict[str, Any] = {"is_deleted": False}
         if search:
             query["original_filename"] = {"$regex": search, "$options": "i"}
         items = await db.admin_audio.find(query, {"_id": 0}).sort("created_at", -1).skip((page - 1) * limit).to_list(limit)
@@ -299,15 +299,15 @@ async def list_items(
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
 
-    query = {}
+    collection_query: dict[str, Any] = {}
     if search:
-        query["$or"] = [
+        collection_query["$or"] = [
             {"name": {"$regex": search, "$options": "i"}},
             {"title": {"$regex": search, "$options": "i"}},
             {"description": {"$regex": search, "$options": "i"}},
         ]
-    items = await db[collection].find(query, {"_id": 0}).sort("created_at", -1).skip((page - 1) * limit).to_list(limit)
-    total = await db[collection].count_documents(query)
+    items = await db[collection].find(collection_query, {"_id": 0}).sort("created_at", -1).skip((page - 1) * limit).to_list(limit)
+    total = await db[collection].count_documents(collection_query)
     return {"items": items, "total": total, "page": page, "limit": limit}
 
 
@@ -630,7 +630,7 @@ async def seed_database(request: SeedRequest, _: dict[str, Any] = Depends(_verif
     logger = logging.getLogger(__name__)
     db = get_router_db()
 
-    results = {"status": "started", "collections": {}, "errors": []}
+    results: dict[str, Any] = {"status": "started", "collections": {}, "errors": []}
 
     try:
         standard_collections, special_collections, courses_payload = _load_seed_payloads()
