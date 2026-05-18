@@ -496,25 +496,25 @@ def get_quality_interpretation(quality: str) -> str:
 
 
 @router.get("/zodiac-signs")
-async def get_zodiac_signs():
+async def get_zodiac_signs() -> dict[str, dict[str, Any]]:
     """Get all zodiac sign information."""
     return ZODIAC_SIGNS
 
 
 @router.get("/planet-meanings")
-async def get_planet_meanings():
+async def get_planet_meanings() -> dict[str, dict[str, Any]]:
     """Get meanings and symbols for all planets."""
     return PLANET_DATA
 
 
 @router.get("/house-meanings")
-async def get_house_meanings():
+async def get_house_meanings() -> dict[int, dict[str, Any]]:
     """Get meanings for all 12 houses."""
     return HOUSE_MEANINGS
 
 
 @router.get("/aspect-meanings")
-async def get_aspect_meanings():
+async def get_aspect_meanings() -> dict[str, dict[str, Any]]:
     """Get meanings for all aspects."""
     return ASPECTS
 
@@ -679,7 +679,7 @@ def _compute_birth_chart(request: BirthChartRequest) -> BirthChartComputation:
 
 
 @router.post("/calculate")
-async def calculate_birth_chart(request: BirthChartRequest):
+async def calculate_birth_chart(request: BirthChartRequest) -> dict[str, Any]:
     """Calculate a complete birth chart using Swiss Ephemeris.
     
     This endpoint uses the Swiss Ephemeris library for professional-grade
@@ -702,7 +702,7 @@ async def calculate_birth_chart(request: BirthChartRequest):
 async def save_birth_chart(
     request: BirthChartRequest,
     user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Calculate and save a birth chart for the authenticated user."""
     db = get_db()
     
@@ -727,7 +727,7 @@ async def save_birth_chart(
 
 
 @router.get("/my-chart")
-async def get_my_birth_chart(user: User = Depends(get_current_user)):
+async def get_my_birth_chart(user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get the authenticated user's saved birth chart."""
     db = get_db()
     chart = await db.birth_charts.find_one({"user_id": user.user_id}, {"_id": 0})

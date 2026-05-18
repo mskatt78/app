@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, Bell, Clock, Calendar, Save, Moon, Sun, User, LogOut, 
-  Sparkles, Smartphone, Globe, Download, ShieldCheck, Trash2, Radio
+  Sparkles, Smartphone, Globe, Download, ShieldCheck, Trash2, Radio, Volume2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -17,6 +17,11 @@ import {
   getGuidedNarrationMode,
   setGuidedNarrationMode,
 } from "../utils/guidedNarrationSettings";
+import {
+  GUIDED_TONING_INTENSITIES,
+  getGuidedToningIntensity,
+  setGuidedToningIntensity,
+} from "../utils/guidedToningSettings";
 
 const Settings = ({ user, api }) => {
   const navigate = useNavigate();
@@ -44,6 +49,7 @@ const Settings = ({ user, api }) => {
     message: "Time for your sacred practice",
   });
   const [guidedNarrationMode, setGuidedNarrationModeState] = useState(() => getGuidedNarrationMode());
+  const [guidedToningIntensity, setGuidedToningIntensityState] = useState(() => getGuidedToningIntensity());
 
   const daysOfWeek = [
     { value: "monday", label: "Mon" },
@@ -153,6 +159,12 @@ const Settings = ({ user, api }) => {
     setGuidedNarrationModeState(nextMode);
     const modeLabel = GUIDED_NARRATION_MODES[nextMode]?.label || "Strict";
     toast.success(`Guided narration mode set to ${modeLabel}`);
+  };
+
+  const updateGuidedToningMode = (mode) => {
+    const nextMode = setGuidedToningIntensity(mode);
+    setGuidedToningIntensityState(nextMode);
+    toast.success(`Guided toning intensity set to ${GUIDED_TONING_INTENSITIES[nextMode].label}`);
   };
 
   return (
@@ -358,6 +370,33 @@ const Settings = ({ user, api }) => {
               <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-narration-active-note">
                 {GUIDED_NARRATION_MODES[guidedNarrationMode]?.description}
               </p>
+
+              <div className="mt-6 pt-5 border-t border-white/10" data-testid="settings-guided-toning-card">
+                <h3 className="text-base font-medium mb-2 flex items-center gap-2">
+                  <Volume2 className="w-4 h-4 text-primary" />
+                  Guided Toning Intensity
+                </h3>
+                <p className="text-sm text-muted-foreground mb-3" data-testid="settings-guided-toning-description">
+                  Controls the resonance depth under guided voice practices across the app.
+                </p>
+
+                <Select value={guidedToningIntensity} onValueChange={updateGuidedToningMode}>
+                  <SelectTrigger className="bg-card/50 border-white/10" data-testid="settings-guided-toning-select">
+                    <SelectValue placeholder="Select toning intensity" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.values(GUIDED_TONING_INTENSITIES).map((option) => (
+                      <SelectItem key={option.id} value={option.id} data-testid={`settings-guided-toning-option-${option.id}`}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-toning-active-note">
+                  {GUIDED_TONING_INTENSITIES[guidedToningIntensity]?.description}
+                </p>
+              </div>
             </motion.div>
 
             {/* Save Button */}

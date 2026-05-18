@@ -80,7 +80,7 @@ def _normalize_admin_item_payload(collection: str, data: dict[str, Any]) -> dict
     return normalized
 
 
-def _init_storage():
+def _init_storage() -> str:
     global _storage_key
     if _storage_key:
         return _storage_key
@@ -102,7 +102,7 @@ def _put_object(path: str, data: bytes, content_type: str) -> dict:
     return resp.json()
 
 
-def _get_object(path: str):
+def _get_object(path: str) -> tuple[bytes, str]:
     key = _init_storage()
     resp = requests.get(
         f"{STORAGE_URL}/objects/{path}",
@@ -235,7 +235,7 @@ class LoginRequest(BaseModel):
 
 
 @router.post("/session-login")
-async def admin_session_login(response: Response, user: User = Depends(get_current_user)):
+async def admin_session_login(response: Response, user: User = Depends(get_current_user)) -> dict[str, str]:
     if not _is_admin_email(user.email):
         raise HTTPException(status_code=403, detail="Admin access required")
     token = _create_session_admin_token(user)
@@ -249,7 +249,7 @@ async def admin_session_login(response: Response, user: User = Depends(get_curre
 
 
 @router.post("/login")
-async def admin_login(data: LoginRequest, response: Response):
+async def admin_login(data: LoginRequest, response: Response) -> dict[str, str]:
     admin_password = os.environ.get("ADMIN_PASSWORD")
     if not admin_password:
         raise HTTPException(status_code=500, detail="Admin password not configured")
@@ -261,13 +261,13 @@ async def admin_login(data: LoginRequest, response: Response):
 
 
 @router.post("/logout")
-async def admin_logout(response: Response):
+async def admin_logout(response: Response) -> dict[str, bool]:
     _clear_admin_cookie(response)
     return {"logged_out": True}
 
 
 @router.get("/collections")
-async def get_collections(_: dict = Depends(_verify_admin)):
+async def get_collections(_: dict[str, Any] = Depends(_verify_admin)) -> list[dict[str, Any]]:
     db = get_router_db()
     result = []
     for meta in COLLECTION_META:
@@ -285,8 +285,8 @@ async def list_items(
     page: int = 1,
     limit: int = 30,
     search: Optional[str] = None,
-    _: dict = Depends(_verify_admin),
-):
+    _: dict[str, Any] = Depends(_verify_admin),
+) -> dict[str, Any]:
     db = get_router_db()
     if collection == "audio_files":
         query = {"is_deleted": False}
@@ -312,7 +312,7 @@ async def list_items(
 
 
 @router.post("/{collection}/items")
-async def create_item(collection: str, data: dict, _: dict = Depends(_verify_admin)):
+async def create_item(collection: str, data: dict[str, Any], _: dict[str, Any] = Depends(_verify_admin)) -> dict[str, Any]:
     db = get_router_db()
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
@@ -326,7 +326,7 @@ async def create_item(collection: str, data: dict, _: dict = Depends(_verify_adm
 
 
 @router.put("/{collection}/items/{item_id}")
-async def update_item(collection: str, item_id: str, data: dict, _: dict = Depends(_verify_admin)):
+async def update_item(collection: str, item_id: str, data: dict[str, Any], _: dict[str, Any] = Depends(_verify_admin)) -> dict[str, Any]:
     db = get_router_db()
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
@@ -340,7 +340,7 @@ async def update_item(collection: str, item_id: str, data: dict, _: dict = Depen
 
 
 @router.delete("/{collection}/items/{item_id}")
-async def delete_item(collection: str, item_id: str, _: dict = Depends(_verify_admin)):
+async def delete_item(collection: str, item_id: str, _: dict[str, Any] = Depends(_verify_admin)) -> dict[str, bool]:
     db = get_router_db()
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
@@ -353,8 +353,8 @@ async def delete_item(collection: str, item_id: str, _: dict = Depends(_verify_a
 @router.post("/upload")
 async def upload_file(
     file: UploadFile = File(...),
-    _: dict = Depends(_verify_admin),
-):
+    _: dict[str, Any] = Depends(_verify_admin),
+) -> dict[str, Any]:
     db = get_router_db()
     ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else "bin"
     file_id = str(uuid.uuid4())
@@ -387,7 +387,7 @@ async def upload_file(
 
 
 @router.get("/files/{path:path}")
-async def serve_file(path: str):
+async def serve_file(path: str) -> Response:
     """Public endpoint — serves uploaded files without auth for display."""
     try:
         data, content_type = _get_object(path)
@@ -397,7 +397,7 @@ async def serve_file(path: str):
 
 
 @router.delete("/audio_files/items/{file_id}")
-async def delete_audio_file(file_id: str, _: dict = Depends(_verify_admin)):
+async def delete_audio_file(file_id: str, _: dict[str, Any] = Depends(_verify_admin)) -> dict[str, bool]:
     db = get_router_db()
     result = await db.admin_audio.update_one(
         {"id": file_id},
@@ -619,7 +619,7 @@ def _resolve_collections_to_seed(
 
 
 @router.post("/seed-database")
-async def seed_database(request: SeedRequest, _: dict = Depends(_verify_admin)):
+async def seed_database(request: SeedRequest, _: dict[str, Any] = Depends(_verify_admin)) -> dict[str, Any]:
     """
     Admin endpoint to trigger database seeding.
     Can seed all collections or specific ones.
@@ -665,7 +665,7 @@ async def seed_database(request: SeedRequest, _: dict = Depends(_verify_admin)):
 
 
 @router.get("/seed-status")
-async def get_seed_status(_: dict = Depends(_verify_admin)):
+async def get_seed_status(_: dict[str, Any] = Depends(_verify_admin)) -> dict[str, Any]:
     """Get current database seeding status - shows count of items in each collection."""
     db = get_router_db()
     

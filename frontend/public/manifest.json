@@ -1,7 +1,7 @@
 {
   "name": "Shamanic Elements Soul Temple 2.0",
   "short_name": "Soul Temple",
-  "description": "Sacred yoga, breathwork, oracle readings, star lineage discovery, elemental healing, crystals, mantras, numerology, and shamanic practices for spiritual wellness and transformation.",
+  "description": "A premium spiritual wellness companion with guided breathwork, meditations, elemental healing, and sacred daily practices.",
   "icons": [
     {
       "src": "icon-72.png",
@@ -126,10 +126,10 @@
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Retreats",
-      "short_name": "Retreats",
-      "description": "Healing retreats and experiences",
-      "url": "/retreats",
+      "name": "Breathwork",
+      "short_name": "Breath",
+      "description": "Open guided breathwork journeys",
+      "url": "/breathwork",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
@@ -147,17 +147,17 @@
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "App Readiness",
-      "short_name": "Ready",
-      "description": "Open launch checklist and store prep",
-      "url": "/app-readiness",
+      "name": "Settings",
+      "short_name": "Settings",
+      "description": "Customize narration and toning preferences",
+      "url": "/settings",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "All Links",
-      "short_name": "Links",
-      "description": "All practices and features",
-      "url": "/links",
+      "name": "Admin Portal",
+      "short_name": "Admin",
+      "description": "Open the unified admin workspace",
+      "url": "/admin",
       "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
     }
   ],

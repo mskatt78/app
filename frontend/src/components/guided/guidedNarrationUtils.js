@@ -1,3 +1,5 @@
+import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
+
 export const ELEMENT_AMBIENT = {
   fire: { freq: 120, Q: 2, gain: 0.12, label: "Sacred Fire" },
   water: { freq: 300, Q: 0.5, gain: 0.1, label: "Ocean Waves" },
@@ -100,8 +102,16 @@ export const startToningLayer = (ctx, element = "spirit", destination = null) =>
   const root = TONING_ROOT_FREQ[normalized] || TONING_ROOT_FREQ.spirit;
 
   const output = destination || ctx.destination;
+  const intensityMultiplier = getGuidedToningMultiplier();
+  if (intensityMultiplier <= 0) {
+    return {
+      setMuted: () => {},
+      stop: () => {},
+    };
+  }
+
   const master = ctx.createGain();
-  const targetGain = resolveToningGain(normalized);
+  const targetGain = resolveToningGain(normalized) * intensityMultiplier;
   master.gain.value = targetGain;
 
   const filter = ctx.createBiquadFilter();
