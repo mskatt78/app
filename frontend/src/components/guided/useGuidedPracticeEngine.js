@@ -18,6 +18,7 @@ import {
   getEffectiveGuidedNarrationMode,
   setGuidedNarrationMode,
 } from "../../utils/guidedNarrationSettings";
+import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const narrationPlan = useMemo(() => buildNarrationPlan(practice || {}, stepsOverride), [practice, stepsOverride]);
@@ -211,7 +212,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   useEffect(() => {
     if (!scriptExpansionContext) {
       setScriptLoading(false);
-      setNarrationReady(false);
+      setNarrationReady(true);
       return undefined;
     }
 
@@ -475,7 +476,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     isPlaying,
     ambientLabel: (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label,
     toningLabel: "Toning layer active",
-    toningActive: Boolean(toningRef.current) && !muted && isPlaying,
+    toningActive: Boolean(toningRef.current) && !muted && isPlaying && getGuidedToningMultiplier() > 0,
     antiRepetitionMode,
     handleAntiRepetitionModeChange,
   };
