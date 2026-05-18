@@ -12,6 +12,23 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **ALL-NOW Batch Complete (Iteration 123/124, May 2026):**
+  - **Component modularization delivered:**
+    - `PracticeTimer.jsx` reduced to a focused render shell and moved core timer/audio/narration logic into `timer/usePracticeTimerEngine.js`.
+    - `Dashboard.jsx` split into modular page components: `StreakWidget`, `SacredPracticeWidget`, `DailyGuidanceGrid`, and `DashboardActionPanels`, with shared config in `dashboardConfig.js`.
+  - **Guided Toning Intensity control added (global):**
+    - New settings utility `utils/guidedToningSettings.js` with `Off / Subtle / Immersive` persistence.
+    - Settings UI now includes a dedicated **Guided Toning Intensity** selector.
+    - Guided audio layer now respects intensity multipliers globally; Off mode disables toning drone while narration remains available.
+  - **App-store readiness polish pass:**
+    - Updated PWA metadata/description consistency in `manifest.json` and `index.html`.
+    - Refined shortcuts for real in-app routes (Breathwork, Settings, Admin, etc.).
+  - **Backend type-hint expansion (P2 progress):**
+    - Added return annotations across key `admin.py` and `birth_chart.py` routes/helpers without runtime regression.
+  - **Validation status:**
+    - `/app/test_reports/iteration_123.json`: frontend regression pass + backend pass with only expected auth-gated responses.
+    - Additional specialist checks confirmed guided toning status behavior (Subtle/Immersive visible during active playback, Off hidden) and backend endpoint health.
+
 - **Authentic Voice Toning Across All Guided Practices (Iteration 122, May 2026):**
   - Implemented combined toning approach across the app (user-approved **C + All practices**):
     - **Script-level toning cues**: `/api/content/expand-script` now supports `include_toning` (default `true`) and injects soft vocal-toning guidance (ahh/ooh/mmm/hum + element seed syllables LAM/VAM/RAM/YAM/OM).
