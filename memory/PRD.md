@@ -12,6 +12,20 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Advanced P1/P2 Cleanup Complete (Iteration 125/126, May 2026):**
+  - **Narration micro-hook decomposition completed:**
+    - `useNarrationPlayback` now orchestrates dedicated micro-hooks:
+      - `useNarrationCache` (audio cache/pending map + blob cleanup)
+      - `useNarrationRequest` (script expansion request lifecycle)
+      - `useNarrationPlayer` (segment-by-segment playback + tempo + tap-to-play handling)
+  - **Real device-class screenshot assets added for manifest:**
+    - Captured and wired real preview screenshots: `screenshot-phone.jpeg` (390x844) and `screenshot-tablet.jpeg` (834x1112).
+  - **Mypy coverage expanded with stricter baseline:**
+    - Added targeted type fixes in `admin.py` and `birth_chart.py`.
+    - CI mypy workflow now passes across `user.py`, `admin.py`, and `birth_chart.py` **without command-level disable flags**.
+  - **Validation:**
+    - `/app/test_reports/iteration_126.json` confirms backend/frontend 100%, strict mypy pass, manifest asset accessibility, and guided endpoint stability.
+
 - **P1/P2 Follow-up Batch Complete (Iteration 124, May 2026):**
   - **Timer architecture split completed:** `usePracticeTimerEngine` now orchestrates three focused hooks:
     - `useTimerClock` (clock/segment progression + play/pause/reset/skip lifecycle)
