@@ -12,6 +12,18 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Code-Quality Fix Batch Complete (Iteration 127, May 2026):**
+  - **P0 fixes delivered:**
+    - Refactored `routeGuards.jsx` auth/admin/public checks to remove brittle callback dependency patterns and prevent stale-closure risks.
+    - Simplified `useCoursePayments.js` callback dependency hotspots while preserving purchase/polling behavior.
+    - Updated `StreakWidget.jsx` to use one-time `useState` initializer pattern for journal-derived streak calculations.
+    - Hardened `guidedToningSettings.js` storage handling by moving preference persistence to `sessionStorage` with explicit warning logs on storage failures.
+  - **P1 (selected target 3) delivered:**
+    - `AdminCMS.jsx` decomposed with extracted `AdminCMSFormRenderer` for form rendering logic.
+    - `ArchangelOracle.jsx` decomposed into `ArchangelBrowseSection` + `ArchangelReadingSection` for cleaner composition.
+  - **Validation:**
+    - `/app/test_reports/iteration_127.json` frontend regression pass (100%), plus final frontend/backend sanity checks passed.
+
 - **Advanced P1/P2 Cleanup Complete (Iteration 125/126, May 2026):**
   - **Narration micro-hook decomposition completed:**
     - `useNarrationPlayback` now orchestrates dedicated micro-hooks:
