@@ -1,10 +1,10 @@
-import { useMemo } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, BookOpen } from "lucide-react";
 import { Button } from "../../components/ui/button";
 
 export const StreakWidget = ({ onJournalClick }) => {
-  const { streak, milestone, thisWeek, weekDots } = useMemo(() => {
+  const [streakData] = useState(() => {
     const raw = localStorage.getItem("practiceJournalEntries");
     const entries = raw ? JSON.parse(raw) : [];
     if (!entries.length) return { streak: 0, milestone: null, thisWeek: 0, weekDots: Array(7).fill(false) };
@@ -50,7 +50,9 @@ export const StreakWidget = ({ onJournalClick }) => {
       thisWeek: weekDots.filter(Boolean).length,
       weekDots,
     };
-  }, []);
+  });
+
+  const { streak, milestone, thisWeek, weekDots } = streakData;
 
   const days = [
     { id: "mon", label: "M", offset: 0 },

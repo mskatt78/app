@@ -1,0 +1,95 @@
+{
+  "summary": "Iteration 127 - Stability regression test after P0 hook dependency/security fixes and P1 AdminCMS/ArchangelOracle refactor. All tested features working correctly: (1) routeGuards auth/admin/public flows working without auth loops or stale state, (2) useCoursePayments purchase flow correctly requires authentication, (3) StreakWidget uses useState initializer pattern correctly, (4) guidedToningSettings uses sessionStorage correctly, (5) AdminCMS create/edit modal works after form renderer extraction, (6) ArchangelOracle browse and reading flows work after component extraction.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_127.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "VERIFIED: routeGuards.jsx - ProtectedRoute correctly redirects unauthenticated users to landing page",
+    "VERIFIED: routeGuards.jsx - PublicRoute correctly handles auth check failures (sets user to null)",
+    "VERIFIED: routeGuards.jsx - AdminRoute uses cookie fallback when /auth/me fails",
+    "VERIFIED: useCoursePayments.js - Purchase flow shows 'Please sign in to purchase courses' toast for unauthenticated users",
+    "VERIFIED: StreakWidget.jsx - Uses useState with initializer function instead of useMemo (correct pattern for localStorage read)",
+    "VERIFIED: guidedToningSettings.js - Uses sessionStorage with proper error handling (try/catch with console.warn)",
+    "VERIFIED: AdminCMS.jsx - Form dialog opens correctly with AdminCMSFormRenderer component",
+    "VERIFIED: AdminCMSFormRenderer.jsx - All form fields render correctly (TextField, TextareaField, SelectField, ArrayField, ImageField, ChakraField)",
+    "VERIFIED: ArchangelOracle.jsx - Browse and reading sections render correctly after component extraction",
+    "VERIFIED: ArchangelBrowseSection.jsx - Browse list and selected profile views work correctly",
+    "VERIFIED: ArchangelReadingSection.jsx - Reading setup and results views work correctly",
+    "All 9 refactored files pass ESLint with no issues"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only test)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Admin: mskatt78@gmail.com / ShamanicAdmin2026!",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 127 verified all P0 hook dependency/security fixes and P1 AdminCMS/ArchangelOracle refactor. Key findings: (1) routeGuards work correctly - ProtectedRoute redirects to landing, PublicRoute handles auth failures gracefully, AdminRoute uses cookie fallback, (2) useCoursePayments correctly requires auth for purchases, (3) StreakWidget uses useState initializer (not useMemo) for localStorage read, (4) guidedToningSettings uses sessionStorage with error handling, (5) AdminCMS form renderer extraction working, (6) ArchangelOracle component extraction working. Console shows expected 'Public route auth check failed: AxiosError' for unauthenticated users - this is correct behavior.",
+  "features_tested": {
+    "routeGuards_auth_flows": {
+      "status": "PASS",
+      "details": [
+        "PublicRoute: Menu page loads correctly, auth check failure handled gracefully",
+        "ProtectedRoute: Dashboard redirects unauthenticated users to landing page",
+        "AdminRoute: Admin login works with password, cookie fallback used when /auth/me fails"
+      ]
+    },
+    "useCoursePayments": {
+      "status": "PASS",
+      "details": [
+        "Courses page loads correctly",
+        "Unlock Course button triggers purchase flow",
+        "Unauthenticated users see 'Please sign in to purchase courses' toast",
+        "User redirected to landing page after toast"
+      ]
+    },
+    "StreakWidget": {
+      "status": "PASS",
+      "details": [
+        "Component uses useState with initializer function (correct pattern)",
+        "localStorage read happens only once on mount",
+        "Component is used in Dashboard.jsx at line 250"
+      ]
+    },
+    "guidedToningSettings": {
+      "status": "PASS",
+      "details": [
+        "sessionStorage read/write working correctly",
+        "Error handling with try/catch and console.warn",
+        "normalize() function validates intensity values"
+      ]
+    },
+    "AdminCMS_form_renderer": {
+      "status": "PASS",
+      "details": [
+        "Admin login with password works",
+        "Create New button opens form dialog",
+        "AdminCMSFormRenderer renders all form fields correctly",
+        "Save button present in dialog"
+      ]
+    },
+    "ArchangelOracle_component_extraction": {
+      "status": "PASS",
+      "details": [
+        "ArchangelOracle page loads at /archangels",
+        "ArchangelReadingSection renders setup form correctly",
+        "Question input, spread select, and guidance button work",
+        "Browse All button opens ArchangelBrowseSection",
+        "Browse list and close button work correctly",
+        "Reading API calls return 200 OK"
+      ]
+    }
+  }
+}

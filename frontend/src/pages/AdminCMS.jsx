@@ -1,28 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { 
-  ArrowLeft, Plus, Pencil, Trash2, Save, X, Loader2,
+import {
+  ArrowLeft, Plus, Save, Loader2,
   Sparkles, Wind, Droplets, Flame, Mountain, 
   Calendar, Users, BookOpen, Video, Heart, Feather, Zap, Palette,
-  Upload, MapPin, Radio, CreditCard, Gift
+  MapPin, Radio, CreditCard
 } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
-import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
 import { AdminCMSTabBar } from "../components/admin/AdminCMSTabBar";
 import { AdminCMSItemCard } from "../components/admin/AdminCMSItemCard";
+import { AdminCMSFormRenderer } from "../components/admin/AdminCMSFormRenderer";
 
 // Import admin config
-import { 
+import {
   ADMIN_TABS,
-  ELEMENTS, DIFFICULTIES, CHAKRAS, 
+  ELEMENTS, DIFFICULTIES, CHAKRAS,
   HEART_CATEGORIES, CREATIVE_CATEGORIES, SHAMANIC_CATEGORIES, ELEMENTAL_CATEGORIES,
-  getEndpoint, getDefaultFormData 
+  getEndpoint, getDefaultFormData
 } from "../components/admin/adminConfig";
 
 const AdminCMS = ({ user, api }) => {
@@ -156,303 +152,14 @@ const AdminCMS = ({ user, api }) => {
     Spirit: "bg-purple-500/20 text-purple-400",
   }[element] || "bg-white/10");
 
-  // Reusable form field components
-  const TextField = ({ name, label, placeholder, required }) => (
-    <div className="space-y-1">
-      <label className="text-sm text-muted-foreground">{label} {required && <span className="text-red-400">*</span>}</label>
-      <Input
-        value={formData[name] || ""}
-        onChange={(e) => updateField(name, e.target.value)}
-        placeholder={placeholder || label}
-      />
-    </div>
-  );
-
-  const TextareaField = ({ name, label, rows = 3 }) => (
-    <div className="space-y-1">
-      <label className="text-sm text-muted-foreground">{label}</label>
-      <Textarea
-        value={formData[name] || ""}
-        onChange={(e) => updateField(name, e.target.value)}
-        rows={rows}
-      />
-    </div>
-  );
-
-  const NumberField = ({ name, label, min, max }) => (
-    <div className="space-y-1">
-      <label className="text-sm text-muted-foreground">{label}</label>
-      <Input
-        type="number"
-        min={min}
-        max={max}
-        value={formData[name] || 0}
-        onChange={(e) => updateField(name, parseFloat(e.target.value) || 0)}
-      />
-    </div>
-  );
-
-  const SelectField = ({ name, label, options }) => (
-    <div className="space-y-1">
-      <label className="text-sm text-muted-foreground">{label}</label>
-      <Select value={formData[name] || ""} onValueChange={(v) => updateField(name, v)}>
-        <SelectTrigger><SelectValue /></SelectTrigger>
-        <SelectContent>
-          {options.map(opt => <SelectItem key={opt} value={opt}>{opt}</SelectItem>)}
-        </SelectContent>
-      </Select>
-    </div>
-  );
-
-  const ArrayField = ({ name, label, placeholder }) => (
-    <div className="space-y-1">
-      <label className="text-sm text-muted-foreground">{label} (one per line)</label>
-      <Textarea
-        value={(formData[name] || []).join("\n")}
-        onChange={(e) => updateArrayField(name, e.target.value)}
-        placeholder={placeholder}
-        rows={3}
-      />
-    </div>
-  );
-
-  const ImageField = () => (
-    <div className="space-y-2">
-      <label className="text-sm text-muted-foreground">Image</label>
-      <div className="flex gap-2">
-        <Input
-          value={formData.image_url || ""}
-          onChange={(e) => updateField("image_url", e.target.value)}
-          placeholder="Image URL"
-          className="flex-1"
-        />
-        <input type="file" ref={fileInputRef} onChange={handleImageUpload} accept="image/*" className="hidden" />
-        <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
-          {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-        </Button>
-      </div>
-      {formData.image_url && (
-        <img src={formData.image_url} alt="Preview" className="w-24 h-24 object-cover rounded-lg" />
-      )}
-    </div>
-  );
-
-  const ChakraField = () => (
-    <div className="space-y-2">
-      <label className="text-sm text-muted-foreground">Chakras</label>
-      <div className="flex flex-wrap gap-2">
-        {CHAKRAS.map(chakra => (
-          <button
-            key={chakra}
-            type="button"
-            onClick={() => {
-              const current = formData.chakras || [];
-              const updated = current.includes(chakra) 
-                ? current.filter(c => c !== chakra) 
-                : [...current, chakra];
-              updateField("chakras", updated);
-            }}
-            className={`px-3 py-1 rounded-full text-xs transition-colors ${
-              (formData.chakras || []).includes(chakra)
-                ? "bg-primary text-primary-foreground"
-                : "bg-white/5 hover:bg-white/10"
-            }`}
-          >
-            {chakra}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-
-  // Dynamic form renderer based on active tab
-  const renderForm = () => {
-    const commonFields = (
-      <>
-        <TextField name="name" label="Name" required />
-        <TextareaField name="description" label="Description" />
-        <SelectField name="element" label="Element" options={ELEMENTS} />
-        <ImageField />
-      </>
-    );
-
-    switch (activeTab) {
-      case "yoga":
-        return (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <TextField name="name" label="Pose Name" required />
-              <TextField name="sanskrit_name" label="Sanskrit Name" />
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <SelectField name="element" label="Element" options={ELEMENTS} />
-              <SelectField name="difficulty" label="Difficulty" options={DIFFICULTIES} />
-              <NumberField name="duration_minutes" label="Duration (min)" />
-            </div>
-            <TextareaField name="description" label="Description" />
-            <ImageField />
-            <ArrayField name="instructions" label="Instructions" />
-            <ArrayField name="benefits" label="Benefits" />
-            <ChakraField />
-          </div>
-        );
-
-      case "crystals":
-        return (
-          <div className="space-y-4">
-            <TextField name="name" label="Crystal Name" required />
-            <SelectField name="element" label="Element" options={ELEMENTS} />
-            <TextareaField name="description" label="Description" />
-            <ArrayField name="properties" label="Properties" />
-            <ChakraField />
-            <ImageField />
-          </div>
-        );
-
-      case "retreats":
-        return (
-          <div className="space-y-4">
-            <TextField name="name" label="Retreat Name" required />
-            <TextareaField name="description" label="Description" />
-            <div className="grid grid-cols-2 gap-4">
-              <TextField name="location" label="Location" />
-              <NumberField name="price" label="Price ($)" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-sm text-muted-foreground">Start Date</label>
-                <Input type="date" value={formData.start_date || ""} onChange={(e) => updateField("start_date", e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <label className="text-sm text-muted-foreground">End Date</label>
-                <Input type="date" value={formData.end_date || ""} onChange={(e) => updateField("end_date", e.target.value)} />
-              </div>
-            </div>
-            <NumberField name="capacity" label="Capacity" />
-            <ArrayField name="features" label="Features" />
-            <ArrayField name="includes" label="What's Included" />
-            <ImageField />
-          </div>
-        );
-
-      case "books":
-        return (
-          <div className="space-y-4">
-            <TextField name="title" label="Book Title" required />
-            <TextField name="author" label="Author" />
-            <TextareaField name="description" label="Description" />
-            <div className="grid grid-cols-2 gap-4">
-              <NumberField name="price" label="Price ($)" />
-              <TextField name="purchase_url" label="Purchase URL" />
-            </div>
-            <ImageField />
-          </div>
-        );
-
-      case "custom-oracle-cards":
-        return (
-          <div className="space-y-4">
-            <TextField name="name" label="Card Name" required />
-            <SelectField name="element" label="Element" options={ELEMENTS} />
-            <TextareaField name="meaning" label="Upright Meaning" />
-            <TextareaField name="reversed_meaning" label="Reversed Meaning" />
-            <ArrayField name="keywords" label="Keywords" />
-            <ImageField />
-          </div>
-        );
-
-      case "live-sessions":
-        return (
-          <div className="space-y-4">
-            <TextField name="title" label="Session Title" required />
-            <TextareaField name="description" label="Description" />
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-sm text-muted-foreground">Date & Time</label>
-                <Input type="datetime-local" value={formData.scheduled_at || ""} onChange={(e) => updateField("scheduled_at", e.target.value)} />
-              </div>
-              <NumberField name="duration_minutes" label="Duration (min)" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <SelectField name="platform" label="Platform" options={["zoom", "youtube", "other"]} />
-              <TextField name="join_url" label="Join URL" />
-            </div>
-            <NumberField name="price" label="Price ($)" />
-          </div>
-        );
-
-      case "heart-practices":
-        return (
-          <div className="space-y-4">
-            <TextField name="name" label="Practice Name" required />
-            <SelectField name="category" label="Category" options={HEART_CATEGORIES} />
-            <TextareaField name="description" label="Description" />
-            <TextField name="tradition" label="Tradition" />
-            <NumberField name="duration_minutes" label="Duration (min)" />
-            <ArrayField name="benefits" label="Benefits" />
-            <ArrayField name="steps" label="Steps" />
-            <TextField name="affirmation" label="Affirmation" />
-            <ImageField />
-          </div>
-        );
-
-      case "shamanic-practices":
-        return (
-          <div className="space-y-4">
-            <TextField name="name" label="Practice Name" required />
-            <SelectField name="category" label="Category" options={SHAMANIC_CATEGORIES} />
-            <TextareaField name="description" label="Description" />
-            <TextField name="tradition" label="Tradition" />
-            <NumberField name="duration_minutes" label="Duration (min)" />
-            <TextareaField name="preparation" label="Preparation" />
-            <ArrayField name="journey_steps" label="Journey Steps" />
-            <TextareaField name="safety_notes" label="Safety Notes" />
-            <ImageField />
-          </div>
-        );
-
-      case "elemental-practices":
-        return (
-          <div className="space-y-4">
-            <TextField name="name" label="Practice Name" required />
-            <div className="grid grid-cols-2 gap-4">
-              <SelectField name="element" label="Element" options={ELEMENTS} />
-              <SelectField name="category" label="Category" options={ELEMENTAL_CATEGORIES} />
-            </div>
-            <TextareaField name="description" label="Description" />
-            <div className="grid grid-cols-2 gap-4">
-              <SelectField name="difficulty" label="Difficulty" options={DIFFICULTIES} />
-              <NumberField name="duration_minutes" label="Duration (min)" />
-            </div>
-            <ArrayField name="benefits" label="Benefits" />
-            <ArrayField name="instructions" label="Instructions" />
-            <ImageField />
-          </div>
-        );
-
-      case "creative-processes":
-        return (
-          <div className="space-y-4">
-            <TextField name="name" label="Process Name" required />
-            <SelectField name="category" label="Category" options={CREATIVE_CATEGORIES} />
-            <TextareaField name="description" label="Description" />
-            <TextField name="tradition" label="Tradition" />
-            <NumberField name="duration_minutes" label="Duration (min)" />
-            <ArrayField name="materials" label="Materials Needed" />
-            <ArrayField name="process_steps" label="Process Steps" />
-            <TextField name="spiritual_purpose" label="Spiritual Purpose" />
-            <ImageField />
-          </div>
-        );
-
-      default:
-        return (
-          <div className="space-y-4">
-            {commonFields}
-            <ArrayField name="benefits" label="Benefits" />
-          </div>
-        );
-    }
+  const formConstants = {
+    ELEMENTS,
+    DIFFICULTIES,
+    CHAKRAS,
+    HEART_CATEGORIES,
+    CREATIVE_CATEGORIES,
+    SHAMANIC_CATEGORIES,
+    ELEMENTAL_CATEGORIES,
   };
 
   return (
@@ -508,7 +215,16 @@ const AdminCMS = ({ user, api }) => {
             <DialogTitle>{editingItem ? "Edit" : "Create"} {tabs.find(t => t.id === activeTab)?.label}</DialogTitle>
           </DialogHeader>
           <div className="py-4">
-            {renderForm()}
+            <AdminCMSFormRenderer
+              activeTab={activeTab}
+              formData={formData}
+              updateField={updateField}
+              updateArrayField={updateArrayField}
+              uploading={uploading}
+              fileInputRef={fileInputRef}
+              handleImageUpload={handleImageUpload}
+              constants={formConstants}
+            />
           </div>
           <div className="flex justify-end gap-2 pt-4 border-t border-white/10">
             <Button variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>

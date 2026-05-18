@@ -26,21 +26,32 @@ const normalize = (value) => {
   return GUIDED_TONING_INTENSITIES[candidate] ? candidate : "subtle";
 };
 
-export const getGuidedToningIntensity = () => {
+const storageKey = TONING_INTENSITY_KEY;
+
+const readStoredValue = () => {
   try {
-    return normalize(window.localStorage.getItem(TONING_INTENSITY_KEY));
-  } catch (_) {
-    return "subtle";
+    return window.sessionStorage.getItem(storageKey);
+  } catch (error) {
+    console.warn("Unable to read guided toning preference from session storage:", error);
+    return null;
   }
+};
+
+const writeStoredValue = (value) => {
+  try {
+    window.sessionStorage.setItem(storageKey, value);
+  } catch (error) {
+    console.warn("Unable to save guided toning preference to session storage:", error);
+  }
+};
+
+export const getGuidedToningIntensity = () => {
+  return normalize(readStoredValue());
 };
 
 export const setGuidedToningIntensity = (value) => {
   const next = normalize(value);
-  try {
-    window.localStorage.setItem(TONING_INTENSITY_KEY, next);
-  } catch (_) {
-    // ignore storage errors
-  }
+  writeStoredValue(next);
   return next;
 };
 
