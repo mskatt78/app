@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Play, Square, Loader2, Volume2 } from "lucide-react";
 import { toast } from "sonner";
-import { DEFAULT_GUIDED_TTS_SPEED } from "./guided/guidedNarrationUtils";
+import { DEFAULT_GUIDED_TTS_SPEED, startToningLayer } from "./guided/guidedNarrationUtils";
 import { getEffectiveGuidedNarrationMode } from "../utils/guidedNarrationSettings";
 
 const MIN_NARRATION_MINUTES = 7;
@@ -53,11 +53,26 @@ const GuidedAudioButton = ({
   steps = [],
 }) => {
   const audioRef = useRef(null);
+  const audioContextRef = useRef(null);
+  const toningLayerRef = useRef(null);
   const abortRef = useRef(null);
   const isStoppedRef = useRef(false);
   const segmentCacheRef = useRef(new Map());
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
+
+  const stopToning = useCallback(() => {
+    try {
+      toningLayerRef.current?.stop?.();
+    } catch (_) {
+      // ignore toning cleanup errors
+    }
+    toningLayerRef.current = null;
+    if (audioContextRef.current && audioContextRef.current.state !== "closed") {
+      audioContextRef.current.close().catch(() => {});
+    }
+    audioContextRef.current = null;
+  }, []);
 
   // Clean up audio on unmount
   useEffect(() => {
@@ -69,8 +84,9 @@ const GuidedAudioButton = ({
         audioRef.current = null;
       }
       segmentCacheRef.current.clear();
+      stopToning();
     };
-  }, []);
+  }, [stopToning]);
 
   const stopPlayback = () => {
     isStoppedRef.current = true;
@@ -82,6 +98,7 @@ const GuidedAudioButton = ({
       audioRef.current.currentTime = 0;
       audioRef.current = null;
     }
+    stopToning();
     setPlaying(false);
     setLoading(false);
   };
@@ -140,6 +157,7 @@ const GuidedAudioButton = ({
         sourceTexts: mergedSources,
         steps: mergedSteps,
       }),
+      include_toning: true,
       source_texts: mergedSources,
       steps: mergedSteps,
     };
@@ -170,6 +188,7 @@ const GuidedAudioButton = ({
 
     const playIndex = async (index) => {
       if (isStoppedRef.current || controller.signal.aborted || index >= segments.length) {
+        stopToning();
         setPlaying(false);
         setLoading(false);
         return;
@@ -203,6 +222,7 @@ const GuidedAudioButton = ({
         return false;
       });
       if (!started) {
+        stopToning();
         setPlaying(false);
         setLoading(false);
         return;
@@ -226,6 +246,19 @@ const GuidedAudioButton = ({
     const controller = new AbortController();
     abortRef.current = controller;
     setLoading(true);
+
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) {
+        const ctx = new AC();
+        if (ctx.state === "suspended") await ctx.resume();
+        audioContextRef.current = ctx;
+        toningLayerRef.current = startToningLayer(ctx, String(element || "spirit").toLowerCase());
+        toningLayerRef.current?.setMuted?.(false, 1);
+      }
+    } catch (_) {
+      stopToning();
+    }
 
     try {
       const expandedSegments = await buildExpandedSegments(controller);

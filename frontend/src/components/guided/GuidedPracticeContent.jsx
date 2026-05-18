@@ -25,6 +25,8 @@ export const GuidedPracticeContent = ({
   formatTime,
   minimumNarrationMinutes,
   ambientLabel,
+  toningLabel,
+  toningActive,
   antiRepetitionMode,
   onAntiRepetitionModeChange,
 }) => {
@@ -139,6 +141,11 @@ export const GuidedPracticeContent = ({
               {ttsPlaying && !ttsLoading && (
                 <div className={`text-center text-xs ${elColor} mb-4`}>
                   Guided narration playing • section {Math.min(currentSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
+                </div>
+              )}
+              {toningActive && !ttsLoading && (
+                <div className={`text-center text-xs ${elColor} mb-4`} data-testid="guided-toning-active-status">
+                  {toningLabel}
                 </div>
               )}
 

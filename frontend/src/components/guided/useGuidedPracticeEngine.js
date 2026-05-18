@@ -9,6 +9,7 @@ import {
   SCRIPT_EXPANSION_TIMEOUT_MS,
   wait,
   startAmbient,
+  startToningLayer,
   flattenTextValue,
   buildNarrationPlan,
 } from "./guidedNarrationUtils";
@@ -40,6 +41,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const ttsRef = useRef(null);
   const audioCtxRef = useRef(null);
   const ambientRef = useRef(null);
+  const toningRef = useRef(null);
   const sessionEndRef = useRef(null);
   const autoStartRef = useRef(false);
   const isPlayingRef = useRef(false);
@@ -147,6 +149,15 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     ambientRef.current = null;
   }, []);
 
+  const stopToning = useCallback(() => {
+    try {
+      toningRef.current?.stop?.();
+    } catch (error) {
+      console.error("Guided overlay toning stop failed:", error);
+    }
+    toningRef.current = null;
+  }, []);
+
   const clearNarrationCache = useCallback(() => {
     ttsPendingRef.current.clear();
     ttsCacheRef.current.forEach((url) => {
@@ -168,8 +179,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       setIsComplete(true);
       ttsRef.current?.pause();
       stopAmbient();
+      stopToning();
     }
-  }, [stopAmbient]);
+  }, [stopAmbient, stopToning]);
 
   useEffect(() => {
     clearInterval(timerRef.current);
@@ -182,6 +194,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     scriptAbortRef.current?.abort?.();
     scriptAbortRef.current = null;
     stopAmbient();
+    stopToning();
     setIsPlaying(false);
     setTimeRemaining(totalDuration);
     setIsComplete(false);
@@ -193,7 +206,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     setNarrationSegments(narrationPlan.segments);
     setNarrationReady(true);
     setScriptLoading(Boolean(practice?.id || practice?.name));
-  }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient, narrationPlan]);
+  }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient, stopToning, narrationPlan]);
 
   useEffect(() => {
     if (!scriptExpansionContext) {
@@ -226,6 +239,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
             element: scriptExpansionContext.element,
             duration_minutes: scriptExpansionContext.durationMinutes,
             use_ai: false,
+            include_toning: true,
             anti_repetition_mode: antiRepetitionMode,
             steps: scriptExpansionContext.steps,
             source_texts: scriptExpansionContext.sourceTexts,
@@ -285,6 +299,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     if (ambientRef.current) {
       ambientRef.current.gain.gain.value = muted ? 0 : (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
     }
+    toningRef.current?.setMuted?.(muted, 1);
     if (ttsRef.current) ttsRef.current.muted = muted;
   }, [muted, element]);
 
@@ -293,9 +308,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     ttsRef.current?.pause();
     scriptAbortRef.current?.abort?.();
     stopAmbient();
+    stopToning();
     clearNarrationCache();
     if (audioCtxRef.current?.state !== "closed") audioCtxRef.current?.close();
-  }, [clearNarrationCache, stopAmbient]);
+  }, [clearNarrationCache, stopAmbient, stopToning]);
 
   const generateSegmentUrl = useCallback(async (segmentIndex) => {
     if (!narrationSegments[segmentIndex]) return null;
@@ -388,6 +404,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
         audioCtxRef.current = ctx;
         ambientRef.current = startAmbient(ctx, element);
+        toningRef.current = startToningLayer(ctx, element);
       } catch (_) {
         return;
       }
@@ -396,6 +413,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     if (ambientRef.current) {
       ambientRef.current.gain.gain.value = muted ? 0 : (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
     }
+    if (!toningRef.current && audioCtxRef.current) {
+      toningRef.current = startToningLayer(audioCtxRef.current, element);
+    }
+    toningRef.current?.setMuted?.(muted, 1);
   }, [element, muted]);
 
   const handlePlay = useCallback(() => {
@@ -407,6 +428,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       setIsPlaying(false);
       ttsRef.current?.pause();
       if (ambientRef.current) ambientRef.current.gain.gain.value = 0;
+      toningRef.current?.setMuted?.(true, 1);
       return;
     }
 
@@ -421,7 +443,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     }
 
     playNarrationSegment(currentSegmentIndexRef.current);
-  }, [isComplete, isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock, timeRemaining]);
+  }, [isComplete, isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock, timeRemaining, element]);
 
   useEffect(() => {
     if (practice && narrationReady && !autoStartRef.current && !isComplete) {
@@ -452,6 +474,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     handlePlay,
     isPlaying,
     ambientLabel: (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label,
+    toningLabel: "Toning layer active",
+    toningActive: Boolean(toningRef.current) && !muted && isPlaying,
     antiRepetitionMode,
     handleAntiRepetitionModeChange,
   };

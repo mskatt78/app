@@ -32,6 +32,8 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       formatTime={formatTime}
       minimumNarrationMinutes={MINIMUM_NARRATION_MINUTES}
       ambientLabel={engine.ambientLabel}
+      toningLabel={engine.toningLabel}
+      toningActive={engine.toningActive}
       antiRepetitionMode={engine.antiRepetitionMode}
       onAntiRepetitionModeChange={engine.handleAntiRepetitionModeChange}
     />

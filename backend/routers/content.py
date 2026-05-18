@@ -261,6 +261,7 @@ class ExpandScriptRequest(BaseModel):
     source_texts: list[str] = Field(default_factory=list)
     use_ai: bool = False
     anti_repetition_mode: Literal["strict", "balanced"] = "strict"
+    include_toning: bool = True
 
 
 class ExpandScriptResponse(BaseModel):
@@ -636,6 +637,47 @@ def _build_fallback_intro(practice_name: str, element: str) -> list[str]:
     ]
 
 
+TONING_SEED_BY_ELEMENT = {
+    "earth": "LAM",
+    "water": "VAM",
+    "fire": "RAM",
+    "air": "YAM",
+    "spirit": "OM",
+}
+
+TONING_PARAGRAPH_TEMPLATES = [
+    "If it feels supportive, add a soft vocal tone under the breath for two or three exhalations—gentle sounds like ahh, ooh, or mmm. Keep it quiet enough to feel soothing in the chest and throat.",
+    "On the next few exhales, hum very softly and feel the vibration traveling through the sternum, jaw, and face. You are not performing; you are simply resonating with your own nervous system.",
+    "You can weave in a light seed syllable when ready: {seed}. Let the sound be subtle, warm, and unforced, then return to natural breathing for a few cycles.",
+    "Try one rounded tone for the length of your exhale, then rest in silence. Alternate tone and silence so your body can absorb the effect gently.",
+    "If emotion rises, keep the sound tender and low. A soft hum can hold you while release moves through, without needing to push or explain anything.",
+]
+
+
+def _inject_toning_paragraphs(paragraphs: list[str], element: str) -> list[str]:
+    if not paragraphs:
+        return paragraphs
+
+    seed = TONING_SEED_BY_ELEMENT.get(str(element or "spirit").lower(), TONING_SEED_BY_ELEMENT["spirit"])
+    interval = max(3, min(8, len(paragraphs) // 3 if len(paragraphs) > 3 else 3))
+
+    injected: list[str] = []
+    cue_index = 0
+    for index, paragraph in enumerate(paragraphs):
+        injected.append(paragraph)
+        if (index + 1) % interval != 0:
+            continue
+
+        cue_template = TONING_PARAGRAPH_TEMPLATES[cue_index % len(TONING_PARAGRAPH_TEMPLATES)]
+        cue_index += 1
+        injected.append(cue_template.format(seed=seed))
+
+    if cue_index == 0:
+        injected.append(TONING_PARAGRAPH_TEMPLATES[0].format(seed=seed))
+
+    return injected
+
+
 def _build_step_paragraphs(unique_steps: list[str], context_sentences: list[str]) -> list[str]:
     step_frames = [
         "Whenever you're ready, begin with",
@@ -834,6 +876,8 @@ def _build_fallback_paragraphs(request: ExpandScriptRequest, target_words: int) 
     adaptive_body = _build_adaptive_body_paragraphs(context_sentences, target_words, seed_words)
     paragraphs.extend(adaptive_body)
     paragraphs.extend(_build_fallback_closing())
+    if request.include_toning:
+        paragraphs = _inject_toning_paragraphs(paragraphs, element)
     return _dedupe_paragraphs(paragraphs)
 
 
@@ -1191,6 +1235,11 @@ async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> O
         context_lines = [line for line in _flatten_text(request.source_texts + request.steps) if line]
         trimmed_context = "\n".join(context_lines[:60])
         target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
+        toning_requirement = (
+            "13) Include occasional non-repetitive soft vocal toning cues (e.g., gentle hum, ahh, ooh, seed syllables like OM/LAM/VAM) woven naturally into the guidance."
+            if request.include_toning
+            else "13) Do not include vocal toning or chant cues."
+        )
         return f"""
 Create a deeply detailed guided meditation narration script.
 
@@ -1215,6 +1264,7 @@ Requirements:
 10) Keep lexical variety high: sentence openings should feel naturally varied and human.
 11) Tone should sound like an intuitive human guide speaking with compassion, not a mechanical script.
 12) Use occasional natural phrasing (e.g., "if it helps", "whenever you're ready") without overusing any single phrase.
+{toning_requirement}
 """.strip()
 
     async def _call_llm_api(prompt: str) -> str | None:
@@ -1266,6 +1316,9 @@ async def expand_guided_script(request: ExpandScriptRequest):
             used_ai = True
 
     selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+    if request.include_toning:
+        selected_paragraphs = _inject_toning_paragraphs(selected_paragraphs, request.element or "spirit")
+        selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
     selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences, stem_words=8)
 
     current_word_count = _count_words(" ".join(selected_paragraphs))

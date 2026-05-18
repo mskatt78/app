@@ -29,6 +29,26 @@ export const FIRST_SEGMENT_TARGET_WORDS = 95;
 export const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
 export const DEFAULT_GUIDED_TTS_SPEED = 0.82;
 
+const TONING_ROOT_FREQ = {
+  fire: 160,
+  water: 144,
+  earth: 128,
+  air: 192,
+  spirit: 216,
+};
+
+export const resolveToningGain = (element = "spirit") => {
+  const normalized = String(element || "spirit").toLowerCase();
+  const gainMap = {
+    fire: 0.022,
+    water: 0.026,
+    earth: 0.024,
+    air: 0.02,
+    spirit: 0.024,
+  };
+  return gainMap[normalized] ?? gainMap.spirit;
+};
+
 export const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const formatTime = (secs) => {
@@ -73,6 +93,71 @@ export const startAmbient = (ctx, element) => {
   source.start();
 
   return { src: source, gain };
+};
+
+export const startToningLayer = (ctx, element = "spirit", destination = null) => {
+  const normalized = String(element || "spirit").toLowerCase();
+  const root = TONING_ROOT_FREQ[normalized] || TONING_ROOT_FREQ.spirit;
+
+  const output = destination || ctx.destination;
+  const master = ctx.createGain();
+  const targetGain = resolveToningGain(normalized);
+  master.gain.value = targetGain;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.value = 1100;
+  filter.Q.value = 0.7;
+
+  master.connect(filter);
+  filter.connect(output);
+
+  const buildVoice = (frequency, type, level) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = frequency;
+    gain.gain.value = level;
+    osc.connect(gain);
+    gain.connect(master);
+    osc.start();
+    return { osc, gain };
+  };
+
+  const voices = [
+    buildVoice(root, "sine", 0.9),
+    buildVoice(root * 1.5, "triangle", 0.22),
+    buildVoice(root * 2, "sine", 0.1),
+  ];
+
+  const lfo = ctx.createOscillator();
+  const lfoGain = ctx.createGain();
+  lfo.type = "sine";
+  lfo.frequency.value = 0.11;
+  lfoGain.gain.value = targetGain * 0.45;
+  lfo.connect(lfoGain);
+  lfoGain.connect(master.gain);
+  lfo.start();
+
+  const setMuted = (muted, mix = 1) => {
+    const nextGain = muted ? 0 : targetGain * Math.max(0.35, Math.min(1, Number(mix) || 1));
+    master.gain.setTargetAtTime(nextGain, ctx.currentTime, 0.08);
+  };
+
+  const stop = () => {
+    voices.forEach(({ osc, gain }) => {
+      try { osc.stop(); } catch (_) {}
+      try { osc.disconnect(); } catch (_) {}
+      try { gain.disconnect(); } catch (_) {}
+    });
+    try { lfo.stop(); } catch (_) {}
+    try { lfo.disconnect(); } catch (_) {}
+    try { lfoGain.disconnect(); } catch (_) {}
+    try { master.disconnect(); } catch (_) {}
+    try { filter.disconnect(); } catch (_) {}
+  };
+
+  return { setMuted, stop };
 };
 
 export const flattenTextValue = (value) => {

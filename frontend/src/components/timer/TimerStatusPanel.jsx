@@ -20,6 +20,7 @@ export const TimerStatusPanel = ({
   narrationSegmentIndex,
   narrationSegments,
   selectedBackgroundAudio,
+  toningActive,
 }) => {
   return (
     <>
@@ -66,6 +67,11 @@ export const TimerStatusPanel = ({
           {autoNarrate && !narrationPreparing && narrationSegments.length > 0 && !ttsLoading && (
             <p className="text-xs text-violet-400/80 mt-2 flex items-center gap-1">
               <Volume2 className="w-3 h-3" /> Narrating section {Math.min(narrationSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
+            </p>
+          )}
+          {autoNarrate && toningActive && !isMuted && (
+            <p className="text-xs text-violet-300/80 mt-2 flex items-center gap-1" data-testid="timer-toning-active-status">
+              <Volume2 className="w-3 h-3" /> Toning drone active
             </p>
           )}
           {!isMuted && selectedBackgroundAudio !== "silence" && !audioPlaying && (

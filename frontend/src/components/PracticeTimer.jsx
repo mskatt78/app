@@ -66,6 +66,7 @@ const PracticeTimer = ({
   const sourcesRef = useRef([]);
   const drumIntervalRef = useRef(null);
   const bowlIntervalRef = useRef(null);
+  const toningLayerRef = useRef(null);
   const ttsAudioRef = useRef(null);
   const ttsAbortRef = useRef(null);
   const ttsCacheRef = useRef(new Map());
@@ -172,6 +173,12 @@ const PracticeTimer = ({
       try { source.disconnect?.(); } catch (error) { console.error("PracticeTimer source disconnect failed:", error); }
     });
     sourcesRef.current = [];
+    try {
+      toningLayerRef.current?.stop?.();
+    } catch (error) {
+      console.error("PracticeTimer toning stop failed:", error);
+    }
+    toningLayerRef.current = null;
     if (audioContextRef.current && audioContextRef.current.state !== "closed") {
       audioContextRef.current.close();
     }
@@ -311,12 +318,15 @@ const PracticeTimer = ({
       audioVolume,
       audioContextRef,
       gainNodeRef,
+      toningLayerRef,
+      element: String(element || "spirit").toLowerCase(),
+      enableToning: Boolean(autoNarrate),
       sourcesRef,
       drumIntervalRef,
       bowlIntervalRef,
       setAudioPlaying,
     });
-  }, [audioVolume, isMuted, selectedBackgroundAudio]);
+  }, [audioVolume, autoNarrate, element, isMuted, selectedBackgroundAudio]);
 
   const playTransitionBell = useCallback(() => {
     playTimerTransitionBell();
@@ -377,18 +387,19 @@ const PracticeTimer = ({
   }, [autoStartAudio, calculatedTotal, currentSegmentIndex, isRunning, totalElapsed]);
 
   useEffect(() => {
-    if (isRunning && !isMuted && selectedBackgroundAudio !== "silence") {
+    if (isRunning && !isMuted && (selectedBackgroundAudio !== "silence" || autoNarrate)) {
       if (!audioPlaying) startAudio();
     } else {
       cleanupAudio();
     }
-  }, [audioPlaying, cleanupAudio, isMuted, isRunning, selectedBackgroundAudio, startAudio]);
+  }, [audioPlaying, autoNarrate, cleanupAudio, isMuted, isRunning, selectedBackgroundAudio, startAudio]);
 
   useEffect(() => {
     if (gainNodeRef.current) {
       gainNodeRef.current.gain.value = isMuted ? 0 : audioVolume * 0.5;
     }
-  }, [audioVolume, isMuted]);
+    toningLayerRef.current?.setMuted?.(isMuted || !isRunning, audioVolume);
+  }, [audioVolume, isMuted, isRunning]);
 
   useEffect(() => {
     if (!autoNarrate) {
@@ -438,6 +449,7 @@ const PracticeTimer = ({
         element,
         duration_minutes: Math.max(MIN_NARRATION_MINUTES, Math.ceil(calculatedTotal / 60)),
         use_ai: false,
+        include_toning: true,
         anti_repetition_mode: getEffectiveGuidedNarrationMode({
           practiceName: normalizedSegments[0]?.name,
           practiceType,
@@ -596,6 +608,7 @@ const PracticeTimer = ({
         narrationSegmentIndex={narrationSegmentIndex}
         narrationSegments={narrationSegments}
         selectedBackgroundAudio={selectedBackgroundAudio}
+        toningActive={Boolean(autoNarrate && isRunning && !isMuted)}
       />
 
       <TimerControlsPanel
