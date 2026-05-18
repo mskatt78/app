@@ -30,5 +30,11 @@ jobs:
 
       - name: Run mypy on typed routers
         run: |
-          mypy --config-file backend/mypy.ini \
-            backend/routers/user.py
+          mypy --config-file backend/mypy.ini backend/routers/user.py
+          mypy --config-file backend/mypy.ini backend/routers/admin.py \
+            --disable-error-code=import-untyped \
+            --disable-error-code=assignment \
+            --disable-error-code=attr-defined
+          mypy --config-file backend/mypy.ini backend/routers/birth_chart.py \
+            --disable-error-code=import-untyped \
+            --disable-error-code=arg-type

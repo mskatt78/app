@@ -1,0 +1,91 @@
+{
+  "summary": "Iteration 125 - Narration Micro-Hook Split & Manifest Screenshots Testing. Verified: (1) PracticeTimer narration works correctly after micro-hook split into useNarrationCache/useNarrationRequest/useNarrationPlayer - play/pause/reset/sound-toggle all functional, (2) Narration script expansion via /api/content/expand-script working, (3) TTS generation via /api/tts/generate-base64 working, (4) Manifest now references real device-class screenshot files (screenshot-phone.jpeg 390x844, screenshot-tablet.jpeg 834x1112) and both are accessible, (5) Mypy passes for all three routers: user.py, admin.py, birth_chart.py with configured command-level disable flags.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_125.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "VERIFIED: useNarrationPlayback.js correctly orchestrates useNarrationCache, useNarrationRequest, useNarrationPlayer hooks",
+    "VERIFIED: useNarrationCache.js handles TTS audio caching with blob URLs and proper cleanup",
+    "VERIFIED: useNarrationRequest.js fetches expanded narration script via /api/content/expand-script with anti_repetition_mode support",
+    "VERIFIED: useNarrationPlayer.js manages TTS playback with tempo control, retry logic, and segment progression",
+    "VERIFIED: usePracticeTimerEngine.js correctly imports and uses useNarrationPlayback hook",
+    "VERIFIED: manifest.json screenshots updated to screenshot-phone.jpeg (390x844) and screenshot-tablet.jpeg (834x1112)",
+    "VERIFIED: Both screenshot files exist and are accessible via HTTP (200 OK, image/jpeg)",
+    "VERIFIED: mypy passes for backend/routers/user.py with mypy.ini configuration",
+    "VERIFIED: mypy passes for backend/routers/admin.py with --disable-error-code=import-untyped,assignment,attr-defined",
+    "VERIFIED: mypy passes for backend/routers/birth_chart.py with --disable-error-code=import-untyped,arg-type",
+    "VERIFIED: GitHub workflow backend-mypy.yml correctly configured for all three routers"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (all tested endpoints working)",
+    "frontend": "100% (all tested flows working)"
+  },
+  "test_credentials": "QA user: demoqa_740fefc1@example.com / DemoPass123!",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 125 verified narration micro-hook split: useNarrationPlayback now orchestrates 3 sub-hooks (useNarrationCache, useNarrationRequest, useNarrationPlayer). Timer controls (play/pause/reset/sound-toggle) all working. Narration script expansion and TTS generation working. Manifest screenshots updated to real device captures. Mypy passes for user.py, admin.py, birth_chart.py with staged error-budget cleanup.",
+  "features_tested": {
+    "narration_micro_hook_split": {
+      "status": "VERIFIED",
+      "details": [
+        "useNarrationPlayback.js imports and orchestrates useNarrationCache, useNarrationRequest, useNarrationPlayer",
+        "useNarrationCache.js: cacheRef, pendingRef for TTS audio caching, clearNarrationCache, fetchNarrationAudioUrl",
+        "useNarrationRequest.js: fetches /api/content/expand-script, handles anti_repetition_mode (strict/balanced)",
+        "useNarrationPlayer.js: ttsAudioRef, playNarrationSegment, pauseNarration, tempo control via tempoPlaybackRates",
+        "Play button starts timer and narration preparation",
+        "Pause button stops timer and narration",
+        "Reset button resets timer and narration state",
+        "Sound toggle mutes/unmutes audio"
+      ]
+    },
+    "manifest_screenshots": {
+      "status": "VERIFIED",
+      "details": [
+        "manifest.json updated with screenshot-phone.jpeg (390x844, form_factor: narrow)",
+        "manifest.json updated with screenshot-tablet.jpeg (834x1112)",
+        "screenshot-phone.jpeg accessible: HTTP 200, content-type: image/jpeg, size: 20280 bytes",
+        "screenshot-tablet.jpeg accessible: HTTP 200, content-type: image/jpeg, size: 43895 bytes"
+      ]
+    },
+    "mypy_staged_coverage": {
+      "status": "VERIFIED",
+      "details": [
+        "mypy --config-file backend/mypy.ini backend/routers/user.py: Success, no issues",
+        "mypy --config-file backend/mypy.ini backend/routers/admin.py --disable-error-code=import-untyped,assignment,attr-defined: Success, no issues",
+        "mypy --config-file backend/mypy.ini backend/routers/birth_chart.py --disable-error-code=import-untyped,arg-type: Success, no issues",
+        "GitHub workflow backend-mypy.yml correctly configured with staged error-budget cleanup"
+      ]
+    },
+    "core_guided_endpoints": {
+      "status": "VERIFIED",
+      "details": [
+        "/api/content/expand-script: Returns expanded narration segments with paragraphs",
+        "/api/tts/generate-base64: Returns audio_base64 for TTS playback",
+        "/api/health: Returns healthy status"
+      ]
+    },
+    "practice_timer_ui": {
+      "status": "VERIFIED",
+      "details": [
+        "Breathwork timer: Play/pause/reset/sound-toggle working",
+        "Meditation timer: Narration script displayed in VISUALIZATION GUIDE section",
+        "Narration preparing indicator: 'Preparing your guide...' shown during script expansion",
+        "Anti-repetition mode selector: 'Strict anti-repeat' and 'Balanced flow' options visible",
+        "Timer countdown: Shows remaining time (e.g., 14:58 REMAINING)",
+        "Soundscape selector: 'Forest & Birds' dropdown working"
+      ]
+    }
+  }
+}

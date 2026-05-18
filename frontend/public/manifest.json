@@ -96,16 +96,17 @@
   "prefer_related_applications": false,
   "screenshots": [
     {
-      "src": "screenshot-1.png",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "label": "Home Screen"
+      "src": "screenshot-phone.jpeg",
+      "sizes": "390x844",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Phone home screen"
     },
     {
-      "src": "screenshot-2.png",
-      "sizes": "1024x1024",
-      "type": "image/png",
-      "label": "Star Lineage Quiz"
+      "src": "screenshot-tablet.jpeg",
+      "sizes": "834x1112",
+      "type": "image/jpeg",
+      "label": "Tablet home screen"
     }
   ],
   "shortcuts": [
