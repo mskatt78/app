@@ -1895,3 +1895,193 @@ test_plan:
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+  - task: "Admin collections auth behavior after type-hint updates"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/admin.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/admin/collections tested without authentication. Returns proper auth error (status 401) as expected. No 500 error after type-hint updates. Auth behavior unchanged. Admin collections auth PASSED."
+
+  - task: "Admin seed-status auth behavior after type-hint updates"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/admin.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/admin/seed-status tested without authentication. Returns proper auth error (status 401) as expected. No 500 error after type-hint updates. Auth behavior unchanged. Admin seed-status auth PASSED."
+
+  - task: "Birth chart zodiac signs endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/birth_chart.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/birth-chart/zodiac-signs returns 200 with 12 zodiac signs. Each sign includes element, quality, ruler, symbol fields. Sample (Aries): element=Fire, quality=Cardinal, ruler=Mars. Expected data structure verified. Birth chart zodiac signs PASSED."
+
+  - task: "Birth chart planet meanings endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/birth_chart.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/birth-chart/planet-meanings returns 200 with 15 planets. Each planet includes meaning, symbol, keywords fields. Sample (Sun): meaning='Your core identity, ego, and life purpose', symbol='☉'. Expected data structure verified. Birth chart planet meanings PASSED."
+
+  - task: "Birth chart house meanings endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/birth_chart.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/birth-chart/house-meanings returns 200 with 12 houses. Each house includes name, theme, description, keywords fields. Sample (House 1): name='First House', theme='Self & Identity'. Expected data structure verified. Birth chart house meanings PASSED."
+
+  - task: "Birth chart aspect meanings endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/birth_chart.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ GET /api/birth-chart/aspect-meanings returns 200 with 7 aspects. Each aspect includes degrees, orb, nature, symbol, meaning fields. Sample (Conjunction): degrees=0, orb=8, meaning='Fusion of energies, intensity'. Expected data structure verified. Birth chart aspect meanings PASSED."
+
+  - task: "Birth chart calculate endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/birth_chart.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ POST /api/birth-chart/calculate with valid payload (birth_date, birth_time, birth_city, birth_country) returns 200. Response includes sun_sign (Taurus), moon_sign (Aquarius), rising_sign (Virgo), planets (12 items), houses (12 items), aspects (27 items), birth_data. All expected fields present with correct data types. Birth chart calculate PASSED."
+
+  - task: "Content expand-script endpoint regression"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ POST /api/content/expand-script with valid payload (practice_name, element, duration_minutes, use_ai=false, include_toning=true, steps, source_texts) returns 200. Response includes practice_name, target_minutes (7), target_word_count, word_count (910), paragraphs (26 items), segments (6 items). All expected fields present with correct data types. Content expand-script PASSED."
+
+  - task: "TTS generate-base64 endpoint regression"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/tts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ POST /api/tts/generate-base64 with valid payload (text, voice='nova', speed=0.85) returns 200. Response includes audio_base64 (125,440 chars), format='mp3'. Audio data is substantial and properly formatted. TTS generate-base64 PASSED."
+
+  - task: "Backend regression sweep - no 500 errors"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ All tested endpoints confirmed to return appropriate status codes (200, 401) with no 500 server errors. Admin routes return 401 (not 500) after type-hint updates. Birth chart endpoints return 200 with expected data structures. Core guided endpoints return 200 for valid payloads. No 500 regressions detected. Backend regression sweep PASSED."
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Backend Regression Sweep completed successfully (2026-05-17):
+      
+      VERIFICATION REQUEST: Run backend regression sweep after current batch:
+      1) /api/admin/collections and /api/admin/seed-status auth behavior unchanged (no 500 after type-hint updates)
+      2) Birth chart endpoints: /api/birth-chart/zodiac-signs, /api/birth-chart/planet-meanings, /api/birth-chart/house-meanings, /api/birth-chart/aspect-meanings, /api/birth-chart/calculate all return expected status/data types
+      3) Core guided endpoints: /api/content/expand-script and /api/tts/generate-base64 still return 200 for valid payloads
+      
+      ✅ ALL TESTS PASSED (9/9):
+      
+      1. ✅ ADMIN COLLECTIONS AUTH - PASSED
+         - GET /api/admin/collections without auth returns 401 (not 500)
+         - Proper auth error handling after type-hint updates
+         - Response: {"detail": "Admin session required"}
+      
+      2. ✅ ADMIN SEED-STATUS AUTH - PASSED
+         - GET /api/admin/seed-status without auth returns 401 (not 500)
+         - Proper auth error handling after type-hint updates
+         - Response: {"detail": "Admin session required"}
+      
+      3. ✅ BIRTH CHART ZODIAC SIGNS - PASSED
+         - GET /api/birth-chart/zodiac-signs returns 200
+         - 12 zodiac signs with element, quality, ruler, symbol
+         - Sample (Aries): element=Fire, quality=Cardinal, ruler=Mars
+      
+      4. ✅ BIRTH CHART PLANET MEANINGS - PASSED
+         - GET /api/birth-chart/planet-meanings returns 200
+         - 15 planets with meaning, symbol, keywords
+         - Sample (Sun): meaning="Your core identity, ego, and life purpose", symbol="☉"
+      
+      5. ✅ BIRTH CHART HOUSE MEANINGS - PASSED
+         - GET /api/birth-chart/house-meanings returns 200
+         - 12 houses with name, theme, description, keywords
+         - Sample (House 1): name="First House", theme="Self & Identity"
+      
+      6. ✅ BIRTH CHART ASPECT MEANINGS - PASSED
+         - GET /api/birth-chart/aspect-meanings returns 200
+         - 7 aspects with degrees, orb, nature, symbol, meaning
+         - Sample (Conjunction): degrees=0, orb=8, meaning="Fusion of energies, intensity"
+      
+      7. ✅ BIRTH CHART CALCULATE - PASSED
+         - POST /api/birth-chart/calculate with valid payload returns 200
+         - Response includes: sun_sign (Taurus), moon_sign (Aquarius), rising_sign (Virgo)
+         - Planets: 12 items, Houses: 12 items, Aspects: 27 items
+         - All expected fields present with correct data types
+      
+      8. ✅ CONTENT EXPAND-SCRIPT - PASSED
+         - POST /api/content/expand-script with valid payload returns 200
+         - Response includes: practice_name, target_minutes (7), word_count (910)
+         - Paragraphs: 26 items, Segments: 6 items
+         - All expected fields present with correct data types
+      
+      9. ✅ TTS GENERATE-BASE64 - PASSED
+         - POST /api/tts/generate-base64 with valid payload returns 200
+         - Response includes: audio_base64 (125,440 chars), format="mp3"
+         - Audio data is substantial and properly formatted
+      
+      CRITICAL FINDINGS:
+      ✓ No 500 errors detected in any tested flow
+      ✓ Admin routes return proper 401 errors (not 500) after type-hint updates
+      ✓ All birth chart endpoints return 200 with expected data structures
+      ✓ Core guided endpoints return 200 for valid payloads
+      ✓ Type-hint updates did not introduce regressions
+      
+      SUMMARY:
+      All backend regression tests passed successfully. Admin auth behavior unchanged after type-hint updates (returns 401, not 500). Birth chart endpoints working correctly with expected data structures for zodiac signs, planet meanings, house meanings, aspect meanings, and full chart calculation. Core guided endpoints (expand-script, TTS generate-base64) working correctly with valid payloads. Backend is production-ready with no regressions detected.
+
