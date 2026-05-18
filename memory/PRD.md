@@ -12,6 +12,22 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **P1/P2 Follow-up Batch Complete (Iteration 124, May 2026):**
+  - **Timer architecture split completed:** `usePracticeTimerEngine` now orchestrates three focused hooks:
+    - `useTimerClock` (clock/segment progression + play/pause/reset/skip lifecycle)
+    - `useNarrationPlayback` (TTS narration prep/cache/playback)
+    - `useAmbientAudio` (soundscape + toning audio context lifecycle)
+  - **App-store content audit completed:**
+    - Policy consistency pass: Privacy + Terms updated to **May 2026**, standardized structure, and full `data-testid` coverage for critical sections.
+    - Manifest asset consistency pass: screenshot metadata aligned to actual asset dimensions.
+  - **Backend typing + CI typing gate progress:**
+    - Extended return/type annotations in `routers/user.py`.
+    - Added `backend/mypy.ini` and GitHub Actions workflow `.github/workflows/backend-mypy.yml`.
+    - CI now runs `mypy` against typed user router module.
+  - **Validation:**
+    - `/app/test_reports/iteration_124.json` verified timer hook split, policy pages, manifest, and mypy command.
+    - Final frontend/backend specialist checks also passed with no critical regressions.
+
 - **ALL-NOW Batch Complete (Iteration 123/124, May 2026):**
   - **Component modularization delivered:**
     - `PracticeTimer.jsx` reduced to a focused render shell and moved core timer/audio/narration logic into `timer/usePracticeTimerEngine.js`.
