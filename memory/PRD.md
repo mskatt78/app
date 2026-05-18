@@ -12,6 +12,19 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Authentic Voice Toning Across All Guided Practices (Iteration 122, May 2026):**
+  - Implemented combined toning approach across the app (user-approved **C + All practices**):
+    - **Script-level toning cues**: `/api/content/expand-script` now supports `include_toning` (default `true`) and injects soft vocal-toning guidance (ahh/ooh/mmm/hum + element seed syllables LAM/VAM/RAM/YAM/OM).
+    - **Audio-layer toning drone**: added WebAudio toning layer (`startToningLayer`) so guided sessions include subtle resonant underlay beneath narration.
+  - Frontend integration coverage:
+    - `GuidedPracticeOverlay` / `useGuidedPracticeEngine` now sends `include_toning: true` and runs tonal drone during playback.
+    - `PracticeTimer` + `timerAudioEngine` now support toning even when natural background sound is set to silence (for guided narration flows).
+    - `GuidedAudioButton` now starts/stops a synchronized toning layer during sequential TTS playback.
+  - UX status visibility:
+    - Added `data-testid="guided-toning-active-status"` and `data-testid="timer-toning-active-status"` for clear runtime verification.
+  - Validation:
+    - `/app/test_reports/iteration_122.json` => backend **100% (20/20)** and frontend **100%**, with no regressions in timers, narration, or TTS.
+
 - **Code Quality & Stability Hardening (Iteration 122, May 2026):**
   - Frontend quality fixes:
     - Eliminated remaining index-key anti-patterns in flagged files: `AdminSection.jsx`, `MeditationVisualizer.jsx`, `AdminFormFields.jsx`, `LiveSessions.jsx`, `GroundingPractices.jsx`, `FreeFormMovement.jsx`, `AncientWisdom.jsx`.

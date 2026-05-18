@@ -763,6 +763,67 @@ frontend:
         agent: "testing"
         comment: "✓ Sanity check completed for previously tested pages. /courses: 3 course cards loaded, integrity labels present. /meditations: 6 meditation cards loaded, integrity labels present. /breathwork: 6 breathwork session cards loaded, integrity labels present ('Curated content' found 6 times). All pages load correctly and display integrity labels. No regressions detected."
 
+  - task: "Install prompt interactions functional"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/InstallPrompt.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Install prompt infrastructure verified. Install prompt elements detected on landing page. Service Worker registration working correctly. PWA install functionality available from landing/top nav path. Test PASSED."
+
+  - task: "Guided toning status element in GuidedPracticeOverlay"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/guided/GuidedPracticeContent.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ PASS: guided-toning-active-status element (data-testid='guided-toning-active-status') is VISIBLE during unmuted playback. Displays 'Toning layer active' text. Element appears when toningActive && !ttsLoading (lines 146-150). Timer starts and counts down correctly (14:57 → 14:52). Play/pause functionality verified. Narration starts successfully ('Guided narration playing • section 1 of 11'). Implementation working as expected."
+
+  - task: "Mute toggle affects toning status visibility in GuidedPracticeOverlay"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/guided/GuidedPracticeContent.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ PASS: Mute toggle (data-testid='guided-mute-btn') correctly controls toning status visibility. When muted: guided-toning-active-status DISAPPEARS. When unmuted: guided-toning-active-status REAPPEARS. Mute button functionality verified with proper state management. Implementation working correctly."
+
+  - task: "Timer toning status element in PracticeTimer"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/timer/TimerStatusPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ PASS: timer-toning-active-status element (data-testid='timer-toning-active-status') is VISIBLE during active narrated playback in elemental practices. Displays '🔊 Toning drone active' text. Element appears when autoNarrate && toningActive && !isMuted (lines 72-76 in TimerStatusPanel.jsx). Tested on /elemental-practices page with Ocean Breath Journey practice. Timer visible (24:55 remaining), narration active, toning status correctly displayed. Implementation working as expected."
+
+  - task: "Guided toning UI stability and console errors"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/GuidedPracticeOverlay.jsx, /app/frontend/src/components/PracticeTimer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ PASS: No UI breakage detected in guided toning flows. All interactive elements functional (play/pause, mute, exit). Console shows 31 errors (all non-critical 401 auth errors for public routes - expected behavior). No blocking JavaScript errors. Screenshots captured for verification. UI stability confirmed across guided practice and timer-based flows."
+
+
 metadata:
   created_by: "testing_agent"
   version: "1.8"
@@ -772,7 +833,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Final release-lock frontend sanity pass completed - ALL PASSED"
+    - "Guided toning implementation verification - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -1248,6 +1309,60 @@ agent_communication:
       All modal Escape key behaviors verified and working correctly. Both Elemental Practices and Heart Practices modals close when Escape key is pressed. No blocking issues found. Frontend is production-ready with complete keyboard accessibility.
 
 
+
+  - agent: "testing"
+    message: |
+      Guided Toning Implementation Verification completed successfully (2026-05-18):
+      
+      VERIFICATION REQUEST: Test guided toning implementation on preview app
+      Base URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (4/4 core requirements):
+      
+      1. ✅ GUIDED PRACTICE FLOW (GuidedPracticeOverlay) - PASSED
+         - Timer starts automatically: ✓ VERIFIED (14:57 displayed)
+         - Timer counts down correctly: ✓ VERIFIED (14:57 → 14:52 over 5 seconds)
+         - Play/pause functionality: ✓ VERIFIED (pause stops countdown)
+         - Narration starts: ✓ VERIFIED ("Guided narration playing • section 1 of 11")
+         - guided-toning-active-status element: ✓ VISIBLE with text "Toning layer active"
+         - Element appears during unmuted playback: ✓ CONFIRMED
+         - data-testid="guided-toning-active-status": ✓ PRESENT
+      
+      2. ✅ MUTE TOGGLE BEHAVIOR - PASSED
+         - Mute button functionality: ✓ VERIFIED (data-testid="guided-mute-btn")
+         - Toning status disappears when muted: ✓ VERIFIED
+         - Toning status reappears when unmuted: ✓ VERIFIED
+         - Mute toggle correctly controls toning visibility: ✓ CONFIRMED
+      
+      3. ✅ PRACTICETIMER-BASED FLOW (Elemental Practices) - PASSED
+         - Navigated to /elemental-practices: ✓ SUCCESS
+         - Opened practice modal: ✓ SUCCESS (data-testid="practice-modal")
+         - Started practice timer: ✓ SUCCESS (24:55 remaining)
+         - Timer counts down: ✓ VERIFIED
+         - timer-toning-active-status element: ✓ VISIBLE with text "🔊 Toning drone active"
+         - Element appears during active narrated playback: ✓ CONFIRMED
+         - data-testid="timer-toning-active-status": ✓ PRESENT
+      
+      4. ✅ UI STABILITY & CONSOLE ERRORS - PASSED
+         - No UI breakage detected: ✓ CONFIRMED
+         - All interactive elements functional: ✓ VERIFIED
+         - Console errors: 31 found (all non-critical 401 auth errors for public routes)
+         - No blocking JavaScript errors: ✓ CONFIRMED
+         - Screenshots captured for verification: ✓ SAVED
+      
+      ADDITIONAL TESTING NOTES:
+      - Breathwork page uses custom BreathworkControls component (not PracticeTimer)
+      - Shamanic practices page uses different UI pattern
+      - Both guided-toning-active-status and timer-toning-active-status elements are properly implemented
+      - Toning status visibility is correctly controlled by mute state and playback state
+      
+      TECHNICAL VERIFICATION:
+      - GuidedPracticeContent.jsx lines 146-150: guided-toning-active-status implementation confirmed
+      - TimerStatusPanel.jsx lines 72-76: timer-toning-active-status implementation confirmed
+      - Both components correctly pass toningActive prop and render status when conditions met
+      
+      SUMMARY:
+      All guided toning implementation requirements verified successfully. Both toning status elements (guided-toning-active-status and timer-toning-active-status) are present, visible during active narrated playback, and correctly respond to mute toggle. No UI breakage or blocking errors detected. Implementation is production-ready.
 
   - agent: "testing"
     message: |
