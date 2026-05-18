@@ -20,9 +20,9 @@ export default function TermsOfService() {
       </header>
 
       <main className="max-w-4xl mx-auto p-6 space-y-8" data-testid="terms-content">
-        <p className="text-sm text-muted-foreground">Last updated: March 2026</p>
+        <p className="text-sm text-muted-foreground" data-testid="terms-updated">Last updated: May 2026</p>
 
-        <section className="space-y-3">
+        <section className="space-y-3" data-testid="terms-acceptance">
           <h2 className="text-xl font-serif text-primary">1. Acceptance of Terms</h2>
           <p className="text-muted-foreground leading-relaxed">
             By using Shamanic Elements Soul Temple 2.0, you agree to these terms. If you do not agree,
@@ -30,7 +30,7 @@ export default function TermsOfService() {
           </p>
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-3" data-testid="terms-wellness-use">
           <h2 className="text-xl font-serif text-primary">2. Wellness and Educational Use</h2>
           <p className="text-muted-foreground leading-relaxed">
             This app provides spiritual and wellness content for educational purposes only. It is not a
@@ -39,7 +39,7 @@ export default function TermsOfService() {
           </p>
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-3" data-testid="terms-account-responsibilities">
           <h2 className="text-xl font-serif text-primary">3. Account Responsibilities</h2>
           <p className="text-muted-foreground leading-relaxed">
             You are responsible for maintaining the confidentiality of your account credentials and for all
@@ -47,7 +47,7 @@ export default function TermsOfService() {
           </p>
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-3" data-testid="terms-payments">
           <h2 className="text-xl font-serif text-primary">4. Payments and Premium Access</h2>
           <p className="text-muted-foreground leading-relaxed">
             Purchases for premium experiences and courses are processed through third-party payment providers.
@@ -55,7 +55,7 @@ export default function TermsOfService() {
           </p>
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-3" data-testid="terms-user-content">
           <h2 className="text-xl font-serif text-primary">5. User Content and Conduct</h2>
           <p className="text-muted-foreground leading-relaxed">
             You retain ownership of content you submit (journal entries, comments, and reflections), while
@@ -64,7 +64,7 @@ export default function TermsOfService() {
           </p>
         </section>
 
-        <section className="space-y-3">
+        <section className="space-y-3" data-testid="terms-service-availability">
           <h2 className="text-xl font-serif text-primary">6. Service Availability</h2>
           <p className="text-muted-foreground leading-relaxed">
             We may update features, content, and integrations over time. Temporary downtime may occur for
@@ -72,12 +72,33 @@ export default function TermsOfService() {
           </p>
         </section>
 
-        <section className="space-y-3">
-          <h2 className="text-xl font-serif text-primary">7. Contact</h2>
+        <section className="space-y-3" data-testid="terms-data-privacy-reference">
+          <h2 className="text-xl font-serif text-primary">7. Data, Privacy, and Deletion</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            Data handling details are outlined in our Privacy Policy. You can request account export
+            or deletion from in-app Settings. Deletion requests are queued for admin processing.
+          </p>
+        </section>
+
+        <section className="space-y-3" data-testid="terms-updates">
+          <h2 className="text-xl font-serif text-primary">8. Updates to Terms</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            We may update these terms as the app evolves. Material updates will be published on this
+            page with a revised date.
+          </p>
+        </section>
+
+        <section className="space-y-3" data-testid="terms-contact">
+          <h2 className="text-xl font-serif text-primary">9. Contact</h2>
           <p className="text-muted-foreground leading-relaxed">
             Questions about these terms can be sent to <span className="text-primary">skywatersacredembodiments@gmail.com</span>.
           </p>
         </section>
+
+        <div className="mt-8 pt-8 border-t border-white/10 text-center text-muted-foreground" data-testid="terms-footer">
+          <p>Shamanic Elements Soul Temple 2.0</p>
+          <p>© 2026 All Rights Reserved</p>
+        </div>
       </main>
     </div>
   );

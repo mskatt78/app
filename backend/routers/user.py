@@ -1,7 +1,7 @@
 """User routes for dashboard, favorites, practice history, rituals, journal, achievements."""
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Any, Optional, List
 from datetime import datetime, timezone, timedelta
 import uuid
 import secrets
@@ -82,11 +82,11 @@ class UserMantraUpdate(BaseModel):
 # ============ DASHBOARD ============
 
 @router.get("/dashboard/daily")
-async def get_daily_guidance(user: User = Depends(get_current_user)):
+async def get_daily_guidance(user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get personalized daily guidance."""
     db = get_db()
 
-    def secure_choice(items):
+    def secure_choice(items: list[Any]) -> Any:
         if not items:
             return None
         return items[secrets.randbelow(len(items))]
@@ -155,7 +155,7 @@ async def get_daily_guidance(user: User = Depends(get_current_user)):
 # ============ FAVORITES ============
 
 @router.post("/favorites")
-async def add_favorite(data: FavoriteCreate, user: User = Depends(get_current_user)):
+async def add_favorite(data: FavoriteCreate, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Add an item to user's favorites."""
     db = get_db()
     existing = await db.favorites.find_one({
@@ -181,7 +181,7 @@ async def add_favorite(data: FavoriteCreate, user: User = Depends(get_current_us
 
 
 @router.delete("/favorites/{item_type}/{item_id}")
-async def remove_favorite(item_type: str, item_id: str, user: User = Depends(get_current_user)):
+async def remove_favorite(item_type: str, item_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
     """Remove an item from user's favorites."""
     db = get_db()
     result = await db.favorites.delete_one({
@@ -197,7 +197,7 @@ async def remove_favorite(item_type: str, item_id: str, user: User = Depends(get
 
 
 @router.get("/favorites")
-async def get_favorites(user: User = Depends(get_current_user), item_type: Optional[str] = None):
+async def get_favorites(user: User = Depends(get_current_user), item_type: Optional[str] = None) -> list[dict[str, Any]]:
     """Get user's favorites, optionally filtered by type."""
     db = get_db()
     query = {"user_id": user.user_id}
@@ -207,7 +207,7 @@ async def get_favorites(user: User = Depends(get_current_user), item_type: Optio
     favorites = await db.favorites.find(query, {"_id": 0}).to_list(500)
     
     # Group favorite IDs by type for batch queries
-    ids_by_type = {}
+    ids_by_type: dict[str, list[str]] = {}
     for fav in favorites:
         ids_by_type.setdefault(fav["item_type"], []).append(fav["item_id"])
     
@@ -253,7 +253,7 @@ async def get_favorites(user: User = Depends(get_current_user), item_type: Optio
 
 
 @router.get("/favorites/check/{item_type}/{item_id}")
-async def check_favorite(item_type: str, item_id: str, user: User = Depends(get_current_user)):
+async def check_favorite(item_type: str, item_id: str, user: User = Depends(get_current_user)) -> dict[str, bool]:
     """Check if an item is in user's favorites."""
     db = get_db()
     existing = await db.favorites.find_one({
@@ -268,7 +268,7 @@ async def check_favorite(item_type: str, item_id: str, user: User = Depends(get_
 # ============ PRACTICE HISTORY ============
 
 @router.post("/practice-history")
-async def log_practice(data: PracticeLogCreate, user: User = Depends(get_current_user)):
+async def log_practice(data: PracticeLogCreate, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Log a completed practice."""
     db = get_db()
     log_entry = {
@@ -292,7 +292,7 @@ async def get_practice_history(
     user: User = Depends(get_current_user),
     practice_type: Optional[str] = None,
     limit: int = 50
-):
+) -> list[dict[str, Any]]:
     """Get user's practice history."""
     db = get_db()
     query = {"user_id": user.user_id}
@@ -304,7 +304,7 @@ async def get_practice_history(
 
 
 @router.get("/practice-history/stats")
-async def get_practice_stats(user: User = Depends(get_current_user)):
+async def get_practice_stats(user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get user's practice statistics."""
     db = get_db()
     # Get all practice history for this user
@@ -314,7 +314,7 @@ async def get_practice_stats(user: User = Depends(get_current_user)):
     total_minutes = sum(h.get("duration_minutes", 0) for h in history)
     
     # Count by type
-    by_type = {}
+    by_type: dict[str, dict[str, int]] = {}
     for h in history:
         ptype = h.get("practice_type", "unknown")
         if ptype not in by_type:
@@ -346,7 +346,7 @@ async def get_practice_stats(user: User = Depends(get_current_user)):
 # ============ RITUALS ============
 
 @router.post("/rituals")
-async def create_ritual(data: RitualCreate, user: User = Depends(get_current_user)):
+async def create_ritual(data: RitualCreate, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Create a custom daily ritual."""
     db = get_db()
     ritual = {
@@ -366,7 +366,7 @@ async def create_ritual(data: RitualCreate, user: User = Depends(get_current_use
 
 
 @router.get("/rituals")
-async def get_rituals(user: User = Depends(get_current_user)):
+async def get_rituals(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
     """Get user's custom rituals."""
     db = get_db()
     rituals = await db.rituals.find({"user_id": user.user_id}, {"_id": 0}).to_list(100)
@@ -374,7 +374,7 @@ async def get_rituals(user: User = Depends(get_current_user)):
 
 
 @router.get("/rituals/{ritual_id}")
-async def get_ritual(ritual_id: str, user: User = Depends(get_current_user)):
+async def get_ritual(ritual_id: str, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get a specific ritual."""
     db = get_db()
     ritual = await db.rituals.find_one({"ritual_id": ritual_id, "user_id": user.user_id}, {"_id": 0})
@@ -384,7 +384,7 @@ async def get_ritual(ritual_id: str, user: User = Depends(get_current_user)):
 
 
 @router.put("/rituals/{ritual_id}")
-async def update_ritual(ritual_id: str, data: RitualUpdate, user: User = Depends(get_current_user)):
+async def update_ritual(ritual_id: str, data: RitualUpdate, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Update a ritual."""
     db = get_db()
     update_data = {k: v for k, v in data.model_dump().items() if v is not None}
@@ -402,7 +402,7 @@ async def update_ritual(ritual_id: str, data: RitualUpdate, user: User = Depends
 
 
 @router.delete("/rituals/{ritual_id}")
-async def delete_ritual(ritual_id: str, user: User = Depends(get_current_user)):
+async def delete_ritual(ritual_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
     """Delete a ritual."""
     db = get_db()
     result = await db.rituals.delete_one({"ritual_id": ritual_id, "user_id": user.user_id})
@@ -414,7 +414,7 @@ async def delete_ritual(ritual_id: str, user: User = Depends(get_current_user)):
 # ============ RITUAL SHARING ============
 
 @router.post("/rituals/{ritual_id}/share")
-async def share_ritual(ritual_id: str, user: User = Depends(get_current_user)):
+async def share_ritual(ritual_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
     """Generate a shareable link for a ritual."""
     db = get_db()
     ritual = await db.rituals.find_one({"ritual_id": ritual_id, "user_id": user.user_id}, {"_id": 0})
@@ -444,7 +444,7 @@ async def share_ritual(ritual_id: str, user: User = Depends(get_current_user)):
 
 
 @router.get("/rituals/shared/{share_code}")
-async def get_shared_ritual(share_code: str):
+async def get_shared_ritual(share_code: str) -> dict[str, Any]:
     """Get a shared ritual by share code (no auth required)."""
     db = get_db()
     shared = await db.shared_rituals.find_one({"share_code": share_code}, {"_id": 0})
@@ -454,7 +454,7 @@ async def get_shared_ritual(share_code: str):
 
 
 @router.post("/rituals/shared/{share_code}/copy")
-async def copy_shared_ritual(share_code: str, user: User = Depends(get_current_user)):
+async def copy_shared_ritual(share_code: str, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Copy a shared ritual to user's own rituals."""
     db = get_db()
     shared = await db.shared_rituals.find_one({"share_code": share_code}, {"_id": 0})
@@ -487,7 +487,7 @@ async def copy_shared_ritual(share_code: str, user: User = Depends(get_current_u
 # ============ REMINDERS ============
 
 @router.get("/settings/reminders")
-async def get_reminder_settings(user: User = Depends(get_current_user)):
+async def get_reminder_settings(user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get user's reminder settings."""
     db = get_db()
     settings = await db.reminder_settings.find_one({"user_id": user.user_id}, {"_id": 0})
@@ -506,7 +506,7 @@ async def get_reminder_settings(user: User = Depends(get_current_user)):
 # ============ ACCOUNT MANAGEMENT ============
 
 @router.get("/account/export")
-async def export_account_data(user: User = Depends(get_current_user)):
+async def export_account_data(user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Export a user's core account data for privacy/compliance needs."""
     db = get_db()
 
@@ -541,7 +541,7 @@ async def export_account_data(user: User = Depends(get_current_user)):
 
 
 @router.get("/account/deletion-status")
-async def get_account_deletion_status(user: User = Depends(get_current_user)):
+async def get_account_deletion_status(user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get the latest account deletion request status for the signed-in user."""
     db = get_db()
     latest = await db.account_deletion_requests.find_one({"user_id": user.user_id}, {"_id": 0}, sort=[("requested_at", -1)])
@@ -552,7 +552,7 @@ async def get_account_deletion_status(user: User = Depends(get_current_user)):
 
 
 @router.post("/account/delete-request")
-async def request_account_deletion(data: AccountDeletionRequest, user: User = Depends(get_current_user)):
+async def request_account_deletion(data: AccountDeletionRequest, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Create or refresh an account deletion request for compliance flows."""
     db = get_db()
     now = datetime.now(timezone.utc).isoformat()
@@ -577,7 +577,7 @@ async def request_account_deletion(data: AccountDeletionRequest, user: User = De
 
 
 @router.put("/settings/reminders")
-async def update_reminder_settings(data: ReminderSettings, user: User = Depends(get_current_user)):
+async def update_reminder_settings(data: ReminderSettings, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Update user's reminder settings."""
     db = get_db()
     settings = {
@@ -602,7 +602,7 @@ async def update_reminder_settings(data: ReminderSettings, user: User = Depends(
 # ============ JOURNAL ============
 
 @router.post("/journal")
-async def create_journal_entry(data: JournalEntryCreate, user: User = Depends(get_current_user)):
+async def create_journal_entry(data: JournalEntryCreate, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Create a new journal entry."""
     db = get_db()
     entry = {
@@ -635,7 +635,7 @@ async def get_journal_entries(
     limit: int = 50,
     mood: Optional[str] = None,
     journal_type: Optional[str] = None
-):
+) -> list[dict[str, Any]]:
     """Get user's journal entries."""
     db = get_db()
     query = {"user_id": user.user_id}
@@ -649,7 +649,7 @@ async def get_journal_entries(
 
 
 @router.get("/journal/{entry_id}")
-async def get_journal_entry(entry_id: str, user: User = Depends(get_current_user)):
+async def get_journal_entry(entry_id: str, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get a specific journal entry."""
     db = get_db()
     entry = await db.journal.find_one({"entry_id": entry_id, "user_id": user.user_id}, {"_id": 0})
@@ -659,7 +659,7 @@ async def get_journal_entry(entry_id: str, user: User = Depends(get_current_user
 
 
 @router.delete("/journal/{entry_id}")
-async def delete_journal_entry(entry_id: str, user: User = Depends(get_current_user)):
+async def delete_journal_entry(entry_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
     """Delete a journal entry."""
     db = get_db()
     result = await db.journal.delete_one({"entry_id": entry_id, "user_id": user.user_id})
@@ -670,7 +670,7 @@ async def delete_journal_entry(entry_id: str, user: User = Depends(get_current_u
 
 # ============ ACHIEVEMENTS ============
 
-ACHIEVEMENT_DEFINITIONS = [
+ACHIEVEMENT_DEFINITIONS: list[dict[str, Any]] = [
     {"id": "first_practice", "name": "First Steps", "description": "Complete your first practice", "icon": "footprints", "requirement": {"type": "sessions", "count": 1}},
     {"id": "week_warrior", "name": "Week Warrior", "description": "Maintain a 7-day practice streak", "icon": "flame", "requirement": {"type": "streak", "count": 7}},
     {"id": "moon_cycle", "name": "Moon Cycle", "description": "Practice for 28 consecutive days", "icon": "moon", "requirement": {"type": "streak", "count": 28}},
@@ -685,7 +685,7 @@ ACHIEVEMENT_DEFINITIONS = [
 
 
 @router.get("/achievements")
-async def get_achievements(user: User = Depends(get_current_user)):
+async def get_achievements(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
     """Get user's achievements with unlock status."""
     db = get_db()
     
@@ -697,7 +697,7 @@ async def get_achievements(user: User = Depends(get_current_user)):
     total_minutes = sum(h.get("duration_minutes", 0) for h in history)
     
     # Count by type and element
-    by_type = {}
+    by_type: dict[str, int] = {}
     elements_practiced = set()
     
     for h in history:
@@ -720,9 +720,9 @@ async def get_achievements(user: User = Depends(get_current_user)):
         streak = 0
     
     # Check each achievement
-    achievements = []
+    achievements: list[dict[str, Any]] = []
     for ach_def in ACHIEVEMENT_DEFINITIONS:
-        req = ach_def["requirement"]
+        req: dict[str, Any] = ach_def["requirement"]
         unlocked = False
         progress = 0
         
@@ -762,7 +762,7 @@ async def get_achievements(user: User = Depends(get_current_user)):
 # ============ USER MANTRAS ============
 
 @router.post("/mantras/custom")
-async def create_user_mantra(data: UserMantraCreate, user: User = Depends(get_current_user)):
+async def create_user_mantra(data: UserMantraCreate, user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Create a custom mantra."""
     db = get_db()
     mantra = {
@@ -784,7 +784,7 @@ async def create_user_mantra(data: UserMantraCreate, user: User = Depends(get_cu
 async def get_user_mantras(
     user: User = Depends(get_current_user),
     category: Optional[str] = None
-):
+) -> list[dict[str, Any]]:
     """Get user's custom mantras."""
     db = get_db()
     query = {"user_id": user.user_id}
@@ -800,7 +800,7 @@ async def update_user_mantra(
     mantra_id: str, 
     data: UserMantraUpdate, 
     user: User = Depends(get_current_user)
-):
+) -> dict[str, Any]:
     """Update a custom mantra."""
     db = get_db()
     
@@ -824,7 +824,7 @@ async def update_user_mantra(
 
 
 @router.delete("/mantras/custom/{mantra_id}")
-async def delete_user_mantra(mantra_id: str, user: User = Depends(get_current_user)):
+async def delete_user_mantra(mantra_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
     """Delete a custom mantra."""
     db = get_db()
     result = await db.user_mantras.delete_one({"mantra_id": mantra_id, "user_id": user.user_id})

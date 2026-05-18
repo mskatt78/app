@@ -20,7 +20,7 @@ const PrivacyPolicy = () => {
       </header>
       
       <main className="max-w-4xl mx-auto p-6 space-y-8" data-testid="privacy-policy-content">
-        <p className="text-sm text-muted-foreground" data-testid="privacy-policy-updated">Last updated: March 2026</p>
+        <p className="text-sm text-muted-foreground" data-testid="privacy-policy-updated">Last updated: May 2026</p>
         
         <section className="space-y-3" data-testid="privacy-policy-introduction">
           <h2 className="text-xl font-serif text-primary">Introduction</h2>
