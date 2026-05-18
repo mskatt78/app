@@ -1601,3 +1601,143 @@ agent_communication:
       
       SUMMARY:
       All audio router endpoints verified and working correctly. Audio router successfully enabled in server.py with proper integration. GET /api/audio/voices returns 200 with list of 6 voice options. GET /api/audio/meditation-scripts returns 200 with list of 3 meditation scripts. Core health endpoint still working correctly. No 500 errors detected. Backend is production-ready with audio router functionality.
+
+
+  - task: "Expand-script endpoint with include_toning=true"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ POST /api/content/expand-script with include_toning=true tested successfully. Returns 200 with all required fields: paragraphs (26), segments (6), word_count (925), target_word_count. Toning cues present in paragraphs (verified presence of tone/hum/ahh/ooh/mmm/syllable/LAM/VAM/RAM/YAM/OM indicators). Segments and paragraphs are properly formatted strings. Expand-script with toning=true PASSED."
+
+  - task: "Expand-script endpoint with include_toning=false"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ POST /api/content/expand-script with include_toning=false tested successfully. Returns 200 with all required fields: paragraphs, segments (5), word_count (814). Verified NO explicit toning instruction cues present (checked for 'seed syllable', 'vocal tone', 'add a soft vocal', 'hum very softly', 'weave in a light seed', 'rounded tone for the length'). Toning cue injection correctly avoided when include_toning=false. Expand-script with toning=false PASSED."
+
+  - task: "Element seed syllable mapping verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Element seed syllable mapping verified across all 5 elements. Tested each element with include_toning=true and confirmed correct seed syllable present in generated text: earth→LAM ✓, water→VAM ✓, fire→RAM ✓, air→YAM ✓, spirit→OM ✓. All mappings defined in TONING_SEED_BY_ELEMENT (lines 640-646 in content.py) working correctly. Element seed syllable mapping PASSED."
+
+  - task: "TTS generate-base64 with expanded script segments"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/tts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ POST /api/tts/generate-base64 tested with expanded script segment. First obtained expanded script from /api/content/expand-script (returned 6 segments), then used first segment (489 chars) for TTS generation. TTS endpoint returns 200 with audio_base64 field (968,320 chars base64, ~726KB audio), format: mp3. Audio generation working correctly for expanded script segments. TTS generate-base64 PASSED."
+
+  - task: "Health and core content routes regression check"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✓ Health and core content routes sanity check completed. All tested endpoints return 200 status: /api/health ✓, /api/yoga/poses ✓, /api/breathwork/sessions ✓, /api/meditations ✓, /api/courses ✓. No 500 server errors detected. No regressions from toning feature implementation. Core routes regression check PASSED."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.9"
+  test_sequence: 10
+  run_ui: false
+  last_tested: "2026-05-17"
+
+test_plan:
+  current_focus:
+    - "Guided toning implementation verification - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Backend API Verification - Guided Toning Implementation completed successfully (2026-05-17):
+      
+      VERIFICATION REQUEST: Run backend API verification for the new guided toning implementation
+      Scope:
+      1) POST /api/content/expand-script with include_toning=true should return 200 with segments/paragraphs and toning cues present
+      2) Same endpoint with include_toning=false should return 200 and avoid toning cue injection
+      3) Verify element seed syllables map correctly across element values (earth/water/fire/air/spirit)
+      4) POST /api/tts/generate-base64 should still generate audio for one returned expanded segment
+      5) Confirm no backend 500s/regressions on /api/health and core content route sanity
+      
+      ✅ ALL TESTS PASSED (5/5):
+      
+      1. ✅ Expand-script with include_toning=true - PASSED
+         - POST /api/content/expand-script returns 200
+         - Response contains all required fields: paragraphs (26), segments (6), word_count (925), target_word_count
+         - Toning cues present in paragraphs (verified indicators: tone, hum, ahh, ooh, mmm, syllable, LAM, VAM, RAM, YAM, OM)
+         - Segments and paragraphs are properly formatted strings
+      
+      2. ✅ Expand-script with include_toning=false - PASSED
+         - POST /api/content/expand-script returns 200
+         - Response contains paragraphs, segments (5), word_count (814)
+         - NO explicit toning instruction cues present (verified absence of: 'seed syllable', 'vocal tone', 'add a soft vocal', 'hum very softly', 'weave in a light seed', 'rounded tone for the length')
+         - Toning cue injection correctly avoided when include_toning=false
+      
+      3. ✅ Element seed syllable mapping - PASSED
+         - Tested all 5 elements with include_toning=true
+         - Verified correct seed syllable present in generated text for each element:
+           * earth → LAM ✓
+           * water → VAM ✓
+           * fire → RAM ✓
+           * air → YAM ✓
+           * spirit → OM ✓
+         - All mappings from TONING_SEED_BY_ELEMENT (lines 640-646 in content.py) working correctly
+      
+      4. ✅ TTS generate-base64 with expanded segments - PASSED
+         - POST /api/tts/generate-base64 returns 200
+         - Successfully generated audio from expanded script segment (489 chars input)
+         - Audio base64 output: 968,320 chars (~726KB audio)
+         - Format: mp3
+         - Audio generation working correctly for expanded script segments
+      
+      5. ✅ Health and core routes sanity - PASSED
+         - All tested endpoints return 200 status:
+           * /api/health ✓
+           * /api/yoga/poses ✓
+           * /api/breathwork/sessions ✓
+           * /api/meditations ✓
+           * /api/courses ✓
+         - No 500 server errors detected
+         - No regressions from toning feature implementation
+      
+      TECHNICAL VERIFICATION:
+      - Toning injection logic working correctly (lines 657-678, 879-880, 1319-1321 in content.py)
+      - Element-specific seed syllables properly mapped via TONING_SEED_BY_ELEMENT dictionary
+      - Toning paragraph templates correctly applied at intervals (lines 648-654)
+      - include_toning parameter defaults to True (line 264) and is properly respected
+      - TTS endpoint handles expanded script segments without issues
+      - No breaking changes to existing endpoints
+      
+      SUMMARY:
+      All backend API tests passed successfully. Guided toning implementation verified and working correctly. POST /api/content/expand-script with include_toning=true returns 200 with segments/paragraphs containing toning cues. Same endpoint with include_toning=false returns 200 and correctly avoids toning cue injection. Element seed syllables map correctly across all 5 elements (earth→LAM, water→VAM, fire→RAM, air→YAM, spirit→OM). POST /api/tts/generate-base64 generates audio successfully for expanded segments. No backend 500s or regressions detected on /api/health and core content routes. Backend toning implementation is production-ready.

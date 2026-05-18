@@ -1,206 +1,292 @@
-#!/usr/bin/env python3
 """
-Backend API Testing Script - Audio Router Verification
-Tests audio endpoints after enabling audio router in server.py
+Backend API Verification for Guided Toning Implementation
+Tests the new toning feature across expand-script and TTS endpoints.
 """
-
+import os
 import requests
-import json
-import sys
 
-# Base URL from environment
-BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
+BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "https://breathwork-sanctuary.preview.emergentagent.com").rstrip("/")
 
-def test_audio_voices():
-    """
-    Test 1: GET /api/audio/voices
-    - Should return 200
-    - Should return list of voice options
-    - Should include default voice
-    """
-    print("\n" + "="*80)
-    print("TEST 1: Audio Voices Endpoint")
-    print("="*80)
+def test_expand_script_with_toning_true():
+    """Test 1: POST /api/content/expand-script with include_toning=true"""
+    print("\n=== Test 1: expand-script with include_toning=true ===")
     
-    try:
-        response = requests.get(f"{BASE_URL}/audio/voices", timeout=10)
-        print(f"Status Code: {response.status_code}")
+    response = requests.post(
+        f"{BASE_URL}/api/content/expand-script",
+        json={
+            "practice_name": "Earth Grounding Practice",
+            "element": "earth",
+            "duration_minutes": 7,
+            "use_ai": False,
+            "include_toning": True,
+            "steps": ["Ground your feet", "Feel the earth beneath you", "Breathe deeply"],
+            "source_texts": ["This practice connects you to the earth element and its grounding energy"]
+        },
+        timeout=30
+    )
+    
+    assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
+    
+    data = response.json()
+    
+    # Verify required fields
+    assert "paragraphs" in data, "Missing 'paragraphs' field"
+    assert "segments" in data, "Missing 'segments' field"
+    assert "word_count" in data, "Missing 'word_count' field"
+    assert "target_word_count" in data, "Missing 'target_word_count' field"
+    
+    # Verify toning cues are present
+    all_text = " ".join(data["paragraphs"])
+    toning_indicators = ["tone", "hum", "ahh", "ooh", "mmm", "syllable", "LAM", "VAM", "RAM", "YAM", "OM"]
+    has_toning = any(indicator in all_text for indicator in toning_indicators)
+    
+    assert has_toning, "Expected toning cues in paragraphs when include_toning=True"
+    assert len(data["segments"]) > 0, "Expected at least one segment"
+    assert len(data["paragraphs"]) > 0, "Expected at least one paragraph"
+    
+    print(f"✅ PASS: expand-script with toning=true")
+    print(f"   - Status: 200")
+    print(f"   - Word count: {data['word_count']}")
+    print(f"   - Segments: {len(data['segments'])}")
+    print(f"   - Paragraphs: {len(data['paragraphs'])}")
+    print(f"   - Toning cues present: Yes")
+    
+    return data
+
+
+def test_expand_script_with_toning_false():
+    """Test 2: POST /api/content/expand-script with include_toning=false"""
+    print("\n=== Test 2: expand-script with include_toning=false ===")
+    
+    response = requests.post(
+        f"{BASE_URL}/api/content/expand-script",
+        json={
+            "practice_name": "Silent Meditation",
+            "element": "spirit",
+            "duration_minutes": 7,
+            "use_ai": False,
+            "include_toning": False,
+            "steps": ["Sit quietly", "Observe breath", "Rest in stillness"],
+            "source_texts": ["A silent practice for inner peace without vocal elements"]
+        },
+        timeout=30
+    )
+    
+    assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
+    
+    data = response.json()
+    
+    # Verify required fields
+    assert "paragraphs" in data, "Missing 'paragraphs' field"
+    assert "segments" in data, "Missing 'segments' field"
+    
+    # Verify toning cues are NOT injected (should be minimal or absent)
+    all_text = " ".join(data["paragraphs"])
+    
+    # Check for explicit toning instruction phrases (not just words that might appear naturally)
+    explicit_toning_phrases = [
+        "seed syllable",
+        "vocal tone",
+        "add a soft vocal",
+        "hum very softly",
+        "weave in a light seed",
+        "rounded tone for the length"
+    ]
+    
+    has_explicit_toning = any(phrase in all_text.lower() for phrase in explicit_toning_phrases)
+    
+    assert not has_explicit_toning, "Expected NO explicit toning instruction cues when include_toning=False"
+    
+    print(f"✅ PASS: expand-script with toning=false")
+    print(f"   - Status: 200")
+    print(f"   - Word count: {data['word_count']}")
+    print(f"   - Segments: {len(data['segments'])}")
+    print(f"   - Explicit toning cues present: No")
+    
+    return data
+
+
+def test_element_seed_syllables():
+    """Test 3: Verify element seed syllables map correctly"""
+    print("\n=== Test 3: Element seed syllable mapping ===")
+    
+    element_seed_map = {
+        "earth": "LAM",
+        "water": "VAM",
+        "fire": "RAM",
+        "air": "YAM",
+        "spirit": "OM"
+    }
+    
+    results = []
+    
+    for element, expected_seed in element_seed_map.items():
+        response = requests.post(
+            f"{BASE_URL}/api/content/expand-script",
+            json={
+                "practice_name": f"{element.title()} Element Practice",
+                "element": element,
+                "duration_minutes": 7,
+                "use_ai": False,
+                "include_toning": True,
+                "steps": [f"Connect with {element} energy"],
+                "source_texts": [f"A {element} element practice"]
+            },
+            timeout=30
+        )
         
-        if response.status_code != 200:
-            print(f"❌ FAILED: Expected 200, got {response.status_code}")
-            return False
+        assert response.status_code == 200, f"Failed for {element}: {response.status_code}"
         
         data = response.json()
-        print(f"Response keys: {list(data.keys())}")
+        all_text = " ".join(data["paragraphs"])
         
-        # Check for voices list
-        if 'voices' not in data:
-            print(f"❌ FAILED: Response missing 'voices' key")
-            return False
+        # Check if the expected seed syllable is present
+        seed_present = expected_seed in all_text
         
-        voices = data['voices']
-        print(f"Total voices available: {len(voices)}")
+        results.append({
+            "element": element,
+            "expected_seed": expected_seed,
+            "seed_present": seed_present
+        })
         
-        if len(voices) == 0:
-            print(f"❌ FAILED: No voices returned")
-            return False
+        assert seed_present, f"Expected seed syllable '{expected_seed}' for {element} element not found in text"
         
-        # Check for default voice
-        if 'default' not in data:
-            print(f"❌ FAILED: Response missing 'default' key")
-            return False
-        
-        print(f"Default voice: {data['default']}")
-        
-        # Print first few voices
-        print(f"\nSample voices:")
-        for voice in voices[:3]:
-            print(f"  - {voice.get('name')} ({voice.get('id')}): {voice.get('description')}")
-        
-        print(f"\n✅ TEST 1 PASSED: Audio voices endpoint working correctly")
-        return True
-        
-    except requests.exceptions.RequestException as e:
-        print(f"❌ FAILED: Request error - {e}")
-        return False
-    except Exception as e:
-        print(f"❌ FAILED: Unexpected error - {e}")
-        return False
-
-
-def test_audio_meditation_scripts():
-    """
-    Test 2: GET /api/audio/meditation-scripts
-    - Should return 200
-    - Should return list of meditation scripts
-    """
-    print("\n" + "="*80)
-    print("TEST 2: Audio Meditation Scripts Endpoint")
-    print("="*80)
+        print(f"   ✓ {element.ljust(8)} → {expected_seed.ljust(4)} (found in text)")
     
-    try:
-        response = requests.get(f"{BASE_URL}/audio/meditation-scripts", timeout=10)
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code != 200:
-            print(f"❌ FAILED: Expected 200, got {response.status_code}")
-            return False
-        
-        data = response.json()
-        print(f"Response keys: {list(data.keys())}")
-        
-        # Check for scripts list
-        if 'scripts' not in data:
-            print(f"❌ FAILED: Response missing 'scripts' key")
-            return False
-        
-        scripts = data['scripts']
-        print(f"Total scripts available: {len(scripts)}")
-        
-        if len(scripts) == 0:
-            print(f"❌ FAILED: No scripts returned")
-            return False
-        
-        # Print all scripts
-        print(f"\nAvailable meditation scripts:")
-        for script in scripts:
-            print(f"  - {script.get('name')} ({script.get('id')}): {script.get('duration_estimate')}")
-        
-        print(f"\n✅ TEST 2 PASSED: Audio meditation scripts endpoint working correctly")
-        return True
-        
-    except requests.exceptions.RequestException as e:
-        print(f"❌ FAILED: Request error - {e}")
-        return False
-    except Exception as e:
-        print(f"❌ FAILED: Unexpected error - {e}")
-        return False
-
-
-def test_health_endpoint():
-    """
-    Test 3: GET /api/health
-    - Core health endpoint sanity check
-    - Should return 200
-    """
-    print("\n" + "="*80)
-    print("TEST 3: Health Endpoint Sanity Check")
-    print("="*80)
+    print(f"✅ PASS: All element seed syllables map correctly")
     
-    try:
-        response = requests.get(f"{BASE_URL}/health", timeout=10)
-        print(f"Status Code: {response.status_code}")
+    return results
+
+
+def test_tts_generate_base64():
+    """Test 4: POST /api/tts/generate-base64 with expanded segment"""
+    print("\n=== Test 4: TTS generate-base64 with expanded segment ===")
+    
+    # First get an expanded script
+    expand_response = requests.post(
+        f"{BASE_URL}/api/content/expand-script",
+        json={
+            "practice_name": "TTS Test Practice",
+            "element": "spirit",
+            "duration_minutes": 7,
+            "use_ai": False,
+            "include_toning": True,
+            "steps": ["Breathe deeply", "Rest in stillness"],
+            "source_texts": ["A calming practice for testing TTS"]
+        },
+        timeout=30
+    )
+    
+    assert expand_response.status_code == 200, f"Expand-script failed: {expand_response.status_code}"
+    
+    expand_data = expand_response.json()
+    assert len(expand_data["segments"]) > 0, "No segments returned from expand-script"
+    
+    # Use first segment for TTS
+    first_segment = expand_data["segments"][0]
+    
+    print(f"   - Using segment (length: {len(first_segment)} chars)")
+    
+    # Generate TTS audio
+    tts_response = requests.post(
+        f"{BASE_URL}/api/tts/generate-base64",
+        json={
+            "text": first_segment,
+            "voice": "nova",
+            "speed": 0.82
+        },
+        timeout=60
+    )
+    
+    assert tts_response.status_code == 200, f"Expected 200, got {tts_response.status_code}: {tts_response.text}"
+    
+    tts_data = tts_response.json()
+    
+    assert "audio_base64" in tts_data, "Missing 'audio_base64' field"
+    assert len(tts_data["audio_base64"]) > 100, "Audio base64 data too short"
+    
+    print(f"✅ PASS: TTS generate-base64")
+    print(f"   - Status: 200")
+    print(f"   - Audio base64 length: {len(tts_data['audio_base64'])} chars")
+    print(f"   - Format: {tts_data.get('format', 'mp3')}")
+    
+    return tts_data
+
+
+def test_health_and_core_routes():
+    """Test 5: Verify no 500s on health and core content routes"""
+    print("\n=== Test 5: Health and core content route sanity ===")
+    
+    endpoints = [
+        ("/api/health", "Health"),
+        ("/api/yoga/poses", "Yoga Poses"),
+        ("/api/breathwork/sessions", "Breathwork Sessions"),
+        ("/api/meditations", "Meditations"),
+        ("/api/courses", "Courses"),
+    ]
+    
+    results = []
+    
+    for endpoint, name in endpoints:
+        response = requests.get(f"{BASE_URL}{endpoint}", timeout=15)
         
-        if response.status_code != 200:
-            print(f"❌ FAILED: Expected 200, got {response.status_code}")
-            return False
+        status = response.status_code
+        is_success = status == 200
         
-        data = response.json()
-        print(f"Response: {json.dumps(data, indent=2)}")
+        assert status != 500, f"{name} endpoint returned 500 error"
+        assert is_success, f"{name} endpoint returned {status}, expected 200"
         
-        if data.get('status') != 'healthy':
-            print(f"❌ FAILED: Health status is not 'healthy'")
-            return False
+        results.append({
+            "endpoint": endpoint,
+            "name": name,
+            "status": status,
+            "success": is_success
+        })
         
-        print(f"✅ TEST 3 PASSED: Health endpoint working correctly")
-        return True
-        
-    except requests.exceptions.RequestException as e:
-        print(f"❌ FAILED: Request error - {e}")
-        return False
-    except Exception as e:
-        print(f"❌ FAILED: Unexpected error - {e}")
-        return False
+        print(f"   ✓ {name.ljust(20)} → {status}")
+    
+    print(f"✅ PASS: All core routes healthy (no 500s)")
+    
+    return results
 
 
 def main():
-    """Run all backend tests"""
-    print("\n" + "="*80)
-    print("BACKEND API TESTING - AUDIO ROUTER VERIFICATION")
-    print("="*80)
+    """Run all backend API verification tests"""
+    print("=" * 70)
+    print("BACKEND API VERIFICATION - GUIDED TONING IMPLEMENTATION")
+    print("=" * 70)
     print(f"Base URL: {BASE_URL}")
-    print(f"Testing after enabling audio router in server.py")
     
-    results = {
-        "Audio Voices Endpoint": test_audio_voices(),
-        "Audio Meditation Scripts Endpoint": test_audio_meditation_scripts(),
-        "Health Endpoint": test_health_endpoint()
-    }
-    
-    # Summary
-    print("\n" + "="*80)
-    print("TEST SUMMARY")
-    print("="*80)
-    
-    passed = sum(1 for result in results.values() if result)
-    total = len(results)
-    
-    for test_name, result in results.items():
-        status = "✅ PASSED" if result else "❌ FAILED"
-        print(f"{status}: {test_name}")
-    
-    print(f"\nTotal: {passed}/{total} tests passed")
-    
-    # Check for 500 errors
-    has_500_errors = False
-    for test_name, result in results.items():
-        if not result:
-            print(f"⚠️  Check if {test_name} returned 500 error")
-            has_500_errors = True
-    
-    if passed == total:
-        print("\n🎉 ALL TESTS PASSED - No 500 errors detected")
-        print("✓ Audio router successfully enabled in server.py")
-        print("✓ GET /api/audio/voices returns 200 with voice options")
-        print("✓ GET /api/audio/meditation-scripts returns 200")
-        print("✓ GET /api/health returns 200")
-        sys.exit(0)
-    else:
-        print(f"\n⚠️  {total - passed} test(s) failed")
-        if has_500_errors:
-            print("❌ Possible 500 errors detected - check backend logs")
-        sys.exit(1)
+    try:
+        # Run all tests
+        test_expand_script_with_toning_true()
+        test_expand_script_with_toning_false()
+        test_element_seed_syllables()
+        test_tts_generate_base64()
+        test_health_and_core_routes()
+        
+        print("\n" + "=" * 70)
+        print("✅ ALL TESTS PASSED")
+        print("=" * 70)
+        print("\nSUMMARY:")
+        print("1. ✅ expand-script with include_toning=true returns segments/paragraphs with toning cues")
+        print("2. ✅ expand-script with include_toning=false avoids toning cue injection")
+        print("3. ✅ Element seed syllables map correctly (earth→LAM, water→VAM, fire→RAM, air→YAM, spirit→OM)")
+        print("4. ✅ TTS generate-base64 generates audio for expanded segments")
+        print("5. ✅ No backend 500s on /api/health and core content routes")
+        print("\nBackend toning implementation verified successfully.")
+        
+        return 0
+        
+    except AssertionError as e:
+        print(f"\n❌ TEST FAILED: {e}")
+        return 1
+    except Exception as e:
+        print(f"\n❌ UNEXPECTED ERROR: {e}")
+        import traceback
+        traceback.print_exc()
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())
