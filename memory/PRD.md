@@ -119,6 +119,22 @@
 - Broad hook-dependency backlog across additional frontend files (beyond prioritized critical targets) still pending.
 - Batch 2 important items pending (payment/content long-function decomposition + residual test anti-pattern sweep).
 
+## Latest Verification Snapshot (Iterations 136-137)
+- User-reported guided issues addressed:
+  - Repetitive narration stems/phrases reduced and validated
+  - Guided duration alignment improved and validated for longer practices
+- Backend guided script changes:
+  - Increased target pacing baseline (`TARGET_WORDS_PER_MINUTE = 132`)
+  - Stronger anti-repetition diversity in deterministic padding
+  - Strict higher minimum word floors + iterative duration-alignment loop
+  - Added `_build_duration_alignment_booster()` for guaranteed long-duration floor completion
+  - AI expansion path guarded with timeout fallback (while frontend requests deterministic mode)
+- Frontend guided payload behavior:
+  - `useGuidedPracticeEngine` and `useGuidedAudioPlayback` send `use_ai=false` + anti-repetition mode
+- Test confirmations:
+  - Iteration 136: repetition improved; 7-15 min alignment pass; identified 20-min gap
+  - Iteration 137: 20-min strict/minimal-source now **100% target_word_count** (2640/2640), repetition guard still pass
+
 ## Newly Completed (Current Pass)
 - Refactored parameter-heavy content helpers:
   - `_apply_commons_visual_fallback_if_needed(...)` now takes a structured state object
