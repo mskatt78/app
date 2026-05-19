@@ -9,7 +9,6 @@ import os
 import re
 import pytest
 import requests
-from collections import Counter
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -339,7 +338,7 @@ class TestExpandScriptEndpointBasics:
         assert response.status_code == 200
         data = response.json()
         
-        assert data['used_ai'] == False, "used_ai should be False"
+        assert not data['used_ai'], "used_ai should be False"
         assert len(data['paragraphs']) > 0, "Should have fallback paragraphs"
         
         print(f"PASS: Fallback content generated - {len(data['paragraphs'])} paragraphs")

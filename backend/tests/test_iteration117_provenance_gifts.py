@@ -40,7 +40,7 @@ class TestAncientWisdomContentIntegrity:
             assert "source_type" in ci, "content_integrity missing source_type"
             assert "verified" in ci, "content_integrity missing verified"
             assert "references_count" in ci, "content_integrity missing references_count"
-        print(f"✓ Ancient wisdom entries have content_integrity metadata")
+        print("✓ Ancient wisdom entries have content_integrity metadata")
 
     def test_ancient_wisdom_has_source_references_list(self):
         """Each ancient wisdom entry should have source_references as a list."""
@@ -53,7 +53,7 @@ class TestAncientWisdomContentIntegrity:
         for entry in data[:5]:
             assert "source_references" in entry, f"Entry {entry.get('id')} missing source_references"
             assert isinstance(entry["source_references"], list), "source_references should be a list"
-        print(f"✓ Ancient wisdom entries have source_references as list")
+        print("✓ Ancient wisdom entries have source_references as list")
 
 
 class TestShamanicPracticesContentIntegrity:
@@ -81,7 +81,7 @@ class TestShamanicPracticesContentIntegrity:
             assert "source_type" in ci, "content_integrity missing source_type"
             assert "verified" in ci, "content_integrity missing verified"
             assert "references_count" in ci, "content_integrity missing references_count"
-        print(f"✓ Shamanic practices have content_integrity metadata")
+        print("✓ Shamanic practices have content_integrity metadata")
 
     def test_shamanic_practices_has_source_references_list(self):
         """Each shamanic practice should have source_references as a list."""
@@ -94,7 +94,7 @@ class TestShamanicPracticesContentIntegrity:
         for entry in data[:5]:
             assert "source_references" in entry, f"Entry {entry.get('id')} missing source_references"
             assert isinstance(entry["source_references"], list), "source_references should be a list"
-        print(f"✓ Shamanic practices have source_references as list")
+        print("✓ Shamanic practices have source_references as list")
 
 
 class TestElementalPracticesContentIntegrity:
@@ -122,7 +122,7 @@ class TestElementalPracticesContentIntegrity:
             assert "source_type" in ci, "content_integrity missing source_type"
             assert "verified" in ci, "content_integrity missing verified"
             assert "references_count" in ci, "content_integrity missing references_count"
-        print(f"✓ Elemental practices have content_integrity metadata")
+        print("✓ Elemental practices have content_integrity metadata")
 
     def test_elemental_practices_has_source_references_list(self):
         """Each elemental practice should have source_references as a list."""
@@ -135,7 +135,7 @@ class TestElementalPracticesContentIntegrity:
         for entry in data[:5]:
             assert "source_references" in entry, f"Entry {entry.get('id')} missing source_references"
             assert isinstance(entry["source_references"], list), "source_references should be a list"
-        print(f"✓ Elemental practices have source_references as list")
+        print("✓ Elemental practices have source_references as list")
 
 
 class TestHeartPracticesContentIntegrity:
@@ -163,7 +163,7 @@ class TestHeartPracticesContentIntegrity:
             assert "source_type" in ci, "content_integrity missing source_type"
             assert "verified" in ci, "content_integrity missing verified"
             assert "references_count" in ci, "content_integrity missing references_count"
-        print(f"✓ Heart practices have content_integrity metadata")
+        print("✓ Heart practices have content_integrity metadata")
 
     def test_heart_practices_has_source_references_list(self):
         """Each heart practice should have source_references as a list."""
@@ -176,7 +176,7 @@ class TestHeartPracticesContentIntegrity:
         for entry in data[:5]:
             assert "source_references" in entry, f"Entry {entry.get('id')} missing source_references"
             assert isinstance(entry["source_references"], list), "source_references should be a list"
-        print(f"✓ Heart practices have source_references as list")
+        print("✓ Heart practices have source_references as list")
 
 
 class TestGiftsEndpointsRegression:
@@ -215,7 +215,7 @@ class TestGiftsEndpointsRegression:
         """GET /api/gifts/{code} for non-existent code should return 404, not 500."""
         response = requests.get(f"{BASE_URL}/api/gifts/GIFT-NONEXISTENT", timeout=10)
         assert response.status_code == 404, f"Expected 404, got {response.status_code}"
-        print(f"✓ GET /api/gifts/GIFT-NONEXISTENT returns 404")
+        print("✓ GET /api/gifts/GIFT-NONEXISTENT returns 404")
 
     def test_gifts_my_sent_requires_auth(self):
         """GET /api/gifts/my/sent without auth should return 401, not 500."""
@@ -237,13 +237,13 @@ class TestNotificationsEndpoints:
         """POST /api/notifications/subscribe without proper body should return 422."""
         response = requests.post(f"{BASE_URL}/api/notifications/subscribe", json={}, timeout=10)
         assert response.status_code == 422, f"Expected 422, got {response.status_code}"
-        print(f"✓ POST /api/notifications/subscribe without body returns 422")
+        print("✓ POST /api/notifications/subscribe without body returns 422")
 
     def test_notifications_unsubscribe_requires_body(self):
         """POST /api/notifications/unsubscribe without proper body should return 422."""
         response = requests.post(f"{BASE_URL}/api/notifications/unsubscribe", json={}, timeout=10)
         assert response.status_code == 422, f"Expected 422, got {response.status_code}"
-        print(f"✓ POST /api/notifications/unsubscribe without body returns 422")
+        print("✓ POST /api/notifications/unsubscribe without body returns 422")
 
 
 if __name__ == "__main__":

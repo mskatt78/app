@@ -25,7 +25,7 @@ class TestCoursesWithPrices:
         assert response.status_code == 200
         data = response.json()
         assert data.get("price") == 197.0, f"Expected price 197.0, got {data.get('price')}"
-        assert data.get("is_premium") == True
+        assert data.get("is_premium")
         print(f"SUCCESS: Munay Ki price is ${data.get('price')}")
     
     def test_nusta_karpay_course_price(self):
@@ -34,7 +34,7 @@ class TestCoursesWithPrices:
         assert response.status_code == 200
         data = response.json()
         assert data.get("price") == 177.0, f"Expected price 177.0, got {data.get('price')}"
-        assert data.get("is_premium") == True
+        assert data.get("is_premium")
         print(f"SUCCESS: Nusta Karpay price is ${data.get('price')}")
     
     def test_13th_rite_womb_course_price(self):
@@ -43,7 +43,7 @@ class TestCoursesWithPrices:
         assert response.status_code == 200
         data = response.json()
         assert data.get("price") == 147.0, f"Expected price 147.0, got {data.get('price')}"
-        assert data.get("is_premium") == True
+        assert data.get("is_premium")
         print(f"SUCCESS: 13th Rite of the Womb price is ${data.get('price')}")
 
 
@@ -101,7 +101,7 @@ class TestCourseContent:
         for expected in expected_rites:
             assert expected in actual_rites, f"Missing rite: {expected}"
         
-        print(f"SUCCESS: Found all 9 rites")
+        print("SUCCESS: Found all 9 rites")
 
 
 class TestPaymentEndpoints:
@@ -172,7 +172,7 @@ class TestAllCoursesHaveRequiredFields:
         courses = response.json()
         
         for course in courses:
-            assert course.get("is_premium") == True, f"Course {course.get('id')} not marked as premium"
+            assert course.get("is_premium"), f"Course {course.get('id')} not marked as premium"
         
         print(f"SUCCESS: All {len(courses)} courses are marked as premium")
     
@@ -188,7 +188,7 @@ class TestAllCoursesHaveRequiredFields:
         for expected_id in expected_ids:
             assert expected_id in actual_ids, f"Missing course with id: {expected_id}"
         
-        print(f"SUCCESS: All expected course IDs present")
+        print("SUCCESS: All expected course IDs present")
 
 
 class TestNustaKarpayContent:
@@ -224,7 +224,7 @@ class TestWombRiteContent:
         assert response.status_code == 200
         data = response.json()
         
-        assert data.get("is_premium") == True
+        assert data.get("is_premium")
         assert data.get("price") == 147.0
         assert data.get("rites") is not None or data.get("rituals") is not None
         

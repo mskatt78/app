@@ -42,7 +42,7 @@ class TestDailyPracticeWidget:
         has_morning = "morning_practice" in data and data["morning_practice"] is not None
         has_evening = "evening_practice" in data and data["evening_practice"] is not None
         
-        print(f"✓ Daily practice endpoint working")
+        print("✓ Daily practice endpoint working")
         print(f"  - Moon phase: {data.get('moon_phase')}")
         print(f"  - Day theme: {data.get('day_theme')}")
         print(f"  - Has morning practice: {has_morning}")

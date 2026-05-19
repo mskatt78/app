@@ -99,7 +99,7 @@ class TestBirthChartCalculateEndpoint:
         for field in required_fields:
             assert field in planet, f"Planet missing '{field}' field"
         
-        print(f"PASSED: Planet structure verified with all required fields")
+        print("PASSED: Planet structure verified with all required fields")
         print(f"  First planet: {planet['name']} in {planet['sign']} at {planet['degree']}°{planet['minute']}'")
     
     def test_calculate_birth_chart_ascendant_structure(self):
@@ -125,7 +125,7 @@ class TestBirthChartCalculateEndpoint:
         assert ascendant["name"] == "Ascendant", "Ascendant name should be 'Ascendant'"
         assert ascendant["house"] == 1, "Ascendant house should be 1"
         
-        print(f"PASSED: Ascendant structure verified")
+        print("PASSED: Ascendant structure verified")
         print(f"  Ascendant: {ascendant['sign']} at {ascendant['degree']}°{ascendant['minute']}'")
     
     def test_calculate_birth_chart_elements_qualities(self):
@@ -155,7 +155,7 @@ class TestBirthChartCalculateEndpoint:
         assert "dominant" in qualities, "Qualities missing 'dominant'"
         assert "interpretation" in qualities, "Qualities missing 'interpretation'"
         
-        print(f"PASSED: Elements and qualities structure verified")
+        print("PASSED: Elements and qualities structure verified")
         print(f"  Dominant element: {elements['dominant']}, Dominant quality: {qualities['dominant']}")
     
     def test_calculate_birth_chart_with_coordinates(self):
@@ -180,7 +180,7 @@ class TestBirthChartCalculateEndpoint:
         assert birth_data["longitude"] == -74.0060, "Longitude not preserved"
         assert birth_data["timezone"] == "America/New_York", "Timezone not preserved"
         
-        print(f"PASSED: Birth chart with explicit coordinates works correctly")
+        print("PASSED: Birth chart with explicit coordinates works correctly")
 
 
 class TestBirthChartAuthenticatedEndpoints:
@@ -247,7 +247,7 @@ class TestBirthChartAuthenticatedEndpoints:
         assert "planets" in saved_data, "Saved chart missing planets"
         assert "user_id" in saved_data, "Saved chart missing user_id"
         
-        print(f"PASSED: Birth chart saved successfully")
+        print("PASSED: Birth chart saved successfully")
         print(f"  Sun: {saved_data['sun_sign']}, Moon: {saved_data['moon_sign']}, Rising: {saved_data['rising_sign']}")
         
         # Retrieve the saved chart
@@ -287,7 +287,7 @@ class TestZodiacAndPlanetEndpoints:
             assert "ruler" in data[sign], f"{sign} missing ruler"
             assert "symbol" in data[sign], f"{sign} missing symbol"
         
-        print(f"PASSED: All 12 zodiac signs returned with complete data")
+        print("PASSED: All 12 zodiac signs returned with complete data")
     
     def test_planet_meanings_endpoint(self):
         """Test /birth-chart/planet-meanings returns planet data"""
@@ -305,7 +305,7 @@ class TestZodiacAndPlanetEndpoints:
             assert "symbol" in data[planet], f"{planet} missing symbol"
             assert "keywords" in data[planet], f"{planet} missing keywords"
         
-        print(f"PASSED: All planet meanings returned with complete data")
+        print("PASSED: All planet meanings returned with complete data")
     
     def test_house_meanings_endpoint(self):
         """Test /birth-chart/house-meanings returns all 12 houses"""
@@ -319,7 +319,7 @@ class TestZodiacAndPlanetEndpoints:
             key = str(i)
             assert key in data or i in data, f"Missing house {i}"
         
-        print(f"PASSED: All 12 house meanings returned")
+        print("PASSED: All 12 house meanings returned")
     
     def test_aspect_meanings_endpoint(self):
         """Test /birth-chart/aspect-meanings returns aspect data"""
@@ -336,7 +336,7 @@ class TestZodiacAndPlanetEndpoints:
             assert "orb" in data[aspect], f"{aspect} missing orb"
             assert "symbol" in data[aspect], f"{aspect} missing symbol"
         
-        print(f"PASSED: All major aspects returned with complete data")
+        print("PASSED: All major aspects returned with complete data")
 
 
 if __name__ == "__main__":

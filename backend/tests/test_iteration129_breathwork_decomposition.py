@@ -115,7 +115,7 @@ class TestContentExpandScript:
         assert data["target_minutes"] >= 7
         assert data["word_count"] > 0
         assert len(data["segments"]) > 0
-        assert data["used_ai"] == False
+        assert not data["used_ai"]
         print(f"✓ Script expansion: {data['word_count']} words, {len(data['segments'])} segments")
 
     def test_expand_script_minimum_duration(self):

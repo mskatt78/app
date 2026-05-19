@@ -4,7 +4,6 @@ Tests: CRUD operations for yoga, mudras, breathwork, crystals, mantras, workshop
 """
 import pytest
 import requests
-import os
 from test_security_config import BASE_URL, TEST_SESSION_TOKEN
 
 SESSION_TOKEN = TEST_SESSION_TOKEN

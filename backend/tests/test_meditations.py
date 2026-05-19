@@ -2,7 +2,6 @@
 Backend tests for Meditations feature (iteration 32)
 Tests: GET /meditations, image_url presence, visualization text, all 6 items
 """
-import pytest
 import requests
 import os
 
@@ -25,14 +24,14 @@ class TestMeditationsAPI:
         response = requests.get(f"{BASE_URL}/api/meditations")
         data = response.json()
         assert isinstance(data, list), f"Expected list, got {type(data)}"
-        print(f"PASS: Response is a list")
+        print("PASS: Response is a list")
 
     def test_get_meditations_returns_6(self):
         """Exactly 6 meditations are returned"""
         response = requests.get(f"{BASE_URL}/api/meditations")
         data = response.json()
         assert len(data) == 6, f"Expected 6 meditations, got {len(data)}"
-        print(f"PASS: 6 meditations returned")
+        print("PASS: 6 meditations returned")
 
     def test_all_meditations_have_image_url(self):
         """All 6 meditations must have image_url populated (not None/empty)"""
@@ -67,7 +66,7 @@ class TestMeditationsAPI:
         for m in data:
             for field in required_fields:
                 assert field in m, f"Meditation '{m.get('name')}' missing field: {field}"
-        print(f"PASS: All meditations have required fields")
+        print("PASS: All meditations have required fields")
 
     def test_meditation_ids_are_1_through_6(self):
         """Meditation IDs are 1 through 6"""

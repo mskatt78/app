@@ -329,7 +329,7 @@ class TestExpandScriptIteration65:
                 duplicates += 1
             seen.add(normalized)
         
-        print(f"\n=== Duplicate Paragraph Check ===")
+        print("\n=== Duplicate Paragraph Check ===")
         print(f"Total paragraphs: {len(paragraphs)}")
         print(f"Duplicate paragraphs: {duplicates}")
         

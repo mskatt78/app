@@ -2,7 +2,6 @@
 Backend tests for Sacred Guardians & Allies API
 Tests: GET /api/sacred-guardians, category filtering, individual guardian, count verification
 """
-import pytest
 import requests
 import os
 

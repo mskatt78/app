@@ -208,7 +208,7 @@ class TestAdminLogout:
         assert logout_response.status_code == 200, f"Expected 200, got {logout_response.status_code}"
         
         data = logout_response.json()
-        assert data.get("logged_out") == True, "Expected logged_out to be True"
+        assert data.get("logged_out"), "Expected logged_out to be True"
         
         print("SUCCESS: Admin logout completed")
 

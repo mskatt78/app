@@ -98,7 +98,7 @@ class TestLightCodesAPI:
         assert "practice_guide" in dna
         assert len(dna["practice_guide"]) > 50, "practice_guide content too short"
         
-        print(f"DNA Activation Helix verified with deep content")
+        print("DNA Activation Helix verified with deep content")
         print(f"  why_this_heals: {len(dna['why_this_heals'])} chars")
         print(f"  ancient_traditions: {len(dna['ancient_traditions'])} chars")
         print(f"  practice_guide: {len(dna['practice_guide'])} chars")

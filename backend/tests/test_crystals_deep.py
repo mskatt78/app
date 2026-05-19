@@ -5,7 +5,6 @@ Backend tests for Crystal Guide deep endpoint:
 - Verifies: healing_properties, cleansing_methods, rituals, combinations
 - Verifies: stone vitals (chakra, planet, vibration_number, hardness, color, rarity)
 """
-import pytest
 import requests
 import os
 

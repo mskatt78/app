@@ -6,7 +6,6 @@ Tests:
 3. Courses - 3 Sacred Rites present (Munay Ki, 13th Womb Rite, Nusta Karpay)
 4. Community posts - 5 posts present (Sacred Circle Awakening)
 """
-import pytest
 import requests
 import os
 

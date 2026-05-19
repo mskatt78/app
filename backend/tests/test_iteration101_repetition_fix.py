@@ -260,7 +260,7 @@ class TestExpandScriptRepetitionFix:
         data = response.json()
 
         segments = data.get("segments", [])
-        assert len(segments) >= 4, f"Should have at least 4 segments for 12-min practice"
+        assert len(segments) >= 4, "Should have at least 4 segments for 12-min practice"
 
         first_segment_words = count_words(segments[0])
         print(f"First segment word count: {first_segment_words}")
@@ -321,7 +321,7 @@ class TestExpandScriptEdgeCases:
 
         data = response.json()
         # 30-min practice should have at least 1800 words (actual output may be less due to deduplication)
-        assert data.get("word_count", 0) >= 1800, f"30-min should have >= 1800 words"
+        assert data.get("word_count", 0) >= 1800, "30-min should have >= 1800 words"
 
 
 if __name__ == "__main__":

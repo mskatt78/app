@@ -10,7 +10,6 @@ Features tested:
 """
 import pytest
 import requests
-import os
 from test_security_config import BASE_URL, TEST_EMAIL, TEST_PASSWORD, TEST_NAME
 
 

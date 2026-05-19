@@ -5,11 +5,10 @@ library (pyswisseph), which is the de-facto standard for astrological calculatio
 0.0001° accuracy based on NASA JPL ephemeris data.
 """
 from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Any, Optional, List, Dict, Tuple
 from datetime import datetime, timezone
 import logging
-import math
 from dataclasses import dataclass
 
 try:

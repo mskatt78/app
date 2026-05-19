@@ -8,7 +8,6 @@ import os
 import hashlib
 import logging
 import base64
-import io
 
 router = APIRouter(prefix="/tts", tags=["tts"])
 logger = logging.getLogger(__name__)

@@ -98,7 +98,6 @@ class TestExpandScriptEndpoint:
 
         target_words = data["target_word_count"]
         actual_words = data["word_count"]
-        target_minutes = data["target_minutes"]
 
         # Target word count should be at least MIN_NARRATION_MINUTES * 120
         min_expected_words = MIN_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE
@@ -253,7 +252,7 @@ class TestRetreatsCleanup:
                 # Should not be placeholder retreats
                 assert not title.startswith("test"), f"Found test retreat: {title}"
                 assert not title.startswith("pytest"), f"Found pytest retreat: {title}"
-                assert title != "sacred journey retreat", f"Found legacy placeholder retreat"
+                assert title != "sacred journey retreat", "Found legacy placeholder retreat"
 
 
 class TestAppStorePolishRoutes:

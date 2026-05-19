@@ -1,6 +1,6 @@
 """User routes for dashboard, favorites, practice history, rituals, journal, achievements."""
 from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Any, Optional, List
 from datetime import datetime, timezone, timedelta
 import uuid

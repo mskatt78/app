@@ -148,7 +148,7 @@ class TestMantrasWithAuth:
             assert fav_response.status_code in [200, 201, 400], \
                 f"Favorites POST failed: {fav_response.status_code} - {fav_response.text}"
             
-            print(f"✓ Favorites endpoint works for mantras")
+            print("✓ Favorites endpoint works for mantras")
 
 
 if __name__ == "__main__":

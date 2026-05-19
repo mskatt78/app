@@ -8,7 +8,6 @@ Tests:
 import pytest
 import requests
 import os
-import json
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
@@ -22,73 +21,73 @@ class TestUserRouterEndpoints:
         assert response.status_code == 404
         data = response.json()
         assert "detail" in data
-        print(f"✓ Shared ritual endpoint returns 404 for non-existent code")
+        print("✓ Shared ritual endpoint returns 404 for non-existent code")
     
     def test_favorites_requires_auth(self):
         """GET /api/favorites - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/favorites")
         assert response.status_code == 401
-        print(f"✓ Favorites endpoint requires auth (401)")
+        print("✓ Favorites endpoint requires auth (401)")
     
     def test_practice_history_requires_auth(self):
         """GET /api/practice-history - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/practice-history")
         assert response.status_code == 401
-        print(f"✓ Practice history endpoint requires auth (401)")
+        print("✓ Practice history endpoint requires auth (401)")
     
     def test_practice_stats_requires_auth(self):
         """GET /api/practice-history/stats - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/practice-history/stats")
         assert response.status_code == 401
-        print(f"✓ Practice stats endpoint requires auth (401)")
+        print("✓ Practice stats endpoint requires auth (401)")
     
     def test_rituals_requires_auth(self):
         """GET /api/rituals - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/rituals")
         assert response.status_code == 401
-        print(f"✓ Rituals endpoint requires auth (401)")
+        print("✓ Rituals endpoint requires auth (401)")
     
     def test_achievements_requires_auth(self):
         """GET /api/achievements - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/achievements")
         assert response.status_code == 401
-        print(f"✓ Achievements endpoint requires auth (401)")
+        print("✓ Achievements endpoint requires auth (401)")
     
     def test_journal_requires_auth(self):
         """GET /api/journal - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/journal")
         assert response.status_code == 401
-        print(f"✓ Journal endpoint requires auth (401)")
+        print("✓ Journal endpoint requires auth (401)")
     
     def test_custom_mantras_requires_auth(self):
         """GET /api/mantras/custom - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/mantras/custom")
         assert response.status_code == 401
-        print(f"✓ Custom mantras endpoint requires auth (401)")
+        print("✓ Custom mantras endpoint requires auth (401)")
     
     def test_reminder_settings_requires_auth(self):
         """GET /api/settings/reminders - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/settings/reminders")
         assert response.status_code == 401
-        print(f"✓ Reminder settings endpoint requires auth (401)")
+        print("✓ Reminder settings endpoint requires auth (401)")
     
     def test_dashboard_daily_requires_auth(self):
         """GET /api/dashboard/daily - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/dashboard/daily")
         assert response.status_code == 401
-        print(f"✓ Dashboard daily endpoint requires auth (401)")
+        print("✓ Dashboard daily endpoint requires auth (401)")
     
     def test_account_export_requires_auth(self):
         """GET /api/account/export - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/account/export")
         assert response.status_code == 401
-        print(f"✓ Account export endpoint requires auth (401)")
+        print("✓ Account export endpoint requires auth (401)")
     
     def test_account_deletion_status_requires_auth(self):
         """GET /api/account/deletion-status - requires authentication"""
         response = requests.get(f"{BASE_URL}/api/account/deletion-status")
         assert response.status_code == 401
-        print(f"✓ Account deletion status endpoint requires auth (401)")
+        print("✓ Account deletion status endpoint requires auth (401)")
 
 
 class TestContentEndpoints:
@@ -98,7 +97,7 @@ class TestContentEndpoints:
         """GET /api/health - should return 200"""
         response = requests.get(f"{BASE_URL}/api/health")
         assert response.status_code == 200
-        print(f"✓ Health endpoint returns 200")
+        print("✓ Health endpoint returns 200")
     
     def test_breathwork_sessions(self):
         """GET /api/breathwork-sessions - should return list"""
@@ -172,7 +171,7 @@ class TestPWAManifest:
         assert "theme_color" in data
         assert "background_color" in data
         
-        print(f"✓ Manifest has all required fields")
+        print("✓ Manifest has all required fields")
         print(f"  - Name: {data['name']}")
         print(f"  - Short name: {data['short_name']}")
         print(f"  - Icons: {len(data['icons'])} defined")
@@ -293,7 +292,7 @@ class TestAuthenticatedUserEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert "enabled" in data or "user_id" in data
-        print(f"✓ Reminder settings retrieved")
+        print("✓ Reminder settings retrieved")
     
     def test_account_export_authenticated(self, auth_token):
         """GET /api/account/export - with auth"""
@@ -303,7 +302,7 @@ class TestAuthenticatedUserEndpoints:
         data = response.json()
         assert "exported_at" in data
         assert "profile" in data
-        print(f"✓ Account export contains profile and exported_at")
+        print("✓ Account export contains profile and exported_at")
     
     def test_account_deletion_status_authenticated(self, auth_token):
         """GET /api/account/deletion-status - with auth"""

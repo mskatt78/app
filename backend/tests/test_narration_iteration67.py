@@ -211,7 +211,7 @@ class TestLegacyPageEndpoints:
         assert "morning_practice" in data
         assert "evening_practice" in data
         assert "moon_phase" in data
-        print(f"PASS: daily-practice returned morning and evening practices")
+        print("PASS: daily-practice returned morning and evening practices")
     
     def test_ancient_wisdom_endpoint(self):
         """Test ancient wisdom data for AncientWisdom page"""

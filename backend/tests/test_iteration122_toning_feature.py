@@ -97,7 +97,7 @@ class TestExpandScriptToningFeature:
         has_toning = any(indicator.lower() in all_text.lower() for indicator in toning_indicators)
         assert has_toning, "Expected toning cues by default (include_toning defaults to True)"
         
-        print(f"PASS: expand-script defaults to toning enabled")
+        print("PASS: expand-script defaults to toning enabled")
 
     def test_expand_script_element_specific_seed_syllables(self):
         """Test that element-specific seed syllables are used"""
@@ -284,7 +284,7 @@ class TestTTSEndpoint:
         assert "audio_base64" in tts_data
         assert len(tts_data["audio_base64"]) > 100
         
-        print(f"PASS: TTS works with expanded script segment")
+        print("PASS: TTS works with expanded script segment")
 
     def test_tts_with_toning_cue_text(self):
         """Test TTS handles text containing toning cues"""
@@ -307,7 +307,7 @@ class TestTTSEndpoint:
         data = response.json()
         assert "audio_base64" in data
         
-        print(f"PASS: TTS handles toning cue text")
+        print("PASS: TTS handles toning cue text")
 
 
 class TestExpandScriptNoRegressions:
@@ -334,7 +334,7 @@ class TestExpandScriptNoRegressions:
         for field in required_fields:
             assert field in data, f"Missing required field: {field}"
         
-        print(f"PASS: All required fields present")
+        print("PASS: All required fields present")
 
     def test_expand_script_segments_are_strings(self):
         """Test that segments are strings (not nested objects)"""
@@ -356,7 +356,7 @@ class TestExpandScriptNoRegressions:
         for segment in data["segments"]:
             assert isinstance(segment, str), f"Segment should be string, got {type(segment)}"
         
-        print(f"PASS: All segments are strings")
+        print("PASS: All segments are strings")
 
     def test_expand_script_paragraphs_are_strings(self):
         """Test that paragraphs are strings"""
@@ -378,7 +378,7 @@ class TestExpandScriptNoRegressions:
         for paragraph in data["paragraphs"]:
             assert isinstance(paragraph, str), f"Paragraph should be string, got {type(paragraph)}"
         
-        print(f"PASS: All paragraphs are strings")
+        print("PASS: All paragraphs are strings")
 
     def test_expand_script_empty_steps_handled(self):
         """Test expand-script handles empty steps gracefully"""
@@ -400,7 +400,7 @@ class TestExpandScriptNoRegressions:
         assert len(data["paragraphs"]) > 0
         assert len(data["segments"]) > 0
         
-        print(f"PASS: Empty steps handled gracefully")
+        print("PASS: Empty steps handled gracefully")
 
     def test_expand_script_empty_source_texts_handled(self):
         """Test expand-script handles empty source_texts gracefully"""
@@ -422,7 +422,7 @@ class TestExpandScriptNoRegressions:
         assert len(data["paragraphs"]) > 0
         assert len(data["segments"]) > 0
         
-        print(f"PASS: Empty source_texts handled gracefully")
+        print("PASS: Empty source_texts handled gracefully")
 
 
 class TestHealthAndBasicEndpoints:

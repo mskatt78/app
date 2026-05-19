@@ -270,9 +270,9 @@ class TestExpandScriptEndpoint:
         assert isinstance(data["paragraphs"], list)
         assert isinstance(data["segments"], list)
         assert isinstance(data["word_count"], int)
-        assert data["used_ai"] == False  # We requested no AI
+        assert not data["used_ai"]  # We requested no AI
 
-        print(f"PASSED: Response structure correct with all required fields")
+        print("PASSED: Response structure correct with all required fields")
 
 
 class TestTTSEndpoint:

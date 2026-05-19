@@ -378,7 +378,7 @@ class TestContentEndpoints:
         """Verify /api/dashboard/daily requires authentication."""
         response = requests.get(f"{BASE_URL}/api/dashboard/daily", timeout=15)
         assert response.status_code == 401, f"Expected 401, got {response.status_code}"
-        print(f"PASS: /api/dashboard/daily correctly requires authentication")
+        print("PASS: /api/dashboard/daily correctly requires authentication")
 
 
 if __name__ == "__main__":

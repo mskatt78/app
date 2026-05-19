@@ -3,7 +3,6 @@ Backend tests for Sacred Rites 2.0 - Iteration 48
 Tests: new fields (forty_day_integration, daily_practice, ceremony_preparation_guide, is_premium, safety_precautions)
 for all 3 Sacred Rites courses, plus Sound Frequencies and Creative Processes.
 """
-import pytest
 import requests
 import os
 

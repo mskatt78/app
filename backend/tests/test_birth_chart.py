@@ -35,7 +35,7 @@ class TestBirthChartAPI:
             assert "quality" in data[sign], f"Missing quality for {sign}"
             assert "symbol" in data[sign], f"Missing symbol for {sign}"
         
-        print(f"SUCCESS: All 12 zodiac signs present with correct structure")
+        print("SUCCESS: All 12 zodiac signs present with correct structure")
     
     def test_planet_meanings_endpoint(self):
         """Test /api/birth-chart/planet-meanings returns planet info"""
@@ -55,7 +55,7 @@ class TestBirthChartAPI:
             assert "meaning" in data[planet], f"Missing meaning for {planet}"
             assert "symbol" in data[planet], f"Missing symbol for {planet}"
         
-        print(f"SUCCESS: All expected planets present with meanings")
+        print("SUCCESS: All expected planets present with meanings")
     
     def test_house_meanings_endpoint(self):
         """Test /api/birth-chart/house-meanings returns all 12 houses"""
@@ -73,7 +73,7 @@ class TestBirthChartAPI:
             assert house_data is not None, f"Missing house {i}"
             assert "theme" in house_data, f"Missing theme for house {i}"
         
-        print(f"SUCCESS: All 12 houses present with themes")
+        print("SUCCESS: All 12 houses present with themes")
     
     def test_aspect_meanings_endpoint(self):
         """Test /api/birth-chart/aspect-meanings returns aspect info"""
@@ -91,7 +91,7 @@ class TestBirthChartAPI:
             assert "degrees" in data[aspect], f"Missing degrees for {aspect}"
             assert "symbol" in data[aspect], f"Missing symbol for {aspect}"
         
-        print(f"SUCCESS: All major aspects present with correct structure")
+        print("SUCCESS: All major aspects present with correct structure")
     
     def test_calculate_birth_chart_success(self):
         """Test /api/birth-chart/calculate with valid data"""
@@ -163,7 +163,7 @@ class TestBirthChartAPI:
             # Check for retrograde flag
             assert "retrograde" in planet, f"Planet {planet.get('name')} missing retrograde flag"
         
-        print(f"SUCCESS: All planets have complete data structure including retrograde")
+        print("SUCCESS: All planets have complete data structure including retrograde")
         
     def test_calculate_birth_chart_houses(self):
         """Test that houses are correctly calculated"""
@@ -192,7 +192,7 @@ class TestBirthChartAPI:
             assert "degree" in house, f"House {key} missing degree"
             assert "theme" in house, f"House {key} missing theme"
         
-        print(f"SUCCESS: All 12 houses calculated with signs and themes")
+        print("SUCCESS: All 12 houses calculated with signs and themes")
     
     def test_calculate_birth_chart_aspects(self):
         """Test that aspects are correctly calculated"""
@@ -293,7 +293,7 @@ class TestBirthChartAPI:
         assert birth_data["latitude"] == 34.0522, "Latitude not preserved"
         assert birth_data["longitude"] == -118.2437, "Longitude not preserved"
         
-        print(f"SUCCESS: Custom coordinates accepted and used")
+        print("SUCCESS: Custom coordinates accepted and used")
     
     def test_calculate_birth_chart_different_cities(self):
         """Test birth chart calculation for different cities"""

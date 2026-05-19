@@ -1,6 +1,6 @@
 """Oracle routes for readings and cards."""
 from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Any, Optional, List
 from datetime import datetime, timezone
 import uuid

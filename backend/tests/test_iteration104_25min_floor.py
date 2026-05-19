@@ -92,7 +92,7 @@ class Test25MinWordFloorVerification:
         target_word_count = data.get("target_word_count", target_words)
         percentage = (word_count / target_word_count * 100) if target_word_count > 0 else 0
 
-        print(f"CRITICAL 25-MIN STRICT TEST:")
+        print("CRITICAL 25-MIN STRICT TEST:")
         print(f"  Target: {target_word_count} words")
         print(f"  Minimum (80%): {minimum_word_floor} words")
         print(f"  Actual: {word_count} words")
@@ -139,7 +139,7 @@ class Test25MinWordFloorVerification:
         target_word_count = data.get("target_word_count", target_words)
         percentage = (word_count / target_word_count * 100) if target_word_count > 0 else 0
 
-        print(f"CRITICAL 25-MIN BALANCED TEST:")
+        print("CRITICAL 25-MIN BALANCED TEST:")
         print(f"  Target: {target_word_count} words")
         print(f"  Minimum (80%): {minimum_word_floor} words")
         print(f"  Actual: {word_count} words")
@@ -307,14 +307,14 @@ class TestAntiRepetitionQuality:
         max_allowed_ratio = 0.12
         minimum_word_floor = int(target_word_count * 0.80)  # 2400
 
-        print(f"25-min strict combined test:")
+        print("25-min strict combined test:")
         print(f"  Word count: {word_count} (minimum: {minimum_word_floor})")
         print(f"  Repeat ratio: {repeat_ratio:.3f} (max: {max_allowed_ratio})")
 
         # Both word count and quality must pass
         assert word_count >= minimum_word_floor, f"Word count {word_count} below {minimum_word_floor}"
         assert repeat_ratio <= max_allowed_ratio, f"Repeat ratio {repeat_ratio:.3f} > {max_allowed_ratio}"
-        print(f"PASSED: 25-min strict has both sufficient words AND good quality")
+        print("PASSED: 25-min strict has both sufficient words AND good quality")
 
 
 class TestAntiRepetitionModePayload:

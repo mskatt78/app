@@ -118,7 +118,7 @@ class TestSofterToneQuality:
         full_text = " ".join(data.get("paragraphs", []))
         tone = calculate_tone_score(full_text)
         
-        print(f"\n7-min Tone Analysis:")
+        print("\n7-min Tone Analysis:")
         print(f"  Word count: {tone['word_count']}")
         print(f"  Mechanical phrases: {tone['mechanical_count']} ({tone['mechanical_per_1000_words']:.1f} per 1000 words)")
         print(f"  Softer phrases: {tone['softer_count']} ({tone['softer_per_1000_words']:.1f} per 1000 words)")
@@ -154,7 +154,7 @@ class TestSofterToneQuality:
         full_text = " ".join(data.get("paragraphs", []))
         tone = calculate_tone_score(full_text)
         
-        print(f"\n15-min Tone Analysis:")
+        print("\n15-min Tone Analysis:")
         print(f"  Word count: {tone['word_count']}")
         print(f"  Mechanical phrases: {tone['mechanical_count']}")
         print(f"  Softer phrases: {tone['softer_count']}")
@@ -184,7 +184,7 @@ class TestSofterToneQuality:
         full_text = " ".join(data.get("paragraphs", []))
         tone = calculate_tone_score(full_text)
         
-        print(f"\n20-min Tone Analysis:")
+        print("\n20-min Tone Analysis:")
         print(f"  Word count: {tone['word_count']}")
         print(f"  Mechanical phrases: {tone['mechanical_count']}")
         print(f"  Softer phrases: {tone['softer_count']}")
@@ -212,7 +212,7 @@ class TestSofterToneQuality:
         full_text = " ".join(data.get("paragraphs", []))
         tone = calculate_tone_score(full_text)
         
-        print(f"\n25-min Tone Analysis:")
+        print("\n25-min Tone Analysis:")
         print(f"  Word count: {tone['word_count']}")
         print(f"  Mechanical phrases: {tone['mechanical_count']}")
         print(f"  Softer phrases: {tone['softer_count']}")

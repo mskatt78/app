@@ -164,7 +164,7 @@ class TestContentExpandScriptAfterHelperDecomposition:
         assert data["word_count"] > 0, "Word count should be positive"
         assert len(data["paragraphs"]) > 0, "Should have paragraphs"
         assert len(data["segments"]) > 0, "Should have segments"
-        assert data["used_ai"] == False, "Should not use AI when use_ai=False"
+        assert not data["used_ai"], "Should not use AI when use_ai=False"
         
         print(f"PASS: expand-script returned {data['word_count']} words in {len(data['segments'])} segments")
     

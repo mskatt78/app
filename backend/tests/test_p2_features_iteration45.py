@@ -4,7 +4,6 @@ Backend tests for P2 features:
 - Elemental Temples API (5 elements with practices/rituals)
 - Water Practices API (19 practices across 7 categories)
 """
-import pytest
 import requests
 import os
 

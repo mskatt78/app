@@ -9,8 +9,6 @@ Tests:
 
 import pytest
 import requests
-import os
-from datetime import datetime, timezone, timedelta
 import uuid
 from test_security_config import BASE_URL, TEST_PASSWORD
 

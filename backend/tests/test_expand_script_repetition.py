@@ -174,7 +174,7 @@ class TestExpandScriptRepetition:
             print(f"  Repeated sentence starts (>3): {high_repeats}")
         
         # Assert no excessive repetition
-        assert len(stem_issues) == 0, f"Excessive repetition found:\n" + "\n".join(stem_issues)
+        assert len(stem_issues) == 0, "Excessive repetition found:\n" + "\n".join(stem_issues)
         
         # Verify minimum word count (7 min * 120 wpm = 840 words)
         assert word_count >= 800, f"Word count {word_count} below minimum 800"

@@ -5,7 +5,6 @@ Tests all critical features before app store submission.
 import pytest
 import requests
 import os
-import time
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://breathwork-sanctuary.preview.emergentagent.com')
 
@@ -289,7 +288,7 @@ class TestEmailAuth:
         )
         # Should return 400 or 422 for validation error, not 404
         assert response.status_code in [400, 422], f"Register endpoint returned {response.status_code}"
-        print(f"✓ Register endpoint exists and validates input")
+        print("✓ Register endpoint exists and validates input")
     
     def test_login_endpoint_exists(self):
         """Test login endpoint responds"""
@@ -299,7 +298,7 @@ class TestEmailAuth:
         )
         # Should return 401 for invalid credentials, not 404
         assert response.status_code in [401, 400, 422], f"Login endpoint returned {response.status_code}"
-        print(f"✓ Login endpoint exists and validates credentials")
+        print("✓ Login endpoint exists and validates credentials")
 
 
 if __name__ == "__main__":

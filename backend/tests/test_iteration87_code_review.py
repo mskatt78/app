@@ -2,7 +2,6 @@
 Backend tests for Iteration 87 - Code Review Findings
 Tests: Admin auth migration (httpOnly cookies), numerology uuid import, content expand-script, birth-chart
 """
-import pytest
 import requests
 import os
 
@@ -94,7 +93,7 @@ class TestAdminAuthCookieMigration:
         logout_resp = session.post(f"{BASE_URL}/api/admin/logout")
         assert logout_resp.status_code == 200
         data = logout_resp.json()
-        assert data.get("logged_out") == True
+        assert data.get("logged_out")
         
         # Try to access collections after logout - should fail
         resp = session.get(f"{BASE_URL}/api/admin/collections")

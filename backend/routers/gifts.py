@@ -109,7 +109,7 @@ async def _resolve_gift_pricing_context(db: Any, gift: GiftCreate) -> tuple[floa
         if not gift.plan_id or gift.plan_id not in SUBSCRIPTION_PLANS:
             raise HTTPException(status_code=400, detail="Invalid subscription plan for gift")
         plan = SUBSCRIPTION_PLANS[gift.plan_id]
-        return float(plan["price"]), str(plan["name"])
+        return float(str(plan["price"])), str(plan["name"])
 
     collection_map = {
         "retreat": "retreats",

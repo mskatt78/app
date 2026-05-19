@@ -8,9 +8,6 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
-
 # Import data
 from data.yoga_poses import YOGA_POSES
 from data.all_content import (
@@ -23,6 +20,9 @@ from data.shamanic_content import (
     EARTH_ALTARS, CREATIVE_PROCESSES, HEART_PRACTICES, 
     SHAMANIC_PRACTICES, ENHANCED_ACHIEVEMENTS, ELEMENTAL_PRACTICES
 )
+
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 async def seed_database() -> None:
     """Seed MongoDB with all content data."""

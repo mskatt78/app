@@ -7,7 +7,6 @@ Test P1 Features: Star Lineage Quiz, Retreats, Videos
 """
 import pytest
 import requests
-import os
 from test_security_config import BASE_URL, ADMIN_PASSWORD
 
 

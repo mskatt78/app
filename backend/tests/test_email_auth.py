@@ -6,7 +6,6 @@ import pytest
 import requests
 import os
 import uuid
-from datetime import datetime
 from test_security_config import TEST_PASSWORD
 
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')

@@ -6,7 +6,6 @@ Tests:
 - Live sessions CRUD endpoints
 - RSVP and message posting (no ObjectId serialization issues)
 """
-import os
 import pytest
 import requests
 from test_security_config import BASE_URL, ADMIN_PASSWORD

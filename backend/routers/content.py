@@ -1221,27 +1221,16 @@ def _apply_script_padding(
     return selected, current
 
 
-async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> Optional[list[str]]:
-    api_key = os.environ.get("EMERGENT_LLM_KEY")
-    if not api_key:
-        return None
-
-    try:
-        from emergentintegrations.llm.chat import LlmChat, UserMessage
-    except Exception as exc:
-        logger.warning("Could not import LLM chat for script expansion: %s", exc)
-        return None
-
-    def _build_prompt() -> str:
-        context_lines = [line for line in _flatten_text(request.source_texts + request.steps) if line]
-        trimmed_context = "\n".join(context_lines[:60])
-        target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
-        toning_requirement = (
-            "13) Include occasional non-repetitive soft vocal toning cues (e.g., gentle hum, ahh, ooh, seed syllables like OM/LAM/VAM) woven naturally into the guidance."
-            if request.include_toning
-            else "13) Do not include vocal toning or chant cues."
-        )
-        return f"""
+def _build_llm_script_prompt(request: ExpandScriptRequest, target_words: int) -> str:
+    context_lines = [line for line in _flatten_text(request.source_texts + request.steps) if line]
+    trimmed_context = "\n".join(context_lines[:60])
+    target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
+    toning_requirement = (
+        "13) Include occasional non-repetitive soft vocal toning cues (e.g., gentle hum, ahh, ooh, seed syllables like OM/LAM/VAM) woven naturally into the guidance."
+        if request.include_toning
+        else "13) Do not include vocal toning or chant cues."
+    )
+    return f"""
 Create a deeply detailed guided meditation narration script.
 
 Practice name: {request.practice_name}
@@ -1268,26 +1257,47 @@ Requirements:
 {toning_requirement}
 """.strip()
 
-    async def _call_llm(prompt: str) -> str | None:
-        chat = LlmChat(
-            api_key=api_key,
-            session_id=f"guided_script_{uuid.uuid4().hex[:12]}",
-            system_message=(
-                "You are an expert meditation guide writing high-quality long-form voice scripts. "
-                "Your output must sound emotionally grounded, intuitive, and naturally human."
-            ),
-        ).with_model("openai", "gpt-5.2")
 
-        response = await asyncio.wait_for(
-            chat.send_message(UserMessage(text=prompt)),
-            timeout=20,
-        )
-        return _sanitize_llm_text(response)
+def _import_llm_chat_dependencies() -> tuple[Any, Any] | None:
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        return LlmChat, UserMessage
+    except Exception as exc:
+        logger.warning("Could not import LLM chat for script expansion: %s", exc)
+        return None
 
-    prompt = _build_prompt()
+
+async def _request_llm_script_text(api_key: str, prompt: str, llm_chat_cls: Any, user_message_cls: Any) -> str | None:
+    chat = llm_chat_cls(
+        api_key=api_key,
+        session_id=f"guided_script_{uuid.uuid4().hex[:12]}",
+        system_message=(
+            "You are an expert meditation guide writing high-quality long-form voice scripts. "
+            "Your output must sound emotionally grounded, intuitive, and naturally human."
+        ),
+    ).with_model("openai", "gpt-5.2")
+
+    response = await asyncio.wait_for(
+        chat.send_message(user_message_cls(text=prompt)),
+        timeout=20,
+    )
+    return _sanitize_llm_text(response)
+
+
+async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> Optional[list[str]]:
+    api_key = os.environ.get("EMERGENT_LLM_KEY")
+    if not api_key:
+        return None
+
+    llm_types = _import_llm_chat_dependencies()
+    if not llm_types:
+        return None
+    llm_chat_cls, user_message_cls = llm_types
+
+    prompt = _build_llm_script_prompt(request, target_words)
 
     try:
-        text = await _call_llm(prompt)
+        text = await _request_llm_script_text(api_key, prompt, llm_chat_cls, user_message_cls)
         if not text:
             return None
         return _postprocess_ai_paragraphs(text, target_words)

@@ -84,7 +84,7 @@ class TestDivinationContentHelpers:
         data = response.json()
         # Light codes should have sacred_geometry, ancient_alphabets, light_language_symbols
         assert "sacred_geometry" in data or isinstance(data, list), "Light codes should have categories"
-        print(f"✓ Light codes endpoint returns data successfully")
+        print("✓ Light codes endpoint returns data successfully")
 
     def test_i_ching_endpoint_returns_data(self):
         """Verify I Ching hexagrams data loads correctly"""
@@ -227,7 +227,7 @@ class TestDataHelperFunctionsDirectly:
 
     def test_archangel_get_by_id_function(self):
         """Test get_archangel_by_id function directly"""
-        from data.archangel_oracle import get_archangel_by_id, ARCHANGEL_ORACLE
+        from data.archangel_oracle import get_archangel_by_id
         
         # Test with valid ID
         archangel = get_archangel_by_id("archangel-michael")
@@ -254,7 +254,7 @@ class TestDataHelperFunctionsDirectly:
 
     def test_crystals_deep_get_by_id_function(self):
         """Test get_crystal_by_id function directly"""
-        from data.crystals_deep import get_crystal_by_id, CRYSTALS_DEEP
+        from data.crystals_deep import get_crystal_by_id
         
         # Test with valid ID
         crystal = get_crystal_by_id("clear-quartz")
@@ -269,7 +269,7 @@ class TestDataHelperFunctionsDirectly:
 
     def test_divination_light_code_enrichment(self):
         """Test _enrich_light_code_entry function directly"""
-        from data.divination_content import _enrich_light_code_entry, LIGHT_CODES
+        from data.divination_content import LIGHT_CODES
         
         # Test enrichment of a sacred geometry entry
         if "sacred_geometry" in LIGHT_CODES and len(LIGHT_CODES["sacred_geometry"]) > 0:

@@ -4,7 +4,6 @@ Tests:
   - GET /api/crystals/deep returns 27 crystals including the 7 new ones
   - POST /api/community/posts works (ShareToCircle backend)
 """
-import pytest
 import requests
 import os
 

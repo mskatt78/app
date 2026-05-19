@@ -8,7 +8,6 @@ Test new backlog features for Shamanic Elements Soul Temple 2.0:
 """
 import pytest
 import requests
-import os
 import uuid
 from test_security_config import BASE_URL, ADMIN_PASSWORD
 

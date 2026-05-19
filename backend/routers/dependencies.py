@@ -1,10 +1,8 @@
 """Shared dependencies for all routers."""
-from fastapi import Request, HTTPException, Depends
-from motor.motor_asyncio import AsyncIOMotorClient
+from fastapi import Request, HTTPException
 from pydantic import BaseModel, Field
 from typing import Any, Optional
 from datetime import datetime, timezone
-import os
 import logging
 
 # Configure logging

@@ -45,7 +45,7 @@ class TestSecurityRandomness:
         )
         # Registration should work (200/201) or user may already exist (400)
         assert response.status_code in [200, 201, 400], f"Registration failed unexpectedly: {response.text}"
-        print(f"✓ Registration endpoint working - uses secrets for random generation")
+        print("✓ Registration endpoint working - uses secrets for random generation")
     
     def test_oracle_reading_randomness(self):
         """Test oracle reading endpoint - should use secrets.randbelow for card selection"""
@@ -57,7 +57,7 @@ class TestSecurityRandomness:
         data = response.json()
         assert "cards" in data
         assert len(data["cards"]) == 1
-        print(f"✓ Oracle reading endpoint working - card selection uses secrets.randbelow")
+        print("✓ Oracle reading endpoint working - card selection uses secrets.randbelow")
 
 
 class TestNarrationExpansion:
@@ -206,7 +206,7 @@ class TestRetreatsEndpoint:
                 placeholder_indicators = ["placeholder", "test", "sample", "lorem ipsum", "coming soon"]
                 for indicator in placeholder_indicators:
                     assert indicator not in name, f"Retreat name contains placeholder text: {name}"
-                    assert indicator not in description, f"Retreat description contains placeholder text"
+                    assert indicator not in description, "Retreat description contains placeholder text"
         else:
             print("✓ Retreats endpoint correctly returns empty list (no seeded placeholders)")
 
@@ -281,7 +281,7 @@ class TestArchangelOracle:
         if response.status_code == 200:
             data = response.json()
             assert "name" in data or "id" in data
-            print(f"✓ Archangel oracle reading working")
+            print("✓ Archangel oracle reading working")
         elif response.status_code == 404:
             print("⚠ Archangel oracle endpoint not found (may be internal only)")
         else:

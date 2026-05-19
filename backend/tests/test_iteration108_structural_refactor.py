@@ -42,7 +42,7 @@ class TestBirthChartAPIs:
             assert sign in data, f"Missing zodiac sign: {sign}"
             assert "element" in data[sign]
             assert "symbol" in data[sign]
-        print(f"PASS: Zodiac signs endpoint returns all 12 signs with correct structure")
+        print("PASS: Zodiac signs endpoint returns all 12 signs with correct structure")
     
     def test_birth_chart_calculate_endpoint(self):
         """Verify birth chart calculation endpoint works"""
@@ -73,7 +73,7 @@ class TestBirthChartAPIs:
             assert "degree" in planet
             assert "house" in planet
         
-        print(f"PASS: Birth chart calculation returns complete data structure")
+        print("PASS: Birth chart calculation returns complete data structure")
 
 
 class TestCrystalGuideAPIs:

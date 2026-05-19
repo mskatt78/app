@@ -7,7 +7,6 @@ Tests:
 - GET /api/tts/meditation/{id}/parts returns total_parts=4
 - POST /api/tts/meditation/nonexistent?part=1 returns 404
 """
-import pytest
 import requests
 import os
 import time
@@ -50,7 +49,7 @@ class TestTTSMeditationPartsInfo:
         assert "total_parts" in data, f"Missing 'total_parts' in response: {data}"
         assert data["total_parts"] == 4, f"Expected total_parts=4, got {data['total_parts']}"
         assert data["meditation_id"] == "1", f"Expected meditation_id='1', got {data['meditation_id']}"
-        print(f"PASS: GET /api/tts/meditation/1/parts returns total_parts=4")
+        print("PASS: GET /api/tts/meditation/1/parts returns total_parts=4")
 
 
 class TestTTSMeditationPart1:
@@ -68,7 +67,7 @@ class TestTTSMeditationPart1:
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text[:200]}"
         data = response.json()
-        assert "audio_base64" in data, f"Missing 'audio_base64' in response"
+        assert "audio_base64" in data, "Missing 'audio_base64' in response"
         assert len(data["audio_base64"]) > 1000, f"audio_base64 too short: {len(data['audio_base64'])} chars"
         assert data.get("format") == "mp3", f"Expected format='mp3', got {data.get('format')}"
         assert elapsed < TTS_TIMEOUT, f"Request took {elapsed:.1f}s, exceeds {TTS_TIMEOUT}s timeout"
@@ -90,8 +89,8 @@ class TestTTSMeditationPart2:
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text[:200]}"
         data = response.json()
-        assert "audio_base64" in data, f"Missing 'audio_base64' in response"
-        assert len(data["audio_base64"]) > 1000, f"audio_base64 too short"
+        assert "audio_base64" in data, "Missing 'audio_base64' in response"
+        assert len(data["audio_base64"]) > 1000, "audio_base64 too short"
         assert elapsed < TTS_TIMEOUT, f"Request took {elapsed:.1f}s, exceeds {TTS_TIMEOUT}s timeout"
         print(f"PASS: Part 2 returned {len(data['audio_base64'])} chars in {elapsed:.1f}s")
 
@@ -111,8 +110,8 @@ class TestTTSMeditationPart3:
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text[:200]}"
         data = response.json()
-        assert "audio_base64" in data, f"Missing 'audio_base64' in response"
-        assert len(data["audio_base64"]) > 1000, f"audio_base64 too short"
+        assert "audio_base64" in data, "Missing 'audio_base64' in response"
+        assert len(data["audio_base64"]) > 1000, "audio_base64 too short"
         assert elapsed < TTS_TIMEOUT, f"Request took {elapsed:.1f}s, exceeds {TTS_TIMEOUT}s timeout"
         print(f"PASS: Part 3 returned {len(data['audio_base64'])} chars in {elapsed:.1f}s")
 
@@ -132,8 +131,8 @@ class TestTTSMeditationPart4:
         
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text[:200]}"
         data = response.json()
-        assert "audio_base64" in data, f"Missing 'audio_base64' in response"
-        assert len(data["audio_base64"]) > 1000, f"audio_base64 too short"
+        assert "audio_base64" in data, "Missing 'audio_base64' in response"
+        assert len(data["audio_base64"]) > 1000, "audio_base64 too short"
         assert elapsed < TTS_TIMEOUT, f"Request took {elapsed:.1f}s, exceeds {TTS_TIMEOUT}s timeout"
         print(f"PASS: Part 4 returned {len(data['audio_base64'])} chars in {elapsed:.1f}s")
 
@@ -162,7 +161,7 @@ class TestTTSMeditationErrorCases:
             timeout=10
         )
         assert response.status_code == 400, f"Expected 400, got {response.status_code}"
-        print(f"PASS: Part 0 returns 400")
+        print("PASS: Part 0 returns 400")
 
     def test_tts_meditation_nonexistent_returns_404(self):
         """POST /api/tts/meditation/nonexistent?part=1 returns 404"""
@@ -185,7 +184,7 @@ class TestTTSMeditationErrorCases:
             timeout=10
         )
         assert response.status_code == 404, f"Expected 404, got {response.status_code}"
-        print(f"PASS: Invalid meditation ID 999 returns 404")
+        print("PASS: Invalid meditation ID 999 returns 404")
 
 
 class TestTTSMeditationDifferentVoices:
@@ -200,5 +199,5 @@ class TestTTSMeditationDifferentVoices:
         )
         assert response.status_code == 200, f"Expected 200, got {response.status_code}"
         data = response.json()
-        assert "audio_base64" in data, f"Missing 'audio_base64'"
+        assert "audio_base64" in data, "Missing 'audio_base64'"
         print(f"PASS: Default voice works, returned {len(data['audio_base64'])} chars")

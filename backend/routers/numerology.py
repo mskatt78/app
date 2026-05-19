@@ -1,7 +1,7 @@
 """Numerology and 13-month astrology routes."""
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-from typing import Any, Optional, List
+from typing import Any, Optional
 from datetime import datetime, timezone
 import logging
 import uuid

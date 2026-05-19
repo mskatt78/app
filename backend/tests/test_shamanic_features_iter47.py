@@ -5,7 +5,6 @@ Backend tests for Shamanic Elements Soul Temple 2.0 new features (iteration 47):
 - Videos: 15 tutorial entries
 - Community sharing: POST /api/community/posts endpoint
 """
-import pytest
 import requests
 import os
 
@@ -154,7 +153,7 @@ class TestCreativeProcesses:
         assert 'why_this_heals' in data and data['why_this_heals']
         assert 'safety_precautions' in data and data['safety_precautions']
         assert 'integration' in data
-        print(f"PASS: Vision Quest entry has all deep fields")
+        print("PASS: Vision Quest entry has all deep fields")
 
     def test_creative_processes_ceremony_category(self):
         """Filter by ceremony category should return smudging entry"""
@@ -300,4 +299,4 @@ class TestCommunityPosts:
         get_resp = requests.get(f"{BASE_URL}/api/community/posts/{post_id}")
         assert get_resp.status_code == 200
         assert get_resp.json()['likes'] == 1
-        print(f"PASS: Like endpoint works - likes incremented to 1")
+        print("PASS: Like endpoint works - likes incremented to 1")

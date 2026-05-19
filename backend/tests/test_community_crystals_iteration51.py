@@ -4,7 +4,6 @@ Backend tests for iteration 51:
 - Crystal deep profiles (20 crystals)
 - Daily practice widget API
 """
-import pytest
 import requests
 import os
 
@@ -123,7 +122,7 @@ class TestCommunityPosts:
         like_resp = requests.post(f"{BASE_URL}/api/community/posts/{post_id}/like", timeout=15)
         assert like_resp.status_code == 200, f"Expected 200, got {like_resp.status_code}: {like_resp.text}"
         data = like_resp.json()
-        assert data.get("success") == True, f"Expected success=True: {data}"
+        assert data.get("success"), f"Expected success=True: {data}"
         print(f"Post {post_id} liked successfully")
 
     def test_reply_to_community_post(self):

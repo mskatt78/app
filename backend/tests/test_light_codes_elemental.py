@@ -3,7 +3,6 @@ Tests for Light Codes and Elemental Temples content expansion features.
 Testing: 5 category tabs, galactic_codes (15 entries), chakra_codes (12 entries), 
          and ElementalTemples 8 sections per element.
 """
-import pytest
 import requests
 import os
 
@@ -86,7 +85,7 @@ class TestLightCodesAPI:
         expected_stars = ['Pleiadian', 'Sirian', 'Arcturian']
         for star in expected_stars:
             assert any(star in name for name in names), f"No entry with star system '{star}' found"
-        print(f"✓ Galactic codes contain Pleiadian, Sirian, Arcturian entries")
+        print("✓ Galactic codes contain Pleiadian, Sirian, Arcturian entries")
 
     def test_chakra_codes_have_activation_field(self):
         """Each chakra code should have activation, purpose, and practice fields"""
@@ -104,9 +103,9 @@ class TestLightCodesAPI:
         resp = requests.get(f"{BASE_URL}/api/light-codes")
         data = resp.json()
         chakra_names = [cc['name'] for cc in data.get('chakra_codes', [])]
-        assert any('Earth Star' in name for name in chakra_names), f"Earth Star Chakra not found"
-        assert any('Stellar Gateway' in name for name in chakra_names), f"Stellar Gateway not found"
-        print(f"✓ Chakra codes include Earth Star and Stellar Gateway")
+        assert any('Earth Star' in name for name in chakra_names), "Earth Star Chakra not found"
+        assert any('Stellar Gateway' in name for name in chakra_names), "Stellar Gateway not found"
+        print("✓ Chakra codes include Earth Star and Stellar Gateway")
 
     def test_galactic_codes_have_image_urls(self):
         """Galactic codes should have image_url fields"""

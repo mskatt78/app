@@ -87,7 +87,7 @@ class TestCrystalImageVerification:
         assert 'wikimedia' in resolved_url.lower() or 'wikipedia' in resolved_url.lower(), \
             f"Iolite resolved URL should be from Wikipedia/Wikimedia, got {resolved_url}"
         
-        print(f"PASS: Iolite correctly mapped to Cordierite with verified Wikipedia image")
+        print("PASS: Iolite correctly mapped to Cordierite with verified Wikipedia image")
     
     def test_validation_score_above_threshold(self):
         """All verified crystals should have score >= 0.58"""
@@ -110,7 +110,7 @@ class TestCrystalImageVerification:
         # At minimum, all should have some score
         zero_scores = [(cid, score) for cid, score in low_scores if score == 0]
         assert len(zero_scores) == 0, f"Crystals with zero score: {zero_scores}"
-        print(f"PASS: All crystals have non-zero validation scores")
+        print("PASS: All crystals have non-zero validation scores")
     
     def test_resolved_image_urls_are_valid(self):
         """All resolved image URLs should be valid HTTPS URLs from Wikipedia/Wikimedia"""
@@ -144,7 +144,7 @@ class TestCrystalImageVerification:
         assert 'image_validation' in data
         assert data['image_validation'].get('status') == 'verified'
         
-        print(f"PASS: Single crystal endpoint returns enriched data with image validation")
+        print("PASS: Single crystal endpoint returns enriched data with image validation")
     
     def test_crystal_title_mapping_coverage(self):
         """Verify all crystals have Wikipedia title in validation (any valid title)"""
@@ -169,7 +169,7 @@ class TestCrystalImageVerification:
         assert iolite is not None
         iolite_title = iolite.get('image_validation', {}).get('wikipedia_title', '')
         assert iolite_title == 'Cordierite', f"Iolite should map to Cordierite, got {iolite_title}"
-        print(f"PASS: Iolite correctly mapped to Cordierite")
+        print("PASS: Iolite correctly mapped to Cordierite")
 
 
 class TestCrystalImageFields:
@@ -191,7 +191,7 @@ class TestCrystalImageFields:
                     missing_fields.append((cid, field))
         
         assert len(missing_fields) == 0, f"Missing fields: {missing_fields}"
-        print(f"PASS: All crystals have required image fields")
+        print("PASS: All crystals have required image fields")
     
     def test_validation_object_structure(self):
         """image_validation should have required sub-fields"""
@@ -210,7 +210,7 @@ class TestCrystalImageFields:
                     missing_fields.append((cid, field))
         
         assert len(missing_fields) == 0, f"Missing validation fields: {missing_fields}"
-        print(f"PASS: All crystals have complete image_validation structure")
+        print("PASS: All crystals have complete image_validation structure")
 
 
 if __name__ == "__main__":

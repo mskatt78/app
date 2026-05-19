@@ -4,7 +4,6 @@ Tests both public GET endpoints and admin CRUD endpoints
 """
 import pytest
 import requests
-import os
 import uuid
 from test_security_config import BASE_URL, TEST_EMAIL, TEST_PASSWORD
 

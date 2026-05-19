@@ -149,7 +149,7 @@ class TestWordFloorVerification:
         target_word_count = data.get("target_word_count", target_words)
         percentage = (word_count / target_word_count * 100) if target_word_count > 0 else 0
 
-        print(f"CRITICAL 20-MIN STRICT TEST:")
+        print("CRITICAL 20-MIN STRICT TEST:")
         print(f"  Target: {target_word_count} words")
         print(f"  Minimum (80%): {minimum_word_floor} words")
         print(f"  Actual: {word_count} words")
@@ -194,7 +194,7 @@ class TestWordFloorVerification:
         target_word_count = data.get("target_word_count", target_words)
         percentage = (word_count / target_word_count * 100) if target_word_count > 0 else 0
 
-        print(f"CRITICAL 20-MIN BALANCED TEST:")
+        print("CRITICAL 20-MIN BALANCED TEST:")
         print(f"  Target: {target_word_count} words")
         print(f"  Minimum (80%): {minimum_word_floor} words")
         print(f"  Actual: {word_count} words")
@@ -295,7 +295,7 @@ class TestRepetitionQualityRegression:
         # Both word count and quality must pass
         assert word_count >= 1920, f"Word count {word_count} below 1920"
         assert repeat_ratio <= max_allowed_ratio, f"Repeat ratio {repeat_ratio:.3f} > {max_allowed_ratio}"
-        print(f"PASSED: 20-min strict has both sufficient words AND good quality")
+        print("PASSED: 20-min strict has both sufficient words AND good quality")
 
 
 class TestAntiRepetitionModePayload:

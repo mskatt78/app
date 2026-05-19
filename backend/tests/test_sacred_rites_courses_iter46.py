@@ -6,7 +6,6 @@ Test sacred rites courses deep content:
 - Nusta Karpay: 7 rites, 3 rituals, 2 embodiment practices
 - 13th Womb Rite: 3 rites, 3 rituals, 3 embodiment practices
 """
-import pytest
 import requests
 import os
 

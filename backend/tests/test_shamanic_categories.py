@@ -371,7 +371,7 @@ class TestDataIntegrity:
         
         with_images = sum(1 for p in data if p.get("image_url"))
         print(f"Heart practices with images: {with_images}/{len(data)}")
-        assert with_images == len(data), f"Some heart practices missing images"
+        assert with_images == len(data), "Some heart practices missing images"
     
     def test_earth_altars_have_images(self):
         """All earth altars should have AI-generated images"""

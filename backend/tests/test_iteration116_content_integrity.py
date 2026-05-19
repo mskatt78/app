@@ -240,7 +240,7 @@ class TestSourceReferencesNormalization:
             refs = pose.get("source_references", [])
             for ref in refs:
                 assert ref.startswith("http://") or ref.startswith("https://"), f"Invalid URL: {ref}"
-        print(f"PASS: Yoga poses have properly normalized source_references")
+        print("PASS: Yoga poses have properly normalized source_references")
 
     def test_mantras_source_references_are_urls(self):
         """Mantras source_references should be list of valid URLs"""
@@ -251,7 +251,7 @@ class TestSourceReferencesNormalization:
             refs = mantra.get("source_references", [])
             for ref in refs:
                 assert ref.startswith("http://") or ref.startswith("https://"), f"Invalid URL: {ref}"
-        print(f"PASS: Mantras have properly normalized source_references")
+        print("PASS: Mantras have properly normalized source_references")
 
 
 if __name__ == "__main__":

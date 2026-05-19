@@ -2,7 +2,6 @@
 Pre-deployment verification tests for Shamanic Elements Soul Temple 2.0
 Tests all content endpoints to verify data counts and structure before deployment.
 """
-import pytest
 import requests
 import os
 

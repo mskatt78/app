@@ -5,9 +5,6 @@ Tests all 9 routers after server.py modularization:
 """
 import pytest
 import requests
-import os
-import uuid
-import time
 from test_security_config import BASE_URL, TEST_EMAIL, TEST_PASSWORD
 
 

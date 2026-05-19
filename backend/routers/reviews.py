@@ -1,5 +1,5 @@
 """Community Reviews router — users can submit star ratings and written reviews."""
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, Request
 from pydantic import BaseModel, Field
 from typing import Any, Optional, List
 from datetime import datetime, timezone

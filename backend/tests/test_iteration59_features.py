@@ -4,7 +4,6 @@ Tests for: Demo page, Support page, Settings account tools, Admin collections, L
 """
 import pytest
 import requests
-import os
 from test_security_config import BASE_URL, ADMIN_PASSWORD, QA_USER_EMAIL, QA_USER_PASSWORD
 
 

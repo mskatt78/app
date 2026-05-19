@@ -102,7 +102,7 @@ class TestExpandScriptEndpoint:
         assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
         
         data = response.json()
-        assert data["used_ai"] == False, "Should not use AI when use_ai=False"
+        assert not data["used_ai"], "Should not use AI when use_ai=False"
 
 
 class TestAstrologyCurrentEndpoint:

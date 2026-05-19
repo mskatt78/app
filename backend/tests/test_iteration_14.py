@@ -8,8 +8,6 @@ Tests for:
 """
 import pytest
 import requests
-import os
-from datetime import datetime
 import uuid
 from test_security_config import BASE_URL, TEST_PASSWORD
 
