@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect, useCallback, createContext, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X, Moon, Sun, Sparkles, Calendar, Check } from "lucide-react";
 import { toast } from "sonner";
@@ -71,6 +71,22 @@ const moonPhaseMessages = {
   waning_crescent: "Waning Crescent Moon. Rest, surrender, and prepare for renewal."
 };
 
+const calculateMoonPhase = (date) => {
+  const lunarCycle = 29.53059;
+  const knownNewMoon = new Date("2024-01-11T11:57:00Z");
+  const daysSince = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
+  const phase = ((daysSince % lunarCycle) + lunarCycle) % lunarCycle;
+
+  if (phase < 1.85) return "new";
+  if (phase < 7.38) return "waxing_crescent";
+  if (phase < 9.23) return "first_quarter";
+  if (phase < 14.76) return "waxing_gibbous";
+  if (phase < 16.61) return "full";
+  if (phase < 22.14) return "waning_gibbous";
+  if (phase < 23.99) return "third_quarter";
+  return "waning_crescent";
+};
+
 // Daily wisdom messages (rotating)
 const dailyWisdomMessages = [
   "Your breath is your anchor. Return to it throughout the day.",
@@ -104,16 +120,15 @@ export const NotificationProvider = ({ children }) => {
     localStorage.setItem("notificationPreferences", JSON.stringify(preferences));
   }, [preferences]);
 
-  // Check for daily notifications on mount and set interval
-  useEffect(() => {
-    checkDailyNotifications();
-    
-    // Check every hour
-    const interval = setInterval(checkDailyNotifications, 60 * 60 * 1000);
-    return () => clearInterval(interval);
-  }, [checkDailyNotifications, preferences]);
+  const addInAppNotification = useCallback((notification) => {
+    const id = Date.now();
+    setInAppNotifications(prev => [
+      { ...notification, id, timestamp: new Date(), read: false },
+      ...prev.slice(0, 19) // Keep max 20 notifications
+    ]);
+  }, []);
 
-  const checkDailyNotifications = () => {
+  const checkDailyNotifications = useCallback(() => {
     const now = new Date();
     const today = now.toDateString();
     const lastCheck = localStorage.getItem("lastNotificationCheck");
@@ -179,32 +194,15 @@ export const NotificationProvider = ({ children }) => {
         });
       }
     }
-  };
+  }, [preferences, addInAppNotification]);
 
-  // Calculate moon phase (simplified)
-  const calculateMoonPhase = (date) => {
-    const lunarCycle = 29.53059;
-    const knownNewMoon = new Date("2024-01-11T11:57:00Z");
-    const daysSince = (date - knownNewMoon) / (1000 * 60 * 60 * 24);
-    const phase = ((daysSince % lunarCycle) + lunarCycle) % lunarCycle;
-    
-    if (phase < 1.85) return "new";
-    if (phase < 7.38) return "waxing_crescent";
-    if (phase < 9.23) return "first_quarter";
-    if (phase < 14.76) return "waxing_gibbous";
-    if (phase < 16.61) return "full";
-    if (phase < 22.14) return "waning_gibbous";
-    if (phase < 23.99) return "third_quarter";
-    return "waning_crescent";
-  };
+  // Check for daily notifications on mount and set interval
+  useEffect(() => {
+    checkDailyNotifications();
 
-  const addInAppNotification = (notification) => {
-    const id = Date.now();
-    setInAppNotifications(prev => [
-      { ...notification, id, timestamp: new Date(), read: false },
-      ...prev.slice(0, 19) // Keep max 20 notifications
-    ]);
-  };
+    const interval = setInterval(checkDailyNotifications, 60 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [checkDailyNotifications]);
 
   const markAsRead = (id) => {
     setInAppNotifications(prev => 

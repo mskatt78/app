@@ -42,8 +42,20 @@ const SacredGuardians = ({ user, api }) => {
   };
 
   useEffect(() => {
+    const fetchGuardians = async () => {
+      try {
+        const response = await api.get("/sacred-guardians");
+        setGuardians(response.data);
+        setFiltered(response.data);
+      } catch (error) {
+        console.error("Failed to fetch sacred guardians:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchGuardians();
-  }, [fetchGuardians]);
+  }, [api]);
 
   useEffect(() => {
     if (activeCategory === "all") {
@@ -52,18 +64,6 @@ const SacredGuardians = ({ user, api }) => {
       setFiltered(guardians.filter(g => g.category === activeCategory));
     }
   }, [activeCategory, guardians]);
-
-  const fetchGuardians = async () => {
-    try {
-      const response = await api.get("/sacred-guardians");
-      setGuardians(response.data);
-      setFiltered(response.data);
-    } catch (error) {
-      console.error("Failed to fetch sacred guardians:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (

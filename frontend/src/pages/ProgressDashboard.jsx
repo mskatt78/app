@@ -45,62 +45,62 @@ const ProgressDashboard = ({ user, api }) => {
   ];
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const fetchData = async () => {
+      try {
+        const [statsRes, historyRes] = await Promise.all([
+          api.get("/practice-history/detailed-stats"),
+          api.get("/practice-history?limit=50")
+        ]);
+        setStats(statsRes.data);
+        setHistory(historyRes.data);
 
-  const fetchData = async () => {
-    try {
-      const [statsRes, historyRes] = await Promise.all([
-        api.get("/practice-history/detailed-stats"),
-        api.get("/practice-history?limit=50")
-      ]);
-      setStats(statsRes.data);
-      setHistory(historyRes.data);
-      
-      // Calculate weekly data for chart
-      const weekly = calculateWeeklyData(historyRes.data);
-      setWeeklyData(weekly);
-    } catch (error) {
-      console.error("Failed to fetch progress data:", error);
-      // Use mock data for demo
-      setStats({
-        total_sessions: 47,
-        total_minutes: 1420,
-        current_streak: 7,
-        longest_streak: 14,
-        favorite_practice: "meditation",
-        element_balance: {
-          Earth: 12,
-          Water: 18,
-          Fire: 8,
-          Air: 15,
-          Spirit: 22
-        },
-        practice_counts: {
-          yoga: 12,
-          breathwork: 8,
-          meditation: 15,
-          oracle: 5,
-          mantra: 4,
-          grounding: 3
-        },
-        achievements_unlocked: 8,
-        weekly_goal: 5,
-        weekly_completed: 4
-      });
-      setWeeklyData([
-        { day: "Mon", minutes: 25, sessions: 2 },
-        { day: "Tue", minutes: 40, sessions: 3 },
-        { day: "Wed", minutes: 15, sessions: 1 },
-        { day: "Thu", minutes: 35, sessions: 2 },
-        { day: "Fri", minutes: 50, sessions: 4 },
-        { day: "Sat", minutes: 30, sessions: 2 },
-        { day: "Sun", minutes: 45, sessions: 3 }
-      ]);
-    } finally {
-      setLoading(false);
-    }
-  };
+        // Calculate weekly data for chart
+        const weekly = calculateWeeklyData(historyRes.data);
+        setWeeklyData(weekly);
+      } catch (error) {
+        console.error("Failed to fetch progress data:", error);
+        // Use mock data for demo
+        setStats({
+          total_sessions: 47,
+          total_minutes: 1420,
+          current_streak: 7,
+          longest_streak: 14,
+          favorite_practice: "meditation",
+          element_balance: {
+            Earth: 12,
+            Water: 18,
+            Fire: 8,
+            Air: 15,
+            Spirit: 22
+          },
+          practice_counts: {
+            yoga: 12,
+            breathwork: 8,
+            meditation: 15,
+            oracle: 5,
+            mantra: 4,
+            grounding: 3
+          },
+          achievements_unlocked: 8,
+          weekly_goal: 5,
+          weekly_completed: 4
+        });
+        setWeeklyData([
+          { day: "Mon", minutes: 25, sessions: 2 },
+          { day: "Tue", minutes: 40, sessions: 3 },
+          { day: "Wed", minutes: 15, sessions: 1 },
+          { day: "Thu", minutes: 35, sessions: 2 },
+          { day: "Fri", minutes: 50, sessions: 4 },
+          { day: "Sat", minutes: 30, sessions: 2 },
+          { day: "Sun", minutes: 45, sessions: 3 }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [api]);
 
   const calculateWeeklyData = (history) => {
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

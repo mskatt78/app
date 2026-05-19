@@ -51,7 +51,10 @@ const saveProgress = (courseId, progress) => {
 
 export const CourseJourneyTimeline = ({ selectedCourse, hasAccess }) => {
   const courseId = selectedCourse?.id;
-  const phases = selectedCourse?.forty_day_integration?.phases || [];
+  const phases = useMemo(
+    () => selectedCourse?.forty_day_integration?.phases ?? [],
+    [selectedCourse?.forty_day_integration?.phases],
+  );
   const phaseMap = useMemo(() => buildPhaseMap(phases), [phases]);
 
   const firstPhaseEnd = useMemo(() => {

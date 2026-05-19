@@ -63,25 +63,25 @@ const Settings = ({ user, api }) => {
   ];
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const fetchData = async () => {
+      try {
+        const [reminderRes, ritualsRes, deletionRes] = await Promise.all([
+          api.get("/settings/reminders"),
+          api.get("/rituals"),
+          api.get("/account/deletion-status"),
+        ]);
+        setReminderSettings(reminderRes.data);
+        setRituals(ritualsRes.data);
+        setDeletionStatus(deletionRes.data || null);
+      } catch (error) {
+        appLogger.error("Failed to fetch settings", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchData = async () => {
-    try {
-      const [reminderRes, ritualsRes, deletionRes] = await Promise.all([
-        api.get("/settings/reminders"),
-        api.get("/rituals"),
-        api.get("/account/deletion-status"),
-      ]);
-      setReminderSettings(reminderRes.data);
-      setRituals(ritualsRes.data);
-      setDeletionStatus(deletionRes.data || null);
-    } catch (error) {
-      appLogger.error("Failed to fetch settings", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchData();
+  }, [api]);
 
   const saveSettings = async () => {
     setSaving(true);

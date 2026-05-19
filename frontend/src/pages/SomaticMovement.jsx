@@ -31,8 +31,20 @@ const SomaticMovement = ({ user, api }) => {
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
   useEffect(() => {
+    const fetchPractices = async () => {
+      try {
+        const response = await api.get("/somatic");
+        setPractices(response.data);
+        setFilteredPractices(response.data);
+      } catch (error) {
+        console.error("Failed to fetch practices:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchPractices();
-  }, [fetchPractices]);
+  }, [api]);
 
   useEffect(() => {
     if (selectedElement === "all") {
@@ -41,18 +53,6 @@ const SomaticMovement = ({ user, api }) => {
       setFilteredPractices(practices.filter((p) => p.element === selectedElement));
     }
   }, [selectedElement, practices]);
-
-  const fetchPractices = async () => {
-    try {
-      const response = await api.get("/somatic");
-      setPractices(response.data);
-      setFilteredPractices(response.data);
-    } catch (error) {
-      console.error("Failed to fetch practices:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleStartGuided = (practice) => {
     setSelectedPractice(null); // close dialog

@@ -77,8 +77,20 @@ const Mindfulness = ({ user, api }) => {
   };
 
   useEffect(() => {
+    const fetchPractices = async () => {
+      try {
+        const response = await api.get("/mindfulness");
+        setPractices(response.data);
+        setFilteredPractices(response.data);
+      } catch (error) {
+        console.error("Failed to fetch practices:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchPractices();
-  }, [fetchPractices]);
+  }, [api]);
 
   useEffect(() => {
     if (selectedCategory === "all") {
@@ -87,18 +99,6 @@ const Mindfulness = ({ user, api }) => {
       setFilteredPractices(practices.filter(p => p.category === selectedCategory));
     }
   }, [selectedCategory, practices]);
-
-  const fetchPractices = async () => {
-    try {
-      const response = await api.get("/mindfulness");
-      setPractices(response.data);
-      setFilteredPractices(response.data);
-    } catch (error) {
-      console.error("Failed to fetch practices:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const isBreathingPractice = (practice) => {
     if (!practice) return false;

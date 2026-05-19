@@ -48,20 +48,20 @@ const RuneReadings = ({ user, api }) => {
   ];
 
   useEffect(() => {
-    fetchRunes();
-  }, [fetchRunes]);
+    const fetchRunes = async () => {
+      try {
+        const response = await api.get("/runes");
+        setRunes(response.data);
+      } catch (error) {
+        console.error("Failed to fetch runes:", error);
+        toast.error("Could not load runes");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchRunes = async () => {
-    try {
-      const response = await api.get("/runes");
-      setRunes(response.data);
-    } catch (error) {
-      console.error("Failed to fetch runes:", error);
-      toast.error("Could not load runes");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchRunes();
+  }, [api]);
 
   const drawRunes = async (spreadType) => {
     setIsDrawing(true);

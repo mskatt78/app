@@ -49,24 +49,26 @@ const AncientWisdom = ({ user, api }) => {
     return parsed.toLocaleDateString();
   };
 
-  useEffect(() => { fetchEntries(); }, [fetchEntries]);
+  useEffect(() => {
+    const fetchEntries = async () => {
+      try {
+        const res = await api.get("/ancient-wisdom");
+        setEntries(res.data);
+        setFiltered(res.data);
+      } catch (err) {
+        console.error("Failed to fetch ancient wisdom:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEntries();
+  }, [api]);
 
   useEffect(() => {
     if (activeTab === "all") setFiltered(entries);
     else setFiltered(entries.filter(e => e.tradition === activeTab));
   }, [activeTab, entries]);
-
-  const fetchEntries = async () => {
-    try {
-      const res = await api.get("/ancient-wisdom");
-      setEntries(res.data);
-      setFiltered(res.data);
-    } catch (err) {
-      console.error("Failed to fetch ancient wisdom:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (loading) {
     return (

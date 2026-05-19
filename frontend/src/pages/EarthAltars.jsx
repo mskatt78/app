@@ -41,21 +41,21 @@ const EarthAltars = ({ user, api }) => {
   };
 
   useEffect(() => {
-    fetchAltars();
-  }, [fetchAltars, filter]);
+    const fetchAltars = async () => {
+      try {
+        const url = filter === "all" ? "/earth-altars" : `/earth-altars?element=${filter}`;
+        const response = await api.get(url);
+        setAltars(response.data);
+      } catch (error) {
+        console.error("Failed to fetch altars:", error);
+        toast.error("Could not load altar guides");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchAltars = async () => {
-    try {
-      const url = filter === "all" ? "/earth-altars" : `/earth-altars?element=${filter}`;
-      const response = await api.get(url);
-      setAltars(response.data);
-    } catch (error) {
-      console.error("Failed to fetch altars:", error);
-      toast.error("Could not load altar guides");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchAltars();
+  }, [api, filter]);
 
   const logPractice = async (altar) => {
     try {

@@ -9,47 +9,57 @@ const PaymentSuccess = ({ user, api }) => {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState("checking"); // checking, success, failed
   const [paymentDetails, setPaymentDetails] = useState(null);
-  const [attempts, setAttempts] = useState(0);
 
   useEffect(() => {
     const sessionId = searchParams.get("session_id");
     if (sessionId) {
-      pollPaymentStatus(sessionId);
+      let isCancelled = false;
+      let timeoutId;
+
+      const pollPaymentStatus = async (attempt = 0) => {
+        const maxAttempts = 10;
+        const pollInterval = 2000;
+
+        if (isCancelled) return;
+
+        if (attempt >= maxAttempts) {
+          setStatus("failed");
+          return;
+        }
+
+        try {
+          const response = await api.get(`/payments/status/${sessionId}`);
+          if (isCancelled) return;
+          setPaymentDetails(response.data);
+
+          if (response.data.payment_status === "paid") {
+            setStatus("success");
+            return;
+          }
+
+          if (response.data.status === "expired") {
+            setStatus("failed");
+            return;
+          }
+
+          timeoutId = setTimeout(() => pollPaymentStatus(attempt + 1), pollInterval);
+        } catch (error) {
+          console.error("Payment status check failed:", error);
+          timeoutId = setTimeout(() => pollPaymentStatus(attempt + 1), pollInterval);
+        }
+      };
+
+      pollPaymentStatus();
+
+      return () => {
+        isCancelled = true;
+        if (timeoutId) clearTimeout(timeoutId);
+      };
     } else {
       setStatus("failed");
     }
-  }, [pollPaymentStatus, searchParams]);
-
-  const pollPaymentStatus = useCallback(async (sessionId) => {
-    const maxAttempts = 10;
-    const pollInterval = 2000;
-
-    if (attempts >= maxAttempts) {
-      setStatus("failed");
-      return;
-    }
-
-    try {
-      const response = await api.get(`/payments/status/${sessionId}`);
-      setPaymentDetails(response.data);
-
-      if (response.data.payment_status === "paid") {
-        setStatus("success");
-        return;
-      } else if (response.data.status === "expired") {
-        setStatus("failed");
-        return;
-      }
-
-      // Continue polling
-      setAttempts(prev => prev + 1);
-      setTimeout(() => pollPaymentStatus(sessionId), pollInterval);
-    } catch (error) {
-      console.error("Payment status check failed:", error);
-      setAttempts(prev => prev + 1);
-      setTimeout(() => pollPaymentStatus(sessionId), pollInterval);
-    }
-  });
+    return undefined;
+  }, [api, searchParams]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">

@@ -41,8 +41,20 @@ const SoundFrequencies = ({ user, api }) => {
   const [filteredFreqs, setFilteredFreqs] = useState([]);
 
   useEffect(() => {
+    const fetchFrequencies = async () => {
+      try {
+        const response = await api.get("/sound-frequencies");
+        setFrequencies(response.data);
+        setFilteredFreqs(response.data);
+      } catch (error) {
+        console.error("Failed to fetch frequencies:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchFrequencies();
-  }, [fetchFrequencies]);
+  }, [api]);
 
   useEffect(() => {
     if (activeCategory === "all") {
@@ -51,18 +63,6 @@ const SoundFrequencies = ({ user, api }) => {
       setFilteredFreqs(frequencies.filter(f => f.category === activeCategory));
     }
   }, [activeCategory, frequencies]);
-
-  const fetchFrequencies = async () => {
-    try {
-      const response = await api.get("/sound-frequencies");
-      setFrequencies(response.data);
-      setFilteredFreqs(response.data);
-    } catch (error) {
-      console.error("Failed to fetch frequencies:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const getColors = (element) => {
     return ELEMENT_COLORS[element] || ELEMENT_COLORS.Water;

@@ -98,8 +98,20 @@ const Meditations = ({ user, api }) => {
   const [guidedPractice, setGuidedPractice] = useState(null);
 
   useEffect(() => {
+    const fetchMeditations = async () => {
+      try {
+        const response = await api.get("/meditations");
+        setMeditations(response.data);
+        setFilteredMeditations(response.data);
+      } catch (error) {
+        console.error("Failed to fetch meditations:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchMeditations();
-  }, [fetchMeditations]);
+  }, [api]);
 
   useEffect(() => {
     if (selectedCategory === "all") {
@@ -108,18 +120,6 @@ const Meditations = ({ user, api }) => {
       setFilteredMeditations(meditations.filter((m) => m.category === selectedCategory));
     }
   }, [selectedCategory, meditations]);
-
-  const fetchMeditations = async () => {
-    try {
-      const response = await api.get("/meditations");
-      setMeditations(response.data);
-      setFilteredMeditations(response.data);
-    } catch (error) {
-      console.error("Failed to fetch meditations:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleStartMeditation = (meditation) => {
     const practice = buildMeditationPractice(meditation);

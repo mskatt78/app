@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Eye, Sparkles, RotateCcw, Loader2, Share2 } from "lucide-react";
@@ -24,10 +24,6 @@ const OracleReadings = ({ user, api }) => {
     { value: "celtic_cross", label: "Celtic Cross", cards: 10 },
   ];
 
-  useEffect(() => {
-    fetchPastReadings();
-  }, [fetchPastReadings]);
-
   const fetchPastReadings = useCallback(async () => {
     try {
       const response = await api.get("/oracle/readings");
@@ -35,7 +31,11 @@ const OracleReadings = ({ user, api }) => {
     } catch (error) {
       console.error("Failed to fetch past readings:", error);
     }
-  });
+  }, [api]);
+
+  useEffect(() => {
+    fetchPastReadings();
+  }, [fetchPastReadings]);
 
   const performReading = async () => {
     setLoading(true);

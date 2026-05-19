@@ -53,19 +53,19 @@ const Retreats = ({ user, api }) => {
   const [activeModality, setActiveModality] = useState(null);
 
   useEffect(() => {
-    fetchRetreats();
-  }, [fetchRetreats]);
+    const fetchRetreats = async () => {
+      try {
+        const response = await api.get("/retreats");
+        setRetreats(response.data || []);
+      } catch (error) {
+        console.error("Failed to fetch retreats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchRetreats = async () => {
-    try {
-      const response = await api.get("/retreats");
-      setRetreats(response.data || []);
-    } catch (error) {
-      console.error("Failed to fetch retreats:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchRetreats();
+  }, [api]);
 
   const getStatusStyle = (status) => {
     const styles = {

@@ -15,19 +15,19 @@ const GroundingPractices = ({ user, api }) => {
   const [isPracticing, setIsPracticing] = useState(false);
 
   useEffect(() => {
-    fetchExercises();
-  }, [fetchExercises]);
+    const fetchExercises = async () => {
+      try {
+        const response = await api.get("/grounding");
+        setExercises(response.data);
+      } catch (error) {
+        console.error("Failed to fetch exercises:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchExercises = async () => {
-    try {
-      const response = await api.get("/grounding");
-      setExercises(response.data);
-    } catch (error) {
-      console.error("Failed to fetch exercises:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchExercises();
+  }, [api]);
 
   return (
     <div className="min-h-screen bg-background" data-testid="grounding-practices">

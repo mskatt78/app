@@ -30,23 +30,23 @@ const Books = ({ user, api }) => {
   );
 
   useEffect(() => {
-    fetchBooks();
-  }, [fetchBooks]);
-
-  const fetchBooks = async () => {
-    try {
-      const response = await api.get("/books");
-      setBooks(response.data || []);
-      // Auto-select first book if available
-      if (response.data?.length > 0) {
-        setSelectedBook(response.data[0]);
+    const fetchBooks = async () => {
+      try {
+        const response = await api.get("/books");
+        setBooks(response.data || []);
+        // Auto-select first book if available
+        if (response.data?.length > 0) {
+          setSelectedBook(response.data[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch books:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Failed to fetch books:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchBooks();
+  }, [api]);
 
   return (
     <div className="min-h-screen bg-background" data-testid="books-page">

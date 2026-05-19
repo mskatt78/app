@@ -86,22 +86,22 @@ const CreativeProcesses = ({ user, api }) => {
   const [guidedPractice, setGuidedPractice] = useState(null);
 
   useEffect(() => {
-    fetchProcesses();
-  }, [fetchProcesses, filter]);
+    const fetchProcesses = async () => {
+      setLoading(true);
+      try {
+        const url = filter === "all" ? "/creative-processes" : `/creative-processes?category=${filter}`;
+        const response = await api.get(url);
+        setProcesses(response.data);
+      } catch (error) {
+        console.error("Failed to fetch creative processes:", error);
+        toast.error("Could not load creative processes");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchProcesses = async () => {
-    setLoading(true);
-    try {
-      const url = filter === "all" ? "/creative-processes" : `/creative-processes?category=${filter}`;
-      const response = await api.get(url);
-      setProcesses(response.data);
-    } catch (error) {
-      console.error("Failed to fetch creative processes:", error);
-      toast.error("Could not load creative processes");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchProcesses();
+  }, [api, filter]);
 
   const handleStartPractice = (process) => {
     const practice = buildPractice(process);

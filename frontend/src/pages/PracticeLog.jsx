@@ -31,24 +31,24 @@ const PracticeLog = ({ user, api }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const fetchData = async () => {
+      try {
+        const [statsRes, historyRes] = await Promise.all([
+          api.get("/practice-history/detailed-stats"),
+          api.get("/practice-history?limit=20")
+        ]);
+        setStats(statsRes.data);
+        setHistory(historyRes.data);
+      } catch (error) {
+        console.error("Failed to fetch practice data:", error);
+        toast.error("Could not load practice history");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchData = async () => {
-    try {
-      const [statsRes, historyRes] = await Promise.all([
-        api.get("/practice-history/detailed-stats"),
-        api.get("/practice-history?limit=20")
-      ]);
-      setStats(statsRes.data);
-      setHistory(historyRes.data);
-    } catch (error) {
-      console.error("Failed to fetch practice data:", error);
-      toast.error("Could not load practice history");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchData();
+  }, [api]);
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);

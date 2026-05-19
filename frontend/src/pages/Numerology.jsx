@@ -61,27 +61,21 @@ const Numerology = ({ user, api }) => {
   };
 
   useEffect(() => {
-    fetchLifePaths();
-    fetchHistory();
-  }, [fetchHistory, fetchLifePaths]);
+    const fetchData = async () => {
+      try {
+        const [lifePathsRes, historyRes] = await Promise.all([
+          api.get("/numerology/life-paths"),
+          api.get("/numerology/readings"),
+        ]);
+        setLifePaths(lifePathsRes.data);
+        setPastReadings(historyRes.data);
+      } catch (error) {
+        appLogger.error("Failed to fetch numerology data", error);
+      }
+    };
 
-  const fetchLifePaths = async () => {
-    try {
-      const response = await api.get("/numerology/life-paths");
-      setLifePaths(response.data);
-    } catch (error) {
-      appLogger.error("Failed to fetch life paths", error);
-    }
-  };
-
-  const fetchHistory = async () => {
-    try {
-      const response = await api.get("/numerology/readings");
-      setPastReadings(response.data);
-    } catch (error) {
-      appLogger.warn("Failed to fetch numerology history", error);
-    }
-  };
+    fetchData();
+  }, [api]);
 
   const calculateReading = async () => {
     if (!birthDate) {

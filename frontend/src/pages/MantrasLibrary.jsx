@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Heart, Filter, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward, Gauge, Minus, Plus, PenLine, Trash2, Edit2, Sparkles } from "lucide-react";
@@ -122,38 +122,14 @@ const MantrasLibrary = ({ user, api }) => {
     return parsed.toLocaleDateString();
   };
 
-  useEffect(() => {
-    fetchMantras();
-    fetchFavorites();
-    if (user) {
-      fetchUserMantras();
-    }
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-      // Stop Web Audio API context (generated mantra sounds)
-      if (mantraAudioCtxRef.current) {
-        try { mantraAudioCtxRef.current.close(); } catch(e) {}
-        mantraAudioCtxRef.current = null;
-      }
-      if (mantraIntervalRef.current) {
-        clearInterval(mantraIntervalRef.current);
-        mantraIntervalRef.current = null;
-      }
-    };
-  }, [fetchFavorites, fetchMantras, fetchUserMantras, user]);
-
-  const fetchUserMantras = async () => {
+  const fetchUserMantras = useCallback(async () => {
     try {
       const response = await api.get("/mantras/custom");
       setUserMantras(response.data);
     } catch (error) {
       appLogger.error("Failed to fetch user mantras", error);
     }
-  };
+  }, [api]);
 
   const createUserMantra = async () => {
     if (!newMantra.text.trim()) {
@@ -236,19 +212,7 @@ const MantrasLibrary = ({ user, api }) => {
     }
   }, [selectedNaturalSound]);
 
-  // Audio setup when mantra is selected
-  useEffect(() => {
-    if (selectedMantra?.audio_url) {
-      setupAudio(selectedMantra.audio_url);
-    }
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-      }
-    };
-  }, [selectedMantra, setupAudio]);
-
-  const setupAudio = (url) => {
+  const setupAudio = useCallback((url) => {
     setAudioError(false);
     setAudioProgress(0);
     setIsPlaying(false);
@@ -282,9 +246,9 @@ const MantrasLibrary = ({ user, api }) => {
     });
     
     audioRef.current = audio;
-  };
+  }, [isLooping, volume]);
 
-  const fetchMantras = async () => {
+  const fetchMantras = useCallback(async () => {
     try {
       const response = await api.get("/mantras");
       setMantras(response.data);
@@ -294,9 +258,9 @@ const MantrasLibrary = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
 
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     try {
       const response = await api.get("/favorites?item_type=mantra");
       const favIds = new Set(response.data.map(f => f.item_id));
@@ -304,7 +268,43 @@ const MantrasLibrary = ({ user, api }) => {
     } catch (error) {
       appLogger.warn("Failed to fetch mantra favorites", error);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchMantras();
+    fetchFavorites();
+    if (user) {
+      fetchUserMantras();
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+      // Stop Web Audio API context (generated mantra sounds)
+      if (mantraAudioCtxRef.current) {
+        try { mantraAudioCtxRef.current.close(); } catch(e) {}
+        mantraAudioCtxRef.current = null;
+      }
+      if (mantraIntervalRef.current) {
+        clearInterval(mantraIntervalRef.current);
+        mantraIntervalRef.current = null;
+      }
+    };
+  }, [fetchFavorites, fetchMantras, fetchUserMantras, user]);
+
+  // Audio setup when mantra is selected
+  useEffect(() => {
+    if (selectedMantra?.audio_url) {
+      setupAudio(selectedMantra.audio_url);
+    }
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, [selectedMantra, setupAudio]);
 
   const toggleFavorite = async (mantraId, e) => {
     e?.stopPropagation();

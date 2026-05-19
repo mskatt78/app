@@ -45,23 +45,23 @@ const Favorites = ({ user, api }) => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const fetchData = async () => {
+      try {
+        const [favsRes, statsRes] = await Promise.all([
+          api.get("/favorites"),
+          api.get("/practice-history/stats"),
+        ]);
+        setFavorites(favsRes.data);
+        setStats(statsRes.data);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchData = async () => {
-    try {
-      const [favsRes, statsRes] = await Promise.all([
-        api.get("/favorites"),
-        api.get("/practice-history/stats"),
-      ]);
-      setFavorites(favsRes.data);
-      setStats(statsRes.data);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchData();
+  }, [api]);
 
   const removeFavorite = async (itemType, itemId) => {
     try {

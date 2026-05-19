@@ -30,20 +30,20 @@ const Achievements = ({ user, api }) => {
   };
 
   useEffect(() => {
-    fetchAchievements();
-  }, [fetchAchievements]);
+    const fetchAchievements = async () => {
+      try {
+        const response = await api.get("/achievements");
+        setData(response.data);
+      } catch (error) {
+        console.error("Failed to fetch achievements:", error);
+        toast.error("Could not load achievements");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const fetchAchievements = async () => {
-    try {
-      const response = await api.get("/achievements");
-      setData(response.data);
-    } catch (error) {
-      console.error("Failed to fetch achievements:", error);
-      toast.error("Could not load achievements");
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchAchievements();
+  }, [api]);
 
   const filteredAchievements = data?.achievements?.filter(a => 
     filter === "all" || a.category === filter

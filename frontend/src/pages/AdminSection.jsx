@@ -223,19 +223,19 @@ function AudioLibrary({ api }) {
   const fileRef = useRef();
 
   useEffect(() => {
-    fetchFiles();
-  }, [fetchFiles]);
+    const fetchFiles = async () => {
+      try {
+        const res = await fetch(`${api}/api/admin/audio_files/items`, {
+          credentials: "include",
+        });
+        const data = await res.json();
+        setFiles(data.items || []);
+      } catch { toast.error("Failed to load files"); }
+      finally { setLoading(false); }
+    };
 
-  const fetchFiles = async () => {
-    try {
-      const res = await fetch(`${api}/api/admin/audio_files/items`, {
-        credentials: "include",
-      });
-      const data = await res.json();
-      setFiles(data.items || []);
-    } catch { toast.error("Failed to load files"); }
-    finally { setLoading(false); }
-  };
+    fetchFiles();
+  }, [api]);
 
   const handleUpload = async (e) => {
     const file = e.target.files?.[0];

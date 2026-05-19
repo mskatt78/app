@@ -37,8 +37,20 @@ const MudrasLibrary = ({ user, api }) => {
   };
 
   useEffect(() => {
+    const fetchMudras = async () => {
+      try {
+        const response = await api.get("/mudras");
+        setMudras(response.data);
+        setFilteredMudras(response.data);
+      } catch (error) {
+        console.error("Failed to fetch mudras:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchMudras();
-  }, [fetchMudras]);
+  }, [api]);
 
   useEffect(() => {
     if (selectedElement === "all") {
@@ -47,18 +59,6 @@ const MudrasLibrary = ({ user, api }) => {
       setFilteredMudras(mudras.filter(m => m.element === selectedElement));
     }
   }, [selectedElement, mudras]);
-
-  const fetchMudras = async () => {
-    try {
-      const response = await api.get("/mudras");
-      setMudras(response.data);
-      setFilteredMudras(response.data);
-    } catch (error) {
-      console.error("Failed to fetch mudras:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleImageError = (mudraId) => {
     setImageErrors(prev => new Set([...prev, mudraId]));

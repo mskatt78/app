@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -55,41 +55,7 @@ const RitualBuilder = ({ user, api }) => {
     mudra: Hand,
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  useEffect(() => {
-    let interval;
-    if (isPlaying && activeRitual) {
-      interval = setInterval(() => {
-        setStepProgress(prev => {
-          const currentPractice = activeRitual.practices[currentStep];
-          const stepDuration = currentPractice?.duration * 60 || 300; // seconds
-          const increment = 100 / stepDuration;
-          
-          if (prev + increment >= 100) {
-            // Move to next step
-            if (currentStep < activeRitual.practices.length - 1) {
-              setCurrentStep(s => s + 1);
-              return 0;
-            } else {
-              // Ritual complete
-              setIsPlaying(false);
-              logRitualComplete();
-              toast.success("Ritual complete! Blessed be.");
-              return 100;
-            }
-          }
-          return prev + increment;
-        });
-        setElapsedTime(t => t + 1);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isPlaying, currentStep, activeRitual, logRitualComplete]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [ritualsRes, yogaRes, breathworkRes, mantraRes, mudraRes] = await Promise.all([
         api.get("/rituals"),
@@ -111,7 +77,11 @@ const RitualBuilder = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const addPracticeToRitual = () => {
     if (!selectedPractice) return;
@@ -204,7 +174,7 @@ const RitualBuilder = ({ user, api }) => {
     setIsPlaying(false);
   };
 
-  const logRitualComplete = async () => {
+  const logRitualComplete = useCallback(async () => {
     if (!activeRitual) return;
     try {
       await api.post("/practice-history", {
@@ -216,7 +186,38 @@ const RitualBuilder = ({ user, api }) => {
     } catch (error) {
       appLogger.warn("Failed to log ritual practice", error);
     }
-  };
+  }, [activeRitual, api]);
+
+  // Timer effect for ritual playback - must be after logRitualComplete is defined
+  useEffect(() => {
+    let interval;
+    if (isPlaying && activeRitual) {
+      interval = setInterval(() => {
+        setStepProgress(prev => {
+          const currentPractice = activeRitual.practices[currentStep];
+          const stepDuration = currentPractice?.duration * 60 || 300; // seconds
+          const increment = 100 / stepDuration;
+          
+          if (prev + increment >= 100) {
+            // Move to next step
+            if (currentStep < activeRitual.practices.length - 1) {
+              setCurrentStep(s => s + 1);
+              return 0;
+            } else {
+              // Ritual complete
+              setIsPlaying(false);
+              logRitualComplete();
+              toast.success("Ritual complete! Blessed be.");
+              return 100;
+            }
+          }
+          return prev + increment;
+        });
+        setElapsedTime(t => t + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isPlaying, currentStep, activeRitual, logRitualComplete]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);

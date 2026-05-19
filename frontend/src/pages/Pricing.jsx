@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
@@ -20,22 +20,6 @@ const Pricing = ({ user, api }) => {
   const [processingPlan, setProcessingPlan] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("stripe");
 
-  useEffect(() => {
-    fetchData();
-    
-    // Check for return from payment
-    const sessionId = searchParams.get("session_id");
-    const isPayPal = searchParams.get("paypal");
-    const token = searchParams.get("token"); // PayPal returns token param
-    
-    if (sessionId) {
-      checkPaymentStatus(sessionId);
-    } else if (isPayPal && token) {
-      // Handle PayPal return - need to capture the order
-      capturePayPalOrder(token);
-    }
-  }, [capturePayPalOrder, checkPaymentStatus, fetchData, searchParams]);
-
   const fetchData = useCallback(async () => {
     // Fetch plans (public endpoint - always works)
     try {
@@ -54,9 +38,9 @@ const Pricing = ({ user, api }) => {
     }
     
     setLoading(false);
-  });
+  }, [api]);
 
-  const checkPaymentStatus = async (sessionId) => {
+  const checkPaymentStatus = useCallback(async (sessionId) => {
     try {
       const response = await api.get(`/payments/status/${sessionId}`);
       if (response.data.payment_status === "paid") {
@@ -66,9 +50,9 @@ const Pricing = ({ user, api }) => {
     } catch (error) {
       appLogger.warn("Payment status check failed", error);
     }
-  };
+  }, [api, fetchData]);
 
-  const capturePayPalOrder = async (orderId) => {
+  const capturePayPalOrder = useCallback(async (orderId) => {
     try {
       const response = await api.post(`/payments/paypal/capture/${orderId}`);
       if (response.data.payment_status === "paid") {
@@ -81,7 +65,23 @@ const Pricing = ({ user, api }) => {
       appLogger.error("PayPal capture failed", error);
       toast.error("Failed to complete PayPal payment.");
     }
-  };
+  }, [api, fetchData]);
+
+  useEffect(() => {
+    fetchData();
+    
+    // Check for return from payment
+    const sessionId = searchParams.get("session_id");
+    const isPayPal = searchParams.get("paypal");
+    const token = searchParams.get("token"); // PayPal returns token param
+    
+    if (sessionId) {
+      checkPaymentStatus(sessionId);
+    } else if (isPayPal && token) {
+      // Handle PayPal return - need to capture the order
+      capturePayPalOrder(token);
+    }
+  }, [capturePayPalOrder, checkPaymentStatus, fetchData, searchParams]);
 
   const handleSubscribe = async (planId) => {
     setProcessingPlan(planId);
