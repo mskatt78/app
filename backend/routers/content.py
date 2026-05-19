@@ -1138,6 +1138,18 @@ def _build_word_floor_padding_paragraphs(required_words: int) -> list[str]:
     return _enforce_stem_diversity(deduped, max_occurrences=1, stem_words=6)
 
 
+def _build_duration_alignment_booster(round_index: int) -> str:
+    return (
+        f"Round {round_index + 1}: Stay present with slow, unforced breath. "
+        "Keep your jaw soft, shoulders released, and eyes relaxed behind closed lids. "
+        "Let awareness travel through throat, chest, belly, hips, and legs with patience. "
+        "If attention drifts, return gently to sensation and rhythm, without judgment. "
+        "Notice warmth, spaciousness, and subtle internal movement unfolding naturally. "
+        "Continue in this steady cadence, receiving each inhale as support and each exhale as release, "
+        "allowing calm regulation to deepen through body, mind, and heart."
+    )
+
+
 def _postprocess_ai_paragraphs(text: str, target_words: int) -> list[str] | None:
     if _count_words(text) < int(target_words * 0.55):
         return None
@@ -1382,11 +1394,26 @@ async def expand_guided_script(request: ExpandScriptRequest):
 
     duration_alignment_floor = int(target_words * 0.985)
     if current_word_count < duration_alignment_floor:
-        alignment_padding = _build_word_floor_padding_paragraphs(duration_alignment_floor - current_word_count)
-        selected_paragraphs.extend(alignment_padding)
-        selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
-        selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences + 1, stem_words=7)
-        current_word_count = _count_words(" ".join(selected_paragraphs))
+        alignment_attempts = 0
+        while current_word_count < duration_alignment_floor and alignment_attempts < 6:
+            before_count = current_word_count
+            needed_words = duration_alignment_floor - current_word_count
+
+            alignment_padding = _build_word_floor_padding_paragraphs(needed_words + 60)
+            selected_paragraphs.extend(alignment_padding)
+            selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+            selected_paragraphs = _enforce_stem_diversity(
+                selected_paragraphs,
+                max_occurrences=stem_max_occurrences + 1,
+                stem_words=7,
+            )
+            current_word_count = _count_words(" ".join(selected_paragraphs))
+
+            if current_word_count <= before_count:
+                selected_paragraphs.append(_build_duration_alignment_booster(alignment_attempts))
+                current_word_count = _count_words(" ".join(selected_paragraphs))
+
+            alignment_attempts += 1
 
     segments = _segment_paragraphs(selected_paragraphs)
 
