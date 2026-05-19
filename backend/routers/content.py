@@ -1231,7 +1231,7 @@ async def _expand_with_llm(request: ExpandScriptRequest, target_words: int) -> O
         logger.warning("Could not import LLM chat for script expansion: %s", exc)
         return None
 
-    def _prepare_llm_prompt() -> str:
+    def _build_prompt() -> str:
         context_lines = [line for line in _flatten_text(request.source_texts + request.steps) if line]
         trimmed_context = "\n".join(context_lines[:60])
         target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
@@ -1267,7 +1267,7 @@ Requirements:
 {toning_requirement}
 """.strip()
 
-    async def _call_llm_api(prompt: str) -> str | None:
+    async def _call_llm(prompt: str) -> str | None:
         chat = LlmChat(
             api_key=api_key,
             session_id=f"guided_script_{uuid.uuid4().hex[:12]}",
@@ -1283,10 +1283,10 @@ Requirements:
         )
         return _sanitize_llm_text(response)
 
-    prompt = _prepare_llm_prompt()
+    prompt = _build_prompt()
 
     try:
-        text = await _call_llm_api(prompt)
+        text = await _call_llm(prompt)
         if not text:
             return None
         return _postprocess_ai_paragraphs(text, target_words)
@@ -1295,14 +1295,11 @@ Requirements:
         return None
 
 
-@router.post("/content/expand-script", response_model=ExpandScriptResponse)
-async def expand_guided_script(request: ExpandScriptRequest):
-    """Expand guided practice text into long-form narration suitable for 7+ minute audio."""
-    practice_name = request.practice_name.strip() if request.practice_name else "Guided Practice"
-    target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
-    target_words = max(MIN_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, target_minutes * TARGET_WORDS_PER_MINUTE)
-
-    fallback_paragraphs = _build_fallback_paragraphs(request, target_words)
+async def _resolve_script_source(
+    request: ExpandScriptRequest,
+    target_words: int,
+    fallback_paragraphs: list[str],
+) -> tuple[list[str], bool, int]:
     selected_paragraphs = fallback_paragraphs.copy()
     used_ai = False
     anti_repetition_mode = "balanced" if request.anti_repetition_mode == "balanced" else "strict"
@@ -1315,11 +1312,37 @@ async def expand_guided_script(request: ExpandScriptRequest):
             selected_paragraphs = ai_paragraphs
             used_ai = True
 
-    selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+    return selected_paragraphs, used_ai, stem_max_occurrences
+
+
+def _finalize_script_paragraphs(
+    request: ExpandScriptRequest,
+    selected_paragraphs: list[str],
+    stem_max_occurrences: int,
+) -> list[str]:
+    finalized = _dedupe_paragraphs(selected_paragraphs)
     if request.include_toning:
-        selected_paragraphs = _inject_toning_paragraphs(selected_paragraphs, request.element or "spirit")
-        selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
-    selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences, stem_words=8)
+        finalized = _inject_toning_paragraphs(finalized, request.element or "spirit")
+        finalized = _dedupe_paragraphs(finalized)
+
+    return _enforce_stem_diversity(finalized, max_occurrences=stem_max_occurrences, stem_words=8)
+
+
+@router.post("/content/expand-script", response_model=ExpandScriptResponse)
+async def expand_guided_script(request: ExpandScriptRequest):
+    """Expand guided practice text into long-form narration suitable for 7+ minute audio."""
+    practice_name = request.practice_name.strip() if request.practice_name else "Guided Practice"
+    target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
+    target_words = max(MIN_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, target_minutes * TARGET_WORDS_PER_MINUTE)
+
+    fallback_paragraphs = _build_fallback_paragraphs(request, target_words)
+    anti_repetition_mode = "balanced" if request.anti_repetition_mode == "balanced" else "strict"
+    selected_paragraphs, used_ai, stem_max_occurrences = await _resolve_script_source(
+        request,
+        target_words,
+        fallback_paragraphs,
+    )
+    selected_paragraphs = _finalize_script_paragraphs(request, selected_paragraphs, stem_max_occurrences)
 
     current_word_count = _count_words(" ".join(selected_paragraphs))
     minimum_word_floor = int(target_words * (0.84 if anti_repetition_mode == "strict" else 0.8))

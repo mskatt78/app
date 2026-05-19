@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { getAuthToken, isLoggedIn } from "../../utils/clientStorage";
+import { appLogger } from "../../utils/logger";
 
 export const useCoursePayments = ({ api, navigate, searchParams }) => {
   const [purchasedCourses, setPurchasedCourses] = useState([]);
@@ -18,7 +19,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
       setPurchasedCourses(data.purchased_courses || []);
       setHasSubscription(data.has_subscription || false);
     } catch (error) {
-      console.error("Failed to fetch course access:", error);
+      appLogger.warn("Failed to fetch course access", error);
     }
   };
 
@@ -57,7 +58,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
         pollPaymentStatus(sessionId, attempts + 1);
       }, 2000);
     } catch (error) {
-      console.error("Payment status polling failed:", error);
+      appLogger.warn("Payment status polling failed", error);
       if (attempts < 9) {
         window.setTimeout(() => {
           pollPaymentStatus(sessionId, attempts + 1);

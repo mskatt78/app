@@ -22,6 +22,29 @@ class TTSRequest(BaseModel):
     speed: float = 0.85  # Slightly slower for meditation
 
 
+def _build_cache_key(text: str, voice: str, speed: float, suffix: str = "") -> str:
+    return hashlib.sha256(f"{text}:{voice}:{speed}{suffix}".encode()).hexdigest()
+
+
+def _build_audio_response(audio_bytes: bytes) -> Response:
+    return Response(
+        content=audio_bytes,
+        media_type="audio/mpeg",
+        headers={"Content-Disposition": "inline; filename=meditation.mp3"},
+    )
+
+
+def _resolve_tts_api_key() -> str:
+    api_key = os.getenv("EMERGENT_LLM_KEY")
+    if not api_key:
+        raise HTTPException(status_code=500, detail="TTS not configured")
+    return api_key
+
+
+def _prepare_text_for_standard_tts(text: str) -> str:
+    return text[:4000] + "..." if len(text) > 4096 else text
+
+
 async def generate_audio_chunk(text: str, voice: str, speed: float, api_key: str) -> bytes:
     """Generate a single chunk of TTS audio."""
     tts = OpenAITextToSpeech(api_key=api_key)
@@ -72,28 +95,14 @@ async def generate_long_audio(text: str, voice: str, speed: float, api_key: str)
 @router.post("/generate")
 async def generate_speech(request: TTSRequest) -> Response:
     """Generate TTS audio from text."""
-    api_key = os.getenv("EMERGENT_LLM_KEY")
-    if not api_key:
-        raise HTTPException(status_code=500, detail="TTS not configured")
-    
-    # Check text length (4096 char limit)
-    if len(request.text) > 4096:
-        # Truncate for now
-        text = request.text[:4000] + "..."
-    else:
-        text = request.text
-    
-    # Create cache key
-    cache_key = hashlib.sha256(f"{text}:{request.voice}:{request.speed}".encode()).hexdigest()
+    api_key = _resolve_tts_api_key()
+    text = _prepare_text_for_standard_tts(request.text)
+    cache_key = _build_cache_key(text, request.voice, request.speed)
     
     # Check cache
     if cache_key in audio_cache:
         logger.info(f"Returning cached audio for key: {cache_key[:8]}")
-        return Response(
-            content=audio_cache[cache_key],
-            media_type="audio/mpeg",
-            headers={"Content-Disposition": "inline; filename=meditation.mp3"}
-        )
+        return _build_audio_response(audio_cache[cache_key])
     
     try:
         tts = OpenAITextToSpeech(api_key=api_key)
@@ -111,11 +120,7 @@ async def generate_speech(request: TTSRequest) -> Response:
         
         logger.info(f"Generated TTS audio: {len(audio_bytes)} bytes")
         
-        return Response(
-            content=audio_bytes,
-            media_type="audio/mpeg",
-            headers={"Content-Disposition": "inline; filename=meditation.mp3"}
-        )
+        return _build_audio_response(audio_bytes)
         
     except Exception as e:
         logger.error(f"TTS generation failed: {e}")
@@ -124,13 +129,8 @@ async def generate_speech(request: TTSRequest) -> Response:
 @router.post("/generate-base64")
 async def generate_speech_base64(request: TTSRequest) -> dict[str, str]:
     """Generate TTS audio and return as base64 for embedding."""
-    
-    api_key = os.getenv("EMERGENT_LLM_KEY")
-    if not api_key:
-        raise HTTPException(status_code=500, detail="TTS not configured")
-    
-    # Create cache key from full text
-    cache_key = hashlib.sha256(f"{request.text}:{request.voice}:{request.speed}:base64".encode()).hexdigest()
+    api_key = _resolve_tts_api_key()
+    cache_key = _build_cache_key(request.text, request.voice, request.speed, suffix=":base64")
     
     # Check cache
     if cache_key in audio_cache:
@@ -156,37 +156,15 @@ async def generate_speech_base64(request: TTSRequest) -> dict[str, str]:
         logger.error(f"TTS generation failed: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to generate audio: {str(e)}")
 
-@router.get("/meditation/{meditation_id}/parts")
-async def get_meditation_parts_info(meditation_id: str) -> dict[str, Any]:
-    """Return the number of audio parts available for a meditation."""
-    return {"meditation_id": meditation_id, "total_parts": 4}
 
+def _build_meditation_scripts(name: str, description: str, element: str, visualization: str) -> dict[int, str]:
+    vis_text = visualization[:400] if visualization else (
+        f"Imagine yourself surrounded by a gentle {element.lower()} energy. "
+        "This energy is warm, ancient, and deeply healing. "
+        "It wraps around you like a cocoon of light."
+    )
 
-# Meditation-specific endpoint with prepared guidance
-@router.post("/meditation/{meditation_id}")
-async def generate_meditation_audio(meditation_id: str, voice: str = "nova", part: int = 1) -> dict[str, str]:
-    """Generate guided meditation audio in 4 parts to stay within proxy timeout.
-    Part 1: Welcome + Breathing (~2-3 min)
-    Part 2: Body Scan (~2-3 min)
-    Part 3: Visualization + Deepening (~3 min)
-    Part 4: Affirmations + Return + Closing (~2-3 min)
-    """
-    from .dependencies import get_db
-    
-    db = get_db()
-    meditation = await db.meditations.find_one({"id": meditation_id}, {"_id": 0})
-    
-    if not meditation:
-        raise HTTPException(status_code=404, detail="Meditation not found")
-    
-    name = meditation.get('name', 'this meditation')
-    description = meditation.get('description', '')
-    visualization = meditation.get('visualization', '')
-    element = meditation.get('element', 'Spirit')
-    
-    vis_text = visualization[:400] if visualization else f"Imagine yourself surrounded by a gentle {element.lower()} energy. This energy is warm, ancient, and deeply healing. It wraps around you like a cocoon of light."
-    
-    scripts = {
+    return {
         1: f"""Welcome to {name}. {description}.
 
 Find a comfortable position. You may sit with your spine tall, or lie down on your back. Allow your body to settle completely. There is nowhere else you need to be.
@@ -281,6 +259,106 @@ Thank you for practicing {name} today. May the peace stay with you throughout yo
 
 Namaste. The light in me honors the light in you.""".strip(),
     }
+
+
+def _build_somatic_script(practice: dict[str, Any]) -> str:
+    duration = practice.get('duration_minutes', 10)
+    name = practice.get('name', 'this practice')
+    description = practice.get('description', '')
+    element = practice.get('element', 'Earth')
+    instructions = practice.get('instructions', [])
+    benefits = practice.get('benefits', [])
+
+    instructions_text = " ".join([f"Step {i+1}: {inst}" for i, inst in enumerate(instructions)])
+    benefits_text = ", ".join(benefits) if benefits else "releasing tension and finding inner peace"
+
+    script_parts = [
+        f"Welcome to {name}.",
+        "",
+        f"{description}",
+        "",
+        f"This practice takes approximately {duration} minutes.",
+        f"The benefits include {benefits_text}.",
+        "",
+        "Find a comfortable space where you can move freely.",
+        "Take a moment to arrive fully in your body.",
+        "",
+        "Let's begin by connecting with your breath.",
+        "Take a deep breath in through your nose...",
+        "And exhale slowly through your mouth...",
+        "",
+        "Again. Breathe in, filling your belly...",
+        "And release, letting go of any tension...",
+        "",
+        "One more time. A deep, grounding breath...",
+        "And let it all flow out...",
+        "",
+        "Before we move, let's check in with your body.",
+        "Notice where you feel any tension or holding.",
+        "Simply observe without judgment.",
+        "Your body has wisdom. Trust it.",
+        "",
+        "Now, let's begin the movement practice.",
+        "",
+        instructions_text,
+        "",
+        "Remember, there is no perfect way to do this.",
+        "Your body knows what it needs.",
+        "Follow your own rhythm.",
+        "Trust the wisdom within you.",
+        "",
+        f"Feel the {element.lower()} energy supporting your practice.",
+        "Let it guide your movements.",
+        "",
+        "As you continue, notice any shifts in your body.",
+        "Any release. Any opening. Any new sensations.",
+        "",
+        "When you feel complete, slowly bring your movements to stillness.",
+        "Take three deep breaths.",
+        "",
+        "Breathe in... and out...",
+        "Breathe in... and out...",
+        "Breathe in... and out...",
+        "",
+        "Place a hand on your heart.",
+        "Thank your body for this practice.",
+        "",
+        f"You have completed {name}.",
+        "May you carry this sense of embodiment throughout your day.",
+        "",
+        "Namaste.",
+    ]
+    return " ".join(script_parts)
+
+@router.get("/meditation/{meditation_id}/parts")
+async def get_meditation_parts_info(meditation_id: str) -> dict[str, Any]:
+    """Return the number of audio parts available for a meditation."""
+    return {"meditation_id": meditation_id, "total_parts": 4}
+
+
+# Meditation-specific endpoint with prepared guidance
+@router.post("/meditation/{meditation_id}")
+async def generate_meditation_audio(meditation_id: str, voice: str = "nova", part: int = 1) -> dict[str, str]:
+    """Generate guided meditation audio in 4 parts to stay within proxy timeout.
+    Part 1: Welcome + Breathing (~2-3 min)
+    Part 2: Body Scan (~2-3 min)
+    Part 3: Visualization + Deepening (~3 min)
+    Part 4: Affirmations + Return + Closing (~2-3 min)
+    """
+    from .dependencies import get_db
+    
+    db = get_db()
+    meditation = await db.meditations.find_one({"id": meditation_id}, {"_id": 0})
+    
+    if not meditation:
+        raise HTTPException(status_code=404, detail="Meditation not found")
+    
+    scripts = _build_meditation_scripts(
+        meditation.get('name', 'this meditation'),
+        meditation.get('description', ''),
+        meditation.get('element', 'Spirit'),
+        meditation.get('visualization', ''),
+    )
     
     if part not in scripts:
         raise HTTPException(status_code=400, detail="Invalid part number. Use 1-4.")
@@ -304,86 +382,7 @@ async def generate_somatic_audio(practice_id: str, voice: str = "nova") -> dict[
     if not practice:
         raise HTTPException(status_code=404, detail="Somatic practice not found")
     
-    duration = practice.get('duration_minutes', 10)
-    name = practice.get('name', 'this practice')
-    description = practice.get('description', '')
-    element = practice.get('element', 'Earth')
-    instructions = practice.get('instructions', [])
-    benefits = practice.get('benefits', [])
-    
-    # Build comprehensive guided somatic practice script
-    instructions_text = " ".join([f"Step {i+1}: {inst}" for i, inst in enumerate(instructions)])
-    benefits_text = ", ".join(benefits) if benefits else "releasing tension and finding inner peace"
-    
-    script_parts = [
-        # ===== OPENING =====
-        f"Welcome to {name}.",
-        "",
-        f"{description}",
-        "",
-        f"This practice takes approximately {duration} minutes.",
-        f"The benefits include {benefits_text}.",
-        "",
-        "Find a comfortable space where you can move freely.",
-        "Take a moment to arrive fully in your body.",
-        "",
-        
-        # ===== BREATH PREPARATION =====
-        "Let's begin by connecting with your breath.",
-        "Take a deep breath in through your nose...",
-        "And exhale slowly through your mouth...",
-        "",
-        "Again. Breathe in, filling your belly...",
-        "And release, letting go of any tension...",
-        "",
-        "One more time. A deep, grounding breath...",
-        "And let it all flow out...",
-        "",
-        
-        # ===== BODY SCAN =====
-        "Before we move, let's check in with your body.",
-        "Notice where you feel any tension or holding.",
-        "Simply observe without judgment.",
-        "Your body has wisdom. Trust it.",
-        "",
-        
-        # ===== INSTRUCTIONS =====
-        "Now, let's begin the movement practice.",
-        "",
-        instructions_text,
-        "",
-        
-        # ===== ENCOURAGEMENT =====
-        "Remember, there is no perfect way to do this.",
-        "Your body knows what it needs.",
-        "Follow your own rhythm.",
-        "Trust the wisdom within you.",
-        "",
-        f"Feel the {element.lower()} energy supporting your practice.",
-        "Let it guide your movements.",
-        "",
-        
-        # ===== CLOSING =====
-        "As you continue, notice any shifts in your body.",
-        "Any release. Any opening. Any new sensations.",
-        "",
-        "When you feel complete, slowly bring your movements to stillness.",
-        "Take three deep breaths.",
-        "",
-        "Breathe in... and out...",
-        "Breathe in... and out...",
-        "Breathe in... and out...",
-        "",
-        "Place a hand on your heart.",
-        "Thank your body for this practice.",
-        "",
-        f"You have completed {name}.",
-        "May you carry this sense of embodiment throughout your day.",
-        "",
-        "Namaste."
-    ]
-    
-    script = " ".join(script_parts)
+    script = _build_somatic_script(practice)
     
     # Use moderate speed for movement guidance (0.85 = slightly slower)
     request = TTSRequest(text=script, voice=voice, speed=0.85)

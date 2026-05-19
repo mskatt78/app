@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 export const AuthCallback = ({ api }) => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export const AuthCallback = ({ api }) => {
         window.history.replaceState(null, "", window.location.pathname);
         navigate("/dashboard", { state: { user: response.data }, replace: true });
       } catch (error) {
-        console.error("Auth callback processing failed:", error);
+        appLogger.error("Auth callback processing failed", error);
         navigate("/", { replace: true });
       }
     };
@@ -68,7 +69,7 @@ export const ProtectedRoute = ({ children, api }) => {
         setIsAuthenticated(true);
       } catch (error) {
         if (!isMountedRef.current) return;
-        console.error("Protected route auth check failed:", error);
+        appLogger.warn("Protected route auth check failed", error);
         setHasAuthError(true);
         setIsAuthenticated(false);
         navigate("/", { replace: true });
@@ -130,7 +131,7 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
           return;
         }
       } catch (error) {
-        console.error("Admin route /auth/me check failed, trying cookie fallback:", error);
+        appLogger.warn("Admin route /auth/me check failed, trying cookie fallback", error);
       }
 
       try {
@@ -143,7 +144,7 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
           navigate("/dashboard", { replace: true });
         }
       } catch (error) {
-        console.error("Admin route cookie validation failed:", error);
+        appLogger.error("Admin route cookie validation failed", error);
         setIsAuthorized(false);
         toast.error("Please sign in to access admin");
         navigate("/", { replace: true });
@@ -188,7 +189,7 @@ export const PublicRoute = ({ children, api }) => {
         setUser(response.data);
       } catch (error) {
         if (!isMountedRef.current) return;
-        console.error("Public route auth check failed:", error);
+        appLogger.warn("Public route auth check failed", error);
         setUser(null);
       }
       if (!isMountedRef.current) return;

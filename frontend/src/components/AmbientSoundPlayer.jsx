@@ -7,6 +7,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Volume2, VolumeX, Play, Pause } from "lucide-react";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
+import { appLogger } from "../utils/logger";
 
 // Sound type definitions
 const AMBIENT_SOUNDS = {
@@ -369,7 +370,9 @@ const createGentleDrums = (audioContext, gainNode) => {
       oscGain.connect(gainNode);
       osc.start();
       osc.stop(audioContext.currentTime + 0.6);
-    } catch(e) {}
+    } catch (error) {
+      appLogger.debug("Fire ceremony beat generation skipped", error);
+    }
   };
   return setInterval(playDrum, 667); // 90 BPM
 };
@@ -390,7 +393,9 @@ const createJourneyDrums = (audioContext, gainNode) => {
       oscGain.connect(gainNode);
       osc.start();
       osc.stop(audioContext.currentTime + 0.28);
-    } catch(e) {}
+    } catch (error) {
+      appLogger.debug("Journey drum tick skipped", error);
+    }
   };
   return setInterval(playDrum, 250); // 240 BPM
 };
@@ -411,7 +416,9 @@ const createAwakeningDrums = (audioContext, gainNode) => {
       oscGain.connect(gainNode);
       osc.start();
       osc.stop(audioContext.currentTime + 0.14);
-    } catch(e) {}
+    } catch (error) {
+      appLogger.debug("Awakening drum tick skipped", error);
+    }
   };
   return setInterval(playDrum, 143); // 420 BPM
 };
@@ -439,7 +446,9 @@ const createFireCeremonyDrums = (audioContext, gainNode) => {
         osc.stop(audioContext.currentTime + 0.28);
       }
       beat++;
-    } catch(e) {}
+    } catch (error) {
+      appLogger.debug("Fire ceremony pattern beat skipped", error);
+    }
   };
   return setInterval(playBeat, 190); // ~316 BPM subdivided
 };
@@ -465,7 +474,9 @@ const createReturnCallDrums = (audioContext, gainNode) => {
           g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.18);
           osc.connect(g); g.connect(gainNode);
           osc.start(); osc.stop(audioContext.currentTime + 0.18);
-        } catch(e) {}
+        } catch (error) {
+          appLogger.debug("Return-call fast beat skipped", error);
+        }
       }, delay);
     });
     SLOW.forEach((delay) => {
@@ -481,7 +492,9 @@ const createReturnCallDrums = (audioContext, gainNode) => {
           g.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.45);
           osc.connect(g); g.connect(gainNode);
           osc.start(); osc.stop(audioContext.currentTime + 0.45);
-        } catch(e) {}
+        } catch (error) {
+          appLogger.debug("Return-call slow beat skipped", error);
+        }
       }, delay);
     });
   };
@@ -575,6 +588,144 @@ const createBinauralBeats = (audioContext, gainNode, beatFreq = 6) => {
   return [leftOsc, rightOsc];
 };
 
+const wireAmbientSoundType = ({ ctx, gainNode, soundType, sourcesRef, intervalsRef }) => {
+  const sound = AMBIENT_SOUNDS[soundType];
+
+  switch (sound?.type) {
+    case "rain":
+    case "water": {
+      const { source, output } = createFilteredNoise(ctx, 400, 2);
+      output.connect(gainNode);
+      source.start();
+      sourcesRef.current.push(source);
+      break;
+    }
+
+    case "ocean": {
+      const { source: low, output: lowOut } = createFilteredNoise(ctx, 200, 1);
+      const { source: mid, output: midOut } = createFilteredNoise(ctx, 800, 0.5);
+
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = 0.1;
+      lfoGain.gain.value = 0.3;
+      lfo.connect(lfoGain);
+      lfoGain.connect(gainNode.gain);
+
+      lowOut.connect(gainNode);
+      midOut.connect(gainNode);
+      low.start();
+      mid.start();
+      lfo.start();
+      sourcesRef.current.push(low, mid, lfo);
+      break;
+    }
+
+    case "wind": {
+      const { source, output } = createFilteredNoise(ctx, 600, 3);
+      output.connect(gainNode);
+      source.start();
+      sourcesRef.current.push(source);
+      break;
+    }
+
+    case "fire": {
+      const { source, output } = createFilteredNoise(ctx, 1000, 1);
+      output.connect(gainNode);
+      source.start();
+      sourcesRef.current.push(source);
+      break;
+    }
+
+    case "nature": {
+      const { source, output } = createFilteredNoise(ctx, 500, 0.5);
+      output.connect(gainNode);
+      source.start();
+      sourcesRef.current.push(source);
+      break;
+    }
+
+    case "drums":
+      intervalsRef.current.push(createDrumPattern(ctx, gainNode));
+      break;
+    case "drums_gentle":
+      intervalsRef.current.push(createGentleDrums(ctx, gainNode));
+      break;
+    case "drums_journey":
+      intervalsRef.current.push(createJourneyDrums(ctx, gainNode));
+      break;
+    case "drums_awakening":
+      intervalsRef.current.push(createAwakeningDrums(ctx, gainNode));
+      break;
+    case "drums_fire":
+      intervalsRef.current.push(createFireCeremonyDrums(ctx, gainNode));
+      break;
+    case "drums_return":
+      intervalsRef.current.push(createReturnCallDrums(ctx, gainNode));
+      break;
+    case "bowls":
+      intervalsRef.current.push(createBowlSound(ctx, gainNode, 528));
+      break;
+    case "crystal_bowls":
+      intervalsRef.current.push(createCrystalBowlSound(ctx, gainNode));
+      break;
+    case "binaural": {
+      const binauralSources = createBinauralBeats(ctx, gainNode, 6);
+      sourcesRef.current.push(...binauralSources);
+      break;
+    }
+    case "dolphin":
+      intervalsRef.current.push(createDolphinSound(ctx, gainNode));
+      break;
+    case "whale":
+      intervalsRef.current.push(createWhaleSound(ctx, gainNode));
+      break;
+    case "birds": {
+      const [birdNoise, birdInterval] = createBirdsSound(ctx, gainNode);
+      sourcesRef.current.push(birdNoise);
+      intervalsRef.current.push(birdInterval);
+      break;
+    }
+    case "leaves": {
+      const leavesResult = createLeavesSound(ctx, gainNode);
+      sourcesRef.current.push(leavesResult[0], leavesResult[1]);
+      break;
+    }
+    case "harp":
+      intervalsRef.current.push(createHarpSound(ctx, gainNode));
+      break;
+    case "gong":
+      intervalsRef.current.push(createGongSound(ctx, gainNode));
+      break;
+    case "chimes":
+      intervalsRef.current.push(createChimesSound(ctx, gainNode));
+      break;
+    case "solfeggio_528":
+      sourcesRef.current.push(...createSolfeggioTone(ctx, gainNode, 528));
+      break;
+    case "solfeggio_432":
+      sourcesRef.current.push(...createSolfeggioTone(ctx, gainNode, 432));
+      break;
+    case "solfeggio_396":
+      sourcesRef.current.push(...createSolfeggioTone(ctx, gainNode, 396));
+      break;
+    case "solfeggio_741":
+      sourcesRef.current.push(...createSolfeggioTone(ctx, gainNode, 741));
+      break;
+    case "solfeggio_852":
+      sourcesRef.current.push(...createSolfeggioTone(ctx, gainNode, 852));
+      break;
+    case "didgeridoo":
+      sourcesRef.current.push(...createDidgeridooSound(ctx, gainNode));
+      break;
+    case "tuning_fork":
+      intervalsRef.current.push(createTuningForkSound(ctx, gainNode));
+      break;
+    default:
+      break;
+  }
+};
+
 const AmbientSoundPlayer = ({
   soundType = "silence", 
   autoPlay = false,
@@ -598,8 +749,8 @@ const AmbientSoundPlayer = ({
     
     // Stop sources
     sourcesRef.current.forEach(source => {
-      try { source.stop?.(); } catch (error) { console.error("Ambient cleanup stop failed:", error); }
-      try { source.disconnect?.(); } catch (error) { console.error("Ambient cleanup disconnect failed:", error); }
+      try { source.stop?.(); } catch (error) { appLogger.warn("Ambient cleanup stop failed", error); }
+      try { source.disconnect?.(); } catch (error) { appLogger.warn("Ambient cleanup disconnect failed", error); }
     });
     sourcesRef.current = [];
     
@@ -646,214 +797,18 @@ const AmbientSoundPlayer = ({
       gainNode.connect(ctx.destination);
       gainNodeRef.current = gainNode;
       
-      const sound = AMBIENT_SOUNDS[soundType];
-      
-      switch (sound?.type) {
-        case "rain":
-        case "water": {
-          const { source, output } = createFilteredNoise(ctx, 400, 2);
-          output.connect(gainNode);
-          source.start();
-          sourcesRef.current.push(source);
-          break;
-        }
-        
-        case "ocean": {
-          // Create multiple layers for ocean sound
-          const { source: low, output: lowOut } = createFilteredNoise(ctx, 200, 1);
-          const { source: mid, output: midOut } = createFilteredNoise(ctx, 800, 0.5);
-          
-          // Add LFO for wave motion
-          const lfo = ctx.createOscillator();
-          const lfoGain = ctx.createGain();
-          lfo.frequency.value = 0.1; // Very slow oscillation
-          lfoGain.gain.value = 0.3;
-          lfo.connect(lfoGain);
-          lfoGain.connect(gainNode.gain);
-          
-          lowOut.connect(gainNode);
-          midOut.connect(gainNode);
-          low.start();
-          mid.start();
-          lfo.start();
-          sourcesRef.current.push(low, mid, lfo);
-          break;
-        }
-        
-        case "wind": {
-          const { source, output } = createFilteredNoise(ctx, 600, 3);
-          output.connect(gainNode);
-          source.start();
-          sourcesRef.current.push(source);
-          break;
-        }
-        
-        case "fire": {
-          // Crackling fire = filtered noise with random amplitude modulation
-          const { source, output } = createFilteredNoise(ctx, 1000, 1);
-          output.connect(gainNode);
-          source.start();
-          sourcesRef.current.push(source);
-          break;
-        }
-        
-        case "nature": {
-          // Gentle ambient noise
-          const { source, output } = createFilteredNoise(ctx, 500, 0.5);
-          output.connect(gainNode);
-          source.start();
-          sourcesRef.current.push(source);
-          break;
-        }
-        
-        case "drums": {
-          const drumInterval = createDrumPattern(ctx, gainNode);
-          intervalsRef.current.push(drumInterval);
-          break;
-        }
-
-        case "drums_gentle": {
-          const gentleInterval = createGentleDrums(ctx, gainNode);
-          intervalsRef.current.push(gentleInterval);
-          break;
-        }
-
-        case "drums_journey": {
-          const journeyInterval = createJourneyDrums(ctx, gainNode);
-          intervalsRef.current.push(journeyInterval);
-          break;
-        }
-
-        case "drums_awakening": {
-          const awakeningInterval = createAwakeningDrums(ctx, gainNode);
-          intervalsRef.current.push(awakeningInterval);
-          break;
-        }
-
-        case "drums_fire": {
-          const fireInterval = createFireCeremonyDrums(ctx, gainNode);
-          intervalsRef.current.push(fireInterval);
-          break;
-        }
-
-        case "drums_return": {
-          const returnInterval = createReturnCallDrums(ctx, gainNode);
-          intervalsRef.current.push(returnInterval);
-          break;
-        }
-        
-        case "bowls": {
-          // Singing bowl at 528 Hz (love frequency)
-          const bowlInterval = createBowlSound(ctx, gainNode, 528);
-          intervalsRef.current.push(bowlInterval);
-          break;
-        }
-
-        case "crystal_bowls": {
-          const crystalInterval = createCrystalBowlSound(ctx, gainNode);
-          intervalsRef.current.push(crystalInterval);
-          break;
-        }
-
-        case "binaural": {
-          const binauralSources = createBinauralBeats(ctx, gainNode, 6);
-          sourcesRef.current.push(...binauralSources);
-          break;
-        }
-
-        case "dolphin": {
-          const dolphinInterval = createDolphinSound(ctx, gainNode);
-          intervalsRef.current.push(dolphinInterval);
-          break;
-        }
-
-        case "whale": {
-          const whaleInterval = createWhaleSound(ctx, gainNode);
-          intervalsRef.current.push(whaleInterval);
-          break;
-        }
-
-        case "birds": {
-          const [birdNoise, birdInterval] = createBirdsSound(ctx, gainNode);
-          sourcesRef.current.push(birdNoise);
-          intervalsRef.current.push(birdInterval);
-          break;
-        }
-
-        case "leaves": {
-          const leavesResult = createLeavesSound(ctx, gainNode);
-          sourcesRef.current.push(leavesResult[0], leavesResult[1]);
-          break;
-        }
-
-        case "harp": {
-          const harpInterval = createHarpSound(ctx, gainNode);
-          intervalsRef.current.push(harpInterval);
-          break;
-        }
-
-        case "gong": {
-          const gongInterval = createGongSound(ctx, gainNode);
-          intervalsRef.current.push(gongInterval);
-          break;
-        }
-
-        case "chimes": {
-          const chimesInterval = createChimesSound(ctx, gainNode);
-          intervalsRef.current.push(chimesInterval);
-          break;
-        }
-
-        case "solfeggio_528": {
-          const solSources = createSolfeggioTone(ctx, gainNode, 528);
-          sourcesRef.current.push(...solSources);
-          break;
-        }
-
-        case "solfeggio_432": {
-          const sol432Sources = createSolfeggioTone(ctx, gainNode, 432);
-          sourcesRef.current.push(...sol432Sources);
-          break;
-        }
-
-        case "solfeggio_396": {
-          const sol396Sources = createSolfeggioTone(ctx, gainNode, 396);
-          sourcesRef.current.push(...sol396Sources);
-          break;
-        }
-
-        case "solfeggio_741": {
-          const sol741Sources = createSolfeggioTone(ctx, gainNode, 741);
-          sourcesRef.current.push(...sol741Sources);
-          break;
-        }
-
-        case "solfeggio_852": {
-          const sol852Sources = createSolfeggioTone(ctx, gainNode, 852);
-          sourcesRef.current.push(...sol852Sources);
-          break;
-        }
-
-        case "didgeridoo": {
-          const didgeSources = createDidgeridooSound(ctx, gainNode);
-          sourcesRef.current.push(...didgeSources);
-          break;
-        }
-
-        case "tuning_fork": {
-          const tuningInterval = createTuningForkSound(ctx, gainNode);
-          intervalsRef.current.push(tuningInterval);
-          break;
-        }
-        
-        default:
-          break;
-      }
+      wireAmbientSoundType({
+        ctx,
+        gainNode,
+        soundType,
+        sourcesRef,
+        intervalsRef,
+      });
       
       setIsPlaying(true);
       onPlayStateChange(true);
-    } catch (e) {
-      console.warn('Web Audio API error:', e);
+    } catch (error) {
+      appLogger.warn("Web Audio API initialization failed", error);
     }
   }, [soundType, volume, onPlayStateChange]);
 
@@ -871,16 +826,14 @@ const AmbientSoundPlayer = ({
     }
   };
 
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-  };
+  const toggleMute = () => setIsMuted((prev) => !prev);
 
   // Auto-play support
   useEffect(() => {
     if (autoPlay && !isPlaying) {
       startSound();
     }
-  }, [autoPlay]);
+  }, [autoPlay, isPlaying, startSound]);
 
   if (!showControls) {
     return null;
