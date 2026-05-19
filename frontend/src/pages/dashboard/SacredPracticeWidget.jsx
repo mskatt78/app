@@ -1,17 +1,26 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Moon } from "lucide-react";
+import { appLogger } from "../../utils/logger";
 
 export const SacredPracticeWidget = ({ api, navigate }) => {
   const [practice, setPractice] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    api.get("/daily-practice")
-      .then((response) => setPractice(response.data))
-      .catch(() => {})
-      .finally(() => setLoading(false));
+  const fetchDailyPractice = useCallback(async () => {
+    try {
+      const response = await api.get("/daily-practice");
+      setPractice(response.data);
+    } catch (error) {
+      appLogger.warn("Failed to fetch daily practice widget", error);
+    } finally {
+      setLoading(false);
+    }
   }, [api]);
+
+  useEffect(() => {
+    fetchDailyPractice();
+  }, [fetchDailyPractice]);
 
   if (loading) {
     return (

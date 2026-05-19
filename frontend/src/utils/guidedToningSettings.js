@@ -1,4 +1,7 @@
+import { appLogger } from "./logger";
+
 const TONING_INTENSITY_KEY = "guided_toning_intensity";
+let runtimeToningIntensity = "subtle";
 
 export const GUIDED_TONING_INTENSITIES = {
   off: {
@@ -28,21 +31,35 @@ const normalize = (value) => {
 
 const storageKey = TONING_INTENSITY_KEY;
 
-const readStoredValue = () => {
+const readCookie = (key) => {
   try {
-    return window.sessionStorage.getItem(storageKey);
+    const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const match = document.cookie.match(new RegExp(`(?:^|; )${escapedKey}=([^;]*)`));
+    return match ? decodeURIComponent(match[1]) : null;
   } catch (error) {
-    console.warn("Unable to read guided toning preference from session storage:", error);
+    appLogger.warn("Unable to read guided toning preference cookie", error);
     return null;
   }
 };
 
-const writeStoredValue = (value) => {
+const writeCookie = (key, value) => {
   try {
-    window.sessionStorage.setItem(storageKey, value);
+    const secure = window.location.protocol === "https:" ? "; Secure" : "";
+    document.cookie = `${key}=${encodeURIComponent(value)}; Max-Age=31536000; Path=/; SameSite=Lax${secure}`;
   } catch (error) {
-    console.warn("Unable to save guided toning preference to session storage:", error);
+    appLogger.warn("Unable to save guided toning preference cookie", error);
   }
+};
+
+const readStoredValue = () => {
+  const cookieValue = readCookie(storageKey);
+  if (cookieValue) return cookieValue;
+  return runtimeToningIntensity;
+};
+
+const writeStoredValue = (value) => {
+  runtimeToningIntensity = value;
+  writeCookie(storageKey, value);
 };
 
 export const getGuidedToningIntensity = () => {

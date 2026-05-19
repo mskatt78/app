@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { getAuthToken, isLoggedIn } from "../../utils/clientStorage";
 import { appLogger } from "../../utils/logger";
@@ -9,7 +9,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [checkingPayment, setCheckingPayment] = useState(false);
 
-  const fetchCourseAccess = async () => {
+  const fetchCourseAccess = useCallback(async () => {
     if (!isLoggedIn()) return;
     try {
       const token = getAuthToken();
@@ -21,11 +21,11 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
     } catch (error) {
       appLogger.warn("Failed to fetch course access", error);
     }
-  };
+  }, [api]);
 
   const hasAccess = (courseId) => hasSubscription || purchasedCourses.includes(courseId);
 
-  const pollPaymentStatus = async (sessionId, attempts = 0) => {
+  const pollPaymentStatus = useCallback(async (sessionId, attempts = 0) => {
     const maxAttempts = 10;
     if (attempts >= maxAttempts) {
       setCheckingPayment(false);
@@ -68,15 +68,16 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
         toast.error("Error verifying payment.");
       }
     }
-  };
+  }, [api, fetchCourseAccess]);
+
+  const paymentSessionId = useMemo(() => searchParams.get("session_id"), [searchParams]);
 
   useEffect(() => {
-    const sessionId = searchParams.get("session_id");
-    if (sessionId && isLoggedIn()) {
+    if (paymentSessionId && isLoggedIn()) {
       setCheckingPayment(true);
-      pollPaymentStatus(sessionId);
+      pollPaymentStatus(paymentSessionId);
     }
-  }, [searchParams]);
+  }, [paymentSessionId, pollPaymentStatus]);
 
   const handlePurchase = async (course) => {
     if (!isLoggedIn()) {
