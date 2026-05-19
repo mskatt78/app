@@ -12,6 +12,7 @@ import { Textarea } from "../components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const Journal = ({ user, api }) => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const Journal = ({ user, api }) => {
       const response = await api.get(`/journal${queryString}`);
       setEntries(response.data);
     } catch (error) {
-      console.error("Failed to fetch entries:", error);
+      appLogger.error("Failed to fetch journal entries", error);
     } finally {
       setLoading(false);
     }
@@ -116,7 +117,7 @@ const Journal = ({ user, api }) => {
       setCreating(false);
       toast.success("Journal entry saved");
     } catch (error) {
-      console.error("Failed to create entry:", error);
+      appLogger.error("Failed to create journal entry", error);
       toast.error("Could not save entry");
     }
   };
@@ -128,7 +129,7 @@ const Journal = ({ user, api }) => {
       setSelectedEntry(null);
       toast.success("Entry deleted");
     } catch (error) {
-      console.error("Failed to delete entry:", error);
+      appLogger.warn("Failed to delete journal entry", error);
       toast.error("Could not delete entry");
     }
   };

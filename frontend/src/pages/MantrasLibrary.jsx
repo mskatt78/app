@@ -20,6 +20,7 @@ import {
   ELEMENT_FREQUENCIES 
 } from "../components/audio/MantraAudio";
 import { getLocalItem, setLocalItem } from "../utils/clientStorage";
+import { appLogger } from "../utils/logger";
 
 const NATURAL_SOUND_OPTIONS = [
   { id: "ocean", label: AMBIENT_SOUNDS.ocean.name },
@@ -150,7 +151,7 @@ const MantrasLibrary = ({ user, api }) => {
       const response = await api.get("/mantras/custom");
       setUserMantras(response.data);
     } catch (error) {
-      console.error("Failed to fetch user mantras:", error);
+      appLogger.error("Failed to fetch user mantras", error);
     }
   };
 
@@ -171,7 +172,7 @@ const MantrasLibrary = ({ user, api }) => {
       setIsCreatingMantra(false);
       toast.success("Mantra saved!");
     } catch (error) {
-      console.error("Failed to create mantra:", error);
+      appLogger.error("Failed to create mantra", error);
       toast.error("Could not save mantra");
     }
   };
@@ -192,7 +193,7 @@ const MantrasLibrary = ({ user, api }) => {
       setEditingMantra(null);
       toast.success("Mantra updated!");
     } catch (error) {
-      console.error("Failed to update mantra:", error);
+      appLogger.error("Failed to update mantra", error);
       toast.error("Could not update mantra");
     }
   };
@@ -203,7 +204,7 @@ const MantrasLibrary = ({ user, api }) => {
       setUserMantras(prev => prev.filter(m => m.mantra_id !== mantraId));
       toast.success("Mantra deleted");
     } catch (error) {
-      console.error("Failed to delete mantra:", error);
+      appLogger.warn("Failed to delete mantra", error);
       toast.error("Could not delete mantra");
     }
   };
@@ -289,7 +290,7 @@ const MantrasLibrary = ({ user, api }) => {
       setMantras(response.data);
       setFilteredMantras(response.data);
     } catch (error) {
-      console.error("Failed to fetch mantras:", error);
+      appLogger.error("Failed to fetch mantras", error);
     } finally {
       setLoading(false);
     }
@@ -301,7 +302,7 @@ const MantrasLibrary = ({ user, api }) => {
       const favIds = new Set(response.data.map(f => f.item_id));
       setFavorites(favIds);
     } catch (error) {
-      console.error("Failed to fetch favorites:", error);
+      appLogger.warn("Failed to fetch mantra favorites", error);
     }
   };
 
@@ -322,7 +323,7 @@ const MantrasLibrary = ({ user, api }) => {
         toast.success("Added to favorites");
       }
     } catch (error) {
-      console.error("Failed to toggle favorite:", error);
+      appLogger.warn("Failed to toggle mantra favorite", error);
     }
   };
 
@@ -450,8 +451,8 @@ const MantrasLibrary = ({ user, api }) => {
         }
       }, cycleDuration * 1000);
       
-    } catch (e) {
-      console.warn("Could not start mantra sound:", e);
+    } catch (error) {
+      appLogger.warn("Could not start mantra sound", error);
       toast.error("Could not play sound - please check your device volume");
     }
   };
@@ -502,7 +503,7 @@ const MantrasLibrary = ({ user, api }) => {
         notes: `Chanted ${selectedMantra.name} ${selectedMantra.repetitions} times`,
       });
     } catch (error) {
-      console.error("Failed to log practice:", error);
+      appLogger.warn("Failed to log mantra practice", error);
     }
   };
 

@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { appLogger } from "../utils/logger";
 
 const ElementalPractices = ({ user, api }) => {
   const stableElementPracticeKey = (prefix, value) => {
@@ -83,7 +84,7 @@ const ElementalPractices = ({ user, api }) => {
       const response = await api.get(url);
       setPractices(response.data);
     } catch (error) {
-      console.error("Failed to fetch elemental practices:", error);
+      appLogger.error("Failed to fetch elemental practices", error);
       toast.error("Could not load elemental practices");
     } finally {
       setLoading(false);
@@ -100,7 +101,7 @@ const ElementalPractices = ({ user, api }) => {
       });
       toast.success("Elemental practice logged!");
     } catch (error) {
-      console.error("Failed to log practice:", error);
+      appLogger.warn("Failed to log elemental practice", error);
     }
   };
 
@@ -414,7 +415,7 @@ const ElementalPractices = ({ user, api }) => {
                           setIsPracticing(false);
                           setSelectedPractice(null);
                         } catch (error) {
-                          console.error("Failed to log practice:", error);
+                          appLogger.warn("Failed to log elemental practice", error);
                           toast.success("Elemental practice complete!");
                           setIsPracticing(false);
                           setSelectedPractice(null);

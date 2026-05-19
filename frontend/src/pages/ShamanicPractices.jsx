@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 import PracticeVideos from "../components/PracticeVideos";
+import { appLogger } from "../utils/logger";
 
 const ShamanicPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -51,7 +52,7 @@ const ShamanicPractices = ({ user, api }) => {
       const response = await api.get(url);
       setPractices(response.data);
     } catch (error) {
-      console.error("Failed to fetch shamanic practices:", error);
+      appLogger.error("Failed to fetch shamanic practices", error);
       toast.error("Could not load shamanic practices");
     } finally {
       setLoading(false);
@@ -64,7 +65,7 @@ const ShamanicPractices = ({ user, api }) => {
       const unlocked = response.data.unlocked_content || [];
       setUnlockedContent(unlocked);
     } catch (error) {
-      console.error("Failed to fetch unlocked content:", error);
+      appLogger.warn("Failed to fetch unlocked shamanic content", error);
     }
   }, [api]);
 
@@ -93,7 +94,7 @@ const ShamanicPractices = ({ user, api }) => {
       });
       toast.success("Shamanic practice logged!");
     } catch (error) {
-      console.error("Failed to log practice:", error);
+      appLogger.warn("Failed to log shamanic practice", error);
     }
   };
 
@@ -434,7 +435,7 @@ const ShamanicPractices = ({ user, api }) => {
                           setIsPracticing(false);
                           setSelectedPractice(null);
                         } catch (error) {
-                          console.error("Failed to log practice:", error);
+                          appLogger.warn("Failed to log shamanic practice", error);
                           toast.success("Shamanic journey complete!");
                           setIsPracticing(false);
                           setSelectedPractice(null);
@@ -470,8 +471,8 @@ const ShamanicPractices = ({ user, api }) => {
                         source.connect(ctx.destination);
                         source.start(0);
                         window.__warmAudioCtx = ctx;
-                      } catch (e) {
-                        console.warn("Could not warm audio context before shamanic practice:", e);
+                      } catch (error) {
+                        appLogger.warn("Could not warm audio context before shamanic practice", error);
                       }
                       setIsPracticing(true);
                     }}

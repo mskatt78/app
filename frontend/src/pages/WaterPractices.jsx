@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { appLogger } from "../utils/logger";
 
 const normalizeWaterCategory = (value) => {
   const raw = String(value || "").trim().toLowerCase();
@@ -229,7 +230,7 @@ const WaterPractices = ({ user, api }) => {
         toast.success("Guided audio started");
       }
     } catch (error) {
-      console.error("Failed to generate audio:", error);
+      appLogger.error("Failed to generate water practice audio", error);
       toast.error("Could not generate guided audio");
     } finally {
       setAudioLoading(false);
@@ -277,7 +278,7 @@ const WaterPractices = ({ user, api }) => {
         }
       })
       .catch((error) => {
-        console.error("Failed to load water practices:", error);
+        appLogger.error("Failed to load water practices", error);
       })
       .finally(() => setLoading(false));
   }, [api]);
@@ -304,7 +305,7 @@ const WaterPractices = ({ user, api }) => {
         });
       })
       .catch((error) => {
-        console.warn(`Could not load additional water practices for category '${activeCategory}':`, error);
+        appLogger.warn(`Could not load additional water practices for category '${activeCategory}'`, error);
       });
   }, [activeCategory, api, loading, waterPractices]);
 

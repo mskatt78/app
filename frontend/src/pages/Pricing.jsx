@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const Pricing = ({ user, api }) => {
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ const Pricing = ({ user, api }) => {
       const plansRes = await api.get("/payments/plans");
       setPlans(plansRes.data.plans || []);
     } catch (error) {
-      console.error("Failed to fetch plans:", error);
+      appLogger.error("Failed to fetch pricing plans", error);
     }
     
     // Fetch subscription status (requires auth - may fail for unauthenticated users)
@@ -49,7 +50,7 @@ const Pricing = ({ user, api }) => {
       const subRes = await api.get("/payments/subscription-status");
       setSubscription(subRes.data);
     } catch (error) {
-      console.error("Subscription status fetch failed:", error);
+      appLogger.warn("Subscription status fetch failed", error);
     }
     
     setLoading(false);
@@ -63,7 +64,7 @@ const Pricing = ({ user, api }) => {
         fetchData(); // Refresh subscription status
       }
     } catch (error) {
-      console.error("Payment status check failed:", error);
+      appLogger.warn("Payment status check failed", error);
     }
   };
 
@@ -77,7 +78,7 @@ const Pricing = ({ user, api }) => {
         toast.error("Payment not completed. Please try again.");
       }
     } catch (error) {
-      console.error("PayPal capture failed:", error);
+      appLogger.error("PayPal capture failed", error);
       toast.error("Failed to complete PayPal payment.");
     }
   };
@@ -96,7 +97,7 @@ const Pricing = ({ user, api }) => {
         window.location.href = response.data.checkout_url;
       }
     } catch (error) {
-      console.error("Checkout error:", error);
+      appLogger.error("Checkout error", error);
       const errorMsg = error.response?.data?.detail || "Failed to start checkout. Please try again.";
       toast.error(errorMsg);
       setProcessingPlan(null);

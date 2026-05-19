@@ -22,6 +22,7 @@ import {
   getGuidedToningIntensity,
   setGuidedToningIntensity,
 } from "../utils/guidedToningSettings";
+import { appLogger } from "../utils/logger";
 
 const Settings = ({ user, api }) => {
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const Settings = ({ user, api }) => {
       setRituals(ritualsRes.data);
       setDeletionStatus(deletionRes.data || null);
     } catch (error) {
-      console.error("Failed to fetch settings:", error);
+      appLogger.error("Failed to fetch settings", error);
     } finally {
       setLoading(false);
     }
@@ -88,7 +89,7 @@ const Settings = ({ user, api }) => {
       await api.put("/settings/reminders", reminderSettings);
       toast.success("Settings saved!");
     } catch (error) {
-      console.error("Failed to save settings:", error);
+      appLogger.error("Failed to save settings", error);
       toast.error("Could not save settings");
     } finally {
       setSaving(false);
@@ -110,7 +111,7 @@ const Settings = ({ user, api }) => {
       toast.success("Blessed journey, until we meet again");
       navigate("/", { replace: true });
     } catch (error) {
-      console.error("Logout failed:", error);
+      appLogger.error("Logout failed", error);
       navigate("/", { replace: true });
     }
   };
@@ -128,7 +129,7 @@ const Settings = ({ user, api }) => {
       window.URL.revokeObjectURL(url);
       toast.success("Account export downloaded");
     } catch (error) {
-      console.error("Failed to export account:", error);
+      appLogger.error("Failed to export account", error);
       toast.error("Could not export account data");
     } finally {
       setExporting(false);
@@ -147,7 +148,7 @@ const Settings = ({ user, api }) => {
       setDeletionStatus(response.data);
       toast.success("Deletion request submitted");
     } catch (error) {
-      console.error("Failed to request deletion:", error);
+      appLogger.error("Failed to request deletion", error);
       toast.error("Could not submit deletion request");
     } finally {
       setRequestingDeletion(false);

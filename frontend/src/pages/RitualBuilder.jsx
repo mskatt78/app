@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Progress } from "../components/ui/progress";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const RitualBuilder = ({ user, api }) => {
   const navigate = useNavigate();
@@ -106,7 +107,7 @@ const RitualBuilder = ({ user, api }) => {
         mudra: mudraRes.data,
       });
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      appLogger.error("Failed to fetch ritual builder data", error);
     } finally {
       setLoading(false);
     }
@@ -161,7 +162,7 @@ const RitualBuilder = ({ user, api }) => {
       setCreating(false);
       toast.success("Ritual saved!");
     } catch (error) {
-      console.error("Failed to save ritual:", error);
+      appLogger.error("Failed to save ritual", error);
       toast.error("Could not save ritual");
     }
   };
@@ -172,7 +173,7 @@ const RitualBuilder = ({ user, api }) => {
       setRituals(prev => prev.filter(r => r.ritual_id !== ritualId));
       toast.success("Ritual deleted");
     } catch (error) {
-      console.error("Failed to delete ritual:", error);
+      appLogger.warn("Failed to delete ritual", error);
       toast.error("Could not delete ritual");
     }
   };
@@ -185,7 +186,7 @@ const RitualBuilder = ({ user, api }) => {
       setShareUrl(fullUrl);
       setShareDialogOpen(true);
     } catch (error) {
-      console.error("Failed to share ritual:", error);
+      appLogger.warn("Failed to share ritual", error);
       toast.error("Could not create share link");
     }
   };
@@ -213,7 +214,7 @@ const RitualBuilder = ({ user, api }) => {
         notes: `Completed ritual: ${activeRitual.name}`,
       });
     } catch (error) {
-      console.error("Failed to log practice:", error);
+      appLogger.warn("Failed to log ritual practice", error);
     }
   };
 

@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Clock, ExternalLink, MessageCircle, Radio, Send, U
 import { toast } from "sonner";
 import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { appLogger } from "../utils/logger";
 
 const formatSchedule = (scheduledAt) => {
   if (!scheduledAt) return "Scheduling soon";
@@ -43,7 +44,7 @@ export default function LiveSessionRoom({ api }) {
         setSession(sessionResponse.data);
         setMessages(messageResponse.data || []);
       } catch (error) {
-        console.error("Failed to load live session room:", error);
+        appLogger.error("Failed to load live session room", error);
         toast.error("Could not load this live client space");
         navigate("/live");
       } finally {
@@ -71,7 +72,7 @@ export default function LiveSessionRoom({ api }) {
       setMessageForm((current) => ({ ...current, message: "" }));
       toast.success(kind === "question" ? "Question sent" : "Message sent");
     } catch (error) {
-      console.error("Failed to send message:", error);
+      appLogger.warn("Failed to send live session message", error);
       toast.error("Could not send that right now");
     } finally {
       setSending(false);
@@ -90,7 +91,7 @@ export default function LiveSessionRoom({ api }) {
       setSession((current) => ({ ...current, attendee_count: response.data.attendee_count }));
       toast.success("You’re on the RSVP list");
     } catch (error) {
-      console.error("RSVP failed:", error);
+      appLogger.warn("Live session RSVP failed", error);
       toast.error("Could not save your RSVP");
     } finally {
       setSavingRsvp(false);

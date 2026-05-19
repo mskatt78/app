@@ -10,6 +10,7 @@ import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const Numerology = ({ user, api }) => {
   const navigate = useNavigate();
@@ -69,7 +70,7 @@ const Numerology = ({ user, api }) => {
       const response = await api.get("/numerology/life-paths");
       setLifePaths(response.data);
     } catch (error) {
-      console.error("Failed to fetch life paths:", error);
+      appLogger.error("Failed to fetch life paths", error);
     }
   };
 
@@ -78,7 +79,7 @@ const Numerology = ({ user, api }) => {
       const response = await api.get("/numerology/readings");
       setPastReadings(response.data);
     } catch (error) {
-      console.error("Failed to fetch history:", error);
+      appLogger.warn("Failed to fetch numerology history", error);
     }
   };
 
@@ -98,7 +99,7 @@ const Numerology = ({ user, api }) => {
       setReading(response.data);
       toast.success("Your numerology reading is ready!");
     } catch (error) {
-      console.error("Failed to calculate reading:", error);
+      appLogger.error("Failed to calculate numerology reading", error);
       toast.error("Could not calculate reading. Check your birth date format.");
     } finally {
       setLoading(false);

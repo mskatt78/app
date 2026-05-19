@@ -8,6 +8,7 @@ import { Dialog, DialogContent } from "../components/ui/dialog";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import { appLogger } from "../utils/logger";
 
 const YogaLibrary = ({ user, api }) => {
   const stablePoseKey = (prefix, value) => {
@@ -60,7 +61,7 @@ const YogaLibrary = ({ user, api }) => {
       setPoses(response.data);
       setFilteredPoses(response.data);
     } catch (error) {
-      console.error("Failed to fetch poses:", error);
+      appLogger.error("Failed to fetch poses", error);
     } finally {
       setLoading(false);
     }
@@ -72,7 +73,7 @@ const YogaLibrary = ({ user, api }) => {
       const favIds = new Set(response.data.map(f => f.item_id));
       setFavorites(favIds);
     } catch (error) {
-      console.error("Failed to fetch favorites:", error);
+      appLogger.warn("Failed to fetch yoga favorites", error);
     }
   }, [api]);
 
@@ -129,7 +130,7 @@ const YogaLibrary = ({ user, api }) => {
         toast.success("Added to favorites");
       }
     } catch (error) {
-      console.error("Failed to toggle favorite:", error);
+      appLogger.warn("Failed to toggle yoga favorite", error);
       toast.error("Could not update favorites");
     }
   };
