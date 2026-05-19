@@ -12,6 +12,11 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Final Playstore-Readiness Signoff (Iteration 129, May 2026):**
+  - Completed requested last-step frontend refactors (`Breathwork`, `GuidedAudioButton` follow-up, `InstallPrompt` platform UI extraction) and broad logger/catch cleanup across additional high-traffic pages.
+  - Completed full regression verification (frontend + backend) with no deployment blockers.
+  - Current preview codebase is in release-ready state for user redeploy and store packaging workflow.
+
 - **P1 Refactor + Backend Decomposition Batch Complete (Iteration 128, May 2026):**
   - **Frontend refactors delivered:**
     - `GuidedAudioButton.jsx` converted into a thin UI wrapper; core playback logic moved into `guided/useGuidedAudioPlayback.js`.
