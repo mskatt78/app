@@ -19,6 +19,9 @@ export const useTimerClock = ({
   const completionRef = useRef(false);
   const autoStartedRef = useRef(false);
   const lastSegmentIndexRef = useRef(0);
+  const currentSegmentIndexRef = useRef(0);
+  const segmentEndTimesRef = useRef([]);
+  const segmentsLengthRef = useRef(0);
   const onTransitionRef = useRef(onTransition);
   const onPauseRef = useRef(onPause);
   const onResetRef = useRef(onReset);
@@ -28,6 +31,9 @@ export const useTimerClock = ({
   useEffect(() => { onPauseRef.current = onPause; }, [onPause]);
   useEffect(() => { onResetRef.current = onReset; }, [onReset]);
   useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
+  useEffect(() => { currentSegmentIndexRef.current = currentSegmentIndex; }, [currentSegmentIndex]);
+  useEffect(() => { segmentEndTimesRef.current = segmentEndTimes; }, [segmentEndTimes]);
+  useEffect(() => { segmentsLengthRef.current = normalizedSegments.length; }, [normalizedSegments.length]);
 
   const normalizedSegments = useMemo(() => {
     if (!segments.length) return [];
@@ -139,10 +145,10 @@ export const useTimerClock = ({
 
     warmAudioContext?.();
     completionRef.current = false;
-    lastSegmentIndexRef.current = currentSegmentIndex;
+    lastSegmentIndexRef.current = currentSegmentIndexRef.current;
     sessionEndRef.current = Date.now() + ((calculatedTotal - totalElapsed) * 1000);
     setIsRunning(true);
-  }, [calculatedTotal, currentSegmentIndex, isRunning, syncElapsedFromClock, totalElapsed, warmAudioContext]);
+  }, [calculatedTotal, isRunning, syncElapsedFromClock, totalElapsed, warmAudioContext]);
 
   const handleReset = useCallback(() => {
     sessionEndRef.current = null;
@@ -154,16 +160,17 @@ export const useTimerClock = ({
   }, []);
 
   const handleSkipSegment = useCallback(() => {
-    if (currentSegmentIndex >= normalizedSegments.length - 1) return;
+    const currentIndex = currentSegmentIndexRef.current;
+    if (currentIndex >= segmentsLengthRef.current - 1) return;
 
-    const nextElapsed = segmentEndTimes[currentSegmentIndex];
+    const nextElapsed = segmentEndTimesRef.current[currentIndex];
     setTotalElapsed(nextElapsed);
-    lastSegmentIndexRef.current = currentSegmentIndex + 1;
+    lastSegmentIndexRef.current = currentIndex + 1;
     if (isRunning) {
       sessionEndRef.current = Date.now() + ((calculatedTotal - nextElapsed) * 1000);
     }
     if (!isMuted) onTransitionRef.current?.();
-  }, [calculatedTotal, currentSegmentIndex, isMuted, isRunning, normalizedSegments.length, segmentEndTimes]);
+  }, [calculatedTotal, isMuted, isRunning]);
 
   useEffect(() => () => {
     if (intervalRef.current) clearInterval(intervalRef.current);

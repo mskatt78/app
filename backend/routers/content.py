@@ -21,7 +21,7 @@ router = APIRouter(tags=["content"])
 logger = logging.getLogger(__name__)
 
 MIN_NARRATION_MINUTES = 7
-TARGET_WORDS_PER_MINUTE = 120
+TARGET_WORDS_PER_MINUTE = 132
 SEGMENT_TARGET_WORDS = 220
 FIRST_SEGMENT_TARGET_WORDS = 95
 MAX_PARAGRAPH_STEM_REPEAT_RATIO = 0.12
@@ -1078,14 +1078,14 @@ WORD_FLOOR_PADDING_OPENERS = [
     "Let this sequence reinforce trust in your internal pacing",
     "Keep this interval simple, clear, and compassionate",
     "Stay steady as breath organizes your inner landscape",
-    "Allow this section to build calm strength through repetition",
+    "Allow this section to build calm strength through consistency",
     "Continue with soft concentration and unhurried attention",
     "Remain connected to the body as your primary reference",
     "Let this moment remind you that slower can still be powerful",
     "Keep your focus kind while breathing stays even",
     "Stay here long enough for integration to feel tangible",
     "If you need a gentler pace, trust that instinct",
-    "Let this feel like you are being guided, not pushed",
+    "Let this feel supportive, steady, and deeply humane",
 ]
 
 WORD_FLOOR_PADDING_SUPPORTS = [
@@ -1109,11 +1109,11 @@ WORD_FLOOR_PADDING_CLOSERS = [
     "Small, consistent moments of presence create lasting change.",
     "Let this steadiness accompany you beyond the practice.",
     "You are building resilience through kindness and clarity.",
-    "Stay with the process and let it keep unfolding.",
+    "Stay with the process as it unfolds in its own timing.",
     "This is enough to support meaningful regulation.",
     "Carry this grounded quality into whatever follows.",
     "You are allowed to soften and still be strong.",
-    "Let this guidance meet you exactly where you are.",
+    "Allow this moment to honor exactly where you are right now.",
 ]
 
 
@@ -1134,7 +1134,8 @@ def _build_word_floor_padding_paragraphs(required_words: int) -> list[str]:
         words += _count_words(paragraph)
         index += 1
 
-    return _dedupe_paragraphs(generated)
+    deduped = _dedupe_paragraphs(generated)
+    return _enforce_stem_diversity(deduped, max_occurrences=1, stem_words=6)
 
 
 def _postprocess_ai_paragraphs(text: str, target_words: int) -> list[str] | None:
@@ -1316,9 +1317,13 @@ async def _resolve_script_source(
     anti_repetition_mode = "balanced" if request.anti_repetition_mode == "balanced" else "strict"
     stem_max_occurrences = 2 if anti_repetition_mode == "strict" else 3
 
-    ai_expansion_enabled = os.environ.get("ENABLE_GUIDED_AI_EXPANSION", "").lower() == "true"
+    ai_expansion_enabled = os.environ.get("ENABLE_GUIDED_AI_EXPANSION", "true").lower() != "false"
     if request.use_ai and ai_expansion_enabled:
-        ai_paragraphs = await _expand_with_llm(request, target_words)
+        try:
+            ai_paragraphs = await asyncio.wait_for(_expand_with_llm(request, target_words), timeout=10)
+        except asyncio.TimeoutError:
+            logger.warning("AI script expansion timeout; using deterministic fallback")
+            ai_paragraphs = None
         if ai_paragraphs:
             selected_paragraphs = ai_paragraphs
             used_ai = True
@@ -1356,7 +1361,7 @@ async def expand_guided_script(request: ExpandScriptRequest):
     selected_paragraphs = _finalize_script_paragraphs(request, selected_paragraphs, stem_max_occurrences)
 
     current_word_count = _count_words(" ".join(selected_paragraphs))
-    minimum_word_floor = int(target_words * (0.84 if anti_repetition_mode == "strict" else 0.8))
+    minimum_word_floor = int(target_words * (0.96 if anti_repetition_mode == "strict" else 0.93))
 
     selected_paragraphs, current_word_count = _extend_script_to_floor(
         request,
@@ -1374,6 +1379,14 @@ async def expand_guided_script(request: ExpandScriptRequest):
         minimum_word_floor,
         stem_max_occurrences,
     )
+
+    duration_alignment_floor = int(target_words * 0.985)
+    if current_word_count < duration_alignment_floor:
+        alignment_padding = _build_word_floor_padding_paragraphs(duration_alignment_floor - current_word_count)
+        selected_paragraphs.extend(alignment_padding)
+        selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+        selected_paragraphs = _enforce_stem_diversity(selected_paragraphs, max_occurrences=stem_max_occurrences + 1, stem_words=7)
+        current_word_count = _count_words(" ".join(selected_paragraphs))
 
     segments = _segment_paragraphs(selected_paragraphs)
 

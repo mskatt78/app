@@ -1,0 +1,89 @@
+{
+  "summary": "Iteration 136 - Guided script repetition and timer mismatch testing. Backend: 15/16 tests passed. The phrase repetition issue appears IMPROVED - no repeated stems detected in strict mode, phrase frequency within limits. Duration alignment works for 7-15 min practices (>=98%) but falls short for 20-min practices (91.2%). Frontend correctly sends use_ai=false and anti_repetition_mode to backend.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "POST /api/content/expand-script",
+        "issue": "20-minute duration alignment only reaches 91.2% of target word count (below 98% floor) when source content is minimal",
+        "priority": "MEDIUM"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration136_guided_script.py",
+    "/app/test_reports/pytest/pytest_iteration136.xml"
+  ],
+  "action_items": [
+    "OPTIONAL: Improve 20-minute duration padding to reach 98% floor when source content is minimal"
+  ],
+  "critical_code_review_comments": [
+    "VERIFIED: useGuidedPracticeEngine.js line 266 sends use_ai: false to backend",
+    "VERIFIED: useGuidedAudioPlayback.js line 117 sends use_ai: false to backend",
+    "VERIFIED: Both hooks send anti_repetition_mode parameter correctly",
+    "VERIFIED: Backend expand-script endpoint returns no repeated stems in strict mode",
+    "VERIFIED: Phrase frequency limits working - 'notice what shifts' appears <=3 times",
+    "VERIFIED: Duration alignment works for 7-15 min practices (>=98%)",
+    "VERIFIED: Frontend guided practice UI shows timer, narration sections, toning layer indicator",
+    "VERIFIED: Strict anti-repeat mode toggle visible and functional in UI",
+    "ISSUE: 20-min duration alignment only 91.2% with minimal source content"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration136_guided_script.py"
+  ],
+  "success_rate": {
+    "backend": "93.75% (15/16 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Admin: mskatt78@gmail.com / ShamanicAdmin2026!",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 136 tested guided script expansion quality. Key findings: (1) Phrase repetition IMPROVED - no repeated stems in strict mode, phrase frequency within limits, (2) Duration alignment works for 7-15 min but 20-min falls short at 91.2%, (3) Frontend correctly sends use_ai=false and anti_repetition_mode, (4) Guided practice UI working with timer, narration sections, toning layer. The user-reported 'notice what shifts' and 'let this guidance' repetition appears addressed - these phrases now appear <=3 times in 15-min scripts.",
+  "features_tested": {
+    "guided_expansion_quality": {
+      "status": "IMPROVED",
+      "details": [
+        "No repeated paragraph stems in strict mode (0% repeat ratio)",
+        "'notice what shifts' appears <=3 times (within limits)",
+        "'let this guidance' appears <=3 times (within limits)",
+        "High lexical variety in generated scripts"
+      ]
+    },
+    "duration_alignment": {
+      "status": "PARTIAL",
+      "details": [
+        "7-min: PASS (>=98%)",
+        "10-min: PASS (>=98%)",
+        "15-min: PASS (>=98%)",
+        "20-min: FAIL (91.2% < 98%) - only with minimal source content"
+      ]
+    },
+    "frontend_payload": {
+      "status": "PASS",
+      "details": [
+        "useGuidedPracticeEngine sends use_ai=false",
+        "useGuidedAudioPlayback sends use_ai=false",
+        "Both hooks send anti_repetition_mode correctly"
+      ]
+    },
+    "runtime_flow": {
+      "status": "PASS",
+      "details": [
+        "Timer shows correct countdown (14:50 for 15-min practice)",
+        "Narration plays in sections (section 1 of 10)",
+        "Toning layer indicator visible",
+        "Strict/Balanced mode toggle functional"
+      ]
+    }
+  },
+  "user_reported_issues_status": {
+    "phrase_repetition": "IMPROVED - 'notice what shifts' and 'let this guidance' now appear <=3 times in 15-min scripts, no repeated stems detected",
+    "timer_mismatch": "IMPROVED - Timer countdown visible and narration plays in sections. Full timer/narration sync requires longer observation but basic flow working"
+  }
+}

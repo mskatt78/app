@@ -47,11 +47,15 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const sessionEndRef = useRef(null);
   const autoStartRef = useRef(false);
   const isPlayingRef = useRef(false);
+  const isCompleteRef = useRef(false);
+  const timeRemainingRef = useRef(totalDuration);
   const ttsCacheRef = useRef(new Map());
   const ttsPendingRef = useRef(new Map());
   const currentSegmentIndexRef = useRef(0);
   const scriptAbortRef = useRef(null);
   const hasStartedRef = useRef(false);
+  const narrationPlanRef = useRef(narrationPlan);
+  const practiceIdentityRef = useRef({ id: practice?.id, name: practice?.name });
 
   const element = (practice?.element || "spirit").toLowerCase();
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
@@ -103,8 +107,21 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [isPlaying]);
 
   useEffect(() => {
+    isCompleteRef.current = isComplete;
+  }, [isComplete]);
+
+  useEffect(() => {
+    timeRemainingRef.current = timeRemaining;
+  }, [timeRemaining]);
+
+  useEffect(() => {
     hasStartedRef.current = hasStarted;
   }, [hasStarted]);
+
+  useEffect(() => {
+    narrationPlanRef.current = narrationPlan;
+    practiceIdentityRef.current = { id: practice?.id, name: practice?.name };
+  }, [narrationPlan, practice?.id, practice?.name]);
 
   useEffect(() => {
     const handleStorage = (event) => {
@@ -185,7 +202,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     }
   }, [stopAmbient, stopToning]);
 
-  useEffect(() => {
+  const resetPracticeState = useCallback(() => {
     clearInterval(timerRef.current);
     sessionEndRef.current = null;
     autoStartRef.current = false;
@@ -204,11 +221,17 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     setTtsPlaying(false);
     setHasStarted(false);
     setAudioTapRequired(false);
-    setNarrationParagraphs(narrationPlan.paragraphs);
-    setNarrationSegments(narrationPlan.segments);
+    setNarrationParagraphs(narrationPlanRef.current.paragraphs);
+    setNarrationSegments(narrationPlanRef.current.segments);
     setNarrationReady(true);
-    setScriptLoading(Boolean(practice?.id || practice?.name));
-  }, [practice?.id, practice?.name, totalDuration, clearNarrationCache, stopAmbient, stopToning, narrationPlan]);
+    setScriptLoading(Boolean(practiceIdentityRef.current.id || practiceIdentityRef.current.name));
+  }, [clearNarrationCache, stopAmbient, stopToning, totalDuration]);
+
+  const practiceKey = `${practice?.id || ""}:${practice?.name || ""}`;
+
+  useEffect(() => {
+    resetPracticeState();
+  }, [practiceKey, resetPracticeState]);
 
   useEffect(() => {
     if (!scriptExpansionContext) {
@@ -422,7 +445,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [element, muted]);
 
   const handlePlay = useCallback(() => {
-    if (isComplete) return;
+    if (isCompleteRef.current) return;
 
     if (isPlaying) {
       syncRemainingFromClock();
@@ -434,7 +457,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       return;
     }
 
-    sessionEndRef.current = Date.now() + (timeRemaining * 1000);
+    sessionEndRef.current = Date.now() + (timeRemainingRef.current * 1000);
     setIsPlaying(true);
     setHasStarted(true);
     startAmbientTrack();
@@ -445,7 +468,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     }
 
     playNarrationSegment(currentSegmentIndexRef.current);
-  }, [isComplete, isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock, timeRemaining]);
+  }, [isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock]);
 
   useEffect(() => {
     if (practice && narrationReady && !autoStartRef.current && !isComplete) {

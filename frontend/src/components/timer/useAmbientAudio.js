@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NATURAL_SOUND_OPTIONS, PREFERRED_NATURAL_SOUND_KEY } from "./practiceTimerUtils";
 import { startPracticeAmbientAudio } from "./timerAudioEngine";
 import { getLocalItem, setLocalItem } from "../../utils/clientStorage";
+import { appLogger } from "../../utils/logger";
 
 export const useAmbientAudio = ({
   backgroundAudio,
@@ -66,15 +67,15 @@ export const useAmbientAudio = ({
       bowlIntervalRef.current = null;
     }
     sourcesRef.current.forEach((source) => {
-      try { source.stop?.(); } catch (error) { console.error("PracticeTimer source stop failed:", error); }
-      try { source.disconnect?.(); } catch (error) { console.error("PracticeTimer source disconnect failed:", error); }
+      try { source.stop?.(); } catch (error) { appLogger.warn("PracticeTimer source stop failed", error); }
+      try { source.disconnect?.(); } catch (error) { appLogger.warn("PracticeTimer source disconnect failed", error); }
     });
     sourcesRef.current = [];
 
     try {
       toningLayerRef.current?.stop?.();
     } catch (error) {
-      console.error("PracticeTimer toning stop failed:", error);
+      appLogger.warn("PracticeTimer toning stop failed", error);
     }
     toningLayerRef.current = null;
 
@@ -103,13 +104,18 @@ export const useAmbientAudio = ({
     });
   }, [audioVolume, autoNarrate, element, isMuted, selectedBackgroundAudio]);
 
+  const shouldPlayAmbient = useMemo(
+    () => isRunning && !isMuted && (selectedBackgroundAudio !== "silence" || autoNarrate),
+    [autoNarrate, isMuted, isRunning, selectedBackgroundAudio]
+  );
+
   useEffect(() => {
-    if (isRunning && !isMuted && (selectedBackgroundAudio !== "silence" || autoNarrate)) {
+    if (shouldPlayAmbient) {
       if (!audioPlaying) startAudio();
       return;
     }
     cleanupAudio();
-  }, [audioPlaying, autoNarrate, cleanupAudio, isMuted, isRunning, selectedBackgroundAudio, startAudio]);
+  }, [audioPlaying, cleanupAudio, shouldPlayAmbient, startAudio]);
 
   useEffect(() => {
     if (gainNodeRef.current) {
@@ -131,7 +137,7 @@ export const useAmbientAudio = ({
         window.__warmAudioCtx = ctx;
       }
     } catch (error) {
-      console.error("PracticeTimer audio warm-up failed:", error);
+      appLogger.warn("PracticeTimer audio warm-up failed", error);
     }
   }, []);
 

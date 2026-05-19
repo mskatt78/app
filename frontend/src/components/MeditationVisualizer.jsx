@@ -192,7 +192,7 @@ const VisualizationCanvas = ({ type, element, state }) => {
     return <div className="absolute inset-0 flex items-center justify-center"><div className="relative w-24 h-full"><motion.div className="absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2" style={{ background: "linear-gradient(to top, #ff0000, #ff7f00, #ffff00, #00ff00, #00bfff, #0000ff, #8b00ff)" }} animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2, repeat: Infinity }} />{chakraSpecs.map((chakra, chakraIndex) => <motion.div key={chakra.id} className="absolute left-1/2 -translate-x-1/2" style={{ top: `${chakra.y}%` }} animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }} transition={{ duration: 2, repeat: Infinity, delay: chakraIndex * 0.2 }}><div className="w-8 h-8 rounded-full" style={{ background: `radial-gradient(circle, ${chakra.color}, transparent)`, boxShadow: `0 0 20px ${chakra.color}80` }} /></motion.div>)}<motion.div className="absolute left-1/2 w-4 h-4 rounded-full -translate-x-1/2" style={{ background: "white", filter: "blur(4px)" }} animate={{ top: ["90%", "0%"], opacity: [0, 1, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} /></div></div>;
   }, [chakraSpecs, mounted]);
 
-  const elementViz = useMemo(() => {
+  const elementViz = (() => {
     if (!mounted) return null;
     switch (element) {
       case "Earth":
@@ -206,7 +206,7 @@ const VisualizationCanvas = ({ type, element, state }) => {
       default:
         return particlesViz;
     }
-  }, [airSpecs, earthSpecs, element, fireSpecs, mounted, particlesViz, waterSpecs]);
+  })();
 
   const visualizations = {
     particles: particlesViz,

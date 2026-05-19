@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { appLogger } from "../../utils/logger";
 import { BREATHWORK_SOUND_OPTIONS, ELEMENT_DEFAULT_SOUNDS } from "./breathworkConfig";
 
@@ -46,6 +46,10 @@ export const useBreathworkEngine = ({ api }) => {
 
   const intervalRef = useRef(null);
   const phaseRef = useRef(breathPhase);
+  const activeSessionRef = useRef(activeSession);
+  const isPlayingRef = useRef(isPlaying);
+  const selectedSoundRef = useRef(selectedSound);
+  const soundEnabledRef = useRef(soundEnabled);
   const audioContextRef = useRef(null);
   const oscillatorRef = useRef(null);
   const gainNodeRef = useRef(null);
@@ -190,6 +194,13 @@ export const useBreathworkEngine = ({ api }) => {
   }, [breathPhase]);
 
   useEffect(() => {
+    activeSessionRef.current = activeSession;
+    isPlayingRef.current = isPlaying;
+    selectedSoundRef.current = selectedSound;
+    soundEnabledRef.current = soundEnabled;
+  }, [activeSession, isPlaying, selectedSound, soundEnabled]);
+
+  useEffect(() => {
     if (selectedElement === "all") {
       setFilteredSessions(sessions);
       return;
@@ -197,14 +208,20 @@ export const useBreathworkEngine = ({ api }) => {
     setFilteredSessions(sessions.filter((session) => session.element === selectedElement));
   }, [selectedElement, sessions]);
 
+  const shouldPlaySelectedSound = useMemo(
+    () => isPlaying && Boolean(activeSession) && soundEnabled,
+    [activeSession, isPlaying, soundEnabled]
+  );
+
   useEffect(() => {
-    if (isPlaying && activeSession && soundEnabled) {
+    if (shouldPlaySelectedSound && activeSession) {
       playSelectedSound(activeSession, selectedSound);
+      return;
     }
     if (selectedSound === "silence") {
       stopSound();
     }
-  }, [activeSession, isPlaying, playSelectedSound, selectedSound, soundEnabled, stopSound]);
+  }, [activeSession, playSelectedSound, selectedSound, shouldPlaySelectedSound, stopSound]);
 
   const runBreathCycle = useCallback(() => {
     if (!activeSession) return;
@@ -250,9 +267,10 @@ export const useBreathworkEngine = ({ api }) => {
   }, []);
 
   const togglePlay = useCallback(() => {
-    if (!activeSession) return;
+    const currentSession = activeSessionRef.current;
+    if (!currentSession) return;
 
-    if (isPlaying) {
+    if (isPlayingRef.current) {
       clearInterval(intervalRef.current);
       stopSound();
       setIsPlaying(false);
@@ -260,18 +278,19 @@ export const useBreathworkEngine = ({ api }) => {
     }
 
     setIsPlaying(true);
-    playSelectedSound(activeSession, selectedSound);
+    playSelectedSound(currentSession, selectedSoundRef.current);
     runBreathCycle();
-  }, [activeSession, isPlaying, playSelectedSound, runBreathCycle, selectedSound, stopSound]);
+  }, [playSelectedSound, runBreathCycle, stopSound]);
 
   const toggleSound = useCallback(() => {
-    if (soundEnabled && (oscillatorRef.current || ambientSourcesRef.current.length > 0)) {
+    const currentlyEnabled = soundEnabledRef.current;
+    if (currentlyEnabled && (oscillatorRef.current || ambientSourcesRef.current.length > 0)) {
       stopSound();
-    } else if (!soundEnabled && isPlaying && activeSession) {
-      playSelectedSound(activeSession, selectedSound, true);
+    } else if (!currentlyEnabled && isPlayingRef.current && activeSessionRef.current) {
+      playSelectedSound(activeSessionRef.current, selectedSoundRef.current, true);
     }
     setSoundEnabled((prev) => !prev);
-  }, [activeSession, isPlaying, playSelectedSound, selectedSound, soundEnabled, stopSound]);
+  }, [playSelectedSound, stopSound]);
 
   const resetSession = useCallback(() => {
     clearInterval(intervalRef.current);
