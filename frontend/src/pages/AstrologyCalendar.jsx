@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Clock, Globe, Moon, Star } from "lucide-react";
@@ -43,7 +43,7 @@ const AstrologyCalendar = ({ api }) => {
     }
   };
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const [monthsRes, currentRes] = await Promise.all([
         api.get("/astrology/months"),
@@ -61,7 +61,7 @@ const AstrologyCalendar = ({ api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api]);
 
   useEffect(() => {
     fetchData();
@@ -75,7 +75,7 @@ const AstrologyCalendar = ({ api }) => {
 
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [fetchData]);
 
   const handleTzSelect = (tz) => {
     setSelectedTz(tz);

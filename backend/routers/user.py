@@ -670,78 +670,101 @@ ACHIEVEMENT_DEFINITIONS: list[dict[str, Any]] = [
 ]
 
 
+def _calculate_practice_streak(history: list[dict[str, Any]], reference: datetime | None = None) -> int:
+    if not history:
+        return 0
+
+    now = reference or datetime.now(timezone.utc)
+    dates = sorted(
+        set(
+            str(entry.get("completed_at", ""))[:10]
+            for entry in history
+            if entry.get("completed_at")
+        ),
+        reverse=True,
+    )
+    if not dates:
+        return 0
+
+    streak = 0
+    for offset, date_str in enumerate(dates):
+        expected_today = (now - timedelta(days=offset)).strftime("%Y-%m-%d")
+        expected_yesterday = (now - timedelta(days=1)).strftime("%Y-%m-%d")
+        if date_str == expected_today or (offset == 0 and date_str == expected_yesterday):
+            streak += 1
+            continue
+        break
+    return streak
+
+
+def _build_achievement_stats(
+    history: list[dict[str, Any]],
+    oracle_readings_count: int,
+) -> dict[str, Any]:
+    by_type: dict[str, int] = {}
+    elements_practiced: set[str] = set()
+
+    for entry in history:
+        practice_type = str(entry.get("practice_type") or "unknown")
+        by_type[practice_type] = by_type.get(practice_type, 0) + 1
+        element = entry.get("element")
+        if isinstance(element, str) and element:
+            elements_practiced.add(element)
+
+    return {
+        "total_sessions": len(history),
+        "total_minutes": sum(int(entry.get("duration_minutes") or 0) for entry in history),
+        "streak": _calculate_practice_streak(history),
+        "oracle_readings": oracle_readings_count,
+        "by_type": by_type,
+        "elements_count": len(elements_practiced),
+    }
+
+
+def _resolve_achievement_progress(requirement: dict[str, Any], stats: dict[str, Any]) -> tuple[int, bool]:
+    requirement_type = requirement.get("type")
+    target = int(requirement.get("count") or 0)
+
+    progress_map: dict[str, int] = {
+        "sessions": int(stats.get("total_sessions") or 0),
+        "streak": int(stats.get("streak") or 0),
+        "minutes": int(stats.get("total_minutes") or 0),
+        "oracle_readings": int(stats.get("oracle_readings") or 0),
+        "breathwork": int((stats.get("by_type") or {}).get("breathwork") or 0),
+        "yoga": int((stats.get("by_type") or {}).get("yoga") or 0),
+        "elements": int(stats.get("elements_count") or 0),
+    }
+
+    progress = progress_map.get(str(requirement_type), 0)
+    return progress, progress >= target
+
+
+def _compose_achievements_payload(stats: dict[str, Any]) -> list[dict[str, Any]]:
+    achievements: list[dict[str, Any]] = []
+    for achievement_definition in ACHIEVEMENT_DEFINITIONS:
+        requirement = achievement_definition.get("requirement") or {}
+        progress, unlocked = _resolve_achievement_progress(requirement, stats)
+        achievements.append(
+            {
+                **achievement_definition,
+                "unlocked": unlocked,
+                "progress": progress,
+                "target": int(requirement.get("count") or 0),
+            }
+        )
+    return achievements
+
+
 @router.get("/achievements")
 async def get_achievements(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
     """Get user's achievements with unlock status."""
     db = get_db()
-    
-    # Get user stats
+
     history = await db.practice_history.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
     oracle_readings = await db.oracle_readings.find({"user_id": user.user_id}, {"_id": 0}).to_list(1000)
-    
-    total_sessions = len(history)
-    total_minutes = sum(h.get("duration_minutes", 0) for h in history)
-    
-    # Count by type and element
-    by_type: dict[str, int] = {}
-    elements_practiced = set()
-    
-    for h in history:
-        ptype = h.get("practice_type", "unknown")
-        by_type[ptype] = by_type.get(ptype, 0) + 1
-        if h.get("element"):
-            elements_practiced.add(h["element"])
-    
-    # Calculate streak
-    if history:
-        dates = sorted(set(h.get("completed_at", "")[:10] for h in history if h.get("completed_at")), reverse=True)
-        streak = 0
-        for i, date in enumerate(dates):
-            expected = (datetime.now(timezone.utc) - timedelta(days=i)).strftime("%Y-%m-%d")
-            if date == expected or (i == 0 and date == (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")):
-                streak += 1
-            else:
-                break
-    else:
-        streak = 0
-    
-    # Check each achievement
-    achievements: list[dict[str, Any]] = []
-    for ach_def in ACHIEVEMENT_DEFINITIONS:
-        req: dict[str, Any] = ach_def["requirement"]
-        unlocked = False
-        progress = 0
-        
-        if req["type"] == "sessions":
-            progress = total_sessions
-            unlocked = total_sessions >= req["count"]
-        elif req["type"] == "streak":
-            progress = streak
-            unlocked = streak >= req["count"]
-        elif req["type"] == "minutes":
-            progress = total_minutes
-            unlocked = total_minutes >= req["count"]
-        elif req["type"] == "oracle_readings":
-            progress = len(oracle_readings)
-            unlocked = len(oracle_readings) >= req["count"]
-        elif req["type"] == "breathwork":
-            progress = by_type.get("breathwork", 0)
-            unlocked = by_type.get("breathwork", 0) >= req["count"]
-        elif req["type"] == "yoga":
-            progress = by_type.get("yoga", 0)
-            unlocked = by_type.get("yoga", 0) >= req["count"]
-        elif req["type"] == "elements":
-            progress = len(elements_practiced)
-            unlocked = len(elements_practiced) >= req["count"]
-        
-        achievements.append({
-            **ach_def,
-            "unlocked": unlocked,
-            "progress": progress,
-            "target": req["count"]
-        })
-    
-    return achievements
+
+    stats = _build_achievement_stats(history, len(oracle_readings))
+    return _compose_achievements_payload(stats)
 
 
 

@@ -3,6 +3,12 @@ import { motion } from "framer-motion";
 import { Moon } from "lucide-react";
 import { appLogger } from "../../utils/logger";
 
+const WIDGET_ANIMATION = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay: 0.15 },
+};
+
 export const SacredPracticeWidget = ({ api, navigate }) => {
   const [practice, setPractice] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -25,9 +31,7 @@ export const SacredPracticeWidget = ({ api, navigate }) => {
   if (loading) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15 }}
+        {...WIDGET_ANIMATION}
         className="rounded-2xl border border-white/10 bg-card/50 p-5 animate-pulse"
       >
         <div className="h-4 bg-white/5 rounded w-1/3 mb-3" />
@@ -43,9 +47,7 @@ export const SacredPracticeWidget = ({ api, navigate }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.15 }}
+      {...WIDGET_ANIMATION}
       className="rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl p-5"
       data-testid="sacred-practice-widget"
     >

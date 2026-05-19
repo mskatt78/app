@@ -115,16 +115,19 @@ async def root_health_check():
 
 # ============ DATABASE SEEDING ============
 
-async def do_database_seeding():
-    """Actual database seeding logic - runs in background with full error handling."""
+def _is_production_seed_mode() -> bool:
+    backend_url = os.environ.get("REACT_APP_BACKEND_URL", "")
+    mongo_url = os.environ.get("MONGO_URL", "")
+    return "emergent.host" in backend_url or "atlas" in mongo_url.lower()
+
+
+async def _seed_database_core_flow():
+    """Database seeding core flow with full error handling."""
     import os
-    
+
     # Skip heavy seeding in production to prevent startup crashes
     # Data should already be in the database from previous deployments
-    is_production = "emergent.host" in os.environ.get("REACT_APP_BACKEND_URL", "") or \
-                    "atlas" in os.environ.get("MONGO_URL", "").lower()
-    
-    if is_production:
+    if _is_production_seed_mode():
         logger.info("Production environment detected - using lightweight seeding")
         try:
             # Just check if database has content, don't do heavy seeding
@@ -467,6 +470,11 @@ async def do_database_seeding():
         logger.error(f"Error during startup seeding: {e}")
         import traceback
         logger.error(traceback.format_exc())
+
+
+async def do_database_seeding():
+    """Coordinator for database seeding tasks."""
+    await _seed_database_core_flow()
 
 
 async def ensure_indexes():

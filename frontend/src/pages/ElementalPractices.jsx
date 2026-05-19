@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -24,7 +24,7 @@ const ElementalPractices = ({ api }) => {
     return parsed.toLocaleDateString();
   };
 
-  const fetchPractices = async () => {
+  const fetchPractices = useCallback(async () => {
     try {
       const url = filter === "all" ? "/elemental-practices" : `/elemental-practices?element=${filter}`;
       const response = await api.get(url);
@@ -35,11 +35,11 @@ const ElementalPractices = ({ api }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [api, filter]);
 
   useEffect(() => {
     fetchPractices();
-  }, [filter]);
+  }, [fetchPractices]);
 
   useEffect(() => {
     if (!selectedPractice) return undefined;

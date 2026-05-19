@@ -31,7 +31,7 @@ export const AuthCallback = ({ api }) => {
     if (hasProcessed.current) return;
     hasProcessed.current = true;
     processAuth();
-  }, [hasProcessed, processAuth]);
+  }, [processAuth]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -46,8 +46,9 @@ export const AuthCallback = ({ api }) => {
 export const ProtectedRoute = ({ children, api }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(location.state?.user ? true : null);
-  const [user, setUser] = useState(location.state?.user || null);
+  const locationStateUser = location.state?.user || null;
+  const [isAuthenticated, setIsAuthenticated] = useState(locationStateUser ? true : null);
+  const [user, setUser] = useState(locationStateUser);
   const [hasAuthError, setHasAuthError] = useState(false);
   const isMountedRef = useRef(true);
 
@@ -70,8 +71,8 @@ export const ProtectedRoute = ({ children, api }) => {
   useEffect(() => {
     isMountedRef.current = true;
 
-    if (location.state?.user) {
-      setUser(location.state.user);
+    if (locationStateUser) {
+      setUser(locationStateUser);
       setIsAuthenticated(true);
     }
 
@@ -80,7 +81,7 @@ export const ProtectedRoute = ({ children, api }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, location.state]);
+  }, [checkAuth, locationStateUser]);
 
   if (isAuthenticated === null) {
     return (
@@ -112,7 +113,8 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isAuthorized, setIsAuthorized] = useState(null);
-  const [user, setUser] = useState(location.state?.user || null);
+  const locationStateUser = location.state?.user || null;
+  const [user, setUser] = useState(locationStateUser);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const checkAdmin = useCallback(async () => {
@@ -150,8 +152,11 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
   }, [adminEmails, api, backendUrl, navigate]);
 
   useEffect(() => {
+    if (locationStateUser) {
+      setUser(locationStateUser);
+    }
     checkAdmin();
-  }, [checkAdmin]);
+  }, [checkAdmin, locationStateUser]);
 
   if (isAuthorized === null) {
     return (
@@ -170,7 +175,8 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
 
 export const PublicRoute = ({ children, api }) => {
   const location = useLocation();
-  const [user, setUser] = useState(location.state?.user || null);
+  const locationStateUser = location.state?.user || null;
+  const [user, setUser] = useState(locationStateUser);
   const [checked, setChecked] = useState(false);
   const isMountedRef = useRef(true);
 
@@ -191,8 +197,8 @@ export const PublicRoute = ({ children, api }) => {
   useEffect(() => {
     isMountedRef.current = true;
 
-    if (location.state?.user) {
-      setUser(location.state.user);
+    if (locationStateUser) {
+      setUser(locationStateUser);
     }
 
     checkAuth();
@@ -200,7 +206,7 @@ export const PublicRoute = ({ children, api }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, location.state]);
+  }, [checkAuth, locationStateUser]);
 
   if (!checked) {
     return (

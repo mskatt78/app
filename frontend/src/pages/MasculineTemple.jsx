@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Shield, Sword, Crown, Heart, Mountain, TreePine, Zap, BookOpen, Star, ChevronRight, X, Eye, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 import AddToJournal from "../components/AddToJournal";
 import axios from "axios";
+import { appLogger } from "../utils/logger";
 
 const apiClient = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -198,20 +199,20 @@ const MasculineTemple = ({ user, api }) => {
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [showIntro, setShowIntro] = useState(true);
 
-  // Fetch masculine embodiment practices from database
-  useEffect(() => {
-    const fetchPractices = async () => {
-      try {
-        const { data } = await apiClient.get("/masculine-embodiment");
-        setEmbodimentPractices(data);
-      } catch {
-        // Keep fallback experience when practices are unavailable.
-      } finally {
-        setLoadingPractices(false);
-      }
-    };
-    fetchPractices();
+  const fetchPractices = useCallback(async () => {
+    try {
+      const { data } = await apiClient.get("/masculine-embodiment");
+      setEmbodimentPractices(data);
+    } catch (error) {
+      appLogger.warn("Masculine Temple practices load failed", error);
+    } finally {
+      setLoadingPractices(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchPractices();
+  }, [fetchPractices]);
 
   return (
     <div className="min-h-screen bg-background" data-testid="masculine-temple">

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="19" time="2.696" timestamp="2026-05-19T12:03:11.045543+00:00" hostname="agent-env-f4a983d4-bb2d-435a-955d-500e0a56ec8f"><testcase classname="backend.tests.test_iteration134_regression.TestHealthAndStartup" name="test_health_endpoint" time="0.284" /><testcase classname="backend.tests.test_iteration134_regression.TestHealthAndStartup" name="test_root_health_endpoint" time="0.144"><failure message="requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">/root/.venv/lib/python3.11/site-packages/requests/models.py:976: in json
+    return complexjson.loads(self.text, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/json/__init__.py:346: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/json/decoder.py:337: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/local/lib/python3.11/json/decoder.py:355: in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+backend/tests/test_iteration134_regression.py:31: in test_root_health_endpoint
+    data = response.json()
+           ^^^^^^^^^^^^^^^
+/root/.venv/lib/python3.11/site-packages/requests/models.py:980: in json
+    raise RequestsJSONDecodeError(e.msg, e.doc, e.pos)
+E   requests.exceptions.JSONDecodeError: Expecting value: line 1 column 1 (char 0)</failure></testcase><testcase classname="backend.tests.test_iteration134_regression.TestAchievementsEndpoint" name="test_achievements_requires_auth" time="0.150" /><testcase classname="backend.tests.test_iteration134_regression.TestAchievementsEndpoint" name="test_achievements_with_invalid_token" time="0.151" /><testcase classname="backend.tests.test_iteration134_regression.TestDashboardEndpoints" name="test_daily_guidance_requires_auth" time="0.142" /><testcase classname="backend.tests.test_iteration134_regression.TestDashboardEndpoints" name="test_daily_practice_public" time="0.126" /><testcase classname="backend.tests.test_iteration134_regression.TestJournalEndpoints" name="test_journal_list_requires_auth" time="0.115" /><testcase classname="backend.tests.test_iteration134_regression.TestJournalEndpoints" name="test_journal_create_requires_auth" time="0.121" /><testcase classname="backend.tests.test_iteration134_regression.TestMasculineTempleEndpoints" name="test_masculine_embodiment_list" time="0.129" /><testcase classname="backend.tests.test_iteration134_regression.TestCoreContentEndpoints" name="test_yoga_poses" time="0.155" /><testcase classname="backend.tests.test_iteration134_regression.TestCoreContentEndpoints" name="test_breathwork_sessions" time="0.138" /><testcase classname="backend.tests.test_iteration134_regression.TestCoreContentEndpoints" name="test_crystals_list" time="0.109" /><testcase classname="backend.tests.test_iteration134_regression.TestCoreContentEndpoints" name="test_mantras_list" time="0.117" /><testcase classname="backend.tests.test_iteration134_regression.TestCoreContentEndpoints" name="test_mudras_list" time="0.122" /><testcase classname="backend.tests.test_iteration134_regression.TestCoreContentEndpoints" name="test_chakra_cleansing" time="0.122" /><testcase classname="backend.tests.test_iteration134_regression.TestAuthEndpoints" name="test_auth_me_requires_auth" time="0.093" /><testcase classname="backend.tests.test_iteration134_regression.TestAuthEndpoints" name="test_auth_me_with_invalid_token" time="0.104" /><testcase classname="backend.tests.test_iteration134_regression.TestMeditationContent" name="test_meditations_list" time="0.109" /><testcase classname="backend.tests.test_iteration134_regression.TestMeditationContent" name="test_elemental_practices" time="0.114" /></testsuite></testsuites>
