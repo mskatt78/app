@@ -67,6 +67,26 @@
 - Retreat cleanup: PASS
 - Deployment blockers found by testing agent: **none**
 
+## Latest Verification Snapshot (Iteration 132)
+- Backend complexity cleanup regression: PASS (14/14)
+- Frontend hook/key cleanup regression: PASS (100%)
+- Verified `content.py` helper signature reduction using `CrystalImageResolutionState`
+- Verified no React key warnings in `MeditationVisualizer` and `BreathingVisualizer`
+- Verified mypy CI workflow added: `.github/workflows/mypy-backend.yml`
+
+## Newly Completed (Current Pass)
+- Refactored parameter-heavy content helpers:
+  - `_apply_commons_visual_fallback_if_needed(...)` now takes a structured state object
+  - `_persist_crystal_image_validation(...)` now accepts structured resolution state
+- Reduced hook dependency/stale-closure risk:
+  - `useTimerClock`: callback refs for transition/pause/reset/complete handlers
+  - `useGuidedPracticeEngine`: logger cleanup + dependency trim on play handler
+  - `BreathingVisualizer`: memoized phase config + callback refs for cycle completion
+- Removed index-as-key anti-patterns:
+  - `MeditationVisualizer`: deterministic object specs with generated IDs
+  - `BreathingVisualizer`: angle-based stable keys (`particle-angle-*`)
+- Added mypy CI gate for typed routers and verified local mypy success on targeted modules.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
