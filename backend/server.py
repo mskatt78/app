@@ -473,8 +473,42 @@ async def _seed_database_core_flow():
 
 
 async def do_database_seeding():
-    """Coordinator for database seeding tasks."""
+    """Coordinator for domain-level seeding tasks."""
+    await seed_users()
+    await seed_content()
+    await seed_config()
+
+
+async def seed_users():
+    """Seed or validate user-domain data."""
+    try:
+        users_count = await db.users.count_documents({})
+        logger.info(f"users domain seeding check complete — {users_count} users present.")
+    except Exception as e:
+        logger.warning(f"users domain seeding warning (non-fatal): {e}")
+
+
+async def seed_content():
+    """Seed content-domain collections and deep teachings."""
     await _seed_database_core_flow()
+
+
+async def seed_config():
+    """Seed/validate config-domain metadata."""
+    try:
+        await db.app_meta.update_one(
+            {"id": "seed_config_last_run"},
+            {
+                "$set": {
+                    "id": "seed_config_last_run",
+                    "updated_at": datetime.now(timezone.utc).isoformat(),
+                    "status": "ok",
+                }
+            },
+            upsert=True,
+        )
+    except Exception as e:
+        logger.warning(f"config domain seeding warning (non-fatal): {e}")
 
 
 async def ensure_indexes():
