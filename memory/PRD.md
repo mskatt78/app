@@ -12,6 +12,17 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **Critical Stability/Security Patch Complete (Iteration 130, May 2026):**
+  - Applied **critical-only** code review fixes:
+    - Hook dependency stabilization in `routeGuards.jsx`, `dashboard/SacredPracticeWidget.jsx`, `courses/useCoursePayments.js`, and `YogaLibrary.jsx` callback paths.
+    - Replaced guided toning preference persistence from `sessionStorage` to cookie-backed + runtime fallback storage in `utils/guidedToningSettings.js`.
+  - Security hardening:
+    - Removed sessionStorage usage for guided toning preferences.
+    - Added robust cookie read/write handling with safe fallback behavior.
+  - Validation:
+    - `/app/test_reports/iteration_130.json` => backend **100% (13/13)** and frontend **100%** for critical-fix regression set.
+    - Additional frontend specialist verification reported no deployment blockers.
+
 - **Final Playstore-Readiness Signoff (Iteration 129, May 2026):**
   - Completed requested last-step frontend refactors (`Breathwork`, `GuidedAudioButton` follow-up, `InstallPrompt` platform UI extraction) and broad logger/catch cleanup across additional high-traffic pages.
   - Completed full regression verification (frontend + backend) with no deployment blockers.
