@@ -2707,3 +2707,136 @@ agent_communication:
       
       SUMMARY:
       All focused frontend verification tests passed successfully. GuidedAudioButton component verified with proper state transitions (idle → loading → playing → stopped). InstallPrompt component structure correct with all required data-testids and PWA install flow. AmbientSoundPlayer component fully functional with play/pause/mute controls and Web Audio API integration. Sound type switching verified with multiple sound options. No console-breaking runtime errors detected. Frontend is production-ready for current batch.
+
+  - task: "TTS meditation parts info endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/tts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/tts/meditation/{id}/parts returns 200 with valid response. Tested with meditation ID '1'. Response includes meditation_id and total_parts (4). Endpoint correctly returns metadata about available audio parts for meditation. TTS meditation parts info PASSED."
+
+  - task: "TTS meditation audio generation endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/tts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ POST /api/tts/meditation/{id}?part=1 returns 200 with valid audio payload. Tested with meditation 'Inner Peace Journey' (ID: 1), part 1. Response includes audio_base64 (2,386,560 chars) and format (mp3). Audio data is substantial and properly formatted. TTS meditation audio generation PASSED."
+
+  - task: "TTS generate-base64 endpoint focused verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/tts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ POST /api/tts/generate-base64 returns 200 with valid audio payload. Tested with sample meditation text (voice: nova, speed: 0.85). Response includes audio_base64 (138,240 chars) and format (mp3). Audio data is substantial and properly formatted. TTS generate-base64 focused verification PASSED."
+
+  - task: "Content expand-script endpoint focused verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ POST /api/content/expand-script returns 200 with stable structure and expected outputs. Tested with 10-minute practice (use_ai: false, include_toning: true). Response includes all required fields: target_minutes (10), target_word_count (1200), word_count (1122), segments (7). Word count validation PASSED: 1122 >= 960 (80% threshold). Segments are properly formatted strings. Content expand-script focused verification PASSED."
+
+  - task: "Health endpoint focused verification"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/health returns 200 with valid JSON. Response includes status (healthy), app name (Shamanic Elements Temple Of The Soul), and version (2.0.0). Health endpoint focused verification PASSED."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.13"
+  test_sequence: 14
+  run_ui: false
+  last_tested: "2026-05-19"
+
+test_plan:
+  current_focus:
+    - "Backend focused verification - TTS meditation endpoints, expand-script, health - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Backend Focused Verification completed successfully (2026-05-19):
+      
+      VERIFICATION REQUEST: Run focused backend verification for this batch:
+      1) /api/tts/generate-base64 returns audio payload for valid text
+      2) /api/tts/meditation/{id}/parts and /api/tts/meditation/{id}?part=1 work for existing meditation id
+      3) /api/content/expand-script returns stable structure and expected word/segment outputs
+      4) /api/health returns 200
+      
+      ✅ ALL TESTS PASSED (5/5):
+      
+      1. ✅ HEALTH ENDPOINT - PASSED
+         - GET /api/health returns 200
+         - Response: {"status": "healthy", "app": "Shamanic Elements Temple Of The Soul", "version": "2.0.0"}
+         - All required fields present
+      
+      2. ✅ TTS GENERATE-BASE64 - PASSED
+         - POST /api/tts/generate-base64 returns 200
+         - Tested with sample meditation text (voice: nova, speed: 0.85)
+         - Response includes audio_base64 (138,240 chars) and format (mp3)
+         - Audio data is substantial and properly formatted
+      
+      3. ✅ TTS MEDITATION PARTS INFO - PASSED
+         - GET /api/tts/meditation/{id}/parts returns 200
+         - Tested with meditation ID '1'
+         - Response: {"meditation_id": "1", "total_parts": 4}
+         - Endpoint correctly returns metadata about available audio parts
+      
+      4. ✅ TTS MEDITATION AUDIO GENERATION - PASSED
+         - POST /api/tts/meditation/{id}?part=1 returns 200
+         - Tested with meditation 'Inner Peace Journey' (ID: 1), part 1
+         - Response includes audio_base64 (2,386,560 chars) and format (mp3)
+         - Audio data is substantial and properly formatted (large payload for full meditation part)
+      
+      5. ✅ CONTENT EXPAND-SCRIPT - PASSED
+         - POST /api/content/expand-script returns 200
+         - Tested with 10-minute practice (use_ai: false, include_toning: true)
+         - Response includes all required fields:
+           * target_minutes: 10
+           * target_word_count: 1200
+           * word_count: 1122
+           * segments: 7 (list of strings)
+         - Word count validation PASSED: 1122 >= 960 (80% of target)
+         - Segments are properly formatted strings
+         - Stable structure confirmed
+      
+      CRITICAL FINDINGS:
+      ✅ All 5 endpoints working correctly with 200 responses
+      ✅ TTS endpoints return valid audio payloads with proper base64 encoding
+      ✅ Meditation audio generation works for multi-part meditations
+      ✅ Content expand-script returns stable structure with expected word/segment outputs
+      ✅ No 500 errors or blocking issues detected
+      
+      SUMMARY:
+      All backend focused verification tests passed successfully. Health endpoint returns 200 with valid JSON. TTS generate-base64 endpoint returns audio payload for valid text (138,240 chars base64). TTS meditation endpoints work correctly: /parts returns metadata (4 parts), and audio generation returns substantial audio payload (2,386,560 chars base64 for part 1). Content expand-script returns stable structure with all required fields and meets word count threshold (1122 words >= 80% of 1200 target). Backend is production-ready for current batch.
+
