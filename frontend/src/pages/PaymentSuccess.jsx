@@ -18,9 +18,9 @@ const PaymentSuccess = ({ user, api }) => {
     } else {
       setStatus("failed");
     }
-  }, [searchParams]);
+  }, [pollPaymentStatus, searchParams]);
 
-  const pollPaymentStatus = async (sessionId) => {
+  const pollPaymentStatus = useCallback(async (sessionId) => {
     const maxAttempts = 10;
     const pollInterval = 2000;
 
@@ -49,7 +49,7 @@ const PaymentSuccess = ({ user, api }) => {
       setAttempts(prev => prev + 1);
       setTimeout(() => pollPaymentStatus(sessionId), pollInterval);
     }
-  };
+  });
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-6">

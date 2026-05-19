@@ -32,7 +32,7 @@ const PracticeLog = ({ user, api }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const fetchData = async () => {
     try {

@@ -32,7 +32,7 @@ const SomaticMovement = ({ user, api }) => {
 
   useEffect(() => {
     fetchPractices();
-  }, []);
+  }, [fetchPractices]);
 
   useEffect(() => {
     if (selectedElement === "all") {

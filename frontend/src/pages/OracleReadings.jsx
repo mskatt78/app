@@ -26,16 +26,16 @@ const OracleReadings = ({ user, api }) => {
 
   useEffect(() => {
     fetchPastReadings();
-  }, []);
+  }, [fetchPastReadings]);
 
-  const fetchPastReadings = async () => {
+  const fetchPastReadings = useCallback(async () => {
     try {
       const response = await api.get("/oracle/readings");
       setPastReadings(response.data);
     } catch (error) {
       console.error("Failed to fetch past readings:", error);
     }
-  };
+  });
 
   const performReading = async () => {
     setLoading(true);

@@ -42,7 +42,7 @@ const SoundFrequencies = ({ user, api }) => {
 
   useEffect(() => {
     fetchFrequencies();
-  }, []);
+  }, [fetchFrequencies]);
 
   useEffect(() => {
     if (activeCategory === "all") {

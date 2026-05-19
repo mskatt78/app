@@ -34,9 +34,9 @@ const Pricing = ({ user, api }) => {
       // Handle PayPal return - need to capture the order
       capturePayPalOrder(token);
     }
-  }, [searchParams]);
+  }, [capturePayPalOrder, checkPaymentStatus, fetchData, searchParams]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     // Fetch plans (public endpoint - always works)
     try {
       const plansRes = await api.get("/payments/plans");
@@ -54,7 +54,7 @@ const Pricing = ({ user, api }) => {
     }
     
     setLoading(false);
-  };
+  });
 
   const checkPaymentStatus = async (sessionId) => {
     try {

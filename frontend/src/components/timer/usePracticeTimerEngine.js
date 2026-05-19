@@ -80,7 +80,7 @@ export const usePracticeTimerEngine = ({
       ambientAudio.warmAudioContext();
     }
     timerClock.handlePlayPause();
-  }, [ambientAudio.warmAudioContext, timerClock.handlePlayPause, timerClock.isRunning]);
+  }, [ambientAudio, timerClock]);
 
   return {
     isRunning: timerClock.isRunning,

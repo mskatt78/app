@@ -54,7 +54,7 @@ const Retreats = ({ user, api }) => {
 
   useEffect(() => {
     fetchRetreats();
-  }, []);
+  }, [fetchRetreats]);
 
   const fetchRetreats = async () => {
     try {

@@ -63,7 +63,7 @@ const Numerology = ({ user, api }) => {
   useEffect(() => {
     fetchLifePaths();
     fetchHistory();
-  }, []);
+  }, [fetchHistory, fetchLifePaths]);
 
   const fetchLifePaths = async () => {
     try {

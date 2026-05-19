@@ -43,7 +43,7 @@ const SacredGuardians = ({ user, api }) => {
 
   useEffect(() => {
     fetchGuardians();
-  }, []);
+  }, [fetchGuardians]);
 
   useEffect(() => {
     if (activeCategory === "all") {

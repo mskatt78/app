@@ -64,7 +64,7 @@ const Settings = ({ user, api }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const fetchData = async () => {
     try {

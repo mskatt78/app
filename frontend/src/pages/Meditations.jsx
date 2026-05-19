@@ -99,7 +99,7 @@ const Meditations = ({ user, api }) => {
 
   useEffect(() => {
     fetchMeditations();
-  }, []);
+  }, [fetchMeditations]);
 
   useEffect(() => {
     if (selectedCategory === "all") {

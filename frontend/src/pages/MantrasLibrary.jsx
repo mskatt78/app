@@ -144,7 +144,7 @@ const MantrasLibrary = ({ user, api }) => {
         mantraIntervalRef.current = null;
       }
     };
-  }, []);
+  }, [fetchFavorites, fetchMantras, fetchUserMantras, user]);
 
   const fetchUserMantras = async () => {
     try {
@@ -246,7 +246,7 @@ const MantrasLibrary = ({ user, api }) => {
         audioRef.current.pause();
       }
     };
-  }, [selectedMantra]);
+  }, [selectedMantra, setupAudio]);
 
   const setupAudio = (url) => {
     setAudioError(false);

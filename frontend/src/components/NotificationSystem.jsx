@@ -111,7 +111,7 @@ export const NotificationProvider = ({ children }) => {
     // Check every hour
     const interval = setInterval(checkDailyNotifications, 60 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [preferences]);
+  }, [checkDailyNotifications, preferences]);
 
   const checkDailyNotifications = () => {
     const now = new Date();

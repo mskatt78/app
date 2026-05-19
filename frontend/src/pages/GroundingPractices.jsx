@@ -16,7 +16,7 @@ const GroundingPractices = ({ user, api }) => {
 
   useEffect(() => {
     fetchExercises();
-  }, []);
+  }, [fetchExercises]);
 
   const fetchExercises = async () => {
     try {

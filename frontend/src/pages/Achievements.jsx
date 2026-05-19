@@ -31,7 +31,7 @@ const Achievements = ({ user, api }) => {
 
   useEffect(() => {
     fetchAchievements();
-  }, []);
+  }, [fetchAchievements]);
 
   const fetchAchievements = async () => {
     try {

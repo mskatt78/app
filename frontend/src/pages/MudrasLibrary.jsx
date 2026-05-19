@@ -38,7 +38,7 @@ const MudrasLibrary = ({ user, api }) => {
 
   useEffect(() => {
     fetchMudras();
-  }, []);
+  }, [fetchMudras]);
 
   useEffect(() => {
     if (selectedElement === "all") {

@@ -78,7 +78,7 @@ const Mindfulness = ({ user, api }) => {
 
   useEffect(() => {
     fetchPractices();
-  }, []);
+  }, [fetchPractices]);
 
   useEffect(() => {
     if (selectedCategory === "all") {
@@ -200,7 +200,7 @@ const Mindfulness = ({ user, api }) => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [timerRunning]);
+  }, [timeRemaining, timerRunning]);
 
   const toggleTimer = () => {
     if (timerRunning) {

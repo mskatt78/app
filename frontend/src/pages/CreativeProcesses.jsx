@@ -87,7 +87,7 @@ const CreativeProcesses = ({ user, api }) => {
 
   useEffect(() => {
     fetchProcesses();
-  }, [filter]);
+  }, [fetchProcesses, filter]);
 
   const fetchProcesses = async () => {
     setLoading(true);

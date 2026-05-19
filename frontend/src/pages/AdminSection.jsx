@@ -224,7 +224,7 @@ function AudioLibrary({ api }) {
 
   useEffect(() => {
     fetchFiles();
-  }, []);
+  }, [fetchFiles]);
 
   const fetchFiles = async () => {
     try {

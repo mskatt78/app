@@ -49,7 +49,7 @@ const RuneReadings = ({ user, api }) => {
 
   useEffect(() => {
     fetchRunes();
-  }, []);
+  }, [fetchRunes]);
 
   const fetchRunes = async () => {
     try {

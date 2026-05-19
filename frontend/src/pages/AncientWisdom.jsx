@@ -49,7 +49,7 @@ const AncientWisdom = ({ user, api }) => {
     return parsed.toLocaleDateString();
   };
 
-  useEffect(() => { fetchEntries(); }, []);
+  useEffect(() => { fetchEntries(); }, [fetchEntries]);
 
   useEffect(() => {
     if (activeTab === "all") setFiltered(entries);

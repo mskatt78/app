@@ -57,7 +57,7 @@ const RitualBuilder = ({ user, api }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   useEffect(() => {
     let interval;
@@ -87,7 +87,7 @@ const RitualBuilder = ({ user, api }) => {
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isPlaying, currentStep, activeRitual]);
+  }, [isPlaying, currentStep, activeRitual, logRitualComplete]);
 
   const fetchData = async () => {
     try {

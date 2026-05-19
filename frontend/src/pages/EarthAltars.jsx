@@ -42,7 +42,7 @@ const EarthAltars = ({ user, api }) => {
 
   useEffect(() => {
     fetchAltars();
-  }, [filter]);
+  }, [fetchAltars, filter]);
 
   const fetchAltars = async () => {
     try {

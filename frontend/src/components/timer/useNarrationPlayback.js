@@ -36,7 +36,7 @@ export const useNarrationPlayback = ({
   useEffect(() => {
     player.pauseNarration(true);
     player.setAudioTapRequired(false);
-  }, [request.narrationSegments, player.pauseNarration, player.setAudioTapRequired]);
+  }, [request.narrationSegments, player.pauseNarration, player.setAudioTapRequired, player]);
 
   useEffect(() => () => {
     clearNarrationCache();
@@ -45,7 +45,7 @@ export const useNarrationPlayback = ({
   const resetNarration = useCallback(() => {
     player.pauseNarration(true);
     player.setAudioTapRequired(false);
-  }, [player.pauseNarration, player.setAudioTapRequired]);
+  }, [player]);
 
   return {
     ttsAudioRef: player.ttsAudioRef,
