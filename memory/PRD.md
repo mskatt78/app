@@ -101,9 +101,23 @@
   - `MeditationVisualizer.jsx` stabilized with memoized visual specs and unique keys
 
 ## Remaining from Current Code Review Report
-- Deeper structural split of seeding flow into domain-level seeders (`seed_users`, `seed_content`, `seed_config`) still pending.
-- Full external module split of `MeditationVisualizer` (attempted, but reverted due visual-edits Babel plugin compile incompatibility during cross-file prop tracing).
 - Additional wide-scope hook dependency backlog outside prioritized critical files still pending for phased cleanup.
+
+## Latest Verification Snapshot (Iteration 135)
+- Completed focused follow-up for the two remaining critical items:
+  1) Domain-level seeding split
+     - `do_database_seeding()` now coordinates `seed_users()`, `seed_content()`, `seed_config()`
+  2) Plugin-compatible `MeditationVisualizer` architecture split
+     - Implemented `useVisualizationState`, `VisualizationCanvas`, and `VisualizationControls` strategy within the same file to avoid Babel cross-file plugin incompatibility.
+- Testing agent (`iteration_135`) confirms:
+  - Backend: **12/12 pass**
+  - Frontend: **100% pass**
+  - No deployment blockers
+  - No React key warnings during breathwork/practice visualizer flows
+
+## Updated Remaining from Current Code Review Report
+- Broad hook-dependency backlog across additional frontend files (beyond prioritized critical targets) still pending.
+- Batch 2 important items pending (payment/content long-function decomposition + residual test anti-pattern sweep).
 
 ## Newly Completed (Current Pass)
 - Refactored parameter-heavy content helpers:
