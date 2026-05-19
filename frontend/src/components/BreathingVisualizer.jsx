@@ -2,7 +2,7 @@
  * BreathingVisualizer - Animated breathing guide for meditation
  * Shows expand/contract circle with breath phases
  */
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const BreathingVisualizer = ({
@@ -16,6 +16,8 @@ const BreathingVisualizer = ({
   const [phase, setPhase] = useState("ready"); // ready, inhale, hold, exhale, hold_empty
   const [countdown, setCountdown] = useState(0);
   const [cycles, setCycles] = useState(0);
+  const cyclesRef = useRef(0);
+  const onCycleCompleteRef = useRef(onCycleComplete);
 
   const colorClasses = {
     primary: { ring: "border-primary", bg: "bg-primary/20", text: "text-primary" },
@@ -28,32 +30,40 @@ const BreathingVisualizer = ({
 
   const colors = colorClasses[color] || colorClasses.primary;
 
-  const phaseConfig = {
-    inhale: { 
-      duration: pattern.inhale, 
-      label: "Breathe In", 
+  const phaseConfig = useMemo(() => ({
+    inhale: {
+      duration: pattern.inhale,
+      label: "Breathe In",
       scale: 1.3,
       next: pattern.hold > 0 ? "hold" : "exhale"
     },
-    hold: { 
-      duration: pattern.hold, 
-      label: "Hold", 
+    hold: {
+      duration: pattern.hold,
+      label: "Hold",
       scale: 1.3,
       next: "exhale"
     },
-    exhale: { 
-      duration: pattern.exhale, 
-      label: "Breathe Out", 
+    exhale: {
+      duration: pattern.exhale,
+      label: "Breathe Out",
       scale: 1,
       next: pattern.hold_empty > 0 ? "hold_empty" : "inhale"
     },
-    hold_empty: { 
-      duration: pattern.hold_empty, 
-      label: "Hold Empty", 
+    hold_empty: {
+      duration: pattern.hold_empty,
+      label: "Hold Empty",
       scale: 1,
       next: "inhale"
     }
-  };
+  }), [pattern.exhale, pattern.hold, pattern.hold_empty, pattern.inhale]);
+
+  useEffect(() => {
+    onCycleCompleteRef.current = onCycleComplete;
+  }, [onCycleComplete]);
+
+  useEffect(() => {
+    cyclesRef.current = cycles;
+  }, [cycles]);
 
   // Start breathing cycle
   const startBreathing = useCallback(() => {
@@ -86,8 +96,12 @@ const BreathingVisualizer = ({
           
           // Track cycle completion
           if (nextPhase === "inhale") {
-            setCycles(c => c + 1);
-            onCycleComplete(cycles + 1);
+            setCycles((prev) => {
+              const nextValue = prev + 1;
+              cyclesRef.current = nextValue;
+              onCycleCompleteRef.current(nextValue);
+              return nextValue;
+            });
           }
           
           return phaseConfig[nextPhase]?.duration || 4;
@@ -97,9 +111,11 @@ const BreathingVisualizer = ({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [isActive, phase, cycles, onCycleComplete]);
+  }, [isActive, phase, phaseConfig, startBreathing]);
 
   const config = phaseConfig[phase] || { scale: 1, label: "Ready" };
+
+  const particleAngles = useMemo(() => [0, 45, 90, 135, 180, 225, 270, 315], []);
 
   return (
     <div 
@@ -182,20 +198,20 @@ const BreathingVisualizer = ({
       {/* Decorative particles */}
       {isActive && (
         <>
-          {[...Array(8)].map((_, i) => (
+          {particleAngles.map((angle) => (
             <motion.div
-              key={i}
+              key={`particle-angle-${angle}`}
               className={`absolute w-2 h-2 rounded-full ${colors.bg}`}
               animate={{
                 scale: [0, 1, 0],
                 opacity: [0, 0.6, 0],
-                x: [0, Math.cos(i * 45 * Math.PI / 180) * (size * 0.45)],
-                y: [0, Math.sin(i * 45 * Math.PI / 180) * (size * 0.45)]
+                x: [0, Math.cos(angle * Math.PI / 180) * (size * 0.45)],
+                y: [0, Math.sin(angle * Math.PI / 180) * (size * 0.45)]
               }}
               transition={{
                 duration: phaseConfig[phase]?.duration || 4,
                 repeat: Infinity,
-                delay: i * 0.2
+                delay: (angle / 45) * 0.2
               }}
             />
           ))}

@@ -19,6 +19,15 @@ export const useTimerClock = ({
   const completionRef = useRef(false);
   const autoStartedRef = useRef(false);
   const lastSegmentIndexRef = useRef(0);
+  const onTransitionRef = useRef(onTransition);
+  const onPauseRef = useRef(onPause);
+  const onResetRef = useRef(onReset);
+  const onCompleteRef = useRef(onComplete);
+
+  useEffect(() => { onTransitionRef.current = onTransition; }, [onTransition]);
+  useEffect(() => { onPauseRef.current = onPause; }, [onPause]);
+  useEffect(() => { onResetRef.current = onReset; }, [onReset]);
+  useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
 
   const normalizedSegments = useMemo(() => {
     if (!segments.length) return [];
@@ -79,7 +88,7 @@ export const useTimerClock = ({
       const foundIndex = segmentEndTimes.findIndex((segmentEnd) => nextElapsed < segmentEnd);
       const nextSegmentIndex = foundIndex === -1 ? normalizedSegments.length - 1 : foundIndex;
       if (nextSegmentIndex !== lastSegmentIndexRef.current && nextElapsed < calculatedTotal) {
-        if (!isMuted) onTransition?.();
+        if (!isMuted) onTransitionRef.current?.();
         lastSegmentIndexRef.current = nextSegmentIndex;
       }
     }
@@ -91,10 +100,10 @@ export const useTimerClock = ({
       sessionEndRef.current = null;
       if (intervalRef.current) clearInterval(intervalRef.current);
       setIsRunning(false);
-      onComplete?.();
-      if (!isMuted) onTransition?.();
+      onCompleteRef.current?.();
+      if (!isMuted) onTransitionRef.current?.();
     }
-  }, [calculatedTotal, isMuted, normalizedSegments.length, onComplete, onTransition, segmentEndTimes]);
+  }, [calculatedTotal, isMuted, normalizedSegments.length, segmentEndTimes]);
 
   useEffect(() => {
     if (isRunning) {
@@ -124,7 +133,7 @@ export const useTimerClock = ({
       syncElapsedFromClock();
       sessionEndRef.current = null;
       setIsRunning(false);
-      onPause?.();
+      onPauseRef.current?.();
       return;
     }
 
@@ -133,7 +142,7 @@ export const useTimerClock = ({
     lastSegmentIndexRef.current = currentSegmentIndex;
     sessionEndRef.current = Date.now() + ((calculatedTotal - totalElapsed) * 1000);
     setIsRunning(true);
-  }, [calculatedTotal, currentSegmentIndex, isRunning, onPause, syncElapsedFromClock, totalElapsed, warmAudioContext]);
+  }, [calculatedTotal, currentSegmentIndex, isRunning, syncElapsedFromClock, totalElapsed, warmAudioContext]);
 
   const handleReset = useCallback(() => {
     sessionEndRef.current = null;
@@ -141,8 +150,8 @@ export const useTimerClock = ({
     lastSegmentIndexRef.current = 0;
     setIsRunning(false);
     setTotalElapsed(0);
-    onReset?.();
-  }, [onReset]);
+    onResetRef.current?.();
+  }, []);
 
   const handleSkipSegment = useCallback(() => {
     if (currentSegmentIndex >= normalizedSegments.length - 1) return;
@@ -153,8 +162,8 @@ export const useTimerClock = ({
     if (isRunning) {
       sessionEndRef.current = Date.now() + ((calculatedTotal - nextElapsed) * 1000);
     }
-    if (!isMuted) onTransition?.();
-  }, [calculatedTotal, currentSegmentIndex, isMuted, isRunning, normalizedSegments.length, onTransition, segmentEndTimes]);
+    if (!isMuted) onTransitionRef.current?.();
+  }, [calculatedTotal, currentSegmentIndex, isMuted, isRunning, normalizedSegments.length, segmentEndTimes]);
 
   useEffect(() => () => {
     if (intervalRef.current) clearInterval(intervalRef.current);

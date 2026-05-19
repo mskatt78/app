@@ -224,7 +224,7 @@ async def _resolve_payment_context(
         if payment_request.plan_id not in SUBSCRIPTION_PLANS:
             raise HTTPException(status_code=400, detail="Invalid subscription plan")
         plan = SUBSCRIPTION_PLANS[payment_request.plan_id]
-        amount = float(plan["price"])
+        amount = float(str(plan["price"]))
         product_name = str(plan["name"])
         metadata["plan_id"] = payment_request.plan_id
         metadata["interval"] = plan["interval"]
@@ -234,10 +234,12 @@ async def _resolve_payment_context(
         if not payment_request.product_id or payment_request.product_id not in COURSE_BUNDLES:
             raise HTTPException(status_code=400, detail="Invalid bundle ID")
         bundle = COURSE_BUNDLES[payment_request.product_id]
-        amount = float(bundle["price"])
+        amount = float(str(bundle["price"]))
         product_name = str(bundle["name"])
         metadata["product_id"] = payment_request.product_id
-        metadata["bundle_courses"] = ",".join(bundle["courses"])
+        raw_courses = bundle.get("courses")
+        course_ids = raw_courses if isinstance(raw_courses, list) else []
+        metadata["bundle_courses"] = ",".join(str(course_id) for course_id in course_ids)
         return amount, product_name, metadata
 
     if not payment_request.product_id:

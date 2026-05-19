@@ -2,6 +2,7 @@
 from datetime import datetime, timezone
 import asyncio
 from collections import Counter
+from dataclasses import dataclass
 import logging
 import os
 import re
@@ -290,10 +291,10 @@ def _flatten_text(value) -> list[str]:
             result.extend(_flatten_text(item))
         return result
     if isinstance(value, dict):
-        result: list[str] = []
+        dict_result: list[str] = []
         for item in value.values():
-            result.extend(_flatten_text(item))
-        return result
+            dict_result.extend(_flatten_text(item))
+        return dict_result
     converted = str(value).strip()
     return [converted] if converted else []
 
@@ -1650,8 +1651,10 @@ def _extract_wikipedia_file_titles(payload: dict[str, Any] | None) -> list[str]:
     for page in pages.values():
         if not isinstance(page, dict):
             continue
-        images = page.get("images") if isinstance(page.get("images"), list) else []
-        for image_entry in images:
+        images_value = page.get("images")
+        if not isinstance(images_value, list):
+            continue
+        for image_entry in images_value:
             if not isinstance(image_entry, dict):
                 continue
             title_value = str(image_entry.get("title") or "").strip()
@@ -1967,7 +1970,7 @@ def _derive_image_resolution_state(
     crystal: dict[str, Any],
     best_match: dict[str, Any] | None,
     best_score: float,
-) -> tuple[str, str | None, str | None, str | None, str]:
+) -> "CrystalImageResolutionState":
     source_type = "catalog_original"
     resolved_image_url = crystal.get("image_url")
     wikipedia_title: str | None = None
@@ -1987,7 +1990,14 @@ def _derive_image_resolution_state(
         source_type = "missing"
         status = "missing"
 
-    return source_type, resolved_image_url, wikipedia_title, wikipedia_page_url, status
+    return CrystalImageResolutionState(
+        source_type=source_type,
+        resolved_image_url=resolved_image_url,
+        wikipedia_title=wikipedia_title,
+        wikipedia_page_url=wikipedia_page_url,
+        best_score=best_score,
+        status=status,
+    )
 
 
 def _is_resolution_visual_match(preferred_form: str, title: str | None, image_url: str | None) -> bool:
@@ -1997,61 +2007,62 @@ def _is_resolution_visual_match(preferred_form: str, title: str | None, image_ur
     return score >= 0.08
 
 
+@dataclass
+class CrystalImageResolutionState:
+    source_type: str
+    resolved_image_url: str | None
+    wikipedia_title: str | None
+    wikipedia_page_url: str | None
+    best_score: float
+    status: str
+
+
 async def _apply_commons_visual_fallback_if_needed(
     crystal: dict[str, Any],
     preferred_form: str,
     article_title: str | None,
-    source_type: str,
-    resolved_image_url: str | None,
-    wikipedia_title: str | None,
-    wikipedia_page_url: str | None,
-    best_score: float,
-    status: str,
-) -> tuple[str, str | None, str | None, str | None, float, str]:
+    state: CrystalImageResolutionState,
+) -> CrystalImageResolutionState:
     needs_fallback = (
-        source_type != "wikipedia_verified"
-        or not _is_resolution_visual_match(preferred_form, wikipedia_title, resolved_image_url)
+        state.source_type != "wikipedia_verified"
+        or not _is_resolution_visual_match(preferred_form, state.wikipedia_title, state.resolved_image_url)
     )
     if not needs_fallback:
-        return source_type, resolved_image_url, wikipedia_title, wikipedia_page_url, best_score, status
+        return state
 
     wiki_article_image = await _search_wikipedia_article_image_for_crystal(
         crystal,
-        article_title or wikipedia_title,
+        article_title or state.wikipedia_title,
         preferred_form,
     )
     if wiki_article_image:
-        return (
-            "wikipedia_verified",
-            wiki_article_image.get("image_url"),
-            wiki_article_image.get("title"),
-            wiki_article_image.get("page_url"),
-            max(best_score, float(wiki_article_image.get("score") or 0.0)),
-            "verified",
+        return CrystalImageResolutionState(
+            source_type="wikipedia_verified",
+            resolved_image_url=wiki_article_image.get("image_url"),
+            wikipedia_title=wiki_article_image.get("title"),
+            wikipedia_page_url=wiki_article_image.get("page_url"),
+            best_score=max(state.best_score, float(wiki_article_image.get("score") or 0.0)),
+            status="verified",
         )
 
     commons_match = await _search_commons_image_for_crystal(crystal, preferred_form)
     if not commons_match:
-        return source_type, resolved_image_url, wikipedia_title, wikipedia_page_url, best_score, status
+        return state
 
-    return (
-        "commons_verified",
-        commons_match.get("image_url"),
-        commons_match.get("title"),
-        commons_match.get("page_url"),
-        max(best_score, float(commons_match.get("score") or 0.0)),
-        "verified",
+    return CrystalImageResolutionState(
+        source_type="commons_verified",
+        resolved_image_url=commons_match.get("image_url"),
+        wikipedia_title=commons_match.get("title"),
+        wikipedia_page_url=commons_match.get("page_url"),
+        best_score=max(state.best_score, float(commons_match.get("score") or 0.0)),
+        status="verified",
     )
 
 
 async def _persist_crystal_image_validation(
     cache_collection: Any,
     crystal_id: str,
-    source_type: str,
-    resolved_image_url: str | None,
-    wikipedia_title: str | None,
-    wikipedia_page_url: str | None,
-    best_score: float,
+    resolution_state: CrystalImageResolutionState,
     validation: dict[str, Any],
     now: datetime,
 ) -> None:
@@ -2063,11 +2074,11 @@ async def _persist_crystal_image_validation(
         {
             "$set": {
                 "crystal_id": crystal_id,
-                "source_type": source_type,
-                "resolved_image_url": resolved_image_url,
-                "wikipedia_title": wikipedia_title,
-                "wikipedia_page_url": wikipedia_page_url,
-                "score": round(best_score, 4),
+                "source_type": resolution_state.source_type,
+                "resolved_image_url": resolution_state.resolved_image_url,
+                "wikipedia_title": resolution_state.wikipedia_title,
+                "wikipedia_page_url": resolution_state.wikipedia_page_url,
+                "score": round(resolution_state.best_score, 4),
                 "validation": validation,
                 "updated_at": now,
             }
@@ -2085,7 +2096,7 @@ async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
         return cached_resolution
 
     best_match, best_score, preferred_form = await _find_best_wikipedia_match(crystal, crystal_id)
-    source_type, resolved_image_url, wikipedia_title, wikipedia_page_url, status = _derive_image_resolution_state(
+    resolution_state = _derive_image_resolution_state(
         crystal,
         best_match,
         best_score,
@@ -2094,39 +2105,30 @@ async def _resolve_crystal_image(crystal: dict[str, Any], db) -> dict[str, Any]:
     if best_match and isinstance(best_match.get("summary"), dict):
         source_article_title = best_match["summary"].get("title")
 
-    source_type, resolved_image_url, wikipedia_title, wikipedia_page_url, best_score, status = await _apply_commons_visual_fallback_if_needed(
+    resolution_state = await _apply_commons_visual_fallback_if_needed(
         crystal,
         preferred_form,
         source_article_title,
-        source_type,
-        resolved_image_url,
-        wikipedia_title,
-        wikipedia_page_url,
-        best_score,
-        status,
+        resolution_state,
     )
 
     validation = _build_image_validation_payload(
-        status=status,
-        score=best_score,
-        source_type=source_type,
-        wikipedia_title=wikipedia_title,
-        wikipedia_page_url=wikipedia_page_url,
+        status=resolution_state.status,
+        score=resolution_state.best_score,
+        source_type=resolution_state.source_type,
+        wikipedia_title=resolution_state.wikipedia_title,
+        wikipedia_page_url=resolution_state.wikipedia_page_url,
     )
 
     await _persist_crystal_image_validation(
         cache_collection,
         crystal_id,
-        source_type,
-        resolved_image_url,
-        wikipedia_title,
-        wikipedia_page_url,
-        best_score,
+        resolution_state,
         validation,
         now,
     )
 
-    return _apply_image_resolution(crystal, resolved_image_url, source_type, validation)
+    return _apply_image_resolution(crystal, resolution_state.resolved_image_url, resolution_state.source_type, validation)
 
 
 async def _enrich_crystals_with_verified_images(crystals: list[dict[str, Any]], db) -> list[dict[str, Any]]:

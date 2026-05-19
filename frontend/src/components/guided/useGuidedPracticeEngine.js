@@ -19,6 +19,7 @@ import {
   setGuidedNarrationMode,
 } from "../../utils/guidedNarrationSettings";
 import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
+import { appLogger } from "../../utils/logger";
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const narrationPlan = useMemo(() => buildNarrationPlan(practice || {}, stepsOverride), [practice, stepsOverride]);
@@ -145,7 +146,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     try {
       ambientRef.current?.src?.stop?.();
     } catch (error) {
-      console.error("Guided overlay ambient stop failed:", error);
+      appLogger.warn("Guided overlay ambient stop failed", error);
     }
     ambientRef.current = null;
   }, []);
@@ -154,7 +155,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     try {
       toningRef.current?.stop?.();
     } catch (error) {
-      console.error("Guided overlay toning stop failed:", error);
+      appLogger.warn("Guided overlay toning stop failed", error);
     }
     toningRef.current = null;
   }, []);
@@ -162,7 +163,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const clearNarrationCache = useCallback(() => {
     ttsPendingRef.current.clear();
     ttsCacheRef.current.forEach((url) => {
-      try { URL.revokeObjectURL(url); } catch (error) { console.error("Guided overlay URL revoke failed:", error); }
+      try { URL.revokeObjectURL(url); } catch (error) { appLogger.warn("Guided overlay URL revoke failed", error); }
     });
     ttsCacheRef.current.clear();
   }, []);
@@ -444,7 +445,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     }
 
     playNarrationSegment(currentSegmentIndexRef.current);
-  }, [isComplete, isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock, timeRemaining, element]);
+  }, [isComplete, isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock, timeRemaining]);
 
   useEffect(() => {
     if (practice && narrationReady && !autoStartRef.current && !isComplete) {

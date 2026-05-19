@@ -5,6 +5,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 
+const createRandomId = (prefix) => {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return `${prefix}-${crypto.randomUUID()}`;
+  }
+  return `${prefix}-${Math.random().toString(16).slice(2)}`;
+};
+
 const MeditationVisualizer = ({
   type = "particles", // particles, aurora, mandala, chakra, element
   element = "Spirit", // Earth, Water, Fire, Air, Spirit
@@ -29,63 +36,168 @@ const MeditationVisualizer = ({
   const colors = elementColors[element] || elementColors.Spirit;
   const particleCount = Math.floor(20 * intensity);
 
+  const particleSpecs = useMemo(
+    () => Array.from({ length: particleCount }, () => ({
+      id: createRandomId("particle"),
+      size: Math.random() * 8 + 4,
+      startX: Math.random() * 100,
+      duration: Math.random() * 10 + 10,
+      delay: Math.random() * 5,
+      rise: 500 + Math.random() * 300,
+      drift: (Math.random() - 0.5) * 100,
+    })),
+    [particleCount]
+  );
+
+  const auroraSpecs = useMemo(
+    () => Array.from({ length: 5 }, (_, bandIndex) => ({
+      id: `aurora-band-${20 + bandIndex * 15}`,
+      top: 20 + bandIndex * 15,
+      duration: 8 + bandIndex * 2,
+      delay: bandIndex * 0.5,
+    })),
+    []
+  );
+
+  const starSpecs = useMemo(
+    () => Array.from({ length: 30 }, () => ({
+      id: createRandomId("star"),
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      duration: 2 + Math.random() * 2,
+      delay: Math.random() * 2,
+    })),
+    []
+  );
+
+  const mandalaRings = useMemo(() => {
+    const petalsPerRing = [8, 12, 16, 20, 24];
+    return petalsPerRing.map((petalCount, ringIndex) => {
+      const ringSize = 60 + ringIndex * 50;
+      const rotationDuration = 30 + ringIndex * 10;
+      return {
+        id: `mandala-ring-${ringSize}-${petalCount}`,
+        ringSize,
+        rotationDuration,
+        rotationDirection: ringIndex % 2 === 0 ? 360 : -360,
+        petals: Array.from({ length: petalCount }, (_, petalIndex) => {
+          const angle = (petalIndex * 360) / petalCount;
+          return {
+            id: `mandala-petal-${ringSize}-${Math.round(angle)}`,
+            angle,
+            delay: petalIndex * 0.1,
+          };
+        }),
+      };
+    });
+  }, []);
+
+  const earthSpecs = useMemo(
+    () => Array.from({ length: 10 }, () => ({
+      id: createRandomId("earth-fragment"),
+      width: 40 + Math.random() * 60,
+      height: 40 + Math.random() * 60,
+      left: Math.random() * 100,
+      bottom: Math.random() * 30,
+      duration: 3 + Math.random() * 2,
+    })),
+    []
+  );
+
+  const waterSpecs = useMemo(
+    () => Array.from({ length: 5 }, (_, waveIndex) => ({
+      id: `water-wave-${20 + waveIndex * 15}`,
+      top: 20 + waveIndex * 15,
+      duration: 4 + waveIndex,
+    })),
+    []
+  );
+
+  const fireSpecs = useMemo(
+    () => Array.from({ length: 15 }, () => ({
+      id: createRandomId("fire-flame"),
+      width: 20 + Math.random() * 40,
+      height: 40 + Math.random() * 80,
+      left: 30 + Math.random() * 40,
+      rise: 100 + Math.random() * 100,
+      duration: 1 + Math.random(),
+      delay: Math.random(),
+    })),
+    []
+  );
+
+  const airSpecs = useMemo(
+    () => Array.from({ length: 20 }, () => ({
+      id: createRandomId("air-stream"),
+      left: Math.random() * 100,
+      top: Math.random() * 100,
+      rotation: Math.random() * 30 - 15,
+      duration: 3 + Math.random() * 2,
+      delay: Math.random() * 2,
+    })),
+    []
+  );
+
+  const chakraSpecs = useMemo(() => [
+    { id: "chakra-root", color: "#ff0000", y: 85 },
+    { id: "chakra-sacral", color: "#ff7f00", y: 72 },
+    { id: "chakra-solar", color: "#ffff00", y: 58 },
+    { id: "chakra-heart", color: "#00ff00", y: 44 },
+    { id: "chakra-throat", color: "#00bfff", y: 30 },
+    { id: "chakra-third-eye", color: "#0000ff", y: 18 },
+    { id: "chakra-crown", color: "#8b00ff", y: 5 }
+  ], []);
+
   // Floating particles visualization
   const ParticlesViz = useMemo(() => {
     if (!mounted) return null;
-    
+
     return (
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(particleCount)].map((_, i) => {
-          const size = Math.random() * 8 + 4;
-          const startX = Math.random() * 100;
-          const duration = Math.random() * 10 + 10;
-          const delay = Math.random() * 5;
-          
-          return (
-            <motion.div
-              key={`particle-${i}`}
-              className="absolute rounded-full"
-              style={{
-                width: size,
-                height: size,
-                background: `radial-gradient(circle, ${colors.primary}, transparent)`,
-                left: `${startX}%`,
-                bottom: "-20px",
-                boxShadow: `0 0 ${size * 2}px ${colors.glow}`
-              }}
-              animate={{
-                y: [0, -500 - Math.random() * 300],
-                x: [0, (Math.random() - 0.5) * 100],
-                opacity: [0, 0.8, 0.8, 0],
-                scale: [0.5, 1, 1, 0.3]
-              }}
-              transition={{
-                duration: duration,
-                repeat: Infinity,
-                delay: delay,
-                ease: "easeOut"
-              }}
-            />
-          );
-        })}
+        {particleSpecs.map((spec) => (
+          <motion.div
+            key={spec.id}
+            className="absolute rounded-full"
+            style={{
+              width: spec.size,
+              height: spec.size,
+              background: `radial-gradient(circle, ${colors.primary}, transparent)`,
+              left: `${spec.startX}%`,
+              bottom: "-20px",
+              boxShadow: `0 0 ${spec.size * 2}px ${colors.glow}`
+            }}
+            animate={{
+              y: [0, -spec.rise],
+              x: [0, spec.drift],
+              opacity: [0, 0.8, 0.8, 0],
+              scale: [0.5, 1, 1, 0.3]
+            }}
+            transition={{
+              duration: spec.duration,
+              repeat: Infinity,
+              delay: spec.delay,
+              ease: "easeOut"
+            }}
+          />
+        ))}
       </div>
     );
-  }, [mounted, particleCount, colors]);
+  }, [mounted, particleSpecs, colors]);
 
   // Aurora/Northern Lights visualization
   const AuroraViz = useMemo(() => {
     if (!mounted) return null;
-    
+
     return (
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(5)].map((_, i) => (
+        {auroraSpecs.map((spec) => (
           <motion.div
-            key={`aurora-band-${i}`}
+            key={spec.id}
             className="absolute w-full h-48 opacity-30"
             style={{
               background: `linear-gradient(180deg, transparent, ${colors.primary}40, ${colors.secondary}40, transparent)`,
               filter: "blur(40px)",
-              top: `${20 + i * 15}%`
+              top: `${spec.top}%`
             }}
             animate={{
               x: [-100, 100, -100],
@@ -93,45 +205,31 @@ const MeditationVisualizer = ({
               opacity: [0.2, 0.4, 0.2]
             }}
             transition={{
-              duration: 8 + i * 2,
+              duration: spec.duration,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: i * 0.5
+              delay: spec.delay
             }}
           />
         ))}
-        
-        {/* Stars */}
-        {[...Array(30)].map((_, i) => (
+
+        {starSpecs.map((star) => (
           <motion.div
-            key={`star-${i}`}
+            key={star.id}
             className="absolute w-1 h-1 bg-white rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`
-            }}
-            animate={{
-              opacity: [0.2, 1, 0.2],
-              scale: [1, 1.2, 1]
-            }}
-            transition={{
-              duration: 2 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2
-            }}
+            style={{ left: `${star.left}%`, top: `${star.top}%` }}
+            animate={{ opacity: [0.2, 1, 0.2], scale: [1, 1.2, 1] }}
+            transition={{ duration: star.duration, repeat: Infinity, delay: star.delay }}
           />
         ))}
       </div>
     );
-  }, [mounted, colors]);
+  }, [mounted, auroraSpecs, starSpecs, colors]);
 
   // Mandala visualization
   const MandalaViz = useMemo(() => {
     if (!mounted) return null;
-    
-    const rings = 5;
-    const petalsPerRing = [8, 12, 16, 20, 24];
-    
+
     return (
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
@@ -140,47 +238,33 @@ const MeditationVisualizer = ({
           animate={{ rotate: 360 }}
           transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
         >
-          {[...Array(rings)].map((_, ringIndex) => (
-            <div key={ringIndex} className="absolute inset-0 flex items-center justify-center">
+          {mandalaRings.map((ring) => (
+            <div key={ring.id} className="absolute inset-0 flex items-center justify-center">
               <motion.div
                 className="relative"
-                style={{
-                  width: 60 + ringIndex * 50,
-                  height: 60 + ringIndex * 50
-                }}
-                animate={{ rotate: ringIndex % 2 === 0 ? 360 : -360 }}
-                transition={{ duration: 30 + ringIndex * 10, repeat: Infinity, ease: "linear" }}
+                style={{ width: ring.ringSize, height: ring.ringSize }}
+                animate={{ rotate: ring.rotationDirection }}
+                transition={{ duration: ring.rotationDuration, repeat: Infinity, ease: "linear" }}
               >
-                {[...Array(petalsPerRing[ringIndex])].map((_, petalIndex) => {
-                  const angle = (petalIndex * 360) / petalsPerRing[ringIndex];
-                  return (
-                    <motion.div
-                      key={petalIndex}
-                      className="absolute w-3 h-8 rounded-full"
-                      style={{
-                        background: `linear-gradient(to bottom, ${colors.primary}, transparent)`,
-                        left: "50%",
-                        top: "50%",
-                        transformOrigin: "center bottom",
-                        transform: `translate(-50%, -100%) rotate(${angle}deg)`
-                      }}
-                      animate={{
-                        opacity: [0.3, 0.7, 0.3],
-                        scale: [0.8, 1, 0.8]
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity,
-                        delay: petalIndex * 0.1
-                      }}
-                    />
-                  );
-                })}
+                {ring.petals.map((petal) => (
+                  <motion.div
+                    key={petal.id}
+                    className="absolute w-3 h-8 rounded-full"
+                    style={{
+                      background: `linear-gradient(to bottom, ${colors.primary}, transparent)`,
+                      left: "50%",
+                      top: "50%",
+                      transformOrigin: "center bottom",
+                      transform: `translate(-50%, -100%) rotate(${petal.angle}deg)`
+                    }}
+                    animate={{ opacity: [0.3, 0.7, 0.3], scale: [0.8, 1, 0.8] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: petal.delay }}
+                  />
+                ))}
               </motion.div>
             </div>
           ))}
-          
-          {/* Center glow */}
+
           <motion.div
             className="absolute inset-0 flex items-center justify-center"
             animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
@@ -197,48 +281,29 @@ const MeditationVisualizer = ({
         </motion.div>
       </div>
     );
-  }, [mounted, colors]);
+  }, [mounted, mandalaRings, colors]);
 
   // Chakra visualization
   const ChakraViz = useMemo(() => {
     if (!mounted) return null;
-    
-    const chakras = [
-      { color: "#ff0000", name: "Root", y: 85 },
-      { color: "#ff7f00", name: "Sacral", y: 72 },
-      { color: "#ffff00", name: "Solar", y: 58 },
-      { color: "#00ff00", name: "Heart", y: 44 },
-      { color: "#00bfff", name: "Throat", y: 30 },
-      { color: "#0000ff", name: "Third Eye", y: 18 },
-      { color: "#8b00ff", name: "Crown", y: 5 }
-    ];
-    
+
     return (
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative w-24 h-full">
-          {/* Energy channel */}
           <motion.div
             className="absolute left-1/2 top-0 bottom-0 w-1 -translate-x-1/2"
             style={{ background: "linear-gradient(to top, #ff0000, #ff7f00, #ffff00, #00ff00, #00bfff, #0000ff, #8b00ff)" }}
             animate={{ opacity: [0.3, 0.6, 0.3] }}
             transition={{ duration: 2, repeat: Infinity }}
           />
-          
-          {/* Chakra points */}
-          {chakras.map((chakra, i) => (
+
+          {chakraSpecs.map((chakra, chakraIndex) => (
             <motion.div
-              key={chakra.name}
+              key={chakra.id}
               className="absolute left-1/2 -translate-x-1/2"
               style={{ top: `${chakra.y}%` }}
-              animate={{
-                scale: [1, 1.3, 1],
-                opacity: [0.7, 1, 0.7]
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                delay: i * 0.2
-              }}
+              animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 2, repeat: Infinity, delay: chakraIndex * 0.2 }}
             >
               <div
                 className="w-8 h-8 rounded-full"
@@ -249,138 +314,96 @@ const MeditationVisualizer = ({
               />
             </motion.div>
           ))}
-          
-          {/* Rising energy */}
+
           <motion.div
             className="absolute left-1/2 w-4 h-4 rounded-full -translate-x-1/2"
             style={{ background: "white", filter: "blur(4px)" }}
-            animate={{
-              top: ["90%", "0%"],
-              opacity: [0, 1, 0]
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
+            animate={{ top: ["90%", "0%"], opacity: [0, 1, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
       </div>
     );
-  }, [mounted]);
+  }, [mounted, chakraSpecs]);
 
   // Element-specific visualization
   const ElementViz = useMemo(() => {
     if (!mounted) return null;
-    
+
     switch (element) {
       case "Earth":
         return (
           <div className="absolute inset-0 overflow-hidden">
-            {[...Array(10)].map((_, i) => (
+            {earthSpecs.map((fragment) => (
               <motion.div
-                key={`earth-fragment-${i}`}
+                key={fragment.id}
                 className="absolute bg-emerald-500/30 rounded-lg"
                 style={{
-                  width: 40 + Math.random() * 60,
-                  height: 40 + Math.random() * 60,
-                  left: `${Math.random() * 100}%`,
-                  bottom: `${Math.random() * 30}%`
+                  width: fragment.width,
+                  height: fragment.height,
+                  left: `${fragment.left}%`,
+                  bottom: `${fragment.bottom}%`
                 }}
-                animate={{
-                  y: [0, -10, 0],
-                  opacity: [0.3, 0.5, 0.3]
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: i * 0.3
-                }}
+                animate={{ y: [0, -10, 0], opacity: [0.3, 0.5, 0.3] }}
+                transition={{ duration: fragment.duration, repeat: Infinity }}
               />
             ))}
           </div>
         );
-      
+
       case "Water":
         return (
           <div className="absolute inset-0 overflow-hidden">
-            {[...Array(5)].map((_, i) => (
+            {waterSpecs.map((wave) => (
               <motion.div
-                key={`water-wave-${i}`}
+                key={wave.id}
                 className="absolute w-full h-20 bg-gradient-to-b from-blue-500/20 to-transparent"
-                style={{ top: `${20 + i * 15}%` }}
-                animate={{
-                  x: [-50, 50, -50],
-                  scaleY: [1, 1.2, 1]
-                }}
-                transition={{
-                  duration: 4 + i,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
+                style={{ top: `${wave.top}%` }}
+                animate={{ x: [-50, 50, -50], scaleY: [1, 1.2, 1] }}
+                transition={{ duration: wave.duration, repeat: Infinity, ease: "easeInOut" }}
               />
             ))}
           </div>
         );
-      
+
       case "Fire":
         return (
           <div className="absolute inset-0 flex items-end justify-center overflow-hidden">
-            {[...Array(15)].map((_, i) => (
+            {fireSpecs.map((flame) => (
               <motion.div
-                key={`fire-flame-${i}`}
+                key={flame.id}
                 className="absolute bg-orange-500 rounded-full blur-md"
-                style={{
-                  width: 20 + Math.random() * 40,
-                  height: 40 + Math.random() * 80,
-                  left: `${30 + Math.random() * 40}%`,
-                  bottom: 0
-                }}
-                animate={{
-                  y: [0, -100 - Math.random() * 100],
-                  opacity: [0.8, 0],
-                  scaleX: [1, 0.5]
-                }}
-                transition={{
-                  duration: 1 + Math.random(),
-                  repeat: Infinity,
-                  delay: Math.random()
-                }}
+                style={{ width: flame.width, height: flame.height, left: `${flame.left}%`, bottom: 0 }}
+                animate={{ y: [0, -flame.rise], opacity: [0.8, 0], scaleX: [1, 0.5] }}
+                transition={{ duration: flame.duration, repeat: Infinity, delay: flame.delay }}
               />
             ))}
           </div>
         );
-      
+
       case "Air":
         return (
           <div className="absolute inset-0 overflow-hidden">
-            {[...Array(20)].map((_, i) => (
+            {airSpecs.map((stream) => (
               <motion.div
-                key={`air-stream-${i}`}
+                key={stream.id}
                 className="absolute w-20 h-0.5 bg-cyan-400/40"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  transform: `rotate(${Math.random() * 30 - 15}deg)`
+                  left: `${stream.left}%`,
+                  top: `${stream.top}%`,
+                  transform: `rotate(${stream.rotation}deg)`
                 }}
-                animate={{
-                  x: [0, 200, 0],
-                  opacity: [0, 0.5, 0]
-                }}
-                transition={{
-                  duration: 3 + Math.random() * 2,
-                  repeat: Infinity,
-                  delay: Math.random() * 2
-                }}
+                animate={{ x: [0, 200, 0], opacity: [0, 0.5, 0] }}
+                transition={{ duration: stream.duration, repeat: Infinity, delay: stream.delay }}
               />
             ))}
           </div>
         );
-      
+
       default:
         return ParticlesViz;
     }
-  }, [mounted, element, ParticlesViz]);
+  }, [mounted, element, ParticlesViz, earthSpecs, waterSpecs, fireSpecs, airSpecs]);
 
   if (!isActive) return null;
 

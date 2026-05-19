@@ -102,7 +102,10 @@ async def generate_speech(request: TTSRequest) -> Response:
     # Check cache
     if cache_key in audio_cache:
         logger.info(f"Returning cached audio for key: {cache_key[:8]}")
-        return _build_audio_response(audio_cache[cache_key])
+        cached_audio = audio_cache[cache_key]
+        if isinstance(cached_audio, str):
+            cached_audio = base64.b64decode(cached_audio)
+        return _build_audio_response(cached_audio)
     
     try:
         tts = OpenAITextToSpeech(api_key=api_key)
@@ -134,7 +137,10 @@ async def generate_speech_base64(request: TTSRequest) -> dict[str, str]:
     
     # Check cache
     if cache_key in audio_cache:
-        return {"audio_base64": audio_cache[cache_key], "format": "mp3"}
+        cached_audio = audio_cache[cache_key]
+        if isinstance(cached_audio, bytes):
+            return {"audio_base64": base64.b64encode(cached_audio).decode("utf-8"), "format": "mp3"}
+        return {"audio_base64": cached_audio, "format": "mp3"}
     
     try:
         # Use long audio generator for any length text
