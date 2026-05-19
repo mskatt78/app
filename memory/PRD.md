@@ -101,7 +101,8 @@
   - `MeditationVisualizer.jsx` stabilized with memoized visual specs and unique keys
 
 ## Remaining from Current Code Review Report
-- Additional wide-scope hook dependency backlog outside prioritized critical files still pending for phased cleanup.
+- Hook dependency backlog has been cleared for the currently reported frontend scope.
+- Remaining quality work is now mainly complexity reduction + production console/log hygiene.
 
 ## Latest Verification Snapshot (Iteration 135)
 - Completed focused follow-up for the two remaining critical items:
@@ -116,7 +117,6 @@
   - No React key warnings during breathwork/practice visualizer flows
 
 ## Updated Remaining from Current Code Review Report
-- Broad hook-dependency backlog across additional frontend files (beyond prioritized critical targets) still pending.
 - Batch 2 important items pending (payment/content long-function decomposition + residual test anti-pattern sweep).
 
 ## Latest Verification Snapshot (Iterations 136-137)
@@ -148,6 +148,15 @@
   - `BreathingVisualizer`: angle-based stable keys (`particle-angle-*`)
 - Added mypy CI gate for typed routers and verified local mypy success on targeted modules.
 
+## Latest Verification Snapshot (Iteration 138)
+- Goal completed: **"fix all hooks"** pass across remaining frontend pages.
+- `react-hooks/exhaustive-deps` status: **0 errors** in current frontend source.
+- Testing-agent validation: frontend runtime regression pass; fixed ordering-related callback initialization bugs in:
+  - `src/pages/Pricing.jsx`
+  - `src/pages/RitualBuilder.jsx`
+  - `src/pages/OracleReadings.jsx`
+- Verified tested pages load cleanly (landing, dashboard, pricing, oracle, mantras, progress dashboard, sound frequencies); no runtime crash from hook refactor.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -157,8 +166,8 @@
 ## Prioritized Backlog
 
 ### P0 (if still pending in future reports)
-- Resolve any newly surfaced hook dependency warnings in timer/guided/breathwork hooks.
 - Continue splitting any remaining oversized feature pages not yet modular.
+- Remove remaining production `console.*` usage and silent error catches flagged by quality reports.
 
 ### P1
 - Refactor remaining parameter-heavy helpers in `routers/content.py`.
