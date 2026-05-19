@@ -63,6 +63,72 @@ class PayPalOrderRequest(BaseModel):
     origin_url: str
 
 
+def _resolve_paypal_config() -> tuple[str, str, str, str]:
+    paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
+    paypal_secret = os.environ.get("PAYPAL_SECRET")
+    paypal_mode = os.environ.get("PAYPAL_MODE")
+    if not paypal_client_id or not paypal_secret or not paypal_mode:
+        raise HTTPException(status_code=500, detail="PayPal not configured")
+    paypal_api = _get_paypal_api_base(paypal_mode)
+    return paypal_client_id, paypal_secret, paypal_mode, paypal_api
+
+
+def _build_paypal_order_payload(product_name: str, amount: float, origin_url: str) -> dict[str, Any]:
+    return {
+        "intent": "CAPTURE",
+        "purchase_units": [{
+            "reference_id": str(uuid.uuid4())[:8],
+            "description": product_name,
+            "amount": {
+                "currency_code": "USD",
+                "value": f"{amount:.2f}",
+            },
+        }],
+        "application_context": {
+            "return_url": f"{origin_url}/payment/success?paypal=true",
+            "cancel_url": f"{origin_url}/payment/cancel?paypal=true",
+            "brand_name": "Shamanic Elements",
+            "user_action": "PAY_NOW",
+        },
+    }
+
+
+def _extract_paypal_approval_url(order: dict[str, Any]) -> str:
+    for link in order.get("links", []):
+        if link.get("rel") == "approve":
+            href = link.get("href")
+            if href:
+                return str(href)
+    raise HTTPException(status_code=500, detail="PayPal approval URL not found")
+
+
+def _build_payment_transaction(
+    session_id: str,
+    current_user: User,
+    payment_request: PaymentRequest,
+    amount: float,
+    product_name: str,
+    payment_method: str,
+    metadata: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "id": str(uuid.uuid4())[:8],
+        "session_id": session_id,
+        "user_id": current_user.user_id,
+        "user_email": current_user.email,
+        "amount": amount,
+        "currency": "usd",
+        "product_type": payment_request.product_type,
+        "product_id": payment_request.product_id,
+        "plan_id": payment_request.plan_id,
+        "product_name": product_name,
+        "payment_method": payment_method,
+        "payment_status": "pending",
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "metadata": metadata,
+    }
+
+
 def _get_paypal_api_base(paypal_mode: str) -> str:
     return "https://api-m.paypal.com" if paypal_mode == "live" else "https://api-m.sandbox.paypal.com"
 
@@ -251,23 +317,15 @@ async def create_checkout_session(
     
     try:
         session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
-        
-        transaction = {
-            "id": str(uuid.uuid4())[:8],
-            "session_id": session.session_id,
-            "user_id": current_user.user_id,
-            "user_email": current_user.email,
-            "amount": amount,
-            "currency": "usd",
-            "product_type": payment_request.product_type,
-            "product_id": payment_request.product_id,
-            "plan_id": payment_request.plan_id,
-            "product_name": product_name,
-            "payment_method": "stripe",
-            "payment_status": "pending",
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "metadata": metadata
-        }
+        transaction = _build_payment_transaction(
+            session_id=session.session_id,
+            current_user=current_user,
+            payment_request=payment_request,
+            amount=amount,
+            product_name=product_name,
+            payment_method="stripe",
+            metadata=metadata,
+        )
         await db.payment_transactions.insert_one(transaction)
         
         return {
@@ -332,40 +390,12 @@ async def create_paypal_order(
 ) -> dict[str, Any]:
     """Create a PayPal order for payment."""
     db = get_db()
-    
-    paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
-    paypal_secret = os.environ.get("PAYPAL_SECRET")
-    paypal_mode = os.environ.get("PAYPAL_MODE")
-    
-    if not paypal_client_id or not paypal_secret or not paypal_mode:
-        raise HTTPException(status_code=500, detail="PayPal not configured")
-    
-    paypal_api = _get_paypal_api_base(paypal_mode)
-    
+
+    paypal_client_id, paypal_secret, _, paypal_api = _resolve_paypal_config()
     amount, product_name, metadata = await _resolve_payment_context(db, payment_request, current_user)
     access_token = await _create_paypal_access_token(paypal_api, paypal_client_id, paypal_secret)
-    
-    origin_url = payment_request.origin_url
-    
-    # Create PayPal order
-    order_data = {
-        "intent": "CAPTURE",
-        "purchase_units": [{
-            "reference_id": str(uuid.uuid4())[:8],
-            "description": product_name,
-            "amount": {
-                "currency_code": "USD",
-                "value": f"{amount:.2f}"
-            }
-        }],
-        "application_context": {
-            "return_url": f"{origin_url}/payment/success?paypal=true",
-            "cancel_url": f"{origin_url}/payment/cancel?paypal=true",
-            "brand_name": "Shamanic Elements",
-            "user_action": "PAY_NOW"
-        }
-    }
-    
+    order_data = _build_paypal_order_payload(product_name, amount, payment_request.origin_url)
+
     async with httpx.AsyncClient() as client:
         order_response = await client.post(
             f"{paypal_api}/v2/checkout/orders",
@@ -379,38 +409,20 @@ async def create_paypal_order(
         if order_response.status_code not in [200, 201]:
             logger.error(f"PayPal order error: {order_response.text}")
             raise HTTPException(status_code=500, detail="Failed to create PayPal order")
-        
         order = order_response.json()
-    
-    # Find approval URL
-    approval_url = None
-    for link in order.get("links", []):
-        if link.get("rel") == "approve":
-            approval_url = link.get("href")
-            break
-    
-    if not approval_url:
-        raise HTTPException(status_code=500, detail="PayPal approval URL not found")
-    
-    # Store transaction
-    transaction = {
-        "id": str(uuid.uuid4())[:8],
-        "session_id": order["id"],  # PayPal order ID
-        "user_id": current_user.user_id,
-        "user_email": current_user.email,
-        "amount": amount,
-        "currency": "usd",
-        "product_type": payment_request.product_type,
-        "product_id": payment_request.product_id,
-        "plan_id": payment_request.plan_id,
-        "product_name": product_name,
-        "payment_method": "paypal",
-        "payment_status": "pending",
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "metadata": metadata
-    }
+    approval_url = _extract_paypal_approval_url(order)
+
+    transaction = _build_payment_transaction(
+        session_id=order["id"],
+        current_user=current_user,
+        payment_request=payment_request,
+        amount=amount,
+        product_name=product_name,
+        payment_method="paypal",
+        metadata=metadata,
+    )
     await db.payment_transactions.insert_one(transaction)
-    
+
     return {
         "checkout_url": approval_url,
         "session_id": order["id"],
@@ -424,16 +436,8 @@ async def capture_paypal_order(
 ) -> dict[str, Any]:
     """Capture a PayPal order after user approval."""
     db = get_db()
-    
-    paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
-    paypal_secret = os.environ.get("PAYPAL_SECRET")
-    paypal_mode = os.environ.get("PAYPAL_MODE")
-    
-    if not paypal_client_id or not paypal_secret or not paypal_mode:
-        raise HTTPException(status_code=500, detail="PayPal not configured")
-    
-    paypal_api = _get_paypal_api_base(paypal_mode)
-    
+
+    paypal_client_id, paypal_secret, _, paypal_api = _resolve_paypal_config()
     access_token = await _create_paypal_access_token(paypal_api, paypal_client_id, paypal_secret)
     
     # Capture the order

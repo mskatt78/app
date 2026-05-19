@@ -11,6 +11,22 @@ from .dependencies import get_db, get_current_user, User
 router = APIRouter(tags=["astrology"])
 logger = logging.getLogger(__name__)
 
+ASTROLOGY_MONTH_RANGES = [
+    (12, 21, 1, 17, "1"),
+    (1, 18, 2, 14, "2"),
+    (2, 15, 3, 14, "3"),
+    (3, 15, 4, 11, "4"),
+    (4, 12, 5, 9, "5"),
+    (5, 10, 6, 6, "6"),
+    (6, 7, 7, 4, "7"),
+    (7, 5, 8, 1, "8"),
+    (8, 2, 8, 29, "9"),
+    (8, 30, 9, 26, "10"),
+    (9, 27, 10, 24, "11"),
+    (10, 25, 11, 21, "12"),
+    (11, 22, 12, 20, "13"),
+]
+
 # Life Path meanings and interpretations
 LIFE_PATHS = {
     1: {
@@ -247,6 +263,39 @@ def calculate_soul_urge(name: str) -> int:
     return reduce_to_single_digit(total, True)
 
 
+def _is_date_in_month_window(
+    current_month: int,
+    current_day: int,
+    start_month: int,
+    start_day: int,
+    end_month: int,
+    end_day: int,
+) -> bool:
+    if start_month <= end_month:
+        return (
+            (current_month == start_month and current_day >= start_day)
+            or (current_month == end_month and current_day <= end_day)
+            or (start_month < current_month < end_month)
+        )
+
+    return (
+        (current_month == start_month and current_day >= start_day)
+        or (current_month == end_month and current_day <= end_day)
+        or current_month > start_month
+        or current_month < end_month
+    )
+
+
+def _resolve_current_lunar_month_id(now: datetime) -> str:
+    current_month = now.month
+    current_day = now.day
+
+    for start_month, start_day, end_month, end_day, month_id in ASTROLOGY_MONTH_RANGES:
+        if _is_date_in_month_window(current_month, current_day, start_month, start_day, end_month, end_day):
+            return month_id
+    return "1"
+
+
 class NumerologyRequest(BaseModel):
     birth_date: str
     full_name: Optional[str] = None
@@ -419,40 +468,9 @@ async def get_astrology_month(month_id: str) -> dict[str, Any]:
 async def get_current_month() -> dict[str, Any]:
     """Get the current lunar month based on today's date."""
     db = get_db()
-    today = datetime.now()
-    
-    month_ranges = [
-        (12, 21, 1, 17, "1"),
-        (1, 18, 2, 14, "2"),
-        (2, 15, 3, 14, "3"),
-        (3, 15, 4, 11, "4"),
-        (4, 12, 5, 9, "5"),
-        (5, 10, 6, 6, "6"),
-        (6, 7, 7, 4, "7"),
-        (7, 5, 8, 1, "8"),
-        (8, 2, 8, 29, "9"),
-        (8, 30, 9, 26, "10"),
-        (9, 27, 10, 24, "11"),
-        (10, 25, 11, 21, "12"),
-        (11, 22, 12, 20, "13"),
-    ]
-    
-    current_month = today.month
-    current_day = today.day
-    
-    for start_month, start_day, end_month, end_day, month_id in month_ranges:
-        if start_month <= end_month:
-            if (current_month == start_month and current_day >= start_day) or \
-               (current_month == end_month and current_day <= end_day) or \
-               (start_month < current_month < end_month):
-                month = await db.astrology_months.find_one({"id": month_id}, {"_id": 0})
-                return month
-        else:
-            if (current_month == start_month and current_day >= start_day) or \
-               (current_month == end_month and current_day <= end_day) or \
-               current_month > start_month or current_month < end_month:
-                month = await db.astrology_months.find_one({"id": month_id}, {"_id": 0})
-                return month
-    
-    first_month = await db.astrology_months.find_one({"id": "1"}, {"_id": 0})
-    return first_month
+    month_id = _resolve_current_lunar_month_id(datetime.now())
+    month = await db.astrology_months.find_one({"id": month_id}, {"_id": 0})
+    if month:
+        return month
+    fallback_month = await db.astrology_months.find_one({"id": "1"}, {"_id": 0})
+    return fallback_month

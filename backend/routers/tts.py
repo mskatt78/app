@@ -157,15 +157,18 @@ async def generate_speech_base64(request: TTSRequest) -> dict[str, str]:
         raise HTTPException(status_code=500, detail=f"Failed to generate audio: {str(e)}")
 
 
-def _build_meditation_scripts(name: str, description: str, element: str, visualization: str) -> dict[int, str]:
-    vis_text = visualization[:400] if visualization else (
+def _build_meditation_visualization_text(element: str, visualization: str) -> str:
+    if visualization:
+        return visualization[:400]
+    return (
         f"Imagine yourself surrounded by a gentle {element.lower()} energy. "
         "This energy is warm, ancient, and deeply healing. "
         "It wraps around you like a cocoon of light."
     )
 
-    return {
-        1: f"""Welcome to {name}. {description}.
+
+def _build_meditation_part_one(name: str, description: str) -> str:
+    return f"""Welcome to {name}. {description}.
 
 Find a comfortable position. You may sit with your spine tall, or lie down on your back. Allow your body to settle completely. There is nowhere else you need to be.
 
@@ -183,9 +186,11 @@ One more time. A deep nourishing breath in... Hold... And let it all go... sinki
 
 Let your breath return to its natural rhythm. Nothing to control. Nothing to force. Easy, natural breathing.
 
-Allow yourself to deepen into this space.""".strip(),
+Allow yourself to deepen into this space.""".strip()
 
-        2: """We now move through your body, releasing any remaining tension.
+
+def _build_meditation_part_two() -> str:
+    return """We now move through your body, releasing any remaining tension.
 
 Bring attention to the top of your head. Feel any tightness... and let it dissolve. Your scalp softening... relaxing...
 
@@ -211,11 +216,13 @@ Down your legs. Thighs grow heavy. Knees. Calves. Ankles. Feet. Each toe relaxin
 
 Your entire body is in deep relaxation. Heavy. Warm. Peaceful. Still.
 
-Rest here. Feel the peace in your body. Allow yourself to deepen into this stillness.""".strip(),
+Rest here. Feel the peace in your body. Allow yourself to deepen into this stillness.""".strip()
 
-        3: f"""Now, we journey deeper inward.
 
-{vis_text}
+def _build_meditation_part_three(element: str, visualization_text: str) -> str:
+    return f"""Now, we journey deeper inward.
+
+{visualization_text}
 
 Stay with this experience. Be fully present in this sacred space. Notice any colors that appear. Any sensations. Any emotions. Everything is welcome here. No right or wrong. Simply be with what is.
 
@@ -229,9 +236,11 @@ You don't need to do anything. Don't need to be anyone. Just rest in pure being.
 
 Feel the {element.lower()} energy surrounding you. Supporting you. Healing you. This peace is your true nature. It never leaves you. Return to it anytime, by closing your eyes and breathing.
 
-Allow yourself to deepen even further into this experience.""".strip(),
+Allow yourself to deepen even further into this experience.""".strip()
 
-        4: f"""Take a moment to feel gratitude. Gratitude for this body that carries you through life. For this breath that sustains you. For this moment of peace.
+
+def _build_meditation_part_four(name: str) -> str:
+    return f"""Take a moment to feel gratitude. Gratitude for this body that carries you through life. For this breath that sustains you. For this moment of peace.
 
 Let these words sink into your being.
 
@@ -257,7 +266,16 @@ When ready, slowly open your eyes. Keep your gaze soft. Honor the journey you've
 
 Thank you for practicing {name} today. May the peace stay with you throughout your day.
 
-Namaste. The light in me honors the light in you.""".strip(),
+Namaste. The light in me honors the light in you.""".strip()
+
+
+def _build_meditation_scripts(name: str, description: str, element: str, visualization: str) -> dict[int, str]:
+    visualization_text = _build_meditation_visualization_text(element, visualization)
+    return {
+        1: _build_meditation_part_one(name, description),
+        2: _build_meditation_part_two(),
+        3: _build_meditation_part_three(element, visualization_text),
+        4: _build_meditation_part_four(name),
     }
 
 
