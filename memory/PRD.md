@@ -12,6 +12,21 @@ A comprehensive full-stack spiritual wellness application featuring yoga, somati
 - **PWA:** Full manifest with app store ready icons
 
 ## Latest Changes (March–May 2026)
+- **P1 Refactor + Backend Decomposition Batch Complete (Iteration 128, May 2026):**
+  - **Frontend refactors delivered:**
+    - `GuidedAudioButton.jsx` converted into a thin UI wrapper; core playback logic moved into `guided/useGuidedAudioPlayback.js`.
+    - `InstallPrompt.jsx` converted into a presentation component backed by `install/useInstallPromptState.js`.
+    - `AmbientSoundPlayer.jsx` complexity reduced by extracting sound-type dispatch into `wireAmbientSoundType(...)` and improving error handling paths.
+  - **Centralized logger rollout (frontend touched files):**
+    - Added `utils/logger.js` (`appLogger`) and replaced direct console usage in key touched modules (`routeGuards`, `useCoursePayments`, `useGuidedAudioPlayback`, `useInstallPromptState`, `AmbientSoundPlayer`).
+    - Empty catch anti-patterns in touched files were replaced with explicit debug/warn logging.
+  - **Backend complexity decomposition delivered:**
+    - `routers/tts.py`: extracted helper layers (`_build_cache_key`, `_build_audio_response`, `_resolve_tts_api_key`, `_prepare_text_for_standard_tts`, `_build_meditation_scripts`, `_build_somatic_script`) and simplified endpoint flow.
+    - `routers/content.py`: extracted script expansion helper layers (`_resolve_script_source`, `_finalize_script_paragraphs`) to reduce branching density in `expand_guided_script`.
+  - **Validation:**
+    - `/app/test_reports/iteration_128.json`: frontend **100%**, backend **93.75% (15/16 passed, 1 skipped due to missing somatic seed data)**, no critical regressions.
+    - Specialist frontend and backend verification agents also passed all requested checks.
+
 - **Code-Quality Fix Batch Complete (Iteration 127, May 2026):**
   - **P0 fixes delivered:**
     - Refactored `routeGuards.jsx` auth/admin/public checks to remove brittle callback dependency patterns and prevent stale-closure risks.
