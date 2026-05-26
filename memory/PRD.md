@@ -157,6 +157,17 @@
   - `src/pages/OracleReadings.jsx`
 - Verified tested pages load cleanly (landing, dashboard, pricing, oracle, mantras, progress dashboard, sound frequencies); no runtime crash from hook refactor.
 
+## Latest Verification Snapshot (Iteration 139)
+- User-reported fixes completed for **exact image rendering** + **guided narration echo reduction**.
+- Image rendering updates applied on guided-practice card surfaces (no-crop fit):
+  - `SomaticMovement`, `Meditations`, `CreativeProcesses`, `MudrasLibrary`, `ElementalPracticeCard`
+  - Core behavior now uses `object-contain object-center` for exact visual fidelity.
+- Guided audio echo mitigation updates:
+  - Added narration ducking in `useGuidedPracticeEngine` (ambient + toning reduced while voice is speaking)
+  - Lowered/controlled toning mix behavior in `guidedNarrationUtils` and `useGuidedAudioPlayback`
+  - Confirmed single-audio-instance playback lifecycle to prevent overlap.
+- Testing agent result (`iteration_139`): **Frontend 100% pass**, no regressions, no echo detected during guided play/pause/resume.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -172,6 +183,7 @@
 ### P1
 - Refactor remaining parameter-heavy helpers in `routers/content.py`.
 - Continue reducing cyclomatic complexity in untouched backend hotspots.
+- Continue cleanup of remaining production console/silent-catch quality report items.
 
 ### P2
 - Replace any remaining array index-as-key usage in visualizer components.
