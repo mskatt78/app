@@ -233,12 +233,13 @@ const Meditations = ({ user, api }) => {
                   >
                     {/* Card Image */}
                     {meditation.image_url ? (
-                      <div className="relative h-40 overflow-hidden">
+                      <div className="relative h-40 overflow-hidden bg-black/45">
                         <img
                           src={meditation.image_url}
                           alt={meditation.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-full object-contain object-center transition-transform duration-500"
                           loading="lazy"
+                          data-testid={`meditation-image-${meditation.id}`}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                         <span className="absolute bottom-3 left-3 text-lg font-serif text-white drop-shadow-lg">

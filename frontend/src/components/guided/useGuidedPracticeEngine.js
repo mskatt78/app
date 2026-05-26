@@ -321,12 +321,24 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [isPlaying, isComplete, syncRemainingFromClock]);
 
   useEffect(() => {
+    const baseAmbientGain = (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
+    const narrationDuckMultiplier = ttsPlaying ? 0.38 : 1;
+
     if (ambientRef.current) {
-      ambientRef.current.gain.gain.value = muted ? 0 : (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
+      ambientRef.current.gain.gain.value = muted ? 0 : baseAmbientGain * narrationDuckMultiplier;
     }
-    toningRef.current?.setMuted?.(muted, 1);
+
+    if (toningRef.current) {
+      if (muted) {
+        toningRef.current.setMuted?.(true, 1);
+      } else {
+        const toningMix = ttsPlaying ? 0.12 : 0.58;
+        toningRef.current.setMuted?.(false, toningMix);
+      }
+    }
+
     if (ttsRef.current) ttsRef.current.muted = muted;
-  }, [muted, element]);
+  }, [muted, element, ttsPlaying]);
 
   useEffect(() => () => {
     clearInterval(timerRef.current);
@@ -435,14 +447,23 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       }
     }
 
+    const baseAmbientGain = (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
+    const narrationDuckMultiplier = ttsPlaying ? 0.38 : 1;
+
     if (ambientRef.current) {
-      ambientRef.current.gain.gain.value = muted ? 0 : (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
+      ambientRef.current.gain.gain.value = muted ? 0 : baseAmbientGain * narrationDuckMultiplier;
     }
     if (!toningRef.current && audioCtxRef.current) {
       toningRef.current = startToningLayer(audioCtxRef.current, element);
     }
-    toningRef.current?.setMuted?.(muted, 1);
-  }, [element, muted]);
+    if (toningRef.current) {
+      if (muted) {
+        toningRef.current.setMuted?.(true, 1);
+      } else {
+        toningRef.current.setMuted?.(false, ttsPlaying ? 0.12 : 0.58);
+      }
+    }
+  }, [element, muted, ttsPlaying]);
 
   const handlePlay = useCallback(() => {
     if (isCompleteRef.current) return;
@@ -499,7 +520,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     handlePlay,
     isPlaying,
     ambientLabel: (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label,
-    toningLabel: "Toning layer active",
+    toningLabel: ttsPlaying ? "Toning layer ducked during voice" : "Toning layer active",
     toningActive: Boolean(toningRef.current) && !muted && isPlaying && getGuidedToningMultiplier() > 0,
     antiRepetitionMode,
     handleAntiRepetitionModeChange,

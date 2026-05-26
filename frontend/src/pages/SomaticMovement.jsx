@@ -161,12 +161,13 @@ const SomaticMovement = ({ user, api }) => {
                   data-testid={`practice-card-${practice.id}`}
                 >
                   {practice.image_url && (
-                    <div className="relative h-40 overflow-hidden">
+                    <div className="relative h-40 overflow-hidden bg-black/45">
                       <img
                         src={practice.image_url}
                         alt={practice.name}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-contain object-center"
                         loading="lazy"
+                        data-testid={`practice-image-${practice.id}`}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/30 to-transparent" />
                     </div>

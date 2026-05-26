@@ -171,11 +171,13 @@ export const useGuidedAudioPlayback = ({
 
       const audio = new Audio(audioUrl);
       audioRef.current = audio;
+      toningLayerRef.current?.setMuted?.(false, 0.14);
       audio.onerror = () => {
         toast.error("Audio playback error");
         stopPlayback();
       };
       audio.onended = () => {
+        toningLayerRef.current?.setMuted?.(false, 0.32);
         playIndex(index + 1).catch(() => stopPlayback());
       };
 
@@ -185,6 +187,7 @@ export const useGuidedAudioPlayback = ({
       });
 
       if (!started) {
+        toningLayerRef.current?.setMuted?.(false, 0.32);
         stopToning();
         setPlaying(false);
         setLoading(false);
@@ -216,7 +219,7 @@ export const useGuidedAudioPlayback = ({
         if (ctx.state === "suspended") await ctx.resume();
         audioContextRef.current = ctx;
         toningLayerRef.current = startToningLayer(ctx, String(element || "spirit").toLowerCase());
-        toningLayerRef.current?.setMuted?.(false, 1);
+        toningLayerRef.current?.setMuted?.(false, 0.32);
       }
     } catch (error) {
       appLogger.warn("Guided toning context setup failed", error);

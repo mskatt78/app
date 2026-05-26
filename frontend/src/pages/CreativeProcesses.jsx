@@ -202,8 +202,14 @@ const CreativeProcesses = ({ user, api }) => {
                   data-testid={`process-card-${process.id}`}
                 >
                   {process.image_url && (
-                    <div className="relative h-36 overflow-hidden">
-                      <img src={process.image_url} alt={process.name} className="w-full h-full object-cover" loading="lazy" />
+                    <div className="relative h-36 overflow-hidden bg-black/45">
+                      <img
+                        src={process.image_url}
+                        alt={process.name}
+                        className="w-full h-full object-contain object-center"
+                        loading="lazy"
+                        data-testid={`process-image-${process.id}`}
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </div>
                   )}

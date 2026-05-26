@@ -161,12 +161,13 @@ const MudrasLibrary = ({ user, api }) => {
                   data-testid={`mudra-card-${mudra.id}`}
                 >
                   {/* Image */}
-                  <div className="relative h-40 overflow-hidden">
+                  <div className="relative h-40 overflow-hidden bg-black/45">
                     <img
                       src={hasImageError ? placeholderImage : (mudra.image_url || placeholderImage)}
                       alt={mudra.name}
-                      className="w-full h-full object-cover opacity-90"
+                      className="w-full h-full object-contain object-center opacity-90"
                       onError={() => handleImageError(mudra.id)}
+                      data-testid={`mudra-image-${mudra.id}`}
                     />
                     <div className={`absolute inset-0 bg-gradient-to-t ${colors.gradient}`} />
                     
@@ -233,12 +234,13 @@ const MudrasLibrary = ({ user, api }) => {
                 </DialogDescription>
               </DialogHeader>
               {/* Hero Image */}
-              <div className="relative h-56">
+              <div className="relative h-56 bg-black/50">
                 <img
                   src={imageErrors.has(selectedMudra.id) ? placeholderImage : (selectedMudra.image_url || placeholderImage)}
                   alt={selectedMudra.name}
-                  className="w-full h-full object-cover opacity-90"
+                  className="w-full h-full object-contain object-center opacity-90"
                   onError={() => handleImageError(selectedMudra.id)}
+                  data-testid={`mudra-modal-image-${selectedMudra.id}`}
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t ${elementColors[selectedMudra.element]?.gradient || 'from-black/80 to-black/40'}`} />
                 

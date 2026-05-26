@@ -17,8 +17,13 @@ export const ElementalPracticeCard = ({ practice, index, onSelect, formatReviewe
       data-testid={`practice-${practice.id}`}
     >
       {practice.image_url && (
-        <div className="relative h-48 overflow-hidden">
-          <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <div className="relative h-48 overflow-hidden bg-black/45">
+          <img
+            src={practice.image_url}
+            alt={practice.name}
+            className="w-full h-full object-contain object-center transition-transform duration-500"
+            data-testid={`elemental-practice-image-${practice.id}`}
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           <div className="absolute top-4 right-4 flex gap-2">
             <span className={`px-3 py-1 rounded-full ${colors.bg} ${colors.text}`}>

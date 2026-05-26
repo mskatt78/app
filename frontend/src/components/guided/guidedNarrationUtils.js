@@ -150,7 +150,8 @@ export const startToningLayer = (ctx, element = "spirit", destination = null) =>
   lfo.start();
 
   const setMuted = (muted, mix = 1) => {
-    const nextGain = muted ? 0 : targetGain * Math.max(0.35, Math.min(1, Number(mix) || 1));
+    const normalizedMix = Math.max(0.08, Math.min(1, Number(mix) || 1));
+    const nextGain = muted ? 0 : targetGain * normalizedMix;
     master.gain.setTargetAtTime(nextGain, ctx.currentTime, 0.08);
   };
 
