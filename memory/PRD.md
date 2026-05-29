@@ -176,6 +176,15 @@
 - Confirmed sound switching behavior: old source cleanup happens before new source starts (no overlap).
 - Testing agent result (`iteration_140`): **Frontend 100% pass**, distinct sounds verified, switching flow verified.
 
+## Latest Verification Snapshot (Iteration 141)
+- Applied default loudness calibration (not optional) for breathwork soundscapes:
+  - Whale deeper: lower base frequency + overtone layer + stronger body
+  - Birds brighter/louder chirps
+  - Fire stronger crackle transients
+  - Dolphin stronger call envelope
+- Per-sound master gain balancing is now built into runtime defaults.
+- Testing agent result (`iteration_141`): **Frontend 100% pass**, tuned profiles verified, switching still stable (no overlap/silence).
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
