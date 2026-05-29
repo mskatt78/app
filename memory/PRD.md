@@ -168,6 +168,14 @@
   - Confirmed single-audio-instance playback lifecycle to prevent overlap.
 - Testing agent result (`iteration_139`): **Frontend 100% pass**, no regressions, no echo detected during guided play/pause/resume.
 
+## Latest Verification Snapshot (Iteration 140)
+- User-reported breathwork sound mismatch resolved with explicit, distinct synthesis engines in `useBreathworkEngine`.
+- Added dedicated sound profiles and switching support for:
+  - `whale`, `dolphin`, `birds`, `nature (forest + birds)`, `fire (with crackle layer)`, `wind`, `rain`, `ocean`, `chimes`, `drums_gentle`.
+- Fixed prior fallback behavior where multiple selections could collapse into similar filtered-noise outputs.
+- Confirmed sound switching behavior: old source cleanup happens before new source starts (no overlap).
+- Testing agent result (`iteration_140`): **Frontend 100% pass**, distinct sounds verified, switching flow verified.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
