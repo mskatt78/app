@@ -139,13 +139,17 @@ export const useBreathworkEngine = ({ api }) => {
       }
 
       gainNodeRef.current = audioContextRef.current.createGain();
-      gainNodeRef.current.gain.setValueAtTime(0.24, audioContextRef.current.currentTime);
+      gainNodeRef.current.gain.setValueAtTime(0.22, audioContextRef.current.currentTime);
       gainNodeRef.current.connect(audioContextRef.current.destination);
 
       const ctx = audioContextRef.current;
       const sources = [];
+      const setMasterGain = (value) => {
+        gainNodeRef.current.gain.setValueAtTime(value, audioContextRef.current.currentTime);
+      };
 
       if (soundId === "ocean") {
+        setMasterGain(0.24);
         const { source: low, output: lowOut } = createFilteredNoise(ctx, 200, 1);
         const { source: mid, output: midOut } = createFilteredNoise(ctx, 800, 0.5);
         lowOut.connect(gainNodeRef.current);
@@ -154,11 +158,13 @@ export const useBreathworkEngine = ({ api }) => {
         mid.start();
         sources.push(low, mid);
       } else if (soundId === "rain") {
+        setMasterGain(0.2);
         const { source, output } = createFilteredNoise(ctx, 400, 2);
         output.connect(gainNodeRef.current);
         source.start();
         sources.push(source);
       } else if (soundId === "nature") {
+        setMasterGain(0.26);
         const { source, output } = createFilteredNoise(ctx, 500, 0.5);
         output.connect(gainNodeRef.current);
         source.start();
@@ -173,7 +179,7 @@ export const useBreathworkEngine = ({ api }) => {
           chirp.frequency.setValueAtTime(start, ctx.currentTime);
           chirp.frequency.exponentialRampToValueAtTime(end, ctx.currentTime + 0.22);
           chirpGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          chirpGain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.02);
+          chirpGain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 0.02);
           chirpGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.24);
           chirp.connect(chirpGain);
           chirpGain.connect(gainNodeRef.current);
@@ -182,6 +188,7 @@ export const useBreathworkEngine = ({ api }) => {
         }, [900, 2400]);
         sources.push(birdsLayer);
       } else if (soundId === "fire") {
+        setMasterGain(0.31);
         const { source, output } = createFilteredNoise(ctx, 1000, 1);
         output.connect(gainNodeRef.current);
         source.start();
@@ -202,7 +209,7 @@ export const useBreathworkEngine = ({ api }) => {
           highpass.frequency.value = 1300 + Math.random() * 1200;
           const crackleGain = ctx.createGain();
           crackleGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          crackleGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.01);
+          crackleGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.01);
           crackleGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + burstDuration);
           crackle.connect(highpass);
           highpass.connect(crackleGain);
@@ -211,35 +218,48 @@ export const useBreathworkEngine = ({ api }) => {
         }, [120, 360]);
         sources.push(crackleLayer);
       } else if (soundId === "wind") {
+        setMasterGain(0.22);
         const { source, output } = createFilteredNoise(ctx, 650, 3);
         output.connect(gainNodeRef.current);
         source.start();
         sources.push(source);
       } else if (soundId === "whale") {
+        setMasterGain(0.27);
         const whaleOsc = ctx.createOscillator();
         const whaleGain = ctx.createGain();
+        const whaleOvertone = ctx.createOscillator();
+        const whaleOvertoneGain = ctx.createGain();
         const whaleLfo = ctx.createOscillator();
         const whaleLfoGain = ctx.createGain();
 
         whaleOsc.type = "sine";
-        whaleOsc.frequency.value = 104;
-        whaleGain.gain.value = 0.09;
+        whaleOsc.frequency.value = 88;
+        whaleGain.gain.value = 0.12;
+
+        whaleOvertone.type = "triangle";
+        whaleOvertone.frequency.value = 176;
+        whaleOvertoneGain.gain.value = 0.022;
 
         whaleLfo.type = "sine";
-        whaleLfo.frequency.value = 0.055;
-        whaleLfoGain.gain.value = 40;
+        whaleLfo.frequency.value = 0.048;
+        whaleLfoGain.gain.value = 32;
 
         whaleLfo.connect(whaleLfoGain);
         whaleLfoGain.connect(whaleOsc.frequency);
+        whaleLfoGain.connect(whaleOvertone.frequency);
         whaleOsc.connect(whaleGain);
         whaleGain.connect(gainNodeRef.current);
+        whaleOvertone.connect(whaleOvertoneGain);
+        whaleOvertoneGain.connect(gainNodeRef.current);
 
         whaleOsc.start();
+        whaleOvertone.start();
         whaleLfo.start();
 
         sources.push({
           stop: () => {
             whaleOsc.stop();
+            whaleOvertone.stop();
             whaleLfo.stop();
           },
           disconnect: () => {
@@ -247,9 +267,12 @@ export const useBreathworkEngine = ({ api }) => {
             whaleLfoGain.disconnect();
             whaleOsc.disconnect();
             whaleGain.disconnect();
+            whaleOvertone.disconnect();
+            whaleOvertoneGain.disconnect();
           },
         });
       } else if (soundId === "dolphin") {
+        setMasterGain(0.25);
         const dolphinLayer = createManagedTimeout(() => {
           const call = ctx.createOscillator();
           const callGain = ctx.createGain();
@@ -260,7 +283,7 @@ export const useBreathworkEngine = ({ api }) => {
           call.frequency.exponentialRampToValueAtTime(peak, ctx.currentTime + 0.12);
           call.frequency.exponentialRampToValueAtTime(start * 0.7, ctx.currentTime + 0.34);
           callGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          callGain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.03);
+          callGain.gain.linearRampToValueAtTime(0.11, ctx.currentTime + 0.03);
           callGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.36);
           call.connect(callGain);
           callGain.connect(gainNodeRef.current);
@@ -269,6 +292,7 @@ export const useBreathworkEngine = ({ api }) => {
         }, [700, 2200]);
         sources.push(dolphinLayer);
       } else if (soundId === "birds") {
+        setMasterGain(0.27);
         const birdsOnlyLayer = createManagedTimeout(() => {
           const chirp = ctx.createOscillator();
           const chirpGain = ctx.createGain();
@@ -278,7 +302,7 @@ export const useBreathworkEngine = ({ api }) => {
           chirp.frequency.setValueAtTime(start, ctx.currentTime);
           chirp.frequency.exponentialRampToValueAtTime(end, ctx.currentTime + 0.2);
           chirpGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          chirpGain.gain.linearRampToValueAtTime(0.09, ctx.currentTime + 0.02);
+          chirpGain.gain.linearRampToValueAtTime(0.13, ctx.currentTime + 0.02);
           chirpGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
           chirp.connect(chirpGain);
           chirpGain.connect(gainNodeRef.current);
@@ -287,6 +311,7 @@ export const useBreathworkEngine = ({ api }) => {
         }, [600, 1600]);
         sources.push(birdsOnlyLayer);
       } else if (soundId === "chimes") {
+        setMasterGain(0.21);
         const chimeLayer = createManagedTimeout(() => {
           [0, 7, 12].forEach((semi, index) => {
             const osc = ctx.createOscillator();
@@ -305,6 +330,7 @@ export const useBreathworkEngine = ({ api }) => {
         }, [4800, 9000]);
         sources.push(chimeLayer);
       } else if (soundId === "drums_gentle") {
+        setMasterGain(0.3);
         const drumsLayer = createManagedTimeout(() => {
           const body = ctx.createOscillator();
           const bodyGain = ctx.createGain();

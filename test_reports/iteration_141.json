@@ -1,0 +1,70 @@
+{
+  "summary": "Frontend testing for breathwork sound loudness tuning. Verified new default gain values are applied per sound profile. Sound switching works correctly without overlap or silence.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/frontend/src/components/breathwork/useBreathworkEngine.js"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Sound tuning values verified in useBreathworkEngine.js:",
+    "- Whale (lines 226-273): setMasterGain(0.27), base freq 88Hz (deeper), overtone at 176Hz with gain 0.022, LFO 0.048Hz depth 32",
+    "- Birds (lines 294-312): setMasterGain(0.27), chirp gain peaks at 0.13 (louder), freq range 1700-3500Hz (brighter)",
+    "- Fire (lines 190-219): setMasterGain(0.31), crackle gain peaks at 0.12 (stronger), highpass 1300-2500Hz",
+    "- Dolphin (lines 274-293): setMasterGain(0.25), call gain peaks at 0.11 (stronger), freq range 1100-1800Hz",
+    "stopSound() properly stops all ambient sources before starting new sound - no overlap",
+    "playSelectedSound() calls stopSound() before initAmbientSound() - verified no silence gaps"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only testing)",
+    "frontend": "100%"
+  },
+  "test_credentials": "No auth needed for breathwork page",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 141 verified breathwork sound loudness tuning: (1) Whale has deeper tones (88Hz base + 176Hz overtone layer), (2) Birds has brighter/louder chirps (gain 0.13, freq 1700-3500Hz), (3) Fire has stronger crackle (gain 0.12, master 0.31), (4) Dolphin has stronger calls (gain 0.11, master 0.25). Sound switching works correctly - tested Whale->Dolphin switching via UI.",
+  "sound_tuning_verification": {
+    "whale_song": {
+      "master_gain": 0.27,
+      "base_frequency": "88Hz (deeper)",
+      "overtone_frequency": "176Hz",
+      "overtone_gain": 0.022,
+      "lfo_frequency": "0.048Hz",
+      "lfo_depth": 32,
+      "character": "Deeper tones with stronger body"
+    },
+    "birds": {
+      "master_gain": 0.27,
+      "chirp_gain_peak": 0.13,
+      "frequency_range": "1700-3500Hz",
+      "character": "Brighter/louder chirps"
+    },
+    "fire": {
+      "master_gain": 0.31,
+      "crackle_gain_peak": 0.12,
+      "highpass_filter": "1300-2500Hz",
+      "character": "Stronger crackle"
+    },
+    "dolphin": {
+      "master_gain": 0.25,
+      "call_gain_peak": 0.11,
+      "frequency_range": "1100-1800Hz",
+      "character": "Stronger calls"
+    }
+  },
+  "tested_flows": [
+    "Earth Grounding Breath session with Forest & Birds default sound",
+    "Sound switching: Forest & Birds -> Whale Song -> Dolphin Song",
+    "Play/Pause controls during sound switching",
+    "Verified no overlap or silence during sound transitions"
+  ]
+}
