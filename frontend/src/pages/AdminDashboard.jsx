@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Settings, LogOut, ChevronRight, Database, Upload, CalendarDays, Sparkles, BookOpen, Radio } from "lucide-react";
@@ -48,24 +48,7 @@ export default function AdminDashboard({ api: providedApi }) {
     [collections],
   );
 
-  useEffect(() => {
-    bootstrapAdminAccess();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const bootstrapAdminAccess = async () => {
-    setLoading(true);
-    try {
-      await ensureAdminToken(api);
-      await fetchCollections();
-    } catch {
-      toast.error("Please sign in with your admin account to continue");
-      navigate("/dashboard");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchCollections = async () => {
+  const fetchCollections = useCallback(async () => {
     try {
       const res = await fetch(`${api}/api/admin/collections`, {
         credentials: "include",
@@ -78,7 +61,24 @@ export default function AdminDashboard({ api: providedApi }) {
       toast.error("Failed to load collections");
       throw new Error("collections-load-failed");
     }
-  };
+  }, [api]);
+
+  const bootstrapAdminAccess = useCallback(async () => {
+    setLoading(true);
+    try {
+      await ensureAdminToken(api);
+      await fetchCollections();
+    } catch {
+      toast.error("Please sign in with your admin account to continue");
+      navigate("/dashboard");
+    } finally {
+      setLoading(false);
+    }
+  }, [api, fetchCollections, navigate]);
+
+  useEffect(() => {
+    bootstrapAdminAccess();
+  }, [bootstrapAdminAccess]);
 
   const logout = async () => {
     try {

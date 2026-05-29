@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -364,27 +364,7 @@ export default function AdminSection() {
     audio_files: { name: "Audio & Media Library", icon: "🎧" },
   }[collection] || { name: collection, icon: "📁" };
 
-  useEffect(() => {
-    bootstrapAdminAccess();
-  }, [collection, page, search]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const bootstrapAdminAccess = async () => {
-    setLoading(true);
-    try {
-      const resolvedToken = await ensureAdminToken(api);
-      setHasAdminSession(Boolean(resolvedToken));
-      if (!isAudio) {
-        await fetchItems();
-      }
-    } catch {
-      toast.error("Please sign in with your admin account to continue");
-      navigate("/dashboard");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page, limit: 30, ...(search ? { search } : {}) });
       const res = await fetch(`${api}/api/admin/${collection}/items?${params}`, {
@@ -401,7 +381,27 @@ export default function AdminSection() {
       toast.error("Failed to load items");
       throw new Error("load-items-failed");
     }
-  };
+  }, [api, collection, page, search]);
+
+  const bootstrapAdminAccess = useCallback(async () => {
+    setLoading(true);
+    try {
+      const resolvedToken = await ensureAdminToken(api);
+      setHasAdminSession(Boolean(resolvedToken));
+      if (!isAudio) {
+        await fetchItems();
+      }
+    } catch {
+      toast.error("Please sign in with your admin account to continue");
+      navigate("/dashboard");
+    } finally {
+      setLoading(false);
+    }
+  }, [api, fetchItems, isAudio, navigate]);
+
+  useEffect(() => {
+    bootstrapAdminAccess();
+  }, [bootstrapAdminAccess]);
 
   const handleSave = async (formData) => {
     const isNew = !formData.id || formData.id === undefined;
