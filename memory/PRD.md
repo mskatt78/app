@@ -185,6 +185,16 @@
 - Per-sound master gain balancing is now built into runtime defaults.
 - Testing agent result (`iteration_141`): **Frontend 100% pass**, tuned profiles verified, switching still stable (no overlap/silence).
 
+## Latest Verification Snapshot (Iteration 142)
+- Completed hook-dependency cleanup request by removing remaining `react-hooks/exhaustive-deps` suppressions in admin pages.
+- Updated callback/effect dependency wiring:
+  - `src/pages/AdminDashboard.jsx`
+  - `src/pages/AdminSection.jsx`
+- Verification status:
+  - ESLint exhaustive-deps: **0 active warnings + 0 suppressions**
+  - Testing agent (`iteration_142`): **Frontend 100% pass**
+  - No runtime loops/crashes in admin collection load/search/pagination/switch flows.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
