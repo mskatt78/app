@@ -1,264 +1,155 @@
 #!/usr/bin/env python3
 """
-Backend Deployment-Readiness Test
-Tests the following endpoints:
-1. GET /api/health
-2. POST /api/content/expand-script
-3. POST /api/tts/generate-base64
-4. GET /api/tts/meditation/{id}/parts
-5. POST /api/tts/meditation/{id}
+Backend smoke check for recently touched APIs
+Focus: expand-script, courses, light-codes, heart-practices, elements
 """
 
 import requests
 import json
 import sys
 
-BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com"
-
-def test_health():
-    """Test GET /api/health"""
-    print("\n1. Testing GET /api/health...")
-    try:
-        response = requests.get(f"{BASE_URL}/api/health", timeout=10)
-        print(f"   Status: {response.status_code}")
-        
-        if response.status_code != 200:
-            print(f"   ❌ FAILED: Expected 200, got {response.status_code}")
-            return False
-        
-        data = response.json()
-        print(f"   Response: {json.dumps(data, indent=2)}")
-        
-        # Verify required fields
-        if "status" not in data or data["status"] != "healthy":
-            print(f"   ❌ FAILED: Missing or invalid 'status' field")
-            return False
-        
-        print(f"   ✅ PASSED")
-        return True
-    except Exception as e:
-        print(f"   ❌ FAILED: {str(e)}")
-        return False
+# Backend URL from environment
+BACKEND_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
 
 def test_expand_script():
-    """Test POST /api/content/expand-script"""
-    print("\n2. Testing POST /api/content/expand-script...")
-    try:
-        payload = {
-            "practice_name": "Sacred Breath Journey",
-            "element": "air",
-            "duration_minutes": 10,
-            "use_ai": False,
-            "include_toning": True,
-            "steps": [
-                "Opening: Ground yourself and set intention",
-                "Main Practice: Deep breathing and visualization",
-                "Closing: Integration and gratitude"
-            ],
-            "source_texts": ["Welcome to this sacred practice."]
-        }
-        
-        response = requests.post(
-            f"{BASE_URL}/api/content/expand-script",
-            json=payload,
-            timeout=30
-        )
-        print(f"   Status: {response.status_code}")
-        
-        if response.status_code != 200:
-            print(f"   ❌ FAILED: Expected 200, got {response.status_code}")
-            print(f"   Response: {response.text[:500]}")
-            return False
-        
-        data = response.json()
-        
-        # Verify required fields
-        required_fields = ["target_minutes", "target_word_count", "word_count"]
-        for field in required_fields:
-            if field not in data:
-                print(f"   ❌ FAILED: Missing required field '{field}'")
-                return False
-        
-        # Verify word count threshold (>= 80% of target)
-        target_word_count = data["target_word_count"]
-        actual_word_count = data["word_count"]
-        threshold = target_word_count * 0.8
-        
-        print(f"   Target minutes: {data['target_minutes']}")
-        print(f"   Target word count: {target_word_count}")
-        print(f"   Actual word count: {actual_word_count}")
-        print(f"   Threshold (80%): {threshold}")
-        
-        if actual_word_count < threshold:
-            print(f"   ❌ FAILED: Word count {actual_word_count} < threshold {threshold}")
-            return False
-        
-        print(f"   ✅ PASSED")
-        return True
-    except Exception as e:
-        print(f"   ❌ FAILED: {str(e)}")
-        return False
-
-def test_tts_generate_base64():
-    """Test POST /api/tts/generate-base64"""
-    print("\n3. Testing POST /api/tts/generate-base64...")
-    try:
-        payload = {
-            "text": "Welcome to this sacred practice. Take a moment to center yourself and breathe deeply.",
-            "voice": "nova",
-            "speed": 0.85
-        }
-        
-        response = requests.post(
-            f"{BASE_URL}/api/tts/generate-base64",
-            json=payload,
-            timeout=30
-        )
-        print(f"   Status: {response.status_code}")
-        
-        if response.status_code != 200:
-            print(f"   ❌ FAILED: Expected 200, got {response.status_code}")
-            print(f"   Response: {response.text[:500]}")
-            return False
-        
-        data = response.json()
-        
-        # Verify required fields
-        if "audio_base64" not in data:
-            print(f"   ❌ FAILED: Missing 'audio_base64' field")
-            return False
-        
-        if "format" not in data:
-            print(f"   ❌ FAILED: Missing 'format' field")
-            return False
-        
-        audio_length = len(data["audio_base64"])
-        print(f"   Audio base64 length: {audio_length:,} chars")
-        print(f"   Format: {data['format']}")
-        
-        # Verify audio data is substantial (at least 10KB base64)
-        if audio_length < 10000:
-            print(f"   ❌ FAILED: Audio data too small ({audio_length} chars)")
-            return False
-        
-        print(f"   ✅ PASSED")
-        return True
-    except Exception as e:
-        print(f"   ❌ FAILED: {str(e)}")
-        return False
-
-def test_tts_meditation_parts():
-    """Test GET /api/tts/meditation/{id}/parts"""
-    print("\n4. Testing GET /api/tts/meditation/{id}/parts...")
-    try:
-        meditation_id = "1"
-        response = requests.get(
-            f"{BASE_URL}/api/tts/meditation/{meditation_id}/parts",
-            timeout=10
-        )
-        print(f"   Status: {response.status_code}")
-        
-        if response.status_code != 200:
-            print(f"   ❌ FAILED: Expected 200, got {response.status_code}")
-            print(f"   Response: {response.text[:500]}")
-            return False
-        
-        data = response.json()
-        print(f"   Response: {json.dumps(data, indent=2)}")
-        
-        # Verify required fields
-        if "meditation_id" not in data:
-            print(f"   ❌ FAILED: Missing 'meditation_id' field")
-            return False
-        
-        if "total_parts" not in data:
-            print(f"   ❌ FAILED: Missing 'total_parts' field")
-            return False
-        
-        print(f"   Meditation ID: {data['meditation_id']}")
-        print(f"   Total parts: {data['total_parts']}")
-        
-        print(f"   ✅ PASSED")
-        return True
-    except Exception as e:
-        print(f"   ❌ FAILED: {str(e)}")
-        return False
-
-def test_tts_meditation_audio():
-    """Test POST /api/tts/meditation/{id}"""
-    print("\n5. Testing POST /api/tts/meditation/{id}...")
-    try:
-        meditation_id = "1"
-        part = 1
-        response = requests.post(
-            f"{BASE_URL}/api/tts/meditation/{meditation_id}?part={part}",
-            timeout=60
-        )
-        print(f"   Status: {response.status_code}")
-        
-        if response.status_code != 200:
-            print(f"   ❌ FAILED: Expected 200, got {response.status_code}")
-            print(f"   Response: {response.text[:500]}")
-            return False
-        
-        data = response.json()
-        
-        # Verify required fields
-        if "audio_base64" not in data:
-            print(f"   ❌ FAILED: Missing 'audio_base64' field")
-            return False
-        
-        if "format" not in data:
-            print(f"   ❌ FAILED: Missing 'format' field")
-            return False
-        
-        audio_length = len(data["audio_base64"])
-        print(f"   Audio base64 length: {audio_length:,} chars")
-        print(f"   Format: {data['format']}")
-        
-        # Verify audio data is substantial (meditation parts should be large)
-        if audio_length < 100000:
-            print(f"   ⚠️  WARNING: Audio data seems small for meditation part ({audio_length} chars)")
-        
-        print(f"   ✅ PASSED")
-        return True
-    except Exception as e:
-        print(f"   ❌ FAILED: {str(e)}")
-        return False
-
-def main():
-    print("=" * 80)
-    print("BACKEND DEPLOYMENT-READINESS TEST")
-    print("=" * 80)
-    print(f"Base URL: {BASE_URL}")
+    """Test /api/content/expand-script endpoint responsiveness"""
+    print("\n1. Testing POST /api/content/expand-script...")
     
-    results = {
-        "health": test_health(),
-        "expand_script": test_expand_script(),
-        "tts_generate_base64": test_tts_generate_base64(),
-        "tts_meditation_parts": test_tts_meditation_parts(),
-        "tts_meditation_audio": test_tts_meditation_audio()
+    payload = {
+        "practice_name": "Sacred Breath Practice",
+        "element": "spirit",
+        "duration_minutes": 10,
+        "steps": ["Take a deep breath", "Hold for a moment", "Release slowly"],
+        "source_texts": ["Welcome to this sacred practice"],
+        "use_ai": False,
+        "anti_repetition_mode": "balanced",
+        "include_toning": True
     }
     
-    print("\n" + "=" * 80)
-    print("SUMMARY")
-    print("=" * 80)
+    try:
+        response = requests.post(
+            f"{BACKEND_URL}/content/expand-script",
+            json=payload,
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            data = response.json()
+            # Check required fields
+            required_fields = ["target_minutes", "target_word_count", "word_count"]
+            missing = [f for f in required_fields if f not in data]
+            
+            if missing:
+                print(f"   ❌ FAIL: Missing fields: {missing}")
+                return False
+            
+            # Validate word count >= target_word_count * 0.8
+            if data["word_count"] >= data["target_word_count"] * 0.8:
+                print(f"   ✅ PASS: Status 200, word_count={data['word_count']}, target={data['target_word_count']}")
+                return True
+            else:
+                print(f"   ❌ FAIL: word_count ({data['word_count']}) < target*0.8 ({data['target_word_count']*0.8})")
+                return False
+        else:
+            print(f"   ❌ FAIL: Status {response.status_code}")
+            print(f"   Response: {response.text[:200]}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ FAIL: Exception - {str(e)}")
+        return False
+
+
+def test_public_read_endpoint(endpoint_name, endpoint_path):
+    """Test public read endpoint returns 200"""
+    print(f"\n{endpoint_name}. Testing GET {endpoint_path}...")
     
-    passed = sum(1 for v in results.values() if v)
+    try:
+        response = requests.get(f"{BACKEND_URL}{endpoint_path}", timeout=10)
+        
+        if response.status_code == 200:
+            data = response.json()
+            # Verify it's valid JSON and not empty
+            if isinstance(data, (list, dict)):
+                count = len(data) if isinstance(data, list) else "dict"
+                print(f"   ✅ PASS: Status 200, returned {count} items")
+                return True
+            else:
+                print(f"   ❌ FAIL: Invalid JSON structure")
+                return False
+        else:
+            print(f"   ❌ FAIL: Status {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ FAIL: Exception - {str(e)}")
+        return False
+
+
+def test_health():
+    """Test health endpoint"""
+    print("\n0. Testing GET /api/health...")
+    
+    try:
+        response = requests.get(f"{BACKEND_URL}/health", timeout=10)
+        
+        if response.status_code == 200:
+            data = response.json()
+            if "status" in data and data["status"] == "healthy":
+                print(f"   ✅ PASS: Status 200, healthy")
+                return True
+            else:
+                print(f"   ❌ FAIL: Invalid health response")
+                return False
+        else:
+            print(f"   ❌ FAIL: Status {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ FAIL: Exception - {str(e)}")
+        return False
+
+
+def main():
+    print("=" * 70)
+    print("BACKEND SMOKE CHECK - Recently Touched APIs")
+    print("=" * 70)
+    
+    results = []
+    
+    # Test health first
+    results.append(("Health", test_health()))
+    
+    # Test expand-script
+    results.append(("Expand Script", test_expand_script()))
+    
+    # Test public read endpoints
+    results.append(("Courses", test_public_read_endpoint("2", "/courses")))
+    results.append(("Light Codes", test_public_read_endpoint("3", "/light-codes")))
+    results.append(("Heart Practices", test_public_read_endpoint("4", "/heart-practices")))
+    results.append(("Elemental Practices", test_public_read_endpoint("5", "/elemental-practices")))
+    
+    # Summary
+    print("\n" + "=" * 70)
+    print("SUMMARY")
+    print("=" * 70)
+    
+    passed = sum(1 for _, result in results if result)
     total = len(results)
     
-    for test_name, result in results.items():
+    for name, result in results:
         status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{status}: {test_name}")
+        print(f"{status}: {name}")
     
     print(f"\nTotal: {passed}/{total} tests passed")
     
     if passed == total:
-        print("\n🎉 ALL TESTS PASSED - DEPLOYMENT READY")
+        print("\n✅ ALL TESTS PASSED - No blockers detected")
         return 0
     else:
-        print(f"\n⚠️  {total - passed} TEST(S) FAILED - BLOCKERS DETECTED")
+        print(f"\n❌ {total - passed} TEST(S) FAILED - Blockers detected")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

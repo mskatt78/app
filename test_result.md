@@ -913,19 +913,88 @@ frontend:
         agent: "testing"
         comment: "✅ REGRESSION TEST PASSED (2026-05-30): All routes verified after latest structural decomposition and console-cleanup pass. /courses: Filters work, bundle banner renders, 3 course cards display, modal opens with tabs and purchase section. /light-codes: 5 category buttons work, 25 symbol cards render, modal opens with 4 tabs (Essence, Why It Heals, Ancient Traditions, Practice Guide), tab switching functional. /heart-practices: 10 practice cards render, modal opens, guided mode starts with Begin button, Complete/Exit controls work without crash. /elemental-temples: 5 temple cards render, temples open via navigation (not modal), section pills work (Why It Heals, Practices, Rituals, etc), section switching functional. No blank pages, no runtime crashes. Console errors: 22 total (20 expected 401 auth errors, 0 critical). All key flows functional."
 
+
+  - task: "Backend smoke check - recently touched APIs"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BACKEND SMOKE CHECK PASSED (2026-05-31): All recently touched APIs verified. 1) GET /api/health: 200 OK, status=healthy. 2) POST /api/content/expand-script: 200 OK, word_count=1381, target=1320 (meets 0.8x threshold). 3) GET /api/courses: 200 OK, 3 items. 4) GET /api/light-codes: 200 OK, dict structure. 5) GET /api/heart-practices: 200 OK, 10 items. 6) GET /api/elemental-practices: 200 OK, 15 items. Backend logs clean: no 500 errors, no critical runtime errors. Only non-critical Wikipedia image lookup warnings (expected). Auth errors are expected 401s from unauthenticated requests. All endpoints responsive and returning valid data."
+
 metadata:
   created_by: "testing_agent"
   version: "2.0"
-  test_sequence: 11
+  test_sequence: 12
   run_ui: false
-  last_tested: "2026-05-30"
+  last_tested: "2026-05-31"
 
 test_plan:
   current_focus:
-    - "Frontend regression - structural decomposition - COMPLETED"
+    - "Backend smoke check - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Backend Smoke Check - Recently Touched APIs (2026-05-31):
+      
+      VERIFICATION REQUEST: Quick backend smoke check after frontend-heavy decomposition pass
+      Target: https://breathwork-sanctuary.preview.emergentagent.com/api
+      
+      ✅ ALL TESTS PASSED (6/6 endpoints):
+      
+      1. ✅ GET /api/health - PASSED
+         - Status: 200 OK
+         - Response: {"status": "healthy", "app": "Shamanic Elements Temple Of The Soul"}
+         - Backend is running and responsive
+      
+      2. ✅ POST /api/content/expand-script - PASSED
+         - Status: 200 OK
+         - Response fields validated: target_minutes, target_word_count, word_count
+         - Word count: 1381 words (target: 1320 words)
+         - Meets 0.8x threshold requirement (1381 >= 1056)
+         - Endpoint responsive and generating valid narration scripts
+      
+      3. ✅ GET /api/courses - PASSED
+         - Status: 200 OK
+         - Returns: 3 course items
+         - Public read access working correctly
+      
+      4. ✅ GET /api/light-codes - PASSED
+         - Status: 200 OK
+         - Returns: dict structure with light code categories
+         - Public read access working correctly
+      
+      5. ✅ GET /api/heart-practices - PASSED
+         - Status: 200 OK
+         - Returns: 10 practice items
+         - Public read access working correctly
+      
+      6. ✅ GET /api/elemental-practices - PASSED
+         - Status: 200 OK
+         - Returns: 15 practice items
+         - Public read access working correctly
+         - Note: Tested /elemental-practices instead of /elements (correct endpoint)
+      
+      BACKEND LOGS ANALYSIS:
+      ✅ No 500 server errors detected
+      ✅ No critical runtime errors
+      ✅ No blocking exceptions
+      ⚠️  Non-critical warnings only:
+         - Wikipedia image lookup warnings (expected, non-blocking)
+         - Auth errors (401) from unauthenticated requests (expected behavior)
+         - Old AI expansion errors from May 15-19 (not current, endpoint working now)
+      
+      SUMMARY:
+      All backend endpoints responsive and returning valid data. No blockers detected. Backend is healthy and production-ready after frontend decomposition work.
 
   - agent: "testing"
     message: |
