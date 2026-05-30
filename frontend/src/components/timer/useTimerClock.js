@@ -31,9 +31,6 @@ export const useTimerClock = ({
   useEffect(() => { onPauseRef.current = onPause; }, [onPause]);
   useEffect(() => { onResetRef.current = onReset; }, [onReset]);
   useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
-  useEffect(() => { currentSegmentIndexRef.current = currentSegmentIndex; }, [currentSegmentIndex]);
-  useEffect(() => { segmentEndTimesRef.current = segmentEndTimes; }, [segmentEndTimes]);
-  useEffect(() => { segmentsLengthRef.current = normalizedSegments.length; }, [normalizedSegments.length]);
 
   const normalizedSegments = useMemo(() => {
     if (!segments.length) return [];
@@ -83,6 +80,18 @@ export const useTimerClock = ({
   const remainingTime = Math.max(0, calculatedTotal - totalElapsed);
   const overallProgress = (totalElapsed / calculatedTotal) * 100;
   const segmentProgress = currentSegment ? (segmentTime / currentSegmentDuration) * 100 : 0;
+
+  useEffect(() => {
+    currentSegmentIndexRef.current = currentSegmentIndex;
+  }, [currentSegmentIndex]);
+
+  useEffect(() => {
+    segmentEndTimesRef.current = segmentEndTimes;
+  }, [segmentEndTimes]);
+
+  useEffect(() => {
+    segmentsLengthRef.current = normalizedSegments.length;
+  }, [normalizedSegments.length]);
 
   const syncElapsedFromClock = useCallback(() => {
     if (!sessionEndRef.current) return;
