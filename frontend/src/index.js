@@ -9,6 +9,7 @@ if (process.env.NODE_ENV === "production") {
   window.console.info = noop;
   window.console.debug = noop;
   window.console.warn = noop;
+  window.console.error = noop;
 }
 
 // Register Service Worker for PWA
