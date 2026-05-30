@@ -195,6 +195,15 @@
   - Testing agent (`iteration_142`): **Frontend 100% pass**
   - No runtime loops/crashes in admin collection load/search/pagination/switch flows.
 
+## Latest Verification Snapshot (Iteration 143)
+- Fixed shamanic journey blank-page crash when pressing **Begin Guided Shamanic Journey**.
+- Root cause: hook-order initialization bug in `src/components/timer/useTimerClock.js` (`currentSegmentIndex` reference used before initialization in effect ordering).
+- Fix: moved computed-value synchronization effects to run after `segmentEndTimes/currentSegmentIndex` are declared, preserving stable ref updates.
+- Validation:
+  - Manual smoke reproduction before/after confirmed crash removal.
+  - Testing agent (`iteration_143`): **Frontend 100% pass**
+  - Timer now renders and runs correctly in `/shamanic` practice start flow.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
