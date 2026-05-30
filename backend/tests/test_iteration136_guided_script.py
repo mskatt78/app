@@ -51,7 +51,7 @@ class TestGuidedScriptExpansion:
         assert "segments" in data
         
         assert data["practice_name"] == "Test Meditation"
-        assert data["used_ai"] == False
+        assert not data["used_ai"]
         assert isinstance(data["paragraphs"], list)
         assert isinstance(data["segments"], list)
         print(f"Basic response structure: PASS (word_count={data['word_count']})")
@@ -314,7 +314,7 @@ class TestGuidedScriptExpansion:
         data = response.json()
         
         # used_ai should be False
-        assert data["used_ai"] == False, "Expected used_ai=False for deterministic mode"
+        assert not data["used_ai"], "Expected used_ai=False for deterministic mode"
         print("Deterministic mode (use_ai=False): PASS")
 
     def test_segments_are_generated(self):
@@ -365,7 +365,7 @@ class TestFrontendPayloadCompatibility:
         assert response.status_code == 200
         data = response.json()
         
-        assert data["used_ai"] == False
+        assert not data["used_ai"]
         assert data["word_count"] > 0
         print("Frontend payload compatibility: PASS")
 

@@ -49,7 +49,7 @@ class TestIteration137_20MinAlignment:
         ratio = actual / target if target > 0 else 0
         percentage = ratio * 100
         
-        print(f"20-min strict minimal source:")
+        print("20-min strict minimal source:")
         print(f"  target_word_count: {target}")
         print(f"  word_count: {actual}")
         print(f"  percentage: {percentage:.2f}%")
@@ -82,7 +82,7 @@ class TestIteration137_20MinAlignment:
         ratio = actual / target if target > 0 else 0
         percentage = ratio * 100
         
-        print(f"20-min strict empty source:")
+        print("20-min strict empty source:")
         print(f"  target_word_count: {target}")
         print(f"  word_count: {actual}")
         print(f"  percentage: {percentage:.2f}%")
@@ -114,7 +114,7 @@ class TestIteration137_20MinAlignment:
         ratio = actual / target if target > 0 else 0
         percentage = ratio * 100
         
-        print(f"20-min strict single step/source:")
+        print("20-min strict single step/source:")
         print(f"  target_word_count: {target}")
         print(f"  word_count: {actual}")
         print(f"  percentage: {percentage:.2f}%")
@@ -155,7 +155,7 @@ class TestIteration137_20MinAlignment:
         repeated = sum(1 for count in stem_counts.values() if count > 1)
         repeat_ratio = repeated / len(stems) if stems else 0
         
-        print(f"20-min stem diversity check:")
+        print("20-min stem diversity check:")
         print(f"  total paragraphs: {len(paragraphs)}")
         print(f"  unique stems: {len(stem_counts)}")
         print(f"  repeated stems: {repeated}")
@@ -196,7 +196,7 @@ class TestIteration137_20MinAlignment:
             "continue with": 15,  # Very common in extension paragraphs
         }
         
-        print(f"20-min trigger phrase check:")
+        print("20-min trigger phrase check:")
         all_within_limits = True
         for phrase, max_count in trigger_phrases.items():
             count = full_text.count(phrase)
@@ -206,7 +206,7 @@ class TestIteration137_20MinAlignment:
                 all_within_limits = False
         
         assert all_within_limits, "Some trigger phrases exceeded limits"
-        print(f"  RESULT: PASS (all phrases within limits)")
+        print("  RESULT: PASS (all phrases within limits)")
 
     def test_25min_strict_minimal_source_alignment(self):
         """
@@ -232,7 +232,7 @@ class TestIteration137_20MinAlignment:
         ratio = actual / target if target > 0 else 0
         percentage = ratio * 100
         
-        print(f"25-min strict minimal source:")
+        print("25-min strict minimal source:")
         print(f"  target_word_count: {target}")
         print(f"  word_count: {actual}")
         print(f"  percentage: {percentage:.2f}%")
@@ -265,18 +265,18 @@ class TestFrontendPayloadUnchanged:
         assert response.status_code == 200
         data = response.json()
         
-        assert data["used_ai"] == False, "Expected used_ai=False"
+        assert not data["used_ai"], "Expected used_ai=False"
         
         target = data["target_word_count"]
         actual = data["word_count"]
         ratio = actual / target if target > 0 else 0
         
-        print(f"Frontend payload test:")
+        print("Frontend payload test:")
         print(f"  used_ai: {data['used_ai']}")
         print(f"  word_count: {actual} / {target} ({ratio*100:.2f}%)")
         
         assert ratio >= 0.98, f"FAIL: Duration alignment {ratio*100:.2f}% < 98%"
-        print(f"  RESULT: PASS")
+        print("  RESULT: PASS")
 
     def test_frontend_payload_anti_repetition_mode(self):
         """

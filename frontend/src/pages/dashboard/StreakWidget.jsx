@@ -3,6 +3,12 @@ import { motion } from "framer-motion";
 import { Flame, BookOpen } from "lucide-react";
 import { Button } from "../../components/ui/button";
 
+const streakWidgetAnimation = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay: 0.05 },
+};
+
 export const StreakWidget = ({ onJournalClick }) => {
   const [streakData] = useState(() => {
     const raw = localStorage.getItem("practiceJournalEntries");
@@ -66,9 +72,9 @@ export const StreakWidget = ({ onJournalClick }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.05 }}
+      initial={streakWidgetAnimation.initial}
+      animate={streakWidgetAnimation.animate}
+      transition={streakWidgetAnimation.transition}
       className="rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4"
       data-testid="streak-widget"
     >

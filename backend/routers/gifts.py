@@ -366,20 +366,18 @@ async def _create_stripe_gift_checkout(
 ) -> dict[str, Any]:
     """Create Stripe checkout for gift."""
     db = get_db()
-    
-    stripe_api_key = os.environ.get("STRIPE_API_KEY")
-    if not stripe_api_key:
-        raise HTTPException(status_code=500, detail="Stripe not configured")
-    
+
+    stripe_api_key = _require_stripe_key()
+
     success_url = f"{origin_url}/gift/success?gift_code={gift['gift_code']}&session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{origin_url}/gift/cancel?gift_code={gift['gift_code']}"
-    
+
     metadata = _build_gift_payment_metadata(gift, current_user)
-    
+
     host_url = str(request.base_url).rstrip("/")
     webhook_url = f"{host_url}/api/webhook/stripe"
     stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
-    
+
     checkout_request = CheckoutSessionRequest(
         amount=amount,
         currency="usd",
@@ -390,13 +388,9 @@ async def _create_stripe_gift_checkout(
     
     try:
         session = await stripe_checkout.create_checkout_session(checkout_request)
-        
-        # Update gift with session ID
-        await db.gifts.update_one(
-            {"gift_code": gift["gift_code"]},
-            {"$set": {"payment_session_id": session.session_id, "payment_method": "stripe"}}
-        )
-        
+
+        await _attach_gift_payment_reference(db, gift["gift_code"], session.session_id, "stripe")
+
         transaction = _build_gift_transaction(
             session.session_id,
             amount,
@@ -406,8 +400,8 @@ async def _create_stripe_gift_checkout(
             current_user,
             metadata,
         )
-        await db.payment_transactions.insert_one(transaction)
-        
+        await _persist_gift_payment_transaction(db, transaction)
+
         return {
             "checkout_url": session.url,
             "session_id": session.session_id,
@@ -428,21 +422,16 @@ async def _create_paypal_gift_order(
 ) -> dict[str, Any]:
     """Create PayPal order for gift."""
     db = get_db()
-    
-    paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
-    paypal_secret = os.environ.get("PAYPAL_SECRET")
-    paypal_mode = os.environ.get("PAYPAL_MODE")
-    
-    if not paypal_client_id or not paypal_secret or not paypal_mode:
-        raise HTTPException(status_code=500, detail="PayPal not configured")
-    
+
+    paypal_client_id, paypal_secret, paypal_mode = _require_paypal_keys()
+
     base_url = _resolve_paypal_base_url(paypal_mode)
-    
+
     async with httpx.AsyncClient() as client:
         access_token = await _fetch_paypal_access_token(client, base_url, paypal_client_id, paypal_secret)
-        
+
         order_data = _build_paypal_gift_order_payload(gift, amount, product_name, origin_url)
-        
+
         order_response = await client.post(
             f"{base_url}/v2/checkout/orders",
             json=order_data,
@@ -451,25 +440,21 @@ async def _create_paypal_gift_order(
                 "Content-Type": "application/json"
             }
         )
-        
+
         if order_response.status_code not in [200, 201]:
             logger.error(f"PayPal order error: {order_response.text}")
             raise HTTPException(status_code=500, detail="Failed to create PayPal order")
-        
+
         order = order_response.json()
         order_id = order["id"]
-        
+
         approval_url = _extract_paypal_approval_url(order)
-        
+
         if not approval_url:
             raise HTTPException(status_code=500, detail="PayPal approval URL not found")
-        
-        # Update gift with order ID
-        await db.gifts.update_one(
-            {"gift_code": gift["gift_code"]},
-            {"$set": {"payment_session_id": order_id, "payment_method": "paypal"}}
-        )
-        
+
+        await _attach_gift_payment_reference(db, gift["gift_code"], order_id, "paypal")
+
         transaction = _build_gift_transaction(
             order_id,
             amount,
@@ -478,14 +463,46 @@ async def _create_paypal_gift_order(
             gift["gift_code"],
             current_user,
         )
-        await db.payment_transactions.insert_one(transaction)
-        
+        await _persist_gift_payment_transaction(db, transaction)
+
         return {
             "checkout_url": approval_url,
             "order_id": order_id,
             "payment_method": "paypal",
             "gift_code": gift["gift_code"]
         }
+
+
+def _require_stripe_key() -> str:
+    stripe_api_key = os.environ.get("STRIPE_API_KEY")
+    if not stripe_api_key:
+        raise HTTPException(status_code=500, detail="Stripe not configured")
+    return stripe_api_key
+
+
+def _require_paypal_keys() -> tuple[str, str, str]:
+    paypal_client_id = os.environ.get("PAYPAL_CLIENT_ID")
+    paypal_secret = os.environ.get("PAYPAL_SECRET")
+    paypal_mode = os.environ.get("PAYPAL_MODE")
+    if not paypal_client_id or not paypal_secret or not paypal_mode:
+        raise HTTPException(status_code=500, detail="PayPal not configured")
+    return paypal_client_id, paypal_secret, paypal_mode
+
+
+async def _attach_gift_payment_reference(
+    db: Any,
+    gift_code: str,
+    payment_reference: str,
+    payment_method: str,
+) -> None:
+    await db.gifts.update_one(
+        {"gift_code": gift_code},
+        {"$set": {"payment_session_id": payment_reference, "payment_method": payment_method}},
+    )
+
+
+async def _persist_gift_payment_transaction(db: Any, transaction: dict[str, Any]) -> None:
+    await db.payment_transactions.insert_one(transaction)
 
 
 @router.post("/gifts/confirm-payment")

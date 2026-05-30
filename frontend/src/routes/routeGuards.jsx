@@ -31,7 +31,7 @@ export const AuthCallback = ({ api }) => {
     if (hasProcessed.current) return;
     hasProcessed.current = true;
     processAuth();
-  }, [processAuth]);
+  }, [hasProcessed, processAuth]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -66,7 +66,7 @@ export const ProtectedRoute = ({ children, api }) => {
       setIsAuthenticated(false);
       navigate("/", { replace: true });
     }
-  }, [api, navigate]);
+  }, [api, isMountedRef, navigate]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -81,7 +81,7 @@ export const ProtectedRoute = ({ children, api }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, locationStateUser]);
+  }, [checkAuth, isMountedRef, locationStateUser]);
 
   if (isAuthenticated === null) {
     return (
@@ -192,7 +192,7 @@ export const PublicRoute = ({ children, api }) => {
     }
     if (!isMountedRef.current) return;
     setChecked(true);
-  }, [api]);
+  }, [api, isMountedRef]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -206,7 +206,7 @@ export const PublicRoute = ({ children, api }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, locationStateUser]);
+  }, [checkAuth, isMountedRef, locationStateUser]);
 
   if (!checked) {
     return (

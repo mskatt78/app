@@ -369,45 +369,7 @@ async def create_numerology_reading(
     """Calculate and save a numerology reading."""
     db = get_db()
     try:
-        life_path_number = calculate_life_path(request.birth_date)
-        life_path_info = LIFE_PATHS.get(life_path_number, LIFE_PATHS.get(reduce_to_single_digit(life_path_number, False), {}))
-        
-        # Calculate personal year
-        current_year = datetime.now().year
-        birth_parts = request.birth_date.split("-")
-        month = int(birth_parts[1])
-        day = int(birth_parts[2])
-        personal_year_sum = reduce_to_single_digit(month + day + sum(int(d) for d in str(current_year)), False)
-        
-        personal_year_themes = {
-            1: {"number": 1, "theme": "New Beginnings", "description": "A year of fresh starts, independence, and planting seeds for the future."},
-            2: {"number": 2, "theme": "Partnerships", "description": "A year of cooperation, patience, and nurturing relationships."},
-            3: {"number": 3, "theme": "Creativity", "description": "A year of self-expression, joy, and creative expansion."},
-            4: {"number": 4, "theme": "Foundation", "description": "A year of hard work, building stability, and laying groundwork."},
-            5: {"number": 5, "theme": "Change", "description": "A year of transformation, freedom, and new experiences."},
-            6: {"number": 6, "theme": "Responsibility", "description": "A year of home, family, love, and nurturing others."},
-            7: {"number": 7, "theme": "Introspection", "description": "A year of spiritual growth, rest, and inner reflection."},
-            8: {"number": 8, "theme": "Abundance", "description": "A year of achievement, recognition, and material success."},
-            9: {"number": 9, "theme": "Completion", "description": "A year of endings, release, and preparing for new cycles."},
-        }
-        
-        reading_data = {
-            "life_path": life_path_info,
-            "personal_year": personal_year_themes.get(personal_year_sum, personal_year_themes[9]),
-        }
-        
-        # Add name-based numbers if name provided
-        if request.full_name:
-            expression_num = calculate_expression_number(request.full_name)
-            soul_urge_num = calculate_soul_urge(request.full_name)
-            reading_data["expression"] = {
-                "number": expression_num,
-                "description": LIFE_PATHS.get(expression_num, {}).get("description", "Your talents and abilities manifest through this number.")
-            }
-            reading_data["soul_urge"] = {
-                "number": soul_urge_num,
-                "description": LIFE_PATHS.get(soul_urge_num, {}).get("description", "Your heart's deepest desires resonate with this number.")
-            }
+        life_path_number, reading_data = _build_reading_payload(request)
         
         # Full record to save
         record = {
@@ -431,6 +393,56 @@ async def create_numerology_reading(
     except Exception as e:
         logger.error(f"Numerology reading error: {e}")
         raise HTTPException(status_code=500, detail="Failed to calculate reading")
+
+
+def _build_reading_payload(request: NumerologyRequest) -> tuple[int, dict[str, Any]]:
+    life_path_number = calculate_life_path(request.birth_date)
+    life_path_info = LIFE_PATHS.get(life_path_number, LIFE_PATHS.get(reduce_to_single_digit(life_path_number, False), {}))
+    personal_year_theme = _build_personal_year_theme(request.birth_date)
+
+    reading_data: dict[str, Any] = {
+        "life_path": life_path_info,
+        "personal_year": personal_year_theme,
+    }
+
+    if request.full_name:
+        _append_name_based_numbers(reading_data, request.full_name)
+
+    return life_path_number, reading_data
+
+
+def _build_personal_year_theme(birth_date: str) -> dict[str, Any]:
+    current_year = datetime.now().year
+    birth_parts = birth_date.split("-")
+    month = int(birth_parts[1])
+    day = int(birth_parts[2])
+    personal_year_sum = reduce_to_single_digit(month + day + sum(int(digit) for digit in str(current_year)), False)
+
+    personal_year_themes = {
+        1: {"number": 1, "theme": "New Beginnings", "description": "A year of fresh starts, independence, and planting seeds for the future."},
+        2: {"number": 2, "theme": "Partnerships", "description": "A year of cooperation, patience, and nurturing relationships."},
+        3: {"number": 3, "theme": "Creativity", "description": "A year of self-expression, joy, and creative expansion."},
+        4: {"number": 4, "theme": "Foundation", "description": "A year of hard work, building stability, and laying groundwork."},
+        5: {"number": 5, "theme": "Change", "description": "A year of transformation, freedom, and new experiences."},
+        6: {"number": 6, "theme": "Responsibility", "description": "A year of home, family, love, and nurturing others."},
+        7: {"number": 7, "theme": "Introspection", "description": "A year of spiritual growth, rest, and inner reflection."},
+        8: {"number": 8, "theme": "Abundance", "description": "A year of achievement, recognition, and material success."},
+        9: {"number": 9, "theme": "Completion", "description": "A year of endings, release, and preparing for new cycles."},
+    }
+    return personal_year_themes.get(personal_year_sum, personal_year_themes[9])
+
+
+def _append_name_based_numbers(reading_data: dict[str, Any], full_name: str) -> None:
+    expression_num = calculate_expression_number(full_name)
+    soul_urge_num = calculate_soul_urge(full_name)
+    reading_data["expression"] = {
+        "number": expression_num,
+        "description": LIFE_PATHS.get(expression_num, {}).get("description", "Your talents and abilities manifest through this number."),
+    }
+    reading_data["soul_urge"] = {
+        "number": soul_urge_num,
+        "description": LIFE_PATHS.get(soul_urge_num, {}).get("description", "Your heart's deepest desires resonate with this number."),
+    }
 
 
 @router.get("/numerology/readings")

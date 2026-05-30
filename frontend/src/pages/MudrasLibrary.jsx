@@ -73,6 +73,14 @@ const MudrasLibrary = ({ user, api }) => {
     return "devotional presence and spiritual coherence";
   };
 
+  const getElementConnectionBenefit = (element) => {
+    if (element === "Earth") return "ground your energy and build stability";
+    if (element === "Water") return "balance emotions and enhance intuition";
+    if (element === "Fire") return "ignite transformation and inner power";
+    if (element === "Air") return "clear the mind and expand awareness";
+    return "connect with your higher self and spiritual essence";
+  };
+
   const createGuidedMudraPractice = (mudra) => {
     const baseMinutes = Math.max(7, Math.min(18, Math.round((mudra?.benefits?.length || 4) * 2)));
 
@@ -303,11 +311,7 @@ const MudrasLibrary = ({ user, api }) => {
                     <strong className="text-primary">Practice:</strong> Hold this mudra during meditation 
                     for 5-15 minutes, or while doing breathwork to enhance its effects. 
                     The <strong className="text-primary">{selectedMudra.element}</strong> element connection helps {
-                      selectedMudra.element === "Earth" ? "ground your energy and build stability" :
-                      selectedMudra.element === "Water" ? "balance emotions and enhance intuition" :
-                      selectedMudra.element === "Fire" ? "ignite transformation and inner power" :
-                      selectedMudra.element === "Air" ? "clear the mind and expand awareness" :
-                      "connect with your higher self and spiritual essence"
+                      getElementConnectionBenefit(selectedMudra.element)
                     }.
                   </p>
                 </div>

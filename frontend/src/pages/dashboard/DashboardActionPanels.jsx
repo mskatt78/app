@@ -2,6 +2,13 @@ import { motion } from "framer-motion";
 import { Sparkles, Shield, BarChart3, Trophy, Star } from "lucide-react";
 import { elementBg, elementColors } from "./dashboardConfig";
 
+const practiceInitial = { opacity: 0, scale: 0.9 };
+const practiceAnimate = { opacity: 1, scale: 1 };
+const journeyInitial = { opacity: 0, y: 20 };
+const journeyAnimate = { opacity: 1, y: 0 };
+const progressInitial = { opacity: 0, y: 20 };
+const progressAnimate = { opacity: 1, y: 0 };
+
 export const DashboardActionPanels = ({ quickPracticeItems, deepJourneyItems, navigate }) => (
   <>
     <div>
@@ -10,8 +17,8 @@ export const DashboardActionPanels = ({ quickPracticeItems, deepJourneyItems, na
         {quickPracticeItems.map((item, index) => (
           <motion.button
             key={item.path}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
+            initial={practiceInitial}
+            animate={practiceAnimate}
             transition={{ delay: index * 0.05 }}
             onClick={() => navigate(item.path)}
             className={`p-6 rounded-2xl border backdrop-blur-xl text-center hover:scale-105 transition-all duration-300 ${elementBg[item.element]}`}
@@ -33,8 +40,8 @@ export const DashboardActionPanels = ({ quickPracticeItems, deepJourneyItems, na
         {deepJourneyItems.map((item, index) => (
           <motion.button
             key={item.path}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={journeyInitial}
+            animate={journeyAnimate}
             transition={{ delay: 0.5 + index * 0.1 }}
             onClick={() => navigate(item.path)}
             className={`p-5 rounded-2xl border backdrop-blur-xl text-center hover:scale-105 transition-all duration-300 relative overflow-hidden ${elementBg[item.element]}`}
@@ -52,8 +59,8 @@ export const DashboardActionPanels = ({ quickPracticeItems, deepJourneyItems, na
       <h3 className="text-2xl font-serif mb-6">Your <span className="italic text-primary">Progress</span></h3>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={progressInitial}
+          animate={progressAnimate}
           transition={{ delay: 0.8 }}
           onClick={() => navigate("/practice-log")}
           className="p-6 rounded-2xl bg-gradient-to-br from-orange-500/10 to-red-500/10 border border-orange-500/20 hover:border-orange-500/40 transition-all text-left"
@@ -65,8 +72,8 @@ export const DashboardActionPanels = ({ quickPracticeItems, deepJourneyItems, na
         </motion.button>
 
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={progressInitial}
+          animate={progressAnimate}
           transition={{ delay: 0.9 }}
           onClick={() => navigate("/achievements")}
           className="p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 to-yellow-500/10 border border-amber-500/20 hover:border-amber-500/40 transition-all text-left"
@@ -78,8 +85,8 @@ export const DashboardActionPanels = ({ quickPracticeItems, deepJourneyItems, na
         </motion.button>
 
         <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={progressInitial}
+          animate={progressAnimate}
           transition={{ delay: 1.0 }}
           onClick={() => navigate("/favorites")}
           className="p-6 rounded-2xl bg-gradient-to-br from-pink-500/10 to-rose-500/10 border border-pink-500/20 hover:border-pink-500/40 transition-all text-left"

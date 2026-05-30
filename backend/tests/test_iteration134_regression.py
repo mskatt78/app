@@ -107,7 +107,7 @@ class TestMasculineTempleEndpoints:
         if len(data) > 0:
             practice = data[0]
             assert "id" in practice or "name" in practice
-            print(f"PASS: Practice has expected structure (id/name present)")
+            print("PASS: Practice has expected structure (id/name present)")
 
 
 class TestCoreContentEndpoints:

@@ -207,8 +207,8 @@ const MantrasLibrary = ({ user, api }) => {
   useEffect(() => {
     try {
       setLocalItem(PREFERRED_NATURAL_SOUND_KEY, selectedNaturalSound);
-    } catch {
-      // ignore storage errors
+    } catch (error) {
+      appLogger.warn("Failed to persist preferred natural sound", error);
     }
   }, [selectedNaturalSound]);
 

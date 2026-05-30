@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { getAuthToken, isLoggedIn } from "../../utils/clientStorage";
 import { appLogger } from "../../utils/logger";
@@ -8,6 +8,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
   const [hasSubscription, setHasSubscription] = useState(false);
   const [purchaseLoading, setPurchaseLoading] = useState(false);
   const [checkingPayment, setCheckingPayment] = useState(false);
+  const pollTimeoutRef = useRef(null);
 
   const fetchCourseAccess = useCallback(async () => {
     if (!isLoggedIn()) return;
@@ -21,53 +22,50 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
     } catch (error) {
       appLogger.warn("Failed to fetch course access", error);
     }
-  }, [api]);
+  }, [api, setHasSubscription, setPurchasedCourses]);
 
   const hasAccess = (courseId) => hasSubscription || purchasedCourses.includes(courseId);
 
-  const pollPaymentStatus = useCallback(async (sessionId, attempts = 0) => {
+  const pollPaymentStatus = useCallback(async (sessionId) => {
     const maxAttempts = 10;
-    if (attempts >= maxAttempts) {
-      setCheckingPayment(false);
-      toast.error("Payment verification timed out. Please check your email.");
-      return;
-    }
 
-    try {
-      const token = getAuthToken();
-      const { data } = await api.get(`/payments/status/${sessionId}`, {
-        headers: { Authorization: `Bearer ${token}` },
+    for (let attempts = 0; attempts < maxAttempts; attempts += 1) {
+      try {
+        const token = getAuthToken();
+        const { data } = await api.get(`/payments/status/${sessionId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (data.payment_status === "paid") {
+          setCheckingPayment(false);
+          toast.success("Payment successful! You now have access to the course.");
+          fetchCourseAccess();
+          window.history.replaceState({}, document.title, window.location.pathname);
+          return;
+        }
+
+        if (data.status === "expired") {
+          setCheckingPayment(false);
+          toast.error("Payment session expired.");
+          window.history.replaceState({}, document.title, window.location.pathname);
+          return;
+        }
+      } catch (error) {
+        appLogger.warn("Payment status polling failed", error);
+        if (attempts === maxAttempts - 1) {
+          setCheckingPayment(false);
+          toast.error("Error verifying payment.");
+          return;
+        }
+      }
+
+      await new Promise((resolve) => {
+        pollTimeoutRef.current = window.setTimeout(resolve, 2000);
       });
-
-      if (data.payment_status === "paid") {
-        setCheckingPayment(false);
-        toast.success("Payment successful! You now have access to the course.");
-        fetchCourseAccess();
-        window.history.replaceState({}, document.title, window.location.pathname);
-        return;
-      }
-
-      if (data.status === "expired") {
-        setCheckingPayment(false);
-        toast.error("Payment session expired.");
-        window.history.replaceState({}, document.title, window.location.pathname);
-        return;
-      }
-
-      window.setTimeout(() => {
-        pollPaymentStatus(sessionId, attempts + 1);
-      }, 2000);
-    } catch (error) {
-      appLogger.warn("Payment status polling failed", error);
-      if (attempts < 9) {
-        window.setTimeout(() => {
-          pollPaymentStatus(sessionId, attempts + 1);
-        }, 2000);
-      } else {
-        setCheckingPayment(false);
-        toast.error("Error verifying payment.");
-      }
     }
+
+    setCheckingPayment(false);
+    toast.error("Payment verification timed out. Please check your email.");
   }, [api, fetchCourseAccess]);
 
   const paymentSessionId = useMemo(() => searchParams.get("session_id"), [searchParams]);
@@ -78,6 +76,12 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
       pollPaymentStatus(paymentSessionId);
     }
   }, [paymentSessionId, pollPaymentStatus]);
+
+  useEffect(() => () => {
+    if (pollTimeoutRef.current) {
+      window.clearTimeout(pollTimeoutRef.current);
+    }
+  }, []);
 
   const handlePurchase = async (course) => {
     if (!isLoggedIn()) {

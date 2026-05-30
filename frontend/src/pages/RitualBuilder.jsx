@@ -229,6 +229,27 @@ const RitualBuilder = ({ user, api }) => {
     return newRitual.practices.reduce((sum, p) => sum + p.duration, 0);
   };
 
+  const getMainContentMode = () => {
+    if (loading) return "loading";
+    if (activeRitual) return "active";
+    if (creating) return "creating";
+    return "list";
+  };
+
+  const getStepContainerClass = (isActive, isComplete) => {
+    if (isActive) return "bg-primary/20 border border-primary/30";
+    if (isComplete) return "bg-emerald-500/10 border border-emerald-500/20";
+    return "bg-card/30 border border-white/5";
+  };
+
+  const getStepBulletClass = (isActive, isComplete) => {
+    if (isComplete) return "bg-emerald-500";
+    if (isActive) return "bg-primary";
+    return "bg-white/10";
+  };
+
+  const mainContentMode = getMainContentMode();
+
   return (
     <div className="min-h-screen bg-background" data-testid="ritual-builder">
       {/* Header */}
@@ -262,11 +283,11 @@ const RitualBuilder = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6">
-        {loading ? (
+        {mainContentMode === "loading" ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
-        ) : activeRitual ? (
+        ) : mainContentMode === "active" ? (
           /* Active Ritual Player */
           <motion.div
             initial={{ opacity: 0 }}
@@ -343,13 +364,9 @@ const RitualBuilder = ({ user, api }) => {
                 return (
                   <div
                     key={`${activeRitual.ritual_id || activeRitual.id || activeRitual.name}-practice-${practice.id || practice.name}-${index}`}
-                    className={`p-4 rounded-xl flex items-center gap-4 transition-all
-                               ${isActive ? 'bg-primary/20 border border-primary/30' : 
-                                 isComplete ? 'bg-emerald-500/10 border border-emerald-500/20' : 
-                                 'bg-card/30 border border-white/5'}`}
+                    className={`p-4 rounded-xl flex items-center gap-4 transition-all ${getStepContainerClass(isActive, isComplete)}`}
                   >
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center
-                                   ${isComplete ? 'bg-emerald-500' : isActive ? 'bg-primary' : 'bg-white/10'}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${getStepBulletClass(isActive, isComplete)}`}>
                       {isComplete ? (
                         <Check className="w-4 h-4 text-white" />
                       ) : (
@@ -366,7 +383,7 @@ const RitualBuilder = ({ user, api }) => {
               })}
             </div>
           </motion.div>
-        ) : creating ? (
+        ) : mainContentMode === "creating" ? (
           /* Create Ritual Form */
           <motion.div
             initial={{ opacity: 0, y: 20 }}

@@ -1019,48 +1019,57 @@ def _build_extension_paragraphs(
     context_sentences = _resolve_extension_context_sentences(request, practice_name)
     phrase_bank = _extension_phrase_bank()
 
-    generated: list[str] = []
-    words = 0
-    index = start_index
-    context_queue = context_sentences[:]
-    recent_stems: list[str] = []
-    midline_counts: dict[str, int] = {}
+    state = _initialize_extension_generation_state(start_index, context_sentences)
     max_midline_reuse, max_attempts = _extension_generation_limits(required_words, anti_repetition_mode)
     attempts = 0
-    attempts_without_append = 0
 
-    while words < required_words + 40:
+    while state["words"] < required_words + 40:
         attempts += 1
         if attempts > max_attempts:
             break
 
-        paragraph = _compose_extension_paragraph(index, context_queue, phrase_bank)
+        paragraph = _compose_extension_paragraph(state["index"], state["context_queue"], phrase_bank)
         stem = " ".join(_normalize_text_for_repeat_check(paragraph).split()[:10])
         midline_stem = _extract_midline_stem(paragraph)
         if _should_skip_extension_candidate(
             stem,
-            recent_stems,
+            state["recent_stems"],
             midline_stem,
-            midline_counts,
+            state["midline_counts"],
             max_midline_reuse,
-            attempts_without_append,
+            state["attempts_without_append"],
         ):
-            index += 1
-            attempts_without_append += 1
+            state["index"] += 1
+            state["attempts_without_append"] += 1
             continue
 
-        generated.append(paragraph)
-        attempts_without_append = 0
-        words += _count_words(paragraph)
+        state["generated"].append(paragraph)
+        state["attempts_without_append"] = 0
+        state["words"] += _count_words(paragraph)
         if stem:
-            recent_stems.append(stem)
-            if len(recent_stems) > 20:
-                recent_stems.pop(0)
+            state["recent_stems"].append(stem)
+            if len(state["recent_stems"]) > 20:
+                state["recent_stems"].pop(0)
         if midline_stem:
-            midline_counts[midline_stem] = midline_counts.get(midline_stem, 0) + 1
-        index += 1
+            state["midline_counts"][midline_stem] = state["midline_counts"].get(midline_stem, 0) + 1
+        state["index"] += 1
 
-    return _dedupe_paragraphs(generated)
+    return _dedupe_paragraphs(state["generated"])
+
+
+def _initialize_extension_generation_state(
+    start_index: int,
+    context_sentences: list[str],
+) -> dict[str, Any]:
+    return {
+        "generated": [],
+        "words": 0,
+        "index": start_index,
+        "context_queue": context_sentences[:],
+        "recent_stems": [],
+        "midline_counts": {},
+        "attempts_without_append": 0,
+    }
 
 
 WORD_FLOOR_PADDING_OPENERS = [
@@ -1393,27 +1402,12 @@ async def expand_guided_script(request: ExpandScriptRequest):
     )
 
     duration_alignment_floor = int(target_words * 0.985)
-    if current_word_count < duration_alignment_floor:
-        alignment_attempts = 0
-        while current_word_count < duration_alignment_floor and alignment_attempts < 6:
-            before_count = current_word_count
-            needed_words = duration_alignment_floor - current_word_count
-
-            alignment_padding = _build_word_floor_padding_paragraphs(needed_words + 60)
-            selected_paragraphs.extend(alignment_padding)
-            selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
-            selected_paragraphs = _enforce_stem_diversity(
-                selected_paragraphs,
-                max_occurrences=stem_max_occurrences + 1,
-                stem_words=7,
-            )
-            current_word_count = _count_words(" ".join(selected_paragraphs))
-
-            if current_word_count <= before_count:
-                selected_paragraphs.append(_build_duration_alignment_booster(alignment_attempts))
-                current_word_count = _count_words(" ".join(selected_paragraphs))
-
-            alignment_attempts += 1
+    selected_paragraphs, current_word_count = _apply_duration_alignment_floor(
+        selected_paragraphs,
+        current_word_count,
+        duration_alignment_floor,
+        stem_max_occurrences,
+    )
 
     segments = _segment_paragraphs(selected_paragraphs)
 
@@ -1426,6 +1420,39 @@ async def expand_guided_script(request: ExpandScriptRequest):
         paragraphs=selected_paragraphs,
         segments=segments,
     )
+
+
+def _apply_duration_alignment_floor(
+    selected_paragraphs: list[str],
+    current_word_count: int,
+    duration_alignment_floor: int,
+    stem_max_occurrences: int,
+) -> tuple[list[str], int]:
+    if current_word_count >= duration_alignment_floor:
+        return selected_paragraphs, current_word_count
+
+    alignment_attempts = 0
+    while current_word_count < duration_alignment_floor and alignment_attempts < 6:
+        before_count = current_word_count
+        needed_words = duration_alignment_floor - current_word_count
+
+        alignment_padding = _build_word_floor_padding_paragraphs(needed_words + 60)
+        selected_paragraphs.extend(alignment_padding)
+        selected_paragraphs = _dedupe_paragraphs(selected_paragraphs)
+        selected_paragraphs = _enforce_stem_diversity(
+            selected_paragraphs,
+            max_occurrences=stem_max_occurrences + 1,
+            stem_words=7,
+        )
+        current_word_count = _count_words(" ".join(selected_paragraphs))
+
+        if current_word_count <= before_count:
+            selected_paragraphs.append(_build_duration_alignment_booster(alignment_attempts))
+            current_word_count = _count_words(" ".join(selected_paragraphs))
+
+        alignment_attempts += 1
+
+    return selected_paragraphs, current_word_count
 
 
 async def _build_live_session(session: dict, db) -> dict:

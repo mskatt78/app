@@ -39,6 +39,28 @@ export const useGuidedAudioPlayback = ({
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
 
+  const playbackConfigRef = useRef({
+    script,
+    sourceTexts,
+    steps,
+    practiceName,
+    label,
+    element,
+    durationMinutes,
+  });
+
+  useEffect(() => {
+    playbackConfigRef.current = {
+      script,
+      sourceTexts,
+      steps,
+      practiceName,
+      label,
+      element,
+      durationMinutes,
+    };
+  }, [durationMinutes, element, label, practiceName, script, sourceTexts, steps]);
+
   const stopToning = useCallback(() => {
     try {
       toningLayerRef.current?.stop?.();
@@ -107,21 +129,36 @@ export const useGuidedAudioPlayback = ({
   }, [api, voice]);
 
   const buildExpandedSegments = useCallback(async (controller) => {
-    const mergedSources = [script, ...sourceTexts].flatMap((value) => splitSentences(value)).filter(Boolean).slice(0, 80);
-    const mergedSteps = [...steps, ...extractStepsFromScript(script)].flatMap((value) => splitSentences(value)).filter(Boolean).slice(0, 32);
+    const {
+      script: currentScript,
+      sourceTexts: currentSourceTexts,
+      steps: currentSteps,
+      practiceName: currentPracticeName,
+      label: currentLabel,
+      element: currentElement,
+      durationMinutes: currentDurationMinutes,
+    } = playbackConfigRef.current;
+
+    const mergedSources = [currentScript, ...currentSourceTexts].flatMap((value) => splitSentences(value)).filter(Boolean).slice(0, 80);
+    const mergedSteps = [...currentSteps, ...extractStepsFromScript(currentScript)].flatMap((value) => splitSentences(value)).filter(Boolean).slice(0, 32);
 
     const payload = {
-      practice_name: practiceName || label || "Guided Practice",
-      element,
-      duration_minutes: estimateMinutes(script, durationMinutes),
+      practice_name: currentPracticeName || currentLabel || "Guided Practice",
+      element: currentElement,
+      duration_minutes: estimateMinutes(currentScript, currentDurationMinutes),
       use_ai: false,
-      anti_repetition_mode: getEffectiveGuidedNarrationMode({ practiceName: practiceName || label, element, sourceTexts: mergedSources, steps: mergedSteps }),
+      anti_repetition_mode: getEffectiveGuidedNarrationMode({
+        practiceName: currentPracticeName || currentLabel,
+        element: currentElement,
+        sourceTexts: mergedSources,
+        steps: mergedSteps,
+      }),
       include_toning: true,
       source_texts: mergedSources,
       steps: mergedSteps,
     };
 
-    const fallback = String(script || "").trim();
+    const fallback = String(currentScript || "").trim();
     try {
       let timerId;
       const timeoutPromise = new Promise((_, reject) => {
@@ -140,7 +177,7 @@ export const useGuidedAudioPlayback = ({
       appLogger.warn("Guided script expansion fallback engaged", error);
       return fallback ? [fallback] : [];
     }
-  }, [api, durationMinutes, element, label, practiceName, script, sourceTexts, steps]);
+  }, [api]);
 
   const playSegmentsSequentially = useCallback(async (segments, controller) => {
     if (!segments.length) throw new Error("No narration segments available");
@@ -200,6 +237,24 @@ export const useGuidedAudioPlayback = ({
     await playIndex(0);
   }, [getSegmentAudio, stopPlayback, stopToning]);
 
+  const setupToningContext = useCallback(async () => {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+
+      const ctx = new AC();
+      if (ctx.state === "suspended") await ctx.resume();
+      audioContextRef.current = ctx;
+
+      const elementKey = String(playbackConfigRef.current.element || "spirit").toLowerCase();
+      toningLayerRef.current = startToningLayer(ctx, elementKey);
+      toningLayerRef.current?.setMuted?.(false, 0.32);
+    } catch (error) {
+      appLogger.warn("Guided toning context setup failed", error);
+      stopToning();
+    }
+  }, [stopToning]);
+
   const handlePlay = useCallback(async () => {
     if (playing) {
       stopPlayback();
@@ -212,19 +267,7 @@ export const useGuidedAudioPlayback = ({
     abortRef.current = controller;
     setLoading(true);
 
-    try {
-      const AC = window.AudioContext || window.webkitAudioContext;
-      if (AC) {
-        const ctx = new AC();
-        if (ctx.state === "suspended") await ctx.resume();
-        audioContextRef.current = ctx;
-        toningLayerRef.current = startToningLayer(ctx, String(element || "spirit").toLowerCase());
-        toningLayerRef.current?.setMuted?.(false, 0.32);
-      }
-    } catch (error) {
-      appLogger.warn("Guided toning context setup failed", error);
-      stopToning();
-    }
+    await setupToningContext();
 
     try {
       const expandedSegments = await buildExpandedSegments(controller);
@@ -241,7 +284,7 @@ export const useGuidedAudioPlayback = ({
         abortRef.current = null;
       }
     }
-  }, [buildExpandedSegments, element, playSegmentsSequentially, playing, stopPlayback, stopToning]);
+  }, [buildExpandedSegments, playSegmentsSequentially, playing, setupToningContext, stopPlayback]);
 
   return {
     loading,

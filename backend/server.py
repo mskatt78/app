@@ -123,26 +123,28 @@ def _is_production_seed_mode() -> bool:
 
 async def _seed_database_core_flow():
     """Database seeding core flow with full error handling."""
-    import os
-
-    # Skip heavy seeding in production to prevent startup crashes
-    # Data should already be in the database from previous deployments
     if _is_production_seed_mode():
-        logger.info("Production environment detected - using lightweight seeding")
-        try:
-            # Just check if database has content, don't do heavy seeding
-            crystals_count = await db.crystals.count_documents({})
-            yoga_count = await db.yoga_poses.count_documents({})
-            logger.info(f"Database status: {crystals_count} crystals, {yoga_count} yoga poses")
-            
-            if crystals_count == 0 or yoga_count == 0:
-                logger.info("Database empty - running minimal seed...")
-                await seed_all_content()
-        except Exception as e:
-            logger.error(f"Error checking database: {e}")
+        await _run_production_seed_sanity_check()
         return
-    
-    # Full seeding for preview/development
+
+    await _seed_database_preview_flow()
+
+
+async def _run_production_seed_sanity_check():
+    logger.info("Production environment detected - using lightweight seeding")
+    try:
+        crystals_count = await db.crystals.count_documents({})
+        yoga_count = await db.yoga_poses.count_documents({})
+        logger.info(f"Database status: {crystals_count} crystals, {yoga_count} yoga poses")
+
+        if crystals_count == 0 or yoga_count == 0:
+            logger.info("Database empty - running minimal seed...")
+            await seed_all_content()
+    except Exception as e:
+        logger.error(f"Error checking database: {e}")
+
+
+async def _seed_database_preview_flow():
     try:
         from data.divination_content import LIGHT_CODES
         from data.all_content import MEDITATIONS

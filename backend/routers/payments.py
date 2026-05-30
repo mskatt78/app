@@ -212,8 +212,6 @@ async def _resolve_payment_context(
     payment_request: PaymentRequest,
     current_user: User,
 ) -> tuple[float, str, dict[str, Any]]:
-    amount = 0.0
-    product_name = ""
     metadata: dict[str, Any] = {
         "user_id": current_user.user_id,
         "user_email": current_user.email,
@@ -221,40 +219,55 @@ async def _resolve_payment_context(
     }
 
     if payment_request.product_type == "subscription":
-        if payment_request.plan_id not in SUBSCRIPTION_PLANS:
-            raise HTTPException(status_code=400, detail="Invalid subscription plan")
-        plan = SUBSCRIPTION_PLANS[payment_request.plan_id]
-        amount = float(str(plan["price"]))
-        product_name = str(plan["name"])
-        metadata["plan_id"] = payment_request.plan_id
-        metadata["interval"] = plan["interval"]
-        return amount, product_name, metadata
+        return _resolve_subscription_payment_context(payment_request, metadata)
 
     if payment_request.product_type == "bundle":
-        if not payment_request.product_id or payment_request.product_id not in COURSE_BUNDLES:
-            raise HTTPException(status_code=400, detail="Invalid bundle ID")
-        bundle = COURSE_BUNDLES[payment_request.product_id]
-        amount = float(str(bundle["price"]))
-        product_name = str(bundle["name"])
-        metadata["product_id"] = payment_request.product_id
-        raw_courses = bundle.get("courses")
-        course_ids = raw_courses if isinstance(raw_courses, list) else []
-        metadata["bundle_courses"] = ",".join(str(course_id) for course_id in course_ids)
-        return amount, product_name, metadata
+        return _resolve_bundle_payment_context(payment_request, metadata)
 
+    return await _resolve_catalog_payment_context(db, payment_request, metadata)
+
+
+def _resolve_subscription_payment_context(
+    payment_request: PaymentRequest,
+    metadata: dict[str, Any],
+) -> tuple[float, str, dict[str, Any]]:
+    if payment_request.plan_id not in SUBSCRIPTION_PLANS:
+        raise HTTPException(status_code=400, detail="Invalid subscription plan")
+
+    plan = SUBSCRIPTION_PLANS[payment_request.plan_id]
+    amount = float(str(plan["price"]))
+    product_name = str(plan["name"])
+    metadata["plan_id"] = payment_request.plan_id
+    metadata["interval"] = plan["interval"]
+    return amount, product_name, metadata
+
+
+def _resolve_bundle_payment_context(
+    payment_request: PaymentRequest,
+    metadata: dict[str, Any],
+) -> tuple[float, str, dict[str, Any]]:
+    if not payment_request.product_id or payment_request.product_id not in COURSE_BUNDLES:
+        raise HTTPException(status_code=400, detail="Invalid bundle ID")
+
+    bundle = COURSE_BUNDLES[payment_request.product_id]
+    amount = float(str(bundle["price"]))
+    product_name = str(bundle["name"])
+    metadata["product_id"] = payment_request.product_id
+    raw_courses = bundle.get("courses")
+    course_ids = raw_courses if isinstance(raw_courses, list) else []
+    metadata["bundle_courses"] = ",".join(str(course_id) for course_id in course_ids)
+    return amount, product_name, metadata
+
+
+async def _resolve_catalog_payment_context(
+    db: Any,
+    payment_request: PaymentRequest,
+    metadata: dict[str, Any],
+) -> tuple[float, str, dict[str, Any]]:
     if not payment_request.product_id:
         raise HTTPException(status_code=400, detail="Product ID required")
 
-    collection_map = {
-        "retreat": "retreats",
-        "course": "courses",
-        "live_session": "live_sessions",
-        "book": "books",
-    }
-    collection = collection_map.get(payment_request.product_type)
-    if not collection:
-        raise HTTPException(status_code=400, detail="Invalid product type")
-
+    collection = _resolve_product_collection(payment_request.product_type)
     product = await db[collection].find_one({"id": payment_request.product_id}, {"_id": 0})
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -266,6 +279,19 @@ async def _resolve_payment_context(
     product_name = product.get("title") or product.get("name", "Product")
     metadata["product_id"] = payment_request.product_id
     return amount, str(product_name), metadata
+
+
+def _resolve_product_collection(product_type: str) -> str:
+    collection_map = {
+        "retreat": "retreats",
+        "course": "courses",
+        "live_session": "live_sessions",
+        "book": "books",
+    }
+    collection = collection_map.get(product_type)
+    if not collection:
+        raise HTTPException(status_code=400, detail="Invalid product type")
+    return collection
 
 
 async def _create_paypal_access_token(paypal_api: str, client_id: str, secret: str) -> str:

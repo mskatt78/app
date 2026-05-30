@@ -55,6 +55,14 @@ const YogaLibrary = ({ user, api }) => {
     return parsed.toLocaleDateString();
   };
 
+  const getElementPracticeTip = (element) => {
+    if (element === "Earth") return "ground and stabilize your energy";
+    if (element === "Water") return "enhance flow and emotional release";
+    if (element === "Fire") return "ignite your inner power and transformation";
+    if (element === "Air") return "expand awareness and create lightness";
+    return "connect with your higher self and spiritual essence";
+  };
+
   const fetchPoses = useCallback(async () => {
     try {
       const response = await api.get("/yoga/poses");
@@ -276,18 +284,22 @@ const YogaLibrary = ({ user, api }) => {
 
       {/* Content */}
       <main className="max-w-6xl mx-auto p-6 pt-2">
-        {loading ? (
+        {loading && (
           <div className="flex items-center justify-center h-64">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
-        ) : filteredPoses.length === 0 ? (
+        )}
+
+        {!loading && filteredPoses.length === 0 && (
           <div className="text-center py-16">
             <Leaf className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
             <p className="text-muted-foreground">
               {showFavoritesOnly ? "No favorite poses yet. Start adding some!" : "No poses match your filter."}
             </p>
           </div>
-        ) : (
+        )}
+
+        {!loading && filteredPoses.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPoses.map((pose, index) => {
               const colors = elementColors[pose.element] || elementColors.Earth;
@@ -558,11 +570,7 @@ const YogaLibrary = ({ user, api }) => {
                     <strong className="text-primary">Practice Tip:</strong> Connect with your breath throughout this pose. 
                     Inhale to create space, exhale to deepen. Listen to your body and modify as needed.
                     This pose works with the <strong className="text-primary">{selectedPose.element}</strong> element to {
-                      selectedPose.element === "Earth" ? "ground and stabilize your energy" :
-                      selectedPose.element === "Water" ? "enhance flow and emotional release" :
-                      selectedPose.element === "Fire" ? "ignite your inner power and transformation" :
-                      selectedPose.element === "Air" ? "expand awareness and create lightness" :
-                      "connect with your higher self and spiritual essence"
+                      getElementPracticeTip(selectedPose.element)
                     }.
                   </p>
                 </div>
