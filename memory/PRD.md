@@ -204,6 +204,26 @@
   - Testing agent (`iteration_143`): **Frontend 100% pass**
   - Timer now renders and runs correctly in `/shamanic` practice start flow.
 
+## Latest Verification Snapshot (Iteration 144)
+- Completed broad code-quality remediation pass from user-provided recommendations (scope C).
+- Frontend quality fixes:
+  - Hook/dependency hardening in `routeGuards.jsx`, `useCoursePayments.js`, `useGuidedAudioPlayback.js`
+  - Nested ternary cleanup in `YogaLibrary.jsx`, `MudrasLibrary.jsx`, `RitualBuilder.jsx`
+  - Inline animation object extraction in dashboard widgets (`DashboardActionPanels.jsx`, `StreakWidget.jsx`)
+  - Empty catch cleanup in `MantrasLibrary.jsx`
+- Backend complexity refactors:
+  - `payments.py`: split `_resolve_payment_context` into subscription/bundle/catalog helper resolvers
+  - `gifts.py`: extracted config validation and payment persistence helpers for Stripe/PayPal gift flows
+  - `content.py`: extracted extension-state init + duration-alignment floor helper from expand-script flow
+  - `numerology.py`: split reading payload construction into personal-year and name-number helper functions
+  - `server.py`: split production sanity seed path vs preview heavy-seed flow orchestration
+- Test quality cleanup:
+  - Updated backend tests flagged for equality/comparison quality (`used_ai == False` -> `not used_ai`, removed non-placeholder f-strings)
+- Validation:
+  - ESLint exhaustive-deps: **0 errors / 0 suppressions**
+  - Python lint: **pass**
+  - Consolidated testing agent (`iteration_144`): backend **44/44 pass**, frontend key flows pass, no regressions.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -220,6 +240,9 @@
 - Refactor remaining parameter-heavy helpers in `routers/content.py`.
 - Continue reducing cyclomatic complexity in untouched backend hotspots.
 - Continue cleanup of remaining production console/silent-catch quality report items.
+
+### P2
+- Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
 ### P2
 - Replace any remaining array index-as-key usage in visualizer components.
