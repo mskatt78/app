@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Globe } from "lucide-react";
 
 // Icon mapping for element ids (React components can't be stored in MongoDB)
-import { ELEMENT_ICONS, STATIC_ELEMENTS } from "./elemental-temples/elementalTempleData";
+import { ELEMENT_ICONS, STATIC_ELEMENTS, stableElementKey } from "./elemental-temples/elementalTempleData";
 import { ElementalTempleGridView } from "./elemental-temples/ElementalTempleGridView";
 import { ElementalTempleDetailView } from "./elemental-temples/ElementalTempleDetailView";
 

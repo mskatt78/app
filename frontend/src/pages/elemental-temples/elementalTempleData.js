@@ -8,7 +8,7 @@ export const ELEMENT_ICONS = {
   sparkles: Sparkles,
 };
 
-const stableElementKey = (prefix, value) => {
+export const stableElementKey = (prefix, value) => {
   const slug = String(value || "item")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
