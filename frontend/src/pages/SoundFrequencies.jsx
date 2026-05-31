@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
+import { appLogger } from "../utils/logger";
 
 const CATEGORIES = [
   { id: "all", label: "All Frequencies", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10" },
@@ -47,7 +48,7 @@ const SoundFrequencies = ({ user, api }) => {
         setFrequencies(response.data);
         setFilteredFreqs(response.data);
       } catch (error) {
-        console.error("Failed to fetch frequencies:", error);
+        appLogger.error("Failed to fetch frequencies:", error);
       } finally {
         setLoading(false);
       }

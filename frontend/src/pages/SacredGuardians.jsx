@@ -6,6 +6,7 @@ import {
   Star, Moon, Heart, Eye, ChevronRight, Zap
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { appLogger } from "../utils/logger";
 
 const CATEGORIES = [
   { id: "all", label: "All Guardians", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
@@ -48,7 +49,7 @@ const SacredGuardians = ({ user, api }) => {
         setGuardians(response.data);
         setFiltered(response.data);
       } catch (error) {
-        console.error("Failed to fetch sacred guardians:", error);
+        appLogger.error("Failed to fetch sacred guardians:", error);
       } finally {
         setLoading(false);
       }

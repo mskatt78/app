@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80";
 
@@ -47,7 +48,7 @@ const VideosLibrary = ({ api }) => {
       setVideos(response.data);
       setFilteredVideos(response.data);
     } catch (error) {
-      console.error("Failed to fetch videos:", error);
+      appLogger.error("Failed to fetch videos:", error);
       toast.error("Could not load videos");
     } finally {
       setLoading(false);

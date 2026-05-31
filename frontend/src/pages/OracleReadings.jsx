@@ -7,6 +7,7 @@ import { Textarea } from "../components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { toast } from "sonner";
 import { ShareButton } from "../components/ShareModal";
+import { appLogger } from "../utils/logger";
 
 const OracleReadings = ({ user, api }) => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const OracleReadings = ({ user, api }) => {
       const response = await api.get("/oracle/readings");
       setPastReadings(response.data);
     } catch (error) {
-      console.error("Failed to fetch past readings:", error);
+      appLogger.error("Failed to fetch past readings:", error);
     }
   }, [api]);
 
@@ -57,7 +58,7 @@ const OracleReadings = ({ user, api }) => {
         fetchPastReadings();
       }
     } catch (error) {
-      console.error("Reading failed:", error);
+      appLogger.error("Reading failed:", error);
       toast.error("The spirits are silent. Please try again.");
     } finally {
       setLoading(false);

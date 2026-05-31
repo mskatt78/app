@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { appLogger } from "../utils/logger";
 
 const categoryIcons = {
   visual: Palette,
@@ -93,7 +94,7 @@ const CreativeProcesses = ({ user, api }) => {
         const response = await api.get(url);
         setProcesses(response.data);
       } catch (error) {
-        console.error("Failed to fetch creative processes:", error);
+        appLogger.error("Failed to fetch creative processes:", error);
         toast.error("Could not load creative processes");
       } finally {
         setLoading(false);

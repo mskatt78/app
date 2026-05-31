@@ -1,3 +1,4 @@
+import { appLogger } from "../utils/logger";
 /**
  * Reusable Admin Form Components for CMS
  * Reduces code duplication across admin forms
@@ -135,7 +136,7 @@ export const ImageUploadField = ({ value, onChange, api }) => {
       onChange(response.data.url);
       toast.success("Image uploaded successfully!");
     } catch (error) {
-      console.error("Upload error:", error);
+      appLogger.error("Upload error:", error);
       toast.error("Failed to upload image");
     } finally {
       setUploading(false);

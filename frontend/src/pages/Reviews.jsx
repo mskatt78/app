@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Star, Send, Sparkles, MessageCircle, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import ShareModal from "../components/ShareModal";
+import { appLogger } from "../utils/logger";
 
 const PRACTICE_AREAS = [
   "Yoga", "Meditation", "Breathwork", "Oracle Readings", "Rune Readings",
@@ -76,11 +77,11 @@ const Reviews = ({ user, api }) => {
             setForm({ rating: myRes.data.rating, text: myRes.data.text, practice_area: myRes.data.practice_area || "" });
           }
         } catch (error) {
-          console.error("Failed loading current user review:", error);
+          appLogger.error("Failed loading current user review:", error);
         }
       }
     } catch (err) {
-      console.error("Failed to load reviews:", err);
+      appLogger.error("Failed to load reviews:", err);
     } finally {
       setLoading(false);
     }

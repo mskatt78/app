@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
+import { appLogger } from "../utils/logger";
 
 const GroundingPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const GroundingPractices = ({ user, api }) => {
         const response = await api.get("/grounding");
         setExercises(response.data);
       } catch (error) {
-        console.error("Failed to fetch exercises:", error);
+        appLogger.error("Failed to fetch exercises:", error);
       } finally {
         setLoading(false);
       }
@@ -249,7 +250,7 @@ const GroundingPractices = ({ user, api }) => {
                           toast.success("Practice complete! You are grounded.");
                           setIsPracticing(false);
                         } catch (error) {
-                          console.error("Failed to log practice:", error);
+                          appLogger.error("Failed to log practice:", error);
                           toast.success("Practice complete!");
                           setIsPracticing(false);
                         }

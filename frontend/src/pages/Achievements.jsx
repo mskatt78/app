@@ -8,6 +8,7 @@ import {
 import { Progress } from "../components/ui/progress";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const Achievements = ({ user, api }) => {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ const Achievements = ({ user, api }) => {
         const response = await api.get("/achievements");
         setData(response.data);
       } catch (error) {
-        console.error("Failed to fetch achievements:", error);
+        appLogger.error("Failed to fetch achievements:", error);
         toast.error("Could not load achievements");
       } finally {
         setLoading(false);

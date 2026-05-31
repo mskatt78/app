@@ -5,6 +5,7 @@ import { ArrowLeft, Coins, RotateCcw, BookOpen, Info, X, Sparkles, Share2 } from
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { ShareButton } from "../components/ShareModal";
+import { appLogger } from "../utils/logger";
 
 const IChing = ({ user, api }) => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const IChing = ({ user, api }) => {
       const response = await api.get("/i-ching");
       setHexagrams(response.data);
     } catch (error) {
-      console.error("Failed to fetch hexagrams:", error);
+      appLogger.error("Failed to fetch hexagrams:", error);
     } finally {
       setLoading(false);
     }
@@ -56,7 +57,7 @@ const IChing = ({ user, api }) => {
       setResult(response.data);
       toast.success(`Hexagram ${response.data.number}: ${response.data.name}`);
     } catch (error) {
-      console.error("Failed to cast I Ching:", error);
+      appLogger.error("Failed to cast I Ching:", error);
       toast.error("Could not complete casting");
     } finally {
       setCasting(false);

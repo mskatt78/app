@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
+import { appLogger } from "../utils/logger";
 
 const SunriseSunsetPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -339,7 +340,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
       });
       toast.success("Practice logged!");
     } catch (error) {
-      console.error("Failed to log practice:", error);
+      appLogger.error("Failed to log practice:", error);
     }
   };
 

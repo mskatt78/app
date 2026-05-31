@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, Clock, Radio, Sparkles, Users, Video } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
+import { appLogger } from "../utils/logger";
 
 const filters = ["all", "live", "scheduled", "completed"];
 
@@ -38,7 +39,7 @@ export default function LiveSessions({ api }) {
         const response = await api.get("/live-sessions");
         setSessions(response.data || []);
       } catch (error) {
-        console.error("Failed to fetch live sessions:", error);
+        appLogger.error("Failed to fetch live sessions:", error);
       } finally {
         setLoading(false);
       }

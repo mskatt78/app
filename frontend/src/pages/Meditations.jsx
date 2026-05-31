@@ -8,6 +8,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { appLogger } from "../utils/logger";
 
 // Convert a meditation record into a multi-step practice object for GuidedPracticeOverlay
 function buildMeditationPractice(meditation) {
@@ -104,7 +105,7 @@ const Meditations = ({ user, api }) => {
         setMeditations(response.data);
         setFilteredMeditations(response.data);
       } catch (error) {
-        console.error("Failed to fetch meditations:", error);
+        appLogger.error("Failed to fetch meditations:", error);
       } finally {
         setLoading(false);
       }

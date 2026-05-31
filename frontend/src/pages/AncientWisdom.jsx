@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import { appLogger } from "../utils/logger";
 
 const TRADITIONS = [
   { id: "all",          label: "All Traditions", icon: Globe,    color: "text-amber-400",   bg: "bg-amber-500/10",    border: "border-amber-500/20" },
@@ -56,7 +57,7 @@ const AncientWisdom = ({ user, api }) => {
         setEntries(res.data);
         setFiltered(res.data);
       } catch (err) {
-        console.error("Failed to fetch ancient wisdom:", err);
+        appLogger.error("Failed to fetch ancient wisdom:", err);
       } finally {
         setLoading(false);
       }

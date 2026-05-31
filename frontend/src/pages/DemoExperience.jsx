@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, CalendarDays, Eye, Gem, Headphones, Moon, Radio, Sparkles, Star, Wind } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
+import { appLogger } from "../utils/logger";
 
 const demoCards = [
   {
@@ -58,7 +59,7 @@ export default function DemoExperience({ api }) {
         setLiveCount((liveResponse.data || []).length);
         setVideoCount((videosResponse.data || []).length);
       } catch (error) {
-        console.error("Failed to load demo counts", error);
+        appLogger.error("Failed to load demo counts", error);
       }
     };
 

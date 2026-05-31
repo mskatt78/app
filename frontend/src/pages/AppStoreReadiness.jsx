@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Progress } from "../components/ui/progress";
 import { migrateLocalToSession, removeSessionItem, setSessionItem } from "../utils/clientStorage";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const STORAGE_KEY = "appStoreReadinessChecklistV1";
 
@@ -155,7 +156,7 @@ export default function AppStoreReadiness() {
       await navigator.clipboard.writeText(value);
       toast.success(`${label} copied`);
     } catch (error) {
-      console.error("Clipboard copy failed", error);
+      appLogger.error("Clipboard copy failed", error);
       toast.error("Could not copy value");
     }
   };

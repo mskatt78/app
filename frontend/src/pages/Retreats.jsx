@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
+import { appLogger } from "../utils/logger";
 
 const HEALING_MODALITIES = [
   {
@@ -58,7 +59,7 @@ const Retreats = ({ user, api }) => {
         const response = await api.get("/retreats");
         setRetreats(response.data || []);
       } catch (error) {
-        console.error("Failed to fetch retreats:", error);
+        appLogger.error("Failed to fetch retreats:", error);
       } finally {
         setLoading(false);
       }

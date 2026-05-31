@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { appLogger } from "../utils/logger";
 
 const MudrasLibrary = ({ user, api }) => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const MudrasLibrary = ({ user, api }) => {
         setMudras(response.data);
         setFilteredMudras(response.data);
       } catch (error) {
-        console.error("Failed to fetch mudras:", error);
+        appLogger.error("Failed to fetch mudras:", error);
       } finally {
         setLoading(false);
       }

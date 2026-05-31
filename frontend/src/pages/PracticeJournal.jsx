@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { migrateLocalToSession, setSessionItem } from "../utils/clientStorage";
+import { appLogger } from "../utils/logger";
 
 // Moon phase calculation
 const getMoonPhase = (date = new Date()) => {
@@ -235,7 +236,7 @@ export default function PracticeJournal({ user, api }) {
         action: { label: "View Community", onClick: () => navigate("/community") }
       });
     } catch (err) {
-      console.error("Share failed:", err);
+      appLogger.error("Share failed:", err);
       toast.error("Could not share to community");
     } finally {
       setSharingId(null);

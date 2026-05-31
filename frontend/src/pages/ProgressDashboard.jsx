@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const ProgressDashboard = ({ user, api }) => {
   const navigate = useNavigate();
@@ -58,7 +59,7 @@ const ProgressDashboard = ({ user, api }) => {
         const weekly = calculateWeeklyData(historyRes.data);
         setWeeklyData(weekly);
       } catch (error) {
-        console.error("Failed to fetch progress data:", error);
+        appLogger.error("Failed to fetch progress data:", error);
         // Use mock data for demo
         setStats({
           total_sessions: 47,

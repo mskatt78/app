@@ -6,6 +6,7 @@ import GuidedAudioButton from "../components/GuidedAudioButton";
 import AddToJournal from "../components/AddToJournal";
 import axios from "axios";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const apiClient = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -211,7 +212,7 @@ const RoseTemple = ({ user, api }) => {
         const { data } = await apiClient.get("/feminine-embodiment");
         setEmbodimentPractices(data);
       } catch (error) {
-        console.error("Failed loading feminine embodiment practices:", error);
+        appLogger.error("Failed loading feminine embodiment practices:", error);
       } finally {
         setLoadingPractices(false);
       }
@@ -222,7 +223,7 @@ const RoseTemple = ({ user, api }) => {
         const { data } = await apiClient.get("/sacred-rites");
         setSacredRites(data);
       } catch (error) {
-        console.error("Failed loading sacred rites:", error);
+        appLogger.error("Failed loading sacred rites:", error);
       }
     };
     

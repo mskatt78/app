@@ -14,6 +14,7 @@ import { AdminCMSItemCard } from "../components/admin/AdminCMSItemCard";
 import { AdminCMSFormRenderer } from "../components/admin/AdminCMSFormRenderer";
 
 // Import admin config
+import { appLogger } from "../utils/logger";
 import {
   ADMIN_TABS,
   ELEMENTS, DIFFICULTIES, CHAKRAS,
@@ -60,7 +61,7 @@ const AdminCMS = ({ user, api }) => {
       const response = await api.get(getEndpoint(activeTab));
       setItems(response.data || []);
     } catch (error) {
-      console.error("Failed to fetch items:", error);
+      appLogger.error("Failed to fetch items:", error);
       toast.error("Failed to load items");
     } finally {
       setLoading(false);

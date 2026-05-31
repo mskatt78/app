@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const EarthAltars = ({ user, api }) => {
   const stableAltarKey = (prefix, value) => {
@@ -47,7 +48,7 @@ const EarthAltars = ({ user, api }) => {
         const response = await api.get(url);
         setAltars(response.data);
       } catch (error) {
-        console.error("Failed to fetch altars:", error);
+        appLogger.error("Failed to fetch altars:", error);
         toast.error("Could not load altar guides");
       } finally {
         setLoading(false);
@@ -67,7 +68,7 @@ const EarthAltars = ({ user, api }) => {
       });
       toast.success("Altar practice logged!");
     } catch (error) {
-      console.error("Failed to log practice:", error);
+      appLogger.error("Failed to log practice:", error);
     }
   };
 

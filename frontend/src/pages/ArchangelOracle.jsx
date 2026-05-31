@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { ArchangelBrowseSection } from "../components/oracle/ArchangelBrowseSection";
 import { ArchangelReadingSection } from "../components/oracle/ArchangelReadingSection";
+import { appLogger } from "../utils/logger";
 
 const ArchangelOracle = ({ user, api }) => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const ArchangelOracle = ({ user, api }) => {
       const response = await api.get("/oracle/archangels");
       setAllArchangels(response.data);
     } catch (error) {
-      console.error("Failed to fetch archangels:", error);
+      appLogger.error("Failed to fetch archangels:", error);
     }
   }, [api]);
 
@@ -64,7 +65,7 @@ const ArchangelOracle = ({ user, api }) => {
       setTimeout(() => setShowCards(true), 500);
       toast.success("The Archangels have come forward with love");
     } catch (error) {
-      console.error("Reading failed:", error);
+      appLogger.error("Reading failed:", error);
       toast.error("Please try again, beloved one");
     } finally {
       setLoading(false);

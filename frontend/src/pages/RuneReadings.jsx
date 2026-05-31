@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { ShareButton } from "../components/ShareModal";
+import { appLogger } from "../utils/logger";
 
 const RuneReadings = ({ user, api }) => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const RuneReadings = ({ user, api }) => {
         const response = await api.get("/runes");
         setRunes(response.data);
       } catch (error) {
-        console.error("Failed to fetch runes:", error);
+        appLogger.error("Failed to fetch runes:", error);
         toast.error("Could not load runes");
       } finally {
         setLoading(false);
@@ -84,7 +85,7 @@ const RuneReadings = ({ user, api }) => {
       
       toast.success("Runes revealed!");
     } catch (error) {
-      console.error("Failed to draw runes:", error);
+      appLogger.error("Failed to draw runes:", error);
       toast.error("Could not draw runes");
     } finally {
       setIsDrawing(false);

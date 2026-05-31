@@ -1,6 +1,7 @@
 import { AMBIENT_SOUNDS } from "../AmbientSoundPlayer";
 import { createFilteredNoise } from "./practiceTimerUtils";
 import { startToningLayer } from "../guided/guidedNarrationUtils";
+import { appLogger } from "../../utils/logger";
 
 export const startPracticeAmbientAudio = ({
   selectedBackgroundAudio,
@@ -165,7 +166,7 @@ export const startPracticeAmbientAudio = ({
 
     setAudioPlaying(true);
   } catch (error) {
-    console.warn("Web Audio API error:", error);
+    appLogger.warn("Web Audio API error:", error);
   }
 };
 
@@ -197,6 +198,6 @@ export const playTimerTransitionBell = () => {
     osc2.stop(ctx.currentTime + 1.0);
     setTimeout(() => ctx.close(), 2000);
   } catch (error) {
-    console.error("PracticeTimer completion chime failed:", error);
+    appLogger.error("PracticeTimer completion chime failed:", error);
   }
 };

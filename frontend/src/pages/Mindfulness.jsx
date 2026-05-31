@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/
 import { Progress } from "../components/ui/progress";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
+import { appLogger } from "../utils/logger";
 
 const Mindfulness = ({ user, api }) => {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ const Mindfulness = ({ user, api }) => {
         setPractices(response.data);
         setFilteredPractices(response.data);
       } catch (error) {
-        console.error("Failed to fetch practices:", error);
+        appLogger.error("Failed to fetch practices:", error);
       } finally {
         setLoading(false);
       }
@@ -258,7 +259,7 @@ const Mindfulness = ({ user, api }) => {
       });
       toast.success("Practice complete! Well done.");
     } catch (error) {
-      console.error("Failed to log practice:", error);
+      appLogger.error("Failed to log practice:", error);
     }
   };
 

@@ -926,16 +926,171 @@ frontend:
         agent: "testing"
         comment: "✅ BACKEND SMOKE CHECK PASSED (2026-05-31): All recently touched APIs verified. 1) GET /api/health: 200 OK, status=healthy. 2) POST /api/content/expand-script: 200 OK, word_count=1381, target=1320 (meets 0.8x threshold). 3) GET /api/courses: 200 OK, 3 items. 4) GET /api/light-codes: 200 OK, dict structure. 5) GET /api/heart-practices: 200 OK, 10 items. 6) GET /api/elemental-practices: 200 OK, 15 items. Backend logs clean: no 500 errors, no critical runtime errors. Only non-critical Wikipedia image lookup warnings (expected). Auth errors are expected 401s from unauthenticated requests. All endpoints responsive and returning valid data."
 
+
+frontend:
+  - task: "Final regression - /elemental-temples page"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ElementalTemples.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ /elemental-temples page loads successfully. Page element found with data-testid='elemental-temples'. Temple cards visible (5 elements in static data). Opening temple works - clicked first temple card successfully. Section tabs visible and functional - tested clicking multiple section tabs (Why It Heals, Ancient Traditions, Embodiment, etc). All core functionality working correctly."
+
+  - task: "Final regression - /light-codes page"
+
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Final Regression Verification - Decomposition + Static Payload Externalization (2026-05-31):
+      
+      VERIFICATION REQUEST: Final regression verification after decomposition + static payload externalization
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ TESTS PASSED (3/4 routes initially, 4/4 after fix):
+      
+      1. ✅ /ELEMENTAL-TEMPLES - PASSED
+         - Page loads: ✓ (data-testid="elemental-temples" found)
+         - Temple cards visible: ✓ (5 elements in static data)
+         - Opening temple works: ✓ (clicked first temple card successfully)
+         - Section tabs work: ✓ (tested multiple tabs - Why It Heals, Ancient Traditions, Embodiment, etc)
+         - All core functionality working correctly
+      
+      2. ✅ /LIGHT-CODES - PASSED
+         - Page loads: ✓ (data-testid="light-codes" found)
+         - Symbol cards visible: ✓ (25 symbol cards across categories)
+         - Modal opens: ✓ (clicked first symbol card successfully)
+         - Tabs work: ✓ (4 tabs present: Essence, Why It Heals, Ancient Traditions, Practice Guide)
+         - Tab switching functional: ✓ (tested clicking 3 tabs)
+         - Modal closes: ✓ (close button works)
+         - All core functionality working correctly
+      
+      3. ❌ → ✅ /HEART-PRACTICES - CRITICAL BUG FOUND AND FIXED
+         INITIAL STATE:
+         - ❌ ReferenceError: Clock is not defined
+         - Red error screen prevented page from loading
+         - Error location: HeartPractices.jsx:961:108
+         - Root cause: Clock icon used on line 202 but not imported from lucide-react
+         
+         FIX APPLIED:
+         - Added Clock to lucide-react imports: import { ..., Clock } from "lucide-react"
+         - Restarted frontend service
+         
+         POST-FIX STATE:
+         - ✅ Page loads: ✓ (data-testid="heart-practices" found)
+         - ✅ Practice cards visible: ✓ (10 practice cards)
+         - ✅ Practice modal opens: ✓ (clicked first card successfully)
+         - ✅ Begin button found: ✓ (Begin Guided Heart Practice button present)
+         - All core functionality working correctly after fix
+      
+      4. ✅ /COURSES - PASSED
+         - Page loads: ✓ (data-testid="courses-page" found)
+         - Filters render: ✓ (7 filter buttons visible)
+         - Bundle offer renders: ✓ (Bundle/Save text found)
+         - Course cards visible: ✓ (3 course cards)
+         - Course modal opens: ✓ (clicked first card successfully)
+         - Tab navigation present: ✓ (tabs for Rites, Overview, Daily Practice)
+         - All core functionality working correctly
+      
+      5. ✅ NO ROUTE-LEVEL BLANK PAGES OR RUNTIME CRASHES - PASSED
+         - All 4 routes render content correctly
+         - No blank pages detected
+         - No runtime crashes after Clock import fix
+         - Application stable and functional
+      
+      6. ✅ CONSOLE ERRORS CHECK - PASSED
+         - Total console errors: 36 (expected auth-related 401 errors)
+         - Critical errors: 0 (after Clock import fix)
+         - No TypeError, ReferenceError, or SyntaxError
+         - Network errors (500+): 0
+         - Console is clean with only expected non-critical errors
+      
+      CRITICAL FINDINGS:
+      ✅ All 4 routes working correctly after Clock import fix
+      ✅ No blank pages or runtime crashes
+      ✅ All modals, tabs, and interactive elements functional
+      ✅ No critical console errors or network failures
+      ❌ → ✅ HeartPractices.jsx Clock import issue FIXED
+      
+      SUMMARY:
+      Final regression verification PASSED after fixing critical Clock import bug in HeartPractices.jsx. All 4 routes (/elemental-temples, /light-codes, /heart-practices, /courses) now load correctly with full functionality. Temple cards, symbol cards, practice cards, and course cards all visible and interactive. Modals open correctly with functional tabs. Section navigation works. No route-level blank pages or runtime crashes. Console shows only expected non-critical auth errors. Application is production-ready after decomposition + static payload externalization.
+
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/LightCodes.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ /light-codes page loads successfully. Page element found with data-testid='light-codes'. 25 symbol cards visible across categories. Modal opens correctly when symbol card clicked. 4 tabs present and functional (Essence, Why It Heals, Ancient Traditions, Practice Guide). Tab switching works smoothly. Modal closes properly. All core functionality working correctly."
+
+  - task: "Final regression - /heart-practices page"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/HeartPractices.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL BUG FOUND: ReferenceError - Clock is not defined. Red error screen prevents page from loading. Error at HeartPractices.jsx:961:108. Clock icon used on line 202 but not imported from lucide-react."
+      - working: true
+        agent: "testing"
+        comment: "✅ FIX APPLIED: Added Clock to lucide-react imports. Page now loads successfully with data-testid='heart-practices'. 10 practice cards visible. Practice modal opens correctly. Begin button found and functional. All core functionality working correctly after fix."
+
+  - task: "Final regression - /courses page"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Courses.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ /courses page loads successfully. Page element found with data-testid='courses-page'. 7 filter buttons render correctly. Bundle offer renders with 'Bundle' and 'Save' text visible. 3 course cards visible. Course modal opens when card clicked. Tab navigation present in modal (tabs for Rites, Overview, Daily Practice). All core functionality working correctly."
+
+  - task: "No route-level blank pages or runtime crashes"
+    implemented: true
+    working: true
+    file: "/app/frontend/src"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ No blank pages detected across all 4 tested routes. No runtime crashes after Clock import fix. All routes render content correctly. Console shows 36 total errors but 0 critical errors (no TypeError, ReferenceError, or SyntaxError after fix). No 500+ network errors detected. Application stable and functional."
+
+  - task: "Console errors check - final regression"
+    implemented: true
+    working: true
+    file: "/app/frontend/src"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Console errors: 36 total errors detected (expected auth-related 401 errors for unauthenticated public routes). 0 critical errors after Clock import fix. No TypeError, ReferenceError, or SyntaxError. No network errors (500+). Console is clean with only expected non-critical errors."
+
 metadata:
   created_by: "testing_agent"
-  version: "2.0"
-  test_sequence: 12
+  version: "2.1"
+  test_sequence: 13
   run_ui: false
   last_tested: "2026-05-31"
 
 test_plan:
   current_focus:
-    - "Backend smoke check - COMPLETED"
+    - "Final regression verification after decomposition + static payload externalization - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"

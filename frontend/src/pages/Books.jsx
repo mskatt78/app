@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
+import { appLogger } from "../utils/logger";
 
 const Books = ({ user, api }) => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const Books = ({ user, api }) => {
           setSelectedBook(response.data[0]);
         }
       } catch (error) {
-        console.error("Failed to fetch books:", error);
+        appLogger.error("Failed to fetch books:", error);
       } finally {
         setLoading(false);
       }

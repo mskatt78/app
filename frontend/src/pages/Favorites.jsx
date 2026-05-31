@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const Favorites = ({ user, api }) => {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ const Favorites = ({ user, api }) => {
         setFavorites(favsRes.data);
         setStats(statsRes.data);
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        appLogger.error("Failed to fetch data:", error);
       } finally {
         setLoading(false);
       }
@@ -69,7 +70,7 @@ const Favorites = ({ user, api }) => {
       setFavorites(prev => prev.filter(f => !(f.item_type === itemType && f.item_id === itemId)));
       toast.success("Removed from favorites");
     } catch (error) {
-      console.error("Failed to remove favorite:", error);
+      appLogger.error("Failed to remove favorite:", error);
       toast.error("Could not remove favorite");
     }
   };

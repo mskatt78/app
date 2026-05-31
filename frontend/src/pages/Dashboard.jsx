@@ -10,6 +10,7 @@ import { SacredPracticeWidget } from "./dashboard/SacredPracticeWidget";
 import { DailyGuidanceGrid } from "./dashboard/DailyGuidanceGrid";
 import { buildDeepJourneyItems, buildQuickItems, DashboardActionPanels } from "./dashboard/DashboardActionPanels";
 import { ADMIN_EMAILS, elementBg, elementColors, getNavItems } from "./dashboard/dashboardConfig";
+import { appLogger } from "../utils/logger";
 
 const Dashboard = ({ user, api }) => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Dashboard = ({ user, api }) => {
       const response = await api.get("/dashboard/daily");
       setDailyData(response.data);
     } catch (error) {
-      console.error("Failed to fetch daily data:", error);
+      appLogger.error("Failed to fetch daily data:", error);
       toast.error("Could not load daily guidance");
     } finally {
       setLoading(false);
@@ -45,7 +46,7 @@ const Dashboard = ({ user, api }) => {
       toast.success("Blessed journey, until we meet again");
       navigate("/", { replace: true });
     } catch (error) {
-      console.error("Logout failed:", error);
+      appLogger.error("Logout failed:", error);
       navigate("/", { replace: true });
     }
   };

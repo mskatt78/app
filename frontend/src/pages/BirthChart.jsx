@@ -14,6 +14,7 @@ import {
   buildBirthDateOptions,
 } from "./birthchart/birthChartUtils";
 import { BirthChartResults } from "./birthchart/BirthChartResults";
+import { appLogger } from "../utils/logger";
 
 const BirthChart = ({ user, api }) => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const BirthChart = ({ user, api }) => {
       const response = await api.get("/birth-chart/zodiac-signs");
       setZodiacSigns(response.data);
     } catch (error) {
-      console.error("Failed to fetch zodiac signs:", error);
+      appLogger.error("Failed to fetch zodiac signs:", error);
     }
   }, [api]);
 
@@ -112,7 +113,7 @@ const BirthChart = ({ user, api }) => {
         toast.success("Birth chart calculated with Swiss Ephemeris precision!");
       }
     } catch (error) {
-      console.error("Chart calculation error:", error);
+      appLogger.error("Chart calculation error:", error);
       toast.error(error.response?.data?.detail || "Failed to calculate chart");
     } finally {
       setCalculating(false);

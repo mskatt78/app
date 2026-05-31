@@ -10,6 +10,7 @@ import { Input } from "../components/ui/input";
 import { ShareButton } from "../components/ShareModal";
 import { toast } from "sonner";
 import { calculateHumanDesignChart } from "../utils/humanDesignCalculator";
+import { appLogger } from "../utils/logger";
 
 // Gene Keys Gate Mapping (simplified - maps solar longitude to gates)
 // The 64 gates are distributed around the zodiac wheel
@@ -276,7 +277,7 @@ const ProfileCalculator = ({ user, api }) => {
 
       toast.success("Profile calculated from exact birth data.");
     } catch (error) {
-      console.error("Profile calculation failed:", error);
+      appLogger.error("Profile calculation failed:", error);
       toast.error(error?.response?.data?.detail || "Could not calculate profile from birth data.");
     } finally {
       setCalculating(false);

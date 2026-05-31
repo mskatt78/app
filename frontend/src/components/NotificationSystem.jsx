@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, createContext, useContext } from "rea
 import { motion, AnimatePresence } from "framer-motion";
 import { Bell, X, Moon, Sun, Sparkles, Calendar, Check } from "lucide-react";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 // Notification Context
 const NotificationContext = createContext();
@@ -27,7 +28,7 @@ const requestPermission = async () => {
     const permission = await Notification.requestPermission();
     return permission === "granted";
   } catch (error) {
-    console.error("Notification permission error:", error);
+    appLogger.error("Notification permission error:", error);
     return false;
   }
 };

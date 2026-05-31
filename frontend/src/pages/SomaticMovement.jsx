@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import PracticeVideos from "../components/PracticeVideos";
+import { appLogger } from "../utils/logger";
 
 const elementColors = {
   Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
@@ -37,7 +38,7 @@ const SomaticMovement = ({ user, api }) => {
         setPractices(response.data);
         setFilteredPractices(response.data);
       } catch (error) {
-        console.error("Failed to fetch practices:", error);
+        appLogger.error("Failed to fetch practices:", error);
       } finally {
         setLoading(false);
       }

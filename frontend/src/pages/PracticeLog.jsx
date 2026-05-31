@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
+import { appLogger } from "../utils/logger";
 
 const PracticeLog = ({ user, api }) => {
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ const PracticeLog = ({ user, api }) => {
         setStats(statsRes.data);
         setHistory(historyRes.data);
       } catch (error) {
-        console.error("Failed to fetch practice data:", error);
+        appLogger.error("Failed to fetch practice data:", error);
         toast.error("Could not load practice history");
       } finally {
         setLoading(false);

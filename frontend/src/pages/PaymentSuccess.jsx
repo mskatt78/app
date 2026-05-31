@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CheckCircle, Loader2, XCircle, ArrowRight } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { appLogger } from "../utils/logger";
 
 const PaymentSuccess = ({ user, api }) => {
   const navigate = useNavigate();
@@ -44,7 +45,7 @@ const PaymentSuccess = ({ user, api }) => {
 
           timeoutId = setTimeout(() => pollPaymentStatus(attempt + 1), pollInterval);
         } catch (error) {
-          console.error("Payment status check failed:", error);
+          appLogger.error("Payment status check failed:", error);
           timeoutId = setTimeout(() => pollPaymentStatus(attempt + 1), pollInterval);
         }
       };

@@ -7,6 +7,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { CrystalDetailDialog } from "./crystal-guide/CrystalDetailDialog";
+import { appLogger } from "../utils/logger";
 
 const elementColors = {
   Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", glow: "shadow-emerald-500/20" },
@@ -81,7 +82,7 @@ const CrystalGuide = ({ user, api }) => {
       setCrystals(response.data);
       setFilteredCrystals(response.data);
     } catch (error) {
-      console.error("Failed to fetch crystals:", error);
+      appLogger.error("Failed to fetch crystals:", error);
     } finally {
       setLoading(false);
     }

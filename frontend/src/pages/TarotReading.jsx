@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { appLogger } from "../utils/logger";
 
 const SPREADS = [
   { id: "single", name: "Single Card", description: "A quick answer or daily guidance", count: 1 },
@@ -29,7 +30,7 @@ const TarotReading = ({ user, api }) => {
       const response = await api.get("/tarot/cards");
       setCards(response.data);
     } catch (error) {
-      console.error("Failed to fetch tarot cards:", error);
+      appLogger.error("Failed to fetch tarot cards:", error);
     } finally {
       setLoading(false);
     }
@@ -47,7 +48,7 @@ const TarotReading = ({ user, api }) => {
       const response = await api.get(`/tarot/reading?spread=${spread}`);
       setReading(response.data);
     } catch (error) {
-      console.error("Failed to get reading:", error);
+      appLogger.error("Failed to get reading:", error);
     } finally {
       setReadingLoading(false);
     }
