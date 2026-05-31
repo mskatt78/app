@@ -3821,3 +3821,96 @@ agent_communication:
       SUMMARY:
       4 out of 5 requested endpoints passed. 1 critical blocker: /api/elements endpoint does not exist. User must clarify if they meant /api/elemental-practices or /api/elemental-temples. All other endpoints working correctly with no 500 errors or data issues.
 
+
+
+backend:
+  - task: "GET /api/elements vs GET /api/elemental-temples payload verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION TEST PASSED (2026-06-01): GET /api/elements and GET /api/elemental-temples verified. Both endpoints return 200 OK. Both return list type with identical count: 5 items. Payload shape identical with 20 keys: affirmations, blessings, ceremonies, color, description, element, embodiment, icon, id, image, inner, name, nature_connection, outer, practices, rituals, safety_precautions, symbol, tagline, wisdom. Both endpoints return identical payloads (verified via equality check). /api/elements is correctly implemented as alias endpoint calling get_elemental_temples() function. No payload shape or count discrepancies detected."
+
+  - task: "GET /api/elemental-temples/{id} endpoint stability"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION TEST PASSED (2026-06-01): GET /api/elemental-temples/{id} endpoint verified. Tested with ID 'earth'. Returns 200 OK with dict type response. Response contains all expected fields including id and name. Response keys match list endpoint structure (20 keys). 404 error handling verified: non-existent ID 'nonexistent-temple-xyz' correctly returns 404 status. Endpoint remains unchanged and working correctly."
+
+  - task: "Core content endpoints health check (/api/light-codes, /api/courses, /api/heart-practices)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION TEST PASSED (2026-06-01): All core content endpoints verified healthy. 1) GET /api/light-codes: 200 OK, returns dict with 7 categories. 2) GET /api/courses: 200 OK, returns list with 3 items. 3) GET /api/heart-practices: 200 OK, returns list with 10 items. All endpoints returning expected data types and counts. No 500 errors or data integrity issues detected."
+
+metadata:
+  created_by: "testing_agent"
+  version: "2.3"
+  test_sequence: 15
+  run_ui: false
+  last_tested: "2026-06-01"
+
+test_plan:
+  current_focus:
+    - "Backend regression for elemental temples endpoints - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Backend Regression Test - Elemental Temples & Core Content (2026-06-01):
+      
+      VERIFICATION REQUEST: Final backend regression for latest request
+      Target: https://breathwork-sanctuary.preview.emergentagent.com/api
+      
+      ✅ ALL TESTS PASSED (3/3):
+      
+      1. ✅ GET /api/elements vs GET /api/elemental-temples - PASSED
+         - Both endpoints return 200 OK
+         - Both return list type with identical count: 5 items
+         - Payload shape identical: 20 keys (affirmations, blessings, ceremonies, color, description, element, embodiment, icon, id, image, inner, name, nature_connection, outer, practices, rituals, safety_precautions, symbol, tagline, wisdom)
+         - Both endpoints return identical payloads (verified via equality check)
+         - /api/elements correctly implemented as alias endpoint
+         - No payload shape or count discrepancies
+      
+      2. ✅ GET /api/elemental-temples/{id} - PASSED
+         - Tested with ID 'earth': 200 OK
+         - Response is dict type with all expected fields
+         - Response keys match list endpoint structure (20 keys)
+         - 404 error handling verified: non-existent ID returns 404
+         - Endpoint remains unchanged and working correctly
+      
+      3. ✅ Core content endpoints - PASSED
+         - GET /api/light-codes: 200 OK, dict with 7 categories
+         - GET /api/courses: 200 OK, list with 3 items
+         - GET /api/heart-practices: 200 OK, list with 10 items
+         - All endpoints returning expected data types and counts
+         - No 500 errors or data integrity issues
+      
+      CRITICAL FINDINGS:
+      ✅ /api/elements and /api/elemental-temples return identical payloads
+      ✅ /api/elemental-temples/{id} endpoint stable and unchanged
+      ✅ All core content endpoints healthy
+      ✅ No blockers detected
+      
+      SUMMARY:
+      Backend regression test PASSED. All requested verifications completed successfully. GET /api/elements returns same payload shape and count as GET /api/elemental-temples (5 items, 20 keys, identical content). GET /api/elemental-temples/{id} remains unchanged with proper 200/404 responses. Core content endpoints (/api/light-codes, /api/courses, /api/heart-practices) all healthy and returning expected data. No 500 errors, no payload discrepancies, no blockers detected. Backend is production-ready.

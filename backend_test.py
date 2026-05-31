@@ -1,186 +1,244 @@
-#!/usr/bin/env python3
-"""
-Backend Smoke Check - Final Verification
-Tests 5 critical endpoints before closure.
-"""
+"""Backend regression test for elemental temples endpoints and core content APIs."""
 import requests
 import json
 import sys
 
-BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
+# Backend URL from environment
+BACKEND_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
 
-def test_elements():
-    """Test /api/elements endpoint"""
-    print("\n1. Testing GET /api/elements...")
+def test_elements_vs_elemental_temples():
+    """Test 1: Verify GET /api/elements returns same payload shape/count as GET /api/elemental-temples"""
+    print("\n" + "="*80)
+    print("TEST 1: GET /api/elements vs GET /api/elemental-temples")
+    print("="*80)
+    
     try:
-        response = requests.get(f"{BASE_URL}/elements", timeout=10)
-        print(f"   Status: {response.status_code}")
+        # Get both endpoints
+        elements_response = requests.get(f"{BACKEND_URL}/elements", timeout=10)
+        temples_response = requests.get(f"{BACKEND_URL}/elemental-temples", timeout=10)
         
-        if response.status_code == 200:
-            data = response.json()
-            print(f"   ✓ PASS - Returns {type(data).__name__}")
-            if isinstance(data, list):
-                print(f"   ✓ PASS - List with {len(data)} items")
-            elif isinstance(data, dict):
-                print(f"   ✓ PASS - Dict with keys: {list(data.keys())[:5]}")
-            return True
-        elif response.status_code == 404:
-            print(f"   ❌ FAIL - Endpoint not found (404)")
-            print(f"   BLOCKER: /api/elements endpoint does not exist")
+        # Check status codes
+        if elements_response.status_code != 200:
+            print(f"❌ FAIL: GET /api/elements returned {elements_response.status_code}")
             return False
-        else:
-            print(f"   ❌ FAIL - Unexpected status: {response.status_code}")
-            print(f"   Response: {response.text[:200]}")
-            return False
-    except Exception as e:
-        print(f"   ❌ FAIL - Exception: {e}")
-        return False
-
-
-def test_light_codes():
-    """Test /api/light-codes endpoint"""
-    print("\n2. Testing GET /api/light-codes...")
-    try:
-        response = requests.get(f"{BASE_URL}/light-codes", timeout=10)
-        print(f"   Status: {response.status_code}")
         
-        if response.status_code == 200:
-            data = response.json()
-            print(f"   ✓ PASS - Returns {type(data).__name__}")
-            if isinstance(data, dict):
-                categories = list(data.keys())
-                print(f"   ✓ PASS - {len(categories)} categories: {categories[:3]}")
-            return True
-        else:
-            print(f"   ❌ FAIL - Status: {response.status_code}")
-            print(f"   Response: {response.text[:200]}")
+        if temples_response.status_code != 200:
+            print(f"❌ FAIL: GET /api/elemental-temples returned {temples_response.status_code}")
             return False
-    except Exception as e:
-        print(f"   ❌ FAIL - Exception: {e}")
-        return False
-
-
-def test_heart_practices():
-    """Test /api/heart-practices endpoint"""
-    print("\n3. Testing GET /api/heart-practices...")
-    try:
-        response = requests.get(f"{BASE_URL}/heart-practices", timeout=10)
-        print(f"   Status: {response.status_code}")
         
-        if response.status_code == 200:
-            data = response.json()
-            print(f"   ✓ PASS - Returns list with {len(data)} items")
-            return True
-        else:
-            print(f"   ❌ FAIL - Status: {response.status_code}")
-            print(f"   Response: {response.text[:200]}")
+        print(f"✅ Both endpoints returned 200 OK")
+        
+        # Parse JSON
+        elements_data = elements_response.json()
+        temples_data = temples_response.json()
+        
+        # Check if both are lists
+        if not isinstance(elements_data, list):
+            print(f"❌ FAIL: /api/elements returned {type(elements_data).__name__}, expected list")
             return False
-    except Exception as e:
-        print(f"   ❌ FAIL - Exception: {e}")
-        return False
-
-
-def test_courses():
-    """Test /api/courses endpoint"""
-    print("\n4. Testing GET /api/courses...")
-    try:
-        response = requests.get(f"{BASE_URL}/courses", timeout=10)
-        print(f"   Status: {response.status_code}")
         
-        if response.status_code == 200:
-            data = response.json()
-            print(f"   ✓ PASS - Returns list with {len(data)} items")
-            return True
-        else:
-            print(f"   ❌ FAIL - Status: {response.status_code}")
-            print(f"   Response: {response.text[:200]}")
+        if not isinstance(temples_data, list):
+            print(f"❌ FAIL: /api/elemental-temples returned {type(temples_data).__name__}, expected list")
             return False
-    except Exception as e:
-        print(f"   ❌ FAIL - Exception: {e}")
-        return False
-
-
-def test_expand_script():
-    """Test /api/content/expand-script endpoint"""
-    print("\n5. Testing POST /api/content/expand-script...")
-    try:
-        payload = {
-            "practice_name": "Sacred Heart Opening",
-            "duration_minutes": 10,
-            "steps": ["Welcome to this sacred practice", "Take a deep breath", "Feel your heart center"],
-            "use_ai": False
-        }
-        response = requests.post(
-            f"{BASE_URL}/content/expand-script",
-            json=payload,
-            timeout=15
-        )
-        print(f"   Status: {response.status_code}")
         
-        if response.status_code == 200:
-            data = response.json()
-            required_fields = ["target_minutes", "target_word_count", "word_count"]
-            missing = [f for f in required_fields if f not in data]
+        print(f"✅ Both endpoints returned list type")
+        
+        # Check count
+        elements_count = len(elements_data)
+        temples_count = len(temples_data)
+        
+        if elements_count != temples_count:
+            print(f"❌ FAIL: Count mismatch - /api/elements: {elements_count}, /api/elemental-temples: {temples_count}")
+            return False
+        
+        print(f"✅ Both endpoints returned same count: {elements_count} items")
+        
+        # Check payload shape (compare keys of first item if available)
+        if elements_count > 0 and temples_count > 0:
+            elements_keys = set(elements_data[0].keys())
+            temples_keys = set(temples_data[0].keys())
             
-            if missing:
-                print(f"   ❌ FAIL - Missing fields: {missing}")
+            if elements_keys != temples_keys:
+                print(f"❌ FAIL: Payload shape mismatch")
+                print(f"   /api/elements keys: {sorted(elements_keys)}")
+                print(f"   /api/elemental-temples keys: {sorted(temples_keys)}")
                 return False
             
-            print(f"   ✓ PASS - All required fields present")
-            print(f"   target_minutes: {data['target_minutes']}")
-            print(f"   target_word_count: {data['target_word_count']}")
-            print(f"   word_count: {data['word_count']}")
+            print(f"✅ Both endpoints have same payload shape with keys: {sorted(elements_keys)}")
+        
+        # Check if payloads are identical
+        if elements_data == temples_data:
+            print(f"✅ Both endpoints return identical payloads")
+        else:
+            print(f"⚠️  WARNING: Payloads have same shape/count but different content")
+        
+        print(f"\n✅ TEST 1 PASSED: /api/elements and /api/elemental-temples return same payload shape and count")
+        return True
+        
+    except Exception as e:
+        print(f"❌ FAIL: Exception occurred - {str(e)}")
+        return False
+
+
+def test_elemental_temple_by_id():
+    """Test 2: Verify GET /api/elemental-temples/{id} remains unchanged"""
+    print("\n" + "="*80)
+    print("TEST 2: GET /api/elemental-temples/{id}")
+    print("="*80)
+    
+    # Test with common element IDs
+    test_ids = ["earth", "water", "fire", "air", "spirit"]
+    
+    try:
+        # First get all temples to see what IDs exist
+        temples_response = requests.get(f"{BACKEND_URL}/elemental-temples", timeout=10)
+        if temples_response.status_code != 200:
+            print(f"❌ FAIL: Could not fetch temples list")
+            return False
+        
+        temples = temples_response.json()
+        available_ids = [t.get("id") for t in temples if "id" in t]
+        print(f"Available temple IDs: {available_ids}")
+        
+        if not available_ids:
+            print(f"❌ FAIL: No temples found with 'id' field")
+            return False
+        
+        # Test first available ID
+        test_id = available_ids[0]
+        print(f"\nTesting with ID: {test_id}")
+        
+        response = requests.get(f"{BACKEND_URL}/elemental-temples/{test_id}", timeout=10)
+        
+        if response.status_code != 200:
+            print(f"❌ FAIL: GET /api/elemental-temples/{test_id} returned {response.status_code}")
+            return False
+        
+        print(f"✅ GET /api/elemental-temples/{test_id} returned 200 OK")
+        
+        # Parse and validate response
+        temple_data = response.json()
+        
+        if not isinstance(temple_data, dict):
+            print(f"❌ FAIL: Response is {type(temple_data).__name__}, expected dict")
+            return False
+        
+        print(f"✅ Response is dict type")
+        
+        # Check for expected fields
+        expected_fields = ["id", "name"]
+        missing_fields = [f for f in expected_fields if f not in temple_data]
+        
+        if missing_fields:
+            print(f"⚠️  WARNING: Missing expected fields: {missing_fields}")
+        else:
+            print(f"✅ Response contains expected fields: {expected_fields}")
+        
+        # Display response keys
+        print(f"Response keys: {sorted(temple_data.keys())}")
+        
+        # Test 404 for non-existent ID
+        print(f"\nTesting 404 for non-existent ID...")
+        not_found_response = requests.get(f"{BACKEND_URL}/elemental-temples/nonexistent-temple-xyz", timeout=10)
+        
+        if not_found_response.status_code == 404:
+            print(f"✅ Non-existent ID correctly returns 404")
+        else:
+            print(f"⚠️  WARNING: Non-existent ID returned {not_found_response.status_code}, expected 404")
+        
+        print(f"\n✅ TEST 2 PASSED: GET /api/elemental-temples/{{id}} endpoint working correctly")
+        return True
+        
+    except Exception as e:
+        print(f"❌ FAIL: Exception occurred - {str(e)}")
+        return False
+
+
+def test_core_content_endpoints():
+    """Test 3: Verify core content endpoints still healthy"""
+    print("\n" + "="*80)
+    print("TEST 3: Core content endpoints health check")
+    print("="*80)
+    
+    endpoints = [
+        "/light-codes",
+        "/courses",
+        "/heart-practices"
+    ]
+    
+    all_passed = True
+    
+    for endpoint in endpoints:
+        try:
+            print(f"\nTesting {endpoint}...")
+            response = requests.get(f"{BACKEND_URL}{endpoint}", timeout=10)
             
-            # Validate word count meets threshold
-            threshold = data['target_word_count'] * 0.8
-            if data['word_count'] >= threshold:
-                print(f"   ✓ PASS - word_count ({data['word_count']}) >= 0.8 * target ({threshold:.0f})")
-                return True
+            if response.status_code != 200:
+                print(f"❌ FAIL: {endpoint} returned {response.status_code}")
+                all_passed = False
+                continue
+            
+            print(f"✅ {endpoint} returned 200 OK")
+            
+            # Parse JSON
+            data = response.json()
+            
+            # Check data type and content
+            if endpoint == "/light-codes":
+                if not isinstance(data, dict):
+                    print(f"❌ FAIL: {endpoint} returned {type(data).__name__}, expected dict")
+                    all_passed = False
+                else:
+                    print(f"✅ {endpoint} returned dict with {len(data)} categories")
             else:
-                print(f"   ❌ FAIL - word_count ({data['word_count']}) < 0.8 * target ({threshold:.0f})")
-                return False
-        else:
-            print(f"   ❌ FAIL - Status: {response.status_code}")
-            print(f"   Response: {response.text[:200]}")
-            return False
-    except Exception as e:
-        print(f"   ❌ FAIL - Exception: {e}")
-        return False
+                if not isinstance(data, list):
+                    print(f"❌ FAIL: {endpoint} returned {type(data).__name__}, expected list")
+                    all_passed = False
+                else:
+                    print(f"✅ {endpoint} returned list with {len(data)} items")
+            
+        except Exception as e:
+            print(f"❌ FAIL: {endpoint} - Exception occurred - {str(e)}")
+            all_passed = False
+    
+    if all_passed:
+        print(f"\n✅ TEST 3 PASSED: All core content endpoints healthy")
+    else:
+        print(f"\n❌ TEST 3 FAILED: Some core content endpoints have issues")
+    
+    return all_passed
 
 
 def main():
-    print("=" * 60)
-    print("BACKEND SMOKE CHECK - FINAL VERIFICATION")
-    print("=" * 60)
+    """Run all backend regression tests."""
+    print("\n" + "="*80)
+    print("BACKEND REGRESSION TEST - ELEMENTAL TEMPLES & CORE CONTENT")
+    print("="*80)
+    print(f"Target: {BACKEND_URL}")
     
     results = {
-        "elements": test_elements(),
-        "light-codes": test_light_codes(),
-        "heart-practices": test_heart_practices(),
-        "courses": test_courses(),
-        "expand-script": test_expand_script()
+        "test_1_elements_vs_temples": test_elements_vs_elemental_temples(),
+        "test_2_temple_by_id": test_elemental_temple_by_id(),
+        "test_3_core_content": test_core_content_endpoints()
     }
     
-    print("\n" + "=" * 60)
-    print("SUMMARY")
-    print("=" * 60)
+    print("\n" + "="*80)
+    print("FINAL RESULTS")
+    print("="*80)
     
-    passed = sum(1 for v in results.values() if v)
-    total = len(results)
+    for test_name, passed in results.items():
+        status = "✅ PASSED" if passed else "❌ FAILED"
+        print(f"{test_name}: {status}")
     
-    for endpoint, result in results.items():
-        status = "✓ PASS" if result else "❌ FAIL"
-        print(f"{status} - /api/{endpoint}")
+    all_passed = all(results.values())
     
-    print(f"\nTotal: {passed}/{total} endpoints passed")
-    
-    if passed == total:
+    if all_passed:
         print("\n✅ ALL TESTS PASSED - No blockers detected")
-        sys.exit(0)
+        return 0
     else:
-        print("\n❌ SOME TESTS FAILED - See blockers above")
-        sys.exit(1)
+        print("\n❌ SOME TESTS FAILED - Blockers detected")
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
