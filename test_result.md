@@ -3693,3 +3693,59 @@ agent_communication:
       SUMMARY:
       All backend regression tests passed successfully (8/8). Recent complexity refactors have not introduced any regressions. Payment context resolution working correctly for all product types (subscription, bundle, course, retreat, live_session, book). Gift payment flows working for both Stripe and PayPal. Content expand-script preserves duration floor logic (7-minute minimum). Numerology reading endpoint returns proper structure and persists records. Seed flow sanity check confirms no import/runtime errors from server.py refactor. Backend is production-ready with no regressions detected.
 
+
+  - task: "Final backend smoke check before closure"
+    implemented: true
+    working: false
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ BLOCKER FOUND: /api/elements endpoint does not exist (404). Available alternatives: /api/elemental-practices (15 items) or /api/elemental-temples (5 temples). ✅ PASSED (4/5): /api/light-codes (200, 7 categories), /api/heart-practices (200, 10 items), /api/courses (200, 3 items), /api/content/expand-script (200, word_count=1362, target=1320, meets 0.8x threshold). User must clarify if they meant /api/elemental-practices or /api/elemental-temples instead of /api/elements."
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Final Backend Smoke Check Before Closure (2026-06-01):
+      
+      VERIFICATION REQUEST: Final backend smoke check on 5 endpoints before closure
+      Target: https://breathwork-sanctuary.preview.emergentagent.com/api
+      
+      ❌ CRITICAL BLOCKER FOUND (1/5 endpoints):
+      
+      1. ❌ GET /api/elements - FAILED
+         - Status: 404 Not Found
+         - BLOCKER: Endpoint does not exist
+         - Available alternatives:
+           * /api/elemental-practices (200 OK, 15 practices)
+           * /api/elemental-temples (200 OK, 5 temples)
+         - ACTION REQUIRED: User must clarify which endpoint they intended
+      
+      ✅ PASSED (4/5 endpoints):
+      
+      2. ✅ GET /api/light-codes - PASSED
+         - Status: 200 OK
+         - Returns: dict with 7 categories
+         - Categories: sacred_geometry, ancient_alphabets, light_language_symbols, etc.
+      
+      3. ✅ GET /api/heart-practices - PASSED
+         - Status: 200 OK
+         - Returns: list with 10 practice items
+      
+      4. ✅ GET /api/courses - PASSED
+         - Status: 200 OK
+         - Returns: list with 3 course items
+      
+      5. ✅ POST /api/content/expand-script - PASSED
+         - Status: 200 OK
+         - Request payload: practice_name, duration_minutes=10, steps, use_ai=false
+         - Response fields validated: target_minutes=10, target_word_count=1320, word_count=1362
+         - Word count validation: 1362 >= 1056 (0.8 * 1320) ✓
+         - Endpoint generating valid narration scripts
+      
+      SUMMARY:
+      4 out of 5 requested endpoints passed. 1 critical blocker: /api/elements endpoint does not exist. User must clarify if they meant /api/elemental-practices or /api/elemental-temples. All other endpoints working correctly with no 500 errors or data issues.
+
