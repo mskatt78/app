@@ -3396,6 +3396,12 @@ async def get_elemental_temples():
     return temples
 
 
+@router.get("/elements")
+async def get_elements_alias():
+    """Alias endpoint for elemental temples (frontend compatibility)."""
+    return await get_elemental_temples()
+
+
 @router.get("/elemental-temples/{element_id}")
 async def get_elemental_temple(element_id: str):
     """Get a specific elemental temple by id (earth, water, fire, air, spirit)."""

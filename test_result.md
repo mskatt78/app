@@ -946,6 +946,78 @@ frontend:
 agent_communication:
   - agent: "testing"
     message: |
+      LightCodes Decomposition Regression Test (2026-05-31):
+      
+      VERIFICATION REQUEST: Final frontend regression for LightCodes decomposition to under 300 lines using config module
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (4/4 routes):
+      
+      1. ✅ /LIGHT-CODES - PASSED
+         - Page loads: ✓ (data-testid="light-codes" found)
+         - LightCodes.jsx file size: 292 lines (under 300 target) ✓
+         - Config module exists: /app/frontend/src/pages/light-codes/lightCodeConfig.js ✓
+         - Category buttons visible: ✓ (Sacred Geometry, Ancient Alphabets, Light Language, Galactic Codes, Chakra Activation)
+         - Category switching works: ✓ (tested switching between categories)
+         - Symbol cards visible: ✓ (25+ symbol cards rendering: Flower of Life, Metatron's Cube, Sri Yantra, etc.)
+         - Symbol modal opens: ✓ (clicked symbol card, modal opened successfully)
+         - Modal tabs work: ✓ (4 tabs present: Essence, Why It Heals, Ancient Traditions, Practice Guide)
+         - Tab switching functional: ✓ (tested clicking between tabs)
+         - Modal close works: ✓ (Escape key and close button both functional)
+         - All core functionality working correctly after decomposition
+      
+      2. ✅ /ELEMENTAL-TEMPLES - PASSED
+         - Page loads: ✓ (data-testid="elemental-temples" found)
+         - Temple cards visible: ✓ (5 temple cards: Earth, Water, Fire, Air, Spirit)
+         - All cards beautifully rendered with images and descriptions
+         - Opening temple works: ✓ (uses in-page state-based rendering, not navigation)
+         - Temple detail view renders correctly
+         - Section buttons present: ✓ (Why It Heals, Ancient Traditions, Embodiment, Within You, In Nature, Practices, Rituals, Ceremonies, Blessings, Affirmations, Safety)
+         - Section switching works: ✓ (tested clicking between sections)
+         - All core functionality working correctly
+      
+      3. ✅ /HEART-PRACTICES - PASSED
+         - Page loads: ✓ (data-testid="heart-practices" found)
+         - Practice cards visible: ✓ (10 practice cards rendering)
+         - Cards include: Heart Opening Ceremony, Forgiveness Fire Ritual, Grief Honoring Practice, Compassion Expansion Meditation, etc.
+         - All cards have images, titles, descriptions, and "Curated content" labels
+         - Category filters visible: ✓ (All, Self Love, Compassion, Forgiveness, Gratitude, Connection, Healing)
+         - Modal opens: ✓ (clicked practice card, modal opened successfully)
+         - Begin button works: ✓ (Begin Guided Heart Practice button present and functional)
+         - Modal close works: ✓ (Escape key functional)
+         - All core functionality working correctly
+      
+      4. ✅ /COURSES - PASSED
+         - Page loads: ✓ (data-testid="courses-page" found)
+         - Filters render: ✓ (4 filter buttons: All Levels, Beginner, Intermediate, Advanced)
+         - Filter switching works: ✓ (tested clicking between filters)
+         - Bundle banner visible: ✓ (All Sacred Rites Bundle - Save $124 - $397)
+         - Course cards visible: ✓ (3 course cards rendering)
+         - Cards include: 13th Rite of the Womb ($147), Nusta Karpay ($177), Munay Ki ($197)
+         - All cards have images, titles, descriptions, pricing, and "Curated content" labels
+         - Modal flows work: ✓ (course modals open with tabs)
+         - All core functionality working correctly
+      
+      5. ✅ NO REGRESSIONS DETECTED - PASSED
+         - All 4 routes render correctly with full content
+         - No blank pages or runtime crashes
+         - All interactive elements functional (modals, tabs, buttons, filters)
+         - Console errors: Only expected 401 auth errors (non-critical)
+         - No critical JavaScript errors or blocking issues
+      
+      CRITICAL FINDINGS:
+      ✅ LightCodes decomposition successful: 292 lines (under 300 target)
+      ✅ Config module properly extracted: lightCodeConfig.js
+      ✅ All 4 routes working correctly with no regressions
+      ✅ Category switching, modals, tabs, filters all functional
+      ✅ No visual or functional regressions detected
+      ✅ Application stable and production-ready
+      
+      SUMMARY:
+      LightCodes decomposition regression test PASSED. LightCodes.jsx successfully reduced to 292 lines (under 300 target) using config module at /app/frontend/src/pages/light-codes/lightCodeConfig.js. All 4 tested routes (/light-codes, /elemental-temples, /heart-practices, /courses) render correctly with full functionality. Category switching, symbol modals with tabs, temple detail views, practice modals with begin buttons, and course filters with modals all working correctly. No regressions detected. Console shows only expected non-critical auth errors. Application is production-ready after LightCodes decomposition.
+
+  - agent: "testing"
+    message: |
       Final Regression Verification - Decomposition + Static Payload Externalization (2026-05-31):
       
       VERIFICATION REQUEST: Final regression verification after decomposition + static payload externalization
@@ -1083,14 +1155,14 @@ agent_communication:
 
 metadata:
   created_by: "testing_agent"
-  version: "2.1"
-  test_sequence: 13
+  version: "2.2"
+  test_sequence: 14
   run_ui: false
   last_tested: "2026-05-31"
 
 test_plan:
   current_focus:
-    - "Final regression verification after decomposition + static payload externalization - COMPLETED"
+    - "LightCodes decomposition to under 300 lines regression - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
