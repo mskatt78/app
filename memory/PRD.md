@@ -262,6 +262,18 @@
   - Backend smoke: core endpoints pass (`light-codes`, `heart-practices`, `courses`, `content/expand-script`)
   - Note: `/api/elements` returns 404 because this route does not exist by design (available alternatives: `/api/elemental-temples`, `/api/elemental-practices`).
 
+## Latest Verification Snapshot (Iteration 146)
+- Completed requested follow-up:
+  - `LightCodes.jsx` reduced to **292 lines** by moving category/tab payload to `pages/light-codes/lightCodeConfig.js`
+  - Added backend alias endpoint `GET /api/elements` mapped to elemental temples data
+- Verified payload externalization + decomposition integrity:
+  - `ElementalTemples` static payload remains externalized in `pages/elemental-temples/elementalTempleData.js`
+  - `ElementalTemples` route consumes decomposed section components
+- Regression status (testing agent `iteration_146`):
+  - Backend: **100% (8/8)**
+  - Frontend: **100%** across Light Codes / Elemental Temples / Heart Practices / Courses
+  - No new regressions found.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
