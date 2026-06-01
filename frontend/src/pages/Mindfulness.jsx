@@ -1,14 +1,14 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, Brain, Filter, Clock, Play, Heart, Footprints, 
-  Eye, Ear, Sparkles, CheckCircle, Pause, RotateCcw, Volume2, VolumeX
+  Eye, Sparkles
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
-import { Progress } from "../components/ui/progress";
+import PracticeTimer from "../components/PracticeTimer";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import { appLogger } from "../utils/logger";
@@ -29,26 +29,7 @@ const Mindfulness = ({ user, api }) => {
       .slice(0, 90);
     return `${prefix}-${slug || "item"}`;
   };
-  const [currentStep, setCurrentStep] = useState(0);
   const [isPracticing, setIsPracticing] = useState(false);
-  
-  // Timer state
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [timeRemaining, setTimeRemaining] = useState(0);
-  const [totalTime, setTotalTime] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
-  const timerRef = useRef(null);
-
-  // Breathing animation state
-  const [breathPhase, setBreathPhase] = useState("inhale");
-  const [breathCount, setBreathCount] = useState(1);
-  const [breathProgress, setBreathProgress] = useState(0);
-  const breathTimerRef = useRef(null);
-  const breathPhaseRef = useRef("inhale");
-
-  // Step auto-advance state
-  const [stepTimeRemaining, setStepTimeRemaining] = useState(0);
-  const stepTimerRef = useRef(null);
 
   const categories = [
     { value: "all", label: "All Practices" },
@@ -101,155 +82,12 @@ const Mindfulness = ({ user, api }) => {
     }
   }, [selectedCategory, practices]);
 
-  const isBreathingPractice = (practice) => {
-    if (!practice) return false;
-    const name = practice.name.toLowerCase();
-    return name.includes("breath") || name.includes("breathing") || practice.category === "focus";
-  };
-
   const startPractice = () => {
-    setCurrentStep(0);
     setIsPracticing(true);
-    const totalSeconds = (selectedPractice?.duration_minutes || 5) * 60;
-    setTotalTime(totalSeconds);
-    setTimeRemaining(totalSeconds);
-    setTimerRunning(true);
-    setBreathPhase("inhale");
-    setBreathCount(1);
-    setBreathProgress(0);
-
-    // Calculate step duration for auto-advance — distribute remainder to last step via caller
-    const stepCount = selectedPractice?.instructions?.length || 1;
-    const stepDuration = Math.round(totalSeconds / stepCount);
-    setStepTimeRemaining(stepDuration);
-
-    // Start breathing animation for breathing practices
-    if (isBreathingPractice(selectedPractice)) {
-      startBreathAnimation();
-    }
-
-    // Start step auto-advance
-    startStepAutoAdvance(stepDuration, stepCount);
-  };
-
-  const startBreathAnimation = () => {
-    // 4 second inhale, 4 second exhale pattern
-    const inhaleDuration = 4;
-    const exhaleDuration = 4;
-    breathPhaseRef.current = "inhale";
-    
-    if (breathTimerRef.current) clearInterval(breathTimerRef.current);
-    
-    let elapsed = 0;
-    let currentPhase = "inhale";
-    let phaseElapsed = 0;
-    
-    breathTimerRef.current = setInterval(() => {
-      elapsed += 0.1;
-      phaseElapsed += 0.1;
-      
-      const phaseDuration = currentPhase === "inhale" ? inhaleDuration : exhaleDuration;
-      const progress = (phaseElapsed / phaseDuration) * 100;
-      
-      setBreathProgress(Math.min(progress, 100));
-      
-      if (phaseElapsed >= phaseDuration) {
-        phaseElapsed = 0;
-        if (currentPhase === "inhale") {
-          currentPhase = "exhale";
-        } else {
-          currentPhase = "inhale";
-          setBreathCount(prev => prev >= 10 ? 1 : prev + 1);
-        }
-        breathPhaseRef.current = currentPhase;
-        setBreathPhase(currentPhase);
-      }
-    }, 100);
-  };
-
-  const startStepAutoAdvance = (stepDuration, stepCount) => {
-    if (stepTimerRef.current) clearInterval(stepTimerRef.current);
-    
-    let elapsed = 0;
-    let currentStepIndex = 0;
-    
-    stepTimerRef.current = setInterval(() => {
-      elapsed += 1;
-      const stepElapsed = elapsed % stepDuration;
-      setStepTimeRemaining(stepDuration - stepElapsed);
-      
-      if (stepElapsed === 0 && elapsed > 0) {
-        currentStepIndex = Math.min(currentStepIndex + 1, stepCount - 1);
-        setCurrentStep(currentStepIndex);
-      }
-    }, 1000);
-  };
-
-  // Timer effect
-  useEffect(() => {
-    if (timerRunning && timeRemaining > 0) {
-      timerRef.current = setInterval(() => {
-        setTimeRemaining(prev => {
-          if (prev <= 1) {
-            setTimerRunning(false);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-  }, [timeRemaining, timerRunning]);
-
-  const toggleTimer = () => {
-    if (timerRunning) {
-      // Pause
-      setTimerRunning(false);
-      if (breathTimerRef.current) clearInterval(breathTimerRef.current);
-      if (stepTimerRef.current) clearInterval(stepTimerRef.current);
-    } else {
-      // Resume
-      setTimerRunning(true);
-      if (isBreathingPractice(selectedPractice)) {
-        startBreathAnimation();
-      }
-      const stepCount = selectedPractice?.instructions?.length || 1;
-      const stepDuration = Math.round(totalTime / stepCount);
-      startStepAutoAdvance(stepDuration, stepCount);
-    }
-  };
-
-  const resetTimer = () => {
-    setTimerRunning(false);
-    setTimeRemaining(totalTime);
-    setCurrentStep(0);
-    setBreathPhase("inhale");
-    setBreathCount(1);
-    setBreathProgress(0);
-    if (breathTimerRef.current) clearInterval(breathTimerRef.current);
-    if (stepTimerRef.current) clearInterval(stepTimerRef.current);
-  };
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const nextStep = () => {
-    if (selectedPractice && currentStep < selectedPractice.instructions.length - 1) {
-      setCurrentStep(prev => prev + 1);
-    } else {
-      completePractice();
-    }
   };
 
   const completePractice = async () => {
     setIsPracticing(false);
-    if (breathTimerRef.current) clearInterval(breathTimerRef.current);
-    if (stepTimerRef.current) clearInterval(stepTimerRef.current);
     try {
       await api.post("/practice-history", {
         practice_type: "mindfulness",
@@ -262,6 +100,29 @@ const Mindfulness = ({ user, api }) => {
       appLogger.error("Failed to log practice:", error);
     }
   };
+
+  const timerSegments = useMemo(() => {
+    if (!selectedPractice) return [];
+    const instructions = Array.isArray(selectedPractice.instructions) ? selectedPractice.instructions.filter(Boolean) : [];
+    const durationSeconds = Math.max(60, (selectedPractice.duration_minutes || 5) * 60);
+
+    if (!instructions.length) {
+      return [{
+        name: selectedPractice.name,
+        description: selectedPractice.description || "Settle into mindful awareness and breathe gently.",
+        duration_seconds: durationSeconds,
+      }];
+    }
+
+    const stepDuration = Math.max(8, Math.floor(durationSeconds / instructions.length));
+    const remainder = durationSeconds - (stepDuration * instructions.length);
+
+    return instructions.map((instruction, index) => ({
+      name: `Step ${index + 1}`,
+      description: instruction,
+      duration_seconds: stepDuration + (index === instructions.length - 1 ? remainder : 0),
+    }));
+  }, [selectedPractice]);
 
   return (
     <div className="min-h-screen bg-background" data-testid="mindfulness-page">
@@ -386,9 +247,6 @@ const Mindfulness = ({ user, api }) => {
       <Dialog open={!!selectedPractice} onOpenChange={() => { 
         setSelectedPractice(null); 
         setIsPracticing(false);
-        if (breathTimerRef.current) clearInterval(breathTimerRef.current);
-        if (stepTimerRef.current) clearInterval(stepTimerRef.current);
-        if (timerRef.current) clearInterval(timerRef.current);
       }}>
         <DialogContent className="bg-card border-white/10 max-w-lg max-h-[85vh] overflow-y-auto">
           {selectedPractice && (
@@ -448,121 +306,29 @@ const Mindfulness = ({ user, api }) => {
                     </Button>
                   </>
                 ) : (
-                  /* Guided Practice Mode with Timer */
-                  <div className="py-4">
-                    {/* Breathing Animation for breathing practices */}
-                    {isBreathingPractice(selectedPractice) && (
-                      <div className="flex flex-col items-center mb-6">
-                        <motion.div
-                          animate={{
-                            scale: breathPhase === "inhale" ? [1, 1.4] : [1.4, 1],
-                          }}
-                          transition={{ duration: 4, ease: "easeInOut" }}
-                          key={breathPhase + breathCount}
-                          className={`w-32 h-32 rounded-full flex items-center justify-center border-2
-                            ${elementColors[selectedPractice.element]?.bg || "bg-primary/10"}
-                            ${elementColors[selectedPractice.element]?.border || "border-primary/20"}`}
-                        >
-                          <div className="text-center">
-                            <p className={`text-3xl font-light ${elementColors[selectedPractice.element]?.text || "text-primary"}`}>
-                              {breathCount}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {breathPhase === "inhale" ? "Breathe In" : "Breathe Out"}
-                            </p>
-                          </div>
-                        </motion.div>
-                        <p className="text-sm text-muted-foreground mt-3">
-                          Count to 10, then restart
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Timer Display */}
-                    <div className="text-center mb-6">
-                      <div className="text-5xl font-light tracking-wider mb-2">
-                        {formatTime(timeRemaining)}
-                      </div>
-                      <Progress 
-                        value={totalTime > 0 ? ((totalTime - timeRemaining) / totalTime) * 100 : 0} 
-                        className="h-2 mb-4" 
-                      />
-                      
-                      {/* Timer Controls */}
-                      <div className="flex items-center justify-center gap-4 mb-6">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={resetTimer}
-                          className="rounded-full border-white/10"
-                        >
-                          <RotateCcw className="w-4 h-4" />
-                        </Button>
-                        
-                        <Button
-                          size="lg"
-                          onClick={toggleTimer}
-                          className={`rounded-full w-14 h-14 ${timerRunning ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary'}`}
-                        >
-                          {timerRunning ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
-                        </Button>
-                        
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          onClick={() => setIsMuted(!isMuted)}
-                          className="rounded-full border-white/10"
-                        >
-                          {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                        </Button>
-                      </div>
-                    </div>
-
-                    {/* Step Progress */}
-                    <div className="text-center mb-4">
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Step {currentStep + 1} of {selectedPractice.instructions?.length}
-                      </p>
-                      <div className="flex justify-center gap-1 mb-4">
-                        {selectedPractice.instructions?.map((instructionText, i) => (
-                          <div 
-                            key={stableMindfulKey(`step-indicator-${selectedPractice.id}`, instructionText || i)}
-                            className={`w-2 h-2 rounded-full transition-colors ${i <= currentStep ? 'bg-primary' : 'bg-white/20'}`} 
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    <motion.div
-                      key={currentStep}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="p-6 rounded-xl bg-primary/10 border border-primary/20 text-center"
-                    >
-                      <p className="text-lg leading-relaxed">
-                        {selectedPractice.instructions?.[currentStep]}
-                      </p>
-                    </motion.div>
-
+                  <div className="py-4" data-testid="mindfulness-practice-timer-shell">
+                    <PracticeTimer
+                      segments={timerSegments}
+                      totalDuration={(selectedPractice.duration_minutes || 5) * 60}
+                      onComplete={completePractice}
+                      backgroundAudio="forest"
+                      practiceType="mindfulness"
+                      element={selectedPractice.element || "Air"}
+                      autoStartAudio={true}
+                      autoNarrate={true}
+                      allowSpeedControl={true}
+                    />
                     <Button
-                      onClick={nextStep}
-                      className="w-full mt-6 bg-primary"
+                      onClick={completePractice}
+                      variant="outline"
+                      className="w-full mt-6 border-white/15"
+                      data-testid="complete-practice-early-btn"
                     >
-                      {currentStep < selectedPractice.instructions?.length - 1 ? (
-                        "Next Step"
-                      ) : (
-                        <>
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          Complete Practice
-                        </>
-                      )}
+                      Complete Early
                     </Button>
-                    
-                    {!isMuted && (
-                      <p className="text-xs text-center text-muted-foreground mt-4">
-                        Bell will sound at end of practice
-                      </p>
-                    )}
+                    <p className="text-xs text-center text-muted-foreground mt-4" data-testid="mindfulness-auto-guidance-note">
+                      Auto-guidance active: steps advance and voice guidance runs automatically.
+                    </p>
                   </div>
                 )}
               </div>
