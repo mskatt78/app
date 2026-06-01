@@ -288,6 +288,28 @@
   - Toning status visible
   - User complaint marked **RESOLVED** by testing agent.
 
+## Latest Verification Snapshot (Iteration 149) — 2026-06-01
+- Implemented user-requested somatic taxonomy + yoga factual-image correction pass with no regressions.
+- Backend updates:
+  - Added verified yoga image override pipeline in `routers/content.py` for key poses (including Downward Dog, Warrior II, Tree Pose, Mountain Pose) using Wikimedia Commons references.
+  - Yoga payloads now include: `somatic_fascia_focus`, `breath_hybrid_cue`, `mindfulness_prompt`, and `source_references` (for verified entries).
+  - Somatic payloads now include movement-track separation and sorting:
+    - `Somatic Movement`
+    - `Tai Chi`
+    - `Chi Gong`
+  - Somatic Movement entries now include Breath Hybrid metadata (`breath_hybrid_mode`, `breath_hybrid_sequence`) and fascia focus.
+  - `tts.py` somatic script generation now incorporates movement-track, fascia focus, and breath-hybrid cues.
+- Frontend updates:
+  - `SomaticMovement.jsx` now includes Movement Track filter and metadata rendering in cards/modals.
+  - `YogaLibrary.jsx` now preserves full-pose visibility (`object-contain`) and shows new sections in pose modal:
+    - Somatic & Fascia Focus
+    - Breath Hybrid Cue
+    - Source References
+- Validation (`iteration_149`):
+  - Backend: **100% (19/19 pass)**
+  - Frontend: **100% pass**
+  - No regressions across landing, Yoga Library, Somatic Movement, guided start flow.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -305,6 +327,10 @@
 - Continue reducing cyclomatic complexity in untouched backend hotspots.
 - Continue cleanup of remaining production console/silent-catch quality report items.
 
+### P1 (New content integrity continuation)
+- Expand Wikimedia-verified override coverage beyond key yoga poses to remaining high-traffic poses where mismatch risk remains.
+- Add optional quality score badge to yoga cards for image verification provenance transparency.
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
@@ -321,6 +347,7 @@
 2. Keep one-screen smoke check before full testing-agent pass.
 3. Maintain `data-testid` coverage for all interactive/critical UI.
 4. Keep retreat seeding disabled unless explicitly requested by owner.
+5. Preserve movement-track separation: Somatic Movement vs Tai Chi vs Chi Gong in all future somatic features.
 
 ## Owner/Admin
 - Primary admin email: `mskatt78@gmail.com`
