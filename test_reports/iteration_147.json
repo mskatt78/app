@@ -1,0 +1,77 @@
+{
+  "summary": "Iteration 147 - Verified guided voice blend (A+C warm+ceremonial) and echo reduction fixes. All backend APIs and frontend guided playback working correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration147_guided_voice_blend.py",
+    "/app/test_reports/pytest/pytest_iteration147.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Echo reduction verified in useGuidedPracticeEngine.js:",
+    "- Ambient ducking: 0.22 multiplier when TTS playing (voice dominant)",
+    "- Toning mix: 0.06 when TTS playing, 0.42 when not (significant reduction during voice)",
+    "",
+    "Echo reduction verified in useGuidedAudioPlayback.js:",
+    "- Toning: 0.05 during voice, 0.26 between segments",
+    "",
+    "LLM prompt warm+ceremonial blend verified in content.py line 1279:",
+    "- '13) Voice tone must blend: (A) warm intimate guide + (C) ceremonial elder. Keep language personable, grounded, and gently sacred.'",
+    "- System message also updated: 'blend warm relational guidance with ceremonial sacred cadence'",
+    "",
+    "Play/pause/resume tested - no duplicate voice streams:",
+    "- Timer progressed correctly: 14:58 → 14:55 → 14:53 → 14:51",
+    "- No overlapping audio observed",
+    "- 'Toning layer ducked during voice' status message visible",
+    "",
+    "All guided overlay controls working:",
+    "- Play/Pause button toggles correctly",
+    "- Mute button works",
+    "- Anti-repetition mode buttons (Strict/Balanced) work",
+    "- Exit button closes overlay properly"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (11/11 tests passed)",
+    "frontend": "100% (all guided playback controls working)"
+  },
+  "test_credentials": "No login required for guided practice testing",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 147 validated guided voice blend and echo reduction. Key ducking values: ambient 0.22x during TTS, toning 0.06 during TTS vs 0.42 between segments. LLM prompt now includes warm+ceremonial voice blend requirement. Play/pause/resume tested with no duplicate streams. All guided overlay UI controls verified working on Chakra Cleansing page.",
+  "tested_flows": [
+    "Backend health check - PASS",
+    "POST /api/content/expand-script basic request - PASS",
+    "POST /api/content/expand-script with toning cues - PASS",
+    "POST /api/content/expand-script without toning - PASS",
+    "POST /api/content/expand-script strict mode - PASS",
+    "POST /api/content/expand-script balanced mode - PASS",
+    "POST /api/content/expand-script all elements - PASS",
+    "POST /api/content/expand-script minimum duration enforcement - PASS",
+    "POST /api/content/expand-script long duration (25 min) - PASS",
+    "GET /api/yoga/poses regression - PASS",
+    "GET /api/breathwork/sessions regression - PASS",
+    "Frontend Chakra Cleansing page load - PASS",
+    "Guided practice overlay open - PASS",
+    "Play/Pause/Resume (no duplicate streams) - PASS",
+    "Mute toggle - PASS",
+    "Anti-repetition mode toggle - PASS",
+    "Exit overlay - PASS"
+  ],
+  "verification_summary": {
+    "echo_reduction_ambient_ducking": "0.22 multiplier when TTS playing ✓",
+    "echo_reduction_toning_mix": "0.06 during TTS, 0.42 between segments ✓",
+    "warm_ceremonial_voice_blend_prompt": "Line 1279 in content.py ✓",
+    "play_pause_resume_no_duplicates": "Timer progressed correctly, no overlapping audio ✓",
+    "guided_overlay_controls": "All buttons working ✓",
+    "toning_ducked_status_message": "Visible during playback ✓"
+  }
+}

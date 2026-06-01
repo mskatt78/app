@@ -1276,6 +1276,8 @@ Requirements:
 10) Keep lexical variety high: sentence openings should feel naturally varied and human.
 11) Tone should sound like an intuitive human guide speaking with compassion, not a mechanical script.
 12) Use occasional natural phrasing (e.g., "if it helps", "whenever you're ready") without overusing any single phrase.
+13) Voice tone must blend: (A) warm intimate guide + (C) ceremonial elder. Keep language personable, grounded, and gently sacred.
+14) Use occasional first-person invitations (e.g., "I invite you", "let us") sparingly to feel more human and relational.
 {toning_requirement}
 """.strip()
 
@@ -1295,7 +1297,8 @@ async def _request_llm_script_text(api_key: str, prompt: str, llm_chat_cls: Any,
         session_id=f"guided_script_{uuid.uuid4().hex[:12]}",
         system_message=(
             "You are an expert meditation guide writing high-quality long-form voice scripts. "
-            "Your output must sound emotionally grounded, intuitive, and naturally human."
+            "Your output must sound emotionally grounded, intuitive, naturally human, "
+            "and blend warm relational guidance with ceremonial sacred cadence."
         ),
     ).with_model("openai", "gpt-5.2")
 

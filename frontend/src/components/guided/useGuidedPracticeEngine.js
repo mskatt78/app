@@ -322,7 +322,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
 
   useEffect(() => {
     const baseAmbientGain = (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
-    const narrationDuckMultiplier = ttsPlaying ? 0.38 : 1;
+    const narrationDuckMultiplier = ttsPlaying ? 0.22 : 1;
 
     if (ambientRef.current) {
       ambientRef.current.gain.gain.value = muted ? 0 : baseAmbientGain * narrationDuckMultiplier;
@@ -332,7 +332,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       if (muted) {
         toningRef.current.setMuted?.(true, 1);
       } else {
-        const toningMix = ttsPlaying ? 0.12 : 0.58;
+        const toningMix = ttsPlaying ? 0.06 : 0.42;
         toningRef.current.setMuted?.(false, toningMix);
       }
     }
@@ -448,7 +448,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     }
 
     const baseAmbientGain = (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
-    const narrationDuckMultiplier = ttsPlaying ? 0.38 : 1;
+    const narrationDuckMultiplier = ttsPlaying ? 0.22 : 1;
 
     if (ambientRef.current) {
       ambientRef.current.gain.gain.value = muted ? 0 : baseAmbientGain * narrationDuckMultiplier;
@@ -460,7 +460,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       if (muted) {
         toningRef.current.setMuted?.(true, 1);
       } else {
-        toningRef.current.setMuted?.(false, ttsPlaying ? 0.12 : 0.58);
+        toningRef.current.setMuted?.(false, ttsPlaying ? 0.06 : 0.42);
       }
     }
   }, [element, muted, ttsPlaying]);
