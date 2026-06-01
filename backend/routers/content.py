@@ -342,6 +342,146 @@ YOGA_VERIFIED_IMAGE_OVERRIDES = {
             "https://en.wikipedia.org/wiki/Natarajasana",
         ],
     },
+    "warrior iii": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/06/Tuladandasana_-_Virabhadrasana_III.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Tuladandasana_-_Virabhadrasana_III.jpg",
+            "https://en.wikipedia.org/wiki/Virabhadrasana",
+        ],
+    },
+    "boat pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/8c/Mr-yoga-boat-pose2.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-boat-pose2.jpg",
+            "https://en.wikipedia.org/wiki/Navasana",
+        ],
+    },
+    "side plank": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e2/Mr-yoga-side-plank.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-side-plank.jpg",
+            "https://en.wikipedia.org/wiki/Vasisthasana",
+        ],
+    },
+    "crow pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f1/Bakasana_Yoga-Asana_Nina-Mel_%28cropped%29.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Bakasana_Yoga-Asana_Nina-Mel_(cropped).jpg",
+            "https://en.wikipedia.org/wiki/Bakasana",
+        ],
+    },
+    "bow pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Dhanurasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Dhanurasana.jpg",
+            "https://en.wikipedia.org/wiki/Dhanurasana",
+        ],
+    },
+    "fish pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Matsyasana%2C_Heinz_Grill_1992.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Matsyasana,_Heinz_Grill_1992.jpg",
+            "https://en.wikipedia.org/wiki/Matsyasana",
+        ],
+    },
+    "sleeping swan": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/04/Eka_Pada_Rajakapotasana_-_One_Legged_Royal_Pigeon_Pose.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Eka_Pada_Rajakapotasana_-_One_Legged_Royal_Pigeon_Pose.jpg",
+            "https://en.wikipedia.org/wiki/Kapotasana",
+        ],
+    },
+    "wheel pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/df/Chakrasana_Yoga-Asana_Nina-Mel.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Chakrasana_Yoga-Asana_Nina-Mel.jpg",
+            "https://en.wikipedia.org/wiki/Chakrasana",
+        ],
+    },
+    "headstand": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b2/Mr-yoga-headstand-5-6.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-headstand-5-6.jpg",
+            "https://en.wikipedia.org/wiki/Sirsasana",
+        ],
+    },
+    "shoulder stand": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Mr-yoga-shouldertand.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-shouldertand.jpg",
+            "https://en.wikipedia.org/wiki/Sarvangasana",
+        ],
+    },
+    "plow pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a2/Halasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Halasana.jpg",
+            "https://en.wikipedia.org/wiki/Halasana",
+        ],
+    },
+    "wild thing": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/90/Mr-yoga-wild-thing.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-wild-thing.jpg",
+            "https://en.wikipedia.org/wiki/Yoga_asana",
+        ],
+    },
+    "revolved triangle": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/cf/Parivrtta-Trikonasana_Yoga-Asana_Nina-Mel.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Parivrtta-Trikonasana_Yoga-Asana_Nina-Mel.jpg",
+            "https://en.wikipedia.org/wiki/Parivrtta_Trikonasana",
+        ],
+    },
+    "bird of paradise": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/68/Svargadvijasana.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Svargadvijasana.png",
+            "https://en.wikipedia.org/wiki/Yoga_asana",
+        ],
+    },
+    "lotus pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Padamasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Padamasana.jpg",
+            "https://en.wikipedia.org/wiki/Lotus_position",
+        ],
+    },
+    "hero pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/22/Mr-yoga-complete-thunderbolt.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-complete-thunderbolt.jpg",
+            "https://en.wikipedia.org/wiki/Virasana",
+        ],
+    },
+    "standing split": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Mr-yoga-one_legged_forward_bend_1.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-one_legged_forward_bend_1.jpg",
+            "https://en.wikipedia.org/wiki/Yoga_asana",
+        ],
+    },
+    "supported headstand": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Salamba_Sirsasana_-_Supported_Headstand.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Salamba_Sirsasana_-_Supported_Headstand.jpg",
+            "https://en.wikipedia.org/wiki/Sirsasana",
+        ],
+    },
+    "firefly pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/58/Mr-yoga-firefly-pose-1.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-firefly-pose-1.jpg",
+            "https://en.wikipedia.org/wiki/Tittibhasana",
+        ],
+    },
+    "eight angle pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/13/Astavakrasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Astavakrasana.jpg",
+            "https://en.wikipedia.org/wiki/Astavakrasana",
+        ],
+    },
 }
 
 YOGA_FASCIA_FOCUS_BY_ELEMENT = {

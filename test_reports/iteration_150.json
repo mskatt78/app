@@ -1,0 +1,93 @@
+{
+  "summary": "Iteration 150 - Verified expanded Wikimedia image overrides for high-risk yoga poses and Verified Source badge UI. All 16 backend tests pass. All 7 high-risk poses (Warrior III, Headstand, Shoulder Stand, Plow Pose, Wheel Pose, Firefly Pose, Eight Angle Pose) have verified Wikimedia images and display Verified Source badges on cards and modals.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration150_yoga_verified_overrides.py",
+    "/app/test_reports/pytest/pytest_iteration150.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "YOGA VERIFIED IMAGE OVERRIDES - All high-risk poses verified:",
+    "- Warrior III: Wikimedia Commons image + source_references + image_source=wikimedia_commons_verified",
+    "- Headstand: Wikimedia Commons image + source_references + image_source=wikimedia_commons_verified",
+    "- Shoulder Stand: Wikimedia Commons image + source_references + image_source=wikimedia_commons_verified",
+    "- Plow Pose: Wikimedia Commons image + source_references + image_source=wikimedia_commons_verified",
+    "- Wheel Pose: Wikimedia Commons image + source_references + image_source=wikimedia_commons_verified",
+    "- Firefly Pose: Wikimedia Commons image + source_references + image_source=wikimedia_commons_verified",
+    "- Eight Angle Pose: Wikimedia Commons image + source_references + image_source=wikimedia_commons_verified",
+    "",
+    "UI VERIFIED SOURCE BADGE - Working correctly:",
+    "- 41 poses display 'Verified Source' badge on cards (bottom right of image)",
+    "- Modal displays 'Verified Source' badge next to element badge",
+    "- Modal shows Source References section with Wikimedia/Wikipedia links",
+    "",
+    "NO REGRESSIONS:",
+    "- Yoga Library loads with 78 poses",
+    "- All pose cards render with images",
+    "- Modal opens correctly with all sections",
+    "- Previously verified poses (Mountain, Tree, Warrior I/II, Downward Dog, Cobra) still verified"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration150_yoga_verified_overrides.py"
+  ],
+  "success_rate": {
+    "backend": "100% (16/16 tests passed)",
+    "frontend": "100% (all UI elements rendering correctly)"
+  },
+  "test_credentials": "No auth needed for yoga endpoints",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 150 validated expanded Wikimedia-verified image overrides for high-risk yoga poses. Key verified features: (1) All 7 high-risk poses (Warrior III, Headstand, Shoulder Stand, Plow Pose, Wheel Pose, Firefly Pose, Eight Angle Pose) have Wikimedia Commons verified images, (2) Verified poses include source_references array and image_source='wikimedia_commons_verified', (3) Yoga Library cards display 'Verified Source' badge for 41 verified poses, (4) Pose modal displays 'Verified Source' badge and Source References section, (5) No regression on yoga page loading (78 poses), modal opening, or image rendering.",
+  "tested_flows": {
+    "backend_api": [
+      "GET /api/yoga/poses - Returns 78 poses - PASS",
+      "Warrior III has Wikimedia Commons verified image - PASS",
+      "Headstand has Wikimedia Commons verified image - PASS",
+      "Shoulder Stand has Wikimedia Commons verified image - PASS",
+      "Plow Pose has Wikimedia Commons verified image - PASS",
+      "Wheel Pose has Wikimedia Commons verified image - PASS",
+      "Firefly Pose has Wikimedia Commons verified image - PASS",
+      "Eight Angle Pose has Wikimedia Commons verified image - PASS",
+      "Verified poses have image_validation.status='verified' - PASS",
+      "Verified poses have content_integrity.verified=True - PASS",
+      "Previously verified poses still have verified images - PASS",
+      "No regression in pose count (78 poses) - PASS",
+      "All poses have required fields - PASS",
+      "Health check endpoint - PASS",
+      "Yoga poses endpoint returns 200 - PASS",
+      "Yoga poses response is list - PASS"
+    ],
+    "frontend_ui": [
+      "Yoga Library page loads (78 poses) - PASS",
+      "41 Verified Source badges visible on cards - PASS",
+      "Warrior III card has Verified Source badge - PASS",
+      "Headstand card has Verified Source badge - PASS",
+      "Shoulder Stand card has Verified Source badge - PASS",
+      "Plow Pose card has Verified Source badge - PASS",
+      "Wheel Pose card has Verified Source badge - PASS",
+      "Firefly Pose card has Verified Source badge - PASS",
+      "Eight Angle Pose card has Verified Source badge - PASS",
+      "Modal shows Verified Source badge - PASS",
+      "Modal shows Source References section - PASS",
+      "Source references include Wikimedia/Wikipedia links - PASS",
+      "Pose images render correctly - PASS"
+    ]
+  },
+  "verification_summary": {
+    "expanded_verified_overrides": "VERIFIED - All 7 high-risk poses have Wikimedia Commons verified images",
+    "source_references": "VERIFIED - Verified poses include source_references array with Wikimedia/Wikipedia links",
+    "image_source_field": "VERIFIED - Verified poses have image_source='wikimedia_commons_verified'",
+    "card_verified_badge": "VERIFIED - 41 poses display 'Verified Source' badge on cards",
+    "modal_verified_badge": "VERIFIED - Modal displays 'Verified Source' badge for verified poses",
+    "no_regressions": "VERIFIED - Yoga page loads, modal opens, images render correctly"
+  }
+}
