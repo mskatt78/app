@@ -12,6 +12,8 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import PracticeVideos from "../components/PracticeVideos";
 import { appLogger } from "../utils/logger";
 
+const movementTrackFilters = ["all", "Somatic Movement", "Tai Chi", "Chi Gong"];
+
 const elementColors = {
   Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
   Water: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
@@ -26,6 +28,7 @@ const SomaticMovement = ({ user, api }) => {
   const [filteredPractices, setFilteredPractices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedElement, setSelectedElement] = useState("all");
+  const [selectedTrack, setSelectedTrack] = useState("all");
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [guidedPractice, setGuidedPractice] = useState(null);
 
@@ -48,12 +51,18 @@ const SomaticMovement = ({ user, api }) => {
   }, [api]);
 
   useEffect(() => {
-    if (selectedElement === "all") {
-      setFilteredPractices(practices);
-    } else {
-      setFilteredPractices(practices.filter((p) => p.element === selectedElement));
+    let nextPractices = practices;
+
+    if (selectedElement !== "all") {
+      nextPractices = nextPractices.filter((practice) => practice.element === selectedElement);
     }
-  }, [selectedElement, practices]);
+
+    if (selectedTrack !== "all") {
+      nextPractices = nextPractices.filter((practice) => practice.movement_track === selectedTrack);
+    }
+
+    setFilteredPractices(nextPractices);
+  }, [selectedElement, selectedTrack, practices]);
 
   const handleStartGuided = (practice) => {
     setSelectedPractice(null); // close dialog
@@ -123,6 +132,20 @@ const SomaticMovement = ({ user, api }) => {
               ))}
             </SelectContent>
           </Select>
+
+          <Select value={selectedTrack} onValueChange={setSelectedTrack}>
+            <SelectTrigger data-testid="movement-track-filter" className="w-52 bg-card border-white/10">
+              <Waves className="w-4 h-4 mr-2" />
+              <SelectValue placeholder="Movement Track" />
+            </SelectTrigger>
+            <SelectContent>
+              {movementTrackFilters.map((track) => (
+                <SelectItem key={track} value={track}>
+                  {track === "all" ? "All Tracks" : track}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </header>
 
@@ -137,8 +160,9 @@ const SomaticMovement = ({ user, api }) => {
             Move with <span className="italic text-primary">Intention</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Somatic movement practices help release stored emotions and trauma from the body.
-            Each element offers a unique approach to healing through movement.
+            Somatic & Fascia Breath Hybrid practices support trauma shedding through mindful movement,
+            longer exhales, and interoceptive tracking. Tai Chi and Chi Gong now live in their own
+            dedicated movement tracks.
           </p>
         </motion.div>
 
@@ -201,6 +225,16 @@ const SomaticMovement = ({ user, api }) => {
                     )}
                     <h3 className="text-xl font-serif mb-3">{practice.name}</h3>
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{practice.description}</p>
+                    {practice.movement_track && (
+                      <p className="text-[11px] text-cyan-300/90 mb-2" data-testid={`movement-track-${practice.id}`}>
+                        {practice.movement_track}
+                      </p>
+                    )}
+                    {practice.breath_hybrid_mode && (
+                      <p className="text-[11px] text-emerald-300/90 mb-3" data-testid={`breath-hybrid-${practice.id}`}>
+                        {practice.breath_hybrid_mode}
+                      </p>
+                    )}
                     <div className="flex flex-wrap gap-1">
                       {practice.benefits?.map((benefit) => (
                         <span key={benefit} className="px-2 py-1 rounded-full bg-white/5 text-xs text-muted-foreground">
@@ -236,6 +270,31 @@ const SomaticMovement = ({ user, api }) => {
               <div className="space-y-6 mt-4">
                 <p className="text-muted-foreground leading-relaxed">{selectedPractice.description}</p>
 
+                {selectedPractice.movement_track && (
+                  <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="selected-movement-track">
+                    <p className="text-xs text-cyan-300 uppercase tracking-wide">Movement Track</p>
+                    <p className="text-sm text-cyan-100 mt-1">{selectedPractice.movement_track}</p>
+                  </div>
+                )}
+
+                {selectedPractice.somatic_fascia_focus && (
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="selected-fascia-focus">
+                    <p className="text-xs text-emerald-300 uppercase tracking-wide">Somatic & Fascia Focus</p>
+                    <p className="text-sm text-emerald-100 mt-1">{selectedPractice.somatic_fascia_focus}</p>
+                  </div>
+                )}
+
+                {selectedPractice.breath_hybrid_sequence?.length > 0 && (
+                  <div className="space-y-2" data-testid="selected-breath-hybrid-sequence">
+                    <p className="text-xs text-primary uppercase tracking-wide">Breath Hybrid Sequence</p>
+                    {selectedPractice.breath_hybrid_sequence.map((cue, index) => (
+                      <p key={`${selectedPractice.id}-hybrid-${index}`} className="text-sm text-muted-foreground">
+                        {cue}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
                 <div className="flex items-center gap-4 p-4 rounded-xl bg-white/5">
                   <Clock className="w-5 h-5 text-primary" />
                   <div>
@@ -258,7 +317,8 @@ const SomaticMovement = ({ user, api }) => {
                 <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
                   <p className="text-sm text-muted-foreground">
                     <strong className="text-primary">Tip:</strong> Find a quiet space where you can move
-                    freely. Let your body guide you — there is no wrong way to do this practice.
+                    freely. Let your body guide you — there is no wrong way to do this practice. Stay in
+                    your Somatic & Fascia Breath Hybrid rhythm and keep movement at a manageable intensity.
                   </p>
                 </div>
 

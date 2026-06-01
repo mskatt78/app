@@ -1,0 +1,93 @@
+{
+  "summary": "Iteration 149 - Verified yoga image corrections, new somatic/fascia fields, and movement track categories (Somatic Movement, Tai Chi, Chi Gong). All 19 backend tests pass. Frontend UI renders correctly with new fields visible in modals.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration149_yoga_somatic_categories.py",
+    "/app/test_reports/pytest/pytest_iteration149.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "YOGA POSES - Verified image corrections working:",
+    "- Downward Dog, Warrior II, Tree Pose, Mountain Pose all have Wikimedia Commons URLs",
+    "- 'Verified references (2)' labels visible on pose cards",
+    "- New fields present: somatic_fascia_focus, breath_hybrid_cue, mindfulness_prompt, source_references",
+    "",
+    "SOMATIC MOVEMENT - Track categories working:",
+    "- Movement Track filter dropdown shows: All Tracks, Somatic Movement, Tai Chi, Chi Gong",
+    "- 39 practices returned with movement_track field",
+    "- Somatic Movement entries have: somatic_fascia_focus, breath_hybrid_mode, breath_hybrid_sequence",
+    "- Modal shows all new metadata sections correctly",
+    "",
+    "NO REGRESSIONS detected:",
+    "- Landing page loads with Shamanic Elements Soul Temple branding",
+    "- Yoga Library shows 78 poses with images rendering",
+    "- Somatic Movement shows 39 practices with track labels",
+    "- Start Guided Practice button visible in modals"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration149_yoga_somatic_categories.py"
+  ],
+  "success_rate": {
+    "backend": "100% (19/19 tests passed)",
+    "frontend": "100% (all UI elements rendering correctly)"
+  },
+  "test_credentials": "No auth needed for yoga/somatic endpoints",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 149 validated yoga image corrections and somatic movement track categories. Key verified features: (1) Yoga poses have Wikimedia Commons verified images for key poses (Downward Dog, Warrior II, Tree Pose, etc.), (2) New yoga fields: somatic_fascia_focus, breath_hybrid_cue, mindfulness_prompt, source_references, (3) Somatic endpoint returns movement_track field with values: 'Somatic Movement', 'Tai Chi', 'Chi Gong', (4) Somatic Movement entries have fascia focus and breath hybrid sequence metadata, (5) Frontend renders all new fields in pose/practice modals.",
+  "tested_flows": {
+    "backend_api": [
+      "GET /api/yoga/poses - Returns 78 poses with verified image URLs - PASS",
+      "Downward Dog has Wikimedia Commons image - PASS",
+      "Warrior II has Wikimedia Commons image - PASS",
+      "Tree Pose has Wikimedia Commons image - PASS",
+      "Poses have somatic_fascia_focus field - PASS",
+      "Poses have breath_hybrid_cue field - PASS",
+      "Poses have mindfulness_prompt field - PASS",
+      "Verified poses have source_references array - PASS",
+      "GET /api/somatic - Returns 39 practices - PASS",
+      "Practices have movement_track field - PASS",
+      "Movement tracks include 'Somatic Movement' - PASS",
+      "Movement tracks include 'Tai Chi' - PASS",
+      "Movement tracks include 'Chi Gong' - PASS",
+      "Somatic Movement has somatic_fascia_focus - PASS",
+      "Somatic Movement has breath_hybrid_sequence - PASS",
+      "Somatic Movement has breath_hybrid_mode - PASS",
+      "Health check endpoint - PASS",
+      "Yoga poses structure no regression - PASS",
+      "Somatic structure no regression - PASS"
+    ],
+    "frontend_ui": [
+      "Landing page loads with Soul Temple branding - PASS",
+      "Yoga Library page loads (78 poses) - PASS",
+      "Pose cards render with images - PASS",
+      "Pose modal shows Somatic & Fascia Focus section - PASS",
+      "Pose modal shows Breath Hybrid Cue section - PASS",
+      "Pose modal shows Source References section - PASS",
+      "Somatic Movement page loads (39 practices) - PASS",
+      "Movement Track filter visible with all options - PASS",
+      "Practice cards show movement track labels - PASS",
+      "Practice cards show breath hybrid mode labels - PASS",
+      "Practice modal shows Movement Track section - PASS",
+      "Practice modal shows Somatic & Fascia Focus section - PASS",
+      "Practice modal shows Breath Hybrid Sequence section - PASS",
+      "Start Guided Practice button visible - PASS"
+    ]
+  },
+  "verification_summary": {
+    "yoga_image_corrections": "VERIFIED - Key poses (Downward Dog, Warrior II, Tree Pose, Mountain Pose) have Wikimedia Commons URLs",
+    "new_yoga_fields": "VERIFIED - somatic_fascia_focus, breath_hybrid_cue, mindfulness_prompt, source_references present",
+    "somatic_track_categories": "VERIFIED - Somatic Movement, Tai Chi, Chi Gong tracks separated",
+    "somatic_fascia_metadata": "VERIFIED - Somatic Movement entries have fascia focus and breath hybrid sequence",
+    "no_regressions": "VERIFIED - Landing, Yoga Library, Somatic Movement pages load correctly"
+  }
+}

@@ -322,8 +322,9 @@ const YogaLibrary = ({ user, api }) => {
                     <img
                       src={hasImageError ? getPlaceholderImage(pose.element) : (pose.image_url || getPlaceholderImage(pose.element))}
                       alt={pose.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain object-center bg-black/35"
                       onError={() => handleImageError(pose.id)}
+                      data-testid={`pose-image-${pose.id}`}
                     />
                     <div className={`absolute inset-0 bg-gradient-to-t ${colors.gradient}`} />
                     
@@ -396,8 +397,9 @@ const YogaLibrary = ({ user, api }) => {
                 <img
                   src={imageErrors.has(selectedPose.id) ? getPlaceholderImage(selectedPose.element) : (selectedPose.image_url || getPlaceholderImage(selectedPose.element))}
                   alt={selectedPose.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain object-center bg-black/45"
                   onError={() => handleImageError(selectedPose.id)}
+                  data-testid="selected-pose-image"
                 />
                 <div className={`absolute inset-0 bg-gradient-to-t ${elementColors[selectedPose.element]?.gradient || 'from-black/60 to-transparent'}`} />
                 
@@ -547,6 +549,56 @@ const YogaLibrary = ({ user, api }) => {
                     </h3>
                     <div className="pl-10 p-4 rounded-xl bg-violet-500/5 border border-violet-500/20">
                       <p className="text-sm text-muted-foreground leading-relaxed italic">{selectedPose.spiritual_purpose}</p>
+                    </div>
+                  </div>
+                )}
+
+                {selectedPose.somatic_fascia_focus && (
+                  <div data-testid="selected-pose-fascia-focus">
+                    <h3 className="text-lg font-serif mb-3 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">◎</span>
+                      Somatic & Fascia Focus
+                    </h3>
+                    <div className="pl-10 p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+                      <p className="text-sm text-muted-foreground leading-relaxed">{selectedPose.somatic_fascia_focus}</p>
+                    </div>
+                  </div>
+                )}
+
+                {selectedPose.breath_hybrid_cue && (
+                  <div data-testid="selected-pose-breath-hybrid">
+                    <h3 className="text-lg font-serif mb-3 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400">◈</span>
+                      Breath Hybrid Cue
+                    </h3>
+                    <div className="pl-10 p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/20">
+                      <p className="text-sm text-muted-foreground leading-relaxed">{selectedPose.breath_hybrid_cue}</p>
+                      {selectedPose.mindfulness_prompt && (
+                        <p className="text-sm text-cyan-200/80 mt-3">Mindfulness: {selectedPose.mindfulness_prompt}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {selectedPose.source_references?.length > 0 && (
+                  <div data-testid="selected-pose-source-references">
+                    <h3 className="text-lg font-serif mb-3 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400">↗</span>
+                      Source References
+                    </h3>
+                    <div className="pl-10 space-y-2">
+                      {selectedPose.source_references.slice(0, 3).map((ref) => (
+                        <a
+                          key={ref}
+                          href={ref}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block text-sm text-amber-200/80 hover:text-amber-200 underline underline-offset-2 break-all"
+                          data-testid={`selected-pose-reference-${stablePoseKey(selectedPose.id || selectedPose.name, ref)}`}
+                        >
+                          {ref}
+                        </a>
+                      ))}
                     </div>
                   </div>
                 )}

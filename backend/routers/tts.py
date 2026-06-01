@@ -291,9 +291,15 @@ def _build_somatic_script(practice: dict[str, Any]) -> str:
     element = practice.get('element', 'Earth')
     instructions = practice.get('instructions', [])
     benefits = practice.get('benefits', [])
+    movement_track = practice.get('movement_track') or practice.get('category') or 'Somatic Movement'
+    fascia_focus = practice.get('somatic_fascia_focus') or "the major fascial lines that feel most charged today"
+    breath_hybrid_mode = practice.get('breath_hybrid_mode') or "Somatic & Fascia Breath Hybrid"
+    breath_hybrid_sequence = practice.get('breath_hybrid_sequence') or []
+    mindfulness_anchor = practice.get('mindfulness_anchor') or "Track one sensation, one emotion, and one breath shift."
 
     instructions_text = " ".join([f"Step {i+1}: {inst}" for i, inst in enumerate(instructions)])
     benefits_text = ", ".join(benefits) if benefits else "releasing tension and finding inner peace"
+    breath_hybrid_text = " ".join([f"Hybrid cue {i + 1}: {cue}" for i, cue in enumerate(breath_hybrid_sequence)])
 
     script_parts = [
         f"Welcome to {name}.",
@@ -302,6 +308,9 @@ def _build_somatic_script(practice: dict[str, Any]) -> str:
         "",
         f"This practice takes approximately {duration} minutes.",
         f"The benefits include {benefits_text}.",
+        f"Movement track: {movement_track}.",
+        f"Primary fascia focus: {fascia_focus}",
+        f"Breath mode: {breath_hybrid_mode}",
         "",
         "Find a comfortable space where you can move freely.",
         "Take a moment to arrive fully in your body.",
@@ -325,10 +334,13 @@ def _build_somatic_script(practice: dict[str, Any]) -> str:
         "",
         instructions_text,
         "",
+        breath_hybrid_text,
+        "",
         "Remember, there is no perfect way to do this.",
         "Your body knows what it needs.",
         "Follow your own rhythm.",
         "Trust the wisdom within you.",
+        mindfulness_anchor,
         "",
         f"Feel the {element.lower()} energy supporting your practice.",
         "Let it guide your movements.",
