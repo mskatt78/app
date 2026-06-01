@@ -310,6 +310,25 @@
   - Frontend: **100% pass**
   - No regressions across landing, Yoga Library, Somatic Movement, guided start flow.
 
+## Latest Verification Snapshot (Iteration 150) — 2026-06-01
+- Follow-up request completed:
+  - Expanded Wikimedia-verified image override coverage for remaining high-risk yoga poses.
+  - Added Yoga card-level and modal-level `Verified Source` badges for faster trust scanning.
+- Backend updates:
+  - Extended `YOGA_VERIFIED_IMAGE_OVERRIDES` in `routers/content.py` for additional advanced/intermediate poses including:
+    - Warrior III, Headstand, Shoulder Stand, Plow Pose, Wheel Pose, Firefly Pose, Eight Angle Pose
+    - plus additional high-risk mismatch candidates.
+- Frontend updates:
+  - `YogaLibrary.jsx` now shows `Verified Source` badge on cards for verified entries.
+  - Pose modal now shows `Verified Source` badge next to element/difficulty and retains source reference links.
+- Validation (`iteration_150`):
+  - Backend: **100% (16/16 pass)**
+  - Frontend: **100% pass**
+  - Verification details:
+    - 41 verified yoga entries rendering badge
+    - all targeted high-risk poses confirmed with Wikimedia-based verified images
+    - no regressions in yoga listing, modal opening, or image rendering.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -330,6 +349,10 @@
 ### P1 (New content integrity continuation)
 - Expand Wikimedia-verified override coverage beyond key yoga poses to remaining high-traffic poses where mismatch risk remains.
 - Add optional quality score badge to yoga cards for image verification provenance transparency.
+
+### P1 (updated after Iteration 150)
+- Continue extending verified references for remaining unverified poses with mismatch reports.
+- Add optional admin-side "mark verified" workflow for future pose/image audits.
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
