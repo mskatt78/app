@@ -274,6 +274,20 @@
   - Frontend: **100%** across Light Codes / Elemental Temples / Heart Practices / Courses
   - No new regressions found.
 
+## Latest Verification Snapshot (Iteration 148)
+- Resolved Mindfulness "Sound Meditation" complaint: no sound + manual step clicking.
+- Replaced manual step/timer flow in `Mindfulness.jsx` with `PracticeTimer` integration configured for:
+  - `autoStartAudio={true}`
+  - `autoNarrate={true}`
+  - automatic segment-based progression (no manual Next Step).
+- Added explicit auto-guidance UX copy and preserved early-complete control.
+- Verification (`iteration_148`):
+  - Frontend **100% pass**
+  - Timer runs continuously
+  - Narration status visible (`Narrating section ...`)
+  - Toning status visible
+  - User complaint marked **RESOLVED** by testing agent.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
