@@ -601,6 +601,20 @@ YOGA_VERIFIED_IMAGE_OVERRIDES = {
             "https://en.wikipedia.org/wiki/Dhyana_in_Hinduism",
         ],
     },
+    "plank pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/76/Phalakasana.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Phalakasana.png",
+            "https://en.wikipedia.org/wiki/Phalakasana",
+        ],
+    },
+    "seated spinal twist": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/8/84/Ardha-Matsyendrasana_Yoga-Asana_Nina-Mel.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Ardha-Matsyendrasana_Yoga-Asana_Nina-Mel.jpg",
+            "https://en.wikipedia.org/wiki/Ardha_Matsyendrasana",
+        ],
+    },
 }
 
 YOGA_FASCIA_FOCUS_BY_ELEMENT = {

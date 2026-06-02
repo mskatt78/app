@@ -637,6 +637,25 @@ const YogaLibrary = ({ user, api }) => {
                   </div>
                 )}
 
+                {selectedPose.image_source === "pending_verification" && (
+                  <div data-testid="selected-pose-pending-verification-note">
+                    <h3 className="text-lg font-serif mb-3 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-300">!</span>
+                      Source Review Status
+                    </h3>
+                    <div className="pl-10 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        This pose is currently marked as pending source verification.
+                      </p>
+                      {selectedPose.image_validation?.priority && (
+                        <p className="text-sm text-amber-200/80 mt-2">
+                          Priority: {selectedPose.image_validation.priority}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Energetic Effects */}
                 {selectedPose.energetic_effects && (
                   <div>
