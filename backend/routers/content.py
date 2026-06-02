@@ -482,6 +482,90 @@ YOGA_VERIFIED_IMAGE_OVERRIDES = {
             "https://en.wikipedia.org/wiki/Astavakrasana",
         ],
     },
+    "bridge pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f9/Anil_Shrikrishna_Manekar_-_Setubandhasana_-_International_Day_of_Yoga_Celebration_-_NCSM_-_Kolkata_2015-06-21_7399.JPG",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Anil_Shrikrishna_Manekar_-_Setubandhasana_-_International_Day_of_Yoga_Celebration_-_NCSM_-_Kolkata_2015-06-21_7399.JPG",
+            "https://en.wikipedia.org/wiki/Setu_Bandha_Sarvangasana",
+        ],
+    },
+    "cat-cow flow": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Bidalasana.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Bidalasana.png",
+            "https://en.wikipedia.org/wiki/Marjaryasana",
+        ],
+    },
+    "corpse pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a4/Savasana_-_International_Day_of_Yoga_Celebration_-_NCSM_-_Kolkata_2015-06-21_7408.JPG",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Savasana_-_International_Day_of_Yoga_Celebration_-_NCSM_-_Kolkata_2015-06-21_7408.JPG",
+            "https://en.wikipedia.org/wiki/Savasana",
+        ],
+    },
+    "easy pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/ae/Sukkasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Sukkasana.jpg",
+            "https://en.wikipedia.org/wiki/Sukhasana",
+        ],
+    },
+    "extended side angle": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Parsvakonasana_Utthita_B_-_Revolved_Side_Angle_Pose_B_-_with_arm_Support.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Parsvakonasana_Utthita_B_-_Revolved_Side_Angle_Pose_B_-_with_arm_Support.jpg",
+            "https://en.wikipedia.org/wiki/Utthita_Parsvakonasana",
+        ],
+    },
+    "extended triangle": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Trikonasana_Yoga-Asana_Nina-Mel.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Trikonasana_Yoga-Asana_Nina-Mel.jpg",
+            "https://en.wikipedia.org/wiki/Trikonasana",
+        ],
+    },
+    "garland pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Mr-yoga-lion-pose-in-garland-pose.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-lion-pose-in-garland-pose.jpg",
+            "https://en.wikipedia.org/wiki/Malasana",
+        ],
+    },
+    "goddess pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Utkatakonasana.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Utkatakonasana.png",
+            "https://en.wikipedia.org/wiki/Utkata_Konasana",
+        ],
+    },
+    "locust pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/14/Salabhasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Salabhasana.jpg",
+            "https://en.wikipedia.org/wiki/Salabhasana",
+        ],
+    },
+    "thunderbolt pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Mrs_Manekar_and_Anil_Shrikrishna_Manekar_-_Vajrasana_-_International_Day_of_Yoga_Celebration_-_NCSM_-_Kolkata_2015-06-21_7342.JPG",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mrs_Manekar_and_Anil_Shrikrishna_Manekar_-_Vajrasana_-_International_Day_of_Yoga_Celebration_-_NCSM_-_Kolkata_2015-06-21_7342.JPG",
+            "https://en.wikipedia.org/wiki/Vajrasana",
+        ],
+    },
+    "prayer pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Pranamanasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Pranamanasana.jpg",
+            "https://en.wikipedia.org/wiki/Anjali_Mudra",
+        ],
+    },
+    "wide-legged forward fold": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Prasaritapadottanasana.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Prasaritapadottanasana.png",
+            "https://en.wikipedia.org/wiki/Prasarita_Padottanasana",
+        ],
+    },
 }
 
 YOGA_FASCIA_FOCUS_BY_ELEMENT = {
@@ -519,6 +603,18 @@ def _normalize_label_key(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", str(value or "").lower()).strip()
 
 
+def _lookup_yoga_override(pose_name_key: str) -> dict[str, Any] | None:
+    direct = YOGA_VERIFIED_IMAGE_OVERRIDES.get(pose_name_key)
+    if direct:
+        return direct
+
+    for raw_key, override in YOGA_VERIFIED_IMAGE_OVERRIDES.items():
+        if _normalize_label_key(raw_key) == pose_name_key:
+            return override
+
+    return None
+
+
 def _merge_source_references(*ref_groups: Any) -> list[str]:
     merged: list[str] = []
     seen: set[str] = set()
@@ -534,7 +630,7 @@ def _merge_source_references(*ref_groups: Any) -> list[str]:
 def _enrich_yoga_pose(pose: dict[str, Any]) -> dict[str, Any]:
     enriched = dict(pose)
     pose_name_key = _normalize_label_key(enriched.get("name", ""))
-    override = YOGA_VERIFIED_IMAGE_OVERRIDES.get(pose_name_key)
+    override = _lookup_yoga_override(pose_name_key)
     source_type = "hybrid-curated"
 
     if override:
