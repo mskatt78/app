@@ -329,6 +329,23 @@
     - all targeted high-risk poses confirmed with Wikimedia-based verified images
     - no regressions in yoga listing, modal opening, or image rendering.
 
+## Latest Verification Snapshot (Iteration 151) — 2026-06-01
+- Continued verification pass completed for remaining mismatch-risk yoga entries.
+- Added/validated additional Wikimedia overrides for beginner/high-traffic mismatch candidates:
+  - Bridge Pose, Cat-Cow Flow, Corpse Pose, Easy Pose, Extended Side Angle, Extended Triangle,
+    Garland Pose, Goddess Pose, Locust Pose, Thunderbolt Pose, Prayer Pose, Wide-Legged Forward Fold.
+- Verification coverage status:
+  - Total yoga poses: 78
+  - Verified with Wikimedia sources: 55
+  - Remaining unverified: 23
+- UI trust indicator status:
+  - `Verified Source` badge rendering on cards: PASS (55 cards)
+  - Modal `Verified Source` badge + source links: PASS
+- Validation (`iteration_151`):
+  - Backend: **100% (24/24 pass)**
+  - Frontend: **100% pass**
+  - No regressions in Yoga Library route, modal, or image rendering.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -353,6 +370,10 @@
 ### P1 (updated after Iteration 150)
 - Continue extending verified references for remaining unverified poses with mismatch reports.
 - Add optional admin-side "mark verified" workflow for future pose/image audits.
+
+### P1 (updated after Iteration 151)
+- Complete final verification of remaining 23 unverified yoga entries (focus on seated variants and low-coverage Sanskrit matches).
+- Introduce optional fallback policy: if no trusted Wikimedia match exists, keep current image but flag as "pending verification".
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
