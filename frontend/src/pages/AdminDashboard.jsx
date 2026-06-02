@@ -35,6 +35,13 @@ const quickActions = [
     icon: Sparkles,
     cta: "Open yoga library",
   },
+  {
+    id: "yoga_poses_pending",
+    title: "Yoga Pending Queue",
+    description: "Review any yoga entries still awaiting source verification in one focused queue.",
+    icon: Sparkles,
+    cta: "Open pending queue",
+  },
 ];
 
 export default function AdminDashboard({ api: providedApi }) {
@@ -129,7 +136,13 @@ export default function AdminDashboard({ api: providedApi }) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                onClick={() => navigate(`/admin/manage/${action.id}`)}
+                onClick={() => {
+                  if (action.id === "yoga_poses_pending") {
+                    navigate("/admin/manage/yoga_poses?verification=pending");
+                    return;
+                  }
+                  navigate(`/admin/manage/${action.id}`);
+                }}
                 className="rounded-[1.5rem] border border-white/10 bg-card/70 p-5 text-left hover:border-primary/30 hover:-translate-y-0.5 transition-all"
                 data-testid={`admin-quick-action-${action.id}`}
               >

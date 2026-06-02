@@ -615,6 +615,118 @@ YOGA_VERIFIED_IMAGE_OVERRIDES = {
             "https://en.wikipedia.org/wiki/Ardha_Matsyendrasana",
         ],
     },
+    "fire log pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a6/Flickr_-_Nicholas_T_-_Crossed.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Flickr_-_Nicholas_T_-_Crossed.jpg",
+            "https://en.wikipedia.org/wiki/Yoga_asana",
+        ],
+    },
+    "frog pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Yagnesh_Uttanmandukasan.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Yagnesh_Uttanmandukasan.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Mandukasana",
+        ],
+    },
+    "reverse warrior": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Nama_Baddha_Hasta_Virabhadrasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Nama_Baddha_Hasta_Virabhadrasana.jpg",
+            "https://en.wikipedia.org/wiki/Virabhadrasana",
+        ],
+    },
+    "supine twist": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/55/Waist_Rotating_Pose.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Waist_Rotating_Pose.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Jathara_Parivartanasana",
+        ],
+    },
+    "thread the needle": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/55/Hatha_yoga_child_pose.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Hatha_yoga_child_pose.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Twisting_asanas",
+        ],
+    },
+    "embryo pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/31/Garbhasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Garbhasana.jpg",
+            "https://en.wikipedia.org/wiki/Yoga_asana",
+        ],
+    },
+    "seated ankle circles": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/ba/1.Ausstrecken.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:1.Ausstrecken.png",
+            "https://en.wikibooks.org/wiki/Yoga/Chair_Yoga",
+        ],
+    },
+    "seated cat cow": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/3.1.Vorbeugen.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:3.1.Vorbeugen.png",
+            "https://en.wikibooks.org/wiki/Yoga/Chair_Yoga",
+        ],
+    },
+    "seated chest opener": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/ba/1.Ausstrecken.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:1.Ausstrecken.png",
+            "https://en.wikibooks.org/wiki/Yoga/Chair_Yoga",
+        ],
+    },
+    "seated eagle arms": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b6/Garudasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Garudasana.jpg",
+            "https://en.wikipedia.org/wiki/Garudasana",
+        ],
+    },
+    "seated neck rolls": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/06/4.Kopf_bewegen.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:4.Kopf_bewegen.png",
+            "https://en.wikibooks.org/wiki/Yoga/Chair_Yoga",
+        ],
+    },
+    "seated pigeon pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/04/Eka_Pada_Rajakapotasana_-_One_Legged_Royal_Pigeon_Pose.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Eka_Pada_Rajakapotasana_-_One_Legged_Royal_Pigeon_Pose.jpg",
+            "https://en.wikipedia.org/wiki/Kapotasana",
+        ],
+    },
+    "seated relaxation": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a8/10.Meditation.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:10.Meditation.png",
+            "https://en.wikibooks.org/wiki/Yoga/Chair_Yoga",
+        ],
+    },
+    "seated side stretch": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/ba/1.Ausstrecken.png",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:1.Ausstrecken.png",
+            "https://en.wikibooks.org/wiki/Yoga/Chair_Yoga",
+        ],
+    },
+    "seated tree pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/72/Vriksasana_Yoga-Asana_Nina-Mel.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Vriksasana_Yoga-Asana_Nina-Mel.jpg",
+            "https://en.wikipedia.org/wiki/Tree_pose",
+        ],
+    },
+    "seated warrior": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f6/Nama_Baddha_Hasta_Virabhadrasana.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Nama_Baddha_Hasta_Virabhadrasana.jpg",
+            "https://en.wikipedia.org/wiki/Virabhadrasana",
+        ],
+    },
 }
 
 YOGA_FASCIA_FOCUS_BY_ELEMENT = {

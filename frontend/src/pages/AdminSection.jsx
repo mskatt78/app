@@ -1,5 +1,5 @@
 import { useCallback, useState, useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Plus, Pencil, Trash2, Search, X, Save, Upload,
@@ -333,17 +333,22 @@ function AudioLibrary({ api }) {
 export default function AdminSection() {
   const { collection } = useParams();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [items, setItems] = useState([]);
   const [total, setTotal] = useState(0);
+  const [verificationSummary, setVerificationSummary] = useState({ verified: 0, pending: 0 });
   const [loading, setLoading] = useState(true);
   const [hasAdminSession, setHasAdminSession] = useState(false);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [modalItem, setModalItem] = useState(undefined); // undefined=closed, null=new, obj=edit
   const [deleting, setDeleting] = useState(null);
+  const [verificationFilter, setVerificationFilter] = useState(() => searchParams.get("verification") || "all");
+  const [priorityFilter, setPriorityFilter] = useState(() => searchParams.get("priority") || "all");
 
   const api = process.env.REACT_APP_BACKEND_URL;
   const isAudio = collection === AUDIO_COLLECTION;
+  const isYogaCollection = collection === "yoga_poses";
   const meta = {
     account_deletion_requests: { name: "Account Deletion Requests", icon: "🗑️" },
     astrology_months: { name: "13 Moon Paths", icon: "🌕" },
@@ -367,6 +372,12 @@ export default function AdminSection() {
   const fetchItems = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page, limit: 30, ...(search ? { search } : {}) });
+      if (isYogaCollection && verificationFilter !== "all") {
+        params.set("verification_status", verificationFilter);
+      }
+      if (isYogaCollection && priorityFilter !== "all") {
+        params.set("verification_priority", priorityFilter);
+      }
       const res = await fetch(`${api}/api/admin/${collection}/items?${params}`, {
         credentials: "include",
       });
@@ -377,11 +388,14 @@ export default function AdminSection() {
       const data = await res.json();
       setItems(data.items || []);
       setTotal(data.total || 0);
+      if (isYogaCollection) {
+        setVerificationSummary(data.verification_summary || { verified: 0, pending: 0 });
+      }
     } catch {
       toast.error("Failed to load items");
       throw new Error("load-items-failed");
     }
-  }, [api, collection, page, search]);
+  }, [api, collection, isYogaCollection, page, priorityFilter, search, verificationFilter]);
 
   const bootstrapAdminAccess = useCallback(async () => {
     setLoading(true);
@@ -402,6 +416,32 @@ export default function AdminSection() {
   useEffect(() => {
     bootstrapAdminAccess();
   }, [bootstrapAdminAccess]);
+
+  useEffect(() => {
+    if (!isYogaCollection) {
+      return;
+    }
+    setVerificationFilter(searchParams.get("verification") || "all");
+    setPriorityFilter(searchParams.get("priority") || "all");
+  }, [isYogaCollection, searchParams]);
+
+  const updateYogaQueueParams = (nextVerification, nextPriority) => {
+    if (!isYogaCollection) {
+      return;
+    }
+    const next = new URLSearchParams(searchParams);
+    if (nextVerification === "all") {
+      next.delete("verification");
+    } else {
+      next.set("verification", nextVerification);
+    }
+    if (nextPriority === "all") {
+      next.delete("priority");
+    } else {
+      next.set("priority", nextPriority);
+    }
+    setSearchParams(next);
+  };
 
   const handleSave = async (formData) => {
     const isNew = !formData.id || formData.id === undefined;
@@ -488,6 +528,83 @@ export default function AdminSection() {
               </Button>
             </div>
 
+            {isYogaCollection && (
+              <div className="mb-6 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5" data-testid="yoga-verification-queue-panel">
+                <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
+                  <div>
+                    <p className="text-sm font-medium">Yoga Image Verification Queue</p>
+                    <p className="text-xs text-muted-foreground" data-testid="yoga-verification-queue-summary">
+                      {verificationSummary.verified} verified · {verificationSummary.pending} pending review
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setVerificationFilter("pending");
+                      setPriorityFilter("all");
+                      setPage(1);
+                      updateYogaQueueParams("pending", "all");
+                    }}
+                    data-testid="yoga-queue-pending-only-button"
+                  >
+                    Review Pending Queue
+                  </Button>
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { value: "all", label: "All" },
+                    { value: "pending", label: "Pending" },
+                    { value: "verified", label: "Verified" },
+                  ].map((filterOption) => (
+                    <button
+                      key={filterOption.value}
+                      type="button"
+                      onClick={() => {
+                        setVerificationFilter(filterOption.value);
+                        setPage(1);
+                        updateYogaQueueParams(filterOption.value, priorityFilter);
+                      }}
+                      className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
+                        verificationFilter === filterOption.value
+                          ? "bg-emerald-500/20 border-emerald-400/40 text-emerald-100"
+                          : "bg-white/5 border-white/10 text-muted-foreground hover:text-foreground"
+                      }`}
+                      data-testid={`yoga-verification-filter-${filterOption.value}`}
+                    >
+                      {filterOption.label}
+                    </button>
+                  ))}
+
+                  {[
+                    { value: "all", label: "All Priorities" },
+                    { value: "high", label: "High" },
+                    { value: "medium", label: "Medium" },
+                    { value: "low", label: "Low" },
+                  ].map((filterOption) => (
+                    <button
+                      key={filterOption.value}
+                      type="button"
+                      onClick={() => {
+                        setPriorityFilter(filterOption.value);
+                        setPage(1);
+                        updateYogaQueueParams(verificationFilter, filterOption.value);
+                      }}
+                      className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
+                        priorityFilter === filterOption.value
+                          ? "bg-cyan-500/20 border-cyan-400/40 text-cyan-100"
+                          : "bg-white/5 border-white/10 text-muted-foreground hover:text-foreground"
+                      }`}
+                      data-testid={`yoga-priority-filter-${filterOption.value}`}
+                    >
+                      {filterOption.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Items List */}
             {loading ? (
               <div className="space-y-2">{Array.from({ length: 8 }, (_, idx) => `items-loading-${idx}`).map((placeholderKey) => <div key={placeholderKey} className="h-16 rounded-xl bg-card/50 animate-pulse" />)}</div>
@@ -513,6 +630,28 @@ export default function AdminSection() {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate">{primary}</p>
                         {secondary && <p className="text-xs text-muted-foreground">{secondary}</p>}
+                        {isYogaCollection && item.image_source && (
+                          <div className="flex flex-wrap items-center gap-2 mt-1">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] border ${
+                                item.image_source === "wikimedia_commons_verified"
+                                  ? "bg-emerald-500/15 border-emerald-400/40 text-emerald-200"
+                                  : "bg-amber-500/15 border-amber-400/40 text-amber-200"
+                              }`}
+                              data-testid={`admin-yoga-source-status-${item.id}`}
+                            >
+                              {item.image_source === "wikimedia_commons_verified" ? "Verified Source" : "Pending Source Review"}
+                            </span>
+                            {item.image_validation?.priority && (
+                              <span
+                                className="px-2 py-0.5 rounded-full text-[10px] border bg-cyan-500/10 border-cyan-400/30 text-cyan-200"
+                                data-testid={`admin-yoga-priority-${item.id}`}
+                              >
+                                Priority: {item.image_validation.priority}
+                              </span>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button onClick={() => setModalItem(item)} className="p-1.5 rounded-lg hover:bg-white/10 text-muted-foreground hover:text-foreground transition-colors" data-testid={`edit-btn-${item.id}`}>

@@ -10,6 +10,7 @@ from pydantic import BaseModel
 import jwt
 
 from .dependencies import User, get_current_user, get_db as get_router_db
+from .content import YOGA_VERIFIED_IMAGE_OVERRIDES
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 security = HTTPBearer(auto_error=False)
@@ -37,6 +38,52 @@ SOURCE_AWARE_COLLECTIONS = {
     "elemental_practices",
     "heart_practices",
 }
+
+
+def _normalize_yoga_pose_key(value: str) -> str:
+    return re.sub(r"[^a-z0-9]+", " ", str(value or "").lower()).strip()
+
+
+def _resolve_admin_yoga_verification(item: dict[str, Any]) -> dict[str, Any]:
+    normalized_name = _normalize_yoga_pose_key(item.get("name", ""))
+    override = YOGA_VERIFIED_IMAGE_OVERRIDES.get(normalized_name)
+    if not override:
+        for raw_key, raw_override in YOGA_VERIFIED_IMAGE_OVERRIDES.items():
+            if _normalize_yoga_pose_key(raw_key) == normalized_name:
+                override = raw_override
+                break
+
+    if override:
+        merged_refs = _normalize_source_references(item.get("source_references"))
+        for ref in _normalize_source_references(override.get("source_references")):
+            if ref not in merged_refs:
+                merged_refs.append(ref)
+
+        return {
+            **item,
+            "image_url": override.get("image_url") or item.get("image_url"),
+            "source_references": merged_refs,
+            "image_source": "wikimedia_commons_verified",
+            "image_validation": {
+                "status": "verified",
+                "source_type": "wikimedia_commons",
+                "score": 0.94,
+                "verified_at": datetime.now(timezone.utc).isoformat(),
+            },
+        }
+
+    difficulty = str(item.get("difficulty") or "").lower().strip()
+    priority = "high" if difficulty in {"advanced", "intermediate"} else ("medium" if normalized_name.startswith("seated ") else "low")
+    return {
+        **item,
+        "image_source": "pending_verification",
+        "image_validation": {
+            "status": "pending_review",
+            "source_type": "awaiting_wikimedia_match",
+            "priority": priority,
+            "score": 0.0,
+        },
+    }
 
 
 def _normalize_source_references(value: Any) -> list[str]:
@@ -273,8 +320,23 @@ async def get_collections(_: dict[str, Any] = Depends(_verify_admin)) -> list[di
     for meta in COLLECTION_META:
         if meta["id"] == "audio_files":
             count = await db.admin_audio.count_documents({"is_deleted": False})
-        else:
-            count = await db[meta["id"]].count_documents({})
+            result.append({**meta, "count": count})
+            continue
+
+        if meta["id"] == "yoga_poses":
+            yoga_items = await db.yoga_poses.find({}, {"_id": 0, "name": 1, "difficulty": 1}).to_list(length=500)
+            annotated = [_resolve_admin_yoga_verification(item) for item in yoga_items]
+            verified_count = len([item for item in annotated if item.get("image_source") == "wikimedia_commons_verified"])
+            pending_count = len([item for item in annotated if item.get("image_source") == "pending_verification"])
+            result.append({
+                **meta,
+                "count": len(annotated),
+                "verified_count": verified_count,
+                "pending_count": pending_count,
+            })
+            continue
+
+        count = await db[meta["id"]].count_documents({})
         result.append({**meta, "count": count})
     return result
 
@@ -285,6 +347,8 @@ async def list_items(
     page: int = 1,
     limit: int = 30,
     search: Optional[str] = None,
+    verification_status: Optional[str] = None,
+    verification_priority: Optional[str] = None,
     _: dict[str, Any] = Depends(_verify_admin),
 ) -> dict[str, Any]:
     db = get_router_db()
@@ -306,6 +370,42 @@ async def list_items(
             {"title": {"$regex": search, "$options": "i"}},
             {"description": {"$regex": search, "$options": "i"}},
         ]
+
+    if collection == "yoga_poses":
+        all_items = await db[collection].find(collection_query, {"_id": 0}).to_list(length=500)
+        annotated_items = [_resolve_admin_yoga_verification(item) for item in all_items]
+
+        if verification_status:
+            normalized_status = verification_status.strip().lower()
+            if normalized_status == "pending":
+                annotated_items = [item for item in annotated_items if item.get("image_source") == "pending_verification"]
+            elif normalized_status == "verified":
+                annotated_items = [item for item in annotated_items if item.get("image_source") == "wikimedia_commons_verified"]
+
+        if verification_priority:
+            normalized_priority = verification_priority.strip().lower()
+            if normalized_priority in {"high", "medium", "low"}:
+                annotated_items = [
+                    item
+                    for item in annotated_items
+                    if str(item.get("image_validation", {}).get("priority", "")).lower() == normalized_priority
+                ]
+
+        annotated_items.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
+        total = len(annotated_items)
+        start = (page - 1) * limit
+        end = start + limit
+        return {
+            "items": annotated_items[start:end],
+            "total": total,
+            "page": page,
+            "limit": limit,
+            "verification_summary": {
+                "verified": len([item for item in annotated_items if item.get("image_source") == "wikimedia_commons_verified"]),
+                "pending": len([item for item in annotated_items if item.get("image_source") == "pending_verification"]),
+            },
+        }
+
     items = await db[collection].find(collection_query, {"_id": 0}).sort("created_at", -1).skip((page - 1) * limit).to_list(limit)
     total = await db[collection].count_documents(collection_query)
     return {"items": items, "total": total, "page": page, "limit": limit}
