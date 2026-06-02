@@ -371,6 +371,21 @@
   - Frontend: **100% pass**
   - No regressions in yoga page load, modal behavior, or image rendering.
 
+## Latest Verification Snapshot (Iteration 153) — 2026-06-02
+- Continued verification pass completed with 2 additional pose upgrades:
+  - Plank Pose (`Phalakasana`)
+  - Seated Spinal Twist (`Seated Ardha Matsyendrasana`)
+- Added pending-state UX detail in Yoga modal:
+  - `Pending Source Review` note now includes priority for unresolved entries.
+- Coverage status after this pass:
+  - Total poses: 78
+  - Verified: 62
+  - Pending: 16
+- Validation (`iteration_153`):
+  - Backend: **100% (23/23 pass)**
+  - Frontend: **100% pass**
+  - No regressions in yoga listing, badges, modal, or image rendering.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -403,6 +418,13 @@
 ### P1 (updated after Iteration 152)
 - Resolve remaining 18 pending entries; prioritize `high` first (`Fire Log Pose`, `Frog Pose`) then `medium` seated variants.
 - Add admin-side verification queue/filter for `pending_verification` so owner can quickly approve replacements.
+
+### P1 (updated after Iteration 153)
+- Resolve final 16 pending entries:
+  - High: `Fire Log Pose`, `Frog Pose`
+  - Medium: seated variants (`Seated Cat-Cow`, `Seated Eagle Arms`, `Seated Pigeon Pose`, `Seated Relaxation`, `Seated Side Stretch`, `Seated Tree Pose`, `Seated Warrior`, `Seated Ankle Circles`, `Seated Chest Opener`, `Seated Neck Rolls`)
+  - Low: `Embryo Pose`, `Reverse Warrior`, `Supine Twist`, `Thread the Needle`
+- Consider owner-driven curation for seated specialty variants where Wikimedia has limited exact taxonomy coverage.
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
