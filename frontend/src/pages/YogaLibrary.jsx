@@ -358,6 +358,15 @@ const YogaLibrary = ({ user, api }) => {
                         Verified Source
                       </span>
                     )}
+
+                    {pose.image_source === "pending_verification" && (
+                      <span
+                        className="absolute bottom-3 right-3 px-2 py-1 rounded-full text-[10px] bg-black/55 text-amber-200 border border-amber-300/30 backdrop-blur-sm"
+                        data-testid={`pending-source-badge-${pose.id}`}
+                      >
+                        Pending Source Review
+                      </span>
+                    )}
                   </div>
                   
                   {/* Content */}
@@ -443,6 +452,14 @@ const YogaLibrary = ({ user, api }) => {
                         data-testid="selected-pose-verified-source-badge"
                       >
                         Verified Source
+                      </span>
+                    )}
+                    {selectedPose.image_source === "pending_verification" && (
+                      <span
+                        className="px-2 py-1 rounded-full text-[10px] bg-black/55 text-amber-200 border border-amber-300/30 backdrop-blur-sm"
+                        data-testid="selected-pose-pending-source-badge"
+                      >
+                        Pending Source Review
                       </span>
                     )}
                     {selectedPose.difficulty && (

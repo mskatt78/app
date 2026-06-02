@@ -1,0 +1,111 @@
+{
+  "summary": "Iteration 152 - Verified expanded yoga entries (Happy Baby, Legs Up the Wall, Reclined Bound Angle, Staff Pose, Seated Meditation). All 19 backend tests pass. API returns 60 verified / 18 pending poses (total 78). UI correctly displays Verified Source badges on cards and modal for verified poses, and Pending Source Review badges for pending poses.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration152_yoga_verification.py",
+    "/app/test_reports/pytest/pytest_iteration152.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "NEWLY VERIFIED YOGA POSES - All 5 confirmed:",
+    "- Happy Baby Pose: wikimedia_commons_verified + 2 source references",
+    "- Legs Up the Wall: wikimedia_commons_verified + 2 source references",
+    "- Reclined Bound Angle: wikimedia_commons_verified + 2 source references",
+    "- Staff Pose: wikimedia_commons_verified + 2 source references",
+    "- Seated Meditation: wikimedia_commons_verified + 2 source references",
+    "",
+    "API VERIFICATION:",
+    "- Total poses: 78",
+    "- Verified: 60 (image_source='wikimedia_commons_verified')",
+    "- Pending: 18 (image_source='pending_verification')",
+    "- All verified poses have content_integrity.verified=True",
+    "- All verified poses have image_validation.status='verified'",
+    "- All verified poses have at least 2 source_references",
+    "- All pending poses have image_validation.status='pending_review' with priority field",
+    "",
+    "UI VERIFICATION:",
+    "- 60 'Verified Source' badges visible on pose cards",
+    "- 18 'Pending Source Review' badges visible on pose cards",
+    "- Modal displays 'Verified Source' badge for verified poses",
+    "- Modal displays 'Pending Source Review' badge for pending poses",
+    "- Modal shows Source References section with clickable Wikimedia/Wikipedia links for verified poses",
+    "- Modal does NOT show Source References section for pending poses (correct behavior)",
+    "- Somatic & Fascia Focus section displays correctly",
+    "- Breath Hybrid Cue section displays correctly",
+    "",
+    "NO REGRESSIONS:",
+    "- Yoga Library loads with 78 poses",
+    "- Previously verified poses (Mountain, Tree, Warrior I/II/III, Bridge) still verified",
+    "- Modal opens correctly with all sections",
+    "- Pose images render correctly"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration152_yoga_verification.py"
+  ],
+  "success_rate": {
+    "backend": "100% (19/19 tests passed)",
+    "frontend": "100% (all UI elements rendering correctly)"
+  },
+  "test_credentials": "No auth needed for yoga endpoints",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Iteration 152 validated expanded Wikimedia-verified image overrides for 5 additional yoga poses. Key verified features: (1) 60 poses now verified (up from 55 in iteration 151), (2) Newly verified poses: Happy Baby Pose, Legs Up the Wall, Reclined Bound Angle, Staff Pose, Seated Meditation, (3) 18 poses remain pending with image_source='pending_verification' and status='pending_review' with priority field, (4) All verified poses have image_source='wikimedia_commons_verified', content_integrity.verified=True, and 2+ source_references, (5) UI displays 'Verified Source' badges on 60 cards and 'Pending Source Review' on 18 cards, (6) Modal shows appropriate badge based on verification status, (7) Source References section only appears for verified poses, (8) No regressions on yoga page loading (78 poses), modal opening, or image rendering.",
+  "tested_flows": {
+    "backend_api": [
+      "GET /api/health - PASS",
+      "GET /api/yoga/poses returns 200 - PASS",
+      "Total poses count is 78 - PASS",
+      "Verified count is 60 - PASS",
+      "Pending count is 18 - PASS",
+      "Happy Baby Pose has Wikimedia Commons verified image - PASS",
+      "Legs Up the Wall has Wikimedia Commons verified image - PASS",
+      "Reclined Bound Angle has Wikimedia Commons verified image - PASS",
+      "Staff Pose has Wikimedia Commons verified image - PASS",
+      "Seated Meditation has Wikimedia Commons verified image - PASS",
+      "Pending poses have status='pending_review' - PASS",
+      "Pending poses have priority field - PASS",
+      "Verified poses have content_integrity.verified=True - PASS",
+      "Verified poses have at least 2 source references - PASS",
+      "Verified poses have Wikimedia image URLs - PASS",
+      "Mountain Pose still verified (regression check) - PASS",
+      "Tree Pose still verified (regression check) - PASS",
+      "Warrior I, II, III still verified (regression check) - PASS",
+      "Bridge Pose still verified (regression check) - PASS"
+    ],
+    "frontend_ui": [
+      "Yoga Library page loads (78 poses) - PASS",
+      "60 Verified Source badges visible on cards - PASS",
+      "18 Pending Source Review badges visible on cards - PASS",
+      "Modal shows Verified Source badge for verified pose - PASS",
+      "Modal shows Pending Source Review badge for pending pose - PASS",
+      "Modal shows Source References section for verified pose - PASS",
+      "Modal does NOT show Source References for pending pose - PASS",
+      "Source references include Wikimedia/Wikipedia links - PASS",
+      "Somatic & Fascia Focus section displays - PASS",
+      "Breath Hybrid Cue section displays - PASS",
+      "Pose images render correctly - PASS"
+    ]
+  },
+  "verification_summary": {
+    "newly_verified_poses": "VERIFIED - Happy Baby Pose, Legs Up the Wall, Reclined Bound Angle, Staff Pose, Seated Meditation",
+    "total_verified_count": "VERIFIED - 60 poses now have Wikimedia Commons verified images",
+    "total_pending_count": "VERIFIED - 18 poses remain pending verification",
+    "source_references": "VERIFIED - All verified poses include source_references array with Wikimedia/Wikipedia links",
+    "image_source_field": "VERIFIED - Verified poses have image_source='wikimedia_commons_verified', pending have 'pending_verification'",
+    "card_verified_badge": "VERIFIED - 60 poses display 'Verified Source' badge on cards",
+    "card_pending_badge": "VERIFIED - 18 poses display 'Pending Source Review' badge on cards",
+    "modal_verified_badge": "VERIFIED - Modal displays 'Verified Source' badge for verified poses",
+    "modal_pending_badge": "VERIFIED - Modal displays 'Pending Source Review' badge for pending poses",
+    "modal_source_references": "VERIFIED - Modal shows Source References section only for verified poses",
+    "no_regressions": "VERIFIED - Yoga page loads, modal opens, images render correctly"
+  }
+}

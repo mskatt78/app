@@ -566,6 +566,41 @@ YOGA_VERIFIED_IMAGE_OVERRIDES = {
             "https://en.wikipedia.org/wiki/Prasarita_Padottanasana",
         ],
     },
+    "happy baby pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/bd/IMG_0377_2_Happy_Baby.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:IMG_0377_2_Happy_Baby.jpg",
+            "https://en.wikipedia.org/wiki/Ananda_Balasana",
+        ],
+    },
+    "legs up the wall": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3b/Viparita-Karani_Yoga-Asana_Nina-Mel.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Viparita-Karani_Yoga-Asana_Nina-Mel.jpg",
+            "https://en.wikipedia.org/wiki/Viparita_Karani",
+        ],
+    },
+    "reclined bound angle": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Mr-yoga-reclined-bound-angle.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mr-yoga-reclined-bound-angle.jpg",
+            "https://en.wikipedia.org/wiki/Baddha_Konasana",
+        ],
+    },
+    "staff pose": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Dandasana_yoga_posture.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Dandasana_yoga_posture.jpg",
+            "https://en.wikipedia.org/wiki/Dandasana",
+        ],
+    },
+    "seated meditation": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/40/Meditation_sitting_pose_siddhasana_yoga_Gloria.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Meditation_sitting_pose_siddhasana_yoga_Gloria.jpg",
+            "https://en.wikipedia.org/wiki/Dhyana_in_Hinduism",
+        ],
+    },
 }
 
 YOGA_FASCIA_FOCUS_BY_ELEMENT = {
@@ -615,6 +650,17 @@ def _lookup_yoga_override(pose_name_key: str) -> dict[str, Any] | None:
     return None
 
 
+def _yoga_pending_verification_priority(pose: dict[str, Any], pose_name_key: str) -> str:
+    difficulty = str(pose.get("difficulty") or "").lower().strip()
+    if difficulty in {"advanced", "intermediate"}:
+        return "high"
+
+    if pose_name_key.startswith("seated "):
+        return "medium"
+
+    return "low"
+
+
 def _merge_source_references(*ref_groups: Any) -> list[str]:
     merged: list[str] = []
     seen: set[str] = set()
@@ -647,6 +693,18 @@ def _enrich_yoga_pose(pose: dict[str, Any]) -> dict[str, Any]:
             "verified_at": datetime.now(timezone.utc).isoformat(),
         }
         source_type = "wikipedia_commons_verified"
+    else:
+        priority = _yoga_pending_verification_priority(enriched, pose_name_key)
+        enriched["image_source"] = "pending_verification"
+        enriched["image_validation"] = {
+            "status": "pending_review",
+            "source_type": "awaiting_wikimedia_match",
+            "score": 0.0,
+            "priority": priority,
+            "note": "No exact Wikimedia Commons match verified yet for this pose variant.",
+        }
+        enriched.setdefault("source_references", [])
+        source_type = "hybrid-curated-pending-verification"
 
     element_key = _normalize_label_key(enriched.get("element", "spirit"))
     enriched.setdefault(
