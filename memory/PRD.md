@@ -386,6 +386,29 @@
   - Frontend: **100% pass**
   - No regressions in yoga listing, badges, modal, or image rendering.
 
+## Latest Verification Snapshot (Iteration 154) — 2026-06-02
+- Completed requested resolution of remaining pending yoga entries with true-image sources and references.
+- Yoga verification status now:
+  - Total poses: 78
+  - Verified: 78
+  - Pending: 0
+- Priority completion confirmed:
+  - Fire Log Pose: verified (Wikimedia source + references)
+  - Frog Pose: verified (Mandukasana-category-aligned Wikimedia source + references)
+  - Seated variants: all resolved to verified source state with references.
+- Admin-side queue/filter enhancements implemented:
+  - Admin API supports yoga verification filters: `verification_status`, `verification_priority`
+  - Admin section (`/admin/manage/yoga_poses`) now includes a verification queue panel:
+    - Summary metrics
+    - Filters (All / Pending / Verified)
+    - Priority filters (All / High / Medium / Low)
+    - “Review Pending Queue” shortcut
+  - Admin dashboard now includes a quick action card for Yoga Pending Queue.
+- Validation (`iteration_154`):
+  - Backend: **100% (28/28 pass)**
+  - Frontend: **100% pass**
+  - No regressions in Yoga Library, Admin Dashboard, or Admin Yoga manager.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -425,6 +448,10 @@
   - Medium: seated variants (`Seated Cat-Cow`, `Seated Eagle Arms`, `Seated Pigeon Pose`, `Seated Relaxation`, `Seated Side Stretch`, `Seated Tree Pose`, `Seated Warrior`, `Seated Ankle Circles`, `Seated Chest Opener`, `Seated Neck Rolls`)
   - Low: `Embryo Pose`, `Reverse Warrior`, `Supine Twist`, `Thread the Needle`
 - Consider owner-driven curation for seated specialty variants where Wikimedia has limited exact taxonomy coverage.
+
+### P1 (updated after Iteration 154)
+- Add optional admin bulk actions for verification workflow (bulk mark reviewed, export verification report CSV).
+- Add optional pose-level verification confidence legend in admin (exact canonical vs seated-variant mapping) for transparency.
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
