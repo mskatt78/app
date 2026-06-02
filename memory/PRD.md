@@ -346,6 +346,31 @@
   - Frontend: **100% pass**
   - No regressions in Yoga Library route, modal, or image rendering.
 
+## Latest Verification Snapshot (Iteration 152) — 2026-06-02
+- Continued yoga verification pass completed with additional safe Wikimedia matches and explicit pending-state handling.
+- Newly verified in this pass:
+  - Happy Baby Pose
+  - Legs Up the Wall
+  - Reclined Bound Angle
+  - Staff Pose
+  - Seated Meditation
+- Verification-state architecture update:
+  - Verified entries: `image_source = wikimedia_commons_verified`
+  - Unresolved entries: `image_source = pending_verification`
+  - Pending entries now include `image_validation.status = pending_review` + `priority` field for triage.
+- UI trust/status updates:
+  - `Verified Source` badge for verified entries
+  - `Pending Source Review` badge for unresolved entries
+  - Source reference links visible only for verified entries
+- Coverage status after this pass:
+  - Total poses: 78
+  - Verified: 60
+  - Pending: 18
+- Validation (`iteration_152`):
+  - Backend: **100% (19/19 pass)**
+  - Frontend: **100% pass**
+  - No regressions in yoga page load, modal behavior, or image rendering.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -374,6 +399,10 @@
 ### P1 (updated after Iteration 151)
 - Complete final verification of remaining 23 unverified yoga entries (focus on seated variants and low-coverage Sanskrit matches).
 - Introduce optional fallback policy: if no trusted Wikimedia match exists, keep current image but flag as "pending verification".
+
+### P1 (updated after Iteration 152)
+- Resolve remaining 18 pending entries; prioritize `high` first (`Fire Log Pose`, `Frog Pose`) then `medium` seated variants.
+- Add admin-side verification queue/filter for `pending_verification` so owner can quickly approve replacements.
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
