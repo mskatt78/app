@@ -91,23 +91,15 @@ const YogaLibrary = ({ user, api }) => {
   }, [fetchFavorites, fetchPoses]);
 
   useEffect(() => {
-    let filtered = poses;
-    
-    if (selectedElement !== "all") {
-      filtered = filtered.filter(p => p.element === selectedElement);
-    }
-    
-    if (showFavoritesOnly) {
-      filtered = filtered.filter(p => favorites.has(p.id));
-    }
+    const nextFiltered = poses.filter((pose) => {
+      if (selectedElement !== "all" && pose.element !== selectedElement) return false;
+      if (showFavoritesOnly && !favorites.has(pose.id)) return false;
+      if (mobilityMode && pose.difficulty !== "Beginner") return false;
+      return true;
+    });
 
-    // Mobility-friendly: show only Beginner difficulty poses
-    if (mobilityMode) {
-      filtered = filtered.filter(p => p.difficulty === "Beginner");
-    }
-    
-    setFilteredPoses(filtered);
-  }, [selectedElement, poses, showFavoritesOnly, favorites, mobilityMode]);
+    setFilteredPoses(nextFiltered);
+  }, [selectedElement, poses, showFavoritesOnly, favorites, mobilityMode, setFilteredPoses]);
 
   // Open specific pose from URL parameter
   useEffect(() => {

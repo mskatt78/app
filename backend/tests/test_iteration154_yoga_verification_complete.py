@@ -12,13 +12,21 @@ import os
 import pytest
 import requests
 
-BASE_URL = os.environ.get("REACT_APP_BACKEND_URL", "").rstrip("/")
-ADMIN_PASSWORD = "ShamanicAdmin2026!"
+BASE_URL = (os.environ.get("REACT_APP_BACKEND_URL") or "").rstrip("/")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+
+
+def _require_test_config() -> None:
+    if not BASE_URL:
+        pytest.skip("REACT_APP_BACKEND_URL is required for iteration154 tests")
+    if not ADMIN_PASSWORD:
+        pytest.skip("ADMIN_PASSWORD is required for iteration154 tests")
 
 
 @pytest.fixture(scope="module")
 def admin_session():
     """Get admin session via fallback login"""
+    _require_test_config()
     session = requests.Session()
     resp = session.post(
         f"{BASE_URL}/api/admin/login",
@@ -33,6 +41,7 @@ class TestYogaPosesVerificationComplete:
 
     def test_health_check(self):
         """Verify API is healthy"""
+        _require_test_config()
         resp = requests.get(f"{BASE_URL}/api/health")
         assert resp.status_code == 200
 

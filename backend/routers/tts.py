@@ -284,24 +284,16 @@ def _build_meditation_scripts(name: str, description: str, element: str, visuali
     }
 
 
-def _build_somatic_script(practice: dict[str, Any]) -> str:
-    duration = practice.get('duration_minutes', 10)
-    name = practice.get('name', 'this practice')
-    description = practice.get('description', '')
-    element = practice.get('element', 'Earth')
-    instructions = practice.get('instructions', [])
-    benefits = practice.get('benefits', [])
-    movement_track = practice.get('movement_track') or practice.get('category') or 'Somatic Movement'
-    fascia_focus = practice.get('somatic_fascia_focus') or "the major fascial lines that feel most charged today"
-    breath_hybrid_mode = practice.get('breath_hybrid_mode') or "Somatic & Fascia Breath Hybrid"
-    breath_hybrid_sequence = practice.get('breath_hybrid_sequence') or []
-    mindfulness_anchor = practice.get('mindfulness_anchor') or "Track one sensation, one emotion, and one breath shift."
-
-    instructions_text = " ".join([f"Step {i+1}: {inst}" for i, inst in enumerate(instructions)])
-    benefits_text = ", ".join(benefits) if benefits else "releasing tension and finding inner peace"
-    breath_hybrid_text = " ".join([f"Hybrid cue {i + 1}: {cue}" for i, cue in enumerate(breath_hybrid_sequence)])
-
-    script_parts = [
+def _somatic_overview_lines(
+    name: str,
+    description: str,
+    duration: int,
+    benefits_text: str,
+    movement_track: str,
+    fascia_focus: str,
+    breath_hybrid_mode: str,
+) -> list[str]:
+    return [
         f"Welcome to {name}.",
         "",
         f"{description}",
@@ -312,6 +304,11 @@ def _build_somatic_script(practice: dict[str, Any]) -> str:
         f"Primary fascia focus: {fascia_focus}",
         f"Breath mode: {breath_hybrid_mode}",
         "",
+    ]
+
+
+def _somatic_breath_grounding_lines() -> list[str]:
+    return [
         "Find a comfortable space where you can move freely.",
         "Take a moment to arrive fully in your body.",
         "",
@@ -330,6 +327,11 @@ def _build_somatic_script(practice: dict[str, Any]) -> str:
         "Simply observe without judgment.",
         "Your body has wisdom. Trust it.",
         "",
+    ]
+
+
+def _somatic_movement_lines(instructions_text: str, breath_hybrid_text: str, mindfulness_anchor: str, element: str) -> list[str]:
+    return [
         "Now, let's begin the movement practice.",
         "",
         instructions_text,
@@ -345,6 +347,11 @@ def _build_somatic_script(practice: dict[str, Any]) -> str:
         f"Feel the {element.lower()} energy supporting your practice.",
         "Let it guide your movements.",
         "",
+    ]
+
+
+def _somatic_closing_lines(name: str) -> list[str]:
+    return [
         "As you continue, notice any shifts in your body.",
         "Any release. Any opening. Any new sensations.",
         "",
@@ -362,6 +369,44 @@ def _build_somatic_script(practice: dict[str, Any]) -> str:
         "May you carry this sense of embodiment throughout your day.",
         "",
         "Namaste.",
+    ]
+
+
+def _build_somatic_script(practice: dict[str, Any]) -> str:
+    duration = practice.get('duration_minutes', 10)
+    name = practice.get('name', 'this practice')
+    description = practice.get('description', '')
+    element = practice.get('element', 'Earth')
+    instructions = practice.get('instructions', [])
+    benefits = practice.get('benefits', [])
+    movement_track = practice.get('movement_track') or practice.get('category') or 'Somatic Movement'
+    fascia_focus = practice.get('somatic_fascia_focus') or "the major fascial lines that feel most charged today"
+    breath_hybrid_mode = practice.get('breath_hybrid_mode') or "Somatic & Fascia Breath Hybrid"
+    breath_hybrid_sequence = practice.get('breath_hybrid_sequence') or []
+    mindfulness_anchor = practice.get('mindfulness_anchor') or "Track one sensation, one emotion, and one breath shift."
+
+    instructions_text = " ".join([f"Step {i+1}: {inst}" for i, inst in enumerate(instructions)])
+    benefits_text = ", ".join(benefits) if benefits else "releasing tension and finding inner peace"
+    breath_hybrid_text = " ".join([f"Hybrid cue {i + 1}: {cue}" for i, cue in enumerate(breath_hybrid_sequence)])
+
+    script_parts = [
+        *_somatic_overview_lines(
+            name=name,
+            description=description,
+            duration=duration,
+            benefits_text=benefits_text,
+            movement_track=movement_track,
+            fascia_focus=fascia_focus,
+            breath_hybrid_mode=breath_hybrid_mode,
+        ),
+        *_somatic_breath_grounding_lines(),
+        *_somatic_movement_lines(
+            instructions_text=instructions_text,
+            breath_hybrid_text=breath_hybrid_text,
+            mindfulness_anchor=mindfulness_anchor,
+            element=element,
+        ),
+        *_somatic_closing_lines(name=name),
     ]
     return " ".join(script_parts)
 

@@ -25,7 +25,7 @@ export const AuthCallback = ({ api }) => {
       appLogger.error("Auth callback processing failed", error);
       navigate("/", { replace: true });
     }
-  }, [api, navigate]);
+  }, [api, navigate, appLogger]);
 
   useEffect(() => {
     if (hasProcessed.current) return;
@@ -66,7 +66,7 @@ export const ProtectedRoute = ({ children, api }) => {
       setIsAuthenticated(false);
       navigate("/", { replace: true });
     }
-  }, [api, isMountedRef, navigate]);
+  }, [api, isMountedRef, navigate, appLogger]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -81,7 +81,7 @@ export const ProtectedRoute = ({ children, api }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, isMountedRef, locationStateUser]);
+  }, [checkAuth, isMountedRef, locationStateUser, setIsAuthenticated, setUser]);
 
   if (isAuthenticated === null) {
     return (
@@ -192,7 +192,7 @@ export const PublicRoute = ({ children, api }) => {
     }
     if (!isMountedRef.current) return;
     setChecked(true);
-  }, [api, isMountedRef]);
+  }, [api, isMountedRef, appLogger]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -206,7 +206,7 @@ export const PublicRoute = ({ children, api }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, isMountedRef, locationStateUser]);
+  }, [checkAuth, isMountedRef, locationStateUser, setUser]);
 
   if (!checked) {
     return (

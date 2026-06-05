@@ -144,330 +144,254 @@ async def _run_production_seed_sanity_check():
         logger.error(f"Error checking database: {e}")
 
 
+async def _refresh_collection(name: str, items: list[dict], message: str) -> None:
+    logger.info(f"Refreshing {name} collection...")
+    await getattr(db, name).delete_many({})
+    if items:
+        await getattr(db, name).insert_many(items)
+    logger.info(message)
+
+
+async def _refresh_collection_single_doc(name: str, document: dict, message: str) -> None:
+    logger.info(f"Refreshing {name} collection...")
+    await getattr(db, name).delete_many({})
+    if document:
+        await getattr(db, name).insert_one(document)
+    logger.info(message)
+
+
+async def _apply_deep_teachings(collection_name: str, teachings_map: dict[str, dict], match_field: str = "id") -> int:
+    updates = 0
+    for item_id, payload in teachings_map.items():
+        result = await getattr(db, collection_name).update_one({match_field: item_id}, {"$set": payload})
+        if result.modified_count:
+            updates += 1
+    return updates
+
+
+async def _seed_archangel_crystals_and_light_codes() -> None:
+    from data.divination_content import LIGHT_CODES
+    from data.crystals_deep import CRYSTALS_DEEP
+    from data.archangel_oracle import ARCHANGEL_ORACLE
+    from data.crystals_deep_teachings import CRYSTAL_DEEP_TEACHINGS
+
+    await _refresh_collection("archangel_oracle", ARCHANGEL_ORACLE, f"archangel_oracle refreshed — {len(ARCHANGEL_ORACLE)} archangels.")
+    await _refresh_collection("crystals_deep", CRYSTALS_DEEP, f"crystals_deep refreshed — {len(CRYSTALS_DEEP)} deep crystals.")
+    updated_crystals = await _apply_deep_teachings("crystals_deep", CRYSTAL_DEEP_TEACHINGS)
+    logger.info(f"Deep teachings applied to {updated_crystals} crystals.")
+    await _refresh_collection_single_doc("light_codes", LIGHT_CODES, "light_codes refreshed.")
+
+
+async def _seed_core_spiritual_content() -> None:
+    from data.all_content import MEDITATIONS, BREATHWORK_SESSIONS, GROUNDING_EXERCISES, MINDFULNESS_PRACTICES, MUDRAS
+    from data.guardians_content import SACRED_GUARDIANS
+    from data.ancient_wisdom_content import ANCIENT_WISDOM
+    from data.ancient_wisdom_extended import ANCIENT_WISDOM_EXTENDED
+    from data.ancient_wisdom_final import ANCIENT_WISDOM_FINAL
+    from data.ancient_wisdom_avalon import ANCIENT_WISDOM_AVALON
+    from data.sound_frequencies import SOUND_FREQUENCIES
+    from data.tarot_cards import TAROT_MAJOR_ARCANA
+    from data.divination_content import ELDER_FUTHARK_RUNES, LIGHT_CODES
+    from data.somatic_practices import SOMATIC_PRACTICES
+    from data.yoga_poses import YOGA_POSES
+
+    all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL + ANCIENT_WISDOM_AVALON
+
+    await _refresh_collection("meditations", MEDITATIONS, "meditations refreshed.")
+    await _refresh_collection("sacred_guardians", SACRED_GUARDIANS, "sacred_guardians refreshed.")
+    await _refresh_collection("ancient_wisdom", all_ancient_wisdom, f"ancient_wisdom refreshed — {len(all_ancient_wisdom)} entries.")
+    await _refresh_collection("sound_frequencies", SOUND_FREQUENCIES, f"sound_frequencies refreshed — {len(SOUND_FREQUENCIES)} entries.")
+    await _refresh_collection("tarot_cards", TAROT_MAJOR_ARCANA, f"tarot_cards refreshed — {len(TAROT_MAJOR_ARCANA)} entries.")
+    await _refresh_collection("breathwork_sessions", BREATHWORK_SESSIONS, f"breathwork_sessions refreshed — {len(BREATHWORK_SESSIONS)} entries.")
+    await _refresh_collection("runes", ELDER_FUTHARK_RUNES, f"runes refreshed — {len(ELDER_FUTHARK_RUNES)} entries.")
+    await _refresh_collection_single_doc("light_codes", LIGHT_CODES, "light_codes refreshed.")
+    await _refresh_collection("somatic_practices", SOMATIC_PRACTICES, f"somatic_practices refreshed — {len(SOMATIC_PRACTICES)} entries.")
+    await _refresh_collection("grounding_exercises", GROUNDING_EXERCISES, f"grounding_exercises refreshed — {len(GROUNDING_EXERCISES)} entries.")
+    await _refresh_collection("mindfulness_practices", MINDFULNESS_PRACTICES, f"mindfulness_practices refreshed — {len(MINDFULNESS_PRACTICES)} entries.")
+    await _refresh_collection("yoga_poses", YOGA_POSES, f"yoga_poses refreshed — {len(YOGA_POSES)} entries.")
+    await _refresh_collection("mudras", MUDRAS, f"mudras refreshed — {len(MUDRAS)} entries.")
+
+
+async def _seed_healing_modalities_and_embodiment() -> None:
+    from data.seed_healing_modalities import ENERGY_HEALING_DATA, FREE_FORM_MOVEMENT_DATA, CHAKRA_CLEANSING_DATA
+    from data.seed_extended_modalities import EXTENDED_CHAKRAS, SOMATIC_YOGA_DATA
+    from data.complete_embodiment_data import COMPLETE_FEMININE_EMBODIMENT, COMPLETE_MASCULINE_EMBODIMENT
+
+    all_chakras = CHAKRA_CLEANSING_DATA + EXTENDED_CHAKRAS
+    await _refresh_collection("energy_healing", ENERGY_HEALING_DATA, f"energy_healing refreshed — {len(ENERGY_HEALING_DATA)} entries.")
+    await _refresh_collection("free_form_movement", FREE_FORM_MOVEMENT_DATA, f"free_form_movement refreshed — {len(FREE_FORM_MOVEMENT_DATA)} entries.")
+    await _refresh_collection("chakra_cleansing", all_chakras, f"chakra_cleansing refreshed — {len(all_chakras)} entries (7 base + 6 extended).")
+    await _refresh_collection("somatic_yoga", SOMATIC_YOGA_DATA, f"somatic_yoga refreshed — {len(SOMATIC_YOGA_DATA)} entries.")
+    await _refresh_collection("feminine_embodiment", COMPLETE_FEMININE_EMBODIMENT, f"feminine_embodiment refreshed — {len(COMPLETE_FEMININE_EMBODIMENT)} entries.")
+    await _refresh_collection("masculine_embodiment", COMPLETE_MASCULINE_EMBODIMENT, f"masculine_embodiment refreshed — {len(COMPLETE_MASCULINE_EMBODIMENT)} entries.")
+
+
+async def _apply_first_layer_deep_teachings() -> None:
+    logger.info("Applying deeper teachings to content...")
+    try:
+        from data.deepen_chakras import CHAKRA_DEEPER_TEACHINGS
+        from data.deepen_feminine import FEMININE_DEEPER_TEACHINGS
+        from data.deepen_masculine import MASCULINE_DEEPER_TEACHINGS
+
+        updated_chakras = await _apply_deep_teachings("chakra_cleansing", CHAKRA_DEEPER_TEACHINGS)
+        updated_feminine = await _apply_deep_teachings("feminine_embodiment", FEMININE_DEEPER_TEACHINGS)
+        updated_masculine = await _apply_deep_teachings("masculine_embodiment", MASCULINE_DEEPER_TEACHINGS)
+        logger.info(f"Applied deep teachings to {updated_chakras} chakras")
+        logger.info(f"Applied deep teachings to {updated_feminine} feminine practices")
+        logger.info(f"Applied deep teachings to {updated_masculine} masculine practices")
+    except Exception as e:
+        logger.warning(f"Could not apply deeper teachings: {e}")
+
+
+def _extract_comprehensive_teaching_payload(teachings: dict, include_duration: bool = False) -> dict:
+    payload = {
+        "why_this_heals": teachings.get("why_this_heals", ""),
+        "practice_guide": teachings.get("practice_guide", ""),
+        "extended_teachings": teachings.get("extended_teachings", ""),
+        "benefits": teachings.get("benefits", []),
+    }
+    if include_duration:
+        payload["duration_minutes"] = teachings.get("duration_minutes", 20)
+    return payload
+
+
+async def _apply_comprehensive_deep_teachings() -> None:
+    logger.info("Applying comprehensive deep teachings...")
+    try:
+        from data.deep_teachings_complete import FEMININE_DEEP_TEACHINGS, MASCULINE_DEEP_TEACHINGS
+        from data.deep_teachings_chakras_breath import CHAKRA_DEEP_TEACHINGS, BREATHWORK_DEEP_TEACHINGS
+
+        feminine_updates = {
+            practice_id: _extract_comprehensive_teaching_payload(teachings, include_duration=True)
+            for practice_id, teachings in FEMININE_DEEP_TEACHINGS.items()
+        }
+        masculine_updates = {
+            practice_id: _extract_comprehensive_teaching_payload(teachings, include_duration=True)
+            for practice_id, teachings in MASCULINE_DEEP_TEACHINGS.items()
+        }
+        chakra_updates = {
+            chakra_id: {
+                "why_this_heals": teachings.get("why_this_heals", ""),
+                "deeper_teachings": teachings.get("deeper_teachings", ""),
+                "healing_practices": teachings.get("healing_practices", []),
+                "affirmations": teachings.get("affirmations", []),
+            }
+            for chakra_id, teachings in CHAKRA_DEEP_TEACHINGS.items()
+        }
+        breath_updates = {
+            session_id: {
+                "why_this_heals": teachings.get("why_this_heals", ""),
+                "full_instructions": teachings.get("full_instructions", ""),
+                "benefits": teachings.get("benefits", []),
+                "best_time": teachings.get("best_time", ""),
+            }
+            for session_id, teachings in BREATHWORK_DEEP_TEACHINGS.items()
+        }
+
+        updated_feminine = await _apply_deep_teachings("feminine_embodiment", feminine_updates)
+        updated_masculine = await _apply_deep_teachings("masculine_embodiment", masculine_updates)
+        updated_chakras = await _apply_deep_teachings("chakra_cleansing", chakra_updates)
+        updated_breathwork = await _apply_deep_teachings("breathwork_sessions", breath_updates)
+        logger.info(f"Applied comprehensive teachings to {updated_feminine} feminine practices")
+        logger.info(f"Applied comprehensive teachings to {updated_masculine} masculine practices")
+        logger.info(f"Applied comprehensive teachings to {updated_chakras} chakras")
+        logger.info(f"Applied comprehensive teachings to {updated_breathwork} breathwork sessions")
+    except Exception as e:
+        logger.warning(f"Could not apply comprehensive deep teachings: {e}")
+
+
+async def _seed_community_creative_video_content() -> None:
+    from data.community_posts import COMMUNITY_POSTS
+    from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
+    from data.video_content import VIDEO_TUTORIALS
+
+    await _refresh_collection("community_posts", COMMUNITY_POSTS, f"community_posts refreshed — {len(COMMUNITY_POSTS)} entries.")
+    await _refresh_collection("creative_processes", CREATIVE_PROCESSES_DEEP, f"creative_processes refreshed — {len(CREATIVE_PROCESSES_DEEP)} entries.")
+    await _refresh_collection("videos", VIDEO_TUTORIALS, f"videos refreshed — {len(VIDEO_TUTORIALS)} entries.")
+
+
+async def _apply_chakra_and_temple_safety() -> None:
+    from data.chakra_safety_deep import CHAKRA_SAFETY_EMBODIMENT
+
+    logger.info("Applying chakra safety & embodiment ceremonies...")
+    await _apply_deep_teachings("chakra_cleansing", CHAKRA_SAFETY_EMBODIMENT)
+    logger.info(f"Chakra safety applied to {len(CHAKRA_SAFETY_EMBODIMENT)} chakras.")
+
+    temple_safety = {
+        "earth": "Earth practices connect us with ancestral memory, grief stored in the body, and deep feminine wisdom. Work gently if you carry unresolved trauma around belonging, displacement, or loss of home. Allow yourself to receive support — do not only be the one who holds others. Grounding ceremonies are not appropriate if you are extremely dissociated from your body; in this case, seek somatic support first. Garden ceremonies: wash your hands before touching eyes, and be mindful of plants that may be toxic if ingested.",
+        "water": "Water ceremonies work deeply with the emotional body and can surface stored grief, fear, and long-suppressed feelings. Do not work in natural bodies of water (rivers, oceans) alone, at night, or when emotionally overwhelmed. For bathing rituals: test water temperature carefully — very hot baths are contraindicated in pregnancy and for those with cardiovascular conditions. If you are in acute grief, work with a practitioner alongside water ceremonies rather than alone. Avoid extended water fasting without medical supervision.",
+        "fire": "Fire is the most powerful and potentially dangerous of the elements to work with ceremonially. FIRE SAFETY: Always have water and a fire extinguisher nearby. Never leave a fire unattended. Keep flames away from flammable materials. Keep children and pets away from ceremonial fires. Extinguish completely before sleeping or leaving. For candle fire ceremonies: use fireproof holders, keep away from drafts and curtains. Emotionally: fire ceremony can bring up intense anger, passion, and grief. These are the fire element's medicine — honour them without acting impulsively on what they reveal.",
+        "air": "Air practices (breathwork, movement, sound) are generally gentle and accessible. However: intense breathing practices (kapalabhati, holotropic breath) are contraindicated for those with high blood pressure, heart conditions, epilepsy, seizure history, or during pregnancy. Hyperventilation can cause light-headedness, tingling, or temporary tetany (muscle cramping) — these pass when breathing normalises. Always practice intense breathwork lying down. Do not drive or operate machinery for 30 minutes after breathwork. Air ceremonies outdoors: be aware of wind conditions, sun exposure, and temperature changes.",
+        "spirit": "Spirit practices work with the transpersonal — dimensions of consciousness beyond the ordinary. Approach with respect and preparation. These practices are not appropriate during acute mental health crises, psychotic episodes, or severe dissociation. Spirit element work can dissolve the sense of personal boundaries — always re-establish grounding afterward (earth food, physical contact, walking barefoot). If you are newly beginning your spiritual path, build a foundation in the lower elements (earth, water, fire, air) before working primarily with spirit. Have spiritual community or guidance for support through major spirit-element openings.",
+    }
+    for temple_id, safety in temple_safety.items():
+        await db.elemental_temples.update_one({"id": temple_id}, {"$set": {"safety_precautions": safety}})
+    logger.info(f"Elemental temple safety precautions applied to {len(temple_safety)} temples.")
+
+
+async def _apply_yoga_spiritual_depth() -> None:
+    from data.yoga_spiritual_data import YOGA_SPIRITUAL_DATA
+
+    logger.info("Applying yoga spiritual depth data...")
+    updated = 0
+    async for pose in db.yoga_poses.find({}, {"_id": 0, "id": 1, "name": 1}):
+        key = pose.get("name", "").lower().strip()
+        if key in YOGA_SPIRITUAL_DATA:
+            await db.yoga_poses.update_one({"id": pose["id"]}, {"$set": YOGA_SPIRITUAL_DATA[key]})
+            updated += 1
+    logger.info(f"Yoga spiritual depth applied to {updated} poses.")
+
+
+async def _refresh_sacred_rites_courses() -> None:
+    from data.sacred_rites_deep import SACRED_RITES_DEEP
+
+    logger.info("Refreshing sacred_rites courses...")
+    for rite_id, deep_data in SACRED_RITES_DEEP.items():
+        await db.courses.update_one({"id": rite_id}, {"$set": deep_data}, upsert=True)
+    logger.info(f"sacred_rites refreshed — {len(SACRED_RITES_DEEP)} courses.")
+
+
+async def _ensure_temples_and_water_seeded() -> None:
+    temples_count = await db.elemental_temples.count_documents({})
+    if temples_count == 0:
+        from data.elemental_temples_data import ELEMENTAL_TEMPLES
+        await db.elemental_temples.insert_many(ELEMENTAL_TEMPLES)
+        logger.info(f"  Seeded elemental_temples: {len(ELEMENTAL_TEMPLES)} elements")
+    else:
+        logger.info(f"  elemental_temples: {temples_count} entries (skipped)")
+
+    wp_count = await db.water_practices.count_documents({})
+    if wp_count == 0:
+        from data.water_practices_data import WATER_PRACTICES
+        await db.water_practices.insert_many(WATER_PRACTICES)
+        logger.info(f"  Seeded water_practices: {len(WATER_PRACTICES)} practices")
+    else:
+        logger.info(f"  water_practices: {wp_count} entries (skipped)")
+
+
+async def _seed_remaining_content_if_empty() -> None:
+    crystals_count = await db.crystals.count_documents({})
+    if crystals_count == 0:
+        logger.info("Database empty - seeding remaining content...")
+        await seed_all_content()
+        logger.info("Database seeding complete!")
+    else:
+        logger.info(f"Database already has {crystals_count} crystals - skipping full seed")
+
+
 async def _seed_database_preview_flow():
     try:
-        from data.divination_content import LIGHT_CODES
-        from data.all_content import MEDITATIONS
-        from data.archangel_oracle import ARCHANGEL_ORACLE
-        from data.crystals_deep import CRYSTALS_DEEP
-
-        # Always reseed archangel_oracle so new angels are applied
-        logger.info("Refreshing archangel_oracle collection...")
-        await db.archangel_oracle.delete_many({})
-        await db.archangel_oracle.insert_many(ARCHANGEL_ORACLE)
-        logger.info(f"archangel_oracle refreshed — {len(ARCHANGEL_ORACLE)} archangels.")
-
-        # Always reseed crystals_deep so content updates are applied
-        logger.info("Refreshing crystals_deep collection...")
-        await db.crystals_deep.delete_many({})
-        await db.crystals_deep.insert_many(CRYSTALS_DEEP)
-        logger.info(f"crystals_deep refreshed — {len(CRYSTALS_DEEP)} deep crystals.")
-
-        # Apply deep philosophical teachings to each crystal
-        from data.crystals_deep_teachings import CRYSTAL_DEEP_TEACHINGS
-        logger.info("Applying deep teachings to crystals_deep...")
-        updated_crystals = 0
-        for crystal_id, teachings in CRYSTAL_DEEP_TEACHINGS.items():
-            result = await db.crystals_deep.update_one(
-                {"id": crystal_id},
-                {"$set": teachings}
-            )
-            if result.modified_count:
-                updated_crystals += 1
-        logger.info(f"Deep teachings applied to {updated_crystals} crystals.")
-
-        # Always reseed light_codes so content updates in divination_content.py are applied
-        logger.info("Refreshing light_codes collection with latest data...")
-        await db.light_codes.delete_many({})
-        await db.light_codes.insert_one(LIGHT_CODES)
-        logger.info("light_codes refreshed.")
-
-        # Always reseed meditations so image_url updates are applied
-        logger.info("Refreshing meditations collection...")
-        await db.meditations.delete_many({})
-        await db.meditations.insert_many(MEDITATIONS)
-        logger.info("meditations refreshed.")
-
-        # Always reseed sacred_guardians so new content is always applied
-        from data.guardians_content import SACRED_GUARDIANS
-        logger.info("Refreshing sacred_guardians collection...")
-        await db.sacred_guardians.delete_many({})
-        await db.sacred_guardians.insert_many(SACRED_GUARDIANS)
-        logger.info("sacred_guardians refreshed.")
-
-        # Always reseed ancient_wisdom (combine all four files)
-        from data.ancient_wisdom_content import ANCIENT_WISDOM
-        from data.ancient_wisdom_extended import ANCIENT_WISDOM_EXTENDED
-        from data.ancient_wisdom_final import ANCIENT_WISDOM_FINAL
-        from data.ancient_wisdom_avalon import ANCIENT_WISDOM_AVALON
-        all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL + ANCIENT_WISDOM_AVALON
-        logger.info("Refreshing ancient_wisdom collection...")
-        await db.ancient_wisdom.delete_many({})
-        await db.ancient_wisdom.insert_many(all_ancient_wisdom)
-        logger.info(f"ancient_wisdom refreshed — {len(all_ancient_wisdom)} entries.")
-
-        # Always reseed sound_frequencies
-        from data.sound_frequencies import SOUND_FREQUENCIES
-        logger.info("Refreshing sound_frequencies collection...")
-        await db.sound_frequencies.delete_many({})
-        await db.sound_frequencies.insert_many(SOUND_FREQUENCIES)
-        logger.info(f"sound_frequencies refreshed — {len(SOUND_FREQUENCIES)} entries.")
-
-        # Always reseed tarot_cards
-        from data.tarot_cards import TAROT_MAJOR_ARCANA
-        logger.info("Refreshing tarot_cards collection...")
-        await db.tarot_cards.delete_many({})
-        await db.tarot_cards.insert_many(TAROT_MAJOR_ARCANA)
-        logger.info(f"tarot_cards refreshed — {len(TAROT_MAJOR_ARCANA)} entries.")
-
-        # Always reseed breathwork_sessions (to get updated images)
-        from data.all_content import BREATHWORK_SESSIONS
-        logger.info("Refreshing breathwork_sessions collection...")
-        await db.breathwork_sessions.delete_many({})
-        await db.breathwork_sessions.insert_many(BREATHWORK_SESSIONS)
-        logger.info(f"breathwork_sessions refreshed — {len(BREATHWORK_SESSIONS)} entries.")
-
-        # Always reseed runes (to get updated AI images)
-        from data.divination_content import ELDER_FUTHARK_RUNES, LIGHT_CODES
-        logger.info("Refreshing runes and light_codes collections...")
-        await db.runes.delete_many({})
-        await db.runes.insert_many(ELDER_FUTHARK_RUNES)
-        logger.info(f"runes refreshed — {len(ELDER_FUTHARK_RUNES)} entries.")
-        
-        await db.light_codes.delete_many({})
-        await db.light_codes.insert_one(LIGHT_CODES)
-        logger.info("light_codes refreshed.")
-
-        # Always reseed somatic_practices (to get updated images)
-        from data.somatic_practices import SOMATIC_PRACTICES
-        logger.info("Refreshing somatic_practices collection...")
-        await db.somatic_practices.delete_many({})
-        await db.somatic_practices.insert_many(SOMATIC_PRACTICES)
-        logger.info(f"somatic_practices refreshed — {len(SOMATIC_PRACTICES)} entries.")
-
-        # Always reseed grounding and mindfulness (images added)
-        from data.all_content import GROUNDING_EXERCISES, MINDFULNESS_PRACTICES
-        logger.info("Refreshing grounding_exercises collection...")
-        await db.grounding_exercises.delete_many({})
-        await db.grounding_exercises.insert_many(GROUNDING_EXERCISES)
-        logger.info(f"grounding_exercises refreshed — {len(GROUNDING_EXERCISES)} entries.")
-        logger.info("Refreshing mindfulness_practices collection...")
-        await db.mindfulness_practices.delete_many({})
-        await db.mindfulness_practices.insert_many(MINDFULNESS_PRACTICES)
-        logger.info(f"mindfulness_practices refreshed — {len(MINDFULNESS_PRACTICES)} entries.")
-
-        # Always reseed yoga_poses and mudras (critical content)
-        from data.yoga_poses import YOGA_POSES
-        from data.all_content import MUDRAS
-        logger.info("Refreshing yoga_poses collection...")
-        await db.yoga_poses.delete_many({})
-        await db.yoga_poses.insert_many(YOGA_POSES)
-        logger.info(f"yoga_poses refreshed — {len(YOGA_POSES)} entries.")
-        
-        logger.info("Refreshing mudras collection...")
-        await db.mudras.delete_many({})
-        await db.mudras.insert_many(MUDRAS)
-        logger.info(f"mudras refreshed — {len(MUDRAS)} entries.")
-
-        # Always reseed healing modalities (energy healing, chakras, movement, embodiment)
-        from data.seed_healing_modalities import (
-            ENERGY_HEALING_DATA, FREE_FORM_MOVEMENT_DATA, CHAKRA_CLEANSING_DATA
-        )
-        from data.seed_extended_modalities import EXTENDED_CHAKRAS, SOMATIC_YOGA_DATA
-        from data.complete_embodiment_data import COMPLETE_FEMININE_EMBODIMENT, COMPLETE_MASCULINE_EMBODIMENT
-        
-        logger.info("Refreshing energy_healing collection...")
-        await db.energy_healing.delete_many({})
-        await db.energy_healing.insert_many(ENERGY_HEALING_DATA)
-        logger.info(f"energy_healing refreshed — {len(ENERGY_HEALING_DATA)} entries.")
-        
-        logger.info("Refreshing free_form_movement collection...")
-        await db.free_form_movement.delete_many({})
-        await db.free_form_movement.insert_many(FREE_FORM_MOVEMENT_DATA)
-        logger.info(f"free_form_movement refreshed — {len(FREE_FORM_MOVEMENT_DATA)} entries.")
-        
-        # Combine base 7 chakras + 6 extended chakras = 13 total
-        logger.info("Refreshing chakra_cleansing collection (13 chakras)...")
-        await db.chakra_cleansing.delete_many({})
-        all_chakras = CHAKRA_CLEANSING_DATA + EXTENDED_CHAKRAS
-        await db.chakra_cleansing.insert_many(all_chakras)
-        logger.info(f"chakra_cleansing refreshed — {len(all_chakras)} entries (7 base + 6 extended).")
-        
-        logger.info("Refreshing somatic_yoga collection...")
-        await db.somatic_yoga.delete_many({})
-        await db.somatic_yoga.insert_many(SOMATIC_YOGA_DATA)
-        logger.info(f"somatic_yoga refreshed — {len(SOMATIC_YOGA_DATA)} entries.")
-        
-        logger.info("Refreshing feminine_embodiment collection (13 practices)...")
-        await db.feminine_embodiment.delete_many({})
-        await db.feminine_embodiment.insert_many(COMPLETE_FEMININE_EMBODIMENT)
-        logger.info(f"feminine_embodiment refreshed — {len(COMPLETE_FEMININE_EMBODIMENT)} entries.")
-        
-        logger.info("Refreshing masculine_embodiment collection (13 practices)...")
-        await db.masculine_embodiment.delete_many({})
-        await db.masculine_embodiment.insert_many(COMPLETE_MASCULINE_EMBODIMENT)
-        logger.info(f"masculine_embodiment refreshed — {len(COMPLETE_MASCULINE_EMBODIMENT)} entries.")
-        
-        # Apply deeper teachings to chakras and embodiment practices
-        logger.info("Applying deeper teachings to content...")
-        try:
-            from data.deepen_chakras import CHAKRA_DEEPER_TEACHINGS
-            from data.deepen_feminine import FEMININE_DEEPER_TEACHINGS
-            from data.deepen_masculine import MASCULINE_DEEPER_TEACHINGS
-            
-            for chakra_id, teachings in CHAKRA_DEEPER_TEACHINGS.items():
-                await db.chakra_cleansing.update_one({"id": chakra_id}, {"$set": teachings})
-            logger.info(f"Applied deep teachings to {len(CHAKRA_DEEPER_TEACHINGS)} chakras")
-            
-            for practice_id, teachings in FEMININE_DEEPER_TEACHINGS.items():
-                await db.feminine_embodiment.update_one({"id": practice_id}, {"$set": teachings})
-            logger.info(f"Applied deep teachings to {len(FEMININE_DEEPER_TEACHINGS)} feminine practices")
-            
-            for practice_id, teachings in MASCULINE_DEEPER_TEACHINGS.items():
-                await db.masculine_embodiment.update_one({"id": practice_id}, {"$set": teachings})
-            logger.info(f"Applied deep teachings to {len(MASCULINE_DEEPER_TEACHINGS)} masculine practices")
-        except Exception as e:
-            logger.warning(f"Could not apply deeper teachings: {e}")
-        
-        # Apply comprehensive deep teachings (why this heals, practice guides, extended teachings)
-        logger.info("Applying comprehensive deep teachings...")
-        try:
-            from data.deep_teachings_complete import FEMININE_DEEP_TEACHINGS, MASCULINE_DEEP_TEACHINGS
-            from data.deep_teachings_chakras_breath import CHAKRA_DEEP_TEACHINGS, BREATHWORK_DEEP_TEACHINGS
-            
-            for practice_id, teachings in FEMININE_DEEP_TEACHINGS.items():
-                await db.feminine_embodiment.update_one({"id": practice_id}, {"$set": {
-                    "why_this_heals": teachings.get("why_this_heals", ""),
-                    "practice_guide": teachings.get("practice_guide", ""),
-                    "extended_teachings": teachings.get("extended_teachings", ""),
-                    "benefits": teachings.get("benefits", []),
-                    "duration_minutes": teachings.get("duration_minutes", 20)
-                }})
-            logger.info(f"Applied comprehensive teachings to {len(FEMININE_DEEP_TEACHINGS)} feminine practices")
-            
-            for practice_id, teachings in MASCULINE_DEEP_TEACHINGS.items():
-                await db.masculine_embodiment.update_one({"id": practice_id}, {"$set": {
-                    "why_this_heals": teachings.get("why_this_heals", ""),
-                    "practice_guide": teachings.get("practice_guide", ""),
-                    "extended_teachings": teachings.get("extended_teachings", ""),
-                    "benefits": teachings.get("benefits", []),
-                    "duration_minutes": teachings.get("duration_minutes", 20)
-                }})
-            logger.info(f"Applied comprehensive teachings to {len(MASCULINE_DEEP_TEACHINGS)} masculine practices")
-            
-            for chakra_id, teachings in CHAKRA_DEEP_TEACHINGS.items():
-                await db.chakra_cleansing.update_one({"id": chakra_id}, {"$set": {
-                    "why_this_heals": teachings.get("why_this_heals", ""),
-                    "deeper_teachings": teachings.get("deeper_teachings", ""),
-                    "healing_practices": teachings.get("healing_practices", []),
-                    "affirmations": teachings.get("affirmations", [])
-                }})
-            logger.info(f"Applied comprehensive teachings to {len(CHAKRA_DEEP_TEACHINGS)} chakras")
-            
-            for session_id, teachings in BREATHWORK_DEEP_TEACHINGS.items():
-                await db.breathwork_sessions.update_one({"id": session_id}, {"$set": {
-                    "why_this_heals": teachings.get("why_this_heals", ""),
-                    "full_instructions": teachings.get("full_instructions", ""),
-                    "benefits": teachings.get("benefits", []),
-                    "best_time": teachings.get("best_time", "")
-                }})
-            logger.info(f"Applied comprehensive teachings to {len(BREATHWORK_DEEP_TEACHINGS)} breathwork sessions")
-        except Exception as e:
-            logger.warning(f"Could not apply comprehensive deep teachings: {e}")
-
-        # Always reseed community posts so Sacred Circle content stays fresh
-        from data.community_posts import COMMUNITY_POSTS
-        logger.info("Refreshing community_posts collection...")
-        await db.community_posts.delete_many({})
-        await db.community_posts.insert_many(COMMUNITY_POSTS)
-        logger.info(f"community_posts refreshed — {len(COMMUNITY_POSTS)} entries.")
-
-        # Always reseed creative processes with deep content
-        from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
-        logger.info("Refreshing creative_processes collection with deep content...")
-        await db.creative_processes.delete_many({})
-        await db.creative_processes.insert_many(CREATIVE_PROCESSES_DEEP)
-        logger.info(f"creative_processes refreshed — {len(CREATIVE_PROCESSES_DEEP)} entries.")
-
-        # Always reseed video tutorials
-        from data.video_content import VIDEO_TUTORIALS
-        logger.info("Refreshing videos collection...")
-        await db.videos.delete_many({})
-        await db.videos.insert_many(VIDEO_TUTORIALS)
-        logger.info(f"videos refreshed — {len(VIDEO_TUTORIALS)} entries.")
-
-        # Apply chakra safety + daily embodiment to all 13 chakras
-        from data.chakra_safety_deep import CHAKRA_SAFETY_EMBODIMENT
-        logger.info("Applying chakra safety & embodiment ceremonies...")
-        for chakra_id, safety_data in CHAKRA_SAFETY_EMBODIMENT.items():
-            await db.chakra_cleansing.update_one(
-                {"id": chakra_id},
-                {"$set": safety_data}
-            )
-        logger.info(f"Chakra safety applied to {len(CHAKRA_SAFETY_EMBODIMENT)} chakras.")
-
-        # Apply yoga spiritual purpose + energetic effects
-        from data.yoga_spiritual_data import YOGA_SPIRITUAL_DATA
-        logger.info("Applying yoga spiritual depth data...")
-        updated = 0
-        async for pose in db.yoga_poses.find({}, {"_id": 0, "id": 1, "name": 1}):
-            key = pose.get("name", "").lower().strip()
-            if key in YOGA_SPIRITUAL_DATA:
-                await db.yoga_poses.update_one(
-                    {"id": pose["id"]},
-                    {"$set": YOGA_SPIRITUAL_DATA[key]}
-                )
-                updated += 1
-        logger.info(f"Yoga spiritual depth applied to {updated} poses.")
-
-        # Apply elemental temple safety precautions
-        TEMPLE_SAFETY = {
-            "earth": "Earth practices connect us with ancestral memory, grief stored in the body, and deep feminine wisdom. Work gently if you carry unresolved trauma around belonging, displacement, or loss of home. Allow yourself to receive support — do not only be the one who holds others. Grounding ceremonies are not appropriate if you are extremely dissociated from your body; in this case, seek somatic support first. Garden ceremonies: wash your hands before touching eyes, and be mindful of plants that may be toxic if ingested.",
-            "water": "Water ceremonies work deeply with the emotional body and can surface stored grief, fear, and long-suppressed feelings. Do not work in natural bodies of water (rivers, oceans) alone, at night, or when emotionally overwhelmed. For bathing rituals: test water temperature carefully — very hot baths are contraindicated in pregnancy and for those with cardiovascular conditions. If you are in acute grief, work with a practitioner alongside water ceremonies rather than alone. Avoid extended water fasting without medical supervision.",
-            "fire": "Fire is the most powerful and potentially dangerous of the elements to work with ceremonially. FIRE SAFETY: Always have water and a fire extinguisher nearby. Never leave a fire unattended. Keep flames away from flammable materials. Keep children and pets away from ceremonial fires. Extinguish completely before sleeping or leaving. For candle fire ceremonies: use fireproof holders, keep away from drafts and curtains. Emotionally: fire ceremony can bring up intense anger, passion, and grief. These are the fire element's medicine — honour them without acting impulsively on what they reveal.",
-            "air": "Air practices (breathwork, movement, sound) are generally gentle and accessible. However: intense breathing practices (kapalabhati, holotropic breath) are contraindicated for those with high blood pressure, heart conditions, epilepsy, seizure history, or during pregnancy. Hyperventilation can cause light-headedness, tingling, or temporary tetany (muscle cramping) — these pass when breathing normalises. Always practice intense breathwork lying down. Do not drive or operate machinery for 30 minutes after breathwork. Air ceremonies outdoors: be aware of wind conditions, sun exposure, and temperature changes.",
-            "spirit": "Spirit practices work with the transpersonal — dimensions of consciousness beyond the ordinary. Approach with respect and preparation. These practices are not appropriate during acute mental health crises, psychotic episodes, or severe dissociation. Spirit element work can dissolve the sense of personal boundaries — always re-establish grounding afterward (earth food, physical contact, walking barefoot). If you are newly beginning your spiritual path, build a foundation in the lower elements (earth, water, fire, air) before working primarily with spirit. Have spiritual community or guidance for support through major spirit-element openings."
-        }
-        for temple_id, safety in TEMPLE_SAFETY.items():
-            await db.elemental_temples.update_one(
-                {"id": temple_id},
-                {"$set": {"safety_precautions": safety}}
-            )
-        logger.info(f"Elemental temple safety precautions applied to {len(TEMPLE_SAFETY)} temples.")
-
-        # Always refresh sacred rites (courses) so content deepening takes effect
-        from data.sacred_rites_deep import SACRED_RITES_DEEP
-        logger.info("Refreshing sacred_rites courses...")
-        for rite_id, deep_data in SACRED_RITES_DEEP.items():
-            await db.courses.update_one({"id": rite_id}, {"$set": deep_data}, upsert=True)
-        logger.info(f"sacred_rites refreshed — {len(SACRED_RITES_DEEP)} courses.")
-
-        # Seed elemental temples if empty
-        temples_count = await db.elemental_temples.count_documents({})
-        if temples_count == 0:
-            from data.elemental_temples_data import ELEMENTAL_TEMPLES
-            await db.elemental_temples.insert_many(ELEMENTAL_TEMPLES)
-            logger.info(f"  Seeded elemental_temples: {len(ELEMENTAL_TEMPLES)} elements")
-        else:
-            logger.info(f"  elemental_temples: {temples_count} entries (skipped)")
-
-        # Seed water practices if empty
-        wp_count = await db.water_practices.count_documents({})
-        if wp_count == 0:
-            from data.water_practices_data import WATER_PRACTICES
-            await db.water_practices.insert_many(WATER_PRACTICES)
-            logger.info(f"  Seeded water_practices: {len(WATER_PRACTICES)} practices")
-        else:
-            logger.info(f"  water_practices: {wp_count} entries (skipped)")
-
-        # Only seed everything else if crystals is empty (to avoid duplicate seeding)
-        crystals_count = await db.crystals.count_documents({})
-        if crystals_count == 0:
-            logger.info("Database empty - seeding remaining content...")
-            await seed_all_content()
-            logger.info("Database seeding complete!")
-        else:
-            logger.info(f"Database already has {crystals_count} crystals - skipping full seed")
+        await _seed_archangel_crystals_and_light_codes()
+        await _seed_core_spiritual_content()
+        await _seed_healing_modalities_and_embodiment()
+        await _apply_first_layer_deep_teachings()
+        await _apply_comprehensive_deep_teachings()
+        await _seed_community_creative_video_content()
+        await _apply_chakra_and_temple_safety()
+        await _apply_yoga_spiritual_depth()
+        await _refresh_sacred_rites_courses()
+        await _ensure_temples_and_water_seeded()
+        await _seed_remaining_content_if_empty()
     except Exception as e:
         logger.error(f"Error during startup seeding: {e}")
         import traceback

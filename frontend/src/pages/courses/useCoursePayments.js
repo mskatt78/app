@@ -75,7 +75,7 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
       setCheckingPayment(true);
       pollPaymentStatus(paymentSessionId);
     }
-  }, [paymentSessionId, pollPaymentStatus]);
+  }, [paymentSessionId, pollPaymentStatus, setCheckingPayment]);
 
   useEffect(() => () => {
     if (pollTimeoutRef.current) {
