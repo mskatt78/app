@@ -409,6 +409,34 @@
   - Frontend: **100% pass**
   - No regressions in Yoga Library, Admin Dashboard, or Admin Yoga manager.
 
+## Latest Verification Snapshot (Iteration 155) — 2026-06-05
+- Critical code-quality/security remediation pass completed from user-provided report.
+- Security fix:
+  - Removed hardcoded admin password from `backend/tests/test_iteration154_yoga_verification_complete.py`.
+  - Test now uses `ADMIN_PASSWORD` from env + `pytest.skip()` when required env vars are missing.
+- Backend refactors (critical complexity):
+  - `server.py` `_seed_database_preview_flow()` decomposed into helper functions for maintainability and lower complexity (seeding phases split by domain).
+  - `routers/tts.py` `_build_somatic_script()` decomposed into helper builders (`_somatic_overview_lines`, `_somatic_breath_grounding_lines`, `_somatic_movement_lines`, `_somatic_closing_lines`).
+- Frontend critical modularization:
+  - `MantrasLibrary.jsx` reduced to a wrapper.
+  - New modular files:
+    - `src/pages/mantras/MantrasLibraryContainer.jsx` (state orchestration)
+    - `src/pages/mantras/MantrasFilters.jsx`
+    - `src/pages/mantras/MantrasHeader.jsx`
+    - `src/pages/mantras/MantrasTabs.jsx`
+    - `src/pages/mantras/MantrasLibraryGrid.jsx`
+    - `src/pages/mantras/MantrasCustomSection.jsx`
+    - `src/pages/mantras/MantrasPlayer.jsx`
+    - `src/pages/mantras/useMantrasData.js` (data/business hook)
+- Hook-dependency cleanup:
+  - Applied targeted updates in listed critical files (`routeGuards.jsx`, `useCoursePayments.js`, `YogaLibrary.jsx`) and re-validated lint state.
+
+- Validation (`iteration_155`):
+  - Backend: **100% (28/28 pass)**
+  - Frontend: **100% pass**
+  - Security verification: hardcoded secret removal confirmed
+  - No regressions in Mantras and Yoga flows.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -452,6 +480,10 @@
 ### P1 (updated after Iteration 154)
 - Add optional admin bulk actions for verification workflow (bulk mark reviewed, export verification report CSV).
 - Add optional pose-level verification confidence legend in admin (exact canonical vs seated-variant mapping) for transparency.
+
+### P1 (updated after Iteration 155)
+- Continue decomposition of remaining large pages (`AdminSection`, `ChakraCleansing`, `MainMenu`, `HumanDesign`) into hooks + presentational components.
+- Continue backend complexity reduction for next tier functions (`routers/admin.py:list_items`, `routers/user.py:get_daily_guidance`, `routers/payments.py:create_checkout_session`, `routers/gifts.py:_create_paypal_gift_order`).
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
