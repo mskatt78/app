@@ -1155,17 +1155,151 @@ agent_communication:
 
 metadata:
   created_by: "testing_agent"
-  version: "2.2"
-  test_sequence: 14
+  version: "2.3"
+  test_sequence: 15
   run_ui: false
-  last_tested: "2026-05-31"
+  last_tested: "2026-06-12"
 
 test_plan:
   current_focus:
-    - "LightCodes decomposition to under 300 lines regression - COMPLETED"
+    - "Quality hardening batch verification - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+  - task: "Quality Guard static checks - empty-catch and file-length thresholds"
+    implemented: true
+    working: true
+    file: "/app/scripts/quality_guard.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ QUALITY GUARD PASSED (2026-06-12): Ran `python /app/scripts/quality_guard.py` successfully. Exit code: 0. No empty-catch issues detected. File-length thresholds respected. All static quality checks passed."
+
+  - task: "API smoke check - Health endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/health returns 200 OK with valid JSON. Response: {status: 'healthy', app: 'Shamanic Elements Temple Of The Soul', version: '2.0.0'}. Health endpoint working correctly."
+
+  - task: "API smoke check - I-Ching endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/oracle.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/i-ching returns 200 OK with valid JSON array. Returns list of I-Ching hexagrams with proper structure (id, number, name, chinese, trigrams, judgment, image, meaning, advice). Endpoint working correctly."
+
+  - task: "API smoke check - Journal entries endpoint auth behavior"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/user.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/journal (corrected path from /api/content/journal/entries) returns proper auth error 401 with {detail: 'Not authenticated'}. Auth-protected endpoint behaves correctly - returns 401 instead of 500. No backend runtime errors."
+
+  - task: "API smoke check - Menu/Journal lightweight endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Lightweight endpoints tested: GET /api/courses (200, 3 items), GET /api/meditations (200, 6 items), GET /api/breathwork/sessions (200, 6 items). All endpoints return 200 with valid data. No 500 errors."
+
+  - task: "Backend runtime errors check"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+
+
+  - agent: "testing"
+    message: |
+      Quality Hardening Batch Verification (2026-06-12):
+      
+      VERIFICATION REQUEST: Backend verification for latest quality-hardening batch
+      Target: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (6/6 checks):
+      
+      1. ✅ STATIC QUALITY CHECKS - PASSED
+         - Command: python /app/scripts/quality_guard.py
+         - Result: ✅ quality_guard passed (exit code 0)
+         - No empty-catch issues detected
+         - File-length thresholds respected
+         - All static quality checks passed
+      
+      2. ✅ GET /api/health - PASSED
+         - Status: 200 OK
+         - Response: {"status": "healthy", "app": "Shamanic Elements Temple Of The Soul", "version": "2.0.0"}
+         - Valid JSON structure confirmed
+         - Health endpoint working correctly
+      
+      3. ✅ GET /api/i-ching - PASSED
+         - Status: 200 OK
+         - Returns: Array of I-Ching hexagrams
+         - Valid JSON structure with proper fields (id, number, name, chinese, trigrams, judgment, image, meaning, advice)
+         - Endpoint responsive and returning correct data
+      
+      4. ✅ GET /api/journal - PASSED (Auth Behavior)
+         - Status: 401 (Not authenticated)
+         - Response: {"detail": "Not authenticated"}
+         - Expected auth behavior: Returns 401 instead of 500
+         - Auth-protected endpoint working correctly
+         - NOTE: Corrected path from /api/content/journal/entries (non-existent) to /api/journal (actual endpoint)
+      
+      5. ✅ MENU/JOURNAL LIGHTWEIGHT ENDPOINTS - PASSED
+         - GET /api/courses: 200 OK (3 items)
+         - GET /api/meditations: 200 OK (6 items)
+         - GET /api/breathwork/sessions: 200 OK (6 items)
+         - All endpoints responsive with valid data
+         - No 500 errors detected
+      
+      6. ✅ BACKEND RUNTIME ERRORS CHECK - PASSED
+         - Checked: /var/log/supervisor/backend.*.log
+         - No 500 server errors detected
+         - No critical runtime exceptions
+         - Only non-fatal warning: Index creation duplicate key for test@example.com (expected during DB init)
+         - All tested endpoints responded without backend errors
+      
+      CRITICAL FINDINGS:
+      ✅ Quality guard static checks passed
+      ✅ All API endpoints responsive (health, i-ching, journal, courses, meditations, breathwork)
+      ✅ Auth-protected endpoints return proper 401 errors (not 500)
+      ✅ No backend runtime errors or 500 responses
+      ✅ Backend logs clean with only expected non-critical warnings
+      
+      SUMMARY:
+      Quality hardening batch verification PASSED. All static quality checks passed (quality_guard.py). All tested API endpoints responsive and returning valid data. Health endpoint returns 200 with proper JSON. I-Ching endpoint returns 200 with hexagram data. Journal endpoint properly protected with 401 auth error (not 500). Menu/journal lightweight endpoints (courses, meditations, breathwork) all return 200 with valid data. Backend logs show no 500 errors or critical runtime exceptions. Application is production-ready after quality hardening batch.
+
+      - working: true
+        agent: "testing"
+        comment: "✅ Backend logs checked (/var/log/supervisor/backend.*.log). No 500 errors or critical runtime exceptions detected. Only non-fatal index creation warning (duplicate key for test@example.com during DB init - expected). All tested endpoints responded without backend errors."
+
 
 
 agent_communication:
