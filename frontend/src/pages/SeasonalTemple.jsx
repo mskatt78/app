@@ -417,6 +417,13 @@ const SeasonalTemple = ({ user }) => {
     } catch { return "north"; }
   });
   const [selectedSabbat, setSelectedSabbat] = useState(null);
+
+  const getSabbatTabLabel = (tab) => {
+    if (tab === "overview") return "Traditions";
+    if (tab === "ritual") return "Ritual 🙏";
+    if (tab === "embodiment") return "Embodiment";
+    return "Crystals & Herbs";
+  };
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedCraft, setSelectedCraft] = useState(null);
 
@@ -622,7 +629,7 @@ const SeasonalTemple = ({ user }) => {
                     className={`flex-1 py-3 text-xs font-medium transition-all capitalize ${
                       activeTab === tab ? `${selectedSabbat.color.text} border-b-2 ${selectedSabbat.color.border}` : "text-muted-foreground hover:text-foreground"
                     }`}>
-                    {tab === "overview" ? "Traditions" : tab === "ritual" ? "Ritual 🙏" : tab === "embodiment" ? "Embodiment" : "Crystals & Herbs"}
+                    {getSabbatTabLabel(tab)}
                   </button>
                 ))}
               </div>

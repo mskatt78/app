@@ -5,6 +5,14 @@ import GuidedAudioButton from "../GuidedAudioButton";
 import GuidedPracticeOverlay from "../GuidedPracticeOverlay";
 import PracticeTimer from "../PracticeTimer";
 import { difficultyColors, elementColors, elementIcons, stableElementPracticeKey } from "./elementalConfig";
+import { appLogger } from "../../utils/logger";
+
+const getElementBackgroundAudio = (element) => {
+  if (element === "Fire") return "fire";
+  if (element === "Water") return "ocean";
+  if (element === "Air") return "wind";
+  return "nature";
+};
 
 export const ElementalPracticeModal = ({
   api,
@@ -165,7 +173,7 @@ export const ElementalPracticeModal = ({
                       has_audio: false,
                     })) || []}
                     totalDuration={(selectedPractice.duration_minutes || 20) * 60}
-                    backgroundAudio={selectedPractice.element === "Fire" ? "fire" : selectedPractice.element === "Water" ? "ocean" : selectedPractice.element === "Air" ? "wind" : "nature"}
+                    backgroundAudio={getElementBackgroundAudio(selectedPractice.element)}
                     autoStartAudio={true}
                     autoNarrate={true}
                     practiceType="elemental"
@@ -206,8 +214,8 @@ export const ElementalPracticeModal = ({
                         source.connect(context.destination);
                         source.start(0);
                         window.__warmAudioCtx = context;
-                      } catch (_) {
-                        // warm-up is best effort only
+                      } catch (error) {
+                        appLogger.warn("Audio warm-up failed", error);
                       }
                       setIsPracticing(true);
                     }}

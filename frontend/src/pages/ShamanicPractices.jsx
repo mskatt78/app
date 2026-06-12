@@ -106,6 +106,14 @@ const ShamanicPractices = ({ user, api }) => {
     return practice.journey_steps || practice.visualization_steps || practice.ritual_steps || practice.ceremony_steps || practice.steps || [];
   };
 
+  const formatPreparationText = (preparation) => {
+    if (!preparation) return "";
+    if (Array.isArray(preparation)) {
+      return `Preparation: ${preparation.join(". ")}`;
+    }
+    return `Preparation: ${preparation}`;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -396,7 +404,7 @@ const ShamanicPractices = ({ user, api }) => {
                         script={[
                           `Welcome to this shamanic journey: ${selectedPractice.name}.`,
                           selectedPractice.description || "",
-                          selectedPractice.preparation ? (Array.isArray(selectedPractice.preparation) ? `Preparation: ${selectedPractice.preparation.join(". ")}` : `Preparation: ${selectedPractice.preparation}`) : "",
+                          formatPreparationText(selectedPractice.preparation),
                           getSteps(selectedPractice).length > 0 ? `Your journey unfolds in ${getSteps(selectedPractice).length} steps. ` + getSteps(selectedPractice).map((s, i) => `Step ${i+1}: ${s}`).join(". ") : "",
                           selectedPractice.closing_prayer ? `When you are ready to close, offer this prayer: ${selectedPractice.closing_prayer}` : "",
                           "Gently return to your body. Wiggle your fingers and toes. Take three deep breaths. Welcome back."

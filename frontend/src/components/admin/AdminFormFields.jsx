@@ -5,6 +5,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Button } from "../ui/button";
 import { Upload, X, Plus, Loader2 } from "lucide-react";
 
+const resolveSelectOption = (option) => {
+  if (typeof option === "string") {
+    return { key: option, value: option, label: option };
+  }
+  return { key: option.value, value: option.value, label: option.label };
+};
+
 // Text input field
 export const TextField = ({ label, name, value, onChange, placeholder, required, type = "text" }) => (
   <div className="space-y-1">
@@ -60,11 +67,14 @@ export const SelectField = ({ label, name, value, onChange, options, placeholder
         <SelectValue placeholder={placeholder || `Select ${label.toLowerCase()}`} />
       </SelectTrigger>
       <SelectContent>
-        {options.map((opt) => (
-          <SelectItem key={typeof opt === 'string' ? opt : opt.value} value={typeof opt === 'string' ? opt : opt.value}>
-            {typeof opt === 'string' ? opt : opt.label}
+        {options.map((option) => {
+          const normalizedOption = resolveSelectOption(option);
+          return (
+          <SelectItem key={normalizedOption.key} value={normalizedOption.value}>
+            {normalizedOption.label}
           </SelectItem>
-        ))}
+          );
+        })}
       </SelectContent>
     </Select>
   </div>

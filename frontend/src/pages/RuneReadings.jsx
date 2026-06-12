@@ -92,6 +92,18 @@ const RuneReadings = ({ user, api }) => {
     }
   };
 
+  const getDrawRunesButtonLabel = () => {
+    if (isDrawing) return "Drawing...";
+    if (drawnRunes.length > 0) return "Draw Again";
+    return "Draw Runes";
+  };
+
+  const getSpreadGridClassName = () => {
+    if (selectedSpread?.id === "single") return "grid-cols-1 max-w-md mx-auto";
+    if (selectedSpread?.id === "three") return "grid-cols-1 md:grid-cols-3";
+    return "grid-cols-2 md:grid-cols-5";
+  };
+
   const getPositionLabel = (position) => {
     const labels = {
       past: "Past",
@@ -207,18 +219,14 @@ const RuneReadings = ({ user, api }) => {
                   data-testid="draw-runes-btn"
                 >
                   <Shuffle className="w-4 h-4 mr-2" />
-                  {isDrawing ? "Drawing..." : drawnRunes.length > 0 ? "Draw Again" : "Draw Runes"}
+                  {getDrawRunesButtonLabel()}
                 </Button>
               </div>
             </div>
 
             {/* Drawn Runes Display */}
             {drawnRunes.length > 0 && (
-              <div className={`grid gap-6 ${
-                selectedSpread.id === "single" ? "grid-cols-1 max-w-md mx-auto" :
-                selectedSpread.id === "three" ? "grid-cols-1 md:grid-cols-3" :
-                "grid-cols-2 md:grid-cols-5"
-              }`}>
+              <div className={`grid gap-6 ${getSpreadGridClassName()}`}>
                 {drawnRunes.map((rune, index) => {
                   const colors = elementColors[rune.element] || elementColors.Spirit;
                   return (
