@@ -10,6 +10,30 @@ import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { JOURNAL_PROMPTS } from "./journalConfig";
 
+const getJournalTypeBadgeStyle = (journalType) => {
+  if (journalType === "moon") {
+    return "bg-purple-500/20 text-purple-400";
+  }
+
+  if (journalType === "dream") {
+    return "bg-blue-500/20 text-blue-400";
+  }
+
+  return "bg-amber-500/20 text-amber-400";
+};
+
+const getJournalTypeBadgeText = (journalType) => {
+  if (journalType === "moon") {
+    return "🌙 Moon";
+  }
+
+  if (journalType === "dream") {
+    return "☁️ Dream";
+  }
+
+  return "📝 Personal";
+};
+
 export const JournalMainSection = ({
   navigate,
   filterMood,
@@ -126,12 +150,11 @@ export const JournalMainSection = ({
                       <Calendar className="w-4 h-4" />
                       <span>{formatDate(entry.created_at)}</span>
                       {entry.journal_type && entry.journal_type !== "personal" && (
-                        <span className={`px-2 py-0.5 rounded-full text-xs ${
-                          entry.journal_type === "moon" ? "bg-purple-500/20 text-purple-400" :
-                          entry.journal_type === "dream" ? "bg-blue-500/20 text-blue-400" :
-                          "bg-amber-500/20 text-amber-400"
-                        }`}>
-                          {entry.journal_type === "moon" ? "🌙 Moon" : entry.journal_type === "dream" ? "☁️ Dream" : "📝 Personal"}
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs ${getJournalTypeBadgeStyle(entry.journal_type)}`}
+                          data-testid={`journal-entry-type-badge-${entry.entry_id}`}
+                        >
+                          {getJournalTypeBadgeText(entry.journal_type)}
                         </span>
                       )}
                     </div>
@@ -139,7 +162,12 @@ export const JournalMainSection = ({
                   </div>
 
                   {entry.title && (
-                    <h3 className="text-xl font-serif mb-2 group-hover:text-primary transition-colors">{entry.title}</h3>
+                    <h3
+                      className="text-xl font-serif mb-2 group-hover:text-primary transition-colors"
+                      data-testid={`journal-entry-title-${entry.entry_id}`}
+                    >
+                      {entry.title}
+                    </h3>
                   )}
 
                   {entry.journal_type === "moon" && entry.moon_phase && (
@@ -155,7 +183,13 @@ export const JournalMainSection = ({
                   {entry.tags?.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {entry.tags.map((tag) => (
-                        <span key={`${entry.entry_id}-${tag}`} className="px-2 py-1 rounded-full bg-white/5 text-xs">#{tag}</span>
+                        <span
+                          key={`${entry.entry_id}-${tag}`}
+                          className="px-2 py-1 rounded-full bg-white/5 text-xs"
+                          data-testid={`journal-entry-tag-${entry.entry_id}-${tag}`}
+                        >
+                          #{tag}
+                        </span>
                       ))}
                     </div>
                   )}

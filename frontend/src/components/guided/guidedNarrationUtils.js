@@ -1,4 +1,5 @@
 import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
+import { appLogger } from "../../utils/logger";
 
 export const ELEMENT_AMBIENT = {
   fire: { freq: 120, Q: 2, gain: 0.12, label: "Sacred Fire" },
@@ -156,16 +157,24 @@ export const startToningLayer = (ctx, element = "spirit", destination = null) =>
   };
 
   const stop = () => {
+    const safeAudioCleanup = (label, action) => {
+      try {
+        action();
+      } catch (error) {
+        appLogger.warn(`[guidedNarrationUtils] Audio cleanup warning (${label})`, error);
+      }
+    };
+
     voices.forEach(({ osc, gain }) => {
-      try { osc.stop(); } catch (_) {}
-      try { osc.disconnect(); } catch (_) {}
-      try { gain.disconnect(); } catch (_) {}
+      safeAudioCleanup("voice-osc-stop", () => osc.stop());
+      safeAudioCleanup("voice-osc-disconnect", () => osc.disconnect());
+      safeAudioCleanup("voice-gain-disconnect", () => gain.disconnect());
     });
-    try { lfo.stop(); } catch (_) {}
-    try { lfo.disconnect(); } catch (_) {}
-    try { lfoGain.disconnect(); } catch (_) {}
-    try { master.disconnect(); } catch (_) {}
-    try { filter.disconnect(); } catch (_) {}
+    safeAudioCleanup("lfo-stop", () => lfo.stop());
+    safeAudioCleanup("lfo-disconnect", () => lfo.disconnect());
+    safeAudioCleanup("lfo-gain-disconnect", () => lfoGain.disconnect());
+    safeAudioCleanup("master-disconnect", () => master.disconnect());
+    safeAudioCleanup("filter-disconnect", () => filter.disconnect());
   };
 
   return { setMuted, stop };

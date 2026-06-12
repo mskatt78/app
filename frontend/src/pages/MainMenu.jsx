@@ -6,14 +6,15 @@ import {
   Palette, Moon, Hash, Star, Mountain, Waves, Eye, Home, LogIn, Mail, Lock, User,
   Flower2, Shield, Globe, Users, Leaf, Sunrise, Hexagon, BookOpen, Coins, Droplets, Dna,
   BarChart3, Calculator, MessageCircle, Feather, Volume2, NotebookPen
-} from "lucide-react";import { Button } from "../components/ui/button";
+} from "lucide-react";
+import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
 import { toast } from "sonner";
 import axios from "axios";
 import DailyPracticeWidget from "../components/DailyPracticeWidget";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "";
+const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const MainMenu = ({ user }) => {
   const navigate = useNavigate();
@@ -35,10 +36,13 @@ const MainMenu = ({ user }) => {
     const name = formData.get('name');
     
     try {
-      const endpoint = isLogin ? "/api/auth/login" : "/api/auth/register";
-      const payload = isLogin 
-        ? { email, password }
-        : { email, password, name };
+      let endpoint = "/api/auth/login";
+      let payload = { email, password };
+
+      if (!isLogin) {
+        endpoint = "/api/auth/register";
+        payload = { email, password, name };
+      }
       
       const response = await axios.post(`${API_URL}${endpoint}`, payload, {
         withCredentials: true
@@ -150,6 +154,13 @@ const MainMenu = ({ user }) => {
     }
   ], []);
 
+  const authModalTitle = isLogin ? "Welcome Back" : "Begin Your Journey";
+  const authSubmitText = loading ? "Please wait..." : (isLogin ? "Sign In" : "Create Account");
+  const authPromptText = isLogin ? "New to Soul Temple 2.0?" : "Already have an account?";
+  const authToggleText = isLogin ? "Create an account" : "Sign in";
+  const quickAccessText = user ? "Access your personal journey" : "Sign in to save your progress";
+  const quickAccessButtonText = user ? "Go to Dashboard" : "Sign In";
+
   return (
     <div className="min-h-screen bg-background" data-testid="main-menu">
       {/* Header */}
@@ -159,6 +170,7 @@ const MainMenu = ({ user }) => {
             <button
               onClick={() => navigate("/")}
               className="p-2 rounded-full hover:bg-white/5 transition-colors"
+              data-testid="main-menu-home-button"
             >
               <Home className="w-5 h-5 text-primary" />
             </button>
@@ -172,6 +184,7 @@ const MainMenu = ({ user }) => {
             <button
               onClick={() => navigate("/dashboard")}
               className="text-sm text-primary hover:text-primary/80"
+              data-testid="main-menu-dashboard-link-button"
             >
               My Dashboard
             </button>
@@ -179,6 +192,7 @@ const MainMenu = ({ user }) => {
             <button
               onClick={() => setShowAuthModal(true)}
               className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
+              data-testid="main-menu-sign-in-open-modal-button"
             >
               <LogIn className="w-4 h-4" />
               Sign In
@@ -217,7 +231,7 @@ const MainMenu = ({ user }) => {
                 {section.title}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {section.items.map((item, index) => (
+                {section.items.map((item) => (
                   <motion.button
                     key={item.path}
                     whileHover={{ scale: 1.02 }}
@@ -244,15 +258,14 @@ const MainMenu = ({ user }) => {
           transition={{ delay: 0.5 }}
           className="mt-12 pt-8 border-t border-white/10 text-center"
         >
-          <p className="text-sm text-muted-foreground mb-4">
-            {user ? "Access your personal journey" : "Sign in to save your progress"}
-          </p>
+          <p className="text-sm text-muted-foreground mb-4" data-testid="main-menu-quick-access-label">{quickAccessText}</p>
           <button
             onClick={() => user ? navigate("/dashboard") : setShowAuthModal(true)}
             className="px-6 py-2 rounded-full bg-primary/20 hover:bg-primary/30 text-primary 
                      border border-primary/30 transition-all"
+            data-testid="main-menu-quick-access-button"
           >
-            {user ? "Go to Dashboard" : "Sign In"}
+            {quickAccessButtonText}
           </button>
         </motion.div>
       </main>
@@ -261,9 +274,7 @@ const MainMenu = ({ user }) => {
       <Dialog open={showAuthModal} onOpenChange={setShowAuthModal}>
         <DialogContent className="bg-card border-white/10 max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-serif text-center">
-              {isLogin ? "Welcome Back" : "Begin Your Journey"}
-            </DialogTitle>
+            <DialogTitle className="text-2xl font-serif text-center" data-testid="main-menu-auth-modal-title">{authModalTitle}</DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 pt-4">
@@ -272,6 +283,7 @@ const MainMenu = ({ user }) => {
               variant="outline"
               className="w-full border-white/20 hover:bg-white/5"
               onClick={handleGoogleLogin}
+              data-testid="main-menu-auth-google-button"
             >
               <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
                 <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -303,6 +315,7 @@ const MainMenu = ({ user }) => {
                       placeholder="Your name"
                       className="pl-10 bg-white/5 border-white/10"
                       required={!isLogin}
+                      data-testid="main-menu-auth-name-input"
                     />
                   </div>
                 </div>
@@ -318,6 +331,7 @@ const MainMenu = ({ user }) => {
                     placeholder="your@email.com"
                     className="pl-10 bg-white/5 border-white/10"
                     required
+                    data-testid="main-menu-auth-email-input"
                   />
                 </div>
               </div>
@@ -332,6 +346,7 @@ const MainMenu = ({ user }) => {
                     placeholder="••••••••"
                     className="pl-10 bg-white/5 border-white/10"
                     required
+                    data-testid="main-menu-auth-password-input"
                   />
                 </div>
               </div>
@@ -340,20 +355,22 @@ const MainMenu = ({ user }) => {
                 type="submit"
                 className="w-full bg-primary hover:bg-primary/90"
                 disabled={loading}
+                data-testid="main-menu-auth-submit-button"
               >
                 <LogIn className="w-5 h-5 mr-2" />
-                {loading ? "Please wait..." : (isLogin ? "Sign In" : "Create Account")}
+                {authSubmitText}
               </Button>
             </form>
 
             <p className="text-center text-sm text-muted-foreground">
-              {isLogin ? "New to Soul Temple 2.0?" : "Already have an account?"}{" "}
+              {authPromptText}{" "}
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
                 className="text-primary hover:underline"
+                data-testid="main-menu-auth-toggle-mode-button"
               >
-                {isLogin ? "Create an account" : "Sign in"}
+                {authToggleText}
               </button>
             </p>
           </div>

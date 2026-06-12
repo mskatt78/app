@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Coins, RotateCcw, BookOpen, Info, X, Sparkles, Share2 } from "lucide-react";
+import { ArrowLeft, Coins, BookOpen, Info, X, Sparkles } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { ShareButton } from "../components/ShareModal";
@@ -67,6 +67,8 @@ const IChing = ({ user, api }) => {
   const renderLine = (value, lineNumber, isChanging) => {
     const isYang = value === 7 || value === 9;
     const isOld = value === 6 || value === 9;
+    const yangLineClassName = `h-3 w-32 rounded-full ${isOld ? 'bg-amber-500' : 'bg-white'}`;
+    const yinSegmentClassName = `h-3 w-14 rounded-full ${isOld ? 'bg-amber-500' : 'bg-white'}`;
     
     return (
       <motion.div
@@ -77,12 +79,12 @@ const IChing = ({ user, api }) => {
         className="flex items-center justify-center gap-2 my-1"
       >
         {isYang ? (
-          <div className={`h-3 w-32 rounded-full ${isOld ? 'bg-amber-500' : 'bg-white'}`} />
+          <div className={yangLineClassName} />
         ) : (
           <>
-            <div className={`h-3 w-14 rounded-full ${isOld ? 'bg-amber-500' : 'bg-white'}`} />
+            <div className={yinSegmentClassName} />
             <div className="w-4" />
-            <div className={`h-3 w-14 rounded-full ${isOld ? 'bg-amber-500' : 'bg-white'}`} />
+            <div className={yinSegmentClassName} />
           </>
         )}
         {isOld && (
@@ -109,6 +111,7 @@ const IChing = ({ user, api }) => {
           <button 
             onClick={() => setShowHexagramList(true)}
             className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-sm flex items-center gap-2"
+            data-testid="i-ching-open-hexagram-list-button"
           >
             <BookOpen className="w-4 h-4" />
             64 Hexagrams
@@ -262,6 +265,7 @@ const IChing = ({ user, api }) => {
                 title={`I Ching: Hexagram ${result.number} - ${result.name}`}
                 description={`${result.chinese} - ${result.judgment?.substring(0, 120)}...`}
                 className="border border-white/10 rounded-full px-6 py-3 hover:bg-white/5 inline-flex items-center gap-2"
+                data-testid="i-ching-share-result-button"
               />
             </div>
           </motion.div>
@@ -313,7 +317,11 @@ const IChing = ({ user, api }) => {
             >
               <div className="sticky top-0 bg-card p-4 border-b border-white/10 flex items-center justify-between">
                 <h2 className="text-xl font-serif">The 64 Hexagrams</h2>
-                <button onClick={() => setShowHexagramList(false)} className="p-2 rounded-full hover:bg-white/10">
+                <button
+                  onClick={() => setShowHexagramList(false)}
+                  className="p-2 rounded-full hover:bg-white/10"
+                  data-testid="i-ching-close-hexagram-list-button"
+                >
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -324,6 +332,7 @@ const IChing = ({ user, api }) => {
                     onClick={() => { setResult(hex); setShowHexagramList(false); }}
                     className="cursor-pointer p-4 rounded-xl bg-red-500/10 border border-red-500/20 
                              hover:bg-red-500/20 transition-colors text-center"
+                    data-testid={`i-ching-hexagram-item-${hex.number}`}
                   >
                     <div className="text-2xl mb-1">{hex.chinese}</div>
                     <p className="text-xs text-muted-foreground">{hex.number}. {hex.name}</p>
