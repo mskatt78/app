@@ -172,7 +172,15 @@ export const useGuidedAudioPlayback = ({
       window.clearTimeout(timerId);
 
       const segments = Array.isArray(response?.data?.segments) ? response.data.segments.filter(Boolean) : [];
-      return segments.length > 0 ? segments : (fallback ? [fallback] : []);
+      if (segments.length > 0) {
+        return segments;
+      }
+
+      if (fallback) {
+        return [fallback];
+      }
+
+      return [];
     } catch (error) {
       appLogger.warn("Guided script expansion fallback engaged", error);
       return fallback ? [fallback] : [];
@@ -215,7 +223,10 @@ export const useGuidedAudioPlayback = ({
       };
       audio.onended = () => {
         toningLayerRef.current?.setMuted?.(false, 0.26);
-        playIndex(index + 1).catch(() => stopPlayback());
+        playIndex(index + 1).catch((error) => {
+          appLogger.warn("Guided sequential playback continuation failed", error);
+          stopPlayback();
+        });
       };
 
       const started = await audio.play().then(() => true).catch(() => {

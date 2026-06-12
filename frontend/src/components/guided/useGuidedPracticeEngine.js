@@ -285,7 +285,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
           ttsRef.current?.pause();
         }
       } catch (_) {
-        // Keep local fallback narration plan when expansion fails or times out.
+        if (!controller.signal.aborted) {
+          appLogger.warn("Guided script expansion fallback engaged in overlay engine");
+        }
       } finally {
         window.clearTimeout(timeoutId);
         if (!controller.signal.aborted) {
@@ -395,7 +397,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       const url = await generateSegmentUrl(segmentIndex);
       if (!url || !isPlayingRef.current) return;
 
-      generateSegmentUrl(segmentIndex + 1).catch(() => {});
+      generateSegmentUrl(segmentIndex + 1).catch((error) => {
+        appLogger.debug("Guided segment prefetch warmup failed", error);
+      });
 
       let audio = ttsRef.current;
       if (!audio) {
@@ -411,7 +415,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       audio.onplay = () => {
         setTtsPlaying(true);
         setAudioTapRequired(false);
-        generateSegmentUrl(segmentIndex + 1).catch(() => {});
+        generateSegmentUrl(segmentIndex + 1).catch((error) => {
+          appLogger.debug("Guided segment prefetch onplay failed", error);
+        });
       };
       audio.onpause = () => setTtsPlaying(false);
       audio.onended = () => {
@@ -428,7 +434,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         setAudioTapRequired(true);
         toast.info("Tap play once to enable guidance audio.");
       }
-    } catch (_) {
+    } catch (error) {
+      appLogger.warn("Guided narration segment playback failed", error);
       setTtsPlaying(false);
     } finally {
       setTtsLoading(false);
@@ -442,7 +449,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         audioCtxRef.current = ctx;
         ambientRef.current = startAmbient(ctx, element);
         toningRef.current = startToningLayer(ctx, element);
-      } catch (_) {
+      } catch (error) {
+        appLogger.warn("Guided ambient track setup failed", error);
         return;
       }
     }
@@ -484,7 +492,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     startAmbientTrack();
 
     if (ttsRef.current?.paused && ttsRef.current?.src) {
-      ttsRef.current.play().catch(() => {});
+      ttsRef.current.play().catch((error) => {
+        appLogger.debug("Guided paused narration resume failed", error);
+      });
       return;
     }
 
