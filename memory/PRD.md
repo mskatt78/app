@@ -658,6 +658,28 @@
   - CI workflow validity: **PASS**
   - No new regressions detected in MainMenu, I Ching, or Journal flows.
 
+## Latest Verification Snapshot (Iteration 163) — 2026-06-12
+- Completed next P1 decomposition wave on secondary large modules:
+  - `PracticeJournal.jsx` reduced to wrapper and split into focused modules:
+    - `PracticeJournalContainer`, `PracticeJournalHeader`, `PracticeJournalFilters`,
+      `PracticeJournalEntriesList`, `PracticeJournalEmptyState`, `PracticeJournalFormModal`,
+      `usePracticeJournalData`, `constants`.
+  - `NumerologyContainer.jsx` decomposed into focused modules:
+    - `NumerologyHeader`, `NumerologyInputView`, `NumerologyReadingResults`,
+      `NumerologyHistoryView`, `NumerologyLifePathDialog`, `numerologyConfig`.
+- Code quality improvements from this wave:
+  - Replaced nested ternary render path in numerology with explicit `if/return` content routing.
+  - Preserved/expanded `data-testid` coverage for critical interactive paths in decomposed modules.
+  - Guided hook hardening: removed silent `.catch(() => {})` patterns in touched paths and added logger-based fallback reporting.
+- Backend low-risk cleanup completed:
+  - Refactored `/backend/routers/numerology.py` to centralize personal-year mappings into `PERSONAL_YEAR_THEMES`.
+  - Consolidated public calculate endpoint through `_build_reading_payload` to reduce duplication.
+  - Added strict date parsing/range validation in `calculate_life_path` (`datetime.strptime`) so invalid dates (e.g. `2025-13-45`) now return `400`.
+- Verification:
+  - Testing agent report `/app/test_reports/iteration_163.json`: frontend **100%**, backend **100%**.
+  - Additional frontend recheck fixed and verified numerology life-path overview grid + dialog behavior.
+  - Additional backend recheck verified invalid-date validation regression fix and no numerology endpoint regressions.
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
