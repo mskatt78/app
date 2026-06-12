@@ -177,7 +177,7 @@ export const HumanDesignChartTab = ({
         </div>
 
         <div className="p-5 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20 text-center">
-          <p className="text-lg font-serif italic">"{chosenType.affirmation}"</p>
+          <p className="text-lg font-serif italic">&ldquo;{chosenType.affirmation}&rdquo;</p>
         </div>
 
         <Button variant="outline" className="w-full border-white/10" onClick={resetChart} data-testid="hd-reset-btn">
@@ -196,7 +196,7 @@ export const HumanDesignChartTab = ({
           </div>
           <p className="text-xs text-muted-foreground mb-4 leading-relaxed">
             Your Profile {hdProfile.profile} in Human Design corresponds directly to your Gene Keys Hologenetic Profile.
-            Discover your Life's Work, Evolution, Radiance, and Purpose through the 64 Gene Keys —
+            Discover your Life&apos;s Work, Evolution, Radiance, and Purpose through the 64 Gene Keys —
             the Shadow, Gift, and Siddhi transformations that map your spiritual journey.
           </p>
           <Button

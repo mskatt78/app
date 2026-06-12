@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
@@ -58,7 +58,7 @@ const MainMenu = ({ user }) => {
     }
   };
 
-  const menuSections = [
+  const menuSections = useMemo(() => [
     {
       title: "Daily Practice",
       items: [
@@ -148,7 +148,7 @@ const MainMenu = ({ user }) => {
         { path: "/progress", icon: BarChart3, label: "My Progress", color: "text-cyan-400", desc: "Track your growth" },
       ]
     }
-  ];
+  ], []);
 
   return (
     <div className="min-h-screen bg-background" data-testid="main-menu">

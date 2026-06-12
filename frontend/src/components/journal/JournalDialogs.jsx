@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Calendar, Tag, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
@@ -24,8 +25,12 @@ export const JournalDialogs = ({
   formatDate,
   getMoodIcon,
   resetEntry,
-}) => (
-  <>
+}) => {
+  const visibleJournalTypes = useMemo(() => journalTypes.filter((type) => type.value !== "all"), [journalTypes]);
+  const selectedEntryTags = useMemo(() => selectedEntry?.tags || [], [selectedEntry]);
+
+  return (
+    <>
     <Dialog open={creating} onOpenChange={setCreating}>
       <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto" data-testid="create-journal-dialog">
         <DialogHeader>
@@ -36,7 +41,7 @@ export const JournalDialogs = ({
           <div>
             <label className="block text-sm text-muted-foreground mb-2">Journal Type</label>
             <div className="flex gap-2">
-              {journalTypes.filter((type) => type.value !== "all").map((type) => {
+              {visibleJournalTypes.map((type) => {
                 const Icon = type.icon;
                 const isSelected = newEntry.journal_type === type.value;
                 return (
@@ -220,9 +225,9 @@ export const JournalDialogs = ({
             <div className="mt-4 space-y-4">
               <p className="text-foreground/90 leading-relaxed whitespace-pre-wrap">{selectedEntry.content}</p>
 
-              {selectedEntry.tags?.length > 0 && (
+              {selectedEntryTags.length > 0 && (
                 <div className="flex flex-wrap gap-2 pt-4 border-t border-white/5">
-                  {selectedEntry.tags.map((tag) => (
+                  {selectedEntryTags.map((tag) => (
                     <span key={tag} className="px-3 py-1 rounded-full bg-white/5 text-sm">#{tag}</span>
                   ))}
                 </div>
@@ -232,5 +237,6 @@ export const JournalDialogs = ({
         )}
       </DialogContent>
     </Dialog>
-  </>
-);
+    </>
+  );
+};

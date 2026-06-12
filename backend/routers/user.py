@@ -5,10 +5,12 @@ from typing import Any, Optional, List
 from datetime import datetime, timezone, timedelta
 import uuid
 import secrets
+import logging
 
 from .dependencies import get_db, get_current_user, User
 
 router = APIRouter(tags=["user"])
+logger = logging.getLogger(__name__)
 
 
 # ============ MODELS ============
@@ -91,42 +93,38 @@ async def get_daily_guidance(user: User = Depends(get_current_user)) -> dict[str
             return None
         return items[secrets.randbelow(len(items))]
     
-    # Import here to avoid circular imports
-    from .numerology import get_current_month
-    current_month = await get_current_month()
-    
-    async def pick_daily_crystal() -> Optional[dict]:
-        from .content import _resolve_crystal_image
+    try:
+        context = await _fetch_daily_guidance_context(db, secure_choice)
+        return _format_daily_guidance_response(user, context)
+    except Exception as exc:
+        return _handle_daily_guidance_error(user, exc)
 
-        deep_crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=80)
-        if deep_crystals:
-            selected_crystal = secure_choice(deep_crystals)
-            if not selected_crystal:
-                return None
-            return await _resolve_crystal_image(selected_crystal, db)
 
-        fallback_crystals = await db.crystals.find({}, {"_id": 0}).to_list(length=50)
-        selected_fallback = secure_choice(fallback_crystals)
-        return selected_fallback
+async def _pick_daily_crystal(db: Any, secure_choice: Any) -> Optional[dict[str, Any]]:
+    from .content import _resolve_crystal_image
 
-    # Fetch data from MongoDB
-    yoga_poses = await db.yoga_poses.find({}, {"_id": 0}).to_list(length=100)
-    mantras = await db.mantras.find({}, {"_id": 0}).to_list(length=50)
-    breathwork_sessions = await db.breathwork_sessions.find({}, {"_id": 0}).to_list(length=20)
-    
-    daily_pose = secure_choice(yoga_poses)
-    daily_crystal = await pick_daily_crystal()
-    daily_mantra = secure_choice(mantras)
-    daily_breathwork = secure_choice(breathwork_sessions)
+    deep_crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=80)
+    if deep_crystals:
+        selected_crystal = secure_choice(deep_crystals)
+        if not selected_crystal:
+            return None
+        return await _resolve_crystal_image(selected_crystal, db)
 
-    yoga_sequence_of_day = {
+    fallback_crystals = await db.crystals.find({}, {"_id": 0}).to_list(length=50)
+    return secure_choice(fallback_crystals)
+
+
+def _default_yoga_sequence_of_day() -> dict[str, Any]:
+    return {
         "id": "daily-yoga-sequence",
         "name": "Daily Nervous System Alignment Flow",
         "duration_minutes": 16,
         "poses": ["Mountain", "Cat-Cow", "Low Lunge", "Seated Twist", "Legs-Up-The-Wall"],
     }
 
-    sunrise_sunset_guidance = {
+
+def _default_sunrise_sunset_guidance() -> dict[str, list[str]]:
+    return {
         "sunrise": [
             "Face first light for 3 deep breaths and set one embodied intention.",
             "Hydrate before caffeine and journal one body sensation.",
@@ -138,17 +136,56 @@ async def get_daily_guidance(user: User = Depends(get_current_user)) -> dict[str
             "Use a 4-6 breath cycle for parasympathetic downshift.",
         ],
     }
-    
+
+
+async def _fetch_daily_guidance_context(db: Any, secure_choice: Any) -> dict[str, Any]:
+    from .numerology import get_current_month
+
+    current_month = await get_current_month()
+    yoga_poses = await db.yoga_poses.find({}, {"_id": 0}).to_list(length=100)
+    mantras = await db.mantras.find({}, {"_id": 0}).to_list(length=50)
+    breathwork_sessions = await db.breathwork_sessions.find({}, {"_id": 0}).to_list(length=20)
+
     return {
-        "greeting": f"Blessed day, {user.name.split()[0]}",
         "current_moon": current_month,
-        "daily_pose": daily_pose,
-        "daily_crystal": daily_crystal,
-        "daily_mantra": daily_mantra,
-        "daily_breathwork": daily_breathwork,
-        "yoga_sequence_of_day": yoga_sequence_of_day,
-        "sunrise_sunset_guidance": sunrise_sunset_guidance,
-        "element_focus": current_month["element"] if current_month else "Spirit"
+        "daily_pose": secure_choice(yoga_poses),
+        "daily_crystal": await _pick_daily_crystal(db, secure_choice),
+        "daily_mantra": secure_choice(mantras),
+        "daily_breathwork": secure_choice(breathwork_sessions),
+        "yoga_sequence_of_day": _default_yoga_sequence_of_day(),
+        "sunrise_sunset_guidance": _default_sunrise_sunset_guidance(),
+    }
+
+
+def _format_daily_guidance_response(user: User, context: dict[str, Any]) -> dict[str, Any]:
+    current_moon = context.get("current_moon")
+    first_name = user.name.split()[0] if user.name else "Beloved"
+    return {
+        "greeting": f"Blessed day, {first_name}",
+        "current_moon": current_moon,
+        "daily_pose": context.get("daily_pose"),
+        "daily_crystal": context.get("daily_crystal"),
+        "daily_mantra": context.get("daily_mantra"),
+        "daily_breathwork": context.get("daily_breathwork"),
+        "yoga_sequence_of_day": context.get("yoga_sequence_of_day"),
+        "sunrise_sunset_guidance": context.get("sunrise_sunset_guidance"),
+        "element_focus": current_moon["element"] if current_moon else "Spirit",
+    }
+
+
+def _handle_daily_guidance_error(user: User, exc: Exception) -> dict[str, Any]:
+    logger.exception("Failed to build daily guidance for user %s", user.user_id)
+    fallback_name = user.name.split()[0] if user.name else "Beloved"
+    return {
+        "greeting": f"Blessed day, {fallback_name}",
+        "current_moon": None,
+        "daily_pose": None,
+        "daily_crystal": None,
+        "daily_mantra": None,
+        "daily_breathwork": None,
+        "yoga_sequence_of_day": _default_yoga_sequence_of_day(),
+        "sunrise_sunset_guidance": _default_sunrise_sunset_guidance(),
+        "element_focus": "Spirit",
     }
 
 

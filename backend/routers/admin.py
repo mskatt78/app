@@ -353,62 +353,106 @@ async def list_items(
 ) -> dict[str, Any]:
     db = get_router_db()
     if collection == "audio_files":
-        query: dict[str, Any] = {"is_deleted": False}
-        if search:
-            query["original_filename"] = {"$regex": search, "$options": "i"}
-        items = await db.admin_audio.find(query, {"_id": 0}).sort("created_at", -1).skip((page - 1) * limit).to_list(limit)
-        total = await db.admin_audio.count_documents(query)
-        return {"items": items, "total": total, "page": page, "limit": limit}
+        return await _list_audio_items(db, page=page, limit=limit, search=search)
 
     if collection not in ALLOWED_COLLECTIONS:
         raise HTTPException(status_code=400, detail="Collection not allowed")
 
-    collection_query: dict[str, Any] = {}
-    if search:
-        collection_query["$or"] = [
-            {"name": {"$regex": search, "$options": "i"}},
-            {"title": {"$regex": search, "$options": "i"}},
-            {"description": {"$regex": search, "$options": "i"}},
-        ]
+    collection_query = _build_admin_collection_query(search)
 
     if collection == "yoga_poses":
-        all_items = await db[collection].find(collection_query, {"_id": 0}).to_list(length=500)
-        annotated_items = [_resolve_admin_yoga_verification(item) for item in all_items]
-
-        if verification_status:
-            normalized_status = verification_status.strip().lower()
-            if normalized_status == "pending":
-                annotated_items = [item for item in annotated_items if item.get("image_source") == "pending_verification"]
-            elif normalized_status == "verified":
-                annotated_items = [item for item in annotated_items if item.get("image_source") == "wikimedia_commons_verified"]
-
-        if verification_priority:
-            normalized_priority = verification_priority.strip().lower()
-            if normalized_priority in {"high", "medium", "low"}:
-                annotated_items = [
-                    item
-                    for item in annotated_items
-                    if str(item.get("image_validation", {}).get("priority", "")).lower() == normalized_priority
-                ]
-
-        annotated_items.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
-        total = len(annotated_items)
-        start = (page - 1) * limit
-        end = start + limit
-        return {
-            "items": annotated_items[start:end],
-            "total": total,
-            "page": page,
-            "limit": limit,
-            "verification_summary": {
-                "verified": len([item for item in annotated_items if item.get("image_source") == "wikimedia_commons_verified"]),
-                "pending": len([item for item in annotated_items if item.get("image_source") == "pending_verification"]),
-            },
-        }
+        return await _list_yoga_items(
+            db,
+            collection_query=collection_query,
+            page=page,
+            limit=limit,
+            verification_status=verification_status,
+            verification_priority=verification_priority,
+        )
 
     items = await db[collection].find(collection_query, {"_id": 0}).sort("created_at", -1).skip((page - 1) * limit).to_list(limit)
     total = await db[collection].count_documents(collection_query)
     return {"items": items, "total": total, "page": page, "limit": limit}
+
+
+def _build_admin_collection_query(search: Optional[str]) -> dict[str, Any]:
+    if not search:
+        return {}
+    return {
+        "$or": [
+            {"name": {"$regex": search, "$options": "i"}},
+            {"title": {"$regex": search, "$options": "i"}},
+            {"description": {"$regex": search, "$options": "i"}},
+        ]
+    }
+
+
+async def _list_audio_items(db: Any, page: int, limit: int, search: Optional[str]) -> dict[str, Any]:
+    query: dict[str, Any] = {"is_deleted": False}
+    if search:
+        query["original_filename"] = {"$regex": search, "$options": "i"}
+    items = await db.admin_audio.find(query, {"_id": 0}).sort("created_at", -1).skip((page - 1) * limit).to_list(limit)
+    total = await db.admin_audio.count_documents(query)
+    return {"items": items, "total": total, "page": page, "limit": limit}
+
+
+def _filter_yoga_by_verification_status(items: list[dict[str, Any]], verification_status: Optional[str]) -> list[dict[str, Any]]:
+    if not verification_status:
+        return items
+    normalized_status = verification_status.strip().lower()
+    if normalized_status == "pending":
+        return [item for item in items if item.get("image_source") == "pending_verification"]
+    if normalized_status == "verified":
+        return [item for item in items if item.get("image_source") == "wikimedia_commons_verified"]
+    return items
+
+
+def _filter_yoga_by_priority(items: list[dict[str, Any]], verification_priority: Optional[str]) -> list[dict[str, Any]]:
+    if not verification_priority:
+        return items
+    normalized_priority = verification_priority.strip().lower()
+    if normalized_priority not in {"high", "medium", "low"}:
+        return items
+    return [
+        item
+        for item in items
+        if str(item.get("image_validation", {}).get("priority", "")).lower() == normalized_priority
+    ]
+
+
+def _paginate_items(items: list[dict[str, Any]], page: int, limit: int) -> list[dict[str, Any]]:
+    start = (page - 1) * limit
+    end = start + limit
+    return items[start:end]
+
+
+def _build_yoga_verification_summary(items: list[dict[str, Any]]) -> dict[str, int]:
+    return {
+        "verified": len([item for item in items if item.get("image_source") == "wikimedia_commons_verified"]),
+        "pending": len([item for item in items if item.get("image_source") == "pending_verification"]),
+    }
+
+
+async def _list_yoga_items(
+    db: Any,
+    collection_query: dict[str, Any],
+    page: int,
+    limit: int,
+    verification_status: Optional[str],
+    verification_priority: Optional[str],
+) -> dict[str, Any]:
+    all_items = await db.yoga_poses.find(collection_query, {"_id": 0}).to_list(length=500)
+    annotated_items = [_resolve_admin_yoga_verification(item) for item in all_items]
+    annotated_items = _filter_yoga_by_verification_status(annotated_items, verification_status)
+    annotated_items = _filter_yoga_by_priority(annotated_items, verification_priority)
+    annotated_items.sort(key=lambda item: str(item.get("created_at") or ""), reverse=True)
+    return {
+        "items": _paginate_items(annotated_items, page=page, limit=limit),
+        "total": len(annotated_items),
+        "page": page,
+        "limit": limit,
+        "verification_summary": _build_yoga_verification_summary(annotated_items),
+    }
 
 
 @router.post("/{collection}/items")
@@ -496,7 +540,7 @@ async def serve_file(path: str) -> Response:
         raise HTTPException(status_code=404, detail="File not found")
 
 
-@router.delete("/audio_files/items/{file_id}")
+@router.delete("/audio_files/managed/{file_id}")
 async def delete_audio_file(file_id: str, _: dict[str, Any] = Depends(_verify_admin)) -> dict[str, bool]:
     db = get_router_db()
     result = await db.admin_audio.update_one(

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ChevronRight, Hexagon, Star, Target } from "lucide-react";
@@ -42,14 +42,14 @@ const HumanDesign = ({ api }) => {
   const [phase, setPhase] = useState(1);
 
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1899 }, (_, index) => currentYear - index);
-  const months = [
+  const years = useMemo(() => Array.from({ length: currentYear - 1899 }, (_, index) => currentYear - index), [currentYear]);
+  const months = useMemo(() => [
     { value: "01", label: "January" }, { value: "02", label: "February" }, { value: "03", label: "March" },
     { value: "04", label: "April" }, { value: "05", label: "May" }, { value: "06", label: "June" },
     { value: "07", label: "July" }, { value: "08", label: "August" }, { value: "09", label: "September" },
     { value: "10", label: "October" }, { value: "11", label: "November" }, { value: "12", label: "December" },
-  ];
-  const days = Array.from({ length: 31 }, (_, index) => String(index + 1).padStart(2, "0"));
+  ], []);
+  const days = useMemo(() => Array.from({ length: 31 }, (_, index) => String(index + 1).padStart(2, "0")), []);
 
   const handleCalcProfile = async () => {
     if (!birthYear || !birthMonth || !birthDay || !birthTime || !birthCity || !birthCountry) {
@@ -322,8 +322,8 @@ const HumanDesign = ({ api }) => {
               <div className="p-6 rounded-xl bg-white/5 border border-white/10">
                 <h4 className="font-medium mb-3">The Ra Uru Hu Quote</h4>
                 <p className="text-lg font-serif italic text-foreground/80">
-                  "Love yourself. You are a unique being. There is no one like you.
-                  You are here to live out your own life, not anyone else&apos;s."
+                  &ldquo;Love yourself. You are a unique being. There is no one like you.
+                  You are here to live out your own life, not anyone else&apos;s.&rdquo;
                 </p>
                 <p className="text-sm text-muted-foreground mt-2">— Ra Uru Hu, founder of Human Design</p>
               </div>

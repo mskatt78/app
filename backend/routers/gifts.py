@@ -424,53 +424,69 @@ async def _create_paypal_gift_order(
     db = get_db()
 
     paypal_client_id, paypal_secret, paypal_mode = _require_paypal_keys()
-
     base_url = _resolve_paypal_base_url(paypal_mode)
 
+    order = await _request_paypal_gift_order(
+        base_url=base_url,
+        paypal_client_id=paypal_client_id,
+        paypal_secret=paypal_secret,
+        gift=gift,
+        amount=amount,
+        product_name=product_name,
+        origin_url=origin_url,
+    )
+    order_id = order["id"]
+    approval_url = _extract_paypal_approval_url(order)
+
+    if not approval_url:
+        raise HTTPException(status_code=500, detail="PayPal approval URL not found")
+
+    await _attach_gift_payment_reference(db, gift["gift_code"], order_id, "paypal")
+    transaction = _build_gift_transaction(
+        order_id,
+        amount,
+        "paypal",
+        product_name,
+        gift["gift_code"],
+        current_user,
+    )
+    await _persist_gift_payment_transaction(db, transaction)
+    return _build_paypal_gift_response(gift_code=gift["gift_code"], order_id=order_id, approval_url=approval_url)
+
+
+async def _request_paypal_gift_order(
+    base_url: str,
+    paypal_client_id: str,
+    paypal_secret: str,
+    gift: dict[str, Any],
+    amount: float,
+    product_name: str,
+    origin_url: str,
+) -> dict[str, Any]:
     async with httpx.AsyncClient() as client:
         access_token = await _fetch_paypal_access_token(client, base_url, paypal_client_id, paypal_secret)
-
         order_data = _build_paypal_gift_order_payload(gift, amount, product_name, origin_url)
-
         order_response = await client.post(
             f"{base_url}/v2/checkout/orders",
             json=order_data,
             headers={
                 "Authorization": f"Bearer {access_token}",
-                "Content-Type": "application/json"
-            }
+                "Content-Type": "application/json",
+            },
         )
+    if order_response.status_code not in [200, 201]:
+        logger.error(f"PayPal order error: {order_response.text}")
+        raise HTTPException(status_code=500, detail="Failed to create PayPal order")
+    return order_response.json()
 
-        if order_response.status_code not in [200, 201]:
-            logger.error(f"PayPal order error: {order_response.text}")
-            raise HTTPException(status_code=500, detail="Failed to create PayPal order")
 
-        order = order_response.json()
-        order_id = order["id"]
-
-        approval_url = _extract_paypal_approval_url(order)
-
-        if not approval_url:
-            raise HTTPException(status_code=500, detail="PayPal approval URL not found")
-
-        await _attach_gift_payment_reference(db, gift["gift_code"], order_id, "paypal")
-
-        transaction = _build_gift_transaction(
-            order_id,
-            amount,
-            "paypal",
-            product_name,
-            gift["gift_code"],
-            current_user,
-        )
-        await _persist_gift_payment_transaction(db, transaction)
-
-        return {
-            "checkout_url": approval_url,
-            "order_id": order_id,
-            "payment_method": "paypal",
-            "gift_code": gift["gift_code"]
-        }
+def _build_paypal_gift_response(gift_code: str, order_id: str, approval_url: str) -> dict[str, Any]:
+    return {
+        "checkout_url": approval_url,
+        "order_id": order_id,
+        "payment_method": "paypal",
+        "gift_code": gift_code,
+    }
 
 
 def _require_stripe_key() -> str:

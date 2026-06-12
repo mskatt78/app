@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Sparkles, Clock, Heart, Sun, ChevronDown, ChevronUp, Loader2, Zap, Moon, Flame, Volume2, Share2, Play } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -36,6 +36,13 @@ const stableChakraKey = (prefix, value) => {
   return `${prefix}-${slug || "item"}`;
 };
 
+const normalizeNarrationText = (content) => {
+  if (content == null) return "";
+  if (typeof content === "string") return content.trim();
+  if (Array.isArray(content)) return content.join(". ").trim();
+  return String(content).trim();
+};
+
 export default function ChakraCleansing() {
   const navigate = useNavigate();
   const [practices, setPractices] = useState([]);
@@ -63,8 +70,9 @@ export default function ChakraCleansing() {
     finally { setLoading(false); }
   };
 
-  const generateAudio = async (text, sectionKey) => {
-    if (!text) return;
+  const generateAudio = useCallback(async (text, sectionKey) => {
+    const narrationText = normalizeNarrationText(text);
+    if (!narrationText) return;
     // Toggle off if same section already playing
     if (audioState.sectionKey === sectionKey && audioState.audioUrl) {
       URL.revokeObjectURL(audioState.audioUrl);
@@ -73,9 +81,8 @@ export default function ChakraCleansing() {
     }
     setAudioState({ loading: true, audioUrl: null, sectionKey });
     try {
-      const safeText = typeof text === "string" ? text : text.join ? text.join(". ") : String(text);
       const { data } = await api.post("/tts/generate-base64", {
-        text: safeText.slice(0, 3800),
+        text: narrationText.slice(0, 3800),
         voice: "nova",
         speed: 0.85,
       });
@@ -89,7 +96,7 @@ export default function ChakraCleansing() {
       toast.error("Could not generate audio narration");
       setAudioState({ loading: false, audioUrl: null, sectionKey: null });
     }
-  };
+  }, [audioState]);
 
   const chakras = ["all", ...Object.keys(CHAKRA_CONFIG)];
   const filtered = useMemo(() => (
@@ -102,6 +109,40 @@ export default function ChakraCleansing() {
     const key = Object.keys(CHAKRA_CONFIG).find(k => chakra?.toLowerCase().includes(k));
     return CHAKRA_CONFIG[key] || CHAKRA_CONFIG.heart;
   };
+
+  const chakraStripItems = useMemo(
+    () => Object.entries(CHAKRA_CONFIG).sort((a, b) => a[1].order - b[1].order),
+    []
+  );
+
+  const sectionItems = useMemo(() => {
+    if (!selectedPractice) return [];
+    return [
+      { key: "why", label: "Why This Heals", icon: Sparkles, content: selectedPractice.why_this_heals },
+      { key: "teaching", label: "Deeper Teaching", icon: Sparkles, content: selectedPractice.deeper_teaching || selectedPractice.deeper_teachings },
+      { key: "guide", label: "Self-Healing Guide", icon: Heart, content: selectedPractice.cleansing_guide },
+      { key: "somatic", label: "Somatic Practice", icon: Zap, content: selectedPractice.somatic_practice },
+      { key: "signs", label: "Signs of Imbalance", icon: Flame, content: selectedPractice.signs_of_imbalance },
+      { key: "healing", label: "Signs of Healing", icon: Sun, content: selectedPractice.signs_of_healing },
+      { key: "shadow", label: "Shadow Work", icon: Moon, content: selectedPractice.shadow_work },
+      { key: "practices", label: "Healing Practices", icon: Heart, content: selectedPractice.healing_practices?.join ? selectedPractice.healing_practices.join("\n\n• ") : selectedPractice.healing_practices },
+      { key: "affirmations", label: "Healing Affirmations", icon: Heart, content: Array.isArray(selectedPractice.affirmations) ? selectedPractice.affirmations.join("\n") : selectedPractice.affirmations },
+      { key: "crystals", label: "Supporting Crystals", icon: Sparkles, content: selectedPractice.crystals },
+    ].filter((section) => section.content);
+  }, [selectedPractice]);
+
+  const selectedPracticeBenefits = useMemo(() => {
+    if (!selectedPractice?.benefits) return [];
+    if (typeof selectedPractice.benefits === "string") {
+      return selectedPractice.benefits.split(",").map((benefit) => benefit.trim()).filter(Boolean);
+    }
+    return selectedPractice.benefits;
+  }, [selectedPractice]);
+
+  const dailyCeremonySteps = useMemo(
+    () => selectedPractice?.daily_embodiment_ceremony?.steps || [],
+    [selectedPractice]
+  );
 
   return (
     <div className="min-h-screen bg-background" data-testid="chakra-cleansing-page">
@@ -122,9 +163,7 @@ export default function ChakraCleansing() {
           
           {/* Chakra visual strip - 13 chakras */}
           <div className="flex gap-1.5 mt-6 justify-center flex-wrap">
-            {Object.entries(CHAKRA_CONFIG)
-              .sort((a, b) => a[1].order - b[1].order)
-              .map(([key, config], idx) => (
+            {chakraStripItems.map(([key, config], idx) => (
               <div key={key} className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full ${config.color} opacity-80 animate-pulse shadow-lg`} 
                 style={{ animationDelay: `${idx * 0.08}s` }} 
                 title={`${config.sanskrit} - ${config.location}`} />
@@ -239,18 +278,7 @@ export default function ChakraCleansing() {
                 })()}
 
                 {/* Expandable sections */}
-                {[
-                  { key: "why", label: "Why This Heals", icon: Sparkles, content: selectedPractice.why_this_heals },
-                  { key: "teaching", label: "Deeper Teaching", icon: Sparkles, content: selectedPractice.deeper_teaching || selectedPractice.deeper_teachings },
-                  { key: "guide", label: "Self-Healing Guide", icon: Heart, content: selectedPractice.cleansing_guide },
-                  { key: "somatic", label: "Somatic Practice", icon: Zap, content: selectedPractice.somatic_practice },
-                  { key: "signs", label: "Signs of Imbalance", icon: Flame, content: selectedPractice.signs_of_imbalance },
-                  { key: "healing", label: "Signs of Healing", icon: Sun, content: selectedPractice.signs_of_healing },
-                  { key: "shadow", label: "Shadow Work", icon: Moon, content: selectedPractice.shadow_work },
-                  { key: "practices", label: "Healing Practices", icon: Heart, content: selectedPractice.healing_practices?.join ? selectedPractice.healing_practices.join("\n\n• ") : selectedPractice.healing_practices },
-                  { key: "affirmations", label: "Healing Affirmations", icon: Heart, content: Array.isArray(selectedPractice.affirmations) ? selectedPractice.affirmations.join("\n") : selectedPractice.affirmations },
-                  { key: "crystals", label: "Supporting Crystals", icon: Sparkles, content: selectedPractice.crystals },
-                ].filter(s => s.content).map(section => (
+                {sectionItems.map(section => (
                   <div key={section.key} className="mb-3 border border-white/10 rounded-xl overflow-hidden">
                     <div className="w-full flex items-center justify-between p-4 hover:bg-white/5 transition-colors">
                       <button
@@ -326,7 +354,7 @@ export default function ChakraCleansing() {
                           <span className="text-xs text-muted-foreground">— {selectedPractice.daily_embodiment_ceremony.duration}</span>
                         </div>
                         <ol className="space-y-2">
-                          {(selectedPractice.daily_embodiment_ceremony.steps || []).map((step, stepIndex) => (
+                          {dailyCeremonySteps.map((step, stepIndex) => (
                             <li key={stableChakraKey(`daily-ceremony-step-${selectedPractice.id}`, step)} className="flex items-start gap-2 text-sm text-muted-foreground">
                               <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-[10px] flex-shrink-0 mt-0.5">{stepIndex + 1}</span>
                               <span className="leading-relaxed">{step}</span>
@@ -342,8 +370,8 @@ export default function ChakraCleansing() {
                   <div className="mt-4">
                     <h3 className="text-sm font-medium mb-2">Benefits When Balanced</h3>
                     <div className="flex flex-wrap gap-2">
-                      {(typeof selectedPractice.benefits === 'string' ? selectedPractice.benefits.split(',') : selectedPractice.benefits).map((benefit) => (
-                        <span key={stableChakraKey(`chakra-benefit-${selectedPractice.id}`, typeof benefit === 'string' ? benefit.trim() : benefit)} className="px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 text-xs">{typeof benefit === 'string' ? benefit.trim() : benefit}</span>
+                      {selectedPracticeBenefits.map((benefit) => (
+                        <span key={stableChakraKey(`chakra-benefit-${selectedPractice.id}`, benefit)} className="px-3 py-1 rounded-full bg-violet-500/10 text-violet-300 text-xs">{benefit}</span>
                       ))}
                     </div>
                   </div>

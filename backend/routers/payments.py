@@ -319,30 +319,11 @@ async def create_checkout_session(
     
     if payment_request.payment_method == "paypal":
         return await create_paypal_order(request, payment_request, current_user)
-    
-    stripe_api_key = os.environ.get("STRIPE_API_KEY")
-    if not stripe_api_key:
-        raise HTTPException(status_code=500, detail="Payment system not configured")
-    
-    origin_url = payment_request.origin_url
-    success_url = f"{origin_url}/payment/success?session_id={{CHECKOUT_SESSION_ID}}"
-    cancel_url = f"{origin_url}/payment/cancel"
-    
+
+    stripe_checkout = _create_stripe_checkout_client(request)
     amount, product_name, metadata = await _resolve_payment_context(db, payment_request, current_user)
-    
-    # Initialize Stripe
-    host_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{host_url}/api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
-    
-    checkout_request = CheckoutSessionRequest(
-        amount=amount,
-        currency="usd",
-        success_url=success_url,
-        cancel_url=cancel_url,
-        metadata=metadata
-    )
-    
+    checkout_request = _build_checkout_request(payment_request.origin_url, amount, metadata)
+
     try:
         session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
         transaction = _build_payment_transaction(
@@ -355,15 +336,43 @@ async def create_checkout_session(
             metadata=metadata,
         )
         await db.payment_transactions.insert_one(transaction)
-        
-        return {
-            "checkout_url": session.url,
-            "session_id": session.session_id,
-            "payment_method": "stripe"
-        }
+        return _build_checkout_response(session)
     except Exception as e:
-        logger.error(f"Stripe checkout error: {e}")
-        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+        _raise_checkout_session_error(e)
+
+
+def _create_stripe_checkout_client(request: Request) -> StripeCheckout:
+    stripe_api_key = os.environ.get("STRIPE_API_KEY")
+    if not stripe_api_key:
+        raise HTTPException(status_code=500, detail="Payment system not configured")
+    host_url = str(request.base_url).rstrip("/")
+    webhook_url = f"{host_url}/api/webhook/stripe"
+    return StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
+
+
+def _build_checkout_request(origin_url: str, amount: float, metadata: dict[str, Any]) -> CheckoutSessionRequest:
+    success_url = f"{origin_url}/payment/success?session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{origin_url}/payment/cancel"
+    return CheckoutSessionRequest(
+        amount=amount,
+        currency="usd",
+        success_url=success_url,
+        cancel_url=cancel_url,
+        metadata=metadata,
+    )
+
+
+def _build_checkout_response(session: CheckoutSessionResponse) -> dict[str, Any]:
+    return {
+        "checkout_url": session.url,
+        "session_id": session.session_id,
+        "payment_method": "stripe",
+    }
+
+
+def _raise_checkout_session_error(error: Exception) -> None:
+    logger.error(f"Stripe checkout error: {error}")
+    raise HTTPException(status_code=500, detail=f"Payment error: {str(error)}")
 
 @router.get("/status/{session_id}")
 async def get_payment_status(

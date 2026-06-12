@@ -1,0 +1,45 @@
+{
+  "summary": "Iteration 156 - Backend refactor regression testing complete. All 31 backend tests pass. All frontend pages (Mantras, ChakraCleansing, MainMenu, HumanDesign, AdminSection, PracticeJournal) load without compile errors. Modal interactions work correctly on ChakraCleansing page.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration156_refactor_regression.py",
+    "/app/test_reports/pytest/pytest_iteration156.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration156_refactor_regression.py"
+  ],
+  "success_rate": {
+    "backend": "100% (31/31 tests passed)",
+    "frontend": "100% (all 6 pages load without compile errors)"
+  },
+  "test_credentials": "Admin: ShamanicAdmin2026!",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Backend refactor regression tests created in test_iteration156_refactor_regression.py covering admin router (collections, yoga verification filtering, audio_files), user router (auth boundaries), payments router (Stripe checkout, subscription status), and gifts router (gift creation, payment flow). All frontend pages tested: Mantras, ChakraCleansing (13 chakra cards, modal interactions work), MainMenu (44 menu items), HumanDesign (5 tabs, 5 type cards), AdminSection (login works, CMS dashboard loads), PracticeJournal (new entry dialog works).",
+  "tests_executed": {
+    "backend": {
+      "health_and_basic": ["health endpoint", "yoga poses", "mantras", "chakra cleansing"],
+      "admin_router": ["collections list", "yoga poses list", "yoga verification filter (pending)", "yoga verification filter (verified)", "yoga priority filter", "audio_files list", "mantras list", "meditations list"],
+      "user_router": ["daily guidance auth", "favorites auth", "practice history auth", "achievements auth"],
+      "payments_router": ["subscription plans public", "bundles public", "create checkout auth", "subscription status auth", "my purchases auth"],
+      "gifts_router": ["create gift public", "get gift by code", "get gift invalid code", "pay for gift auth", "redeem gift auth"],
+      "content_endpoints": ["crystals", "breathwork sessions", "meditations", "shamanic practices", "sound frequencies"]
+    },
+    "frontend": {
+      "pages_tested": ["Mantras", "ChakraCleansing", "MainMenu", "HumanDesign", "AdminSection", "PracticeJournal"],
+      "compile_errors": "None detected on any page",
+      "modal_interactions": "ChakraCleansing modal opens correctly with section buttons, share button, guided practice button"
+    }
+  }
+}

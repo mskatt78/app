@@ -260,7 +260,7 @@ function AudioLibrary({ api }) {
   const handleDelete = async (id) => {
     if (!confirm("Remove this file?")) return;
     try {
-      await fetch(`${api}/api/admin/audio_files/items/${id}`, {
+      await fetch(`${api}/api/admin/audio_files/managed/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -416,14 +416,6 @@ export default function AdminSection() {
   useEffect(() => {
     bootstrapAdminAccess();
   }, [bootstrapAdminAccess]);
-
-  useEffect(() => {
-    if (!isYogaCollection) {
-      return;
-    }
-    setVerificationFilter(searchParams.get("verification") || "all");
-    setPriorityFilter(searchParams.get("priority") || "all");
-  }, [isYogaCollection, searchParams]);
 
   const updateYogaQueueParams = (nextVerification, nextPriority) => {
     if (!isYogaCollection) {
