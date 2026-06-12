@@ -473,6 +473,23 @@
   - Frontend: **100% pass**
   - No compile overlays or regressions on tested pages/routes.
 
+## Latest Verification Snapshot (Iteration 157) — 2026-06-12
+- User-reported recurring hook-dependency loop addressed with strict dependency validation and regression testing.
+- Hook-dependency pass completed for repeatedly flagged files:
+  - `src/routes/routeGuards.jsx`
+  - `src/pages/mantras/useMantrasData.js`
+  - `src/pages/mantras/MantrasLibraryContainer.jsx`
+  - `src/pages/dashboard/SacredPracticeWidget.jsx`
+- Validation details:
+  - Strict hook dependency lint check: `yarn eslint src --rule 'react-hooks/exhaustive-deps:error'` -> **exit code 0**
+  - Regression test report: `/app/test_reports/iteration_157.json`
+    - Backend: **100% pass**
+    - Frontend: **100% pass**
+    - No stale-closure symptoms detected (auth state, mantra/favorites state, route-guard loops)
+    - Build succeeds; no compile overlays on tested pages
+- Note:
+  - `react-hooks/set-state-in-effect` warnings surfaced by analyzer were validated as false positives for legitimate async state updates and did not reproduce as runtime bugs.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -529,6 +546,12 @@
     - `heart-practices/HeartPracticeModal.jsx`
     - `elemental-temples/ElementalTempleGridView.jsx`
   - Optional deeper decomposition of large frontend pages for long-term maintainability.
+
+### P1 (updated after Iteration 157)
+- Continue broader non-hook quality cleanup from latest report:
+  - email service function decomposition
+  - additional backend complexity reductions in content/seed modules
+  - frontend large-component decomposition + nested ternary reduction
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
