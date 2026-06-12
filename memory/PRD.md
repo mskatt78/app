@@ -437,6 +437,42 @@
   - Security verification: hardcoded secret removal confirmed
   - No regressions in Mantras and Yoga flows.
 
+## Latest Verification Snapshot (Iteration 156) — 2026-06-12
+- Important recommendation batch (phase-1) completed and validated.
+- Backend complexity refactors completed:
+  - `routers/admin.py:list_items()` split into helper functions:
+    - query builder
+    - audio listing
+    - yoga verification filtering
+    - pagination + summary builders
+  - `routers/user.py:get_daily_guidance()` split into:
+    - context fetcher
+    - response formatter
+    - error handler
+  - `routers/payments.py:create_checkout_session()` split into:
+    - Stripe client setup
+    - checkout request builder
+    - checkout response/error helpers
+  - `routers/gifts.py:_create_paypal_gift_order()` split into:
+    - PayPal order request helper
+    - response builder
+- Frontend performance/organization improvements completed:
+  - `JournalDialogs.jsx`: memoized expensive derived arrays.
+  - `ChakraCleansing.jsx`: memoized chakra-strip entries, section data, benefits, and ceremony steps.
+  - `MainMenu.jsx`: memoized menu-section structure.
+  - `HumanDesign.jsx`: memoized years/months/days option arrays.
+  - `HumanDesignChartTab.jsx` and `HumanDesign.jsx`: fixed unescaped-entity issues in user-facing copy.
+  - `AdminSection.jsx`: updated admin audio delete endpoint path alignment.
+- Test-quality check status:
+  - Confirmed zero remaining `is` vs `==` anti-patterns in:
+    - `test_stripe_payment_iteration49.py`
+    - `test_sacred_rites_iteration48.py`
+    - `test_shamanic_features_iter47.py`
+- Validation (`iteration_156`):
+  - Backend: **100% (31/31 pass)**
+  - Frontend: **100% pass**
+  - No compile overlays or regressions on tested pages/routes.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -484,6 +520,15 @@
 ### P1 (updated after Iteration 155)
 - Continue decomposition of remaining large pages (`AdminSection`, `ChakraCleansing`, `MainMenu`, `HumanDesign`) into hooks + presentational components.
 - Continue backend complexity reduction for next tier functions (`routers/admin.py:list_items`, `routers/user.py:get_daily_guidance`, `routers/payments.py:create_checkout_session`, `routers/gifts.py:_create_paypal_gift_order`).
+
+### P1 (updated after Iteration 156)
+- Remaining important recommendations to complete in next phase:
+  - Full React-hook dependency sweep across remaining files beyond targeted critical set.
+  - React animation inline-object optimization in:
+    - `light-codes/LightCodeModal.jsx`
+    - `heart-practices/HeartPracticeModal.jsx`
+    - `elemental-temples/ElementalTempleGridView.jsx`
+  - Optional deeper decomposition of large frontend pages for long-term maintainability.
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
