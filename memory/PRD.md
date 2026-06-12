@@ -618,6 +618,21 @@
   - Resolve non-blocking `react-hooks/set-state-in-effect` warnings called out in Iteration 160 report.
   - Continue broader nested-ternary cleanup on additional non-critical files.
 
+### P1 (updated after Iteration 161 - 2026-06-12)
+- Completed deeper decomposition (hooks + presentational components + shared constants/utils) across all requested targets:
+  - `admin`: `useAdminSectionData`, split modal/audio/list/toolbar/verification components, constants and utilities extracted.
+  - `chakra-cleansing`: `useChakraCleansingData`, split header/filter/grid/detail modal components, chakra config/helpers extracted.
+  - `ancient-wisdom`: `useAncientWisdomData`, split hero/filter/grid/detail modal components, tradition constants extracted.
+  - `masculine-temple`: `useMasculineTempleData`, split header/hero/intro/grid/modals/quote components, archetype + intro constants extracted.
+- Regression verification:
+  - Lint passed for all newly created decomposition modules.
+  - Testing agent report `/app/test_reports/iteration_161.json`: frontend 100% pass with no regressions.
+  - Confirmed route stability and modal/filter interactions across `/masculine-temple`, `/chakra-cleansing`, `/ancient-wisdom`, and protected `/admin/manage/:collection` route behavior.
+- Remaining P1/P2 hardening from code-quality backlog:
+  - Continue decomposition for next-tier large pages (`AdminCMS`, `ShamanicPractices`, other secondary high-size files).
+  - Complete remaining nested ternary simplification sweep in secondary files.
+  - Address non-blocking hook-style warnings (`react-hooks/set-state-in-effect`) where still applicable.
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
