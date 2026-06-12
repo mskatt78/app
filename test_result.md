@@ -4004,14 +4004,14 @@ frontend:
 
 metadata:
   created_by: "testing_agent"
-  version: "2.4"
-  test_sequence: 16
+  version: "2.5"
+  test_sequence: 17
   run_ui: false
   last_tested: "2026-06-12"
 
 test_plan:
   current_focus:
-    - "Focused frontend QA for refactored routes - COMPLETED"
+    - "Quality hardening verification - Main Menu, I Ching, Practice Journal - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -4092,3 +4092,120 @@ agent_communication:
       
       SUMMARY:
       Focused frontend QA PASSED for all 6 refactored routes. All routes load successfully without compile/runtime overlays. Key interactions verified: mudras filter dropdown + card modal, numerology primary controls (birth date selectors, full name input, calculate button), masculine temple archetype card/modal, chakra cleansing filter + card modal, ancient wisdom tradition filter + detail modal, shamanic practices modal + guided journey/timer + exit flow. Console analysis shows 64 total messages with 0 critical errors (all are expected non-critical auth errors). Minor overlay interception issue on ancient wisdom filter click (resolved with force=True) but functionality works correctly. Application is stable and production-ready across all tested routes.
+
+
+
+frontend:
+  - task: "Main Menu route rendering and interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/MainMenu.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ QUALITY HARDENING VERIFICATION PASSED (2026-06-12): Main Menu route (/menu) tested successfully. Page renders correctly with data-testid='main-menu'. Home button (data-testid='main-menu-home-button') functional. Sign-in modal trigger button (data-testid='main-menu-sign-in-open-modal-button') opens auth modal correctly. Auth modal displays with proper title (data-testid='main-menu-auth-modal-title') and all form fields are interactable (email, password, submit button). Modal closes correctly with Escape key. Quick access button (data-testid='main-menu-quick-access-button') present. All key buttons and interactions working correctly. No UI regressions detected."
+
+  - task: "I Ching route casting and hexagram modal"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/IChing.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ QUALITY HARDENING VERIFICATION PASSED (2026-06-12): I Ching route (/i-ching) tested successfully. Page loads correctly with data-testid='i-ching'. Cast coins button (data-testid='cast-coins-btn') functional with proper animation (6 seconds). Casting animation completes and result renders correctly showing Hexagram details (Judgment, Image sections visible). 64 Hexagrams modal button (data-testid='i-ching-open-hexagram-list-button') opens modal with 8 hexagrams displayed. Hexagram selection works - clicking hexagram item closes modal and updates result. Modal close button (data-testid='i-ching-close-hexagram-list-button') functional. All casting and modal interactions working correctly. No UI regressions detected."
+
+  - task: "Practice Journal route controls and list view"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/PracticeJournal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ QUALITY HARDENING VERIFICATION PASSED (2026-06-12): Practice Journal route (/practice-journal) tested successfully. Page loads correctly with data-testid='practice-journal-page'. Back button (data-testid='back-btn') present. New entry button (data-testid='new-entry-btn') functional. Mood filter buttons present and functional (data-testid='filter-all', 'filter-chakra', etc). Entries list view renders without runtime crash. Stats display correctly (Streak: 0 days, Total: 0, This Week: 0). Current moon phase displayed. All critical controls render and function correctly. No runtime crashes detected."
+
+  - task: "Regression check - navigation and UI stability"
+    implemented: true
+    working: true
+    file: "/app/frontend/src"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ QUALITY HARDENING VERIFICATION PASSED (2026-06-12): Regression check completed successfully. Landing page (/) renders correctly (not blank). Navigation between routes working: / → /menu → /i-ching → /practice-journal all functional. No blank pages detected. No obvious UI regressions from ternary cleanup. No error messages found on pages. App navigation stable across all tested routes. All regression checks passed."
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Quality Hardening Verification completed successfully (2026-06-12):
+      
+      VERIFICATION REQUEST: Verify latest quality-hardening changes on preview app URL https://breathwork-sanctuary.preview.emergentagent.com
+      
+      Focus tests:
+      1) Main Menu route (/menu)
+      2) I Ching route (/i-ching)
+      3) Practice Journal route (/practice-journal)
+      4) Regression check
+      
+      ✅ ALL TESTS PASSED (24/24 checks):
+      
+      1. ✅ MAIN MENU ROUTE (/menu) - PASSED (7/7 checks)
+         - Page renders: ✓ (data-testid="main-menu")
+         - Home button: ✓ (data-testid="main-menu-home-button")
+         - Sign-in modal trigger: ✓ (data-testid="main-menu-sign-in-open-modal-button")
+         - Auth modal opens: ✓ (data-testid="main-menu-auth-modal-title")
+         - Auth modal form fields interactable: ✓ (email, password, submit inputs present)
+         - Auth modal closes: ✓ (Escape key closes modal)
+         - Quick access button: ✓ (data-testid="main-menu-quick-access-button")
+      
+      2. ✅ I CHING ROUTE (/i-ching) - PASSED (7/7 checks)
+         - Page loads: ✓ (data-testid="i-ching")
+         - Cast coins button: ✓ (data-testid="cast-coins-btn")
+         - Casting animation + result render: ✓ (6-second animation, Hexagram/Judgment/Image visible)
+         - 64 Hexagrams button: ✓ (data-testid="i-ching-open-hexagram-list-button")
+         - 64 Hexagrams modal opens: ✓ (8 hexagrams displayed)
+         - Hexagram selection: ✓ (modal closes, result updates)
+         - Modal close button: ✓ (data-testid="i-ching-close-hexagram-list-button")
+      
+      3. ✅ PRACTICE JOURNAL ROUTE (/practice-journal) - PASSED (5/5 checks)
+         - Page loads: ✓ (data-testid="practice-journal-page")
+         - Back button: ✓ (data-testid="back-btn")
+         - New entry button: ✓ (data-testid="new-entry-btn")
+         - Mood filter buttons: ✓ (data-testid="filter-all", "filter-chakra", etc)
+         - No runtime crash in entries list: ✓ (page renders correctly with stats)
+      
+      4. ✅ REGRESSION CHECK - PASSED (5/5 checks)
+         - Landing page not blank: ✓ (content > 100 chars)
+         - Navigation to /menu: ✓ ("Temple Menu" visible)
+         - Navigation to /i-ching: ✓ ("I Ching" / "Book of Changes" visible)
+         - Navigation to /practice-journal: ✓ ("Practice Journal" visible)
+         - No error messages: ✓ (no error elements found)
+      
+      CRITICAL FINDINGS:
+      ✅ All 3 focus routes load and render correctly
+      ✅ Main Menu: Home button, sign-in modal trigger, quick access button all functional
+      ✅ Main Menu: Auth modal opens/closes correctly with interactable form fields
+      ✅ I Ching: Cast coins button works with proper 6-second animation
+      ✅ I Ching: Casting result renders with Hexagram details (Judgment, Image)
+      ✅ I Ching: 64 Hexagrams modal opens with 8 hexagrams
+      ✅ I Ching: Hexagram selection closes modal and updates result
+      ✅ I Ching: Modal close button functional
+      ✅ Practice Journal: All critical controls render (back, new entry, mood filters)
+      ✅ Practice Journal: Entries list view renders without runtime crash
+      ✅ Regression: No blank pages detected
+      ✅ Regression: Navigation between all routes functional
+      ✅ Regression: No obvious UI regressions from ternary cleanup
+      ✅ No error messages found on any tested pages
+      
+      SUMMARY:
+      Quality hardening verification PASSED for all focus areas. Main Menu route (/menu) renders correctly with functional home button, sign-in modal trigger, and quick access button. Auth modal opens/closes correctly with all form fields interactable. I Ching route (/i-ching) loads correctly with functional cast coins button (6-second animation), proper result rendering (Hexagram/Judgment/Image), and working 64 Hexagrams modal (opens, hexagram selection, close button). Practice Journal route (/practice-journal) loads correctly with all critical controls present (back button, new entry button, mood filters) and entries list view renders without runtime crash. Regression check passed: no blank pages, navigation between routes functional, no UI regressions from ternary cleanup, no error messages detected. Application is stable and production-ready after quality-hardening changes.
