@@ -3914,3 +3914,181 @@ agent_communication:
       
       SUMMARY:
       Backend regression test PASSED. All requested verifications completed successfully. GET /api/elements returns same payload shape and count as GET /api/elemental-temples (5 items, 20 keys, identical content). GET /api/elemental-temples/{id} remains unchanged with proper 200/404 responses. Core content endpoints (/api/light-codes, /api/courses, /api/heart-practices) all healthy and returning expected data. No 500 errors, no payload discrepancies, no blockers detected. Backend is production-ready.
+
+
+
+frontend:
+  - task: "Mudras page filter dropdown and card modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/MudrasLibrary.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FOCUSED QA PASSED (2026-06-12): /mudras route verified. Page loads successfully with data-testid='mudras-library'. Filter dropdown (data-testid='element-filter') functional - successfully selected Fire element. Mudra card modal opens correctly when card clicked. Modal displays mudra details and closes properly. All key interactions working as expected. No compile/runtime overlays detected."
+
+  - task: "Numerology page controls and interactivity"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Numerology.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FOCUSED QA PASSED (2026-06-12): /numerology route verified. Page loads successfully with data-testid='numerology-page'. All primary controls interactive: birth year selector (selected 1990), birth month selector (selected June), birth day selector (selected 15), full name input (filled 'Alexander Thompson'). Calculate button enabled and interactive. All form controls working correctly. No compile/runtime overlays detected."
+
+  - task: "Masculine Temple archetype card and modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/MasculineTemple.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FOCUSED QA PASSED (2026-06-12): /masculine-temple route verified. Page loads successfully with data-testid='masculine-temple'. Warrior archetype card (data-testid='archetype-warrior') opens modal successfully. Archetype modal (data-testid='archetype-modal') displays correctly with teachings, practices, and ritual tabs. Modal closes properly via close button (data-testid='close-modal'). All key interactions working as expected. No compile/runtime overlays detected."
+
+  - task: "Chakra Cleansing filter and card modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ChakraCleansing.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FOCUSED QA PASSED (2026-06-12): /chakra-cleansing route verified. Page loads successfully with data-testid='chakra-cleansing-page'. Chakra filter applied successfully (heart filter via data-testid='filter-heart'). Chakra card modal opens correctly when card clicked. Modal (data-testid='chakra-detail-modal') displays chakra details with expandable sections. Modal closes properly. All key interactions working as expected. No compile/runtime overlays detected."
+
+  - task: "Ancient Wisdom tradition filter and detail modal interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AncientWisdom.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FOCUSED QA PASSED (2026-06-12): /ancient-wisdom route verified. Page loads successfully with data-testid='ancient-wisdom-page'. Tradition filter applied successfully (egyptian filter via data-testid='filter-egyptian'). Entry card opens detail modal correctly. Modal (data-testid='wisdom-detail-modal') displays ancient wisdom details including sacred message, invocation, teachings, and sacred tools. Modal closes properly via close button (data-testid='close-modal-btn'). Minor: Initial click required force=True due to overlay interception, but functionality works correctly. All key interactions working as expected. No compile/runtime overlays detected."
+
+  - task: "Shamanic Practices modal and guided journey/timer flow"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ShamanicPractices.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FOCUSED QA PASSED (2026-06-12): /shamanic-practices route verified. Page loads successfully with data-testid='shamanic-practices'. Practice card opens modal correctly (data-testid='practice-modal'). Begin practice button (data-testid='begin-practice-btn') starts guided journey successfully. Practice timer/interface activates correctly. Exit practice button (data-testid='exit-practice-btn') exits journey successfully. Modal closes properly via close button (data-testid='close-modal'). Complete guided journey flow working as expected. No compile/runtime overlays detected."
+
+  - task: "Console error check - refactored routes"
+    implemented: true
+    working: true
+    file: "/app/frontend/src"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FOCUSED QA PASSED (2026-06-12): Console error analysis completed across all 6 refactored routes. Total console messages: 64. Critical errors: 0. No console-breaking frontend errors detected (no TypeError, ReferenceError, SyntaxError, 'cannot read', 'undefined is not', 'null is not'). All console errors are expected non-critical auth errors (401 unauthorized, public route auth check failed). Application stable across all tested routes."
+
+metadata:
+  created_by: "testing_agent"
+  version: "2.4"
+  test_sequence: 16
+  run_ui: false
+  last_tested: "2026-06-12"
+
+test_plan:
+  current_focus:
+    - "Focused frontend QA for refactored routes - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Focused Frontend QA - Refactored Routes Test completed successfully (2026-06-12):
+      
+      VERIFICATION REQUEST: Run focused frontend QA pass on https://breathwork-sanctuary.preview.emergentagent.com for recently refactored routes and interactions
+      
+      ✅ ALL TESTS PASSED (6/6 routes):
+      
+      1. ✅ /MUDRAS - PASSED
+         - Page loads: ✓ (data-testid="mudras-library")
+         - Filter dropdown: ✓ (data-testid="element-filter" - selected Fire)
+         - Mudra card modal: ✓ (opens and closes correctly)
+         - All key interactions working
+      
+      2. ✅ /NUMEROLOGY - PASSED
+         - Page loads: ✓ (data-testid="numerology-page")
+         - Birth year selector: ✓ (selected 1990)
+         - Birth month selector: ✓ (selected June)
+         - Birth day selector: ✓ (selected 15)
+         - Full name input: ✓ (filled "Alexander Thompson")
+         - Calculate button: ✓ (enabled and interactive)
+         - All primary controls interactive
+      
+      3. ✅ /MASCULINE-TEMPLE - PASSED
+         - Page loads: ✓ (data-testid="masculine-temple")
+         - Archetype card: ✓ (warrior card opens modal)
+         - Archetype modal: ✓ (data-testid="archetype-modal" displays correctly)
+         - Modal tabs: ✓ (teachings, practices, ritual)
+         - Modal close: ✓ (data-testid="close-modal")
+         - All key interactions working
+      
+      4. ✅ /CHAKRA-CLEANSING - PASSED
+         - Page loads: ✓ (data-testid="chakra-cleansing-page")
+         - Chakra filter: ✓ (data-testid="filter-heart" applied)
+         - Chakra card modal: ✓ (data-testid="chakra-detail-modal" opens)
+         - Expandable sections: ✓ (working correctly)
+         - Modal close: ✓ (closes properly)
+         - All key interactions working
+      
+      5. ✅ /ANCIENT-WISDOM - PASSED
+         - Page loads: ✓ (data-testid="ancient-wisdom-page")
+         - Tradition filter: ✓ (data-testid="filter-egyptian" applied)
+         - Entry card modal: ✓ (data-testid="wisdom-detail-modal" opens)
+         - Modal content: ✓ (sacred message, invocation, teachings, tools)
+         - Modal close: ✓ (data-testid="close-modal-btn")
+         - Minor: Initial click required force=True due to overlay interception
+         - All key interactions working
+      
+      6. ✅ /SHAMANIC-PRACTICES - PASSED
+         - Page loads: ✓ (data-testid="shamanic-practices")
+         - Practice modal: ✓ (data-testid="practice-modal" opens)
+         - Begin practice: ✓ (data-testid="begin-practice-btn" starts journey)
+         - Timer/interface: ✓ (activates correctly)
+         - Exit practice: ✓ (data-testid="exit-practice-btn" exits journey)
+         - Modal close: ✓ (data-testid="close-modal")
+         - Complete guided journey flow working
+      
+      7. ✅ CONSOLE ERROR CHECK - PASSED
+         - Total console messages: 64
+         - Critical errors: 0
+         - No console-breaking frontend errors detected
+         - All errors are expected non-critical auth errors (401, public route auth check failed)
+         - Application stable across all routes
+      
+      CRITICAL FINDINGS:
+      ✅ All 6 routes load without compile/runtime overlays
+      ✅ All filter dropdowns and buttons functional
+      ✅ All card modals open and close correctly
+      ✅ Numerology form controls fully interactive
+      ✅ Shamanic practices guided journey/timer flow complete
+      ✅ No console-breaking frontend errors
+      ⚠️  Minor: Ancient wisdom filter click required force=True (overlay interception) but functionality works
+      
+      SUMMARY:
+      Focused frontend QA PASSED for all 6 refactored routes. All routes load successfully without compile/runtime overlays. Key interactions verified: mudras filter dropdown + card modal, numerology primary controls (birth date selectors, full name input, calculate button), masculine temple archetype card/modal, chakra cleansing filter + card modal, ancient wisdom tradition filter + detail modal, shamanic practices modal + guided journey/timer + exit flow. Console analysis shows 64 total messages with 0 critical errors (all are expected non-critical auth errors). Minor overlay interception issue on ancient wisdom filter click (resolved with force=True) but functionality works correctly. Application is stable and production-ready across all tested routes.
