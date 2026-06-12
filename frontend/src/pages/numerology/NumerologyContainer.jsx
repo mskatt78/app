@@ -34,14 +34,23 @@ const Numerology = ({ user, api }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [lifePathsRes, historyRes] = await Promise.all([
-          api.get("/numerology/life-paths"),
-          api.get("/numerology/readings"),
-        ]);
+        const lifePathsRes = await api.get("/numerology/life-paths");
         setLifePaths(lifePathsRes.data);
+      } catch (error) {
+        appLogger.error("Failed to fetch numerology life paths", error);
+      }
+
+      try {
+        const historyRes = await api.get("/numerology/readings");
         setPastReadings(historyRes.data);
       } catch (error) {
-        appLogger.error("Failed to fetch numerology data", error);
+        const statusCode = error?.response?.status;
+        if (statusCode === 401) {
+          setPastReadings([]);
+          return;
+        }
+
+        appLogger.error("Failed to fetch numerology reading history", error);
       }
     };
 
