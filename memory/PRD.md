@@ -599,6 +599,25 @@
   - Broader nested-ternary cleanup sweep across reported files.
   - Import-count reduction and barrel-export organization for high-import modules.
 
+### P1 (updated after Iteration 160 - 2026-06-12)
+- Completed Phase-3 route-level wrapper split for remaining large pages:
+  - `MudrasLibrary`, `Numerology`, `MasculineTemple`, `ChakraCleansing`, `AdminSection`, `AncientWisdom`
+  - Large page logic moved into container files under feature subfolders for safer incremental decomposition.
+- Stabilized module imports after split (corrected relative imports for moved container files).
+- Applied quality hardening sweep in this pass:
+  - Replaced multiple silent/empty catches with structured `appLogger` error/warn logging in admin and chakra flows.
+  - Removed nested ternary hotspot in shamanic guided narration preparation text.
+  - Reworked option normalization in `AdminFormFields` to reduce JSX conditional complexity.
+  - Improved elemental practice modal with explicit background-audio resolver and non-silent audio warm-up warning logging.
+- Verification status:
+  - Frontend lint run passed on refactored files.
+  - Testing agent report: `/app/test_reports/iteration_160.json` (frontend 100% pass).
+  - Additional frontend automation pass confirmed all targeted routes/interactions pass with no blockers.
+- Remaining from this wave:
+  - Deeper hook isolation + further decomposition inside container files (currently still large).
+  - Resolve non-blocking `react-hooks/set-state-in-effect` warnings called out in Iteration 160 report.
+  - Continue broader nested-ternary cleanup on additional non-critical files.
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
