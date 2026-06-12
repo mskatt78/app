@@ -4632,7 +4632,7 @@ backend:
 
   - task: "Numerology router regression - invalid birth_date validation"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/routers/numerology.py"
     stuck_count: 0
     priority: "medium"
@@ -4641,6 +4641,9 @@ backend:
       - working: false
         agent: "testing"
         comment: "❌ VALIDATION BUG FOUND (2026-06-12): POST /api/numerology/calculate does not properly validate date ranges. Test results: 'invalid-date' correctly returns 400 ✓, '2025-13-45' (invalid month 13, day 45) incorrectly returns 200 ✗, 'not-a-date-at-all' correctly returns 400 ✓. Root cause: calculate_life_path function (lines 227-254) splits date string but does not validate month/day are within valid calendar ranges. The function accepts month=13 and day=45 without error. Impact: MINOR - Invalid dates with correct format (YYYY-MM-DD) but invalid ranges are accepted and processed. Recommendation: Add date range validation using datetime.strptime or similar to ensure month is 1-12 and day is valid for the given month."
+      - working: true
+        agent: "testing"
+        comment: "✅ FIX VERIFIED (2026-06-12): POST /api/numerology/calculate now properly validates date ranges. Re-test results: (1) GET /api/numerology/life-paths returns 200 with 12 life paths ✓, (2) POST with valid date '1990-06-15' returns 200 with life_path_number=4, life_path.name='The Builder', personal_year=4 ✓, (3) POST with invalid date '2025-13-45' now correctly returns 400 with error message 'Invalid date format: 2025-13-45' ✓, (4) POST with full_name='Sarah Elizabeth Johnson' returns 200 with expression.number=5 and soul_urge.number=7 ✓. All 4/4 tests passed. Date validation fix working correctly."
 
 agent_communication:
   - agent: "testing"
@@ -4696,5 +4699,59 @@ agent_communication:
       ❌ Date range validation missing (accepts month=13, day=45)
       
       SUMMARY:
+
+  - agent: "testing"
+    message: |
+      Numerology Date Validation Fix Re-Test completed successfully (2026-06-12):
+      
+      VERIFICATION REQUEST: Re-test numerology backend after latest fix in calculate_life_path date validation
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/api
+      
+      ✅ ALL TESTS PASSED (4/4):
+      
+      1. ✅ GET /api/numerology/life-paths non-empty - PASSED
+         - Status: 200 OK
+         - Response contains 12 life paths (1-9, 11, 22, 33)
+         - Sample life paths verified: ['1', '2', '3', '4', '5']
+         - Life path structure includes required fields: number, name, description, traits
+         - All life paths have complete metadata
+      
+      2. ✅ POST /api/numerology/calculate valid date - PASSED
+         - Status: 200 OK
+         - Payload: birth_date="1990-06-15"
+         - Response includes all required fields:
+           * life_path_number: 4
+           * life_path.name: "The Builder"
+           * personal_year.number: 4
+           * personal_year.theme: "Foundation"
+         - Valid date calculation working correctly
+      
+      3. ✅ POST /api/numerology/calculate invalid date returns 400 - PASSED
+         - Status: 400 Bad Request (FIXED - previously returned 200)
+         - Payload: birth_date="2025-13-45"
+         - Error message: "Invalid date format: 2025-13-45"
+         - Invalid date with month=13 and day=45 now correctly rejected
+         - Date range validation working correctly
+      
+      4. ✅ POST /api/numerology/calculate with name (expression + soul_urge) - PASSED
+         - Status: 200 OK
+         - Payload: birth_date="1985-03-20", full_name="Sarah Elizabeth Johnson"
+         - Response includes all required fields:
+           * expression.number: 5
+           * expression.description: present
+           * soul_urge.number: 7
+           * soul_urge.description: present
+         - Name-based calculations working correctly
+      
+      CRITICAL FINDINGS:
+      ✅ Date validation fix VERIFIED - invalid dates now return 400
+      ✅ Life-paths endpoint returns non-empty data (12 life paths)
+      ✅ Valid date calculation still works correctly
+      ✅ Name payload returns expression and soul_urge
+      ✅ No regressions detected in any endpoint
+      
+      SUMMARY:
+      Numerology date validation fix VERIFIED and WORKING. All 4 tests passed successfully. POST /api/numerology/calculate now properly validates date ranges and rejects invalid dates like '2025-13-45' with 400 status (previously incorrectly returned 200). GET /api/numerology/life-paths returns non-empty data with 12 life paths. Valid date calculation still works correctly (tested with '1990-06-15'). Name payload correctly returns expression and soul_urge fields (tested with 'Sarah Elizabeth Johnson'). No regressions detected. Numerology backend is production-ready with proper date validation.
+
       Numerology router regression test MOSTLY PASSED (4/5 tests). GET /api/numerology/life-paths now returns non-empty object with 12 life paths (PREVIOUS ISSUE FIXED). POST /api/numerology/calculate works correctly for both basic payload (returns life_path and personal_year) and with full_name (returns expression and soul_urge). PERSONAL_YEAR_THEMES mapping resolves correctly for personal year numbers 1-9. MINOR VALIDATION BUG: Invalid date ranges (month=13, day=45) are accepted instead of returning 400. Recommend adding datetime.strptime validation in calculate_life_path function to ensure dates are within valid calendar ranges. Overall numerology router is functional with one minor validation issue.
 

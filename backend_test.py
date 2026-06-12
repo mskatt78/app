@@ -1,185 +1,212 @@
 #!/usr/bin/env python3
 """
-Backend API Verification Test Suite
-Tests quality-hardening batch endpoints
+Backend test for numerology endpoints after date validation fix.
+Tests:
+1) GET /api/numerology/life-paths non-empty
+2) POST /api/numerology/calculate valid date still works
+3) POST /api/numerology/calculate invalid date (e.g. 2025-13-45) now returns 400
+4) Name payload still returns expression + soul_urge
 """
 
 import requests
 import json
-import sys
 
-BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com"
+BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
 
-def test_health_endpoint():
-    """Test GET /api/health endpoint"""
-    print("\n" + "="*60)
-    print("TEST 1: GET /api/health")
-    print("="*60)
+def test_life_paths_non_empty():
+    """Test 1: GET /api/numerology/life-paths returns non-empty data"""
+    print("\n" + "="*80)
+    print("TEST 1: GET /api/numerology/life-paths non-empty")
+    print("="*80)
     
-    try:
-        response = requests.get(f"{BASE_URL}/api/health", timeout=10)
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            print(f"Response: {json.dumps(data, indent=2)}")
-            
-            # Verify it's valid JSON and has expected structure
-            if isinstance(data, dict) and 'status' in data:
-                print("✅ PASS: Health endpoint returns 200 with valid JSON")
-                return True
-            else:
-                print("❌ FAIL: Response missing expected 'status' field")
-                return False
-        else:
-            print(f"❌ FAIL: Expected 200, got {response.status_code}")
-            print(f"Response: {response.text}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ FAIL: Exception occurred - {str(e)}")
+    url = f"{BASE_URL}/numerology/life-paths"
+    response = requests.get(url)
+    
+    print(f"Status Code: {response.status_code}")
+    
+    if response.status_code != 200:
+        print(f"❌ FAILED: Expected 200, got {response.status_code}")
         return False
-
-
-def test_i_ching_endpoint():
-    """Test GET /api/i-ching endpoint"""
-    print("\n" + "="*60)
-    print("TEST 2: GET /api/i-ching")
-    print("="*60)
     
-    try:
-        response = requests.get(f"{BASE_URL}/api/i-ching", timeout=10)
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            print(f"Response keys: {list(data.keys()) if isinstance(data, dict) else 'Not a dict'}")
-            print(f"Response preview: {json.dumps(data, indent=2)[:500]}...")
-            
-            # Verify it's valid JSON
-            if data:
-                print("✅ PASS: I-Ching endpoint returns 200 with valid JSON")
-                return True
-            else:
-                print("❌ FAIL: Empty response")
-                return False
-        else:
-            print(f"❌ FAIL: Expected 200, got {response.status_code}")
-            print(f"Response: {response.text[:500]}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ FAIL: Exception occurred - {str(e)}")
+    data = response.json()
+    
+    if not data or len(data) == 0:
+        print(f"❌ FAILED: Response is empty")
         return False
-
-
-def test_journal_entries_endpoint():
-    """Test GET /api/journal endpoint (corrected path)"""
-    print("\n" + "="*60)
-    print("TEST 3: GET /api/journal (journal entries)")
-    print("="*60)
     
-    try:
-        response = requests.get(f"{BASE_URL}/api/journal", timeout=10)
-        print(f"Status Code: {response.status_code}")
-        
-        # This endpoint requires auth, so 401 is expected
-        if response.status_code == 200:
-            data = response.json()
-            print(f"Response type: {type(data)}")
-            print(f"Response preview: {json.dumps(data, indent=2)[:500]}...")
-            print("✅ PASS: Journal entries endpoint returns 200 with valid JSON")
-            return True
-        elif response.status_code == 401:
-            data = response.json()
-            print(f"Response: {json.dumps(data, indent=2)}")
-            print("⚠️  Expected auth behavior: Returns 401 (authentication required)")
-            print("✅ PASS: Auth-protected endpoint behaves correctly (401, not 500)")
-            return True
-        elif response.status_code == 403:
-            print("⚠️  Expected auth behavior: Returns 403 (forbidden)")
-            print("✅ PASS: Auth-protected endpoint behaves correctly (403, not 500)")
-            return True
-        else:
-            print(f"❌ FAIL: Unexpected status code {response.status_code}")
-            print(f"Response: {response.text[:500]}")
+    print(f"✅ PASSED: Response contains {len(data)} life paths")
+    print(f"Sample life paths: {list(data.keys())[:5]}")
+    
+    # Verify structure of first life path
+    first_key = list(data.keys())[0]
+    first_path = data[first_key]
+    required_fields = ['number', 'name', 'description', 'traits']
+    
+    for field in required_fields:
+        if field not in first_path:
+            print(f"❌ FAILED: Missing required field '{field}' in life path data")
             return False
-            
-    except Exception as e:
-        print(f"❌ FAIL: Exception occurred - {str(e)}")
+    
+    print(f"✅ Life path structure verified with required fields: {required_fields}")
+    return True
+
+
+def test_calculate_valid_date():
+    """Test 2: POST /api/numerology/calculate with valid date works"""
+    print("\n" + "="*80)
+    print("TEST 2: POST /api/numerology/calculate with valid date")
+    print("="*80)
+    
+    url = f"{BASE_URL}/numerology/calculate"
+    payload = {
+        "birth_date": "1990-06-15"
+    }
+    
+    print(f"Payload: {json.dumps(payload, indent=2)}")
+    response = requests.post(url, json=payload)
+    
+    print(f"Status Code: {response.status_code}")
+    
+    if response.status_code != 200:
+        print(f"❌ FAILED: Expected 200, got {response.status_code}")
+        print(f"Response: {response.text}")
         return False
+    
+    data = response.json()
+    
+    # Verify required fields
+    required_fields = ['birth_date', 'life_path_number', 'life_path', 'personal_year']
+    for field in required_fields:
+        if field not in data:
+            print(f"❌ FAILED: Missing required field '{field}'")
+            return False
+    
+    print(f"✅ PASSED: Valid date calculation successful")
+    print(f"Life Path Number: {data['life_path_number']}")
+    print(f"Life Path Name: {data['life_path'].get('name', 'N/A')}")
+    print(f"Personal Year: {data['personal_year'].get('number', 'N/A')} - {data['personal_year'].get('theme', 'N/A')}")
+    return True
 
 
-def test_menu_journal_lightweight_endpoints():
-    """Test lightweight endpoints used by menu/journal flows"""
-    print("\n" + "="*60)
-    print("TEST 4: Lightweight endpoints for menu/journal flows")
-    print("="*60)
+def test_calculate_invalid_date():
+    """Test 3: POST /api/numerology/calculate with invalid date returns 400"""
+    print("\n" + "="*80)
+    print("TEST 3: POST /api/numerology/calculate with invalid date (2025-13-45)")
+    print("="*80)
     
-    endpoints = [
-        "/api/courses",
-        "/api/meditations",
-        "/api/breathwork/sessions"
-    ]
+    url = f"{BASE_URL}/numerology/calculate"
+    payload = {
+        "birth_date": "2025-13-45"
+    }
     
-    all_passed = True
+    print(f"Payload: {json.dumps(payload, indent=2)}")
+    response = requests.post(url, json=payload)
     
-    for endpoint in endpoints:
+    print(f"Status Code: {response.status_code}")
+    
+    if response.status_code == 200:
+        print(f"❌ FAILED: Invalid date was accepted (returned 200)")
+        print(f"Response: {response.text[:200]}")
+        return False
+    
+    if response.status_code == 400:
+        print(f"✅ PASSED: Invalid date correctly rejected with 400")
         try:
-            response = requests.get(f"{BASE_URL}{endpoint}", timeout=10)
-            print(f"\n{endpoint}: Status {response.status_code}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                item_count = len(data) if isinstance(data, list) else "N/A"
-                print(f"  ✅ Returns 200 with {item_count} items")
-            else:
-                print(f"  ❌ Unexpected status: {response.status_code}")
-                all_passed = False
-                
-        except Exception as e:
-            print(f"  ❌ Exception: {str(e)}")
-            all_passed = False
+            error_data = response.json()
+            print(f"Error message: {error_data.get('detail', 'No detail provided')}")
+        except:
+            print(f"Response text: {response.text[:200]}")
+        return True
     
-    return all_passed
+    print(f"⚠️  UNEXPECTED: Got status code {response.status_code} (expected 400)")
+    print(f"Response: {response.text[:200]}")
+    return False
+
+
+def test_calculate_with_name():
+    """Test 4: POST /api/numerology/calculate with name returns expression + soul_urge"""
+    print("\n" + "="*80)
+    print("TEST 4: POST /api/numerology/calculate with name (expression + soul_urge)")
+    print("="*80)
+    
+    url = f"{BASE_URL}/numerology/calculate"
+    payload = {
+        "birth_date": "1985-03-20",
+        "full_name": "Sarah Elizabeth Johnson"
+    }
+    
+    print(f"Payload: {json.dumps(payload, indent=2)}")
+    response = requests.post(url, json=payload)
+    
+    print(f"Status Code: {response.status_code}")
+    
+    if response.status_code != 200:
+        print(f"❌ FAILED: Expected 200, got {response.status_code}")
+        print(f"Response: {response.text}")
+        return False
+    
+    data = response.json()
+    
+    # Verify expression and soul_urge fields
+    if 'expression' not in data:
+        print(f"❌ FAILED: Missing 'expression' field")
+        return False
+    
+    if 'soul_urge' not in data:
+        print(f"❌ FAILED: Missing 'soul_urge' field")
+        return False
+    
+    # Verify expression structure
+    expression = data['expression']
+    if 'number' not in expression or 'description' not in expression:
+        print(f"❌ FAILED: Expression missing required fields (number, description)")
+        return False
+    
+    # Verify soul_urge structure
+    soul_urge = data['soul_urge']
+    if 'number' not in soul_urge or 'description' not in soul_urge:
+        print(f"❌ FAILED: Soul urge missing required fields (number, description)")
+        return False
+    
+    print(f"✅ PASSED: Name calculation successful with expression and soul_urge")
+    print(f"Expression Number: {expression['number']}")
+    print(f"Soul Urge Number: {soul_urge['number']}")
+    return True
 
 
 def main():
-    """Run all backend verification tests"""
-    print("\n" + "="*60)
-    print("BACKEND VERIFICATION - Quality Hardening Batch")
-    print("="*60)
-    print(f"Target: {BASE_URL}")
+    """Run all tests and report results"""
+    print("\n" + "="*80)
+    print("NUMEROLOGY BACKEND RE-TEST AFTER DATE VALIDATION FIX")
+    print("="*80)
     
-    results = []
+    results = {
+        "Test 1: GET /api/numerology/life-paths non-empty": test_life_paths_non_empty(),
+        "Test 2: POST /api/numerology/calculate valid date": test_calculate_valid_date(),
+        "Test 3: POST /api/numerology/calculate invalid date returns 400": test_calculate_invalid_date(),
+        "Test 4: POST /api/numerology/calculate with name (expression + soul_urge)": test_calculate_with_name()
+    }
     
-    # Run all tests
-    results.append(("Health endpoint", test_health_endpoint()))
-    results.append(("I-Ching endpoint", test_i_ching_endpoint()))
-    results.append(("Journal entries endpoint", test_journal_entries_endpoint()))
-    results.append(("Menu/Journal lightweight endpoints", test_menu_journal_lightweight_endpoints()))
+    print("\n" + "="*80)
+    print("SUMMARY")
+    print("="*80)
     
-    # Summary
-    print("\n" + "="*60)
-    print("TEST SUMMARY")
-    print("="*60)
-    
-    passed = sum(1 for _, result in results if result)
+    passed = sum(1 for result in results.values() if result)
     total = len(results)
     
-    for test_name, result in results:
+    for test_name, result in results.items():
         status = "✅ PASS" if result else "❌ FAIL"
         print(f"{status}: {test_name}")
     
     print(f"\nTotal: {passed}/{total} tests passed")
     
     if passed == total:
-        print("\n✅ ALL TESTS PASSED - Backend verification successful")
+        print("\n🎉 ALL TESTS PASSED - Date validation fix verified!")
         return 0
     else:
-        print(f"\n❌ {total - passed} TEST(S) FAILED - Review failures above")
+        print(f"\n⚠️  {total - passed} test(s) failed")
         return 1
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    exit(main())

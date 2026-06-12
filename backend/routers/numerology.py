@@ -227,24 +227,33 @@ def reduce_to_single_digit(num: int, keep_master: bool = True) -> int:
 def calculate_life_path(birth_date: str) -> int:
     """Calculate life path number from birth date (YYYY-MM-DD format)."""
     try:
-        parts = birth_date.split("-")
-        if len(parts) == 3:
-            year, month, day = parts
-        else:
-            # Try other formats
-            if "/" in birth_date:
-                parts = birth_date.split("/")
-                if len(parts[2]) == 4:  # MM/DD/YYYY
-                    month, day, year = parts
-                else:  # DD/MM/YY or similar
-                    day, month, year = parts
-            else:
+        normalized_birth_date = birth_date.strip()
+
+        if "-" in normalized_birth_date:
+            parsed_date = datetime.strptime(normalized_birth_date, "%Y-%m-%d")
+        elif "/" in normalized_birth_date:
+            slash_formats = ["%m/%d/%Y", "%d/%m/%Y", "%m/%d/%y", "%d/%m/%y"]
+            parsed_date = None
+            for date_format in slash_formats:
+                try:
+                    parsed_date = datetime.strptime(normalized_birth_date, date_format)
+                    break
+                except ValueError:
+                    continue
+
+            if parsed_date is None:
                 raise ValueError("Invalid date format")
-        
+        else:
+            raise ValueError("Invalid date format")
+
+        year = str(parsed_date.year)
+        month = parsed_date.month
+        day = parsed_date.day
+
         # Calculate each component
         year_sum = reduce_to_single_digit(sum(int(d) for d in year), False)
-        month_sum = reduce_to_single_digit(int(month), False)
-        day_sum = reduce_to_single_digit(int(day), False)
+        month_sum = reduce_to_single_digit(month, False)
+        day_sum = reduce_to_single_digit(day, False)
         
         # Sum and reduce
         total = year_sum + month_sum + day_sum
