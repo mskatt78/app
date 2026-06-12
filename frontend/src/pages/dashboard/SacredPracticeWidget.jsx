@@ -13,16 +13,20 @@ export const SacredPracticeWidget = ({ api, navigate }) => {
   const [practice, setPractice] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const logWarn = useCallback((message, error) => {
+    appLogger.warn(message, error);
+  }, []);
+
   const fetchDailyPractice = useCallback(async () => {
     try {
       const response = await api.get("/daily-practice");
       setPractice(response.data);
     } catch (error) {
-      appLogger.warn("Failed to fetch daily practice widget", error);
+      logWarn("Failed to fetch daily practice widget", error);
     } finally {
       setLoading(false);
     }
-  }, [api]);
+  }, [api, logWarn]);
 
   useEffect(() => {
     fetchDailyPractice();

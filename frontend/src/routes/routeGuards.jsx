@@ -18,11 +18,11 @@ export const AuthCallback = ({ api }) => {
 
     const sessionId = sessionIdMatch[1];
     try {
-      const response = await api.post("/auth/session", { session_id: sessionId });
+      const { data } = await api.post("/auth/session", { session_id: sessionId });
       window.history.replaceState(null, "", window.location.pathname);
-      navigate("/dashboard", { state: { user: response.data }, replace: true });
-    } catch (error) {
-      appLogger.error("Auth callback processing failed", error);
+      navigate("/dashboard", { state: { user: data }, replace: true });
+    } catch {
+      appLogger.error("Auth callback processing failed");
       navigate("/", { replace: true });
     }
   }, [api, navigate]);
@@ -54,14 +54,14 @@ export const ProtectedRoute = ({ children, api }) => {
 
   const checkAuth = useCallback(async () => {
     try {
-      const response = await api.get("/auth/me");
+      const { data } = await api.get("/auth/me");
       if (!isMountedRef.current) return;
-      setUser(response.data);
+      setUser(data);
       setHasAuthError(false);
       setIsAuthenticated(true);
-    } catch (error) {
+    } catch {
       if (!isMountedRef.current) return;
-      appLogger.warn("Protected route auth check failed", error);
+      appLogger.warn("Protected route auth check failed");
       setHasAuthError(true);
       setIsAuthenticated(false);
       navigate("/", { replace: true });
@@ -119,8 +119,7 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
 
   const checkAdmin = useCallback(async () => {
     try {
-      const response = await api.get("/auth/me");
-      const userData = response.data;
+      const { data: userData } = await api.get("/auth/me");
       setUser(userData);
 
       const userEmail = (userData.email || "").toLowerCase();
@@ -130,8 +129,8 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
         setIsAuthorized(true);
         return;
       }
-    } catch (error) {
-      appLogger.warn("Admin route /auth/me check failed, trying cookie fallback", error);
+    } catch {
+      appLogger.warn("Admin route /auth/me check failed, trying cookie fallback");
     }
 
     try {
@@ -143,8 +142,8 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
         toast.error("Admin access required");
         navigate("/dashboard", { replace: true });
       }
-    } catch (error) {
-      appLogger.error("Admin route cookie validation failed", error);
+    } catch {
+      appLogger.error("Admin route cookie validation failed");
       setIsAuthorized(false);
       toast.error("Please sign in to access admin");
       navigate("/", { replace: true });
@@ -156,7 +155,7 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
       setUser(locationStateUser);
     }
     checkAdmin();
-  }, [checkAdmin, locationStateUser]);
+  }, [checkAdmin, locationStateUser, setUser]);
 
   if (isAuthorized === null) {
     return (
@@ -182,12 +181,12 @@ export const PublicRoute = ({ children, api }) => {
 
   const checkAuth = useCallback(async () => {
     try {
-      const response = await api.get("/auth/me");
+      const { data } = await api.get("/auth/me");
       if (!isMountedRef.current) return;
-      setUser(response.data);
-    } catch (error) {
+      setUser(data);
+    } catch {
       if (!isMountedRef.current) return;
-      appLogger.warn("Public route auth check failed", error);
+      appLogger.warn("Public route auth check failed");
       setUser(null);
     }
     if (!isMountedRef.current) return;

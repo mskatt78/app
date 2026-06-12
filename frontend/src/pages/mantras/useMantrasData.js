@@ -26,15 +26,23 @@ export const useMantrasData = ({ api, user }) => {
 
   const isMountedRef = useRef(true);
 
+  const logError = useCallback((message, error) => {
+    appLogger.error(message, error);
+  }, []);
+
+  const logWarn = useCallback((message, error) => {
+    appLogger.warn(message, error);
+  }, []);
+
   const fetchUserMantras = useCallback(async () => {
     try {
       const response = await api.get("/mantras/custom");
       if (!isMountedRef.current) return;
       setUserMantras(response.data);
     } catch (error) {
-      appLogger.error("Failed to fetch user mantras", error);
+      logError("Failed to fetch user mantras", error);
     }
-  }, [api]);
+  }, [api, logError]);
 
   const fetchMantras = useCallback(async () => {
     try {
@@ -43,12 +51,12 @@ export const useMantrasData = ({ api, user }) => {
       setMantras(response.data);
       setFilteredMantras(response.data);
     } catch (error) {
-      appLogger.error("Failed to fetch mantras", error);
+      logError("Failed to fetch mantras", error);
     } finally {
       if (!isMountedRef.current) return;
       setLoading(false);
     }
-  }, [api]);
+  }, [api, logError]);
 
   const fetchFavorites = useCallback(async () => {
     try {
@@ -57,9 +65,9 @@ export const useMantrasData = ({ api, user }) => {
       const favIds = new Set(response.data.map((f) => f.item_id));
       setFavorites(favIds);
     } catch (error) {
-      appLogger.warn("Failed to fetch mantra favorites", error);
+      logWarn("Failed to fetch mantra favorites", error);
     }
-  }, [api]);
+  }, [api, logWarn]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -71,7 +79,7 @@ export const useMantrasData = ({ api, user }) => {
     return () => {
       isMountedRef.current = false;
     };
-  }, [fetchFavorites, fetchMantras, fetchUserMantras, user]);
+  }, [fetchFavorites, fetchMantras, fetchUserMantras, isMountedRef, user]);
 
   useEffect(() => {
     if (selectedElement === "all") {
@@ -79,15 +87,15 @@ export const useMantrasData = ({ api, user }) => {
       return;
     }
     setFilteredMantras(mantras.filter((m) => m.element === selectedElement));
-  }, [selectedElement, mantras]);
+  }, [selectedElement, mantras, setFilteredMantras]);
 
   useEffect(() => {
     try {
       setLocalItem(PREFERRED_NATURAL_SOUND_KEY, selectedNaturalSound);
     } catch (error) {
-      appLogger.warn("Failed to persist preferred natural sound", error);
+      logWarn("Failed to persist preferred natural sound", error);
     }
-  }, [selectedNaturalSound]);
+  }, [logWarn, selectedNaturalSound]);
 
   const createUserMantra = async () => {
     if (!newMantra.text.trim()) {
@@ -106,7 +114,7 @@ export const useMantrasData = ({ api, user }) => {
       setIsCreatingMantra(false);
       toast.success("Mantra saved!");
     } catch (error) {
-      appLogger.error("Failed to create mantra", error);
+      logError("Failed to create mantra", error);
       toast.error("Could not save mantra");
     }
   };
@@ -127,7 +135,7 @@ export const useMantrasData = ({ api, user }) => {
       setEditingMantra(null);
       toast.success("Mantra updated!");
     } catch (error) {
-      appLogger.error("Failed to update mantra", error);
+      logError("Failed to update mantra", error);
       toast.error("Could not update mantra");
     }
   };
@@ -138,7 +146,7 @@ export const useMantrasData = ({ api, user }) => {
       setUserMantras((prev) => prev.filter((m) => m.mantra_id !== mantraId));
       toast.success("Mantra deleted");
     } catch (error) {
-      appLogger.warn("Failed to delete mantra", error);
+      logWarn("Failed to delete mantra", error);
       toast.error("Could not delete mantra");
     }
   };
@@ -171,7 +179,7 @@ export const useMantrasData = ({ api, user }) => {
         toast.success("Added to favorites");
       }
     } catch (error) {
-      appLogger.warn("Failed to toggle mantra favorite", error);
+      logWarn("Failed to toggle mantra favorite", error);
     }
   };
 

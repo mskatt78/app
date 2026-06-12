@@ -43,6 +43,15 @@ const ELEMENT_NATURAL_DEFAULT = {
   Spirit: "rain",
 };
 
+const safeCloseAudioContext = (contextRef) => {
+  if (!contextRef.current) return;
+  contextRef.current.close().catch((error) => {
+    appLogger.warn("Error while closing mantra audio context", error);
+  }).finally(() => {
+    contextRef.current = null;
+  });
+};
+
 const MantrasLibrary = ({ user, api }) => {
   const navigate = useNavigate();
   const {
@@ -157,7 +166,7 @@ const MantrasLibrary = ({ user, api }) => {
     });
     
     audioRef.current = audio;
-  }, [isLooping, volume]);
+  }, [audioRef, isLooping, setAudioError, setAudioProgress, setCurrentRep, setIsPlaying, volume]);
 
   useEffect(() => {
     return () => {
@@ -168,15 +177,14 @@ const MantrasLibrary = ({ user, api }) => {
       }
       // Stop Web Audio API context (generated mantra sounds)
       if (mantraAudioCtxRef.current) {
-        try { mantraAudioCtxRef.current.close(); } catch(e) {}
-        mantraAudioCtxRef.current = null;
+        safeCloseAudioContext(mantraAudioCtxRef);
       }
       if (mantraIntervalRef.current) {
         clearInterval(mantraIntervalRef.current);
         mantraIntervalRef.current = null;
       }
     };
-  }, []);
+  }, [audioRef, intervalRef, mantraAudioCtxRef, mantraIntervalRef]);
 
   // Audio setup when mantra is selected
   useEffect(() => {
@@ -188,7 +196,7 @@ const MantrasLibrary = ({ user, api }) => {
         audioRef.current.pause();
       }
     };
-  }, [selectedMantra, setupAudio]);
+  }, [audioRef, selectedMantra?.audio_url, setupAudio]);
 
   // Audio controls
   const toggleAudio = () => {
@@ -327,9 +335,10 @@ const MantrasLibrary = ({ user, api }) => {
       mantraIntervalRef.current = null;
     }
     if (mantraAudioCtxRef.current && mantraAudioCtxRef.current.state !== 'closed') {
-      mantraAudioCtxRef.current.close();
+      safeCloseAudioContext(mantraAudioCtxRef);
+    } else {
+      mantraAudioCtxRef.current = null;
     }
-    mantraAudioCtxRef.current = null;
     mantraGainRef.current = null;
   };
 
@@ -583,13 +592,13 @@ const MantrasLibrary = ({ user, api }) => {
               <label className="block text-sm text-muted-foreground mb-2">Element (optional)</label>
               <Select 
                 value={newMantra.element} 
-                onValueChange={(value) => setNewMantra(prev => ({ ...prev, element: value }))}
+                onValueChange={(value) => setNewMantra(prev => ({ ...prev, element: value === "none" ? "" : value }))}
               >
                 <SelectTrigger className="bg-card/50 border-white/10">
                   <SelectValue placeholder="Connect to an element..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None</SelectItem>
+                  <SelectItem value="none">None</SelectItem>
                   {elements.filter(e => e !== "all").map((el) => (
                     <SelectItem key={el} value={el}>
                       {el}
