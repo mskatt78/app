@@ -490,6 +490,46 @@
 - Note:
   - `react-hooks/set-state-in-effect` warnings surfaced by analyzer were validated as false positives for legitimate async state updates and did not reproduce as runtime bugs.
 
+## Latest Verification Snapshot (Iterations 158-159) — 2026-06-12
+- Continuous hardening pass (phase-2) completed with backend complexity decomposition + targeted frontend quality cleanup.
+
+### Backend hardening completed
+- `services/email_service.py`
+  - Decomposed large functions into helpers:
+    - gift type formatting
+    - message HTML builders
+    - payload builders
+    - send wrapper
+    - disabled-email response helper
+- `routers/content.py`
+  - Decomposed `expand_guided_script()` with explicit target/response helper builders.
+  - Simplified Wikipedia helper complexity:
+    - page extraction helper
+    - file URL extraction helper
+    - article-file candidate scoring helper
+    - title-skip predicate helper
+- `routers/gifts.py`
+  - Decomposed `_create_stripe_gift_checkout()` into URL/client/request/response/error helpers.
+- `routers/admin.py`
+  - Reduced `_resolve_admin_yoga_verification()` branching via focused helpers for override lookup, reference merge, and verified/pending item builders.
+- `seed_content.py`
+  - Split seeding into collection helper + summary counts helper.
+- `seed_database.py`
+  - Split into collection builder, per-collection seed, index creation, and summary printer helpers.
+
+### Frontend hardening completed
+- `GroundingPractices.jsx`
+  - Removed empty catch; added structured warning logging for audio warmup failures.
+- `mantras/MantrasLibraryContainer.jsx`
+  - Reduced nested ternary in main render path via `renderMainContent()` helper.
+
+### Validation
+- `/app/test_reports/iteration_158.json`: backend + smoke checks passed.
+- `/app/test_reports/iteration_159.json`: **full regression pass success**
+  - Backend: **100% (22/22 tests passed)**
+  - Frontend: **100% pass**
+  - No compile overlays, no route regressions.
+
 ## Data / Quality Rules to Preserve
 - Mongo responses must exclude `_id` unless transformed safely.
 - Any Mongo write objects reused in responses must be sanitized.
@@ -552,6 +592,12 @@
   - email service function decomposition
   - additional backend complexity reductions in content/seed modules
   - frontend large-component decomposition + nested ternary reduction
+
+### P1 (updated after Iteration 159)
+- Remaining hardening recommendations for next phase:
+  - Continue large frontend component decomposition (`Numerology`, `MasculineTemple`, `ChakraCleansing`, `AdminSection`, `AncientWisdom`, `MudrasLibrary`, etc.)
+  - Broader nested-ternary cleanup sweep across reported files.
+  - Import-count reduction and barrel-export organization for high-import modules.
 
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
