@@ -213,7 +213,18 @@ const GroundingPractices = ({ user, api }) => {
 
                     <Button
                       onClick={() => {
-                        try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) {}
+                        try {
+                          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                          const context = new AudioContextClass();
+                          const buffer = context.createBuffer(1, context.sampleRate * 0.1, context.sampleRate);
+                          const source = context.createBufferSource();
+                          source.buffer = buffer;
+                          source.connect(context.destination);
+                          source.start(0);
+                          window.__warmAudioCtx = context;
+                        } catch (error) {
+                          appLogger.warn("Audio context warmup failed for grounding practice", error);
+                        }
                         setIsPracticing(true);
                       }}
                       className="w-full bg-emerald-600 hover:bg-emerald-700"

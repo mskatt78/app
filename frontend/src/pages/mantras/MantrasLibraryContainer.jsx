@@ -451,6 +451,44 @@ const MantrasLibrary = ({ user, api }) => {
     };
   };
 
+  const renderMainContent = () => {
+    if (activeTab === "custom") {
+      return (
+        <MantrasCustomSection
+          user={user}
+          navigate={navigate}
+          userMantras={userMantras}
+          elementColors={elementColors}
+          setEditingMantra={setEditingMantra}
+          setNewMantra={setNewMantra}
+          setIsCreatingMantra={setIsCreatingMantra}
+          startEditingMantra={startEditingMantra}
+          deleteUserMantra={deleteUserMantra}
+        />
+      );
+    }
+
+    if (loading) {
+      return (
+        <div className="flex items-center justify-center h-64">
+          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+        </div>
+      );
+    }
+
+    return (
+      <MantrasLibraryGrid
+        filteredMantras={filteredMantras}
+        favorites={favorites}
+        elementColors={elementColors}
+        ensureElementNaturalDefault={ensureElementNaturalDefault}
+        setSelectedMantra={setSelectedMantra}
+        toggleFavorite={toggleFavorite}
+        formatReviewedDate={formatReviewedDate}
+      />
+    );
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="mantras-library">
       <MantrasFilters
@@ -464,33 +502,7 @@ const MantrasLibrary = ({ user, api }) => {
       />
 
       <main className="max-w-6xl mx-auto p-6">
-        {activeTab === "custom" ? (
-          <MantrasCustomSection
-            user={user}
-            navigate={navigate}
-            userMantras={userMantras}
-            elementColors={elementColors}
-            setEditingMantra={setEditingMantra}
-            setNewMantra={setNewMantra}
-            setIsCreatingMantra={setIsCreatingMantra}
-            startEditingMantra={startEditingMantra}
-            deleteUserMantra={deleteUserMantra}
-          />
-        ) : loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
-          </div>
-        ) : (
-          <MantrasLibraryGrid
-            filteredMantras={filteredMantras}
-            favorites={favorites}
-            elementColors={elementColors}
-            ensureElementNaturalDefault={ensureElementNaturalDefault}
-            setSelectedMantra={setSelectedMantra}
-            toggleFavorite={toggleFavorite}
-            formatReviewedDate={formatReviewedDate}
-          />
-        )}
+        {renderMainContent()}
       </main>
 
       <MantrasPlayer
