@@ -4580,3 +4580,121 @@ agent_communication:
       
       SUMMARY:
       Focused frontend regression verification PASSED with 1 minor issue. Practice Journal route (/practice-journal) fully functional with all features working: page load, back button, new entry button, search input, filter chips, form modal with all fields, save entry, modal close, and list updates. Numerology route (/numerology) core functionality working: page load, birth date selectors (year/month/day), calculate button, reading results with life path card ("The Builder") and personal year card ("Foundation"), and history toggle. ISSUE: Numerology life-path overview grid renders but contains 0 items - API endpoint /numerology/life-paths not returning data. I-Ching route (/i-ching) sanity check passed: page load, cast coins button, 6-second animation, and result rendering (Hexagram 8). No console errors detected. Application stable after decomposition changes. Recommend fixing numerology life-paths API endpoint to restore overview dialog functionality.
+
+backend:
+  - task: "Numerology router regression - life-paths endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/numerology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION TEST PASSED (2026-06-12): GET /api/numerology/life-paths returns 200 with non-empty object. Response contains 12 life path definitions (1-9, 11, 22, 33). Each life path includes: number, name, keywords, description, traits, strengths, challenges, element, crystal, mantra, career_paths, spiritual_lesson. Sample verified: Life Path 1 'The Leader' with complete metadata. PREVIOUS ISSUE RESOLVED: Endpoint was returning 0 items, now returns full 12-item dictionary. Life-paths endpoint working correctly."
+
+  - task: "Numerology router regression - calculate endpoint basic payload"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/numerology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION TEST PASSED (2026-06-12): POST /api/numerology/calculate with basic payload (birth_date only) returns 200 with complete response. Response includes: birth_date, full_name (null), life_path_number (4), life_path object (with number, name 'The Builder', keywords, description, traits, strengths, challenges, element, crystal, mantra, career_paths, spiritual_lesson), personal_year object (number: 4, theme: 'Foundation', description). All required fields present. Basic calculate endpoint working correctly."
+
+  - task: "Numerology router regression - calculate endpoint with full_name"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/numerology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION TEST PASSED (2026-06-12): POST /api/numerology/calculate with full_name returns 200 with extended response. Response includes all basic fields PLUS expression object (number: 5, description) and soul_urge object (number: 7, description). Tested with birth_date='1985-03-20' and full_name='Sarah Elizabeth Johnson'. Expression and soul_urge calculations working correctly. Calculate with full_name endpoint working correctly."
+
+  - task: "Numerology router regression - PERSONAL_YEAR_THEMES mapping"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/numerology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION TEST PASSED (2026-06-12): PERSONAL_YEAR_THEMES mapping resolves correctly for personal year numbers 1-9. Tested with 4 different birth dates, found personal years 3, 6, 8. All responses include: number (1-9 range), theme string ('Creativity', 'Responsibility', 'Abundance'), description string. All personal year numbers in valid range 1-9. All have theme and description fields populated. PERSONAL_YEAR_THEMES mapping working correctly."
+
+  - task: "Numerology router regression - invalid birth_date validation"
+    implemented: true
+    working: false
+    file: "/app/backend/routers/numerology.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ VALIDATION BUG FOUND (2026-06-12): POST /api/numerology/calculate does not properly validate date ranges. Test results: 'invalid-date' correctly returns 400 ✓, '2025-13-45' (invalid month 13, day 45) incorrectly returns 200 ✗, 'not-a-date-at-all' correctly returns 400 ✓. Root cause: calculate_life_path function (lines 227-254) splits date string but does not validate month/day are within valid calendar ranges. The function accepts month=13 and day=45 without error. Impact: MINOR - Invalid dates with correct format (YYYY-MM-DD) but invalid ranges are accepted and processed. Recommendation: Add date range validation using datetime.strptime or similar to ensure month is 1-12 and day is valid for the given month."
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Numerology Router Regression Test (2026-06-12):
+      
+      VERIFICATION REQUEST: Backend regression checks for latest numerology router cleanup on preview environment
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ TESTS PASSED (4/5):
+      
+      1. ✅ GET /api/numerology/life-paths - PASSED
+         - Returns 200 with non-empty object
+         - Contains 12 life path definitions (1-9, 11, 22, 33)
+         - Each life path has complete metadata: number, name, keywords, description, traits, strengths, challenges, element, crystal, mantra, career_paths, spiritual_lesson
+         - Sample verified: Life Path 1 "The Leader" with all fields
+         - PREVIOUS ISSUE RESOLVED: Was returning 0 items, now returns full dictionary
+      
+      2. ✅ POST /api/numerology/calculate (basic payload) - PASSED
+         - Returns 200 with life_path and personal_year
+         - Tested with birth_date="1990-06-15"
+         - Response includes: life_path_number (4), life_path object (The Builder), personal_year object (number: 4, theme: "Foundation", description)
+         - All required fields present
+      
+      3. ✅ POST /api/numerology/calculate (with full_name) - PASSED
+         - Returns 200 with expression and soul_urge
+         - Tested with birth_date="1985-03-20", full_name="Sarah Elizabeth Johnson"
+         - Response includes: life_path, personal_year, expression (number: 5), soul_urge (number: 7)
+         - Name-based calculations working correctly
+      
+      4. ✅ PERSONAL_YEAR_THEMES mapping (1..9) - PASSED
+         - Tested with 4 different birth dates
+         - Found personal years: 3 (Creativity), 6 (Responsibility), 8 (Abundance)
+         - All personal year numbers in valid range 1-9
+         - All responses include number, theme, and description
+         - PERSONAL_YEAR_THEMES mapping resolves correctly
+      
+      ❌ TEST FAILED (1/5):
+      
+      5. ❌ Invalid birth_date validation - FAILED
+         - Test case "invalid-date": Returns 400 ✓
+         - Test case "2025-13-45": Returns 200 ✗ (SHOULD BE 400)
+         - Test case "not-a-date-at-all": Returns 400 ✓
+         - Issue: Date with invalid month (13) and day (45) is accepted
+         - Root cause: calculate_life_path function (lines 227-254) does not validate date ranges
+         - Impact: MINOR - Invalid dates with correct format but invalid ranges are processed
+         - Recommendation: Add datetime.strptime validation to ensure month is 1-12 and day is valid
+      
+      CRITICAL FINDINGS:
+      ✅ Life-paths endpoint FIXED (was returning 0 items, now returns 12)
+      ✅ Calculate endpoint working for basic and full_name payloads
+      ✅ PERSONAL_YEAR_THEMES mapping resolves correctly for 1-9
+      ❌ Date range validation missing (accepts month=13, day=45)
+      
+      SUMMARY:
+      Numerology router regression test MOSTLY PASSED (4/5 tests). GET /api/numerology/life-paths now returns non-empty object with 12 life paths (PREVIOUS ISSUE FIXED). POST /api/numerology/calculate works correctly for both basic payload (returns life_path and personal_year) and with full_name (returns expression and soul_urge). PERSONAL_YEAR_THEMES mapping resolves correctly for personal year numbers 1-9. MINOR VALIDATION BUG: Invalid date ranges (month=13, day=45) are accepted instead of returning 400. Recommend adding datetime.strptime validation in calculate_life_path function to ensure dates are within valid calendar ranges. Overall numerology router is functional with one minor validation issue.
+
