@@ -44,34 +44,40 @@ def _normalize_yoga_pose_key(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", str(value or "").lower()).strip()
 
 
-def _resolve_admin_yoga_verification(item: dict[str, Any]) -> dict[str, Any]:
-    normalized_name = _normalize_yoga_pose_key(item.get("name", ""))
+def _find_yoga_override(normalized_name: str) -> Optional[dict[str, Any]]:
     override = YOGA_VERIFIED_IMAGE_OVERRIDES.get(normalized_name)
-    if not override:
-        for raw_key, raw_override in YOGA_VERIFIED_IMAGE_OVERRIDES.items():
-            if _normalize_yoga_pose_key(raw_key) == normalized_name:
-                override = raw_override
-                break
-
     if override:
-        merged_refs = _normalize_source_references(item.get("source_references"))
-        for ref in _normalize_source_references(override.get("source_references")):
-            if ref not in merged_refs:
-                merged_refs.append(ref)
+        return override
+    for raw_key, raw_override in YOGA_VERIFIED_IMAGE_OVERRIDES.items():
+        if _normalize_yoga_pose_key(raw_key) == normalized_name:
+            return raw_override
+    return None
 
-        return {
-            **item,
-            "image_url": override.get("image_url") or item.get("image_url"),
-            "source_references": merged_refs,
-            "image_source": "wikimedia_commons_verified",
-            "image_validation": {
-                "status": "verified",
-                "source_type": "wikimedia_commons",
-                "score": 0.94,
-                "verified_at": datetime.now(timezone.utc).isoformat(),
-            },
-        }
 
+def _merge_yoga_source_references(item_refs: Any, override_refs: Any) -> list[str]:
+    merged_refs = _normalize_source_references(item_refs)
+    for ref in _normalize_source_references(override_refs):
+        if ref not in merged_refs:
+            merged_refs.append(ref)
+    return merged_refs
+
+
+def _build_verified_yoga_admin_item(item: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
+    return {
+        **item,
+        "image_url": override.get("image_url") or item.get("image_url"),
+        "source_references": _merge_yoga_source_references(item.get("source_references"), override.get("source_references")),
+        "image_source": "wikimedia_commons_verified",
+        "image_validation": {
+            "status": "verified",
+            "source_type": "wikimedia_commons",
+            "score": 0.94,
+            "verified_at": datetime.now(timezone.utc).isoformat(),
+        },
+    }
+
+
+def _build_pending_yoga_admin_item(item: dict[str, Any], normalized_name: str) -> dict[str, Any]:
     difficulty = str(item.get("difficulty") or "").lower().strip()
     priority = "high" if difficulty in {"advanced", "intermediate"} else ("medium" if normalized_name.startswith("seated ") else "low")
     return {
@@ -84,6 +90,14 @@ def _resolve_admin_yoga_verification(item: dict[str, Any]) -> dict[str, Any]:
             "score": 0.0,
         },
     }
+
+
+def _resolve_admin_yoga_verification(item: dict[str, Any]) -> dict[str, Any]:
+    normalized_name = _normalize_yoga_pose_key(item.get("name", ""))
+    override = _find_yoga_override(normalized_name)
+    if override:
+        return _build_verified_yoga_admin_item(item, override)
+    return _build_pending_yoga_admin_item(item, normalized_name)
 
 
 def _normalize_source_references(value: Any) -> list[str]:

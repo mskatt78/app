@@ -28,20 +28,46 @@ def get_gift_email_template(
     redemption_url: str
 ) -> str:
     """Generate beautiful HTML email for gift notification."""
-    
-    gift_type_display = {
+    gift_type_display = _format_gift_type_label(gift_type)
+    message_html = _build_personal_message_html(message)
+    return _build_gift_notification_email_html(
+        recipient_name=recipient_name,
+        sender_name=sender_name,
+        gift_type_display=gift_type_display,
+        gift_code=gift_code,
+        message_html=message_html,
+        redemption_url=redemption_url,
+    )
+
+
+def _format_gift_type_label(gift_type: str) -> str:
+    return {
         "subscription": "a Sacred Membership",
         "retreat": "a Retreat Experience",
         "book": "a Sacred Book",
-        "session": "a Live Session"
+        "session": "a Live Session",
     }.get(gift_type, "a Special Gift")
-    
-    message_html = f"""
+
+
+def _build_personal_message_html(message: Optional[str]) -> str:
+    if not message:
+        return ""
+    return f"""
     <div style="background: #2a2a2a; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #d4a953;">
         <p style="color: #d4a953; margin: 0 0 8px 0; font-size: 14px;">Personal Message:</p>
         <p style="color: #e0e0e0; margin: 0; font-style: italic;">"{message}"</p>
     </div>
-    """ if message else ""
+    """
+
+
+def _build_gift_notification_email_html(
+    recipient_name: str,
+    sender_name: str,
+    gift_type_display: str,
+    gift_code: str,
+    message_html: str,
+    redemption_url: str,
+) -> str:
     
     return f"""
 <!DOCTYPE html>
@@ -124,6 +150,40 @@ def get_gift_email_template(
 """
 
 
+def _build_gift_notification_email_payload(
+    recipient_email: str,
+    sender_name: str,
+    html_content: str,
+) -> dict:
+    return {
+        "from": SENDER_EMAIL,
+        "to": [recipient_email],
+        "subject": f"🎁 {sender_name} sent you a gift from Shamanic Elements!",
+        "html": html_content,
+    }
+
+
+def _build_redeemed_email_payload(sender_email: str, recipient_name: str, html_content: str) -> dict:
+    return {
+        "from": SENDER_EMAIL,
+        "to": [sender_email],
+        "subject": f"🎉 {recipient_name} redeemed your gift!",
+        "html": html_content,
+    }
+
+
+async def _send_email_payload(params: dict) -> dict:
+    return await asyncio.to_thread(resend.Emails.send, params)
+
+
+def _email_disabled_response(recipient: str) -> dict:
+    return {
+        "status": "skipped",
+        "message": "Email sending not configured",
+        "recipient": recipient,
+    }
+
+
 async def send_gift_notification_email(
     recipient_email: str,
     recipient_name: str,
@@ -134,17 +194,13 @@ async def send_gift_notification_email(
     base_url: str
 ) -> dict:
     """Send gift notification email to recipient."""
-    
+
     if not EMAIL_ENABLED:
         logger.info(f"Email disabled - would send gift notification to {recipient_email}")
-        return {
-            "status": "skipped",
-            "message": "Email sending not configured",
-            "recipient": recipient_email
-        }
-    
+        return _email_disabled_response(recipient_email)
+
     redemption_url = f"{base_url}/gift/redeem?code={gift_code}"
-    
+
     html_content = get_gift_email_template(
         recipient_name=recipient_name,
         sender_name=sender_name,
@@ -153,17 +209,11 @@ async def send_gift_notification_email(
         message=message,
         redemption_url=redemption_url
     )
-    
-    params = {
-        "from": SENDER_EMAIL,
-        "to": [recipient_email],
-        "subject": f"🎁 {sender_name} sent you a gift from Shamanic Elements!",
-        "html": html_content
-    }
-    
+
+    params = _build_gift_notification_email_payload(recipient_email, sender_name, html_content)
+
     try:
-        # Run sync SDK in thread to keep FastAPI non-blocking
-        email_response = await asyncio.to_thread(resend.Emails.send, params)
+        email_response = await _send_email_payload(params)
         logger.info(f"Gift notification sent to {recipient_email}, ID: {email_response.get('id')}")
         return {
             "status": "sent",
@@ -179,25 +229,17 @@ async def send_gift_notification_email(
         }
 
 
-async def send_gift_redeemed_notification(
-    sender_email: str,
-    sender_name: str,
-    recipient_name: str,
-    gift_type: str
-) -> dict:
-    """Notify sender when their gift has been redeemed."""
-    
-    if not EMAIL_ENABLED:
-        return {"status": "skipped", "message": "Email sending not configured"}
-    
-    gift_type_display = {
+def _format_gift_type_redeemed_label(gift_type: str) -> str:
+    return {
         "subscription": "Sacred Membership",
         "retreat": "Retreat Experience",
         "book": "Sacred Book",
-        "session": "Live Session"
+        "session": "Live Session",
     }.get(gift_type, "gift")
-    
-    html_content = f"""
+
+
+def _build_gift_redeemed_email_html(sender_name: str, recipient_name: str, gift_type_display: str) -> str:
+    return f"""
 <!DOCTYPE html>
 <html>
 <body style="margin: 0; padding: 40px; background-color: #1a1a1a; font-family: Georgia, serif;">
@@ -219,16 +261,25 @@ async def send_gift_redeemed_notification(
 </body>
 </html>
 """
-    
-    params = {
-        "from": SENDER_EMAIL,
-        "to": [sender_email],
-        "subject": f"🎉 {recipient_name} redeemed your gift!",
-        "html": html_content
-    }
-    
+
+
+async def send_gift_redeemed_notification(
+    sender_email: str,
+    sender_name: str,
+    recipient_name: str,
+    gift_type: str
+) -> dict:
+    """Notify sender when their gift has been redeemed."""
+
+    if not EMAIL_ENABLED:
+        return {"status": "skipped", "message": "Email sending not configured"}
+
+    gift_type_display = _format_gift_type_redeemed_label(gift_type)
+    html_content = _build_gift_redeemed_email_html(sender_name, recipient_name, gift_type_display)
+    params = _build_redeemed_email_payload(sender_email, recipient_name, html_content)
+
     try:
-        email_response = await asyncio.to_thread(resend.Emails.send, params)
+        email_response = await _send_email_payload(params)
         return {"status": "sent", "email_id": email_response.get("id")}
     except Exception as e:
         logger.error(f"Failed to send redemption notification: {str(e)}")

@@ -369,67 +369,42 @@ CREATIVE_PROCESSES = [
 async def seed_content() -> None:
     """Seed all additional content into the database."""
     print("Starting content seeding...")
-    
-    # Seed Yoga Poses
-    for pose in YOGA_POSES:
-        existing = await db.yoga_poses.find_one({"id": pose["id"]})
-        if not existing:
-            await db.yoga_poses.insert_one(pose)
-            print(f"  Added yoga pose: {pose['name']}")
-        else:
-            print(f"  Yoga pose already exists: {pose['name']}")
-    
-    # Seed Breathwork Sessions
-    for session in BREATHWORK_SESSIONS:
-        existing = await db.breathwork_sessions.find_one({"id": session["id"]})
-        if not existing:
-            await db.breathwork_sessions.insert_one(session)
-            print(f"  Added breathwork: {session['name']}")
-        else:
-            print(f"  Breathwork already exists: {session['name']}")
-    
-    # Seed Shamanic Ceremonies
-    for ceremony in SHAMANIC_CEREMONIES:
-        existing = await db.shamanic_practices.find_one({"id": ceremony["id"]})
-        if not existing:
-            await db.shamanic_practices.insert_one(ceremony)
-            print(f"  Added shamanic ceremony: {ceremony['name']}")
-        else:
-            print(f"  Shamanic ceremony already exists: {ceremony['name']}")
-    
-    # Seed Elemental Practices
-    for practice in ELEMENTAL_PRACTICES:
-        existing = await db.elemental_practices.find_one({"id": practice["id"]})
-        if not existing:
-            await db.elemental_practices.insert_one(practice)
-            print(f"  Added elemental practice: {practice['name']}")
-        else:
-            print(f"  Elemental practice already exists: {practice['name']}")
-    
-    # Seed Creative Processes
-    for process in CREATIVE_PROCESSES:
-        existing = await db.creative_processes.find_one({"id": process["id"]})
-        if not existing:
-            await db.creative_processes.insert_one(process)
-            print(f"  Added creative process: {process['name']}")
-        else:
-            print(f"  Creative process already exists: {process['name']}")
-    
+    await _seed_collection_if_missing("yoga_poses", YOGA_POSES, "yoga pose")
+    await _seed_collection_if_missing("breathwork_sessions", BREATHWORK_SESSIONS, "breathwork")
+    await _seed_collection_if_missing("shamanic_practices", SHAMANIC_CEREMONIES, "shamanic ceremony")
+    await _seed_collection_if_missing("elemental_practices", ELEMENTAL_PRACTICES, "elemental practice")
+    await _seed_collection_if_missing("creative_processes", CREATIVE_PROCESSES, "creative process")
+
     print("\nContent seeding complete!")
-    
-    # Print counts
-    yoga_count = await db.yoga_poses.count_documents({})
-    breathwork_count = await db.breathwork_sessions.count_documents({})
-    shamanic_count = await db.shamanic_practices.count_documents({})
-    elemental_count = await db.elemental_practices.count_documents({})
-    creative_count = await db.creative_processes.count_documents({})
-    
+    counts = await _fetch_seed_collection_counts()
     print("\nFinal counts:")
-    print(f"  Yoga poses: {yoga_count}")
-    print(f"  Breathwork sessions: {breathwork_count}")
-    print(f"  Shamanic ceremonies: {shamanic_count}")
-    print(f"  Elemental practices: {elemental_count}")
-    print(f"  Creative processes: {creative_count}")
+    print(f"  Yoga poses: {counts['yoga_poses']}")
+    print(f"  Breathwork sessions: {counts['breathwork_sessions']}")
+    print(f"  Shamanic ceremonies: {counts['shamanic_practices']}")
+    print(f"  Elemental practices: {counts['elemental_practices']}")
+    print(f"  Creative processes: {counts['creative_processes']}")
+
+
+async def _seed_collection_if_missing(collection_name: str, items: list[dict], label: str) -> None:
+    collection = db[collection_name]
+    for item in items:
+        existing = await collection.find_one({"id": item["id"]})
+        item_name = item.get("name", item["id"])
+        if not existing:
+            await collection.insert_one(item)
+            print(f"  Added {label}: {item_name}")
+        else:
+            print(f"  {label.capitalize()} already exists: {item_name}")
+
+
+async def _fetch_seed_collection_counts() -> dict[str, int]:
+    return {
+        "yoga_poses": await db.yoga_poses.count_documents({}),
+        "breathwork_sessions": await db.breathwork_sessions.count_documents({}),
+        "shamanic_practices": await db.shamanic_practices.count_documents({}),
+        "elemental_practices": await db.elemental_practices.count_documents({}),
+        "creative_processes": await db.creative_processes.count_documents({}),
+    }
 
 
 if __name__ == "__main__":

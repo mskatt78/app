@@ -35,8 +35,24 @@ async def seed_database() -> None:
     print("=" * 50)
     print("Starting database seeding...")
     print("=" * 50)
-    
-    collections = [
+
+    collections = _build_seed_collections()
+
+    for collection_name, data in collections:
+        await _seed_collection_data(db, collection_name, data)
+
+    await _create_seed_indexes(db)
+
+    print("\n" + "=" * 50)
+    print("✅ Database seeding complete!")
+    print("=" * 50)
+
+    await _print_seed_summary(db, collections)
+    client.close()
+
+
+def _build_seed_collections() -> list[tuple[str, list[dict]]]:
+    return [
         ("yoga_poses", YOGA_POSES),
         ("crystals", CRYSTALS),
         ("mantras", MANTRAS),
@@ -56,17 +72,19 @@ async def seed_database() -> None:
         ("elemental_practices", ELEMENTAL_PRACTICES),
         ("achievement_definitions", ENHANCED_ACHIEVEMENTS),
     ]
-    
-    for collection_name, data in collections:
-        print(f"\n📿 Seeding {collection_name}...")
-        await db[collection_name].delete_many({})
-        if data:
-            await db[collection_name].insert_many(data)
-            print(f"   ✓ Inserted {len(data)} items")
-        else:
-            print("   ⚠ No data to insert")
-    
-    # Create indexes
+
+
+async def _seed_collection_data(db, collection_name: str, data: list[dict]) -> None:
+    print(f"\n📿 Seeding {collection_name}...")
+    await db[collection_name].delete_many({})
+    if data:
+        await db[collection_name].insert_many(data)
+        print(f"   ✓ Inserted {len(data)} items")
+    else:
+        print("   ⚠ No data to insert")
+
+
+async def _create_seed_indexes(db) -> None:
     print("\n🔍 Creating indexes...")
     await db.yoga_poses.create_index("element")
     await db.yoga_poses.create_index("difficulty")
@@ -76,18 +94,13 @@ async def seed_database() -> None:
     await db.breathwork_sessions.create_index("element")
     await db.oracle_cards.create_index("element")
     print("   ✓ Indexes created")
-    
-    print("\n" + "=" * 50)
-    print("✅ Database seeding complete!")
-    print("=" * 50)
-    
-    # Summary
+
+
+async def _print_seed_summary(db, collections: list[tuple[str, list[dict]]]) -> None:
     print("\n📊 Summary:")
     for collection_name, data in collections:
         count = await db[collection_name].count_documents({})
         print(f"   {collection_name}: {count} documents")
-    
-    client.close()
 
 if __name__ == "__main__":
     asyncio.run(seed_database())

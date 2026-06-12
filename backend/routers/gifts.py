@@ -366,25 +366,11 @@ async def _create_stripe_gift_checkout(
 ) -> dict[str, Any]:
     """Create Stripe checkout for gift."""
     db = get_db()
-
     stripe_api_key = _require_stripe_key()
-
-    success_url = f"{origin_url}/gift/success?gift_code={gift['gift_code']}&session_id={{CHECKOUT_SESSION_ID}}"
-    cancel_url = f"{origin_url}/gift/cancel?gift_code={gift['gift_code']}"
-
+    success_url, cancel_url = _build_stripe_gift_urls(origin_url, gift["gift_code"])
     metadata = _build_gift_payment_metadata(gift, current_user)
-
-    host_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{host_url}/api/webhook/stripe"
-    stripe_checkout = StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
-
-    checkout_request = CheckoutSessionRequest(
-        amount=amount,
-        currency="usd",
-        success_url=success_url,
-        cancel_url=cancel_url,
-        metadata=metadata
-    )
+    stripe_checkout = _create_gift_stripe_client(request, stripe_api_key)
+    checkout_request = _build_gift_checkout_request(amount, success_url, cancel_url, metadata)
     
     try:
         session = await stripe_checkout.create_checkout_session(checkout_request)
@@ -401,16 +387,50 @@ async def _create_stripe_gift_checkout(
             metadata,
         )
         await _persist_gift_payment_transaction(db, transaction)
-
-        return {
-            "checkout_url": session.url,
-            "session_id": session.session_id,
-            "payment_method": "stripe",
-            "gift_code": gift["gift_code"]
-        }
+        return _build_stripe_gift_checkout_response(session.url, session.session_id, gift["gift_code"])
     except Exception as e:
-        logger.error(f"Stripe gift checkout error: {e}")
-        raise HTTPException(status_code=500, detail=f"Payment error: {str(e)}")
+        _raise_stripe_gift_checkout_error(e)
+
+
+def _build_stripe_gift_urls(origin_url: str, gift_code: str) -> tuple[str, str]:
+    success_url = f"{origin_url}/gift/success?gift_code={gift_code}&session_id={{CHECKOUT_SESSION_ID}}"
+    cancel_url = f"{origin_url}/gift/cancel?gift_code={gift_code}"
+    return success_url, cancel_url
+
+
+def _create_gift_stripe_client(request: Request, stripe_api_key: str) -> StripeCheckout:
+    host_url = str(request.base_url).rstrip("/")
+    webhook_url = f"{host_url}/api/webhook/stripe"
+    return StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
+
+
+def _build_gift_checkout_request(
+    amount: float,
+    success_url: str,
+    cancel_url: str,
+    metadata: dict[str, Any],
+) -> CheckoutSessionRequest:
+    return CheckoutSessionRequest(
+        amount=amount,
+        currency="usd",
+        success_url=success_url,
+        cancel_url=cancel_url,
+        metadata=metadata,
+    )
+
+
+def _build_stripe_gift_checkout_response(checkout_url: str, session_id: str, gift_code: str) -> dict[str, Any]:
+    return {
+        "checkout_url": checkout_url,
+        "session_id": session_id,
+        "payment_method": "stripe",
+        "gift_code": gift_code,
+    }
+
+
+def _raise_stripe_gift_checkout_error(error: Exception) -> None:
+    logger.error(f"Stripe gift checkout error: {error}")
+    raise HTTPException(status_code=500, detail=f"Payment error: {str(error)}")
 
 
 async def _create_paypal_gift_order(

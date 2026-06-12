@@ -2042,12 +2042,12 @@ def _finalize_script_paragraphs(
 @router.post("/content/expand-script", response_model=ExpandScriptResponse)
 async def expand_guided_script(request: ExpandScriptRequest):
     """Expand guided practice text into long-form narration suitable for 7+ minute audio."""
-    practice_name = request.practice_name.strip() if request.practice_name else "Guided Practice"
-    target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
-    target_words = max(MIN_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, target_minutes * TARGET_WORDS_PER_MINUTE)
-
+    expansion_targets = _build_script_expansion_targets(request)
+    practice_name = expansion_targets["practice_name"]
+    target_minutes = expansion_targets["target_minutes"]
+    target_words = expansion_targets["target_words"]
     fallback_paragraphs = _build_fallback_paragraphs(request, target_words)
-    anti_repetition_mode = "balanced" if request.anti_repetition_mode == "balanced" else "strict"
+    anti_repetition_mode = expansion_targets["anti_repetition_mode"]
     selected_paragraphs, used_ai, stem_max_occurrences = await _resolve_script_source(
         request,
         target_words,
@@ -2056,7 +2056,7 @@ async def expand_guided_script(request: ExpandScriptRequest):
     selected_paragraphs = _finalize_script_paragraphs(request, selected_paragraphs, stem_max_occurrences)
 
     current_word_count = _count_words(" ".join(selected_paragraphs))
-    minimum_word_floor = int(target_words * (0.96 if anti_repetition_mode == "strict" else 0.93))
+    minimum_word_floor = expansion_targets["minimum_word_floor"]
 
     selected_paragraphs, current_word_count = _extend_script_to_floor(
         request,
@@ -2075,7 +2075,7 @@ async def expand_guided_script(request: ExpandScriptRequest):
         stem_max_occurrences,
     )
 
-    duration_alignment_floor = int(target_words * 0.985)
+    duration_alignment_floor = expansion_targets["duration_alignment_floor"]
     selected_paragraphs, current_word_count = _apply_duration_alignment_floor(
         selected_paragraphs,
         current_word_count,
@@ -2084,14 +2084,45 @@ async def expand_guided_script(request: ExpandScriptRequest):
     )
 
     segments = _segment_paragraphs(selected_paragraphs)
+    return _build_expand_script_response(
+        practice_name=practice_name,
+        target_minutes=target_minutes,
+        target_words=target_words,
+        used_ai=used_ai,
+        paragraphs=selected_paragraphs,
+        segments=segments,
+    )
 
+
+def _build_script_expansion_targets(request: ExpandScriptRequest) -> dict[str, Any]:
+    target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
+    target_words = max(MIN_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, target_minutes * TARGET_WORDS_PER_MINUTE)
+    anti_repetition_mode = "balanced" if request.anti_repetition_mode == "balanced" else "strict"
+    return {
+        "practice_name": request.practice_name.strip() if request.practice_name else "Guided Practice",
+        "target_minutes": target_minutes,
+        "target_words": target_words,
+        "anti_repetition_mode": anti_repetition_mode,
+        "minimum_word_floor": int(target_words * (0.96 if anti_repetition_mode == "strict" else 0.93)),
+        "duration_alignment_floor": int(target_words * 0.985),
+    }
+
+
+def _build_expand_script_response(
+    practice_name: str,
+    target_minutes: int,
+    target_words: int,
+    used_ai: bool,
+    paragraphs: list[str],
+    segments: list[dict[str, Any]],
+) -> ExpandScriptResponse:
     return ExpandScriptResponse(
         practice_name=practice_name,
         target_minutes=target_minutes,
         target_word_count=target_words,
-        word_count=_count_words(" ".join(selected_paragraphs)),
+        word_count=_count_words(" ".join(paragraphs)),
         used_ai=used_ai,
-        paragraphs=selected_paragraphs,
+        paragraphs=paragraphs,
         segments=segments,
     )
 
@@ -2393,9 +2424,18 @@ async def _fetch_wikipedia_page_images(title: str) -> list[str]:
     return _extract_wikipedia_file_titles(payload)
 
 
+def _extract_wikipedia_pages(payload: dict[str, Any] | None) -> dict[str, Any]:
+    if not isinstance(payload, dict):
+        return {}
+    pages = ((payload.get("query") or {}).get("pages") or {})
+    if isinstance(pages, dict):
+        return pages
+    return {}
+
+
 def _extract_wikipedia_file_titles(payload: dict[str, Any] | None) -> list[str]:
-    pages = ((payload.get("query") or {}).get("pages") or {}) if isinstance(payload, dict) else {}
-    if not isinstance(pages, dict):
+    pages = _extract_wikipedia_pages(payload)
+    if not pages:
         return []
 
     file_titles: list[str] = []
@@ -2412,6 +2452,22 @@ def _extract_wikipedia_file_titles(payload: dict[str, Any] | None) -> list[str]:
             if title_value:
                 file_titles.append(title_value)
     return file_titles
+
+
+def _extract_wikipedia_file_url_from_payload(payload: dict[str, Any] | None) -> str | None:
+    pages = _extract_wikipedia_pages(payload)
+    if not pages:
+        return None
+    for page in pages.values():
+        if not isinstance(page, dict):
+            continue
+        image_info = page.get("imageinfo")
+        if not isinstance(image_info, list) or not image_info:
+            continue
+        first_info = image_info[0]
+        if isinstance(first_info, dict) and first_info.get("url"):
+            return str(first_info.get("url"))
+    return None
 
 
 async def _fetch_wikipedia_image_file_url(file_title: str) -> str | None:
@@ -2436,16 +2492,32 @@ async def _fetch_wikipedia_image_file_url(file_title: str) -> str | None:
         logger.warning("Wikipedia file-url lookup failed for %s: %s", file_title, exc)
         return None
 
-    pages = ((payload.get("query") or {}).get("pages") or {}) if isinstance(payload, dict) else {}
-    if not isinstance(pages, dict):
+    return _extract_wikipedia_file_url_from_payload(payload)
+
+
+def _should_skip_article_file_title(file_title: str) -> bool:
+    lowered = file_title.lower()
+    if any(token in lowered for token in COMMONS_SEARCH_EXCLUDE_TOKENS):
+        return True
+    return not lowered.endswith((".jpg", ".jpeg", ".webp", ".png"))
+
+
+async def _score_article_file_candidate(
+    file_title: str,
+    article_title: str,
+    preferred_form: str,
+    crystal_name: str,
+) -> dict[str, Any] | None:
+    file_url = await _fetch_wikipedia_image_file_url(file_title)
+    if not file_url:
         return None
-    for page in pages.values():
-        if not isinstance(page, dict):
-            continue
-        info = page.get("imageinfo") if isinstance(page.get("imageinfo"), list) else []
-        if info and isinstance(info[0], dict) and info[0].get("url"):
-            return str(info[0].get("url"))
-    return None
+    score = _score_commons_candidate(preferred_form, crystal_name, file_title, file_url)
+    return {
+        "title": file_title,
+        "image_url": file_url,
+        "page_url": f"https://en.wikipedia.org/wiki/{quote(article_title.replace(' ', '_'))}",
+        "score": score,
+    }
 
 
 async def _search_wikipedia_article_image_for_crystal(
@@ -2462,30 +2534,23 @@ async def _search_wikipedia_article_image_for_crystal(
 
     crystal_name = str(crystal.get("name") or crystal.get("id") or "")
     best_candidate: dict[str, Any] | None = None
-    best_score = 0.0
-
     for file_title in file_titles:
-        lowered = file_title.lower()
-        if any(token in lowered for token in COMMONS_SEARCH_EXCLUDE_TOKENS):
-            continue
-        if not lowered.endswith((".jpg", ".jpeg", ".webp", ".png")):
+        if _should_skip_article_file_title(file_title):
             continue
 
-        file_url = await _fetch_wikipedia_image_file_url(file_title)
-        if not file_url:
+        candidate = await _score_article_file_candidate(
+            file_title=file_title,
+            article_title=article_title,
+            preferred_form=preferred_form,
+            crystal_name=crystal_name,
+        )
+        if not candidate:
             continue
 
-        score = _score_commons_candidate(preferred_form, crystal_name, file_title, file_url)
-        if score > best_score:
-            best_score = score
-            best_candidate = {
-                "title": file_title,
-                "image_url": file_url,
-                "page_url": f"https://en.wikipedia.org/wiki/{quote(article_title.replace(' ', '_'))}",
-                "score": score,
-            }
+        if not best_candidate or candidate["score"] > best_candidate["score"]:
+            best_candidate = candidate
 
-    if not best_candidate or best_score < 0.38:
+    if not best_candidate or best_candidate["score"] < 0.38:
         return None
     return best_candidate
 
