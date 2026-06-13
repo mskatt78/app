@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
 import { appLogger } from "../utils/logger";
 
@@ -242,6 +242,9 @@ const SoundFrequencies = ({ user, api }) => {
                   </span>
                 </div>
                 <DialogTitle className="text-2xl font-serif">{selectedFreq.name}</DialogTitle>
+                <DialogDescription className="sr-only" data-testid="sound-frequency-modal-description">
+                  Frequency details, healing properties, and guided integration suggestions.
+                </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
