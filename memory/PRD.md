@@ -680,6 +680,27 @@
   - Additional frontend recheck fixed and verified numerology life-path overview grid + dialog behavior.
   - Additional backend recheck verified invalid-date validation regression fix and no numerology endpoint regressions.
 
+## Latest Verification Snapshot (Iteration 164) — 2026-06-13
+- Completed requested **P1 secondary hotspot sweep** + next decomposition tranche:
+  - Secondary hotspot decomposition:
+    - `Reviews.jsx` → decomposed into `reviews/*` modules (`ReviewsContainer`, `useReviewsData`, composer/grid/header/stats components, constants)
+    - `Settings.jsx` → decomposed into `settings/*` modules (`SettingsContainer`, `useSettingsData`, profile/reminders/guided/notifications/account/logout cards, constants)
+  - Next-tranche decomposition (largest non-data pages):
+    - `LightCodes.jsx` → `light-codes/LightCodesContainer` + modular sections + `useLightCodesData`
+    - `HeartPractices.jsx` → `heart-practices/HeartPracticesContainer` + modular filters/grid/header + `useHeartPracticesData`
+    - `Courses.jsx` → `courses/CoursesContainer` + modular header/content + `useCoursesData`
+- Guided hook cleanup pass:
+  - `useGuidedAudioPlayback.js`: reduced ref-heavy config syncing by moving to memoized playback config; preserved segment expansion/playback behavior.
+  - `useGuidedPracticeEngine.js`: improved narration-mode derivation flow and error logging in script expansion fallback; added explicit `toningActive` state output.
+- Accessibility quality fix from regression testing:
+  - `SoundFrequencies.jsx` modal now includes `DialogDescription` to resolve missing `aria-describedby` warning.
+- Verification summary:
+  - `yarn quality:frontend` **PASS**
+  - `/app/scripts/quality_guard.py` **PASS**
+  - Testing agent report `/app/test_reports/iteration_164.json`: frontend **100% pass** for decomposed routes
+  - Manual smoke verification confirms Light Codes symbol modal opens (`MODAL_VISIBLE=True`)
+  - Backend endpoint sanity (`reviews`, `light-codes`, `heart-practices`, `courses`, `sound-frequencies`, numerology valid/invalid date checks) **PASS**
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
