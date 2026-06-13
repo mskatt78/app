@@ -4965,3 +4965,217 @@ agent_communication:
       
       SUMMARY:
       Final frontend regression test PASSED with 1 minor issue. 9 out of 10 tested features working correctly. Reviews page loads with stats, unauth prompt, and review cards. Settings route resolves with proper auth redirect and no runtime errors. Light Codes page loads and category switching works (symbol modal interaction needs manual verification - 25 'Open' buttons visible but modal did not open in automated test). Heart Practices fully functional with page load, filter changes, and modal open/close working correctly. Courses fully functional with page load, filters, and modal open/close working correctly. Sound Frequencies fully functional with DialogDescription accessibility fix verified - no console warnings detected. Console shows only expected non-critical auth errors. Application is production-ready with one minor modal interaction issue on Light Codes that requires manual verification.
+
+backend:
+  - task: "Decomposition wave - Reviews API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/reviews.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/reviews returns 200 OK with list of 1 review. Response structure verified with required fields: review_id, user_name, rating, text. Sample review: rating=4, user=Sacred Tester. Reviews API endpoint PASSED."
+
+  - task: "Decomposition wave - Reviews stats API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/reviews.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/reviews/stats returns 200 OK with valid stats. Response contains all required fields: average (4.0), total (1), breakdown ({1: 0, 2: 0, 3: 0, 4: 1, 5: 0}). Reviews stats API endpoint PASSED."
+
+  - task: "Decomposition wave - Light codes API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/light-codes returns 200 OK with dict containing 7 categories. All 5 expected categories present: sacred_geometry, ancient_alphabets, light_language_symbols, galactic_codes, chakra_codes. Light codes API endpoint PASSED."
+
+  - task: "Decomposition wave - Heart practices API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/heart-practices returns 200 OK with list of 10 items. Sample practice: Heart Opening Ceremony. Content integrity metadata present with source_type: hybrid-curated. Heart practices API endpoint PASSED."
+
+  - task: "Decomposition wave - Courses API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/courses returns 200 OK with list of 3 items. Content integrity metadata present with source_type: hybrid-curated. Courses API endpoint PASSED."
+
+  - task: "Decomposition wave - Sound frequencies API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/sound-frequencies returns 200 OK with list of 17 items. Sample frequency: Dolphin Frequencies. Sound frequencies API endpoint PASSED."
+
+  - task: "Decomposition wave - Numerology life paths API endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/numerology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/numerology/life-paths returns 200 OK with dict containing 12 life path entries. Sample life paths: 1, 2, 3, 4, 5. Numerology life paths API endpoint PASSED."
+
+  - task: "Decomposition wave - Numerology calculate API endpoint (valid date)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/numerology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ POST /api/numerology/calculate with valid date (1990-06-15) returns 200 OK. Response contains all required fields: birth_date, life_path_number (4), life_path (The Builder), personal_year. Numerology calculate API endpoint PASSED for valid dates."
+
+  - task: "Decomposition wave - Numerology calculate API endpoint (invalid date validation)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/numerology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ POST /api/numerology/calculate with invalid date (2025-13-45) correctly returns 400 Bad Request with error message: 'Invalid date format: 2025-13-45'. Date validation working correctly. Numerology calculate API endpoint PASSED for invalid date handling."
+
+metadata:
+  created_by: "testing_agent"
+  version: "2.8"
+  test_sequence: 20
+  run_ui: false
+  last_tested: "2026-06-13"
+
+test_plan:
+  current_focus:
+    - "Decomposition wave backend sanity - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Decomposition Wave Backend Sanity Test (2026-06-13):
+      
+      VERIFICATION REQUEST: Run backend sanity for decomposition wave
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/api
+      
+      Scope:
+      1) GET /api/reviews, GET /api/reviews/stats
+      2) GET /api/light-codes
+      3) GET /api/heart-practices
+      4) GET /api/courses
+      5) GET /api/sound-frequencies
+      6) Numerology endpoints: GET /api/numerology/life-paths and POST /api/numerology/calculate (valid + invalid date)
+      
+      ✅ ALL TESTS PASSED (9/9 endpoints):
+      
+      1. ✅ GET /api/reviews - PASSED
+         - Status: 200 OK
+         - Response: List with 1 review
+         - Structure verified: review_id, user_name, rating, text
+         - Sample: rating=4, user=Sacred Tester
+      
+      2. ✅ GET /api/reviews/stats - PASSED
+         - Status: 200 OK
+         - Response: {average: 4.0, total: 1, breakdown: {1: 0, 2: 0, 3: 0, 4: 1, 5: 0}}
+         - All required fields present
+      
+      3. ✅ GET /api/light-codes - PASSED
+         - Status: 200 OK
+         - Response: Dict with 7 categories
+         - All 5 expected categories present: sacred_geometry, ancient_alphabets, light_language_symbols, galactic_codes, chakra_codes
+      
+      4. ✅ GET /api/heart-practices - PASSED
+         - Status: 200 OK
+         - Response: List with 10 items
+         - Sample: Heart Opening Ceremony
+         - Content integrity metadata present
+      
+      5. ✅ GET /api/courses - PASSED
+         - Status: 200 OK
+         - Response: List with 3 items
+         - Content integrity metadata present
+      
+      6. ✅ GET /api/sound-frequencies - PASSED
+         - Status: 200 OK
+         - Response: List with 17 items
+         - Sample: Dolphin Frequencies
+      
+      7. ✅ GET /api/numerology/life-paths - PASSED
+         - Status: 200 OK
+         - Response: Dict with 12 life path entries
+         - Sample life paths: 1, 2, 3, 4, 5
+      
+      8. ✅ POST /api/numerology/calculate (valid date) - PASSED
+         - Status: 200 OK
+         - Payload: {birth_date: "1990-06-15"}
+         - Response: life_path_number=4, life_path={name: "The Builder"}, personal_year present
+         - All required fields present
+      
+      9. ✅ POST /api/numerology/calculate (invalid date) - PASSED
+         - Status: 400 Bad Request (correct)
+         - Payload: {birth_date: "2025-13-45"}
+         - Response: {detail: "Invalid date format: 2025-13-45"}
+         - Date validation working correctly
+      
+      BACKEND LOGS ANALYSIS:
+      - No 500 errors detected
+      - Only expected error: numerology date validation error for invalid date test (correct behavior)
+      - All endpoints responding correctly
+      - No critical runtime errors
+      
+      CRITICAL FINDINGS:
+      ✅ All 9 endpoints tested are working correctly
+      ✅ Reviews API returning data with proper structure
+      ✅ Reviews stats API calculating correctly
+      ✅ Light codes API returning all expected categories
+      ✅ Heart practices API returning data with content integrity metadata
+      ✅ Courses API returning data with content integrity metadata
+      ✅ Sound frequencies API returning complete list
+      ✅ Numerology life paths API returning all life path data
+      ✅ Numerology calculate API working for valid dates
+      ✅ Numerology calculate API correctly rejecting invalid dates with 400 error
+      ✅ No backend 500 errors or crashes
+      ✅ Date validation working correctly after earlier cleanup
+      
+      SUMMARY:
+      Decomposition wave backend sanity test PASSED. All 9 tested endpoints (reviews, reviews/stats, light-codes, heart-practices, courses, sound-frequencies, numerology/life-paths, numerology/calculate with valid date, numerology/calculate with invalid date) are working correctly. Reviews API returns 1 review with proper structure. Reviews stats API calculates average (4.0) and breakdown correctly. Light codes API returns all 5 expected categories. Heart practices API returns 10 items with content integrity metadata. Courses API returns 3 items with content integrity metadata. Sound frequencies API returns 17 items. Numerology life paths API returns 12 life path entries. Numerology calculate API correctly processes valid dates (returns life path 4 for 1990-06-15) and correctly rejects invalid dates with 400 error (2025-13-45). Backend logs show no 500 errors, only expected date validation error for invalid date test. All endpoints stable and production-ready after decomposition wave.
+
