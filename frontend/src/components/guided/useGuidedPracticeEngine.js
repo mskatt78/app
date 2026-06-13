@@ -37,7 +37,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const [narrationReady, setNarrationReady] = useState(false);
   const [scriptLoading, setScriptLoading] = useState(false);
   const [audioTapRequired, setAudioTapRequired] = useState(false);
-  const [antiRepetitionMode, setAntiRepetitionModeState] = useState(() => getGuidedNarrationMode());
+  const [selectedNarrationMode, setSelectedNarrationMode] = useState(() => getGuidedNarrationMode());
+  const [toningActive, setToningActive] = useState(false);
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
@@ -102,6 +103,19 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     };
   }, [practice, stepsOverride]);
 
+  const antiRepetitionMode = useMemo(() => {
+    if (!scriptExpansionContext) {
+      return selectedNarrationMode;
+    }
+
+    return getEffectiveGuidedNarrationMode({
+      practiceName: scriptExpansionContext.practiceName,
+      element: scriptExpansionContext.element,
+      sourceTexts: scriptExpansionContext.sourceTexts,
+      steps: scriptExpansionContext.steps,
+    });
+  }, [scriptExpansionContext, selectedNarrationMode]);
+
   useEffect(() => {
     isPlayingRef.current = isPlaying;
   }, [isPlaying]);
@@ -126,38 +140,19 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   useEffect(() => {
     const handleStorage = (event) => {
       if (event.key === "guided_narration_mode" || event.key === "guided_narration_manual_override") {
-        setAntiRepetitionModeState((current) => {
-          if (!scriptExpansionContext) return current;
-          return getEffectiveGuidedNarrationMode({
-            practiceName: scriptExpansionContext.practiceName,
-            element: scriptExpansionContext.element,
-            sourceTexts: scriptExpansionContext.sourceTexts,
-            steps: scriptExpansionContext.steps,
-          });
-        });
+        setSelectedNarrationMode(getGuidedNarrationMode());
       }
     };
 
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-  }, [scriptExpansionContext]);
+  }, []);
 
   const handleAntiRepetitionModeChange = useCallback((mode) => {
     const nextMode = setGuidedNarrationMode(mode);
-    setAntiRepetitionModeState(nextMode);
+    setSelectedNarrationMode(nextMode);
     toast.success(`Narration mode: ${nextMode === "strict" ? "Strict" : "Balanced"}`);
   }, []);
-
-  useEffect(() => {
-    if (!scriptExpansionContext) return;
-    const nextMode = getEffectiveGuidedNarrationMode({
-      practiceName: scriptExpansionContext.practiceName,
-      element: scriptExpansionContext.element,
-      sourceTexts: scriptExpansionContext.sourceTexts,
-      steps: scriptExpansionContext.steps,
-    });
-    setAntiRepetitionModeState(nextMode);
-  }, [scriptExpansionContext]);
 
   const stopAmbient = useCallback(() => {
     try {
@@ -284,9 +279,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
           clearNarrationCache();
           ttsRef.current?.pause();
         }
-      } catch (_) {
+      } catch (error) {
         if (!controller.signal.aborted) {
-          appLogger.warn("Guided script expansion fallback engaged in overlay engine");
+          appLogger.warn("Guided script expansion fallback engaged in overlay engine", error);
         }
       } finally {
         window.clearTimeout(timeoutId);
@@ -340,7 +335,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     }
 
     if (ttsRef.current) ttsRef.current.muted = muted;
-  }, [muted, element, ttsPlaying]);
+    const hasToningLayer = Boolean(toningRef.current);
+    const toningEnabled = getGuidedToningMultiplier() > 0;
+    setToningActive(hasToningLayer && !muted && isPlaying && toningEnabled);
+  }, [muted, element, ttsPlaying, isPlaying]);
 
   useEffect(() => () => {
     clearInterval(timerRef.current);
@@ -531,7 +529,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     isPlaying,
     ambientLabel: (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label,
     toningLabel: ttsPlaying ? "Toning layer ducked during voice" : "Toning layer active",
-    toningActive: Boolean(toningRef.current) && !muted && isPlaying && getGuidedToningMultiplier() > 0,
+    toningActive,
     antiRepetitionMode,
     handleAntiRepetitionModeChange,
   };

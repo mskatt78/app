@@ -105,7 +105,7 @@ export const HeartPracticeModal = ({
                   {practiceAffirmation && (
                     <div className="p-4 rounded-xl bg-pink-500/5 border border-pink-500/20">
                       <h3 className="font-medium mb-2">Heart Affirmation</h3>
-                      <p className="text-sm italic text-muted-foreground">"{practiceAffirmation}"</p>
+                      <p className="text-sm italic text-muted-foreground">&quot;{practiceAffirmation}&quot;</p>
                     </div>
                   )}
                 </div>
@@ -123,7 +123,7 @@ export const HeartPracticeModal = ({
                 {practiceAffirmation && (
                   <div className="p-4 rounded-xl bg-pink-500/10 border border-pink-500/20 text-center">
                     <p className="text-xs text-pink-400 uppercase tracking-wider mb-1">Hold this intention</p>
-                    <p className="text-base italic text-pink-100">"{practiceAffirmation}"</p>
+                    <p className="text-base italic text-pink-100">&quot;{practiceAffirmation}&quot;</p>
                   </div>
                 )}
 
