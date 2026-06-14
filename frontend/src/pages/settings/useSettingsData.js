@@ -52,7 +52,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
       }
     };
 
-    fetchData();
+    queueMicrotask(fetchData);
   }, [api]);
 
   const saveSettings = useCallback(async () => {

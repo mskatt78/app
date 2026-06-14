@@ -43,15 +43,24 @@ const BirthChart = ({ user, api }) => {
   const { years, months, days, hours, minutes } = buildBirthDateOptions();
 
   // Update formData when date components change
+  const resolvedBirthDate = birthYear && birthMonth && birthDay
+    ? `${birthYear}-${birthMonth}-${birthDay}`
+    : "";
+  const resolvedBirthTime = `${birthHour}:${birthMinute}`;
+
   useEffect(() => {
-    if (birthYear && birthMonth && birthDay) {
-      setFormData(prev => ({ 
-        ...prev, 
-        birth_date: `${birthYear}-${birthMonth}-${birthDay}`,
-        birth_time: `${birthHour}:${birthMinute}`
-      }));
+    if (!resolvedBirthDate) {
+      return;
     }
-  }, [birthYear, birthMonth, birthDay, birthHour, birthMinute]);
+
+    queueMicrotask(() => {
+      setFormData((prev) => ({
+        ...prev,
+        birth_date: resolvedBirthDate,
+        birth_time: resolvedBirthTime,
+      }));
+    });
+  }, [resolvedBirthDate, resolvedBirthTime]);
 
   const fetchZodiacSigns = useCallback(async () => {
     try {
@@ -68,7 +77,7 @@ const BirthChart = ({ user, api }) => {
       const response = await api.get("/birth-chart/my-chart");
       setChart(response.data);
     } catch (error) {
-      // No saved chart - that's OK
+      appLogger.warn("No saved birth chart found", error);
     } finally {
       setLoading(false);
     }

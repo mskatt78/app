@@ -5,6 +5,7 @@ import { Settings, LogOut, ChevronRight, Database, Upload, CalendarDays, Sparkle
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { ensureAdminToken, logoutAdminSession } from "../components/admin/adminSession";
+import { appLogger } from "../utils/logger";
 
 const quickActions = [
   {
@@ -64,7 +65,8 @@ export default function AdminDashboard({ api: providedApi }) {
         throw new Error("expired-admin-token");
       }
       setCollections(await res.json());
-    } catch {
+    } catch (error) {
+      appLogger.error("Failed to load admin collections", error);
       toast.error("Failed to load collections");
       throw new Error("collections-load-failed");
     }
@@ -75,7 +77,8 @@ export default function AdminDashboard({ api: providedApi }) {
     try {
       await ensureAdminToken(api);
       await fetchCollections();
-    } catch {
+    } catch (error) {
+      appLogger.warn("Admin access bootstrap failed", error);
       toast.error("Please sign in with your admin account to continue");
       navigate("/dashboard");
     } finally {
@@ -90,8 +93,8 @@ export default function AdminDashboard({ api: providedApi }) {
   const logout = async () => {
     try {
       await logoutAdminSession(api);
-    } catch {
-      // no-op
+    } catch (error) {
+      appLogger.warn("Admin logout encountered an issue", error);
     }
     navigate("/dashboard");
     toast.success("Logged out");

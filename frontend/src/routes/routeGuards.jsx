@@ -21,8 +21,8 @@ export const AuthCallback = ({ api }) => {
       const { data } = await api.post("/auth/session", { session_id: sessionId });
       window.history.replaceState(null, "", window.location.pathname);
       navigate("/dashboard", { state: { user: data }, replace: true });
-    } catch {
-      appLogger.error("Auth callback processing failed");
+    } catch (error) {
+      appLogger.error("Auth callback processing failed", error);
       navigate("/", { replace: true });
     }
   }, [api, navigate]);
@@ -30,8 +30,8 @@ export const AuthCallback = ({ api }) => {
   useEffect(() => {
     if (hasProcessed.current) return;
     hasProcessed.current = true;
-    processAuth();
-  }, [hasProcessed, processAuth]);
+    queueMicrotask(() => processAuth());
+  }, [processAuth]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
@@ -59,29 +59,31 @@ export const ProtectedRoute = ({ children, api }) => {
       setUser(data);
       setHasAuthError(false);
       setIsAuthenticated(true);
-    } catch {
+    } catch (error) {
       if (!isMountedRef.current) return;
-      appLogger.warn("Protected route auth check failed");
+      appLogger.warn("Protected route auth check failed", error);
       setHasAuthError(true);
       setIsAuthenticated(false);
       navigate("/", { replace: true });
     }
-  }, [api, isMountedRef, navigate]);
+  }, [api, navigate]);
 
   useEffect(() => {
     isMountedRef.current = true;
 
-    if (locationStateUser) {
-      setUser(locationStateUser);
-      setIsAuthenticated(true);
-    }
+    queueMicrotask(() => {
+      if (locationStateUser) {
+        setUser(locationStateUser);
+        setIsAuthenticated(true);
+      }
 
-    checkAuth();
+      checkAuth();
+    });
 
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, isMountedRef, locationStateUser, setIsAuthenticated, setUser]);
+  }, [checkAuth, locationStateUser]);
 
   if (isAuthenticated === null) {
     return (
@@ -129,8 +131,8 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
         setIsAuthorized(true);
         return;
       }
-    } catch {
-      appLogger.warn("Admin route /auth/me check failed, trying cookie fallback");
+    } catch (error) {
+      appLogger.warn("Admin route /auth/me check failed, trying cookie fallback", error);
     }
 
     try {
@@ -142,8 +144,8 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
         toast.error("Admin access required");
         navigate("/dashboard", { replace: true });
       }
-    } catch {
-      appLogger.error("Admin route cookie validation failed");
+    } catch (error) {
+      appLogger.error("Admin route cookie validation failed", error);
       setIsAuthorized(false);
       toast.error("Please sign in to access admin");
       navigate("/", { replace: true });
@@ -151,11 +153,13 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
   }, [adminEmails, api, backendUrl, navigate]);
 
   useEffect(() => {
-    if (locationStateUser) {
-      setUser(locationStateUser);
-    }
-    checkAdmin();
-  }, [checkAdmin, locationStateUser, setUser]);
+    queueMicrotask(() => {
+      if (locationStateUser) {
+        setUser(locationStateUser);
+      }
+      checkAdmin();
+    });
+  }, [checkAdmin, locationStateUser]);
 
   if (isAuthorized === null) {
     return (
@@ -184,28 +188,30 @@ export const PublicRoute = ({ children, api }) => {
       const { data } = await api.get("/auth/me");
       if (!isMountedRef.current) return;
       setUser(data);
-    } catch {
+    } catch (error) {
       if (!isMountedRef.current) return;
-      appLogger.warn("Public route auth check failed");
+      appLogger.warn("Public route auth check failed", error);
       setUser(null);
     }
     if (!isMountedRef.current) return;
     setChecked(true);
-  }, [api, isMountedRef]);
+  }, [api]);
 
   useEffect(() => {
     isMountedRef.current = true;
 
-    if (locationStateUser) {
-      setUser(locationStateUser);
-    }
+    queueMicrotask(() => {
+      if (locationStateUser) {
+        setUser(locationStateUser);
+      }
 
-    checkAuth();
+      checkAuth();
+    });
 
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, isMountedRef, locationStateUser, setUser]);
+  }, [checkAuth, locationStateUser]);
 
   if (!checked) {
     return (

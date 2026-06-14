@@ -163,7 +163,7 @@ class TestYogaExpandedVerification:
         poses = response.json()
         verified = [p for p in poses if p.get('image_source') == 'wikimedia_commons_verified']
         for pose in verified:
-            assert pose.get('content_integrity', {}).get('verified') == True, f"{pose.get('name')} missing content_integrity.verified"
+            assert pose.get('content_integrity', {}).get('verified'), f"{pose.get('name')} missing content_integrity.verified"
     
     def test_verified_poses_have_image_validation(self):
         """Verified poses should have image_validation.status='verified'"""

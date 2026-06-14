@@ -299,7 +299,7 @@ class TestGiftsRouterRefactor:
         assert data["gift_code"] == gift_code
         assert data["recipient_email"] == "test2@example.com"
         assert data["status"] == "pending"
-        print(f"PASS: Get gift by code returns correct data")
+        print("PASS: Get gift by code returns correct data")
 
     def test_get_gift_invalid_code(self):
         """Get gift with invalid code should return 404"""

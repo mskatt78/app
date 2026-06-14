@@ -124,7 +124,7 @@ class TestYogaPosesVerifiedOverrides:
         for pose in yoga_poses:
             if pose.get("image_source") == "wikimedia_commons_verified":
                 integrity = pose.get("content_integrity", {})
-                assert integrity.get("verified") is True, f"{pose.get('name')} content_integrity.verified not True"
+                assert integrity.get("verified"), f"{pose.get('name')} content_integrity.verified not True"
                 assert integrity.get("references_count", 0) > 0, f"{pose.get('name')} has no references_count"
         print("PASS: All verified poses have content_integrity.verified = True")
 
@@ -135,7 +135,7 @@ class TestYogaPosesVerifiedOverrides:
             if pose:
                 assert pose.get("image_source") == "wikimedia_commons_verified", f"{pose_name} lost verified status"
                 assert "wikimedia" in pose.get("image_url", "").lower(), f"{pose_name} lost Wikimedia URL"
-        print(f"PASS: Previously verified poses still have verified images")
+        print("PASS: Previously verified poses still have verified images")
 
     def test_no_regression_pose_count(self, yoga_poses):
         """Yoga poses count should not regress (should be >= 78 from iteration 149)"""

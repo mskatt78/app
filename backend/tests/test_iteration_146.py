@@ -111,7 +111,7 @@ class TestElementalTemplesAPI:
         for field in expected_fields:
             assert field in earth, f"Missing field in Earth temple: {field}"
         
-        print(f"✅ Earth temple has all expected fields")
+        print("✅ Earth temple has all expected fields")
 
 
 class TestHeartPracticesAPI:

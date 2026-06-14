@@ -53,7 +53,9 @@ export const useNarrationPlayer = ({
 
       const nextText = String(narrationSegments[index + 1] || "").trim();
       if (nextText) {
-        fetchNarrationAudioUrl(index + 1, nextText, controller).catch(() => {});
+        fetchNarrationAudioUrl(index + 1, nextText, controller).catch((error) => {
+          console.error("Narration prefetch failed:", error);
+        });
       }
 
       narrationIndexRef.current = index;
@@ -77,8 +79,8 @@ export const useNarrationPlayer = ({
       } else {
         setAudioTapRequired(false);
       }
-    } catch (_) {
-      // Ignore transient narration errors.
+    } catch (error) {
+      console.error("Narration segment playback failed:", error);
     } finally {
       if (ttsAbortRef.current === controller) ttsAbortRef.current = null;
       setTtsLoading(false);
@@ -86,18 +88,21 @@ export const useNarrationPlayer = ({
   }, [autoNarrate, fetchNarrationAudioUrl, isMuted, isRunning, narrationSegments, tempo]);
 
   useEffect(() => {
-    if (!autoNarrate) {
-      narrationIndexRef.current = 0;
-      setNarrationSegmentIndex(0);
-      setAudioTapRequired(false);
-      return;
-    }
+    queueMicrotask(() => {
+      if (!autoNarrate) {
+        narrationIndexRef.current = 0;
+        setNarrationSegmentIndex(0);
+        setAudioTapRequired(false);
+        return;
+      }
 
-    if (isRunning && narrationSegments.length > 0) {
-      playNarrationSegment(Math.min(narrationIndexRef.current, narrationSegments.length - 1));
-      return;
-    }
-    ttsAudioRef.current?.pause();
+      if (isRunning && narrationSegments.length > 0) {
+        playNarrationSegment(Math.min(narrationIndexRef.current, narrationSegments.length - 1));
+        return;
+      }
+
+      ttsAudioRef.current?.pause();
+    });
   }, [autoNarrate, isRunning, narrationSegments, playNarrationSegment]);
 
   useEffect(() => {
