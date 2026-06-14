@@ -711,6 +711,31 @@
   - CORS/env posture acceptable for current deployment profile
 - Ready for deployment flow; post-deploy functional verification still recommended (auth + key API smoke).
 
+## Latest Verification Snapshot (Iteration 165) — 2026-06-13
+- Applied critical code-review fixes requested:
+  - Empty-catch hardening completed in:
+    - `src/pages/BirthChart.jsx`
+    - `src/pages/AdminDashboard.jsx`
+    - `src/components/timer/useNarrationPlayer.js`
+  - Route/auth guard error handling tightened in:
+    - `src/routes/routeGuards.jsx`
+  - Settings + shamanic hook paths confirmed with logger-backed error handling:
+    - `src/pages/settings/useSettingsData.js`
+    - `src/pages/shamanic/useShamanicPracticesData.js`
+  - Backend lint blocker in tests resolved (`==`/truthy assertion cleanup in yoga verification tests).
+- Completed requested “remaining large page” decomposition wrappers:
+  - `MainMenu.jsx` → `main-menu/MainMenuContainer.jsx`
+  - `RitualBuilder.jsx` → `ritual-builder/RitualBuilderContainer.jsx`
+  - `RoseTemple.jsx` → `rose-temple/RoseTempleContainer.jsx`
+  - `ProgressDashboard.jsx` → `progress-dashboard/ProgressDashboardContainer.jsx`
+  - `Retreats.jsx` → `retreats/RetreatsContainer.jsx`
+- Accessibility follow-up fix from test feedback:
+  - Added missing `DialogDescription` in Main Menu auth modal (`MainMenuContainer.jsx`).
+- Verification results:
+  - Testing agent: `/app/test_reports/iteration_165.json` → frontend **100%**, backend **100%**.
+  - Focused auth-aware `/settings` run passed with QA account (`demoqa_740fefc1@example.com`).
+  - `yarn quality:frontend` **PASS** and `quality_guard.py` **PASS**.
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 

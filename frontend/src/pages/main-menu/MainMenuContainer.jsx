@@ -8,7 +8,7 @@ import {
   BarChart3, Calculator, MessageCircle, Feather, Volume2, NotebookPen
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { Input } from "../../components/ui/input";
 import { toast } from "sonner";
 import axios from "axios";
@@ -275,6 +275,9 @@ const MainMenuContainer = ({ user }) => {
         <DialogContent className="bg-card border-white/10 max-w-md">
           <DialogHeader>
             <DialogTitle className="text-2xl font-serif text-center" data-testid="main-menu-auth-modal-title">{authModalTitle}</DialogTitle>
+            <DialogDescription className="sr-only" data-testid="main-menu-auth-modal-description">
+              Sign in with Google or email to access personalized dashboard and progress tracking.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 pt-4">
