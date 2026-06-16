@@ -795,6 +795,31 @@
     - No console accessibility warnings for DialogContent/DialogTitle/DialogDescription.
     - Some cases marked blocked-by-auth/data only (admin CMS, ritual share with no ritual data), with code verified.
 
+## Latest Verification Snapshot (Iteration 169 - Code Review Remediation) — 2026-06-16
+- Addressed critical recurring quality concerns in one consolidated pass:
+  - **React hook dependency recurrence check**: project-wide `react-hooks/exhaustive-deps` audit now reports **0** issues.
+  - Priority hook files reconfirmed stable: `routeGuards.jsx`, `useShamanicPracticesData.js`, `useSettingsData.js`.
+- Frontend performance/quality hardening completed:
+  - Extracted inline Framer Motion objects to stable constants in settings cards:
+    - `SettingsProfileCard.jsx`
+    - `SettingsNotificationsCard.jsx`
+    - `SettingsLogoutCard.jsx`
+    - `SettingsGuidedAudioCard.jsx`
+    - `SettingsAccountToolsCard.jsx`
+  - Removed remaining empty-catch anti-patterns in timer audio stack:
+    - `components/timer/useAmbientAudio.js`
+    - `components/timer/timerAudioEngine.js`
+- Backend complexity refactor pass completed in targeted files:
+  - `server.py`: replaced 20-arg seed builder with `SeedContentConfig` dataclass-based config passing.
+  - `numerology.py`: extracted date parsing helpers (`_parse_birth_date`, `_parse_slash_birth_date`) and simplified month-window logic.
+  - `user.py`: extracted achievement progress map helper (`_build_achievement_progress_map`).
+  - `email_service.py`: split large gift-notification HTML builder into composable section helpers.
+- Validation:
+  - Testing agent report `/app/test_reports/iteration_169.json` → backend **100%**, frontend **100%**.
+  - Frontend quality/lint: PASS.
+  - Quality guard: PASS.
+  - Backend compile sanity for refactored modules: PASS.
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
@@ -806,7 +831,7 @@
   - `routers/content.py` (remaining large helper clusters)
   - `server.py` (seed flow helper extraction continuity)
   - `services/email_service.py` (response/payload helper normalization)
-- Run a focused modal accessibility sweep to ensure every `DialogContent` has explicit `DialogDescription` (or intentionally managed `aria-describedby`) across all routes.
+- (Completed) Modal accessibility sweep ensuring `DialogDescription` semantics across dialog surfaces.
 
 ### P2
 - Replace any remaining array index-as-key usage in visualizer components.
