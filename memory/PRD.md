@@ -770,6 +770,31 @@
   - `/app/test_reports/iteration_168.json` PASS (final release-readiness verification)
   - Guided script floor maintained (`/api/content/expand-script` > 840 words at 15 min target).
 
+## Latest Verification Snapshot (Modal Accessibility Sweep) — 2026-06-16
+- Completed full requested P1 modal accessibility sweep (`A + C`):
+  - Ensured explicit `DialogDescription` semantics for all `DialogContent` usages importing from `components/ui/dialog`.
+  - Added unique `data-testid` markers to dialog descriptions where missing.
+  - Added missing `DialogTitle` for previously flagged hidden-title modal structures (command dialog + yoga details modal).
+- Files updated for accessibility semantics:
+  - `pages/Mindfulness.jsx`
+  - `pages/TarotReading.jsx`
+  - `pages/GroundingPractices.jsx`
+  - `pages/SomaticMovement.jsx`
+  - `pages/YogaLibrary.jsx`
+  - `pages/admin-cms/AdminCMSFormDialog.jsx`
+  - `pages/numerology/NumerologyLifePathDialog.jsx`
+  - `pages/ritual-builder/RitualBuilderShareDialog.jsx`
+  - `pages/mantras/MantrasPlayer.jsx`
+  - `pages/mudras/MudrasLibraryContainer.jsx`
+  - `components/ui/command.jsx`
+- Validation summary:
+  - Static check: zero remaining `DialogContent` files missing `DialogDescription`.
+  - Frontend lint/quality: `yarn quality:frontend` PASS.
+  - Frontend testing agent pass:
+    - Verified modal description test IDs present for all accessible flows.
+    - No console accessibility warnings for DialogContent/DialogTitle/DialogDescription.
+    - Some cases marked blocked-by-auth/data only (admin CMS, ritual share with no ritual data), with code verified.
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
