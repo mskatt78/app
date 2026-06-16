@@ -68,7 +68,7 @@ export const MantrasPlayer = ({
                 </Button>
               </div>
               <DialogTitle className="text-2xl font-serif">{selectedMantra.name}</DialogTitle>
-              <DialogDescription className="sr-only">
+              <DialogDescription className="sr-only" data-testid="mantra-player-dialog-description">
                 Mantra details, guided practice controls, and therapeutic context.
               </DialogDescription>
             </DialogHeader>
@@ -87,7 +87,7 @@ export const MantrasPlayer = ({
 
               <div>
                 <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">Translation</h4>
-                <p className="text-lg italic text-foreground/90">"{selectedMantra.translation}"</p>
+                <p className="text-lg italic text-foreground/90">&ldquo;{selectedMantra.translation}&rdquo;</p>
               </div>
 
               {selectedMantra.audio_url && !audioError ? (

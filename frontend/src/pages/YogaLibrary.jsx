@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check, Users, Accessibility } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent, DialogDescription } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../components/ui/dialog";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
@@ -23,7 +23,6 @@ const YogaLibrary = ({ user, api }) => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [poses, setPoses] = useState([]);
-  const [filteredPoses, setFilteredPoses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedElement, setSelectedElement] = useState("all");
   const [selectedPose, setSelectedPose] = useState(null);
@@ -31,6 +30,7 @@ const YogaLibrary = ({ user, api }) => {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [mobilityMode, setMobilityMode] = useState(false);
   const [imageErrors, setImageErrors] = useState(new Set());
+  const initialQueryPoseIdRef = useRef(searchParams.get("pose"));
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
@@ -67,7 +67,14 @@ const YogaLibrary = ({ user, api }) => {
     try {
       const response = await api.get("/yoga/poses");
       setPoses(response.data);
-      setFilteredPoses(response.data);
+
+      if (initialQueryPoseIdRef.current) {
+        const preselectedPose = response.data.find((pose) => pose.id === initialQueryPoseIdRef.current);
+        if (preselectedPose) {
+          setSelectedPose(preselectedPose);
+        }
+        initialQueryPoseIdRef.current = null;
+      }
     } catch (error) {
       appLogger.error("Failed to fetch poses", error);
     } finally {
@@ -90,27 +97,15 @@ const YogaLibrary = ({ user, api }) => {
     fetchFavorites();
   }, [fetchFavorites, fetchPoses]);
 
-  useEffect(() => {
-    const nextFiltered = poses.filter((pose) => {
+  const filteredPoses = useMemo(
+    () => poses.filter((pose) => {
       if (selectedElement !== "all" && pose.element !== selectedElement) return false;
       if (showFavoritesOnly && !favorites.has(pose.id)) return false;
       if (mobilityMode && pose.difficulty !== "Beginner") return false;
       return true;
-    });
-
-    setFilteredPoses(nextFiltered);
-  }, [selectedElement, poses, showFavoritesOnly, favorites, mobilityMode, setFilteredPoses]);
-
-  // Open specific pose from URL parameter
-  useEffect(() => {
-    const poseId = searchParams.get('pose');
-    if (poseId && poses.length > 0) {
-      const pose = poses.find(p => p.id === poseId);
-      if (pose) {
-        setSelectedPose(pose);
-      }
-    }
-  }, [searchParams, poses]);
+    }),
+    [selectedElement, poses, showFavoritesOnly, favorites, mobilityMode],
+  );
 
   const toggleFavorite = async (poseId, e) => {
     e.stopPropagation();
@@ -402,6 +397,7 @@ const YogaLibrary = ({ user, api }) => {
         {selectedPose && (
           <Dialog open={!!selectedPose} onOpenChange={() => setSelectedPose(null)}>
             <DialogContent className="bg-card border-white/10 max-w-2xl max-h-[90vh] overflow-y-auto p-0">
+              <DialogTitle className="sr-only" data-testid="yoga-pose-dialog-title">Yoga Pose Details</DialogTitle>
               <DialogDescription className="sr-only" data-testid="yoga-pose-dialog-description">
                 Detailed yoga pose guidance including instructions, benefits, cautions, and spiritual context.
               </DialogDescription>

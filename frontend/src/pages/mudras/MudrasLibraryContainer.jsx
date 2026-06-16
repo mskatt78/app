@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Hand, Filter, X, Check, Sparkles } from "lucide-react";
@@ -11,7 +11,6 @@ import { appLogger } from "../../utils/logger";
 const MudrasLibrary = ({ user, api }) => {
   const navigate = useNavigate();
   const [mudras, setMudras] = useState([]);
-  const [filteredMudras, setFilteredMudras] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedElement, setSelectedElement] = useState("all");
   const [selectedMudra, setSelectedMudra] = useState(null);
@@ -42,7 +41,6 @@ const MudrasLibrary = ({ user, api }) => {
       try {
         const response = await api.get("/mudras");
         setMudras(response.data);
-        setFilteredMudras(response.data);
       } catch (error) {
         appLogger.error("Failed to fetch mudras:", error);
       } finally {
@@ -53,12 +51,11 @@ const MudrasLibrary = ({ user, api }) => {
     fetchMudras();
   }, [api]);
 
-  useEffect(() => {
+  const filteredMudras = useMemo(() => {
     if (selectedElement === "all") {
-      setFilteredMudras(mudras);
-    } else {
-      setFilteredMudras(mudras.filter(m => m.element === selectedElement));
+      return mudras;
     }
+    return mudras.filter((m) => m.element === selectedElement);
   }, [selectedElement, mudras]);
 
   const handleImageError = (mudraId) => {
@@ -238,7 +235,7 @@ const MudrasLibrary = ({ user, api }) => {
             <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto p-0">
               <DialogHeader className="sr-only">
                 <DialogTitle>{selectedMudra.name} details</DialogTitle>
-                <DialogDescription>
+                <DialogDescription data-testid="mudra-details-dialog-description">
                   Mudra technique details, benefits, and guided practice entry.
                 </DialogDescription>
               </DialogHeader>
