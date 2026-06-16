@@ -736,11 +736,52 @@
   - Focused auth-aware `/settings` run passed with QA account (`demoqa_740fefc1@example.com`).
   - `yarn quality:frontend` **PASS** and `quality_guard.py` **PASS**.
 
+## Latest Verification Snapshot (Iterations 166-168) — 2026-06-16
+- Completed user-requested Action Items + app-store readiness continuation.
+- Frontend decomposition finalized:
+  - `RitualBuilderContainer` split into:
+    - `RitualBuilderHeader`, `RitualBuilderLoadingView`, `RitualBuilderListView`,
+      `RitualBuilderCreateView`, `RitualBuilderActiveView`, `RitualBuilderShareDialog`
+    - state/orchestration via `useRitualBuilderData`
+  - `RoseTempleContainer` split into:
+    - `RoseTempleHeader`, `RoseTempleMainSections`, `RoseTempleModals`
+    - data orchestration via `useRoseTempleData`
+    - constants extracted to `roseTempleConstants`
+- Frontend quality hardening:
+  - Extracted inline motion object props to constants in:
+    - `shamanic/ShamanicPracticeGrid.jsx`
+    - `shamanic/ShamanicPracticeModal.jsx`
+    - `settings/SettingsRemindersCard.jsx`
+  - Reduced complex conditional rendering / ternary hotspots in:
+    - `WaterPractices.jsx`
+    - `Books.jsx`
+  - Preserved/expanded `data-testid` coverage for newly extracted interaction points.
+- Backend app-store blockers resolved:
+  - Sacred rites API reliability improved:
+    - `GET /api/sacred-rites` now supports fallback category matching (`sacred_rites`).
+    - `GET /api/sacred-rites/{rite_id}` aligned with same fallback behavior.
+  - Added missing books API endpoints consumed by frontend:
+    - `GET /api/books`
+    - `GET /api/books/{book_id}`
+  - Landing auth dialog accessibility updated with explicit `DialogDescription`.
+- Regression validation:
+  - `/app/test_reports/iteration_166.json` PASS (decomposition + regression)
+  - `/app/test_reports/iteration_167.json` PASS (sacred rites + accessibility revalidation)
+  - `/app/test_reports/iteration_168.json` PASS (final release-readiness verification)
+  - Guided script floor maintained (`/api/content/expand-script` > 840 words at 15 min target).
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
 ### Updated Remaining
 - `ElementalTemples.jsx` still contains large embedded static temple content payload; next pass should externalize static data into dedicated module(s) to complete full decomposition.
+
+### P1 (updated after Iteration 168)
+- Continue backend complexity decomposition in remaining long helpers:
+  - `routers/content.py` (remaining large helper clusters)
+  - `server.py` (seed flow helper extraction continuity)
+  - `services/email_service.py` (response/payload helper normalization)
+- Run a focused modal accessibility sweep to ensure every `DialogContent` has explicit `DialogDescription` (or intentionally managed `aria-describedby`) across all routes.
 
 ### P2
 - Replace any remaining array index-as-key usage in visualizer components.
@@ -753,6 +794,7 @@
 3. Maintain `data-testid` coverage for all interactive/critical UI.
 4. Keep retreat seeding disabled unless explicitly requested by owner.
 5. Preserve movement-track separation: Somatic Movement vs Tai Chi vs Chi Gong in all future somatic features.
+6. Preserve `/api/sacred-rites` and `/api/books` contracts (frontend depends on both for app-store flows).
 
 ## Owner/Admin
 - Primary admin email: `mskatt78@gmail.com`
