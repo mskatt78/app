@@ -820,6 +820,25 @@
   - Quality guard: PASS.
   - Backend compile sanity for refactored modules: PASS.
 
+## Latest Verification Snapshot (Iteration 170 - Large Page Decomposition) — 2026-06-16
+- Completed structural decomposition for high-line-count route files by converting each top-level page into a thin wrapper and relocating implementation to dedicated containers:
+  - `pages/RuneReadings.jsx` → `pages/rune-readings/RuneReadingsContainer.jsx`
+  - `pages/ProfileCalculator.jsx` → `pages/profile-calculator/ProfileCalculatorContainer.jsx`
+  - `pages/IChing.jsx` → `pages/i-ching/IChingContainer.jsx`
+  - `pages/HumanDesign.jsx` → `pages/human-design-page/HumanDesignContainer.jsx`
+  - `pages/SeasonalTemple.jsx` → `pages/seasonal-temple/SeasonalTempleContainer.jsx`
+- Further data extraction completed to reduce container bloat:
+  - `profile-calculator/profileCalculatorData.js` (Gene Keys + calculation constants/helpers)
+  - `seasonal-temple/seasonalTempleData.js` (Sabbats + earth crafting + seasonal resolver)
+- Critical runtime regression fixed during validation:
+  - Added missing Lucide icon imports in `seasonalTempleData.js` (`Moon is not defined` fix).
+- Validation:
+  - Testing agent report `/app/test_reports/iteration_170.json` → backend **100%**, frontend **100%**.
+  - All decomposed routes verified loading and functional:
+    - `/rune-readings`, `/profile-calculator`, `/i-ching`, `/human-design`, `/seasonal-temple`
+  - Frontend lint/quality: PASS.
+  - React exhaustive-deps audit: `TOTAL 0`.
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
@@ -832,6 +851,8 @@
   - `server.py` (seed flow helper extraction continuity)
   - `services/email_service.py` (response/payload helper normalization)
 - (Completed) Modal accessibility sweep ensuring `DialogDescription` semantics across dialog surfaces.
+- (Completed) large page wrapper decomposition for RuneReadings/ProfileCalculator/IChing/HumanDesign/SeasonalTemple.
+- Next refinement: split the new container files into section-level subcomponents to keep each container ideally under ~250 lines.
 
 ### P2
 - Replace any remaining array index-as-key usage in visualizer components.

@@ -99,7 +99,7 @@ app.mount("/api/uploads", StaticFiles(directory=str(UPLOADS_DIR)), name="uploads
 # ============ HEALTH CHECK ============
 
 @app.get("/api/health")
-async def health_check():
+async def health_check() -> dict[str, str]:
     """Health check endpoint."""
     return {
         "status": "healthy",
@@ -109,7 +109,7 @@ async def health_check():
 
 
 @app.get("/health")
-async def root_health_check():
+async def root_health_check() -> dict[str, str]:
     """Root health check endpoint for deployment verification."""
     return {"status": "healthy"}
 
@@ -399,14 +399,14 @@ async def _seed_database_preview_flow():
         logger.error(traceback.format_exc())
 
 
-async def do_database_seeding():
+async def do_database_seeding() -> None:
     """Coordinator for domain-level seeding tasks."""
     await seed_users()
     await seed_content()
     await seed_config()
 
 
-async def seed_users():
+async def seed_users() -> None:
     """Seed or validate user-domain data."""
     try:
         users_count = await db.users.count_documents({})
@@ -415,12 +415,12 @@ async def seed_users():
         logger.warning(f"users domain seeding warning (non-fatal): {e}")
 
 
-async def seed_content():
+async def seed_content() -> None:
     """Seed content-domain collections and deep teachings."""
     await _seed_database_core_flow()
 
 
-async def seed_config():
+async def seed_config() -> None:
     """Seed/validate config-domain metadata."""
     try:
         await db.app_meta.update_one(
@@ -438,7 +438,7 @@ async def seed_config():
         logger.warning(f"config domain seeding warning (non-fatal): {e}")
 
 
-async def ensure_indexes():
+async def ensure_indexes() -> None:
     """Create MongoDB indexes for performance-critical queries."""
     try:
         # Users — fast auth lookups
@@ -456,7 +456,7 @@ async def ensure_indexes():
         logger.warning(f"Index creation warning (non-fatal): {e}")
 
 
-async def cleanup_legacy_retreats_once():
+async def cleanup_legacy_retreats_once() -> None:
     """Remove legacy placeholder retreats a single time without affecting future user-created entries."""
     marker_id = "retreats_cleanup_2026_03"
 
@@ -518,7 +518,7 @@ def _should_clear_legacy_retreats(retreats: list[dict], placeholder_flags: list[
 
 
 @app.on_event("startup")
-async def startup_seed_database():
+async def startup_seed_database() -> None:
     """Seed database with content on startup."""
     import asyncio
     asyncio.create_task(ensure_indexes())
@@ -527,7 +527,7 @@ async def startup_seed_database():
     logger.info("Database seeding and indexing started in background...")
 
 
-async def seed_all_content():
+async def seed_all_content() -> None:
     """Seed all content collections."""
     from data.yoga_poses import YOGA_POSES
     from data.all_content import (

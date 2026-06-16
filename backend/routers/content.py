@@ -2040,23 +2040,56 @@ def _finalize_script_paragraphs(
 
 
 @router.post("/content/expand-script", response_model=ExpandScriptResponse)
-async def expand_guided_script(request: ExpandScriptRequest):
+async def expand_guided_script(request: ExpandScriptRequest) -> ExpandScriptResponse:
     """Expand guided practice text into long-form narration suitable for 7+ minute audio."""
+    context = await _build_expand_script_context(request)
+    segments = _segment_paragraphs(context["selected_paragraphs"])
+    return _build_expand_script_response(
+        practice_name=context["practice_name"],
+        target_minutes=context["target_minutes"],
+        target_words=context["target_words"],
+        used_ai=context["used_ai"],
+        paragraphs=context["selected_paragraphs"],
+        segments=segments,
+    )
+
+
+async def _build_expand_script_context(request: ExpandScriptRequest) -> dict[str, Any]:
     expansion_targets = _build_script_expansion_targets(request)
-    practice_name = expansion_targets["practice_name"]
-    target_minutes = expansion_targets["target_minutes"]
     target_words = expansion_targets["target_words"]
     fallback_paragraphs = _build_fallback_paragraphs(request, target_words)
-    anti_repetition_mode = expansion_targets["anti_repetition_mode"]
     selected_paragraphs, used_ai, stem_max_occurrences = await _resolve_script_source(
         request,
         target_words,
         fallback_paragraphs,
     )
     selected_paragraphs = _finalize_script_paragraphs(request, selected_paragraphs, stem_max_occurrences)
+    selected_paragraphs = _enforce_word_floors(
+        request=request,
+        selected_paragraphs=selected_paragraphs,
+        expansion_targets=expansion_targets,
+        stem_max_occurrences=stem_max_occurrences,
+    )
 
+    return {
+        "practice_name": expansion_targets["practice_name"],
+        "target_minutes": expansion_targets["target_minutes"],
+        "target_words": target_words,
+        "used_ai": used_ai,
+        "selected_paragraphs": selected_paragraphs,
+    }
+
+
+def _enforce_word_floors(
+    request: ExpandScriptRequest,
+    selected_paragraphs: list[str],
+    expansion_targets: dict[str, Any],
+    stem_max_occurrences: int,
+) -> list[str]:
     current_word_count = _count_words(" ".join(selected_paragraphs))
     minimum_word_floor = expansion_targets["minimum_word_floor"]
+    target_words = expansion_targets["target_words"]
+    anti_repetition_mode = expansion_targets["anti_repetition_mode"]
 
     selected_paragraphs, current_word_count = _extend_script_to_floor(
         request,
@@ -2076,22 +2109,13 @@ async def expand_guided_script(request: ExpandScriptRequest):
     )
 
     duration_alignment_floor = expansion_targets["duration_alignment_floor"]
-    selected_paragraphs, current_word_count = _apply_duration_alignment_floor(
+    selected_paragraphs, _ = _apply_duration_alignment_floor(
         selected_paragraphs,
         current_word_count,
         duration_alignment_floor,
         stem_max_occurrences,
     )
-
-    segments = _segment_paragraphs(selected_paragraphs)
-    return _build_expand_script_response(
-        practice_name=practice_name,
-        target_minutes=target_minutes,
-        target_words=target_words,
-        used_ai=used_ai,
-        paragraphs=selected_paragraphs,
-        segments=segments,
-    )
+    return selected_paragraphs
 
 
 def _build_script_expansion_targets(request: ExpandScriptRequest) -> dict[str, Any]:
