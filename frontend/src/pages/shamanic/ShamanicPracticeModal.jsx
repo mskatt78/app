@@ -6,6 +6,11 @@ import GuidedAudioButton from "../../components/GuidedAudioButton";
 import PracticeTimer from "../../components/PracticeTimer";
 import { appLogger } from "../../utils/logger";
 
+const OVERLAY_INITIAL = { opacity: 0 };
+const OVERLAY_ANIMATE = { opacity: 1 };
+const PANEL_INITIAL = { scale: 0.9, opacity: 0 };
+const PANEL_ANIMATE = { scale: 1, opacity: 1 };
+
 export const ShamanicPracticeModal = ({
   selectedPractice,
   isPracticing,
@@ -20,9 +25,9 @@ export const ShamanicPracticeModal = ({
     <AnimatePresence>
       {selectedPractice && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+          initial={OVERLAY_INITIAL}
+          animate={OVERLAY_ANIMATE}
+          exit={OVERLAY_INITIAL}
           className="fixed inset-0 z-[220] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={() => {
             setSelectedPractice(null);
@@ -30,9 +35,9 @@ export const ShamanicPracticeModal = ({
           }}
         >
           <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+            initial={PANEL_INITIAL}
+            animate={PANEL_ANIMATE}
+            exit={PANEL_INITIAL}
             className="bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col"
             onClick={(event) => event.stopPropagation()}
             data-testid="practice-modal"
@@ -106,7 +111,7 @@ export const ShamanicPracticeModal = ({
                     {selectedPractice.closing_prayer && (
                       <div className="p-4 rounded-xl bg-indigo-500/5 border border-indigo-500/20">
                         <h3 className="font-medium mb-2">Closing Prayer</h3>
-                        <p className="text-sm italic text-muted-foreground">"{selectedPractice.closing_prayer}"</p>
+                        <p className="text-sm italic text-muted-foreground">&ldquo;{selectedPractice.closing_prayer}&rdquo;</p>
                       </div>
                     )}
                   </div>
@@ -179,7 +184,7 @@ export const ShamanicPracticeModal = ({
                   {selectedPractice.closing_prayer && (
                     <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-center">
                       <p className="text-sm text-indigo-300">Remember to close with:</p>
-                      <p className="text-lg italic text-indigo-100 mt-2">"{selectedPractice.closing_prayer}"</p>
+                      <p className="text-lg italic text-indigo-100 mt-2">&ldquo;{selectedPractice.closing_prayer}&rdquo;</p>
                     </div>
                   )}
                 </div>

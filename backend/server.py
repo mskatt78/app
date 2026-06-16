@@ -465,22 +465,9 @@ async def cleanup_legacy_retreats_once():
             return
 
         retreats = await db.retreats.find({}, {"_id": 0, "title": 1}).to_list(length=50)
-        titles = [str(item.get("title", "")).strip().lower() for item in retreats]
-
-        def is_placeholder(title: str) -> bool:
-            return (
-                title.startswith("test")
-                or title.startswith("test_")
-                or title.startswith("test-")
-                or title.startswith("pytest")
-                or title == "sacred journey retreat"
-            )
-
-        placeholder_flags = [is_placeholder(title) for title in titles]
-        should_clear = bool(retreats) and (
-            all(placeholder_flags)
-            or (len(retreats) <= 5 and sum(placeholder_flags) >= max(1, len(retreats) - 1))
-        )
+        titles = _extract_retreat_titles(retreats)
+        placeholder_flags = [_is_placeholder_retreat_title(title) for title in titles]
+        should_clear = _should_clear_legacy_retreats(retreats, placeholder_flags)
 
         deleted_count = 0
         if should_clear:
@@ -505,6 +492,28 @@ async def cleanup_legacy_retreats_once():
         )
     except Exception as e:
         logger.warning(f"Legacy retreats cleanup warning (non-fatal): {e}")
+
+
+def _extract_retreat_titles(retreats: list[dict]) -> list[str]:
+    return [str(item.get("title", "")).strip().lower() for item in retreats]
+
+
+def _is_placeholder_retreat_title(title: str) -> bool:
+    return (
+        title.startswith("test")
+        or title.startswith("test_")
+        or title.startswith("test-")
+        or title.startswith("pytest")
+        or title == "sacred journey retreat"
+    )
+
+
+def _should_clear_legacy_retreats(retreats: list[dict], placeholder_flags: list[bool]) -> bool:
+    if not retreats:
+        return False
+    if all(placeholder_flags):
+        return True
+    return len(retreats) <= 5 and sum(placeholder_flags) >= max(1, len(retreats) - 1)
 
 
 @app.on_event("startup")
@@ -536,43 +545,97 @@ async def seed_all_content():
     from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
     from data.video_content import VIDEO_TUTORIALS
 
-    collections = [
-        ("yoga_poses", YOGA_POSES),
-        ("crystals", CRYSTALS),
-        ("mantras", MANTRAS),
-        ("mudras", MUDRAS),
-        ("breathwork_sessions", BREATHWORK_SESSIONS),
-        ("astrology_months", THIRTEEN_MONTH_CALENDAR),
-        ("oracle_cards", ORACLE_CARDS),
-        ("somatic_practices", SOMATIC_PRACTICES),
-        ("grounding_exercises", GROUNDING_EXERCISES),
-        ("mindfulness_practices", MINDFULNESS_PRACTICES),
-        ("meditations", MEDITATIONS),
-        ("earth_altars", EARTH_ALTARS),
-        ("creative_processes", CREATIVE_PROCESSES_DEEP),
-        ("heart_practices", HEART_PRACTICES),
-        ("shamanic_practices", SHAMANIC_PRACTICES),
-        ("achievements", ENHANCED_ACHIEVEMENTS),
-        ("elemental_practices", ELEMENTAL_PRACTICES),
-        ("runes", ELDER_FUTHARK_RUNES),
-        ("i_ching", I_CHING_HEXAGRAMS),
-        ("videos", VIDEO_TUTORIALS),
+    collections = _build_seed_content_collections(
+        yoga_poses=YOGA_POSES,
+        crystals=CRYSTALS,
+        mantras=MANTRAS,
+        mudras=MUDRAS,
+        breathwork_sessions=BREATHWORK_SESSIONS,
+        thirteen_month_calendar=THIRTEEN_MONTH_CALENDAR,
+        oracle_cards=ORACLE_CARDS,
+        somatic_practices=SOMATIC_PRACTICES,
+        grounding_exercises=GROUNDING_EXERCISES,
+        mindfulness_practices=MINDFULNESS_PRACTICES,
+        meditations=MEDITATIONS,
+        earth_altars=EARTH_ALTARS,
+        creative_processes=CREATIVE_PROCESSES_DEEP,
+        heart_practices=HEART_PRACTICES,
+        shamanic_practices=SHAMANIC_PRACTICES,
+        achievements=ENHANCED_ACHIEVEMENTS,
+        elemental_practices=ELEMENTAL_PRACTICES,
+        runes=ELDER_FUTHARK_RUNES,
+        i_ching=I_CHING_HEXAGRAMS,
+        videos=VIDEO_TUTORIALS,
+    )
+
+    await _seed_content_collections(collections)
+    await _seed_light_codes_document(LIGHT_CODES)
+
+    # Seed courses (sacred rites) — always refresh so content deepening takes effect
+    await _seed_sacred_rites_courses()
+
+
+def _build_seed_content_collections(
+    yoga_poses: list[dict],
+    crystals: list[dict],
+    mantras: list[dict],
+    mudras: list[dict],
+    breathwork_sessions: list[dict],
+    thirteen_month_calendar: list[dict],
+    oracle_cards: list[dict],
+    somatic_practices: list[dict],
+    grounding_exercises: list[dict],
+    mindfulness_practices: list[dict],
+    meditations: list[dict],
+    earth_altars: list[dict],
+    creative_processes: list[dict],
+    heart_practices: list[dict],
+    shamanic_practices: list[dict],
+    achievements: list[dict],
+    elemental_practices: list[dict],
+    runes: list[dict],
+    i_ching: list[dict],
+    videos: list[dict],
+) -> list[tuple[str, list[dict]]]:
+    return [
+        ("yoga_poses", yoga_poses),
+        ("crystals", crystals),
+        ("mantras", mantras),
+        ("mudras", mudras),
+        ("breathwork_sessions", breathwork_sessions),
+        ("astrology_months", thirteen_month_calendar),
+        ("oracle_cards", oracle_cards),
+        ("somatic_practices", somatic_practices),
+        ("grounding_exercises", grounding_exercises),
+        ("mindfulness_practices", mindfulness_practices),
+        ("meditations", meditations),
+        ("earth_altars", earth_altars),
+        ("creative_processes", creative_processes),
+        ("heart_practices", heart_practices),
+        ("shamanic_practices", shamanic_practices),
+        ("achievements", achievements),
+        ("elemental_practices", elemental_practices),
+        ("runes", runes),
+        ("i_ching", i_ching),
+        ("videos", videos),
     ]
 
+
+async def _seed_content_collections(collections: list[tuple[str, list[dict]]]) -> None:
     for name, data in collections:
         if data:
             await db[name].delete_many({})  # Clear existing
             await db[name].insert_many(data)
             logger.info(f"  Seeded {name}: {len(data)} items")
-    
-    # Seed light codes as a single document
-    if LIGHT_CODES:
-        await db.light_codes.delete_many({})
-        await db.light_codes.insert_one(LIGHT_CODES)
-        logger.info("  Seeded light_codes: 1 document")
 
-    # Seed courses (sacred rites) — always refresh so content deepening takes effect
-    await _seed_sacred_rites_courses()
+
+async def _seed_light_codes_document(light_codes: dict) -> None:
+    if not light_codes:
+        return
+
+    await db.light_codes.delete_many({})
+    await db.light_codes.insert_one(light_codes)
+    logger.info("  Seeded light_codes: 1 document")
 
 
 async def _seed_sacred_rites_courses():

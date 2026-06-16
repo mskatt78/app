@@ -35,7 +35,7 @@ class TestMantrasAPI:
                 assert field in mantra, f"Mantra {mantra.get('id')} missing field: {field}"
             
             # audio_url should exist (can be null)
-            assert 'audio_url' in mantra or mantra.get('audio_url') is None, \
+            assert 'audio_url' in mantra, \
                 f"Mantra {mantra.get('id')} should have audio_url field"
         
         print("✓ All required fields present in mantras")

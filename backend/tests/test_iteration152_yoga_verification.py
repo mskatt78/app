@@ -128,7 +128,7 @@ class TestVerifiedPosesStructure:
         """All verified poses have content_integrity.verified=True"""
         for pose in verified_poses:
             ci = pose.get("content_integrity", {})
-            assert ci.get("verified") is True, f"{pose.get('name')} content_integrity.verified is not True"
+            assert ci.get("verified"), f"{pose.get('name')} content_integrity.verified is not True"
 
     def test_verified_poses_have_source_references(self, verified_poses):
         """All verified poses have at least 2 source references"""

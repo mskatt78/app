@@ -2,6 +2,17 @@ import { motion } from "framer-motion";
 import { ChevronRight, Clock, Feather, Loader2, Lock, Sparkles, Trophy } from "lucide-react";
 import { categoryColors, categoryIcons, formatReviewedDate } from "./constants";
 
+const CARD_INITIAL = { opacity: 0, y: 20 };
+const CARD_ANIMATE = { opacity: 1, y: 0 };
+const LOCKED_OVERLAY_INITIAL = { opacity: 0 };
+const LOCKED_OVERLAY_ANIMATE = { opacity: 1 };
+const UNLOCKED_BADGE_INITIAL = { scale: 0, rotate: -180 };
+const UNLOCKED_BADGE_ANIMATE = { scale: 1, rotate: 0 };
+const UNLOCKED_BADGE_TRANSITION = { type: "spring", stiffness: 200 };
+const LOCK_ICON_INITIAL = { scale: 0 };
+const LOCK_ICON_ANIMATE = { scale: 1 };
+const LOCK_ICON_TRANSITION = { type: "spring", delay: 0.1 };
+
 export const ShamanicPracticeGrid = ({
   loading,
   practices,
@@ -28,8 +39,8 @@ export const ShamanicPracticeGrid = ({
           return (
             <motion.div
               key={practice.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={CARD_INITIAL}
+              animate={CARD_ANIMATE}
               transition={{ delay: index * 0.1 }}
               className={`group rounded-2xl overflow-hidden bg-card/50 border ${colors.border} transition-all duration-500 cursor-pointer relative`}
               onClick={() => (locked ? navigate("/achievements") : setSelectedPractice(practice))}
@@ -37,15 +48,15 @@ export const ShamanicPracticeGrid = ({
             >
               {locked && (
                 <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={LOCKED_OVERLAY_INITIAL}
+                  animate={LOCKED_OVERLAY_ANIMATE}
                   className="absolute inset-0 z-10 backdrop-blur-[2px] bg-gradient-to-t from-black/70 via-black/40 to-black/20 flex items-center justify-center"
                 >
                   <div className="text-center p-4">
                     <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", delay: 0.1 }}
+                      initial={LOCK_ICON_INITIAL}
+                      animate={LOCK_ICON_ANIMATE}
+                      transition={LOCK_ICON_TRANSITION}
                       className="w-14 h-14 mx-auto mb-3 rounded-full bg-gradient-to-br from-amber-500/30 to-orange-600/30 border border-amber-500/40 flex items-center justify-center"
                     >
                       <Lock className="w-6 h-6 text-amber-400" />
@@ -62,9 +73,9 @@ export const ShamanicPracticeGrid = ({
 
               {!locked && practice.requires_unlock && (
                 <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", stiffness: 200 }}
+                  initial={UNLOCKED_BADGE_INITIAL}
+                  animate={UNLOCKED_BADGE_ANIMATE}
+                  transition={UNLOCKED_BADGE_TRANSITION}
                   className="absolute top-3 left-3 z-10 w-7 h-7 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30"
                 >
                   <Sparkles className="w-4 h-4 text-white" />

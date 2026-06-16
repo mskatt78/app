@@ -176,6 +176,22 @@ async def _send_email_payload(params: dict) -> dict:
     return await asyncio.to_thread(resend.Emails.send, params)
 
 
+def _success_email_response(recipient: str, email_id: str | None) -> dict:
+    return {
+        "status": "sent",
+        "message": f"Email sent to {recipient}",
+        "email_id": email_id,
+    }
+
+
+def _failed_email_response(recipient: str, error: Exception) -> dict:
+    return {
+        "status": "failed",
+        "message": str(error),
+        "recipient": recipient,
+    }
+
+
 def _email_disabled_response(recipient: str) -> dict:
     return {
         "status": "skipped",
@@ -215,18 +231,10 @@ async def send_gift_notification_email(
     try:
         email_response = await _send_email_payload(params)
         logger.info(f"Gift notification sent to {recipient_email}, ID: {email_response.get('id')}")
-        return {
-            "status": "sent",
-            "message": f"Email sent to {recipient_email}",
-            "email_id": email_response.get("id")
-        }
+        return _success_email_response(recipient_email, email_response.get("id"))
     except Exception as e:
         logger.error(f"Failed to send gift email to {recipient_email}: {str(e)}")
-        return {
-            "status": "failed",
-            "message": str(e),
-            "recipient": recipient_email
-        }
+        return _failed_email_response(recipient_email, e)
 
 
 def _format_gift_type_redeemed_label(gift_type: str) -> str:
@@ -263,6 +271,18 @@ def _build_gift_redeemed_email_html(sender_name: str, recipient_name: str, gift_
 """
 
 
+def _send_not_configured_payload() -> dict:
+    return {"status": "skipped", "message": "Email sending not configured"}
+
+
+def _simple_sent_response(email_id: str | None) -> dict:
+    return {"status": "sent", "email_id": email_id}
+
+
+def _simple_failed_response(error: Exception) -> dict:
+    return {"status": "failed", "message": str(error)}
+
+
 async def send_gift_redeemed_notification(
     sender_email: str,
     sender_name: str,
@@ -272,7 +292,7 @@ async def send_gift_redeemed_notification(
     """Notify sender when their gift has been redeemed."""
 
     if not EMAIL_ENABLED:
-        return {"status": "skipped", "message": "Email sending not configured"}
+        return _send_not_configured_payload()
 
     gift_type_display = _format_gift_type_redeemed_label(gift_type)
     html_content = _build_gift_redeemed_email_html(sender_name, recipient_name, gift_type_display)
@@ -280,7 +300,7 @@ async def send_gift_redeemed_notification(
 
     try:
         email_response = await _send_email_payload(params)
-        return {"status": "sent", "email_id": email_response.get("id")}
+        return _simple_sent_response(email_response.get("id"))
     except Exception as e:
         logger.error(f"Failed to send redemption notification: {str(e)}")
-        return {"status": "failed", "message": str(e)}
+        return _simple_failed_response(e)

@@ -45,7 +45,7 @@ class TestExpandScriptDecomposition:
         
         # Verify word count meets 7-minute floor (840 words)
         assert data["word_count"] >= 700, f"word_count {data['word_count']} below 7-min floor"
-        assert data["used_ai"] is False, "used_ai should be False"
+        assert not data["used_ai"], "used_ai should be False"
         print(f"PASS: expand-script returned {len(data['paragraphs'])} paragraphs, {len(data['segments'])} segments, {data['word_count']} words")
 
     def test_expand_script_balanced_mode(self):

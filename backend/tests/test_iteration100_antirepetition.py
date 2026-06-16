@@ -141,7 +141,7 @@ class TestExpandScriptAntiRepetition:
         assert "paragraphs" in data, "Response missing 'paragraphs'"
         assert "segments" in data, "Response missing 'segments'"
         assert "word_count" in data, "Response missing 'word_count'"
-        assert data.get("used_ai") is False, "Expected use_ai=false but got AI response"
+        assert not data.get("used_ai"), "Expected use_ai=false but got AI response"
 
         paragraphs = data["paragraphs"]
         word_count = data["word_count"]

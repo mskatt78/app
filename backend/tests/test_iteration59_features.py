@@ -172,7 +172,7 @@ class TestUserAccountEndpoints:
         # Verify export structure
         assert "exported_at" in data
         assert "profile" in data
-        assert "reminder_settings" in data or data.get("reminder_settings") is None
+        assert "reminder_settings" in data
         assert "favorites" in data
         assert "practice_history" in data
         assert "rituals" in data

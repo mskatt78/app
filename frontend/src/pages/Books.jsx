@@ -10,6 +10,34 @@ import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { appLogger } from "../utils/logger";
 
+const FALLBACK_BOOK_COVER_CLASSES =
+  "w-full h-full bg-gradient-to-br from-primary/30 to-purple-600/30 flex items-center justify-center";
+
+const renderBookCover = (coverImage, title, iconSize) => {
+  if (coverImage) {
+    return (
+      <img
+        src={coverImage}
+        alt={title}
+        className="w-full h-full object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className={FALLBACK_BOOK_COVER_CLASSES}>
+      <BookOpen className={iconSize} />
+    </div>
+  );
+};
+
+const getMainContentState = (loading, books, selectedBook) => {
+  if (loading) return "loading";
+  if (books.length === 0) return "empty";
+  if (selectedBook) return "book";
+  return "none";
+};
+
 const Books = ({ user, api }) => {
   const navigate = useNavigate();
   const [books, setBooks] = useState([]);
@@ -49,6 +77,8 @@ const Books = ({ user, api }) => {
     fetchBooks();
   }, [api]);
 
+  const mainContentState = getMainContentState(loading, books, selectedBook);
+
   return (
     <div className="min-h-screen bg-background" data-testid="books-page">
       {/* Header */}
@@ -71,11 +101,11 @@ const Books = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6">
-        {loading ? (
+        {mainContentState === "loading" ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
           </div>
-        ) : books.length === 0 ? (
+        ) : mainContentState === "empty" ? (
           <div className="text-center py-16">
             <BookOpen className="w-16 h-16 text-muted-foreground/30 mx-auto mb-4" />
             <p className="text-muted-foreground">Book coming soon!</p>
@@ -83,7 +113,7 @@ const Books = ({ user, api }) => {
               Sacred wisdom is being prepared for you.
             </p>
           </div>
-        ) : selectedBook ? (
+        ) : mainContentState === "book" ? (
           <div className="grid lg:grid-cols-[350px,1fr] gap-12">
             {/* Book Cover Section */}
             <motion.div
@@ -92,17 +122,7 @@ const Books = ({ user, api }) => {
               className="space-y-6"
             >
               <div className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-2xl shadow-primary/20">
-                {selectedBook.cover_image ? (
-                  <img 
-                    src={selectedBook.cover_image} 
-                    alt={selectedBook.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-primary/30 to-purple-600/30 flex items-center justify-center">
-                    <BookOpen className="w-24 h-24 text-white/30" />
-                  </div>
-                )}
+                {renderBookCover(selectedBook.cover_image, selectedBook.title, "w-24 h-24 text-white/30")}
               </div>
 
               {/* Quick Info */}
@@ -217,7 +237,7 @@ const Books = ({ user, api }) => {
                         <CardContent className="p-6">
                           <Quote className="w-8 h-8 text-primary/30 mb-3" />
                           <p className="italic text-muted-foreground mb-4">
-                            "{testimonial.quote}"
+                            &ldquo;{testimonial.quote}&rdquo;
                           </p>
                           <p className="font-medium text-sm">— {testimonial.name}</p>
                         </CardContent>
@@ -241,19 +261,10 @@ const Books = ({ user, api }) => {
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedBook(book)}
                   className="cursor-pointer"
+                  data-testid={`more-book-card-${book.id}`}
                 >
                   <div className="aspect-[2/3] rounded-lg overflow-hidden shadow-lg">
-                    {book.cover_image ? (
-                      <img 
-                        src={book.cover_image} 
-                        alt={book.title}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-primary/30 to-purple-600/30 flex items-center justify-center">
-                        <BookOpen className="w-12 h-12 text-white/30" />
-                      </div>
-                    )}
+                    {renderBookCover(book.cover_image, book.title, "w-12 h-12 text-white/30")}
                   </div>
                   <h4 className="mt-2 font-medium text-sm line-clamp-1">{book.title}</h4>
                 </motion.div>

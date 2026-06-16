@@ -2533,6 +2533,21 @@ async def _search_wikipedia_article_image_for_crystal(
         return None
 
     crystal_name = str(crystal.get("name") or crystal.get("id") or "")
+    best_candidate = await _find_best_article_image_candidate(
+        file_titles=file_titles,
+        article_title=article_title,
+        preferred_form=preferred_form,
+        crystal_name=crystal_name,
+    )
+    return _get_article_image_candidate_if_passing(best_candidate, minimum_score=0.38)
+
+
+async def _find_best_article_image_candidate(
+    file_titles: list[str],
+    article_title: str,
+    preferred_form: str,
+    crystal_name: str,
+) -> dict[str, Any] | None:
     best_candidate: dict[str, Any] | None = None
     for file_title in file_titles:
         if _should_skip_article_file_title(file_title):
@@ -2547,12 +2562,24 @@ async def _search_wikipedia_article_image_for_crystal(
         if not candidate:
             continue
 
-        if not best_candidate or candidate["score"] > best_candidate["score"]:
+        if _is_higher_score_candidate(best_candidate, candidate):
             best_candidate = candidate
 
-    if not best_candidate or best_candidate["score"] < 0.38:
-        return None
     return best_candidate
+
+
+def _is_higher_score_candidate(best_candidate: dict[str, Any] | None, candidate: dict[str, Any]) -> bool:
+    if not best_candidate:
+        return True
+    return candidate["score"] > best_candidate["score"]
+
+
+def _get_article_image_candidate_if_passing(candidate: dict[str, Any] | None, minimum_score: float) -> dict[str, Any] | None:
+    if not candidate:
+        return None
+    if candidate["score"] < minimum_score:
+        return None
+    return candidate
 
 
 def _score_commons_candidate(preferred_form: str, crystal_name: str, title: str, image_url: str) -> float:

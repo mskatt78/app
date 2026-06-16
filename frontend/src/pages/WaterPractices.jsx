@@ -10,6 +10,34 @@ import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
 
+const getCategoryButtonClassName = (isActive) => {
+  if (isActive) {
+    return "bg-blue-500/20 text-blue-300 border border-blue-500/30";
+  }
+  return "bg-card/50 text-muted-foreground border border-white/5 hover:border-white/10";
+};
+
+const getGuidedAudioButtonContent = (audioLoading, isPlaying) => {
+  if (audioLoading) {
+    return {
+      icon: <Loader2 className="w-4 h-4 mr-2 animate-spin" />,
+      text: "Generating Audio...",
+    };
+  }
+
+  if (isPlaying) {
+    return {
+      icon: <Pause className="w-4 h-4 mr-2" />,
+      text: "Pause Guided Audio",
+    };
+  }
+
+  return {
+    icon: <Volume2 className="w-4 h-4 mr-2" />,
+    text: "Play Guided Audio",
+  };
+};
+
 const normalizeWaterCategory = (value) => {
   const raw = String(value || "").trim().toLowerCase();
   if (!raw) return "blessing";
@@ -314,7 +342,7 @@ const WaterPractices = ({ user, api }) => {
   );
   const fallbackPractices = WATER_CATEGORY_FALLBACKS[activeCategory] || [];
   const displayPractices = currentPractices.length > 0 ? currentPractices : fallbackPractices;
-  const currentCategory = categories.find(c => c.id === activeCategory);
+  const guidedAudioButtonContent = getGuidedAudioButtonContent(audioLoading, isPlaying);
 
   return (
     <div className="min-h-screen bg-background" data-testid="water-practices">
@@ -354,8 +382,8 @@ const WaterPractices = ({ user, api }) => {
         {/* Emoto Quote */}
         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
           <p className="text-lg font-serif italic text-foreground/80 max-w-2xl mx-auto">
-            "Water is the mirror that has the ability to show us what we cannot see. 
-            It is a blueprint for our reality, which can change with a single positive thought."
+            &ldquo;Water is the mirror that has the ability to show us what we cannot see.
+            It is a blueprint for our reality, which can change with a single positive thought.&rdquo;
           </p>
           <p className="text-sm text-muted-foreground mt-3">— Dr. Masaru Emoto</p>
         </div>
@@ -369,11 +397,7 @@ const WaterPractices = ({ user, api }) => {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-5 py-3 rounded-xl flex items-center gap-2 transition-all ${
-                  isActive 
-                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/30" 
-                    : "bg-card/50 text-muted-foreground border border-white/5 hover:border-white/10"
-                }`}
+                className={`px-5 py-3 rounded-xl flex items-center gap-2 transition-all ${getCategoryButtonClassName(isActive)}`}
                 data-testid={`category-${cat.id}`}
               >
                 <Icon className="w-4 h-4" />
@@ -451,11 +475,11 @@ const WaterPractices = ({ user, api }) => {
             The Science of Water Memory
           </h3>
           <p className="text-muted-foreground leading-relaxed">
-            Dr. Masaru Emoto's experiments showed that water exposed to positive words, music, 
+            Dr. Masaru Emoto&apos;s experiments showed that water exposed to positive words, music,
             and intentions forms beautiful hexagonal crystals when frozen, while negative influences 
             create chaotic, incomplete structures. Though controversial in mainstream science, 
-            this research suggests water may indeed respond to consciousness. Combined with water's 
-            known ability to form "structured" or "hexagonal" clusters that may enhance cellular 
+            this research suggests water may indeed respond to consciousness. Combined with water&apos;s
+            known ability to form &ldquo;structured&rdquo; or &ldquo;hexagonal&rdquo; clusters that may enhance cellular
             hydration, these practices offer a bridge between ancient wisdom and modern understanding.
           </p>
         </div>
@@ -562,7 +586,7 @@ const WaterPractices = ({ user, api }) => {
                           <div className={`w-4 h-4 rounded-full`} style={{backgroundColor: cw.color.toLowerCase()}} />
                           <div className="flex-1">
                             <p className="text-sm font-medium">{cw.chakra}</p>
-                            <p className="text-xs text-muted-foreground italic">"{cw.intention}"</p>
+                            <p className="text-xs text-muted-foreground italic">&ldquo;{cw.intention}&rdquo;</p>
                           </div>
                           <span className="text-xs text-muted-foreground">{cw.crystal}</span>
                         </div>
@@ -606,7 +630,7 @@ const WaterPractices = ({ user, api }) => {
                 {selectedPractice.affirmation && (
                   <div className="p-4 rounded-xl bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-center">
                     <h3 className="font-medium mb-2 text-blue-300">Affirmation</h3>
-                    <p className="text-lg font-serif italic">"{selectedPractice.affirmation}"</p>
+                    <p className="text-lg font-serif italic">&ldquo;{selectedPractice.affirmation}&rdquo;</p>
                   </div>
                 )}
 
@@ -624,23 +648,10 @@ const WaterPractices = ({ user, api }) => {
                     onClick={toggleAudio}
                     disabled={audioLoading}
                     className="w-full bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500/30"
+                    data-testid="water-practice-guided-audio-toggle"
                   >
-                    {audioLoading ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Generating Audio...
-                      </>
-                    ) : isPlaying ? (
-                      <>
-                        <Pause className="w-4 h-4 mr-2" />
-                        Pause Guided Audio
-                      </>
-                    ) : (
-                      <>
-                        <Volume2 className="w-4 h-4 mr-2" />
-                        Play Guided Audio
-                      </>
-                    )}
+                    {guidedAudioButtonContent.icon}
+                    {guidedAudioButtonContent.text}
                   </Button>
                 )}
 
@@ -651,7 +662,7 @@ const WaterPractices = ({ user, api }) => {
                     setIsPlaying(false);
                   }
                   setSelectedPractice(null);
-                }} className="w-full" variant="outline">
+                }} className="w-full" variant="outline" data-testid="water-practice-close-modal-btn">
                   Close
                 </Button>
                 <Button

@@ -83,7 +83,7 @@ class TestNewlyVerifiedPoses:
         plank = next((p for p in poses if p.get("name", "").lower() == "plank pose"), None)
         assert plank is not None, "Plank Pose not found"
         integrity = plank.get("content_integrity", {})
-        assert integrity.get("verified") is True, f"Plank Pose content_integrity.verified is {integrity.get('verified')}"
+        assert integrity.get("verified"), f"Plank Pose content_integrity.verified is {integrity.get('verified')}"
         print("PASS: Plank Pose has content_integrity.verified=True")
 
     def test_plank_pose_image_validation_status_verified(self):
@@ -127,7 +127,7 @@ class TestNewlyVerifiedPoses:
         twist = next((p for p in poses if p.get("name", "").lower() == "seated spinal twist"), None)
         assert twist is not None, "Seated Spinal Twist not found"
         integrity = twist.get("content_integrity", {})
-        assert integrity.get("verified") is True, f"Seated Spinal Twist content_integrity.verified is {integrity.get('verified')}"
+        assert integrity.get("verified"), f"Seated Spinal Twist content_integrity.verified is {integrity.get('verified')}"
         print("PASS: Seated Spinal Twist has content_integrity.verified=True")
 
     def test_seated_spinal_twist_image_validation_status_verified(self):
