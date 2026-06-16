@@ -1,9 +1,13 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Leaf, Flame, Snowflake, Sun, Moon, Star, X, ChevronRight, Gem, Wind, Mountain, TreePine, Globe } from "lucide-react";
+import { Leaf, Flame, Snowflake, Sun, Moon, Star, X, ChevronRight, Gem, Wind, Mountain, TreePine, Globe } from "lucide-react";
 
 import { EARTH_CRAFTING, SABBATS, getCurrentSabbat } from "./seasonalTempleData";
+import { SeasonalTempleHeader } from "./SeasonalTempleHeader";
+import { SeasonalTempleWheelSection } from "./SeasonalTempleWheelSection";
+import { SeasonalTempleCardsSection } from "./SeasonalTempleCardsSection";
+import { SABBAT_TABS, getSabbatTabLabel } from "./seasonalTempleConstants";
 
 const SeasonalTemple = ({ user }) => {
   const navigate = useNavigate();
@@ -16,149 +20,24 @@ const SeasonalTemple = ({ user }) => {
   });
   const [selectedSabbat, setSelectedSabbat] = useState(null);
 
-  const getSabbatTabLabel = (tab) => {
-    if (tab === "overview") return "Traditions";
-    if (tab === "ritual") return "Ritual 🙏";
-    if (tab === "embodiment") return "Embodiment";
-    return "Crystals & Herbs";
-  };
   const [activeTab, setActiveTab] = useState("overview");
   const [selectedCraft, setSelectedCraft] = useState(null);
 
   const currentSabbat = useMemo(() => getCurrentSabbat(hemisphere), [hemisphere]);
 
-  const sabbatTabs = ["overview", "ritual", "embodiment", "nature"];
+  const onSelectSabbat = (sabbat) => {
+    setSelectedSabbat(sabbat);
+    setActiveTab("overview");
+  };
 
   return (
     <div className="min-h-screen bg-background" data-testid="seasonal-temple">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button data-testid="back-btn" onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-white/5 transition-colors">
-              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            </button>
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-widest">Sacred Seasons</p>
-              <h1 className="text-xl font-serif">Wheel of the <span className="italic text-amber-300">Year</span></h1>
-            </div>
-          </div>
-          {/* Hemisphere Toggle */}
-          <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/10">
-            <button onClick={() => setHemisphere("south")} data-testid="hemi-south"
-              className={`px-3 py-1 rounded-full text-xs transition-all ${hemisphere === "south" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
-              🌿 South
-            </button>
-            <button onClick={() => setHemisphere("north")} data-testid="hemi-north"
-              className={`px-3 py-1 rounded-full text-xs transition-all ${hemisphere === "north" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
-              ☀️ North
-            </button>
-          </div>
-        </div>
-      </header>
+      <SeasonalTempleHeader hemisphere={hemisphere} onBack={() => navigate(-1)} onHemisphereChange={setHemisphere} />
 
       <main className="max-w-5xl mx-auto p-6">
-        {/* ── Wheel of the Year visual ─────────────────────────────────────────── */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-10 pt-4">
-          <h2 className="text-3xl font-serif mb-2">The Eight <span className="italic text-amber-300">Sacred Gates</span></h2>
-          <p className="text-muted-foreground text-sm max-w-xl mx-auto">
-            The Wheel turns through 8 stations — 4 solar (solstices & equinoxes) and 4 fire festivals. Each gate is a doorway into a different quality of being.
-            {" "}<span className={`text-xs px-2 py-0.5 rounded-full ${hemisphere === "south" ? "text-emerald-400 bg-emerald-500/10" : "text-amber-400 bg-amber-500/10"}`}>
-              {hemisphere === "south" ? "🌿 Southern Hemisphere dates" : "☀️ Northern Hemisphere dates"}
-            </span>
-          </p>
+        <SeasonalTempleWheelSection hemisphere={hemisphere} currentSabbat={currentSabbat} sabbats={SABBATS} onSelectSabbat={onSelectSabbat} />
 
-          {/* Wheel graphic */}
-          <div className="relative w-72 h-72 mx-auto my-10">
-            {/* Outer ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-white/10" />
-            <div className="absolute inset-4 rounded-full border border-white/5" />
-            {/* Centre */}
-            <div className="absolute inset-[44%] rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
-              <Star className="w-3 h-3 text-primary" />
-            </div>
-            {/* Sabbat nodes */}
-            {SABBATS.map((s) => {
-              const angleRad = ((s.angle - 90) * Math.PI) / 180;
-              const radius = 108;
-              const x = 144 + radius * Math.cos(angleRad);
-              const y = 144 + radius * Math.sin(angleRad);
-              const isCurrent = s.id === currentSabbat;
-              const Icon = s.icon;
-              return (
-                <button
-                  key={s.id}
-                  onClick={() => { setSelectedSabbat(s); setActiveTab("overview"); }}
-                  data-testid={`wheel-${s.id}`}
-                  style={{ left: x - 20, top: y - 20 }}
-                  className={`absolute w-10 h-10 rounded-full border flex items-center justify-center
-                             transition-all hover:scale-110
-                             ${s.color.bg} ${s.color.border}
-                             ${isCurrent ? "ring-2 ring-primary ring-offset-1 ring-offset-background scale-110" : ""}`}
-                  title={`${s.name} — ${s.dates[hemisphere]}`}
-                >
-                  <Icon className={`w-4 h-4 ${s.color.text}`} />
-                </button>
-              );
-            })}
-            {/* Spokes */}
-            <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 288 288">
-              {SABBATS.map((s) => {
-                const angleRad = ((s.angle - 90) * Math.PI) / 180;
-                return (
-                  <line key={s.id}
-                    x1="144" y1="144"
-                    x2={144 + 100 * Math.cos(angleRad)}
-                    y2={144 + 100 * Math.sin(angleRad)}
-                    stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-                );
-              })}
-            </svg>
-          </div>
-
-          <p className="text-xs text-muted-foreground">
-            <span className="text-primary">●</span> Currently nearest: <span className="font-medium">{SABBATS.find(s => s.id === currentSabbat)?.name}</span>
-            {" "}· Click any gate to enter
-          </p>
-        </motion.div>
-
-        {/* ── Sabbat Cards Grid ─────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
-          {SABBATS.map((s, i) => {
-            const Icon = s.icon;
-            const isCurrent = s.id === currentSabbat;
-            return (
-              <motion.div
-                key={s.id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                onClick={() => { setSelectedSabbat(s); setActiveTab("overview"); }}
-                data-testid={`sabbat-card-${s.id}`}
-                className={`cursor-pointer rounded-xl border transition-all hover:scale-[1.02] overflow-hidden
-                           ${s.color.bg} ${s.color.border}
-                           ${isCurrent ? "ring-1 ring-primary" : ""}`}
-              >
-                {s.image && (
-                  <div className="relative h-28 overflow-hidden">
-                    <img src={s.image} alt={s.name} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card/90 via-card/30 to-transparent" />
-                    {isCurrent && <span className="absolute top-2 right-2 text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">Now</span>}
-                  </div>
-                )}
-                <div className="p-4">
-                <div className={`flex items-center justify-between mb-3 ${s.image ? 'hidden' : ''}`}>
-                  <Icon className={`w-6 h-6 ${s.color.text}`} />
-                  {isCurrent && !s.image && <span className="text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">Now</span>}
-                </div>
-                <h3 className="font-serif text-base mb-0.5">{s.name}</h3>
-                <p className={`text-xs ${s.color.text} mb-2`}>{s.dates[hemisphere]}</p>
-                <p className="text-xs text-muted-foreground line-clamp-2">{s.theme}</p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+        <SeasonalTempleCardsSection sabbats={SABBATS} currentSabbat={currentSabbat} hemisphere={hemisphere} onSelectSabbat={onSelectSabbat} />
 
         {/* ── Earth Crafting ─────────────────────────────────────────────────────── */}
         <div className="mb-10">
@@ -222,7 +101,7 @@ const SeasonalTemple = ({ user }) => {
               </div>
               {/* Tabs */}
               <div className={`flex border-b ${selectedSabbat.color.border}`}>
-                {sabbatTabs.map(tab => (
+                {SABBAT_TABS.map(tab => (
                   <button key={tab} onClick={() => setActiveTab(tab)}
                     className={`flex-1 py-3 text-xs font-medium transition-all capitalize ${
                       activeTab === tab ? `${selectedSabbat.color.text} border-b-2 ${selectedSabbat.color.border}` : "text-muted-foreground hover:text-foreground"

@@ -2,13 +2,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ArrowLeft, Sparkles, Moon, Sun, Eye, Star, Shuffle, 
-  ChevronRight, RotateCcw, Info, X, Clock, Share2
+  Sparkles, Shuffle, RotateCcw
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { toast } from "sonner";
 import { ShareButton } from "../../components/ShareModal";
 import { appLogger } from "../../utils/logger";
+import { ELEMENT_COLORS, SPREADS, getPositionLabel, getSpreadGridClassName } from "./runeReadingsConstants";
+import { RuneReadingsHeader } from "./RuneReadingsHeader";
+import { RuneSpreadSelector } from "./RuneSpreadSelector";
+import { RuneLibraryModal } from "./RuneLibraryModal";
 
 const RuneReadings = ({ user, api }) => {
   const navigate = useNavigate();
@@ -19,34 +22,6 @@ const RuneReadings = ({ user, api }) => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [selectedRune, setSelectedRune] = useState(null);
   const [showAllRunes, setShowAllRunes] = useState(false);
-
-  const spreads = [
-    {
-      id: "single",
-      name: "Single Rune",
-      description: "Daily guidance or quick insight",
-      runeCount: 1,
-      positions: ["guidance"],
-      icon: Star
-    },
-    {
-      id: "three",
-      name: "Three Norns",
-      description: "Past, Present, Future reading",
-      runeCount: 3,
-      positions: ["past", "present", "future"],
-      positionMeanings: ["What shaped this moment", "Your current energy", "Where this leads"],
-      icon: Moon
-    },
-    {
-      id: "celtic-cross",
-      name: "Celtic Cross",
-      description: "Deep comprehensive reading",
-      runeCount: 10,
-      positions: ["present", "challenge", "past", "future", "above", "below", "advice", "external", "hopes_fears", "outcome"],
-      icon: Sun
-    }
-  ];
 
   useEffect(() => {
     const fetchRunes = async () => {
@@ -98,60 +73,9 @@ const RuneReadings = ({ user, api }) => {
     return "Draw Runes";
   };
 
-  const getSpreadGridClassName = () => {
-    if (selectedSpread?.id === "single") return "grid-cols-1 max-w-md mx-auto";
-    if (selectedSpread?.id === "three") return "grid-cols-1 md:grid-cols-3";
-    return "grid-cols-2 md:grid-cols-5";
-  };
-
-  const getPositionLabel = (position) => {
-    const labels = {
-      past: "Past",
-      present: "Present Situation",
-      future: "Future Outcome",
-      challenge: "Challenge/Crossing",
-      above: "Conscious Goal",
-      below: "Subconscious",
-      advice: "Advice",
-      external: "External Influences",
-      hopes_fears: "Hopes & Fears",
-      outcome: "Final Outcome",
-      guidance: "Your Guidance"
-    };
-    return labels[position] || position;
-  };
-
-  const elementColors = {
-    Fire: { bg: "bg-orange-500/20", text: "text-orange-300", border: "border-orange-500/30" },
-    Water: { bg: "bg-blue-500/20", text: "text-blue-300", border: "border-blue-500/30" },
-    Earth: { bg: "bg-emerald-500/20", text: "text-emerald-300", border: "border-emerald-500/30" },
-    Air: { bg: "bg-cyan-500/20", text: "text-cyan-300", border: "border-cyan-500/30" },
-    Spirit: { bg: "bg-purple-500/20", text: "text-purple-300", border: "border-purple-500/30" },
-  };
-
   return (
     <div className="min-h-screen bg-background" data-testid="rune-readings">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
-        <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button onClick={() => navigate("/menu")} className="p-2 rounded-full hover:bg-white/5 transition-colors">
-              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            </button>
-            <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Elder Futhark</p>
-              <h1 className="text-xl font-serif">Rune <span className="italic text-primary">Readings</span></h1>
-            </div>
-          </div>
-          <button 
-            onClick={() => setShowAllRunes(true)}
-            className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-sm flex items-center gap-2"
-          >
-            <Eye className="w-4 h-4" />
-            View All Runes
-          </button>
-        </div>
-      </header>
+      <RuneReadingsHeader onBack={() => navigate("/menu")} onOpenLibrary={() => setShowAllRunes(true)} />
 
       <main className="max-w-6xl mx-auto p-6 space-y-8">
         {/* Intro */}
@@ -168,32 +92,7 @@ const RuneReadings = ({ user, api }) => {
 
         {!selectedSpread ? (
           /* Spread Selection */
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {spreads.map((spread) => {
-              const Icon = spread.icon;
-              return (
-                <motion.div
-                  key={spread.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  onClick={() => setSelectedSpread(spread)}
-                  className="group cursor-pointer p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/5 
-                           border border-amber-500/20 hover:border-amber-500/40 transition-all"
-                  data-testid={`spread-${spread.id}`}
-                >
-                  <div className="w-14 h-14 rounded-xl bg-amber-500/20 flex items-center justify-center mb-4">
-                    <Icon className="w-7 h-7 text-amber-300" />
-                  </div>
-                  <h3 className="text-xl font-serif mb-2">{spread.name}</h3>
-                  <p className="text-muted-foreground mb-4">{spread.description}</p>
-                  <div className="flex items-center gap-2 text-amber-300 text-sm">
-                    <span>{spread.runeCount} rune{spread.runeCount > 1 ? 's' : ''}</span>
-                    <ChevronRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+          <RuneSpreadSelector spreads={SPREADS} onSelectSpread={setSelectedSpread} />
         ) : (
           /* Reading Area */
           <div className="space-y-8">
@@ -226,9 +125,9 @@ const RuneReadings = ({ user, api }) => {
 
             {/* Drawn Runes Display */}
             {drawnRunes.length > 0 && (
-              <div className={`grid gap-6 ${getSpreadGridClassName()}`}>
+              <div className={`grid gap-6 ${getSpreadGridClassName(selectedSpread)}`}>
                 {drawnRunes.map((rune, index) => {
-                  const colors = elementColors[rune.element] || elementColors.Spirit;
+                  const colors = ELEMENT_COLORS[rune.element] || ELEMENT_COLORS.Spirit;
                   return (
                     <motion.div
                       key={`${rune.id}-${index}`}
@@ -359,46 +258,15 @@ const RuneReadings = ({ user, api }) => {
         )}
       </AnimatePresence>
 
-      {/* All Runes Modal */}
-      <AnimatePresence>
-        {showAllRunes && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowAllRunes(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-card rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="sticky top-0 bg-card p-4 border-b border-white/10 flex items-center justify-between">
-                <h2 className="text-xl font-serif">Elder Futhark Runes</h2>
-                <button onClick={() => setShowAllRunes(false)} className="p-2 rounded-full hover:bg-white/10">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="p-4 grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">
-                {runes.map((rune) => (
-                  <div
-                    key={rune.id}
-                    onClick={() => { setSelectedRune(rune); setShowAllRunes(false); }}
-                    className="cursor-pointer p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 
-                             hover:bg-amber-500/20 transition-colors text-center"
-                  >
-                    <div className="text-3xl font-serif text-amber-300 mb-1">{rune.symbol}</div>
-                    <p className="text-xs text-muted-foreground truncate">{rune.name}</p>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <RuneLibraryModal
+        open={showAllRunes}
+        runes={runes}
+        onClose={() => setShowAllRunes(false)}
+        onSelectRune={(rune) => {
+          setSelectedRune(rune);
+          setShowAllRunes(false);
+        }}
+      />
     </div>
   );
 };

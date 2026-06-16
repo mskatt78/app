@@ -839,6 +839,19 @@
   - Frontend lint/quality: PASS.
   - React exhaustive-deps audit: `TOTAL 0`.
 
+## Latest Verification Snapshot (Iteration 171 - Stability Revalidation) — 2026-06-16
+- Revalidated decomposed route architecture after wrapper/container migration and data extraction.
+- Backend long-form narration pipeline remained stable after context-builder refactor in `expand_guided_script`:
+  - `/api/content/expand-script` returns successful long-form output (~2028 words for 15-minute target).
+- Route-level runtime verification remains green:
+  - `/rune-readings`, `/profile-calculator`, `/i-ching`, `/human-design`, `/seasonal-temple` all load and function.
+- Backend health endpoints remain green:
+  - `/api/health`, `/api/books`, `/api/sacred-rites` all return 200.
+- Quality checks:
+  - Frontend lint/quality PASS
+  - `quality_guard` PASS
+  - Backend compile sanity PASS
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
@@ -853,6 +866,11 @@
 - (Completed) Modal accessibility sweep ensuring `DialogDescription` semantics across dialog surfaces.
 - (Completed) large page wrapper decomposition for RuneReadings/ProfileCalculator/IChing/HumanDesign/SeasonalTemple.
 - Next refinement: split the new container files into section-level subcomponents to keep each container ideally under ~250 lines.
+- Continue container-level decomposition for:
+  - `rune-readings/RuneReadingsContainer.jsx`
+  - `i-ching/IChingContainer.jsx`
+  - `human-design-page/HumanDesignContainer.jsx`
+  - `seasonal-temple/SeasonalTempleContainer.jsx`
 
 ### P2
 - Replace any remaining array index-as-key usage in visualizer components.
