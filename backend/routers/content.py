@@ -3789,6 +3789,24 @@ async def get_course(course_id: str):
     return _enrich_content_integrity(course, "hybrid-curated")
 
 
+@router.get("/books")
+async def get_books():
+    """Get books collection for the Books page."""
+    db = get_db()
+    books = await db.books.find({}, {"_id": 0}).sort("created_at", -1).to_list(length=100)
+    return [_enrich_content_integrity(book, "hybrid-curated") for book in books]
+
+
+@router.get("/books/{book_id}")
+async def get_book(book_id: str):
+    """Get a specific book by id."""
+    db = get_db()
+    book = await db.books.find_one({"id": book_id}, {"_id": 0})
+    if not book:
+        raise HTTPException(status_code=404, detail="Book not found")
+    return _enrich_content_integrity(book, "hybrid-curated")
+
+
 # ============ SACRED RITES ROUTES ============
 
 @router.get("/sacred-rites")
