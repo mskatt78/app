@@ -1,6 +1,6 @@
 import { Copy } from "lucide-react";
 import { Button } from "../../components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 
 export const RitualBuilderShareDialog = ({ open, onOpenChange, shareUrl, onCopy }) => {
   return (
@@ -8,6 +8,9 @@ export const RitualBuilderShareDialog = ({ open, onOpenChange, shareUrl, onCopy 
       <DialogContent className="bg-card border-white/10" data-testid="ritual-share-dialog">
         <DialogHeader>
           <DialogTitle>Share Ritual</DialogTitle>
+          <DialogDescription className="sr-only" data-testid="ritual-share-dialog-description">
+            Copy and share your ritual link so others can open your sacred practice sequence.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="p-3 rounded-lg bg-background border border-white/10 break-all text-sm" data-testid="ritual-share-url">

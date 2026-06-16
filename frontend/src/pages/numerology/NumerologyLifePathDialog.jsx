@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { getNumerologyElementColors } from "./numerologyConfig";
 
 export const NumerologyLifePathDialog = ({ selectedLifePath, setSelectedLifePath }) => {
@@ -17,6 +17,9 @@ export const NumerologyLifePathDialog = ({ selectedLifePath, setSelectedLifePath
                 Life Path {selectedLifePath.number}
               </div>
               <DialogTitle className="text-2xl font-serif" data-testid="numerology-life-path-dialog-title">{selectedLifePath.name}</DialogTitle>
+              <DialogDescription className="sr-only" data-testid="numerology-life-path-dialog-description">
+                Detailed life path numerology traits, crystal association, element, and mantra guidance.
+              </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-4 mt-4">

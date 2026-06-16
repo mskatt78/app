@@ -6,7 +6,7 @@ import {
   Shuffle, ChevronRight, X, Heart, Briefcase, Compass
 } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { appLogger } from "../utils/logger";
 
 const SPREADS = [
@@ -100,7 +100,7 @@ const TarotReading = ({ user, api }) => {
                 Receive Your <span className="italic text-primary">Guidance</span>
               </h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                The 22 Major Arcana cards represent life's spiritual lessons and karmic influences. 
+                The 22 Major Arcana cards represent life&apos;s spiritual lessons and karmic influences.
                 Choose your spread to receive wisdom from the cards.
               </p>
             </motion.div>
@@ -299,6 +299,9 @@ const TarotReading = ({ user, api }) => {
                   </span>
                 </div>
                 <DialogTitle className="text-2xl font-serif">{selectedCard.name}</DialogTitle>
+                <DialogDescription className="sr-only" data-testid="tarot-card-dialog-description">
+                  View complete card meanings, life guidance, and spiritual advice for the selected tarot card.
+                </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
@@ -371,8 +374,8 @@ const TarotReading = ({ user, api }) => {
 
                 {/* Advice */}
                 <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                  <p className="text-xs text-muted-foreground mb-2">Card's Advice</p>
-                  <p className="font-serif italic text-foreground">"{selectedCard.advice}"</p>
+                  <p className="text-xs text-muted-foreground mb-2">Card&apos;s Advice</p>
+                  <p className="font-serif italic text-foreground">&ldquo;{selectedCard.advice}&rdquo;</p>
                 </div>
               </div>
             </>

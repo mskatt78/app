@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import PracticeTimer from "../components/PracticeTimer";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
@@ -257,6 +257,9 @@ const Mindfulness = ({ user, api }) => {
                   {selectedPractice.element} • {selectedPractice.category}
                 </div>
                 <DialogTitle className="text-2xl font-serif">{selectedPractice.name}</DialogTitle>
+                <DialogDescription className="sr-only" data-testid="mindfulness-practice-dialog-description">
+                  Review mindfulness practice details and begin the guided timer session.
+                </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-6 mt-4">

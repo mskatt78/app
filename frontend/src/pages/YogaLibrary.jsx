@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check, Users, Accessibility } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription } from "../components/ui/dialog";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
@@ -402,6 +402,9 @@ const YogaLibrary = ({ user, api }) => {
         {selectedPose && (
           <Dialog open={!!selectedPose} onOpenChange={() => setSelectedPose(null)}>
             <DialogContent className="bg-card border-white/10 max-w-2xl max-h-[90vh] overflow-y-auto p-0">
+              <DialogDescription className="sr-only" data-testid="yoga-pose-dialog-description">
+                Detailed yoga pose guidance including instructions, benefits, cautions, and spiritual context.
+              </DialogDescription>
               {/* Hero Image */}
               <div className="relative h-64">
                 <img

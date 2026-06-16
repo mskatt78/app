@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import PracticeVideos from "../components/PracticeVideos";
@@ -265,6 +265,9 @@ const SomaticMovement = ({ user, api }) => {
                   {selectedPractice.element} Element
                 </div>
                 <DialogTitle className="text-2xl font-serif">{selectedPractice.name}</DialogTitle>
+                <DialogDescription className="sr-only" data-testid="somatic-practice-dialog-description">
+                  View somatic movement guidance and start the selected guided practice.
+                </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-6 mt-4">

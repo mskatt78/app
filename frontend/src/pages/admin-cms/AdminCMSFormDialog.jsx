@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { Button } from "../../components/ui/button";
 import { Save, X } from "lucide-react";
 import { AdminCMSFormRenderer } from "../../components/admin/AdminCMSFormRenderer";
@@ -27,6 +27,9 @@ export const AdminCMSFormDialog = ({
               <X className="w-4 h-4" />
             </Button>
           </DialogTitle>
+          <DialogDescription className="sr-only" data-testid="admin-cms-form-dialog-description">
+            Fill content fields and save changes for the selected admin collection entry.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 mt-4">

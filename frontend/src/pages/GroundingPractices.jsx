@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Mountain, Clock, TreeDeciduous, Play, CheckCircle } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
@@ -169,6 +169,9 @@ const GroundingPractices = ({ user, api }) => {
                   Earth Element
                 </div>
                 <DialogTitle className="text-2xl font-serif">{selectedExercise.name}</DialogTitle>
+                <DialogDescription className="sr-only" data-testid="grounding-exercise-dialog-description">
+                  Review exercise instructions, benefits, and launch the grounding practice timer.
+                </DialogDescription>
               </DialogHeader>
 
               <div className="space-y-6 mt-4">
