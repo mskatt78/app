@@ -852,6 +852,36 @@
   - `quality_guard` PASS
   - Backend compile sanity PASS
 
+## Latest Verification Snapshot (Iteration 172 - Container-Level Decomposition) — 2026-06-16
+- Continued decomposition without pause into section-level modules:
+  - `i-ching/` split into:
+    - `IChingHeader.jsx`
+    - `IChingCastingPanel.jsx`
+    - `IChingResultCard.jsx`
+    - `IChingHexagramModal.jsx`
+    - `iChingConstants.js`
+    - `IChingContainer.jsx` reduced to orchestration layer
+  - `rune-readings/` split into:
+    - `RuneReadingsHeader.jsx`
+    - `RuneSpreadSelector.jsx`
+    - `RuneLibraryModal.jsx`
+    - `runeReadingsConstants.js`
+    - `RuneReadingsContainer.jsx` reduced significantly
+  - `human-design-page/` split into:
+    - `HumanDesignTabContent.jsx`
+    - `HumanDesignContainer.jsx` reduced to shell/orchestration
+  - `seasonal-temple/` split into:
+    - `SeasonalTempleHeader.jsx`
+    - `SeasonalTempleWheelSection.jsx`
+    - `SeasonalTempleCardsSection.jsx`
+    - `seasonalTempleConstants.js`
+    - `SeasonalTempleContainer.jsx` reduced to orchestration + modal handling
+- Validation (`/app/test_reports/iteration_172.json`):
+  - Frontend **100%**, Backend **100%**
+  - No runtime import errors on decomposed routes
+  - All key route interactions passed (cast coins, draw runes, tab switching, modal open/close)
+  - Backend health/content APIs passed
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
@@ -867,10 +897,9 @@
 - (Completed) large page wrapper decomposition for RuneReadings/ProfileCalculator/IChing/HumanDesign/SeasonalTemple.
 - Next refinement: split the new container files into section-level subcomponents to keep each container ideally under ~250 lines.
 - Continue container-level decomposition for:
-  - `rune-readings/RuneReadingsContainer.jsx`
-  - `i-ching/IChingContainer.jsx`
-  - `human-design-page/HumanDesignContainer.jsx`
-  - `seasonal-temple/SeasonalTempleContainer.jsx`
+  - `profile-calculator/ProfileCalculatorContainer.jsx` (still high line count)
+- Optional final lint advisory cleanup:
+  - non-blocking `react-hooks/set-state-in-effect` advisory reported by tooling on `i-ching/IChingContainer.jsx` despite functional pass and global lint pass.
 
 ### P2
 - Replace any remaining array index-as-key usage in visualizer components.
