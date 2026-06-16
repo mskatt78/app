@@ -762,18 +762,23 @@ def _resolve_achievement_progress(requirement: dict[str, Any], stats: dict[str, 
     requirement_type = requirement.get("type")
     target = int(requirement.get("count") or 0)
 
-    progress_map: dict[str, int] = {
+    progress_map = _build_achievement_progress_map(stats)
+
+    progress = progress_map.get(str(requirement_type), 0)
+    return progress, progress >= target
+
+
+def _build_achievement_progress_map(stats: dict[str, Any]) -> dict[str, int]:
+    by_type = stats.get("by_type") or {}
+    return {
         "sessions": int(stats.get("total_sessions") or 0),
         "streak": int(stats.get("streak") or 0),
         "minutes": int(stats.get("total_minutes") or 0),
         "oracle_readings": int(stats.get("oracle_readings") or 0),
-        "breathwork": int((stats.get("by_type") or {}).get("breathwork") or 0),
-        "yoga": int((stats.get("by_type") or {}).get("yoga") or 0),
+        "breathwork": int(by_type.get("breathwork") or 0),
+        "yoga": int(by_type.get("yoga") or 0),
         "elements": int(stats.get("elements_count") or 0),
     }
-
-    progress = progress_map.get(str(requirement_type), 0)
-    return progress, progress >= target
 
 
 def _compose_achievements_payload(stats: dict[str, Any]) -> list[dict[str, Any]]:

@@ -2,11 +2,15 @@ import { motion } from "framer-motion";
 import { LogOut } from "lucide-react";
 import { Button } from "../../components/ui/button";
 
+const CARD_INITIAL = { opacity: 0, y: 20 };
+const CARD_ANIMATE = { opacity: 1, y: 0 };
+const CARD_TRANSITION = { delay: 0.2 };
+
 export const SettingsLogoutCard = ({ handleLogout }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.2 }}
+    initial={CARD_INITIAL}
+    animate={CARD_ANIMATE}
+    transition={CARD_TRANSITION}
     className="p-6 rounded-2xl bg-destructive/10 border border-destructive/20"
     data-testid="settings-logout-card"
   >

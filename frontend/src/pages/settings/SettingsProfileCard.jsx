@@ -2,10 +2,13 @@ import { motion } from "framer-motion";
 import { User } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
 
+const CARD_INITIAL = { opacity: 0, y: 20 };
+const CARD_ANIMATE = { opacity: 1, y: 0 };
+
 export const SettingsProfileCard = ({ user }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
+    initial={CARD_INITIAL}
+    animate={CARD_ANIMATE}
     className="p-6 rounded-2xl bg-card/50 border border-white/5"
     data-testid="settings-profile-card"
   >

@@ -227,25 +227,7 @@ def reduce_to_single_digit(num: int, keep_master: bool = True) -> int:
 def calculate_life_path(birth_date: str) -> int:
     """Calculate life path number from birth date (YYYY-MM-DD format)."""
     try:
-        normalized_birth_date = birth_date.strip()
-
-        if "-" in normalized_birth_date:
-            parsed_date = datetime.strptime(normalized_birth_date, "%Y-%m-%d")
-        elif "/" in normalized_birth_date:
-            slash_formats = ["%m/%d/%Y", "%d/%m/%Y", "%m/%d/%y", "%d/%m/%y"]
-            parsed_date = None
-            for date_format in slash_formats:
-                try:
-                    parsed_date = datetime.strptime(normalized_birth_date, date_format)
-                    break
-                except ValueError:
-                    continue
-
-            if parsed_date is None:
-                raise ValueError("Invalid date format")
-        else:
-            raise ValueError("Invalid date format")
-
+        parsed_date = _parse_birth_date(birth_date)
         year = str(parsed_date.year)
         month = parsed_date.month
         day = parsed_date.day
@@ -261,6 +243,25 @@ def calculate_life_path(birth_date: str) -> int:
     except Exception as e:
         logger.error(f"Life path calculation error: {e}")
         raise ValueError(f"Invalid date format: {birth_date}")
+
+
+def _parse_birth_date(birth_date: str) -> datetime:
+    normalized_birth_date = birth_date.strip()
+    if "-" in normalized_birth_date:
+        return datetime.strptime(normalized_birth_date, "%Y-%m-%d")
+    if "/" in normalized_birth_date:
+        return _parse_slash_birth_date(normalized_birth_date)
+    raise ValueError("Invalid date format")
+
+
+def _parse_slash_birth_date(normalized_birth_date: str) -> datetime:
+    slash_formats = ["%m/%d/%Y", "%d/%m/%Y", "%m/%d/%y", "%d/%m/%y"]
+    for date_format in slash_formats:
+        try:
+            return datetime.strptime(normalized_birth_date, date_format)
+        except ValueError:
+            continue
+    raise ValueError("Invalid date format")
 
 
 def calculate_expression_number(name: str) -> int:
@@ -292,19 +293,14 @@ def _is_date_in_month_window(
     end_month: int,
     end_day: int,
 ) -> bool:
-    if start_month <= end_month:
-        return (
-            (current_month == start_month and current_day >= start_day)
-            or (current_month == end_month and current_day <= end_day)
-            or (start_month < current_month < end_month)
-        )
+    date_tuple = (current_month, current_day)
+    start_tuple = (start_month, start_day)
+    end_tuple = (end_month, end_day)
 
-    return (
-        (current_month == start_month and current_day >= start_day)
-        or (current_month == end_month and current_day <= end_day)
-        or current_month > start_month
-        or current_month < end_month
-    )
+    if start_tuple <= end_tuple:
+        return start_tuple <= date_tuple <= end_tuple
+
+    return date_tuple >= start_tuple or date_tuple <= end_tuple
 
 
 def _resolve_current_lunar_month_id(now: datetime) -> str:

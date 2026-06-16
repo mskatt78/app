@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
+from dataclasses import dataclass
 import logging
 from pathlib import Path
 from datetime import datetime, timezone
@@ -545,7 +546,7 @@ async def seed_all_content():
     from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
     from data.video_content import VIDEO_TUTORIALS
 
-    collections = _build_seed_content_collections(
+    seed_config = SeedContentConfig(
         yoga_poses=YOGA_POSES,
         crystals=CRYSTALS,
         mantras=MANTRAS,
@@ -567,6 +568,7 @@ async def seed_all_content():
         i_ching=I_CHING_HEXAGRAMS,
         videos=VIDEO_TUTORIALS,
     )
+    collections = _build_seed_content_collections(seed_config)
 
     await _seed_content_collections(collections)
     await _seed_light_codes_document(LIGHT_CODES)
@@ -575,49 +577,52 @@ async def seed_all_content():
     await _seed_sacred_rites_courses()
 
 
-def _build_seed_content_collections(
-    yoga_poses: list[dict],
-    crystals: list[dict],
-    mantras: list[dict],
-    mudras: list[dict],
-    breathwork_sessions: list[dict],
-    thirteen_month_calendar: list[dict],
-    oracle_cards: list[dict],
-    somatic_practices: list[dict],
-    grounding_exercises: list[dict],
-    mindfulness_practices: list[dict],
-    meditations: list[dict],
-    earth_altars: list[dict],
-    creative_processes: list[dict],
-    heart_practices: list[dict],
-    shamanic_practices: list[dict],
-    achievements: list[dict],
-    elemental_practices: list[dict],
-    runes: list[dict],
-    i_ching: list[dict],
-    videos: list[dict],
-) -> list[tuple[str, list[dict]]]:
+@dataclass(frozen=True)
+class SeedContentConfig:
+    yoga_poses: list[dict]
+    crystals: list[dict]
+    mantras: list[dict]
+    mudras: list[dict]
+    breathwork_sessions: list[dict]
+    thirteen_month_calendar: list[dict]
+    oracle_cards: list[dict]
+    somatic_practices: list[dict]
+    grounding_exercises: list[dict]
+    mindfulness_practices: list[dict]
+    meditations: list[dict]
+    earth_altars: list[dict]
+    creative_processes: list[dict]
+    heart_practices: list[dict]
+    shamanic_practices: list[dict]
+    achievements: list[dict]
+    elemental_practices: list[dict]
+    runes: list[dict]
+    i_ching: list[dict]
+    videos: list[dict]
+
+
+def _build_seed_content_collections(config: SeedContentConfig) -> list[tuple[str, list[dict]]]:
     return [
-        ("yoga_poses", yoga_poses),
-        ("crystals", crystals),
-        ("mantras", mantras),
-        ("mudras", mudras),
-        ("breathwork_sessions", breathwork_sessions),
-        ("astrology_months", thirteen_month_calendar),
-        ("oracle_cards", oracle_cards),
-        ("somatic_practices", somatic_practices),
-        ("grounding_exercises", grounding_exercises),
-        ("mindfulness_practices", mindfulness_practices),
-        ("meditations", meditations),
-        ("earth_altars", earth_altars),
-        ("creative_processes", creative_processes),
-        ("heart_practices", heart_practices),
-        ("shamanic_practices", shamanic_practices),
-        ("achievements", achievements),
-        ("elemental_practices", elemental_practices),
-        ("runes", runes),
-        ("i_ching", i_ching),
-        ("videos", videos),
+        ("yoga_poses", config.yoga_poses),
+        ("crystals", config.crystals),
+        ("mantras", config.mantras),
+        ("mudras", config.mudras),
+        ("breathwork_sessions", config.breathwork_sessions),
+        ("astrology_months", config.thirteen_month_calendar),
+        ("oracle_cards", config.oracle_cards),
+        ("somatic_practices", config.somatic_practices),
+        ("grounding_exercises", config.grounding_exercises),
+        ("mindfulness_practices", config.mindfulness_practices),
+        ("meditations", config.meditations),
+        ("earth_altars", config.earth_altars),
+        ("creative_processes", config.creative_processes),
+        ("heart_practices", config.heart_practices),
+        ("shamanic_practices", config.shamanic_practices),
+        ("achievements", config.achievements),
+        ("elemental_practices", config.elemental_practices),
+        ("runes", config.runes),
+        ("i_ching", config.i_ching),
+        ("videos", config.videos),
     ]
 
 

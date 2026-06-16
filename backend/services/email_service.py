@@ -68,8 +68,25 @@ def _build_gift_notification_email_html(
     message_html: str,
     redemption_url: str,
 ) -> str:
-    
-    return f"""
+    return "\n".join(
+        [
+            _gift_notification_html_head(),
+            _gift_notification_html_header(),
+            _gift_notification_html_body(
+                recipient_name=recipient_name,
+                sender_name=sender_name,
+                gift_type_display=gift_type_display,
+                gift_code=gift_code,
+                message_html=message_html,
+                redemption_url=redemption_url,
+            ),
+            _gift_notification_html_footer(),
+        ]
+    )
+
+
+def _gift_notification_html_head() -> str:
+    return """
 <!DOCTYPE html>
 <html>
 <head>
@@ -81,8 +98,11 @@ def _build_gift_notification_email_html(
         <tr>
             <td align="center">
                 <table width="600" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.4);">
-                    
-                    <!-- Header -->
+"""
+
+
+def _gift_notification_html_header() -> str:
+    return """
                     <tr>
                         <td style="background: linear-gradient(135deg, #d4a953 0%, #b8860b 100%); padding: 40px 30px; text-align: center;">
                             <h1 style="color: #1a1a1a; margin: 0; font-size: 28px; font-weight: normal; letter-spacing: 2px;">
@@ -90,30 +110,34 @@ def _build_gift_notification_email_html(
                             </h1>
                         </td>
                     </tr>
-                    
-                    <!-- Body -->
+"""
+
+
+def _gift_notification_html_body(
+    recipient_name: str,
+    sender_name: str,
+    gift_type_display: str,
+    gift_code: str,
+    message_html: str,
+    redemption_url: str,
+) -> str:
+    return f"""
                     <tr>
                         <td style="padding: 40px 30px;">
                             <p style="color: #e0e0e0; font-size: 18px; line-height: 1.6; margin: 0 0 20px 0;">
                                 Dear <strong style="color: #d4a953;">{recipient_name}</strong>,
                             </p>
-                            
                             <p style="color: #b0b0b0; font-size: 16px; line-height: 1.8; margin: 0 0 20px 0;">
-                                <strong style="color: #e0e0e0;">{sender_name}</strong> has gifted you {gift_type_display} 
+                                <strong style="color: #e0e0e0;">{sender_name}</strong> has gifted you {gift_type_display}
                                 from <em>Shamanic Elements Temple of the Soul</em>.
                             </p>
-                            
                             {message_html}
-                            
-                            <!-- Gift Code Box -->
                             <div style="background: #1a1a1a; padding: 25px; border-radius: 12px; text-align: center; margin: 30px 0; border: 1px solid #3a3a3a;">
                                 <p style="color: #888; margin: 0 0 10px 0; font-size: 12px; text-transform: uppercase; letter-spacing: 2px;">Your Gift Code</p>
                                 <p style="color: #d4a953; margin: 0; font-size: 28px; font-weight: bold; letter-spacing: 3px; font-family: monospace;">
                                     {gift_code}
                                 </p>
                             </div>
-                            
-                            <!-- CTA Button -->
                             <table width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td align="center" style="padding: 20px 0;">
@@ -123,15 +147,17 @@ def _build_gift_notification_email_html(
                                     </td>
                                 </tr>
                             </table>
-                            
                             <p style="color: #666; font-size: 14px; line-height: 1.6; margin: 30px 0 0 0; text-align: center;">
                                 Begin your journey through the sacred elements.<br>
                                 Transform your practice with shamanic traditions.
                             </p>
                         </td>
                     </tr>
-                    
-                    <!-- Footer -->
+"""
+
+
+def _gift_notification_html_footer() -> str:
+    return """
                     <tr>
                         <td style="background: #1a1a1a; padding: 25px 30px; text-align: center; border-top: 1px solid #3a3a3a;">
                             <p style="color: #666; font-size: 12px; margin: 0;">
@@ -140,7 +166,6 @@ def _build_gift_notification_email_html(
                             </p>
                         </td>
                     </tr>
-                    
                 </table>
             </td>
         </tr>

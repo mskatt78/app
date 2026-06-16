@@ -19,8 +19,8 @@ export const useAmbientAudio = ({
       if (saved && NATURAL_SOUND_OPTIONS.some((option) => option.id === saved)) {
         return saved;
       }
-    } catch {
-      // ignore localStorage errors
+    } catch (error) {
+      appLogger.warn("Could not read preferred natural sound from storage", error);
     }
     return backgroundAudio || "silence";
   });
@@ -52,8 +52,8 @@ export const useAmbientAudio = ({
     if (!NATURAL_SOUND_OPTIONS.some((option) => option.id === selectedBackgroundAudio)) return;
     try {
       setLocalItem(PREFERRED_NATURAL_SOUND_KEY, selectedBackgroundAudio);
-    } catch {
-      // ignore localStorage errors
+    } catch (error) {
+      appLogger.warn("Could not persist preferred natural sound", error);
     }
   }, [selectedBackgroundAudio]);
 

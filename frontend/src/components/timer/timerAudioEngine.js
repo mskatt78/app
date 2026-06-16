@@ -157,8 +157,8 @@ export const startPracticeAmbientAudio = ({
     if (enableToning && toningLayerRef) {
       try {
         toningLayerRef.current?.stop?.();
-      } catch (_) {
-        // ignore stale toning cleanup errors
+      } catch (error) {
+        appLogger.warn("Failed to stop stale toning layer before restart", error);
       }
       toningLayerRef.current = startToningLayer(ctx, element, gainNode);
       toningLayerRef.current?.setMuted?.(isMuted, audioVolume);

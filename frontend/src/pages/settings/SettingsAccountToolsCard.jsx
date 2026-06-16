@@ -2,6 +2,10 @@ import { motion } from "framer-motion";
 import { Download, Globe, Radio, ShieldCheck, Smartphone, Sparkles, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 
+const CARD_INITIAL = { opacity: 0, y: 20 };
+const CARD_ANIMATE = { opacity: 1, y: 0 };
+const CARD_TRANSITION = { delay: 0.18 };
+
 export const SettingsAccountToolsCard = ({
   navigate,
   exporting,
@@ -12,9 +16,9 @@ export const SettingsAccountToolsCard = ({
   requestAccountDeletion,
 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay: 0.18 }}
+    initial={CARD_INITIAL}
+    animate={CARD_ANIMATE}
+    transition={CARD_TRANSITION}
     className="p-6 rounded-2xl bg-card/50 border border-white/5"
     data-testid="settings-account-tools"
   >
