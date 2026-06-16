@@ -3795,10 +3795,12 @@ async def get_course(course_id: str):
 async def get_sacred_rites():
     """Get sacred rites (Munay Ki, Nusta Karpay, 13th Womb Rite) from courses collection."""
     db = get_db()
-    rites = await db.courses.find(
-        {"category": "Shamanic Initiation"},
-        {"_id": 0}
-    ).to_list(length=20)
+    rites = await db.courses.find({"category": "Shamanic Initiation"}, {"_id": 0}).to_list(length=20)
+    if not rites:
+        rites = await db.courses.find(
+            {"category": {"$regex": "^sacred_rites$", "$options": "i"}},
+            {"_id": 0},
+        ).to_list(length=20)
     return rites
 
 
@@ -3806,10 +3808,15 @@ async def get_sacred_rites():
 async def get_sacred_rite(rite_id: str):
     """Get a specific sacred rite."""
     db = get_db()
-    rite = await db.courses.find_one(
-        {"id": rite_id, "category": "Shamanic Initiation"},
-        {"_id": 0}
-    )
+    rite = await db.courses.find_one({"id": rite_id, "category": "Shamanic Initiation"}, {"_id": 0})
+    if not rite:
+        rite = await db.courses.find_one(
+            {
+                "id": rite_id,
+                "category": {"$regex": "^sacred_rites$", "$options": "i"},
+            },
+            {"_id": 0},
+        )
     if not rite:
         raise HTTPException(status_code=404, detail="Sacred rite not found")
     return rite

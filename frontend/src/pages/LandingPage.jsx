@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -181,6 +181,9 @@ const LandingPage = ({ onLoginSuccess }) => {
             <DialogTitle className="text-2xl font-serif text-center">
               {isLogin ? "Welcome Back" : "Begin Your Journey"}
             </DialogTitle>
+            <DialogDescription className="sr-only" data-testid="landing-auth-modal-description">
+              Sign in with Google or email to save your progress, rituals, and guided journey history.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6 py-4">
