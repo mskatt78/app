@@ -882,6 +882,27 @@
   - All key route interactions passed (cast coins, draw runes, tab switching, modal open/close)
   - Backend health/content APIs passed
 
+## Latest Verification Snapshot (Iteration 173 - Playstore Readiness Sanity) — 2026-06-16
+- Playstore-focused end-to-end sanity verification completed after final type-hint and decomposition passes.
+- Backend verification:
+  - High-traffic routes all healthy and returning expected data contracts.
+  - Included checks for: health, books, sacred rites, i-ching (index + cast + detail), runes (index + draw variants), expand-script, yoga, breathwork, crystals, mantras, meditations, oracle, tarot.
+  - Result: backend **100%** (`18 passed`).
+- Frontend verification:
+  - Decomposed routes all load and function without regressions:
+    - `/i-ching`
+    - `/rune-readings`
+    - `/human-design`
+    - `/seasonal-temple`
+    - `/profile-calculator`
+  - Result: frontend **100%**.
+- Advisory closure:
+  - Optional i-ching advisory path validated as non-blocking under project lint baseline.
+- Artifacts:
+  - `/app/test_reports/iteration_173.json`
+  - `/app/backend/tests/test_iteration173_playstore_sanity.py`
+  - `/app/test_reports/pytest/pytest_iteration173.xml`
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
