@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Info } from "lucide-react";
@@ -8,16 +8,28 @@ import { IChingHeader } from "./IChingHeader";
 import { IChingCastingPanel } from "./IChingCastingPanel";
 import { IChingResultCard } from "./IChingResultCard";
 import { IChingHexagramModal } from "./IChingHexagramModal";
-import { buildCoinAnimationFrames, sleep } from "./iChingConstants";
+import { runCoinCastingFlow } from "./iChingConstants";
 
 const IChing = ({ user, api }) => {
   const navigate = useNavigate();
   const [hexagrams, setHexagrams] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [casting, setCasting] = useState(false);
-  const [result, setResult] = useState(null);
   const [showHexagramList, setShowHexagramList] = useState(false);
-  const [coinAnimation, setCoinAnimation] = useState([]);
+
+  const [castingState, dispatchCasting] = useReducer(
+    (state, action) => {
+      if (action.type === "start") {
+        return { ...state, result: null, coinAnimation: action.frames };
+      }
+      if (action.type === "set-result") {
+        return { ...state, result: action.result };
+      }
+      return state;
+    },
+    { result: null, coinAnimation: [] },
+  );
+
+  const { result, coinAnimation } = castingState;
 
   const fetchHexagrams = useCallback(async () => {
     try {
@@ -33,25 +45,6 @@ const IChing = ({ user, api }) => {
   useEffect(() => {
     fetchHexagrams();
   }, [fetchHexagrams]);
-
-  const castCoins = async () => {
-    setCasting(true);
-    setResult(null);
-    setCoinAnimation(buildCoinAnimationFrames());
-    await sleep(400);
-
-    try {
-      const response = await api.get("/i-ching/cast/coins");
-      await sleep(500);
-      setResult(response.data);
-      toast.success(`Hexagram ${response.data.number}: ${response.data.name}`);
-    } catch (error) {
-      appLogger.error("Failed to cast I Ching:", error);
-      toast.error("Could not complete casting");
-    } finally {
-      setCasting(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background" data-testid="i-ching">
@@ -70,7 +63,21 @@ const IChing = ({ user, api }) => {
           </p>
         </div>
 
-        <IChingCastingPanel casting={casting} result={result} coinAnimation={coinAnimation} onCastCoins={castCoins} />
+        <IChingCastingPanel
+          casting={coinAnimation.length > 0 && !result}
+          result={result}
+          coinAnimation={coinAnimation}
+          onCastCoins={() => {
+            void runCoinCastingFlow({ api, dispatchCasting }).then(({ result: castResult, error }) => {
+              if (error) {
+                appLogger.error("Failed to cast I Ching:", error);
+                toast.error("Could not complete casting");
+                return;
+              }
+              toast.success(`Hexagram ${castResult.number}: ${castResult.name}`);
+            });
+          }}
+        />
 
         <IChingResultCard result={result} />
 
@@ -106,7 +113,7 @@ const IChing = ({ user, api }) => {
         hexagrams={hexagrams}
         onClose={() => setShowHexagramList(false)}
         onSelectHexagram={(hexagram) => {
-          setResult(hexagram);
+          dispatchCasting({ type: "set-result", result: hexagram });
           setShowHexagramList(false);
         }}
       />

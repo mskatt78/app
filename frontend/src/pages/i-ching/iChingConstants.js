@@ -8,3 +8,18 @@ export const buildCoinAnimationFrames = () => {
     type: Math.random() > 0.5 ? "yang" : "yin",
   }));
 };
+
+export const runCoinCastingFlow = async ({ api, dispatchCasting }) => {
+  const frames = buildCoinAnimationFrames();
+  dispatchCasting({ type: "start", frames });
+  await sleep(400);
+
+  try {
+    const response = await api.get("/i-ching/cast/coins");
+    await sleep(500);
+    dispatchCasting({ type: "set-result", result: response.data });
+    return { result: response.data, error: null };
+  } catch (error) {
+    return { result: null, error };
+  }
+};

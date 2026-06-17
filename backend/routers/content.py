@@ -918,7 +918,7 @@ class LiveSessionMessageRequest(BaseModel):
 
     @field_validator("email", mode="before")
     @classmethod
-    def empty_email_to_none(cls, value):
+    def empty_email_to_none(cls, value: Any) -> Optional[EmailStr]:
         if value in ("", None):
             return None
         return value
@@ -2217,7 +2217,7 @@ async def _build_live_session(session: dict, db) -> dict:
 # ============ YOGA ROUTES ============
 
 @router.get("/yoga/poses")
-async def get_yoga_poses(element: Optional[str] = None, difficulty: Optional[str] = None):
+async def get_yoga_poses(element: Optional[str] = None, difficulty: Optional[str] = None) -> list[dict[str, Any]]:
     """Get yoga poses from database, optionally filtered by element or difficulty."""
     db = get_db()
     query = {}
@@ -2231,7 +2231,7 @@ async def get_yoga_poses(element: Optional[str] = None, difficulty: Optional[str
 
 
 @router.get("/yoga/poses/{pose_id}")
-async def get_yoga_pose(pose_id: str):
+async def get_yoga_pose(pose_id: str) -> dict[str, Any]:
     """Get a specific yoga pose from database."""
     db = get_db()
     pose = await db.yoga_poses.find_one({"id": pose_id}, {"_id": 0})
@@ -2243,7 +2243,7 @@ async def get_yoga_pose(pose_id: str):
 # ============ BREATHWORK ROUTES ============
 
 @router.get("/breathwork/sessions")
-async def get_breathwork_sessions(element: Optional[str] = None):
+async def get_breathwork_sessions(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get breathwork sessions from database, optionally filtered by element."""
     db = get_db()
     query = {}
@@ -2255,7 +2255,7 @@ async def get_breathwork_sessions(element: Optional[str] = None):
 
 
 @router.get("/breathwork/sessions/{session_id}")
-async def get_breathwork_session(session_id: str):
+async def get_breathwork_session(session_id: str) -> dict[str, Any]:
     """Get a specific breathwork session from database."""
     db = get_db()
     session = await db.breathwork_sessions.find_one({"id": session_id}, {"_id": 0})
@@ -3017,7 +3017,7 @@ async def _enrich_crystals_with_verified_images(crystals: list[dict[str, Any]], 
     return await asyncio.gather(*[_enrich_single(crystal) for crystal in crystals])
 
 @router.get("/crystals")
-async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = None):
+async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = None) -> list[dict[str, Any]]:
     """Get crystals from database, optionally filtered by element or chakra."""
     db = get_db()
     query = {}
@@ -3031,7 +3031,7 @@ async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = No
 
 
 @router.get("/crystals/deep")
-async def get_deep_crystals():
+async def get_deep_crystals() -> list[dict[str, Any]]:
     """Get deep crystal healing data with rituals, meditations, and comprehensive guidance."""
     db = get_db()
     crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=50)
@@ -3042,7 +3042,7 @@ async def get_deep_crystals():
 
 
 @router.get("/crystals/deep/{crystal_id}")
-async def get_deep_crystal(crystal_id: str):
+async def get_deep_crystal(crystal_id: str) -> dict[str, Any]:
     """Get a specific deep crystal by ID."""
     db = get_db()
     crystal = await db.crystals_deep.find_one({"id": crystal_id}, {"_id": 0})
@@ -3056,7 +3056,7 @@ async def get_deep_crystal(crystal_id: str):
 
 
 @router.get("/crystals/{crystal_id}")
-async def get_crystal(crystal_id: str):
+async def get_crystal(crystal_id: str) -> dict[str, Any]:
     """Get a specific crystal from database."""
     db = get_db()
     crystal = await db.crystals.find_one({"id": crystal_id}, {"_id": 0})
@@ -3068,7 +3068,7 @@ async def get_crystal(crystal_id: str):
 # ============ MANTRAS ROUTES ============
 
 @router.get("/mantras")
-async def get_mantras(element: Optional[str] = None):
+async def get_mantras(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get mantras from database, optionally filtered by element."""
     db = get_db()
     query = {}
@@ -3082,7 +3082,7 @@ async def get_mantras(element: Optional[str] = None):
 # ============ MUDRAS ROUTES ============
 
 @router.get("/mudras")
-async def get_mudras(element: Optional[str] = None):
+async def get_mudras(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get mudras from database, optionally filtered by element."""
     db = get_db()
     query = {}
@@ -3097,7 +3097,7 @@ async def get_mudras(element: Optional[str] = None):
 # ============ MINDFULNESS PRACTICES ============
 
 @router.get("/mindfulness")
-async def get_mindfulness_practices(category: Optional[str] = None, element: Optional[str] = None):
+async def get_mindfulness_practices(category: Optional[str] = None, element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get mindfulness practices from database."""
     db = get_db()
     query = {}
@@ -3112,7 +3112,7 @@ async def get_mindfulness_practices(category: Optional[str] = None, element: Opt
 
 
 @router.get("/mindfulness-practices")
-async def get_mindfulness_practices_alias(category: Optional[str] = None, element: Optional[str] = None):
+async def get_mindfulness_practices_alias(category: Optional[str] = None, element: Optional[str] = None) -> list[dict[str, Any]]:
     """Alias endpoint for clients expecting /mindfulness-practices."""
     return await get_mindfulness_practices(category=category, element=element)
 
@@ -3120,7 +3120,7 @@ async def get_mindfulness_practices_alias(category: Optional[str] = None, elemen
 # ============ GUIDED MEDITATIONS ============
 
 @router.get("/meditations")
-async def get_meditations(category: Optional[str] = None, element: Optional[str] = None):
+async def get_meditations(category: Optional[str] = None, element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get guided meditations from database."""
     db = get_db()
     query = {}
@@ -3134,7 +3134,7 @@ async def get_meditations(category: Optional[str] = None, element: Optional[str]
 
 
 @router.get("/meditations/{meditation_id}")
-async def get_meditation(meditation_id: str):
+async def get_meditation(meditation_id: str) -> dict[str, Any]:
     """Get a specific meditation from database."""
     db = get_db()
     meditation = await db.meditations.find_one({"id": meditation_id}, {"_id": 0})
@@ -3146,7 +3146,7 @@ async def get_meditation(meditation_id: str):
 # ============ SOMATIC PRACTICES ============
 
 @router.get("/somatic")
-async def get_somatic_practices(element: Optional[str] = None):
+async def get_somatic_practices(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get somatic practices from database."""
     db = get_db()
     query = {}
@@ -3167,7 +3167,7 @@ async def get_somatic_practices(element: Optional[str] = None):
 # ============ GROUNDING EXERCISES ============
 
 @router.get("/grounding")
-async def get_grounding_exercises(element: Optional[str] = None):
+async def get_grounding_exercises(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get grounding exercises from database."""
     db = get_db()
     query = {}
@@ -3181,7 +3181,7 @@ async def get_grounding_exercises(element: Optional[str] = None):
 # ============ PRESET RITUALS (Public) ============
 
 @router.get("/preset-rituals")
-async def get_preset_rituals(element: Optional[str] = None):
+async def get_preset_rituals(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get preset ritual templates."""
     db = get_db()
     query = {}
@@ -3193,7 +3193,7 @@ async def get_preset_rituals(element: Optional[str] = None):
 
 
 @router.get("/preset-rituals/{ritual_id}")
-async def get_preset_ritual(ritual_id: str):
+async def get_preset_ritual(ritual_id: str) -> dict[str, Any]:
     """Get a specific preset ritual."""
     db = get_db()
     ritual = await db.preset_rituals.find_one({"id": ritual_id}, {"_id": 0})
@@ -3205,7 +3205,7 @@ async def get_preset_ritual(ritual_id: str):
 # ============ HEART PRACTICES ============
 
 @router.get("/heart-practices")
-async def get_heart_practices(category: Optional[str] = None):
+async def get_heart_practices(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get heart practices from database."""
     db = get_db()
     query = {}
@@ -3217,7 +3217,7 @@ async def get_heart_practices(category: Optional[str] = None):
 
 
 @router.get("/heart-practices/{practice_id}")
-async def get_heart_practice(practice_id: str):
+async def get_heart_practice(practice_id: str) -> dict[str, Any]:
     """Get a specific heart practice."""
     db = get_db()
     practice = await db.heart_practices.find_one({"id": practice_id}, {"_id": 0})
@@ -3229,7 +3229,7 @@ async def get_heart_practice(practice_id: str):
 # ============ SHAMANIC PRACTICES ============
 
 @router.get("/shamanic-practices")
-async def get_shamanic_practices(category: Optional[str] = None):
+async def get_shamanic_practices(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get shamanic practices from database."""
     db = get_db()
     query = {}
@@ -3244,7 +3244,7 @@ async def get_shamanic_practices(category: Optional[str] = None):
 
 
 @router.get("/shamanic-practices/{practice_id}")
-async def get_shamanic_practice(practice_id: str):
+async def get_shamanic_practice(practice_id: str) -> dict[str, Any]:
     """Get a specific shamanic practice."""
     db = get_db()
     practice = await db.shamanic_practices.find_one({"id": practice_id}, {"_id": 0})
@@ -3256,7 +3256,7 @@ async def get_shamanic_practice(practice_id: str):
 # ============ ELEMENTAL PRACTICES ============
 
 @router.get("/elemental-practices")
-async def get_elemental_practices(element: Optional[str] = None):
+async def get_elemental_practices(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get elemental practices from database."""
     db = get_db()
     query = {}
@@ -3271,7 +3271,7 @@ async def get_elemental_practices(element: Optional[str] = None):
 
 
 @router.get("/elemental-practices/{practice_id}")
-async def get_elemental_practice(practice_id: str):
+async def get_elemental_practice(practice_id: str) -> dict[str, Any]:
     """Get a specific elemental practice."""
     db = get_db()
     practice = await db.elemental_practices.find_one({"id": practice_id}, {"_id": 0})
@@ -3283,7 +3283,7 @@ async def get_elemental_practice(practice_id: str):
 # ============ CREATIVE PROCESSES ============
 
 @router.get("/creative-processes")
-async def get_creative_processes(category: Optional[str] = None):
+async def get_creative_processes(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get creative processes from database."""
     db = get_db()
     query = {}
@@ -3295,7 +3295,7 @@ async def get_creative_processes(category: Optional[str] = None):
 
 
 @router.get("/creative-processes/{process_id}")
-async def get_creative_process(process_id: str):
+async def get_creative_process(process_id: str) -> dict[str, Any]:
     """Get a specific creative process."""
     db = get_db()
     process = await db.creative_processes.find_one({"id": process_id}, {"_id": 0})
@@ -3307,7 +3307,7 @@ async def get_creative_process(process_id: str):
 # ============ EARTH ALTARS ============
 
 @router.get("/earth-altars")
-async def get_earth_altars():
+async def get_earth_altars() -> list[dict[str, Any]]:
     """Get earth altars from database."""
     db = get_db()
     altars = await db.earth_altars.find({}, {"_id": 0}).to_list(length=50)
@@ -3315,7 +3315,7 @@ async def get_earth_altars():
 
 
 @router.get("/earth-altars/{altar_id}")
-async def get_earth_altar(altar_id: str):
+async def get_earth_altar(altar_id: str) -> dict[str, Any]:
     """Get a specific earth altar."""
     db = get_db()
     altar = await db.earth_altars.find_one({"id": altar_id}, {"_id": 0})
@@ -3328,7 +3328,7 @@ async def get_earth_altar(altar_id: str):
 # ============ RUNES ROUTES ============
 
 @router.get("/runes")
-async def get_runes():
+async def get_runes() -> list[dict[str, Any]]:
     """Get all Elder Futhark runes."""
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
@@ -3336,7 +3336,7 @@ async def get_runes():
 
 
 @router.get("/runes/{rune_id}")
-async def get_rune(rune_id: str):
+async def get_rune(rune_id: str) -> dict[str, Any]:
     """Get a specific rune."""
     db = get_db()
     rune = await db.runes.find_one({"id": rune_id}, {"_id": 0})
@@ -3346,7 +3346,7 @@ async def get_rune(rune_id: str):
 
 
 @router.get("/runes/draw/single")
-async def draw_single_rune():
+async def draw_single_rune() -> dict[str, Any]:
     """Draw a single rune for daily guidance."""
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
@@ -3358,7 +3358,7 @@ async def draw_single_rune():
 
 
 @router.get("/runes/draw/three")
-async def draw_three_runes():
+async def draw_three_runes() -> list[dict[str, Any]]:
     """Draw three runes for past/present/future spread."""
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
@@ -3375,7 +3375,7 @@ async def draw_three_runes():
 
 
 @router.get("/runes/draw/celtic-cross")
-async def draw_celtic_cross():
+async def draw_celtic_cross() -> list[dict[str, Any]]:
     """Draw 10 runes for a full Celtic Cross spread."""
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
@@ -3411,7 +3411,7 @@ async def draw_celtic_cross():
 # ============ I CHING ROUTES ============
 
 @router.get("/i-ching")
-async def get_hexagrams():
+async def get_hexagrams() -> list[dict[str, Any]]:
     """Get all I Ching hexagrams."""
     db = get_db()
     hexagrams = await db.i_ching.find({}, {"_id": 0}).to_list(length=70)
@@ -3419,7 +3419,7 @@ async def get_hexagrams():
 
 
 @router.get("/i-ching/{hexagram_number}")
-async def get_hexagram(hexagram_number: int):
+async def get_hexagram(hexagram_number: int) -> dict[str, Any]:
     """Get a specific hexagram by number."""
     db = get_db()
     hexagram = await db.i_ching.find_one({"number": hexagram_number}, {"_id": 0})
@@ -3466,7 +3466,7 @@ def _append_changing_line_meanings(hexagram: dict, changing_lines: list[int]) ->
 
 
 @router.get("/i-ching/cast/coins")
-async def cast_i_ching():
+async def cast_i_ching() -> dict[str, Any]:
     """Cast I Ching using the three coin method."""
     db = get_db()
     lines, changing_lines = _cast_coin_lines()
@@ -3480,7 +3480,7 @@ async def cast_i_ching():
 # ============ LIGHT CODES ROUTES ============
 
 @router.get("/light-codes")
-async def get_all_light_codes():
+async def get_all_light_codes() -> dict[str, Any]:
     """Get all light codes (sacred geometry, alphabets, light language)."""
     db = get_db()
     light_codes = await db.light_codes.find_one({}, {"_id": 0})
@@ -3488,7 +3488,7 @@ async def get_all_light_codes():
 
 
 @router.get("/light-codes/sacred-geometry")
-async def get_sacred_geometry():
+async def get_sacred_geometry() -> list[dict[str, Any]]:
     """Get sacred geometry symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
@@ -3496,7 +3496,7 @@ async def get_sacred_geometry():
 
 
 @router.get("/light-codes/ancient-alphabets")
-async def get_ancient_alphabets():
+async def get_ancient_alphabets() -> list[dict[str, Any]]:
     """Get ancient alphabet symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
@@ -3504,7 +3504,7 @@ async def get_ancient_alphabets():
 
 
 @router.get("/light-codes/light-language")
-async def get_light_language():
+async def get_light_language() -> list[dict[str, Any]]:
     """Get light language symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
@@ -3514,7 +3514,7 @@ async def get_light_language():
 # ============ LIVE SESSIONS ROUTES ============
 
 @router.get("/live-sessions")
-async def get_live_sessions(status: Optional[str] = None, session_type: Optional[str] = None):
+async def get_live_sessions(status: Optional[str] = None, session_type: Optional[str] = None) -> list[dict[str, Any]]:
     db = get_db()
     query = {}
     if status:
@@ -3527,7 +3527,7 @@ async def get_live_sessions(status: Optional[str] = None, session_type: Optional
 
 
 @router.get("/live-sessions/{session_id}")
-async def get_live_session(session_id: str):
+async def get_live_session(session_id: str) -> dict[str, Any]:
     db = get_db()
     session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
     if not session:
@@ -3536,7 +3536,7 @@ async def get_live_session(session_id: str):
 
 
 @router.post("/live-sessions/{session_id}/rsvp")
-async def rsvp_live_session(session_id: str, payload: LiveSessionRsvpRequest):
+async def rsvp_live_session(session_id: str, payload: LiveSessionRsvpRequest) -> dict[str, Any]:
     db = get_db()
     session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
     if not session:
@@ -3567,7 +3567,7 @@ async def rsvp_live_session(session_id: str, payload: LiveSessionRsvpRequest):
 
 
 @router.get("/live-sessions/{session_id}/messages")
-async def get_live_session_messages(session_id: str, kind: Optional[str] = None):
+async def get_live_session_messages(session_id: str, kind: Optional[str] = None) -> list[dict[str, Any]]:
     db = get_db()
     session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
     if not session:
@@ -3581,7 +3581,7 @@ async def get_live_session_messages(session_id: str, kind: Optional[str] = None)
 
 
 @router.post("/live-sessions/{session_id}/messages")
-async def post_live_session_message(session_id: str, payload: LiveSessionMessageRequest):
+async def post_live_session_message(session_id: str, payload: LiveSessionMessageRequest) -> dict[str, Any]:
     db = get_db()
     session = await db.live_sessions.find_one({"id": session_id}, {"_id": 0})
     if not session:
@@ -3607,7 +3607,7 @@ async def post_live_session_message(session_id: str, payload: LiveSessionMessage
 # ============ SACRED GUARDIANS & ALLIES ============
 
 @router.get("/sacred-guardians")
-async def get_sacred_guardians(category: Optional[str] = None):
+async def get_sacred_guardians(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get sacred guardians and allies, optionally filtered by category."""
     db = get_db()
     query = {}
@@ -3618,7 +3618,7 @@ async def get_sacred_guardians(category: Optional[str] = None):
 
 
 @router.get("/sacred-guardians/{guardian_id}")
-async def get_sacred_guardian(guardian_id: str):
+async def get_sacred_guardian(guardian_id: str) -> dict[str, Any]:
     """Get a specific sacred guardian."""
     db = get_db()
     guardian = await db.sacred_guardians.find_one({"id": guardian_id}, {"_id": 0})
@@ -3630,7 +3630,7 @@ async def get_sacred_guardian(guardian_id: str):
 # ============ ANCIENT WISDOM TRADITIONS ============
 
 @router.get("/ancient-wisdom")
-async def get_ancient_wisdom(tradition: Optional[str] = None):
+async def get_ancient_wisdom(tradition: Optional[str] = None) -> list[dict[str, Any]]:
     """Get ancient wisdom entries, optionally filtered by tradition."""
     db = get_db()
     query = {}
@@ -3647,7 +3647,7 @@ async def get_ancient_wisdom(tradition: Optional[str] = None):
 
 
 @router.get("/ancient-wisdom/{entry_id}")
-async def get_ancient_wisdom_entry(entry_id: str):
+async def get_ancient_wisdom_entry(entry_id: str) -> dict[str, Any]:
     """Get a specific ancient wisdom entry."""
     db = get_db()
     entry = await db.ancient_wisdom.find_one({"id": entry_id}, {"_id": 0})
@@ -3660,7 +3660,7 @@ async def get_ancient_wisdom_entry(entry_id: str):
 # ============ SOUND FREQUENCIES ROUTES ============
 
 @router.get("/sound-frequencies")
-async def get_sound_frequencies(category: Optional[str] = None):
+async def get_sound_frequencies(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get sound frequency healing content, optionally filtered by category."""
     db = get_db()
     query = {}
@@ -3671,7 +3671,7 @@ async def get_sound_frequencies(category: Optional[str] = None):
 
 
 @router.get("/sound-frequencies/{freq_id}")
-async def get_sound_frequency(freq_id: str):
+async def get_sound_frequency(freq_id: str) -> dict[str, Any]:
     """Get a specific sound frequency entry."""
     db = get_db()
     entry = await db.sound_frequencies.find_one({"id": freq_id}, {"_id": 0})
@@ -3684,7 +3684,7 @@ async def get_sound_frequency(freq_id: str):
 # ============ TAROT ROUTES ============
 
 @router.get("/tarot/cards")
-async def get_tarot_cards(arcana: Optional[str] = None):
+async def get_tarot_cards(arcana: Optional[str] = None) -> list[dict[str, Any]]:
     """Get tarot cards, optionally filtered by arcana type."""
     db = get_db()
     query = {}
@@ -3695,7 +3695,7 @@ async def get_tarot_cards(arcana: Optional[str] = None):
 
 
 @router.get("/tarot/cards/{card_id}")
-async def get_tarot_card(card_id: str):
+async def get_tarot_card(card_id: str) -> dict[str, Any]:
     """Get a specific tarot card."""
     db = get_db()
     card = await db.tarot_cards.find_one({"id": card_id}, {"_id": 0})
@@ -3705,7 +3705,7 @@ async def get_tarot_card(card_id: str):
 
 
 @router.get("/tarot/reading")
-async def get_tarot_reading(spread: str = "single"):
+async def get_tarot_reading(spread: str = "single") -> dict[str, Any]:
     """Get a random tarot reading. Spreads: single, three, celtic_cross"""
     db = get_db()
     cards = await db.tarot_cards.find({}, {"_id": 0}).to_list(length=100)
@@ -3745,7 +3745,7 @@ async def get_tarot_reading(spread: str = "single"):
 # ============ RETREATS ROUTES ============
 
 @router.get("/retreats")
-async def get_retreats(status: Optional[str] = None):
+async def get_retreats(status: Optional[str] = None) -> list[dict[str, Any]]:
     """Get retreats, optionally filtered by status."""
     db = get_db()
     query = {}
@@ -3756,7 +3756,7 @@ async def get_retreats(status: Optional[str] = None):
 
 
 @router.get("/retreats/{retreat_id}")
-async def get_retreat(retreat_id: str):
+async def get_retreat(retreat_id: str) -> dict[str, Any]:
     """Get a specific retreat."""
     db = get_db()
     retreat = await db.retreats.find_one({"id": retreat_id}, {"_id": 0})
@@ -3768,7 +3768,7 @@ async def get_retreat(retreat_id: str):
 # ============ VIDEOS ROUTES ============
 
 @router.get("/videos")
-async def get_videos(category: Optional[str] = None):
+async def get_videos(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get practice videos, optionally filtered by category."""
     db = get_db()
     query = {}
@@ -3779,7 +3779,7 @@ async def get_videos(category: Optional[str] = None):
 
 
 @router.get("/videos/{video_id}")
-async def get_video(video_id: str):
+async def get_video(video_id: str) -> dict[str, Any]:
     """Get a specific video."""
     db = get_db()
     video = await db.videos.find_one({"id": video_id}, {"_id": 0})
@@ -3791,7 +3791,7 @@ async def get_video(video_id: str):
 # ============ COURSES ROUTES ============
 
 @router.get("/courses")
-async def get_courses(category: Optional[str] = None, level: Optional[str] = None):
+async def get_courses(category: Optional[str] = None, level: Optional[str] = None) -> list[dict[str, Any]]:
     """Get courses, optionally filtered by category or level."""
     db = get_db()
     query = {}
@@ -3804,7 +3804,7 @@ async def get_courses(category: Optional[str] = None, level: Optional[str] = Non
 
 
 @router.get("/courses/{course_id}")
-async def get_course(course_id: str):
+async def get_course(course_id: str) -> dict[str, Any]:
     """Get a specific course."""
     db = get_db()
     course = await db.courses.find_one({"id": course_id}, {"_id": 0})
@@ -3814,7 +3814,7 @@ async def get_course(course_id: str):
 
 
 @router.get("/books")
-async def get_books():
+async def get_books() -> list[dict[str, Any]]:
     """Get books collection for the Books page."""
     db = get_db()
     books = await db.books.find({}, {"_id": 0}).sort("created_at", -1).to_list(length=100)
@@ -3822,7 +3822,7 @@ async def get_books():
 
 
 @router.get("/books/{book_id}")
-async def get_book(book_id: str):
+async def get_book(book_id: str) -> dict[str, Any]:
     """Get a specific book by id."""
     db = get_db()
     book = await db.books.find_one({"id": book_id}, {"_id": 0})
@@ -3834,7 +3834,7 @@ async def get_book(book_id: str):
 # ============ SACRED RITES ROUTES ============
 
 @router.get("/sacred-rites")
-async def get_sacred_rites():
+async def get_sacred_rites() -> list[dict[str, Any]]:
     """Get sacred rites (Munay Ki, Nusta Karpay, 13th Womb Rite) from courses collection."""
     db = get_db()
     rites = await db.courses.find({"category": "Shamanic Initiation"}, {"_id": 0}).to_list(length=20)
@@ -3847,7 +3847,7 @@ async def get_sacred_rites():
 
 
 @router.get("/sacred-rites/{rite_id}")
-async def get_sacred_rite(rite_id: str):
+async def get_sacred_rite(rite_id: str) -> dict[str, Any]:
     """Get a specific sacred rite."""
     db = get_db()
     rite = await db.courses.find_one({"id": rite_id, "category": "Shamanic Initiation"}, {"_id": 0})
@@ -3867,7 +3867,7 @@ async def get_sacred_rite(rite_id: str):
 # ============ COMMUNITY ROUTES ============
 
 @router.get("/community/posts")
-async def get_community_posts(type: Optional[str] = None):
+async def get_community_posts(type: Optional[str] = None) -> list[dict[str, Any]]:
     """Get community posts, optionally filtered by type."""
     db = get_db()
     query = {"status": {"$ne": "hidden"}}
@@ -3878,7 +3878,7 @@ async def get_community_posts(type: Optional[str] = None):
 
 
 @router.post("/community/posts")
-async def create_community_post(post_data: dict):
+async def create_community_post(post_data: dict[str, Any]) -> dict[str, Any]:
     """Create a new community post (shared from journal or directly)."""
     from datetime import datetime, timezone
     db = get_db()
@@ -3905,7 +3905,7 @@ async def create_community_post(post_data: dict):
 
 
 @router.post("/community/posts/{post_id}/like")
-async def like_community_post(post_id: str):
+async def like_community_post(post_id: str) -> dict[str, Any]:
     """Like a community post."""
     db = get_db()
     result = await db.community_posts.update_one(
@@ -3918,7 +3918,7 @@ async def like_community_post(post_id: str):
 
 
 @router.post("/community/posts/{post_id}/replies")
-async def add_community_reply(post_id: str, reply_data: dict):
+async def add_community_reply(post_id: str, reply_data: dict[str, Any]) -> dict[str, Any]:
     """Add a reply/comment to a community post."""
     from datetime import datetime, timezone
     import uuid
@@ -3943,7 +3943,7 @@ async def add_community_reply(post_id: str, reply_data: dict):
 # ============ SACRED GEOMETRY ROUTES ============
 
 @router.get("/sacred-geometry")
-async def get_sacred_geometry_collection():
+async def get_sacred_geometry_collection() -> list[dict[str, Any]]:
     """Get sacred geometry guides from dedicated collection."""
     db = get_db()
     guides = await db.sacred_geometry.find({}, {"_id": 0}).to_list(length=100)
@@ -3953,7 +3953,7 @@ async def get_sacred_geometry_collection():
 # ============ ENERGY HEALING ROUTES ============
 
 @router.get("/energy-healing")
-async def get_energy_healing(modality: Optional[str] = None):
+async def get_energy_healing(modality: Optional[str] = None) -> list[dict[str, Any]]:
     """Get energy healing modalities with self-healing guides."""
     db = get_db()
     query = {}
@@ -3964,7 +3964,7 @@ async def get_energy_healing(modality: Optional[str] = None):
 
 
 @router.get("/energy-healing/{practice_id}")
-async def get_energy_healing_practice(practice_id: str):
+async def get_energy_healing_practice(practice_id: str) -> dict[str, Any]:
     db = get_db()
     practice = await db.energy_healing.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
@@ -3975,7 +3975,7 @@ async def get_energy_healing_practice(practice_id: str):
 # ============ FREE FORM MOVEMENT ROUTES ============
 
 @router.get("/free-form-movement")
-async def get_free_form_movement(category: Optional[str] = None):
+async def get_free_form_movement(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get free form movement and somatic yoga practices."""
     db = get_db()
     query = {}
@@ -3988,7 +3988,7 @@ async def get_free_form_movement(category: Optional[str] = None):
 # ============ CHAKRA CLEANSING ROUTES ============
 
 @router.get("/chakra-cleansing")
-async def get_chakra_cleansing(chakra: Optional[str] = None):
+async def get_chakra_cleansing(chakra: Optional[str] = None) -> list[dict[str, Any]]:
     """Get chakra cleansing practices for all 13 chakras."""
     db = get_db()
     query = {}
@@ -3999,7 +3999,7 @@ async def get_chakra_cleansing(chakra: Optional[str] = None):
 
 
 @router.get("/chakra-cleansing/{chakra_id}")
-async def get_chakra_cleansing_practice(chakra_id: str):
+async def get_chakra_cleansing_practice(chakra_id: str) -> dict[str, Any]:
     """Get a specific chakra cleansing practice."""
     db = get_db()
     practice = await db.chakra_cleansing.find_one({"id": chakra_id}, {"_id": 0})
@@ -4011,7 +4011,7 @@ async def get_chakra_cleansing_practice(chakra_id: str):
 # ============ SOMATIC YOGA ROUTES ============
 
 @router.get("/somatic-yoga")
-async def get_somatic_yoga(style: Optional[str] = None):
+async def get_somatic_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
     """Get somatic yoga practices."""
     db = get_db()
     query = {}
@@ -4022,7 +4022,7 @@ async def get_somatic_yoga(style: Optional[str] = None):
 
 
 @router.get("/somatic-yoga/{practice_id}")
-async def get_somatic_yoga_practice(practice_id: str):
+async def get_somatic_yoga_practice(practice_id: str) -> dict[str, Any]:
     """Get a specific somatic yoga practice."""
     db = get_db()
     practice = await db.somatic_yoga.find_one({"id": practice_id}, {"_id": 0})
@@ -4034,7 +4034,7 @@ async def get_somatic_yoga_practice(practice_id: str):
 # ============ FEMININE EMBODIMENT (ROSE TEMPLE) ============
 
 @router.get("/feminine-embodiment")
-async def get_feminine_embodiment(category: Optional[str] = None):
+async def get_feminine_embodiment(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get feminine embodiment practices for Rose Temple."""
     db = get_db()
     query = {}
@@ -4169,7 +4169,7 @@ def _build_daily_practice_response(
 
 
 @router.get("/daily-practice")
-async def get_daily_practice(focus: Optional[str] = None):
+async def get_daily_practice(focus: Optional[str] = None) -> dict[str, Any]:
     """Get a daily sacred practice with morning and evening guidance."""
     db = get_db()
 
@@ -4198,7 +4198,7 @@ async def get_daily_practice(focus: Optional[str] = None):
 # ============ MASCULINE EMBODIMENT ============
 
 @router.get("/masculine-embodiment")
-async def get_masculine_embodiment(category: Optional[str] = None):
+async def get_masculine_embodiment(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get masculine embodiment practices for Masculine Temple."""
     db = get_db()
     query = {}
@@ -4211,7 +4211,7 @@ async def get_masculine_embodiment(category: Optional[str] = None):
 # ============ ELEMENTAL TEMPLES ROUTES ============
 
 @router.get("/elemental-temples")
-async def get_elemental_temples():
+async def get_elemental_temples() -> list[dict[str, Any]]:
     """Get all 5 elemental temples with full content."""
     db = get_db()
     temples = await db.elemental_temples.find({}, {"_id": 0}).to_list(length=10)
@@ -4219,13 +4219,13 @@ async def get_elemental_temples():
 
 
 @router.get("/elements")
-async def get_elements_alias():
+async def get_elements_alias() -> list[dict[str, Any]]:
     """Alias endpoint for elemental temples (frontend compatibility)."""
     return await get_elemental_temples()
 
 
 @router.get("/elemental-temples/{element_id}")
-async def get_elemental_temple(element_id: str):
+async def get_elemental_temple(element_id: str) -> dict[str, Any]:
     """Get a specific elemental temple by id (earth, water, fire, air, spirit)."""
     db = get_db()
     temple = await db.elemental_temples.find_one({"id": element_id}, {"_id": 0})
@@ -4237,7 +4237,7 @@ async def get_elemental_temple(element_id: str):
 # ============ WATER PRACTICES ROUTES ============
 
 @router.get("/water-practices")
-async def get_water_practices(category: Optional[str] = None):
+async def get_water_practices(category: Optional[str] = None) -> list[dict[str, Any]]:
     """Get water practices, optionally filtered by category."""
     db = get_db()
     query = {}
