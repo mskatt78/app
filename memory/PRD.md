@@ -952,3 +952,57 @@
 ## Owner/Admin
 - Primary admin email: `mskatt78@gmail.com`
 - Unified admin portal path: `/admin`
+
+## Latest Verification Snapshot (Iteration 175) — 2026-06-18
+- Completed user-confirmed priority **A** flow: echo fix first, then voice recording.
+
+### Guided Audio Echo Remediation (P0)
+- Hardened guided playback lifecycle in:
+  - `src/components/guided/useGuidedPracticeEngine.js`
+  - `src/components/guided/useGuidedAudioPlayback.js`
+- Implemented run/session guards to prevent stale async callbacks from continuing narration:
+  - `narrationRunIdRef` and `playbackRunIdRef` incremented on stop/restart.
+  - Active run IDs validated before `onplay`/`onpause`/`onended` and after `audio.play()`.
+- Added strict audio teardown to prevent overlap:
+  - Clears all audio handlers before pause/reset.
+  - Explicit stop helper now centralizes pause/reset/index clear behavior.
+- Toning blend updated during TTS playback:
+  - Guided overlay toning now ducks to `0` during spoken narration and restores after.
+
+### Practice Journal Voice Recording (P1)
+- Added user voice note recording in journal form modal:
+  - `src/pages/practice-journal/PracticeJournalFormModal.jsx`
+  - Supports **Record / Stop / Preview / Remove** controls.
+  - Uses `MediaRecorder + getUserMedia` with cleanup for streams and intervals.
+  - Persists note as Data URL + duration + mime type in form payload.
+- Extended journal data model and edit hydration:
+  - `src/pages/practice-journal/constants.js`
+  - `src/pages/practice-journal/usePracticeJournalData.js`
+- Added playback in saved/expanded entries:
+  - `src/pages/practice-journal/PracticeJournalEntriesList.jsx`
+
+### Test-ID and UX Contract
+- Added/verified test IDs for all critical voice-note controls and outputs:
+  - `practice-journal-voice-note-card`
+  - `practice-journal-voice-record-button`
+  - `practice-journal-voice-stop-button`
+  - `practice-journal-voice-delete-button`
+  - `practice-journal-voice-preview-player`
+  - entry-level voice note test IDs for expanded journal cards
+
+### Validation & Testing
+- Local lint on all touched frontend files: **PASS** (`mcp_lint_javascript` no issues).
+- Frontend smoke screenshot test on `/practice-journal`: **PASS**.
+- Testing agent report: `/app/test_reports/iteration_175.json`
+  - Frontend **100% PASS**
+  - Echo prevention verified (no duplicate narration streams)
+  - Voice note UI and journal save/expand flows verified
+- Expert frontend test agent: **PASS** on guided overlay + voice-note flows.
+- Expert backend/frontend regression agent: **PASS**
+  - `/api/health` 200
+  - `/api/content/expand-script` returns segments/paragraphs
+  - `/api/tts/generate-base64` returns `audio_base64`
+
+### Remaining Priorities
+- P1: Move voice note persistence from session storage data URLs to object storage + backend metadata endpoint for scalable cross-device sync.
+- P2: Optional user custom voice-upload pipeline for guided sessions (separate from note recording).
