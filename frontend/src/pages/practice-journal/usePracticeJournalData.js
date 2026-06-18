@@ -118,6 +118,9 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
       intentions: entry.intentions || "",
       key_insights: entry.key_insights || "",
       reflection: entry.reflection || "",
+      voice_note_data_url: entry.voice_note_data_url || "",
+      voice_note_duration_seconds: Number(entry.voice_note_duration_seconds || 0),
+      voice_note_mime_type: entry.voice_note_mime_type || "",
     });
     setEditingEntry(entry);
     setShowForm(true);

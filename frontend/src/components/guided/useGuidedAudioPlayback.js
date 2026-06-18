@@ -36,6 +36,7 @@ export const useGuidedAudioPlayback = ({
   const abortRef = useRef(null);
   const isStoppedRef = useRef(false);
   const segmentCacheRef = useRef(new Map());
+  const playbackRunIdRef = useRef(0);
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
 
@@ -65,11 +66,13 @@ export const useGuidedAudioPlayback = ({
   }, []);
 
   const stopPlayback = useCallback(() => {
+    playbackRunIdRef.current += 1;
     isStoppedRef.current = true;
     abortRef.current?.abort?.();
     abortRef.current = null;
     if (audioRef.current) {
       audioRef.current.onended = null;
+      audioRef.current.onerror = null;
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current = null;
@@ -176,10 +179,11 @@ export const useGuidedAudioPlayback = ({
   }, [api, playbackConfig]);
 
   const playSegmentsSequentially = useCallback(async (segments, controller) => {
+    const activeRunId = playbackRunIdRef.current;
     if (!segments.length) throw new Error("No narration segments available");
 
     const playIndex = async (index) => {
-      if (isStoppedRef.current || controller.signal.aborted || index >= segments.length) {
+      if (isStoppedRef.current || controller.signal.aborted || index >= segments.length || activeRunId !== playbackRunIdRef.current) {
         stopToning();
         setPlaying(false);
         setLoading(false);
@@ -193,7 +197,7 @@ export const useGuidedAudioPlayback = ({
       }
 
       const audioUrl = await getSegmentAudio(segmentText, controller);
-      if (isStoppedRef.current || controller.signal.aborted) return;
+      if (isStoppedRef.current || controller.signal.aborted || activeRunId !== playbackRunIdRef.current) return;
 
       const nextText = String(segments[index + 1] || "").trim();
       if (nextText) {
@@ -203,14 +207,15 @@ export const useGuidedAudioPlayback = ({
       }
 
       const audio = new Audio(audioUrl);
+      audio.preload = "auto";
       audioRef.current = audio;
-      toningLayerRef.current?.setMuted?.(false, 0.05);
+      toningLayerRef.current?.setMuted?.(true, 1);
       audio.onerror = () => {
         toast.error("Audio playback error");
         stopPlayback();
       };
       audio.onended = () => {
-        toningLayerRef.current?.setMuted?.(false, 0.26);
+        toningLayerRef.current?.setMuted?.(false, 0.2);
         playIndex(index + 1).catch((error) => {
           appLogger.warn("Guided sequential playback continuation failed", error);
           stopPlayback();
@@ -222,8 +227,15 @@ export const useGuidedAudioPlayback = ({
         return false;
       });
 
+      if (activeRunId !== playbackRunIdRef.current) {
+        audio.pause();
+        audio.onended = null;
+        audio.onerror = null;
+        return;
+      }
+
       if (!started) {
-        toningLayerRef.current?.setMuted?.(false, 0.26);
+        toningLayerRef.current?.setMuted?.(false, 0.2);
         stopToning();
         setPlaying(false);
         setLoading(false);
@@ -260,6 +272,7 @@ export const useGuidedAudioPlayback = ({
       return;
     }
 
+    playbackRunIdRef.current += 1;
     isStoppedRef.current = false;
     abortRef.current?.abort?.();
     const controller = new AbortController();

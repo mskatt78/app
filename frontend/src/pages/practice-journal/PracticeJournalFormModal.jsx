@@ -1,6 +1,8 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Heart, Moon, Plus, Sparkles, X } from "lucide-react";
+import { Heart, Mic, Moon, Pause, Play, Square, Sparkles, Trash2, X } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import { appLogger } from "../../utils/logger";
 import { MOODS } from "./constants";
 
 const resolveMoodButtonClassName = (isActive) => {
@@ -9,6 +11,249 @@ const resolveMoodButtonClassName = (isActive) => {
   }
 
   return "bg-white/5 hover:bg-white/10";
+};
+
+const formatVoiceDuration = (seconds) => {
+  const total = Math.max(0, Number(seconds) || 0);
+  const minutes = Math.floor(total / 60);
+  const remainder = Math.floor(total % 60);
+  return `${minutes}:${String(remainder).padStart(2, "0")}`;
+};
+
+const resolveSupportedMimeType = () => {
+  if (typeof window === "undefined" || typeof window.MediaRecorder === "undefined") {
+    return "";
+  }
+
+  const candidates = [
+    "audio/webm;codecs=opus",
+    "audio/mp4",
+    "audio/webm",
+    "audio/ogg;codecs=opus",
+    "audio/ogg",
+  ];
+
+  return candidates.find((type) => window.MediaRecorder.isTypeSupported(type)) || "";
+};
+
+const fileReaderToDataUrl = (blob) => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onloadend = () => resolve(typeof reader.result === "string" ? reader.result : "");
+  reader.onerror = reject;
+  reader.readAsDataURL(blob);
+});
+
+const VoiceNoteRecorder = ({ formData, setFormData }) => {
+  const mediaRecorderRef = useRef(null);
+  const chunksRef = useRef([]);
+  const streamRef = useRef(null);
+  const recordingStartedAtRef = useRef(0);
+  const tickRef = useRef(null);
+  const audioPreviewRef = useRef(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(() => Number(formData.voice_note_duration_seconds || 0));
+  const [recordingError, setRecordingError] = useState("");
+
+  useEffect(() => {
+    setElapsedSeconds(Number(formData.voice_note_duration_seconds || 0));
+  }, [formData.voice_note_duration_seconds]);
+
+  const clearTick = useCallback(() => {
+    if (tickRef.current) {
+      window.clearInterval(tickRef.current);
+      tickRef.current = null;
+    }
+  }, []);
+
+  const stopStreamTracks = useCallback(() => {
+    streamRef.current?.getTracks?.().forEach((track) => track.stop());
+    streamRef.current = null;
+  }, []);
+
+  const stopRecording = useCallback(() => {
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+    clearTick();
+    setIsRecording(false);
+  }, [clearTick]);
+
+  useEffect(() => () => {
+    clearTick();
+    try {
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.stop();
+      }
+    } catch (error) {
+      appLogger.warn("Voice recorder cleanup stop failed", error);
+    }
+    stopStreamTracks();
+  }, [clearTick, stopStreamTracks]);
+
+  const clearVoiceNote = useCallback(() => {
+    setFormData((current) => ({
+      ...current,
+      voice_note_data_url: "",
+      voice_note_duration_seconds: 0,
+      voice_note_mime_type: "",
+    }));
+    setElapsedSeconds(0);
+  }, [setFormData]);
+
+  const startRecording = useCallback(async () => {
+    setRecordingError("");
+    if (!navigator?.mediaDevices?.getUserMedia) {
+      setRecordingError("Voice recording is not supported in this browser.");
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = resolveSupportedMimeType();
+      const recorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+
+      streamRef.current = stream;
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
+      recordingStartedAtRef.current = Date.now();
+      setElapsedSeconds(0);
+      setIsRecording(true);
+
+      recorder.ondataavailable = (event) => {
+        if (event.data && event.data.size > 0) {
+          chunksRef.current.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        clearTick();
+        stopStreamTracks();
+        setIsRecording(false);
+
+        const blob = new Blob(chunksRef.current, { type: mimeType || recorder.mimeType || "audio/webm" });
+        chunksRef.current = [];
+        if (blob.size === 0) {
+          setRecordingError("No audio captured. Please try recording again.");
+          return;
+        }
+
+        const duration = Math.max(1, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
+        try {
+          const dataUrl = await fileReaderToDataUrl(blob);
+          if (!dataUrl) {
+            setRecordingError("Voice note could not be saved. Please try again.");
+            return;
+          }
+
+          setFormData((current) => ({
+            ...current,
+            voice_note_data_url: dataUrl,
+            voice_note_duration_seconds: duration,
+            voice_note_mime_type: blob.type || mimeType || "audio/webm",
+          }));
+          setElapsedSeconds(duration);
+        } catch (error) {
+          appLogger.error("Voice note encoding failed", error);
+          setRecordingError("Voice note could not be saved. Please try again.");
+        }
+      };
+
+      recorder.onerror = () => {
+        clearTick();
+        stopStreamTracks();
+        setIsRecording(false);
+        setRecordingError("Microphone error. Please allow permission and try again.");
+      };
+
+      recorder.start();
+      tickRef.current = window.setInterval(() => {
+        setElapsedSeconds(Math.max(0, Math.round((Date.now() - recordingStartedAtRef.current) / 1000)));
+      }, 200);
+    } catch (error) {
+      appLogger.warn("Voice recorder start failed", error);
+      setRecordingError("Microphone permission is required to record voice notes.");
+      stopStreamTracks();
+      clearTick();
+      setIsRecording(false);
+    }
+  }, [clearTick, setFormData, stopStreamTracks]);
+
+  const hasVoiceNote = useMemo(() => Boolean(formData.voice_note_data_url), [formData.voice_note_data_url]);
+
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/5 p-4" data-testid="practice-journal-voice-note-card">
+      <div className="flex items-center justify-between gap-3 mb-3">
+        <label className="text-sm font-medium flex items-center gap-2" data-testid="practice-journal-voice-note-label">
+          <Mic className="w-4 h-4 text-emerald-300" /> Voice Note
+        </label>
+        <span className="text-xs text-muted-foreground" data-testid="practice-journal-voice-note-duration">
+          {formatVoiceDuration(isRecording ? elapsedSeconds : (formData.voice_note_duration_seconds || 0))}
+        </span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {!isRecording ? (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={startRecording}
+            className="border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/10"
+            data-testid="practice-journal-voice-record-button"
+          >
+            <Play className="w-3.5 h-3.5 mr-1" /> Record
+          </Button>
+        ) : (
+          <Button
+            type="button"
+            variant="outline"
+            onClick={stopRecording}
+            className="border-red-500/40 text-red-200 hover:bg-red-500/10"
+            data-testid="practice-journal-voice-stop-button"
+          >
+            <Square className="w-3.5 h-3.5 mr-1" /> Stop
+          </Button>
+        )}
+
+        {hasVoiceNote && (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={clearVoiceNote}
+            className="text-red-300 hover:text-red-200 hover:bg-red-500/10"
+            data-testid="practice-journal-voice-delete-button"
+          >
+            <Trash2 className="w-3.5 h-3.5 mr-1" /> Remove
+          </Button>
+        )}
+
+        {isRecording && (
+          <span className="text-xs text-emerald-300 flex items-center gap-1" data-testid="practice-journal-voice-recording-status">
+            <Pause className="w-3 h-3" /> Recording live…
+          </span>
+        )}
+      </div>
+
+      {recordingError && (
+        <p className="text-xs text-red-300 mt-2" data-testid="practice-journal-voice-error">
+          {recordingError}
+        </p>
+      )}
+
+      {hasVoiceNote && (
+        <div className="mt-3" data-testid="practice-journal-voice-preview-wrap">
+          <audio
+            ref={audioPreviewRef}
+            controls
+            src={formData.voice_note_data_url}
+            className="w-full"
+            data-testid="practice-journal-voice-preview-player"
+          />
+        </div>
+      )}
+    </div>
+  );
 };
 
 export const PracticeJournalFormModal = ({
@@ -210,6 +455,8 @@ export const PracticeJournalFormModal = ({
                 data-testid="reflection-input"
               />
             </div>
+
+            <VoiceNoteRecorder formData={formData} setFormData={setFormData} />
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground bg-white/5 rounded-lg p-3" data-testid="practice-journal-form-moon-phase-info">
               <Moon className="w-4 h-4" />

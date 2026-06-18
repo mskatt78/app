@@ -57,6 +57,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const hasStartedRef = useRef(false);
   const narrationPlanRef = useRef(narrationPlan);
   const practiceIdentityRef = useRef({ id: practice?.id, name: practice?.name });
+  const narrationRunIdRef = useRef(0);
 
   const element = (practice?.element || "spirit").toLowerCase();
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
@@ -180,6 +181,26 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     ttsCacheRef.current.clear();
   }, []);
 
+  const stopNarrationPlayback = useCallback((resetIndex = false) => {
+    narrationRunIdRef.current += 1;
+    setTtsPlaying(false);
+    setTtsLoading(false);
+    setAudioTapRequired(false);
+    if (ttsRef.current) {
+      ttsRef.current.onplay = null;
+      ttsRef.current.onpause = null;
+      ttsRef.current.onended = null;
+      ttsRef.current.pause();
+      if (resetIndex) {
+        ttsRef.current.currentTime = 0;
+      }
+    }
+    if (resetIndex) {
+      currentSegmentIndexRef.current = 0;
+      setCurrentSegmentIndex(0);
+    }
+  }, []);
+
   const syncRemainingFromClock = useCallback(() => {
     if (!sessionEndRef.current) return;
 
@@ -191,11 +212,11 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       sessionEndRef.current = null;
       setIsPlaying(false);
       setIsComplete(true);
-      ttsRef.current?.pause();
+      stopNarrationPlayback(false);
       stopAmbient();
       stopToning();
     }
-  }, [stopAmbient, stopToning]);
+  }, [stopAmbient, stopNarrationPlayback, stopToning]);
 
   const resetPracticeState = useCallback(() => {
     clearInterval(timerRef.current);
@@ -203,7 +224,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     autoStartRef.current = false;
     currentSegmentIndexRef.current = 0;
     setCurrentSegmentIndex(0);
-    ttsRef.current?.pause();
+    stopNarrationPlayback(true);
     clearNarrationCache();
     scriptAbortRef.current?.abort?.();
     scriptAbortRef.current = null;
@@ -220,7 +241,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     setNarrationSegments(narrationPlanRef.current.segments);
     setNarrationReady(true);
     setScriptLoading(Boolean(practiceIdentityRef.current.id || practiceIdentityRef.current.name));
-  }, [clearNarrationCache, stopAmbient, stopToning, totalDuration]);
+  }, [clearNarrationCache, stopAmbient, stopNarrationPlayback, stopToning, totalDuration]);
 
   const practiceKey = `${practice?.id || ""}:${practice?.name || ""}`;
 
@@ -277,7 +298,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
           currentSegmentIndexRef.current = 0;
           setCurrentSegmentIndex(0);
           clearNarrationCache();
-          ttsRef.current?.pause();
+          stopNarrationPlayback(true);
         }
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -304,7 +325,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         scriptAbortRef.current = null;
       }
     };
-  }, [scriptExpansionContext, clearNarrationCache, antiRepetitionMode]);
+  }, [scriptExpansionContext, clearNarrationCache, antiRepetitionMode, stopNarrationPlayback]);
 
   useEffect(() => {
     if (isPlaying && !isComplete) {
@@ -329,7 +350,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       if (muted) {
         toningRef.current.setMuted?.(true, 1);
       } else {
-        const toningMix = ttsPlaying ? 0.06 : 0.42;
+        const toningMix = ttsPlaying ? 0 : 0.38;
         toningRef.current.setMuted?.(false, toningMix);
       }
     }
@@ -342,13 +363,13 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
 
   useEffect(() => () => {
     clearInterval(timerRef.current);
-    ttsRef.current?.pause();
+    stopNarrationPlayback(false);
     scriptAbortRef.current?.abort?.();
     stopAmbient();
     stopToning();
     clearNarrationCache();
     if (audioCtxRef.current?.state !== "closed") audioCtxRef.current?.close();
-  }, [clearNarrationCache, stopAmbient, stopToning]);
+  }, [clearNarrationCache, stopAmbient, stopNarrationPlayback, stopToning]);
 
   const generateSegmentUrl = useCallback(async (segmentIndex) => {
     if (!narrationSegments[segmentIndex]) return null;
@@ -388,12 +409,13 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [narrationSegments]);
 
   const playNarrationSegment = useCallback(async (segmentIndex) => {
+    const activeRunId = narrationRunIdRef.current;
     if (!narrationSegments[segmentIndex]) return;
 
     setTtsLoading(!ttsCacheRef.current.has(segmentIndex));
     try {
       const url = await generateSegmentUrl(segmentIndex);
-      if (!url || !isPlayingRef.current) return;
+      if (!url || !isPlayingRef.current || activeRunId !== narrationRunIdRef.current) return;
 
       generateSegmentUrl(segmentIndex + 1).catch((error) => {
         appLogger.debug("Guided segment prefetch warmup failed", error);
@@ -402,8 +424,14 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       let audio = ttsRef.current;
       if (!audio) {
         audio = new Audio();
+        audio.preload = "auto";
         ttsRef.current = audio;
       }
+
+      audio.pause();
+      audio.onplay = null;
+      audio.onpause = null;
+      audio.onended = null;
 
       currentSegmentIndexRef.current = segmentIndex;
       setCurrentSegmentIndex(segmentIndex);
@@ -411,14 +439,19 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       audio.src = url;
       audio.currentTime = 0;
       audio.onplay = () => {
+        if (activeRunId !== narrationRunIdRef.current) return;
         setTtsPlaying(true);
         setAudioTapRequired(false);
         generateSegmentUrl(segmentIndex + 1).catch((error) => {
           appLogger.debug("Guided segment prefetch onplay failed", error);
         });
       };
-      audio.onpause = () => setTtsPlaying(false);
+      audio.onpause = () => {
+        if (activeRunId !== narrationRunIdRef.current) return;
+        setTtsPlaying(false);
+      };
       audio.onended = () => {
+        if (activeRunId !== narrationRunIdRef.current) return;
         setTtsPlaying(false);
         const nextIndex = segmentIndex + 1;
         currentSegmentIndexRef.current = nextIndex;
@@ -428,6 +461,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         }
       };
       const started = await audio.play().then(() => true).catch(() => false);
+      if (activeRunId !== narrationRunIdRef.current) return;
       if (!started) {
         setAudioTapRequired(true);
         toast.info("Tap play once to enable guidance audio.");
@@ -436,7 +470,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       appLogger.warn("Guided narration segment playback failed", error);
       setTtsPlaying(false);
     } finally {
-      setTtsLoading(false);
+      if (activeRunId === narrationRunIdRef.current) {
+        setTtsLoading(false);
+      }
     }
   }, [generateSegmentUrl, muted, narrationSegments]);
 
@@ -466,7 +502,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       if (muted) {
         toningRef.current.setMuted?.(true, 1);
       } else {
-        toningRef.current.setMuted?.(false, ttsPlaying ? 0.06 : 0.42);
+        toningRef.current.setMuted?.(false, ttsPlaying ? 0 : 0.38);
       }
     }
   }, [element, muted, ttsPlaying]);
@@ -478,26 +514,20 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       syncRemainingFromClock();
       sessionEndRef.current = null;
       setIsPlaying(false);
-      ttsRef.current?.pause();
+      stopNarrationPlayback(false);
       if (ambientRef.current) ambientRef.current.gain.gain.value = 0;
       toningRef.current?.setMuted?.(true, 1);
       return;
     }
 
+    narrationRunIdRef.current += 1;
     sessionEndRef.current = Date.now() + (timeRemainingRef.current * 1000);
     setIsPlaying(true);
     setHasStarted(true);
     startAmbientTrack();
 
-    if (ttsRef.current?.paused && ttsRef.current?.src) {
-      ttsRef.current.play().catch((error) => {
-        appLogger.debug("Guided paused narration resume failed", error);
-      });
-      return;
-    }
-
     playNarrationSegment(currentSegmentIndexRef.current);
-  }, [isPlaying, playNarrationSegment, startAmbientTrack, syncRemainingFromClock]);
+  }, [isPlaying, playNarrationSegment, startAmbientTrack, stopNarrationPlayback, syncRemainingFromClock]);
 
   useEffect(() => {
     if (practice && narrationReady && !autoStartRef.current && !isComplete) {

@@ -145,6 +145,23 @@ export const PracticeJournalEntriesList = ({
                     </div>
                   )}
 
+                  {entry.voice_note_data_url && (
+                    <div data-testid={`practice-journal-entry-voice-note-${entry.id}`}>
+                      <h4 className="text-sm font-medium text-muted-foreground mb-1">Voice Note</h4>
+                      <audio
+                        controls
+                        src={entry.voice_note_data_url}
+                        className="w-full"
+                        data-testid={`practice-journal-entry-voice-player-${entry.id}`}
+                      />
+                      {Number(entry.voice_note_duration_seconds || 0) > 0 && (
+                        <p className="text-xs text-muted-foreground mt-1" data-testid={`practice-journal-entry-voice-duration-${entry.id}`}>
+                          Duration: {Math.floor(Number(entry.voice_note_duration_seconds) / 60)}:{String(Math.floor(Number(entry.voice_note_duration_seconds) % 60)).padStart(2, "0")}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
                   <div className="pt-2 border-t border-white/10">
                     <Button
                       size="sm"
