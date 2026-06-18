@@ -1006,3 +1006,29 @@
 ### Remaining Priorities
 - P1: Move voice note persistence from session storage data URLs to object storage + backend metadata endpoint for scalable cross-device sync.
 - P2: Optional user custom voice-upload pipeline for guided sessions (separate from note recording).
+
+## Mudra Image Certification + Uniqueness Hardening (Iteration 177) — 2026-06-18
+- User-reported issue triaged as seen on **production deployment**; code fixes implemented and validated in preview.
+
+### What Was Fixed
+- Enforced **Wikimedia/Commons-only** mudra source mapping in backend (`/backend/routers/content.py`) with explicit source references per mudra.
+- Normalized `/api/mudras` output to remove duplicate mudra records by normalized name.
+- Ensured 12 mudras now resolve to **12 unique image URLs** (no repeated mudra image URLs).
+- Updated Mudra UI to match user preference:
+  - Removed verification chips from card grid.
+  - Added verification badge + source references **only in modal**.
+
+### Validation Results
+- `/api/mudras` returns 12 entries, each with unique non-null image URL and `image_validation.status = verified`.
+- Testing report: `/app/test_reports/iteration_177.json`
+  - Backend: 12/12 tests passed
+  - Frontend: modal-only badge behavior confirmed
+  - Element filter regression checks passed
+
+### Notes
+- One broken Wikimedia path was corrected during testing:
+  - `Gyana_(jnana)_mudra_and_rudraksha.jpg` URL hash path updated to the valid location.
+
+### Remaining Related Backlog
+- P1: Admin-side mudra/image verification queue with approval workflow and reviewer notes.
+- P2: Add pose-accuracy confidence tiering (exact pose match vs category reference) in modal metadata.

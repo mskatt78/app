@@ -15,6 +15,11 @@
 - **Password:** `DemoPass123!`
 - **Use for:** `/settings` account export + deletion request verification, general authenticated smoke testing
 
+## Voice Sync QA User (June 2026)
+- **Email:** `voice.sync.qa@example.com`
+- **Password:** `Pass1234!`
+- **Use for:** object-storage voice notes, `/api/practice-journal` persistence, `/api/voice-files`, `/api/voice-profiles`
+
 ## User Testing
 - No login required for most features (public access)
 - Google OAuth available for account creation
