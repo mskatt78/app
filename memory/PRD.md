@@ -903,6 +903,20 @@
   - `/app/backend/tests/test_iteration173_playstore_sanity.py`
   - `/app/test_reports/pytest/pytest_iteration173.xml`
 
+## Latest Verification Snapshot (Iteration 174 - Daily Practice Rotation Fix) — 2026-06-16
+- User-reported issue addressed: "Daily Sacred practices are the same every week."
+- Root-cause remediation in `routers/content.py`:
+  - Added deterministic weekly/day rotation of daily practice pool via:
+    - `_deterministic_rotate_pool(...)`
+    - rotation seed formula: `(iso_week * 97) + (day_of_year * 13)`
+  - Wired seed into `_select_morning_evening_practices(...)` used by `/api/daily-practice`.
+  - Preserved focus filtering behavior (`/api/daily-practice?focus=water`) and response structure.
+- Verification (`/app/test_reports/iteration_174.json`):
+  - Backend **100%**, Frontend **100%**
+  - `/api/daily-practice` and `/api/daily-practice?focus=water` pass
+  - Rotation seed behavior validated (different days => different seed)
+  - No regressions on `/api/health`, `/api/books`, `/api/sacred-rites`, and `/i-ching` cast flow
+
 ### P2
 - Continue structural decomposition of very large pages (`ElementalTemples.jsx`, `LightCodes.jsx`, `HeartPractices.jsx`, `Courses.jsx`) into smaller route-level and section components.
 
