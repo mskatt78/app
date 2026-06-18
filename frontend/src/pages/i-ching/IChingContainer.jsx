@@ -10,6 +10,17 @@ import { IChingResultCard } from "./IChingResultCard";
 import { IChingHexagramModal } from "./IChingHexagramModal";
 import { runCoinCastingFlow } from "./iChingConstants";
 
+const handleCastCoins = ({ api, dispatchCasting }) => {
+  void runCoinCastingFlow({ api, dispatchCasting }).then(({ result: castResult, error }) => {
+    if (error) {
+      appLogger.error("Failed to cast I Ching:", error);
+      toast.error("Could not complete casting");
+      return;
+    }
+    toast.success(`Hexagram ${castResult.number}: ${castResult.name}`);
+  });
+};
+
 const IChing = ({ user, api }) => {
   const navigate = useNavigate();
   const [hexagrams, setHexagrams] = useState([]);
@@ -67,16 +78,7 @@ const IChing = ({ user, api }) => {
           casting={coinAnimation.length > 0 && !result}
           result={result}
           coinAnimation={coinAnimation}
-          onCastCoins={() => {
-            void runCoinCastingFlow({ api, dispatchCasting }).then(({ result: castResult, error }) => {
-              if (error) {
-                appLogger.error("Failed to cast I Ching:", error);
-                toast.error("Could not complete casting");
-                return;
-              }
-              toast.success(`Hexagram ${castResult.number}: ${castResult.name}`);
-            });
-          }}
+          onCastCoins={() => handleCastCoins({ api, dispatchCasting })}
         />
 
         <IChingResultCard result={result} />

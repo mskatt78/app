@@ -7,7 +7,7 @@ import logging
 import os
 import re
 import secrets
-from typing import Any, Literal, Optional
+from typing import Any, Literal, Optional, Sequence
 import uuid
 from urllib.parse import quote, urlparse
 
@@ -1128,19 +1128,27 @@ def _split_sentences(text: str) -> list[str]:
     return [chunk.strip() for chunk in chunks if len(chunk.strip()) > 20]
 
 
-def _secure_choice(items):
+def _secure_choice(items: Sequence[dict[str, Any]]) -> Optional[dict[str, Any]]:
     if not items:
         return None
     return items[secrets.randbelow(len(items))]
 
 
-def _secure_sample(items, count: int):
-    pool = list(items)
-    result = []
+def _secure_sample(items: Sequence[dict[str, Any]], count: int) -> list[dict[str, Any]]:
+    pool: list[dict[str, Any]] = list(items)
+    result: list[dict[str, Any]] = []
     for _ in range(min(count, len(pool))):
         idx = secrets.randbelow(len(pool))
         result.append(pool.pop(idx))
     return result
+
+
+def _deterministic_rotate_pool(practices: Sequence[dict[str, Any]], seed_value: int) -> list[dict[str, Any]]:
+    ordered = sorted(list(practices), key=lambda item: str(item.get("id") or item.get("name") or ""))
+    if not ordered:
+        return []
+    rotation = seed_value % len(ordered)
+    return ordered[rotation:] + ordered[:rotation]
 
 
 def _secure_bool(probability: float = 0.5):
@@ -4114,11 +4122,18 @@ def _filter_by_keywords(practices: list[dict[str, Any]], keywords: list[str]) ->
     return [practice for practice in practices if any(keyword in str(practice).lower() for keyword in keywords)]
 
 
-def _select_morning_evening_practices(practices: list[dict[str, Any]]) -> tuple[Optional[dict[str, Any]], Optional[dict[str, Any]]]:
-    morning_candidates = _filter_by_keywords(practices, MORNING_KEYWORDS) or practices
+def _select_morning_evening_practices(
+    practices: list[dict[str, Any]],
+    rotation_seed: Optional[int] = None,
+) -> tuple[Optional[dict[str, Any]], Optional[dict[str, Any]]]:
+    source_practices = practices
+    if rotation_seed is not None:
+        source_practices = _deterministic_rotate_pool(practices, rotation_seed)
+
+    morning_candidates = _filter_by_keywords(source_practices, MORNING_KEYWORDS) or source_practices
     morning_practice = _secure_choice(morning_candidates)
 
-    evening_candidates = _filter_by_keywords(practices, EVENING_KEYWORDS) or practices
+    evening_candidates = _filter_by_keywords(source_practices, EVENING_KEYWORDS) or source_practices
     if morning_practice:
         evening_candidates = [candidate for candidate in evening_candidates if candidate.get("id") != morning_practice.get("id")]
     evening_practice = _secure_choice(evening_candidates)
@@ -4182,7 +4197,9 @@ async def get_daily_practice(focus: Optional[str] = None) -> dict[str, Any]:
 
     all_practices = await _collect_daily_practice_pool(db)
     all_practices = _apply_focus_filter(all_practices, focus)
-    morning_practice, evening_practice = _select_morning_evening_practices(all_practices)
+    iso_week = now.isocalendar()[1]
+    rotation_seed = (iso_week * 97) + (now.timetuple().tm_yday * 13)
+    morning_practice, evening_practice = _select_morning_evening_practices(all_practices, rotation_seed=rotation_seed)
 
     return _build_daily_practice_response(
         now=now,
