@@ -107,7 +107,7 @@ CRYSTAL_STRICT_VISUAL_VALIDATION_IDS = {"iolite"}
 
 MUDRA_VERIFIED_IMAGE_MAP: dict[str, dict[str, Any]] = {
     "gyan mudra": {
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Gyana_%28jnana%29_mudra_and_rudraksha.jpg",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Gyana_%28jnana%29_mudra_and_rudraksha.jpg",
         "source_references": [
             "https://commons.wikimedia.org/wiki/File:Gyana_(jnana)_mudra_and_rudraksha.jpg",
             "https://commons.wikimedia.org/wiki/Category:J%C3%B1%C4%81na_mudra",
