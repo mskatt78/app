@@ -105,12 +105,91 @@ CRYSTAL_VISUAL_FORM_MAP = {
 
 CRYSTAL_STRICT_VISUAL_VALIDATION_IDS = {"iolite"}
 
-MUDRA_VERIFIED_IMAGE_MAP = {
-    "anjali mudra": "https://upload.wikimedia.org/wikipedia/commons/e/e4/Buddha_anjali_mudra.JPG",
-    "prithvi mudra": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Prithvi_mudra.jpg",
-    "varuna mudra": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Varuna-Mudra.webp",
-    "shuni mudra": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Ellora-Cave29-ShuniMudra.jpg",
-    "chin mudra": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Chin_Mudra.jpg",
+MUDRA_VERIFIED_IMAGE_MAP: dict[str, dict[str, Any]] = {
+    "gyan mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/e6/Gyana_%28jnana%29_mudra_and_rudraksha.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Gyana_(jnana)_mudra_and_rudraksha.jpg",
+            "https://commons.wikimedia.org/wiki/Category:J%C3%B1%C4%81na_mudra",
+        ],
+    },
+    "anjali mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/A%C3%B1jali_Mudr%C4%81_%28Pra%E1%B9%87%C4%81m%C4%81sana%29.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:A%C3%B1jali_Mudr%C4%81_(Pra%E1%B9%87%C4%81m%C4%81sana).jpg",
+            "https://en.wikipedia.org/wiki/Anjali_Mudra",
+        ],
+    },
+    "dhyana mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Budhha_in_Dhyana_Mudra%2C_The_Great_Stupa%2C_Sanchi.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Budhha_in_Dhyana_Mudra,_The_Great_Stupa,_Sanchi.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Dhy%C4%81na_mudra",
+        ],
+    },
+    "prithvi mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Prithvi_mudra.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Prithvi_mudra.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Prithvi_mudra",
+        ],
+    },
+    "varuna mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Varuna-Mudra.webp",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Varuna-Mudra.webp",
+            "https://en.wikipedia.org/wiki/List_of_mudras_(yoga)",
+        ],
+    },
+    "agni mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/06/Mudras.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mudras.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Mudras",
+        ],
+    },
+    "vayu mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Mudras_1.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mudras_1.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Mudras",
+        ],
+    },
+    "shuni mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Ellora-Cave29-ShuniMudra.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Ellora-Cave29-ShuniMudra.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Shuni_mudra",
+        ],
+    },
+    "surya mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/74/Mudras_2.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Mudras_2.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Mudras",
+        ],
+    },
+    "prana mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/97/The_Language_of_Mudras.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:The_Language_of_Mudras.jpg",
+            "https://commons.wikimedia.org/wiki/Category:Mudras",
+        ],
+    },
+    "apana mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/2/2e/Apna_Mudra.svg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Apna_Mudra.svg",
+            "https://commons.wikimedia.org/wiki/Category:Apana_mudra",
+        ],
+    },
+    "chin mudra": {
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b4/Chin_Mudra.jpg",
+        "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Chin_Mudra.jpg",
+            "https://commons.wikimedia.org/wiki/File:Chin_Mudraa.jpg",
+        ],
+    },
 }
 
 WATER_PRACTICE_SUPPLEMENTS = [
@@ -1015,24 +1094,28 @@ def _mudra_key(name: str) -> str:
 def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
     enriched = dict(mudra)
     mudra_name = _mudra_key(mudra.get("name", ""))
-    verified_url = MUDRA_VERIFIED_IMAGE_MAP.get(mudra_name)
+    verified_image = MUDRA_VERIFIED_IMAGE_MAP.get(mudra_name)
 
     enriched["image_url_original"] = mudra.get("image_url")
-    if verified_url:
-        enriched["image_url"] = verified_url
-        enriched["image_source"] = "wikipedia_verified"
+    if verified_image:
+        enriched["image_url"] = verified_image.get("image_url")
+        enriched["image_source"] = "wikimedia_commons_verified"
         enriched["image_validation"] = {
             "status": "verified",
-            "source_type": "wikipedia_verified",
-            "score": 0.9,
+            "source_type": "wikimedia_commons_verified",
+            "score": 0.95,
             "verified_at": datetime.now(timezone.utc).isoformat(),
         }
+        enriched["source_references"] = _merge_source_references(
+            enriched.get("source_references"),
+            verified_image.get("source_references"),
+        )
     else:
         enriched["image_url"] = None
         enriched["image_source"] = "awaiting_verification"
         enriched["image_validation"] = {
             "status": "review",
-            "source_type": "awaiting_verification",
+            "source_type": "awaiting_wikimedia_commons_verified_match",
             "score": 0.0,
             "note": "Awaiting verified mudra reference image",
         }
@@ -3097,8 +3180,19 @@ async def get_mudras(element: Optional[str] = None) -> list[dict[str, Any]]:
     if element:
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
-    mudras = await db.mudras.find(query, {"_id": 0}).to_list(length=50)
-    enriched_mudras = [_enrich_content_integrity(mudra, "hybrid-curated") for mudra in mudras]
+    mudras = await db.mudras.find(query, {"_id": 0}).to_list(length=100)
+
+    # Remove duplicated mudra records by normalized mudra name to avoid repeated images/content.
+    unique_by_name: dict[str, dict[str, Any]] = {}
+    for mudra in mudras:
+        key = _mudra_key(mudra.get("name", ""))
+        if not key:
+            key = str(mudra.get("id") or "").strip().lower()
+        if key in unique_by_name:
+            continue
+        unique_by_name[key] = mudra
+
+    enriched_mudras = [_enrich_content_integrity(mudra, "hybrid-curated") for mudra in unique_by_name.values()]
     return [_enrich_mudra_entry(mudra) for mudra in enriched_mudras]
 
 

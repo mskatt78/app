@@ -5730,19 +5730,110 @@ frontend:
         agent: "testing"
         comment: "✅ REGRESSION CHECK PASSED (2026-06-19): /practice-journal page tested successfully. New Entry button found and clicked. New Entry modal opens correctly. Voice note controls render correctly with all required test IDs present: practice-journal-voice-note-card ✓, practice-journal-voice-record-button ✓, practice-journal-voice-note-duration ✓. Voice note recording UI working correctly after iteration changes."
 
+  - task: "Mudras library - Dataset integrity and badge placement verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mudras/MudrasLibraryContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MUDRAS LIBRARY VERIFICATION PASSED (2026-06-18): Comprehensive testing completed on /mudras route. 1) Dataset integrity: 12 mudras render correctly ✓, API returns 12 unique image URLs (verified via curl) ✓. Note: Some images show placeholder in browser due to network restrictions (ERR_ABORTED from Wikimedia Commons) - this is test environment limitation, not data issue. 2) Badge placement rule: NO image-verification badges on card grid ✓, image verification badge present in modal with test ID 'mudra-modal-image-verification-badge' ✓, source references present in modal with test ID 'mudra-modal-source-references' (2 reference links per mudra) ✓. 3) Regression check: Element filter working correctly (tested with Water element, showing 2 mudras: Dhyana Mudra, Varuna Mudra) ✓, guided practice button present in modal with test ID 'start-mudra-guided-practice-btn' (visible and enabled) ✓. All requirements met. Mudras library fully functional."
+
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
-  last_regression_check: "2026-06-19"
-  iteration_focus: "Guided playback overlap guards & practice journal voice-note recording UI"
+  test_sequence: 2
+  last_regression_check: "2026-06-18"
+  iteration_focus: "Mudras library dataset integrity and badge placement verification"
 
 test_plan:
   current_focus:
-    - "Regression check - COMPLETE"
+    - "Mudras library verification - COMPLETE"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+  - agent: "testing"
+    message: |
+      Mudras Library Verification Complete (2026-06-18):
+      
+      VERIFICATION REQUEST: Test Mudras library on /mudras with dataset integrity, badge placement, and regression checks
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/mudras
+      
+      ✅ ALL TESTS PASSED (7/7):
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 1: MUDRA DATASET INTEGRITY FROM UI/API BEHAVIOR
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      1.1) ✅ Mudra count verification - PASSED
+         - Total mudra cards rendered: 12 ✓
+         - Expected: 12 mudras
+         - Result: Exactly 12 mudras rendered as expected
+      
+      1.2) ✅ Image URL uniqueness verification - PASSED
+         - API returns 12 unique image URLs (verified via curl) ✓
+         - All mudras have distinct image URLs in backend data
+         - Note: Some images show placeholder in browser due to network restrictions
+           (ERR_ABORTED from Wikimedia Commons in automated test environment)
+         - This is a test environment limitation, NOT a data integrity issue
+         - Backend data is correct with unique URLs for all 12 mudras
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 2: BADGE PLACEMENT RULE
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      2.1) ✅ Card grid - NO image-verification badge on cards - PASSED
+         - Verified: NO image-verification badges found on any mudra cards ✓
+         - Badge placement rule correctly implemented
+      
+      2.2) ✅ Modal - Image verification badge with test ID - PASSED
+         - Badge found with test ID: 'mudra-modal-image-verification-badge' ✓
+         - Badge displays: "Verified Wikimedia/Commons source"
+         - Correctly shows verification status in modal
+      
+      2.3) ✅ Modal - Source reference links with test ID - PASSED
+         - Source references section found with test ID: 'mudra-modal-source-references' ✓
+         - Number of reference links per mudra: 2
+         - Example reference: https://commons.wikimedia.org/wiki/File:Gyana_(jnana)_mudra_and_rudraksha.jpg
+         - All mudras have proper source attribution
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 3: REGRESSION CHECK
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      3.1) ✅ Element filter functionality - PASSED
+         - Filter dropdown found with test ID: 'element-filter' ✓
+         - Tested with Water element filter
+         - Expected: 2 Water mudras
+         - Result: Correctly showing 2 mudras (Dhyana Mudra, Varuna Mudra) ✓
+         - Filter dropdown text changes correctly (All Elements → Water) ✓
+         - Element filter working as expected
+      
+      3.2) ✅ Guided button in modal - PASSED
+         - Button found with test ID: 'start-mudra-guided-practice-btn' ✓
+         - Button text: "Begin Guided Mudra Practice"
+         - Button visible: True ✓
+         - Button enabled: True ✓
+         - Guided practice entry point working correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ Dataset integrity: 12 mudras render with unique API image URLs
+      ✅ Badge placement: Correct implementation (none on cards, present in modal)
+      ✅ Source references: Present in modal with proper test IDs
+      ✅ Element filter: Working correctly (filters by element)
+      ✅ Guided button: Present and functional in modal
+      ✅ No critical issues or blocking errors detected
+      
+      Mudras library verification COMPLETE. All requirements met.
+
 
 agent_communication:
   - agent: "testing"

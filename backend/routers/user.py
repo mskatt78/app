@@ -1,13 +1,17 @@
 """User routes for dashboard, favorites, practice history, rituals, journal, achievements."""
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi.responses import Response
 from pydantic import BaseModel
 from typing import Any, Optional, List
 from datetime import datetime, timezone, timedelta
+import base64
 import uuid
 import secrets
 import logging
+import os
 
 from .dependencies import get_db, get_current_user, User
+from services.object_storage import put_object, get_object, build_storage_path
 
 router = APIRouter(tags=["user"])
 logger = logging.getLogger(__name__)
@@ -67,6 +71,33 @@ class JournalEntryCreate(BaseModel):
     dream_symbols: Optional[str] = None  # For dream journal
 
 
+class PracticeJournalEntryCreate(BaseModel):
+    entry_id: Optional[str] = None
+    practice_name: str
+    practice_type: str
+    mood_before: int
+    mood_after: int
+    duration_minutes: int
+    body_sensations: Optional[str] = None
+    spiritual_downloads: Optional[str] = None
+    intentions: Optional[str] = None
+    key_insights: Optional[str] = None
+    reflection: Optional[str] = None
+    moon_phase: Optional[str] = None
+    moon_emoji: Optional[str] = None
+    voice_note_file_id: Optional[str] = None
+
+
+class PracticeJournalEntryUpdate(PracticeJournalEntryCreate):
+    pass
+
+
+class VoiceProfileCreate(BaseModel):
+    name: str
+    sample_file_id: str
+    description: Optional[str] = None
+
+
 class UserMantraCreate(BaseModel):
     text: str
     category: Optional[str] = "personal"  # "healing", "abundance", "protection", "love", "personal"
@@ -79,6 +110,129 @@ class UserMantraUpdate(BaseModel):
     category: Optional[str] = None
     element: Optional[str] = None
     notes: Optional[str] = None
+
+
+def _now_iso() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _safe_audio_extension(filename: str, content_type: str) -> str:
+    lowered_name = (filename or "").lower()
+    if lowered_name.endswith(".webm"):
+        return "webm"
+    if lowered_name.endswith(".mp3"):
+        return "mp3"
+    if lowered_name.endswith(".ogg"):
+        return "ogg"
+    if lowered_name.endswith(".wav"):
+        return "wav"
+    if lowered_name.endswith(".m4a") or lowered_name.endswith(".mp4"):
+        return "m4a"
+
+    content_type_map = {
+        "audio/webm": "webm",
+        "audio/webm;codecs=opus": "webm",
+        "audio/ogg": "ogg",
+        "audio/ogg;codecs=opus": "ogg",
+        "audio/mpeg": "mp3",
+        "audio/mp3": "mp3",
+        "audio/wav": "wav",
+        "audio/x-wav": "wav",
+        "audio/mp4": "m4a",
+        "audio/x-m4a": "m4a",
+    }
+    return content_type_map.get((content_type or "").lower(), "webm")
+
+
+def _validate_audio_upload(content_type: str, file_size_bytes: int) -> None:
+    allowed_types = {
+        "audio/webm",
+        "audio/webm;codecs=opus",
+        "audio/ogg",
+        "audio/ogg;codecs=opus",
+        "audio/mpeg",
+        "audio/mp3",
+        "audio/wav",
+        "audio/x-wav",
+        "audio/mp4",
+        "audio/x-m4a",
+    }
+    normalized_type = (content_type or "").lower()
+    if normalized_type not in allowed_types:
+        raise HTTPException(status_code=400, detail="Unsupported audio format")
+
+    max_bytes = int(os.environ["VOICE_NOTE_MAX_UPLOAD_BYTES"])
+    if file_size_bytes > max_bytes:
+        raise HTTPException(status_code=400, detail="Audio file exceeds size limit")
+
+
+def _safe_int(value: Any, fallback: int = 0) -> int:
+    try:
+        return int(value)
+    except Exception:
+        return fallback
+
+
+def _normalize_practice_journal_entry(document: dict[str, Any], file_map: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    file_id = document.get("voice_note_file_id")
+    file_record = file_map.get(str(file_id)) if file_id else None
+
+    result = {
+        "id": document.get("entry_id"),
+        "entry_id": document.get("entry_id"),
+        "practice_name": document.get("practice_name"),
+        "practice_type": document.get("practice_type"),
+        "mood_before": _safe_int(document.get("mood_before"), 3),
+        "mood_after": _safe_int(document.get("mood_after"), 4),
+        "duration_minutes": _safe_int(document.get("duration_minutes"), 0),
+        "body_sensations": document.get("body_sensations") or "",
+        "spiritual_downloads": document.get("spiritual_downloads") or "",
+        "intentions": document.get("intentions") or "",
+        "key_insights": document.get("key_insights") or "",
+        "reflection": document.get("reflection") or "",
+        "moon_phase": document.get("moon_phase") or "",
+        "moon_emoji": document.get("moon_emoji") or "",
+        "created_at": document.get("created_at"),
+        "updated_at": document.get("updated_at"),
+        "voice_note_file_id": file_id,
+        "voice_note_duration_seconds": _safe_int((file_record or {}).get("duration_seconds"), 0),
+        "voice_note_mime_type": (file_record or {}).get("content_type") or "",
+        "voice_note_url": f"/api/voice-files/{file_id}/download" if file_record else "",
+        "voice_note_data_url": "",
+    }
+    return result
+
+
+async def _build_voice_file_map_for_entries(db: Any, user_id: str, entries: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    file_ids = [str(item.get("voice_note_file_id")) for item in entries if item.get("voice_note_file_id")]
+    if not file_ids:
+        return {}
+
+    records = await db.user_voice_files.find(
+        {
+            "file_id": {"$in": file_ids},
+            "user_id": user_id,
+            "is_deleted": False,
+        },
+        {"_id": 0},
+    ).to_list(length=500)
+    return {str(record.get("file_id")): record for record in records if record.get("file_id")}
+
+
+async def _soft_delete_voice_file(db: Any, user_id: str, file_id: str) -> None:
+    await db.user_voice_files.update_one(
+        {
+            "file_id": file_id,
+            "user_id": user_id,
+            "is_deleted": False,
+        },
+        {
+            "$set": {
+                "is_deleted": True,
+                "updated_at": _now_iso(),
+            }
+        },
+    )
 
 
 # ============ DASHBOARD ============
@@ -650,6 +804,377 @@ async def create_journal_entry(data: JournalEntryCreate, user: User = Depends(ge
     await db.journal.insert_one(entry)
     entry.pop("_id", None)
     return entry
+
+
+@router.post("/voice-files")
+async def upload_voice_file(
+    file: UploadFile = File(...),
+    duration_seconds: int = Form(0),
+    category: str = Form("journal_voice_note"),
+    user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Upload a user voice file to object storage and persist metadata."""
+    db = get_db()
+    content = await file.read()
+    content_type = (file.content_type or "").lower()
+    _validate_audio_upload(content_type, len(content))
+
+    extension = _safe_audio_extension(file.filename or "voice-note", content_type)
+    storage_path = build_storage_path(user.user_id, category, extension)
+
+    try:
+        result = put_object(storage_path, content, content_type)
+    except Exception as exc:
+        logger.exception("Voice file upload failed for user %s", user.user_id)
+        raise HTTPException(status_code=500, detail="Voice upload failed") from exc
+
+    file_id = f"voice_{uuid.uuid4().hex[:12]}"
+    record = {
+        "file_id": file_id,
+        "user_id": user.user_id,
+        "category": category,
+        "storage_path": result.get("path") or storage_path,
+        "original_filename": file.filename or f"voice-note.{extension}",
+        "content_type": content_type,
+        "size": _safe_int(result.get("size"), len(content)),
+        "duration_seconds": max(0, _safe_int(duration_seconds, 0)),
+        "is_deleted": False,
+        "created_at": _now_iso(),
+        "updated_at": _now_iso(),
+    }
+    await db.user_voice_files.insert_one(record.copy())
+
+    return {
+        "file_id": file_id,
+        "content_type": record["content_type"],
+        "duration_seconds": record["duration_seconds"],
+        "size": record["size"],
+        "download_url": f"/api/voice-files/{file_id}/download",
+    }
+
+
+@router.get("/voice-files/{file_id}/download")
+async def download_voice_file(file_id: str, user: User = Depends(get_current_user)) -> Response:
+    """Stream voice file from object storage for the authenticated owner."""
+    db = get_db()
+    record = await db.user_voice_files.find_one(
+        {
+            "file_id": file_id,
+            "user_id": user.user_id,
+            "is_deleted": False,
+        },
+        {"_id": 0},
+    )
+    if not record:
+        raise HTTPException(status_code=404, detail="Voice file not found")
+
+    try:
+        file_bytes, fallback_content_type = get_object(str(record.get("storage_path") or ""))
+    except Exception as exc:
+        logger.exception("Voice file download failed for user %s file %s", user.user_id, file_id)
+        raise HTTPException(status_code=404, detail="Voice file unavailable") from exc
+
+    return Response(content=file_bytes, media_type=record.get("content_type") or fallback_content_type)
+
+
+@router.delete("/voice-files/{file_id}")
+async def delete_voice_file(file_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
+    """Soft-delete voice file metadata record."""
+    db = get_db()
+    record = await db.user_voice_files.find_one(
+        {
+            "file_id": file_id,
+            "user_id": user.user_id,
+            "is_deleted": False,
+        },
+        {"_id": 0, "file_id": 1},
+    )
+    if not record:
+        raise HTTPException(status_code=404, detail="Voice file not found")
+
+    await _soft_delete_voice_file(db, user.user_id, file_id)
+    return {"message": "Voice file removed"}
+
+
+@router.post("/practice-journal")
+async def create_practice_journal_entry(data: PracticeJournalEntryCreate, user: User = Depends(get_current_user)) -> dict[str, Any]:
+    """Create a cross-device practice journal entry stored in MongoDB."""
+    db = get_db()
+
+    if not data.practice_name.strip():
+        raise HTTPException(status_code=400, detail="Practice name is required")
+
+    voice_note_file_id = data.voice_note_file_id or None
+    if voice_note_file_id:
+        voice_record = await db.user_voice_files.find_one(
+            {
+                "file_id": voice_note_file_id,
+                "user_id": user.user_id,
+                "is_deleted": False,
+            },
+            {"_id": 0, "file_id": 1},
+        )
+        if not voice_record:
+            raise HTTPException(status_code=400, detail="Invalid voice note reference")
+
+    entry_id = data.entry_id or f"journal_{uuid.uuid4().hex[:12]}"
+    now_iso = _now_iso()
+    document = {
+        "entry_id": entry_id,
+        "user_id": user.user_id,
+        "practice_name": data.practice_name.strip(),
+        "practice_type": data.practice_type,
+        "mood_before": data.mood_before,
+        "mood_after": data.mood_after,
+        "duration_minutes": data.duration_minutes,
+        "body_sensations": data.body_sensations or "",
+        "spiritual_downloads": data.spiritual_downloads or "",
+        "intentions": data.intentions or "",
+        "key_insights": data.key_insights or "",
+        "reflection": data.reflection or "",
+        "moon_phase": data.moon_phase or "",
+        "moon_emoji": data.moon_emoji or "",
+        "voice_note_file_id": voice_note_file_id,
+        "created_at": now_iso,
+        "updated_at": now_iso,
+    }
+    await db.practice_journal_entries.insert_one(document.copy())
+
+    file_map = await _build_voice_file_map_for_entries(db, user.user_id, [document])
+    return _normalize_practice_journal_entry(document, file_map)
+
+
+@router.get("/practice-journal")
+async def list_practice_journal_entries(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
+    """Get authenticated user's practice journal entries."""
+    db = get_db()
+    entries = await db.practice_journal_entries.find(
+        {
+            "user_id": user.user_id,
+            "is_deleted": {"$ne": True},
+        },
+        {"_id": 0},
+    ).sort("created_at", -1).to_list(length=1000)
+
+    file_map = await _build_voice_file_map_for_entries(db, user.user_id, entries)
+    return [_normalize_practice_journal_entry(entry, file_map) for entry in entries]
+
+
+@router.put("/practice-journal/{entry_id}")
+async def update_practice_journal_entry(
+    entry_id: str,
+    data: PracticeJournalEntryUpdate,
+    user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Update an existing practice journal entry."""
+    db = get_db()
+    existing = await db.practice_journal_entries.find_one(
+        {
+            "entry_id": entry_id,
+            "user_id": user.user_id,
+            "is_deleted": {"$ne": True},
+        },
+        {"_id": 0},
+    )
+    if not existing:
+        raise HTTPException(status_code=404, detail="Practice journal entry not found")
+
+    next_voice_file_id = data.voice_note_file_id or None
+    if next_voice_file_id:
+        voice_record = await db.user_voice_files.find_one(
+            {
+                "file_id": next_voice_file_id,
+                "user_id": user.user_id,
+                "is_deleted": False,
+            },
+            {"_id": 0, "file_id": 1},
+        )
+        if not voice_record:
+            raise HTTPException(status_code=400, detail="Invalid voice note reference")
+
+    previous_voice_file_id = existing.get("voice_note_file_id")
+    update_doc = {
+        "practice_name": data.practice_name.strip(),
+        "practice_type": data.practice_type,
+        "mood_before": data.mood_before,
+        "mood_after": data.mood_after,
+        "duration_minutes": data.duration_minutes,
+        "body_sensations": data.body_sensations or "",
+        "spiritual_downloads": data.spiritual_downloads or "",
+        "intentions": data.intentions or "",
+        "key_insights": data.key_insights or "",
+        "reflection": data.reflection or "",
+        "moon_phase": data.moon_phase or "",
+        "moon_emoji": data.moon_emoji or "",
+        "voice_note_file_id": next_voice_file_id,
+        "updated_at": _now_iso(),
+    }
+
+    await db.practice_journal_entries.update_one(
+        {"entry_id": entry_id, "user_id": user.user_id},
+        {"$set": update_doc},
+    )
+
+    if previous_voice_file_id and previous_voice_file_id != next_voice_file_id:
+        await _soft_delete_voice_file(db, user.user_id, previous_voice_file_id)
+
+    merged = {**existing, **update_doc}
+    file_map = await _build_voice_file_map_for_entries(db, user.user_id, [merged])
+    return _normalize_practice_journal_entry(merged, file_map)
+
+
+@router.delete("/practice-journal/{entry_id}")
+async def delete_practice_journal_entry(entry_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
+    """Soft-delete a practice journal entry and linked voice note metadata."""
+    db = get_db()
+    existing = await db.practice_journal_entries.find_one(
+        {
+            "entry_id": entry_id,
+            "user_id": user.user_id,
+            "is_deleted": {"$ne": True},
+        },
+        {"_id": 0, "voice_note_file_id": 1},
+    )
+    if not existing:
+        raise HTTPException(status_code=404, detail="Practice journal entry not found")
+
+    await db.practice_journal_entries.update_one(
+        {"entry_id": entry_id, "user_id": user.user_id},
+        {
+            "$set": {
+                "is_deleted": True,
+                "updated_at": _now_iso(),
+            }
+        },
+    )
+
+    if existing.get("voice_note_file_id"):
+        await _soft_delete_voice_file(db, user.user_id, str(existing.get("voice_note_file_id")))
+
+    return {"message": "Practice journal entry deleted"}
+
+
+@router.post("/voice-files/from-data-url")
+async def upload_voice_file_from_data_url(
+    payload: dict[str, Any],
+    user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Compatibility endpoint: accepts data URL and stores as object for migration flows."""
+    data_url = str(payload.get("data_url") or "")
+    duration_seconds = _safe_int(payload.get("duration_seconds"), 0)
+    category = str(payload.get("category") or "journal_voice_note")
+
+    if not data_url.startswith("data:") or ";base64," not in data_url:
+        raise HTTPException(status_code=400, detail="Invalid voice note payload")
+
+    header, encoded = data_url.split(",", 1)
+    mime_type = header.split(";")[0].replace("data:", "")
+    try:
+        file_bytes = base64.b64decode(encoded)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail="Invalid base64 audio payload") from exc
+
+    _validate_audio_upload(mime_type, len(file_bytes))
+    extension = _safe_audio_extension("voice-note", mime_type)
+    storage_path = build_storage_path(user.user_id, category, extension)
+    try:
+        result = put_object(storage_path, file_bytes, mime_type)
+    except Exception as exc:
+        logger.exception("Voice data-url upload failed for user %s", user.user_id)
+        raise HTTPException(status_code=500, detail="Voice upload failed") from exc
+
+    db = get_db()
+    file_id = f"voice_{uuid.uuid4().hex[:12]}"
+    record = {
+        "file_id": file_id,
+        "user_id": user.user_id,
+        "category": category,
+        "storage_path": result.get("path") or storage_path,
+        "original_filename": f"voice-note.{extension}",
+        "content_type": mime_type,
+        "size": _safe_int(result.get("size"), len(file_bytes)),
+        "duration_seconds": max(0, duration_seconds),
+        "is_deleted": False,
+        "created_at": _now_iso(),
+        "updated_at": _now_iso(),
+    }
+    await db.user_voice_files.insert_one(record.copy())
+
+    return {
+        "file_id": file_id,
+        "content_type": record["content_type"],
+        "duration_seconds": record["duration_seconds"],
+        "size": record["size"],
+        "download_url": f"/api/voice-files/{file_id}/download",
+    }
+
+
+@router.post("/voice-profiles")
+async def create_voice_profile(
+    data: VoiceProfileCreate,
+    user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Create optional custom voice profile metadata from uploaded sample."""
+    db = get_db()
+    sample = await db.user_voice_files.find_one(
+        {
+            "file_id": data.sample_file_id,
+            "user_id": user.user_id,
+            "is_deleted": False,
+        },
+        {"_id": 0},
+    )
+    if not sample:
+        raise HTTPException(status_code=400, detail="Voice sample file not found")
+
+    profile = {
+        "profile_id": f"voice_profile_{uuid.uuid4().hex[:12]}",
+        "user_id": user.user_id,
+        "name": data.name.strip() or "My Voice",
+        "description": data.description or "",
+        "sample_file_id": data.sample_file_id,
+        "status": "sample_uploaded",
+        "created_at": _now_iso(),
+        "updated_at": _now_iso(),
+    }
+    await db.user_voice_profiles.insert_one(profile.copy())
+    return profile
+
+
+@router.get("/voice-profiles")
+async def list_voice_profiles(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
+    """List optional user custom voice profile metadata."""
+    db = get_db()
+    profiles = await db.user_voice_profiles.find(
+        {
+            "user_id": user.user_id,
+            "is_deleted": {"$ne": True},
+        },
+        {"_id": 0},
+    ).sort("created_at", -1).to_list(length=200)
+    return profiles
+
+
+@router.delete("/voice-profiles/{profile_id}")
+async def delete_voice_profile(profile_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
+    """Soft-delete custom voice profile metadata."""
+    db = get_db()
+    result = await db.user_voice_profiles.update_one(
+        {
+            "profile_id": profile_id,
+            "user_id": user.user_id,
+            "is_deleted": {"$ne": True},
+        },
+        {
+            "$set": {
+                "is_deleted": True,
+                "updated_at": _now_iso(),
+            }
+        },
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Voice profile not found")
+    return {"message": "Voice profile deleted"}
 
 
 @router.get("/journal")

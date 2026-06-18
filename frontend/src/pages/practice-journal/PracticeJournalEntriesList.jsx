@@ -145,12 +145,12 @@ export const PracticeJournalEntriesList = ({
                     </div>
                   )}
 
-                  {entry.voice_note_data_url && (
+                  {(entry.voice_note_data_url || entry.voice_note_url) && (
                     <div data-testid={`practice-journal-entry-voice-note-${entry.id}`}>
                       <h4 className="text-sm font-medium text-muted-foreground mb-1">Voice Note</h4>
                       <audio
                         controls
-                        src={entry.voice_note_data_url}
+                        src={entry.voice_note_data_url || entry.voice_note_url}
                         className="w-full"
                         data-testid={`practice-journal-entry-voice-player-${entry.id}`}
                       />

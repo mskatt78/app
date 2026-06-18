@@ -181,12 +181,6 @@ const MudrasLibrary = ({ user, api }) => {
                     <span className={`absolute top-3 left-3 px-3 py-1 rounded-full text-xs backdrop-blur-sm ${colors.bg} ${colors.text} border ${colors.border}`}>
                       {mudra.element}
                     </span>
-                    <span
-                      className={`absolute bottom-3 left-3 px-2 py-1 rounded-full text-[10px] border backdrop-blur-sm ${hasVerifiedImage ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30" : "text-amber-300 bg-amber-500/10 border-amber-500/30"}`}
-                      data-testid={`mudra-image-validation-${mudra.id}`}
-                    >
-                      {hasVerifiedImage ? "Verified image" : "Awaiting verified image"}
-                    </span>
                   </div>
                   
                   {/* Content */}
@@ -203,12 +197,6 @@ const MudrasLibrary = ({ user, api }) => {
                         </span>
                       ))}
                     </div>
-
-                    {!hasVerifiedImage && (
-                      <p className="mt-2 text-[11px] text-amber-300/90" data-testid={`mudra-unverified-note-${mudra.id}`}>
-                        We removed unverified visual references for this mudra until source confirmation.
-                      </p>
-                    )}
 
                     <p className="mt-2 text-[11px] text-cyan-300/90" data-testid={`mudra-integrity-${mudra.id}`}>
                       {mudra.content_integrity?.verified
@@ -286,6 +274,39 @@ const MudrasLibrary = ({ user, api }) => {
                     </p>
                   </div>
                 )}
+
+                <div
+                  className={`p-4 rounded-xl border ${
+                    selectedMudra.image_validation?.status === "verified"
+                      ? "bg-emerald-500/10 border-emerald-500/30"
+                      : "bg-amber-500/10 border-amber-500/30"
+                  }`}
+                  data-testid="mudra-modal-image-verification-badge"
+                >
+                  <h4 className="text-xs uppercase tracking-wider mb-2 text-muted-foreground">Image Verification</h4>
+                  <p className={`text-sm ${selectedMudra.image_validation?.status === "verified" ? "text-emerald-200" : "text-amber-200"}`}>
+                    {selectedMudra.image_validation?.status === "verified"
+                      ? "Verified Wikimedia/Commons source"
+                      : "Pending Wikimedia verification"}
+                  </p>
+                  {selectedMudra.source_references?.length > 0 && (
+                    <ul className="mt-2 space-y-1" data-testid="mudra-modal-source-references">
+                      {selectedMudra.source_references.slice(0, 2).map((reference) => (
+                        <li key={reference}>
+                          <a
+                            href={reference}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-cyan-200 underline break-all"
+                            data-testid={`mudra-modal-source-reference-${selectedMudra.id}`}
+                          >
+                            {reference}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
 
                 {/* Benefits */}
                 <div>

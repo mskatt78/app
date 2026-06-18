@@ -52,7 +52,9 @@ export const createInitialJournalFormData = () => ({
   intentions: "",
   key_insights: "",
   reflection: "",
+  voice_note_file_id: "",
   voice_note_data_url: "",
+  voice_note_url: "",
   voice_note_duration_seconds: 0,
   voice_note_mime_type: "",
 });

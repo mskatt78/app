@@ -31,6 +31,7 @@ from routers.gifts import router as gifts_router
 from routers.tts import router as tts_router
 from routers.audio import router as audio_router
 from routers.reviews import router as reviews_router
+from services.object_storage import ensure_storage_initialized
 
 ROOT_DIR = Path(__file__).parent
 UPLOADS_DIR = ROOT_DIR / "uploads"
@@ -521,6 +522,11 @@ def _should_clear_legacy_retreats(retreats: list[dict], placeholder_flags: list[
 async def startup_seed_database() -> None:
     """Seed database with content on startup."""
     import asyncio
+    try:
+        ensure_storage_initialized()
+        logger.info("Object storage initialized.")
+    except Exception as e:
+        logger.warning(f"Object storage init warning (non-fatal): {e}")
     asyncio.create_task(ensure_indexes())
     asyncio.create_task(cleanup_legacy_retreats_once())
     asyncio.create_task(do_database_seeding())

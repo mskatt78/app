@@ -24,6 +24,11 @@ export const useSettingsData = ({ api, user, navigate }) => {
   const [reminderSettings, setReminderSettings] = useState(DEFAULT_REMINDER_SETTINGS);
   const [guidedNarrationMode, setGuidedNarrationModeState] = useState(() => getGuidedNarrationMode());
   const [guidedToningIntensity, setGuidedToningIntensityState] = useState(() => getGuidedToningIntensity());
+  const [voiceProfiles, setVoiceProfiles] = useState([]);
+  const [voiceProfileName, setVoiceProfileName] = useState("My Voice");
+  const [voiceSampleFile, setVoiceSampleFile] = useState(null);
+  const [creatingVoiceProfile, setCreatingVoiceProfile] = useState(false);
+  const [deletingVoiceProfileId, setDeletingVoiceProfileId] = useState(null);
 
   const {
     preferences: notificationPrefs,
@@ -45,6 +50,12 @@ export const useSettingsData = ({ api, user, navigate }) => {
         setReminderSettings(reminderRes.data);
         setRituals(ritualsRes.data);
         setDeletionStatus(deletionRes.data || null);
+        try {
+          const voiceProfilesResponse = await api.get("/voice-profiles");
+          setVoiceProfiles(Array.isArray(voiceProfilesResponse.data) ? voiceProfilesResponse.data : []);
+        } catch (voiceError) {
+          appLogger.warn("Voice profiles load warning", voiceError);
+        }
       } catch (error) {
         appLogger.error("Failed to fetch settings", error);
       } finally {
@@ -143,6 +154,70 @@ export const useSettingsData = ({ api, user, navigate }) => {
     toast.success(`Guided toning intensity set to ${GUIDED_TONING_INTENSITIES[nextMode].label}`);
   }, []);
 
+  const createVoiceProfile = useCallback(async () => {
+    if (!voiceSampleFile) {
+      toast.error("Please select an audio sample first");
+      return;
+    }
+
+    const name = voiceProfileName.trim();
+    if (!name) {
+      toast.error("Please enter a voice profile name");
+      return;
+    }
+
+    setCreatingVoiceProfile(true);
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", voiceSampleFile);
+      uploadFormData.append("duration_seconds", "0");
+      uploadFormData.append("category", "custom_voice_sample");
+      const uploadResponse = await api.post("/voice-files", uploadFormData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const fileId = uploadResponse?.data?.file_id;
+      if (!fileId) {
+        toast.error("Voice sample upload failed");
+        return;
+      }
+
+      const profileResponse = await api.post("/voice-profiles", {
+        name,
+        sample_file_id: fileId,
+      });
+
+      const createdProfile = profileResponse?.data;
+      if (createdProfile?.profile_id) {
+        setVoiceProfiles((current) => [createdProfile, ...current]);
+        setVoiceProfileName("My Voice");
+        setVoiceSampleFile(null);
+        toast.success("Custom voice profile saved");
+      } else {
+        toast.error("Could not create voice profile");
+      }
+    } catch (error) {
+      appLogger.error("Create voice profile failed", error);
+      toast.error("Could not create voice profile");
+    } finally {
+      setCreatingVoiceProfile(false);
+    }
+  }, [api, voiceProfileName, voiceSampleFile]);
+
+  const removeVoiceProfile = useCallback(async (profileId) => {
+    setDeletingVoiceProfileId(profileId);
+    try {
+      await api.delete(`/voice-profiles/${profileId}`);
+      setVoiceProfiles((current) => current.filter((profile) => profile.profile_id !== profileId));
+      toast.success("Voice profile removed");
+    } catch (error) {
+      appLogger.error("Delete voice profile failed", error);
+      toast.error("Could not remove voice profile");
+    } finally {
+      setDeletingVoiceProfileId(null);
+    }
+  }, [api]);
+
   return {
     loading,
     saving,
@@ -153,6 +228,13 @@ export const useSettingsData = ({ api, user, navigate }) => {
     reminderSettings,
     guidedNarrationMode,
     guidedToningIntensity,
+    voiceProfiles,
+    voiceProfileName,
+    setVoiceProfileName,
+    voiceSampleFile,
+    setVoiceSampleFile,
+    creatingVoiceProfile,
+    deletingVoiceProfileId,
     notificationPrefs,
     updateNotificationPrefs,
     supportsNotifications,
@@ -166,5 +248,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
     requestAccountDeletion,
     updateGuidedNarrationMode,
     updateGuidedToningMode,
+    createVoiceProfile,
+    removeVoiceProfile,
   };
 };

@@ -43,7 +43,7 @@ const fileReaderToDataUrl = (blob) => new Promise((resolve, reject) => {
   reader.readAsDataURL(blob);
 });
 
-const VoiceNoteRecorder = ({ formData, setFormData }) => {
+const VoiceNoteRecorder = ({ formData, setFormData, api, user }) => {
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const streamRef = useRef(null);
@@ -91,14 +91,30 @@ const VoiceNoteRecorder = ({ formData, setFormData }) => {
   }, [clearTick, stopStreamTracks]);
 
   const clearVoiceNote = useCallback(() => {
+    if (formData.voice_note_data_url?.startsWith?.("blob:")) {
+      try {
+        URL.revokeObjectURL(formData.voice_note_data_url);
+      } catch (error) {
+        appLogger.warn("Voice note blob URL cleanup warning", error);
+      }
+    }
+
+    if (api && user?.user_id && formData.voice_note_file_id) {
+      api.delete(`/voice-files/${formData.voice_note_file_id}`).catch((error) => {
+        appLogger.warn("Voice note delete warning", error);
+      });
+    }
+
     setFormData((current) => ({
       ...current,
+      voice_note_file_id: "",
       voice_note_data_url: "",
+      voice_note_url: "",
       voice_note_duration_seconds: 0,
       voice_note_mime_type: "",
     }));
     setElapsedSeconds(0);
-  }, [setFormData]);
+  }, [api, formData.voice_note_file_id, setFormData, user?.user_id]);
 
   const startRecording = useCallback(async () => {
     setRecordingError("");
@@ -141,6 +157,42 @@ const VoiceNoteRecorder = ({ formData, setFormData }) => {
 
         const duration = Math.max(1, Math.round((Date.now() - recordingStartedAtRef.current) / 1000));
         try {
+          if (api && user?.user_id) {
+            if (formData.voice_note_file_id) {
+              await api.delete(`/voice-files/${formData.voice_note_file_id}`).catch((error) => {
+                appLogger.warn("Previous voice note cleanup warning", error);
+              });
+            }
+
+            const uploadFormData = new FormData();
+            const extension = (blob.type || "audio/webm").includes("mp4") ? "m4a" : "webm";
+            uploadFormData.append("file", blob, `voice-note-${Date.now()}.${extension}`);
+            uploadFormData.append("duration_seconds", String(duration));
+            uploadFormData.append("category", "journal_voice_note");
+
+            const uploadResponse = await api.post("/voice-files", uploadFormData, {
+              headers: { "Content-Type": "multipart/form-data" },
+            });
+
+            const uploaded = uploadResponse?.data;
+            if (!uploaded?.file_id) {
+              setRecordingError("Voice note upload failed. Please try again.");
+              return;
+            }
+
+            const blobUrl = URL.createObjectURL(blob);
+            setFormData((current) => ({
+              ...current,
+              voice_note_file_id: uploaded.file_id,
+              voice_note_data_url: blobUrl,
+              voice_note_url: uploaded.download_url || "",
+              voice_note_duration_seconds: Number(uploaded.duration_seconds || duration),
+              voice_note_mime_type: uploaded.content_type || blob.type || mimeType || "audio/webm",
+            }));
+            setElapsedSeconds(Number(uploaded.duration_seconds || duration));
+            return;
+          }
+
           const dataUrl = await fileReaderToDataUrl(blob);
           if (!dataUrl) {
             setRecordingError("Voice note could not be saved. Please try again.");
@@ -149,7 +201,9 @@ const VoiceNoteRecorder = ({ formData, setFormData }) => {
 
           setFormData((current) => ({
             ...current,
+            voice_note_file_id: "",
             voice_note_data_url: dataUrl,
+            voice_note_url: "",
             voice_note_duration_seconds: duration,
             voice_note_mime_type: blob.type || mimeType || "audio/webm",
           }));
@@ -178,9 +232,12 @@ const VoiceNoteRecorder = ({ formData, setFormData }) => {
       clearTick();
       setIsRecording(false);
     }
-  }, [clearTick, setFormData, stopStreamTracks]);
+  }, [api, clearTick, formData.voice_note_file_id, setFormData, stopStreamTracks, user?.user_id]);
 
-  const hasVoiceNote = useMemo(() => Boolean(formData.voice_note_data_url), [formData.voice_note_data_url]);
+  const hasVoiceNote = useMemo(
+    () => Boolean(formData.voice_note_data_url || formData.voice_note_url),
+    [formData.voice_note_data_url, formData.voice_note_url]
+  );
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/5 p-4" data-testid="practice-journal-voice-note-card">
@@ -246,7 +303,7 @@ const VoiceNoteRecorder = ({ formData, setFormData }) => {
           <audio
             ref={audioPreviewRef}
             controls
-            src={formData.voice_note_data_url}
+            src={formData.voice_note_data_url || formData.voice_note_url}
             className="w-full"
             data-testid="practice-journal-voice-preview-player"
           />
@@ -266,6 +323,8 @@ export const PracticeJournalFormModal = ({
   setFormData,
   handleSubmit,
   moonPhase,
+  api,
+  user,
 }) => (
   <AnimatePresence>
     {showForm && (
@@ -456,7 +515,7 @@ export const PracticeJournalFormModal = ({
               />
             </div>
 
-            <VoiceNoteRecorder formData={formData} setFormData={setFormData} />
+            <VoiceNoteRecorder formData={formData} setFormData={setFormData} api={api} user={user} />
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground bg-white/5 rounded-lg p-3" data-testid="practice-journal-form-moon-phase-info">
               <Moon className="w-4 h-4" />

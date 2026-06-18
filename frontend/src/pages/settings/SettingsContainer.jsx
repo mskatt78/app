@@ -8,6 +8,7 @@ import { SettingsLogoutCard } from "./SettingsLogoutCard";
 import { SettingsNotificationsCard } from "./SettingsNotificationsCard";
 import { SettingsProfileCard } from "./SettingsProfileCard";
 import { SettingsRemindersCard } from "./SettingsRemindersCard";
+import { SettingsCustomVoiceCard } from "./SettingsCustomVoiceCard";
 import { useSettingsData } from "./useSettingsData";
 
 const SettingsContainer = ({ user, api }) => {
@@ -22,6 +23,13 @@ const SettingsContainer = ({ user, api }) => {
     reminderSettings,
     guidedNarrationMode,
     guidedToningIntensity,
+    voiceProfiles,
+    voiceProfileName,
+    setVoiceProfileName,
+    voiceSampleFile,
+    setVoiceSampleFile,
+    creatingVoiceProfile,
+    deletingVoiceProfileId,
     notificationPrefs,
     updateNotificationPrefs,
     supportsNotifications,
@@ -35,6 +43,8 @@ const SettingsContainer = ({ user, api }) => {
     requestAccountDeletion,
     updateGuidedNarrationMode,
     updateGuidedToningMode,
+    createVoiceProfile,
+    removeVoiceProfile,
   } = useSettingsData({ api, user, navigate });
 
   if (loading) {
@@ -70,6 +80,18 @@ const SettingsContainer = ({ user, api }) => {
             guidedToningIntensity={guidedToningIntensity}
             updateGuidedNarrationMode={updateGuidedNarrationMode}
             updateGuidedToningMode={updateGuidedToningMode}
+          />
+
+          <SettingsCustomVoiceCard
+            creatingVoiceProfile={creatingVoiceProfile}
+            deletingVoiceProfileId={deletingVoiceProfileId}
+            voiceProfileName={voiceProfileName}
+            setVoiceProfileName={setVoiceProfileName}
+            voiceSampleFile={voiceSampleFile}
+            setVoiceSampleFile={setVoiceSampleFile}
+            voiceProfiles={voiceProfiles}
+            createVoiceProfile={createVoiceProfile}
+            removeVoiceProfile={removeVoiceProfile}
           />
 
           <Button onClick={saveSettings} disabled={saving} className="w-full bg-primary" data-testid="save-settings-btn">

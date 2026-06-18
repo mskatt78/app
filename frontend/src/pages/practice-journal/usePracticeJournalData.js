@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { migrateLocalToSession, setSessionItem } from "../../utils/clientStorage";
 import { appLogger } from "../../utils/logger";
@@ -51,6 +51,63 @@ const calculateStreak = (entries) => {
   return streak;
 };
 
+const normalizeEntryFromApi = (entry) => ({
+  ...entry,
+  id: entry.id || entry.entry_id,
+  voice_note_file_id: entry.voice_note_file_id || "",
+  voice_note_duration_seconds: Number(entry.voice_note_duration_seconds || 0),
+  voice_note_mime_type: entry.voice_note_mime_type || "",
+  voice_note_url: entry.voice_note_url || "",
+  voice_note_data_url: "",
+});
+
+const hydrateVoiceBlobUrl = async (api, entry) => {
+  if (!entry.voice_note_url) {
+    return entry;
+  }
+
+  try {
+    const response = await api.get(entry.voice_note_url, { responseType: "blob" });
+    const blobUrl = URL.createObjectURL(response.data);
+    return {
+      ...entry,
+      voice_note_data_url: blobUrl,
+    };
+  } catch (error) {
+    appLogger.warn("Voice note blob hydration failed", error);
+    return entry;
+  }
+};
+
+const revokeVoiceBlobUrls = (entries) => {
+  entries.forEach((entry) => {
+    if (entry?.voice_note_data_url?.startsWith?.("blob:")) {
+      try {
+        URL.revokeObjectURL(entry.voice_note_data_url);
+      } catch (error) {
+        appLogger.warn("Voice note blob URL revoke warning", error);
+      }
+    }
+  });
+};
+
+const buildEntryPayloadForApi = (entry) => ({
+  entry_id: entry.id,
+  practice_name: entry.practice_name,
+  practice_type: entry.practice_type,
+  mood_before: Number(entry.mood_before || 3),
+  mood_after: Number(entry.mood_after || 4),
+  duration_minutes: Number(entry.duration_minutes || 0),
+  body_sensations: entry.body_sensations || "",
+  spiritual_downloads: entry.spiritual_downloads || "",
+  intentions: entry.intentions || "",
+  key_insights: entry.key_insights || "",
+  reflection: entry.reflection || "",
+  moon_phase: entry.moon_phase || "",
+  moon_emoji: entry.moon_emoji || "",
+  voice_note_file_id: entry.voice_note_file_id || null,
+});
+
 export const usePracticeJournalData = ({ api, navigate, user }) => {
   const [entries, setEntries] = useState(() => getStoredEntries());
   const [showForm, setShowForm] = useState(false);
@@ -62,6 +119,47 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
   const [sharingId, setSharingId] = useState(null);
   const [formData, setFormData] = useState(createInitialJournalFormData());
 
+  const isAuthenticated = Boolean(user?.user_id && api);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadRemoteEntries = async () => {
+      if (!isAuthenticated) {
+        return;
+      }
+
+      try {
+        const response = await api.get("/practice-journal");
+        const normalized = Array.isArray(response.data)
+          ? response.data.map(normalizeEntryFromApi)
+          : [];
+
+        const hydratedEntries = await Promise.all(normalized.map((entry) => hydrateVoiceBlobUrl(api, entry)));
+        if (!cancelled) {
+          setEntries((previous) => {
+            revokeVoiceBlobUrls(previous);
+            return hydratedEntries;
+          });
+          saveEntriesToStorage(hydratedEntries);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          appLogger.warn("Remote practice journal sync failed", error);
+        }
+      }
+    };
+
+    loadRemoteEntries();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [api, isAuthenticated]);
+
+  useEffect(() => () => {
+    revokeVoiceBlobUrls(entries);
+  }, [entries]);
+
   const resetForm = useCallback(() => {
     setFormData(createInitialJournalFormData());
     setShowForm(false);
@@ -69,7 +167,20 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
     setCurrentPrompt(getRandomPrompt());
   }, []);
 
-  const handleSubmit = useCallback(() => {
+  const uploadVoiceDataUrlIfNeeded = useCallback(async (rawDataUrl, durationSeconds) => {
+    if (!rawDataUrl || !rawDataUrl.startsWith("data:")) {
+      return null;
+    }
+
+    const response = await api.post("/voice-files/from-data-url", {
+      data_url: rawDataUrl,
+      duration_seconds: Number(durationSeconds || 0),
+      category: "journal_voice_note",
+    });
+    return response?.data?.file_id || null;
+  }, [api]);
+
+  const handleSubmit = useCallback(async () => {
     if (!formData.practice_name.trim()) {
       toast.error("Please enter a practice name");
       return;
@@ -85,6 +196,45 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
       updated_at: new Date().toISOString(),
     };
 
+    if (isAuthenticated) {
+      try {
+        let voiceNoteFileId = entry.voice_note_file_id || null;
+        if (entry.voice_note_data_url && !voiceNoteFileId) {
+          voiceNoteFileId = await uploadVoiceDataUrlIfNeeded(entry.voice_note_data_url, entry.voice_note_duration_seconds);
+        }
+
+        const payload = buildEntryPayloadForApi({
+          ...entry,
+          voice_note_file_id: voiceNoteFileId,
+        });
+
+        let saved;
+        if (editingEntry?.id) {
+          const response = await api.put(`/practice-journal/${editingEntry.id}`, payload);
+          saved = normalizeEntryFromApi(response.data);
+        } else {
+          const response = await api.post("/practice-journal", payload);
+          saved = normalizeEntryFromApi(response.data);
+        }
+
+        const hydratedSaved = await hydrateVoiceBlobUrl(api, saved);
+        setEntries((previous) => {
+          const next = editingEntry
+            ? previous.map((existingEntry) => (existingEntry.id === editingEntry.id ? hydratedSaved : existingEntry))
+            : [hydratedSaved, ...previous];
+          saveEntriesToStorage(next);
+          return next;
+        });
+        toast.success(editingEntry ? "Journal entry updated" : "Journal entry saved");
+        resetForm();
+        return;
+      } catch (error) {
+        appLogger.error("Remote journal save failed", error);
+        toast.error("Could not save entry to your account");
+        return;
+      }
+    }
+
     let nextEntries = [];
     if (editingEntry) {
       nextEntries = entries.map((existingEntry) => (existingEntry.id === editingEntry.id ? entry : existingEntry));
@@ -97,14 +247,24 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
     setEntries(nextEntries);
     saveEntriesToStorage(nextEntries);
     resetForm();
-  }, [editingEntry, entries, formData, resetForm]);
+  }, [api, editingEntry, entries, formData, isAuthenticated, resetForm, uploadVoiceDataUrlIfNeeded]);
 
-  const handleDelete = useCallback((id) => {
+  const handleDelete = useCallback(async (id) => {
+    if (isAuthenticated) {
+      try {
+        await api.delete(`/practice-journal/${id}`);
+      } catch (error) {
+        appLogger.error("Remote journal delete failed", error);
+        toast.error("Could not delete entry");
+        return;
+      }
+    }
+
     const nextEntries = entries.filter((entry) => entry.id !== id);
     setEntries(nextEntries);
     saveEntriesToStorage(nextEntries);
     toast.success("Entry deleted");
-  }, [entries]);
+  }, [api, entries, isAuthenticated]);
 
   const startEdit = useCallback((entry) => {
     setFormData({
@@ -118,9 +278,11 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
       intentions: entry.intentions || "",
       key_insights: entry.key_insights || "",
       reflection: entry.reflection || "",
+      voice_note_file_id: entry.voice_note_file_id || "",
       voice_note_data_url: entry.voice_note_data_url || "",
       voice_note_duration_seconds: Number(entry.voice_note_duration_seconds || 0),
       voice_note_mime_type: entry.voice_note_mime_type || "",
+      voice_note_url: entry.voice_note_url || "",
     });
     setEditingEntry(entry);
     setShowForm(true);

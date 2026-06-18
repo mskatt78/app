@@ -85,6 +85,8 @@ export const PracticeJournalContainer = ({ user, api }) => {
         setFormData={setFormData}
         handleSubmit={handleSubmit}
         moonPhase={moonPhase}
+        api={api}
+        user={user}
       />
     </div>
   );
