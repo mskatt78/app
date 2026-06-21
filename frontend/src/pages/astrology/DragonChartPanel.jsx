@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Flame, Loader2, Milestone, Sparkles, Star, Wand2 } from "lucide-react";
+import { Eye, Flame, Loader2, Milestone, Sparkles, Star, Trash2, Wand2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
 import { Input } from "../../components/ui/input";
@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { buildBirthDateOptions } from "../birthchart/birthChartUtils";
 import { appLogger } from "../../utils/logger";
 
-const DragonChartPanel = ({ api }) => {
+const DragonChartPanel = ({ api, user }) => {
   const [birthYear, setBirthYear] = useState("");
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay] = useState("");
@@ -18,9 +18,35 @@ const DragonChartPanel = ({ api }) => {
   const [birthCity, setBirthCity] = useState("");
   const [birthCountry, setBirthCountry] = useState("");
   const [loading, setLoading] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
   const [dragonData, setDragonData] = useState(null);
+  const [history, setHistory] = useState([]);
+
+  const isAuthenticated = Boolean(user?.user_id);
 
   const { years, months, days, hours, minutes } = useMemo(() => buildBirthDateOptions(), []);
+
+  const fetchHistory = useCallback(async () => {
+    if (!isAuthenticated) {
+      setHistory([]);
+      return;
+    }
+
+    setHistoryLoading(true);
+    try {
+      const response = await api.get("/birth-chart/dragon-chart/history");
+      setHistory(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      appLogger.warn("Dragon chart history load failed", error);
+      setHistory([]);
+    } finally {
+      setHistoryLoading(false);
+    }
+  }, [api, isAuthenticated]);
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
 
   const calculateDragonChart = async () => {
     if (!birthYear || !birthMonth || !birthDay || !birthCity.trim() || !birthCountry.trim()) {
@@ -36,15 +62,42 @@ const DragonChartPanel = ({ api }) => {
         birth_city: birthCity.trim(),
         birth_country: birthCountry.trim(),
       };
-      const response = await api.post("/birth-chart/dragon-chart/calculate", payload);
-      setDragonData(response.data);
-      toast.success("Dragon Chart revealed");
+
+      if (isAuthenticated) {
+        const response = await api.post("/birth-chart/dragon-chart/save", payload);
+        setDragonData(response.data);
+        setHistory((previous) => [response.data, ...previous]);
+        toast.success("Dragon Chart revealed and saved");
+      } else {
+        const response = await api.post("/birth-chart/dragon-chart/calculate", payload);
+        setDragonData(response.data);
+        toast.success("Dragon Chart revealed");
+      }
     } catch (error) {
       appLogger.error("Dragon chart error", error);
       toast.error(error?.response?.data?.detail || "Could not calculate Dragon Chart");
     } finally {
       setLoading(false);
     }
+  };
+
+  const deleteHistoryItem = async (chartId) => {
+    try {
+      await api.delete(`/birth-chart/dragon-chart/history/${chartId}`);
+      setHistory((previous) => previous.filter((item) => item.chart_id !== chartId));
+      if (dragonData?.chart_id === chartId) {
+        setDragonData(null);
+      }
+      toast.success("Dragon chart deleted");
+    } catch (error) {
+      appLogger.error("Dragon history delete failed", error);
+      toast.error("Could not delete history item");
+    }
+  };
+
+  const viewHistoryItem = (item) => {
+    setDragonData(item);
+    toast.success("Dragon chart loaded");
   };
 
   return (
@@ -152,6 +205,61 @@ const DragonChartPanel = ({ api }) => {
             </CardContent>
           </Card>
         </motion.div>
+      )}
+
+      {isAuthenticated && (
+        <Card className="bg-card/50 border-white/10" data-testid="dragon-chart-history-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-cyan-300" /> Saved Dragon Chart History
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {historyLoading ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground" data-testid="dragon-history-loading">
+                <Loader2 className="w-4 h-4 animate-spin" /> Loading history...
+              </div>
+            ) : history.length === 0 ? (
+              <p className="text-sm text-muted-foreground" data-testid="dragon-history-empty">No saved Dragon charts yet.</p>
+            ) : (
+              <div className="space-y-2" data-testid="dragon-history-list">
+                {history.map((item) => (
+                  <div key={item.chart_id} className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid={`dragon-history-item-${item.chart_id}`}>
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div>
+                        <p className="text-sm font-medium">
+                          {item.birth_input?.birth_date} {item.birth_input?.birth_time} • {item.birth_input?.birth_city}, {item.birth_input?.birth_country}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Axis: {item.dragon_head_tail_chart?.karmic_axis} • Chinese: {item.chinese_dragon_chart?.zodiac_element} {item.chinese_dragon_chart?.zodiac_animal}
+                        </p>
+                        <p className="text-xs text-muted-foreground">Saved: {item.saved_at || item.generated_at}</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => viewHistoryItem(item)}
+                          data-testid={`dragon-history-view-${item.chart_id}`}
+                        >
+                          <Eye className="w-4 h-4 mr-1" /> View
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => deleteHistoryItem(item.chart_id)}
+                          data-testid={`dragon-history-delete-${item.chart_id}`}
+                        >
+                          <Trash2 className="w-4 h-4 text-red-300" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       )}
     </div>
   );

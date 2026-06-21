@@ -10,6 +10,7 @@ from typing import Any, Optional, List, Dict, Tuple
 from datetime import datetime, timezone
 import logging
 from dataclasses import dataclass
+import uuid
 
 try:
     import swisseph as swe
@@ -345,6 +346,38 @@ def _build_dragon_head_tail_chart(planets: list[dict[str, Any]]) -> dict[str, An
         },
         "karmic_axis": f"{south_sign} → {north_sign}",
         "axis_message": axis_message,
+    }
+
+
+def _build_dragon_chart_payload(request: BirthChartRequest, computation: Any) -> dict[str, Any]:
+    natal_chart = _build_birth_chart_payload(computation)
+    chinese_profile = _build_chinese_zodiac_profile(computation.year)
+    dragon_head_tail = _build_dragon_head_tail_chart(computation.planets)
+
+    return {
+        "chart_id": f"dragon_{uuid.uuid4().hex[:14]}",
+        "birth_input": {
+            "birth_date": request.birth_date,
+            "birth_time": request.birth_time,
+            "birth_city": request.birth_city,
+            "birth_country": request.birth_country,
+        },
+        "natal_chart": natal_chart,
+        "dragon_head_tail_chart": dragon_head_tail,
+        "chinese_dragon_chart": chinese_profile,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def _normalize_dragon_chart_record(record: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "chart_id": record.get("chart_id"),
+        "birth_input": record.get("birth_input") or {},
+        "natal_chart": record.get("natal_chart") or {},
+        "dragon_head_tail_chart": record.get("dragon_head_tail_chart") or {},
+        "chinese_dragon_chart": record.get("chinese_dragon_chart") or {},
+        "generated_at": record.get("generated_at"),
+        "saved_at": record.get("saved_at"),
     }
 
 
@@ -851,16 +884,81 @@ async def calculate_dragon_chart(request: BirthChartRequest) -> dict[str, Any]:
 
     try:
         computation = _compute_birth_chart(request)
-        natal_chart = _build_birth_chart_payload(computation)
-        chinese_profile = _build_chinese_zodiac_profile(computation.year)
-        dragon_head_tail = _build_dragon_head_tail_chart(computation.planets)
-
+        chart = _build_dragon_chart_payload(request, computation)
         return {
-            "natal_chart": natal_chart,
-            "dragon_head_tail_chart": dragon_head_tail,
-            "chinese_dragon_chart": chinese_profile,
-            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "natal_chart": chart["natal_chart"],
+            "dragon_head_tail_chart": chart["dragon_head_tail_chart"],
+            "chinese_dragon_chart": chart["chinese_dragon_chart"],
+            "generated_at": chart["generated_at"],
         }
     except Exception as e:
         logger.error(f"Dragon chart calculation error: {e}")
         raise HTTPException(status_code=400, detail=f"Could not calculate dragon chart: {str(e)}")
+
+
+@router.post("/dragon-chart/save")
+async def save_dragon_chart(
+    request: BirthChartRequest,
+    user: User = Depends(get_current_user)
+) -> dict[str, Any]:
+    """Calculate and auto-save Dragon chart history for authenticated users."""
+    if not SWISSEPH_AVAILABLE:
+        raise HTTPException(status_code=500, detail="Swiss Ephemeris not available")
+
+    db = get_db()
+    try:
+        computation = _compute_birth_chart(request)
+        chart = _build_dragon_chart_payload(request, computation)
+        chart["user_id"] = user.user_id
+        chart["saved_at"] = datetime.now(timezone.utc).isoformat()
+        chart["is_deleted"] = False
+
+        await db.dragon_charts.insert_one(chart.copy())
+        chart.pop("_id", None)
+        return _normalize_dragon_chart_record(chart)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Dragon chart save error: {e}")
+        raise HTTPException(status_code=400, detail=f"Could not save dragon chart: {str(e)}")
+
+
+@router.get("/dragon-chart/history")
+async def get_dragon_chart_history(
+    user: User = Depends(get_current_user)
+) -> list[dict[str, Any]]:
+    """Get saved Dragon chart history for authenticated user."""
+    db = get_db()
+    rows = await db.dragon_charts.find(
+        {
+            "user_id": user.user_id,
+            "is_deleted": {"$ne": True},
+        },
+        {"_id": 0},
+    ).sort("saved_at", -1).to_list(length=200)
+    return [_normalize_dragon_chart_record(row) for row in rows]
+
+
+@router.delete("/dragon-chart/history/{chart_id}")
+async def delete_dragon_chart_history_item(
+    chart_id: str,
+    user: User = Depends(get_current_user)
+) -> dict[str, str]:
+    """Soft-delete one saved Dragon chart history record."""
+    db = get_db()
+    result = await db.dragon_charts.update_one(
+        {
+            "chart_id": chart_id,
+            "user_id": user.user_id,
+            "is_deleted": {"$ne": True},
+        },
+        {
+            "$set": {
+                "is_deleted": True,
+                "updated_at": datetime.now(timezone.utc).isoformat(),
+            }
+        },
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Dragon chart history item not found")
+    return {"message": "Dragon chart history item deleted"}
