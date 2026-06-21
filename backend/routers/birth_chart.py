@@ -242,6 +242,112 @@ class BirthChartRequest(BaseModel):
     timezone_name: Optional[str] = None  # IANA timezone like "America/New_York"
 
 
+CHINESE_ZODIAC_ANIMALS = [
+    "Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog", "Pig"
+]
+
+HEAVENLY_STEMS = [
+    {"element": "Wood", "polarity": "Yang"},
+    {"element": "Wood", "polarity": "Yin"},
+    {"element": "Fire", "polarity": "Yang"},
+    {"element": "Fire", "polarity": "Yin"},
+    {"element": "Earth", "polarity": "Yang"},
+    {"element": "Earth", "polarity": "Yin"},
+    {"element": "Metal", "polarity": "Yang"},
+    {"element": "Metal", "polarity": "Yin"},
+    {"element": "Water", "polarity": "Yang"},
+    {"element": "Water", "polarity": "Yin"},
+]
+
+NODE_SIGN_THEMES = {
+    "Aries": "courageous initiation and direct self-trust",
+    "Taurus": "embodied steadiness and sustainable value-building",
+    "Gemini": "curiosity, dialogue, and flexible perception",
+    "Cancer": "emotional safety, belonging, and care leadership",
+    "Leo": "heart-centered visibility and creative sovereignty",
+    "Virgo": "refinement, practical service, and sacred craftsmanship",
+    "Libra": "relational balance, diplomacy, and shared harmony",
+    "Scorpio": "depth work, shadow alchemy, and transformation",
+    "Sagittarius": "truth-seeking, faith, and horizon expansion",
+    "Capricorn": "integrity, responsibility, and legacy architecture",
+    "Aquarius": "visionary innovation and collective contribution",
+    "Pisces": "compassion, surrender, and mystical trust",
+}
+
+
+def _build_chinese_zodiac_profile(year: int) -> dict[str, Any]:
+    animal_index = (year - 4) % 12
+    stem_index = (year - 4) % 10
+
+    animal = CHINESE_ZODIAC_ANIMALS[animal_index]
+    stem_data = HEAVENLY_STEMS[stem_index]
+    is_dragon_year = animal == "Dragon"
+
+    dragon_cycle_message = (
+        "You were born in a Dragon year: amplified leadership force, visionary charisma, and bold destiny activation."
+        if is_dragon_year
+        else "Your chart can still consciously invoke Dragon medicine through courage, sovereignty, and purpose-led action."
+    )
+
+    return {
+        "birth_year": year,
+        "zodiac_animal": animal,
+        "zodiac_element": stem_data["element"],
+        "polarity": stem_data["polarity"],
+        "is_dragon_year": is_dragon_year,
+        "dragon_cycle_message": dragon_cycle_message,
+    }
+
+
+def _build_dragon_head_tail_chart(planets: list[dict[str, Any]]) -> dict[str, Any]:
+    north_node = next((planet for planet in planets if planet.get("name") == "North Node"), None)
+    south_node = next((planet for planet in planets if planet.get("name") == "South Node"), None)
+
+    if not north_node or not south_node:
+        raise ValueError("North/South node positions are unavailable for Dragon chart")
+
+    north_sign = north_node.get("sign", "Unknown")
+    south_sign = south_node.get("sign", "Unknown")
+    north_theme = NODE_SIGN_THEMES.get(north_sign, "purpose-led evolution")
+    south_theme = NODE_SIGN_THEMES.get(south_sign, "past pattern integration")
+
+    dragon_head_message = (
+        f"Dragon Head (North Node) in {north_sign}: your soul grows through {north_theme}."
+    )
+    dragon_tail_message = (
+        f"Dragon Tail (South Node) in {south_sign}: your inherited karmic comfort zone includes {south_theme}."
+    )
+
+    axis_message = (
+        f"Karmic axis {south_sign} → {north_sign}: transmute old habits into conscious destiny embodiment."
+    )
+
+    return {
+        "dragon_head": {
+            "name": "Dragon Head",
+            "symbol": north_node.get("symbol", "☊"),
+            "sign": north_sign,
+            "sign_symbol": north_node.get("sign_symbol"),
+            "house": north_node.get("house"),
+            "degree": north_node.get("degree"),
+            "minute": north_node.get("minute"),
+            "message": dragon_head_message,
+        },
+        "dragon_tail": {
+            "name": "Dragon Tail",
+            "symbol": south_node.get("symbol", "☋"),
+            "sign": south_sign,
+            "sign_symbol": south_node.get("sign_symbol"),
+            "house": south_node.get("house"),
+            "degree": south_node.get("degree"),
+            "minute": south_node.get("minute"),
+            "message": dragon_tail_message,
+        },
+        "karmic_axis": f"{south_sign} → {north_sign}",
+        "axis_message": axis_message,
+    }
+
+
 def get_city_coordinates(city: str, country: str) -> Dict:
     """Get coordinates and timezone for a city."""
     city_key = city.lower().strip()
@@ -735,3 +841,26 @@ async def get_my_birth_chart(user: User = Depends(get_current_user)) -> dict[str
     if not chart:
         raise HTTPException(status_code=404, detail="No birth chart saved. Please create one first.")
     return chart
+
+
+@router.post("/dragon-chart/calculate")
+async def calculate_dragon_chart(request: BirthChartRequest) -> dict[str, Any]:
+    """Calculate full natal chart plus Dragon Chart (Head/Tail + Chinese Dragon profile)."""
+    if not SWISSEPH_AVAILABLE:
+        raise HTTPException(status_code=500, detail="Swiss Ephemeris not available")
+
+    try:
+        computation = _compute_birth_chart(request)
+        natal_chart = _build_birth_chart_payload(computation)
+        chinese_profile = _build_chinese_zodiac_profile(computation.year)
+        dragon_head_tail = _build_dragon_head_tail_chart(computation.planets)
+
+        return {
+            "natal_chart": natal_chart,
+            "dragon_head_tail_chart": dragon_head_tail,
+            "chinese_dragon_chart": chinese_profile,
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+        }
+    except Exception as e:
+        logger.error(f"Dragon chart calculation error: {e}")
+        raise HTTPException(status_code=400, detail=f"Could not calculate dragon chart: {str(e)}")

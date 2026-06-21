@@ -76,6 +76,7 @@ const PracticeJournal = lazy(() => import("../pages/PracticeJournal"));
 const VideosLibrary = lazy(() => import("../pages/VideosLibrary"));
 const ArchangelOracle = lazy(() => import("../pages/ArchangelOracle"));
 const SmartRouteResolver = lazy(() => import("../pages/SmartRouteResolver"));
+const AstrologyChartsHub = lazy(() => import("../pages/astrology/AstrologyChartsHub"));
 
 const routeLoader = (
   <div className="min-h-screen flex items-center justify-center bg-background">
@@ -142,6 +143,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/oracle" element={publicElement(OracleReadings, PublicRoute, api)} />
       <Route path="/archangels" element={publicElement(ArchangelOracle, PublicRoute, api)} />
       <Route path="/astrology" element={publicElement(AstrologyCalendar, PublicRoute, api)} />
+      <Route path="/astrology/charts" element={publicElement(AstrologyChartsHub, PublicRoute, api)} />
       <Route path="/somatic" element={publicElement(SomaticMovement, PublicRoute, api)} />
       <Route path="/favorites" element={protectedElement(Favorites, ProtectedRoute, api)} />
       <Route path="/rituals" element={protectedElement(RitualBuilder, ProtectedRoute, api)} />

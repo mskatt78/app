@@ -117,6 +117,13 @@ const AstrologyCalendar = ({ api }) => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => navigate("/astrology/charts")}
+              className="px-3 py-1.5 rounded-full bg-primary/15 border border-primary/30 text-xs text-primary hover:bg-primary/25 transition-all"
+              data-testid="astrology-open-charts-button"
+            >
+              Open Birth & Dragon Charts
+            </button>
             <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/10">
               <button
                 onClick={() => setHemisphere("south")}

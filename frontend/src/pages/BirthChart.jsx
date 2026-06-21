@@ -16,7 +16,7 @@ import {
 import { BirthChartResults } from "./birthchart/BirthChartResults";
 import { appLogger } from "../utils/logger";
 
-const BirthChart = ({ user, api }) => {
+const BirthChart = ({ user, api, embeddedMode = false }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [calculating, setCalculating] = useState(false);
@@ -129,8 +129,9 @@ const BirthChart = ({ user, api }) => {
     }
   };
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className={embeddedMode ? "bg-background" : "min-h-screen bg-background pb-20"}>
       {/* Header */}
+      {!embeddedMode && (
       <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-lg border-b border-white/10">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
@@ -150,8 +151,9 @@ const BirthChart = ({ user, api }) => {
           </div>
         </div>
       </div>
+      )}
 
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <div className={`max-w-4xl mx-auto ${embeddedMode ? "px-0 py-2" : "px-4 py-6"} space-y-6`}>
         {/* Input Form */}
         {!chart && (
           <motion.div
