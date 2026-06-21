@@ -1073,3 +1073,33 @@
 ### Deployment Note
 - Since issue was reported on production, these fixes/features are now ready in preview and require redeploy to appear on live deployment.
 
+## Dragon Chart History (Authenticated Cross-Device Sync) (Iteration 179) — 2026-06-21
+- User-approved scope delivered:
+  - Auto-save every Dragon Chart calculation
+  - History inside Dragon Chart tab
+  - Actions: view + delete
+  - Summary fields: birth data + Dragon axis + Chinese profile
+  - Access model: logged-in users only
+
+### Backend
+- Added authenticated endpoints in `backend/routers/birth_chart.py`:
+  - `POST /api/birth-chart/dragon-chart/save`
+  - `GET /api/birth-chart/dragon-chart/history`
+  - `DELETE /api/birth-chart/dragon-chart/history/{chart_id}`
+- Persistence model:
+  - Collection: `dragon_charts`
+  - Uses `user_id` ownership + `is_deleted` soft-delete flag
+  - History sorted by `saved_at` descending
+
+### Frontend
+- Updated `frontend/src/pages/astrology/DragonChartPanel.jsx`:
+  - Auth users: calculate action uses `/dragon-chart/save` and auto-appends to history
+  - Guest users: still uses `/dragon-chart/calculate` (no history)
+  - Added in-tab history panel with view/delete controls and full summary metadata
+
+### Verification
+- Test report: `/app/test_reports/iteration_179.json`
+  - Backend: **100% (18/18)**
+  - Frontend: **100%**
+  - Verified auth guard behavior, sorting, soft-delete, and cross-device retrieval.
+
