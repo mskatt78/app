@@ -1032,3 +1032,44 @@
 ### Remaining Related Backlog
 - P1: Admin-side mudra/image verification queue with approval workflow and reviewer notes.
 - P2: Add pose-accuracy confidence tiering (exact pose match vs category reference) in modal metadata.
+
+## Astrology Birth Chart + Dragon Chart Expansion (Iteration 178) — 2026-06-21
+- Request came from **production observation** (feature missing live); implemented in preview and verified.
+
+### Implemented
+- Added new astrology charts hub route and UI:
+  - Frontend route: `/astrology/charts`
+  - File: `frontend/src/pages/astrology/AstrologyChartsHub.jsx`
+  - Contains two tabs inside astrology section:
+    1) Full Birth Chart (existing Swiss Ephemeris natal flow embedded)
+    2) Dragon Chart (new)
+- Added Dragon Chart panel:
+  - File: `frontend/src/pages/astrology/DragonChartPanel.jsx`
+  - Input flow supports **date + exact time + birthplace (city + country)**
+  - Displays:
+    - Chinese zodiac profile (`zodiac_animal`, `zodiac_element`, polarity, dragon-year state)
+    - Dragon Head/Tail karmic axis (North/South Node with sign/house/degree and interpretation)
+- Kept Birth Chart as full natal chart and made it embeddable:
+  - Updated `frontend/src/pages/BirthChart.jsx` with `embeddedMode` for use inside astrology tabs.
+- Navigation integration:
+  - Added CTA in astrology calendar page to open chart hub.
+  - Added `Astrology Charts` item into dashboard nav config.
+
+### Backend Added
+- New endpoint: `POST /api/birth-chart/dragon-chart/calculate`
+  - File: `backend/routers/birth_chart.py`
+  - Returns:
+    - `natal_chart` (full Swiss Ephemeris chart)
+    - `dragon_head_tail_chart` (North Node / South Node axis)
+    - `chinese_dragon_chart` (Chinese zodiac + dragon cycle messaging)
+    - `generated_at`
+
+### Verification
+- Testing report: `/app/test_reports/iteration_178.json`
+  - Backend: **100% (18/18)**
+  - Frontend: **100%**
+  - Route/tab/nav/CTA/dragon output behaviors all verified.
+
+### Deployment Note
+- Since issue was reported on production, these fixes/features are now ready in preview and require redeploy to appear on live deployment.
+
