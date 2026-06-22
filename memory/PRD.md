@@ -1476,3 +1476,28 @@
 ### Deployment Note
 - Fixes are complete in preview and require redeploy to apply on production.
 
+## Factual Image Correction (Wikimedia-Only for Ally + Angelic) (Iteration 190) — 2026-06-22
+- User feedback: newly shown images were not true/factual enough.
+
+### What was corrected immediately
+- Replaced Sacred Ally + Angelic reference images with **Wikimedia factual references only** (no stock fallback imagery).
+- Updated both:
+  - frontend visual override map (`SacredAllyAlchemy.jsx`) for guaranteed display correctness
+  - backend seed source (`backend/data/sacred_ally_alchemy_content.py`) for persistent/admin-seeded factual defaults
+
+### Verified Wikimedia image mappings (examples)
+- Dragon: `upload.wikimedia.org/...St_Catherine...Dragon...png`
+- Whale: `upload.wikimedia.org/...Humpback_Whale_underwater_shot.jpg`
+- Dolphin: `upload.wikimedia.org/...Tursiops_truncatus_01.jpg`
+- Metatron: `upload.wikimedia.org/...MetatronInIslamicArts.jpg`
+- Michael: `upload.wikimedia.org/...GuidoReni_MichaelDefeatsSatan.jpg`
+
+### Validation
+- Frontend specialist verification: PASS
+  - All requested ally/angel cards display non-empty images
+  - Modal reference image URLs confirmed on `upload.wikimedia.org`
+  - Diagram section remains present and functional
+
+### Deployment Note
+- Correction completed in preview and requires redeploy to apply in production.
+
