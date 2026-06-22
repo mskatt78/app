@@ -34,8 +34,6 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       ambientLabel={engine.ambientLabel}
       toningLabel={engine.toningLabel}
       toningActive={engine.toningActive}
-      antiRepetitionMode={engine.antiRepetitionMode}
-      onAntiRepetitionModeChange={engine.handleAntiRepetitionModeChange}
     />
   );
 }

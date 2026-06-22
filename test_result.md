@@ -6820,3 +6820,16 @@ agent_communication:
       
       SUMMARY:
       Google auth flow verification PASSED. All 4 checks completed successfully. Landing page Google login button redirects to auth.emergentagent.com with redirect parameter pointing to https://breathwork-sanctuary.preview.emergentagent.com/dashboard (NOT backend /api/auth/google endpoint). Menu overlay sign-in buttons navigate to landing page for auth (correct behavior). Network monitoring confirmed zero direct backend /api/auth/google calls. AuthCallback component handles session_id hash gracefully without crashes. All requirements met. Google auth flow prevents backend error-page redirect correctly.
+
+  - task: "GuidedPracticeOverlay mobile behavior - scroll and controls"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/GuidedPracticeOverlay.jsx, /app/frontend/src/components/guided/GuidedPracticeContent.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MOBILE GUIDED OVERLAY BEHAVIOR VERIFIED (2026-06-22): Comprehensive testing on preview URL with mobile viewport (390x844). ALL 10 REQUIREMENTS PASSED: 1) Timer visible and working ✓ - displays 9:52 and counts down correctly. 2) Narration status present ✓ - shows 'Guided narration playing • section 1 of 7' and 'Toning layer ducked during voice'. 3) Narration content visible ✓ - 6967 characters of visualization guide content displayed. 4) Narration area scrollable ✓ - has overflow-y-auto class, max-h-[36vh] allows scrolling. 5) Play button visible ✓ - positioned at y=664, height=80. 6) Exit button visible ✓ - positioned at y=784, height=44. 7) Controls visible after scroll ✓ - both play and exit buttons remain visible after scrolling 300px down. 8) 'Strict anti-repeat' NOT visible ✓ - count: 0, not found in page content. 9) 'Balanced flow' NOT visible ✓ - count: 0, not found in page content. 10) No layout breaks ✓ - no error messages, overlay has proper flex layout. Console errors: Only expected 401 auth errors and external image loading failures (non-critical). Screenshots: mobile-overlay-timer-status.png, mobile-overlay-controls.png, mobile-overlay-after-scroll.png, mobile-overlay-final-check.png. User can scroll down to read narration content and still reach controls (play + exit). Unwanted UI controls ('Strict anti-repeat', 'Balanced flow') are NOT visible. Overlay shows timer and narration status without layout break. All requirements PASSED."
+

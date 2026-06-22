@@ -27,15 +27,13 @@ export const GuidedPracticeContent = ({
   ambientLabel,
   toningLabel,
   toningActive,
-  antiRepetitionMode,
-  onAntiRepetitionModeChange,
 }) => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={`fixed inset-0 z-[200] bg-gradient-to-b ${bgGradient} flex flex-col`}
+      className={`fixed inset-0 z-[200] bg-gradient-to-b ${bgGradient} flex flex-col overflow-y-auto overscroll-contain`}
       data-testid="guided-practice-overlay"
     >
       <div className="flex items-center justify-between px-5 pt-6 pb-3 flex-shrink-0">
@@ -63,7 +61,7 @@ export const GuidedPracticeContent = ({
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 px-5 flex flex-col">
+      <div className="flex-1 min-h-0 px-5 flex flex-col pb-4">
         <AnimatePresence mode="wait">
           {isComplete ? (
             <motion.div
@@ -149,34 +147,7 @@ export const GuidedPracticeContent = ({
                 </div>
               )}
 
-              <div className="flex items-center justify-center gap-2 mb-4" data-testid="guided-anti-repetition-mode-group">
-                <button
-                  type="button"
-                  onClick={() => onAntiRepetitionModeChange?.("strict")}
-                  className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
-                    antiRepetitionMode === "strict"
-                      ? "bg-white/25 border-white/60 text-white"
-                      : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"
-                  }`}
-                  data-testid="guided-mode-strict-btn"
-                >
-                  Strict anti-repeat
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onAntiRepetitionModeChange?.("balanced")}
-                  className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
-                    antiRepetitionMode === "balanced"
-                      ? "bg-white/25 border-white/60 text-white"
-                      : "bg-white/5 border-white/15 text-white/70 hover:bg-white/10"
-                  }`}
-                  data-testid="guided-mode-balanced-btn"
-                >
-                  Balanced flow
-                </button>
-              </div>
-
-              <div className="flex-1 min-h-0 overflow-y-auto rounded-2xl bg-white/5 p-5 mb-6" data-testid="guided-practice-description">
+              <div className="rounded-2xl bg-white/5 p-5 mb-6 max-h-[36vh] overflow-y-auto overscroll-contain" data-testid="guided-practice-description">
                 <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Visualization Guide</p>
                 <div className="space-y-3">
                   {narrationParagraphs.map((paragraph, index) => (
@@ -185,7 +156,7 @@ export const GuidedPracticeContent = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-center mb-4">
+              <div className="flex items-center justify-center mb-4 mt-auto">
                 <button
                   onClick={handlePlay}
                   className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
@@ -215,7 +186,7 @@ export const GuidedPracticeContent = ({
       </div>
 
       {!isComplete && (
-        <div className="flex-shrink-0 px-5 pb-6 pt-2">
+        <div className="flex-shrink-0 px-5 pt-2 pb-[calc(env(safe-area-inset-bottom,0px)+1rem)]">
           <button
             onClick={onExit}
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-sm text-white/40"
