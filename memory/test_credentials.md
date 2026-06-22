@@ -20,6 +20,11 @@
 - **Password:** `Pass1234!`
 - **Use for:** object-storage voice notes, `/api/practice-journal` persistence, `/api/voice-files`, `/api/voice-profiles`
 
+## Google OAuth Test Identity (Managed by Emergent Auth)
+- **Flow:** `https://auth.emergentagent.com/?redirect=${window.location.origin}/dashboard`
+- **Note:** No app-managed password. Use allowed Google account(s) and complete OAuth consent.
+- **Critical:** Frontend must never redirect directly to backend `/api/auth/google` endpoint; always use Emergent auth host redirect flow.
+
 ## User Testing
 - No login required for most features (public access)
 - Google OAuth available for account creation

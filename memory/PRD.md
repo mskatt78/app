@@ -1379,3 +1379,27 @@
 ### Deployment Note
 - This fix is implemented in preview and requires redeploy for production to receive the corrected install behavior.
 
+## Production Google Sign-In Error-Page Fix (Iteration 187) — 2026-06-22
+- User reported production sign-in failing with Google error page.
+
+### Root Cause
+- Main menu Google login path was still sending users to backend endpoint `/api/auth/google` directly, which can surface backend JSON/error pages in browser.
+
+### Fix Applied
+- Updated `frontend/src/pages/main-menu/MainMenuContainer.jsx` Google login handler:
+  - Now redirects to Emergent Auth host: `https://auth.emergentagent.com/?redirect=${window.location.origin}/dashboard`
+  - Added explicit code reminder comment to avoid hardcoded/fallback redirect URLs.
+
+### Why this fixes it
+- Aligns all Google sign-in entry points (Landing + Main Menu) to the same managed OAuth flow.
+- Ensures callback returns with `#session_id=...` and is processed by existing `AuthCallback` route logic.
+
+### Validation
+- Frontend specialist auth test: PASS
+  - No direct frontend redirect to backend `/api/auth/google`
+  - Redirect target correctly points to `auth.emergentagent.com` with current origin `/dashboard`
+  - Session hash callback handling (`session_id`) verified without crash
+
+### Deployment Note
+- Fix is in preview and requires redeploy to apply in production.
+
