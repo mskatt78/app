@@ -3779,6 +3779,165 @@ async def get_angelic_alchemy_item(item_id: str) -> dict[str, Any]:
     return _enrich_content_integrity(item, "hybrid-curated")
 
 
+# ============ SACRED ALLY AUDIO JOURNEYS & PATHWAYS ==========
+
+@router.get("/sacred-ally-audio-journeys")
+async def get_sacred_ally_audio_journeys(
+    ally_id: Optional[str] = None,
+    category: Optional[str] = None,
+    focus_tag: Optional[str] = None,
+) -> list[dict[str, Any]]:
+    """Get guided ally/angelic audio journey templates."""
+    db = get_db()
+    query: dict[str, Any] = {}
+    if ally_id:
+        query["ally_id"] = ally_id
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    if focus_tag:
+        query["focus_tags"] = {"$in": [focus_tag]}
+
+    items = await db.sacred_ally_audio_journeys.find(query, {"_id": 0}).to_list(length=200)
+    return [_enrich_content_integrity(item, "hybrid-curated") for item in items]
+
+
+@router.get("/sacred-ally-pathways")
+async def get_sacred_ally_pathways(ally_id: Optional[str] = None) -> list[dict[str, Any]]:
+    """Get Sacred Ally progression pathways (7/14/21 day style)."""
+    db = get_db()
+    query: dict[str, Any] = {}
+    if ally_id:
+        query["ally_id"] = ally_id
+
+    items = await db.sacred_ally_pathways.find(query, {"_id": 0}).to_list(length=200)
+    return [_enrich_content_integrity(item, "hybrid-curated") for item in items]
+
+
+@router.post("/sacred-ally/daily-recommendation")
+async def get_sacred_ally_daily_recommendation(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return personalized ally recommendation by mood + moon + intention with deterministic variety."""
+    db = get_db()
+    mood = str(payload.get("mood") or "balanced").strip().lower()
+    moon_phase = str(payload.get("moon_phase") or "").strip().lower()
+    intention = str(payload.get("intention") or "clarity").strip().lower()
+    recent_ids = [str(x).strip() for x in (payload.get("recent_ids") or []) if str(x).strip()]
+
+    allies = await db.sacred_ally_alchemy.find({}, {"_id": 0}).to_list(length=200)
+    angelic = await db.angelic_alchemy.find({}, {"_id": 0}).to_list(length=100)
+    combined = allies + angelic
+    if not combined:
+        raise HTTPException(status_code=404, detail="No Sacred Ally content available")
+
+    mood_weights = {
+        "anxious": {"whale": 4, "dolphin": 3, "raphael": 3, "gabriel": 2},
+        "tired": {"dragon": 3, "michael": 3, "wolf": 2, "jaguar": 2},
+        "sad": {"whale": 4, "raphael": 3, "fairy": 2, "gabriel": 2},
+        "overwhelmed": {"metatron": 4, "whale": 3, "wolf": 2},
+        "focused": {"dragon": 3, "metatron": 3, "michael": 2},
+        "balanced": {"dolphin": 2, "fairy": 2, "dragon": 2, "metatron": 2},
+    }
+
+    moon_weights = {
+        "new": {"metatron": 3, "fairy": 2, "gabriel": 2},
+        "waxing": {"dragon": 3, "dolphin": 2, "michael": 2},
+        "full": {"whale": 4, "wolf": 2, "raphael": 2},
+        "waning": {"jaguar": 3, "metatron": 2, "michael": 2},
+    }
+
+    intention_weights = {
+        "courage": {"dragon": 4, "michael": 3, "wolf": 2},
+        "healing": {"whale": 3, "raphael": 4, "dolphin": 2},
+        "clarity": {"metatron": 4, "raven": 3, "gabriel": 2},
+        "joy": {"dolphin": 4, "fairy": 3, "gabriel": 2},
+        "protection": {"michael": 4, "dragon": 3, "jaguar": 2},
+    }
+
+    moon_key = ""
+    if "new" in moon_phase:
+        moon_key = "new"
+    elif "wax" in moon_phase:
+        moon_key = "waxing"
+    elif "full" in moon_phase:
+        moon_key = "full"
+    elif "wan" in moon_phase or "last quarter" in moon_phase:
+        moon_key = "waning"
+
+    seed_key = f"{mood}|{moon_key}|{intention}"
+    rotation_seed = sum(ord(ch) for ch in seed_key)
+
+    def _score(entry: dict[str, Any]) -> tuple[int, int]:
+        name = str(entry.get("name") or "").lower()
+        category = str(entry.get("category") or "").lower()
+        ally_type = str(entry.get("ally_type") or "").lower()
+        base = 1
+        keys = [category, ally_type, name]
+
+        def add_weight(weight_map: dict[str, int] | None) -> int:
+            if not weight_map:
+                return 0
+            score = 0
+            for key, val in weight_map.items():
+                key_l = key.lower()
+                if any(key_l in token for token in keys):
+                    score += int(val)
+            return score
+
+        base += add_weight(mood_weights.get(mood))
+        base += add_weight(moon_weights.get(moon_key))
+        base += add_weight(intention_weights.get(intention))
+
+        if str(entry.get("id") or "") in recent_ids:
+            base -= 3
+
+        tie_break = (rotation_seed + sum(ord(c) for c in str(entry.get("id") or ""))) % 100
+        return base, tie_break
+
+    ranked = sorted(combined, key=lambda item: _score(item), reverse=True)
+    selected = ranked[0]
+    selected_id = str(selected.get("id") or "")
+
+    journey = await db.sacred_ally_audio_journeys.find_one({"ally_id": selected_id}, {"_id": 0})
+    pathway = await db.sacred_ally_pathways.find_one({"ally_id": selected_id}, {"_id": 0})
+
+    selected_name = str(selected.get("name") or "").lower()
+    selected_category = str(selected.get("category") or "").lower()
+    selected_type = str(selected.get("ally_type") or "").lower()
+
+    if not journey:
+        if "metatron" in selected_name:
+            journey = await db.sacred_ally_audio_journeys.find_one({"id": "journey-metatron-cube-attunement"}, {"_id": 0})
+        elif "michael" in selected_name:
+            journey = await db.sacred_ally_audio_journeys.find_one({"id": "journey-michael-blue-shield"}, {"_id": 0})
+        elif "raphael" in selected_name or "gabriel" in selected_name:
+            journey = await db.sacred_ally_audio_journeys.find_one({"id": "journey-whale-songline-immersion"}, {"_id": 0})
+        elif selected_category == "whales":
+            journey = await db.sacred_ally_audio_journeys.find_one({"id": "journey-whale-songline-immersion"}, {"_id": 0})
+        elif selected_category == "dolphins":
+            journey = await db.sacred_ally_audio_journeys.find_one({"id": "journey-dolphin-joy-current"}, {"_id": 0})
+        elif selected_category == "dragon" or selected_type == "dragon":
+            journey = await db.sacred_ally_audio_journeys.find_one({"id": "journey-dragon-fire-initiation"}, {"_id": 0})
+
+    if not pathway:
+        if "metatron" in selected_name:
+            pathway = await db.sacred_ally_pathways.find_one({"id": "pathway-metatron-21"}, {"_id": 0})
+        elif selected_category == "whales":
+            pathway = await db.sacred_ally_pathways.find_one({"id": "pathway-whale-14"}, {"_id": 0})
+        elif selected_category == "dragon" or selected_type == "dragon":
+            pathway = await db.sacred_ally_pathways.find_one({"id": "pathway-dragon-21"}, {"_id": 0})
+
+    return {
+        "recommended_at": datetime.now(timezone.utc).isoformat(),
+        "input": {
+            "mood": mood,
+            "moon_phase": moon_phase,
+            "intention": intention,
+        },
+        "recommended_ally": _enrich_content_integrity(selected, "hybrid-curated"),
+        "recommended_journey": _enrich_content_integrity(journey, "hybrid-curated") if journey else None,
+        "recommended_pathway": _enrich_content_integrity(pathway, "hybrid-curated") if pathway else None,
+    }
+
+
 # ============ ANCIENT WISDOM TRADITIONS ============
 
 @router.get("/ancient-wisdom")

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Sparkles, Flame, Waves, Wind, Shield, X, Feather, Star, ChevronRight } from "lucide-react";
+import { ArrowLeft, Sparkles, Flame, Waves, Wind, Shield, X, Feather, Star, ChevronRight, Loader2, PlayCircle } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 
 const TABS = [
   { id: "allies", label: "Sacred Ally Alchemy", icon: Flame },
@@ -50,6 +51,45 @@ export default function SacredAllyAlchemy({ api }) {
   const [allies, setAllies] = useState([]);
   const [angelic, setAngelic] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [journeys, setJourneys] = useState([]);
+  const [pathways, setPathways] = useState([]);
+  const [dailyRecommendation, setDailyRecommendation] = useState(null);
+  const [dailyLoading, setDailyLoading] = useState(false);
+  const [recommendMood, setRecommendMood] = useState("balanced");
+  const [recommendIntention, setRecommendIntention] = useState("clarity");
+  const [recommendMoonPhase, setRecommendMoonPhase] = useState("full moon");
+
+  const [roadmapExpanded, setRoadmapExpanded] = useState(true);
+
+  const ROADMAP_PHASES = [
+    {
+      id: "p0",
+      title: "P0 — Live Now",
+      bullets: [
+        "Sacred Ally + Angelic Alchemy full-depth entries",
+        "Whale Song Lines module",
+        "Admin editable collections",
+      ],
+    },
+    {
+      id: "p1",
+      title: "P1 — Engagement Upgrade",
+      bullets: [
+        "Guided ally audio journeys",
+        "21-day pathways",
+        "Personalized daily ally recommendation",
+      ],
+    },
+    {
+      id: "p2",
+      title: "P2 — Premium Expansion",
+      bullets: [
+        "Compare two ally pathways",
+        "Facilitator session mode",
+        "Paid advanced ceremony packs",
+      ],
+    },
+  ];
 
   useEffect(() => {
     const load = async () => {
@@ -59,8 +99,14 @@ export default function SacredAllyAlchemy({ api }) {
           api.get("/sacred-ally-alchemy"),
           api.get("/angelic-alchemy"),
         ]);
+        const [journeyRes, pathwayRes] = await Promise.all([
+          api.get("/sacred-ally-audio-journeys"),
+          api.get("/sacred-ally-pathways"),
+        ]);
         setAllies(Array.isArray(alliesRes.data) ? alliesRes.data : []);
         setAngelic(Array.isArray(angelicRes.data) ? angelicRes.data : []);
+        setJourneys(Array.isArray(journeyRes.data) ? journeyRes.data : []);
+        setPathways(Array.isArray(pathwayRes.data) ? pathwayRes.data : []);
       } catch (error) {
         appLogger.error("Failed loading Sacred Ally Alchemy", error);
       } finally {
@@ -76,6 +122,36 @@ export default function SacredAllyAlchemy({ api }) {
   }, [allies, allyFilter]);
 
   const cards = tab === "allies" ? filteredAllies : angelic;
+
+  const requestDailyRecommendation = async () => {
+    setDailyLoading(true);
+    try {
+      const recentIds = [selected?.id, dailyRecommendation?.recommended_ally?.id]
+        .filter(Boolean);
+
+      const response = await api.post("/sacred-ally/daily-recommendation", {
+        mood: recommendMood,
+        moon_phase: recommendMoonPhase,
+        intention: recommendIntention,
+        recent_ids: recentIds,
+      });
+      setDailyRecommendation(response.data || null);
+    } catch (error) {
+      appLogger.error("Daily ally recommendation failed", error);
+    } finally {
+      setDailyLoading(false);
+    }
+  };
+
+  const selectedJourney = useMemo(
+    () => journeys.find((entry) => entry.ally_id === selected?.id),
+    [journeys, selected?.id]
+  );
+
+  const selectedPathway = useMemo(
+    () => pathways.find((entry) => entry.ally_id === selected?.id),
+    [pathways, selected?.id]
+  );
 
   return (
     <div className="min-h-screen bg-background" data-testid="sacred-ally-alchemy-page">
@@ -97,6 +173,81 @@ export default function SacredAllyAlchemy({ api }) {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
+        <div className="rounded-2xl border border-white/10 bg-card/50 p-5" data-testid="sacred-ally-roadmap-card">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-base font-serif">Potential Improvements Roadmap</h2>
+            <button
+              onClick={() => setRoadmapExpanded((v) => !v)}
+              className="text-xs text-primary hover:text-primary/80"
+              data-testid="sacred-ally-roadmap-toggle"
+            >
+              {roadmapExpanded ? "Collapse" : "Expand"}
+            </button>
+          </div>
+          {roadmapExpanded && (
+            <div className="grid md:grid-cols-3 gap-3 mt-3" data-testid="sacred-ally-roadmap-phases">
+              {ROADMAP_PHASES.map((phase) => (
+                <div key={phase.id} className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid={`sacred-ally-roadmap-${phase.id}`}>
+                  <p className="text-sm text-primary mb-2">{phase.title}</p>
+                  <ul className="space-y-1">
+                    {phase.bullets.map((bullet) => (
+                      <li key={bullet} className="text-xs text-muted-foreground">• {bullet}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-900/20 via-background to-cyan-900/20 p-5" data-testid="sacred-ally-daily-recommendation-card">
+          <h2 className="text-base font-serif mb-3">What to Practice Today</h2>
+          <div className="grid sm:grid-cols-4 gap-2 mb-3">
+            <input
+              value={recommendMood}
+              onChange={(e) => setRecommendMood(e.target.value)}
+              className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+              placeholder="mood (e.g. anxious)"
+              data-testid="sacred-ally-recommend-mood-input"
+            />
+            <input
+              value={recommendMoonPhase}
+              onChange={(e) => setRecommendMoonPhase(e.target.value)}
+              className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+              placeholder="moon phase"
+              data-testid="sacred-ally-recommend-moon-input"
+            />
+            <input
+              value={recommendIntention}
+              onChange={(e) => setRecommendIntention(e.target.value)}
+              className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+              placeholder="intention"
+              data-testid="sacred-ally-recommend-intention-input"
+            />
+            <Button
+              onClick={requestDailyRecommendation}
+              disabled={dailyLoading}
+              data-testid="sacred-ally-recommend-button"
+            >
+              {dailyLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Finding...</> : "Recommend"}
+            </Button>
+          </div>
+
+          {dailyRecommendation?.recommended_ally && (
+            <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-recommendation-result">
+              <p className="text-xs text-muted-foreground">Recommended Ally</p>
+              <p className="text-sm font-medium text-cyan-200">{dailyRecommendation.recommended_ally.name}</p>
+              <p className="text-xs text-muted-foreground mt-1">{dailyRecommendation.recommended_ally.description}</p>
+              {dailyRecommendation.recommended_journey?.title && (
+                <p className="text-xs mt-2 text-amber-200">Journey: {dailyRecommendation.recommended_journey.title}</p>
+              )}
+              {dailyRecommendation.recommended_pathway?.title && (
+                <p className="text-xs text-emerald-200">Pathway: {dailyRecommendation.recommended_pathway.title}</p>
+              )}
+            </div>
+          )}
+        </div>
+
         <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-cyan-900/20 via-background to-amber-900/20 p-5" data-testid="sacred-ally-hero-copy">
           <p className="text-sm text-muted-foreground leading-relaxed">
             Work deeply with Dragon Alchemy, Fairies, Wolves, Whales with Song Lines, Dolphins, and expanded Sacred Allies — plus Angelic Alchemy including Metatron’s Cube and practical ritual pathways.
@@ -220,6 +371,38 @@ export default function SacredAllyAlchemy({ api }) {
                 <p className="text-sm text-muted-foreground" data-testid="sacred-ally-modal-description">{selected.description}</p>
 
                 <SectionList title="Alchemy Teachings" icon={Sparkles} items={selected.alchemy_teachings} testId="sacred-ally-alchemy-teachings" />
+
+                {selectedJourney && (
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-guided-journey-card">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Guided Audio Journey</p>
+                    <p className="text-sm text-primary mb-2">{selectedJourney.title}</p>
+                    <p className="text-xs text-muted-foreground mb-3">{selectedJourney.duration_minutes} minutes · {selectedJourney.ambient} ambience</p>
+                    <GuidedAudioButton
+                      api={api}
+                      script={selectedJourney.script}
+                      label={`Play ${selectedJourney.title}`}
+                      practiceName={selectedJourney.title}
+                      durationMinutes={selectedJourney.duration_minutes}
+                      sourceTexts={selectedJourney.focus_tags || []}
+                      steps={selectedJourney.focus_tags || []}
+                      className="w-full justify-center"
+                    />
+                  </div>
+                )}
+
+                {selectedPathway && (
+                  <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-pathway-card">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground">Pathway</p>
+                    <p className="text-sm text-emerald-200 mt-1">{selectedPathway.title}</p>
+                    <p className="text-xs text-muted-foreground">{selectedPathway.days} days · {selectedPathway.level}</p>
+                    <p className="text-xs text-muted-foreground mt-2">{selectedPathway.theme}</p>
+                    <ul className="mt-2 space-y-1" data-testid="sacred-ally-pathway-modules">
+                      {(selectedPathway.modules || []).map((module) => (
+                        <li key={module} className="text-xs text-muted-foreground">• {module}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 {selected.song_lines?.length > 0 && (
                   <SectionList title="Whale Song Lines" icon={Waves} items={selected.song_lines} testId="sacred-ally-song-lines" />

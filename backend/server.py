@@ -197,6 +197,7 @@ async def _seed_core_spiritual_content() -> None:
     from data.somatic_practices import SOMATIC_PRACTICES
     from data.yoga_poses import YOGA_POSES
     from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
+    from data.sacred_ally_audio_journeys import SACRED_ALLY_AUDIO_JOURNEYS, SACRED_ALLY_PATHWAYS
 
     all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL + ANCIENT_WISDOM_AVALON
 
@@ -215,6 +216,8 @@ async def _seed_core_spiritual_content() -> None:
     await _refresh_collection("mudras", MUDRAS, f"mudras refreshed — {len(MUDRAS)} entries.")
     await _refresh_collection("sacred_ally_alchemy", SACRED_ALLY_ALCHEMY, f"sacred_ally_alchemy refreshed — {len(SACRED_ALLY_ALCHEMY)} entries.")
     await _refresh_collection("angelic_alchemy", ANGELIC_ALCHEMY, f"angelic_alchemy refreshed — {len(ANGELIC_ALCHEMY)} entries.")
+    await _refresh_collection("sacred_ally_audio_journeys", SACRED_ALLY_AUDIO_JOURNEYS, f"sacred_ally_audio_journeys refreshed — {len(SACRED_ALLY_AUDIO_JOURNEYS)} entries.")
+    await _refresh_collection("sacred_ally_pathways", SACRED_ALLY_PATHWAYS, f"sacred_ally_pathways refreshed — {len(SACRED_ALLY_PATHWAYS)} entries.")
 
 
 async def _seed_healing_modalities_and_embodiment() -> None:
@@ -555,6 +558,7 @@ async def seed_all_content() -> None:
     from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
     from data.video_content import VIDEO_TUTORIALS
     from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
+    from data.sacred_ally_audio_journeys import SACRED_ALLY_AUDIO_JOURNEYS, SACRED_ALLY_PATHWAYS
 
     seed_config = SeedContentConfig(
         yoga_poses=YOGA_POSES,
@@ -583,6 +587,8 @@ async def seed_all_content() -> None:
     await _seed_content_collections(collections)
     await _refresh_collection("sacred_ally_alchemy", SACRED_ALLY_ALCHEMY, f"sacred_ally_alchemy refreshed — {len(SACRED_ALLY_ALCHEMY)} entries.")
     await _refresh_collection("angelic_alchemy", ANGELIC_ALCHEMY, f"angelic_alchemy refreshed — {len(ANGELIC_ALCHEMY)} entries.")
+    await _refresh_collection("sacred_ally_audio_journeys", SACRED_ALLY_AUDIO_JOURNEYS, f"sacred_ally_audio_journeys refreshed — {len(SACRED_ALLY_AUDIO_JOURNEYS)} entries.")
+    await _refresh_collection("sacred_ally_pathways", SACRED_ALLY_PATHWAYS, f"sacred_ally_pathways refreshed — {len(SACRED_ALLY_PATHWAYS)} entries.")
     await _seed_light_codes_document(LIGHT_CODES)
 
     # Seed courses (sacred rites) — always refresh so content deepening takes effect
