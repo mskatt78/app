@@ -1224,3 +1224,31 @@
 ### Deployment Note
 - Implemented in preview; production deployment requires redeploy to receive iteration 181 features.
 
+## Production UX Follow-up: Hide Roadmap/Tools From Initial View (Iteration 182) — 2026-06-22
+- User feedback from production screenshot: roadmap/planning content should not dominate in-app first impression.
+
+### Fix Applied
+- Updated `frontend/src/pages/SacredAllyAlchemy.jsx` to make app **content-first**:
+  - Ally content (hero + tabs + filters + cards) now appears first.
+  - Recommendation/Roadmap tools moved behind optional toggle card near bottom.
+  - Tools are hidden by default (`showPracticeTools=false`).
+  - Roadmap remains collapsed by default (`roadmapExpanded=false`).
+
+### New UX Behavior
+- Initial page = actual Sacred Ally content.
+- Optional panel:
+  - `Show Tools` button reveals:
+    - “What to Practice Today”
+    - “Potential Improvements Roadmap”
+  - `Hide Tools` collapses both again.
+
+### Validation
+- Mobile smoke screenshot confirms content-first rendering at 390x844.
+- Frontend specialist validation: **PASS**
+  - Hidden-by-default tools verified
+  - Toggle show/hide verified
+  - Ally cards and modal flow unaffected
+
+### Deployment Note
+- This correction is in preview and needs redeploy to appear in production.
+
