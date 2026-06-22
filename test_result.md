@@ -6007,11 +6007,50 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ PASSED (2026-06-22): GET /api/angelic-alchemy returns 200 with 4 angelic entries. Metatron entry (angel-metatron-cube-alchemy) confirmed with sacred_geometry='Metatron's Cube'. All angelic entries have sacred_geometry field."
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION PASSED (2026-06-23): GET /api/angelic-alchemy verified in regression test. Returns 200 with 4 entries. Metatron entry (angel-metatron-cube-alchemy) confirmed with sacred_geometry='Metatron's Cube'. No regressions detected."
+
+  - task: "Sacred Ally Alchemy API - Category filter (whales)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED (2026-06-23): GET /api/sacred-ally-alchemy?category=whales filter verified. Returns 200 with 1 whale entry. All returned entries correctly filtered to whale category. Filter functionality working correctly."
+
+  - task: "Angelic Alchemy API - Sacred geometry filter (Metatron)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED (2026-06-23): GET /api/angelic-alchemy?sacred_geometry=Metatron filter verified. Returns 200 with 1 Metatron entry. All returned entries correctly filtered to Metatron sacred_geometry. Filter functionality working correctly."
+
+  - task: "Health endpoint regression check"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ REGRESSION PASSED (2026-06-23): GET /api/health verified in regression test. Returns 200 with status='healthy', app='Shamanic Elements Temple Of The Soul', version='2.0.0'. Health endpoint still functioning correctly."
 
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 181
+  test_sequence: 182
   run_ui: false
 
 test_plan:
@@ -6161,4 +6200,67 @@ agent_communication:
       ✅ No critical issues or blocking errors detected
       
       Sacred Ally Alchemy verification COMPLETE. All requirements met.
+
+  - agent: "testing"
+    message: |
+      Sacred Ally Alchemy & Angelic Alchemy Backend Regression Test (2026-06-23):
+      
+      VERIFICATION REQUEST: Run concise backend/API regression for Sacred Ally Alchemy additions
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL BACKEND REGRESSION TESTS PASSED (5/5):
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 1: GET /api/health ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Status: 200 OK
+      - Response: status='healthy', app='Shamanic Elements Temple Of The Soul', version='2.0.0'
+      - Health endpoint still functioning correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 2: GET /api/sacred-ally-alchemy ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Status: 200 OK
+      - Total entries: 7 (non-empty list confirmed)
+      - Whale entry found: ally-whale-oceanic-hymn
+      - Whale entry has song_lines field: ✓
+      - Whale entry has song_line_practices field: ✓
+      - All required fields present
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 3: GET /api/sacred-ally-alchemy?category=whales ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Status: 200 OK
+      - Filter returned: 1 whale entry
+      - All entries correctly filtered to whale category
+      - Category filter working correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 4: GET /api/angelic-alchemy ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Status: 200 OK
+      - Total entries: 4 (non-empty list confirmed)
+      - Metatron entry found: angel-metatron-cube-alchemy
+      - Metatron entry sacred_geometry: "Metatron's Cube" ✓
+      - All required fields present
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 5: GET /api/angelic-alchemy?sacred_geometry=Metatron ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Status: 200 OK
+      - Filter returned: 1 Metatron entry
+      - All entries correctly filtered to Metatron sacred_geometry
+      - Sacred geometry filter working correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ Health endpoint: Still healthy (200 OK)
+      ✅ Sacred Ally Alchemy endpoint: Returns non-empty list with whale entry containing song_lines + song_line_practices
+      ✅ Sacred Ally Alchemy category filter: Whales filter works correctly
+      ✅ Angelic Alchemy endpoint: Returns non-empty list with Metatron entry containing sacred_geometry
+      ✅ Angelic Alchemy sacred_geometry filter: Metatron filter works correctly
+      
+      All 5 backend regression tests PASSED. No issues detected.
 

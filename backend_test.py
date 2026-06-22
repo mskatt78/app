@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Backend Regression Test - Iteration: Guided Playback Overlap Guards & Voice Notes
+Backend Regression Test - Sacred Ally Alchemy & Angelic Alchemy API Validation
 Test URL: https://breathwork-sanctuary.preview.emergentagent.com
 """
 
@@ -11,7 +11,7 @@ import sys
 BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com"
 
 def test_health_endpoint():
-    """Test 1: GET /api/health should return 200"""
+    """Test 1: GET /api/health should return 200 and healthy status"""
     print("\n" + "="*80)
     print("TEST 1: GET /api/health")
     print("="*80)
@@ -40,73 +40,61 @@ def test_health_endpoint():
         return False
 
 
-def test_expand_script_endpoint():
-    """Test 2: POST /api/content/expand-script with guided payload"""
+def test_sacred_ally_alchemy_endpoint():
+    """Test 2: GET /api/sacred-ally-alchemy returns non-empty list with whale entry"""
     print("\n" + "="*80)
-    print("TEST 2: POST /api/content/expand-script")
+    print("TEST 2: GET /api/sacred-ally-alchemy")
     print("="*80)
     
-    payload = {
-        "practice_type": "meditation",
-        "practice_name": "Peaceful Breath Meditation",
-        "target_minutes": 5,
-        "segments": [
-            {
-                "name": "Opening",
-                "duration_minutes": 1,
-                "brief_guidance": "Begin by finding a comfortable seated position"
-            },
-            {
-                "name": "Breath Awareness",
-                "duration_minutes": 3,
-                "brief_guidance": "Focus on the natural rhythm of your breath"
-            },
-            {
-                "name": "Closing",
-                "duration_minutes": 1,
-                "brief_guidance": "Gently return your awareness to the room"
-            }
-        ],
-        "use_ai": False
-    }
-    
     try:
-        response = requests.post(
-            f"{BASE_URL}/api/content/expand-script",
-            json=payload,
-            timeout=30
-        )
+        response = requests.get(f"{BASE_URL}/api/sacred-ally-alchemy", timeout=10)
         print(f"Status Code: {response.status_code}")
         
-        if response.status_code == 200:
-            data = response.json()
-            print(f"Response keys: {list(data.keys())}")
-            
-            # Verify expected fields
-            required_fields = ['target_minutes', 'target_word_count', 'word_count', 'paragraphs']
-            missing_fields = [f for f in required_fields if f not in data]
-            
-            if missing_fields:
-                print(f"❌ FAIL: Missing required fields: {missing_fields}")
-                return False
-            
-            print(f"Target Minutes: {data['target_minutes']}")
-            print(f"Target Word Count: {data['target_word_count']}")
-            print(f"Actual Word Count: {data['word_count']}")
-            print(f"Paragraphs/Segments: {len(data['paragraphs'])} segments")
-            
-            # Verify word count meets threshold (>= 80% of target)
-            threshold = data['target_word_count'] * 0.8
-            if data['word_count'] >= threshold:
-                print(f"✅ PASS: Expand-script returns valid response with paragraphs/segments")
-                print(f"   Word count {data['word_count']} >= threshold {threshold:.0f}")
-                return True
-            else:
-                print(f"❌ FAIL: Word count {data['word_count']} < threshold {threshold:.0f}")
-                return False
-        else:
+        if response.status_code != 200:
             print(f"❌ FAIL: Expected 200, got {response.status_code}")
-            print(f"Response: {response.text}")
+            return False
+        
+        data = response.json()
+        
+        # Check if response is non-empty list
+        if not isinstance(data, list):
+            print(f"❌ FAIL: Expected list, got {type(data)}")
+            return False
+        
+        if len(data) == 0:
+            print("❌ FAIL: Response is empty list")
+            return False
+        
+        print(f"✓ Response is non-empty list with {len(data)} entries")
+        
+        # Find whale entry
+        whale_entry = None
+        for entry in data:
+            if 'category' in entry and 'whale' in entry['category'].lower():
+                whale_entry = entry
+                break
+        
+        if not whale_entry:
+            print("❌ FAIL: No whale entry found in response")
+            print(f"Available categories: {[e.get('category', 'N/A') for e in data]}")
+            return False
+        
+        print(f"✓ Found whale entry: {whale_entry.get('id', 'N/A')}")
+        
+        # Check for song_lines field
+        has_song_lines = 'song_lines' in whale_entry
+        print(f"  - has song_lines field: {has_song_lines}")
+        
+        # Check for song_line_practices field
+        has_song_line_practices = 'song_line_practices' in whale_entry
+        print(f"  - has song_line_practices field: {has_song_line_practices}")
+        
+        if has_song_lines and has_song_line_practices:
+            print("✅ PASS: Sacred ally alchemy endpoint returns whale entry with song_lines + song_line_practices")
+            return True
+        else:
+            print("❌ FAIL: Whale entry missing song_lines or song_line_practices fields")
+            print(f"Whale entry keys: {list(whale_entry.keys())}")
             return False
             
     except Exception as e:
@@ -114,48 +102,139 @@ def test_expand_script_endpoint():
         return False
 
 
-def test_tts_endpoint():
-    """Test 3: POST /api/tts/generate-base64 with short text"""
+def test_sacred_ally_alchemy_filter_whales():
+    """Test 3: GET /api/sacred-ally-alchemy?category=whales filters successfully"""
     print("\n" + "="*80)
-    print("TEST 3: POST /api/tts/generate-base64")
+    print("TEST 3: GET /api/sacred-ally-alchemy?category=whales")
     print("="*80)
     
-    payload = {
-        "text": "Welcome to your guided meditation practice. Take a deep breath and relax.",
-        "voice": "alloy"
-    }
-    
     try:
-        response = requests.post(
-            f"{BASE_URL}/api/tts/generate-base64",
-            json=payload,
-            timeout=30
-        )
+        response = requests.get(f"{BASE_URL}/api/sacred-ally-alchemy?category=whales", timeout=10)
         print(f"Status Code: {response.status_code}")
         
-        if response.status_code == 200:
-            data = response.json()
-            print(f"Response keys: {list(data.keys())}")
-            
-            # Verify audio_base64 field exists
-            if 'audio_base64' not in data:
-                print("❌ FAIL: Missing 'audio_base64' field in response")
-                return False
-            
-            audio_base64 = data['audio_base64']
-            audio_length = len(audio_base64)
-            print(f"Audio Base64 Length: {audio_length} characters")
-            
-            # Verify audio_base64 is not empty and looks valid
-            if audio_length > 1000:  # Should be substantial for the given text
-                print(f"✅ PASS: TTS endpoint returns audio_base64 ({audio_length} chars)")
-                return True
-            else:
-                print(f"❌ FAIL: audio_base64 too short ({audio_length} chars)")
-                return False
-        else:
+        if response.status_code != 200:
             print(f"❌ FAIL: Expected 200, got {response.status_code}")
-            print(f"Response: {response.text}")
+            return False
+        
+        data = response.json()
+        
+        # Check if response is list
+        if not isinstance(data, list):
+            print(f"❌ FAIL: Expected list, got {type(data)}")
+            return False
+        
+        if len(data) == 0:
+            print("❌ FAIL: Filter returned empty list")
+            return False
+        
+        print(f"✓ Filter returned {len(data)} entries")
+        
+        # Verify all entries are whale category
+        all_whales = all('category' in entry and 'whale' in entry['category'].lower() for entry in data)
+        
+        if all_whales:
+            print(f"✓ All {len(data)} entries are whale category")
+            print("✅ PASS: Category filter for whales works correctly")
+            return True
+        else:
+            print("❌ FAIL: Not all entries are whale category")
+            categories = [e.get('category', 'N/A') for e in data]
+            print(f"Categories found: {categories}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ FAIL: Exception occurred: {str(e)}")
+        return False
+
+
+def test_angelic_alchemy_endpoint():
+    """Test 4: GET /api/angelic-alchemy returns non-empty list with Metatron entry"""
+    print("\n" + "="*80)
+    print("TEST 4: GET /api/angelic-alchemy")
+    print("="*80)
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/angelic-alchemy", timeout=10)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ FAIL: Expected 200, got {response.status_code}")
+            return False
+        
+        data = response.json()
+        
+        # Check if response is non-empty list
+        if not isinstance(data, list):
+            print(f"❌ FAIL: Expected list, got {type(data)}")
+            return False
+        
+        if len(data) == 0:
+            print("❌ FAIL: Response is empty list")
+            return False
+        
+        print(f"✓ Response is non-empty list with {len(data)} entries")
+        
+        # Find Metatron entry
+        metatron_entry = None
+        for entry in data:
+            if 'sacred_geometry' in entry and 'metatron' in entry['sacred_geometry'].lower():
+                metatron_entry = entry
+                break
+        
+        if not metatron_entry:
+            print("❌ FAIL: No Metatron entry found in response")
+            print(f"Available sacred_geometry values: {[e.get('sacred_geometry', 'N/A') for e in data]}")
+            return False
+        
+        print(f"✓ Found Metatron entry: {metatron_entry.get('id', 'N/A')}")
+        print(f"  - sacred_geometry: {metatron_entry.get('sacred_geometry', 'N/A')}")
+        
+        print("✅ PASS: Angelic alchemy endpoint returns Metatron entry with sacred_geometry")
+        return True
+            
+    except Exception as e:
+        print(f"❌ FAIL: Exception occurred: {str(e)}")
+        return False
+
+
+def test_angelic_alchemy_filter_metatron():
+    """Test 5: GET /api/angelic-alchemy?sacred_geometry=Metatron filters successfully"""
+    print("\n" + "="*80)
+    print("TEST 5: GET /api/angelic-alchemy?sacred_geometry=Metatron")
+    print("="*80)
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/angelic-alchemy?sacred_geometry=Metatron", timeout=10)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ FAIL: Expected 200, got {response.status_code}")
+            return False
+        
+        data = response.json()
+        
+        # Check if response is list
+        if not isinstance(data, list):
+            print(f"❌ FAIL: Expected list, got {type(data)}")
+            return False
+        
+        if len(data) == 0:
+            print("❌ FAIL: Filter returned empty list")
+            return False
+        
+        print(f"✓ Filter returned {len(data)} entries")
+        
+        # Verify all entries have Metatron in sacred_geometry
+        all_metatron = all('sacred_geometry' in entry and 'metatron' in entry['sacred_geometry'].lower() for entry in data)
+        
+        if all_metatron:
+            print(f"✓ All {len(data)} entries have Metatron sacred_geometry")
+            print("✅ PASS: Sacred geometry filter for Metatron works correctly")
+            return True
+        else:
+            print("❌ FAIL: Not all entries have Metatron sacred_geometry")
+            geometries = [e.get('sacred_geometry', 'N/A') for e in data]
+            print(f"Sacred geometries found: {geometries}")
             return False
             
     except Exception as e:
@@ -165,7 +244,7 @@ def test_tts_endpoint():
 
 def main():
     print("\n" + "="*80)
-    print("BACKEND REGRESSION TEST - Guided Playback & Voice Notes Iteration")
+    print("BACKEND REGRESSION TEST - Sacred Ally Alchemy & Angelic Alchemy")
     print("="*80)
     print(f"Test URL: {BASE_URL}")
     
@@ -173,8 +252,10 @@ def main():
     
     # Run all tests
     results.append(("Health Endpoint", test_health_endpoint()))
-    results.append(("Expand Script Endpoint", test_expand_script_endpoint()))
-    results.append(("TTS Endpoint", test_tts_endpoint()))
+    results.append(("Sacred Ally Alchemy Endpoint", test_sacred_ally_alchemy_endpoint()))
+    results.append(("Sacred Ally Alchemy Filter (whales)", test_sacred_ally_alchemy_filter_whales()))
+    results.append(("Angelic Alchemy Endpoint", test_angelic_alchemy_endpoint()))
+    results.append(("Angelic Alchemy Filter (Metatron)", test_angelic_alchemy_filter_metatron()))
     
     # Summary
     print("\n" + "="*80)
@@ -191,7 +272,7 @@ def main():
     print(f"\nTotal: {passed}/{total} tests passed")
     
     if passed == total:
-        print("\n✅ ALL BACKEND SMOKE TESTS PASSED")
+        print("\n✅ ALL BACKEND REGRESSION TESTS PASSED")
         return 0
     else:
         print(f"\n❌ {total - passed} BACKEND TEST(S) FAILED")
