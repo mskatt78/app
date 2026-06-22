@@ -1430,3 +1430,49 @@
 ### Deployment Note
 - Fix is in preview and requires redeploy to apply in production.
 
+## Ally Alchemy Visual Restoration + Label Cleanup (Iteration 189) — 2026-06-22
+- User request on deployed app:
+  - Ally Alchemy had missing/blank-feeling visuals
+  - Remove "curated content" wording from cards/lists
+  - Add easier picture diagrams for detail understanding
+
+### Fixes Delivered
+- **Sacred Ally visuals hardened** in `frontend/src/pages/SacredAllyAlchemy.jsx`:
+  - Added `VISUAL_OVERRIDES_BY_ID` so each ally/angelic entry always resolves to a valid reference image + diagram.
+  - Added frontend fallback data if API returns empty.
+  - Detail modal now includes **Reference Visuals** section (Reference Image + Diagram).
+- **Added 11 diagram assets** under `frontend/public/diagrams/*.svg`:
+  - dragon, fairy, wolf, whale song line, dolphin, jaguar, raven
+  - metatron cube, michael shield, raphael healing, gabriel communication
+- **Backend seed alignment** (`backend/data/sacred_ally_alchemy_content.py`):
+  - Added `diagram_image_url` to all Sacred Ally + Angelic entries for admin-seeded continuity.
+- **Admin editing support** (`frontend/src/pages/admin/constants.js`):
+  - Added `diagram_image_url` to editable field lists for `sacred_ally_alchemy` and `angelic_alchemy`.
+
+### “Curated content” wording removal
+- Removed/hid "Curated content" labels across card/list UIs:
+  - Elemental practices
+  - Breathwork sessions
+  - Courses cards
+  - Sacred guardians cards
+  - Meditations cards
+  - Yoga library cards
+  - Heart practices cards
+  - Mantras library cards
+  - Ancient wisdom cards
+  - Mudras cards
+  - Shamanic practice cards
+- Updated visible copy in Videos Library to remove "Curated ..." wording.
+
+### Validation
+- Testing report: `/app/test_reports/iteration_183.json`
+  - Frontend: **100% PASS**
+  - Verified:
+    - Ally cards render images
+    - Detail modal shows image + diagram
+    - No "Curated content" / "Curated reference set" text
+    - All 11 diagram SVG assets return HTTP 200
+
+### Deployment Note
+- Fixes are complete in preview and require redeploy to apply on production.
+
