@@ -128,48 +128,59 @@ const ANGELIC_FALLBACK_DATA = [
 
 const VISUAL_OVERRIDES_BY_ID = {
   "ally-dragon-sovereign-flame": {
-    image_url: "https://images.pexels.com/photos/3608541/pexels-photo-3608541.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/b/bf/St_Catherine%2C_St_George_and_the_Dragon_%28M%C3%A4staren_fr%C3%A5n_Kappenberg%29_-_Nationalmuseum_-_18337_%28brightened%29%2C_draken.png",
     diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Dragon"],
   },
   "ally-fairy-aether-bloom": {
-    image_url: "https://images.pexels.com/photos/1028225/pexels-photo-1028225.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Falero_Luis_Ricardo_Lily_Fairy_1888.jpg",
     diagram_image_url: "/diagrams/fairy-alchemy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Fairy"],
   },
   "ally-wolf-lunar-path": {
-    image_url: "https://images.pexels.com/photos/346941/pexels-photo-346941.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/6/68/Eurasian_wolf_2.jpg",
     diagram_image_url: "/diagrams/wolf-alchemy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Wolf"],
   },
   "ally-whale-oceanic-hymn": {
-    image_url: "https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/6/61/Humpback_Whale_underwater_shot.jpg",
     diagram_image_url: "/diagrams/whale-songline-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Humpback_whale"],
   },
   "ally-dolphin-joy-current": {
-    image_url: "https://images.pexels.com/photos/2258696/pexels-photo-2258696.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/1/10/Tursiops_truncatus_01.jpg",
     diagram_image_url: "/diagrams/dolphin-alchemy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Dolphin"],
   },
   "ally-jaguar-shadow-gold": {
-    image_url: "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/0/0a/Standing_jaguar.jpg",
     diagram_image_url: "/diagrams/jaguar-alchemy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Jaguar"],
   },
   "ally-raven-oracle-veil": {
-    image_url: "https://images.pexels.com/photos/326900/pexels-photo-326900.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/7c/Corvus_corax.jpg",
     diagram_image_url: "/diagrams/raven-alchemy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Common_raven"],
   },
   "angel-metatron-cube-alchemy": {
-    image_url: "https://images.pexels.com/photos/312839/pexels-photo-312839.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/a/ad/MetatronInIslamicArts.jpg",
     diagram_image_url: "/diagrams/metatron-cube-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Metatron"],
   },
   "angel-michael-blue-flame": {
-    image_url: "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/7a/GuidoReni_MichaelDefeatsSatan.jpg",
     diagram_image_url: "/diagrams/michael-shield-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Michael_(archangel)"],
   },
   "angel-raphael-emerald-ray": {
-    image_url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/9/97/Saint_Raphael.JPG",
     diagram_image_url: "/diagrams/raphael-healing-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Raphael_(archangel)"],
   },
   "angel-gabriel-silver-stream": {
-    image_url: "https://images.pexels.com/photos/772826/pexels-photo-772826.jpeg",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/1/12/Ghent_Altarpiece_-_Angel_of_the_Annunciation.jpg",
     diagram_image_url: "/diagrams/gabriel-communication-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Gabriel"],
   },
 };
 

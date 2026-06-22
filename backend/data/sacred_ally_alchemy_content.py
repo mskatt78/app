@@ -28,7 +28,7 @@ SACRED_ALLY_ALCHEMY = [
             "My fire purifies; it does not consume my essence.",
             "I am safe to be fully powerful.",
         ],
-        "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/d22b251fb1f07f98f770815056f0a57fcf2a421e35bdbf5306411ab74c1bc8cb.png",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/St_Catherine%2C_St_George_and_the_Dragon_%28M%C3%A4staren_fr%C3%A5n_Kappenberg%29_-_Nationalmuseum_-_18337_%28brightened%29%2C_draken.png",
         "diagram_image_url": "/diagrams/dragon-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -64,7 +64,7 @@ SACRED_ALLY_ALCHEMY = [
             "I co-create with subtle realms in integrity.",
             "Beauty is medicine for my nervous system.",
         ],
-        "image_url": "https://images.pexels.com/photos/1028225/pexels-photo-1028225.jpeg",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Falero_Luis_Ricardo_Lily_Fairy_1888.jpg",
         "diagram_image_url": "/diagrams/fairy-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -99,7 +99,7 @@ SACRED_ALLY_ALCHEMY = [
             "I belong without betraying myself.",
             "My voice is clear, clean, and true.",
         ],
-        "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/125766c5bcd3db6bbf38083d00a7c1bef34336306c8f003b919ae3bf833b08e2.png",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/68/Eurasian_wolf_2.jpg",
         "diagram_image_url": "/diagrams/wolf-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -144,7 +144,7 @@ SACRED_ALLY_ALCHEMY = [
             "I trust the deep tide of my becoming.",
             "I am held by vast, loving intelligence.",
         ],
-        "image_url": "https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/61/Humpback_Whale_underwater_shot.jpg",
         "diagram_image_url": "/diagrams/whale-songline-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -180,7 +180,7 @@ SACRED_ALLY_ALCHEMY = [
             "I communicate with warmth and clarity.",
             "Play restores my soul intelligence.",
         ],
-        "image_url": "https://images.pexels.com/photos/2258696/pexels-photo-2258696.jpeg",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/10/Tursiops_truncatus_01.jpg",
         "diagram_image_url": "/diagrams/dolphin-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -215,7 +215,7 @@ SACRED_ALLY_ALCHEMY = [
             "My boundaries honor my sacred mission.",
             "I walk in grounded inner authority.",
         ],
-        "image_url": "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Standing_jaguar.jpg",
         "diagram_image_url": "/diagrams/jaguar-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -250,7 +250,7 @@ SACRED_ALLY_ALCHEMY = [
             "I cross thresholds with courage and wisdom.",
             "My voice serves truth and healing.",
         ],
-        "image_url": "https://images.pexels.com/photos/326900/pexels-photo-326900.jpeg",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Corvus_corax.jpg",
         "diagram_image_url": "/diagrams/raven-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -289,7 +289,7 @@ ANGELIC_ALCHEMY = [
             "My field is clear, coherent, and protected.",
             "I align to sacred architecture and right action.",
         ],
-        "image_url": "https://images.pexels.com/photos/312839/pexels-photo-312839.jpeg",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/ad/MetatronInIslamicArts.jpg",
         "diagram_image_url": "/diagrams/metatron-cube-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -325,7 +325,7 @@ ANGELIC_ALCHEMY = [
             "My truth is loving and firm.",
             "I choose courageous integrity.",
         ],
-        "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/86f232c5a05f9e4f7ed008bf0907e095f30e5186422e07acd4be29b88df9857b.png",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/7/7a/GuidoReni_MichaelDefeatsSatan.jpg",
         "diagram_image_url": "/diagrams/michael-shield-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -360,7 +360,7 @@ ANGELIC_ALCHEMY = [
             "I welcome gentle restoration.",
             "My body is an ally in awakening.",
         ],
-        "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/95cf9fab9be16a77b0b1e17e6b23e8c84396f721cab9d0b8e73339bc82c55bdb.png",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/9/97/Saint_Raphael.JPG",
         "diagram_image_url": "/diagrams/raphael-healing-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
@@ -395,7 +395,7 @@ ANGELIC_ALCHEMY = [
             "My voice is a vessel for truth and beauty.",
             "Creation flows through me with ease.",
         ],
-        "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/04ce5859c58c4a8ee0f9c08993f6440d87ac4aaf0296871026db1cc50a389d2a.png",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Ghent_Altarpiece_-_Angel_of_the_Annunciation.jpg",
         "diagram_image_url": "/diagrams/gabriel-communication-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [

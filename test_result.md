@@ -7021,3 +7021,77 @@ agent_communication:
       
       UX/CONTENT FIXES VALIDATION: COMPLETE ✅
       All requirements met. No issues found.
+
+
+
+frontend:
+  - task: "Sacred Ally/Angelic images Wikimedia verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SacredAllyAlchemy.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Sacred Ally/Angelic images Wikimedia verification PASSED (2026-06-22). All 5 requested card IDs verified: ally-dragon-sovereign-flame, ally-whale-oceanic-hymn, ally-dolphin-joy-current, angel-metatron-cube-alchemy, angel-michael-blue-flame. All modal reference images use factual Wikimedia URLs (upload.wikimedia.org): Dragon (St_Catherine dragon painting), Whale (Humpback_Whale_underwater_shot.jpg), Dolphin (Tursiops_truncatus_01.jpg), Metatron (MetatronInIslamicArts.jpg), Michael (GuidoReni_MichaelDefeatsSatan.jpg). Diagram sections present in all modals with local SVG diagrams. No stock/random images detected. All checks passed."
+
+  - agent: "testing"
+    message: |
+      Sacred Ally/Angelic Images Wikimedia Verification (2026-06-22):
+      
+      VERIFICATION REQUEST: Validate Sacred Ally/Angelic images are factual Wikimedia references (not stock/random) on preview URL
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/sacred-ally-alchemy
+      
+      ✅ ALL CHECKS PASSED (4/4):
+      
+      1. ✅ ALLY CARDS SHOW NON-EMPTY IMAGES - PASSED
+         - Found 28 ally cards on the page
+         - All checked cards (5/5) have non-empty image src attributes
+         - Images render correctly on card thumbnails
+      
+      2. ✅ SPECIFIC CARD IDS VERIFIED - PASSED (5/5)
+         All requested card IDs found and opened successfully:
+         - ally-dragon-sovereign-flame ✓
+         - ally-whale-oceanic-hymn ✓
+         - ally-dolphin-joy-current ✓
+         - angel-metatron-cube-alchemy ✓
+         - angel-michael-blue-flame ✓
+      
+      3. ✅ WIKIMEDIA IMAGE VERIFICATION - PASSED (5/5)
+         All modal reference images use Wikimedia upload URLs (upload.wikimedia.org):
+         
+         a) ally-dragon-sovereign-flame:
+            src: https://upload.wikimedia.org/wikipedia/commons/b/bf/St_Catherine%2C_St_George_and_the_Dragon_%28M%C3%A4staren_fr%C3%A5n_Kappenberg%29_-_Nationalmuseum_-_18337_%28brightened%29%2C_draken.png
+         
+         b) ally-whale-oceanic-hymn:
+            src: https://upload.wikimedia.org/wikipedia/commons/6/61/Humpback_Whale_underwater_shot.jpg
+         
+         c) ally-dolphin-joy-current:
+            src: https://upload.wikimedia.org/wikipedia/commons/1/10/Tursiops_truncatus_01.jpg
+         
+         d) angel-metatron-cube-alchemy:
+            src: https://upload.wikimedia.org/wikipedia/commons/a/ad/MetatronInIslamicArts.jpg
+         
+         e) angel-michael-blue-flame:
+            src: https://upload.wikimedia.org/wikipedia/commons/7/7a/GuidoReni_MichaelDefeatsSatan.jpg
+      
+      4. ✅ DIAGRAM SECTION PRESENT - PASSED
+         All 5 tested modals include diagram section with local SVG diagrams:
+         - /diagrams/dragon-alchemy-diagram.svg
+         - /diagrams/whale-songline-diagram.svg
+         - /diagrams/dolphin-alchemy-diagram.svg
+         - /diagrams/metatron-cube-diagram.svg
+         - /diagrams/michael-shield-diagram.svg
+      
+      CRITICAL FINDINGS:
+      ✅ All Sacred Ally/Angelic images are factual Wikimedia references (NOT stock/random)
+      ✅ Reference visuals section present in all modals with both image and diagram
+      ✅ All image URLs use upload.wikimedia.org domain (verified Wikimedia uploads)
+      ✅ Diagram sections present and functional in all tested modals
+      ✅ Tab switching between Sacred Ally Alchemy and Angelic Alchemy working correctly
+      ✅ Modal interactions (open/close) working smoothly
+      
+      SUMMARY:
+      Sacred Ally/Angelic images Wikimedia verification PASSED. All 5 requested card IDs (3 allies + 2 angelic) verified with factual Wikimedia reference images. Every modal shows proper reference image from upload.wikimedia.org plus accompanying diagram. No stock or random images detected. Implementation meets all verification requirements.
