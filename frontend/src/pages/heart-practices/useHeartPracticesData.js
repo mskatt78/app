@@ -6,8 +6,8 @@ export const useHeartPracticesData = (api) => {
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPractice, setSelectedPractice] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const [filter, setFilter] = useState("all");
-  const [isPracticing, setIsPracticing] = useState(false);
 
   const fetchPractices = useCallback(async () => {
     try {
@@ -45,10 +45,10 @@ export const useHeartPracticesData = (api) => {
     practices,
     loading,
     selectedPractice,
+    guidedPractice,
     filter,
-    isPracticing,
     setSelectedPractice,
+    setGuidedPractice,
     setFilter,
-    setIsPracticing,
   };
 };

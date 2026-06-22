@@ -1355,17 +1355,31 @@ agent_communication:
 
 metadata:
   created_by: "testing_agent"
-  version: "2.3"
-  test_sequence: 15
+  version: "2.4"
+  test_sequence: 16
   run_ui: false
-  last_tested: "2026-06-12"
+  last_tested: "2026-06-22"
 
 test_plan:
   current_focus:
-    - "Quality hardening batch verification - COMPLETED"
+    - "Heart guided voice playback verification - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+frontend:
+  - task: "Heart guided voice playback flow verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/heart-practices/HeartPracticesContainer.jsx, /app/frontend/src/components/GuidedPracticeOverlay.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ HEART GUIDED VOICE PLAYBACK VERIFICATION PASSED (2026-06-22): Comprehensive test on https://breathwork-sanctuary.preview.emergentagent.com/heart-practices completed successfully. Test flow: 1) Opened first heart practice card (Heart Opening Ceremony) ✓. 2) Clicked 'Begin Guided Heart Practice' button ✓. 3) GuidedPracticeOverlay opened with data-testid='guided-practice-overlay' ✓. 4) Voice flow indicators confirmed within 1 second: 'Guided narration playing • section 1 of 21' displayed ✓. Toning status also visible: 'Toning layer ducked during voice' ✓. 5) Timer countdown verified: 19:58 → 19:57 → 19:52 → 19:47 over 11 seconds (not stuck) ✓. 6) Narration is NOT static text-only mode - active voice playback confirmed ✓. 7) TTS API health: 2 successful POST requests to /api/tts/generate-base64, both returned 200 OK, zero errors ✓. 8) Console errors: Only 6 non-critical 401 auth errors (expected for public routes), zero critical TTS/audio/narration errors ✓. 9) Autoplay NOT blocked - narration started immediately without user tap required ✓. All requirements met. Heart guided voice playback fully functional."
+
 
   - task: "Quality Guard static checks - empty-catch and file-length thresholds"
     implemented: true
@@ -6484,3 +6498,107 @@ agent_communication:
       ✅ Desktop viewport (1920x1080) also verified
       
       All requirements met. Install flow simplification VERIFIED and WORKING correctly.
+
+
+  - agent: "testing"
+    message: |
+      Heart Guided Voice Playback Verification (2026-06-22):
+      
+      VERIFICATION REQUEST: Test heart guided voice playback on preview URL
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/heart-practices
+      
+      ✅ ALL TESTS PASSED (9/9 test steps):
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 1: Navigate to /heart-practices page ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Page loaded successfully with data-testid="heart-practices"
+      - 10 heart practice cards found and rendered
+      - No blocking errors during page load
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 2: Open first heart practice card ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - First practice card clicked: "Heart Opening Ceremony"
+      - Practice modal opened successfully
+      - Card interaction working correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 3: Click "Begin Guided Heart Practice" button ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Begin button found with text: "Begin Guided Heart Practice"
+      - Button clicked successfully
+      - Transition to guided overlay initiated
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 4: Verify GuidedPracticeOverlay opens ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - GuidedPracticeOverlay opened with data-testid="guided-practice-overlay"
+      - Practice title displayed: "Heart Opening Ceremony"
+      - Overlay UI rendered correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 5: Voice flow indicators confirmed ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Narration playing indicator appeared within 1 second
+      - Status text: "Guided narration playing • section 1 of 21"
+      - Toning status visible: "Toning layer ducked during voice"
+      - Autoplay NOT blocked (no user tap required)
+      - Voice guidance started immediately
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 6: Timer countdown verification ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Initial timer: 19:58
+      - Timer at 1s: 19:57
+      - Timer at 6s: 19:52
+      - Timer at 11s: 19:47
+      - Timer is counting down correctly (NOT stuck)
+      - Countdown verified over 11 seconds
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 7: Narration mode verification ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Narration is NOT static text-only mode
+      - Active voice playback confirmed via status indicators
+      - TTS audio generation and playback working
+      - Voice guidance actively narrating practice steps
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 8: TTS API health check ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Total TTS API requests: 2
+      - All requests: POST /api/tts/generate-base64
+      - All responses: 200 OK (success)
+      - TTS API errors: 0
+      - API responding correctly and generating audio
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 9: Console and network error check ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Total console errors: 6 (all non-critical 401 auth errors)
+      - Critical TTS/audio/narration errors: 0
+      - No blocking errors detected
+      - No network failures for TTS endpoints
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SCREENSHOTS CAPTURED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - guided-overlay-opened.png: Shows overlay with timer 19:58
+      - heart-voice-playback-final.png: Shows timer 19:47 with narration status
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ Heart practices page loads correctly
+      ✅ Practice cards clickable and modal opens
+      ✅ Begin Guided Heart Practice button functional
+      ✅ GuidedPracticeOverlay opens successfully
+      ✅ Voice flow indicators appear within 1 second
+      ✅ Timer counts down correctly (19:58 → 19:47)
+      ✅ Narration is active voice playback (not text-only)
+      ✅ TTS API calls successful (2/2 requests returned 200 OK)
+      ✅ No blocking errors in console or network
+      
+      All requirements met. Heart guided voice playback VERIFIED and WORKING correctly.
