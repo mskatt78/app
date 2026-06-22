@@ -6047,20 +6047,130 @@ backend:
         agent: "testing"
         comment: "✅ REGRESSION PASSED (2026-06-23): GET /api/health verified in regression test. Returns 200 with status='healthy', app='Shamanic Elements Temple Of The Soul', version='2.0.0'. Health endpoint still functioning correctly."
 
+  - task: "Sacred Ally Alchemy content-first UX fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SacredAllyAlchemy.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED (2026-06-22): Content-first UX fix validated on mobile viewport (390x844). All 6 critical checks passed: 1) Content order verified - Hero (Y:215.2), Tabs (Y:401.2), Cards grid (Y:631.2) all appear BEFORE tools toggle (Y:3553.8). 28 ally cards loaded correctly. 2) Roadmap and recommendation sections hidden by default (conditionally rendered, not in DOM). 3) Tools toggle card exists with button [data-testid='sacred-ally-tools-toggle-button'], initial state shows 'Show Tools'. 4) Clicking toggle reveals both recommendation card [data-testid='sacred-ally-daily-recommendation-card'] and roadmap card [data-testid='sacred-ally-roadmap-card'], button text changes to 'Hide Tools'. 5) Clicking toggle again hides both sections (removed from DOM), button text changes back to 'Show Tools'. 6) Ally cards and modal functionality verified - Dragon Alchemy card opens modal with all sections (Alchemy Teachings, Rituals, Journal Prompts, Affirmations). Modal close button works correctly. No error messages detected. Content-first UX fix working perfectly."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 182
+  test_sequence: 183
   run_ui: false
 
 test_plan:
   current_focus:
-    - "Sacred Ally Alchemy verification - COMPLETE"
+    - "Sacred Ally Alchemy content-first UX fix - COMPLETE"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      Sacred Ally Alchemy Content-First UX Fix Validation (2026-06-22):
+      
+      VERIFICATION REQUEST: Validate content-first UX fix on /sacred-ally-alchemy
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/sacred-ally-alchemy
+      Mobile Viewport: 390x844
+      
+      ✅ ALL TESTS PASSED (6/6 critical checks):
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 1: CONTENT-FIRST ORDER ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      On mobile viewport (390x844), actual content appears BEFORE tools toggle:
+      - Hero section: Y position 215.2 (BEFORE tools at 3553.8) ✓
+      - Tabs section: Y position 401.2 (BEFORE tools at 3553.8) ✓
+      - Cards grid: Y position 631.2 (BEFORE tools at 3553.8) ✓
+      - 28 ally cards loaded correctly ✓
+      
+      Content-first UX verified: Users see hero + tabs + ally cards before optional tools.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 2: TOOLS HIDDEN BY DEFAULT ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Recommendation card: NOT in DOM by default (conditionally rendered) ✓
+      - Roadmap card: NOT in DOM by default (conditionally rendered) ✓
+      
+      Tools sections properly hidden by default using conditional rendering.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 3: TOOLS TOGGLE BUTTON ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Toggle card exists: [data-testid='sacred-ally-tools-toggle-card'] ✓
+      - Toggle button exists: [data-testid='sacred-ally-tools-toggle-button'] ✓
+      - Initial button text: "Show Tools" ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 4: TOGGLE REVEALS TOOLS ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      After clicking "Show Tools" button:
+      - Recommendation card: NOW VISIBLE [data-testid='sacred-ally-daily-recommendation-card'] ✓
+      - Roadmap card: NOW VISIBLE [data-testid='sacred-ally-roadmap-card'] ✓
+      - Button text changed to: "Hide Tools" ✓
+      
+      Toggle correctly reveals both recommendation and roadmap sections.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 5: TOGGLE HIDES TOOLS ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      After clicking "Hide Tools" button:
+      - Recommendation card: REMOVED from DOM (conditionally rendered) ✓
+      - Roadmap card: REMOVED from DOM (conditionally rendered) ✓
+      - Button text changed back to: "Show Tools" ✓
+      
+      Toggle correctly hides both sections by removing them from DOM.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 6: ALLY CARDS/MODAL STILL WORK ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      After toggle changes, ally functionality verified:
+      - Ally card found: "Dragon Alchemy · Sovereign Flame" ✓
+      - Card click opens modal: [data-testid='sacred-ally-detail-modal'] ✓
+      - Modal sections present:
+        * Alchemy Teachings: [data-testid='sacred-ally-alchemy-teachings'] ✓
+        * Rituals: [data-testid='sacred-ally-rituals'] ✓
+        * Journal Prompts: [data-testid='sacred-ally-journal-prompts'] ✓
+        * Affirmations: [data-testid='sacred-ally-affirmations'] ✓
+      - Modal close button works: [data-testid='sacred-ally-modal-close'] ✓
+      
+      Core ally card and modal functionality unaffected by UX changes.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      CONSOLE & ERROR CHECK ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ No error messages found on page
+      ✅ No runtime crashes detected
+      ✅ All interactive elements functional
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ Content-first order: Hero + tabs + cards appear BEFORE tools toggle
+      ✅ Tools hidden by default: Recommendation + roadmap sections not in DOM initially
+      ✅ Toggle button: Exists with correct test ID and initial state
+      ✅ Toggle reveals: Clicking shows both recommendation and roadmap sections
+      ✅ Toggle hides: Clicking again removes sections from DOM
+      ✅ Ally functionality: Cards and modal work correctly after UX changes
+      
+      Content-first UX fix validation COMPLETE. All requirements met.
+
   - agent: "testing"
     message: |
       Sacred Ally Alchemy Verification Complete (2026-06-22):

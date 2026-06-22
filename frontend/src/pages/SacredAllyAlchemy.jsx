@@ -58,8 +58,8 @@ export default function SacredAllyAlchemy({ api }) {
   const [recommendMood, setRecommendMood] = useState("balanced");
   const [recommendIntention, setRecommendIntention] = useState("clarity");
   const [recommendMoonPhase, setRecommendMoonPhase] = useState("full moon");
-
-  const [roadmapExpanded, setRoadmapExpanded] = useState(true);
+  const [showPracticeTools, setShowPracticeTools] = useState(false);
+  const [roadmapExpanded, setRoadmapExpanded] = useState(false);
 
   const ROADMAP_PHASES = [
     {
@@ -173,81 +173,6 @@ export default function SacredAllyAlchemy({ api }) {
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
-        <div className="rounded-2xl border border-white/10 bg-card/50 p-5" data-testid="sacred-ally-roadmap-card">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-base font-serif">Potential Improvements Roadmap</h2>
-            <button
-              onClick={() => setRoadmapExpanded((v) => !v)}
-              className="text-xs text-primary hover:text-primary/80"
-              data-testid="sacred-ally-roadmap-toggle"
-            >
-              {roadmapExpanded ? "Collapse" : "Expand"}
-            </button>
-          </div>
-          {roadmapExpanded && (
-            <div className="grid md:grid-cols-3 gap-3 mt-3" data-testid="sacred-ally-roadmap-phases">
-              {ROADMAP_PHASES.map((phase) => (
-                <div key={phase.id} className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid={`sacred-ally-roadmap-${phase.id}`}>
-                  <p className="text-sm text-primary mb-2">{phase.title}</p>
-                  <ul className="space-y-1">
-                    {phase.bullets.map((bullet) => (
-                      <li key={bullet} className="text-xs text-muted-foreground">• {bullet}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-900/20 via-background to-cyan-900/20 p-5" data-testid="sacred-ally-daily-recommendation-card">
-          <h2 className="text-base font-serif mb-3">What to Practice Today</h2>
-          <div className="grid sm:grid-cols-4 gap-2 mb-3">
-            <input
-              value={recommendMood}
-              onChange={(e) => setRecommendMood(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
-              placeholder="mood (e.g. anxious)"
-              data-testid="sacred-ally-recommend-mood-input"
-            />
-            <input
-              value={recommendMoonPhase}
-              onChange={(e) => setRecommendMoonPhase(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
-              placeholder="moon phase"
-              data-testid="sacred-ally-recommend-moon-input"
-            />
-            <input
-              value={recommendIntention}
-              onChange={(e) => setRecommendIntention(e.target.value)}
-              className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
-              placeholder="intention"
-              data-testid="sacred-ally-recommend-intention-input"
-            />
-            <Button
-              onClick={requestDailyRecommendation}
-              disabled={dailyLoading}
-              data-testid="sacred-ally-recommend-button"
-            >
-              {dailyLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Finding...</> : "Recommend"}
-            </Button>
-          </div>
-
-          {dailyRecommendation?.recommended_ally && (
-            <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-recommendation-result">
-              <p className="text-xs text-muted-foreground">Recommended Ally</p>
-              <p className="text-sm font-medium text-cyan-200">{dailyRecommendation.recommended_ally.name}</p>
-              <p className="text-xs text-muted-foreground mt-1">{dailyRecommendation.recommended_ally.description}</p>
-              {dailyRecommendation.recommended_journey?.title && (
-                <p className="text-xs mt-2 text-amber-200">Journey: {dailyRecommendation.recommended_journey.title}</p>
-              )}
-              {dailyRecommendation.recommended_pathway?.title && (
-                <p className="text-xs text-emerald-200">Pathway: {dailyRecommendation.recommended_pathway.title}</p>
-              )}
-            </div>
-          )}
-        </div>
-
         <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-cyan-900/20 via-background to-amber-900/20 p-5" data-testid="sacred-ally-hero-copy">
           <p className="text-sm text-muted-foreground leading-relaxed">
             Work deeply with Dragon Alchemy, Fairies, Wolves, Whales with Song Lines, Dolphins, and expanded Sacred Allies — plus Angelic Alchemy including Metatron’s Cube and practical ritual pathways.
@@ -326,6 +251,101 @@ export default function SacredAllyAlchemy({ api }) {
               </button>
             ))}
           </div>
+        )}
+
+        <div className="rounded-2xl border border-white/10 bg-card/40 p-4" data-testid="sacred-ally-tools-toggle-card">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium">Personalized Practice Tools</p>
+              <p className="text-xs text-muted-foreground">Optional: recommendations, roadmap, and planning tools</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setShowPracticeTools((prev) => !prev)}
+              data-testid="sacred-ally-tools-toggle-button"
+            >
+              {showPracticeTools ? "Hide Tools" : "Show Tools"}
+            </Button>
+          </div>
+        </div>
+
+        {showPracticeTools && (
+          <>
+            <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-indigo-900/20 via-background to-cyan-900/20 p-5" data-testid="sacred-ally-daily-recommendation-card">
+              <h2 className="text-base font-serif mb-3">What to Practice Today</h2>
+              <div className="grid sm:grid-cols-4 gap-2 mb-3">
+                <input
+                  value={recommendMood}
+                  onChange={(e) => setRecommendMood(e.target.value)}
+                  className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+                  placeholder="mood (e.g. anxious)"
+                  data-testid="sacred-ally-recommend-mood-input"
+                />
+                <input
+                  value={recommendMoonPhase}
+                  onChange={(e) => setRecommendMoonPhase(e.target.value)}
+                  className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+                  placeholder="moon phase"
+                  data-testid="sacred-ally-recommend-moon-input"
+                />
+                <input
+                  value={recommendIntention}
+                  onChange={(e) => setRecommendIntention(e.target.value)}
+                  className="px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+                  placeholder="intention"
+                  data-testid="sacred-ally-recommend-intention-input"
+                />
+                <Button
+                  onClick={requestDailyRecommendation}
+                  disabled={dailyLoading}
+                  data-testid="sacred-ally-recommend-button"
+                >
+                  {dailyLoading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Finding...</> : "Recommend"}
+                </Button>
+              </div>
+
+              {dailyRecommendation?.recommended_ally && (
+                <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-recommendation-result">
+                  <p className="text-xs text-muted-foreground">Recommended Ally</p>
+                  <p className="text-sm font-medium text-cyan-200">{dailyRecommendation.recommended_ally.name}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{dailyRecommendation.recommended_ally.description}</p>
+                  {dailyRecommendation.recommended_journey?.title && (
+                    <p className="text-xs mt-2 text-amber-200">Journey: {dailyRecommendation.recommended_journey.title}</p>
+                  )}
+                  {dailyRecommendation.recommended_pathway?.title && (
+                    <p className="text-xs text-emerald-200">Pathway: {dailyRecommendation.recommended_pathway.title}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-card/50 p-5" data-testid="sacred-ally-roadmap-card">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-base font-serif">Potential Improvements Roadmap</h2>
+                <button
+                  onClick={() => setRoadmapExpanded((v) => !v)}
+                  className="text-xs text-primary hover:text-primary/80"
+                  data-testid="sacred-ally-roadmap-toggle"
+                >
+                  {roadmapExpanded ? "Collapse" : "Expand"}
+                </button>
+              </div>
+              {roadmapExpanded && (
+                <div className="grid md:grid-cols-3 gap-3 mt-3" data-testid="sacred-ally-roadmap-phases">
+                  {ROADMAP_PHASES.map((phase) => (
+                    <div key={phase.id} className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid={`sacred-ally-roadmap-${phase.id}`}>
+                      <p className="text-sm text-primary mb-2">{phase.title}</p>
+                      <ul className="space-y-1">
+                        {phase.bullets.map((bullet) => (
+                          <li key={bullet} className="text-xs text-muted-foreground">• {bullet}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </>
         )}
       </main>
 
