@@ -1252,3 +1252,35 @@
 ### Deployment Note
 - This correction is in preview and needs redeploy to appear in production.
 
+## Production Install Flow Simplification (Iteration 183) — 2026-06-22
+- User-reported production issue: tapping Install surfaced too many confusing options.
+
+### Fix Applied
+- Simplified install prompt actions to one clear primary action:
+  - If native `beforeinstallprompt` available → `Install App`
+  - Else one fallback primary action based on platform context:
+    - Android non-Chrome: `Open in Chrome to Install`
+    - iOS non-Safari: `Copy Link for Safari`
+    - Otherwise: `Open Install Guide`
+- Kept secondary actions minimal and explicit (`Copy link`, `Maybe Later`).
+
+### Event Wiring
+- Updated top nav Install button to open the install prompt directly via custom event (`pwa-install-open`) instead of routing to support first.
+- Added listener in install prompt state hook to open prompt reliably when event is dispatched.
+
+### Files Updated
+- `frontend/src/components/TopNav.jsx`
+- `frontend/src/components/install/useInstallPromptState.js`
+- `frontend/src/components/InstallPrompt.jsx`
+- `frontend/src/components/install/InstallPromptContent.jsx`
+
+### Validation
+- Frontend specialist test: PASS
+  - Single clear primary install action verified
+  - TopNav install event trigger verified
+  - Mobile viewport checks (390x844) passed
+  - No JS errors in install open/close flow
+
+### Deployment Note
+- Fix implemented in preview; production requires redeploy to receive install-flow simplification.
+
