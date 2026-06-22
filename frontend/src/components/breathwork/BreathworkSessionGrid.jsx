@@ -50,9 +50,11 @@ export const BreathworkSessionGrid = ({ filteredSessions, elementColors, startSe
               </div>
             )}
 
-            <p className="mt-2 text-[11px] text-cyan-300/90" data-testid={`breathwork-integrity-${session.id}`}>
-              {session.content_integrity?.verified ? `Verified references (${session.content_integrity.references_count || 0})` : "Curated content"}
-            </p>
+            {session.content_integrity?.verified && (
+              <p className="mt-2 text-[11px] text-cyan-300/90" data-testid={`breathwork-integrity-${session.id}`}>
+                Verified references ({session.content_integrity.references_count || 0})
+              </p>
+            )}
             {session.content_integrity?.last_reviewed_at && (
               <p className="text-[11px] text-muted-foreground" data-testid={`breathwork-reviewed-at-${session.id}`}>
                 Last reviewed: {new Date(session.content_integrity.last_reviewed_at).toLocaleDateString()}

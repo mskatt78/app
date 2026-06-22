@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#0a1427"/>
+  <text x="600" y="90" fill="#c4b5fd" font-size="46" font-family="Georgia, serif" text-anchor="middle">Gabriel Silver Stream Map</text>
+  <path d="M220 620 C340 400, 520 300, 600 170 C680 300, 860 400, 980 620" fill="none" stroke="#c4b5fd" stroke-width="6"/>
+  <text x="600" y="290" fill="#ddd6fe" font-size="30" text-anchor="middle">RECEPTION</text>
+  <text x="600" y="360" fill="#ddd6fe" font-size="26" text-anchor="middle">EXPRESSION</text>
+  <text x="600" y="430" fill="#ddd6fe" font-size="24" text-anchor="middle">SACRED SPEECH</text>
+  <text x="600" y="744" fill="#94a3b8" font-size="20" text-anchor="middle">Reference Diagram • Moon mandorla communication pathway</text>
+</svg>

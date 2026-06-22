@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#071227"/>
+  <text x="600" y="90" fill="#93c5fd" font-size="46" font-family="Georgia, serif" text-anchor="middle">Michael Blue Flame Shield</text>
+  <polygon points="600,180 840,320 840,580 600,720 360,580 360,320" fill="none" stroke="#60a5fa" stroke-width="6"/>
+  <text x="600" y="370" fill="#dbeafe" font-size="28" text-anchor="middle">TRUTH</text>
+  <text x="600" y="420" fill="#dbeafe" font-size="24" text-anchor="middle">BOUNDARY</text>
+  <text x="600" y="470" fill="#dbeafe" font-size="22" text-anchor="middle">PROTECTION</text>
+  <text x="600" y="744" fill="#94a3b8" font-size="20" text-anchor="middle">Reference Diagram • Hexagram shield contemplation map</text>
+</svg>

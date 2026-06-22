@@ -53,11 +53,11 @@ export const ElementalPracticeCard = ({ practice, index, onSelect, formatReviewe
             Linked pathways: {practice.linked_practices.length}
           </p>
         )}
-        <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`elemental-integrity-${practice.id}`}>
-          {practice.content_integrity?.verified
-            ? `Verified references (${practice.content_integrity.references_count || 0})`
-            : "Curated content"}
-        </p>
+        {practice.content_integrity?.verified && (
+          <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`elemental-integrity-${practice.id}`}>
+            Verified references ({practice.content_integrity.references_count || 0})
+          </p>
+        )}
         {formatReviewedDate(practice.content_integrity?.last_reviewed_at) && (
           <p className="text-[11px] text-muted-foreground mb-2" data-testid={`elemental-reviewed-at-${practice.id}`}>
             Last reviewed: {formatReviewedDate(practice.content_integrity?.last_reviewed_at)}

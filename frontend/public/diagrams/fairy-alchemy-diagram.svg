@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#0b1217"/>
+  <text x="600" y="90" fill="#a7f3d0" font-size="48" font-family="Georgia, serif" text-anchor="middle">Fairy Alchemy Attunement</text>
+  <ellipse cx="600" cy="400" rx="320" ry="170" fill="none" stroke="#34d399" stroke-width="5"/>
+  <text x="600" y="390" fill="#d1fae5" font-size="30" text-anchor="middle">WONDER</text>
+  <text x="600" y="430" fill="#d1fae5" font-size="24" text-anchor="middle">Subtle Listening + Playful Reverence</text>
+  <text x="300" y="270" fill="#a7f3d0" font-size="24">Land Connection</text>
+  <text x="840" y="270" fill="#a7f3d0" font-size="24">Beauty Practice</text>
+  <text x="300" y="560" fill="#a7f3d0" font-size="24">Micro-Ritual Consistency</text>
+  <text x="790" y="560" fill="#a7f3d0" font-size="24">Gentle Co-Creation</text>
+  <text x="600" y="730" fill="#94a3b8" font-size="20" text-anchor="middle">Reference Diagram • Fairy relational field principles</text>
+</svg>

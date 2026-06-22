@@ -42,11 +42,11 @@ export const AncientWisdomGrid = ({ entries, setSelected }) => {
                 <p className={`text-xs ${tradition.color} mb-0.5`}>{tradition.label}</p>
                 <h3 className="text-sm font-serif text-white font-semibold leading-tight">{entry.name}</h3>
                 {entry.title && <p className="text-xs text-white/50 mt-0.5 line-clamp-1">{entry.title}</p>}
-                <p className="text-[10px] text-cyan-300/90 mt-1" data-testid={`ancient-wisdom-integrity-${entry.id}`}>
-                  {entry.content_integrity?.verified
-                    ? `Verified references (${entry.content_integrity.references_count || 0})`
-                    : "Curated content"}
-                </p>
+                {entry.content_integrity?.verified && (
+                  <p className="text-[10px] text-cyan-300/90 mt-1" data-testid={`ancient-wisdom-integrity-${entry.id}`}>
+                    Verified references ({entry.content_integrity.references_count || 0})
+                  </p>
+                )}
               </div>
             </div>
           </motion.div>

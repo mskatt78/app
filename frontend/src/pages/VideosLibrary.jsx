@@ -109,7 +109,7 @@ const VideosLibrary = ({ api }) => {
               Video Library
             </h1>
             <p className="text-base md:text-lg leading-relaxed text-muted-foreground">
-              Curated video teachings for your spiritual journey. From feminine embodiment to shamanic drumming, discover practices that resonate with your soul.
+              Video teachings for your spiritual journey. From feminine embodiment to shamanic drumming, discover practices that resonate with your soul.
             </p>
           </div>
         </div>

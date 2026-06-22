@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#071827"/>
+  <text x="600" y="90" fill="#67e8f9" font-size="46" font-family="Georgia, serif" text-anchor="middle">Dolphin Alchemy Joy Circuit</text>
+  <circle cx="420" cy="390" r="110" fill="none" stroke="#22d3ee" stroke-width="4"/>
+  <circle cx="780" cy="390" r="110" fill="none" stroke="#22d3ee" stroke-width="4"/>
+  <line x1="530" y1="390" x2="670" y2="390" stroke="#67e8f9" stroke-width="4"/>
+  <text x="420" y="380" fill="#cffafe" font-size="24" text-anchor="middle">PLAY</text>
+  <text x="420" y="414" fill="#cffafe" font-size="20" text-anchor="middle">Nervous reset</text>
+  <text x="780" y="380" fill="#cffafe" font-size="24" text-anchor="middle">COMMUNICATION</text>
+  <text x="780" y="414" fill="#cffafe" font-size="20" text-anchor="middle">Relational warmth</text>
+  <text x="600" y="370" fill="#a5f3fc" font-size="22" text-anchor="middle">JOY CURRENT</text>
+  <text x="600" y="730" fill="#94a3b8" font-size="20" text-anchor="middle">Reference Diagram • Dolphin joy + communication feedback loop</text>
+</svg>

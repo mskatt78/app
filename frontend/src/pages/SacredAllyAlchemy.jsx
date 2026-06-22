@@ -6,6 +6,179 @@ import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 
+const ALLY_FALLBACK_DATA = [
+  {
+    id: "ally-dragon-sovereign-flame",
+    name: "Dragon Alchemy · Sovereign Flame",
+    category: "dragon",
+    ally_type: "dragon",
+    element: "fire",
+    description: "Dragon medicine awakens sovereign leadership, sacred courage, and transmutation through conscious fire.",
+    image_url: "https://images.pexels.com/photos/3608541/pexels-photo-3608541.jpeg",
+    diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
+  },
+  {
+    id: "ally-fairy-aether-bloom",
+    name: "Fairy Alchemy · Aether Bloom",
+    category: "fairies",
+    ally_type: "fairy",
+    element: "air",
+    description: "Fairy alchemy restores wonder, subtle listening, and relational harmony with land intelligence.",
+    image_url: "https://images.pexels.com/photos/1028225/pexels-photo-1028225.jpeg",
+    diagram_image_url: "/diagrams/fairy-alchemy-diagram.svg",
+  },
+  {
+    id: "ally-wolf-lunar-path",
+    name: "Wolf Alchemy · Lunar Path",
+    category: "wolves",
+    ally_type: "wolf",
+    element: "moon",
+    description: "Wolf alchemy refines instinct, discernment, and sacred pack dynamics.",
+    image_url: "https://images.pexels.com/photos/346941/pexels-photo-346941.jpeg",
+    diagram_image_url: "/diagrams/wolf-alchemy-diagram.svg",
+  },
+  {
+    id: "ally-whale-oceanic-hymn",
+    name: "Whale Alchemy · Oceanic Hymn",
+    category: "whales",
+    ally_type: "whale",
+    element: "water",
+    description: "Whale alchemy carries ancestral memory and deep coherence through sacred song lines.",
+    image_url: "https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg",
+    diagram_image_url: "/diagrams/whale-songline-diagram.svg",
+  },
+  {
+    id: "ally-dolphin-joy-current",
+    name: "Dolphin Alchemy · Joy Current",
+    category: "dolphins",
+    ally_type: "dolphin",
+    element: "water",
+    description: "Dolphin alchemy harmonizes joy, play, communication, and social healing.",
+    image_url: "https://images.pexels.com/photos/2258696/pexels-photo-2258696.jpeg",
+    diagram_image_url: "/diagrams/dolphin-alchemy-diagram.svg",
+  },
+  {
+    id: "ally-jaguar-shadow-gold",
+    name: "Jaguar Alchemy · Shadow Gold",
+    category: "sacred_allies",
+    ally_type: "jaguar",
+    element: "earth",
+    description: "Jaguar alchemy guides fearless shadow integration and energetic boundary mastery.",
+    image_url: "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg",
+    diagram_image_url: "/diagrams/jaguar-alchemy-diagram.svg",
+  },
+  {
+    id: "ally-raven-oracle-veil",
+    name: "Raven Alchemy · Oracle Veil",
+    category: "sacred_allies",
+    ally_type: "raven",
+    element: "air",
+    description: "Raven alchemy activates pattern recognition and threshold wisdom.",
+    image_url: "https://images.pexels.com/photos/326900/pexels-photo-326900.jpeg",
+    diagram_image_url: "/diagrams/raven-alchemy-diagram.svg",
+  },
+];
+
+const ANGELIC_FALLBACK_DATA = [
+  {
+    id: "angel-metatron-cube-alchemy",
+    name: "Metatron Alchemy · Metatron's Cube",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Metatron's Cube",
+    element: "spirit",
+    description: "Metatron alchemy uses sacred geometry for energetic clearing and coherent alignment.",
+    image_url: "https://images.pexels.com/photos/312839/pexels-photo-312839.jpeg",
+    diagram_image_url: "/diagrams/metatron-cube-diagram.svg",
+  },
+  {
+    id: "angel-michael-blue-flame",
+    name: "Michael Alchemy · Blue Flame Shield",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Hexagram Shield",
+    element: "fire",
+    description: "Michael alchemy strengthens boundaries, truth action, and spiritual protection.",
+    image_url: "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg",
+    diagram_image_url: "/diagrams/michael-shield-diagram.svg",
+  },
+  {
+    id: "angel-raphael-emerald-ray",
+    name: "Raphael Alchemy · Emerald Ray",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Vesica Piscis",
+    element: "air",
+    description: "Raphael alchemy supports restoration, compassion, and body-mind integration.",
+    image_url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg",
+    diagram_image_url: "/diagrams/raphael-healing-diagram.svg",
+  },
+  {
+    id: "angel-gabriel-silver-stream",
+    name: "Gabriel Alchemy · Silver Stream",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Moon Mandorla",
+    element: "water",
+    description: "Gabriel alchemy opens inspired communication and creative receptivity.",
+    image_url: "https://images.pexels.com/photos/772826/pexels-photo-772826.jpeg",
+    diagram_image_url: "/diagrams/gabriel-communication-diagram.svg",
+  },
+];
+
+const VISUAL_OVERRIDES_BY_ID = {
+  "ally-dragon-sovereign-flame": {
+    image_url: "https://images.pexels.com/photos/3608541/pexels-photo-3608541.jpeg",
+    diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
+  },
+  "ally-fairy-aether-bloom": {
+    image_url: "https://images.pexels.com/photos/1028225/pexels-photo-1028225.jpeg",
+    diagram_image_url: "/diagrams/fairy-alchemy-diagram.svg",
+  },
+  "ally-wolf-lunar-path": {
+    image_url: "https://images.pexels.com/photos/346941/pexels-photo-346941.jpeg",
+    diagram_image_url: "/diagrams/wolf-alchemy-diagram.svg",
+  },
+  "ally-whale-oceanic-hymn": {
+    image_url: "https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg",
+    diagram_image_url: "/diagrams/whale-songline-diagram.svg",
+  },
+  "ally-dolphin-joy-current": {
+    image_url: "https://images.pexels.com/photos/2258696/pexels-photo-2258696.jpeg",
+    diagram_image_url: "/diagrams/dolphin-alchemy-diagram.svg",
+  },
+  "ally-jaguar-shadow-gold": {
+    image_url: "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg",
+    diagram_image_url: "/diagrams/jaguar-alchemy-diagram.svg",
+  },
+  "ally-raven-oracle-veil": {
+    image_url: "https://images.pexels.com/photos/326900/pexels-photo-326900.jpeg",
+    diagram_image_url: "/diagrams/raven-alchemy-diagram.svg",
+  },
+  "angel-metatron-cube-alchemy": {
+    image_url: "https://images.pexels.com/photos/312839/pexels-photo-312839.jpeg",
+    diagram_image_url: "/diagrams/metatron-cube-diagram.svg",
+  },
+  "angel-michael-blue-flame": {
+    image_url: "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg",
+    diagram_image_url: "/diagrams/michael-shield-diagram.svg",
+  },
+  "angel-raphael-emerald-ray": {
+    image_url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg",
+    diagram_image_url: "/diagrams/raphael-healing-diagram.svg",
+  },
+  "angel-gabriel-silver-stream": {
+    image_url: "https://images.pexels.com/photos/772826/pexels-photo-772826.jpeg",
+    diagram_image_url: "/diagrams/gabriel-communication-diagram.svg",
+  },
+};
+
+const withVisualOverrides = (items) =>
+  (items || []).map((item) => ({
+    ...item,
+    ...((item && VISUAL_OVERRIDES_BY_ID[item.id]) || {}),
+  }));
+
 const TABS = [
   { id: "allies", label: "Sacred Ally Alchemy", icon: Flame },
   { id: "angelic", label: "Angelic Alchemy", icon: Shield },
@@ -103,12 +276,16 @@ export default function SacredAllyAlchemy({ api }) {
           api.get("/sacred-ally-audio-journeys"),
           api.get("/sacred-ally-pathways"),
         ]);
-        setAllies(Array.isArray(alliesRes.data) ? alliesRes.data : []);
-        setAngelic(Array.isArray(angelicRes.data) ? angelicRes.data : []);
+        const allyData = Array.isArray(alliesRes.data) && alliesRes.data.length > 0 ? alliesRes.data : ALLY_FALLBACK_DATA;
+        const angelicData = Array.isArray(angelicRes.data) && angelicRes.data.length > 0 ? angelicRes.data : ANGELIC_FALLBACK_DATA;
+        setAllies(withVisualOverrides(allyData));
+        setAngelic(withVisualOverrides(angelicData));
         setJourneys(Array.isArray(journeyRes.data) ? journeyRes.data : []);
         setPathways(Array.isArray(pathwayRes.data) ? pathwayRes.data : []);
       } catch (error) {
         appLogger.error("Failed loading Sacred Ally Alchemy", error);
+        setAllies(withVisualOverrides(ALLY_FALLBACK_DATA));
+        setAngelic(withVisualOverrides(ANGELIC_FALLBACK_DATA));
       } finally {
         setLoading(false);
       }
@@ -388,6 +565,23 @@ export default function SacredAllyAlchemy({ api }) {
                   </div>
                 )}
 
+                {(selected.image_url || selected.diagram_image_url) && (
+                  <div className="grid sm:grid-cols-2 gap-3" data-testid="sacred-ally-reference-visuals">
+                    {selected.image_url && (
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-2">
+                        <p className="text-[11px] text-muted-foreground mb-2">Reference Image</p>
+                        <img src={selected.image_url} alt={`${selected.name} reference`} className="w-full aspect-[4/3] object-cover rounded-lg" />
+                      </div>
+                    )}
+                    {selected.diagram_image_url && (
+                      <div className="rounded-xl border border-white/10 bg-white/5 p-2">
+                        <p className="text-[11px] text-muted-foreground mb-2">Diagram</p>
+                        <img src={selected.diagram_image_url} alt={`${selected.name} diagram`} className="w-full aspect-[4/3] object-contain rounded-lg bg-black/20" />
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <p className="text-sm text-muted-foreground" data-testid="sacred-ally-modal-description">{selected.description}</p>
 
                 <SectionList title="Alchemy Teachings" icon={Sparkles} items={selected.alchemy_teachings} testId="sacred-ally-alchemy-teachings" />
@@ -438,7 +632,9 @@ export default function SacredAllyAlchemy({ api }) {
 
                 <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-source-integrity">
                   <p className="text-xs text-muted-foreground mb-2">Source Integrity</p>
-                  <p className="text-xs text-cyan-300/90">{selected.content_integrity?.verified ? `Verified references (${selected.content_integrity?.references_count || 0})` : "Curated reference set"}</p>
+                  {selected.content_integrity?.verified && (
+                    <p className="text-xs text-cyan-300/90">Verified references ({selected.content_integrity?.references_count || 0})</p>
+                  )}
                   {selected.source_references?.length > 0 && (
                     <ul className="mt-2 space-y-1">
                       {selected.source_references.slice(0, 3).map((ref) => (

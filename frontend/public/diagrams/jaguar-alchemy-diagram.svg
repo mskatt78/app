@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#111111"/>
+  <text x="600" y="90" fill="#facc15" font-size="46" font-family="Georgia, serif" text-anchor="middle">Jaguar Alchemy Shadow Map</text>
+  <polygon points="600,210 880,580 320,580" fill="none" stroke="#facc15" stroke-width="5"/>
+  <text x="600" y="320" fill="#fde68a" font-size="30" text-anchor="middle">AWARENESS</text>
+  <text x="470" y="540" fill="#fde68a" font-size="24">BOUNDARIES</text>
+  <text x="710" y="540" fill="#fde68a" font-size="24">INTEGRATION</text>
+  <text x="600" y="730" fill="#94a3b8" font-size="20" text-anchor="middle">Reference Diagram • Jaguar shadow integration triangle</text>
+</svg>

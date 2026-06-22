@@ -29,6 +29,7 @@ SACRED_ALLY_ALCHEMY = [
             "I am safe to be fully powerful.",
         ],
         "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/d22b251fb1f07f98f770815056f0a57fcf2a421e35bdbf5306411ab74c1bc8cb.png",
+        "diagram_image_url": "/diagrams/dragon-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Dragon",
@@ -64,6 +65,7 @@ SACRED_ALLY_ALCHEMY = [
             "Beauty is medicine for my nervous system.",
         ],
         "image_url": "https://images.pexels.com/photos/1028225/pexels-photo-1028225.jpeg",
+        "diagram_image_url": "/diagrams/fairy-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Fairy",
@@ -98,6 +100,7 @@ SACRED_ALLY_ALCHEMY = [
             "My voice is clear, clean, and true.",
         ],
         "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/125766c5bcd3db6bbf38083d00a7c1bef34336306c8f003b919ae3bf833b08e2.png",
+        "diagram_image_url": "/diagrams/wolf-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Wolf",
@@ -142,6 +145,7 @@ SACRED_ALLY_ALCHEMY = [
             "I am held by vast, loving intelligence.",
         ],
         "image_url": "https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg",
+        "diagram_image_url": "/diagrams/whale-songline-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Whale_vocalization",
@@ -177,6 +181,7 @@ SACRED_ALLY_ALCHEMY = [
             "Play restores my soul intelligence.",
         ],
         "image_url": "https://images.pexels.com/photos/2258696/pexels-photo-2258696.jpeg",
+        "diagram_image_url": "/diagrams/dolphin-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Dolphin",
@@ -211,6 +216,7 @@ SACRED_ALLY_ALCHEMY = [
             "I walk in grounded inner authority.",
         ],
         "image_url": "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg",
+        "diagram_image_url": "/diagrams/jaguar-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Jaguar",
@@ -245,6 +251,7 @@ SACRED_ALLY_ALCHEMY = [
             "My voice serves truth and healing.",
         ],
         "image_url": "https://images.pexels.com/photos/326900/pexels-photo-326900.jpeg",
+        "diagram_image_url": "/diagrams/raven-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Raven",
@@ -283,6 +290,7 @@ ANGELIC_ALCHEMY = [
             "I align to sacred architecture and right action.",
         ],
         "image_url": "https://images.pexels.com/photos/312839/pexels-photo-312839.jpeg",
+        "diagram_image_url": "/diagrams/metatron-cube-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Metatron",
@@ -318,6 +326,7 @@ ANGELIC_ALCHEMY = [
             "I choose courageous integrity.",
         ],
         "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/86f232c5a05f9e4f7ed008bf0907e095f30e5186422e07acd4be29b88df9857b.png",
+        "diagram_image_url": "/diagrams/michael-shield-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Michael_(archangel)",
@@ -352,6 +361,7 @@ ANGELIC_ALCHEMY = [
             "My body is an ally in awakening.",
         ],
         "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/95cf9fab9be16a77b0b1e17e6b23e8c84396f721cab9d0b8e73339bc82c55bdb.png",
+        "diagram_image_url": "/diagrams/raphael-healing-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Raphael_(archangel)",
@@ -386,6 +396,7 @@ ANGELIC_ALCHEMY = [
             "Creation flows through me with ease.",
         ],
         "image_url": "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/04ce5859c58c4a8ee0f9c08993f6440d87ac4aaf0296871026db1cc50a389d2a.png",
+        "diagram_image_url": "/diagrams/gabriel-communication-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
             "https://en.wikipedia.org/wiki/Gabriel",

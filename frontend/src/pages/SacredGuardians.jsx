@@ -113,7 +113,7 @@ const SacredGuardians = ({ user, api }) => {
             <p className="text-muted-foreground max-w-2xl mx-auto text-base leading-relaxed">
               Discover your spirit allies across the unseen realms — power animals, dragon energies,
               angelic presences, familiars, and sacred messengers. Each carries unique wisdom and
-              medicine for your soul's journey.
+              medicine for your soul&apos;s journey.
             </p>
           </motion.div>
         </div>
@@ -183,11 +183,11 @@ const SacredGuardians = ({ user, api }) => {
                     <div className="absolute bottom-0 left-0 right-0 p-3">
                       <h3 className="text-sm font-serif text-white font-semibold leading-tight">{guardian.name}</h3>
                       <p className={`text-xs ${catInfo.color} mt-0.5`}>{catInfo.label}</p>
-                      <p className="text-[10px] text-cyan-300/90 mt-1" data-testid={`guardian-integrity-${guardian.id}`}>
-                        {guardian.content_integrity?.verified
-                          ? `Verified references (${guardian.content_integrity.references_count || 0})`
-                          : "Curated content"}
-                      </p>
+                      {guardian.content_integrity?.verified && (
+                        <p className="text-[10px] text-cyan-300/90 mt-1" data-testid={`guardian-integrity-${guardian.id}`}>
+                          Verified references ({guardian.content_integrity.references_count || 0})
+                        </p>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -271,7 +271,7 @@ const SacredGuardians = ({ user, api }) => {
                     <Sparkles className="w-3.5 h-3.5" />
                     Sacred Message
                   </h4>
-                  <p className="text-foreground italic leading-relaxed">"{selected.message}"</p>
+                  <p className="text-foreground italic leading-relaxed">&ldquo;{selected.message}&rdquo;</p>
                 </div>
 
                 {/* Symbolism */}

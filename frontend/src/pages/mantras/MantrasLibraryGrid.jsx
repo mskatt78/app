@@ -67,13 +67,13 @@ export const MantrasLibraryGrid = ({
             {mantra.sanskrit && (
               <p className="text-2xl text-primary/80 mb-3 font-serif">{mantra.sanskrit}</p>
             )}
-            <p className="text-sm text-muted-foreground italic mb-3 line-clamp-2">"{mantra.translation}"</p>
+            <p className="text-sm text-muted-foreground italic mb-3 line-clamp-2">&ldquo;{mantra.translation}&rdquo;</p>
 
-            <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`mantra-integrity-${mantra.id}`}>
-              {mantra.content_integrity?.verified
-                ? `Verified references (${mantra.content_integrity.references_count || 0})`
-                : "Curated content"}
-            </p>
+            {mantra.content_integrity?.verified && (
+              <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`mantra-integrity-${mantra.id}`}>
+                Verified references ({mantra.content_integrity.references_count || 0})
+              </p>
+            )}
             {formatReviewedDate(mantra.content_integrity?.last_reviewed_at) && (
               <p className="text-[11px] text-muted-foreground mb-2" data-testid={`mantra-reviewed-at-${mantra.id}`}>
                 Last reviewed: {formatReviewedDate(mantra.content_integrity?.last_reviewed_at)}

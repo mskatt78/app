@@ -363,11 +363,11 @@ const YogaLibrary = ({ user, api }) => {
                     
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{pose.description}</p>
 
-                    <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`pose-integrity-${pose.id}`}>
-                      {pose.content_integrity?.verified
-                        ? `Verified references (${pose.content_integrity.references_count || 0})`
-                        : "Curated content"}
-                    </p>
+                    {pose.content_integrity?.verified && (
+                      <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`pose-integrity-${pose.id}`}>
+                        Verified references ({pose.content_integrity.references_count || 0})
+                      </p>
+                    )}
                     {formatReviewedDate(pose.content_integrity?.last_reviewed_at) && (
                       <p className="text-[11px] text-muted-foreground mb-3" data-testid={`pose-reviewed-at-${pose.id}`}>
                         Last reviewed: {formatReviewedDate(pose.content_integrity?.last_reviewed_at)}

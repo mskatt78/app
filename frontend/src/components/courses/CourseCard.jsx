@@ -12,7 +12,7 @@ export const CourseCard = ({
   const integrity = course.content_integrity || {};
   const integrityLabel = integrity.verified
     ? `Verified references (${integrity.references_count || 0})`
-    : "Curated content";
+    : "";
   const reviewedAt = integrity.last_reviewed_at ? new Date(integrity.last_reviewed_at) : null;
   const reviewedLabel = reviewedAt && !Number.isNaN(reviewedAt.getTime()) ? reviewedAt.toLocaleDateString() : null;
 
@@ -68,12 +68,14 @@ export const CourseCard = ({
           )}
         </div>
 
-        <p
-          className="mt-2 text-[11px] text-cyan-300/90"
-          data-testid={`course-integrity-${course.id}`}
-        >
-          {integrityLabel}
-        </p>
+        {integrityLabel && (
+          <p
+            className="mt-2 text-[11px] text-cyan-300/90"
+            data-testid={`course-integrity-${course.id}`}
+          >
+            {integrityLabel}
+          </p>
+        )}
         {reviewedLabel && (
           <p className="text-[11px] text-muted-foreground" data-testid={`course-reviewed-at-${course.id}`}>
             Last reviewed: {reviewedLabel}

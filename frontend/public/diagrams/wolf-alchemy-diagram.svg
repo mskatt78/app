@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#0b1016"/>
+  <text x="600" y="90" fill="#cbd5e1" font-size="48" font-family="Georgia, serif" text-anchor="middle">Wolf Alchemy Compass</text>
+  <circle cx="600" cy="390" r="230" fill="none" stroke="#94a3b8" stroke-width="5"/>
+  <line x1="600" y1="160" x2="600" y2="620" stroke="#64748b" stroke-width="3"/>
+  <line x1="370" y1="390" x2="830" y2="390" stroke="#64748b" stroke-width="3"/>
+  <text x="600" y="340" fill="#e2e8f0" font-size="32" text-anchor="middle">INSTINCT</text>
+  <text x="600" y="385" fill="#e2e8f0" font-size="28" text-anchor="middle">BOUNDARIES</text>
+  <text x="600" y="430" fill="#e2e8f0" font-size="26" text-anchor="middle">PACK INTEGRITY</text>
+  <text x="600" y="670" fill="#94a3b8" font-size="20" text-anchor="middle">Reference Diagram • Wolf discernment and belonging model</text>
+</svg>

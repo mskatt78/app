@@ -114,11 +114,11 @@ export const ShamanicPracticeGrid = ({
                   </p>
                 )}
 
+              {practice.content_integrity?.verified && (
                 <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`shamanic-integrity-${practice.id}`}>
-                  {practice.content_integrity?.verified
-                    ? `Verified references (${practice.content_integrity.references_count || 0})`
-                    : "Curated content"}
+                  Verified references ({practice.content_integrity.references_count || 0})
                 </p>
+              )}
 
                 {formatReviewedDate(practice.content_integrity?.last_reviewed_at) && (
                   <p className="text-[11px] text-muted-foreground mb-2" data-testid={`shamanic-reviewed-at-${practice.id}`}>

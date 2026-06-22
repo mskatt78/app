@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#090e1a"/>
+  <text x="600" y="88" fill="#a5b4fc" font-size="44" font-family="Georgia, serif" text-anchor="middle">Metatron&apos;s Cube Reference</text>
+  <g transform="translate(600 400)" stroke="#93c5fd" fill="none" stroke-width="3">
+    <circle r="200"/>
+    <circle cx="0" cy="-200" r="46"/>
+    <circle cx="173" cy="-100" r="46"/>
+    <circle cx="173" cy="100" r="46"/>
+    <circle cx="0" cy="200" r="46"/>
+    <circle cx="-173" cy="100" r="46"/>
+    <circle cx="-173" cy="-100" r="46"/>
+    <circle cx="0" cy="0" r="46"/>
+    <line x1="0" y1="-200" x2="173" y2="100"/>
+    <line x1="0" y1="-200" x2="-173" y2="100"/>
+    <line x1="173" y1="-100" x2="-173" y2="-100"/>
+    <line x1="173" y1="100" x2="-173" y2="100"/>
+    <line x1="0" y1="200" x2="173" y2="-100"/>
+    <line x1="0" y1="200" x2="-173" y2="-100"/>
+  </g>
+  <text x="600" y="744" fill="#94a3b8" font-size="20" text-anchor="middle">Reference Diagram • Sacred geometry structure for alignment practice</text>
+</svg>

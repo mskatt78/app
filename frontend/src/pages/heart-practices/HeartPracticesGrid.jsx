@@ -44,11 +44,11 @@ export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, s
                 </div>
               </div>
               <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{practice.description}</p>
-              <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`heart-integrity-${practice.id}`}>
-                {practice.content_integrity?.verified
-                  ? `Verified references (${practice.content_integrity.references_count || 0})`
-                  : "Curated content"}
-              </p>
+              {practice.content_integrity?.verified && (
+                <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`heart-integrity-${practice.id}`}>
+                  Verified references ({practice.content_integrity.references_count || 0})
+                </p>
+              )}
               {reviewedDate && (
                 <p className="text-[11px] text-muted-foreground mb-2" data-testid={`heart-reviewed-at-${practice.id}`}>
                   Last reviewed: {reviewedDate}

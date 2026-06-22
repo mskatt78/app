@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800">
+  <rect width="1200" height="800" fill="#07131e"/>
+  <text x="600" y="90" fill="#7dd3fc" font-size="46" font-family="Georgia, serif" text-anchor="middle">Whale Song Lines Map</text>
+  <path d="M120 300 C260 200, 420 380, 560 280 C700 190, 860 360, 1080 250" stroke="#38bdf8" stroke-width="5" fill="none"/>
+  <path d="M120 390 C260 290, 420 470, 560 370 C700 280, 860 450, 1080 340" stroke="#22d3ee" stroke-width="4" fill="none"/>
+  <path d="M120 480 C260 380, 420 560, 560 460 C700 370, 860 540, 1080 430" stroke="#67e8f9" stroke-width="3" fill="none"/>
+  <text x="220" y="230" fill="#bae6fd" font-size="24">Song Line 1: Ancestral Return</text>
+  <text x="220" y="320" fill="#bae6fd" font-size="24">Song Line 2: Heart Coherence</text>
+  <text x="220" y="410" fill="#bae6fd" font-size="24">Song Line 3: Planetary Prayer</text>
+  <text x="600" y="730" fill="#94a3b8" font-size="20" text-anchor="middle">Reference Diagram • Whale vocal rhythm contemplation lines</text>
+</svg>
