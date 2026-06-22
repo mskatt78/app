@@ -6374,3 +6374,113 @@ agent_communication:
       
       All 5 backend regression tests PASSED. No issues detected.
 
+
+
+frontend:
+  - task: "Install flow simplification - ONE primary action"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/install/InstallPromptContent.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ INSTALL FLOW SIMPLIFICATION VERIFIED (2026-06-22): Comprehensive testing completed on preview URL. 1) Install prompt shows exactly ONE clear primary action button ('Open Install Guide' fallback when native install unavailable, or 'Install App' when native prompt available). Secondary actions ('Copy link', 'Maybe Later') clearly distinguished. NO multiple confusing install options. 2) Top nav install button correctly triggers 'pwa-install-open' event (source: topnav) - does NOT navigate to random option-heavy path. Event-driven approach working correctly. 3) Landing page 'Install App' button navigates to /support (acceptable fallback per requirements). 4) No JavaScript errors during install prompt open/close operations. 5) Mobile viewport (390x844) tested successfully. Desktop viewport (1920x1080) also verified. Screenshots captured: install-prompt-mobile.png, install-prompt-desktop.png. All requirements met. Install flow simplification PASSED."
+
+  - task: "Top nav install button event trigger (not navigation)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/TopNav.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Top nav install button (line 110-118) correctly dispatches 'pwa-install-open' custom event with detail.source='topnav'. Does NOT navigate to random paths. Event listener in useInstallPromptState.js (line 78) correctly handles event and opens install prompt. Event-driven install flow working as designed."
+
+  - task: "Landing page install button behavior"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/LandingPage.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Landing page install button (line 154-161) navigates to /support route. This is acceptable per requirements ('support/install guide route acceptable if native prompt unavailable'). Provides fallback install instructions for users who need manual guidance."
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Install Flow Simplification Verification (2026-06-22):
+      
+      VERIFICATION REQUEST: Test install flow simplification on preview URL
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL INSTALL FLOW TESTS PASSED (5/5):
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 1: Landing Page Install Button ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Landing page install button found (data-testid="landing-install-btn")
+      - Navigates to /support route (acceptable fallback per requirements)
+      - Provides install guide for users needing manual instructions
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 2: Top Nav Install Button Event Trigger ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Top nav install button triggers 'pwa-install-open' custom event
+      - Event detail contains source: "topnav"
+      - Does NOT navigate to random option-heavy path
+      - Event-driven approach working correctly
+      - useInstallPromptState.js listener responds to event and opens prompt
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 3: Install Prompt Primary Action Simplification ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Install prompt shows exactly ONE primary action button
+      - Primary action: "Open Install Guide" (fallback when native install unavailable)
+      - OR "Install App" (when native beforeinstallprompt available)
+      - Secondary actions clearly distinguished:
+        * "Copy link" button (secondary styling)
+        * "Maybe Later" button (ghost styling)
+      - NO multiple confusing install options
+      - Clean, simplified UI verified via screenshots
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 4: No JS Errors During Install Prompt Open/Close ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - No JavaScript errors during install prompt open
+      - No JavaScript errors during install prompt close
+      - Console logs clean (no critical errors)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 5: Mobile Viewport Check (390x844) ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - All tests conducted on mobile viewport (390x844) as required
+      - Install prompt displays correctly on mobile
+      - Desktop viewport (1920x1080) also tested and working
+      - Responsive behavior verified
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SCREENSHOTS CAPTURED
+      ═══════════════════════════════════════════════════════════════════════════════
+      - install-prompt-mobile.png: Shows ONE primary action on mobile (390x844)
+      - install-prompt-desktop.png: Shows desktop view (1920x1080)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ Install prompt shows ONE clear primary action (not multiple confusing options)
+      ✅ Top nav install button triggers install prompt via event (not navigation)
+      ✅ Landing page "Install App" navigates to /support (acceptable fallback)
+      ✅ No JS errors during install prompt open/close
+      ✅ Mobile viewport (390x844) tested successfully
+      ✅ Desktop viewport (1920x1080) also verified
+      
+      All requirements met. Install flow simplification VERIFIED and WORKING correctly.

@@ -107,7 +107,9 @@ const TopNav = ({ user }) => {
           <div className="flex items-center gap-2">
             {user && <NotificationBell />}
             <button
-              onClick={() => navigate("/support")}
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("pwa-install-open", { detail: { source: "topnav" } }));
+              }}
               className="hidden sm:flex items-center gap-2 text-primary/80 hover:text-primary transition-colors"
               data-testid="topnav-install-btn"
             >

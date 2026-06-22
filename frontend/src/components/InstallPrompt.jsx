@@ -24,6 +24,7 @@ const InstallPrompt = () => {
       handleReopen,
       openChromeAttempt,
       handleCopyLink,
+      openBrowserInstallGuide,
     },
   } = useInstallPromptState();
 
@@ -62,6 +63,7 @@ const InstallPrompt = () => {
           handleInstall={handleInstall}
           openChromeAttempt={openChromeAttempt}
           handleCopyLink={handleCopyLink}
+          openBrowserInstallGuide={openBrowserInstallGuide}
           handleDismiss={handleDismiss}
         />
       </motion.div>

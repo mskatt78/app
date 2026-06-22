@@ -12,6 +12,7 @@ export const InstallPromptContent = ({
   handleInstall,
   openChromeAttempt,
   handleCopyLink,
+  openBrowserInstallGuide,
   handleDismiss,
 }) => (
   <div className="bg-card/95 backdrop-blur-xl border border-primary/30 rounded-2xl p-4 shadow-2xl" data-testid="install-prompt-content">
@@ -63,20 +64,12 @@ export const InstallPromptContent = ({
         <div className="flex flex-wrap gap-2">
           {deferredPrompt ? (
             <Button onClick={handleInstall} size="sm" className="bg-primary hover:bg-primary/90" data-testid="install-prompt-install-btn">
-              <Download className="w-4 h-4 mr-2" />Install
-            </Button>
-          ) : isAndroid && !isChrome ? (
-            <Button onClick={openChromeAttempt} size="sm" className="bg-primary hover:bg-primary/90" data-testid="install-prompt-open-chrome-btn">
-              <ExternalLink className="w-4 h-4 mr-2" />Open in Chrome
-            </Button>
-          ) : isIos && !isSafari ? (
-            <Button onClick={handleCopyLink} size="sm" className="bg-primary hover:bg-primary/90" data-testid="install-prompt-copy-link-btn">
-              {copiedLink ? <Check className="w-4 h-4 mr-2" /> : <Copy className="w-4 h-4 mr-2" />}
-              {copiedLink ? "Copied" : "Copy app link"}
+              <Download className="w-4 h-4 mr-2" />Install App
             </Button>
           ) : (
-            <Button onClick={() => { window.location.href = "/support"; }} size="sm" className="bg-primary hover:bg-primary/90" data-testid="install-prompt-guide-btn">
-              <Download className="w-4 h-4 mr-2" />Open install guide
+            <Button onClick={openBrowserInstallGuide} size="sm" className="bg-primary hover:bg-primary/90" data-testid="install-prompt-install-primary-btn">
+              {isAndroid && !isChrome ? <ExternalLink className="w-4 h-4 mr-2" /> : <Download className="w-4 h-4 mr-2" />}
+              {isAndroid && !isChrome ? "Open in Chrome to Install" : isIos && !isSafari ? "Copy Link for Safari" : "Open Install Guide"}
             </Button>
           )}
           <Button onClick={handleCopyLink} size="sm" variant="outline" className="border-white/20" data-testid="install-prompt-copy-link-secondary-btn">

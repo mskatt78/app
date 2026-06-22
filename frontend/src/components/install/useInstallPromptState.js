@@ -69,11 +69,20 @@ export const useInstallPromptState = () => {
     window.addEventListener("beforeinstallprompt", handleBeforeInstall);
     window.addEventListener("appinstalled", handleInstalled);
 
+    const openInstallPrompt = () => {
+      if (isStandalone || isInstalled) return;
+      setShowPrompt(true);
+      setShowReopenChip(false);
+    };
+
+    window.addEventListener("pwa-install-open", openInstallPrompt);
+
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
       window.removeEventListener("appinstalled", handleInstalled);
+      window.removeEventListener("pwa-install-open", openInstallPrompt);
     };
-  }, []);
+  }, [isInstalled]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
@@ -115,6 +124,20 @@ export const useInstallPromptState = () => {
     }
   };
 
+  const openBrowserInstallGuide = () => {
+    if (isIos && !isSafari) {
+      handleCopyLink();
+      return;
+    }
+
+    if (isAndroid && !isChrome) {
+      openChromeAttempt();
+      return;
+    }
+
+    window.location.href = "/support";
+  };
+
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -144,6 +167,7 @@ export const useInstallPromptState = () => {
       handleReopen,
       openChromeAttempt,
       handleCopyLink,
+      openBrowserInstallGuide,
     },
   };
 };
