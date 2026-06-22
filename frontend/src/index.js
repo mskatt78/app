@@ -3,6 +3,20 @@ import ReactDOM from "react-dom/client";
 import "@/index.css";
 import App from "@/App";
 
+if (typeof window !== "undefined") {
+  window.__deferredInstallPrompt = window.__deferredInstallPrompt || null;
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    window.__deferredInstallPrompt = event;
+    window.dispatchEvent(new CustomEvent("pwa-beforeinstallprompt-ready"));
+  });
+
+  window.addEventListener("appinstalled", () => {
+    window.__deferredInstallPrompt = null;
+  });
+}
+
 if (process.env.NODE_ENV === "production") {
   const noop = () => {};
   window.console.log = noop;

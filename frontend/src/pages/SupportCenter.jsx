@@ -48,6 +48,15 @@ export default function SupportCenter() {
               </ol>
             </div>
             <Button variant="outline" onClick={() => navigate("/demo")} data-testid="support-center-demo-btn">Open the polished demo</Button>
+            <Button
+              className="ml-3"
+              onClick={() => {
+                window.dispatchEvent(new CustomEvent("pwa-install-open", { detail: { source: "support", immediate: true } }));
+              }}
+              data-testid="support-center-install-now-btn"
+            >
+              Install Now
+            </Button>
           </section>
 
           <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-android-install-card">

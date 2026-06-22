@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getLocalItem, removeLocalItem, setLocalItem } from "../../utils/clientStorage";
 import { appLogger } from "../../utils/logger";
 
@@ -15,6 +15,47 @@ export const useInstallPromptState = () => {
   const [isChrome, setIsChrome] = useState(false);
   const [isInAppBrowser, setIsInAppBrowser] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  const openBrowserInstallGuide = useCallback(() => {
+    if (isIos && !isSafari) {
+      handleCopyLink();
+      return;
+    }
+
+    if (isAndroid && !isChrome) {
+      openChromeAttempt();
+      return;
+    }
+
+    setShowPrompt(true);
+    setShowReopenChip(false);
+  }, [isAndroid, isChrome, isIos, isSafari]);
+
+  const triggerNativeInstall = useCallback(async () => {
+    if (!deferredPrompt) {
+      openBrowserInstallGuide();
+      return false;
+    }
+
+    try {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+
+      if (outcome === "accepted") {
+        setIsInstalled(true);
+        removeLocalItem(DISMISS_KEY);
+        setShowPrompt(false);
+        setDeferredPrompt(null);
+        return true;
+      }
+    } catch (error) {
+      appLogger.warn("Native install prompt failed", error);
+    }
+
+    setShowPrompt(false);
+    setDeferredPrompt(null);
+    return false;
+  }, [deferredPrompt, openBrowserInstallGuide]);
 
   useEffect(() => {
     const isStandalone =
@@ -45,8 +86,17 @@ export const useInstallPromptState = () => {
       setShowReopenChip(true);
     }
 
+    if (window.__deferredInstallPrompt) {
+      setDeferredPrompt(window.__deferredInstallPrompt);
+      if (!dismissed) {
+        setShowPrompt(true);
+        setShowReopenChip(false);
+      }
+    }
+
     const handleBeforeInstall = (event) => {
       event.preventDefault();
+      window.__deferredInstallPrompt = event;
       setDeferredPrompt(event);
       if (!dismissed) {
         setShowReopenChip(false);
@@ -66,11 +116,29 @@ export const useInstallPromptState = () => {
       removeLocalItem(DISMISS_KEY);
     };
 
+    const handleGlobalInstallReady = () => {
+      if (window.__deferredInstallPrompt) {
+        setDeferredPrompt(window.__deferredInstallPrompt);
+      }
+    };
+
     window.addEventListener("beforeinstallprompt", handleBeforeInstall);
+    window.addEventListener("pwa-beforeinstallprompt-ready", handleGlobalInstallReady);
     window.addEventListener("appinstalled", handleInstalled);
 
-    const openInstallPrompt = () => {
+    const openInstallPrompt = (event) => {
       if (isStandalone || isInstalled) return;
+      const immediate = Boolean(event?.detail?.immediate);
+
+      if (immediate) {
+        if (deferredPrompt) {
+          triggerNativeInstall();
+        } else {
+          openBrowserInstallGuide();
+        }
+        return;
+      }
+
       setShowPrompt(true);
       setShowReopenChip(false);
     };
@@ -79,22 +147,14 @@ export const useInstallPromptState = () => {
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstall);
+      window.removeEventListener("pwa-beforeinstallprompt-ready", handleGlobalInstallReady);
       window.removeEventListener("appinstalled", handleInstalled);
       window.removeEventListener("pwa-install-open", openInstallPrompt);
     };
-  }, [isInstalled]);
+  }, [deferredPrompt, isInstalled, openBrowserInstallGuide, triggerNativeInstall]);
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === "accepted") {
-      setIsInstalled(true);
-      removeLocalItem(DISMISS_KEY);
-    }
-    setShowPrompt(false);
-    setDeferredPrompt(null);
+    await triggerNativeInstall();
   };
 
   const handleDismiss = () => {
@@ -111,7 +171,8 @@ export const useInstallPromptState = () => {
   const openChromeAttempt = () => {
     const target = `${window.location.origin}${window.location.pathname}${window.location.search}`;
     if (!isAndroid) {
-      window.location.href = "/support";
+      setShowPrompt(true);
+      setShowReopenChip(false);
       return;
     }
     try {
@@ -122,20 +183,6 @@ export const useInstallPromptState = () => {
       appLogger.warn("Open in Chrome intent failed, using fallback URL", error);
       window.location.href = target;
     }
-  };
-
-  const openBrowserInstallGuide = () => {
-    if (isIos && !isSafari) {
-      handleCopyLink();
-      return;
-    }
-
-    if (isAndroid && !isChrome) {
-      openChromeAttempt();
-      return;
-    }
-
-    window.location.href = "/support";
   };
 
   const handleCopyLink = async () => {

@@ -6426,6 +6426,21 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ Landing page install button (line 154-161) navigates to /support route. This is acceptable per requirements ('support/install guide route acceptable if native prompt unavailable'). Provides fallback install instructions for users who need manual guidance."
+      - working: true
+        agent: "testing"
+        comment: "✅ BEHAVIOR CHANGED (2026-06-22): Landing page install button (line 154-163) NOW dispatches 'pwa-install-open' custom event with source='landing' and immediate=true. Does NOT navigate to /support anymore. Triggers install prompt component in-place. This is the CORRECT behavior per new requirements. Verified on mobile viewport (390x844)."
+
+  - task: "Install flow reliability verification - comprehensive mobile test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/LandingPage.jsx, /app/frontend/src/components/TopNav.jsx, /app/frontend/src/pages/SupportCenter.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ INSTALL FLOW RELIABILITY VERIFIED (2026-06-22): Comprehensive testing on preview URL with mobile viewport (390x844). ALL 6 REQUIREMENTS PASSED: 1) Landing page Install App button (data-testid=landing-install-btn) does NOT navigate to /support ✓ - dispatches 'pwa-install-open' event instead. 2) Clicking landing Install triggers install prompt component in-place ✓ - InstallPrompt component appears with 'Open Install Guide' primary action. 3) TopNav install button (data-testid=topnav-install-btn) does NOT navigate to /support ✓ - dispatches 'pwa-install-open' event (verified on desktop 1920x1080, hidden on mobile per design). 4) If deferred prompt unavailable, prompt stays on same page ✓ - no forced redirect to /support, shows install guidance with copy actions. 5) Support page Install Now button (data-testid=support-center-install-now-btn) triggers install prompt ✓ - dispatches 'pwa-install-open' event with source='support'. 6) No console errors tied to install event handlers ✓ - 0 install-related errors detected (only expected 401 auth errors). Screenshots: landing-install-prompt-visible.png, support-install-prompt-visible.png, desktop-topnav-install-prompt.png. All install flow requirements PASSED."
 
 agent_communication:
   - agent: "testing"
@@ -6602,3 +6617,137 @@ agent_communication:
       ✅ No blocking errors in console or network
       
       All requirements met. Heart guided voice playback VERIFIED and WORKING correctly.
+
+
+
+  - agent: "testing"
+    message: |
+      Install Flow Reliability Verification (2026-06-22):
+      
+      VERIFICATION REQUEST: Test install flow reliability on preview URL with mobile viewport (390x844)
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL 6 REQUIREMENTS PASSED:
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      REQUIREMENT 1: Landing page Install App button does NOT navigate to /support ✅
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Button found: data-testid="landing-install-btn"
+      - Behavior: Dispatches 'pwa-install-open' custom event (source: "landing", immediate: true)
+      - Navigation check: Does NOT navigate to /support ✓
+      - Current URL after click: Stays on landing page (/)
+      - PASS: Landing install button does NOT navigate to /support
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      REQUIREMENT 2: Clicking landing Install triggers install prompt in-place ✅
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Install prompt component appeared: data-testid="install-prompt" visible
+      - Prompt content: "Install App" title with description
+      - Primary action: "Open Install Guide" button (fallback when native prompt unavailable)
+      - Secondary actions: "Copy link" and "Maybe Later" buttons
+      - Location: Appears in-place on landing page (no navigation)
+      - Screenshot: landing-install-prompt-visible.png
+      - PASS: Install prompt triggers in-place successfully
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      REQUIREMENT 3: TopNav install button does NOT navigate to /support ✅
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Button found: data-testid="topnav-install-btn"
+      - Mobile viewport (390x844): Button hidden (expected per responsive design)
+      - Desktop viewport (1920x1080): Button visible and tested
+      - Behavior: Dispatches 'pwa-install-open' custom event (source: "topnav", immediate: true)
+      - Navigation check: Does NOT navigate to /support ✓
+      - Install prompt triggered: data-testid="install-prompt" visible after click
+      - Screenshot: desktop-topnav-install-prompt.png
+      - PASS: TopNav install button triggers install prompt (no navigation to /support)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      REQUIREMENT 4: Prompt stays on same page if deferred prompt unavailable ✅
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Test scenario: Clicked landing install button multiple times
+      - Current URL: Stayed on landing page (/) - no forced redirect to /support
+      - Install prompt behavior: Shows "Open Install Guide" fallback action
+      - Copy actions available: "Copy link" button present and functional
+      - Install guidance: Prompt provides install instructions without navigation
+      - Screenshot: install-no-redirect-state.png
+      - PASS: No forced redirect to /support when deferred prompt unavailable
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      REQUIREMENT 5: Support page Install Now button triggers install prompt ✅
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Button found: data-testid="support-center-install-now-btn"
+      - Location: /support page, Install the app section
+      - Behavior: Dispatches 'pwa-install-open' custom event (source: "support", immediate: true)
+      - Install prompt triggered: data-testid="install-prompt" visible after click
+      - Screenshot: support-install-prompt-visible.png
+      - PASS: Support page Install Now button triggers install prompt successfully
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      REQUIREMENT 6: No console errors tied to install event handlers ✅
+      ═══════════════════════════════════════════════════════════════════════════════
+      - Total console errors: 11 (all non-critical 401 auth errors)
+      - Install-related console errors: 0
+      - Keywords monitored: install, pwa, beforeinstallprompt, manifest
+      - No JavaScript errors during install prompt open/close operations
+      - No errors in custom event dispatching or handling
+      - PASS: No console errors tied to install event handlers
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SCREENSHOTS CAPTURED
+      ═══════════════════════════════════════════════════════════════════════════════
+      Mobile viewport (390x844):
+      - landing-before-install-click.png: Landing page before clicking install button
+      - landing-install-prompt-visible.png: Install prompt appeared in-place on landing
+      - install-no-redirect-state.png: Prompt stays on same page (no redirect)
+      - support-before-install-click.png: Support page before clicking Install Now
+      - support-install-prompt-visible.png: Install prompt triggered from support page
+      
+      Desktop viewport (1920x1080):
+      - desktop-topnav-before-click.png: Menu page with TopNav install button visible
+      - desktop-topnav-install-prompt.png: Install prompt triggered from TopNav button
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      IMPLEMENTATION DETAILS
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      Landing page install button (LandingPage.jsx line 154-163):
+      - Uses window.dispatchEvent(new CustomEvent("pwa-install-open", {...}))
+      - Event detail: { source: "landing", immediate: true }
+      - Does NOT use navigate('/support')
+      
+      TopNav install button (TopNav.jsx line 110-118):
+      - Uses window.dispatchEvent(new CustomEvent("pwa-install-open", {...}))
+      - Event detail: { source: "topnav", immediate: true }
+      - Does NOT use navigate('/support')
+      - Hidden on mobile viewport (sm:flex class)
+      
+      Support Center Install Now button (SupportCenter.jsx line 51-59):
+      - Uses window.dispatchEvent(new CustomEvent("pwa-install-open", {...}))
+      - Event detail: { source: "support", immediate: true }
+      - Located in install card section
+      
+      Install prompt component (InstallPrompt.jsx):
+      - Listens for 'pwa-install-open' custom events
+      - Shows in-place modal with install guidance
+      - Primary action: "Open Install Guide" (fallback) or "Install App" (native)
+      - Secondary actions: "Copy link", "Maybe Later"
+      - No forced navigation to /support
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ Landing page Install App button does NOT navigate to /support
+      ✅ Clicking landing Install triggers install prompt component in-place
+      ✅ TopNav install button does NOT navigate to /support (triggers install prompt)
+      ✅ Prompt stays on same page if deferred prompt unavailable (no forced redirect)
+      ✅ Support page Install Now button triggers install prompt/native flow
+      ✅ No console errors tied to install event handlers (0 install-related errors)
+      
+      All 6 requirements PASSED. Install flow reliability VERIFIED on mobile viewport (390x844).
+      Desktop viewport (1920x1080) also tested and working correctly.
+      
+      BEHAVIOR CHANGE NOTED:
+      Previous test (2026-06-22 earlier) showed landing page install button navigating to /support.
+      Current implementation (verified 2026-06-22 latest) shows landing page install button dispatching
+      'pwa-install-open' event instead. This is the CORRECT behavior per new requirements.

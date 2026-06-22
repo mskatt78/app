@@ -152,7 +152,9 @@ const LandingPage = ({ onLoginSuccess }) => {
               </Button>
               <Button
                 variant="ghost"
-                onClick={() => navigate('/support')}
+                onClick={() => {
+                  window.dispatchEvent(new CustomEvent("pwa-install-open", { detail: { source: "landing", immediate: true } }));
+                }}
                 className="text-white/70 hover:text-primary"
                 data-testid="landing-install-btn"
               >
