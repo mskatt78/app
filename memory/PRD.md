@@ -1103,3 +1103,67 @@
   - Frontend: **100%**
   - Verified auth guard behavior, sorting, soft-delete, and cross-device retrieval.
 
+## Sacred Ally Alchemy + Angelic Alchemy Expansion (Iteration 180) — 2026-06-22
+- User-selected scope completed:
+  - New standalone route/page: `/sacred-ally-alchemy`
+  - Full-depth ally modules (Dragon, Fairies, Wolves, Whales, Dolphins, plus other sacred allies)
+  - Whale-specific dedicated Song Lines module
+  - Angelic Alchemy with core angels + sacred geometry (including Metatron’s Cube)
+  - Pre-seeded rich content and admin editability for all entries
+
+### Backend Delivered
+- New seed content file:
+  - `backend/data/sacred_ally_alchemy_content.py`
+  - Collections seeded:
+    - `sacred_ally_alchemy` (Dragon, Fairy, Wolf, Whale, Dolphin, Jaguar, Raven)
+    - `angelic_alchemy` (Metatron, Michael, Raphael, Gabriel)
+- New content endpoints:
+  - `GET /api/sacred-ally-alchemy`
+  - `GET /api/sacred-ally-alchemy/{item_id}`
+  - `GET /api/angelic-alchemy`
+  - `GET /api/angelic-alchemy/{item_id}`
+  - Supports filtering (`category`, `ally_type`, `sacred_geometry`)
+- Seeding pipeline integrated in both startup seed paths (`server.py`) so data is durable and consistent.
+
+### Admin Editability Delivered
+- Added both collections to admin backend controls (`routers/admin.py`):
+  - `SOURCE_AWARE_COLLECTIONS`
+  - `ALLOWED_COLLECTIONS`
+  - `COLLECTION_META`
+  - seed-status checks and advanced seed loaders
+- Added frontend admin field mappings (`pages/admin/constants.js`) for all ally/angelic fields, including arrays for:
+  - `alchemy_teachings`, `rituals`, `practical_rituals`, `journal_prompts`, `affirmations`, `song_lines`, `song_line_practices`, `source_references`
+- Enhanced `AdminFieldInput.jsx` so list-like textarea fields save as clean arrays (not raw strings).
+
+### Frontend Delivered
+- New page:
+  - `frontend/src/pages/SacredAllyAlchemy.jsx`
+- Route integrated:
+  - `frontend/src/routes/AppRoutes.jsx` → `/sacred-ally-alchemy`
+- UI behavior:
+  - Tabs: Sacred Ally Alchemy / Angelic Alchemy
+  - Ally filters: all, dragon, fairies, wolves, whales, dolphins, other sacred allies
+  - Rich detail modal sections:
+    - alchemy teachings
+    - rituals / practical rituals
+    - journal prompts
+    - affirmations
+    - source integrity links
+    - whale-only Song Lines + Song Line Practices
+    - angelic sacred geometry badge (Metatron’s Cube)
+- Navigation integration:
+  - Main menu card added
+  - TopNav and BottomNav menu entries added
+  - Dashboard quick-nav entry added
+
+### Testing + Verification
+- Automated test report: `/app/test_reports/iteration_180.json`
+  - Backend: **100% (30/30)**
+  - Frontend: **100%**
+  - Admin CRUD for both new collections: verified
+- Additional frontend specialist validation: PASS
+- Additional backend regression validation: PASS (`/api/health`, ally/angelic filters and payload contracts)
+
+### Deployment Note
+- This was implemented and verified in preview; production requires redeploy to receive `/sacred-ally-alchemy` and associated data/routes.
+
