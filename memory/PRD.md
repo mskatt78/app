@@ -1403,3 +1403,30 @@
 ### Deployment Note
 - Fix is in preview and requires redeploy to apply in production.
 
+## Guided Overlay Mobile UX Cleanup (Scroll + Hidden Internal Controls) (Iteration 188) — 2026-06-22
+- User report from production screenshot:
+  - Could not scroll comfortably to read narration content.
+  - Internal controls (`Strict anti-repeat`, `Balanced flow`) should not appear in production UI.
+
+### Fixes Applied
+- `frontend/src/components/GuidedPracticeOverlay.jsx`
+  - Stopped passing anti-repetition mode props to visual content layer.
+- `frontend/src/components/guided/GuidedPracticeContent.jsx`
+  - Removed anti-repeat mode button group from user-facing overlay.
+  - Improved mobile scroll behavior:
+    - Overlay root now supports vertical scrolling (`overflow-y-auto`, `overscroll-contain`).
+    - Narration panel constrained with internal scroll (`max-h-[36vh]`, `overflow-y-auto`).
+    - Bottom safe-area padding added so Exit controls remain reachable above device UI bars.
+
+### Validation
+- Mobile smoke checks on guided practice flow: PASS
+  - `guided-mode-strict-btn` count: 0
+  - `guided-mode-balanced-btn` count: 0
+- Frontend specialist validation: PASS
+  - Narration content scrollable on 390x844
+  - Play + Exit controls remain reachable after scrolling
+  - Timer and narration status remain visible and stable
+
+### Deployment Note
+- Fix is in preview and requires redeploy to apply in production.
+
