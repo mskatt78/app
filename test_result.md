@@ -1355,14 +1355,14 @@ agent_communication:
 
 metadata:
   created_by: "testing_agent"
-  version: "2.4"
-  test_sequence: 16
+  version: "2.5"
+  test_sequence: 17
   run_ui: false
   last_tested: "2026-06-22"
 
 test_plan:
   current_focus:
-    - "Heart guided voice playback verification - COMPLETED"
+    - "Google auth flow verification - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -1379,6 +1379,19 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ HEART GUIDED VOICE PLAYBACK VERIFICATION PASSED (2026-06-22): Comprehensive test on https://breathwork-sanctuary.preview.emergentagent.com/heart-practices completed successfully. Test flow: 1) Opened first heart practice card (Heart Opening Ceremony) ✓. 2) Clicked 'Begin Guided Heart Practice' button ✓. 3) GuidedPracticeOverlay opened with data-testid='guided-practice-overlay' ✓. 4) Voice flow indicators confirmed within 1 second: 'Guided narration playing • section 1 of 21' displayed ✓. Toning status also visible: 'Toning layer ducked during voice' ✓. 5) Timer countdown verified: 19:58 → 19:57 → 19:52 → 19:47 over 11 seconds (not stuck) ✓. 6) Narration is NOT static text-only mode - active voice playback confirmed ✓. 7) TTS API health: 2 successful POST requests to /api/tts/generate-base64, both returned 200 OK, zero errors ✓. 8) Console errors: Only 6 non-critical 401 auth errors (expected for public routes), zero critical TTS/audio/narration errors ✓. 9) Autoplay NOT blocked - narration started immediately without user tap required ✓. All requirements met. Heart guided voice playback fully functional."
+
+
+  - task: "Google auth flow verification - redirect behavior and AuthCallback handling"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/LandingPage.jsx, /app/frontend/src/routes/routeGuards.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GOOGLE AUTH FLOW VERIFICATION PASSED (2026-06-22): Comprehensive test on https://breathwork-sanctuary.preview.emergentagent.com completed successfully. All 4 verification checks passed: 1) LANDING PAGE GOOGLE LOGIN ✓ - Opened auth modal from landing page, clicked 'Continue with Google' button (data-testid='google-login-btn'), verified redirect to auth.emergentagent.com with redirect parameter pointing to https://breathwork-sanctuary.preview.emergentagent.com/dashboard (NOT backend /api/auth/google endpoint). 2) MENU OVERLAY AUTH OPTIONS ✓ - Verified sign-in buttons in top nav and menu overlay navigate to landing page (not directly to backend), correct behavior confirmed. 3) NO DIRECT BACKEND CALLS ✓ - Network monitoring confirmed zero direct calls to /api/auth/google endpoint during Google login flow. 4) AUTHCALLBACK HANDLER ✓ - Tested with mock session_id hash (#session_id=test_session_12345), AuthCallback component processed it gracefully, removed hash from URL, redirected to landing page without crashes or errors. Navigation log shows correct flow: Landing → auth.emergentagent.com → Menu → AuthCallback test → Landing. All requirements met. Google auth flow prevents backend error-page redirect correctly."
 
 
   - task: "Quality Guard static checks - empty-catch and file-length thresholds"
@@ -6751,3 +6764,59 @@ agent_communication:
       Previous test (2026-06-22 earlier) showed landing page install button navigating to /support.
       Current implementation (verified 2026-06-22 latest) shows landing page install button dispatching
       'pwa-install-open' event instead. This is the CORRECT behavior per new requirements.
+
+
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Google Auth Flow Verification (2026-06-22):
+      
+      VERIFICATION REQUEST: Verify Google auth flow behavior on preview https://breathwork-sanctuary.preview.emergentagent.com with focus on preventing backend error-page redirect.
+      
+      ✅ ALL CHECKS PASSED (4/4):
+      
+      1. ✅ LANDING PAGE GOOGLE LOGIN - PASSED
+         - Opened auth modal from landing page via "Sign in to save your progress" button
+         - Clicked "Continue with Google" button (data-testid="google-login-btn")
+         - Verified redirect target: https://auth.emergentagent.com/?redirect=https%3A%2F%2Fbreathwork-sanctuary.preview.emergentagent.com%2Fdashboard
+         - ✅ Redirects to auth.emergentagent.com (NOT backend /api/auth/google endpoint)
+         - ✅ Redirect parameter present and correctly points to current origin + /dashboard
+         - ✅ No direct backend API calls detected
+      
+      2. ✅ MENU OVERLAY AUTH OPTIONS - PASSED
+         - Navigated to /menu page
+         - Found sign-in button in top nav (data-testid="topnav-signin-btn")
+         - Opened menu overlay and found sign-in button (data-testid="topnav-overlay-signin-btn")
+         - ✅ Both buttons navigate to landing page (not directly to backend)
+         - ✅ Correct behavior: users go to landing page for auth, then Google login redirects to auth.emergentagent.com
+      
+      3. ✅ NO DIRECT BACKEND CALLS - PASSED
+         - Network monitoring active throughout test
+         - Monitored all requests for /api/auth/google endpoint
+         - ✅ Zero direct calls to backend /api/auth/google detected
+         - ✅ All Google auth flows correctly redirect to auth.emergentagent.com
+      
+      4. ✅ AUTHCALLBACK HANDLER - PASSED
+         - Tested with mock session_id hash: #session_id=test_session_12345
+         - AuthCallback component processed the hash
+         - ✅ Hash removed from URL (redirected to landing page)
+         - ✅ No crashes or errors detected
+         - ✅ Handled gracefully even with invalid session_id
+      
+      NAVIGATION LOG:
+      1. https://breathwork-sanctuary.preview.emergentagent.com/ (landing)
+      2. https://auth.emergentagent.com/?redirect=https%3A%2F%2Fbreathwork-sanctuary.preview.emergentagent.com%2Fdashboard (Google auth)
+      3. https://breathwork-sanctuary.preview.emergentagent.com/menu (menu page)
+      4. https://breathwork-sanctuary.preview.emergentagent.com/#session_id=test_session_12345 (AuthCallback test)
+      5. https://breathwork-sanctuary.preview.emergentagent.com/ (after AuthCallback processing)
+      
+      CRITICAL FINDINGS:
+      ✅ Google login button correctly redirects to auth.emergentagent.com
+      ✅ Redirect parameter includes current origin + /dashboard (NOT backend endpoint)
+      ✅ No front-end route sends user directly to backend /api/auth/google URL
+      ✅ AuthCallback component handles session_id hash without crashing
+      ✅ All auth flows prevent backend error-page redirect
+      
+      SUMMARY:
+      Google auth flow verification PASSED. All 4 checks completed successfully. Landing page Google login button redirects to auth.emergentagent.com with redirect parameter pointing to https://breathwork-sanctuary.preview.emergentagent.com/dashboard (NOT backend /api/auth/google endpoint). Menu overlay sign-in buttons navigate to landing page for auth (correct behavior). Network monitoring confirmed zero direct backend /api/auth/google calls. AuthCallback component handles session_id hash gracefully without crashes. All requirements met. Google auth flow prevents backend error-page redirect correctly.
