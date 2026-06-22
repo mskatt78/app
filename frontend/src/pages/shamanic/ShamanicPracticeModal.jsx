@@ -15,6 +15,7 @@ export const ShamanicPracticeModal = ({
   selectedPractice,
   isPracticing,
   setIsPracticing,
+  setGuidedPractice,
   setSelectedPractice,
   getSteps,
   formatPreparationText,
@@ -196,19 +197,16 @@ export const ShamanicPracticeModal = ({
                 <button
                   type="button"
                   onClick={() => {
-                    try {
-                      const AC = window.AudioContext || window.webkitAudioContext;
-                      const ctx = new AC();
-                      const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.1, ctx.sampleRate);
-                      const source = ctx.createBufferSource();
-                      source.buffer = buffer;
-                      source.connect(ctx.destination);
-                      source.start(0);
-                      window.__warmAudioCtx = ctx;
-                    } catch (error) {
-                      appLogger.warn("Could not warm audio context before shamanic practice", error);
-                    }
-                    setIsPracticing(true);
+                    if (!selectedPractice) return;
+                    setSelectedPractice(null);
+                    setIsPracticing(false);
+                    setGuidedPractice?.({
+                      ...selectedPractice,
+                      category: selectedPractice.category || "shamanic",
+                      element: selectedPractice.element || "Spirit",
+                      steps: getSteps(selectedPractice),
+                      duration_minutes: Number(selectedPractice.duration_minutes || 30),
+                    });
                   }}
                   className="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"
                   style={{ WebkitTapHighlightColor: "transparent", minHeight: "56px" }}

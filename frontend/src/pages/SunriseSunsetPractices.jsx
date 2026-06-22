@@ -8,6 +8,7 @@ import {
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
 
 const SunriseSunsetPractices = ({ user, api }) => {
@@ -15,6 +16,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [activeTab, setActiveTab] = useState("sunrise");
   const [isPracticing, setIsPracticing] = useState(false);
+  const [guidedPractice, setGuidedPractice] = useState(null);
 
   const sunrisePractices = [
     {
@@ -354,6 +356,18 @@ const SunriseSunsetPractices = ({ user, api }) => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="sunrise-sunset-practices">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={async () => {
+          const completed = guidedPractice;
+          setGuidedPractice(null);
+          if (!completed) return;
+          await logPractice(completed);
+          toast.success(`${completed.name} complete!`);
+        }}
+      />
+
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
@@ -597,7 +611,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
                     {/* Affirmation */}
                     <div className={`p-4 rounded-xl ${elementColors[selectedPractice.element]?.bg} border ${elementColors[selectedPractice.element]?.border}`}>
                       <h3 className="font-medium mb-2">Affirmation</h3>
-                      <p className="text-sm italic text-foreground/90">"{selectedPractice.affirmation}"</p>
+                      <p className="text-sm italic text-foreground/90">&ldquo;{selectedPractice.affirmation}&rdquo;</p>
                     </div>
 
                     {/* Prayer if exists */}
@@ -649,7 +663,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
 
                     {/* Affirmation reminder */}
                     <div className={`p-4 rounded-xl ${elementColors[selectedPractice.element]?.bg} text-center`}>
-                      <p className="text-sm italic">"{selectedPractice.affirmation}"</p>
+                      <p className="text-sm italic">&ldquo;{selectedPractice.affirmation}&rdquo;</p>
                     </div>
                   </div>
                 )}
@@ -660,8 +674,15 @@ const SunriseSunsetPractices = ({ user, api }) => {
                 {!isPracticing ? (
                   <Button 
                     onClick={() => {
-                      try { const AC = window.AudioContext || window.webkitAudioContext; const c = new AC(); const b = c.createBuffer(1, c.sampleRate * 0.1, c.sampleRate); const s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); window.__warmAudioCtx = c; } catch(e) { toast.error("Audio warm-up failed. Tap again to start."); }
-                      setIsPracticing(true);
+                      if (!selectedPractice) return;
+                      setSelectedPractice(null);
+                      setIsPracticing(false);
+                      setGuidedPractice({
+                        ...selectedPractice,
+                        category: activeTab,
+                        steps: selectedPractice.steps,
+                        duration_minutes: Number(selectedPractice.duration_minutes || 15),
+                      });
                     }}
                     className={`w-full py-4 ${
                       activeTab === "sunrise" 
@@ -671,7 +692,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
                     data-testid="begin-practice-btn"
                   >
                     <Play className="w-5 h-5 mr-2" />
-                    Begin Practice
+                    Begin Guided Practice
                   </Button>
                 ) : (
                   <Button 

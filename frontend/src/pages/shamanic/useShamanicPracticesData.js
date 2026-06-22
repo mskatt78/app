@@ -6,6 +6,7 @@ export const useShamanicPracticesData = (api) => {
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPractice, setSelectedPractice] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const [filter, setFilter] = useState("all");
   const [unlockedContent, setUnlockedContent] = useState([]);
   const [isPracticing, setIsPracticing] = useState(false);
@@ -88,6 +89,8 @@ export const useShamanicPracticesData = (api) => {
     loading,
     selectedPractice,
     setSelectedPractice,
+    guidedPractice,
+    setGuidedPractice,
     filter,
     setFilter,
     unlockedContent,

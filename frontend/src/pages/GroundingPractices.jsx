@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
 
 const GroundingPractices = ({ user, api }) => {
@@ -14,6 +15,31 @@ const GroundingPractices = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [isPracticing, setIsPracticing] = useState(false);
+  const [guidedPractice, setGuidedPractice] = useState(null);
+
+  const resolveGroundingSteps = (exercise) => {
+    const base = Array.isArray(exercise.instructions)
+      ? exercise.instructions.filter((step) => typeof step === "string" && step.trim())
+      : [];
+
+    if (base.length) return base;
+
+    return [
+      `Settle into ${exercise.name}.`,
+      exercise.description || "Allow your body to soften into grounded awareness.",
+      "Bring your attention to your feet and the support beneath you.",
+      "With each exhale, release tension down into the earth.",
+      "Close by placing a hand on your heart and naming one thing you are grateful for.",
+    ].filter(Boolean);
+  };
+
+  const toGuidedGroundingPractice = (exercise) => ({
+    ...exercise,
+    element: exercise.element || "Earth",
+    category: exercise.category || "grounding",
+    duration_minutes: Number(exercise.duration_minutes || 15),
+    steps: resolveGroundingSteps(exercise),
+  });
 
   useEffect(() => {
     const fetchExercises = async () => {
@@ -32,6 +58,28 @@ const GroundingPractices = ({ user, api }) => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="grounding-practices">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={async () => {
+          const completed = guidedPractice;
+          setGuidedPractice(null);
+          if (!completed) return;
+          try {
+            await api.post("/practice-history", {
+              practice_type: "grounding",
+              practice_id: completed.id,
+              duration_minutes: completed.duration_minutes,
+              notes: `Completed ${completed.name}`,
+            });
+            toast.success("Practice complete! You are grounded.");
+          } catch (error) {
+            appLogger.error("Failed to log practice:", error);
+            toast.success("Practice complete!");
+          }
+        }}
+      />
+
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto p-4 flex items-center">
@@ -216,25 +264,16 @@ const GroundingPractices = ({ user, api }) => {
 
                     <Button
                       onClick={() => {
-                        try {
-                          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                          const context = new AudioContextClass();
-                          const buffer = context.createBuffer(1, context.sampleRate * 0.1, context.sampleRate);
-                          const source = context.createBufferSource();
-                          source.buffer = buffer;
-                          source.connect(context.destination);
-                          source.start(0);
-                          window.__warmAudioCtx = context;
-                        } catch (error) {
-                          appLogger.warn("Audio context warmup failed for grounding practice", error);
-                        }
-                        setIsPracticing(true);
+                        if (!selectedExercise) return;
+                        setSelectedExercise(null);
+                        setIsPracticing(false);
+                        setGuidedPractice(toGuidedGroundingPractice(selectedExercise));
                       }}
                       className="w-full bg-emerald-600 hover:bg-emerald-700"
                       data-testid="start-practice-btn"
                     >
                       <Play className="w-4 h-4 mr-2" />
-                      Begin Practice with Timer
+                      Begin Guided Grounding Practice
                     </Button>
 
                     <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">

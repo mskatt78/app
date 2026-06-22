@@ -6,6 +6,8 @@ import { ShamanicPracticeGrid } from "./ShamanicPracticeGrid";
 import { ShamanicPracticeModal } from "./ShamanicPracticeModal";
 import { useShamanicPracticesData } from "./useShamanicPracticesData";
 import PracticeVideos from "../../components/PracticeVideos";
+import GuidedPracticeOverlay from "../../components/GuidedPracticeOverlay";
+import { toast } from "sonner";
 
 export default function ShamanicPracticesContainer({ api }) {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ export default function ShamanicPracticesContainer({ api }) {
     loading,
     selectedPractice,
     setSelectedPractice,
+    guidedPractice,
+    setGuidedPractice,
     filter,
     setFilter,
     isPracticing,
@@ -26,6 +30,18 @@ export default function ShamanicPracticesContainer({ api }) {
 
   return (
     <div className="min-h-screen bg-background" data-testid="shamanic-practices-page">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={async () => {
+          const completed = guidedPractice;
+          setGuidedPractice(null);
+          if (!completed) return;
+          await logPractice(completed);
+          toast.success("Shamanic journey complete! Welcome back.");
+        }}
+      />
+
       <ShamanicHeader navigate={navigate} />
 
       <main className="max-w-6xl mx-auto p-6 space-y-6">
@@ -58,6 +74,7 @@ export default function ShamanicPracticesContainer({ api }) {
         selectedPractice={selectedPractice}
         isPracticing={isPracticing}
         setIsPracticing={setIsPracticing}
+        setGuidedPractice={setGuidedPractice}
         setSelectedPractice={setSelectedPractice}
         getSteps={getSteps}
         formatPreparationText={formatPreparationText}
