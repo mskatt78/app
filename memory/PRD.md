@@ -1314,3 +1314,37 @@
 ### Deployment Note
 - Fix is in preview and requires redeploy to apply in production.
 
+## Full Section Guided Voice Sweep (Iteration 185) — 2026-06-22
+- User request: go through all sections and auto-fix instruction-only/no-voice regressions.
+
+### Sections Audited + Fixed
+- Heart Practices
+- Grounding Practices
+- Sunrise/Sunset Practices
+- Shamanic Practices
+
+### What Changed
+- Standardized these sections to launch `GuidedPracticeOverlay` (shared, TTS-capable engine) instead of instruction-only/timer-only branches.
+- Updated begin-practice actions to set `guidedPractice` payloads with robust steps + duration + element metadata.
+- Preserved/kept practice history logging on completion/exit in each section.
+
+### Key File Updates
+- `frontend/src/pages/heart-practices/useHeartPracticesData.js`
+- `frontend/src/pages/heart-practices/HeartPracticesContainer.jsx`
+- `frontend/src/pages/heart-practices/HeartPracticeModal.jsx`
+- `frontend/src/pages/GroundingPractices.jsx`
+- `frontend/src/pages/SunriseSunsetPractices.jsx`
+- `frontend/src/pages/shamanic/useShamanicPracticesData.js`
+- `frontend/src/pages/shamanic/ShamanicPracticesContainer.jsx`
+- `frontend/src/pages/shamanic/ShamanicPracticeModal.jsx`
+
+### Validation
+- Test report: `/app/test_reports/iteration_182.json`
+  - Frontend: **100%**
+  - Verified voice flow in all 4 sections above
+  - Verified TTS requests to `/api/tts/generate-base64` succeed
+  - Verified active narration indicator: `Guided narration playing • section X of Y`
+
+### Deployment Note
+- Sweep completed in preview and requires redeploy to apply across production.
+
