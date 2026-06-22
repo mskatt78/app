@@ -48,6 +48,7 @@ const PaymentCancel = lazy(() => import("../pages/PaymentCancel"));
 const BirthChart = lazy(() => import("../pages/BirthChart"));
 const Reviews = lazy(() => import("../pages/Reviews"));
 const SacredGuardians = lazy(() => import("../pages/SacredGuardians"));
+const SacredAllyAlchemy = lazy(() => import("../pages/SacredAllyAlchemy"));
 const AncientWisdom = lazy(() => import("../pages/AncientWisdom"));
 const SoundFrequencies = lazy(() => import("../pages/SoundFrequencies"));
 const TarotReading = lazy(() => import("../pages/TarotReading"));
@@ -171,6 +172,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/sound-frequencies" element={publicElement(SoundFrequencies, PublicRoute, api)} />
       <Route path="/tarot" element={publicElement(TarotReading, PublicRoute, api)} />
       <Route path="/sacred-guardians" element={publicElement(SacredGuardians, PublicRoute, api)} />
+      <Route path="/sacred-ally-alchemy" element={publicElement(SacredAllyAlchemy, PublicRoute, api)} />
       <Route path="/star-lineage" element={publicElement(StarLineageQuiz, PublicRoute, api)} />
       <Route path="/star-lineage/result/:lineageId" element={publicElement(StarLineageQuiz, PublicRoute, api)} />
       <Route path="/daily-practice" element={publicElement(DailySacredPractice, PublicRoute, api)} />

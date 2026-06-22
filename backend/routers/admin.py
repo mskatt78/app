@@ -37,6 +37,8 @@ SOURCE_AWARE_COLLECTIONS = {
     "shamanic_practices",
     "elemental_practices",
     "heart_practices",
+    "sacred_ally_alchemy",
+    "angelic_alchemy",
 }
 
 
@@ -254,6 +256,7 @@ ALLOWED_COLLECTIONS = {
     "community_posts", "sacred_geometry", "energy_healing",
     "free_form_movement", "chakra_cleansing", "live_sessions",
     "astrology_months", "account_deletion_requests",
+    "sacred_ally_alchemy", "angelic_alchemy",
 }
 
 COLLECTION_META = [
@@ -274,6 +277,8 @@ COLLECTION_META = [
     {"id": "somatic_practices", "name": "Somatic Practices", "icon": "🤸"},
     {"id": "elemental_practices", "name": "Elemental Practices", "icon": "🔥"},
     {"id": "creative_processes", "name": "Creative Processes", "icon": "🎨"},
+    {"id": "sacred_ally_alchemy", "name": "Sacred Ally Alchemy", "icon": "🐉"},
+    {"id": "angelic_alchemy", "name": "Angelic Alchemy", "icon": "🧿"},
     {"id": "yoga_poses", "name": "Yoga Poses", "icon": "🧘‍♀️"},
     {"id": "sacred_geometry", "name": "Sacred Geometry", "icon": "🔺"},
     {"id": "energy_healing", "name": "Energy Healing", "icon": "✨"},
@@ -617,6 +622,7 @@ def _load_standard_seed_advanced_collections() -> dict[str, list[dict[str, Any]]
     from data.complete_embodiment_data import COMPLETE_FEMININE_EMBODIMENT, COMPLETE_MASCULINE_EMBODIMENT
     from data.elemental_temples_data import ELEMENTAL_TEMPLES
     from data.water_practices_data import WATER_PRACTICES
+    from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
 
     return {
         "somatic_practices": SOMATIC_PRACTICES,
@@ -636,6 +642,8 @@ def _load_standard_seed_advanced_collections() -> dict[str, list[dict[str, Any]]
         "masculine_embodiment": COMPLETE_MASCULINE_EMBODIMENT,
         "elemental_temples": ELEMENTAL_TEMPLES,
         "water_practices": WATER_PRACTICES,
+        "sacred_ally_alchemy": SACRED_ALLY_ALCHEMY,
+        "angelic_alchemy": ANGELIC_ALCHEMY,
     }
 
 
@@ -833,7 +841,7 @@ async def get_seed_status(_: dict[str, Any] = Depends(_verify_admin)) -> dict[st
         "somatic_practices", "shamanic_practices", "yoga_poses", "tarot_cards",
         "sound_frequencies", "sacred_guardians", "ancient_wisdom", "community_posts",
         "energy_healing", "chakra_cleansing", "feminine_embodiment", "masculine_embodiment",
-        "courses", "elemental_temples", "water_practices", "runes", "i_ching"
+        "courses", "elemental_temples", "water_practices", "runes", "i_ching", "sacred_ally_alchemy", "angelic_alchemy"
     ]
     
     status = {}

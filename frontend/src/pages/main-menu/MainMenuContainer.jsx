@@ -105,6 +105,7 @@ const MainMenuContainer = ({ user }) => {
       items: [
         { path: "/shamanic", icon: Moon, label: "Shamanic Practices", color: "text-indigo-400", desc: "Journey & soul retrieval" },
         { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening ceremonies" },
+        { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Ally Alchemy", color: "text-fuchsia-300", desc: "Dragon, whales, angels & more" },
         { path: "/sacred-guardians", icon: Feather, label: "Sacred Guardians", color: "text-amber-400", desc: "Animals, dragons & angels" },
         { path: "/ancient-wisdom", icon: Globe, label: "Ancient Traditions", color: "text-yellow-400", desc: "Egyptian, Celtic & Avalon" },
         { path: "/sound-frequencies", icon: Volume2, label: "Sound Healing", color: "text-cyan-400", desc: "Frequencies & vibration" },

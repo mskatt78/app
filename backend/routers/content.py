@@ -3729,6 +3729,56 @@ async def get_sacred_guardian(guardian_id: str) -> dict[str, Any]:
     return _enrich_content_integrity(guardian, "hybrid-curated")
 
 
+# ============ SACRED ALLY ALCHEMY ==========
+
+@router.get("/sacred-ally-alchemy")
+async def get_sacred_ally_alchemy(category: Optional[str] = None, ally_type: Optional[str] = None) -> list[dict[str, Any]]:
+    """Get Sacred Ally Alchemy entries with optional category/type filters."""
+    db = get_db()
+    query: dict[str, Any] = {}
+    if category:
+        query["category"] = {"$regex": f"^{category}$", "$options": "i"}
+    if ally_type:
+        query["ally_type"] = {"$regex": f"^{ally_type}$", "$options": "i"}
+
+    items = await db.sacred_ally_alchemy.find(query, {"_id": 0}).to_list(length=300)
+    return [_enrich_content_integrity(item, "hybrid-curated") for item in items]
+
+
+@router.get("/sacred-ally-alchemy/{item_id}")
+async def get_sacred_ally_alchemy_item(item_id: str) -> dict[str, Any]:
+    """Get one Sacred Ally Alchemy entry by id."""
+    db = get_db()
+    item = await db.sacred_ally_alchemy.find_one({"id": item_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Sacred ally alchemy entry not found")
+    return _enrich_content_integrity(item, "hybrid-curated")
+
+
+# ============ ANGELIC ALCHEMY ==========
+
+@router.get("/angelic-alchemy")
+async def get_angelic_alchemy(sacred_geometry: Optional[str] = None) -> list[dict[str, Any]]:
+    """Get Angelic Alchemy entries, optionally filtered by sacred geometry."""
+    db = get_db()
+    query: dict[str, Any] = {}
+    if sacred_geometry:
+        query["sacred_geometry"] = {"$regex": sacred_geometry, "$options": "i"}
+
+    items = await db.angelic_alchemy.find(query, {"_id": 0}).to_list(length=200)
+    return [_enrich_content_integrity(item, "hybrid-curated") for item in items]
+
+
+@router.get("/angelic-alchemy/{item_id}")
+async def get_angelic_alchemy_item(item_id: str) -> dict[str, Any]:
+    """Get one Angelic Alchemy entry by id."""
+    db = get_db()
+    item = await db.angelic_alchemy.find_one({"id": item_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Angelic alchemy entry not found")
+    return _enrich_content_integrity(item, "hybrid-curated")
+
+
 # ============ ANCIENT WISDOM TRADITIONS ============
 
 @router.get("/ancient-wisdom")

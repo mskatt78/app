@@ -196,6 +196,7 @@ async def _seed_core_spiritual_content() -> None:
     from data.divination_content import ELDER_FUTHARK_RUNES, LIGHT_CODES
     from data.somatic_practices import SOMATIC_PRACTICES
     from data.yoga_poses import YOGA_POSES
+    from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
 
     all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL + ANCIENT_WISDOM_AVALON
 
@@ -212,6 +213,8 @@ async def _seed_core_spiritual_content() -> None:
     await _refresh_collection("mindfulness_practices", MINDFULNESS_PRACTICES, f"mindfulness_practices refreshed — {len(MINDFULNESS_PRACTICES)} entries.")
     await _refresh_collection("yoga_poses", YOGA_POSES, f"yoga_poses refreshed — {len(YOGA_POSES)} entries.")
     await _refresh_collection("mudras", MUDRAS, f"mudras refreshed — {len(MUDRAS)} entries.")
+    await _refresh_collection("sacred_ally_alchemy", SACRED_ALLY_ALCHEMY, f"sacred_ally_alchemy refreshed — {len(SACRED_ALLY_ALCHEMY)} entries.")
+    await _refresh_collection("angelic_alchemy", ANGELIC_ALCHEMY, f"angelic_alchemy refreshed — {len(ANGELIC_ALCHEMY)} entries.")
 
 
 async def _seed_healing_modalities_and_embodiment() -> None:
@@ -551,6 +554,7 @@ async def seed_all_content() -> None:
     )
     from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
     from data.video_content import VIDEO_TUTORIALS
+    from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
 
     seed_config = SeedContentConfig(
         yoga_poses=YOGA_POSES,
@@ -577,6 +581,8 @@ async def seed_all_content() -> None:
     collections = _build_seed_content_collections(seed_config)
 
     await _seed_content_collections(collections)
+    await _refresh_collection("sacred_ally_alchemy", SACRED_ALLY_ALCHEMY, f"sacred_ally_alchemy refreshed — {len(SACRED_ALLY_ALCHEMY)} entries.")
+    await _refresh_collection("angelic_alchemy", ANGELIC_ALCHEMY, f"angelic_alchemy refreshed — {len(ANGELIC_ALCHEMY)} entries.")
     await _seed_light_codes_document(LIGHT_CODES)
 
     # Seed courses (sacred rites) — always refresh so content deepening takes effect

@@ -14,6 +14,8 @@ export const COLLECTION_META = {
   mudras: { name: "Mudras", icon: "🤲" },
   runes: { name: "Runes", icon: "ᚱ" },
   sacred_guardians: { name: "Sacred Guardians", icon: "🦁" },
+  sacred_ally_alchemy: { name: "Sacred Ally Alchemy", icon: "🐉" },
+  angelic_alchemy: { name: "Angelic Alchemy", icon: "🧿" },
   retreats: { name: "Retreats", icon: "🏔️" },
   videos: { name: "Practice Videos", icon: "🎬" },
   live_sessions: { name: "Live Client Spaces", icon: "📡" },
@@ -38,6 +40,8 @@ export const FIELD_CONFIG = {
   mudras: ["name", "type", "description", "benefits", "instructions", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   runes: ["name", "symbol", "phonetic", "meaning", "description", "reversed_meaning", "image_url"],
   sacred_guardians: ["name", "type", "element", "description", "gifts", "invocation", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
+  sacred_ally_alchemy: ["name", "ally_type", "category", "element", "description", "alchemy_teachings", "rituals", "song_lines", "song_line_practices", "journal_prompts", "affirmations", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
+  angelic_alchemy: ["name", "angelic_order", "sacred_geometry", "element", "description", "alchemy_teachings", "practical_rituals", "journal_prompts", "affirmations", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   retreats: ["title", "status", "description", "location", "start_date", "end_date", "duration_days", "max_participants", "price", "deposit", "facilitator", "highlights", "includes", "accommodation", "healing_modalities", "registration_link", "image_url"],
   videos: ["title", "category", "description", "video_url", "thumbnail_url", "duration", "practice_type"],
   breathwork_sessions: ["name", "element", "description", "duration_minutes", "frequency", "benefits", "instructions", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
@@ -60,7 +64,29 @@ export const TEXTAREA_FIELDS = new Set([
   "content", "visualization", "journey_steps", "steps", "affirmations",
   "materials", "how_to_draw", "symbolism", "lessons",
   "self_healing_guide", "how_it_works", "history", "contraindications",
-  "guidance", "blockage_signs", "cleansing_practice", "client_instructions", "what_to_bring", "source_references"
+  "guidance", "blockage_signs", "cleansing_practice", "client_instructions", "what_to_bring", "source_references",
+  "alchemy_teachings", "rituals", "practical_rituals", "journal_prompts", "affirmations", "song_lines", "song_line_practices"
+]);
+
+export const LIST_TEXTAREA_FIELDS = new Set([
+  "source_references",
+  "alchemy_teachings",
+  "rituals",
+  "practical_rituals",
+  "journal_prompts",
+  "affirmations",
+  "song_lines",
+  "song_line_practices",
+  "benefits",
+  "instructions",
+  "uses",
+  "highlights",
+  "includes",
+  "healing_modalities",
+  "steps",
+  "materials",
+  "journey_steps",
+  "lessons",
 ]);
 
 export const IMAGE_FIELDS = new Set(["image_url", "thumbnail_url"]);

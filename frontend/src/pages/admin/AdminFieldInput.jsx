@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Image, Loader2, Music, Upload } from "lucide-react";
-import { AUDIO_FIELDS, IMAGE_FIELDS, TEXTAREA_FIELDS, VIDEO_FIELDS } from "./constants";
+import { AUDIO_FIELDS, IMAGE_FIELDS, LIST_TEXTAREA_FIELDS, TEXTAREA_FIELDS, VIDEO_FIELDS } from "./constants";
 
 export const AdminFieldInput = ({ field, value, onChange, onUpload, uploadLoading }) => {
   const isTextarea = TEXTAREA_FIELDS.has(field);
@@ -81,10 +81,35 @@ export const AdminFieldInput = ({ field, value, onChange, onUpload, uploadLoadin
   }
 
   if (isTextarea) {
+    const normalizeTextareaValue = () => {
+      if (!LIST_TEXTAREA_FIELDS.has(field)) {
+        return value || "";
+      }
+
+      if (Array.isArray(value)) {
+        return value.join("\n");
+      }
+
+      return value || "";
+    };
+
+    const handleTextareaChange = (raw) => {
+      if (!LIST_TEXTAREA_FIELDS.has(field)) {
+        onChange(raw);
+        return;
+      }
+
+      const nextList = raw
+        .split(/\n|,/) 
+        .map((item) => item.trim())
+        .filter(Boolean);
+      onChange(nextList);
+    };
+
     return (
       <textarea
-        value={value || ""}
-        onChange={(event) => onChange(event.target.value)}
+        value={normalizeTextareaValue()}
+        onChange={(event) => handleTextareaChange(event.target.value)}
         rows={3}
         className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-primary/50 resize-none"
       />

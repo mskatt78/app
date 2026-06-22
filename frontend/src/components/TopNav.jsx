@@ -50,6 +50,7 @@ const TopNav = ({ user }) => {
     { path: "/shamanic", icon: Moon, label: "Shamanic", color: "text-indigo-400" },
     { path: "/elemental", icon: Sparkles, label: "Elemental", color: "text-teal-400" },
     { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400" },
+    { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Ally Alchemy", color: "text-fuchsia-300" },
     { path: "/creative", icon: Palette, label: "Creative", color: "text-violet-400" },
     { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400" },
     { path: "/birth-chart", icon: Star, label: "Birth Chart", color: "text-yellow-400" },
