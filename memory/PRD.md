@@ -1348,3 +1348,34 @@
 ### Deployment Note
 - Sweep completed in preview and requires redeploy to apply across production.
 
+## Install Flow Regression Fix (No Forced Support Redirect) (Iteration 186) — 2026-06-22
+- User reported install still opened info pages instead of install flow (preview + production symptoms).
+
+### Root Cause
+- Landing page `Install App` CTA still navigated to `/support`.
+- Fallback install action in install hook routed to support page when native prompt was unavailable.
+- Install event reliability depended on timing of `beforeinstallprompt` capture.
+
+### Fixes Applied
+- **Direct install trigger wiring**
+  - `LandingPage.jsx`: install CTA now dispatches `pwa-install-open` (`immediate: true`) instead of navigating to support.
+  - `TopNav.jsx`: install button dispatch now uses `immediate: true` for direct prompt attempt.
+  - `SupportCenter.jsx`: added `Install Now` button dispatching install event.
+- **No forced redirect fallback**
+  - `useInstallPromptState.js`: removed default fallback navigation to `/support`; prompt now remains in-place.
+  - Non-Android Chrome fallback no longer pushes user away from current page.
+- **Improved prompt availability reliability**
+  - `index.js`: global early capture of `beforeinstallprompt` stored at `window.__deferredInstallPrompt` and broadcast via `pwa-beforeinstallprompt-ready`.
+  - `useInstallPromptState.js`: consumes global deferred prompt on mount and listens for readiness event.
+
+### Validation
+- Frontend specialist automation: PASS (all requirements)
+  - Landing install button no longer navigates to support.
+  - TopNav install button triggers install flow without support redirect.
+  - Support page `Install Now` triggers install flow.
+  - When native prompt unavailable, install prompt remains in-place with guidance/copy actions.
+  - No install-handler console errors.
+
+### Deployment Note
+- This fix is implemented in preview and requires redeploy for production to receive the corrected install behavior.
+
