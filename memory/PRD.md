@@ -1167,3 +1167,60 @@
 ### Deployment Note
 - This was implemented and verified in preview; production requires redeploy to receive `/sacred-ally-alchemy` and associated data/routes.
 
+## Sacred Ally Potential Improvements (Top 3) Implemented (Iteration 181) — 2026-06-22
+- User asked to proceed with potential improvements; implemented top 3 end-to-end.
+
+### Delivered Improvement #1 — Guided Ally Audio Journeys
+- Added seeded journey templates in `backend/data/sacred_ally_audio_journeys.py`:
+  - Dragon Fire Initiation
+  - Whale Song Line Immersion
+  - Dolphin Joy Current
+  - Metatron Cube Attunement
+  - Michael Blue Flame Shield
+- Added API endpoint:
+  - `GET /api/sacred-ally-audio-journeys`
+  - Supports filters: `category`, `ally_id`, `focus_tag`
+- Frontend integration:
+  - `SacredAllyAlchemy.jsx` detail modal now renders journey card
+  - Uses existing `GuidedAudioButton` for playable TTS journey script
+
+### Delivered Improvement #2 — Sacred Ally Pathways
+- Added seeded pathways (14/21 day frameworks) in `backend/data/sacred_ally_audio_journeys.py`:
+  - Dragon Sovereignty Path (21)
+  - Whale Coherence Path (14)
+  - Metatron Geometry Path (21)
+- Added API endpoint:
+  - `GET /api/sacred-ally-pathways`
+  - Optional filter: `ally_id`
+- Frontend integration:
+  - Detail modal renders pathway card + module list for selected ally/angelic entry
+
+### Delivered Improvement #3 — Personalized “What to Practice Today”
+- Added API endpoint:
+  - `POST /api/sacred-ally/daily-recommendation`
+- Input:
+  - `mood`, `moon_phase`, `intention`, `recent_ids`
+- Behavior:
+  - Deterministic weighted scoring by mood + moon + intention
+  - Anti-repeat via `recent_ids`
+  - Returns recommended ally + matching journey + pathway
+  - Includes fallback mapping for angelic recommendations (Metatron/Michael/Raphael/Gabriel)
+- Frontend integration:
+  - Added recommendation panel to `/sacred-ally-alchemy`
+  - Inputs and one-click recommend action with rendered result card
+
+### Roadmap UX Added
+- Added in-page roadmap card with three phases:
+  - P0 Live Now
+  - P1 Engagement Upgrade
+  - P2 Premium Expansion
+
+### Validation
+- Testing report: `/app/test_reports/iteration_181.json`
+  - Backend: **100% (30/30)**
+  - Frontend: **100%**
+  - Verified journey/pathway APIs, recommendation logic, modal journey playback card, and recommendation UI.
+
+### Deployment Note
+- Implemented in preview; production deployment requires redeploy to receive iteration 181 features.
+
