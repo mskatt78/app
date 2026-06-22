@@ -1284,3 +1284,33 @@
 ### Deployment Note
 - Fix implemented in preview; production requires redeploy to receive install-flow simplification.
 
+## Guided Voice Restored for Heart Practices (Iteration 184) — 2026-06-22
+- User reported: “No voice” and heart flow showing static instructions instead of full guided narration.
+
+### Root Cause
+- `HeartPracticeModal.jsx` had regressed into an instruction-only in-modal flow (`isPracticing`) without launching the shared voice/timer engine (`GuidedPracticeOverlay`).
+
+### Fix Applied
+- Rewired Heart Practices to use the same full guided overlay pipeline as Meditations/Somatic/Creative:
+  - `HeartPracticesContainer.jsx`
+    - Added `GuidedPracticeOverlay` rendering with `guidedPractice` state.
+    - Added `handleStartGuided` and `handleExitGuided` flow.
+    - Added robust step resolution fallback so guided narration always has script material.
+    - Preserved practice-history logging on guided exit.
+  - `useHeartPracticesData.js`
+    - Replaced `isPracticing` state with `guidedPractice` state.
+  - `HeartPracticeModal.jsx`
+    - Removed instruction-only “practice mode” branch.
+    - Restored modal to detail + single “Begin Guided Heart Practice” handoff into overlay.
+
+### Validation
+- Mobile/desktop smoke verified guided overlay opens with active countdown timer.
+- Frontend specialist verification: PASS
+  - Narration indicator present: `Guided narration playing • section X of Y`
+  - `/api/tts/generate-base64` requests returning `200`
+  - Timer countdown confirmed
+  - Not static text-only mode
+
+### Deployment Note
+- Fix is in preview and requires redeploy to apply in production.
+
