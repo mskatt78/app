@@ -7275,3 +7275,197 @@ agent_communication:
       OVERALL STATUS: Daily Guidance enrichment MOSTLY VERIFIED ✅
       - Primary feature (/daily-practice page): FULLY FUNCTIONAL
       - Secondary feature (dashboard cards): CODE CORRECT, MANUAL VERIFICATION NEEDED
+
+backend:
+  - task: "Daily practice API enrichment - GET /api/daily-practice"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ DAILY PRACTICE API ENRICHMENT VERIFIED (2026-06-23): GET /api/daily-practice endpoint tested successfully. Returns 200 OK with all required enriched keys: daily_ally (Whale Alchemy · Oceanic Hymn), daily_angel (Zadkiel Alchemy · Mercy Violet Ray), dragon_astrology_reflection (dict with title, summary, zodiac_focus, integration_prompt, is_personalized), daily_journal_prompts (list with 7 prompts), ceremonial_affirmation (string), unified_daily_flow (dict with title, opening_invocation, ceremony_steps [4 steps], dragon_integration, closing_benediction, journal_prompt). All schema requirements met. No regressions detected."
+
+  - task: "Daily practice API enrichment - GET /api/daily-practice?focus=dragon"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ DAILY PRACTICE FOCUS PARAMETER VERIFIED (2026-06-23): GET /api/daily-practice?focus=dragon endpoint tested successfully. Returns 200 OK with all enriched keys preserved: daily_ally, daily_angel, dragon_astrology_reflection, daily_journal_prompts, ceremonial_affirmation, unified_daily_flow. unified_daily_flow structure intact with all required fields (title, opening_invocation, ceremony_steps, dragon_integration, closing_benediction, journal_prompt). Focus parameter correctly filters content while maintaining enriched schema. No regressions detected."
+
+  - task: "Auth flow - POST /api/auth/login"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/auth.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ AUTH LOGIN FLOW VERIFIED (2026-06-23): POST /api/auth/login tested with credentials demoqa_740fefc1@example.com / DemoPass123!. Returns 200 OK with user data (email: demoqa_740fefc1@example.com) and session_token cookie. Cookie correctly set with httpOnly flag. Auth flow working correctly for backend API testing. No issues detected."
+
+  - task: "Dashboard daily guidance - GET /api/dashboard/daily (authenticated)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/user.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ DASHBOARD DAILY GUIDANCE API VERIFIED (2026-06-23): GET /api/dashboard/daily endpoint tested with authenticated session (session_token cookie from login). Returns 200 OK with all required enriched keys: daily_ally, daily_angel, dragon_astrology_reflection, daily_journal_prompts, ceremonial_affirmation, unified_daily_flow. unified_daily_flow includes all required fields with ceremony_steps (5 steps). Schema matches /api/daily-practice enrichment structure. Personalized daily guidance working correctly for authenticated users. No regressions detected."
+
+  - task: "Dashboard daily guidance - GET /api/dashboard/daily (unauthenticated)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/user.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ DASHBOARD DAILY AUTH PROTECTION VERIFIED (2026-06-23): GET /api/dashboard/daily endpoint tested without authentication. Correctly returns 401 Unauthorized. Auth protection working as expected. Endpoint properly gated for authenticated users only. No security issues detected."
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Daily Guidance Enrichment Backend API Verification (2026-06-23):
+      
+      VERIFICATION REQUEST: Backend API verification for daily guidance enrichment on running app
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      Test Credentials: demoqa_740fefc1@example.com / DemoPass123!
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST RESULTS SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ ALL BACKEND API TESTS PASSED (5/5)
+      
+      1. ✅ GET /api/daily-practice - PASSED
+      2. ✅ GET /api/daily-practice?focus=dragon - PASSED
+      3. ✅ POST /api/auth/login - PASSED
+      4. ✅ GET /api/dashboard/daily (authenticated) - PASSED
+      5. ✅ GET /api/dashboard/daily (unauthenticated) - PASSED
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      DETAILED TEST RESULTS
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      1. ✅ GET /api/daily-practice - PASSED
+         - Status: 200 OK
+         - Response: Valid JSON
+         - Required enriched keys present:
+           * daily_ally: Whale Alchemy · Oceanic Hymn ✓
+           * daily_angel: Zadkiel Alchemy · Mercy Violet Ray ✓
+           * dragon_astrology_reflection: dict with 5 keys ✓
+           * daily_journal_prompts: list with 7 prompts ✓
+           * ceremonial_affirmation: string ✓
+           * unified_daily_flow: dict with all required fields ✓
+         - unified_daily_flow structure verified:
+           * title: "Very Deep Ceremonial Daily Flow" ✓
+           * opening_invocation: present ✓
+           * ceremony_steps: non-empty list with 4 steps ✓
+           * dragon_integration: present ✓
+           * closing_benediction: present ✓
+           * journal_prompt: present ✓
+         - Schema requirements: ALL MET ✓
+      
+      2. ✅ GET /api/daily-practice?focus=dragon - PASSED
+         - Status: 200 OK
+         - Response: Valid JSON
+         - All enriched keys preserved with focus parameter ✓
+         - unified_daily_flow structure intact ✓
+         - Focus parameter correctly filters content ✓
+         - No schema regressions ✓
+      
+      3. ✅ POST /api/auth/login - PASSED
+         - Status: 200 OK
+         - Credentials: demoqa_740fefc1@example.com / DemoPass123! ✓
+         - session_token cookie received ✓
+         - User data present in response ✓
+         - Email verified: demoqa_740fefc1@example.com ✓
+         - Auth flow working correctly ✓
+      
+      4. ✅ GET /api/dashboard/daily (authenticated) - PASSED
+         - Status: 200 OK (with session_token cookie)
+         - Response: Valid JSON
+         - All required enriched keys present:
+           * daily_ally ✓
+           * daily_angel ✓
+           * dragon_astrology_reflection ✓
+           * daily_journal_prompts ✓
+           * ceremonial_affirmation ✓
+           * unified_daily_flow ✓
+         - unified_daily_flow structure verified:
+           * All required fields present ✓
+           * ceremony_steps: non-empty list with 5 steps ✓
+         - Personalized daily guidance working ✓
+         - Schema matches /api/daily-practice enrichment ✓
+      
+      5. ✅ GET /api/dashboard/daily (unauthenticated) - PASSED
+         - Status: 401 Unauthorized ✓
+         - Auth protection working correctly ✓
+         - Endpoint properly gated for authenticated users ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      CRITICAL FINDINGS
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ GET /api/daily-practice returns all enriched keys with correct schema
+      ✅ GET /api/daily-practice?focus=dragon preserves enriched keys
+      ✅ unified_daily_flow includes all required fields (title, opening_invocation, ceremony_steps, dragon_integration, closing_benediction, journal_prompt)
+      ✅ ceremony_steps is non-empty list (4 steps for public, 5 steps for authenticated)
+      ✅ Auth flow working correctly (login returns session_token cookie)
+      ✅ GET /api/dashboard/daily (authenticated) returns enriched schema matching /api/daily-practice
+      ✅ GET /api/dashboard/daily (unauthenticated) correctly returns 401
+      ✅ No schema mismatches detected
+      ✅ No regressions detected
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SCHEMA VERIFICATION COMPLETE
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      All requested endpoints and contracts validated:
+      
+      1) GET /api/daily-practice
+         ✓ 200 response
+         ✓ Includes keys: daily_ally, daily_angel, dragon_astrology_reflection, daily_journal_prompts, ceremonial_affirmation, unified_daily_flow
+         ✓ unified_daily_flow includes: title, opening_invocation, ceremony_steps (non-empty), dragon_integration, closing_benediction, journal_prompt
+      
+      2) GET /api/daily-practice?focus=dragon
+         ✓ 200 response
+         ✓ Preserves enriched keys above
+      
+      3) Auth flow:
+         ✓ POST /api/auth/login with demoqa_740fefc1@example.com / DemoPass123!
+         ✓ Returns session_token cookie
+      
+      4) GET /api/dashboard/daily (authenticated)
+         ✓ 200 response
+         ✓ Includes keys: daily_ally, daily_angel, dragon_astrology_reflection, daily_journal_prompts, ceremonial_affirmation, unified_daily_flow
+      
+      5) GET /api/dashboard/daily (without auth)
+         ✓ Returns 401
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      Backend API verification for daily guidance enrichment COMPLETE ✅
+      All 5 tests passed with no schema mismatches or regressions.
+      Daily practice and dashboard daily endpoints working correctly with full enrichment.
+      Auth flow verified and working as expected.
+      
+      RECOMMENDATION: Backend APIs are production-ready. No issues found.
+

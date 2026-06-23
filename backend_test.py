@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Backend Regression Test - Sacred Ally Alchemy & Angelic Alchemy API Validation
+Backend API Verification - Daily Guidance Enrichment
 Test URL: https://breathwork-sanctuary.preview.emergentagent.com
 """
 
@@ -10,44 +10,14 @@ import sys
 
 BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com"
 
-def test_health_endpoint():
-    """Test 1: GET /api/health should return 200 and healthy status"""
+def test_daily_practice_endpoint():
+    """Test 1: GET /api/daily-practice returns 200 with enriched schema"""
     print("\n" + "="*80)
-    print("TEST 1: GET /api/health")
+    print("TEST 1: GET /api/daily-practice")
     print("="*80)
     
     try:
-        response = requests.get(f"{BASE_URL}/api/health", timeout=10)
-        print(f"Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            print(f"Response: {json.dumps(data, indent=2)}")
-            
-            # Verify expected fields
-            if 'status' in data and data['status'] == 'healthy':
-                print("✅ PASS: Health endpoint returns 200 with 'healthy' status")
-                return True
-            else:
-                print("❌ FAIL: Health endpoint missing 'status' field or not 'healthy'")
-                return False
-        else:
-            print(f"❌ FAIL: Expected 200, got {response.status_code}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ FAIL: Exception occurred: {str(e)}")
-        return False
-
-
-def test_sacred_ally_alchemy_endpoint():
-    """Test 2: GET /api/sacred-ally-alchemy returns non-empty list with whale entry"""
-    print("\n" + "="*80)
-    print("TEST 2: GET /api/sacred-ally-alchemy")
-    print("="*80)
-    
-    try:
-        response = requests.get(f"{BASE_URL}/api/sacred-ally-alchemy", timeout=10)
+        response = requests.get(f"{BASE_URL}/api/daily-practice", timeout=10)
         print(f"Status Code: {response.status_code}")
         
         if response.status_code != 200:
@@ -55,156 +25,106 @@ def test_sacred_ally_alchemy_endpoint():
             return False
         
         data = response.json()
+        print(f"✓ Response is valid JSON")
         
-        # Check if response is non-empty list
-        if not isinstance(data, list):
-            print(f"❌ FAIL: Expected list, got {type(data)}")
+        # Check required enriched keys
+        required_keys = [
+            "daily_ally",
+            "daily_angel",
+            "dragon_astrology_reflection",
+            "daily_journal_prompts",
+            "ceremonial_affirmation",
+            "unified_daily_flow"
+        ]
+        
+        missing_keys = [key for key in required_keys if key not in data]
+        if missing_keys:
+            print(f"❌ FAIL: Missing required keys: {missing_keys}")
+            print(f"Available keys: {list(data.keys())}")
             return False
         
-        if len(data) == 0:
-            print("❌ FAIL: Response is empty list")
+        print(f"✓ All required enriched keys present: {required_keys}")
+        
+        # Verify unified_daily_flow structure
+        unified_flow = data.get("unified_daily_flow", {})
+        if not isinstance(unified_flow, dict):
+            print(f"❌ FAIL: unified_daily_flow is not a dict, got {type(unified_flow)}")
             return False
         
-        print(f"✓ Response is non-empty list with {len(data)} entries")
+        flow_required_keys = [
+            "title",
+            "opening_invocation",
+            "ceremony_steps",
+            "dragon_integration",
+            "closing_benediction",
+            "journal_prompt"
+        ]
         
-        # Find whale entry
-        whale_entry = None
-        for entry in data:
-            if 'category' in entry and 'whale' in entry['category'].lower():
-                whale_entry = entry
-                break
-        
-        if not whale_entry:
-            print("❌ FAIL: No whale entry found in response")
-            print(f"Available categories: {[e.get('category', 'N/A') for e in data]}")
+        missing_flow_keys = [key for key in flow_required_keys if key not in unified_flow]
+        if missing_flow_keys:
+            print(f"❌ FAIL: unified_daily_flow missing keys: {missing_flow_keys}")
+            print(f"Available keys: {list(unified_flow.keys())}")
             return False
         
-        print(f"✓ Found whale entry: {whale_entry.get('id', 'N/A')}")
+        print(f"✓ unified_daily_flow has all required keys: {flow_required_keys}")
         
-        # Check for song_lines field
-        has_song_lines = 'song_lines' in whale_entry
-        print(f"  - has song_lines field: {has_song_lines}")
+        # Verify ceremony_steps is non-empty list
+        ceremony_steps = unified_flow.get("ceremony_steps", [])
+        if not isinstance(ceremony_steps, list):
+            print(f"❌ FAIL: ceremony_steps is not a list, got {type(ceremony_steps)}")
+            return False
         
-        # Check for song_line_practices field
-        has_song_line_practices = 'song_line_practices' in whale_entry
-        print(f"  - has song_line_practices field: {has_song_line_practices}")
+        if len(ceremony_steps) == 0:
+            print(f"❌ FAIL: ceremony_steps is empty")
+            return False
         
-        if has_song_lines and has_song_line_practices:
-            print("✅ PASS: Sacred ally alchemy endpoint returns whale entry with song_lines + song_line_practices")
-            return True
+        print(f"✓ ceremony_steps is non-empty list with {len(ceremony_steps)} steps")
+        
+        # Verify daily_ally and daily_angel are present
+        if data.get("daily_ally") is None:
+            print(f"⚠️  WARNING: daily_ally is null")
         else:
-            print("❌ FAIL: Whale entry missing song_lines or song_line_practices fields")
-            print(f"Whale entry keys: {list(whale_entry.keys())}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ FAIL: Exception occurred: {str(e)}")
-        return False
-
-
-def test_sacred_ally_alchemy_filter_whales():
-    """Test 3: GET /api/sacred-ally-alchemy?category=whales filters successfully"""
-    print("\n" + "="*80)
-    print("TEST 3: GET /api/sacred-ally-alchemy?category=whales")
-    print("="*80)
-    
-    try:
-        response = requests.get(f"{BASE_URL}/api/sacred-ally-alchemy?category=whales", timeout=10)
-        print(f"Status Code: {response.status_code}")
+            print(f"✓ daily_ally present: {data['daily_ally'].get('name', 'N/A')}")
         
-        if response.status_code != 200:
-            print(f"❌ FAIL: Expected 200, got {response.status_code}")
-            return False
-        
-        data = response.json()
-        
-        # Check if response is list
-        if not isinstance(data, list):
-            print(f"❌ FAIL: Expected list, got {type(data)}")
-            return False
-        
-        if len(data) == 0:
-            print("❌ FAIL: Filter returned empty list")
-            return False
-        
-        print(f"✓ Filter returned {len(data)} entries")
-        
-        # Verify all entries are whale category
-        all_whales = all('category' in entry and 'whale' in entry['category'].lower() for entry in data)
-        
-        if all_whales:
-            print(f"✓ All {len(data)} entries are whale category")
-            print("✅ PASS: Category filter for whales works correctly")
-            return True
+        if data.get("daily_angel") is None:
+            print(f"⚠️  WARNING: daily_angel is null")
         else:
-            print("❌ FAIL: Not all entries are whale category")
-            categories = [e.get('category', 'N/A') for e in data]
-            print(f"Categories found: {categories}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ FAIL: Exception occurred: {str(e)}")
-        return False
-
-
-def test_angelic_alchemy_endpoint():
-    """Test 4: GET /api/angelic-alchemy returns non-empty list with Metatron entry"""
-    print("\n" + "="*80)
-    print("TEST 4: GET /api/angelic-alchemy")
-    print("="*80)
-    
-    try:
-        response = requests.get(f"{BASE_URL}/api/angelic-alchemy", timeout=10)
-        print(f"Status Code: {response.status_code}")
+            print(f"✓ daily_angel present: {data['daily_angel'].get('name', 'N/A')}")
         
-        if response.status_code != 200:
-            print(f"❌ FAIL: Expected 200, got {response.status_code}")
+        # Verify dragon_astrology_reflection structure
+        dragon_reflection = data.get("dragon_astrology_reflection", {})
+        if not isinstance(dragon_reflection, dict):
+            print(f"❌ FAIL: dragon_astrology_reflection is not a dict")
             return False
         
-        data = response.json()
+        print(f"✓ dragon_astrology_reflection is dict with keys: {list(dragon_reflection.keys())}")
         
-        # Check if response is non-empty list
-        if not isinstance(data, list):
-            print(f"❌ FAIL: Expected list, got {type(data)}")
+        # Verify daily_journal_prompts is list
+        journal_prompts = data.get("daily_journal_prompts", [])
+        if not isinstance(journal_prompts, list):
+            print(f"❌ FAIL: daily_journal_prompts is not a list")
             return False
         
-        if len(data) == 0:
-            print("❌ FAIL: Response is empty list")
-            return False
+        print(f"✓ daily_journal_prompts is list with {len(journal_prompts)} prompts")
         
-        print(f"✓ Response is non-empty list with {len(data)} entries")
-        
-        # Find Metatron entry
-        metatron_entry = None
-        for entry in data:
-            if 'sacred_geometry' in entry and 'metatron' in entry['sacred_geometry'].lower():
-                metatron_entry = entry
-                break
-        
-        if not metatron_entry:
-            print("❌ FAIL: No Metatron entry found in response")
-            print(f"Available sacred_geometry values: {[e.get('sacred_geometry', 'N/A') for e in data]}")
-            return False
-        
-        print(f"✓ Found Metatron entry: {metatron_entry.get('id', 'N/A')}")
-        print(f"  - sacred_geometry: {metatron_entry.get('sacred_geometry', 'N/A')}")
-        
-        print("✅ PASS: Angelic alchemy endpoint returns Metatron entry with sacred_geometry")
+        print("✅ PASS: GET /api/daily-practice returns 200 with all required enriched keys")
         return True
             
     except Exception as e:
         print(f"❌ FAIL: Exception occurred: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return False
 
 
-def test_angelic_alchemy_filter_metatron():
-    """Test 5: GET /api/angelic-alchemy?sacred_geometry=Metatron filters successfully"""
+def test_daily_practice_with_focus():
+    """Test 2: GET /api/daily-practice?focus=dragon preserves enriched keys"""
     print("\n" + "="*80)
-    print("TEST 5: GET /api/angelic-alchemy?sacred_geometry=Metatron")
+    print("TEST 2: GET /api/daily-practice?focus=dragon")
     print("="*80)
     
     try:
-        response = requests.get(f"{BASE_URL}/api/angelic-alchemy?sacred_geometry=Metatron", timeout=10)
+        response = requests.get(f"{BASE_URL}/api/daily-practice?focus=dragon", timeout=10)
         print(f"Status Code: {response.status_code}")
         
         if response.status_code != 200:
@@ -212,50 +132,241 @@ def test_angelic_alchemy_filter_metatron():
             return False
         
         data = response.json()
+        print(f"✓ Response is valid JSON")
         
-        # Check if response is list
-        if not isinstance(data, list):
-            print(f"❌ FAIL: Expected list, got {type(data)}")
+        # Check required enriched keys are still present with focus parameter
+        required_keys = [
+            "daily_ally",
+            "daily_angel",
+            "dragon_astrology_reflection",
+            "daily_journal_prompts",
+            "ceremonial_affirmation",
+            "unified_daily_flow"
+        ]
+        
+        missing_keys = [key for key in required_keys if key not in data]
+        if missing_keys:
+            print(f"❌ FAIL: Missing required keys with focus parameter: {missing_keys}")
             return False
         
-        if len(data) == 0:
-            print("❌ FAIL: Filter returned empty list")
+        print(f"✓ All required enriched keys preserved with focus parameter")
+        
+        # Verify unified_daily_flow structure still intact
+        unified_flow = data.get("unified_daily_flow", {})
+        flow_required_keys = [
+            "title",
+            "opening_invocation",
+            "ceremony_steps",
+            "dragon_integration",
+            "closing_benediction",
+            "journal_prompt"
+        ]
+        
+        missing_flow_keys = [key for key in flow_required_keys if key not in unified_flow]
+        if missing_flow_keys:
+            print(f"❌ FAIL: unified_daily_flow missing keys with focus: {missing_flow_keys}")
             return False
         
-        print(f"✓ Filter returned {len(data)} entries")
+        print(f"✓ unified_daily_flow structure preserved with focus parameter")
         
-        # Verify all entries have Metatron in sacred_geometry
-        all_metatron = all('sacred_geometry' in entry and 'metatron' in entry['sacred_geometry'].lower() for entry in data)
-        
-        if all_metatron:
-            print(f"✓ All {len(data)} entries have Metatron sacred_geometry")
-            print("✅ PASS: Sacred geometry filter for Metatron works correctly")
-            return True
-        else:
-            print("❌ FAIL: Not all entries have Metatron sacred_geometry")
-            geometries = [e.get('sacred_geometry', 'N/A') for e in data]
-            print(f"Sacred geometries found: {geometries}")
-            return False
+        print("✅ PASS: GET /api/daily-practice?focus=dragon preserves all enriched keys")
+        return True
             
     except Exception as e:
         print(f"❌ FAIL: Exception occurred: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
+def test_auth_login():
+    """Test 3: POST /api/auth/login with test credentials"""
+    print("\n" + "="*80)
+    print("TEST 3: POST /api/auth/login")
+    print("="*80)
+    
+    try:
+        payload = {
+            "email": "demoqa_740fefc1@example.com",
+            "password": "DemoPass123!"
+        }
+        
+        response = requests.post(
+            f"{BASE_URL}/api/auth/login",
+            json=payload,
+            timeout=10
+        )
+        
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ FAIL: Expected 200, got {response.status_code}")
+            print(f"Response: {response.text}")
+            return False, None
+        
+        data = response.json()
+        print(f"✓ Login successful")
+        
+        # Check for session_token in cookies
+        session_token = response.cookies.get("session_token")
+        if not session_token:
+            print(f"❌ FAIL: No session_token cookie returned")
+            print(f"Cookies: {response.cookies}")
+            return False, None
+        
+        print(f"✓ session_token cookie received")
+        
+        # Verify user data in response
+        if "user" not in data:
+            print(f"⚠️  WARNING: No user object in response")
+        else:
+            print(f"✓ User data present: {data['user'].get('email', 'N/A')}")
+        
+        print("✅ PASS: POST /api/auth/login successful with session_token cookie")
+        return True, session_token
+            
+    except Exception as e:
+        print(f"❌ FAIL: Exception occurred: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False, None
+
+
+def test_dashboard_daily_authenticated(session_token):
+    """Test 4: GET /api/dashboard/daily (authenticated) returns enriched schema"""
+    print("\n" + "="*80)
+    print("TEST 4: GET /api/dashboard/daily (authenticated)")
+    print("="*80)
+    
+    if not session_token:
+        print(f"❌ FAIL: No session_token provided, cannot test authenticated endpoint")
+        return False
+    
+    try:
+        cookies = {"session_token": session_token}
+        response = requests.get(
+            f"{BASE_URL}/api/dashboard/daily",
+            cookies=cookies,
+            timeout=10
+        )
+        
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code != 200:
+            print(f"❌ FAIL: Expected 200, got {response.status_code}")
+            print(f"Response: {response.text}")
+            return False
+        
+        data = response.json()
+        print(f"✓ Response is valid JSON")
+        
+        # Check required enriched keys
+        required_keys = [
+            "daily_ally",
+            "daily_angel",
+            "dragon_astrology_reflection",
+            "daily_journal_prompts",
+            "ceremonial_affirmation",
+            "unified_daily_flow"
+        ]
+        
+        missing_keys = [key for key in required_keys if key not in data]
+        if missing_keys:
+            print(f"❌ FAIL: Missing required keys: {missing_keys}")
+            print(f"Available keys: {list(data.keys())}")
+            return False
+        
+        print(f"✓ All required enriched keys present: {required_keys}")
+        
+        # Verify unified_daily_flow structure
+        unified_flow = data.get("unified_daily_flow", {})
+        if not isinstance(unified_flow, dict):
+            print(f"❌ FAIL: unified_daily_flow is not a dict")
+            return False
+        
+        flow_required_keys = [
+            "title",
+            "opening_invocation",
+            "ceremony_steps",
+            "dragon_integration",
+            "closing_benediction",
+            "journal_prompt"
+        ]
+        
+        missing_flow_keys = [key for key in flow_required_keys if key not in unified_flow]
+        if missing_flow_keys:
+            print(f"❌ FAIL: unified_daily_flow missing keys: {missing_flow_keys}")
+            return False
+        
+        print(f"✓ unified_daily_flow has all required keys")
+        
+        # Verify ceremony_steps is non-empty
+        ceremony_steps = unified_flow.get("ceremony_steps", [])
+        if not isinstance(ceremony_steps, list) or len(ceremony_steps) == 0:
+            print(f"❌ FAIL: ceremony_steps is not a non-empty list")
+            return False
+        
+        print(f"✓ ceremony_steps is non-empty list with {len(ceremony_steps)} steps")
+        
+        print("✅ PASS: GET /api/dashboard/daily (authenticated) returns all enriched keys")
+        return True
+            
+    except Exception as e:
+        print(f"❌ FAIL: Exception occurred: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
+def test_dashboard_daily_unauthenticated():
+    """Test 5: GET /api/dashboard/daily (without auth) returns 401"""
+    print("\n" + "="*80)
+    print("TEST 5: GET /api/dashboard/daily (without auth)")
+    print("="*80)
+    
+    try:
+        response = requests.get(f"{BASE_URL}/api/dashboard/daily", timeout=10)
+        print(f"Status Code: {response.status_code}")
+        
+        if response.status_code != 401:
+            print(f"❌ FAIL: Expected 401, got {response.status_code}")
+            print(f"Response: {response.text}")
+            return False
+        
+        print(f"✓ Correctly returns 401 Unauthorized for unauthenticated request")
+        
+        print("✅ PASS: GET /api/dashboard/daily (without auth) returns 401")
+        return True
+            
+    except Exception as e:
+        print(f"❌ FAIL: Exception occurred: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return False
 
 
 def main():
     print("\n" + "="*80)
-    print("BACKEND REGRESSION TEST - Sacred Ally Alchemy & Angelic Alchemy")
+    print("BACKEND API VERIFICATION - Daily Guidance Enrichment")
     print("="*80)
     print(f"Test URL: {BASE_URL}")
+    print(f"Test Credentials: demoqa_740fefc1@example.com / DemoPass123!")
     
     results = []
     
     # Run all tests
-    results.append(("Health Endpoint", test_health_endpoint()))
-    results.append(("Sacred Ally Alchemy Endpoint", test_sacred_ally_alchemy_endpoint()))
-    results.append(("Sacred Ally Alchemy Filter (whales)", test_sacred_ally_alchemy_filter_whales()))
-    results.append(("Angelic Alchemy Endpoint", test_angelic_alchemy_endpoint()))
-    results.append(("Angelic Alchemy Filter (Metatron)", test_angelic_alchemy_filter_metatron()))
+    results.append(("GET /api/daily-practice", test_daily_practice_endpoint()))
+    results.append(("GET /api/daily-practice?focus=dragon", test_daily_practice_with_focus()))
+    
+    # Auth flow
+    auth_result, session_token = test_auth_login()
+    results.append(("POST /api/auth/login", auth_result))
+    
+    # Authenticated dashboard endpoint
+    results.append(("GET /api/dashboard/daily (authenticated)", test_dashboard_daily_authenticated(session_token)))
+    
+    # Unauthenticated dashboard endpoint
+    results.append(("GET /api/dashboard/daily (unauthenticated)", test_dashboard_daily_unauthenticated()))
     
     # Summary
     print("\n" + "="*80)
@@ -272,7 +383,15 @@ def main():
     print(f"\nTotal: {passed}/{total} tests passed")
     
     if passed == total:
-        print("\n✅ ALL BACKEND REGRESSION TESTS PASSED")
+        print("\n✅ ALL BACKEND API VERIFICATION TESTS PASSED")
+        print("\nSCHEMA VERIFICATION COMPLETE:")
+        print("  ✓ GET /api/daily-practice returns all enriched keys")
+        print("  ✓ GET /api/daily-practice?focus=dragon preserves enriched keys")
+        print("  ✓ unified_daily_flow includes all required fields")
+        print("  ✓ ceremony_steps is non-empty list")
+        print("  ✓ Auth flow working correctly")
+        print("  ✓ GET /api/dashboard/daily (authenticated) returns enriched schema")
+        print("  ✓ GET /api/dashboard/daily (unauthenticated) returns 401")
         return 0
     else:
         print(f"\n❌ {total - passed} BACKEND TEST(S) FAILED")
