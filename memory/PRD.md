@@ -1546,3 +1546,49 @@
 - **P1:** Begin premium monetization layer for deep guidance modules (locked ceremonial expansions).
 - **P2:** Add weekly alchemy synthesis generated from daily journal prompts and usage history.
 
+## Healing Portals Module Added (Iteration 186) — 2026-06-23
+
+### User Choices Implemented
+- New standalone route/page: `/healing-portals`
+- Depth mode: **Immersive very deep ceremonial**
+- Initial portals: **Womb, Shadow, Heart, Ancestral, Trauma**
+- Guided voice enabled per portal
+- Access model: **Premium locked**
+- Requirement preserved: user can add more portals later
+
+### Backend Delivered
+- Added new content dataset: `backend/data/healing_portals_content.py`
+- Added API endpoints:
+  - `GET /api/healing-portals`
+  - `GET /api/healing-portals?portal_type=...`
+  - `GET /api/healing-portals/{portal_id}`
+- Added seeding integration in startup/seed flows (`server.py`) for `healing_portals` collection
+- Added admin support (`admin.py`):
+  - collection allowed in CRUD
+  - appears in admin collection meta
+  - included in seed status + seed payloads
+
+### Frontend Delivered
+- New page: `frontend/src/pages/HealingPortals.jsx`
+  - immersive portal cards
+  - visible alchemy/ritual/ceremony previews on cards
+  - detailed modal with sections: Alchemy, Rituals, Ceremonies, Integration
+  - premium lock panel for unauthenticated/unsubscribed users
+  - upgrade CTA to `/pricing`
+  - guided audio button appears when access is allowed
+- Route wiring added in `AppRoutes.jsx`
+- Navigation wiring added in:
+  - Main Menu (`MainMenuContainer.jsx`)
+  - TopNav overlay (`TopNav.jsx`)
+  - Dashboard nav config (`dashboardConfig.js`)
+
+### Validation Status
+- Backend tests: **PASS** (21/21)
+- Frontend tests: **PASS** (all requested portal UI + navigation validations)
+- Test report: `/app/test_reports/iteration_185.json`
+
+### Next Priorities
+- P0: Confirm production behavior after redeploy (portal locks + pricing redirect)
+- P1: Add admin UX schema helper for quick portal authoring templates
+- P2: Add additional user-requested portals and optional weekly portal rotation
+
