@@ -3779,6 +3779,30 @@ async def get_angelic_alchemy_item(item_id: str) -> dict[str, Any]:
     return _enrich_content_integrity(item, "hybrid-curated")
 
 
+# ============ HEALING PORTALS ==========
+
+@router.get("/healing-portals")
+async def get_healing_portals(portal_type: Optional[str] = None) -> list[dict[str, Any]]:
+    """Get healing portals, optionally filtered by portal type."""
+    db = get_db()
+    query: dict[str, Any] = {}
+    if portal_type:
+        query["portal_type"] = {"$regex": f"^{portal_type}$", "$options": "i"}
+
+    items = await db.healing_portals.find(query, {"_id": 0}).to_list(length=300)
+    return [_enrich_content_integrity(item, "hybrid-curated") for item in items]
+
+
+@router.get("/healing-portals/{portal_id}")
+async def get_healing_portal(portal_id: str) -> dict[str, Any]:
+    """Get one healing portal by id."""
+    db = get_db()
+    item = await db.healing_portals.find_one({"id": portal_id}, {"_id": 0})
+    if not item:
+        raise HTTPException(status_code=404, detail="Healing portal not found")
+    return _enrich_content_integrity(item, "hybrid-curated")
+
+
 # ============ SACRED ALLY AUDIO JOURNEYS & PATHWAYS ==========
 
 @router.get("/sacred-ally-audio-journeys")

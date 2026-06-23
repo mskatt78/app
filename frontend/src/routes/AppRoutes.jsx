@@ -72,6 +72,7 @@ const EnergyHealing = lazy(() => import("../pages/EnergyHealing"));
 const FreeFormMovement = lazy(() => import("../pages/FreeFormMovement"));
 const SomaticYoga = lazy(() => import("../pages/SomaticYoga"));
 const ChakraCleansing = lazy(() => import("../pages/ChakraCleansing"));
+const HealingPortals = lazy(() => import("../pages/HealingPortals"));
 const DailySacredPractice = lazy(() => import("../pages/DailySacredPractice"));
 const PracticeJournal = lazy(() => import("../pages/PracticeJournal"));
 const VideosLibrary = lazy(() => import("../pages/VideosLibrary"));
@@ -185,6 +186,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/free-form-movement" element={publicElement(FreeFormMovement, PublicRoute, api)} />
       <Route path="/somatic-yoga" element={publicElement(SomaticYoga, PublicRoute, api)} />
       <Route path="/chakra-cleansing" element={publicElement(ChakraCleansing, PublicRoute, api)} />
+      <Route path="/healing-portals" element={publicElement(HealingPortals, PublicRoute, api)} />
       <Route path="/practice-journal" element={publicElement(PracticeJournal, PublicRoute, api)} />
       <Route path="/videos" element={publicElement(VideosLibrary, PublicRoute, api)} />
       <Route path="/admin/login" element={<AdminLogin />} />

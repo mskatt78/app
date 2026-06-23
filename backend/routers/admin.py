@@ -39,6 +39,7 @@ SOURCE_AWARE_COLLECTIONS = {
     "heart_practices",
     "sacred_ally_alchemy",
     "angelic_alchemy",
+    "healing_portals",
 }
 
 
@@ -256,7 +257,7 @@ ALLOWED_COLLECTIONS = {
     "community_posts", "sacred_geometry", "energy_healing",
     "free_form_movement", "chakra_cleansing", "live_sessions",
     "astrology_months", "account_deletion_requests",
-    "sacred_ally_alchemy", "angelic_alchemy",
+    "sacred_ally_alchemy", "angelic_alchemy", "healing_portals",
 }
 
 COLLECTION_META = [
@@ -279,6 +280,7 @@ COLLECTION_META = [
     {"id": "creative_processes", "name": "Creative Processes", "icon": "🎨"},
     {"id": "sacred_ally_alchemy", "name": "Sacred Ally Alchemy", "icon": "🐉"},
     {"id": "angelic_alchemy", "name": "Angelic Alchemy", "icon": "🧿"},
+    {"id": "healing_portals", "name": "Healing Portals", "icon": "🜂"},
     {"id": "yoga_poses", "name": "Yoga Poses", "icon": "🧘‍♀️"},
     {"id": "sacred_geometry", "name": "Sacred Geometry", "icon": "🔺"},
     {"id": "energy_healing", "name": "Energy Healing", "icon": "✨"},
@@ -624,6 +626,7 @@ def _load_standard_seed_advanced_collections() -> dict[str, list[dict[str, Any]]
     from data.water_practices_data import WATER_PRACTICES
     from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
     from data.sacred_ally_alchemy_expansion import EXPANDED_SACRED_ALLY_ALCHEMY, EXPANDED_ANGELIC_ALCHEMY
+    from data.healing_portals_content import HEALING_PORTALS
 
     return {
         "somatic_practices": SOMATIC_PRACTICES,
@@ -645,6 +648,7 @@ def _load_standard_seed_advanced_collections() -> dict[str, list[dict[str, Any]]
         "water_practices": WATER_PRACTICES,
         "sacred_ally_alchemy": SACRED_ALLY_ALCHEMY + EXPANDED_SACRED_ALLY_ALCHEMY,
         "angelic_alchemy": ANGELIC_ALCHEMY + EXPANDED_ANGELIC_ALCHEMY,
+        "healing_portals": HEALING_PORTALS,
     }
 
 
@@ -842,7 +846,7 @@ async def get_seed_status(_: dict[str, Any] = Depends(_verify_admin)) -> dict[st
         "somatic_practices", "shamanic_practices", "yoga_poses", "tarot_cards",
         "sound_frequencies", "sacred_guardians", "ancient_wisdom", "community_posts",
         "energy_healing", "chakra_cleansing", "feminine_embodiment", "masculine_embodiment",
-        "courses", "elemental_temples", "water_practices", "runes", "i_ching", "sacred_ally_alchemy", "angelic_alchemy"
+        "courses", "elemental_temples", "water_practices", "runes", "i_ching", "sacred_ally_alchemy", "angelic_alchemy", "healing_portals"
     ]
     
     status = {}

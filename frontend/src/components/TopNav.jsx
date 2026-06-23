@@ -23,7 +23,7 @@ import {
   Globe,
   Users,
   Leaf
-  ,Download
+  ,Download, Orbit
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -51,6 +51,7 @@ const TopNav = ({ user }) => {
     { path: "/elemental", icon: Sparkles, label: "Elemental", color: "text-teal-400" },
     { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400" },
     { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Ally Alchemy", color: "text-fuchsia-300" },
+    { path: "/healing-portals", icon: Orbit, label: "Healing Portals", color: "text-amber-300" },
     { path: "/creative", icon: Palette, label: "Creative", color: "text-violet-400" },
     { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400" },
     { path: "/birth-chart", icon: Star, label: "Birth Chart", color: "text-yellow-400" },
