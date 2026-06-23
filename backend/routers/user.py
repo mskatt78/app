@@ -6,7 +6,6 @@ from typing import Any, Optional, List
 from datetime import datetime, timezone, timedelta
 import base64
 import uuid
-import secrets
 import logging
 import os
 
@@ -242,30 +241,218 @@ async def get_daily_guidance(user: User = Depends(get_current_user)) -> dict[str
     """Get personalized daily guidance."""
     db = get_db()
 
-    def secure_choice(items: list[Any]) -> Any:
-        if not items:
-            return None
-        return items[secrets.randbelow(len(items))]
-    
     try:
-        context = await _fetch_daily_guidance_context(db, secure_choice)
+        context = await _fetch_daily_guidance_context(db, user.user_id)
         return _format_daily_guidance_response(user, context)
     except Exception as exc:
         return _handle_daily_guidance_error(user, exc)
 
 
-async def _pick_daily_crystal(db: Any, secure_choice: Any) -> Optional[dict[str, Any]]:
+def _today_key() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
+def _sorted_daily_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return sorted(
+        items,
+        key=lambda item: str(item.get("id") or item.get("name") or item.get("title") or ""),
+    )
+
+
+def _daily_seed_index(user_id: str, date_key: str, salt: str, length: int) -> int:
+    if length <= 0:
+        return 0
+    seed_value = uuid.uuid5(uuid.NAMESPACE_DNS, f"{user_id}|{date_key}|{salt}").int
+    return seed_value % length
+
+
+def _pick_daily_item(
+    items: list[dict[str, Any]],
+    user_id: str,
+    date_key: str,
+    salt: str,
+) -> Optional[dict[str, Any]]:
+    if not items:
+        return None
+    ordered = _sorted_daily_items(items)
+    return ordered[_daily_seed_index(user_id, date_key, salt, len(ordered))]
+
+
+def _first_list_item(value: Any, fallback: str = "") -> str:
+    if isinstance(value, list):
+        for item in value:
+            text = str(item or "").strip()
+            if text:
+                return text
+    text = str(value or "").strip()
+    return text or fallback
+
+
+def _build_daily_journal_prompts(
+    current_moon: Optional[dict[str, Any]],
+    daily_ally: Optional[dict[str, Any]],
+    daily_angel: Optional[dict[str, Any]],
+    dragon_reflection: Optional[dict[str, Any]],
+) -> list[str]:
+    prompts: list[str] = []
+
+    moon_name = str((current_moon or {}).get("name") or "this moon phase").strip()
+    moon_element = str((current_moon or {}).get("element") or "Spirit").strip()
+    prompts.append(f"How can I embody {moon_name} through my {moon_element.lower()} element today?")
+
+    for source in (daily_ally, daily_angel):
+        if not source:
+            continue
+        ally_name = str(source.get("name") or "this ally").strip()
+        journal_prompt = _first_list_item(source.get("journal_prompts"))
+        if journal_prompt:
+            prompts.append(f"{ally_name}: {journal_prompt}")
+
+    dragon_prompt = str((dragon_reflection or {}).get("integration_prompt") or "").strip()
+    if dragon_prompt:
+        prompts.append(dragon_prompt)
+
+    prompts.append("What sacred action will I complete before nightfall to honor today's guidance?")
+
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for prompt in prompts:
+        normalized = prompt.lower().strip()
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        deduped.append(prompt)
+
+    return deduped[:6]
+
+
+def _build_dragon_astrology_reflection(
+    current_moon: Optional[dict[str, Any]],
+    latest_dragon_chart: Optional[dict[str, Any]],
+) -> dict[str, Any]:
+    moon_name = str((current_moon or {}).get("name") or "Current Moon").strip()
+
+    if latest_dragon_chart:
+        dragon_axis = latest_dragon_chart.get("dragon_head_tail_chart") or {}
+        dragon_head = dragon_axis.get("dragon_head") or {}
+        dragon_tail = dragon_axis.get("dragon_tail") or {}
+        chinese_profile = latest_dragon_chart.get("chinese_dragon_chart") or {}
+        zodiac_animal = str(chinese_profile.get("zodiac_animal") or "Dragon").strip()
+
+        head_sign = str(dragon_head.get("sign") or "your North Node sign").strip()
+        tail_sign = str(dragon_tail.get("sign") or "your South Node sign").strip()
+        return {
+            "title": "Dragon Axis Integration",
+            "summary": f"{moon_name} amplifies your karmic movement from {tail_sign} toward {head_sign}.",
+            "zodiac_focus": f"Chinese Zodiac resonance: {zodiac_animal}",
+            "integration_prompt": f"What one action today aligns your life from {tail_sign} patterns into {head_sign} embodiment?",
+            "is_personalized": True,
+        }
+
+    moon_description = str((current_moon or {}).get("description") or "Move slowly and listen deeply.").strip()
+    return {
+        "title": "Collective Dragon Reflection",
+        "summary": f"{moon_name} invites sovereignty through embodied truth and clear intention.",
+        "zodiac_focus": moon_description,
+        "integration_prompt": "Where can you choose destiny over habit in one practical step today?",
+        "is_personalized": False,
+    }
+
+
+def _build_unified_daily_flow(context: dict[str, Any]) -> dict[str, Any]:
+    daily_pose = context.get("daily_pose") or {}
+    daily_breathwork = context.get("daily_breathwork") or {}
+    daily_mantra = context.get("daily_mantra") or {}
+    daily_ally = context.get("daily_ally") or {}
+    daily_angel = context.get("daily_angel") or {}
+    dragon_reflection = context.get("dragon_astrology_reflection") or {}
+
+    ally_name = str(daily_ally.get("name") or "Sacred Ally").strip()
+    angel_name = str(daily_angel.get("name") or "Angelic Guide").strip()
+    mantra_name = str(daily_mantra.get("name") or "Heart Mantra").strip()
+    pose_name = str(daily_pose.get("name") or "Grounding Pose").strip()
+    breath_name = str(daily_breathwork.get("name") or "Coherent Breath").strip()
+
+    ally_ritual = _first_list_item(daily_ally.get("rituals"), "Offer one intentional breath with gratitude.")
+    angel_ritual = _first_list_item(daily_angel.get("practical_rituals"), "Visualize your field held in clear protective light.")
+
+    journal_prompts = context.get("daily_journal_prompts") or []
+    closing_prompt = str(journal_prompts[0]) if journal_prompts else "What sacred action am I choosing now?"
+
+    return {
+        "title": "Very Deep Ceremonial Daily Flow",
+        "opening_invocation": "I enter this day with reverence, embodiment, and devotion to truth.",
+        "ceremony_steps": [
+            {
+                "step_id": "attune",
+                "title": "Attune to the field",
+                "instruction": f"Speak or chant {mantra_name} slowly for 3 rounds and soften the jaw, heart, and belly.",
+                "duration_minutes": 4,
+                "anchor_name": mantra_name,
+                "anchor_route": "/mantras",
+            },
+            {
+                "step_id": "embody",
+                "title": "Embody through movement",
+                "instruction": f"Practice {pose_name} with slow transitions and a listening body for structural coherence.",
+                "duration_minutes": int(daily_pose.get("duration_minutes") or 8),
+                "anchor_name": pose_name,
+                "anchor_route": "/yoga",
+            },
+            {
+                "step_id": "regulate",
+                "title": "Regulate your nervous system",
+                "instruction": f"Complete {breath_name} while extending each exhale and releasing pressure from the chest.",
+                "duration_minutes": int(daily_breathwork.get("duration_minutes") or 7),
+                "anchor_name": breath_name,
+                "anchor_route": "/breathwork",
+            },
+            {
+                "step_id": "ally",
+                "title": "Sacred ally transmission",
+                "instruction": f"Receive guidance from {ally_name}: {ally_ritual}",
+                "duration_minutes": 6,
+                "anchor_name": ally_name,
+                "anchor_route": "/sacred-ally-alchemy",
+            },
+            {
+                "step_id": "angelic",
+                "title": "Angelic coherence seal",
+                "instruction": f"Seal your practice with {angel_name}: {angel_ritual}",
+                "duration_minutes": 5,
+                "anchor_name": angel_name,
+                "anchor_route": "/sacred-ally-alchemy",
+            },
+        ],
+        "dragon_integration": str(dragon_reflection.get("summary") or "Align your actions with your highest destiny.").strip(),
+        "closing_benediction": "Carry this ceremonial state into every conversation, task, and boundary today.",
+        "journal_prompt": closing_prompt,
+    }
+
+
+async def _pick_daily_crystal(db: Any, user_id: str, date_key: str) -> Optional[dict[str, Any]]:
     from .content import _resolve_crystal_image
 
     deep_crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=80)
     if deep_crystals:
-        selected_crystal = secure_choice(deep_crystals)
+        selected_crystal = _pick_daily_item(deep_crystals, user_id, date_key, "daily-crystal-deep")
         if not selected_crystal:
             return None
         return await _resolve_crystal_image(selected_crystal, db)
 
     fallback_crystals = await db.crystals.find({}, {"_id": 0}).to_list(length=50)
-    return secure_choice(fallback_crystals)
+    return _pick_daily_item(fallback_crystals, user_id, date_key, "daily-crystal-fallback")
+
+
+async def _fetch_latest_dragon_chart(db: Any, user_id: str) -> Optional[dict[str, Any]]:
+    return await db.dragon_charts.find_one(
+        {
+            "user_id": user_id,
+            "is_deleted": {"$ne": True},
+        },
+        {"_id": 0},
+        sort=[("saved_at", -1)],
+    )
 
 
 def _default_yoga_sequence_of_day() -> dict[str, Any]:
@@ -292,23 +479,56 @@ def _default_sunrise_sunset_guidance() -> dict[str, list[str]]:
     }
 
 
-async def _fetch_daily_guidance_context(db: Any, secure_choice: Any) -> dict[str, Any]:
+async def _fetch_daily_guidance_context(db: Any, user_id: str) -> dict[str, Any]:
     from .numerology import get_current_month
 
+    date_key = _today_key()
     current_month = await get_current_month()
+
     yoga_poses = await db.yoga_poses.find({}, {"_id": 0}).to_list(length=100)
     mantras = await db.mantras.find({}, {"_id": 0}).to_list(length=50)
     breathwork_sessions = await db.breathwork_sessions.find({}, {"_id": 0}).to_list(length=20)
+    ally_entries = await db.sacred_ally_alchemy.find({}, {"_id": 0}).to_list(length=200)
+    angel_entries = await db.angelic_alchemy.find({}, {"_id": 0}).to_list(length=120)
 
-    return {
+    daily_pose = _pick_daily_item(yoga_poses, user_id, date_key, "daily-pose")
+    daily_mantra = _pick_daily_item(mantras, user_id, date_key, "daily-mantra")
+    daily_breathwork = _pick_daily_item(breathwork_sessions, user_id, date_key, "daily-breathwork")
+    daily_ally = _pick_daily_item(ally_entries, user_id, date_key, "daily-ally")
+    daily_angel = _pick_daily_item(angel_entries, user_id, date_key, "daily-angel")
+    latest_dragon_chart = await _fetch_latest_dragon_chart(db, user_id)
+    dragon_reflection = _build_dragon_astrology_reflection(current_month, latest_dragon_chart)
+
+    daily_journal_prompts = _build_daily_journal_prompts(
+        current_moon=current_month,
+        daily_ally=daily_ally,
+        daily_angel=daily_angel,
+        dragon_reflection=dragon_reflection,
+    )
+
+    ceremonial_affirmation = (
+        _first_list_item((daily_ally or {}).get("affirmations"))
+        or _first_list_item((daily_angel or {}).get("affirmations"))
+        or "I walk this day as ceremony, compassion, and coherent power."
+    )
+
+    context = {
         "current_moon": current_month,
-        "daily_pose": secure_choice(yoga_poses),
-        "daily_crystal": await _pick_daily_crystal(db, secure_choice),
-        "daily_mantra": secure_choice(mantras),
-        "daily_breathwork": secure_choice(breathwork_sessions),
+        "daily_pose": daily_pose,
+        "daily_crystal": await _pick_daily_crystal(db, user_id, date_key),
+        "daily_mantra": daily_mantra,
+        "daily_breathwork": daily_breathwork,
+        "daily_ally": daily_ally,
+        "daily_angel": daily_angel,
+        "dragon_astrology_reflection": dragon_reflection,
+        "daily_journal_prompts": daily_journal_prompts,
+        "ceremonial_affirmation": ceremonial_affirmation,
         "yoga_sequence_of_day": _default_yoga_sequence_of_day(),
         "sunrise_sunset_guidance": _default_sunrise_sunset_guidance(),
     }
+    context["unified_daily_flow"] = _build_unified_daily_flow(context)
+
+    return context
 
 
 def _format_daily_guidance_response(user: User, context: dict[str, Any]) -> dict[str, Any]:
@@ -321,6 +541,12 @@ def _format_daily_guidance_response(user: User, context: dict[str, Any]) -> dict
         "daily_crystal": context.get("daily_crystal"),
         "daily_mantra": context.get("daily_mantra"),
         "daily_breathwork": context.get("daily_breathwork"),
+        "daily_ally": context.get("daily_ally"),
+        "daily_angel": context.get("daily_angel"),
+        "dragon_astrology_reflection": context.get("dragon_astrology_reflection"),
+        "daily_journal_prompts": context.get("daily_journal_prompts") or [],
+        "ceremonial_affirmation": context.get("ceremonial_affirmation"),
+        "unified_daily_flow": context.get("unified_daily_flow"),
         "yoga_sequence_of_day": context.get("yoga_sequence_of_day"),
         "sunrise_sunset_guidance": context.get("sunrise_sunset_guidance"),
         "element_focus": current_moon["element"] if current_moon else "Spirit",
@@ -330,6 +556,18 @@ def _format_daily_guidance_response(user: User, context: dict[str, Any]) -> dict
 def _handle_daily_guidance_error(user: User, exc: Exception) -> dict[str, Any]:
     logger.exception("Failed to build daily guidance for user %s", user.user_id)
     fallback_name = user.name.split()[0] if user.name else "Beloved"
+    fallback_dragon_reflection = {
+        "title": "Collective Dragon Reflection",
+        "summary": "Choose one brave aligned action and let it become your ceremony.",
+        "zodiac_focus": "Return to breath, body, and truthful action.",
+        "integration_prompt": "What single action today proves your devotion to your path?",
+        "is_personalized": False,
+    }
+    fallback_prompts = [
+        "What is one sacred action I will complete today?",
+        "Where can I choose coherence over urgency?",
+        "What did my body teach me today?",
+    ]
     return {
         "greeting": f"Blessed day, {fallback_name}",
         "current_moon": None,
@@ -337,6 +575,44 @@ def _handle_daily_guidance_error(user: User, exc: Exception) -> dict[str, Any]:
         "daily_crystal": None,
         "daily_mantra": None,
         "daily_breathwork": None,
+        "daily_ally": None,
+        "daily_angel": None,
+        "dragon_astrology_reflection": fallback_dragon_reflection,
+        "daily_journal_prompts": fallback_prompts,
+        "ceremonial_affirmation": "I walk this day as ceremony and truth.",
+        "unified_daily_flow": {
+            "title": "Very Deep Ceremonial Daily Flow",
+            "opening_invocation": "I arrive with reverence and intention.",
+            "ceremony_steps": [
+                {
+                    "step_id": "arrive",
+                    "title": "Arrive",
+                    "instruction": "Take seven deep breaths and soften your shoulders.",
+                    "duration_minutes": 3,
+                    "anchor_name": "Breath Arrival",
+                    "anchor_route": "/breathwork",
+                },
+                {
+                    "step_id": "move",
+                    "title": "Move",
+                    "instruction": "Practice one grounding movement sequence with full attention.",
+                    "duration_minutes": 8,
+                    "anchor_name": "Grounding Sequence",
+                    "anchor_route": "/yoga",
+                },
+                {
+                    "step_id": "integrate",
+                    "title": "Integrate",
+                    "instruction": "Journal one truth and one aligned action for today.",
+                    "duration_minutes": 5,
+                    "anchor_name": "Journal Integration",
+                    "anchor_route": "/journal",
+                },
+            ],
+            "dragon_integration": fallback_dragon_reflection["summary"],
+            "closing_benediction": "Carry this coherence into your next conversation.",
+            "journal_prompt": fallback_prompts[0],
+        },
         "yoga_sequence_of_day": _default_yoga_sequence_of_day(),
         "sunrise_sunset_guidance": _default_sunrise_sunset_guidance(),
         "element_focus": "Spirit",

@@ -4462,6 +4462,142 @@ def _daily_reflection_prompts(current_moon: dict[str, Any], current_day: dict[st
     ]
 
 
+def _pick_rotated_daily_item(items: list[dict[str, Any]], rotation_seed: int, salt: str) -> Optional[dict[str, Any]]:
+    if not items:
+        return None
+    ordered = sorted(items, key=lambda item: str(item.get("id") or item.get("name") or ""))
+    seed_offset = sum(ord(char) for char in salt)
+    index = (rotation_seed + seed_offset) % len(ordered)
+    return ordered[index]
+
+
+def _first_text_line(value: Any, fallback: str = "") -> str:
+    if isinstance(value, list):
+        for item in value:
+            text = str(item or "").strip()
+            if text:
+                return text
+    text = str(value or "").strip()
+    return text or fallback
+
+
+def _daily_collective_dragon_reflection(current_moon: dict[str, Any], current_day: dict[str, Any]) -> dict[str, Any]:
+    moon_theme = str(current_moon.get("theme") or "collective attunement").strip()
+    day_ruler = str(current_day.get("ruler") or "the day").strip()
+    return {
+        "title": "Collective Dragon Reflection",
+        "summary": f"Today favors {moon_theme.lower()} guided by {day_ruler} discipline.",
+        "zodiac_focus": f"Move with {current_moon.get('energy', 'balanced')} lunar rhythm and embodied courage.",
+        "integration_prompt": "What one choice today turns insight into aligned action?",
+        "is_personalized": False,
+    }
+
+
+def _daily_ceremonial_journal_prompts(
+    current_moon: dict[str, Any],
+    current_day: dict[str, Any],
+    daily_ally: Optional[dict[str, Any]],
+    daily_angel: Optional[dict[str, Any]],
+    dragon_reflection: dict[str, Any],
+) -> list[str]:
+    prompts = _daily_reflection_prompts(current_moon, current_day)
+
+    if daily_ally:
+        ally_name = str(daily_ally.get("name") or "Sacred Ally").strip()
+        ally_prompt = _first_text_line(daily_ally.get("journal_prompts"))
+        if ally_prompt:
+            prompts.append(f"{ally_name}: {ally_prompt}")
+
+    if daily_angel:
+        angel_name = str(daily_angel.get("name") or "Angelic Guide").strip()
+        angel_prompt = _first_text_line(daily_angel.get("journal_prompts"))
+        if angel_prompt:
+            prompts.append(f"{angel_name}: {angel_prompt}")
+
+    dragon_prompt = str(dragon_reflection.get("integration_prompt") or "").strip()
+    if dragon_prompt:
+        prompts.append(dragon_prompt)
+
+    prompts.append("What sacred action will I complete before nightfall to honor today's guidance?")
+
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for prompt in prompts:
+        normalized = prompt.lower().strip()
+        if not normalized or normalized in seen:
+            continue
+        seen.add(normalized)
+        deduped.append(prompt)
+    return deduped[:7]
+
+
+def _safe_step_duration(value: Any, fallback: int) -> int:
+    try:
+        parsed = int(value)
+    except Exception:
+        parsed = fallback
+    return max(3, min(25, parsed))
+
+
+def _daily_unified_ceremonial_flow(
+    morning_practice: Optional[dict[str, Any]],
+    evening_practice: Optional[dict[str, Any]],
+    daily_ally: Optional[dict[str, Any]],
+    daily_angel: Optional[dict[str, Any]],
+    dragon_reflection: dict[str, Any],
+    journal_prompts: list[str],
+) -> dict[str, Any]:
+    morning_name = str((morning_practice or {}).get("name") or "Morning Awakening").strip()
+    evening_name = str((evening_practice or {}).get("name") or "Evening Integration").strip()
+    ally_name = str((daily_ally or {}).get("name") or "Sacred Ally").strip()
+    angel_name = str((daily_angel or {}).get("name") or "Angelic Guide").strip()
+
+    ally_ritual = _first_text_line((daily_ally or {}).get("rituals"), "Offer one breath of gratitude and grounded intention.")
+    angel_ritual = _first_text_line((daily_angel or {}).get("practical_rituals"), "Visualize your field in clear coherent light.")
+
+    return {
+        "title": "Very Deep Ceremonial Daily Flow",
+        "opening_invocation": "I enter this day as ceremony—grounded, clear, and aligned.",
+        "ceremony_steps": [
+            {
+                "step_id": "morning-embodiment",
+                "title": "Morning Embodiment",
+                "instruction": f"Begin with {morning_name}, moving slowly with full body awareness.",
+                "duration_minutes": _safe_step_duration((morning_practice or {}).get("duration_minutes"), 8),
+                "anchor_name": morning_name,
+                "anchor_route": "/daily-practice",
+            },
+            {
+                "step_id": "ally-transmission",
+                "title": "Sacred Ally Transmission",
+                "instruction": f"Receive guidance from {ally_name}: {ally_ritual}",
+                "duration_minutes": 6,
+                "anchor_name": ally_name,
+                "anchor_route": "/sacred-ally-alchemy",
+            },
+            {
+                "step_id": "angelic-seal",
+                "title": "Angelic Alchemy Seal",
+                "instruction": f"Seal your field with {angel_name}: {angel_ritual}",
+                "duration_minutes": 5,
+                "anchor_name": angel_name,
+                "anchor_route": "/sacred-ally-alchemy",
+            },
+            {
+                "step_id": "evening-integration",
+                "title": "Evening Integration",
+                "instruction": f"Close with {evening_name}, releasing what is complete and integrating what is true.",
+                "duration_minutes": _safe_step_duration((evening_practice or {}).get("duration_minutes"), 10),
+                "anchor_name": evening_name,
+                "anchor_route": "/daily-practice",
+            },
+        ],
+        "dragon_integration": str(dragon_reflection.get("summary") or "Align this day with your highest path.").strip(),
+        "closing_benediction": "Carry this ceremonial coherence into every word, boundary, and choice.",
+        "journal_prompt": str(journal_prompts[0]) if journal_prompts else "What sacred action am I choosing now?",
+    }
+
+
 def _build_daily_practice_response(
     now: datetime,
     day_of_week: str,
@@ -4470,6 +4606,12 @@ def _build_daily_practice_response(
     current_moon: dict[str, Any],
     morning_practice: Optional[dict[str, Any]],
     evening_practice: Optional[dict[str, Any]],
+    daily_ally: Optional[dict[str, Any]],
+    daily_angel: Optional[dict[str, Any]],
+    dragon_astrology_reflection: dict[str, Any],
+    daily_journal_prompts: list[str],
+    ceremonial_affirmation: str,
+    unified_daily_flow: dict[str, Any],
 ) -> dict[str, Any]:
     return {
         "date": now.strftime("%Y-%m-%d"),
@@ -4483,6 +4625,12 @@ def _build_daily_practice_response(
         "morning_practice": morning_practice,
         "evening_practice": evening_practice,
         "reflection_prompts": _daily_reflection_prompts(current_moon, current_day),
+        "daily_ally": daily_ally,
+        "daily_angel": daily_angel,
+        "dragon_astrology_reflection": dragon_astrology_reflection,
+        "daily_journal_prompts": daily_journal_prompts,
+        "ceremonial_affirmation": ceremonial_affirmation,
+        "unified_daily_flow": unified_daily_flow,
     }
 
 
@@ -4504,6 +4652,37 @@ async def get_daily_practice(focus: Optional[str] = None) -> dict[str, Any]:
     rotation_seed = (iso_week * 97) + (now.timetuple().tm_yday * 13)
     morning_practice, evening_practice = _select_morning_evening_practices(all_practices, rotation_seed=rotation_seed)
 
+    ally_entries = await db.sacred_ally_alchemy.find({}, {"_id": 0}).to_list(length=200)
+    angel_entries = await db.angelic_alchemy.find({}, {"_id": 0}).to_list(length=120)
+
+    selected_ally = _pick_rotated_daily_item(ally_entries, rotation_seed, "daily-ally")
+    selected_angel = _pick_rotated_daily_item(angel_entries, rotation_seed, "daily-angel")
+
+    enriched_ally = _enrich_content_integrity(selected_ally, "hybrid-curated") if selected_ally else None
+    enriched_angel = _enrich_content_integrity(selected_angel, "hybrid-curated") if selected_angel else None
+
+    dragon_reflection = _daily_collective_dragon_reflection(current_moon, current_day)
+    ceremonial_affirmation = (
+        _first_text_line((enriched_ally or {}).get("affirmations"))
+        or _first_text_line((enriched_angel or {}).get("affirmations"))
+        or "I walk this day as ceremony, coherence, and compassion."
+    )
+    daily_journal_prompts = _daily_ceremonial_journal_prompts(
+        current_moon=current_moon,
+        current_day=current_day,
+        daily_ally=enriched_ally,
+        daily_angel=enriched_angel,
+        dragon_reflection=dragon_reflection,
+    )
+    unified_flow = _daily_unified_ceremonial_flow(
+        morning_practice=morning_practice,
+        evening_practice=evening_practice,
+        daily_ally=enriched_ally,
+        daily_angel=enriched_angel,
+        dragon_reflection=dragon_reflection,
+        journal_prompts=daily_journal_prompts,
+    )
+
     return _build_daily_practice_response(
         now=now,
         day_of_week=day_of_week,
@@ -4512,6 +4691,12 @@ async def get_daily_practice(focus: Optional[str] = None) -> dict[str, Any]:
         current_moon=current_moon,
         morning_practice=morning_practice,
         evening_practice=evening_practice,
+        daily_ally=enriched_ally,
+        daily_angel=enriched_angel,
+        dragon_astrology_reflection=dragon_reflection,
+        daily_journal_prompts=daily_journal_prompts,
+        ceremonial_affirmation=ceremonial_affirmation,
+        unified_daily_flow=unified_flow,
     )
 
 

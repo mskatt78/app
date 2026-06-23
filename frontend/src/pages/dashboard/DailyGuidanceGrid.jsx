@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Leaf, Sparkles, Heart, Wind, ChevronRight, Play, Sun } from "lucide-react";
+import { Leaf, Sparkles, Heart, Wind, ChevronRight, Play, Sun, Shield, Flame, Star } from "lucide-react";
 
 export const DailyGuidanceGrid = ({ dailyData, navigate }) => (
   <div>
@@ -137,6 +137,75 @@ export const DailyGuidanceGrid = ({ dailyData, navigate }) => (
               <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Sunrise / Sunset Guidance</p>
               <h4 className="text-xl font-serif mb-1 group-hover:text-primary transition-colors">Circadian Ritual Pair</h4>
               <p className="text-sm text-muted-foreground">Morning activation + evening release</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        </motion.div>
+      )}
+
+      {dailyData?.daily_ally && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.55 }}
+          className="p-6 rounded-2xl bg-card/50 border border-white/5 hover:border-fuchsia-400/30 transition-all duration-500 cursor-pointer group"
+          onClick={() => navigate("/sacred-ally-alchemy")}
+          data-testid="daily-ally-card"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-fuchsia-500/10 flex items-center justify-center">
+              <Flame className="w-6 h-6 text-fuchsia-300" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Sacred Ally Transmission</p>
+              <h4 className="text-xl font-serif mb-1 group-hover:text-primary transition-colors">{dailyData.daily_ally.name}</h4>
+              <p className="text-sm text-muted-foreground">{dailyData.daily_ally.element || "Spirit"} element guidance</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        </motion.div>
+      )}
+
+      {dailyData?.daily_angel && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="p-6 rounded-2xl bg-card/50 border border-white/5 hover:border-sky-400/30 transition-all duration-500 cursor-pointer group"
+          onClick={() => navigate("/sacred-ally-alchemy")}
+          data-testid="daily-angel-card"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-sky-500/10 flex items-center justify-center">
+              <Shield className="w-6 h-6 text-sky-300" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Angelic Alchemy Seal</p>
+              <h4 className="text-xl font-serif mb-1 group-hover:text-primary transition-colors">{dailyData.daily_angel.name}</h4>
+              <p className="text-sm text-muted-foreground">{dailyData.daily_angel.sacred_geometry || "Sacred geometry"}</p>
+            </div>
+            <ChevronRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        </motion.div>
+      )}
+
+      {dailyData?.dragon_astrology_reflection && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65 }}
+          className="p-6 rounded-2xl bg-card/50 border border-white/5 hover:border-amber-300/30 transition-all duration-500 cursor-pointer group md:col-span-2"
+          onClick={() => navigate("/astrology/charts")}
+          data-testid="daily-dragon-reflection-card"
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
+              <Star className="w-6 h-6 text-amber-300" />
+            </div>
+            <div className="flex-1">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">Dragon & Astrology Reflection</p>
+              <h4 className="text-xl font-serif mb-1 group-hover:text-primary transition-colors">{dailyData.dragon_astrology_reflection.title}</h4>
+              <p className="text-sm text-muted-foreground">{dailyData.dragon_astrology_reflection.summary}</p>
             </div>
             <ChevronRight className="w-5 h-5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>

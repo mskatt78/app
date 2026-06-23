@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sun, Moon, Sparkles, Heart, Clock, ChevronDown, ChevronUp, Loader2, Calendar, Star, Sunrise, Sunset, RefreshCw } from "lucide-react";
+import { ArrowLeft, Sun, Moon, Sparkles, Heart, Clock, ChevronDown, Loader2, Calendar, Star, Sunrise, Sunset, RefreshCw, Shield, Flame, Wand2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
@@ -46,9 +46,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
   const [expandedPractice, setExpandedPractice] = useState(null);
   const [focusArea, setFocusArea] = useState("");
 
-  useEffect(() => { fetchDailyPractice(); }, []);
-
-  const fetchDailyPractice = async (focus = null) => {
+  const fetchDailyPractice = useCallback(async (focus = null) => {
     setLoading(true);
     try {
       const params = focus ? { focus } : {};
@@ -59,35 +57,42 @@ export default function DailySacredPractice({ user, api: userApi }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchDailyPractice();
+  }, [fetchDailyPractice]);
 
   const handleFocusSearch = (e) => {
     e.preventDefault();
-    if (focusArea.trim()) {
-      fetchDailyPractice(focusArea.trim());
-    }
+    fetchDailyPractice(focusArea.trim() || null);
   };
 
   const dayConfig = dailyData ? DAY_COLORS[dailyData.day_of_week] || DAY_COLORS.Sunday : DAY_COLORS.Sunday;
   const DayIcon = dayConfig.icon;
 
-  const PracticeCard = ({ practice, time, icon: Icon, label }) => {
+  const renderPracticeCard = ({ practice, time, icon: Icon, label }) => {
     if (!practice) return null;
     const isExpanded = expandedPractice === `${time}-${practice.id}`;
-    
+
     return (
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden"
       >
-        <div 
+        <div
           className="p-5 cursor-pointer hover:bg-white/5 transition-colors"
           onClick={() => setExpandedPractice(isExpanded ? null : `${time}-${practice.id}`)}
         >
           <div className="flex items-start gap-4">
             {practice.image_url ? (
-              <img src={practice.image_url} alt={practice.name} className="w-20 h-20 rounded-xl object-cover" />
+              <img
+                src={practice.image_url}
+                alt={practice.name}
+                className="w-20 h-20 rounded-xl object-contain bg-black/25"
+                data-testid={`daily-practice-image-${time}`}
+              />
             ) : (
               <div className={`w-20 h-20 rounded-xl ${time === 'morning' ? 'bg-amber-500/20' : 'bg-indigo-500/20'} flex items-center justify-center`}>
                 <Icon className={`w-8 h-8 ${time === 'morning' ? 'text-amber-400' : 'text-indigo-400'}`} />
@@ -112,7 +117,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
             <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           </div>
         </div>
-        
+
         <AnimatePresence>
           {isExpanded && (
             <motion.div
@@ -122,7 +127,6 @@ export default function DailySacredPractice({ user, api: userApi }) {
               className="border-t border-white/10 overflow-hidden"
             >
               <div className="p-5 space-y-4">
-                {/* Deeper Teaching */}
                 {practice.deeper_teaching && (
                   <div>
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -131,8 +135,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
                     <p className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{practice.deeper_teaching}</p>
                   </div>
                 )}
-                
-                {/* Practice Guide */}
+
                 {(practice.practice_guide || practice.cleansing_guide || practice.self_healing_guide || practice.extended_practice || practice.somatic_practice) && (
                   <div>
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -144,7 +147,6 @@ export default function DailySacredPractice({ user, api: userApi }) {
                   </div>
                 )}
 
-                {/* Shadow Work */}
                 {(practice.shadow_work || practice.shadow_integration) && (
                   <div>
                     <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -154,7 +156,6 @@ export default function DailySacredPractice({ user, api: userApi }) {
                   </div>
                 )}
 
-                {/* Benefits */}
                 {practice.benefits && (
                   <div>
                     <h4 className="text-sm font-medium mb-2">Benefits</h4>
@@ -166,7 +167,6 @@ export default function DailySacredPractice({ user, api: userApi }) {
                   </div>
                 )}
 
-                {/* Audio */}
                 <GuidedAudioButton
                   api={userApi}
                   script={`${practice.name}. ${practice.description}. ${practice.practice_guide || practice.cleansing_guide || practice.self_healing_guide || ''}`}
@@ -180,6 +180,140 @@ export default function DailySacredPractice({ user, api: userApi }) {
       </motion.div>
     );
   };
+
+  const renderUnifiedFlow = () => {
+    const flow = dailyData?.unified_daily_flow;
+    if (!flow) {
+      return null;
+    }
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="rounded-2xl border border-fuchsia-500/20 bg-gradient-to-br from-fuchsia-950/20 via-violet-950/20 to-slate-950/20 p-6 space-y-5"
+        data-testid="daily-unified-ceremonial-flow"
+      >
+        <div>
+          <h2 className="text-xl font-serif flex items-center gap-2" data-testid="daily-unified-title">
+            <Wand2 className="w-5 h-5 text-fuchsia-300" />
+            {flow.title}
+          </h2>
+          <p className="text-sm text-muted-foreground mt-2 italic" data-testid="daily-unified-opening-invocation">
+            {flow.opening_invocation}
+          </p>
+        </div>
+
+        <div className="space-y-3" data-testid="daily-unified-steps-list">
+          {(flow.ceremony_steps || []).map((step) => (
+            <div
+              key={stableDailyKey("daily-unified-step", step.step_id || step.title)}
+              className="rounded-xl border border-white/10 bg-black/20 p-4"
+              data-testid={`daily-unified-step-${step.step_id || "step"}`}
+            >
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <h3 className="text-sm font-medium text-violet-100">{step.title}</h3>
+                <span className="text-xs px-2 py-1 rounded-full bg-violet-500/20 text-violet-200" data-testid={`daily-unified-step-duration-${step.step_id || "step"}`}>
+                  {step.duration_minutes} min
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed" data-testid={`daily-unified-step-instruction-${step.step_id || "step"}`}>
+                {step.instruction}
+              </p>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="mt-2 px-0 text-xs text-violet-300 hover:text-violet-200"
+                onClick={() => navigate(step.anchor_route || "/menu")}
+                data-testid={`daily-unified-step-open-${step.step_id || "step"}`}
+              >
+                Open {step.anchor_name || "practice"}
+              </Button>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4" data-testid="daily-dragon-integration-panel">
+            <h3 className="text-sm font-medium text-amber-300 mb-1">Dragon Integration</h3>
+            <p className="text-sm text-muted-foreground">{flow.dragon_integration}</p>
+          </div>
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4" data-testid="daily-closing-benediction-panel">
+            <h3 className="text-sm font-medium text-emerald-300 mb-1">Closing Benediction</h3>
+            <p className="text-sm text-muted-foreground">{flow.closing_benediction}</p>
+          </div>
+        </div>
+
+        <p className="text-sm italic text-violet-100/90" data-testid="daily-unified-journal-prompt">
+          Journal Prompt: {flow.journal_prompt}
+        </p>
+      </motion.div>
+    );
+  };
+
+  const renderAllyAngelPanels = () => (
+    <div className="grid md:grid-cols-2 gap-4" data-testid="daily-ally-angel-grid">
+      {dailyData?.daily_ally ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 p-5"
+          data-testid="daily-ally-panel"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <Flame className="w-4 h-4 text-fuchsia-300" />
+            <h3 className="font-serif text-lg" data-testid="daily-ally-name">{dailyData.daily_ally.name}</h3>
+          </div>
+          <p className="text-sm text-muted-foreground mb-2" data-testid="daily-ally-description">{dailyData.daily_ally.description}</p>
+          <p className="text-xs text-fuchsia-200/80 italic" data-testid="daily-ally-ritual-preview">{firstLine(dailyData.daily_ally.rituals)}</p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-3 px-0 text-fuchsia-300 hover:text-fuchsia-200"
+            onClick={() => navigate("/sacred-ally-alchemy")}
+            data-testid="daily-ally-open-button"
+          >
+            Open Sacred Ally Alchemy
+          </Button>
+        </motion.div>
+      ) : (
+        <div className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 p-5" data-testid="daily-ally-fallback-panel">
+          <h3 className="font-serif text-lg">Sacred Ally Transmission</h3>
+          <p className="text-sm text-muted-foreground">Ally guidance is attuning for today. Return with a fresh refresh.</p>
+        </div>
+      )}
+
+      {dailyData?.daily_angel ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="rounded-2xl border border-sky-500/20 bg-sky-500/10 p-5"
+          data-testid="daily-angel-panel"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <Shield className="w-4 h-4 text-sky-300" />
+            <h3 className="font-serif text-lg" data-testid="daily-angel-name">{dailyData.daily_angel.name}</h3>
+          </div>
+          <p className="text-sm text-muted-foreground mb-2" data-testid="daily-angel-description">{dailyData.daily_angel.description}</p>
+          <p className="text-xs text-sky-200/80 italic" data-testid="daily-angel-ritual-preview">{firstLine(dailyData.daily_angel.practical_rituals)}</p>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mt-3 px-0 text-sky-300 hover:text-sky-200"
+            onClick={() => navigate("/sacred-ally-alchemy")}
+            data-testid="daily-angel-open-button"
+          >
+            Open Angelic Alchemy
+          </Button>
+        </motion.div>
+      ) : (
+        <div className="rounded-2xl border border-sky-500/20 bg-sky-500/10 p-5" data-testid="daily-angel-fallback-panel">
+          <h3 className="font-serif text-lg">Angelic Alchemy Seal</h3>
+          <p className="text-sm text-muted-foreground">Angelic seal guidance is attuning for today. Return with a fresh refresh.</p>
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background" data-testid="daily-practice-page">
@@ -195,8 +329,13 @@ export default function DailySacredPractice({ user, api: userApi }) {
               <DayIcon className={`w-10 h-10 ${dayConfig.accent}`} />
             </div>
             <div>
-              <h1 className="text-3xl sm:text-4xl font-serif">Daily Sacred Practice</h1>
-              <p className="text-muted-foreground mt-1">Your personalized spiritual guidance for today</p>
+              <h1 className="text-3xl sm:text-4xl font-serif" data-testid="daily-practice-title">Daily Sacred Practice</h1>
+              <p className="text-muted-foreground mt-1" data-testid="daily-practice-subtitle">Your personalized spiritual guidance for today</p>
+              {dailyData?.ceremonial_affirmation && (
+                <p className="text-sm italic text-violet-200/90 mt-2" data-testid="daily-ceremonial-affirmation">
+                  “{dailyData.ceremonial_affirmation}”
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -214,6 +353,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className="rounded-2xl border border-white/10 bg-white/[0.02] p-6"
+              data-testid="daily-cosmic-context-card"
             >
               <div className="flex flex-wrap items-center gap-4 mb-4">
                 <div className="flex items-center gap-2">
@@ -242,18 +382,49 @@ export default function DailySacredPractice({ user, api: userApi }) {
             </motion.div>
 
             {/* Focus Area Search */}
-            <form onSubmit={handleFocusSearch} className="flex gap-2">
+            <form onSubmit={handleFocusSearch} className="flex gap-2" data-testid="daily-focus-form">
               <input
                 type="text"
                 value={focusArea}
                 onChange={(e) => setFocusArea(e.target.value)}
                 placeholder="Focus area (e.g., heart, grounding, grief, sensuality...)"
                 className="flex-1 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50"
+                data-testid="daily-focus-input"
               />
-              <Button type="submit" variant="outline" size="sm">
+              <Button type="submit" variant="outline" size="sm" data-testid="daily-focus-refresh-button">
                 <RefreshCw className="w-4 h-4 mr-1" /> Refresh
               </Button>
             </form>
+
+            {renderUnifiedFlow()}
+
+            {renderAllyAngelPanels()}
+
+            {dailyData.dragon_astrology_reflection && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-6"
+                data-testid="daily-dragon-astrology-reflection"
+              >
+                <h2 className="text-lg font-serif flex items-center gap-2 mb-2" data-testid="daily-dragon-reflection-title">
+                  <Star className="w-5 h-5 text-amber-300" />
+                  {dailyData.dragon_astrology_reflection.title}
+                </h2>
+                <p className="text-sm text-muted-foreground mb-2" data-testid="daily-dragon-reflection-summary">{dailyData.dragon_astrology_reflection.summary}</p>
+                <p className="text-sm italic text-amber-100/80" data-testid="daily-dragon-reflection-zodiac-focus">{dailyData.dragon_astrology_reflection.zodiac_focus}</p>
+                <p className="text-xs text-muted-foreground mt-2" data-testid="daily-dragon-reflection-prompt">{dailyData.dragon_astrology_reflection.integration_prompt}</p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="mt-3 px-0 text-amber-300 hover:text-amber-200"
+                  onClick={() => navigate("/astrology/charts")}
+                  data-testid="daily-dragon-open-charts-button"
+                >
+                  Open Astrology Charts
+                </Button>
+              </motion.div>
+            )}
 
             {/* Morning Practice */}
             <div>
@@ -261,12 +432,12 @@ export default function DailySacredPractice({ user, api: userApi }) {
                 <Sunrise className="w-5 h-5 text-amber-400" />
                 <h2 className="text-xl font-serif">Morning Practice</h2>
               </div>
-              <PracticeCard 
-                practice={dailyData.morning_practice} 
-                time="morning" 
-                icon={Sunrise}
-                label="Morning Awakening"
-              />
+              {renderPracticeCard({
+                practice: dailyData.morning_practice,
+                time: "morning",
+                icon: Sunrise,
+                label: "Morning Awakening",
+              })}
             </div>
 
             {/* Evening Practice */}
@@ -275,12 +446,12 @@ export default function DailySacredPractice({ user, api: userApi }) {
                 <Sunset className="w-5 h-5 text-indigo-400" />
                 <h2 className="text-xl font-serif">Evening Practice</h2>
               </div>
-              <PracticeCard 
-                practice={dailyData.evening_practice} 
-                time="evening" 
-                icon={Sunset}
-                label="Evening Integration"
-              />
+              {renderPracticeCard({
+                practice: dailyData.evening_practice,
+                time: "evening",
+                icon: Sunset,
+                label: "Evening Integration",
+              })}
             </div>
 
             {/* Reflection Prompts */}
@@ -289,6 +460,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="rounded-2xl border border-white/10 bg-white/[0.02] p-6"
+                data-testid="daily-reflection-prompts-card"
               >
                 <h2 className="text-lg font-serif mb-4 flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-violet-400" />
@@ -298,6 +470,28 @@ export default function DailySacredPractice({ user, api: userApi }) {
                   {dailyData.reflection_prompts.map((prompt) => (
                     <li key={stableDailyKey("daily-reflection", prompt)} className="flex gap-3 text-muted-foreground">
                       <span className="text-violet-400">•</span>
+                      <span className="italic">{prompt}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
+
+            {dailyData.daily_journal_prompts?.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-2xl border border-violet-500/20 bg-violet-500/10 p-6"
+                data-testid="daily-journal-prompts-card"
+              >
+                <h2 className="text-lg font-serif mb-4 flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-violet-300" />
+                  Ceremonial Journal Prompts
+                </h2>
+                <ul className="space-y-3">
+                  {dailyData.daily_journal_prompts.map((prompt) => (
+                    <li key={stableDailyKey("daily-journal", prompt)} className="flex gap-3 text-muted-foreground">
+                      <span className="text-violet-300">✦</span>
                       <span className="italic">{prompt}</span>
                     </li>
                   ))}
@@ -316,3 +510,12 @@ export default function DailySacredPractice({ user, api: userApi }) {
     </div>
   );
 }
+
+const firstLine = (value) => {
+  if (Array.isArray(value)) {
+    const found = value.find((item) => String(item || "").trim());
+    return found ? String(found) : "Ritual guidance available in this transmission.";
+  }
+  const text = String(value || "").trim();
+  return text || "Ritual guidance available in this transmission.";
+};
