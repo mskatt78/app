@@ -7337,6 +7337,66 @@ backend:
         agent: "testing"
         comment: "✅ DASHBOARD DAILY AUTH PROTECTION VERIFIED (2026-06-23): GET /api/dashboard/daily endpoint tested without authentication. Correctly returns 401 Unauthorized. Auth protection working as expected. Endpoint properly gated for authenticated users only. No security issues detected."
 
+  - task: "Healing Portals API - GET /api/healing-portals"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ HEALING PORTALS API VERIFIED (2026-06-24): GET /api/healing-portals endpoint tested successfully. Returns 200 OK with exactly 5 portals. Portal IDs: portal-heart-healing, portal-womb-healing, portal-shadow-integration, portal-ancestral-healing, portal-trauma-release. All portals include required fields: id, name, portal_type, element, description, duration_minutes, is_premium, alchemy_teachings[], rituals[], ceremonies[], integration_practices[]. All portals are premium locked (is_premium=true). Content integrity enrichment present. No issues detected."
+
+  - task: "Healing Portals API - GET /api/healing-portals?portal_type=womb"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ HEALING PORTALS FILTER BY TYPE VERIFIED (2026-06-24): GET /api/healing-portals?portal_type=womb endpoint tested successfully. Returns 200 OK with exactly 1 portal. Portal ID: portal-womb-healing, portal_type: womb. Filter parameter working correctly. All required fields present. No issues detected."
+
+  - task: "Healing Portals API - GET /api/healing-portals/{id}"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ HEALING PORTALS GET BY ID VERIFIED (2026-06-24): GET /api/healing-portals/portal-womb-healing and GET /api/healing-portals/portal-shadow-integration endpoints tested successfully. Both return 200 OK with correct portal data. portal-womb-healing: id matches, name='Womb Healing Portal', portal_type='womb', element='Water', duration_minutes=27. portal-shadow-integration: id matches, name='Shadow Integration Portal', portal_type='shadow', element='Spirit', duration_minutes=30. All required fields present including alchemy_teachings, rituals, ceremonies, integration_practices arrays. No issues detected."
+
+  - task: "Healing Portals API - GET /api/healing-portals/nonexistent-id (404 handling)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ HEALING PORTALS 404 ERROR HANDLING VERIFIED (2026-06-24): GET /api/healing-portals/nonexistent-id endpoint tested successfully. Returns 404 Not Found with error message 'Healing portal not found'. Error handling working correctly. No issues detected."
+
+  - task: "Healing Portals API - Portal object schema validation"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ HEALING PORTALS SCHEMA VALIDATION COMPLETE (2026-06-24): All portal objects validated for required fields. Each portal includes: id ✓, name ✓, portal_type ✓, element ✓, description ✓, duration_minutes ✓, is_premium ✓, alchemy_teachings[] (list with content) ✓, rituals[] (list with content) ✓, ceremonies[] (list with content) ✓, integration_practices[] (list with content) ✓. Additional fields verified: tagline, intensity, focus_tags, opening_invocation, source_references, content_integrity. All 21 test cases passed. Schema validation complete. No issues detected."
+
 agent_communication:
   - agent: "testing"
     message: |
@@ -7886,12 +7946,141 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Healing Portals feature validation"
+    - "Healing Portals backend API validation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      Healing Portals Backend API Validation (2026-06-24):
+      
+      VERIFICATION REQUEST: Validate Healing Portals backend APIs
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST RESULTS SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ ALL BACKEND API TESTS PASSED (21/21)
+      
+      Test Suite: /app/backend/tests/test_healing_portals.py
+      Execution Time: 2.59 seconds
+      
+      CORE ENDPOINT TESTS:
+      1. ✅ GET /api/healing-portals returns 200
+      2. ✅ GET /api/healing-portals returns exactly 5 portals
+      3. ✅ GET /api/healing-portals?portal_type=womb returns only womb portal
+      4. ✅ GET /api/healing-portals/{id} for portal-womb-healing returns 200 and correct data
+      5. ✅ GET /api/healing-portals/{id} for portal-shadow-integration returns 200 and correct data
+      6. ✅ GET /api/healing-portals/nonexistent-id returns 404
+      
+      SCHEMA VALIDATION TESTS:
+      7. ✅ All portals have required fields (id, name, portal_type, element, description, duration_minutes, is_premium)
+      8. ✅ All portals have alchemy_teachings[] array with content
+      9. ✅ All portals have rituals[] array with content
+      10. ✅ All portals have ceremonies[] array with content
+      11. ✅ All portals have integration_practices[] array with content
+      12. ✅ All portals have content_integrity enrichment
+      
+      FILTER TESTS:
+      13. ✅ Filter by portal_type=womb works correctly
+      14. ✅ Filter by portal_type=shadow works correctly
+      15. ✅ Filter by portal_type=heart works correctly
+      16. ✅ Filter by portal_type=ancestral works correctly
+      17. ✅ Filter by portal_type=trauma works correctly
+      
+      ADDITIONAL VALIDATION TESTS:
+      18. ✅ All portals are premium locked (is_premium=true)
+      19. ✅ All expected portal types present (womb, shadow, heart, ancestral, trauma)
+      20. ✅ Trauma portal has safety_notes field
+      21. ✅ Portals have opening_invocation field
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      DETAILED VERIFICATION
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      1. GET /api/healing-portals
+         Status: 200 OK ✓
+         Portal Count: 5 ✓
+         Portal IDs: 
+           - portal-heart-healing ✓
+           - portal-womb-healing ✓
+           - portal-shadow-integration ✓
+           - portal-ancestral-healing ✓
+           - portal-trauma-release ✓
+      
+      2. GET /api/healing-portals?portal_type=womb
+         Status: 200 OK ✓
+         Result Count: 1 ✓
+         Portal ID: portal-womb-healing ✓
+         Portal Type: womb ✓
+      
+      3. GET /api/healing-portals/portal-womb-healing
+         Status: 200 OK ✓
+         ID: portal-womb-healing ✓
+         Name: Womb Healing Portal ✓
+         Portal Type: womb ✓
+         Element: Water ✓
+         Duration: 27 minutes ✓
+         Is Premium: true ✓
+      
+      4. GET /api/healing-portals/portal-shadow-integration
+         Status: 200 OK ✓
+         ID: portal-shadow-integration ✓
+         Name: Shadow Integration Portal ✓
+         Portal Type: shadow ✓
+         Element: Spirit ✓
+         Duration: 30 minutes ✓
+         Is Premium: true ✓
+      
+      5. GET /api/healing-portals/nonexistent-id
+         Status: 404 Not Found ✓
+         Error Message: "Healing portal not found" ✓
+      
+      6. Portal Object Schema Validation
+         Required Fields Present in All Portals:
+         - id ✓
+         - name ✓
+         - portal_type ✓
+         - element ✓
+         - description ✓
+         - duration_minutes ✓
+         - is_premium ✓
+         - alchemy_teachings[] (array with content) ✓
+         - rituals[] (array with content) ✓
+         - ceremonies[] (array with content) ✓
+         - integration_practices[] (array with content) ✓
+         
+         Additional Fields Verified:
+         - tagline ✓
+         - intensity ✓
+         - focus_tags ✓
+         - opening_invocation ✓
+         - source_references ✓
+         - content_integrity (enrichment) ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      CRITICAL FINDINGS
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ All 5 healing portal endpoints working correctly
+      ✅ All portals return 200 status code
+      ✅ Exactly 5 portals seeded in database
+      ✅ Filter by portal_type parameter working correctly for all types
+      ✅ Get by ID working correctly for all portal IDs
+      ✅ 404 error handling working correctly for nonexistent IDs
+      ✅ All required fields present in portal objects
+      ✅ All array fields (alchemy_teachings, rituals, ceremonies, integration_practices) contain content
+      ✅ All portals are premium locked
+      ✅ Content integrity enrichment applied to all portals
+      ✅ No 500 errors detected
+      ✅ No schema validation errors
+      
+      SUMMARY:
+      Healing Portals backend API validation PASSED. All 21 test cases executed successfully in 2.59 seconds. All endpoints (GET /api/healing-portals, GET /api/healing-portals?portal_type={type}, GET /api/healing-portals/{id}) working correctly. All 5 portals (womb, shadow, heart, ancestral, trauma) properly seeded with complete data. Schema validation confirms all required fields present including id, name, portal_type, element, description, duration_minutes, is_premium, and all content arrays (alchemy_teachings, rituals, ceremonies, integration_practices). Error handling working correctly (404 for nonexistent IDs). Content integrity enrichment applied. No issues detected. Backend APIs are production-ready.
+
   - agent: "testing"
     message: |
       Healing Portals Feature Validation (2026-06-23):
