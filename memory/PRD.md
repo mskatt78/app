@@ -1501,3 +1501,48 @@
 ### Deployment Note
 - Correction completed in preview and requires redeploy to apply in production.
 
+## Daily Guidance Deep Ceremonial Enrichment (Iteration 191) — 2026-06-23
+- User-approved direction implemented:
+  - Depth mode: **Very deep ceremonial**
+  - Structure: **Single unified daily flow**
+  - Included by default: **Sacred Ally + Angelic + Dragon/Astrology reflection**
+
+### Backend Delivered
+- `GET /api/daily-practice` enriched with:
+  - `daily_ally`, `daily_angel`, `dragon_astrology_reflection`
+  - `daily_journal_prompts`, `ceremonial_affirmation`
+  - `unified_daily_flow` (opening invocation, ceremony steps, dragon integration, closing benediction, journal prompt)
+- `GET /api/dashboard/daily` enriched for authenticated users with:
+  - deterministic daily selections (pose/mantra/breathwork/ally/angel)
+  - personalized/collective dragon reflection
+  - unified ceremonial flow payload and daily journaling prompts
+- Maintained Mongo serialization safety (`_id` excluded in all new reads).
+
+### Frontend Delivered
+- `DailySacredPractice.jsx` now renders immersive deep-guidance experience:
+  - unified ceremonial flow module
+  - Sacred Ally panel + Angelic panel
+  - Dragon/Astrology reflection module
+  - ceremonial journal prompts and refreshed focus flow
+- `dashboard/DailyGuidanceGrid.jsx` now includes new cards:
+  - Sacred Ally transmission
+  - Angelic alchemy seal
+  - Dragon/Astrology reflection
+- Added/verified `data-testid` markers for all newly added critical interactive sections.
+
+### Validation
+- Core testing agent report: `/app/test_reports/iteration_184.json`
+  - Backend: **100% (18/18)**
+  - Frontend: **100%**
+- Additional verification:
+  - Frontend specialist agent: PASS on enriched `/daily-practice` UI and interactions
+  - Backend deep-testing agent: PASS on auth + enriched schema contracts for `/api/daily-practice` and `/api/dashboard/daily`
+
+### Deployment Note
+- Changes are complete in preview. Redeploy to apply them on production.
+
+### Updated Priorities
+- **P0:** Monitor live production feedback on Daily Guidance completeness after redeploy.
+- **P1:** Begin premium monetization layer for deep guidance modules (locked ceremonial expansions).
+- **P2:** Add weekly alchemy synthesis generated from daily journal prompts and usage history.
+
