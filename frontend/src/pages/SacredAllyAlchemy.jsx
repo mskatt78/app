@@ -39,7 +39,7 @@ const ALLY_FALLBACK_DATA = [
       "My golden fire purifies and clarifies my path.",
       "I am safe to embody sovereign truth.",
     ],
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vietnamese_Dragon_gold.svg/960px-Vietnamese_Dragon_gold.svg.png",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/71/Serpiente_alquimica.jpg",
     diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
   },
   {
@@ -154,8 +154,8 @@ const ANGELIC_FALLBACK_DATA = [
 const VISUAL_OVERRIDES_BY_ID = {
   "ally-dragon-sovereign-flame": {
     name: "Sophia Dragon Alchemy · Sovereign Flame",
-    description: "Sophia dragon medicine awakens sovereign wisdom, sacred courage, and transmutation through conscious golden fire.",
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vietnamese_Dragon_gold.svg/960px-Vietnamese_Dragon_gold.svg.png",
+    description: "Sophia dragon medicine awakens sovereign wisdom, sacred courage, and transmutation through the Cosmic Womb of conscious golden fire.",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/71/Serpiente_alquimica.jpg",
     diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
     ceremonies: [
       "Sophia Flame Opening Ceremony: 9 breaths, vow invocation, and candle offering.",
@@ -163,8 +163,8 @@ const VISUAL_OVERRIDES_BY_ID = {
       "Night Integration Ceremony: gratitude, journal insight, and one aligned action for tomorrow.",
     ],
     source_references: [
-      "https://commons.wikimedia.org/wiki/File:Vietnamese_Dragon_gold.svg",
-      "https://en.wikipedia.org/wiki/Vietnamese_dragon",
+      "https://en.wikipedia.org/wiki/Ouroboros",
+      "https://commons.wikimedia.org/wiki/File:Serpiente_alquimica.jpg",
       "https://en.wikipedia.org/wiki/Sophia_(Gnosticism)",
     ],
   },
@@ -488,8 +488,16 @@ export default function SacredAllyAlchemy({ api }) {
   }, [api]);
 
   const filteredAllies = useMemo(() => {
-    if (allyFilter === "all") return allies;
-    return allies.filter((item) => String(item.category || "").toLowerCase() === allyFilter);
+    const items = allyFilter === "all"
+      ? allies
+      : allies.filter((item) => String(item.category || "").toLowerCase() === allyFilter);
+
+    const FEATURED_MAIN_DRAGON_ID = "ally-dragon-sovereign-flame";
+    return [...items].sort((a, b) => {
+      if (a?.id === FEATURED_MAIN_DRAGON_ID && b?.id !== FEATURED_MAIN_DRAGON_ID) return -1;
+      if (b?.id === FEATURED_MAIN_DRAGON_ID && a?.id !== FEATURED_MAIN_DRAGON_ID) return 1;
+      return String(a?.name || "").localeCompare(String(b?.name || ""));
+    });
   }, [allies, allyFilter]);
 
   const cards = tab === "allies" ? filteredAllies : angelic;

@@ -3830,26 +3830,26 @@ async def get_sacred_ally_daily_recommendation(payload: dict[str, Any]) -> dict[
 
     mood_weights = {
         "anxious": {"whale": 4, "dolphin": 3, "raphael": 3, "gabriel": 2},
-        "tired": {"dragon": 3, "michael": 3, "wolf": 2, "jaguar": 2},
+        "tired": {"dragon": 3, "michael": 3, "wolf": 2, "jaguar": 2, "sophia": 2},
         "sad": {"whale": 4, "raphael": 3, "fairy": 2, "gabriel": 2},
         "overwhelmed": {"metatron": 4, "whale": 3, "wolf": 2},
-        "focused": {"dragon": 3, "metatron": 3, "michael": 2},
-        "balanced": {"dolphin": 2, "fairy": 2, "dragon": 2, "metatron": 2},
+        "focused": {"dragon": 3, "metatron": 3, "michael": 2, "sophia": 2},
+        "balanced": {"dolphin": 2, "fairy": 2, "dragon": 2, "metatron": 2, "sophia": 2},
     }
 
     moon_weights = {
         "new": {"metatron": 3, "fairy": 2, "gabriel": 2},
-        "waxing": {"dragon": 3, "dolphin": 2, "michael": 2},
-        "full": {"whale": 4, "wolf": 2, "raphael": 2},
+        "waxing": {"dragon": 3, "dolphin": 2, "michael": 2, "sophia": 2},
+        "full": {"whale": 4, "wolf": 2, "raphael": 2, "sophia": 2},
         "waning": {"jaguar": 3, "metatron": 2, "michael": 2},
     }
 
     intention_weights = {
         "courage": {"dragon": 4, "michael": 3, "wolf": 2},
         "healing": {"whale": 3, "raphael": 4, "dolphin": 2},
-        "clarity": {"metatron": 4, "raven": 3, "gabriel": 2},
+        "clarity": {"metatron": 4, "raven": 3, "gabriel": 2, "sophia": 3},
         "joy": {"dolphin": 4, "fairy": 3, "gabriel": 2},
-        "protection": {"michael": 4, "dragon": 3, "jaguar": 2},
+        "protection": {"michael": 4, "dragon": 3, "jaguar": 2, "sophia": 2},
     }
 
     moon_key = ""
@@ -3885,6 +3885,10 @@ async def get_sacred_ally_daily_recommendation(payload: dict[str, Any]) -> dict[
         base += add_weight(mood_weights.get(mood))
         base += add_weight(moon_weights.get(moon_key))
         base += add_weight(intention_weights.get(intention))
+
+        entry_id = str(entry.get("id") or "")
+        if entry_id == "ally-dragon-sovereign-flame":
+            base += 3
 
         if str(entry.get("id") or "") in recent_ids:
             base -= 3
