@@ -182,6 +182,106 @@ const VISUAL_OVERRIDES_BY_ID = {
     diagram_image_url: "/diagrams/gabriel-communication-diagram.svg",
     source_references: ["https://en.wikipedia.org/wiki/Gabriel"],
   },
+  "ally-dragon-fire-phoenix-current": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/b/bf/St_Catherine%2C_St_George_and_the_Dragon_%28M%C3%A4staren_fr%C3%A5n_Kappenberg%29_-_Nationalmuseum_-_18337_%28brightened%29%2C_draken.png",
+    diagram_image_url: "/diagrams/dragon-fire-current-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Dragon"],
+  },
+  "ally-dragon-water-lunar-current": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png",
+    diagram_image_url: "/diagrams/dragon-water-current-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Chinese_dragon"],
+  },
+  "ally-dragon-air-feathered-current": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Quetzalc%C3%B3atl_como_la_serpiente_emplumada_y_el_dios_del_viento_Eh%C3%A9catl%2C_en_el_folio_19.jpg",
+    diagram_image_url: "/diagrams/dragon-air-current-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Quetzalcoatl"],
+  },
+  "ally-dragon-earth-root-current": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/f/f5/202306_Varanus_komodoensis.jpg",
+    diagram_image_url: "/diagrams/dragon-earth-current-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Komodo_dragon"],
+  },
+  "ally-dragon-spirit-aether-current": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/71/Serpiente_alquimica.jpg",
+    diagram_image_url: "/diagrams/dragon-spirit-current-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Ouroboros"],
+  },
+  "ally-sophia-wisdom-stream": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/4/47/Ecclesia_Gnostica_Holy_Sophia_Statue.png",
+    diagram_image_url: "/diagrams/sophia-wisdom-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Sophia_(Gnosticism)"],
+  },
+  "ally-ascended-master-st-germain": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/6/62/Count_of_St_Germain.jpg",
+    diagram_image_url: "/diagrams/st-germain-violet-flame-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Count_of_St._Germain"],
+  },
+  "ally-ascended-master-thoth": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Thoth.svg/500px-Thoth.svg.png",
+    diagram_image_url: "/diagrams/thoth-language-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Thoth"],
+  },
+  "ally-earth-oak-elder": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/a/af/Quercus_robur.jpg",
+    diagram_image_url: "/diagrams/oak-rootedness-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Quercus_robur"],
+  },
+  "ally-earth-honeybee-alliance": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/4/4d/Apis_mellifera_Western_honey_bee.jpg",
+    diagram_image_url: "/diagrams/honeybee-pollination-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Western_honey_bee"],
+  },
+  "ally-earth-mycelium-network": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/f/f6/Mushroom%27s_roots_%28myc%C3%A9lium%29.jpg",
+    diagram_image_url: "/diagrams/mycelium-network-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Mycelium"],
+  },
+  "ally-earth-redwood-guardian": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/0/03/US_199_Redwood_Highway.jpg",
+    diagram_image_url: "/diagrams/redwood-axis-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Sequoia_sempervirens"],
+  },
+  "ally-galactic-pleiades-harmonic": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Pleiades_large.jpg/3840px-Pleiades_large.jpg",
+    diagram_image_url: "/diagrams/pleiades-harmonic-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Pleiades"],
+  },
+  "ally-galactic-sirius-focus": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Canis_Major_constellation_map.svg/250px-Canis_Major_constellation_map.svg.png",
+    diagram_image_url: "/diagrams/sirius-focus-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Sirius"],
+  },
+  "ally-galactic-andromeda-perspective": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Andromeda_Galaxy_2025.png/3840px-Andromeda_Galaxy_2025.png",
+    diagram_image_url: "/diagrams/andromeda-perspective-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Andromeda_Galaxy"],
+  },
+  "ally-galactic-orion-creation-field": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg/3840px-Orion_Nebula_-_Hubble_2006_mosaic_18000.jpg",
+    diagram_image_url: "/diagrams/orion-creation-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Orion_Nebula"],
+  },
+  "angel-uriel-golden-wisdom": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/4/43/St_Uriel%2C_St_John%27s_Church%2C_Warminster%2C_Wiltshire.jpg",
+    diagram_image_url: "/diagrams/uriel-wisdom-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Uriel"],
+  },
+  "angel-zadkiel-mercy-violet": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Sanctus_Zadkiel.jpg",
+    diagram_image_url: "/diagrams/zadkiel-mercy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Zadkiel"],
+  },
+  "angel-chamuel-heart-peace": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Sanctus_Chamuel.jpg",
+    diagram_image_url: "/diagrams/chamuel-heart-peace-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Camael"],
+  },
+  "angel-jophiel-illumination": {
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/9/91/Sanctus_Jophiel.jpg",
+    diagram_image_url: "/diagrams/jophiel-illumination-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Jophiel"],
+  },
 };
 
 const withVisualOverrides = (items) =>

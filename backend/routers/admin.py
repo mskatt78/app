@@ -623,6 +623,7 @@ def _load_standard_seed_advanced_collections() -> dict[str, list[dict[str, Any]]
     from data.elemental_temples_data import ELEMENTAL_TEMPLES
     from data.water_practices_data import WATER_PRACTICES
     from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
+    from data.sacred_ally_alchemy_expansion import EXPANDED_SACRED_ALLY_ALCHEMY, EXPANDED_ANGELIC_ALCHEMY
 
     return {
         "somatic_practices": SOMATIC_PRACTICES,
@@ -642,8 +643,8 @@ def _load_standard_seed_advanced_collections() -> dict[str, list[dict[str, Any]]
         "masculine_embodiment": COMPLETE_MASCULINE_EMBODIMENT,
         "elemental_temples": ELEMENTAL_TEMPLES,
         "water_practices": WATER_PRACTICES,
-        "sacred_ally_alchemy": SACRED_ALLY_ALCHEMY,
-        "angelic_alchemy": ANGELIC_ALCHEMY,
+        "sacred_ally_alchemy": SACRED_ALLY_ALCHEMY + EXPANDED_SACRED_ALLY_ALCHEMY,
+        "angelic_alchemy": ANGELIC_ALCHEMY + EXPANDED_ANGELIC_ALCHEMY,
     }
 
 

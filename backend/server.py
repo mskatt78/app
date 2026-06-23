@@ -197,6 +197,7 @@ async def _seed_core_spiritual_content() -> None:
     from data.somatic_practices import SOMATIC_PRACTICES
     from data.yoga_poses import YOGA_POSES
     from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
+    from data.sacred_ally_alchemy_expansion import EXPANDED_SACRED_ALLY_ALCHEMY, EXPANDED_ANGELIC_ALCHEMY
     from data.sacred_ally_audio_journeys import SACRED_ALLY_AUDIO_JOURNEYS, SACRED_ALLY_PATHWAYS
 
     all_ancient_wisdom = ANCIENT_WISDOM + ANCIENT_WISDOM_EXTENDED + ANCIENT_WISDOM_FINAL + ANCIENT_WISDOM_AVALON
@@ -214,8 +215,10 @@ async def _seed_core_spiritual_content() -> None:
     await _refresh_collection("mindfulness_practices", MINDFULNESS_PRACTICES, f"mindfulness_practices refreshed — {len(MINDFULNESS_PRACTICES)} entries.")
     await _refresh_collection("yoga_poses", YOGA_POSES, f"yoga_poses refreshed — {len(YOGA_POSES)} entries.")
     await _refresh_collection("mudras", MUDRAS, f"mudras refreshed — {len(MUDRAS)} entries.")
-    await _refresh_collection("sacred_ally_alchemy", SACRED_ALLY_ALCHEMY, f"sacred_ally_alchemy refreshed — {len(SACRED_ALLY_ALCHEMY)} entries.")
-    await _refresh_collection("angelic_alchemy", ANGELIC_ALCHEMY, f"angelic_alchemy refreshed — {len(ANGELIC_ALCHEMY)} entries.")
+    ally_combined = SACRED_ALLY_ALCHEMY + EXPANDED_SACRED_ALLY_ALCHEMY
+    angelic_combined = ANGELIC_ALCHEMY + EXPANDED_ANGELIC_ALCHEMY
+    await _refresh_collection("sacred_ally_alchemy", ally_combined, f"sacred_ally_alchemy refreshed — {len(ally_combined)} entries.")
+    await _refresh_collection("angelic_alchemy", angelic_combined, f"angelic_alchemy refreshed — {len(angelic_combined)} entries.")
     await _refresh_collection("sacred_ally_audio_journeys", SACRED_ALLY_AUDIO_JOURNEYS, f"sacred_ally_audio_journeys refreshed — {len(SACRED_ALLY_AUDIO_JOURNEYS)} entries.")
     await _refresh_collection("sacred_ally_pathways", SACRED_ALLY_PATHWAYS, f"sacred_ally_pathways refreshed — {len(SACRED_ALLY_PATHWAYS)} entries.")
 
@@ -558,6 +561,7 @@ async def seed_all_content() -> None:
     from data.creative_processes_deep import CREATIVE_PROCESSES_DEEP
     from data.video_content import VIDEO_TUTORIALS
     from data.sacred_ally_alchemy_content import SACRED_ALLY_ALCHEMY, ANGELIC_ALCHEMY
+    from data.sacred_ally_alchemy_expansion import EXPANDED_SACRED_ALLY_ALCHEMY, EXPANDED_ANGELIC_ALCHEMY
     from data.sacred_ally_audio_journeys import SACRED_ALLY_AUDIO_JOURNEYS, SACRED_ALLY_PATHWAYS
 
     seed_config = SeedContentConfig(
@@ -585,8 +589,10 @@ async def seed_all_content() -> None:
     collections = _build_seed_content_collections(seed_config)
 
     await _seed_content_collections(collections)
-    await _refresh_collection("sacred_ally_alchemy", SACRED_ALLY_ALCHEMY, f"sacred_ally_alchemy refreshed — {len(SACRED_ALLY_ALCHEMY)} entries.")
-    await _refresh_collection("angelic_alchemy", ANGELIC_ALCHEMY, f"angelic_alchemy refreshed — {len(ANGELIC_ALCHEMY)} entries.")
+    ally_combined = SACRED_ALLY_ALCHEMY + EXPANDED_SACRED_ALLY_ALCHEMY
+    angelic_combined = ANGELIC_ALCHEMY + EXPANDED_ANGELIC_ALCHEMY
+    await _refresh_collection("sacred_ally_alchemy", ally_combined, f"sacred_ally_alchemy refreshed — {len(ally_combined)} entries.")
+    await _refresh_collection("angelic_alchemy", angelic_combined, f"angelic_alchemy refreshed — {len(angelic_combined)} entries.")
     await _refresh_collection("sacred_ally_audio_journeys", SACRED_ALLY_AUDIO_JOURNEYS, f"sacred_ally_audio_journeys refreshed — {len(SACRED_ALLY_AUDIO_JOURNEYS)} entries.")
     await _refresh_collection("sacred_ally_pathways", SACRED_ALLY_PATHWAYS, f"sacred_ally_pathways refreshed — {len(SACRED_ALLY_PATHWAYS)} entries.")
     await _seed_light_codes_document(LIGHT_CODES)
