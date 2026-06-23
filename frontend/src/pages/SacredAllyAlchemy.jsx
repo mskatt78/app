@@ -128,9 +128,9 @@ const ANGELIC_FALLBACK_DATA = [
 
 const VISUAL_OVERRIDES_BY_ID = {
   "ally-dragon-sovereign-flame": {
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/b/bf/St_Catherine%2C_St_George_and_the_Dragon_%28M%C3%A4staren_fr%C3%A5n_Kappenberg%29_-_Nationalmuseum_-_18337_%28brightened%29%2C_draken.png",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png",
     diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
-    source_references: ["https://en.wikipedia.org/wiki/Dragon"],
+    source_references: ["https://en.wikipedia.org/wiki/Chinese_dragon"],
   },
   "ally-fairy-aether-bloom": {
     image_url: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Falero_Luis_Ricardo_Lily_Fairy_1888.jpg",
@@ -183,9 +183,9 @@ const VISUAL_OVERRIDES_BY_ID = {
     source_references: ["https://en.wikipedia.org/wiki/Gabriel"],
   },
   "ally-dragon-fire-phoenix-current": {
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/b/bf/St_Catherine%2C_St_George_and_the_Dragon_%28M%C3%A4staren_fr%C3%A5n_Kappenberg%29_-_Nationalmuseum_-_18337_%28brightened%29%2C_draken.png",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png",
     diagram_image_url: "/diagrams/dragon-fire-current-diagram.svg",
-    source_references: ["https://en.wikipedia.org/wiki/Dragon"],
+    source_references: ["https://en.wikipedia.org/wiki/Chinese_dragon"],
   },
   "ally-dragon-water-lunar-current": {
     image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png",

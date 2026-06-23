@@ -28,11 +28,11 @@ SACRED_ALLY_ALCHEMY = [
             "My fire purifies; it does not consume my essence.",
             "I am safe to be fully powerful.",
         ],
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/b/bf/St_Catherine%2C_St_George_and_the_Dragon_%28M%C3%A4staren_fr%C3%A5n_Kappenberg%29_-_Nationalmuseum_-_18337_%28brightened%29%2C_draken.png",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png",
         "diagram_image_url": "/diagrams/dragon-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
-            "https://en.wikipedia.org/wiki/Dragon",
+            "https://en.wikipedia.org/wiki/Chinese_dragon",
             "https://en.wikipedia.org/wiki/Alchemy",
         ],
         "review_status": "reviewed",

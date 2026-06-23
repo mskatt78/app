@@ -7469,3 +7469,127 @@ agent_communication:
       
       RECOMMENDATION: Backend APIs are production-ready. No issues found.
 
+
+frontend:
+  - task: "Sacred Ally dragon image swap verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SacredAllyAlchemy.jsx, /app/backend/data/sacred_ally_alchemy_content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED (2026-06-23): Sacred Ally dragon image swap verified successfully. All 5 test requirements met: 1) Navigated to /sacred-ally-alchemy page ✓. 2) Clicked Dragon filter (data-testid='sacred-ally-filter-dragon') ✓. 3) Dragon card (ally-dragon-sovereign-flame) appears with CORRECT updated Wikimedia image URL: https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png ✓. 4) Clicked dragon card, modal opened with reference image section showing same Wikimedia URL, image is VISIBLE and LOADED (naturalWidth: 960px, not broken/blank) ✓. 5) Source link present and visible: https://en.wikipedia.org/wiki/Chinese_dragon ✓. Console check: No critical image-loading errors (only expected 401 auth errors and some ERR_ABORTED for background image requests after page interaction, but dragon image loaded successfully). All modal sections present: Alchemy Teachings, Rituals, Journal Prompts, Affirmations. Styling/layout intact. Dragon image swap from old St_Catherine painting to new Chinese dragon heraldry SVG VERIFIED and working correctly."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+
+test_plan:
+  current_focus:
+    - "Sacred Ally dragon image swap verification - COMPLETE"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Sacred Ally Dragon Image Swap Verification (2026-06-23):
+      
+      VERIFICATION REQUEST: Verify Sacred Ally dragon image swap to new Wikimedia URL
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/sacred-ally-alchemy
+      
+      ✅ ALL TESTS PASSED (5/5 requirements):
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 1: NAVIGATE TO /SACRED-ALLY-ALCHEMY ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Page loaded successfully ✓
+      - Page element found: [data-testid='sacred-ally-alchemy-page'] ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 2: CLICK DRAGON FILTER ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Dragon filter button found: [data-testid='sacred-ally-filter-dragon'] ✓
+      - Dragon filter clicked successfully ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 3: DRAGON CARD IMAGE VERIFICATION ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Dragon card found: [data-testid='sacred-ally-card-ally-dragon-sovereign-flame'] ✓
+      - Card image URL verification:
+        * Expected: https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png
+        * Actual: https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png
+        * ✅ MATCH - Image URL is CORRECT
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 4: MODAL REFERENCE IMAGE VERIFICATION ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Dragon card clicked ✓
+      - Modal opened: [data-testid='sacred-ally-detail-modal'] ✓
+      - Modal title: "Dragon Alchemy · Sovereign Flame" ✓
+      - Reference visuals section found: [data-testid='sacred-ally-reference-visuals'] ✓
+      - Reference image URL verification:
+        * Expected: https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png
+        * Actual: https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png
+        * ✅ MATCH - Reference image URL is CORRECT
+      - Image load verification:
+        * Image is VISIBLE: true ✓
+        * Image naturalWidth: 960px ✓
+        * ✅ Image is NOT broken/blank - loads correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 5: SOURCE LINK VERIFICATION ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Source integrity section found: [data-testid='sacred-ally-source-integrity'] ✓
+      - Source reference links found: 1 link ✓
+      - Link 1: https://en.wikipedia.org/wiki/Chinese_dragon
+        * ✅ Wikipedia reference link present and visible
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      CONSOLE & ERROR CHECK ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ No error elements found on page
+      ✅ No critical image-loading errors
+      ✅ Console shows only expected 401 auth errors (non-critical)
+      ✅ Some ERR_ABORTED for background image requests (non-critical, occurs after page interaction)
+      ✅ Dragon image loaded successfully before any ERR_ABORTED occurred
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      LAYOUT & STYLING VERIFICATION ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      All modal sections present and functional:
+      - Alchemy Teachings: [data-testid='sacred-ally-alchemy-teachings'] ✓
+      - Rituals: [data-testid='sacred-ally-rituals'] ✓
+      - Journal Prompts: [data-testid='sacred-ally-journal-prompts'] ✓
+      - Affirmations: [data-testid='sacred-ally-affirmations'] ✓
+      
+      Layout and styling remain intact - no visual regressions detected.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ Dragon filter works correctly
+      ✅ Dragon card displays with updated Wikimedia image URL (Chinese dragon heraldry SVG)
+      ✅ Image is not broken/blank - loads and displays correctly (960px width)
+      ✅ Modal opens with reference image showing same Wikimedia URL
+      ✅ Source link to Wikipedia Chinese dragon page is visible
+      ✅ No console image-loading errors (only expected auth errors)
+      ✅ Layout and styling intact
+      
+      Dragon image swap verification COMPLETE ✅
+      Image successfully updated from old St_Catherine dragon painting to new Chinese dragon heraldry SVG.
+      All requirements met - ready for production.
+
