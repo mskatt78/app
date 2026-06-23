@@ -7866,6 +7866,19 @@ agent_communication:
       SUMMARY:
       Sacred Ally dragon visual update verification PASSED. All 6 verification steps completed successfully. The newly generated custom golden Sophia dragon artwork (golden winged dragon around cosmic womb orb) is correctly displayed in both the card view and modal reference image. Visual override implementation working correctly. No UI regressions detected. All modal sections functional.
 
+frontend:
+  - task: "Healing Portals page loads successfully"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/HealingPortals.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ HEALING PORTALS FEATURE VALIDATION COMPLETE (2026-06-23): All 6 verification tests passed successfully. 1) Page loads: /healing-portals page loads with data-testid='healing-portals-page' ✓. 2) Portal cards: All 5 required portal cards found (portal-womb-healing, portal-shadow-integration, portal-heart-healing, portal-ancestral-healing, portal-trauma-release) ✓. 3) Preview lines: All portal cards have visible preview lines (healing-portal-alchemy-preview-*, healing-portal-ritual-preview-*, healing-portal-ceremony-preview-*) ✓. 4) Modal sections: All 4 required modal sections render (healing-portal-alchemy-section, healing-portal-rituals-section, healing-portal-ceremonies-section, healing-portal-integration-section) ✓. 5) Premium lock UI: Premium lock panel (healing-portal-premium-lock-panel) and upgrade button (healing-portal-upgrade-button) visible for unauthenticated user ✓. 6) Navigation access: Main menu has 'menu-healing-portals' link (visible) ✓, Top nav overlay has 'topnav-practice-item-healing-portals' link (visible) ✓, Navigation from top nav overlay to /healing-portals works correctly ✓. No regressions detected. All requirements met."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
@@ -7873,7 +7886,80 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Sacred Ally dragon visual update verification"
+    - "Healing Portals feature validation"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Healing Portals Feature Validation (2026-06-23):
+      
+      VERIFICATION REQUEST: Validate newly added Healing Portals feature end-to-end
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/healing-portals
+      
+      ✅ ALL TESTS PASSED (6/6):
+      
+      1. ✅ PAGE LOADS - PASSED
+         - /healing-portals page loads successfully
+         - Page element found with data-testid='healing-portals-page'
+         - Page title: "Healing Portals"
+         - Page subtitle: "Immersive ceremonial journeys for deep transformation"
+         - Premium banner visible: "Premium Portal Access: Womb · Shadow · Heart · Ancestral · Trauma"
+      
+      2. ✅ PORTAL CARDS EXIST - PASSED
+         - All 5 required portal cards found:
+           * portal-womb-healing ✓
+           * portal-shadow-integration ✓
+           * portal-heart-healing ✓
+           * portal-ancestral-healing ✓
+           * portal-trauma-release ✓
+         - Each card has data-testid='healing-portal-card-{portal_id}'
+         - All cards display correctly with portal type, premium badge, name, tagline
+      
+      3. ✅ PREVIEW LINES VISIBLE - PASSED
+         - All portal cards have visible preview lines:
+           * healing-portal-alchemy-preview-{portal_id} ✓
+           * healing-portal-ritual-preview-{portal_id} ✓
+           * healing-portal-ceremony-preview-{portal_id} ✓
+         - Preview lines display correctly with icons and text
+      
+      4. ✅ MODAL SECTIONS RENDER - PASSED
+         - Opened portal modal (Womb Healing Portal)
+         - Modal has data-testid='healing-portal-detail-modal'
+         - All 4 required sections found:
+           * healing-portal-alchemy-section ✓
+           * healing-portal-rituals-section ✓
+           * healing-portal-ceremonies-section ✓
+           * healing-portal-integration-section ✓
+         - Modal displays duration, intensity, and all content sections
+         - Close button works correctly
+      
+      5. ✅ PREMIUM LOCK UI - PASSED
+         - Premium lock panel visible (data-testid='healing-portal-premium-lock-panel')
+         - Upgrade button visible (data-testid='healing-portal-upgrade-button')
+         - Premium lock message: "This portal is part of Premium Membership."
+         - Sign In button also visible for unauthenticated users
+         - Premium lock UI appears correctly for unauthenticated user
+      
+      6. ✅ NAVIGATION ACCESS - PASSED
+         - Main menu (/menu):
+           * Link found with data-testid='menu-healing-portals' ✓
+           * Link is visible and clickable ✓
+         - Top nav overlay:
+           * Link found with data-testid='topnav-practice-item-healing-portals' ✓
+           * Link is visible with text "Healing Portals" ✓
+           * Clicking link navigates to /healing-portals successfully ✓
+      
+      CRITICAL FINDINGS:
+      ✅ Page loads successfully
+      ✅ All 5 required portal cards present and visible
+      ✅ All preview lines visible on cards
+      ✅ All 4 modal sections render correctly
+      ✅ Premium lock UI appears for unauthenticated users
+      ✅ Navigation links exist in both main menu and top nav overlay
+      ✅ No console errors or runtime crashes
+      
+      SUMMARY:
+      Healing Portals feature validation PASSED. All 6 verification tests completed successfully. The newly added Healing Portals feature is fully functional with all required portal cards (womb-healing, shadow-integration, heart-healing, ancestral-healing, trauma-release), preview lines (alchemy, ritual, ceremony), modal sections (alchemy, rituals, ceremonies, integration), premium lock UI (panel and upgrade button), and navigation access (main menu and top nav overlay). No regressions detected. Feature is production-ready.
