@@ -3,11 +3,11 @@
 SACRED_ALLY_ALCHEMY = [
     {
         "id": "ally-dragon-sovereign-flame",
-        "name": "Dragon Alchemy · Sovereign Flame",
+        "name": "Sophia Dragon Alchemy · Sovereign Flame",
         "ally_type": "dragon",
         "category": "dragon",
         "element": "fire",
-        "description": "Dragon medicine awakens sovereign leadership, sacred courage, and the alchemical fire that transmutes fear into purpose-led action.",
+        "description": "Sophia dragon medicine awakens sovereign wisdom, sacred courage, and the alchemical fire that transmutes fear into purpose-led action.",
         "alchemy_teachings": [
             "Power without heart creates domination; power with devotion creates benevolent leadership.",
             "Dragon fire is transmutation, not destruction — offer old identities to the flame consciously.",
@@ -17,6 +17,11 @@ SACRED_ALLY_ALCHEMY = [
             "Light a red or gold candle. On each exhale, release one limiting pattern into the flame.",
             "Place right hand on solar plexus, left on heart, and repeat your core vow three times.",
             "Complete with a grounding practice: feet on earth for 7 minutes.",
+        ],
+        "ceremonies": [
+            "Sophia Flame Opening Ceremony: 9 breaths, vow invocation, and candle offering.",
+            "Sovereign Boundary Ceremony: draw a golden circle around your body and state three truth-boundaries.",
+            "Night Integration Ceremony: gratitude, journal insight, and one aligned action for tomorrow.",
         ],
         "journal_prompts": [
             "Where am I surrendering my power out of habit?",
@@ -28,11 +33,13 @@ SACRED_ALLY_ALCHEMY = [
             "My fire purifies; it does not consume my essence.",
             "I am safe to be fully powerful.",
         ],
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png",
+        "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vietnamese_Dragon_gold.svg/960px-Vietnamese_Dragon_gold.svg.png",
         "diagram_image_url": "/diagrams/dragon-alchemy-diagram.svg",
         "source_type": "hybrid-curated",
         "source_references": [
-            "https://en.wikipedia.org/wiki/Chinese_dragon",
+            "https://commons.wikimedia.org/wiki/File:Vietnamese_Dragon_gold.svg",
+            "https://en.wikipedia.org/wiki/Vietnamese_dragon",
+            "https://en.wikipedia.org/wiki/Sophia_(Gnosticism)",
             "https://en.wikipedia.org/wiki/Alchemy",
         ],
         "review_status": "reviewed",

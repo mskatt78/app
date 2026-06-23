@@ -9,12 +9,37 @@ import GuidedAudioButton from "../components/GuidedAudioButton";
 const ALLY_FALLBACK_DATA = [
   {
     id: "ally-dragon-sovereign-flame",
-    name: "Dragon Alchemy · Sovereign Flame",
+    name: "Sophia Dragon Alchemy · Sovereign Flame",
     category: "dragon",
     ally_type: "dragon",
     element: "fire",
-    description: "Dragon medicine awakens sovereign leadership, sacred courage, and transmutation through conscious fire.",
-    image_url: "https://images.pexels.com/photos/3608541/pexels-photo-3608541.jpeg",
+    description: "Sophia dragon medicine awakens sovereign wisdom, sacred courage, and transmutation through conscious golden fire.",
+    alchemy_teachings: [
+      "Power with wisdom creates benevolent leadership.",
+      "Golden dragon fire transmutes fear into precise compassionate action.",
+      "Sovereignty is self-mastery anchored in truth and devotion.",
+    ],
+    rituals: [
+      "Light a gold candle and release one limiting story into the flame with breath.",
+      "Place right hand on solar plexus and left hand on heart while speaking your vow three times.",
+      "Complete with barefoot grounding for 7 minutes.",
+    ],
+    ceremonies: [
+      "Sophia Flame Opening Ceremony: 9 breaths, vow invocation, and candle offering.",
+      "Sovereign Boundary Ceremony: draw a golden circle around your body and state three truth-boundaries.",
+      "Night Integration Ceremony: gratitude, journal insight, and one aligned action for tomorrow.",
+    ],
+    journal_prompts: [
+      "Where is wisdom asking me to lead with more courage?",
+      "What fear is ready to become sacred fuel?",
+      "What boundary protects my devotion and mission?",
+    ],
+    affirmations: [
+      "I lead with wisdom, courage, and compassion.",
+      "My golden fire purifies and clarifies my path.",
+      "I am safe to embody sovereign truth.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vietnamese_Dragon_gold.svg/960px-Vietnamese_Dragon_gold.svg.png",
     diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
   },
   {
@@ -128,9 +153,20 @@ const ANGELIC_FALLBACK_DATA = [
 
 const VISUAL_OVERRIDES_BY_ID = {
   "ally-dragon-sovereign-flame": {
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/960px-Chinese_dragon_asset_heraldry.svg.png",
+    name: "Sophia Dragon Alchemy · Sovereign Flame",
+    description: "Sophia dragon medicine awakens sovereign wisdom, sacred courage, and transmutation through conscious golden fire.",
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vietnamese_Dragon_gold.svg/960px-Vietnamese_Dragon_gold.svg.png",
     diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
-    source_references: ["https://en.wikipedia.org/wiki/Chinese_dragon"],
+    ceremonies: [
+      "Sophia Flame Opening Ceremony: 9 breaths, vow invocation, and candle offering.",
+      "Sovereign Boundary Ceremony: draw a golden circle around your body and state three truth-boundaries.",
+      "Night Integration Ceremony: gratitude, journal insight, and one aligned action for tomorrow.",
+    ],
+    source_references: [
+      "https://commons.wikimedia.org/wiki/File:Vietnamese_Dragon_gold.svg",
+      "https://en.wikipedia.org/wiki/Vietnamese_dragon",
+      "https://en.wikipedia.org/wiki/Sophia_(Gnosticism)",
+    ],
   },
   "ally-fairy-aether-bloom": {
     image_url: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Falero_Luis_Ricardo_Lily_Fairy_1888.jpg",
@@ -284,11 +320,58 @@ const VISUAL_OVERRIDES_BY_ID = {
   },
 };
 
+const WITH_DEFAULT_FIELDS = [
+  "alchemy_teachings",
+  "rituals",
+  "ceremonies",
+  "journal_prompts",
+  "affirmations",
+];
+
+const FALLBACK_BY_ID = Object.fromEntries((ALLY_FALLBACK_DATA || []).map((item) => [item.id, item]));
+
 const withVisualOverrides = (items) =>
-  (items || []).map((item) => ({
-    ...item,
-    ...((item && VISUAL_OVERRIDES_BY_ID[item.id]) || {}),
-  }));
+  (items || []).map((item) => {
+    const fallback = (item && FALLBACK_BY_ID[item.id]) || {};
+    const merged = {
+      ...fallback,
+      ...item,
+      ...((item && VISUAL_OVERRIDES_BY_ID[item.id]) || {}),
+    };
+
+    WITH_DEFAULT_FIELDS.forEach((field) => {
+      if (!Array.isArray(merged[field]) || merged[field].length === 0) {
+        const fallbackValue = fallback[field];
+        if (Array.isArray(fallbackValue) && fallbackValue.length > 0) {
+          merged[field] = fallbackValue;
+        }
+      }
+    });
+
+    return merged;
+  });
+
+const firstLine = (value, fallback = "") => {
+  if (Array.isArray(value)) {
+    const found = value.find((item) => String(item || "").trim());
+    return found ? String(found).trim() : fallback;
+  }
+  const text = String(value || "").trim();
+  return text || fallback;
+};
+
+const deriveCeremonies = (item) => {
+  if (Array.isArray(item?.ceremonies) && item.ceremonies.length > 0) {
+    return item.ceremonies;
+  }
+  const ritualLines = Array.isArray(item?.practical_rituals)
+    ? item.practical_rituals
+    : Array.isArray(item?.rituals)
+      ? item.rituals
+      : [];
+
+  return ritualLines.slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+};
 
 const TABS = [
   { id: "allies", label: "Sacred Ally Alchemy", icon: Flame },
@@ -523,7 +606,12 @@ export default function SacredAllyAlchemy({ api }) {
                 data-testid={`sacred-ally-card-${item.id}`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                  <img
+                    src={item.image_url}
+                    alt={item.name}
+                    className={`w-full h-full ${item.id === "ally-dragon-sovereign-flame" ? "object-contain bg-black/35" : "object-cover"}`}
+                    data-testid={`sacred-ally-card-image-${item.id}`}
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <p className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded-full border border-white/20 bg-black/40 text-white/85" data-testid={`sacred-ally-card-category-${item.id}`}>
                     {item.category || item.ally_type || item.angelic_order}
@@ -535,6 +623,17 @@ export default function SacredAllyAlchemy({ api }) {
                   <p className="text-xs text-muted-foreground line-clamp-3" data-testid={`sacred-ally-card-description-${item.id}`}>
                     {item.description}
                   </p>
+                  <div className="space-y-1.5" data-testid={`sacred-ally-card-practice-preview-${item.id}`}>
+                    <p className="text-[11px] text-amber-200/90 line-clamp-1" data-testid={`sacred-ally-card-alchemy-preview-${item.id}`}>
+                      ✦ Alchemy: {firstLine(item.alchemy_teachings, "Wisdom-led transmutation and sovereign embodiment.")}
+                    </p>
+                    <p className="text-[11px] text-cyan-200/90 line-clamp-1" data-testid={`sacred-ally-card-ritual-preview-${item.id}`}>
+                      🔥 Ritual: {firstLine(item.practical_rituals || item.rituals, "Opening breath ritual and grounding integration.")}
+                    </p>
+                    <p className="text-[11px] text-fuchsia-200/90 line-clamp-1" data-testid={`sacred-ally-card-ceremony-preview-${item.id}`}>
+                      🜂 Ceremony: {firstLine(deriveCeremonies(item), "Invoke, embody, and seal your daily practice.")}
+                    </p>
+                  </div>
                 </div>
               </button>
             ))}
@@ -696,6 +795,7 @@ export default function SacredAllyAlchemy({ api }) {
                 <p className="text-sm text-muted-foreground" data-testid="sacred-ally-modal-description">{selected.description}</p>
 
                 <SectionList title="Alchemy Teachings" icon={Sparkles} items={selected.alchemy_teachings} testId="sacred-ally-alchemy-teachings" />
+                <SectionList title="Ceremonies" icon={Flame} items={deriveCeremonies(selected)} testId="sacred-ally-ceremonies" />
 
                 {selectedJourney && (
                   <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-guided-journey-card">

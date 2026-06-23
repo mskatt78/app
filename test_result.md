@@ -7593,3 +7593,132 @@ agent_communication:
       Image successfully updated from old St_Catherine dragon painting to new Chinese dragon heraldry SVG.
       All requirements met - ready for production.
 
+  - task: "Sacred Ally Sophia dragon and visible ceremonies verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SacredAllyAlchemy.jsx, /app/backend/data/sacred_ally_alchemy_content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED (2026-06-23): Sacred Ally Sophia dragon and ceremonies verification completed successfully. All 14 test requirements met: 1) Navigated to /sacred-ally-alchemy page ✓. 2) Clicked Dragon filter (data-testid='sacred-ally-filter-dragon') ✓. 3) Card title EXACTLY matches 'Sophia Dragon Alchemy · Sovereign Flame' ✓. 4) Card preview shows ALL THREE LINES visible: Alchemy preview ('✦ Alchemy: Power without heart creates domination...') ✓, Ritual preview ('🔥 Ritual: Light a red or gold candle...') ✓, Ceremony preview ('🜂 Ceremony: Sophia Flame Opening Ceremony...') ✓. 5) Clicked dragon card, modal opened successfully ✓. 6) Modal contains Ceremonies section (data-testid='sacred-ally-ceremonies') with 3 ceremony list items: 'Sophia Flame Opening Ceremony: 9 breaths, vow invocation, and candle offering', 'Sovereign Boundary Ceremony: draw a golden circle around your body and state three truth-boundaries', 'Night Integration Ceremony: gratitude, journal insight, and one aligned action for tomorrow' ✓. 7) All existing sections still present: Alchemy Teachings ✓, Rituals ✓, Journal Prompts ✓, Affirmations ✓. 8) Reference image loaded correctly (naturalWidth: 960px, visible and not broken) ✓. 9) No console errors or error elements on page ✓. Screenshot captured showing modal with all sections beautifully rendered. No UI regressions detected. All requirements from review request verified and working correctly."
+
+test_plan:
+  current_focus:
+    - "Sacred Ally Sophia dragon and visible ceremonies verification - COMPLETE"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Sacred Ally Sophia Dragon & Ceremonies Verification (2026-06-23):
+      
+      VERIFICATION REQUEST: Test Sacred Ally Alchemy updates for Sophia dragon and visible ceremonies
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/sacred-ally-alchemy
+      
+      ✅ ALL TESTS PASSED (14/14 requirements):
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 1: NAVIGATE TO /SACRED-ALLY-ALCHEMY ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Page loaded successfully ✓
+      - Page element found: [data-testid='sacred-ally-alchemy-page'] ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 2: CLICK DRAGON FILTER ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Dragon filter button found: [data-testid='sacred-ally-filter-dragon'] ✓
+      - Dragon filter clicked successfully ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 3: CARD TITLE EXACT MATCH ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Card title element found: [data-testid='sacred-ally-card-title-ally-dragon-sovereign-flame'] ✓
+      - Expected title: 'Sophia Dragon Alchemy · Sovereign Flame'
+      - Actual title: 'Sophia Dragon Alchemy · Sovereign Flame'
+      - ✅ EXACT MATCH - Card title is correct
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 4: CARD PREVIEW THREE LINES VISIBLE ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Alchemy preview found: [data-testid='sacred-ally-card-alchemy-preview-ally-dragon-sovereign-flame'] ✓
+        * Text: '✦ Alchemy: Power without heart creates domination; power with devotion creates b...'
+      
+      - Ritual preview found: [data-testid='sacred-ally-card-ritual-preview-ally-dragon-sovereign-flame'] ✓
+        * Text: '🔥 Ritual: Light a red or gold candle. On each exhale, release one limiting patte...'
+      
+      - Ceremony preview found: [data-testid='sacred-ally-card-ceremony-preview-ally-dragon-sovereign-flame'] ✓
+        * Text: '🜂 Ceremony: Sophia Flame Opening Ceremony: 9 breaths, vow invocation, and candle...'
+      
+      ✅ ALL THREE PREVIEW LINES VISIBLE ON CARD
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 5: MODAL OPENS SUCCESSFULLY ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Dragon card clicked ✓
+      - Modal opened: [data-testid='sacred-ally-detail-modal'] ✓
+      - Modal title: 'Sophia Dragon Alchemy · Sovereign Flame' ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 6: MODAL CEREMONIES SECTION ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Ceremonies section found: [data-testid='sacred-ally-ceremonies'] ✓
+      - Ceremonies section has 3 list items ✓
+      - Ceremony 1: Sophia Flame Opening Ceremony: 9 breaths, vow invocation, and candle offering.
+      - Ceremony 2: Sovereign Boundary Ceremony: draw a golden circle around your body and state three truth-boundaries.
+      - Ceremony 3: Night Integration Ceremony: gratitude, journal insight, and one aligned action for tomorrow.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 7: EXISTING MODAL SECTIONS STILL PRESENT ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Alchemy Teachings section: [data-testid='sacred-ally-alchemy-teachings'] ✓
+      - Rituals section: [data-testid='sacred-ally-rituals'] ✓
+      - Journal Prompts section: [data-testid='sacred-ally-journal-prompts'] ✓
+      - Affirmations section: [data-testid='sacred-ally-affirmations'] ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 8: REFERENCE IMAGE VERIFICATION ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      - Reference visuals section found: [data-testid='sacred-ally-reference-visuals'] ✓
+      - Reference image URL: https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Vietnamese_Dragon_gold.svg/960px-Vietnamese_Dragon_gold.svg.png
+      - Image is VISIBLE: true ✓
+      - Image naturalWidth: 960px ✓
+      - ✅ Image is NOT broken/blank - loads correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST 9: CONSOLE & ERROR CHECK ✅ PASSED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ No error elements found on page
+      ✅ No console errors detected
+      ✅ No UI regressions
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      SUMMARY
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ Dragon filter works correctly
+      ✅ Card title is EXACTLY 'Sophia Dragon Alchemy · Sovereign Flame'
+      ✅ Card preview shows ALL THREE LINES (alchemy, ritual, ceremony)
+      ✅ Modal opens successfully
+      ✅ Ceremonies section present with 3 ceremony items
+      ✅ All existing sections still present (Alchemy Teachings, Rituals, Journal Prompts, Affirmations)
+      ✅ Reference image loaded correctly (960px width, visible, not broken)
+      ✅ No console errors or UI regressions
+      
+      Sacred Ally Sophia dragon and ceremonies verification COMPLETE ✅
+      All requirements from review request verified and working correctly.
+      Screenshot saved: sacred-ally-sophia-dragon-modal.png
+

@@ -3,7 +3,7 @@
 SACRED_ALLY_AUDIO_JOURNEYS = [
     {
         "id": "journey-dragon-fire-initiation",
-        "title": "Dragon Fire Initiation",
+        "title": "Sophia Dragon Fire Initiation",
         "ally_id": "ally-dragon-sovereign-flame",
         "category": "ally",
         "duration_minutes": 12,
@@ -67,7 +67,7 @@ SACRED_ALLY_AUDIO_JOURNEYS = [
 SACRED_ALLY_PATHWAYS = [
     {
         "id": "pathway-dragon-21",
-        "title": "Dragon Sovereignty Path",
+        "title": "Sophia Dragon Sovereignty Path",
         "ally_id": "ally-dragon-sovereign-flame",
         "level": "Initiate",
         "days": 21,
