@@ -7722,3 +7722,158 @@ agent_communication:
       All requirements from review request verified and working correctly.
       Screenshot saved: sacred-ally-sophia-dragon-modal.png
 
+
+
+  - task: "Sacred Ally dragon visual update verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SacredAllyAlchemy.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ SACRED ALLY DRAGON VISUAL UPDATE VERIFICATION PASSED (2026-06-23):
+          
+          Comprehensive verification of Sophia Dragon Alchemy visual update completed successfully.
+          Test URL: https://breathwork-sanctuary.preview.emergentagent.com/sacred-ally-alchemy
+          
+          ═══════════════════════════════════════════════════════════════════════════════
+          TEST RESULTS (6/6 PASSED)
+          ═══════════════════════════════════════════════════════════════════════════════
+          
+          1. ✅ DRAGON FILTER - PASSED
+             - Dragon filter button (data-testid="sacred-ally-filter-dragon") clicked successfully
+             - Filter is active (amber styling detected)
+             - First card correctly sorted to ally-dragon-sovereign-flame
+          
+          2. ✅ MAIN CARD TITLE - PASSED
+             - Card title: "Sophia Dragon Alchemy · Sovereign Flame" ✓
+             - Matches expected title exactly
+          
+          3. ✅ CARD IMAGE (NEW CUSTOM DRAGON) - PASSED
+             - Card image URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/212855693ad33b5cc2d9428fc7c4f110428011f892af99f0e690eeecd787374d.png
+             - ✓ NEW custom golden Sophia dragon artwork confirmed
+             - ✓ NOT using old Chinese dragon artwork (https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Chinese_dragon_asset_heraldry.svg/...)
+             - ✓ NOT using old alchemical serpent artwork (Serpiente_alquimica.jpg)
+          
+          4. ✅ MODAL OPENED - PASSED
+             - Modal opened successfully when clicking dragon card
+             - Modal title: "Sophia Dragon Alchemy · Sovereign Flame" ✓
+          
+          5. ✅ REFERENCE IMAGE IN MODAL (NEW CUSTOM DRAGON) - PASSED
+             - Reference visuals section found with 2 images (reference image + diagram)
+             - Reference image URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/212855693ad33b5cc2d9428fc7c4f110428011f892af99f0e690eeecd787374d.png
+             - ✓ CONFIRMED: Reference image is the NEW custom golden Sophia dragon (golden winged dragon around cosmic womb orb)
+             - ✓ CONFIRMED: NOT using old Chinese dragon artwork
+             - Visual override working correctly (VISUAL_OVERRIDES_BY_ID["ally-dragon-sovereign-flame"])
+          
+          6. ✅ NO UI REGRESSIONS - PASSED
+             - All modal sections present and functional:
+               ✓ Description section
+               ✓ Alchemy Teachings section
+               ✓ Ceremonies section
+               ✓ Rituals section
+               ✓ Journal Prompts section
+               ✓ Affirmations section
+               ✓ Source Integrity section
+             - Modal close button works correctly
+             - Page remains functional after modal close
+             - No missing sections detected
+          
+          ═══════════════════════════════════════════════════════════════════════════════
+          VISUAL VERIFICATION
+          ═══════════════════════════════════════════════════════════════════════════════
+          
+          Screenshots captured:
+          - dragon-card-view.png: Shows dragon filter active and Sophia Dragon card with NEW custom golden dragon artwork
+          - dragon-modal-view.png: Shows modal with NEW custom golden dragon in reference image section
+          
+          The custom golden Sophia dragon artwork is clearly visible in both screenshots:
+          - Beautiful golden winged dragon wrapped around a cosmic womb orb
+          - Dark mystical background with ornate archways
+          - Distinct from old Chinese dragon heraldry artwork
+          - Matches the description: "golden winged dragon around cosmic womb orb"
+          
+          ═══════════════════════════════════════════════════════════════════════════════
+          SUMMARY
+          ═══════════════════════════════════════════════════════════════════════════════
+          
+          ✅ Dragon filter works correctly
+          ✅ Main card title is "Sophia Dragon Alchemy · Sovereign Flame"
+          ✅ Card image is NEW custom golden Sophia dragon
+          ✅ Modal opens successfully
+          ✅ Reference image in modal is NEW custom golden Sophia dragon (NOT Chinese dragon artwork)
+          ✅ No major UI regressions detected
+          
+          Sacred Ally dragon visual update verification COMPLETE ✅
+          All 6 verification steps passed successfully.
+          The newly generated custom golden Sophia dragon artwork is correctly displayed in both the card view and modal reference image.
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Sacred Ally Dragon Visual Update Verification (2026-06-23):
+      
+      VERIFICATION REQUEST: Verify Sacred Ally dragon visual update
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/sacred-ally-alchemy
+      
+      ✅ ALL TESTS PASSED (6/6):
+      
+      1. ✅ DRAGON FILTER - PASSED
+         - Clicked Dragon filter button (data-testid="sacred-ally-filter-dragon")
+         - Filter is active (amber styling)
+         - First card is ally-dragon-sovereign-flame (correct sorting)
+      
+      2. ✅ MAIN CARD TITLE - PASSED
+         - Card title: "Sophia Dragon Alchemy · Sovereign Flame" ✓
+      
+      3. ✅ CARD IMAGE - PASSED
+         - NEW custom golden Sophia dragon artwork confirmed ✓
+         - URL: https://static.prod-images.emergentagent.com/.../212855693ad33b5cc2d9428fc7c4f110428011f892af99f0e690eeecd787374d.png
+         - NOT using old Chinese dragon artwork ✓
+      
+      4. ✅ MODAL OPENED - PASSED
+         - Modal opened successfully
+         - Modal title matches: "Sophia Dragon Alchemy · Sovereign Flame" ✓
+      
+      5. ✅ REFERENCE IMAGE IN MODAL - PASSED
+         - Reference image is NEW custom golden Sophia dragon ✓
+         - Golden winged dragon around cosmic womb orb (as described) ✓
+         - NOT using old Chinese dragon artwork ✓
+         - Visual override working correctly ✓
+      
+      6. ✅ NO UI REGRESSIONS - PASSED
+         - All modal sections present: Description, Alchemy Teachings, Ceremonies, Rituals, Journal Prompts, Affirmations, Source Integrity ✓
+         - Modal close works correctly ✓
+         - Page functional after modal close ✓
+      
+      CRITICAL FINDINGS:
+      ✅ Dragon filter functional
+      ✅ Main card title correct
+      ✅ Card image is NEW custom golden Sophia dragon
+      ✅ Modal reference image is NEW custom golden Sophia dragon (NOT Chinese dragon)
+      ✅ No UI regressions detected
+      
+      VISUAL CONFIRMATION:
+      Screenshots show the beautiful custom golden Sophia dragon artwork:
+      - Golden winged dragon wrapped around cosmic womb orb
+      - Dark mystical background with ornate archways
+      - Clearly distinct from old Chinese dragon heraldry
+      
+      SUMMARY:
+      Sacred Ally dragon visual update verification PASSED. All 6 verification steps completed successfully. The newly generated custom golden Sophia dragon artwork (golden winged dragon around cosmic womb orb) is correctly displayed in both the card view and modal reference image. Visual override implementation working correctly. No UI regressions detected. All modal sections functional.
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+
+test_plan:
+  current_focus:
+    - "Sacred Ally dragon visual update verification"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"

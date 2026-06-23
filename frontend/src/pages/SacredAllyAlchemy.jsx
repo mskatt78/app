@@ -155,7 +155,7 @@ const VISUAL_OVERRIDES_BY_ID = {
   "ally-dragon-sovereign-flame": {
     name: "Sophia Dragon Alchemy · Sovereign Flame",
     description: "Sophia dragon medicine awakens sovereign wisdom, sacred courage, and transmutation through the Cosmic Womb of conscious golden fire.",
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/71/Serpiente_alquimica.jpg",
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/212855693ad33b5cc2d9428fc7c4f110428011f892af99f0e690eeecd787374d.png",
     diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
     ceremonies: [
       "Sophia Flame Opening Ceremony: 9 breaths, vow invocation, and candle offering.",
@@ -163,9 +163,9 @@ const VISUAL_OVERRIDES_BY_ID = {
       "Night Integration Ceremony: gratitude, journal insight, and one aligned action for tomorrow.",
     ],
     source_references: [
-      "https://en.wikipedia.org/wiki/Ouroboros",
-      "https://commons.wikimedia.org/wiki/File:Serpiente_alquimica.jpg",
+      "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/212855693ad33b5cc2d9428fc7c4f110428011f892af99f0e690eeecd787374d.png",
       "https://en.wikipedia.org/wiki/Sophia_(Gnosticism)",
+      "https://en.wikipedia.org/wiki/Dragon",
     ],
   },
   "ally-fairy-aether-bloom": {
