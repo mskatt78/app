@@ -1866,6 +1866,75 @@
 - **P1:** Admin login fallback UX improved ✅ done.
 - **Next:** Add downloadable CSV template + inline row-level error export in admin panel.
 
+## Astrology Hemisphere Restore + Daily Guidance Tweak + Sister Circle Texture (Iteration 196) — 2026-06-24
+
+### User Requests Implemented
+- Astrology should use Southern Hemisphere behavior (with Northern option), restore original intent, and retain user preference.
+- Today’s guidance needed both practical and spiritual depth tweaks.
+- Sister Circle needed richer texture (sister love, crafting, ceremonies, rituals/prompts).
+
+### Delivered
+
+#### 1) Astrology Hemisphere Logic
+- `frontend/src/pages/AstrologyCalendar.jsx`
+  - Default hemisphere changed to **south**.
+  - Added hemisphere persistence in localStorage:
+    - `astrologyHemispherePreference`
+    - `astrologyTimezonePreference`
+  - Added geolocation-assisted hemisphere detection (with timezone fallback).
+  - Kept simple Northern/Southern toggle in Astrology page header as requested.
+
+#### 2) Today’s Guidance Tweak (Practical + Spiritual)
+- `backend/routers/user.py`
+  - Extended daily response with `guidance_tweak` object:
+    - `practical` array
+    - `spiritual` array
+  - Added same structure into fallback daily guidance path.
+  - Enriched unified daily flow with practical and spiritual focus layers.
+
+- `frontend/src/pages/dashboard/DailyGuidanceGrid.jsx`
+  - Added render panel for:
+    - Practical Focus
+    - Spiritual Focus
+  - Data-testids:
+    - `daily-guidance-tweak-panel`
+    - `daily-guidance-practical-focus`
+    - `daily-guidance-spiritual-focus`
+
+#### 3) Sister Circle Texture Expansion
+- `frontend/src/pages/rose-temple/roseTempleConstants.js`
+  - Added `sisterCircleTexture` content model.
+  - Pillars include:
+    - Sister Love Agreements
+    - Crafting Rituals
+    - Ceremony Templates
+    - Ritual Prompt Deck
+
+- `frontend/src/pages/rose-temple/RoseTempleMainSections.jsx`
+  - Added “Sister Circle Living Texture” section to page.
+  - Data-testids:
+    - `rose-temple-sister-circle-texture`
+    - `sister-circle-pillar-sister-love`
+    - `sister-circle-pillar-sacred-crafting`
+    - `sister-circle-pillar-ceremony-templates`
+    - `sister-circle-pillar-ritual-prompts`
+
+### Verification
+- Full test agent report: `/app/test_reports/iteration_196.json`
+  - Backend: **100% (13/13)**
+  - Frontend: **100%**
+- Backend deep check passed for:
+  - `/api/astrology/current`
+  - `/api/astrology/months`
+  - `/api/dashboard/daily`
+  - `/api/health`
+
+### Updated Priority Snapshot
+- **P1:** Astrology southern-first + north toggle + persistence ✅ done.
+- **P1:** Today’s Guidance practical/spiritual refinement ✅ done.
+- **P1:** Sister Circle texture expansion ✅ done.
+- **Next:** Add user-level “Guidance Tone” controls (practical-heavy / balanced / mystical-heavy) in settings.
+
 ## Requested Expansion: Astrology Hemisphere + Guidance + Sister Circle Texture (Planned Next) — 2026-06-24
 
 ### User-confirmed choices (captured)
