@@ -79,7 +79,7 @@ export const ShamanicPracticeModal = ({
                       <Clock className="w-5 h-5 text-indigo-400" />
                       <div>
                         <p className="text-sm font-medium">Duration</p>
-                        <p className="text-muted-foreground">{selectedPractice.duration_minutes || 30} minutes</p>
+                        <p className="text-muted-foreground">{resolveDurationMinutes(selectedPractice.duration_minutes, 30)} minutes</p>
                       </div>
                     </div>
 

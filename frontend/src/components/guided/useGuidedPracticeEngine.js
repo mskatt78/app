@@ -24,9 +24,14 @@ import { appLogger } from "../../utils/logger";
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const narrationPlan = useMemo(() => buildNarrationPlan(practice || {}, stepsOverride), [practice, stepsOverride]);
+  const defaultDurationMinutes = practice?.category === "shamanic" ? 30 : 20;
+  const resolvedDurationMinutes = resolveDurationMinutes(
+    practice?.duration_minutes ?? practice?.duration,
+    defaultDurationMinutes,
+  );
   const totalDuration = Math.max(
     MINIMUM_NARRATION_MINUTES * 60,
-    resolveDurationMinutes(practice?.duration_minutes, 20) * 60,
+    resolvedDurationMinutes * 60,
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(totalDuration);
@@ -102,11 +107,11 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       practiceId: practice.id || null,
       practiceName: practice.name || "Guided Practice",
       element: practice.element || "Spirit",
-      durationMinutes: resolveDurationMinutes(practice.duration_minutes, MINIMUM_NARRATION_MINUTES),
+      durationMinutes: resolvedDurationMinutes,
       sourceTexts,
       steps,
     };
-  }, [practice, stepsOverride]);
+  }, [practice, resolvedDurationMinutes, stepsOverride]);
 
   const antiRepetitionMode = useMemo(() => {
     if (!scriptExpansionContext) {
@@ -236,6 +241,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     stopToning();
     setIsPlaying(false);
     setTimeRemaining(totalDuration);
+    timeRemainingRef.current = totalDuration;
     setIsComplete(false);
     setTtsLoading(false);
     setTtsPlaying(false);
