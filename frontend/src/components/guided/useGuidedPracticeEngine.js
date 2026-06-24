@@ -13,7 +13,7 @@ import {
   flattenTextValue,
   buildNarrationPlan,
 } from "./guidedNarrationUtils";
-import { resolveDurationMinutes } from "../../utils/durationUtils";
+import { auditDurationAlignment, resolveDurationMinutes } from "../../utils/durationUtils";
 import {
   getGuidedNarrationMode,
   getEffectiveGuidedNarrationMode,
@@ -33,6 +33,16 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     MINIMUM_NARRATION_MINUTES * 60,
     resolvedDurationMinutes * 60,
   );
+
+  useEffect(() => {
+    if (!practice?.name) return;
+    auditDurationAlignment({
+      route: practice?.category || "guided-practice",
+      source: practice?.name,
+      displayMinutes: practice?.duration_minutes,
+      sessionMinutes: resolvedDurationMinutes,
+    });
+  }, [practice?.category, practice?.duration_minutes, practice?.name, resolvedDurationMinutes]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(totalDuration);
   const [isComplete, setIsComplete] = useState(false);

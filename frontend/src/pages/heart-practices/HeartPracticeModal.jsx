@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, X, Clock, Play } from "lucide-react";
 import { EmbodimentProtocolPanel } from "../../components/practice/EmbodimentProtocolPanel";
+import { formatDurationMinutesLabel } from "../../utils/durationUtils";
 
 const resolvePracticeModalData = (selectedPractice) => {
   const practiceSteps = selectedPractice.steps || selectedPractice.ceremony_steps || selectedPractice.meditation_steps || selectedPractice.journey_steps || selectedPractice.ritual_steps || selectedPractice.visualization_steps || [];
@@ -66,7 +67,7 @@ export const HeartPracticeModal = ({
                   <Clock className="w-5 h-5 text-pink-400" />
                   <div>
                     <p className="text-sm font-medium">Duration</p>
-                    <p className="text-muted-foreground">{selectedPractice.duration_minutes || 20} minutes</p>
+                    <p className="text-muted-foreground">{formatDurationMinutesLabel(selectedPractice.duration_minutes, 20)}</p>
                   </div>
                 </div>
 

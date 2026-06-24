@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronRight, Clock, Heart } from "lucide-react";
 import { resolveReviewedDate } from "./heartPracticeConfig";
+import { formatDurationMinutesLabel } from "../../utils/durationUtils";
 
 export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, setSelectedPractice }) => (
   <>
@@ -57,7 +58,7 @@ export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, s
               <div className="flex items-center justify-between">
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <Clock className="w-3 h-3" />
-                  {practice.duration_minutes || 20} min
+                  {formatDurationMinutesLabel(practice.duration_minutes, 20)}
                 </span>
                 <ChevronRight className={`w-4 h-4 ${colors.text} opacity-0 group-hover:opacity-100 transition-opacity`} />
               </div>

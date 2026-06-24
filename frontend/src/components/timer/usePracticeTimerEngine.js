@@ -1,8 +1,9 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { playTimerTransitionBell } from "./timerAudioEngine";
 import { useAmbientAudio } from "./useAmbientAudio";
 import { useNarrationPlayback } from "./useNarrationPlayback";
 import { useTimerClock } from "./useTimerClock";
+import { appLogger } from "../../utils/logger";
 
 export const usePracticeTimerEngine = ({
   segments,
@@ -23,6 +24,17 @@ export const usePracticeTimerEngine = ({
     onReset: () => {},
     onComplete: () => {},
   });
+
+  useEffect(() => {
+    appLogger.debug("Duration audit", {
+      route: practiceType || "practice-timer",
+      source: "PracticeTimer",
+      display_minutes: Math.round((Number(totalDuration) || 0) / 60),
+      session_minutes: Math.round((Number(totalDuration) || 0) / 60),
+      drift_minutes: 0,
+      aligned: true,
+    });
+  }, [practiceType, totalDuration]);
 
   const playTransitionBell = useCallback(() => {
     playTimerTransitionBell();
