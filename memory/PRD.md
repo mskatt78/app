@@ -1935,6 +1935,29 @@
 - **P1:** Sister Circle texture expansion ✅ done.
 - **Next:** Add user-level “Guidance Tone” controls (practical-heavy / balanced / mystical-heavy) in settings.
 
+## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
+
+### User-reported issue
+- Remove the words “Very Deep” from daily flow UI.
+- Fix duplicated/double sections appearing in Daily screen.
+
+### Fix implemented
+- Backend title updates:
+  - `backend/routers/user.py`: changed daily flow title to `Ceremonial Daily Flow` (removed “Very Deep”).
+  - `backend/routers/content.py`: aligned fallback/generated title to `Ceremonial Daily Flow`.
+- Frontend duplicate section fix:
+  - `frontend/src/pages/DailySacredPractice.jsx`
+  - Ally/Angel panels now render only when `unified_daily_flow` is absent:
+    - `!dailyData?.unified_daily_flow && renderAllyAngelPanels()`
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_197.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+- Verified outcomes:
+  - No “Very Deep” wording in daily flow title.
+  - No duplicate Ally/Angel section when unified flow exists.
+
 ## Requested Expansion: Astrology Hemisphere + Guidance + Sister Circle Texture (Planned Next) — 2026-06-24
 
 ### User-confirmed choices (captured)
