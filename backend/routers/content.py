@@ -203,6 +203,8 @@ MANTRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
     "ham sa": ["https://www.youtube.com/watch?v=303Dmd3WIl8"],
     "om gam ganapataye namaha": ["https://www.youtube.com/watch?v=oahB95PKbfA"],
     "ra ma da sa": ["https://www.youtube.com/watch?v=8IYzSbrI6h0"],
+    "aham brahmasmi": ["https://www.youtube.com/watch?v=Zz4fJJzoLHY"],
+    "om shanti shanti shanti": ["https://www.youtube.com/watch?v=Ql5vZGKe8KQ"],
 }
 
 MUDRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
@@ -216,6 +218,8 @@ MUDRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
     "shuni mudra": ["https://www.youtube.com/watch?v=oJJQ_eJthLk"],
     "surya mudra": ["https://www.youtube.com/watch?v=gA5ndKk1B68"],
     "prana mudra": ["https://www.youtube.com/watch?v=3ritYT9VnTM"],
+    "apana mudra": ["https://www.youtube.com/watch?v=8Zy5nJqKLHg"],
+    "chin mudra": ["https://www.youtube.com/watch?v=fRtOijVfhn4"],
 }
 
 YOGA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
