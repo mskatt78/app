@@ -3,6 +3,7 @@ import { Clock, Moon, Play, Sparkles, Star, X } from "lucide-react";
 import { Button } from "../ui/button";
 import GuidedAudioButton from "../GuidedAudioButton";
 import GuidedPracticeOverlay from "../GuidedPracticeOverlay";
+import { EmbodimentProtocolPanel } from "../practice/EmbodimentProtocolPanel";
 import PracticeTimer from "../PracticeTimer";
 import { difficultyColors, elementColors, elementIcons, stableElementPracticeKey } from "./elementalConfig";
 import { appLogger } from "../../utils/logger";
@@ -135,6 +136,12 @@ export const ElementalPracticeModal = ({
                         <p className="text-sm text-muted-foreground">{selectedPractice.caution}</p>
                       </div>
                     )}
+
+                    <EmbodimentProtocolPanel
+                      practiceName={selectedPractice.name}
+                      element={selectedPractice.element || "Earth"}
+                      testIdPrefix="elemental-practice-embodiment"
+                    />
                   </div>
                 </>
               ) : (

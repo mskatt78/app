@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Sparkles, Clock, Heart, Shield, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
+import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -213,6 +214,12 @@ export default function EnergyHealing() {
                     </ul>
                   </div>
                 )}
+
+                <EmbodimentProtocolPanel
+                  practiceName={selectedPractice.name}
+                  element={selectedPractice.element || selectedPractice.modality || "Spirit"}
+                  testIdPrefix="energy-healing-embodiment"
+                />
 
                 <Button variant="ghost" onClick={() => setSelectedPractice(null)} className="w-full mt-4">Close</Button>
               </div>

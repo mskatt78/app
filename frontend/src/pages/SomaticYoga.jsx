@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Sparkles, Clock, Heart, Leaf, ChevronDown, ChevronUp, Loader2, Activity, Feather, Moon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
+import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
 import { toast } from "sonner";
 import axios from "axios";
 
@@ -202,6 +203,12 @@ export default function SomaticYoga() {
                     </div>
                   </div>
                 )}
+
+                <EmbodimentProtocolPanel
+                  practiceName={selectedPractice.name}
+                  element={selectedPractice.element || "Earth"}
+                  testIdPrefix="somatic-yoga-embodiment"
+                />
 
                 <Button variant="ghost" onClick={() => setSelectedPractice(null)} className="w-full mt-4">Close</Button>
               </div>

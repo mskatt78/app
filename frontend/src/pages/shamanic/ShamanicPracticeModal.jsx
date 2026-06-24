@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Clock, Compass, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "../../components/ui/button";
+import { EmbodimentProtocolPanel } from "../../components/practice/EmbodimentProtocolPanel";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
 import PracticeTimer from "../../components/PracticeTimer";
 import { appLogger } from "../../utils/logger";
@@ -115,6 +116,12 @@ export const ShamanicPracticeModal = ({
                         <p className="text-sm italic text-muted-foreground">&ldquo;{selectedPractice.closing_prayer}&rdquo;</p>
                       </div>
                     )}
+
+                    <EmbodimentProtocolPanel
+                      practiceName={selectedPractice.name}
+                      element={selectedPractice.element || "Spirit"}
+                      testIdPrefix="shamanic-practice-embodiment"
+                    />
                   </div>
                 </>
               ) : (

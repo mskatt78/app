@@ -6,6 +6,7 @@ import {
   Play, X, Clock, Volume2, Star, Waves, Pause, Loader2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
@@ -641,6 +642,12 @@ const WaterPractices = ({ user, api }) => {
                     <p className="text-sm text-muted-foreground">{selectedPractice.caution}</p>
                   </div>
                 )}
+
+                <EmbodimentProtocolPanel
+                  practiceName={selectedPractice.name}
+                  element="Water"
+                  testIdPrefix="water-practice-embodiment"
+                />
 
                 {/* Guided Audio Button */}
                 {api && (

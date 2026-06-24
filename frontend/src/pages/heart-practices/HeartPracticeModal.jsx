@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, X, Clock, Play } from "lucide-react";
+import { EmbodimentProtocolPanel } from "../../components/practice/EmbodimentProtocolPanel";
 
 const resolvePracticeModalData = (selectedPractice) => {
   const practiceSteps = selectedPractice.steps || selectedPractice.ceremony_steps || selectedPractice.meditation_steps || selectedPractice.journey_steps || selectedPractice.ritual_steps || selectedPractice.visualization_steps || [];
@@ -104,6 +105,12 @@ export const HeartPracticeModal = ({
                     <p className="text-sm italic text-muted-foreground">&quot;{practiceAffirmation}&quot;</p>
                   </div>
                 )}
+
+                <EmbodimentProtocolPanel
+                  practiceName={selectedPractice.name}
+                  element={selectedPractice.element || "Water"}
+                  testIdPrefix="heart-practice-embodiment"
+                />
               </div>
             </>
           </div>

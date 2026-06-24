@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Clock, ChevronDown, ChevronUp, Flame, Loader2, Play, Share2, Volume2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import AddToJournal from "../../components/AddToJournal";
+import { EmbodimentProtocolPanel } from "../../components/practice/EmbodimentProtocolPanel";
 import { getChakraConfig, stableChakraKey } from "./chakraConfig";
 
 export const ChakraDetailModal = ({
@@ -183,6 +184,12 @@ export const ChakraDetailModal = ({
                   )}
                 </div>
               )}
+
+              <EmbodimentProtocolPanel
+                practiceName={selectedPractice.name}
+                element={selectedPractice.element || selectedPractice.chakra || "Spirit"}
+                testIdPrefix="chakra-practice-embodiment"
+              />
 
               {selectedPractice.benefits && (
                 <div className="mt-4">
