@@ -1745,3 +1745,62 @@
 - **P2:** Master-depth protocol structure extended to Yoga/Breathwork/Meditations ✅ done.
 - **Next:** Optional direct-video curation for Yoga/Breathwork/Meditations (currently search-based YouTube links there).
 
+## Direct Video Expansion + Admin No-Code Overrides + Best-For Tagging (Iteration 194-195) — 2026-06-24
+
+### User Request Implemented
+- Curate direct video-level links for Yoga, Breathwork, and Meditations (not only search links).
+- Add admin-side controls to override tutorial links and tags without code changes.
+- Add Best-For tags (`sleep`, `anxiety`, `focus`, `grief`, `energy`) on protocol cards for faster user choice.
+
+### Backend Changes
+- `backend/routers/content.py`
+  - Added direct link maps:
+    - `YOGA_DIRECT_VIDEO_MAP` (top 10 yoga poses)
+    - `BREATHWORK_DIRECT_VIDEO_MAP` (all current breathwork sessions)
+    - `MEDITATION_DIRECT_VIDEO_MAP` (all current meditations)
+  - Expanded direct mappings to complete Mantras/Mudras coverage (all 12 each now return direct links).
+  - Added `best_for_tags` inference helper and injected tags across:
+    - mantras, mudras, yoga poses, breathwork sessions, meditations.
+  - Added admin override support:
+    - `youtube_tutorial_override_urls` (list of direct YouTube URLs)
+    - when present, API returns admin-curated tutorial set with source=`admin_override`.
+
+- `backend/routers/admin.py`
+  - Added normalization for:
+    - `youtube_tutorial_override_urls`
+    - `best_for_tags` (validated against allowed tags).
+
+### Admin UI No-Code Controls
+- `frontend/src/pages/admin/constants.js`
+  - Added editable fields for collections:
+    - `mantras`, `mudras`, `yoga_poses`, `breathwork_sessions`, `meditations`
+  - New editable fields:
+    - `youtube_tutorial_override_urls`
+    - `best_for_tags`
+  - Included in list-textarea handling for easy comma/newline entry.
+
+### Frontend Protocol Card Tagging
+- Added Best-For chips and direct tutorial visibility in:
+  - `MantrasPlayer.jsx`
+  - `MudrasLibraryContainer.jsx`
+  - `YogaLibrary.jsx`
+  - `BreathworkSessionGrid.jsx`
+  - `BreathworkActiveSessionView.jsx`
+  - `Meditations.jsx`
+
+### Verification
+- Full test agent report: `/app/test_reports/iteration_194.json`
+  - Backend: **100% (22/22)**
+  - Frontend: **100%**
+- Admin API persistence check (login + update + read + revert) passed for override URLs and best_for tags.
+- Backend regression confirms:
+  - direct video links for all required families
+  - valid best_for tags across endpoints
+  - no 500 responses.
+
+### Updated Priority Snapshot
+- **P1:** Direct video curation for Yoga/Breathwork/Meditations ✅ done.
+- **P1:** Admin no-code override controls for tutorials/tags ✅ done.
+- **P1:** Best-for tags on protocol cards ✅ done.
+- **Next:** Optional analytics-driven “most clicked tutorial” tracking for smarter auto-prioritization.
+
