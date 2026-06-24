@@ -80,8 +80,8 @@ export default function AdminDashboard({ api: providedApi }) {
       await fetchCollections();
     } catch (error) {
       appLogger.warn("Admin access bootstrap failed", error);
-      toast.error("Please sign in with your admin account to continue");
-      navigate("/dashboard");
+      toast.error("Admin session required. Please sign in via admin login.");
+      navigate("/admin/login");
     } finally {
       setLoading(false);
     }
