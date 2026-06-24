@@ -8962,6 +8962,55 @@ backend:
         agent: "testing"
         comment: "✅ BACKEND VALIDATION PASSED (2026-06-24): Comprehensive testing of POST /api/admin/tutorial-overrides/bulk-upload endpoint completed successfully. TEST RESULTS: 1) CSV Validation ✅ - Non-CSV files rejected with 400 error, empty CSV rejected with 400 error, CSV with missing required columns handled gracefully (rows skipped). 2) Supported Collections ✅ - All 5 required collections verified: mantras, mudras, yoga_poses, breathwork_sessions, meditations. Unsupported collections properly rejected with error messages. 3) Safety Notes Persistence ✅ - safety_notes field accepted via CSV upload, successfully persisted to database (verified via admin API), test mantra 'Om' updated with safety note 'TEST SAFETY NOTE - Automated test at healthy'. 4) No 500 Errors ✅ - All related endpoints tested without 500 errors: /api/health (200), /api/mantras (200), /api/mudras (200), /api/yoga/poses (200), /api/breathwork/sessions (200), /api/meditations (200), /api/admin/collections (200), /api/admin/mantras/items (200), /api/admin/mudras/items (200). SUMMARY: All 4 verification requirements met. Bulk upload endpoint working correctly with proper CSV validation, collection filtering, safety_notes persistence, and error handling."
 
+  - task: "Astrology hemisphere API - /api/astrology/current"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/astrology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BACKEND RELEASE VALIDATION PASSED (2026-06-24): GET /api/astrology/current endpoint tested successfully. Returns 200 OK with hemisphere-ready fields: description_north and description_south present. Sample: description_north='Summer solstice energy. The bee's honey sweetens life's celebrations.', description_south='Winter solstice energy. The bee's stored honey sustains through the dark.' All requirements met. No 500 errors detected."
+
+  - task: "Astrology hemisphere API - /api/astrology/months"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/astrology.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BACKEND RELEASE VALIDATION PASSED (2026-06-24): GET /api/astrology/months endpoint tested successfully. Returns 200 OK with 13 months. All months include hemisphere-ready fields: description_north and description_south present. Sample from Wolf Moon: description_north='The primal spark ignites. New beginnings emerge from winter's dark womb.', description_south='The primal spark ignites. New beginnings emerge from summer's vibrant peak.' All requirements met. No 500 errors detected."
+
+  - task: "Dashboard daily guidance tweak API - /api/dashboard/daily"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/dashboard.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BACKEND RELEASE VALIDATION PASSED (2026-06-24): GET /api/dashboard/daily endpoint tested successfully with authenticated session. Returns 200 OK with guidance_tweak object containing practical and spiritual arrays. guidance_tweak.practical: 3 items, guidance_tweak.spiritual: 3 items. All requirements met. No 500 errors detected."
+
+  - task: "Health endpoint verification - /api/health"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BACKEND RELEASE VALIDATION PASSED (2026-06-24): GET /api/health endpoint tested successfully. Returns 200 OK with valid JSON: status='healthy', app='Shamanic Elements Temple Of The Soul', version='2.0.0'. All requirements met."
+
+
 agent_communication:
   - agent: "testing"
     message: |
@@ -9094,3 +9143,48 @@ agent_communication:
       SUMMARY:
       Backend validation PASSED. All 4 verification requirements met. CSV bulk upload endpoint working correctly with proper validation, collection filtering, safety_notes persistence, and error handling. No 500 errors detected. Release ready for production.
 
+
+
+  - agent: "testing"
+    message: |
+      ASTROLOGY HEMISPHERE + DAILY GUIDANCE TWEAK BACKEND VALIDATION COMPLETE (2026-06-24)
+      
+      VERIFICATION REQUEST: Run backend-only final check for astrology hemisphere and daily guidance tweak release
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL BACKEND TESTS PASSED (4/4):
+      
+      1. ✅ /api/astrology/current - PASS
+         - Returns 200 OK
+         - Hemisphere-ready fields present: description_north and description_south
+         - Sample: description_north='Summer solstice energy. The bee's honey sweetens life's celebrations.'
+         - Sample: description_south='Winter solstice energy. The bee's stored honey sustains through the dark.'
+         - All requirements met
+      
+      2. ✅ /api/astrology/months - PASS
+         - Returns 200 OK with 13 months
+         - All months include hemisphere-ready fields: description_north and description_south
+         - Sample from Wolf Moon: description_north='The primal spark ignites. New beginnings emerge from winter's dark womb.'
+         - Sample from Wolf Moon: description_south='The primal spark ignites. New beginnings emerge from summer's vibrant peak.'
+         - All requirements met
+      
+      3. ✅ /api/dashboard/daily - PASS
+         - Returns 200 OK with authenticated session
+         - guidance_tweak object present with practical and spiritual arrays
+         - guidance_tweak.practical: 3 items
+         - guidance_tweak.spiritual: 3 items
+         - All requirements met
+      
+      4. ✅ /api/health - PASS
+         - Returns 200 OK
+         - Valid JSON response: status='healthy', app='Shamanic Elements Temple Of The Soul', version='2.0.0'
+         - All requirements met
+      
+      CRITICAL FINDINGS:
+      ✅ Astrology endpoints return hemisphere-ready fields (description_north/description_south)
+      ✅ Dashboard daily endpoint includes guidance_tweak with practical and spiritual arrays
+      ✅ Health endpoint returns 200 with valid JSON
+      ✅ No 500 errors detected across all tested endpoints
+      
+      SUMMARY:
+      Backend release validation PASSED. All 4 verification requirements met. Astrology hemisphere feature working correctly with north/south descriptions. Daily guidance tweak feature working correctly with practical and spiritual focus arrays. No 500 errors detected. Release ready for production.
