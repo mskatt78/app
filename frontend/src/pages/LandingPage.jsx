@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import axios from "axios";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
+const AUTH_PROVIDER_URL = process.env.REACT_APP_AUTH_PROVIDER_URL;
 
 const LandingPage = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
@@ -27,7 +28,11 @@ const LandingPage = ({ onLoginSuccess }) => {
   // Google OAuth login
   const handleGoogleLogin = () => {
     const redirectUrl = window.location.origin + '/dashboard';
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    if (!AUTH_PROVIDER_URL) {
+      toast.error("Google sign-in is not configured for this environment");
+      return;
+    }
+    window.location.href = `${AUTH_PROVIDER_URL}/?redirect=${encodeURIComponent(redirectUrl)}`;
   };
 
   // Email/Password login

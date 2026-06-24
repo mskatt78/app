@@ -15,6 +15,7 @@ import axios from "axios";
 import DailyPracticeWidget from "../../components/DailyPracticeWidget";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
+const AUTH_PROVIDER_URL = process.env.REACT_APP_AUTH_PROVIDER_URL;
 
 const MainMenuContainer = ({ user }) => {
   const navigate = useNavigate();
@@ -23,9 +24,12 @@ const MainMenuContainer = ({ user }) => {
   const [loading, setLoading] = useState(false);
 
   const handleGoogleLogin = () => {
-    // REMINDER: DO NOT HARDCODE THE URL, OR ADD ANY FALLBACKS OR REDIRECT URLS, THIS BREAKS THE AUTH
     const redirectUrl = window.location.origin + '/dashboard';
-    window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    if (!AUTH_PROVIDER_URL) {
+      toast.error("Google sign-in is not configured for this environment");
+      return;
+    }
+    window.location.href = `${AUTH_PROVIDER_URL}/?redirect=${encodeURIComponent(redirectUrl)}`;
   };
 
   const handleEmailAuth = async (e) => {
