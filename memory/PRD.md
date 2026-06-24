@@ -1619,3 +1619,42 @@
 - Redeploy to apply updated env-driven auth flow to production.
 - If deployment platform still reports contradictory status despite green health checks, collect latest deploy ID and contact Emergent Support with run logs.
 
+## Embodiment Protocol Global Verification + Retreat Cleanup Recheck (Iteration 191-192) — 2026-06-24
+
+### Scope Confirmed by User
+- Execute all pending action items including P1/P2 verification intent.
+- Test both frontend and backend for embodiment integration and narration/retreat integrity.
+
+### What Was Completed
+- Verified global embodiment integration across all requested modalities/pages:
+  - Chakra (`chakra-practice-embodiment-*`)
+  - Heart (`heart-practice-embodiment-*`)
+  - Shamanic (`shamanic-practice-embodiment-*`)
+  - Energy Healing (`energy-healing-embodiment-*`)
+  - Somatic Yoga (`somatic-yoga-embodiment-*`)
+  - Water (`water-practice-embodiment-*`)
+  - Elemental (`elemental-practice-embodiment-*`)
+- Revalidated retreats cleanup behavior:
+  - `GET /api/retreats` returns empty array in preview.
+- Revalidated narration expansion floor:
+  - `/api/content/expand-script` returns >=840 words for 7+ minute targets.
+  - TTS synthesis check from expanded script produced ~7m10s audio duration in preview.
+
+### Minor UX Fix Applied
+- Fixed elemental card click friction by preventing overlay layers from intercepting pointer events:
+  - `frontend/src/components/elemental/ElementalPracticeCard.jsx`
+  - Added `pointer-events-none` to non-interactive gradient/badge overlays.
+
+### Validation Evidence
+- Frontend specialist test agent: PASS across all 7 modality flows.
+- Full testing agent report: `/app/test_reports/iteration_191.json`
+  - Backend: **100% (4/4)**
+  - Frontend: **100%**
+- Post-fix manual smoke: elemental card opens modal without forced click.
+- Additional backend regression pass: health/retreats/expand-script checks PASS.
+
+### Updated Priority Snapshot
+- **P0:** Completed for this pass (global embodiment verification + stability).
+- **P1:** Completed for this pass (retreat cleanup and narration floor regression checks).
+- **P2 (next):** Begin net-new enrichment work (remaining lighter sections and additional real YouTube tutorial depth), now that stability checks are green.
+
