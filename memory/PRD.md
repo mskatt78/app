@@ -1972,6 +1972,41 @@
 - **P0 bug:** Card-vs-session timing mismatch ✅ fixed and verified.
 - **Next:** Optional timing badge UX (“Session Time Locked”) for user trust visibility.
 
+## Dev Duration Audit Logging + Label Normalization Sweep (Iteration 199) — 2026-06-24
+
+### User request implemented
+- Add lightweight duration audit logging in dev mode.
+- Normalize remaining non-guided duration labels with shared parser for consistency.
+
+### Delivered
+- `frontend/src/utils/durationUtils.js`
+  - Added:
+    - `formatDurationMinutesLabel()`
+    - `auditDurationAlignment()`
+- `frontend/src/components/guided/useGuidedPracticeEngine.js`
+  - Added dev-mode duration alignment audit calls.
+  - Uses normalized duration resolution for guided flow contexts.
+- `frontend/src/components/timer/usePracticeTimerEngine.js`
+  - Added dev-mode timer duration audit logging via `appLogger.debug`.
+- Label normalization updates across targeted routes:
+  - Heart Practices (grid + modal)
+  - Shamanic, Chakra, Yoga, Masculine
+  - Daily Sacred Practice (card + guided button duration wiring)
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_199.json`
+  - Frontend: **100%**
+  - No NaN duration labels, parser usage confirmed in targeted files.
+- Backend sanity check passed:
+  - `/api/health` 200
+  - `/api/dashboard/daily` reachable (401 auth-protected expected)
+  - no 500s.
+
+### Updated priority snapshot
+- **P1:** Dev-mode duration audit logging ✅ done.
+- **P1:** Non-guided duration label normalization sweep ✅ done.
+- **Next:** Optional “Session Time Locked” badge and duration provenance tooltip UX.
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
