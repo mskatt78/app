@@ -8275,16 +8275,41 @@ frontend:
         agent: "testing"
         comment: "✅ Elemental Practices embodiment integration PASSED. Page loads correctly at /elemental-practices with data-testid='elemental-practices'. 15 practice cards present and clickable. Modal renders successfully. Embodiment panel present with correct data-testid='elemental-practice-embodiment-panel'. 3-step block visible (data-testid='elemental-practice-embodiment-three-step'). 7-day block visible (data-testid='elemental-practice-embodiment-seven-day'). Begin Guided Practice button found and functional. No runtime crashes. No blocking console errors."
 
+
+  - task: "Mantras master-depth embodiment protocol and YouTube tutorials"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mantras/MantrasPlayer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Mantras master-depth embodiment protocol and YouTube tutorials PASSED (2026-06-24). Page loads correctly at /mantras with 12 mantra cards. First mantra card modal opens successfully. Master embodiment protocol visible (data-testid='mantra-master-embodiment-protocol'). All three phase blocks exist: preparation_phase ✓, embodiment_phase ✓, integration_phase ✓. Seven-day embodiment path present (data-testid='mantra-master-seven-day') ✓. YouTube tutorials section visible (data-testid='mantra-youtube-tutorials') with 2 tutorial links ✓. First YouTube link is visible and clickable ✓. Guided practice button present and visible (data-testid='start-mantra-guided-practice-btn') ✓. Modal closes successfully ✓. No modal rendering crash. Console errors: 21 expected 401 auth errors (non-critical). No blocking console errors detected."
+
+  - task: "Mudras master-depth embodiment protocol and YouTube tutorials"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mudras/MudrasLibraryContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Mudras master-depth embodiment protocol and YouTube tutorials PASSED (2026-06-24). Page loads correctly at /mudras with 12 mudra cards. First mudra card modal opens successfully. Master embodiment protocol visible (data-testid='mudra-master-embodiment-protocol'). All three phase blocks exist: preparation_phase ✓, embodiment_phase ✓, integration_phase ✓. Seven-day embodiment path present (data-testid='mudra-master-seven-day') ✓. YouTube tutorials section visible (data-testid='mudra-youtube-tutorials') with 2 tutorial links ✓. First YouTube link is visible and clickable ✓. Guided practice button present and visible (data-testid='start-mudra-guided-practice-btn') ✓. Modal closes successfully ✓. No modal rendering crash. Console errors: 21 expected 401 auth errors (non-critical). No blocking console errors detected."
+
 metadata:
   created_by: "testing_agent"
   version: "2.0"
-  test_sequence: 11
+  test_sequence: 12
   run_ui: false
   last_tested: "2026-06-24"
 
 test_plan:
   current_focus:
-    - "Embodiment integration verification - COMPLETED"
+    - "Mantras/Mudras master-depth and YouTube tutorials - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -8388,6 +8413,62 @@ agent_communication:
       
       1. ✅ GET /api/retreats - PASSED
          - Status: 200 OK
+
+
+  - agent: "testing"
+    message: |
+      Mantras/Mudras Master-Depth & YouTube Tutorials Test completed successfully (2026-06-24):
+      
+      VERIFICATION REQUEST: Run targeted frontend testing for new Mantras/Mudras master-depth and YouTube tutorial enhancements
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (2/2 routes):
+      
+      1. ✅ MANTRAS (/mantras) - PASSED
+         - Page loads: ✓ (data-testid='mantras-library' found)
+         - Mantra cards: ✓ 12 cards found
+         - Modal opens: ✓ first mantra card clicked successfully
+         - Master embodiment protocol: ✓ data-testid='mantra-master-embodiment-protocol' visible
+         - Phase blocks:
+           * Preparation: ✓ data-testid='mantra-master-preparation_phase' exists
+           * Embodiment: ✓ data-testid='mantra-master-embodiment_phase' exists
+           * Integration: ✓ data-testid='mantra-master-integration_phase' exists
+         - Seven-day embodiment: ✓ data-testid='mantra-master-seven-day' exists
+         - YouTube tutorials: ✓ data-testid='mantra-youtube-tutorials' exists
+         - YouTube links: ✓ 2 tutorial links found, first link visible and clickable
+         - Guided practice button: ✓ data-testid='start-mantra-guided-practice-btn' visible
+         - Modal close: ✓ works correctly
+      
+      2. ✅ MUDRAS (/mudras) - PASSED
+         - Page loads: ✓ (data-testid='mudras-library' found)
+         - Mudra cards: ✓ 12 cards found
+         - Modal opens: ✓ first mudra card clicked successfully
+         - Master embodiment protocol: ✓ data-testid='mudra-master-embodiment-protocol' visible
+         - Phase blocks:
+           * Preparation: ✓ data-testid='mudra-master-preparation_phase' exists
+           * Embodiment: ✓ data-testid='mudra-master-embodiment_phase' exists
+           * Integration: ✓ data-testid='mudra-master-integration_phase' exists
+         - Seven-day embodiment: ✓ data-testid='mudra-master-seven-day' exists
+         - YouTube tutorials: ✓ data-testid='mudra-youtube-tutorials' exists
+         - YouTube links: ✓ 2 tutorial links found, first link visible and clickable
+         - Guided practice button: ✓ data-testid='start-mudra-guided-practice-btn' visible
+         - Modal close: ✓ works correctly
+      
+      CROSS-CUTTING CHECKS:
+      ✅ No modal rendering crashes
+      ✅ No frontend console errors that block interaction
+      ✅ Existing guided-practice trigger buttons still render in both modals
+      ✅ All required data-testids present and accessible
+      ✅ Phase blocks (preparation, embodiment, integration) visible in both routes
+      ✅ Seven-day embodiment paths visible in both routes
+      ✅ YouTube tutorial sections visible with clickable links in both routes
+      
+      CONSOLE ERRORS:
+      ⚠️ 21 console errors detected - all are expected 401 auth errors for unauthenticated public route access (non-critical, consistent with previous test results)
+      
+      SUMMARY:
+      All requirements from review_request met successfully. Both /mantras and /mudras pages load correctly with master-depth embodiment protocols and YouTube tutorials fully functional. All data-testids verified. No blocking errors. No modal crashes. Guided practice buttons working. Feature is production-ready.
+
          - Response: Empty list []
          - Verification: Returns 200 and empty list as expected
       

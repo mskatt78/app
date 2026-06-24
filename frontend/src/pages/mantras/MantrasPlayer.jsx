@@ -376,6 +376,65 @@ export const MantrasPlayer = ({
                 </div>
               </div>
 
+              {selectedMantra.master_embodiment_protocol && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mantra-master-embodiment-protocol">
+                  <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-3">Master Embodiment Protocol</h4>
+                  <div className="space-y-3">
+                    {[
+                      { key: "preparation_phase", label: "Preparation" },
+                      { key: "embodiment_phase", label: "Embodiment" },
+                      { key: "integration_phase", label: "Integration" },
+                    ].map((section) => (
+                      <div key={section.key} className="p-3 rounded-lg bg-black/20 border border-white/10" data-testid={`mantra-master-${section.key}`}>
+                        <p className="text-xs text-amber-200 font-medium mb-2">{section.label}</p>
+                        <ul className="space-y-1.5">
+                          {(selectedMantra.master_embodiment_protocol?.[section.key] || []).map((step, index) => (
+                            <li key={`mantra-${section.key}-${index}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                              <span className="text-amber-300">✦</span>
+                              <span>{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+
+                  {(selectedMantra.master_embodiment_protocol?.seven_day_embodiment || []).length > 0 && (
+                    <div className="mt-3 p-3 rounded-lg bg-black/20 border border-white/10" data-testid="mantra-master-seven-day">
+                      <p className="text-xs text-amber-200 font-medium mb-2">7-Day Embodiment Path</p>
+                      <ol className="space-y-1.5">
+                        {selectedMantra.master_embodiment_protocol.seven_day_embodiment.map((step, index) => (
+                          <li key={`mantra-seven-day-${index}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                            <span className="text-amber-300">{index + 1}.</span>
+                            <span>{step}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {(selectedMantra.youtube_tutorials || []).length > 0 && (
+                <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mantra-youtube-tutorials">
+                  <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">YouTube Tutorials</h4>
+                  <div className="space-y-2">
+                    {selectedMantra.youtube_tutorials.map((item, index) => (
+                      <a
+                        key={`mantra-youtube-${index}`}
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block text-sm text-cyan-100 underline underline-offset-2 break-words"
+                        data-testid={`mantra-youtube-link-${index}`}
+                      >
+                        {item.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-4">
                 {selectedMantra.pronunciation && (
                   <div className="p-4 rounded-xl bg-gradient-to-br from-primary/10 to-purple-500/10 border border-primary/20">

@@ -350,6 +350,65 @@ const MudrasLibrary = ({ user, api }) => {
                   </div>
                 </div>
 
+                {selectedMudra.master_embodiment_protocol && (
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mudra-master-embodiment-protocol">
+                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-3">Master Embodiment Protocol</h4>
+                    <div className="space-y-3">
+                      {[
+                        { key: "preparation_phase", label: "Preparation" },
+                        { key: "embodiment_phase", label: "Embodiment" },
+                        { key: "integration_phase", label: "Integration" },
+                      ].map((section) => (
+                        <div key={section.key} className="p-3 rounded-lg bg-black/20 border border-white/10" data-testid={`mudra-master-${section.key}`}>
+                          <p className="text-xs text-amber-200 font-medium mb-2">{section.label}</p>
+                          <ul className="space-y-1.5">
+                            {(selectedMudra.master_embodiment_protocol?.[section.key] || []).map((step, index) => (
+                              <li key={`mudra-${section.key}-${index}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                                <span className="text-amber-300">✦</span>
+                                <span>{step}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+
+                    {(selectedMudra.master_embodiment_protocol?.seven_day_embodiment || []).length > 0 && (
+                      <div className="mt-3 p-3 rounded-lg bg-black/20 border border-white/10" data-testid="mudra-master-seven-day">
+                        <p className="text-xs text-amber-200 font-medium mb-2">7-Day Embodiment Path</p>
+                        <ol className="space-y-1.5">
+                          {selectedMudra.master_embodiment_protocol.seven_day_embodiment.map((step, index) => (
+                            <li key={`mudra-seven-day-${index}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                              <span className="text-amber-300">{index + 1}.</span>
+                              <span>{step}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {(selectedMudra.youtube_tutorials || []).length > 0 && (
+                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mudra-youtube-tutorials">
+                    <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">YouTube Tutorials</h4>
+                    <div className="space-y-2">
+                      {selectedMudra.youtube_tutorials.map((item, index) => (
+                        <a
+                          key={`mudra-youtube-${index}`}
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="block text-sm text-cyan-100 underline underline-offset-2 break-words"
+                          data-testid={`mudra-youtube-link-${index}`}
+                        >
+                          {item.title}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <Button
                   onClick={() => setGuidedPractice(createGuidedMudraPractice(selectedMudra))}
                   className="w-full py-6 rounded-xl bg-gradient-to-r from-primary to-orange-300 text-black hover:opacity-90"

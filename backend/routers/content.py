@@ -1087,6 +1087,65 @@ def _enrich_content_integrity(item: dict[str, Any], default_source_type: str) ->
     return enriched
 
 
+def _build_youtube_tutorial_links(practice_name: str, focus: str) -> list[dict[str, str]]:
+    name = str(practice_name or "practice").strip()
+    focus_term = str(focus or "tutorial").strip()
+    query_pairs = [
+        (f"{name} {focus_term} step by step tutorial", "Step-by-step tutorial"),
+        (f"{name} {focus_term} guided practice", "Guided practice video"),
+    ]
+    links: list[dict[str, str]] = []
+    for query, label in query_pairs:
+        links.append({
+            "title": f"{name} — {label}",
+            "url": f"https://www.youtube.com/results?search_query={quote(query)}",
+            "platform": "youtube",
+        })
+    return links
+
+
+def _build_mantra_master_protocol(mantra: dict[str, Any]) -> dict[str, Any]:
+    name = str(mantra.get("name") or "this mantra").strip()
+    chakra = str(mantra.get("chakra") or "energy center").strip()
+    translation = str(mantra.get("translation") or "Return to sacred steadiness.").strip()
+
+    return {
+        "preparation_phase": [
+            f"Seat and spine setup (2-3 min): sit tall, soften jaw/shoulders, and align awareness at the {chakra}.",
+            f"Intentional breath entrainment (2 min): breathe nasal 4-in/6-out and set intention with '{translation}'.",
+            f"Vocal warm-up (1 min): hum softly to prepare resonance pathways before chanting {name}.",
+        ],
+        "embodiment_phase": [
+            f"Chant cycles (8-20 min): repeat {name} while feeling vibration through chest, throat, and skull corridors.",
+            "Somatic anchoring: keep one subtle body cue (hands, sternum, lower belly) to prevent dissociation into mental repetition.",
+            "Regulation checkpoints every 3-5 minutes: pause one breath, release tension, and restart with clear pronunciation.",
+        ],
+        "integration_phase": [
+            "Silent absorption (2-4 min): stop vocalizing and notice after-vibration in body and breath rhythm.",
+            "Journal one concrete shift: emotional tone, mental clarity, and body state after chanting.",
+            "Behavior bridge: choose one grounded action in the next 24h that reflects the mantra's medicine.",
+        ],
+        "seven_day_embodiment": [
+            "Day 1: Learn pronunciation slowly; record one intentional round and listen back.",
+            "Day 2: Match mantra rhythm to breath pacing (4-in/6-out) for nervous-system regulation.",
+            "Day 3: Add posture discipline (stable spine + relaxed throat) for full-session consistency.",
+            "Day 4: Chant in two blocks (morning/evening) and compare emotional-state differences.",
+            "Day 5: Integrate walking or hand-on-heart chanting for embodied movement.",
+            "Day 6: Offer one round as compassion practice for someone else (without bypassing your own process).",
+            "Day 7: Complete integration review: what changed in breath, mood, and behavior; set next-week commitment.",
+        ],
+    }
+
+
+def _enrich_mantra_entry(mantra: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(mantra)
+    name = str(enriched.get("name") or "Mantra").strip()
+    enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(name, "mantra chanting"))
+    if not enriched.get("master_embodiment_protocol"):
+        enriched["master_embodiment_protocol"] = _build_mantra_master_protocol(enriched)
+    return enriched
+
+
 def _mudra_key(name: str) -> str:
     return str(name or "").strip().lower()
 
@@ -1118,6 +1177,36 @@ def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
             "source_type": "awaiting_wikimedia_commons_verified_match",
             "score": 0.0,
             "note": "Awaiting verified mudra reference image",
+        }
+
+    mudra_name = str(enriched.get("name") or "Mudra").strip()
+    enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(mudra_name, "mudra hand position"))
+    if not enriched.get("master_embodiment_protocol"):
+        enriched["master_embodiment_protocol"] = {
+            "preparation_phase": [
+                "Seat and shoulder release (2 min): relax wrists, elbows, and upper traps before forming the mudra.",
+                "Breath entry (90 sec): nasal inhale/exhale with equal counts to stabilize concentration.",
+                f"Hand seal setup: form {mudra_name} gently (no over-pressing) and soften fingertip contact.",
+            ],
+            "embodiment_phase": [
+                "Hold cycle (6-15 min): maintain the seal while tracking pulse, warmth, and subtle energetic flow.",
+                "Micro-adjust every 2-3 minutes: release hand tension, reset posture, and re-enter with precision.",
+                "Combine with mantra or breath count for attentional steadiness and deeper somatic imprinting.",
+            ],
+            "integration_phase": [
+                "Release slowly and shake out fingers/wrists for circulation reset.",
+                "Place one palm on heart and one on belly for five slow breaths.",
+                "Capture one practical integration action for the next day (communication, boundary, or emotional regulation).",
+            ],
+            "seven_day_embodiment": [
+                "Day 1: Learn finger geometry and hold for 5 minutes with relaxed breath.",
+                "Day 2: Increase to 7 minutes; monitor where tension accumulates in hands/shoulders.",
+                "Day 3: Pair with short affirmation rounds for neural and emotional coupling.",
+                "Day 4: Practice morning and evening to compare energetic/mental state shifts.",
+                "Day 5: Integrate standing posture for embodied grounding while holding mudra.",
+                "Day 6: Add 2-minute silent stillness after release and track mood/focus effects.",
+                "Day 7: Review changes in clarity, regulation, and consistency; set next-week progression.",
+            ],
         }
 
     return enriched
@@ -3167,7 +3256,8 @@ async def get_mantras(element: Optional[str] = None) -> list[dict[str, Any]]:
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     mantras = await db.mantras.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_content_integrity(mantra, "hybrid-curated") for mantra in mantras]
+    enriched = [_enrich_content_integrity(mantra, "hybrid-curated") for mantra in mantras]
+    return [_enrich_mantra_entry(mantra) for mantra in enriched]
 
 
 # ============ MUDRAS ROUTES ============
