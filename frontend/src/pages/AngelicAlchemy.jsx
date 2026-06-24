@@ -14,7 +14,7 @@ const ANGELIC_FALLBACK_DATA = [
     sacred_geometry: "Metatron's Cube",
     element: "spirit",
     description: "Metatron alchemy uses sacred geometry for energetic clearing and coherent alignment.",
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/a/ad/MetatronInIslamicArts.jpg",
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0de529b0be19663cbdd777dec567ea6ee75a5095a0393c2c21613e9519f2fb60.png",
     diagram_image_url: "/diagrams/metatron-cube-diagram.svg",
   },
   {
@@ -25,7 +25,7 @@ const ANGELIC_FALLBACK_DATA = [
     sacred_geometry: "Hexagram Shield",
     element: "fire",
     description: "Michael alchemy strengthens boundaries, truth action, and spiritual protection.",
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/7a/GuidoReni_MichaelDefeatsSatan.jpg",
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ad522c612a029af953c2ab484613c9cd45eeb18b9b10c35ab6c4d58367a1349a.png",
     diagram_image_url: "/diagrams/michael-shield-diagram.svg",
   },
   {
@@ -36,7 +36,7 @@ const ANGELIC_FALLBACK_DATA = [
     sacred_geometry: "Vesica Piscis",
     element: "air",
     description: "Raphael alchemy supports restoration, compassion, and body-mind integration.",
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/9/97/Saint_Raphael.JPG",
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e3f5b33091712e74921ac9f6d1fe452e69d48d969f6229fb988ad35452d1e0bb.png",
     diagram_image_url: "/diagrams/raphael-healing-diagram.svg",
   },
   {
@@ -47,10 +47,381 @@ const ANGELIC_FALLBACK_DATA = [
     sacred_geometry: "Moon Mandorla",
     element: "water",
     description: "Gabriel alchemy opens inspired communication and creative receptivity.",
-    image_url: "https://upload.wikimedia.org/wikipedia/commons/1/12/Ghent_Altarpiece_-_Angel_of_the_Annunciation.jpg",
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/da6c1db72712f17b387dc320ee104a0075e79c66f93cfd37d50fb7ac825ee0a4.png",
     diagram_image_url: "/diagrams/gabriel-communication-diagram.svg",
   },
+  {
+    id: "angel-uriel-golden-wisdom",
+    name: "Uriel Alchemy · Golden Wisdom Flame",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Solar Hexa-Radiant",
+    element: "fire",
+    description: "Uriel alchemy illuminates wise discernment, practical insight, and grounded revelation.",
+    alchemy_teachings: [
+      "Illumination must become practical application.",
+      "Discernment protects sacred purpose.",
+      "Wisdom is amplified by humility.",
+    ],
+    practical_rituals: [
+      "Golden light contemplation at dawn.",
+      "Decision clarity journaling with pros/values alignment.",
+      "Three-breath pause before major choices.",
+    ],
+    journal_prompts: [
+      "Where do I need clearer discernment?",
+      "What insight wants practical embodiment?",
+      "How can wisdom become service?",
+    ],
+    affirmations: [
+      "I welcome clear, practical wisdom.",
+      "Discernment guides my decisions.",
+      "I act from illuminated truth.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/60066a885e368cb7c8c2b6daf32a4567ec4452c6539efe5b6017d30867b47439.png",
+    diagram_image_url: "/diagrams/uriel-wisdom-diagram.svg",
+  },
+  {
+    id: "angel-zadkiel-mercy-violet",
+    name: "Zadkiel Alchemy · Mercy Violet Ray",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Mercy Spiral",
+    element: "water",
+    description: "Zadkiel alchemy supports forgiveness, compassionate release, and restorative transmutation.",
+    alchemy_teachings: [
+      "Mercy is strength guided by compassion.",
+      "Forgiveness frees life-force for aligned action.",
+      "Release is a recurring spiritual discipline.",
+    ],
+    practical_rituals: [
+      "Violet mercy breath with hand-on-heart focus.",
+      "Forgiveness letter ritual (not necessarily sent).",
+      "Compassion prayer for self and others.",
+    ],
+    journal_prompts: [
+      "What needs mercy in me right now?",
+      "Where am I ready to release resentment?",
+      "How can compassion restore my next step?",
+    ],
+    affirmations: [
+      "Mercy restores my energy and heart.",
+      "I release what no longer serves.",
+      "Compassion is my strength.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/5a8b44e77572bc3b37f8cb02aa12d7196b35bc339e51660bcced13a3d90cab90.png",
+    diagram_image_url: "/diagrams/zadkiel-mercy-diagram.svg",
+  },
+  {
+    id: "angel-chamuel-heart-peace",
+    name: "Chamuel Alchemy · Heart Peace Ray",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Heart Mandala",
+    element: "air",
+    description: "Chamuel alchemy supports relational peace, heart coherence, and compassionate reconnection.",
+    alchemy_teachings: [
+      "Peace is an active relational practice.",
+      "Heart coherence improves communication quality.",
+      "Repair is sacred in spiritual maturity.",
+    ],
+    practical_rituals: [
+      "Heart coherence breathing before difficult conversations.",
+      "Blessing practice for strained relationships.",
+      "Peace invocation at day-end reflection.",
+    ],
+    journal_prompts: [
+      "Where can I create more peace relationally?",
+      "What conversation needs compassion and honesty?",
+      "How does heart coherence feel in my body?",
+    ],
+    affirmations: [
+      "Peace begins within my heart.",
+      "I communicate with compassion and clarity.",
+      "Repair and reconciliation are possible.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/547d74a395cd6aa412cdb5d4a203e1d944532856c3f6c04b673565f66b123907.png",
+    diagram_image_url: "/diagrams/chamuel-heart-peace-diagram.svg",
+  },
+  {
+    id: "angel-jophiel-illumination",
+    name: "Jophiel Alchemy · Illumined Mind",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Light Prism",
+    element: "air",
+    description: "Jophiel alchemy clarifies perception, beautifies thought patterns, and supports elegant mental order.",
+    alchemy_teachings: [
+      "Beauty in thought creates beauty in action.",
+      "Mental clarity is cultivated, not accidental.",
+      "Grace can coexist with precision.",
+    ],
+    practical_rituals: [
+      "Thought-clearing breath with light visualization.",
+      "One-page reframing practice for cognitive clutter.",
+      "Beauty walk with attentive noticing.",
+    ],
+    journal_prompts: [
+      "Which thought patterns need refinement?",
+      "How can elegance shape my actions today?",
+      "What helps my mind become clear and kind?",
+    ],
+    affirmations: [
+      "My mind is clear, kind, and luminous.",
+      "I choose thoughts that support beauty and truth.",
+      "Clarity and grace guide my path.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/218b88193cb16ead08e12abdc15d5e0c4c9cda5e61bb8482eda5a84c70f10f14.png",
+    diagram_image_url: "/diagrams/jophiel-illumination-diagram.svg",
+  },
+  {
+    id: "angel-haniel-lunar-grace",
+    name: "Haniel Alchemy · Lunar Grace",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Lunar Spiral",
+    element: "water",
+    description: "Haniel alchemy restores moon intuition, feminine grace, and emotionally attuned wisdom.",
+    alchemy_teachings: [
+      "Sensitivity becomes strength when regulated and honored.",
+      "Lunar cycles support timing and receptivity.",
+      "Grace is embodied softness with clear discernment.",
+    ],
+    practical_rituals: [
+      "Moonlight breath for 12 cycles with hand on lower belly.",
+      "Lunar journaling before sleep for dream integration.",
+      "Water blessing ritual with intention for emotional clarity.",
+    ],
+    journal_prompts: [
+      "What emotional truth is surfacing now?",
+      "Where does lunar timing ask me to pause?",
+      "How can grace become a practical way of moving today?",
+    ],
+    affirmations: [
+      "I trust my intuitive moon intelligence.",
+      "Grace and discernment guide my path.",
+      "I move in harmony with sacred timing.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e7228157cc39defd5b2971dad0b9adc537ec02ee1496eb39bc570c59a4ffa985.png",
+    diagram_image_url: "/diagrams/gabriel-communication-diagram.svg",
+  },
+  {
+    id: "angel-raziel-mystery-flame",
+    name: "Raziel Alchemy · Mystery Flame",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Mystic Merkaba",
+    element: "spirit",
+    description: "Raziel alchemy opens divine mysteries, symbolic decoding, and advanced spiritual discernment.",
+    alchemy_teachings: [
+      "Mystery asks humility, patience, and disciplined inquiry.",
+      "Symbol decoding reveals hidden guidance pathways.",
+      "Higher knowledge must become grounded ethical action.",
+    ],
+    practical_rituals: [
+      "Mystery book ritual: ask one question and journal three intuitive responses.",
+      "Symbol contemplation with long exhale breathing.",
+      "Night prayer for dream revelation and morning integration notes.",
+    ],
+    journal_prompts: [
+      "What mystery am I being invited to study?",
+      "Which symbols are repeating in my life now?",
+      "How will I apply this insight practically?",
+    ],
+    affirmations: [
+      "I welcome sacred mystery with humility.",
+      "Divine intelligence reveals itself in right timing.",
+      "I embody wisdom through practical integrity.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9ee90ae0ccb416c954265b0bb3b0d0d89d83178cdefb2a6fe64c6553b6bcc82f.png",
+    diagram_image_url: "/diagrams/metatron-cube-diagram.svg",
+  },
+  {
+    id: "angel-ariel-earth-guardian",
+    name: "Ariel Alchemy · Earth Guardian Flame",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Gaia Spiral",
+    element: "earth",
+    description: "Ariel alchemy protects nature pathways, body vitality, and grounded stewardship.",
+    alchemy_teachings: [
+      "Earth protection is a spiritual responsibility.",
+      "Body vitality and nature attunement are linked.",
+      "Stewardship is devotion in action.",
+    ],
+    practical_rituals: [
+      "Grounding ritual with feet on earth and long exhale cycles.",
+      "Nature blessing prayer for local land and waters.",
+      "One stewardship action weekly (cleanup, planting, protection).",
+    ],
+    journal_prompts: [
+      "How can I protect life around me this week?",
+      "What restores my body's natural vitality?",
+      "Where does stewardship call me into action?",
+    ],
+    affirmations: [
+      "I protect and serve the living Earth.",
+      "My body is in harmony with nature.",
+      "Stewardship is sacred practice.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6bb707c26757c1b1d639a9d0e0461d726bf8510707e86c250dff7fc845f695db.png",
+    diagram_image_url: "/diagrams/oak-rootedness-diagram.svg",
+  },
+  {
+    id: "angel-azrael-peace-transition",
+    name: "Azrael Alchemy · Peaceful Transition",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Veil Mandala",
+    element: "water",
+    description: "Azrael alchemy supports grief integration, endings, and peaceful transitions with compassion.",
+    alchemy_teachings: [
+      "Endings are sacred thresholds, not failures.",
+      "Grief honored becomes gentle wisdom.",
+      "Compassion stabilizes transition processes.",
+    ],
+    practical_rituals: [
+      "Candle-and-water grief ritual with spoken blessing.",
+      "Compassion breath while naming what has ended.",
+      "Transition journal: what is closing and what is opening.",
+    ],
+    journal_prompts: [
+      "What ending am I still integrating?",
+      "How can I meet grief with tenderness?",
+      "What gentle next step supports transition?",
+    ],
+    affirmations: [
+      "I move through endings with grace.",
+      "Compassion steadies my transitions.",
+      "Peace is available in change.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/660d77bc720cc8d1141cc33cc14dafb543b28e95dd65e1831bf6813c7ed59b44.png",
+    diagram_image_url: "/diagrams/andromeda-perspective-diagram.svg",
+  },
+  {
+    id: "angel-jeremiel-life-review",
+    name: "Jeremiel Alchemy · Life Review Flame",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Review Spiral",
+    element: "spirit",
+    description: "Jeremiel alchemy supports life review, prophetic reflection, and course correction with wisdom.",
+    alchemy_teachings: [
+      "Review creates conscious redirection.",
+      "Prophetic insight requires humility and truth.",
+      "Course correction is a strength, not weakness.",
+    ],
+    practical_rituals: [
+      "Annual reflection ritual: keep, release, and renew lists.",
+      "Timeline journaling for pattern recognition.",
+      "Course-correction vow spoken aloud with one immediate action.",
+    ],
+    journal_prompts: [
+      "What pattern needs redirection now?",
+      "Where am I being called to mature quickly?",
+      "Which one action restores alignment today?",
+    ],
+    affirmations: [
+      "I review my life with honesty and grace.",
+      "Insight guides aligned redirection.",
+      "I choose growth with clarity.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/15b99cadedda6b5f312e206abe912f1c6daf4df8df7f7536ede423e580145eea.png",
+    diagram_image_url: "/diagrams/thoth-language-diagram.svg",
+  },
+  {
+    id: "angel-sandalphon-prayer-song",
+    name: "Sandalphon Alchemy · Prayer Song",
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: "Resonance Spiral",
+    element: "air",
+    description: "Sandalphon alchemy elevates prayers through sacred sound, resonance, and embodied devotion.",
+    alchemy_teachings: [
+      "Sound can carry prayer into coherent action.",
+      "Resonance is a relational field practice.",
+      "Devotion becomes stable through repetition.",
+    ],
+    practical_rituals: [
+      "Toning practice for 7 minutes with heart focus.",
+      "Prayer-writing and spoken resonance ritual.",
+      "Evening gratitude chant to seal the day.",
+    ],
+    journal_prompts: [
+      "What prayer is asking to be voiced now?",
+      "How does sound change my inner state?",
+      "What devotion rhythm can I sustain daily?",
+    ],
+    affirmations: [
+      "My voice carries prayer and coherence.",
+      "Sound aligns me with devotion.",
+      "I live in resonant gratitude.",
+    ],
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/8790860ac21df32da33f17186b9f40ee60f28f6e485817271f8893704c99d2c0.png",
+    diagram_image_url: "/diagrams/whale-songline-diagram.svg",
+  },
 ];
+
+const ANGELIC_VISUAL_OVERRIDES = {
+  "angel-metatron-cube-alchemy": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0de529b0be19663cbdd777dec567ea6ee75a5095a0393c2c21613e9519f2fb60.png",
+  },
+  "angel-michael-blue-flame": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ad522c612a029af953c2ab484613c9cd45eeb18b9b10c35ab6c4d58367a1349a.png",
+  },
+  "angel-raphael-emerald-ray": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e3f5b33091712e74921ac9f6d1fe452e69d48d969f6229fb988ad35452d1e0bb.png",
+  },
+  "angel-gabriel-silver-stream": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/da6c1db72712f17b387dc320ee104a0075e79c66f93cfd37d50fb7ac825ee0a4.png",
+  },
+  "angel-uriel-golden-wisdom": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/60066a885e368cb7c8c2b6daf32a4567ec4452c6539efe5b6017d30867b47439.png",
+  },
+  "angel-zadkiel-mercy-violet": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/5a8b44e77572bc3b37f8cb02aa12d7196b35bc339e51660bcced13a3d90cab90.png",
+  },
+  "angel-chamuel-heart-peace": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/547d74a395cd6aa412cdb5d4a203e1d944532856c3f6c04b673565f66b123907.png",
+  },
+  "angel-jophiel-illumination": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/218b88193cb16ead08e12abdc15d5e0c4c9cda5e61bb8482eda5a84c70f10f14.png",
+  },
+  "angel-haniel-lunar-grace": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e7228157cc39defd5b2971dad0b9adc537ec02ee1496eb39bc570c59a4ffa985.png",
+  },
+  "angel-raziel-mystery-flame": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9ee90ae0ccb416c954265b0bb3b0d0d89d83178cdefb2a6fe64c6553b6bcc82f.png",
+  },
+  "angel-ariel-earth-guardian": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6bb707c26757c1b1d639a9d0e0461d726bf8510707e86c250dff7fc845f695db.png",
+  },
+  "angel-azrael-peace-transition": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/660d77bc720cc8d1141cc33cc14dafb543b28e95dd65e1831bf6813c7ed59b44.png",
+  },
+  "angel-jeremiel-life-review": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/15b99cadedda6b5f312e206abe912f1c6daf4df8df7f7536ede423e580145eea.png",
+  },
+  "angel-sandalphon-prayer-song": {
+    image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/8790860ac21df32da33f17186b9f40ee60f28f6e485817271f8893704c99d2c0.png",
+  },
+};
+
+const mergeArchangels = (items) => {
+  const incoming = Array.isArray(items) ? items : [];
+  const byId = new Map(incoming.map((item) => [item?.id, item]));
+
+  ANGELIC_FALLBACK_DATA.forEach((entry) => {
+    if (!byId.has(entry.id)) {
+      byId.set(entry.id, entry);
+    }
+  });
+
+  return Array.from(byId.values()).map((item) => ({
+    ...item,
+    ...(ANGELIC_VISUAL_OVERRIDES[item?.id] || {}),
+  }));
+};
 
 const safeItem = (value) => String(value || "").trim();
 
@@ -145,11 +516,11 @@ const AngelicAlchemy = ({ api }) => {
       setLoading(true);
       try {
         const { data } = await api.get("/angelic-alchemy");
-        const rows = Array.isArray(data) && data.length > 0 ? data : ANGELIC_FALLBACK_DATA;
+        const rows = mergeArchangels(data);
         setAngels(rows.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""))));
       } catch (error) {
         appLogger.error("Failed loading Angelic Alchemy", error);
-        setAngels(ANGELIC_FALLBACK_DATA);
+        setAngels(mergeArchangels(ANGELIC_FALLBACK_DATA));
       } finally {
         setLoading(false);
       }
