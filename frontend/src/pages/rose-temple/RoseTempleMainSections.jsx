@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import { ROSE_FEMININE_IMAGES, teachings, templeIntro } from "./roseTempleConstants";
+import { ROSE_FEMININE_IMAGES, teachings, templeIntro, sisterCircleTexture } from "./roseTempleConstants";
 
 const TEACHING_HOVER = { y: -2 };
 
@@ -108,6 +108,23 @@ export const RoseTempleMainSections = ({
               <h4 className="font-serif text-lg mb-1">{rite.title || rite.name}</h4>
               <p className="text-sm text-muted-foreground line-clamp-2">{rite.description}</p>
             </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-rose-500/20 bg-gradient-to-br from-rose-500/10 via-background to-fuchsia-500/10 p-6" data-testid="rose-temple-sister-circle-texture">
+        <h3 className="text-2xl font-serif mb-2">{sisterCircleTexture.title}</h3>
+        <p className="text-sm text-muted-foreground mb-5">{sisterCircleTexture.intro}</p>
+        <div className="grid md:grid-cols-2 gap-4">
+          {sisterCircleTexture.pillars.map((pillar) => (
+            <div key={pillar.id} className="rounded-2xl border border-white/10 bg-card/50 p-4" data-testid={`sister-circle-pillar-${pillar.id}`}>
+              <h4 className="font-serif text-lg mb-2 text-rose-200">{pillar.title}</h4>
+              <ul className="space-y-1.5">
+                {pillar.points.map((point, index) => (
+                  <li key={`${pillar.id}-${index}`} className="text-xs text-muted-foreground">• {point}</li>
+                ))}
+              </ul>
+            </div>
           ))}
         </div>
       </section>

@@ -4,6 +4,28 @@ import { Leaf, Sparkles, Heart, Wind, ChevronRight, Play, Sun, Shield, Flame, St
 export const DailyGuidanceGrid = ({ dailyData, navigate }) => (
   <div>
     <h3 className="text-2xl font-serif mb-6">Today&apos;s <span className="italic text-primary">Guidance</span></h3>
+
+    {dailyData?.guidance_tweak && (
+      <div className="mb-6 grid grid-cols-1 lg:grid-cols-2 gap-4" data-testid="daily-guidance-tweak-panel">
+        <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4" data-testid="daily-guidance-practical-focus">
+          <p className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Practical Focus</p>
+          <ul className="space-y-1.5">
+            {(dailyData.guidance_tweak.practical || []).map((item, index) => (
+              <li key={`daily-practical-${index}`} className="text-xs text-emerald-100/90">• {item}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="rounded-2xl border border-fuchsia-500/20 bg-fuchsia-500/10 p-4" data-testid="daily-guidance-spiritual-focus">
+          <p className="text-xs uppercase tracking-wider text-fuchsia-300 mb-2">Spiritual Focus</p>
+          <ul className="space-y-1.5">
+            {(dailyData.guidance_tweak.spiritual || []).map((item, index) => (
+              <li key={`daily-spiritual-${index}`} className="text-xs text-fuchsia-100/90">• {item}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    )}
+
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {dailyData?.daily_pose && (
         <motion.div

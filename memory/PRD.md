@@ -1866,3 +1866,20 @@
 - **P1:** Admin login fallback UX improved ✅ done.
 - **Next:** Add downloadable CSV template + inline row-level error export in admin panel.
 
+## Requested Expansion: Astrology Hemisphere + Guidance + Sister Circle Texture (Planned Next) — 2026-06-24
+
+### User-confirmed choices (captured)
+- Astrology default: auto-detect by user location + remember last hemisphere in localStorage.
+- Northern option placement: simple toggle inside Astrology page.
+- Today’s Guidance tweak: both practical/actionable and spiritually deep tone.
+- Sister Circle texture priority: defaults accepted (no extra constraint provided).
+
+### Current status
+- This requirement set is now queued as the next implementation block.
+- Existing release completed first: CSV bulk tutorial overrides + safety notes.
+
+### Next execution order
+1. Astrology hemisphere logic (geo detect + local persistence + toggle UI)
+2. Today’s Guidance content/UX balancing (practical + ceremonial)
+3. Sister Circle enrichment modules (sister-love, crafting, ceremonies, rituals, prompts)
+

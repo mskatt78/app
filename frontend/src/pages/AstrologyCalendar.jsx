@@ -13,6 +13,9 @@ import {
 } from "../components/astrology/astrologyCalendarConfig";
 import { appLogger } from "../utils/logger";
 
+const HEMISPHERE_PREF_KEY = "astrologyHemispherePreference";
+const TIMEZONE_PREF_KEY = "astrologyTimezonePreference";
+
 const AstrologyCalendar = ({ api }) => {
   const navigate = useNavigate();
   const [months, setMonths] = useState([]);
@@ -20,26 +23,89 @@ const AstrologyCalendar = ({ api }) => {
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [loading, setLoading] = useState(true);
   const [viewIndex, setViewIndex] = useState(0);
-  const [hemisphere, setHemisphere] = useState("north");
+  const [hemisphere, setHemisphere] = useState("south");
   const [selectedTz, setSelectedTz] = useState(null);
   const [showTzDropdown, setShowTzDropdown] = useState(false);
   const tzRef = useRef(null);
 
-  const autoDetectTimezone = () => {
+  const inferHemisphereFromTimezone = (tz = "") => {
+    const lower = tz.toLowerCase();
+    const southPatterns = [
+      "australia",
+      "auckland",
+      "wellington",
+      "argentina",
+      "sao_paulo",
+      "santiago",
+      "lima",
+      "johannesburg",
+      "cape",
+      "mauritius",
+      "new_zealand",
+      "nz",
+      "hobart",
+      "adelaide",
+      "perth",
+    ];
+    return southPatterns.some((pattern) => lower.includes(pattern)) ? "south" : "north";
+  };
+
+  const detectHemisphereByGeolocation = () => new Promise((resolve) => {
+    if (!navigator.geolocation) {
+      resolve(null);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latitude = Number(position.coords?.latitude);
+        if (Number.isFinite(latitude)) {
+          resolve(latitude < 0 ? "south" : "north");
+          return;
+        }
+        resolve(null);
+      },
+      () => resolve(null),
+      { timeout: 5000, maximumAge: 60 * 60 * 1000 },
+    );
+  });
+
+  const autoDetectTimezone = async () => {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const match = TIMEZONES.find((entry) => !entry.group && entry.tz === tz);
-      if (match) {
-        setSelectedTz(match);
-        setHemisphere(match.hemi);
+
+      const storedTz = localStorage.getItem(TIMEZONE_PREF_KEY);
+      if (storedTz) {
+        const storedTzMatch = TIMEZONES.find((entry) => !entry.group && entry.tz === storedTz);
+        if (storedTzMatch) {
+          setSelectedTz(storedTzMatch);
+        }
+      }
+
+      const storedHemisphere = localStorage.getItem(HEMISPHERE_PREF_KEY);
+      if (storedHemisphere === "south" || storedHemisphere === "north") {
+        if (!storedTz && match) {
+          setSelectedTz(match);
+        }
+        setHemisphere(storedHemisphere);
         return;
       }
 
-      const southPatterns = ["australia", "auckland", "wellington", "argentina", "sao_paulo", "santiago", "lima", "johannesburg", "cape", "mauritius", "new_zealand", "nz"];
-      const isSouth = southPatterns.some((pattern) => tz.toLowerCase().includes(pattern));
-      setHemisphere(isSouth ? "south" : "north");
+      if (match) {
+        setSelectedTz(match);
+        setHemisphere(match.hemi);
+        localStorage.setItem(TIMEZONE_PREF_KEY, match.tz);
+        localStorage.setItem(HEMISPHERE_PREF_KEY, match.hemi);
+        return;
+      }
+
+      const geolocatedHemisphere = await detectHemisphereByGeolocation();
+      const detectedHemisphere = geolocatedHemisphere || inferHemisphereFromTimezone(tz) || "south";
+      setHemisphere(detectedHemisphere);
+      localStorage.setItem(HEMISPHERE_PREF_KEY, detectedHemisphere);
     } catch {
-      setHemisphere("north");
+      setHemisphere("south");
     }
   };
 
@@ -65,7 +131,7 @@ const AstrologyCalendar = ({ api }) => {
 
   useEffect(() => {
     fetchData();
-    autoDetectTimezone();
+    void autoDetectTimezone();
 
     const handler = (event) => {
       if (tzRef.current && !tzRef.current.contains(event.target)) {
@@ -80,7 +146,14 @@ const AstrologyCalendar = ({ api }) => {
   const handleTzSelect = (tz) => {
     setSelectedTz(tz);
     setHemisphere(tz.hemi);
+    localStorage.setItem(TIMEZONE_PREF_KEY, tz.tz);
+    localStorage.setItem(HEMISPHERE_PREF_KEY, tz.hemi);
     setShowTzDropdown(false);
+  };
+
+  const handleHemisphereChange = (value) => {
+    setHemisphere(value);
+    localStorage.setItem(HEMISPHERE_PREF_KEY, value);
   };
 
   const getDescription = (month) => {
@@ -126,14 +199,14 @@ const AstrologyCalendar = ({ api }) => {
             </button>
             <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/10">
               <button
-                onClick={() => setHemisphere("south")}
+                onClick={() => handleHemisphereChange("south")}
                 data-testid="hemi-south"
                 className={`px-3 py-1 rounded-full text-xs transition-all ${hemisphere === "south" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
               >
                 🌿 Southern
               </button>
               <button
-                onClick={() => setHemisphere("north")}
+                onClick={() => handleHemisphereChange("north")}
                 data-testid="hemi-north"
                 className={`px-3 py-1 rounded-full text-xs transition-all ${hemisphere === "north" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
               >

@@ -72,3 +72,47 @@ export const teachings = [
     ],
   },
 ];
+
+export const sisterCircleTexture = {
+  title: "Sister Circle Living Texture",
+  intro:
+    "Bring warmth, craft, and ceremony into your sister circles. This is where devotion becomes lived culture — through shared making, witnessing, and ritual rhythm.",
+  pillars: [
+    {
+      id: "sister-love",
+      title: "Sister Love Agreements",
+      points: [
+        "Confidentiality is sacred: what is shared in circle remains in circle.",
+        "Witness before advice: presence first, guidance only when requested.",
+        "Repair with tenderness: when rupture appears, choose honest loving conversation.",
+      ],
+    },
+    {
+      id: "sacred-crafting",
+      title: "Crafting Rituals",
+      points: [
+        "Rose bead bracelet blessing: each sister knots one prayer into the thread.",
+        "Ancestral recipe altar night: cook one lineage recipe and share its healing story.",
+        "Seasonal altar cards: hand-create intention cards for moon-cycle focus.",
+      ],
+    },
+    {
+      id: "ceremony-templates",
+      title: "Ceremony Templates",
+      points: [
+        "New Moon reset: release, intention, and breath seal in 45 minutes.",
+        "Full Moon gratitude circle: testimony, song, and blessing exchange.",
+        "Threshold rites: birthdays, grief passages, and life transitions held in sister witness.",
+      ],
+    },
+    {
+      id: "ritual-prompts",
+      title: "Ritual Prompt Deck",
+      points: [
+        "What tenderness does my body ask of me this week?",
+        "Where am I ready to receive support instead of performing strength?",
+        "What beauty practice reconnects me to feminine devotion today?",
+      ],
+    },
+  ],
+};

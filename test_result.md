@@ -634,6 +634,43 @@ frontend:
         agent: "testing"
         comment: "✅ FINAL VALIDATION PASSED (2026-06-24): Admin bulk upload panel fully accessible and functional. A) /admin without session: Redirects to landing page (/) - MINOR DEVIATION: AdminRoute redirects to / or /dashboard instead of /admin/login (lines 145, 151 in routeGuards.jsx), but this is acceptable fallback behavior. B) /admin/login: Successfully logs in with admin password 'ShamanicAdmin2026!', redirects to /admin dashboard. All bulk upload panel elements verified: ✅ admin-tutorial-bulk-upload-panel, ✅ admin-bulk-upload-file-input, ✅ admin-bulk-upload-submit-button, ✅ admin-bulk-upload-csv-format-note. Panel fully functional and accessible after admin login."
 
+
+  - task: "Astrology hemisphere toggle behavior"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AstrologyCalendar.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Astrology hemisphere toggle PASSED (2026-06-24): Southern/Northern toggle exists in header area (data-testid='hemi-south', 'hemi-north'). Toggle functionality verified: clicked Southern (localStorage='south'), clicked Northern (localStorage='north'). Persistence verified: page reload maintains 'north' selection. localStorage key: 'astrologyHemispherePreference'. All requirements met."
+
+  - task: "Rose Temple Sister Circle texture section"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/rose-temple/RoseTempleMainSections.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Rose Temple Sister Circle texture PASSED (2026-06-24): Section exists (data-testid='rose-temple-sister-circle-texture'). Sister-love pillar verified (data-testid='sister-circle-pillar-sister-love'). All 4 pillars found: sister-love (Sister Love Agreements), sacred-crafting (Crafting Rituals), ceremony-templates (Ceremony Templates), ritual-prompts (Ritual Prompt Deck). Content includes sister love, crafting, ceremonies, and ritual-style prompts. All requirements met."
+
+  - task: "Daily Guidance tweak panel (authenticated dashboard)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/dashboard/DailyGuidanceGrid.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Daily Guidance tweak panel PASSED (2026-06-24): Successfully authenticated with test credentials (demoqa_740fefc1@example.com). Panel exists (data-testid='daily-guidance-tweak-panel'). Practical focus panel verified (data-testid='daily-guidance-practical-focus'). Spiritual focus panel verified (data-testid='daily-guidance-spiritual-focus'). Both panels contain content with bullet points. Conditional rendering working correctly (only appears when backend provides guidance_tweak data). All requirements met."
+
   - task: "Safety notes - Mantras modal conditional rendering"
     implemented: true
     working: true
@@ -8445,12 +8482,62 @@ metadata:
 
 test_plan:
   current_focus:
-    - "CSV bulk upload + safety notes verification - COMPLETED"
+    - "Astrology hemisphere, Rose Temple Sister Circle, Daily Guidance tweak panel - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      Astrology Hemisphere, Rose Temple Sister Circle, Daily Guidance Tweak Panel Testing (2026-06-24):
+      
+      VERIFICATION REQUEST: Run frontend testing for latest feature additions
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (3/3):
+      
+      1. ✅ ASTROLOGY HEMISPHERE TOGGLE (/astrology) - PASSED
+         - Southern/Northern toggle exists: ✓ data-testid='hemi-south', data-testid='hemi-north'
+         - Toggle placement: ✓ Located in Astrology page header area
+         - Toggle functionality: ✓ Both buttons clickable and responsive
+         - localStorage persistence: ✓ Hemisphere choice persists across page reload
+         - localStorage key: 'astrologyHemispherePreference'
+         - Test flow: Clicked Southern (stored 'south'), clicked Northern (stored 'north'), reloaded page (still 'north')
+         - All requirements met
+      
+      2. ✅ ROSE TEMPLE SISTER CIRCLE TEXTURE (/rose-temple) - PASSED
+         - Section exists: ✓ data-testid='rose-temple-sister-circle-texture'
+         - Section title: 'Sister Circle Living Texture'
+         - Sister-love pillar exists: ✓ data-testid='sister-circle-pillar-sister-love'
+         - All 4 pillar cards found:
+           * sister-circle-pillar-sister-love: 'Sister Love Agreements'
+           * sister-circle-pillar-sacred-crafting: 'Crafting Rituals'
+           * sister-circle-pillar-ceremony-templates: 'Ceremony Templates'
+           * sister-circle-pillar-ritual-prompts: 'Ritual Prompt Deck'
+         - Content verification: ✓ Includes sister love, crafting, ceremonies, and ritual-style prompts
+         - All requirements met
+      
+      3. ✅ DAILY GUIDANCE TWEAK PANEL (Authenticated Dashboard) - PASSED
+         - Authentication: ✓ Successfully logged in with test credentials (demoqa_740fefc1@example.com)
+         - Dashboard loaded: ✓ data-testid='dashboard'
+         - Tweak panel exists: ✓ data-testid='daily-guidance-tweak-panel'
+         - Practical focus panel: ✓ data-testid='daily-guidance-practical-focus'
+         - Spiritual focus panel: ✓ data-testid='daily-guidance-spiritual-focus'
+         - Both panels contain content with bullet points
+         - Conditional rendering working correctly (panel only appears when backend provides guidance_tweak data)
+         - All requirements met
+      
+      CRITICAL FINDINGS:
+      ✅ Astrology hemisphere toggle working with localStorage persistence
+      ✅ Rose Temple Sister Circle section fully implemented with all 4 pillars
+      ✅ Daily Guidance tweak panel accessible and functional in authenticated dashboard
+      ✅ All exact selectors from review_request verified and working
+      ✅ No regressions detected
+      
+      SUMMARY:
+      All 3 feature additions FULLY WORKING. Astrology hemisphere toggle persists across reload, Rose Temple Sister Circle texture includes all expected content (sister love, crafting, ceremonies, ritual prompts), and Daily Guidance tweak panel displays correctly in authenticated dashboard with practical and spiritual focus sections. All data-testids present and functional. No issues found.
+
   - agent: "testing"
     message: |
       CSV Bulk Upload + Safety Notes Focused Testing (2026-06-24):

@@ -382,6 +382,16 @@ def _build_unified_daily_flow(context: dict[str, Any]) -> dict[str, Any]:
     return {
         "title": "Very Deep Ceremonial Daily Flow",
         "opening_invocation": "I enter this day with reverence, embodiment, and devotion to truth.",
+        "practical_focus": [
+            "Complete one physical grounding action in the first hour of your day.",
+            "Choose one clear boundary conversation and speak it gently but directly.",
+            "Close the day with a 5-minute written integration before sleep.",
+        ],
+        "spiritual_focus": [
+            "Consecrate your day with breath and mantra before opening external inputs.",
+            "Treat each transition as ceremony: pause, breathe, choose alignment.",
+            "Offer one gratitude prayer to your ally/angel axis before dusk.",
+        ],
         "ceremony_steps": [
             {
                 "step_id": "attune",
@@ -550,6 +560,18 @@ def _format_daily_guidance_response(user: User, context: dict[str, Any]) -> dict
         "yoga_sequence_of_day": context.get("yoga_sequence_of_day"),
         "sunrise_sunset_guidance": context.get("sunrise_sunset_guidance"),
         "element_focus": current_moon["element"] if current_moon else "Spirit",
+        "guidance_tweak": {
+            "practical": [
+                "Take one embodied action within the next 60 minutes.",
+                "Protect one non-negotiable pocket of sacred time today.",
+                "End day with three written reflections: body, heart, purpose.",
+            ],
+            "spiritual": [
+                "Speak your chosen mantra as a doorway into aligned action.",
+                "Remember: devotion is measured through consistency, not intensity.",
+                "Ask: 'How can I embody sacred love in one concrete choice today?'",
+            ],
+        },
     }
 
 
@@ -616,6 +638,16 @@ def _handle_daily_guidance_error(user: User, exc: Exception) -> dict[str, Any]:
         "yoga_sequence_of_day": _default_yoga_sequence_of_day(),
         "sunrise_sunset_guidance": _default_sunrise_sunset_guidance(),
         "element_focus": "Spirit",
+        "guidance_tweak": {
+            "practical": [
+                "Complete one meaningful action before checking out of your day.",
+                "Hydrate, breathe, and reset your body every transition point.",
+            ],
+            "spiritual": [
+                "Return to your heart center before every key decision.",
+                "Offer one small act of devotion with sincerity over performance.",
+            ],
+        },
     }
 
 
