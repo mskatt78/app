@@ -1,0 +1,78 @@
+{
+  "summary": "Iteration 195 - Admin Bulk Upload CSV for Tutorial Overrides & Safety Notes. All 23 backend tests passed. Frontend UI verified: Admin bulk upload panel visible with safety_notes column documented, safety notes display conditionally on Yoga, Meditations cards/modals. Best_for_tags and YouTube links remain intact.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration195_bulk_upload_safety_notes.py",
+    "/app/test_reports/pytest/pytest_iteration195.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration195_bulk_upload_safety_notes.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "test_credentials": "Admin: ShamanicAdmin2026! (from test_credentials.md)",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Admin bulk upload CSV endpoint fully functional at POST /api/admin/tutorial-overrides/bulk-upload. Supports collections: mantras, mudras, yoga_poses, breathwork_sessions, meditations. CSV columns: collection,item_id,item_name,youtube_tutorial_override_urls,best_for_tags,safety_notes. Safety notes display conditionally on cards/modals when data exists.",
+  "verified_features": {
+    "admin_bulk_upload_endpoint": {
+      "endpoint": "POST /api/admin/tutorial-overrides/bulk-upload",
+      "auth_required": true,
+      "csv_columns": ["collection", "item_id", "item_name", "youtube_tutorial_override_urls", "best_for_tags", "safety_notes"],
+      "supported_collections": ["mantras", "mudras", "yoga_poses", "breathwork_sessions", "meditations"],
+      "validation": {
+        "rejects_non_csv": true,
+        "rejects_empty_csv": true,
+        "skips_invalid_collections": true,
+        "skips_missing_identifiers": true
+      }
+    },
+    "admin_dashboard_bulk_panel": {
+      "visible": true,
+      "file_input": true,
+      "submit_button": true,
+      "csv_format_note_includes_safety_notes": true
+    },
+    "safety_notes_display": {
+      "yoga_poses_modal": "Contraindications / Safety section with rose/pink styling",
+      "meditations_cards": "CONTRAINDICATIONS / SAFETY section on cards",
+      "breathwork_sessions": "Conditional display when safety_notes exists",
+      "mantras_modal": "Conditional display when safety_notes exists",
+      "mudras_modal": "Conditional display when safety_notes exists"
+    },
+    "best_for_tags_intact": {
+      "yoga_poses": true,
+      "breathwork_sessions": true,
+      "meditations": true,
+      "mantras": true,
+      "mudras": true
+    },
+    "youtube_tutorials_intact": {
+      "yoga_poses": true,
+      "breathwork_sessions": true,
+      "meditations": true,
+      "mantras": true,
+      "mudras": true
+    }
+  },
+  "admin_field_config_verified": {
+    "mantras": ["best_for_tags", "youtube_tutorial_override_urls", "safety_notes"],
+    "mudras": ["best_for_tags", "youtube_tutorial_override_urls", "safety_notes"],
+    "yoga_poses": ["best_for_tags", "youtube_tutorial_override_urls", "safety_notes"],
+    "breathwork_sessions": ["best_for_tags", "youtube_tutorial_override_urls", "safety_notes"],
+    "meditations": ["best_for_tags", "youtube_tutorial_override_urls", "safety_notes"]
+  }
+}
