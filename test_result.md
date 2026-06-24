@@ -9431,3 +9431,8 @@ agent_communication:
       
       Duration label normalization and audit logging verification PASSED. All 8 tests completed successfully. All duration labels normalized to parser (formatDurationMinutesLabel or resolveDurationMinutes). No NaN values detected. Guided flows start without crashes. Duration audit logging functional and app remains stable. No selector regressions detected. All requirements met.
 
+
+
+agent_communication:
+  - agent: "testing"
+    message: "Backend sanity check completed (2026-06-24). Quick verification of health and dashboard endpoints. No feature-specific changes tested. Results: GET /api/health returns 200 ✓, GET /api/dashboard/daily returns 401 (auth-protected, acceptable) ✓, No 500 errors detected ✓. All sanity checks PASSED."
