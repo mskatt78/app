@@ -1592,3 +1592,30 @@
 - P1: Add admin UX schema helper for quick portal authoring templates
 - P2: Add additional user-requested portals and optional weekly portal rotation
 
+## Deployment Fix: Auth Redirect Hardcoding Removal (Iteration 187) — 2026-06-24
+
+### Issue Context
+- User reported production deployment failure and asked for deployment-log based debugging.
+- Deployment analysis repeatedly highlighted auth redirect concerns in frontend Google login flow.
+
+### Fix Implemented
+- Updated Google auth entry points to avoid hardcoded provider URL usage:
+  - `frontend/src/pages/LandingPage.jsx`
+  - `frontend/src/pages/main-menu/MainMenuContainer.jsx`
+- Added environment-driven auth provider key:
+  - `frontend/.env`: `REACT_APP_AUTH_PROVIDER_URL=https://auth.emergentagent.com`
+- Kept redirect target environment-safe and domain-agnostic:
+  - `window.location.origin + '/dashboard'`
+
+### Validation
+- Frontend lint: PASS
+- Testing agent run: `/app/test_reports/iteration_186.json` (PASS)
+  - Auth buttons render
+  - No hardcoded runtime auth provider references in target auth flow files
+  - Redirect pattern validated as production-ready
+- Deployment agent final scan: no actionable blockers remaining in code.
+
+### Follow-up
+- Redeploy to apply updated env-driven auth flow to production.
+- If deployment platform still reports contradictory status despite green health checks, collect latest deploy ID and contact Emergent Support with run logs.
+
