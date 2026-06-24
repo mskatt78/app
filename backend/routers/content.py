@@ -192,6 +192,32 @@ MUDRA_VERIFIED_IMAGE_MAP: dict[str, dict[str, Any]] = {
     },
 }
 
+MANTRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
+    "om": ["https://www.youtube.com/watch?v=eQTenvydZIo"],
+    "om mani padme hum": ["https://www.youtube.com/watch?v=JgHId_MP7gY"],
+    "lokah samastah sukhino bhavantu": ["https://www.youtube.com/watch?v=CBe4Q3upir8"],
+    "so hum": ["https://www.youtube.com/watch?v=303Dmd3WIl8"],
+    "sat nam": ["https://www.youtube.com/watch?v=kUCCrf4c6R0"],
+    "om namah shivaya": ["https://www.youtube.com/watch?v=0C2s8ved0VU"],
+    "gayatri mantra": ["https://www.youtube.com/watch?v=ESW83VsEfWc"],
+    "ham sa": ["https://www.youtube.com/watch?v=303Dmd3WIl8"],
+    "om gam ganapataye namaha": ["https://www.youtube.com/watch?v=oahB95PKbfA"],
+    "ra ma da sa": ["https://www.youtube.com/watch?v=8IYzSbrI6h0"],
+}
+
+MUDRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
+    "gyan mudra": ["https://www.youtube.com/watch?v=fRtOijVfhn4"],
+    "anjali mudra": ["https://www.youtube.com/watch?v=JgFLogqy1LU"],
+    "dhyana mudra": ["https://www.youtube.com/watch?v=yogF5AOPrpU"],
+    "prithvi mudra": ["https://www.youtube.com/watch?v=KbCrUaXee_w"],
+    "varuna mudra": ["https://www.youtube.com/watch?v=LRSqHICoKF0"],
+    "agni mudra": ["https://www.youtube.com/watch?v=R8Qfy-V77Ug"],
+    "vayu mudra": ["https://www.youtube.com/watch?v=SiWC_Ra7PWI"],
+    "shuni mudra": ["https://www.youtube.com/watch?v=oJJQ_eJthLk"],
+    "surya mudra": ["https://www.youtube.com/watch?v=gA5ndKk1B68"],
+    "prana mudra": ["https://www.youtube.com/watch?v=3ritYT9VnTM"],
+}
+
 WATER_PRACTICE_SUPPLEMENTS = [
     {
         "id": "water-practice-auric-rinse",
@@ -924,6 +950,18 @@ def _enrich_yoga_pose(pose: dict[str, Any]) -> dict[str, Any]:
         "mindfulness_prompt",
         "Track one sensation, one emotion, and one breath shift while holding the posture.",
     )
+    enriched.setdefault(
+        "master_embodiment_protocol",
+        _build_modality_master_protocol(
+            str(enriched.get("name") or "Yoga Pose"),
+            "yoga",
+            str(enriched.get("somatic_fascia_focus") or "stable posture and slow breath"),
+        ),
+    )
+    enriched.setdefault(
+        "youtube_tutorials",
+        _build_youtube_tutorial_links(str(enriched.get("name") or "Yoga Pose"), "yoga pose alignment"),
+    )
 
     return _enrich_content_integrity(enriched, source_type)
 
@@ -1087,21 +1125,108 @@ def _enrich_content_integrity(item: dict[str, Any], default_source_type: str) ->
     return enriched
 
 
-def _build_youtube_tutorial_links(practice_name: str, focus: str) -> list[dict[str, str]]:
+def _build_youtube_tutorial_links(
+    practice_name: str,
+    focus: str,
+    direct_video_map: Optional[dict[str, list[str]]] = None,
+) -> list[dict[str, str]]:
     name = str(practice_name or "practice").strip()
     focus_term = str(focus or "tutorial").strip()
+    normalized_name = _normalize_label_key(name)
+
+    links: list[dict[str, str]] = []
+    seen_urls: set[str] = set()
+
+    if direct_video_map and normalized_name in direct_video_map:
+        for idx, url in enumerate(direct_video_map.get(normalized_name, [])[:2]):
+            if not url or url in seen_urls:
+                continue
+            links.append({
+                "title": f"{name} — Curated tutorial {idx + 1}",
+                "url": url,
+                "platform": "youtube",
+                "source": "direct_video",
+            })
+            seen_urls.add(url)
+
     query_pairs = [
         (f"{name} {focus_term} step by step tutorial", "Step-by-step tutorial"),
         (f"{name} {focus_term} guided practice", "Guided practice video"),
     ]
-    links: list[dict[str, str]] = []
+
     for query, label in query_pairs:
+        url = f"https://www.youtube.com/results?search_query={quote(query)}"
+        if url in seen_urls:
+            continue
         links.append({
             "title": f"{name} — {label}",
-            "url": f"https://www.youtube.com/results?search_query={quote(query)}",
+            "url": url,
             "platform": "youtube",
+            "source": "search_query",
         })
-    return links
+        seen_urls.add(url)
+    return links[:3]
+
+
+def _build_modality_master_protocol(practice_name: str, modality: str, somatic_anchor: str) -> dict[str, Any]:
+    name = str(practice_name or "Practice").strip()
+    mode = str(modality or "practice").strip()
+    anchor = str(somatic_anchor or "steady breath and grounded posture").strip()
+
+    return {
+        "preparation_phase": [
+            f"Ritual arrival (2-4 min): settle your body and clarify intention for {name}.",
+            f"Nervous-system setup: use slow nasal breathing and establish {anchor} as your somatic anchor.",
+            f"Safety and pacing check: choose intensity that supports sustainable {mode} integration.",
+        ],
+        "embodiment_phase": [
+            f"Core {mode} engagement (8-20 min): practice with precision rather than force.",
+            "Micro-adjust every few minutes: release excess tension and restore coherent breath rhythm.",
+            "Track one body sensation + one emotional shift to keep the session deeply embodied.",
+        ],
+        "integration_phase": [
+            "Down-regulate with 90-180 seconds of stillness before transitioning out.",
+            "Journal one tangible nervous-system change and one practical life integration action.",
+            "Hydrate, orient to environment, and complete a gentle movement reset.",
+        ],
+        "seven_day_embodiment": [
+            "Day 1: Learn foundations and establish safe baseline duration/intensity.",
+            "Day 2: Refine breath pacing and remove unnecessary muscular effort.",
+            "Day 3: Add mindful cueing (sensation + emotion tracking).",
+            "Day 4: Split into two shorter sessions to improve consistency.",
+            "Day 5: Integrate with intentional movement transitions and posture awareness.",
+            "Day 6: Add 3-minute stillness integration after the active practice.",
+            "Day 7: Review gains, identify friction points, and commit to next-week progression.",
+        ],
+    }
+
+
+def _enrich_breathwork_session_entry(session: dict[str, Any]) -> dict[str, Any]:
+    enriched = _enrich_content_integrity(session, "hybrid-curated")
+    session_name = str(enriched.get("name") or "Breathwork Session").strip()
+    enriched.setdefault(
+        "master_embodiment_protocol",
+        _build_modality_master_protocol(session_name, "breathwork", "diaphragmatic breathing and jaw/shoulder release"),
+    )
+    enriched.setdefault(
+        "youtube_tutorials",
+        _build_youtube_tutorial_links(session_name, "breathwork technique"),
+    )
+    return enriched
+
+
+def _enrich_meditation_entry(meditation: dict[str, Any]) -> dict[str, Any]:
+    enriched = _enrich_content_integrity(meditation, "hybrid-curated")
+    meditation_name = str(enriched.get("name") or "Meditation").strip()
+    enriched.setdefault(
+        "master_embodiment_protocol",
+        _build_modality_master_protocol(meditation_name, "meditation", "upright spine and long exhale"),
+    )
+    enriched.setdefault(
+        "youtube_tutorials",
+        _build_youtube_tutorial_links(meditation_name, "guided meditation"),
+    )
+    return enriched
 
 
 def _build_mantra_master_protocol(mantra: dict[str, Any]) -> dict[str, Any]:
@@ -1140,7 +1265,7 @@ def _build_mantra_master_protocol(mantra: dict[str, Any]) -> dict[str, Any]:
 def _enrich_mantra_entry(mantra: dict[str, Any]) -> dict[str, Any]:
     enriched = dict(mantra)
     name = str(enriched.get("name") or "Mantra").strip()
-    enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(name, "mantra chanting"))
+    enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(name, "mantra chanting", MANTRA_DIRECT_VIDEO_MAP))
     if not enriched.get("master_embodiment_protocol"):
         enriched["master_embodiment_protocol"] = _build_mantra_master_protocol(enriched)
     return enriched
@@ -1180,7 +1305,7 @@ def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
         }
 
     mudra_name = str(enriched.get("name") or "Mudra").strip()
-    enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(mudra_name, "mudra hand position"))
+    enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(mudra_name, "mudra hand position", MUDRA_DIRECT_VIDEO_MAP))
     if not enriched.get("master_embodiment_protocol"):
         enriched["master_embodiment_protocol"] = {
             "preparation_phase": [
@@ -2431,7 +2556,7 @@ async def get_breathwork_sessions(element: Optional[str] = None) -> list[dict[st
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     sessions = await db.breathwork_sessions.find(query, {"_id": 0}).to_list(length=20)
-    return [_enrich_content_integrity(session, "hybrid-curated") for session in sessions]
+    return [_enrich_breathwork_session_entry(session) for session in sessions]
 
 
 @router.get("/breathwork/sessions/{session_id}")
@@ -2441,7 +2566,7 @@ async def get_breathwork_session(session_id: str) -> dict[str, Any]:
     session = await db.breathwork_sessions.find_one({"id": session_id}, {"_id": 0})
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
-    return _enrich_content_integrity(session, "hybrid-curated")
+    return _enrich_breathwork_session_entry(session)
 
 
 # ============ CRYSTALS ROUTES ============
@@ -3322,7 +3447,7 @@ async def get_meditations(category: Optional[str] = None, element: Optional[str]
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     meditations = await db.meditations.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_content_integrity(meditation, "hybrid-curated") for meditation in meditations]
+    return [_enrich_meditation_entry(meditation) for meditation in meditations]
 
 
 @router.get("/meditations/{meditation_id}")
@@ -3332,7 +3457,7 @@ async def get_meditation(meditation_id: str) -> dict[str, Any]:
     meditation = await db.meditations.find_one({"id": meditation_id}, {"_id": 0})
     if not meditation:
         raise HTTPException(status_code=404, detail="Meditation not found")
-    return _enrich_content_integrity(meditation, "hybrid-curated")
+    return _enrich_meditation_entry(meditation)
 
 
 # ============ SOMATIC PRACTICES ============

@@ -50,6 +50,19 @@ export const BreathworkSessionGrid = ({ filteredSessions, elementColors, startSe
               </div>
             )}
 
+            {(session.youtube_tutorials || []).length > 0 && (
+              <a
+                href={session.youtube_tutorials[0].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(event) => event.stopPropagation()}
+                className="mt-3 inline-block text-xs text-cyan-200 underline underline-offset-2"
+                data-testid={`breathwork-youtube-link-${session.id}`}
+              >
+                {session.youtube_tutorials[0].title}
+              </a>
+            )}
+
             {session.content_integrity?.verified && (
               <p className="mt-2 text-[11px] text-cyan-300/90" data-testid={`breathwork-integrity-${session.id}`}>
                 Verified references ({session.content_integrity.references_count || 0})

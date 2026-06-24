@@ -8325,16 +8325,52 @@ frontend:
         agent: "testing"
         comment: "✅ Mudras master-depth embodiment protocol and YouTube tutorials PASSED (2026-06-24). Page loads correctly at /mudras with 12 mudra cards. First mudra card modal opens successfully. Master embodiment protocol visible (data-testid='mudra-master-embodiment-protocol'). All three phase blocks exist: preparation_phase ✓, embodiment_phase ✓, integration_phase ✓. Seven-day embodiment path present (data-testid='mudra-master-seven-day') ✓. YouTube tutorials section visible (data-testid='mudra-youtube-tutorials') with 2 tutorial links ✓. First YouTube link is visible and clickable ✓. Guided practice button present and visible (data-testid='start-mudra-guided-practice-btn') ✓. Modal closes successfully ✓. No modal rendering crash. Console errors: 21 expected 401 auth errors (non-critical). No blocking console errors detected."
 
+  - task: "Yoga poses master embodiment protocol and YouTube tutorials"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Yoga poses master embodiment protocol and YouTube tutorials PASSED (2026-06-24). Page loads correctly at /yoga. First pose card modal opens successfully. Master embodiment protocol visible (data-testid='selected-pose-master-embodiment-protocol') ✓. YouTube tutorials section visible (data-testid='selected-pose-youtube-tutorials') ✓. 2 YouTube tutorial links found with correct data-testid pattern (selected-pose-youtube-link-*) ✓. YouTube links are visible and clickable ✓. All required selectors present. No route crash. Console errors: 78 expected 401 auth errors (non-critical). No blocking console errors detected."
+
+  - task: "Breathwork sessions master embodiment protocol and YouTube tutorials"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Breathwork.jsx, /app/frontend/src/components/breathwork/BreathworkSessionGrid.jsx, /app/frontend/src/components/breathwork/BreathworkActiveSessionView.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Breathwork sessions master embodiment protocol and YouTube tutorials PASSED (2026-06-24). Page loads correctly at /breathwork. 6 card-level YouTube links present (data-testid='breathwork-youtube-link-*') and visible ✓. First session card opens active view successfully ✓. Master embodiment protocol visible in active session (data-testid='breathwork-master-embodiment-protocol') ✓. YouTube tutorials section visible in active session (data-testid='breathwork-youtube-tutorials') ✓. 2 YouTube links in active session (data-testid='breathwork-youtube-link-active-*') ✓. All required selectors present. No route crash. Console errors: 78 expected 401 auth errors (non-critical). No blocking console errors detected."
+
+  - task: "Meditations master embodiment protocol snippets and YouTube tutorials"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Meditations.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Meditations master embodiment protocol snippets and YouTube tutorials PASSED (2026-06-24). Page loads correctly at /meditations. 6 protocol snippet blocks on cards (data-testid='meditation-master-embodiment-*') ✓. 6 YouTube links on cards (data-testid='meditation-youtube-link-*') ✓. YouTube link click does NOT trigger meditation modal (correct stopPropagation behavior) ✓. All required selectors present. No route crash. Console errors: 78 expected 401 auth errors (non-critical). No blocking console errors detected."
+
 metadata:
   created_by: "testing_agent"
   version: "2.0"
-  test_sequence: 12
+  test_sequence: 13
   run_ui: false
   last_tested: "2026-06-24"
 
 test_plan:
   current_focus:
-    - "Mantras/Mudras master-depth and YouTube tutorials - COMPLETED"
+    - "Yoga/Breathwork/Meditations protocol + YouTube mapping - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -8560,3 +8596,53 @@ agent_communication:
       
       SUMMARY:
       Backend regression checks PASSED. Both /api/mantras and /api/mudras endpoints return 200 with all required fields. All 24 items (12 mantras + 12 mudras) include master_embodiment_protocol and youtube_tutorials with valid YouTube URLs. No 500 errors detected. Backend APIs are stable and production-ready.
+
+
+  - agent: "testing"
+    message: |
+      Protocol + YouTube Mapping Validation Test completed successfully (2026-06-24):
+      
+      VERIFICATION REQUEST: Run frontend validation for newly added protocol + YouTube mapping features
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (3/3 routes):
+      
+      1. ✅ YOGA (/yoga) - PASSED
+         - Page loads: ✓ (data-testid='yoga-library' found)
+         - First pose card opens modal: ✓
+         - Master embodiment protocol: ✓ data-testid='selected-pose-master-embodiment-protocol' visible
+         - YouTube tutorials section: ✓ data-testid='selected-pose-youtube-tutorials' visible
+         - YouTube links: ✓ 2 links found with data-testid='selected-pose-youtube-link-*' pattern
+         - YouTube links visible: ✓ first link is visible and clickable
+         - No route crash: ✓
+      
+      2. ✅ BREATHWORK (/breathwork) - PASSED
+         - Page loads: ✓ (data-testid='breathwork' found)
+         - Card-level YouTube links: ✓ 6 links found with data-testid='breathwork-youtube-link-*' pattern
+         - Card-level YouTube links visible: ✓
+         - First session card opens active view: ✓
+         - Master embodiment protocol in active session: ✓ data-testid='breathwork-master-embodiment-protocol' visible
+         - YouTube tutorials in active session: ✓ data-testid='breathwork-youtube-tutorials' visible
+         - YouTube links in active session: ✓ 2 links found with data-testid='breathwork-youtube-link-active-*' pattern
+         - No route crash: ✓
+      
+      3. ✅ MEDITATIONS (/meditations) - PASSED
+         - Page loads: ✓ (data-testid='meditations-page' found)
+         - Protocol snippet blocks on cards: ✓ 6 blocks found with data-testid='meditation-master-embodiment-*' pattern
+         - YouTube links on cards: ✓ 6 links found with data-testid='meditation-youtube-link-*' pattern
+         - YouTube link click behavior: ✓ does NOT trigger card modal/start action (correct stopPropagation)
+         - No route crash: ✓
+      
+      CROSS-CUTTING CHECKS:
+      ✅ No route crashes detected
+      ✅ No blocking console errors (78 expected 401 auth errors - non-critical)
+      ✅ All required data-testids present and accessible
+      ✅ Master embodiment protocols visible in all tested routes
+      ✅ YouTube tutorial sections visible with clickable links
+      ✅ YouTube links have correct stopPropagation behavior (meditations)
+      
+      CONSOLE ERRORS:
+      ⚠️ 78 console errors detected - all are expected 401 auth errors for unauthenticated public route access (non-critical, consistent with previous test results)
+      
+      SUMMARY:
+      All requirements from review_request met successfully. All 3 routes (/yoga, /breathwork, /meditations) load correctly with master embodiment protocols and YouTube tutorials fully functional. All exact selector requirements verified. No blocking errors. No route crashes. Feature is production-ready.

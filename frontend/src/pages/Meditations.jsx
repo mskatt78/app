@@ -278,6 +278,29 @@ const Meditations = ({ user, api }) => {
                           {meditation.category}
                         </span>
                       </div>
+
+                      {meditation.master_embodiment_protocol && (
+                        <div className="mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid={`meditation-master-embodiment-${meditation.id}`}>
+                          <p className="text-[11px] uppercase tracking-wider text-amber-300 mb-2">Master Embodiment Protocol</p>
+                          <p className="text-xs text-muted-foreground line-clamp-3">
+                            {(meditation.master_embodiment_protocol.preparation_phase || [])[0]}
+                          </p>
+                        </div>
+                      )}
+
+                      {(meditation.youtube_tutorials || []).length > 0 && (
+                        <a
+                          href={meditation.youtube_tutorials[0].url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(event) => event.stopPropagation()}
+                          className="mt-3 inline-block text-xs text-cyan-200 underline underline-offset-2"
+                          data-testid={`meditation-youtube-link-${meditation.id}`}
+                        >
+                          {meditation.youtube_tutorials[0].title}
+                        </a>
+                      )}
+
                       {meditation.content_integrity?.verified && (
                         <p
                           className="mt-2 text-[11px] text-cyan-300/90"
