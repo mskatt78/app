@@ -1699,3 +1699,49 @@
 - **P1:** YouTube mappings for Mantras/Mudras ✅ done.
 - **P2 Next:** Expand this same master-depth + YouTube curation approach into additional practice families (if requested), plus weekly reflection/alchemy planning.
 
+## Direct Video Curation + Cross-Family Protocol Extension (Iteration 193) — 2026-06-24
+
+### User Request Implemented
+- Curate direct video-level YouTube links (not only search mappings) for top 10 most-used Mantras/Mudras.
+- Extend the same master-depth embodiment protocol structure to remaining lighter practice families.
+
+### Delivered
+- Backend (`backend/routers/content.py`)
+  - Added curated direct link maps:
+    - `MANTRA_DIRECT_VIDEO_MAP` (top 10 mantra entries)
+    - `MUDRA_DIRECT_VIDEO_MAP` (top 10 mudra entries)
+  - Enhanced tutorial builder:
+    - `_build_youtube_tutorial_links()` now prioritizes direct videos and labels sources (`direct_video` / `search_query`).
+  - Added reusable cross-family depth:
+    - `_build_modality_master_protocol()`
+    - `_enrich_breathwork_session_entry()`
+    - `_enrich_meditation_entry()`
+  - Extended protocol fields + tutorials into:
+    - `mantras`, `mudras`, `yoga poses`, `breathwork sessions`, `meditations` APIs.
+
+- Frontend
+  - `YogaLibrary.jsx` modal now renders:
+    - full master embodiment protocol sections + 7-day path
+    - YouTube tutorial links
+  - `BreathworkSessionGrid.jsx`:
+    - card-level YouTube tutorial link
+  - `BreathworkActiveSessionView.jsx`:
+    - full master protocol + YouTube sections
+  - `Meditations.jsx`:
+    - card-level master protocol snippet + YouTube link
+    - link click keeps `stopPropagation` (does not auto-start meditation)
+
+### Verification
+- Full testing agent report: `/app/test_reports/iteration_193.json`
+  - Backend: **100% (18/18)**
+  - Frontend: **100%**
+- Key validations confirmed:
+  - Top 10 mantras/mudras return direct YouTube watch links with `source=direct_video`
+  - Yoga/Breathwork/Meditations include `master_embodiment_protocol` + `youtube_tutorials`
+  - UI sections render and remain interactive without route crashes.
+
+### Updated Priority Snapshot
+- **P1:** Direct video-level curation for top 10 Mantras/Mudras ✅ done.
+- **P2:** Master-depth protocol structure extended to Yoga/Breathwork/Meditations ✅ done.
+- **Next:** Optional direct-video curation for Yoga/Breathwork/Meditations (currently search-based YouTube links there).
+
