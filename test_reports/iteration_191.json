@@ -1,0 +1,125 @@
+{
+  "summary": "Iteration 191 - Embodiment Protocol Panel Verification Complete. All 7 modalities (Chakra, Heart, Shamanic, Energy Healing, Somatic Yoga, Water, Elemental) have EmbodimentProtocolPanel with 3-step and 7-day options. Guided practice flows work without crashes. Retreats cleanup effective (0 placeholders). Expand-script returns >= 840 words for 7+ minute narration.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Elemental Practice cards",
+        "issues": ["Overlay gradient intercepts pointer events - requires force=True click (minor UX friction)"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_embodiment_iteration191.py",
+    "/app/test_reports/pytest/pytest_iteration191.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "EmbodimentProtocolPanel.jsx: Clean implementation with data-testid attributes for 3-step, 7-day, and integration-note sections",
+    "ChakraDetailModal.jsx: EmbodimentProtocolPanel integrated with testIdPrefix='chakra-practice-embodiment'",
+    "HeartPracticeModal.jsx: EmbodimentProtocolPanel integrated with testIdPrefix='heart-practice-embodiment'",
+    "ShamanicPracticeModal.jsx: EmbodimentProtocolPanel integrated with testIdPrefix='shamanic-practice-embodiment'",
+    "EnergyHealing.jsx: EmbodimentProtocolPanel integrated with testIdPrefix='energy-healing-embodiment'",
+    "SomaticYoga.jsx: EmbodimentProtocolPanel integrated with testIdPrefix='somatic-yoga-embodiment'",
+    "WaterPractices.jsx: EmbodimentProtocolPanel integrated with testIdPrefix='water-practice-embodiment'",
+    "ElementalPracticeModal.jsx: EmbodimentProtocolPanel integrated with testIdPrefix='elemental-practice-embodiment'",
+    "server.py: cleanup_legacy_retreats_once() function properly removes placeholder retreats with marker tracking"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_embodiment_iteration191.py"
+  ],
+  "success_rate": {
+    "backend": "100% (4/4 tests passed)",
+    "frontend": "100% (all 7 modalities verified)"
+  },
+  "test_credentials": "N/A - no auth required for these tests",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All EmbodimentProtocolPanel integrations verified across 7 modalities. Guided practice flows work without crashes. Minor console warning about 'signal is aborted without reason' in PracticeTimer narration playback is non-blocking. Retreats cleanup is effective.",
+  "tests_executed": {
+    "chakra_cleansing": [
+      "Page loads at /chakra-cleansing - PASSED",
+      "Root Chakra modal opens - PASSED",
+      "EmbodimentProtocolPanel found - PASSED",
+      "3-Step Embodiment Option found - PASSED",
+      "7-Day Embodiment Option found - PASSED",
+      "Guided Practice button works - PASSED",
+      "No crash on guided start - PASSED"
+    ],
+    "heart_practices": [
+      "Page loads at /heart-practices - PASSED",
+      "Heart Opening Ceremony modal opens - PASSED",
+      "EmbodimentProtocolPanel found - PASSED",
+      "3-Step Embodiment Option found - PASSED",
+      "7-Day Embodiment Option found - PASSED",
+      "Begin Guided Practice button works - PASSED"
+    ],
+    "shamanic_practices": [
+      "Page loads at /shamanic - PASSED",
+      "Power Animal Journey modal opens - PASSED",
+      "EmbodimentProtocolPanel found - PASSED",
+      "3-Step Embodiment Option found - PASSED",
+      "7-Day Embodiment Option found - PASSED",
+      "Begin Guided Shamanic Journey button works - PASSED",
+      "No crash on guided start - PASSED"
+    ],
+    "energy_healing": [
+      "Page loads at /energy-healing - PASSED",
+      "Energy Healing modal opens - PASSED",
+      "EmbodimentProtocolPanel found - PASSED",
+      "3-Step Embodiment Option found - PASSED",
+      "7-Day Embodiment Option found - PASSED"
+    ],
+    "somatic_yoga": [
+      "Page loads at /somatic-yoga - PASSED",
+      "Somatic Yoga modal opens - PASSED",
+      "EmbodimentProtocolPanel found - PASSED",
+      "3-Step Embodiment Option found - PASSED",
+      "7-Day Embodiment Option found - PASSED"
+    ],
+    "water_practices": [
+      "Page loads at /water-practices - PASSED",
+      "Intention Water Blessing modal opens - PASSED",
+      "EmbodimentProtocolPanel found - PASSED",
+      "3-Step Embodiment Option found - PASSED",
+      "7-Day Embodiment Option found - PASSED",
+      "Start Guided Practice button works - PASSED"
+    ],
+    "elemental_practices": [
+      "Page loads at /elemental-practices - PASSED",
+      "Earth Body Meditation modal opens - PASSED",
+      "EmbodimentProtocolPanel found - PASSED",
+      "3-Step Embodiment Option found - PASSED",
+      "7-Day Embodiment Option found - PASSED",
+      "Begin Guided Practice button works - PASSED"
+    ],
+    "backend_tests": [
+      "Retreats cleanup - returns empty array - PASSED",
+      "Expand-script 7-min narration >= 840 words - PASSED (1000 words)",
+      "Expand-script 10-min narration >= 840 words - PASSED (1000 words, capped)",
+      "API health check - PASSED"
+    ]
+  },
+  "feature_verification": {
+    "embodiment_protocol_panel_chakra": "VERIFIED - 3-step and 7-day options present",
+    "embodiment_protocol_panel_heart": "VERIFIED - 3-step and 7-day options present",
+    "embodiment_protocol_panel_shamanic": "VERIFIED - 3-step and 7-day options present",
+    "embodiment_protocol_panel_energy_healing": "VERIFIED - 3-step and 7-day options present",
+    "embodiment_protocol_panel_somatic_yoga": "VERIFIED - 3-step and 7-day options present",
+    "embodiment_protocol_panel_water": "VERIFIED - 3-step and 7-day options present",
+    "embodiment_protocol_panel_elemental": "VERIFIED - 3-step and 7-day options present",
+    "guided_practice_no_crash": "VERIFIED - All guided flows start without blank/crash",
+    "retreats_cleanup": "VERIFIED - /api/retreats returns empty array",
+    "expand_script_word_floor": "VERIFIED - Returns >= 840 words for 7+ minute narration"
+  },
+  "console_warnings_noted": [
+    "401 errors on auth check - expected for public routes without login",
+    "AbortError: signal is aborted without reason - non-blocking narration playback warning in PracticeTimer"
+  ]
+}
