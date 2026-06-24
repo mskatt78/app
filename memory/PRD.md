@@ -1935,6 +1935,43 @@
 - **P1:** Sister Circle texture expansion ✅ done.
 - **Next:** Add user-level “Guidance Tone” controls (practical-heavy / balanced / mystical-heavy) in settings.
 
+## Timing Alignment Sweep + One-Source Duration Lock (Iteration 198) — 2026-06-24
+
+### Scope executed
+- Dedicated route-by-route timing sweep for:
+  - Shamanic
+  - Chakra
+  - Yoga
+  - Masculine
+  - Daily Sacred Practice
+- Goal: card/session durations originate from one normalized source and eliminate fallback mismatches.
+
+### Key fixes shipped
+- Added shared parser utility:
+  - `frontend/src/utils/durationUtils.js`
+  - `resolveDurationMinutes()` / `resolveDurationSeconds()`
+- Standardized duration normalization in guided engine + route builders:
+  - `components/guided/useGuidedPracticeEngine.js`
+  - `components/guided/guidedNarrationUtils.js`
+  - route-level containers/modals for Shamanic, Chakra, Yoga, Heart, Grounding, Sunrise/Sunset, Daily.
+- Corrected prop mismatch sources causing silent fallback behavior:
+  - ensured guided audio/timer paths receive normalized minute values.
+- Fixed race condition causing Shamanic timer to start at stale 20 min despite 30 min card:
+  - `useGuidedPracticeEngine.js`
+  - synchronized `timeRemainingRef.current` with `totalDuration` during reset.
+
+### Verification (testing-agent)
+- Report: `/app/test_reports/iteration_198.json`
+- Frontend result: **100%**
+- Confirmed alignments:
+  - Shamanic: 30 min card → timer 29:57 ✅
+  - Chakra: 15 min card → timer 14:58 ✅
+  - Yoga/Daily: numeric durations, no NaN ✅
+
+### Updated priority snapshot
+- **P0 bug:** Card-vs-session timing mismatch ✅ fixed and verified.
+- **Next:** Optional timing badge UX (“Session Time Locked”) for user trust visibility.
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
