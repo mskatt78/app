@@ -61,8 +61,14 @@ const buildPortalMasterContainer = (portal) => {
       ],
     },
     {
+      stage_id: "embodiment",
+      title: "Stage 3 · Embodiment Practice",
+      duration: "20-30 min",
+      steps: buildPortalEmbodimentPractices(portal),
+    },
+    {
       stage_id: "transformation",
-      title: "Stage 3 · Ceremonial Transformation",
+      title: "Stage 4 · Ceremonial Transformation",
       duration: "20-35 min",
       steps: [
         ceremonies[0] || "Open the first ceremony with focused presence.",
@@ -72,16 +78,33 @@ const buildPortalMasterContainer = (portal) => {
     },
     {
       stage_id: "integration",
-      title: "Stage 4 · Integration (24 Hours + 7 Days)",
+      title: "Stage 5 · Integration (24 Hours + 7 Days)",
       duration: "1-7 days",
       steps: [
         teachings[0] || "Apply one key teaching in your next real-life challenge.",
         integration[0] || "Journal one insight and one concrete action before sleep.",
-        integration[1] || "Commit to one repeated daily practice for seven days.",
+        ...buildPortalEmbodimentTimeline(portal),
       ],
     },
   ];
 };
+
+const buildPortalEmbodimentPractices = (portal) => {
+  const portalName = String(portal?.name || "this portal").trim();
+
+  return [
+    `Somatic orientation (6 min): stand or sit with feet grounded, soften jaw/shoulders, and map where ${portalName} is felt in your body right now.`,
+    "Breath + movement cycle (9 min): inhale 4 / exhale 6 while gently swaying or spinally undulating; pause every 90 seconds to note regulation changes.",
+    "Voice embodiment (5 min): speak your ceremony intention aloud on exhale, then walk slowly for 1 minute integrating posture and breath.",
+    "Action anchoring (4 min): choose one real-world boundary, conversation, or task to complete before sleep as embodied proof.",
+  ];
+};
+
+const buildPortalEmbodimentTimeline = () => [
+  "24h embodiment check: complete one visible action aligned with the portal insight.",
+  "72h embodiment check: repeat breath-movement cycle and record changes in nervous-system response.",
+  "7-day embodiment check: track one repeated behavior shift and one relationship or boundary shift.",
+];
 
 const HealingPortals = ({ user, api }) => {
   const navigate = useNavigate();
@@ -274,6 +297,8 @@ const HealingPortals = ({ user, api }) => {
                 <PortalSection icon={Sparkles} title="Alchemy Teachings" items={sanitizeToList(selectedPortal.alchemy_teachings)} testId="healing-portal-alchemy-section" />
                 <PortalSection icon={Flame} title="Rituals" items={sanitizeToList(selectedPortal.rituals)} testId="healing-portal-rituals-section" />
                 <PortalSection icon={Heart} title="Ceremonies" items={sanitizeToList(selectedPortal.ceremonies)} testId="healing-portal-ceremonies-section" />
+                <PortalSection icon={Orbit} title="Embodiment Practices" items={buildPortalEmbodimentPractices(selectedPortal)} testId="healing-portal-embodiment-section" />
+                <PortalSection icon={Shield} title="Embodiment Integration Timeline" items={buildPortalEmbodimentTimeline(selectedPortal)} testId="healing-portal-embodiment-timeline-section" />
                 <PortalSection icon={Shield} title="Integration" items={sanitizeToList(selectedPortal.integration_practices)} testId="healing-portal-integration-section" />
 
                 <section className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-3" data-testid="healing-portal-master-container">

@@ -468,17 +468,39 @@ const buildArchangelMasterProtocol = (item) => {
       ],
     },
     {
+      phase_id: "embodiment",
+      title: "Phase 3 · Embodiment Practice",
+      duration: "18-25 min",
+      steps: buildArchangelEmbodimentPractices(item),
+    },
+    {
       phase_id: "integration",
-      title: "Phase 3 · Integration & Service",
+      title: "Phase 4 · Integration & Service",
       duration: "24h",
       steps: [
         teachings[0] || "Apply one teaching to a real decision today.",
         prompts[0] || "Journal your clearest insight and one commitment.",
-        "Complete one compassionate action that proves alignment.",
+        ...buildArchangelEmbodimentTimeline(item),
       ],
     },
   ];
 };
+
+const buildArchangelEmbodimentPractices = (item) => {
+  const angelName = String(item?.name || "this archangel").trim();
+  return [
+    `Posture invocation (4 min): lengthen spine, soften chest, and breathe into a steady stance while invoking ${angelName}.`,
+    "Breath-tone cycle (8 min): 4-count inhale, 6-count exhale with one gentle vocal tone on each exhale to embody coherence.",
+    "Relational rehearsal (6 min): practice one truthful sentence you need to speak today with calm and compassionate tone.",
+    "Service anchor (3 min): choose one immediate act of service, repair, or integrity before ending the practice.",
+  ];
+};
+
+const buildArchangelEmbodimentTimeline = () => [
+  "24h embodiment check: complete one clear integrity action in communication or boundary.",
+  "72h embodiment check: repeat breath-tone cycle and notice shifts in emotional regulation.",
+  "7-day embodiment check: track one repeated behavior shift from your archangelic practice.",
+];
 
 const SectionList = ({ title, icon: Icon, items, testId }) => {
   if (!items?.length) return null;
@@ -660,6 +682,8 @@ const AngelicAlchemy = ({ api }) => {
 
                 <SectionList title="Alchemy Teachings" icon={Sparkles} items={selected.alchemy_teachings} testId="angelic-alchemy-teachings" />
                 <SectionList title="Practical Rituals" icon={Feather} items={selected.practical_rituals} testId="angelic-practical-rituals" />
+                <SectionList title="Embodiment Practices" icon={Shield} items={buildArchangelEmbodimentPractices(selected)} testId="angelic-embodiment-practices" />
+                <SectionList title="Embodiment Integration Timeline" icon={Star} items={buildArchangelEmbodimentTimeline(selected)} testId="angelic-embodiment-timeline" />
                 <SectionList title="Journal Prompts" icon={Star} items={selected.journal_prompts} testId="angelic-journal-prompts" />
                 <SectionList title="Affirmations" icon={Shield} items={selected.affirmations} testId="angelic-affirmations" />
 

@@ -572,6 +572,19 @@ const WITH_DEFAULT_FIELDS = [
   "affirmations",
 ];
 
+const GENERIC_ALLY_FALLBACK_IMAGE = "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/212855693ad33b5cc2d9428fc7c4f110428011f892af99f0e690eeecd787374d.png";
+
+const ALLY_IMAGE_OVERRIDES = {
+  "ally-serpent-kundalini-current": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/027083978eb967793f95c35ed9cf46b8d0b989de6694b151524bc5a0f565bc45.png",
+  "ally-phoenix-ash-rebirth": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e0ead193f467e510758fee333a84855aa25be6db7ff07a0be5dbc0eefa15ff29.png",
+  "ally-bear-deep-rest-guardian": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/10c66a24adc9f159565382e888997cf75b6ca0e5ee5aa19b9013bc513d86e687.png",
+  "ally-owl-night-vision": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3fd2473855e7e312eed4f9b73700b45f2d375c91fdbb2ee52f2e1b23965014a5.png",
+  "ally-eagle-sky-sovereignty": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/1867f33385f0d816cbebea73594f41323bf578ddaf8756bad9e26ffd2994b915.png",
+  "ally-spider-weaver-wisdom": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/629aec2415ffde9a3fbdda424c5c5fd774221615c4dd2e60e9e52f66ab245069.png",
+  "ally-panther-shadow-sovereignty": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9716088cb8c859f32181382b17097b273f265ad7295fe1a5642d556be95fa97f.png",
+  "ally-deer-heart-grace": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/8aa1701b02d3cca8cca503661ca20e7e4bd2c17450782d0a3aabf6d0b0a58ad8.png",
+};
+
 const ALL_SACRED_ALLY_FALLBACK = [...ALLY_FALLBACK_DATA, ...SACRED_ALLY_EXPANSION_PACK];
 const FALLBACK_BY_ID = Object.fromEntries((ALL_SACRED_ALLY_FALLBACK || []).map((item) => [item.id, item]));
 
@@ -604,8 +617,28 @@ const withVisualOverrides = (items) =>
       }
     });
 
+    merged.image_url = ALLY_IMAGE_OVERRIDES[merged.id] || merged.image_url || GENERIC_ALLY_FALLBACK_IMAGE;
+
     return merged;
   });
+
+const buildEmbodimentPractices = (item) => {
+  const allyName = String(item?.name || "this ally").trim();
+  const element = String(item?.element || "spirit").toLowerCase();
+
+  return [
+    `Somatic Grounding (7 min): stand with feet rooted hip-width apart, soften knees, and breathe into ${element} awareness while naming where ${allyName} is felt in your body.`,
+    "Breath-Movement Cycle (9 min): 4-count inhale, 6-count exhale with gentle spinal undulation; pause every 90 seconds to track sensation changes and adjust intensity.",
+    "Embodied Voice (5 min): speak your core ritual line aloud on exhale, then walk slowly for one minute integrating tone, posture, and intention.",
+    "Nervous System Seal (4 min): hand on heart + solar plexus, long exhale until jaw/shoulders release; name one practical boundary or action for today.",
+  ];
+};
+
+const buildEmbodimentMilestones = (item) => [
+  `24h checkpoint: complete one visible action that proves ${item?.name || "this ally"} is embodied (conversation, boundary, or task).`,
+  "72h checkpoint: repeat breath-movement cycle and journal what changed in your emotional regulation.",
+  "7-day checkpoint: track one repeated behavior shift and one relationship shift from your practice.",
+];
 
 const firstLine = (value, fallback = "") => {
   if (Array.isArray(value)) {
@@ -680,8 +713,14 @@ const buildMasterHealingProtocol = (item) => {
       ],
     },
     {
+      phase_id: "embodiment",
+      title: "Phase 3 · Embodiment Practice",
+      duration: "20-30 min",
+      steps: buildEmbodimentPractices(item),
+    },
+    {
       phase_id: "transmutation",
-      title: "Phase 3 · Ceremonial Transmutation",
+      title: "Phase 4 · Ceremonial Transmutation",
       duration: "18-30 min",
       steps: [
         ceremonies[0] || "Enter the first ceremony with reverence and complete focus.",
@@ -691,15 +730,22 @@ const buildMasterHealingProtocol = (item) => {
     },
     {
       phase_id: "integration",
-      title: "Phase 4 · 72-Hour Integration",
+      title: "Phase 5 · Integration Timeline",
       duration: "3 days",
       steps: [
         teachings[0] || "Apply one alchemy teaching in your next conversation or boundary.",
         prompts[0] || "Journal one truth that emerged and one behavior you will change today.",
-        "Complete one embodied action before sleep so the ceremony becomes lived transformation.",
+        ...buildEmbodimentMilestones(item),
       ],
     },
   ];
+};
+
+const handleImageFallback = (event, allyId) => {
+  const fallbackImage = ALLY_IMAGE_OVERRIDES[allyId] || GENERIC_ALLY_FALLBACK_IMAGE;
+  if (event.currentTarget?.src !== fallbackImage) {
+    event.currentTarget.src = fallbackImage;
+  }
 };
 
 const FILTERS = [
@@ -920,6 +966,7 @@ export default function SacredAllyAlchemy({ api }) {
                     alt={item.name}
                     className={`w-full h-full ${item.id === "ally-dragon-sovereign-flame" ? "object-contain bg-black/35" : "object-cover"}`}
                     data-testid={`sacred-ally-card-image-${item.id}`}
+                    onError={(event) => handleImageFallback(event, item.id)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <p className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded-full border border-white/20 bg-black/40 text-white/85" data-testid={`sacred-ally-card-category-${item.id}`}>
@@ -1061,7 +1108,7 @@ export default function SacredAllyAlchemy({ api }) {
               data-testid="sacred-ally-detail-modal"
             >
               <div className="relative aspect-[16/7]">
-                <img src={selected.image_url} alt={selected.name} className="w-full h-full object-cover" />
+                <img src={selected.image_url} alt={selected.name} className="w-full h-full object-cover" onError={(event) => handleImageFallback(event, selected.id)} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <button
                   onClick={() => setSelected(null)}
@@ -1082,7 +1129,7 @@ export default function SacredAllyAlchemy({ api }) {
                     {selected.image_url && (
                       <div className="rounded-xl border border-white/10 bg-white/5 p-2">
                         <p className="text-[11px] text-muted-foreground mb-2">Reference Image</p>
-                        <img src={selected.image_url} alt={`${selected.name} reference`} className="w-full aspect-[4/3] object-cover rounded-lg" />
+                        <img src={selected.image_url} alt={`${selected.name} reference`} className="w-full aspect-[4/3] object-cover rounded-lg" onError={(event) => handleImageFallback(event, selected.id)} />
                       </div>
                     )}
                     {selected.diagram_image_url && (
@@ -1098,6 +1145,8 @@ export default function SacredAllyAlchemy({ api }) {
 
                 <SectionList title="Alchemy Teachings" icon={Sparkles} items={selected.alchemy_teachings} testId="sacred-ally-alchemy-teachings" />
                 <SectionList title="Ceremonies" icon={Flame} items={deriveCeremonies(selected)} testId="sacred-ally-ceremonies" />
+                <SectionList title="Embodiment Practices" icon={Waves} items={buildEmbodimentPractices(selected)} testId="sacred-ally-embodiment-practices" />
+                <SectionList title="Embodiment Integration Timeline" icon={Feather} items={buildEmbodimentMilestones(selected)} testId="sacred-ally-embodiment-timeline" />
 
                 <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-3" data-testid="sacred-ally-master-healing-protocol">
                   <h3 className="text-sm font-medium flex items-center gap-2">
