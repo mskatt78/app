@@ -619,6 +619,78 @@ backend:
         comment: "✅ No blank screens detected across tested pages: Landing page (/), Meditations page (/meditations), Breathwork page (/breathwork), Privacy page (/privacy), Terms page (/terms), Elemental Practices page (/elemental-practices). All pages render content correctly. Console errors detected are non-critical: 'Public route auth check failed: AxiosError' errors are expected for unauthenticated public route access. No console-breaking errors that prevent functionality."
 
 frontend:
+  - task: "Admin bulk upload panel - CSV tutorial overrides"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/admin/AdminTutorialBulkUploadPanel.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ Admin bulk upload panel component correctly implemented with all required data-testids (admin-tutorial-bulk-upload-panel, admin-bulk-upload-file-input, admin-bulk-upload-submit-button, admin-bulk-upload-csv-format-note) but NOT ACCESSIBLE due to admin session authentication issue. After signing in with admin email (mskatt78@gmail.com), /admin page redirects back to landing page. Backend logs show GET /api/admin/collections returns 401 Unauthorized. Root cause: Admin session-login flow not working - ensureAdminToken() calls /api/admin/session-login but user JWT token may not be sent with request. This is a BACKEND AUTHENTICATION ISSUE, not a frontend implementation issue. Component implementation is correct."
+
+  - task: "Safety notes - Mantras modal conditional rendering"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mantras/MantrasPlayer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Mantras safety notes working correctly. Modal opens successfully. Safety notes conditional rendering verified (data-testid='mantra-safety-notes'). Best-for tags visible (data-testid='mantra-best-for-tags'). YouTube tutorials visible (data-testid='mantra-youtube-tutorials'). All requirements met."
+
+  - task: "Safety notes - Mudras modal conditional rendering"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mudras/MudrasLibraryContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Mudras safety notes working correctly. Modal opens successfully. Safety notes conditional rendering verified (data-testid='mudra-safety-notes'). Best-for tags visible (data-testid='mudra-best-for-tags'). YouTube tutorials visible (data-testid='mudra-youtube-tutorials'). All requirements met."
+
+  - task: "Safety notes - Yoga pose modal conditional rendering"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Yoga safety notes working correctly. Modal opens successfully. Safety notes conditional rendering verified (data-testid='selected-pose-safety-notes'). Best-for tags visible (data-testid='selected-pose-best-for-tags'). YouTube tutorials visible (data-testid='selected-pose-youtube-tutorials'). All requirements met."
+
+  - task: "Safety notes - Breathwork card and active session conditional rendering"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/breathwork/BreathworkSessionGrid.jsx, /app/frontend/src/components/breathwork/BreathworkActiveSessionView.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Breathwork safety notes working correctly. Card-level safety notes conditional rendering verified (data-testid='breathwork-safety-notes-{id}'). Session opens successfully. Active session safety notes conditional rendering verified (data-testid='breathwork-safety-notes-active'). All requirements met."
+
+  - task: "Safety notes - Meditations card conditional rendering"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Meditations.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Meditations safety notes working correctly. Card-level safety notes conditional rendering verified (data-testid='meditation-safety-notes-{id}'). Best-for tags visible. YouTube tutorials visible. All requirements met."
+
   - task: "Landing auth modal DialogDescription accessibility"
     implemented: true
     working: true
@@ -8370,10 +8442,75 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Yoga/Breathwork/Meditations protocol + YouTube mapping - COMPLETED"
-  stuck_tasks: []
+    - "CSV bulk upload + safety notes verification - COMPLETED"
+  stuck_tasks:
+    - "Admin bulk upload panel - authentication issue"
   test_all: false
   test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      CSV Bulk Upload + Safety Notes Focused Testing (2026-06-24):
+      
+      VERIFICATION REQUEST: Run focused frontend testing for new CSV bulk upload + safety notes additions
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ SAFETY NOTES IMPLEMENTATION - ALL PASSED (5/5 routes):
+      
+      1. ✅ MANTRAS (/mantras) - PASSED
+         - Modal opens correctly
+         - Safety notes: ✓ Conditional rendering working (data-testid='mantra-safety-notes')
+         - Best-for tags: ✓ Visible (data-testid='mantra-best-for-tags')
+         - YouTube tutorials: ✓ Visible (data-testid='mantra-youtube-tutorials')
+      
+      2. ✅ MUDRAS (/mudras) - PASSED
+         - Modal opens correctly
+         - Safety notes: ✓ Conditional rendering working (data-testid='mudra-safety-notes')
+         - Best-for tags: ✓ Visible (data-testid='mudra-best-for-tags')
+         - YouTube tutorials: ✓ Visible (data-testid='mudra-youtube-tutorials')
+      
+      3. ✅ YOGA (/yoga) - PASSED
+         - Modal opens correctly
+         - Safety notes: ✓ Conditional rendering working (data-testid='selected-pose-safety-notes')
+         - Best-for tags: ✓ Visible (data-testid='selected-pose-best-for-tags')
+         - YouTube tutorials: ✓ Visible (data-testid='selected-pose-youtube-tutorials')
+      
+      4. ✅ BREATHWORK (/breathwork) - PASSED
+         - Card-level safety notes: ✓ Conditional rendering working (data-testid='breathwork-safety-notes-{id}')
+         - Active session safety notes: ✓ Conditional rendering working (data-testid='breathwork-safety-notes-active')
+         - Session opens correctly
+      
+      5. ✅ MEDITATIONS (/meditations) - PASSED
+         - Card-level safety notes: ✓ Conditional rendering working (data-testid='meditation-safety-notes-{id}')
+         - Best-for tags: ✓ Visible
+         - YouTube tutorials: ✓ Visible
+      
+      ❌ ADMIN BULK UPLOAD PANEL - BLOCKED BY AUTH ISSUE:
+      
+      1. ❌ /admin page - AUTHENTICATION ISSUE
+         - Admin login successful (mskatt78@gmail.com)
+         - Page redirects back to landing page (admin session not established)
+         - Root cause: Admin session-login flow not working properly
+         - Backend logs show: GET /api/admin/collections returns 401 Unauthorized
+         - Frontend component exists and is correctly implemented:
+           * AdminTutorialBulkUploadPanel.jsx has all required data-testids
+           * data-testid='admin-tutorial-bulk-upload-panel' ✓
+           * data-testid='admin-bulk-upload-file-input' ✓
+           * data-testid='admin-bulk-upload-submit-button' ✓
+           * data-testid='admin-bulk-upload-csv-format-note' ✓
+         - Issue: Backend admin session authentication not working
+         - The ensureAdminToken() function calls /api/admin/session-login but it requires authenticated user token
+         - Possible issue: User JWT token not being sent with admin session-login request
+      
+      CRITICAL FINDINGS:
+      ✅ All safety notes implementations working correctly with conditional rendering
+      ✅ Best-for tags and YouTube tutorials remain visible on all pages
+      ✅ All exact selectors from review_request verified and working
+      ❌ Admin bulk upload panel blocked by authentication issue (not a frontend implementation issue)
+      
+      SUMMARY:
+      Safety notes feature FULLY WORKING across all 5 routes (/mantras, /mudras, /yoga, /breathwork, /meditations). All conditional rendering working as expected. Best-for tags and YouTube tutorials remain intact. Admin bulk upload panel component correctly implemented but NOT ACCESSIBLE due to admin session authentication issue. This is a backend authentication flow issue, not a frontend implementation issue.
 
 agent_communication:
   - agent: "testing"

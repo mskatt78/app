@@ -153,6 +153,13 @@ export const BreathworkActiveSessionView = ({
       </div>
     )}
 
+    {activeSession.safety_notes && (
+      <div className="mt-4 w-full max-w-xl p-4 rounded-xl bg-rose-500/10 border border-rose-500/20" data-testid="breathwork-safety-notes-active">
+        <h4 className="text-xs uppercase tracking-wider text-rose-300 mb-2">Contraindications / Safety</h4>
+        <p className="text-xs text-rose-100/90 leading-relaxed">{activeSession.safety_notes}</p>
+      </div>
+    )}
+
     {(activeSession.youtube_tutorials || []).length > 0 && (
       <div className="mt-6 w-full max-w-xl p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="breathwork-youtube-tutorials">
         <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">YouTube Tutorials</h4>

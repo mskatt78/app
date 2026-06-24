@@ -35,23 +35,23 @@ export const FIELD_CONFIG = {
   somatic_practices: ["name", "type", "element", "description", "benefits", "duration", "instructions", "image_url"],
   sound_frequencies: ["name", "frequency", "element", "category", "ambient_type", "description", "benefits", "practice", "audio_url", "image_url"],
   crystals: ["name", "color", "element", "chakra", "description", "properties", "uses", "image_url"],
-  mantras: ["name", "tradition", "text", "meaning", "pronunciation", "benefits", "practice", "best_for_tags", "youtube_tutorial_override_urls", "source_type", "source_references", "review_status", "last_reviewed_at"],
-  meditations: ["name", "type", "element", "duration_minutes", "description", "visualization", "instructions", "best_for_tags", "youtube_tutorial_override_urls", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
-  mudras: ["name", "type", "description", "benefits", "instructions", "best_for_tags", "youtube_tutorial_override_urls", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
+  mantras: ["name", "tradition", "text", "meaning", "pronunciation", "benefits", "practice", "best_for_tags", "youtube_tutorial_override_urls", "safety_notes", "source_type", "source_references", "review_status", "last_reviewed_at"],
+  meditations: ["name", "type", "element", "duration_minutes", "description", "visualization", "instructions", "best_for_tags", "youtube_tutorial_override_urls", "safety_notes", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
+  mudras: ["name", "type", "description", "benefits", "instructions", "best_for_tags", "youtube_tutorial_override_urls", "safety_notes", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   runes: ["name", "symbol", "phonetic", "meaning", "description", "reversed_meaning", "image_url"],
   sacred_guardians: ["name", "type", "element", "description", "gifts", "invocation", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   sacred_ally_alchemy: ["name", "ally_type", "category", "element", "description", "alchemy_teachings", "rituals", "song_lines", "song_line_practices", "journal_prompts", "affirmations", "image_url", "diagram_image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   angelic_alchemy: ["name", "angelic_order", "sacred_geometry", "element", "description", "alchemy_teachings", "practical_rituals", "journal_prompts", "affirmations", "image_url", "diagram_image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   retreats: ["title", "status", "description", "location", "start_date", "end_date", "duration_days", "max_participants", "price", "deposit", "facilitator", "highlights", "includes", "accommodation", "healing_modalities", "registration_link", "image_url"],
   videos: ["title", "category", "description", "video_url", "thumbnail_url", "duration", "practice_type"],
-  breathwork_sessions: ["name", "element", "description", "duration_minutes", "frequency", "benefits", "instructions", "best_for_tags", "youtube_tutorial_override_urls", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
+  breathwork_sessions: ["name", "element", "description", "duration_minutes", "frequency", "benefits", "instructions", "best_for_tags", "youtube_tutorial_override_urls", "safety_notes", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   shamanic_practices: ["name", "category", "element", "description", "duration_minutes", "benefits", "journey_steps", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   mindfulness_practices: ["name", "category", "element", "description", "duration_minutes", "benefits", "instructions", "image_url"],
   grounding_exercises: ["name", "element", "description", "duration_minutes", "benefits", "instructions", "background_audio", "image_url"],
   heart_practices: ["name", "category", "element", "description", "duration_minutes", "benefits", "steps", "affirmations", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   creative_processes: ["name", "element", "description", "duration_minutes", "benefits", "materials", "instructions", "image_url"],
   elemental_practices: ["name", "element", "description", "duration_minutes", "benefits", "instructions", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
-  yoga_poses: ["name", "sanskrit_name", "element", "category", "description", "benefits", "instructions", "best_for_tags", "youtube_tutorial_override_urls", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
+  yoga_poses: ["name", "sanskrit_name", "element", "category", "description", "benefits", "instructions", "best_for_tags", "youtube_tutorial_override_urls", "safety_notes", "image_url", "source_type", "source_references", "review_status", "last_reviewed_at"],
   energy_healing: ["name", "modality", "element", "description", "history", "how_it_works", "self_healing_guide", "benefits", "contraindications", "duration_minutes", "image_url"],
   free_form_movement: ["name", "category", "element", "description", "duration_minutes", "benefits", "guidance", "music_suggestion", "image_url"],
   chakra_cleansing: ["name", "chakra_name", "chakra_number", "color", "location", "element", "description", "blockage_signs", "cleansing_practice", "affirmations", "duration_minutes", "sound", "image_url"],
@@ -66,6 +66,7 @@ export const TEXTAREA_FIELDS = new Set([
   "self_healing_guide", "how_it_works", "history", "contraindications",
   "guidance", "blockage_signs", "cleansing_practice", "client_instructions", "what_to_bring", "source_references",
   "youtube_tutorial_override_urls", "best_for_tags",
+  "safety_notes",
   "alchemy_teachings", "rituals", "practical_rituals", "journal_prompts", "affirmations", "song_lines", "song_line_practices"
 ]);
 
@@ -90,6 +91,7 @@ export const LIST_TEXTAREA_FIELDS = new Set([
   "lessons",
   "youtube_tutorial_override_urls",
   "best_for_tags",
+  "safety_notes",
 ]);
 
 export const IMAGE_FIELDS = new Set(["image_url", "thumbnail_url"]);

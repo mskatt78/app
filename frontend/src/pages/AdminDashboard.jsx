@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { ensureAdminToken, logoutAdminSession } from "../components/admin/adminSession";
 import { appLogger } from "../utils/logger";
+import { AdminTutorialBulkUploadPanel } from "./admin/AdminTutorialBulkUploadPanel";
 
 const quickActions = [
   {
@@ -181,6 +182,10 @@ export default function AdminDashboard({ api: providedApi }) {
             Open Media Library
           </Button>
         </motion.div>
+
+        <div className="mb-8">
+          <AdminTutorialBulkUploadPanel />
+        </div>
 
         {/* Collections Grid */}
         {loading ? (

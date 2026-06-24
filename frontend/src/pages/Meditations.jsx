@@ -298,6 +298,13 @@ const Meditations = ({ user, api }) => {
                         </div>
                       )}
 
+                      {meditation.safety_notes && (
+                        <div className="mt-3 p-3 rounded-xl bg-rose-500/10 border border-rose-500/20" data-testid={`meditation-safety-notes-${meditation.id}`}>
+                          <p className="text-[11px] uppercase tracking-wider text-rose-300 mb-1">Contraindications / Safety</p>
+                          <p className="text-xs text-rose-100/90 line-clamp-3">{meditation.safety_notes}</p>
+                        </div>
+                      )}
+
                       {(meditation.youtube_tutorials || []).length > 0 && (
                         <a
                           href={meditation.youtube_tutorials[0].url}

@@ -54,6 +54,13 @@ export const BreathworkSessionGrid = ({ filteredSessions, elementColors, startSe
               </div>
             )}
 
+            {session.safety_notes && (
+              <div className="mt-3 p-2 rounded-lg bg-rose-500/10 border border-rose-500/20" data-testid={`breathwork-safety-notes-${session.id}`}>
+                <p className="text-[10px] uppercase tracking-wider text-rose-300 mb-1">Safety</p>
+                <p className="text-[11px] text-rose-100/90 line-clamp-2">{session.safety_notes}</p>
+              </div>
+            )}
+
             {session.frequency && (
               <div className="mt-3 text-xs text-muted-foreground flex items-center gap-1">
                 <span className="text-primary">Frequency:</span> {session.frequency.split(" - ")[0]}

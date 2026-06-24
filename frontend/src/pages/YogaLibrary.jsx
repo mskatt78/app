@@ -519,6 +519,13 @@ const YogaLibrary = ({ user, api }) => {
                   </div>
                 )}
 
+                {selectedPose.safety_notes && (
+                  <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20" data-testid="selected-pose-safety-notes">
+                    <h3 className="text-sm uppercase tracking-wider text-rose-300 mb-2">Contraindications / Safety</h3>
+                    <p className="text-sm text-rose-100/90 leading-relaxed">{selectedPose.safety_notes}</p>
+                  </div>
+                )}
+
                 {(selectedPose.youtube_tutorials || []).length > 0 && (
                   <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="selected-pose-youtube-tutorials">
                     <h3 className="text-sm uppercase tracking-wider text-cyan-300 mb-2">YouTube Tutorials</h3>

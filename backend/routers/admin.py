@@ -2,6 +2,8 @@ import os
 import uuid
 import requests
 import re
+import csv
+import io
 from datetime import datetime, timezone, timedelta
 from typing import Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Response, Request
@@ -43,6 +45,7 @@ SOURCE_AWARE_COLLECTIONS = {
 }
 
 BEST_FOR_ALLOWED_TAGS = {"sleep", "anxiety", "focus", "grief", "energy"}
+TUTORIAL_OVERRIDE_BULK_COLLECTIONS = {"mantras", "mudras", "yoga_poses", "breathwork_sessions", "meditations"}
 
 
 def _normalize_yoga_pose_key(value: str) -> str:
@@ -193,6 +196,12 @@ def _normalize_admin_item_payload(collection: str, data: dict[str, Any]) -> dict
     normalized["best_for_tags"] = _normalize_best_for_tags(normalized.get("best_for_tags"))
 
     return normalized
+
+
+def _parse_csv_list_field(value: str) -> list[str]:
+    if not value:
+        return []
+    return [chunk.strip() for chunk in re.split(r"[|,\n]", value) if chunk.strip()]
 
 
 def _init_storage() -> str:
@@ -564,6 +573,89 @@ async def delete_item(collection: str, item_id: str, _: dict[str, Any] = Depends
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Item not found")
     return {"deleted": True}
+
+
+@router.post("/tutorial-overrides/bulk-upload")
+async def bulk_upload_tutorial_overrides(
+    file: UploadFile = File(...),
+    _: dict[str, Any] = Depends(_verify_admin),
+) -> dict[str, Any]:
+    if not file.filename or not file.filename.lower().endswith(".csv"):
+        raise HTTPException(status_code=400, detail="Please upload a .csv file")
+
+    raw = await file.read()
+    if not raw:
+        raise HTTPException(status_code=400, detail="Uploaded CSV is empty")
+
+    try:
+        text = raw.decode("utf-8-sig")
+    except UnicodeDecodeError as exc:
+        raise HTTPException(status_code=400, detail="CSV must be UTF-8 encoded") from exc
+
+    db = get_router_db()
+    reader = csv.DictReader(io.StringIO(text))
+
+    required_hint = "Required columns: collection,item_id or item_name"
+    if not reader.fieldnames:
+        raise HTTPException(status_code=400, detail=f"CSV has no header row. {required_hint}")
+
+    processed = 0
+    updated = 0
+    skipped = 0
+    errors: list[dict[str, Any]] = []
+
+    for index, row in enumerate(reader, start=2):
+        processed += 1
+        collection = str(row.get("collection") or "").strip()
+        item_id = str(row.get("item_id") or "").strip()
+        item_name = str(row.get("item_name") or "").strip()
+
+        if collection not in TUTORIAL_OVERRIDE_BULK_COLLECTIONS:
+            skipped += 1
+            errors.append({"row": index, "error": "Invalid or unsupported collection"})
+            continue
+
+        if not item_id and not item_name:
+            skipped += 1
+            errors.append({"row": index, "error": "Missing item_id and item_name"})
+            continue
+
+        tutorial_urls = _normalize_youtube_override_urls(_parse_csv_list_field(str(row.get("youtube_tutorial_override_urls") or "")))
+        best_for_tags = _normalize_best_for_tags(_parse_csv_list_field(str(row.get("best_for_tags") or "")))
+        safety_notes = str(row.get("safety_notes") or "").strip()
+
+        update_payload: dict[str, Any] = {
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        }
+        if tutorial_urls:
+            update_payload["youtube_tutorial_override_urls"] = tutorial_urls
+        if best_for_tags:
+            update_payload["best_for_tags"] = best_for_tags
+        if safety_notes:
+            update_payload["safety_notes"] = safety_notes
+
+        if len(update_payload) == 1:
+            skipped += 1
+            errors.append({"row": index, "error": "No override fields provided"})
+            continue
+
+        query = {"id": item_id} if item_id else {"name": item_name}
+        result = await db[collection].update_one(query, {"$set": update_payload})
+        if result.matched_count == 0:
+            skipped += 1
+            errors.append({"row": index, "error": "Item not found", "collection": collection, "item_id": item_id, "item_name": item_name})
+            continue
+
+        updated += 1
+
+    return {
+        "processed": processed,
+        "updated": updated,
+        "skipped": skipped,
+        "errors": errors[:50],
+        "error_count": len(errors),
+        "supported_collections": sorted(TUTORIAL_OVERRIDE_BULK_COLLECTIONS),
+    }
 
 
 @router.post("/upload")

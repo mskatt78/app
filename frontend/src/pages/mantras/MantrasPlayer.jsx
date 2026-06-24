@@ -389,6 +389,13 @@ export const MantrasPlayer = ({
                 </div>
               )}
 
+              {selectedMantra.safety_notes && (
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20" data-testid="mantra-safety-notes">
+                  <h4 className="text-xs uppercase tracking-wider text-rose-300 mb-2">Contraindications / Safety</h4>
+                  <p className="text-xs text-rose-100/90 leading-relaxed">{selectedMantra.safety_notes}</p>
+                </div>
+              )}
+
               {selectedMantra.master_embodiment_protocol && (
                 <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mantra-master-embodiment-protocol">
                   <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-3">Master Embodiment Protocol</h4>
