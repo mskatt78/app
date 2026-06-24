@@ -1804,3 +1804,65 @@
 - **P1:** Best-for tags on protocol cards ✅ done.
 - **Next:** Optional analytics-driven “most clicked tutorial” tracking for smarter auto-prioritization.
 
+## Admin CSV Bulk Overrides + Safety Notes Display (Iteration 195-196) — 2026-06-24
+
+### User Request Implemented
+- Add admin bulk-upload (CSV) for tutorial overrides to accelerate large content updates.
+- Add optional per-item contraindications/safety notes in admin and display on cards/modals.
+
+### Backend Delivered
+- `backend/routers/admin.py`
+  - Added endpoint: `POST /api/admin/tutorial-overrides/bulk-upload`
+  - CSV validation: rejects non-CSV and empty files, handles malformed rows safely.
+  - Supported collections: `mantras`, `mudras`, `yoga_poses`, `breathwork_sessions`, `meditations`.
+  - Supported CSV columns:
+    - `collection`, `item_id`, `item_name`, `youtube_tutorial_override_urls`, `best_for_tags`, `safety_notes`
+  - Bulk update behavior:
+    - updates override URLs, best-for tags, safety notes
+    - returns processed/updated/skipped/error counts
+  - Added normalization helpers for:
+    - `youtube_tutorial_override_urls`
+    - `best_for_tags`
+
+### Admin UI Delivered
+- New panel: `frontend/src/pages/admin/AdminTutorialBulkUploadPanel.jsx`
+  - file picker
+  - upload button
+  - CSV schema note
+  - success/error result panel
+- Integrated panel into `frontend/src/pages/AdminDashboard.jsx`.
+- Added admin field configurability (`frontend/src/pages/admin/constants.js`) for:
+  - `youtube_tutorial_override_urls`
+  - `best_for_tags`
+  - `safety_notes`
+  - across: mantras, mudras, yoga_poses, breathwork_sessions, meditations.
+
+### Safety Notes Rendering Delivered
+- Conditional safety note sections added to:
+  - `MantrasPlayer.jsx`
+  - `MudrasLibraryContainer.jsx`
+  - `YogaLibrary.jsx`
+  - `BreathworkSessionGrid.jsx`
+  - `BreathworkActiveSessionView.jsx`
+  - `Meditations.jsx`
+
+### Auth/Access UX Adjustment
+- Admin dashboard now redirects unauthorized admin access to `/admin/login` (instead of dashboard), improving discoverability of password-based admin access flow.
+
+### Verification
+- Full test agent report: `/app/test_reports/iteration_195.json`
+  - Backend: **100% (23/23)**
+  - Frontend: **100%**
+- Backend deep regression confirms bulk-upload endpoint behavior and safety note persistence.
+- Manual round-trip verified:
+  - admin login
+  - CSV upload update
+  - public API reflection
+  - safe revert.
+
+### Updated Priority Snapshot
+- **P1:** Admin CSV bulk overrides ✅ done.
+- **P1:** Safety notes admin fields + frontend display ✅ done.
+- **P1:** Admin login fallback UX improved ✅ done.
+- **Next:** Add downloadable CSV template + inline row-level error export in admin panel.
+
