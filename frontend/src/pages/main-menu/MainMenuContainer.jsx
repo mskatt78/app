@@ -111,7 +111,8 @@ const MainMenuContainer = ({ user }) => {
       items: [
         { path: "/shamanic", icon: Moon, label: "Shamanic Practices", color: "text-indigo-400", desc: "Journey & soul retrieval" },
         { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening ceremonies" },
-        { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Ally Alchemy", color: "text-fuchsia-300", desc: "Dragon, whales, angels & more" },
+        { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Allies Alchemy", color: "text-fuchsia-300", desc: "Dragon, whales, wolves & expanded allies" },
+        { path: "/angelic-alchemy", icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300", desc: "Dedicated Archangel section" },
         { path: "/sacred-guardians", icon: Feather, label: "Sacred Guardians", color: "text-amber-400", desc: "Animals, dragons & angels" },
         { path: "/ancient-wisdom", icon: Globe, label: "Ancient Traditions", color: "text-yellow-400", desc: "Egyptian, Celtic & Avalon" },
         { path: "/sound-frequencies", icon: Volume2, label: "Sound Healing", color: "text-cyan-400", desc: "Frequencies & vibration" },
@@ -124,6 +125,7 @@ const MainMenuContainer = ({ user }) => {
         { path: "/tarot", icon: Star, label: "Tarot Reading", color: "text-indigo-400", desc: "Major Arcana wisdom" },
         { path: "/oracle", icon: Eye, label: "Oracle Cards", color: "text-purple-400", desc: "Spirit guidance" },
         { path: "/archangels", icon: Feather, label: "Archangel Oracle", color: "text-amber-400", desc: "Divine angelic guidance" },
+        { path: "/angelic-alchemy", icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300", desc: "Archangel rituals & protocols" },
         { path: "/rune-readings", icon: Star, label: "Rune Readings", color: "text-amber-400", desc: "Elder Futhark wisdom" },
         { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
         { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400", desc: "Life path numbers" },

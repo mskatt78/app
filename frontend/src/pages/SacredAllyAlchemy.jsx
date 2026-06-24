@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Sparkles, Flame, Waves, Wind, Shield, X, Feather, Star, ChevronRight, Loader2, PlayCircle } from "lucide-react";
+import { ArrowLeft, Sparkles, Flame, Waves, Wind, X, Feather, Star, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
 import GuidedAudioButton from "../components/GuidedAudioButton";
@@ -104,50 +104,294 @@ const ALLY_FALLBACK_DATA = [
   },
 ];
 
-const ANGELIC_FALLBACK_DATA = [
+const SACRED_ALLY_EXPANSION_PACK = [
   {
-    id: "angel-metatron-cube-alchemy",
-    name: "Metatron Alchemy · Metatron's Cube",
-    angelic_order: "Archangel",
-    category: "angelic",
-    sacred_geometry: "Metatron's Cube",
+    id: "ally-serpent-kundalini-current",
+    name: "Serpent Alchemy · Kundalini Current",
+    ally_type: "serpent",
+    category: "sacred_allies",
     element: "spirit",
-    description: "Metatron alchemy uses sacred geometry for energetic clearing and coherent alignment.",
-    image_url: "https://images.pexels.com/photos/312839/pexels-photo-312839.jpeg",
-    diagram_image_url: "/diagrams/metatron-cube-diagram.svg",
+    description: "Serpent alchemy awakens embodied life-force, spinal intelligence, and sacred renewal through conscious shedding.",
+    alchemy_teachings: [
+      "Shedding identity layers is required for authentic rebirth.",
+      "Kundalini movement asks for regulation and grounded pacing.",
+      "Embodiment converts awakening into relational integrity.",
+    ],
+    rituals: [
+      "Spinal wave breath for 12 minutes with a gentle pelvic floor release.",
+      "Shedding ritual: write one outgrown identity and release it safely by fire or water.",
+      "Grounding seal: knees bent, palms on lower belly, long exhales for 5 cycles.",
+    ],
+    ceremonies: [
+      "Coiled Light Ceremony: awaken and circulate life-force through breath and intention.",
+      "Sacred Shedding Ceremony: release old vows, contracts, and identities.",
+      "Embodiment Seal Ceremony: anchor awakened energy into one practical life action.",
+    ],
+    journal_prompts: [
+      "What identity is complete and ready to shed now?",
+      "Where is life-force asking me to move differently?",
+      "How will I protect this new energy with healthy boundaries?",
+    ],
+    affirmations: [
+      "I shed with grace and rise in truth.",
+      "My life-force is sacred, grounded, and wise.",
+      "I embody renewal with integrity.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/71/Serpiente_alquimica.jpg",
+    diagram_image_url: "/diagrams/dragon-spirit-current-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Ouroboros"],
   },
   {
-    id: "angel-michael-blue-flame",
-    name: "Michael Alchemy · Blue Flame Shield",
-    angelic_order: "Archangel",
-    category: "angelic",
-    sacred_geometry: "Hexagram Shield",
+    id: "ally-phoenix-ash-rebirth",
+    name: "Phoenix Alchemy · Ash Rebirth",
+    ally_type: "phoenix",
+    category: "sacred_allies",
     element: "fire",
-    description: "Michael alchemy strengthens boundaries, truth action, and spiritual protection.",
-    image_url: "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg",
-    diagram_image_url: "/diagrams/michael-shield-diagram.svg",
+    description: "Phoenix alchemy guides total renewal, grief transmutation, and rebirth after collapse.",
+    alchemy_teachings: [
+      "Rebirth requires honoring endings, not bypassing them.",
+      "Grief metabolized becomes clean life-force.",
+      "True renewal pairs vision with disciplined action.",
+    ],
+    rituals: [
+      "Ash-to-gold journaling: what ended, what remains, what rises.",
+      "Fire breath with hand on heart and navel for 9 cycles.",
+      "Dawn vow ritual: name your renewed identity and one action for today.",
+    ],
+    ceremonies: [
+      "Ashes Ceremony: consciously grieve and release what has ended.",
+      "Flame Rise Ceremony: call forward your renewed path and power.",
+      "Vow of Continuity Ceremony: commit to seven days of aligned actions.",
+    ],
+    journal_prompts: [
+      "What chapter has fully ended in me?",
+      "What am I being reborn into now?",
+      "Which one action proves my renewal is real?",
+    ],
+    affirmations: [
+      "I rise renewed, clear, and devoted.",
+      "My endings are gateways to truth.",
+      "I carry fire with wisdom.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/71/Serpiente_alquimica.jpg",
+    diagram_image_url: "/diagrams/dragon-fire-current-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Phoenix_(mythology)"],
   },
   {
-    id: "angel-raphael-emerald-ray",
-    name: "Raphael Alchemy · Emerald Ray",
-    angelic_order: "Archangel",
-    category: "angelic",
-    sacred_geometry: "Vesica Piscis",
+    id: "ally-bear-deep-rest-guardian",
+    name: "Bear Alchemy · Deep Rest Guardian",
+    ally_type: "bear",
+    category: "sacred_allies",
+    element: "earth",
+    description: "Bear alchemy restores strength through rest, boundary intelligence, and embodied protection.",
+    alchemy_teachings: [
+      "Rest is medicine and a strategic discipline.",
+      "Boundaries preserve life-force for sacred priorities.",
+      "Power matures through pacing, not force.",
+    ],
+    rituals: [
+      "Weighted rest ritual for 12 minutes of nervous-system downshift.",
+      "Boundary mapping: write yes/no commitments for this week.",
+      "Grounding meal blessing before evening closure.",
+    ],
+    ceremonies: [
+      "Den Ceremony: reclaim rest as sacred strength.",
+      "Boundary Circle Ceremony: define and speak protective boundaries.",
+      "Strength in Stillness Ceremony: channel power without urgency.",
+    ],
+    journal_prompts: [
+      "Where am I exhausted from overextending?",
+      "What boundary would restore my energy now?",
+      "How does rested power feel in my body?",
+    ],
+    affirmations: [
+      "My rest is sacred and non-negotiable.",
+      "I protect my energy with clarity.",
+      "Grounded strength lives in me.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/7/71/2010-kodiak-bear-1.jpg",
+    diagram_image_url: "/diagrams/oak-rootedness-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Bear"],
+  },
+  {
+    id: "ally-owl-night-vision",
+    name: "Owl Alchemy · Night Vision",
+    ally_type: "owl",
+    category: "sacred_allies",
     element: "air",
-    description: "Raphael alchemy supports restoration, compassion, and body-mind integration.",
-    image_url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg",
-    diagram_image_url: "/diagrams/raphael-healing-diagram.svg",
+    description: "Owl alchemy sharpens intuitive vision, pattern recognition, and truth discernment in darkness.",
+    alchemy_teachings: [
+      "Night vision is the ability to perceive what others miss.",
+      "Silence refines intuition and symbolic literacy.",
+      "Discernment protects destiny pathways.",
+    ],
+    rituals: [
+      "Twilight silence sit for 9 minutes with soft gaze awareness.",
+      "Symbol tracking: record first three signs you notice each evening.",
+      "Moon breath ritual for focus and subtle listening.",
+    ],
+    ceremonies: [
+      "Night Vision Ceremony: enter silence and ask one precise truth-question.",
+      "Symbol Reading Ceremony: decode repeating omens into one practical next step.",
+      "Discernment Seal Ceremony: commit to one truth-based decision.",
+    ],
+    journal_prompts: [
+      "What truth am I finally ready to see?",
+      "Which pattern keeps repeating until I respond?",
+      "Where does discernment ask for action now?",
+    ],
+    affirmations: [
+      "I see clearly in all conditions.",
+      "Discernment guides my choices.",
+      "My intuition is calm and precise.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/4/4f/Bubo_bubo_2_%28Martin_Mecnarowski%29.jpg",
+    diagram_image_url: "/diagrams/raven-alchemy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Owl"],
   },
   {
-    id: "angel-gabriel-silver-stream",
-    name: "Gabriel Alchemy · Silver Stream",
-    angelic_order: "Archangel",
-    category: "angelic",
-    sacred_geometry: "Moon Mandorla",
+    id: "ally-eagle-sky-sovereignty",
+    name: "Eagle Alchemy · Sky Sovereignty",
+    ally_type: "eagle",
+    category: "sacred_allies",
+    element: "air",
+    description: "Eagle alchemy expands vision, strategic leadership, and sovereign altitude perspective.",
+    alchemy_teachings: [
+      "Altitude reveals strategy hidden in ground-level noise.",
+      "Sovereignty means vision plus responsibility.",
+      "Precision focus protects purpose from distraction.",
+    ],
+    rituals: [
+      "Horizon-gaze breathing with expanded chest posture for 7 minutes.",
+      "Strategy mapping: define your top three priorities for 30 days.",
+      "Sky vow: speak your mission aloud before beginning work.",
+    ],
+    ceremonies: [
+      "Sovereign View Ceremony: rise above noise and claim true priorities.",
+      "Mission Alignment Ceremony: refine focus and remove misaligned commitments.",
+      "Leadership Integrity Ceremony: pair vision with one concrete service action.",
+    ],
+    journal_prompts: [
+      "What does the higher view reveal right now?",
+      "Where am I scattering focus away from purpose?",
+      "What decision aligns with sovereign leadership?",
+    ],
+    affirmations: [
+      "I see clearly and lead wisely.",
+      "My vision is focused and purposeful.",
+      "I act from altitude and integrity.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/1/1a/Bald_Eagle_Portrait.jpg",
+    diagram_image_url: "/diagrams/sirius-focus-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Eagle"],
+  },
+  {
+    id: "ally-spider-weaver-wisdom",
+    name: "Spider Alchemy · Weaver Wisdom",
+    ally_type: "spider",
+    category: "sacred_allies",
+    element: "earth",
+    description: "Spider alchemy teaches destiny weaving, relational architecture, and intentional creation.",
+    alchemy_teachings: [
+      "What you weave daily becomes your lived destiny.",
+      "Structure and artistry belong together.",
+      "Intentional patterns create resilient outcomes.",
+    ],
+    rituals: [
+      "Thread ritual: map one life pattern you are consciously weaving this month.",
+      "Sacred web reflection: identify five key relationships and their reciprocity quality.",
+      "Creation sprint: 20 minutes of focused building without distraction.",
+    ],
+    ceremonies: [
+      "Web of Destiny Ceremony: choose what to weave and what to dissolve.",
+      "Reciprocity Ceremony: repair one relational thread through truthful action.",
+      "Creation Integrity Ceremony: align output with soul values.",
+    ],
+    journal_prompts: [
+      "What am I weaving repeatedly through habits?",
+      "Which thread in my life needs repair?",
+      "What new pattern will I weave this week?",
+    ],
+    affirmations: [
+      "I weave my life with intention.",
+      "My patterns are aligned with truth.",
+      "Creation flows through focused devotion.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/9/9a/Argiope_aurantia_%28Garden_spider%29.jpg",
+    diagram_image_url: "/diagrams/mycelium-network-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Spider"],
+  },
+  {
+    id: "ally-panther-shadow-sovereignty",
+    name: "Panther Alchemy · Shadow Sovereignty",
+    ally_type: "panther",
+    category: "sacred_allies",
     element: "water",
-    description: "Gabriel alchemy opens inspired communication and creative receptivity.",
-    image_url: "https://images.pexels.com/photos/772826/pexels-photo-772826.jpeg",
-    diagram_image_url: "/diagrams/gabriel-communication-diagram.svg",
+    description: "Panther alchemy guides elegant shadow power, stealth discernment, and embodied courage.",
+    alchemy_teachings: [
+      "Shadow power becomes medicine through conscious accountability.",
+      "Stealth is timing wisdom, not fear.",
+      "Elegant strength protects your sacred mission.",
+    ],
+    rituals: [
+      "Night path walk in mindful silence for 10 minutes.",
+      "Shadow naming ritual: identify one hidden fear and one courageous response.",
+      "Somatic boundary practice with low stance and grounded breath.",
+    ],
+    ceremonies: [
+      "Shadow Sovereignty Ceremony: reclaim denied strength with compassion.",
+      "Timing Wisdom Ceremony: choose right action at the right moment.",
+      "Elegant Power Ceremony: embody calm authority in one challenging interaction.",
+    ],
+    journal_prompts: [
+      "What hidden strength am I ready to reclaim?",
+      "Where does timing matter more than speed?",
+      "How can I embody power without hardening?",
+    ],
+    affirmations: [
+      "My shadow integrates into clean power.",
+      "I move with calm, precise authority.",
+      "Courage lives in my body now.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/d/d6/Black_panther.jpg",
+    diagram_image_url: "/diagrams/jaguar-alchemy-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Black_panther"],
+  },
+  {
+    id: "ally-deer-heart-grace",
+    name: "Deer Alchemy · Heart Grace",
+    ally_type: "deer",
+    category: "sacred_allies",
+    element: "earth",
+    description: "Deer alchemy restores gentle strength, heart coherence, and responsive grace under pressure.",
+    alchemy_teachings: [
+      "Gentleness can hold extraordinary strength.",
+      "Grace is embodied responsiveness, not passivity.",
+      "Heart coherence improves choices in conflict.",
+    ],
+    rituals: [
+      "Heart coherence breath for 7 minutes with hand on chest.",
+      "Grace under pressure ritual: rehearse one difficult conversation slowly.",
+      "Nature attunement walk for relational softness and clarity.",
+    ],
+    ceremonies: [
+      "Heart Grace Ceremony: soften armor without losing boundaries.",
+      "Compassionate Strength Ceremony: pair kindness with clear truth.",
+      "Relational Repair Ceremony: complete one act of clean restoration.",
+    ],
+    journal_prompts: [
+      "Where does my heart need more gentleness right now?",
+      "How can I stay kind and clear in conflict?",
+      "What grace-filled action will I take today?",
+    ],
+    affirmations: [
+      "My heart is gentle and strong.",
+      "I respond with grace and clarity.",
+      "Compassion and boundaries coexist in me.",
+    ],
+    image_url: "https://upload.wikimedia.org/wikipedia/commons/5/54/Red_deer_stag_2009_denmark.jpg",
+    diagram_image_url: "/diagrams/chamuel-heart-peace-diagram.svg",
+    source_references: ["https://en.wikipedia.org/wiki/Deer"],
   },
 ];
 
@@ -328,7 +572,19 @@ const WITH_DEFAULT_FIELDS = [
   "affirmations",
 ];
 
-const FALLBACK_BY_ID = Object.fromEntries((ALLY_FALLBACK_DATA || []).map((item) => [item.id, item]));
+const ALL_SACRED_ALLY_FALLBACK = [...ALLY_FALLBACK_DATA, ...SACRED_ALLY_EXPANSION_PACK];
+const FALLBACK_BY_ID = Object.fromEntries((ALL_SACRED_ALLY_FALLBACK || []).map((item) => [item.id, item]));
+
+const mergeAllyCompanionPack = (items) => {
+  const incoming = Array.isArray(items) ? items : [];
+  const byId = new Map(incoming.map((item) => [item?.id, item]));
+  SACRED_ALLY_EXPANSION_PACK.forEach((entry) => {
+    if (!byId.has(entry.id)) {
+      byId.set(entry.id, entry);
+    }
+  });
+  return Array.from(byId.values());
+};
 
 const withVisualOverrides = (items) =>
   (items || []).map((item) => {
@@ -446,11 +702,6 @@ const buildMasterHealingProtocol = (item) => {
   ];
 };
 
-const TABS = [
-  { id: "allies", label: "Sacred Ally Alchemy", icon: Flame },
-  { id: "angelic", label: "Angelic Alchemy", icon: Shield },
-];
-
 const FILTERS = [
   { id: "all", label: "All", icon: Sparkles },
   { id: "dragon", label: "Dragon", icon: Flame },
@@ -460,12 +711,6 @@ const FILTERS = [
   { id: "dolphins", label: "Dolphins", icon: Star },
   { id: "sacred_allies", label: "Other Sacred Allies", icon: Sparkles },
 ];
-
-const AngelicBadge = ({ value }) => (
-  <span className="px-2 py-1 rounded-full text-[11px] border border-cyan-500/30 bg-cyan-500/10 text-cyan-200" data-testid="angelic-geometry-badge">
-    {value}
-  </span>
-);
 
 const SectionList = ({ title, icon: Icon, items, testId }) => (
   <div className="space-y-2" data-testid={testId}>
@@ -490,11 +735,9 @@ const SectionList = ({ title, icon: Icon, items, testId }) => (
 
 export default function SacredAllyAlchemy({ api }) {
   const navigate = useNavigate();
-  const [tab, setTab] = useState("allies");
   const [loading, setLoading] = useState(true);
   const [allyFilter, setAllyFilter] = useState("all");
   const [allies, setAllies] = useState([]);
-  const [angelic, setAngelic] = useState([]);
   const [selected, setSelected] = useState(null);
   const [journeys, setJourneys] = useState([]);
   const [pathways, setPathways] = useState([]);
@@ -511,7 +754,7 @@ export default function SacredAllyAlchemy({ api }) {
       id: "p0",
       title: "P0 — Live Now",
       bullets: [
-        "Sacred Ally + Angelic Alchemy full-depth entries",
+        "Sacred Ally full-depth entries",
         "Whale Song Lines module",
         "Admin editable collections",
       ],
@@ -540,24 +783,19 @@ export default function SacredAllyAlchemy({ api }) {
     const load = async () => {
       setLoading(true);
       try {
-        const [alliesRes, angelicRes] = await Promise.all([
-          api.get("/sacred-ally-alchemy"),
-          api.get("/angelic-alchemy"),
-        ]);
+        const alliesRes = await api.get("/sacred-ally-alchemy");
         const [journeyRes, pathwayRes] = await Promise.all([
           api.get("/sacred-ally-audio-journeys"),
           api.get("/sacred-ally-pathways"),
         ]);
-        const allyData = Array.isArray(alliesRes.data) && alliesRes.data.length > 0 ? alliesRes.data : ALLY_FALLBACK_DATA;
-        const angelicData = Array.isArray(angelicRes.data) && angelicRes.data.length > 0 ? angelicRes.data : ANGELIC_FALLBACK_DATA;
+        const allyDataBase = Array.isArray(alliesRes.data) && alliesRes.data.length > 0 ? alliesRes.data : ALLY_FALLBACK_DATA;
+        const allyData = mergeAllyCompanionPack(allyDataBase);
         setAllies(withVisualOverrides(allyData));
-        setAngelic(withVisualOverrides(angelicData));
         setJourneys(Array.isArray(journeyRes.data) ? journeyRes.data : []);
         setPathways(Array.isArray(pathwayRes.data) ? pathwayRes.data : []);
       } catch (error) {
         appLogger.error("Failed loading Sacred Ally Alchemy", error);
-        setAllies(withVisualOverrides(ALLY_FALLBACK_DATA));
-        setAngelic(withVisualOverrides(ANGELIC_FALLBACK_DATA));
+        setAllies(withVisualOverrides(mergeAllyCompanionPack(ALLY_FALLBACK_DATA)));
       } finally {
         setLoading(false);
       }
@@ -578,7 +816,7 @@ export default function SacredAllyAlchemy({ api }) {
     });
   }, [allies, allyFilter]);
 
-  const cards = tab === "allies" ? filteredAllies : angelic;
+  const cards = filteredAllies;
 
   const requestDailyRecommendation = async () => {
     setDailyLoading(true);
@@ -623,62 +861,47 @@ export default function SacredAllyAlchemy({ api }) {
           </button>
           <div className="text-center">
             <p className="text-[11px] uppercase tracking-[0.2em] text-cyan-300/80">Sacred Temple</p>
-            <h1 className="text-xl sm:text-2xl font-serif">Sacred Ally & Angelic <span className="italic text-primary">Alchemy</span></h1>
+            <h1 className="text-xl sm:text-2xl font-serif">Sacred <span className="italic text-primary">Allies</span> Alchemy</h1>
           </div>
-          <div className="w-5" />
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate("/angelic-alchemy")}
+            className="text-cyan-200"
+            data-testid="sacred-allies-open-angelic-section"
+          >
+            Open Archangels
+          </Button>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-8 space-y-6">
         <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-cyan-900/20 via-background to-amber-900/20 p-5" data-testid="sacred-ally-hero-copy">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Work deeply with Dragon Alchemy, Fairies, Wolves, Whales with Song Lines, Dolphins, and expanded Sacred Allies — plus Angelic Alchemy including Metatron’s Cube and practical ritual pathways.
+            Work deeply with Dragon Alchemy, Fairies, Wolves, Whales with Song Lines, Dolphins, and expanded Sacred Allies. Archangelic work now lives in its own dedicated section.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2" data-testid="sacred-ally-tabs">
-          {TABS.map((item) => {
+        <div className="flex flex-wrap gap-2" data-testid="sacred-ally-filters">
+          {FILTERS.map((item) => {
             const Icon = item.icon;
-            const active = tab === item.id;
+            const active = allyFilter === item.id;
             return (
               <button
                 key={item.id}
-                onClick={() => setTab(item.id)}
-                data-testid={`sacred-ally-tab-${item.id}`}
-                className={`px-4 py-2 rounded-full text-sm border transition-all flex items-center gap-2 ${
+                onClick={() => setAllyFilter(item.id)}
+                data-testid={`sacred-ally-filter-${item.id}`}
+                className={`px-3 py-1.5 rounded-full text-xs border transition-all flex items-center gap-1.5 ${
                   active
-                    ? "bg-primary/15 border-primary/40 text-primary"
+                    ? "bg-amber-500/15 border-amber-500/35 text-amber-200"
                     : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"
                 }`}
               >
-                <Icon className="w-4 h-4" /> {item.label}
+                <Icon className="w-3.5 h-3.5" /> {item.label}
               </button>
             );
           })}
         </div>
-
-        {tab === "allies" && (
-          <div className="flex flex-wrap gap-2" data-testid="sacred-ally-filters">
-            {FILTERS.map((item) => {
-              const Icon = item.icon;
-              const active = allyFilter === item.id;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => setAllyFilter(item.id)}
-                  data-testid={`sacred-ally-filter-${item.id}`}
-                  className={`px-3 py-1.5 rounded-full text-xs border transition-all flex items-center gap-1.5 ${
-                    active
-                      ? "bg-amber-500/15 border-amber-500/35 text-amber-200"
-                      : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" /> {item.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
 
         {loading ? (
           <div className="h-56 rounded-2xl border border-white/10 bg-card/40 animate-pulse" data-testid="sacred-ally-loading" />
@@ -700,12 +923,11 @@ export default function SacredAllyAlchemy({ api }) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <p className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded-full border border-white/20 bg-black/40 text-white/85" data-testid={`sacred-ally-card-category-${item.id}`}>
-                    {item.category || item.ally_type || item.angelic_order}
+                    {item.category || item.ally_type}
                   </p>
                 </div>
                 <div className="p-4 space-y-2">
                   <h3 className="text-base font-serif" data-testid={`sacred-ally-card-title-${item.id}`}>{item.name}</h3>
-                  {item.sacred_geometry && <AngelicBadge value={item.sacred_geometry} />}
                   <p className="text-xs text-muted-foreground line-clamp-3" data-testid={`sacred-ally-card-description-${item.id}`}>
                     {item.description}
                   </p>
@@ -849,18 +1071,12 @@ export default function SacredAllyAlchemy({ api }) {
                   <X className="w-5 h-5 text-white" />
                 </button>
                 <div className="absolute bottom-4 left-4 right-12">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-cyan-200/90">{selected.category || selected.ally_type || selected.angelic_order}</p>
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-cyan-200/90">{selected.category || selected.ally_type}</p>
                   <h2 className="text-2xl sm:text-3xl font-serif text-white" data-testid="sacred-ally-modal-title">{selected.name}</h2>
                 </div>
               </div>
 
               <div className="p-5 space-y-5">
-                {selected.sacred_geometry && (
-                  <div data-testid="sacred-ally-modal-geometry-wrap">
-                    <AngelicBadge value={`Sacred Geometry: ${selected.sacred_geometry}`} />
-                  </div>
-                )}
-
                 {(selected.image_url || selected.diagram_image_url) && (
                   <div className="grid sm:grid-cols-2 gap-3" data-testid="sacred-ally-reference-visuals">
                     {selected.image_url && (
