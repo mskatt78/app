@@ -175,6 +175,43 @@ user_problem_statement: |
         comment: "✅ CRYSTAL-TRUTH FIX VERIFIED (2026-05-17): GET /api/crystals/deep iolite record confirmed. image_url now points to Iolite-specific file (https://upload.wikimedia.org/wikipedia/commons/4/4b/Iolite.JPG), NOT old Cordierite cluster image. image_validation.status=verified with source references: wikipedia_title='File:Iolite.JPG', wikipedia_page_url='https://en.wikipedia.org/wiki/Cordierite'. All sanity checks passed: /api/health (200), /api/courses (200, 3 items), /api/meditations (200, 6 items). No 500 errors detected. Crystal-truth fix VERIFIED."
 
 backend:
+
+  - task: "Final regression - retreats endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/retreats returns 200 with empty list []. Cleanup verification confirmed - no default placeholder retreats seeded. Final regression check PASSED."
+
+  - task: "Final regression - expand-script endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ POST /api/content/expand-script with duration_minutes=7, use_ai=false returns 200. Response: target_minutes=7, word_count=1020 (>= 840 requirement). All required fields present: practice_name, target_minutes, target_word_count, word_count, used_ai, paragraphs, segments. Final regression check PASSED."
+
+  - task: "Final regression - health endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/health returns 200 with valid JSON. Response: status=healthy, app='Shamanic Elements Temple Of The Soul', version='2.0.0'. Final regression check PASSED."
+
   - task: "Health endpoint verification"
     implemented: true
     working: true
@@ -8338,3 +8375,40 @@ agent_communication:
       SUMMARY:
       All 7 routes passed comprehensive embodiment integration testing. All Embodiment panels present with correct data-testids. All 3-step and 7-day blocks visible. All Begin Guided Practice buttons functional. No runtime crashes. No blocking console errors. One minor z-index UI issue in Shamanic Practices (non-critical). Embodiment integration is production-ready and stable.
 
+
+
+  - agent: "testing"
+    message: |
+      Final Regression Check - Backend Only (2026-06-15):
+      
+      VERIFICATION REQUEST: Run concise final regression check for this pass
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ BACKEND TESTS PASSED (3/3):
+      
+      1. ✅ GET /api/retreats - PASSED
+         - Status: 200 OK
+         - Response: Empty list []
+         - Verification: Returns 200 and empty list as expected
+      
+      2. ✅ POST /api/content/expand-script - PASSED
+         - Status: 200 OK
+         - Payload: practice_name="Test Practice", duration_minutes=7, use_ai=false
+         - Response: target_minutes=7, word_count=1020
+         - Verification: word_count (1020) >= 840 (7 minutes * 120 words/minute) ✓
+         - All required fields present: practice_name, target_minutes, target_word_count, word_count, used_ai, paragraphs, segments
+      
+      3. ✅ GET /api/health - PASSED
+         - Status: 200 OK
+         - Response: {"status": "healthy", "app": "Shamanic Elements Temple Of The Soul", "version": "2.0.0"}
+         - Verification: Returns 200 with valid health status
+      
+      FRONTEND TESTS:
+      ⚠️ Frontend testing NOT performed as per testing agent role (backend specialist only)
+      - /chakra-cleansing -> data-testid='chakra-practice-embodiment-panel' check: NOT TESTED
+      - /elemental-practices -> modal open check: NOT TESTED
+      
+      NOTE: Testing agent is specialized for backend API testing only. Frontend checks should be performed by main agent or manual verification.
+      
+      SUMMARY:
+      All backend regression checks PASSED. No blockers detected in backend APIs. GET /api/retreats returns empty list correctly. POST /api/content/expand-script generates sufficient word count (1020 >= 840). GET /api/health returns healthy status. Backend is stable and production-ready for this pass.

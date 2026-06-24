@@ -24,8 +24,8 @@ export const ElementalPracticeCard = ({ practice, index, onSelect, formatReviewe
             className="w-full h-full object-contain object-center transition-transform duration-500"
             data-testid={`elemental-practice-image-${practice.id}`}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-          <div className="absolute top-4 right-4 flex gap-2">
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-background via-transparent to-transparent" />
+          <div className="absolute top-4 right-4 flex gap-2 pointer-events-none">
             <span className={`px-3 py-1 rounded-full ${colors.bg} ${colors.text}`}>
               <span className="text-xs font-medium">{practice.element}</span>
             </span>
