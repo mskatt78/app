@@ -16,6 +16,73 @@ const sanitizeToList = (value) => {
 
 const safePortalKey = (scope, value) => `${scope}-${String(value || "").replace(/\s+/g, "-").toLowerCase()}`;
 
+const portalDeepLine = (sectionTitle, baseText, index) => {
+  const text = String(baseText || "").trim();
+  if (!text) return "";
+
+  if (sectionTitle.toLowerCase().includes("ritual")) {
+    return `Somatic practice ${index + 1}: complete this slowly, pausing every 90 seconds to track body signals and restore regulation before continuing.`;
+  }
+  if (sectionTitle.toLowerCase().includes("ceremon")) {
+    return `Ceremonial anchor ${index + 1}: begin with consent and breath, perform the act in silence, and close by naming one concrete life commitment.`;
+  }
+  if (sectionTitle.toLowerCase().includes("integration")) {
+    return `Aftercare protocol ${index + 1}: hydrate, orient, journal for 9 minutes, and complete one practical embodiment action in the next 24 hours.`;
+  }
+  return `Alchemy integration ${index + 1}: identify where this teaching applies today, then convert it into one compassionate boundary or aligned action.`;
+};
+
+const buildPortalMasterContainer = (portal) => {
+  const teachings = sanitizeToList(portal?.alchemy_teachings);
+  const rituals = sanitizeToList(portal?.rituals);
+  const ceremonies = sanitizeToList(portal?.ceremonies);
+  const integration = sanitizeToList(portal?.integration_practices);
+  const safety = String(portal?.safety_notes || "Move at the speed of safety and support.").trim();
+
+  return [
+    {
+      stage_id: "preparation",
+      title: "Stage 1 · Preparation & Consent",
+      duration: "10 min",
+      steps: [
+        `Invocation: ${portal?.opening_invocation || "I enter this portal with reverence and safety."}`,
+        "Orient to your environment and establish body safety before deeper work.",
+        safety,
+      ],
+    },
+    {
+      stage_id: "descent",
+      title: "Stage 2 · Descent into Ritual",
+      duration: "15-25 min",
+      steps: [
+        rituals[0] || "Begin with a grounding ritual and breathe slowly.",
+        rituals[1] || "Complete the second ritual while tracking sensations.",
+        rituals[2] || "Seal ritual descent with hand on heart and truthful naming.",
+      ],
+    },
+    {
+      stage_id: "transformation",
+      title: "Stage 3 · Ceremonial Transformation",
+      duration: "20-35 min",
+      steps: [
+        ceremonies[0] || "Open the first ceremony with focused presence.",
+        ceremonies[1] || "Move one pattern through transmutation and release.",
+        ceremonies[2] || "Complete with vow and embodied closure.",
+      ],
+    },
+    {
+      stage_id: "integration",
+      title: "Stage 4 · Integration (24 Hours + 7 Days)",
+      duration: "1-7 days",
+      steps: [
+        teachings[0] || "Apply one key teaching in your next real-life challenge.",
+        integration[0] || "Journal one insight and one concrete action before sleep.",
+        integration[1] || "Commit to one repeated daily practice for seven days.",
+      ],
+    },
+  ];
+};
+
 const HealingPortals = ({ user, api }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -209,6 +276,31 @@ const HealingPortals = ({ user, api }) => {
                 <PortalSection icon={Heart} title="Ceremonies" items={sanitizeToList(selectedPortal.ceremonies)} testId="healing-portal-ceremonies-section" />
                 <PortalSection icon={Shield} title="Integration" items={sanitizeToList(selectedPortal.integration_practices)} testId="healing-portal-integration-section" />
 
+                <section className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-3" data-testid="healing-portal-master-container">
+                  <h3 className="text-sm font-medium flex items-center gap-2">
+                    <Flame className="w-4 h-4 text-amber-300" />
+                    Deep Transformational Healing Container
+                  </h3>
+                  <div className="space-y-3">
+                    {buildPortalMasterContainer(selectedPortal).map((stage) => (
+                      <div key={stage.stage_id} className="rounded-lg border border-white/10 bg-black/20 p-3" data-testid={`healing-portal-master-stage-${stage.stage_id}`}>
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <p className="text-sm text-amber-100">{stage.title}</p>
+                          <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200">{stage.duration}</span>
+                        </div>
+                        <ul className="space-y-1.5">
+                          {stage.steps.map((step, idx) => (
+                            <li key={`${stage.stage_id}-${idx}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                              <span className="text-amber-300">✦</span>
+                              <span>{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
                 {!canAccessPortal(selectedPortal) ? (
                   <div className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-4" data-testid="healing-portal-premium-lock-panel">
                     <p className="text-sm text-fuchsia-100 mb-3">
@@ -278,10 +370,15 @@ const PortalSection = ({ icon: Icon, title, items, testId }) => {
         <Icon className="w-4 h-4 text-amber-300" /> {title}
       </h3>
       <ul className="space-y-2">
-        {items.map((item) => (
-          <li key={safePortalKey(testId, item)} className="text-sm text-muted-foreground flex gap-2">
-            <span className="text-amber-300">✦</span>
-            <span>{item}</span>
+        {items.map((item, idx) => (
+          <li key={safePortalKey(testId, item)} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
+            <div className="text-sm text-muted-foreground flex gap-2">
+              <span className="text-amber-300">✦</span>
+              <span>{item}</span>
+            </div>
+            <p className="text-xs text-muted-foreground/80 mt-2 leading-relaxed" data-testid={`${testId}-deep-line-${idx}`}>
+              {portalDeepLine(title, item, idx)}
+            </p>
           </li>
         ))}
       </ul>

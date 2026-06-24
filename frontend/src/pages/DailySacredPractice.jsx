@@ -39,6 +39,53 @@ const stableDailyKey = (prefix, value) => {
   return `${prefix}-${slug || "item"}`;
 };
 
+const buildPracticeDeepContainer = (practice) => {
+  if (!practice) return [];
+
+  const guide = String(
+    practice.extended_practice
+    || practice.somatic_practice
+    || practice.practice_guide
+    || practice.cleansing_guide
+    || practice.self_healing_guide
+    || practice.description
+    || ""
+  ).trim();
+
+  return [
+    {
+      phase_id: "prepare",
+      title: "Preparation & Intention",
+      duration: "5-8 min",
+      steps: [
+        `Name your intention for ${practice.name} in one sentence.`,
+        "Orient to breath and body safety before beginning deeper work.",
+        "Set one measurable healing outcome for today's session.",
+      ],
+    },
+    {
+      phase_id: "activate",
+      title: "Activation & Ritual Depth",
+      duration: `${Math.max(8, Number(practice.duration_minutes || 12))} min`,
+      steps: [
+        guide || `Practice ${practice.name} with slow precision and breath-led pacing.`,
+        "Pause every 2-3 minutes to feel where resistance or softening appears in your body.",
+        "Adjust intensity to stay in compassionate regulation while maintaining focus.",
+      ],
+    },
+    {
+      phase_id: "integrate",
+      title: "Integration & Real-Life Transfer",
+      duration: "10-15 min",
+      steps: [
+        "Write one insight, one boundary, and one courageous action from this practice.",
+        "Hydrate, ground, and complete one embodied action before the day ends.",
+        "Revisit this same protocol for 7 days to stabilize transformation.",
+      ],
+    },
+  ];
+};
+
 export default function DailySacredPractice({ user, api: userApi }) {
   const navigate = useNavigate();
   const [dailyData, setDailyData] = useState(null);
@@ -146,6 +193,28 @@ export default function DailySacredPractice({ user, api: userApi }) {
                     </div>
                   </div>
                 )}
+
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-3" data-testid={`daily-practice-master-container-${time}`}>
+                  <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Flame className="w-4 h-4 text-amber-300" /> Transformational Ritual Container
+                  </h4>
+                  {buildPracticeDeepContainer(practice).map((phase) => (
+                    <div key={phase.phase_id} className="rounded-lg border border-white/10 bg-black/20 p-3" data-testid={`daily-practice-master-phase-${time}-${phase.phase_id}`}>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <p className="text-xs text-amber-100">{phase.title}</p>
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200">{phase.duration}</span>
+                      </div>
+                      <ul className="space-y-1.5">
+                        {phase.steps.map((step, idx) => (
+                          <li key={`${phase.phase_id}-${idx}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                            <span className="text-amber-300">✦</span>
+                            <span>{step}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
 
                 {(practice.shadow_work || practice.shadow_integration) && (
                   <div>

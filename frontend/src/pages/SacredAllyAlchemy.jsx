@@ -373,6 +373,79 @@ const deriveCeremonies = (item) => {
   return ritualLines.slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
 };
 
+const deepLine = (sectionTitle, baseText, index) => {
+  const text = String(baseText || "").trim();
+  if (!text) return "";
+
+  if (sectionTitle.toLowerCase().includes("ritual")) {
+    return `Somatic anchor ${index + 1}: Slow your breath for 7 cycles, embody this line in your body, then complete one grounded action before moving on.`;
+  }
+  if (sectionTitle.toLowerCase().includes("ceremon")) {
+    return `Ceremonial descent ${index + 1}: speak this intention aloud, pause in silence for 60 seconds, then seal it through touch at heart and solar plexus.`;
+  }
+  if (sectionTitle.toLowerCase().includes("journal")) {
+    return `Integration journaling ${index + 1}: write without editing for 9 minutes, then underline one actionable truth to complete today.`;
+  }
+  if (sectionTitle.toLowerCase().includes("affirmation")) {
+    return `Embodiment repetition ${index + 1}: repeat slowly on breath (inhale/hold/exhale), then walk one minute while feeling it become lived reality.`;
+  }
+  return `Transformational inquiry ${index + 1}: contemplate this teaching, name where it lives in your life now, and define one practical shift before nightfall.`;
+};
+
+const buildMasterHealingProtocol = (item) => {
+  const rituals = Array.isArray(item?.practical_rituals) && item.practical_rituals.length > 0
+    ? item.practical_rituals
+    : Array.isArray(item?.rituals)
+      ? item.rituals
+      : [];
+  const ceremonies = deriveCeremonies(item);
+  const teachings = Array.isArray(item?.alchemy_teachings) ? item.alchemy_teachings : [];
+  const prompts = Array.isArray(item?.journal_prompts) ? item.journal_prompts : [];
+
+  return [
+    {
+      phase_id: "preparation",
+      title: "Phase 1 · Preparation & Nervous System Safety",
+      duration: "8-12 min",
+      steps: [
+        `Opening Invocation: ${item?.description || "I enter this work with clarity, consent, and compassion."}`,
+        `Set body safety: orient to five stable points in your environment and lengthen the exhale for 7 rounds.`,
+        `Name today's healing intention in one sentence and speak it aloud three times.`,
+      ],
+    },
+    {
+      phase_id: "descent",
+      title: "Phase 2 · Ritual Descent",
+      duration: "15-25 min",
+      steps: [
+        rituals[0] || "Begin with one grounding ritual and move slowly through each body signal.",
+        rituals[1] || "Track sensations and pause whenever activation rises beyond your capacity.",
+        rituals[2] || "Seal the descent by placing hand on heart and naming what softened.",
+      ],
+    },
+    {
+      phase_id: "transmutation",
+      title: "Phase 3 · Ceremonial Transmutation",
+      duration: "18-30 min",
+      steps: [
+        ceremonies[0] || "Enter the first ceremony with reverence and complete focus.",
+        ceremonies[1] || "Move one limiting pattern into flame, breath, or water as symbolic release.",
+        ceremonies[2] || "Close with a vow that converts insight into a visible action.",
+      ],
+    },
+    {
+      phase_id: "integration",
+      title: "Phase 4 · 72-Hour Integration",
+      duration: "3 days",
+      steps: [
+        teachings[0] || "Apply one alchemy teaching in your next conversation or boundary.",
+        prompts[0] || "Journal one truth that emerged and one behavior you will change today.",
+        "Complete one embodied action before sleep so the ceremony becomes lived transformation.",
+      ],
+    },
+  ];
+};
+
 const TABS = [
   { id: "allies", label: "Sacred Ally Alchemy", icon: Flame },
   { id: "angelic", label: "Angelic Alchemy", icon: Shield },
@@ -401,9 +474,14 @@ const SectionList = ({ title, icon: Icon, items, testId }) => (
     </h4>
     <ul className="space-y-2">
       {items?.map((item, idx) => (
-        <li key={`${title}-${idx}-${String(item).slice(0, 20)}`} className="flex items-start gap-2 text-sm text-muted-foreground">
-          <ChevronRight className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
-          <span>{item}</span>
+        <li key={`${title}-${idx}-${String(item).slice(0, 20)}`} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
+          <div className="flex items-start gap-2 text-sm text-muted-foreground">
+            <ChevronRight className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
+            <span>{item}</span>
+          </div>
+          <p className="text-xs text-muted-foreground/80 mt-2 leading-relaxed" data-testid={`${testId}-deep-line-${idx}`}>
+            {deepLine(title, item, idx)}
+          </p>
         </li>
       ))}
     </ul>
@@ -804,6 +882,31 @@ export default function SacredAllyAlchemy({ api }) {
 
                 <SectionList title="Alchemy Teachings" icon={Sparkles} items={selected.alchemy_teachings} testId="sacred-ally-alchemy-teachings" />
                 <SectionList title="Ceremonies" icon={Flame} items={deriveCeremonies(selected)} testId="sacred-ally-ceremonies" />
+
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-3" data-testid="sacred-ally-master-healing-protocol">
+                  <h3 className="text-sm font-medium flex items-center gap-2">
+                    <Flame className="w-4 h-4 text-amber-300" />
+                    Transformational Healing Protocol (Master-Level)
+                  </h3>
+                  <div className="space-y-3">
+                    {buildMasterHealingProtocol(selected).map((phase) => (
+                      <div key={phase.phase_id} className="rounded-lg border border-white/10 bg-black/20 p-3" data-testid={`sacred-ally-master-phase-${phase.phase_id}`}>
+                        <div className="flex items-center justify-between gap-2 mb-2">
+                          <p className="text-sm text-amber-100">{phase.title}</p>
+                          <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-200">{phase.duration}</span>
+                        </div>
+                        <ul className="space-y-1.5">
+                          {phase.steps.map((step, idx) => (
+                            <li key={`${phase.phase_id}-${idx}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                              <span className="text-amber-300">✦</span>
+                              <span>{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
                 {selectedJourney && (
                   <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-guided-journey-card">
