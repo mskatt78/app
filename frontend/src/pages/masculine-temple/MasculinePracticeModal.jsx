@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, Shield, Zap } from "lucide-react";
 import AddToJournal from "../../components/AddToJournal";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 const normalizeBenefits = (benefits) => {
   if (!benefits) return [];
@@ -100,11 +101,12 @@ export const MasculinePracticeModal = ({ selectedPractice, setSelectedPractice, 
                   script={`${selectedPractice.name}. ${selectedPractice.description}. ${selectedPractice.practice_guide || ""}`}
                   label="Listen to Guided Practice"
                   className="flex-1"
+                  durationMinutes={resolveDurationMinutes(selectedPractice.duration_minutes, 20)}
                 />
                 <AddToJournal
                   practiceName={selectedPractice.name}
                   practiceType="masculine"
-                  duration={selectedPractice.duration_minutes || 20}
+                  duration={resolveDurationMinutes(selectedPractice.duration_minutes, 20)}
                   buttonVariant="outline"
                   buttonSize="default"
                 />

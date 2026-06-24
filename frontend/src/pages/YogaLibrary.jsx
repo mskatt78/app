@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 import { appLogger } from "../utils/logger";
+import { resolveDurationMinutes } from "../utils/durationUtils";
 
 const YogaLibrary = ({ user, api }) => {
   const stablePoseKey = (prefix, value) => {
@@ -592,7 +593,7 @@ const YogaLibrary = ({ user, api }) => {
                       script={`Welcome to ${selectedPose.name}. ${selectedPose.description}. ${selectedPose.instructions?.join(". ") || "Move gently and breathe naturally."} Keep your awareness in the body and soften your jaw and shoulders as you hold the posture.`}
                       title={`Guided ${selectedPose.name}`}
                       element={selectedPose.element || "Spirit"}
-                      duration={Math.max(8, selectedPose.duration_minutes || 8)}
+                      durationMinutes={resolveDurationMinutes(selectedPose.duration_minutes, 8)}
                       practiceName={selectedPose.name}
                     />
                   </div>

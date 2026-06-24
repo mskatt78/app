@@ -3,6 +3,7 @@ import GuidedPracticeOverlay from "../../components/GuidedPracticeOverlay";
 import PracticeTimer from "../../components/PracticeTimer";
 import ShareToCircle from "../../components/ShareToCircle";
 import { stableShamanicKey } from "./constants";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 const getShamanicBackgroundAudio = (element) => {
   if (element === "Fire") return "fire";
@@ -23,6 +24,8 @@ export const ShamanicPracticeOverlays = ({
   getSteps,
   setShowPracticeGuide,
 }) => {
+  const resolvedDurationMinutes = selectedPractice ? resolveDurationMinutes(selectedPractice.duration_minutes, 30) : 30;
+
   return (
     <>
       <AnimatePresence>
@@ -30,7 +33,7 @@ export const ShamanicPracticeOverlays = ({
           <GuidedPracticeOverlay
             practice={{
               ...selectedPractice,
-              duration_minutes: selectedPractice.duration_minutes || 20,
+              duration_minutes: resolvedDurationMinutes,
               instructions: getSteps(selectedPractice),
             }}
             onExit={() => setShowGuidedOverlay(false)}
@@ -41,26 +44,27 @@ export const ShamanicPracticeOverlays = ({
       <AnimatePresence>
         {showPracticeTimer && selectedPractice && (
           <PracticeTimer
-            open={showPracticeTimer}
-            onClose={() => setShowPracticeTimer(false)}
-            duration={selectedPractice.duration_minutes || 20}
-            title={selectedPractice.name}
-            subtitle={selectedPractice.category}
+            totalDuration={resolvedDurationMinutes * 60}
             backgroundAudio={getShamanicBackgroundAudio(selectedPractice.element)}
-            guidedScript={[
-              selectedPractice.description,
-              ...(Array.isArray(selectedPractice.preparation)
-                ? selectedPractice.preparation
-                : selectedPractice.preparation
-                  ? [selectedPractice.preparation]
-                  : []),
-              ...getSteps(selectedPractice),
-              selectedPractice.closing_prayer,
-            ]
-              .filter(Boolean)
-              .join("\n\n")}
-            voice="alloy"
-            speed="slow"
+            practiceType="shamanic"
+            element={selectedPractice.element || "Spirit"}
+            segments={
+              getSteps(selectedPractice).length > 0
+                ? getSteps(selectedPractice).map((step, index) => ({
+                    name: `Step ${index + 1}`,
+                    description: step,
+                    duration_seconds: Math.floor((resolvedDurationMinutes * 60) / getSteps(selectedPractice).length),
+                    has_audio: true,
+                  }))
+                : [
+                    {
+                      name: selectedPractice.name,
+                      description: selectedPractice.description || "Allow yourself to journey deeply with the drumming.",
+                      duration_seconds: resolvedDurationMinutes * 60,
+                      has_audio: true,
+                    },
+                  ]
+            }
             dataTestIdPrefix={stableShamanicKey("shamanic-timer", selectedPractice.id || selectedPractice.name)}
             onComplete={() => {
               setShowPracticeTimer(false);

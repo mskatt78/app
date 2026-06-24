@@ -4925,7 +4925,7 @@ def _daily_unified_ceremonial_flow(
     angel_ritual = _first_text_line((daily_angel or {}).get("practical_rituals"), "Visualize your field in clear coherent light.")
 
     return {
-        "title": "Very Deep Ceremonial Daily Flow",
+        "title": "Ceremonial Daily Flow",
         "opening_invocation": "I enter this day as ceremony—grounded, clear, and aligned.",
         "ceremony_steps": [
             {

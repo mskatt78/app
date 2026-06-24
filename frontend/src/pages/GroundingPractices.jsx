@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
+import { resolveDurationMinutes } from "../utils/durationUtils";
 
 const GroundingPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const GroundingPractices = ({ user, api }) => {
     ...exercise,
     element: exercise.element || "Earth",
     category: exercise.category || "grounding",
-    duration_minutes: Number(exercise.duration_minutes || 15),
+    duration_minutes: resolveDurationMinutes(exercise.duration_minutes, 15),
     steps: resolveGroundingSteps(exercise),
   });
 

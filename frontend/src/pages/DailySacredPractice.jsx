@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import axios from "axios";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import { resolveDurationMinutes } from "../utils/durationUtils";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -66,7 +67,7 @@ const buildPracticeDeepContainer = (practice) => {
     {
       phase_id: "activate",
       title: "Activation & Ritual Depth",
-      duration: `${Math.max(8, Number(practice.duration_minutes || 12))} min`,
+      duration: `${Math.max(8, resolveDurationMinutes(practice.duration_minutes, 12))} min`,
       steps: [
         guide || `Practice ${practice.name} with slow precision and breath-led pacing.`,
         "Pause every 2-3 minutes to feel where resistance or softening appears in your body.",
@@ -467,7 +468,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
 
             {renderUnifiedFlow()}
 
-            {renderAllyAngelPanels()}
+            {!dailyData?.unified_daily_flow && renderAllyAngelPanels()}
 
             {dailyData.dragon_astrology_reflection && (
               <motion.div

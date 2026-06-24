@@ -13,6 +13,7 @@ import {
   flattenTextValue,
   buildNarrationPlan,
 } from "./guidedNarrationUtils";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 import {
   getGuidedNarrationMode,
   getEffectiveGuidedNarrationMode,
@@ -23,7 +24,10 @@ import { appLogger } from "../../utils/logger";
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const narrationPlan = useMemo(() => buildNarrationPlan(practice || {}, stepsOverride), [practice, stepsOverride]);
-  const totalDuration = Math.max(MINIMUM_NARRATION_MINUTES * 60, Number(practice?.duration_minutes || 20) * 60);
+  const totalDuration = Math.max(
+    MINIMUM_NARRATION_MINUTES * 60,
+    resolveDurationMinutes(practice?.duration_minutes, 20) * 60,
+  );
   const [isPlaying, setIsPlaying] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(totalDuration);
   const [isComplete, setIsComplete] = useState(false);
@@ -98,7 +102,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       practiceId: practice.id || null,
       practiceName: practice.name || "Guided Practice",
       element: practice.element || "Spirit",
-      durationMinutes: practice.duration_minutes || MINIMUM_NARRATION_MINUTES,
+      durationMinutes: resolveDurationMinutes(practice.duration_minutes, MINIMUM_NARRATION_MINUTES),
       sourceTexts,
       steps,
     };

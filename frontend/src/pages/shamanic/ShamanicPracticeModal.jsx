@@ -6,6 +6,7 @@ import { EmbodimentProtocolPanel } from "../../components/practice/EmbodimentPro
 import GuidedAudioButton from "../../components/GuidedAudioButton";
 import PracticeTimer from "../../components/PracticeTimer";
 import { appLogger } from "../../utils/logger";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 const OVERLAY_INITIAL = { opacity: 0 };
 const OVERLAY_ANIMATE = { opacity: 1 };
@@ -23,6 +24,8 @@ export const ShamanicPracticeModal = ({
   logPractice,
   api,
 }) => {
+  const resolvedDurationMinutes = selectedPractice ? resolveDurationMinutes(selectedPractice.duration_minutes, 30) : 30;
+
   return (
     <AnimatePresence>
       {selectedPractice && (
@@ -138,6 +141,7 @@ export const ShamanicPracticeModal = ({
                     <GuidedAudioButton
                       api={api}
                       label="Play Guided Journey Narration"
+                      durationMinutes={resolvedDurationMinutes}
                       script={[
                         `Welcome to this shamanic journey: ${selectedPractice.name}.`,
                         selectedPractice.description || "",
@@ -163,19 +167,19 @@ export const ShamanicPracticeModal = ({
                         ? getSteps(selectedPractice).map((step, index) => ({
                             name: `Step ${index + 1}`,
                             description: step,
-                            duration_seconds: Math.floor(((selectedPractice.duration_minutes || 30) * 60) / getSteps(selectedPractice).length),
+                            duration_seconds: Math.floor((resolvedDurationMinutes * 60) / getSteps(selectedPractice).length),
                             has_audio: true,
                           }))
                         : [
                             {
                               name: selectedPractice.name,
                               description: selectedPractice.description || "Allow yourself to journey deeply with the drumming.",
-                              duration_seconds: (selectedPractice.duration_minutes || 30) * 60,
+                              duration_seconds: resolvedDurationMinutes * 60,
                               has_audio: true,
                             },
                           ]
                     }
-                    totalDuration={(selectedPractice.duration_minutes || 30) * 60}
+                    totalDuration={resolvedDurationMinutes * 60}
                     backgroundAudio="drums"
                     autoStartAudio={true}
                     practiceType="shamanic"
@@ -212,7 +216,7 @@ export const ShamanicPracticeModal = ({
                       category: selectedPractice.category || "shamanic",
                       element: selectedPractice.element || "Spirit",
                       steps: getSteps(selectedPractice),
-                      duration_minutes: Number(selectedPractice.duration_minutes || 30),
+                      duration_minutes: resolveDurationMinutes(selectedPractice.duration_minutes, 30),
                     });
                   }}
                   className="w-full py-4 px-6 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-medium rounded-xl flex items-center justify-center gap-2 touch-manipulation"

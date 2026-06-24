@@ -1,5 +1,6 @@
 import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
 import { appLogger } from "../../utils/logger";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 export const ELEMENT_AMBIENT = {
   fire: { freq: 120, Q: 2, gain: 0.12, label: "Sacred Fire" },
@@ -205,7 +206,10 @@ const normalizeForRepeatCheck = (text) =>
 const stemKey = (text) => normalizeForRepeatCheck(text).split(" ").slice(0, 10).join(" ");
 
 export function buildNarrationPlan(practice, stepsOverride) {
-  const targetMinutes = Math.max(MINIMUM_NARRATION_MINUTES, Number(practice?.duration_minutes || 0) || MINIMUM_NARRATION_MINUTES);
+  const targetMinutes = Math.max(
+    MINIMUM_NARRATION_MINUTES,
+    resolveDurationMinutes(practice?.duration_minutes, MINIMUM_NARRATION_MINUTES),
+  );
   const targetWords = Math.max(MINIMUM_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, targetMinutes * TARGET_WORDS_PER_MINUTE);
 
   const sources = [

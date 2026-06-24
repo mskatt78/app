@@ -3,6 +3,7 @@ import { Clock, ChevronDown, ChevronUp, Flame, Loader2, Play, Share2, Volume2 } 
 import { Button } from "../../components/ui/button";
 import AddToJournal from "../../components/AddToJournal";
 import { EmbodimentProtocolPanel } from "../../components/practice/EmbodimentProtocolPanel";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { getChakraConfig, stableChakraKey } from "./chakraConfig";
 
 export const ChakraDetailModal = ({
@@ -208,7 +209,7 @@ export const ChakraDetailModal = ({
                 <AddToJournal
                   practiceName={selectedPractice.name}
                   practiceType="chakra"
-                  duration={selectedPractice.duration_minutes || 15}
+                  duration={resolveDurationMinutes(selectedPractice.duration_minutes, 15)}
                   buttonVariant="outline"
                   buttonSize="default"
                 />

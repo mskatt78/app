@@ -7,6 +7,7 @@ import { HeartPracticesFilters } from "./HeartPracticesFilters";
 import { HeartPracticesGrid } from "./HeartPracticesGrid";
 import { HeartPracticesHeader } from "./HeartPracticesHeader";
 import { useHeartPracticesData } from "./useHeartPracticesData";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 const HeartPracticesContainer = ({ api }) => {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ const HeartPracticesContainer = ({ api }) => {
     ...practice,
     element: practice.element || "Water",
     category: practice.category || "heart",
-    duration_minutes: Number(practice.duration_minutes || 20),
+    duration_minutes: resolveDurationMinutes(practice.duration_minutes, 20),
     steps: resolveHeartPracticeSteps(practice),
   });
 

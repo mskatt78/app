@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
+import { resolveDurationMinutes } from "../utils/durationUtils";
 
 const SunriseSunsetPractices = ({ user, api }) => {
   const navigate = useNavigate();
@@ -681,7 +682,7 @@ const SunriseSunsetPractices = ({ user, api }) => {
                         ...selectedPractice,
                         category: activeTab,
                         steps: selectedPractice.steps,
-                        duration_minutes: Number(selectedPractice.duration_minutes || 15),
+                        duration_minutes: resolveDurationMinutes(selectedPractice.duration_minutes, 15),
                       });
                     }}
                     className={`w-full py-4 ${

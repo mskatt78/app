@@ -380,7 +380,7 @@ def _build_unified_daily_flow(context: dict[str, Any]) -> dict[str, Any]:
     closing_prompt = str(journal_prompts[0]) if journal_prompts else "What sacred action am I choosing now?"
 
     return {
-        "title": "Very Deep Ceremonial Daily Flow",
+        "title": "Ceremonial Daily Flow",
         "opening_invocation": "I enter this day with reverence, embodiment, and devotion to truth.",
         "practical_focus": [
             "Complete one physical grounding action in the first hour of your day.",
@@ -603,7 +603,7 @@ def _handle_daily_guidance_error(user: User, exc: Exception) -> dict[str, Any]:
         "daily_journal_prompts": fallback_prompts,
         "ceremonial_affirmation": "I walk this day as ceremony and truth.",
         "unified_daily_flow": {
-            "title": "Very Deep Ceremonial Daily Flow",
+            "title": "Ceremonial Daily Flow",
             "opening_invocation": "I arrive with reverence and intention.",
             "ceremony_steps": [
                 {

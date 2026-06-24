@@ -7,6 +7,7 @@ import { ChakraFilterBar } from "./ChakraFilterBar";
 import { ChakraHeader } from "./ChakraHeader";
 import { ChakraPracticeGrid } from "./ChakraPracticeGrid";
 import { useChakraCleansingData } from "./useChakraCleansingData";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 export default function ChakraCleansing() {
   const navigate = useNavigate();
@@ -81,7 +82,7 @@ export default function ChakraCleansing() {
           <GuidedPracticeOverlay
             practice={{
               name: `${selectedPractice.chakra || selectedPractice.name} Chakra — Self-Healing`,
-              duration_minutes: selectedPractice.duration_minutes || 20,
+              duration_minutes: resolveDurationMinutes(selectedPractice.duration_minutes, 20),
               element: selectedPractice.element || "Spirit",
               cleansing_guide: selectedPractice.cleansing_guide,
             }}
