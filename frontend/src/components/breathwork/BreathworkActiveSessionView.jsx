@@ -140,6 +140,19 @@ export const BreathworkActiveSessionView = ({
       </div>
     )}
 
+    {(activeSession.best_for_tags || []).length > 0 && (
+      <div className="mt-4 w-full max-w-xl p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="breathwork-best-for-tags-active">
+        <h4 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Best For</h4>
+        <div className="flex flex-wrap gap-2">
+          {activeSession.best_for_tags.map((tag) => (
+            <span key={`breathwork-active-best-for-${tag}`} className="px-2 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[11px] text-emerald-100">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
     {(activeSession.youtube_tutorials || []).length > 0 && (
       <div className="mt-6 w-full max-w-xl p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="breathwork-youtube-tutorials">
         <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">YouTube Tutorials</h4>

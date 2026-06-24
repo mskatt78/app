@@ -8646,3 +8646,64 @@ agent_communication:
       
       SUMMARY:
       All requirements from review_request met successfully. All 3 routes (/yoga, /breathwork, /meditations) load correctly with master embodiment protocols and YouTube tutorials fully functional. All exact selector requirements verified. No blocking errors. No route crashes. Feature is production-ready.
+
+  - agent: "testing"
+    message: |
+      Direct Video Links + Best-For Tags Testing completed successfully (2026-06-24):
+      
+      VERIFICATION REQUEST: Run frontend testing for new direct video links + best-for tags
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (5/5 routes):
+      
+      1. ✅ YOGA (/yoga) - PASSED
+         - Page loads: ✓ (data-testid='yoga-library' found)
+         - First pose modal opens: ✓
+         - Direct tutorial link: ✓ data-testid='selected-pose-youtube-tutorials' found with 3 tutorial links
+         - First link URL: https://www.youtube.com/watch?v=ipitZ_o2ut4 ✓ DIRECT VIDEO LINK (youtube.com/watch)
+         - Best-for tags: ✓ data-testid='selected-pose-best-for-tags' found with 5 tags
+         - No route crash: ✓
+      
+      2. ✅ BREATHWORK (/breathwork) - PASSED
+         - Page loads: ✓ (data-testid='breathwork' found)
+         - Card-level YouTube links: ✓ 6 links found with data-testid='breathwork-youtube-link-*' pattern
+         - First card link URL: https://www.youtube.com/watch?v=URiPyIbU3bg ✓ DIRECT VIDEO LINK (youtube.com/watch)
+         - Card-level best-for tags: ✓ 6 sections found with data-testid='breathwork-best-for-tags-*' pattern
+         - First session opens active view: ✓
+         - Active view best-for tags: ✓ data-testid='breathwork-best-for-tags-active' found with 9 tags
+         - Active view YouTube tutorials: ✓ data-testid='breathwork-youtube-tutorials' found with 3 links
+         - First active link URL: https://www.youtube.com/watch?v=URiPyIbU3bg ✓ DIRECT VIDEO LINK (youtube.com/watch)
+         - No route crash: ✓
+      
+      3. ✅ MEDITATIONS (/meditations) - PASSED
+         - Page loads: ✓ (data-testid='meditations-page' found)
+         - Card-level best-for tags: ✓ 6 sections found with data-testid='meditation-best-for-tags-*' pattern
+         - Card-level YouTube links: ✓ 6 links found with data-testid='meditation-youtube-link-*' pattern
+         - First card link URL: https://www.youtube.com/watch?v=td6BhfC7Xwk ✓ DIRECT VIDEO LINK (youtube.com/watch)
+         - No route crash: ✓
+      
+      4. ✅ MANTRAS (/mantras) - PASSED
+         - Page loads: ✓ (data-testid='mantras-library' found)
+         - First mantra modal opens: ✓
+         - Best-for tags: ✓ data-testid='mantra-best-for-tags' found with 7 tags
+         - YouTube tutorials: ✓ data-testid='mantra-youtube-tutorials' found with 3 links
+         - First link URL: https://www.youtube.com/watch?v=eQTenvydZIo ✓ DIRECT VIDEO LINK (youtube.com/watch)
+         - No route crash: ✓
+      
+      5. ✅ MUDRAS (/mudras) - PASSED
+         - Page loads: ✓ (data-testid='mudras-library' found)
+         - First mudra modal opens: ✓
+         - Best-for tags: ✓ data-testid='mudra-best-for-tags' found with 5 tags
+         - YouTube tutorials: ✓ data-testid='mudra-youtube-tutorials' found with 3 links
+         - First link URL: https://www.youtube.com/watch?v=fRtOijVfhn4 ✓ DIRECT VIDEO LINK (youtube.com/watch)
+         - No route crash: ✓
+      
+      CROSS-CUTTING CHECKS:
+      ✅ No route crashes detected - all routes loaded successfully
+      ✅ No blocking console errors detected
+      ✅ All required data-testids present and accessible
+      ✅ All tutorial links are DIRECT VIDEO LINKS (youtube.com/watch) as expected
+      ✅ Best-for tags visible and populated in all tested routes
+      
+      SUMMARY:
+      All requirements from review_request met successfully. All 5 routes (/yoga, /breathwork, /meditations, /mantras, /mudras) load correctly with direct video links (youtube.com/watch URLs) and best-for tags fully functional. All exact selector requirements verified. No blocking errors. No route crashes. Feature is production-ready.

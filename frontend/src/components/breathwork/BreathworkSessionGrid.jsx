@@ -44,6 +44,16 @@ export const BreathworkSessionGrid = ({ filteredSessions, elementColors, startSe
               ))}
             </div>
 
+            {(session.best_for_tags || []).length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2" data-testid={`breathwork-best-for-tags-${session.id}`}>
+                {session.best_for_tags.map((tag) => (
+                  <span key={`breathwork-best-for-${session.id}-${tag}`} className="px-2 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[11px] text-emerald-100">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
             {session.frequency && (
               <div className="mt-3 text-xs text-muted-foreground flex items-center gap-1">
                 <span className="text-primary">Frequency:</span> {session.frequency.split(" - ")[0]}

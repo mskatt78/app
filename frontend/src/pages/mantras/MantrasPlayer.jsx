@@ -376,6 +376,19 @@ export const MantrasPlayer = ({
                 </div>
               </div>
 
+              {(selectedMantra.best_for_tags || []).length > 0 && (
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="mantra-best-for-tags">
+                  <h4 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Best For</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedMantra.best_for_tags.map((tag) => (
+                      <span key={`mantra-best-for-${tag}`} className="px-2 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[11px] text-emerald-100">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {selectedMantra.master_embodiment_protocol && (
                 <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mantra-master-embodiment-protocol">
                   <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-3">Master Embodiment Protocol</h4>

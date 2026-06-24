@@ -288,6 +288,16 @@ const Meditations = ({ user, api }) => {
                         </div>
                       )}
 
+                      {(meditation.best_for_tags || []).length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2" data-testid={`meditation-best-for-tags-${meditation.id}`}>
+                          {meditation.best_for_tags.map((tag) => (
+                            <span key={`meditation-best-for-${meditation.id}-${tag}`} className="px-2 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[11px] text-emerald-100">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+
                       {(meditation.youtube_tutorials || []).length > 0 && (
                         <a
                           href={meditation.youtube_tutorials[0].url}

@@ -506,6 +506,19 @@ const YogaLibrary = ({ user, api }) => {
                   </div>
                 )}
 
+                {(selectedPose.best_for_tags || []).length > 0 && (
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="selected-pose-best-for-tags">
+                    <h3 className="text-sm uppercase tracking-wider text-emerald-300 mb-2">Best For</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedPose.best_for_tags.map((tag) => (
+                        <span key={`selected-pose-best-for-${tag}`} className="px-2 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[11px] text-emerald-100">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {(selectedPose.youtube_tutorials || []).length > 0 && (
                   <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="selected-pose-youtube-tutorials">
                     <h3 className="text-sm uppercase tracking-wider text-cyan-300 mb-2">YouTube Tutorials</h3>

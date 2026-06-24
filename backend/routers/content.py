@@ -218,6 +218,37 @@ MUDRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
     "prana mudra": ["https://www.youtube.com/watch?v=3ritYT9VnTM"],
 }
 
+YOGA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
+    "mountain pose": ["https://www.youtube.com/watch?v=ipitZ_o2ut4"],
+    "tree pose": ["https://www.youtube.com/watch?v=HrQZnM3soFk"],
+    "bridge pose": ["https://www.youtube.com/watch?v=IV9Y-52NOY0"],
+    "garland pose": ["https://www.youtube.com/watch?v=7LzI9jlvX0g"],
+    "extended triangle": ["https://www.youtube.com/watch?v=JhtpJfrxfDs"],
+    "wide legged forward fold": ["https://www.youtube.com/watch?v=tJAbNDZBUwE"],
+    "chair pose": ["https://www.youtube.com/watch?v=NUTWhwm04WY"],
+    "standing forward fold": ["https://www.youtube.com/watch?v=GZZk3sAf61U"],
+    "goddess pose": ["https://www.youtube.com/watch?v=HvkzRRG8OC0"],
+    "half moon pose": ["https://www.youtube.com/watch?v=xMm6zCZxmRc"],
+}
+
+BREATHWORK_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
+    "earth grounding breath": ["https://www.youtube.com/watch?v=URiPyIbU3bg"],
+    "fire breath kapalabhati": ["https://www.youtube.com/watch?v=QEOCE_f32tc"],
+    "ocean breath ujjayi": ["https://www.youtube.com/watch?v=GryOvhcnRcw"],
+    "wind clearing breath": ["https://www.youtube.com/watch?v=OYa-EJAMDjg"],
+    "spirit journey breath": ["https://www.youtube.com/watch?v=sJ3YzmDiIzA"],
+    "4 7 8 relaxation": ["https://www.youtube.com/watch?v=FpQMfI56Cj4"],
+}
+
+MEDITATION_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
+    "inner peace journey": ["https://www.youtube.com/watch?v=td6BhfC7Xwk"],
+    "mountain meditation": ["https://www.youtube.com/watch?v=yW_-d84Igxw"],
+    "chakra cleansing": ["https://www.youtube.com/watch?v=I6jP5oLdKpY"],
+    "forest bathing": ["https://www.youtube.com/watch?v=qRzKqLnv5ms"],
+    "ocean of consciousness": ["https://www.youtube.com/watch?v=jPpUNAFHgxM"],
+    "inner fire activation": ["https://www.youtube.com/watch?v=PoW4rqDue0c"],
+}
+
 WATER_PRACTICE_SUPPLEMENTS = [
     {
         "id": "water-practice-auric-rinse",
@@ -958,10 +989,16 @@ def _enrich_yoga_pose(pose: dict[str, Any]) -> dict[str, Any]:
             str(enriched.get("somatic_fascia_focus") or "stable posture and slow breath"),
         ),
     )
-    enriched.setdefault(
-        "youtube_tutorials",
-        _build_youtube_tutorial_links(str(enriched.get("name") or "Yoga Pose"), "yoga pose alignment"),
-    )
+    pose_name = str(enriched.get("name") or "Yoga Pose")
+    override_tutorials = _build_admin_override_tutorials(pose_name, enriched.get("youtube_tutorial_override_urls"))
+    if override_tutorials:
+        enriched["youtube_tutorials"] = override_tutorials
+    else:
+        enriched.setdefault(
+            "youtube_tutorials",
+            _build_youtube_tutorial_links(pose_name, "yoga pose alignment", YOGA_DIRECT_VIDEO_MAP),
+        )
+    enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "yoga"))
 
     return _enrich_content_integrity(enriched, source_type)
 
@@ -1201,6 +1238,70 @@ def _build_modality_master_protocol(practice_name: str, modality: str, somatic_a
     }
 
 
+def _resolve_best_for_tags(item: dict[str, Any], modality: str) -> list[str]:
+    mode = _normalize_label_key(modality)
+    element_key = _normalize_label_key(item.get("element", ""))
+    category_key = _normalize_label_key(item.get("category", item.get("type", "")))
+
+    tags: list[str] = []
+    if mode in {"mantra", "mudra", "meditation", "breathwork"}:
+        tags.extend(["focus", "sleep"])
+
+    if mode in {"yoga", "breathwork"}:
+        tags.append("energy")
+
+    if mode in {"meditation", "mantra"}:
+        tags.append("grief")
+
+    if "water" in element_key or "relax" in category_key:
+        tags.append("sleep")
+    if "fire" in element_key or "activ" in category_key:
+        tags.append("energy")
+    if "earth" in element_key or "ground" in category_key:
+        tags.append("anxiety")
+    if "heart" in category_key:
+        tags.append("grief")
+
+    ordered = ["sleep", "anxiety", "focus", "grief", "energy"]
+    return [tag for tag in ordered if tag in set(tags)]
+
+
+def _normalize_tutorial_override_urls(value: Any) -> list[str]:
+    if isinstance(value, list):
+        urls = [str(entry or "").strip() for entry in value]
+    elif isinstance(value, str):
+        urls = [chunk.strip() for chunk in re.split(r"[\n,]", value)]
+    else:
+        return []
+
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for url in urls:
+        if not url:
+            continue
+        if not url.startswith("https://www.youtube.com/"):
+            continue
+        if url in seen:
+            continue
+        seen.add(url)
+        normalized.append(url)
+    return normalized
+
+
+def _build_admin_override_tutorials(practice_name: str, override_urls: Any) -> list[dict[str, str]]:
+    name = str(practice_name or "Practice").strip()
+    urls = _normalize_tutorial_override_urls(override_urls)
+    tutorials: list[dict[str, str]] = []
+    for idx, url in enumerate(urls[:3]):
+        tutorials.append({
+            "title": f"{name} — Admin curated tutorial {idx + 1}",
+            "url": url,
+            "platform": "youtube",
+            "source": "admin_override",
+        })
+    return tutorials
+
+
 def _enrich_breathwork_session_entry(session: dict[str, Any]) -> dict[str, Any]:
     enriched = _enrich_content_integrity(session, "hybrid-curated")
     session_name = str(enriched.get("name") or "Breathwork Session").strip()
@@ -1208,10 +1309,15 @@ def _enrich_breathwork_session_entry(session: dict[str, Any]) -> dict[str, Any]:
         "master_embodiment_protocol",
         _build_modality_master_protocol(session_name, "breathwork", "diaphragmatic breathing and jaw/shoulder release"),
     )
-    enriched.setdefault(
-        "youtube_tutorials",
-        _build_youtube_tutorial_links(session_name, "breathwork technique"),
-    )
+    override_tutorials = _build_admin_override_tutorials(session_name, enriched.get("youtube_tutorial_override_urls"))
+    if override_tutorials:
+        enriched["youtube_tutorials"] = override_tutorials
+    else:
+        enriched.setdefault(
+            "youtube_tutorials",
+            _build_youtube_tutorial_links(session_name, "breathwork technique", BREATHWORK_DIRECT_VIDEO_MAP),
+        )
+    enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "breathwork"))
     return enriched
 
 
@@ -1222,10 +1328,15 @@ def _enrich_meditation_entry(meditation: dict[str, Any]) -> dict[str, Any]:
         "master_embodiment_protocol",
         _build_modality_master_protocol(meditation_name, "meditation", "upright spine and long exhale"),
     )
-    enriched.setdefault(
-        "youtube_tutorials",
-        _build_youtube_tutorial_links(meditation_name, "guided meditation"),
-    )
+    override_tutorials = _build_admin_override_tutorials(meditation_name, enriched.get("youtube_tutorial_override_urls"))
+    if override_tutorials:
+        enriched["youtube_tutorials"] = override_tutorials
+    else:
+        enriched.setdefault(
+            "youtube_tutorials",
+            _build_youtube_tutorial_links(meditation_name, "guided meditation", MEDITATION_DIRECT_VIDEO_MAP),
+        )
+    enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "meditation"))
     return enriched
 
 
@@ -1265,9 +1376,14 @@ def _build_mantra_master_protocol(mantra: dict[str, Any]) -> dict[str, Any]:
 def _enrich_mantra_entry(mantra: dict[str, Any]) -> dict[str, Any]:
     enriched = dict(mantra)
     name = str(enriched.get("name") or "Mantra").strip()
-    enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(name, "mantra chanting", MANTRA_DIRECT_VIDEO_MAP))
+    override_tutorials = _build_admin_override_tutorials(name, enriched.get("youtube_tutorial_override_urls"))
+    if override_tutorials:
+        enriched["youtube_tutorials"] = override_tutorials
+    else:
+        enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(name, "mantra chanting", MANTRA_DIRECT_VIDEO_MAP))
     if not enriched.get("master_embodiment_protocol"):
         enriched["master_embodiment_protocol"] = _build_mantra_master_protocol(enriched)
+    enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "mantra"))
     return enriched
 
 
@@ -1305,7 +1421,11 @@ def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
         }
 
     mudra_name = str(enriched.get("name") or "Mudra").strip()
-    enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(mudra_name, "mudra hand position", MUDRA_DIRECT_VIDEO_MAP))
+    override_tutorials = _build_admin_override_tutorials(mudra_name, enriched.get("youtube_tutorial_override_urls"))
+    if override_tutorials:
+        enriched["youtube_tutorials"] = override_tutorials
+    else:
+        enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(mudra_name, "mudra hand position", MUDRA_DIRECT_VIDEO_MAP))
     if not enriched.get("master_embodiment_protocol"):
         enriched["master_embodiment_protocol"] = {
             "preparation_phase": [
@@ -1333,6 +1453,8 @@ def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
                 "Day 7: Review changes in clarity, regulation, and consistency; set next-week progression.",
             ],
         }
+
+    enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "mudra"))
 
     return enriched
 

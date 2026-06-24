@@ -42,6 +42,8 @@ SOURCE_AWARE_COLLECTIONS = {
     "healing_portals",
 }
 
+BEST_FOR_ALLOWED_TAGS = {"sleep", "anxiety", "focus", "grief", "energy"}
+
 
 def _normalize_yoga_pose_key(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", str(value or "").lower()).strip()
@@ -126,6 +128,50 @@ def _normalize_source_references(value: Any) -> list[str]:
     return refs
 
 
+def _normalize_youtube_override_urls(value: Any) -> list[str]:
+    if isinstance(value, str):
+        chunks = re.split(r"[\n,]", value)
+    elif isinstance(value, list):
+        chunks = value
+    else:
+        return []
+
+    urls: list[str] = []
+    seen: set[str] = set()
+    for item in chunks:
+        url = str(item or "").strip()
+        if not url:
+            continue
+        if not url.startswith("https://www.youtube.com/"):
+            continue
+        if url in seen:
+            continue
+        seen.add(url)
+        urls.append(url)
+    return urls
+
+
+def _normalize_best_for_tags(value: Any) -> list[str]:
+    if isinstance(value, str):
+        chunks = re.split(r"[\n,]", value)
+    elif isinstance(value, list):
+        chunks = value
+    else:
+        return []
+
+    tags: list[str] = []
+    seen: set[str] = set()
+    for item in chunks:
+        tag = str(item or "").strip().lower()
+        if tag not in BEST_FOR_ALLOWED_TAGS:
+            continue
+        if tag in seen:
+            continue
+        seen.add(tag)
+        tags.append(tag)
+    return tags
+
+
 def _normalize_admin_item_payload(collection: str, data: dict[str, Any]) -> dict[str, Any]:
     normalized = {k: v for k, v in data.items() if k != "_id"}
 
@@ -140,6 +186,11 @@ def _normalize_admin_item_payload(collection: str, data: dict[str, Any]) -> dict
 
     if review_status in {"reviewed", "verified", "approved"} and not normalized.get("last_reviewed_at"):
         normalized["last_reviewed_at"] = datetime.now(timezone.utc).isoformat()
+
+    normalized["youtube_tutorial_override_urls"] = _normalize_youtube_override_urls(
+        normalized.get("youtube_tutorial_override_urls")
+    )
+    normalized["best_for_tags"] = _normalize_best_for_tags(normalized.get("best_for_tags"))
 
     return normalized
 
