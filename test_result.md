@@ -176,6 +176,31 @@ user_problem_statement: |
 
 backend:
 
+  - task: "Mantras API master_embodiment_protocol and youtube_tutorials"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/mantras returns 200 with 12 mantras. All mantras include master_embodiment_protocol (preparation_phase, embodiment_phase, integration_phase, seven_day_embodiment). All mantras include youtube_tutorials list with valid youtube.com URLs. No 500 errors. Mantras API PASSED."
+
+  - task: "Mudras API master_embodiment_protocol and youtube_tutorials"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/mudras returns 200 with 12 mudras. All mudras include master_embodiment_protocol (preparation_phase, embodiment_phase, integration_phase, seven_day_embodiment). All mudras include youtube_tutorials list with valid youtube.com URLs. No 500 errors. Mudras API PASSED."
+
+
   - task: "Final regression - retreats endpoint"
     implemented: true
     working: true
@@ -8493,3 +8518,45 @@ agent_communication:
       
       SUMMARY:
       All backend regression checks PASSED. No blockers detected in backend APIs. GET /api/retreats returns empty list correctly. POST /api/content/expand-script generates sufficient word count (1020 >= 840). GET /api/health returns healthy status. Backend is stable and production-ready for this pass.
+
+
+
+  - agent: "testing"
+    message: |
+      Backend Regression - Mantras & Mudras Endpoints (2026-06-24):
+      
+      VERIFICATION REQUEST: Run backend-only regression checks for mantras and mudras endpoints
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL BACKEND TESTS PASSED (2/2):
+      
+      1. ✅ GET /api/mantras - PASSED
+         - Status: 200 OK
+         - Response: 12 mantras returned
+         - master_embodiment_protocol: ✓ Present in all 12 mantras
+         - youtube_tutorials: ✓ Present in all 12 mantras
+         - YouTube URL validation: ✓ All URLs contain valid youtube.com domains
+         - No 500 errors detected
+      
+      2. ✅ GET /api/mudras - PASSED
+         - Status: 200 OK
+         - Response: 12 mudras returned
+         - master_embodiment_protocol: ✓ Present in all 12 mudras
+         - youtube_tutorials: ✓ Present in all 12 mudras
+         - YouTube URL validation: ✓ All URLs contain valid youtube.com domains
+         - No 500 errors detected
+      
+      FIELD VERIFICATION DETAILS:
+      - master_embodiment_protocol structure verified:
+        * preparation_phase: ✓ (3 steps)
+        * embodiment_phase: ✓ (3 steps)
+        * integration_phase: ✓ (3 steps)
+        * seven_day_embodiment: ✓ (7 days)
+      
+      - youtube_tutorials structure verified:
+        * Each entry contains: title, url, platform
+        * All URLs follow format: https://www.youtube.com/results?search_query=...
+        * Platform field correctly set to "youtube"
+      
+      SUMMARY:
+      Backend regression checks PASSED. Both /api/mantras and /api/mudras endpoints return 200 with all required fields. All 24 items (12 mantras + 12 mudras) include master_embodiment_protocol and youtube_tutorials with valid YouTube URLs. No 500 errors detected. Backend APIs are stable and production-ready.
