@@ -1658,3 +1658,44 @@
 - **P1:** Completed for this pass (retreat cleanup and narration floor regression checks).
 - **P2 (next):** Begin net-new enrichment work (remaining lighter sections and additional real YouTube tutorial depth), now that stability checks are green.
 
+## Mantras + Mudras Master-Level Deepening + YouTube Mapping (Iteration 192-193) — 2026-06-24
+
+### User-Requested Scope
+- Deepen lighter sections (Mantras/Mudras) to master-level transformational depth.
+- Add and verify real YouTube tutorial mappings across these key practice pages.
+
+### Implementation Completed
+- Backend enrichment in `backend/routers/content.py`:
+  - Added `_enrich_mantra_entry()` to inject:
+    - `master_embodiment_protocol` (Preparation / Embodiment / Integration + 7-day path)
+    - `youtube_tutorials` mappings per mantra
+  - Extended `_enrich_mudra_entry()` to inject:
+    - `master_embodiment_protocol` (Preparation / Embodiment / Integration + 7-day path)
+    - `youtube_tutorials` mappings per mudra
+  - Added reusable `_build_youtube_tutorial_links()` and `_build_mantra_master_protocol()` helpers.
+  - Updated `GET /api/mantras` to return enriched mantra entries.
+
+- Frontend rendering updates:
+  - `frontend/src/pages/mantras/MantrasPlayer.jsx`
+    - Added Master Embodiment Protocol display blocks.
+    - Added 7-Day Embodiment Path section.
+    - Added YouTube Tutorials section with clickable links.
+  - `frontend/src/pages/mudras/MudrasLibraryContainer.jsx`
+    - Added Master Embodiment Protocol display blocks.
+    - Added 7-Day Embodiment Path section.
+    - Added YouTube Tutorials section with clickable links.
+
+### QA / Verification
+- Targeted lint checks passed for all touched files.
+- Frontend smoke screenshots passed for `/mantras` and `/mudras`.
+- Frontend specialist testing agent: PASS.
+- Full testing agent report: `/app/test_reports/iteration_192.json`
+  - Backend: **100% (11/11)**
+  - Frontend: **100%**
+- Backend regression (deep testing): PASS for `/api/mantras` and `/api/mudras` enriched fields and YouTube URL checks.
+
+### Updated Priority Snapshot
+- **P1:** Mantras/Mudras deepening ✅ done.
+- **P1:** YouTube mappings for Mantras/Mudras ✅ done.
+- **P2 Next:** Expand this same master-depth + YouTube curation approach into additional practice families (if requested), plus weekly reflection/alchemy planning.
+
