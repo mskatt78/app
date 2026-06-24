@@ -156,7 +156,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
               <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                 {practice.duration_minutes && (
                   <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" />{practice.duration_minutes} min
+                    <Clock className="w-3 h-3" />{resolveDurationMinutes(practice.duration_minutes, 12)} min
                   </span>
                 )}
                 <span className="capitalize">{practice.practice_type?.replace(/_/g, ' ')}</span>
@@ -241,6 +241,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
                   api={userApi}
                   script={`${practice.name}. ${practice.description}. ${practice.practice_guide || practice.cleansing_guide || practice.self_healing_guide || ''}`}
                   label="Listen to Guided Practice"
+                  durationMinutes={resolveDurationMinutes(practice.duration_minutes, 12)}
                   className="w-full"
                 />
               </div>

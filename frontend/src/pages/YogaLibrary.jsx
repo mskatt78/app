@@ -378,7 +378,7 @@ const YogaLibrary = ({ user, api }) => {
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
-                        <span>{pose.duration_minutes} min</span>
+                        <span>{resolveDurationMinutes(pose.duration_minutes, 8)} min</span>
                       </div>
                       <div className="flex items-center gap-1 text-primary">
                         <span>View Details</span>
@@ -551,7 +551,7 @@ const YogaLibrary = ({ user, api }) => {
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5">
                     <Clock className="w-5 h-5 text-primary" />
-                    <span>Hold for {selectedPose.duration_minutes} minutes</span>
+                    <span>Hold for {resolveDurationMinutes(selectedPose.duration_minutes, 8)} minutes</span>
                   </div>
                   {selectedPose.chakras?.map((chakra) => (
                     <span key={chakra} className="px-4 py-2 rounded-xl bg-primary/10 text-primary text-sm">

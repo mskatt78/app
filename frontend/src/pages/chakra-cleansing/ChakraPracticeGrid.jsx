@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Clock, Heart, Loader2, Zap } from "lucide-react";
 import { getChakraConfig } from "./chakraConfig";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 export const ChakraPracticeGrid = ({ loading, practices, onOpenPractice }) => {
   if (loading) {
@@ -58,7 +59,7 @@ export const ChakraPracticeGrid = ({ loading, practices, onOpenPractice }) => {
                 {practice.duration_minutes && (
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {practice.duration_minutes} min
+                    {resolveDurationMinutes(practice.duration_minutes, 20)} min
                   </span>
                 )}
                 <span className="flex items-center gap-1">

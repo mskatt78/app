@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 export const GuidedPracticeContent = ({
   practice,
@@ -28,6 +29,11 @@ export const GuidedPracticeContent = ({
   toningLabel,
   toningActive,
 }) => {
+  const effectiveDurationMinutes = Math.max(
+    minimumNarrationMinutes,
+    resolveDurationMinutes(practice.duration_minutes, minimumNarrationMinutes),
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -77,7 +83,7 @@ export const GuidedPracticeContent = ({
                 <p className="text-white/60 text-sm">{practice.name}</p>
               </div>
               <p className="text-white/50 text-sm max-w-xs">
-                You have completed {Math.max(minimumNarrationMinutes, practice.duration_minutes || minimumNarrationMinutes)} minutes of sacred practice. Carry this energy with you.
+                You have completed {effectiveDurationMinutes} minutes of sacred practice. Carry this energy with you.
               </p>
               <button
                 onClick={onExit}
@@ -98,7 +104,7 @@ export const GuidedPracticeContent = ({
                     ? "remaining"
                     : scriptLoading
                       ? "Preparing long-form guidance..."
-                      : `${Math.max(minimumNarrationMinutes, practice.duration_minutes || minimumNarrationMinutes)} min · ${ambientLabel}`}
+                      : `${effectiveDurationMinutes} min · ${ambientLabel}`}
                 </p>
               </div>
 

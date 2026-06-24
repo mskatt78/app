@@ -44,7 +44,7 @@ export const MasculinePracticeModal = ({ selectedPractice, setSelectedPractice, 
               <div className="flex items-center gap-2 mb-2">
                 <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs">{selectedPractice.category}</span>
                 {selectedPractice.element && <span className="px-3 py-1 rounded-full bg-white/5 text-xs">{selectedPractice.element} Element</span>}
-                {selectedPractice.duration_minutes && <span className="px-3 py-1 rounded-full bg-white/5 text-xs">{selectedPractice.duration_minutes} min</span>}
+                {selectedPractice.duration_minutes && <span className="px-3 py-1 rounded-full bg-white/5 text-xs">{resolveDurationMinutes(selectedPractice.duration_minutes, 20)} min</span>}
               </div>
               <h2 className="text-2xl font-serif mb-3">{selectedPractice.name}</h2>
               <p className="text-muted-foreground mb-6">{selectedPractice.description}</p>

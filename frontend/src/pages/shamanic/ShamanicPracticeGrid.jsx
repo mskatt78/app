@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronRight, Clock, Feather, Loader2, Lock, Sparkles, Trophy } from "lucide-react";
 import { categoryColors, categoryIcons, formatReviewedDate } from "./constants";
+import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 const CARD_INITIAL = { opacity: 0, y: 20 };
 const CARD_ANIMATE = { opacity: 1, y: 0 };
@@ -129,7 +130,7 @@ export const ShamanicPracticeGrid = ({
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
                     <Clock className="w-3 h-3" />
-                    {practice.duration_minutes || 30} min
+                    {resolveDurationMinutes(practice.duration_minutes, 30)} min
                   </span>
                   <ChevronRight className={`w-4 h-4 ${colors.text} opacity-0 group-hover:opacity-100 transition-opacity`} />
                 </div>

@@ -58,7 +58,7 @@ export const ChakraDetailModal = ({
                       {selectedPractice.duration_minutes && (
                         <span className="px-3 py-1 rounded-full text-xs bg-white/5 flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          {selectedPractice.duration_minutes} min
+                          {resolveDurationMinutes(selectedPractice.duration_minutes, 20)} min
                         </span>
                       )}
                     </div>
