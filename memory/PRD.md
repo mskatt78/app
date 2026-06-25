@@ -2109,6 +2109,39 @@
   - Calmer/sweeter voice profile with reduced echo ✅
   - Practice-specific button label ✅
 
+## Image Subject Alignment Sweep (High-Impact + Broad Fallbacks) — Iteration 204
+
+### User request
+- Ensure images across the app match subject matter.
+- Preferred execution: high-impact first, then broader auto-replacement.
+- Style preference: keep existing style, fix wrong/irrelevant mismatches.
+
+### What was implemented
+- Added centralized subject-image alignment in backend content router:
+  - `PRACTICE_IMAGE_FALLBACKS` (explicit subject-specific mappings)
+  - `GENERIC_CATEGORY_IMAGE_FALLBACKS` (safe category defaults)
+  - `_apply_subject_image_alignment()` for runtime image correction.
+- Applied alignment to key endpoints/routes:
+  - grounding
+  - water practices
+  - mindfulness
+  - meditations
+  - daily practice pool loading
+- Replacement policy is conservative:
+  - Explicit subject override names always corrected
+  - Missing image URLs corrected
+  - Known placeholder image host (`static.prod-images.emergentagent.com/jobs/...`) corrected
+
+### Verification (required)
+- Testing agent report: `/app/test_reports/iteration_204.json`
+  - Backend: **100% (17/17)**
+  - Frontend: **100%**
+- Confirmed pass:
+  - Grounding images subject-aligned (including Cold Water Reset / Root Visualization)
+  - Water practice images no longer missing in key cards
+  - Daily morning/evening + ally/angel images valid
+  - No broken image placeholders in high-impact routes
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
