@@ -53,7 +53,7 @@ export const SettingsGuidedAudioCard = ({
         Guided Toning Intensity
       </h3>
       <p className="text-sm text-muted-foreground mb-3" data-testid="settings-guided-toning-description">
-        Controls the resonance depth under guided voice practices across the app.
+        Controls the resonance depth under guided voice practices across the app. Choose Subtle or Off for a calmer, sweeter voice feel.
       </p>
 
       <Select value={guidedToningIntensity} onValueChange={updateGuidedToningMode}>

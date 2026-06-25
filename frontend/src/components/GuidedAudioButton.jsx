@@ -22,10 +22,12 @@ const GuidedAudioButton = ({
   sourceTexts = [],
   steps = [],
 }) => {
+  const effectiveLabel = practiceName ? `Listen to ${practiceName}` : (label || "Listen to Guided Practice");
+
   const { loading, playing, handlePlay } = useGuidedAudioPlayback({
     api,
     script,
-    label,
+    label: effectiveLabel,
     voice,
     practiceName,
     durationMinutes,
@@ -51,7 +53,7 @@ const GuidedAudioButton = ({
       ) : playing ? (
         <><Square className="w-4 h-4" /><span>Stop Audio</span></>
       ) : (
-        <><Volume2 className="w-4 h-4" /><span>{label}</span></>
+        <><Volume2 className="w-4 h-4" /><span>{effectiveLabel}</span></>
       )}
     </button>
   );

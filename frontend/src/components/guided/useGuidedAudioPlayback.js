@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
-import { DEFAULT_GUIDED_TTS_SPEED, startToningLayer } from "./guidedNarrationUtils";
+import { DEFAULT_GUIDED_TTS_SPEED, ensureTitleLedNarrationOpen, startToningLayer } from "./guidedNarrationUtils";
 import { getEffectiveGuidedNarrationMode } from "../../utils/guidedNarrationSettings";
 import { appLogger } from "../../utils/logger";
 
@@ -259,7 +259,7 @@ export const useGuidedAudioPlayback = ({
 
       const elementKey = String(playbackConfig.element || "spirit").toLowerCase();
       toningLayerRef.current = startToningLayer(ctx, elementKey);
-      toningLayerRef.current?.setMuted?.(false, 0.26);
+      toningLayerRef.current?.setMuted?.(false, 0.16);
     } catch (error) {
       appLogger.warn("Guided toning context setup failed", error);
       stopToning();
@@ -283,7 +283,8 @@ export const useGuidedAudioPlayback = ({
 
     try {
       const expandedSegments = await buildExpandedSegments(controller);
-      await playSegmentsSequentially(expandedSegments, controller);
+      const titleLedSegments = ensureTitleLedNarrationOpen(expandedSegments, playbackConfig.practiceName || playbackConfig.label);
+      await playSegmentsSequentially(titleLedSegments, controller);
     } catch (error) {
       if (!controller.signal.aborted && !isStoppedRef.current) {
         appLogger.error("Guided TTS playback failed", error);

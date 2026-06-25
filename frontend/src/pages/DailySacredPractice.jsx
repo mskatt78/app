@@ -265,7 +265,8 @@ export default function DailySacredPractice({ user, api: userApi }) {
                 <GuidedAudioButton
                   api={userApi}
                   script={`${practice.name}. ${practice.description}. ${practice.practice_guide || practice.cleansing_guide || practice.self_healing_guide || ''}`}
-                  label="Listen to Guided Practice"
+                  practiceName={practice.name}
+                  element={practice.element}
                   durationMinutes={resolveDurationMinutes(practice.duration_minutes, 12)}
                   className="w-full"
                 />

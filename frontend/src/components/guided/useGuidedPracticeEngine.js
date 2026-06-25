@@ -7,6 +7,7 @@ import {
   DEFAULT_GUIDED_TTS_SPEED,
   MINIMUM_NARRATION_MINUTES,
   SCRIPT_EXPANSION_TIMEOUT_MS,
+  ensureTitleLedNarrationOpen,
   wait,
   startAmbient,
   startToningLayer,
@@ -52,7 +53,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const [hasStarted, setHasStarted] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
   const [narrationParagraphs, setNarrationParagraphs] = useState(narrationPlan.paragraphs);
-  const [narrationSegments, setNarrationSegments] = useState(narrationPlan.segments);
+  const [narrationSegments, setNarrationSegments] = useState(
+    ensureTitleLedNarrationOpen(narrationPlan.segments, practice?.name),
+  );
   const [narrationReady, setNarrationReady] = useState(false);
   const [scriptLoading, setScriptLoading] = useState(false);
   const [audioTapRequired, setAudioTapRequired] = useState(false);
@@ -258,7 +261,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     setHasStarted(false);
     setAudioTapRequired(false);
     setNarrationParagraphs(narrationPlanRef.current.paragraphs);
-    setNarrationSegments(narrationPlanRef.current.segments);
+    setNarrationSegments(ensureTitleLedNarrationOpen(narrationPlanRef.current.segments, practiceIdentityRef.current.name));
     setNarrationReady(true);
     setScriptLoading(Boolean(practiceIdentityRef.current.id || practiceIdentityRef.current.name));
   }, [clearNarrationCache, stopAmbient, stopNarrationPlayback, stopToning, totalDuration]);
@@ -314,7 +317,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
 
         if (nextParagraphs.length > 0 && nextSegments.length > 0 && !hasStartedRef.current && !isPlayingRef.current) {
           setNarrationParagraphs(nextParagraphs);
-          setNarrationSegments(nextSegments);
+          setNarrationSegments(ensureTitleLedNarrationOpen(nextSegments, scriptExpansionContext.practiceName));
           currentSegmentIndexRef.current = 0;
           setCurrentSegmentIndex(0);
           clearNarrationCache();
@@ -370,7 +373,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       if (muted) {
         toningRef.current.setMuted?.(true, 1);
       } else {
-        const toningMix = ttsPlaying ? 0 : 0.38;
+        const toningMix = ttsPlaying ? 0 : 0.16;
         toningRef.current.setMuted?.(false, toningMix);
       }
     }
@@ -403,7 +406,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text: narrationSegments[segmentIndex], voice: "nova", speed: DEFAULT_GUIDED_TTS_SPEED }),
+        body: JSON.stringify({ text: narrationSegments[segmentIndex], voice: "shimmer", speed: DEFAULT_GUIDED_TTS_SPEED }),
         });
         if (response.ok) {
           data = await response.json();
@@ -522,7 +525,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       if (muted) {
         toningRef.current.setMuted?.(true, 1);
       } else {
-        toningRef.current.setMuted?.(false, ttsPlaying ? 0 : 0.38);
+        toningRef.current.setMuted?.(false, ttsPlaying ? 0 : 0.16);
       }
     }
   }, [element, muted, ttsPlaying]);
@@ -545,6 +548,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     setIsPlaying(true);
     setHasStarted(true);
     startAmbientTrack();
+    setTtsLoading(true);
 
     playNarrationSegment(currentSegmentIndexRef.current);
   }, [isPlaying, playNarrationSegment, startAmbientTrack, stopNarrationPlayback, syncRemainingFromClock]);
@@ -552,9 +556,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   useEffect(() => {
     if (practice && narrationReady && !autoStartRef.current && !isComplete) {
       autoStartRef.current = true;
-      handlePlay();
+      setHasStarted(false);
     }
-  }, [practice, narrationReady, isComplete, handlePlay]);
+  }, [practice, narrationReady, isComplete]);
 
   const progress = ((totalDuration - timeRemaining) / totalDuration) * 100;
 

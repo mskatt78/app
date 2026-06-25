@@ -31,7 +31,7 @@ export const TARGET_WORDS_PER_MINUTE = 120;
 export const SEGMENT_TARGET_WORDS = 220;
 export const FIRST_SEGMENT_TARGET_WORDS = 95;
 export const SCRIPT_EXPANSION_TIMEOUT_MS = 25000;
-export const DEFAULT_GUIDED_TTS_SPEED = 0.82;
+export const DEFAULT_GUIDED_TTS_SPEED = 0.8;
 
 const TONING_ROOT_FREQ = {
   fire: 160,
@@ -44,13 +44,47 @@ const TONING_ROOT_FREQ = {
 export const resolveToningGain = (element = "spirit") => {
   const normalized = String(element || "spirit").toLowerCase();
   const gainMap = {
-    fire: 0.022,
-    water: 0.026,
-    earth: 0.024,
-    air: 0.02,
-    spirit: 0.024,
+    fire: 0.012,
+    water: 0.013,
+    earth: 0.012,
+    air: 0.011,
+    spirit: 0.012,
   };
   return gainMap[normalized] ?? gainMap.spirit;
+};
+
+export const ensureTitleLedNarrationOpen = (segments, practiceName) => {
+  const title = String(practiceName || "Guided Practice").trim();
+  if (!title) return segments;
+
+  const normalized = Array.isArray(segments)
+    ? segments
+      .map((segment) => {
+        if (typeof segment === "string") return segment;
+        if (segment && typeof segment === "object") {
+          return String(segment.text || segment.script || "").trim();
+        }
+        return "";
+      })
+      .filter(Boolean)
+    : [];
+
+  if (normalized.length === 0) {
+    return [`${title}. Begin gently and follow your breath.`];
+  }
+
+  const [first, ...rest] = normalized;
+  const genericLead = first
+    .replace(/^\s*welcome\s+to\s+(this\s+)?guided\s+practice[\s:,.!-]*/i, "")
+    .replace(/^\s*welcome\s+to[\s:,.!-]*/i, "")
+    .replace(/^\s*listen\s+to\s+guided\s+practice[\s:,.!-]*/i, "")
+    .trim();
+
+  const firstWithTitle = genericLead.toLowerCase().startsWith(title.toLowerCase())
+    ? genericLead
+    : `${title}. ${genericLead || "Begin gently and follow your breath."}`.trim();
+
+  return [firstWithTitle, ...rest];
 };
 
 export const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
