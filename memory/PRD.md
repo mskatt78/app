@@ -2054,6 +2054,31 @@
   - Morning/Evening `/daily-practice` anchors resolve to `/menu`
   - Tender Warrior practice confirmed accessible in `/masculine-temple` (modal behavior)
 
+## UX Correction: Daily Guidance CTA behavior (all buttons) — Iteration 202
+
+### User report
+- User confirmed all daily guidance CTAs should work and should not bounce to main screen.
+
+### Root issue
+- Previous guard routed `/daily-practice` anchors to `/menu`, which felt like a wrong redirect.
+
+### Final behavior implemented
+- `frontend/src/pages/DailySacredPractice.jsx`
+  - Added `handleUnifiedStepOpen(step)` behavior split:
+    - Morning Embodiment step: stay on `/daily-practice`, auto-expand Morning card, scroll to it.
+    - Evening Integration step: stay on `/daily-practice`, auto-expand Evening card, scroll to it.
+    - Sacred Ally step: navigate to `/sacred-ally-alchemy`.
+    - Angelic step: navigate to `/angelic-alchemy`.
+
+### Verification (required)
+- Testing agent report: `/app/test_reports/iteration_202.json`
+  - Frontend: **100%**
+- Verified outcomes for all 4 unified CTA buttons:
+  - Morning in-page expansion ✅
+  - Evening in-page expansion ✅
+  - Sacred Ally route ✅
+  - Angelic route ✅
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
