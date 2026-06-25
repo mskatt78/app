@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Sun, Moon, Sparkles, Heart, Clock, ChevronDown, Loader2, Calendar, Star, Sunrise, Sunset, RefreshCw, Shield, Flame, Wand2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -38,14 +38,6 @@ const stableDailyKey = (prefix, value) => {
     .replace(/^-+|-+$/g, "")
     .slice(0, 80);
   return `${prefix}-${slug || "item"}`;
-};
-
-const resolveDailyRoute = (route) => {
-  if (!route) return "/menu";
-
-  if (route === "/daily-practice") return "/menu";
-
-  return route;
 };
 
 const buildPracticeDeepContainer = (practice) => {
@@ -101,6 +93,8 @@ export default function DailySacredPractice({ user, api: userApi }) {
   const [loading, setLoading] = useState(true);
   const [expandedPractice, setExpandedPractice] = useState(null);
   const [focusArea, setFocusArea] = useState("");
+  const morningSectionRef = useRef(null);
+  const eveningSectionRef = useRef(null);
 
   const fetchDailyPractice = useCallback(async (focus = null) => {
     setLoading(true);
@@ -126,6 +120,29 @@ export default function DailySacredPractice({ user, api: userApi }) {
 
   const dayConfig = dailyData ? DAY_COLORS[dailyData.day_of_week] || DAY_COLORS.Sunday : DAY_COLORS.Sunday;
   const DayIcon = dayConfig.icon;
+
+  const handleUnifiedStepOpen = (step) => {
+    const route = step?.anchor_route;
+    const stepId = String(step?.step_id || "").toLowerCase();
+
+    if (!route || route === "/daily-practice") {
+      if (stepId.includes("morning") && dailyData?.morning_practice) {
+        setExpandedPractice(`morning-${dailyData.morning_practice.id}`);
+        morningSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      if ((stepId.includes("evening") || stepId.includes("integration")) && dailyData?.evening_practice) {
+        setExpandedPractice(`evening-${dailyData.evening_practice.id}`);
+        eveningSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+
+      return;
+    }
+
+    navigate(route);
+  };
 
   const renderPracticeCard = ({ practice, time, icon: Icon, label }) => {
     if (!practice) return null;
@@ -303,7 +320,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
                 variant="ghost"
                 size="sm"
                 className="mt-2 px-0 text-xs text-violet-300 hover:text-violet-200"
-                onClick={() => navigate(resolveDailyRoute(step.anchor_route))}
+                onClick={() => handleUnifiedStepOpen(step)}
                 data-testid={`daily-unified-step-open-${step.step_id || "step"}`}
               >
                 Open {step.anchor_name || "practice"}
@@ -506,7 +523,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
             )}
 
             {/* Morning Practice */}
-            <div>
+            <div ref={morningSectionRef}>
               <div className="flex items-center gap-2 mb-4">
                 <Sunrise className="w-5 h-5 text-amber-400" />
                 <h2 className="text-xl font-serif">Morning Practice</h2>
@@ -520,7 +537,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
             </div>
 
             {/* Evening Practice */}
-            <div>
+            <div ref={eveningSectionRef}>
               <div className="flex items-center gap-2 mb-4">
                 <Sunset className="w-5 h-5 text-indigo-400" />
                 <h2 className="text-xl font-serif">Evening Practice</h2>
