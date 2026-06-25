@@ -40,6 +40,14 @@ const stableDailyKey = (prefix, value) => {
   return `${prefix}-${slug || "item"}`;
 };
 
+const resolveDailyRoute = (route) => {
+  if (!route) return "/menu";
+
+  if (route === "/daily-practice") return "/menu";
+
+  return route;
+};
+
 const buildPracticeDeepContainer = (practice) => {
   if (!practice) return [];
 
@@ -295,7 +303,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
                 variant="ghost"
                 size="sm"
                 className="mt-2 px-0 text-xs text-violet-300 hover:text-violet-200"
-                onClick={() => navigate(step.anchor_route || "/menu")}
+                onClick={() => navigate(resolveDailyRoute(step.anchor_route))}
                 data-testid={`daily-unified-step-open-${step.step_id || "step"}`}
               >
                 Open {step.anchor_name || "practice"}
