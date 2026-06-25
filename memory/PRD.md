@@ -2079,6 +2079,36 @@
   - Sacred Ally route ✅
   - Angelic route ✅
 
+## Guided Audio UX + Voice Tone Fix (Iteration 203)
+
+### User-reported production issues
+- Narration opened with generic phrase instead of subject title.
+- Guided control felt like it needed two clicks.
+- Voice should be calmer/sweeter with less echo.
+
+### Fixes applied
+- Title-led narration start
+  - Added `ensureTitleLedNarrationOpen()` in `guidedNarrationUtils.js`.
+  - Strips generic "welcome to guided practice" style opener and prepends practice title.
+- Single-click responsiveness
+  - Immediate loading state on first click in guided playback handlers.
+  - Removed unintended auto-start overlay behavior that created click confusion.
+- Calmer voice profile
+  - Slowed guided TTS speed default to `0.8`.
+  - Reduced toning resonance gain significantly for less echo feel.
+  - Overlay generation uses softer voice profile (`shimmer`) for guided narration.
+- Practice-specific CTA labels
+  - Guided button now prioritizes practice title text (e.g., “Listen to [Practice Name]”).
+
+### Verification (required)
+- Testing agent report: `/app/test_reports/iteration_203.json`
+  - Frontend: **100%**
+- Verified fixed:
+  - Subject-title-led opening narration ✅
+  - Single-click start behavior ✅
+  - Calmer/sweeter voice profile with reduced echo ✅
+  - Practice-specific button label ✅
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
