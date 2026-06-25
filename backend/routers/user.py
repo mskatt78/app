@@ -431,7 +431,7 @@ def _build_unified_daily_flow(context: dict[str, Any]) -> dict[str, Any]:
                 "instruction": f"Seal your practice with {angel_name}: {angel_ritual}",
                 "duration_minutes": 5,
                 "anchor_name": angel_name,
-                "anchor_route": "/sacred-ally-alchemy",
+                "anchor_route": "/angelic-alchemy",
             },
         ],
         "dragon_integration": str(dragon_reflection.get("summary") or "Align your actions with your highest destiny.").strip(),

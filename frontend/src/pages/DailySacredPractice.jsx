@@ -371,7 +371,7 @@ export default function DailySacredPractice({ user, api: userApi }) {
             variant="ghost"
             size="sm"
             className="mt-3 px-0 text-sky-300 hover:text-sky-200"
-            onClick={() => navigate("/sacred-ally-alchemy")}
+            onClick={() => navigate("/angelic-alchemy")}
             data-testid="daily-angel-open-button"
           >
             Open Angelic Alchemy

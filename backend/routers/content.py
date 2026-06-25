@@ -4950,7 +4950,7 @@ def _daily_unified_ceremonial_flow(
                 "instruction": f"Seal your field with {angel_name}: {angel_ritual}",
                 "duration_minutes": 5,
                 "anchor_name": angel_name,
-                "anchor_route": "/sacred-ally-alchemy",
+                "anchor_route": "/angelic-alchemy",
             },
             {
                 "step_id": "evening-integration",
