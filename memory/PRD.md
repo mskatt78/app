@@ -2033,6 +2033,27 @@
   - Daily Angel button → `/angelic-alchemy`
   - Daily Ally button → `/sacred-ally-alchemy`
 
+## Bug Fix: Daily CTAs not opening (production report) — Iteration 201
+
+### User report
+- In production, user reported that all daily CTAs still were not opening and some appeared as placeholders.
+
+### Additional fix applied
+- `frontend/src/pages/DailySacredPractice.jsx`
+  - Added `resolveDailyRoute()` guard to prevent self-navigation dead clicks.
+  - Any unified flow step with `anchor_route === "/daily-practice"` is now mapped to `"/menu"`.
+  - This ensures “Open …” buttons always navigate to a meaningful destination instead of reloading the same page.
+
+### Verification (required)
+- Testing agent report: `/app/test_reports/iteration_201.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+- Verified working CTAs:
+  - Sacred Ally → `/sacred-ally-alchemy`
+  - Angelic Guide → `/angelic-alchemy`
+  - Morning/Evening `/daily-practice` anchors resolve to `/menu`
+  - Tender Warrior practice confirmed accessible in `/masculine-temple` (modal behavior)
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
