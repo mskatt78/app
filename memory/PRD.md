@@ -2007,6 +2007,32 @@
 - **P1:** Non-guided duration label normalization sweep ✅ done.
 - **Next:** Optional “Session Time Locked” badge and duration provenance tooltip UX.
 
+## Bug Fix: Daily card click targets (Angelic route) — Iteration 200
+
+### User-reported issue
+- Clicking daily flow cards in production was not opening expected section(s).
+
+### Root cause
+- Angelic daily step/button route pointed to the Sacred Ally page route in some paths.
+
+### Fix applied
+- `backend/routers/user.py`
+  - Angelic daily step `anchor_route` corrected to `/angelic-alchemy`.
+- `backend/routers/content.py`
+  - Angelic seal `anchor_route` corrected to `/angelic-alchemy`.
+- `frontend/src/pages/DailySacredPractice.jsx`
+  - Angelic panel button navigation corrected to `/angelic-alchemy`.
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_200.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+- Verified pass:
+  - Unified flow Angelic step → `/angelic-alchemy`
+  - Unified flow Ally step → `/sacred-ally-alchemy`
+  - Daily Angel button → `/angelic-alchemy`
+  - Daily Ally button → `/sacred-ally-alchemy`
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
