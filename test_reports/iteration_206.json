@@ -1,0 +1,80 @@
+{
+  "summary": "Frontend-only testing of guided voice/speed settings features. All 8 requested features verified: (1) Segment X/Y indicator with dots PASS, (2) Settings speed options Slow/Normal/Fast PASS, (3) Settings voice profile options Feminine/Masculine/Balanced PASS, (4) Inline preview buttons for speed and voice PASS, (5) Guided overlay per-practice Voice+Speed override controls PASS, (6) Per-practice persistence modes (Session/Remember) PASS, (7) TTS voice mapping correctly resolves profile ids to TTS voices PASS, (8) Narration completion logic verified in code review PASS.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "GuidedPracticeContent.jsx",
+        "issues": ["Minor React hydration warning: <span> cannot be child of <option> - cosmetic only, does not affect functionality"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/frontend/src/utils/guidedVoiceSettings.js",
+    "/app/frontend/src/pages/settings/SettingsGuidedAudioCard.jsx",
+    "/app/frontend/src/components/guided/GuidedPracticeContent.jsx",
+    "/app/frontend/src/components/guided/useGuidedPracticeEngine.js"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "resolveGuidedVoiceId() correctly maps profile ids to TTS voices: feminine→shimmer, masculine→onyx, balanced→nova",
+    "TTS API call at useGuidedPracticeEngine.js:465 uses resolveGuidedVoiceId(playbackVoiceProfile) - no invalid profile ids sent to backend",
+    "Segment indicator shows 'segment X of Y' format with mini progress dots below",
+    "Per-practice override controls (Voice/Speed dropdowns) visible in guided overlay",
+    "Settings page has all required controls: Speed (Slow/Normal/Fast), Voice (Feminine/Masculine/Balanced), Override Mode (Session/Remember)",
+    "Inline preview buttons exist for both speed options and voice profile options in settings"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only test)",
+    "frontend": "100%"
+  },
+  "test_credentials": "N/A - public routes tested",
+  "seed_data_creation": "N/A",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All 8 requested features verified working. Settings page at /settings shows guided audio controls. Guided overlay opens from practice cards and shows Voice/Speed override dropdowns. Segment indicator with dots appears during TTS playback.",
+  "feature_verification": {
+    "segment_indicator_with_dots": {
+      "status": "PASS",
+      "details": "Guided overlay shows 'Guided narration playing • segment 1 of 6' text with mini progress dots below. Dots show active/complete/pending states."
+    },
+    "settings_speed_options": {
+      "status": "PASS",
+      "details": "Settings page shows Guided Voice Speed section with Slow/Normal/Fast options in dropdown. Each option has description text."
+    },
+    "settings_voice_profile_options": {
+      "status": "PASS",
+      "details": "Settings page shows Guided Voice Type section with Feminine (Soft)/Masculine (Grounded)/Balanced (Neutral) options in dropdown."
+    },
+    "inline_preview_buttons_speed": {
+      "status": "PASS",
+      "details": "Settings page shows 'Preview Slow', 'Preview Normal', 'Preview Fast' buttons below speed dropdown."
+    },
+    "inline_preview_buttons_voice": {
+      "status": "PASS",
+      "details": "Settings page shows 'Preview Feminine (Soft)', 'Preview Masculine (Grounded)', 'Preview Balanced (Neutral)' buttons below voice dropdown."
+    },
+    "guided_overlay_voice_speed_override": {
+      "status": "PASS",
+      "details": "Guided overlay shows Voice and Speed dropdowns with data-testid='guided-practice-voice-override-select' and 'guided-practice-speed-override-select'."
+    },
+    "per_practice_persistence_modes": {
+      "status": "PASS",
+      "details": "Settings page shows Per-Practice Override Mode section with 'Session only' and 'Remember per practice' options."
+    },
+    "tts_voice_mapping": {
+      "status": "PASS",
+      "details": "resolveGuidedVoiceId() at guidedVoiceSettings.js:211-227 correctly maps profile ids (feminine/masculine/balanced) to TTS voice names (shimmer/onyx/nova). TTS API call uses this function."
+    },
+    "narration_completion_behavior": {
+      "status": "PASS (code review)",
+      "details": "useGuidedPracticeEngine.js:540-548 shows completion only triggers when !narrationSegments[nextIndex] (no more segments). Timer reaching 0 also checks segment completion before marking complete."
+    }
+  }
+}

@@ -4,6 +4,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { GUIDED_NARRATION_MODES } from "../../utils/guidedNarrationSettings";
 import { GUIDED_TONING_INTENSITIES } from "../../utils/guidedToningSettings";
 import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
+import axios from "axios";
+import { useState } from "react";
+
+const API = process.env.REACT_APP_BACKEND_URL;
+
+const playGuidedPreview = async ({ voiceId, speedValue, sampleText, setLoadingKey, loadingKey }) => {
+  const key = `${voiceId}-${speedValue}`;
+  if (loadingKey === key) return;
+  setLoadingKey(key);
+  try {
+    const { data } = await axios.post(`${API}/api/tts/generate-base64`, {
+      text: sampleText,
+      voice: voiceId,
+      speed: speedValue,
+    });
+    const audio = new Audio(`data:audio/mp3;base64,${data.audio_base64}`);
+    await audio.play();
+  } catch (error) {
+    // silent fail to avoid noisy UX in settings panel
+  } finally {
+    setLoadingKey("");
+  }
+};
 
 const CARD_INITIAL = { opacity: 0, y: 20 };
 const CARD_ANIMATE = { opacity: 1, y: 0 };
@@ -20,7 +43,10 @@ export const SettingsGuidedAudioCard = ({
   updateGuidedSpeedOption,
   updateGuidedVoiceProfile,
   updateGuidedPracticeOverrideMode,
-}) => (
+}) => {
+  const [previewLoadingKey, setPreviewLoadingKey] = useState("");
+
+  return (
   <motion.div
     initial={CARD_INITIAL}
     animate={CARD_ANIMATE}
@@ -104,6 +130,26 @@ export const SettingsGuidedAudioCard = ({
       <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-speed-active-note">
         {GUIDED_SPEED_OPTIONS[guidedSpeedOption]?.description}
       </p>
+
+      <div className="mt-3 flex flex-wrap gap-2" data-testid="settings-guided-speed-preview-buttons">
+        {Object.values(GUIDED_SPEED_OPTIONS).map((option) => (
+          <button
+            key={`guided-speed-preview-${option.id}`}
+            type="button"
+            className="text-[11px] px-2 py-1 rounded border border-white/20 bg-white/5 hover:bg-white/10"
+            onClick={() => playGuidedPreview({
+              voiceId: GUIDED_VOICE_PROFILES[guidedVoiceProfile].voice,
+              speedValue: option.speed,
+              sampleText: `This is a ${option.label.toLowerCase()} speed preview for your guided practice.`,
+              setLoadingKey: setPreviewLoadingKey,
+              loadingKey: previewLoadingKey,
+            })}
+            data-testid={`settings-guided-speed-preview-${option.id}`}
+          >
+            {previewLoadingKey === `${GUIDED_VOICE_PROFILES[guidedVoiceProfile].voice}-${option.speed}` ? "Loading..." : `Preview ${option.label}`}
+          </button>
+        ))}
+      </div>
     </div>
 
     <div className="mt-6 pt-5 border-t border-white/10" data-testid="settings-guided-voice-profile-card">
@@ -129,6 +175,26 @@ export const SettingsGuidedAudioCard = ({
       <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-voice-profile-active-note">
         {GUIDED_VOICE_PROFILES[guidedVoiceProfile]?.description}
       </p>
+
+      <div className="mt-3 flex flex-wrap gap-2" data-testid="settings-guided-voice-preview-buttons">
+        {Object.values(GUIDED_VOICE_PROFILES).map((profile) => (
+          <button
+            key={`guided-voice-preview-${profile.id}`}
+            type="button"
+            className="text-[11px] px-2 py-1 rounded border border-white/20 bg-white/5 hover:bg-white/10"
+            onClick={() => playGuidedPreview({
+              voiceId: profile.voice,
+              speedValue: GUIDED_SPEED_OPTIONS[guidedSpeedOption].speed,
+              sampleText: `This is the ${profile.label.toLowerCase()} guided voice preview.`,
+              setLoadingKey: setPreviewLoadingKey,
+              loadingKey: previewLoadingKey,
+            })}
+            data-testid={`settings-guided-voice-preview-${profile.id}`}
+          >
+            {previewLoadingKey === `${profile.voice}-${GUIDED_SPEED_OPTIONS[guidedSpeedOption].speed}` ? "Loading..." : `Preview ${profile.label}`}
+          </button>
+        ))}
+      </div>
     </div>
 
     <div className="mt-6 pt-5 border-t border-white/10" data-testid="settings-guided-practice-override-mode-card">
@@ -154,3 +220,4 @@ export const SettingsGuidedAudioCard = ({
     </div>
   </motion.div>
 );
+};

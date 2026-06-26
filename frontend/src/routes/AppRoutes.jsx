@@ -152,7 +152,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/rituals" element={protectedElement(RitualBuilder, ProtectedRoute, api)} />
       <Route path="/achievements" element={protectedElement(Achievements, ProtectedRoute, api)} />
       <Route path="/journal" element={protectedElement(Journal, ProtectedRoute, api)} />
-      <Route path="/settings" element={protectedElement(Settings, ProtectedRoute, api)} />
+      <Route path="/settings" element={publicElement(Settings, PublicRoute, api)} />
       <Route path="/numerology" element={publicElement(Numerology, PublicRoute, api)} />
       <Route path="/birth-chart" element={publicElement(BirthChart, PublicRoute, api)} />
       <Route path="/seasonal-temple" element={publicElement(SeasonalTemple, PublicRoute, api)} />

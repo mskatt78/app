@@ -209,7 +209,19 @@ export const setGuidedSpeedOption = (value) => {
 };
 
 export const resolveGuidedVoiceId = (explicitVoice) => {
-  if (explicitVoice) return String(explicitVoice);
+  if (explicitVoice) {
+    const candidate = String(explicitVoice).toLowerCase();
+    if (GUIDED_VOICE_PROFILES[candidate]) {
+      return GUIDED_VOICE_PROFILES[candidate].voice;
+    }
+
+    const directVoiceMatch = Object.values(GUIDED_VOICE_PROFILES).find((profile) => profile.voice === candidate);
+    if (directVoiceMatch) {
+      return directVoiceMatch.voice;
+    }
+
+    return candidate;
+  }
   const profile = getGuidedVoiceProfile();
   return GUIDED_VOICE_PROFILES[profile].voice;
 };
