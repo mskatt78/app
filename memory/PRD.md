@@ -2392,3 +2392,27 @@
 - Changes are implemented in **preview** and validated there.
 - Production deployment requires redeploy from latest preview code state.
 
+## P1 Polish Sweep: App Store readiness + Entitlements hardening (Iteration 213) — 2026-06-26
+
+### Implemented
+- Hardened unauthenticated behavior around premium entitlements:
+  - `GET /api/payments/entitlements` now explicitly enforces authenticated user guardrails.
+  - `frontend/src/hooks/usePremiumAccess.js` now resets premium state on 401/403 instead of retaining stale unlock state.
+- Payment UX continuity polish:
+  - `PaymentSuccess.jsx` upgraded with full critical-state test IDs and responsive action layouts.
+  - `PaymentCancel.jsx` action layout changed to mobile-safe stacked buttons (`flex-col sm:flex-row`) to prevent narrow viewport overflow.
+- App Store readiness sweep updates:
+  - `App.js` hides top nav on `/app-readiness` to prevent header overlap regression.
+  - `public/index.html` metadata refined with safer canonical/OG URL placeholders and stronger crawler/referrer directives.
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_213.json`
+  - Backend: **100% (15/15)**
+  - Frontend: **100%**
+  - Verified:
+    - unauth `/api/payments/entitlements` returns 401,
+    - authenticated entitlements schema intact,
+    - payment pages mobile-responsive (320–414 widths),
+    - `/app-readiness` no top-nav overlap,
+    - premium state resets correctly after logout/auth loss.
+
