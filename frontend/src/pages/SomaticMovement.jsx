@@ -325,6 +325,15 @@ const SomaticMovement = ({ user, api }) => {
                   </p>
                 </div>
 
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="somatic-earth-cosmic-frame">
+                  <p className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Earth + Cosmic Coherence</p>
+                  <ul className="space-y-1.5">
+                    <li className="text-xs text-emerald-100/90">• Ground feet and pelvis as if rooting into living Earth before each movement phrase.</li>
+                    <li className="text-xs text-emerald-100/90">• Match movement to long exhale and heart-centered attention for ceremonial steadiness.</li>
+                    <li className="text-xs text-emerald-100/90">• Pause every 3-4 minutes to receive a cosmic guidance line, then continue with embodied devotion.</li>
+                  </ul>
+                </div>
+
                 <Button
                   onClick={() => handleStartGuided(selectedPractice)}
                   className="w-full"

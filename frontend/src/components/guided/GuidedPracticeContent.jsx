@@ -72,7 +72,7 @@ export const GuidedPracticeContent = ({
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 px-5 flex flex-col pb-4">
+      <div className="flex-1 min-h-0 px-5 flex flex-col pb-4 overflow-y-auto overscroll-contain" data-testid="guided-practice-scroll-container">
         <AnimatePresence mode="wait">
           {isComplete ? (
             <motion.div
@@ -99,7 +99,7 @@ export const GuidedPracticeContent = ({
               </button>
             </motion.div>
           ) : (
-            <motion.div key="player" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 min-h-0 flex flex-col">
+            <motion.div key="player" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 min-h-0 flex flex-col pb-4">
               <div className="text-center mt-6 mb-4">
                 <p className={`text-7xl font-serif font-light ${elColor} tabular-nums`}>
                   <span data-testid="guided-practice-timer">{formatTime(timeRemaining)}</span>
@@ -210,7 +210,7 @@ export const GuidedPracticeContent = ({
                 </label>
               </div>
 
-              <div className="rounded-2xl bg-white/5 p-5 mb-6 max-h-[36vh] overflow-y-auto overscroll-contain" data-testid="guided-practice-description">
+              <div className="rounded-2xl bg-white/5 p-5 mb-6 max-h-none overflow-visible" data-testid="guided-practice-description">
                 <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Visualization Guide</p>
                 <div className="space-y-3">
                   {narrationParagraphs.map((paragraph, index) => (

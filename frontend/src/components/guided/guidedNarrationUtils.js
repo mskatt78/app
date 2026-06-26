@@ -74,6 +74,7 @@ export const ensureTitleLedNarrationOpen = (segments, practiceName) => {
   }
 
   const [first, ...rest] = normalized;
+  const ceremonialPrefix = "Root into Earth. Open your heart to cosmic coherence.";
   const genericLead = first
     .replace(/^\s*welcome\s+to\s+(this\s+)?guided\s+practice[\s:,.!-]*/i, "")
     .replace(/^\s*welcome\s+to[\s:,.!-]*/i, "")
@@ -82,7 +83,7 @@ export const ensureTitleLedNarrationOpen = (segments, practiceName) => {
 
   const firstWithTitle = genericLead.toLowerCase().startsWith(title.toLowerCase())
     ? genericLead
-    : `${title}. ${genericLead || "Begin gently and follow your breath."}`.trim();
+    : `${title}. ${ceremonialPrefix} ${genericLead || "Begin gently and follow your breath."}`.trim();
 
   return [firstWithTitle, ...rest];
 };
@@ -289,6 +290,10 @@ export function buildNarrationPlan(practice, stepsOverride) {
   const richSentences = contentPool.length > 0 ? contentPool : [fallbackSentence];
   const usableContextBase = contextPool.length > 0 ? contextPool : richSentences;
   const expansionContext = [
+    "Anchor your feet and spine to Earth while opening your heart to the wider cosmic field.",
+    "Let each inhale receive cosmic guidance and each exhale root that guidance into your body.",
+    "Move as a ceremonial being: grounded, devoted, and in coherent relationship with life.",
+    "Practice heart coherence by softening chest tension and breathing with reverence.",
     "Allow this experience to unfold without needing immediate results.",
     "Your breath can be both anchor and medicine in this moment.",
     "Stay in relationship with sensation instead of fighting it.",
@@ -301,6 +306,8 @@ export function buildNarrationPlan(practice, stepsOverride) {
   const affirmations = flattenTextValue(practice.affirmations).filter(Boolean);
 
   const reflectionPrompts = [
+    "As a Shaman would, listen to Earth first, then to the stars, and let your body bridge both.",
+    "Feel your pulse as a drum of the Earth while your breath carries cosmic rhythm through your chest.",
     "Take a slower breath here. Let your pace soften so your body feels safe, not hurried.",
     "Notice the small shifts as they arise—warmth, emotion, memory, or a subtle sense of space opening within you.",
     "If your mind wanders, come back gently. Nothing has gone wrong; this is part of being human.",
