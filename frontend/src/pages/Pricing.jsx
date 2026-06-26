@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
 import { appLogger } from "../utils/logger";
+import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 
 const Pricing = ({ user, api }) => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Pricing = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [processingPlan, setProcessingPlan] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("stripe");
+  const [pricingMode, setPricingMode] = useState("one-time");
 
   const fetchData = useCallback(async () => {
     // Fetch plans (public endpoint - always works)
@@ -153,6 +155,19 @@ const Pricing = ({ user, api }) => {
             Join our sacred community and gain unlimited access to all yoga poses, shamanic practices, 
             guided meditations, and transformative content.
           </p>
+          <div className="flex items-center justify-center" data-testid="pricing-mode-tabs-wrap">
+            <Tabs value={pricingMode} onValueChange={setPricingMode}>
+              <TabsList className="bg-white/5 border border-white/10" data-testid="pricing-mode-tabs">
+                <TabsTrigger value="one-time" data-testid="pricing-mode-one-time">One-time</TabsTrigger>
+                <TabsTrigger value="monthly" data-testid="pricing-mode-monthly">Monthly (preview)</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+          {pricingMode === "monthly" && (
+            <p className="text-xs text-muted-foreground" data-testid="pricing-monthly-placeholder-note">
+              Monthly/recurring options are shown as a UI preview. Current checkout remains one-time or existing membership plans.
+            </p>
+          )}
         </div>
 
         {/* Plans Grid */}

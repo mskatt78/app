@@ -1,14 +1,64 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Filter } from "lucide-react";
+import { ArrowLeft, Crown, Filter, Loader2, Sparkles } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { useBreathworkEngine } from "../components/breathwork/useBreathworkEngine";
 import { BreathworkActiveSessionView } from "../components/breathwork/BreathworkActiveSessionView";
 import { BreathworkSessionGrid } from "../components/breathwork/BreathworkSessionGrid";
 import { BREATHWORK_ELEMENTS, ELEMENT_COLORS, PHASE_LABELS } from "../components/breathwork/breathworkConfig";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import { Button } from "../components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { useEffect, useMemo, useState } from "react";
 
-const Breathwork = ({ api }) => {
+const Breathwork = ({ api, user }) => {
   const navigate = useNavigate();
   const engine = useBreathworkEngine({ api });
+  const [catalogMode, setCatalogMode] = useState("all");
+  const [selectedLockedSession, setSelectedLockedSession] = useState(null);
+  const premium = usePremiumAccess({ api, user });
+  const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
+  const setPremiumFilter = engine.setPremiumFilter;
+
+  useEffect(() => {
+    finalizeCheckoutIfPresent({ search: window.location.search });
+  }, [finalizeCheckoutIfPresent]);
+
+  const premiumBreathworkUnlocked = premium.isSectionUnlocked("premium_breathwork");
+
+  useEffect(() => {
+    if (catalogMode === "free") {
+      setPremiumFilter(false);
+      return;
+    }
+    setPremiumFilter(true);
+  }, [catalogMode, setPremiumFilter]);
+
+  const premiumProduct = premium.findProduct("premium_breathwork");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
+
+  const premiumSessionCount = useMemo(
+    () => (engine.allSessions || []).filter((session) => Boolean(session.is_premium)).length,
+    [engine.allSessions],
+  );
+
+  const canAccessSession = (session) => {
+    if (!session?.is_premium) return true;
+    return premiumBreathworkUnlocked;
+  };
+
+  const handleUnlockBreathlove = async () => {
+    await premium.startPurchase({
+      productId: "premium_breathwork",
+      returnPath: "/breathwork",
+    });
+  };
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/breathwork",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background" data-testid="breathwork">
@@ -47,6 +97,63 @@ const Breathwork = ({ api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6">
+        {!engine.activeSession && (
+          <section className="mb-6 rounded-2xl border border-fuchsia-500/20 bg-gradient-to-r from-fuchsia-500/10 via-pink-500/10 to-background p-4" data-testid="breathwork-premium-banner">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-fuchsia-200/90">Premium Breathlove</p>
+                <h2 className="text-lg font-serif flex items-center gap-2">
+                  <Crown className="w-4 h-4 text-fuchsia-300" />
+                  Heart-coherence + self-love rituals
+                </h2>
+                <p className="text-sm text-muted-foreground mt-1" data-testid="breathwork-premium-banner-description">
+                  {premiumSessionCount} premium Breathlove sessions available. {premiumBreathworkUnlocked ? "Unlocked for your account." : "Unlock instantly to practice now."}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <Tabs value={catalogMode} onValueChange={setCatalogMode}>
+                  <TabsList className="bg-black/30 border border-white/10" data-testid="breathwork-catalog-tabs">
+                    <TabsTrigger value="all" data-testid="breathwork-catalog-tab-all">All</TabsTrigger>
+                    <TabsTrigger value="free" data-testid="breathwork-catalog-tab-free">Free</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="all" className="hidden" />
+                  <TabsContent value="free" className="hidden" />
+                </Tabs>
+
+                {!premiumBreathworkUnlocked && (
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      onClick={handleUnlockBreathlove}
+                      className="bg-fuchsia-500 hover:bg-fuchsia-600"
+                      data-testid="breathwork-unlock-premium-button"
+                      disabled={premium.purchaseLoadingId === "premium_breathwork" || premium.loading}
+                    >
+                      {premium.purchaseLoadingId === "premium_breathwork" ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Unlock ${premiumProduct?.price?.toFixed(2) || "44.00"}
+                        </>
+                      )}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={handleUnlockFullApp}
+                      className="border-amber-500/30 text-amber-200"
+                      data-testid="breathwork-unlock-fullapp-button"
+                      disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
+                    >
+                      {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "149.00"}</>}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
         {engine.activeSession ? (
           <BreathworkActiveSessionView
             activeSession={engine.activeSession}
@@ -74,7 +181,46 @@ const Breathwork = ({ api }) => {
             filteredSessions={engine.filteredSessions}
             elementColors={ELEMENT_COLORS}
             startSession={engine.startSession}
+            canAccessSession={canAccessSession}
+            onLockedSessionSelect={setSelectedLockedSession}
           />
+        )}
+
+        {selectedLockedSession && !premiumBreathworkUnlocked && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setSelectedLockedSession(null)}>
+            <div
+              className="w-full max-w-md rounded-2xl border border-fuchsia-500/30 bg-card p-6"
+              onClick={(event) => event.stopPropagation()}
+              data-testid="breathwork-premium-lock-modal"
+            >
+              <h3 className="text-2xl font-serif mb-2" data-testid="breathwork-premium-lock-title">{selectedLockedSession.name}</h3>
+              <p className="text-sm text-muted-foreground mb-4" data-testid="breathwork-premium-lock-description">
+                This is a Premium Breathlove ritual. Unlock section access for immediate in-session use.
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleUnlockBreathlove}
+                  className="flex-1 bg-fuchsia-500 hover:bg-fuchsia-600"
+                  data-testid="breathwork-premium-lock-unlock-button"
+                  disabled={premium.purchaseLoadingId === "premium_breathwork"}
+                >
+                  {premium.purchaseLoadingId === "premium_breathwork" ? "Opening checkout..." : `Unlock ${premiumProduct?.price?.toFixed(2) || "44.00"}`}
+                </Button>
+                <Button
+                  onClick={handleUnlockFullApp}
+                  variant="outline"
+                  className="flex-1 border-amber-500/30 text-amber-200"
+                  data-testid="breathwork-premium-lock-fullapp-button"
+                  disabled={premium.purchaseLoadingId === "full_app_unlock"}
+                >
+                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "149.00"}`}
+                </Button>
+                <Button variant="outline" onClick={() => setSelectedLockedSession(null)} className="flex-1" data-testid="breathwork-premium-lock-close-button">
+                  Not now
+                </Button>
+              </div>
+            </div>
+          </div>
         )}
       </main>
     </div>

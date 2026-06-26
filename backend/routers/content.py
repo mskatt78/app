@@ -1414,6 +1414,9 @@ def _enrich_breathwork_session_entry(session: dict[str, Any]) -> dict[str, Any]:
             _build_youtube_tutorial_links(session_name, "breathwork technique", BREATHWORK_DIRECT_VIDEO_MAP),
         )
     enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "breathwork"))
+    if bool(enriched.get("is_premium")):
+        enriched.setdefault("premium_unlock_id", "premium_breathwork")
+        enriched.setdefault("premium_label", "Breathlove")
     return enriched
 
 

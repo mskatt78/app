@@ -1,10 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import axios from "axios";
 import { appLogger } from "../../utils/logger";
 
-const apiClient = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
-
-export const useRoseTempleData = () => {
+export const useRoseTempleData = (api) => {
   const [selectedTeaching, setSelectedTeaching] = useState(null);
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [embodimentPractices, setEmbodimentPractices] = useState([]);
@@ -14,23 +11,23 @@ export const useRoseTempleData = () => {
 
   const fetchEmbodimentPractices = useCallback(async () => {
     try {
-      const { data } = await apiClient.get("/feminine-embodiment");
+      const { data } = await api.get("/feminine-embodiment");
       setEmbodimentPractices(data);
     } catch (error) {
       appLogger.error("Failed loading feminine embodiment practices:", error);
     } finally {
       setLoadingPractices(false);
     }
-  }, []);
+  }, [api]);
 
   const fetchSacredRites = useCallback(async () => {
     try {
-      const { data } = await apiClient.get("/sacred-rites");
+      const { data } = await api.get("/sacred-rites");
       setSacredRites(data);
     } catch (error) {
       appLogger.error("Failed loading sacred rites:", error);
     }
-  }, []);
+  }, [api]);
 
   useEffect(() => {
     fetchEmbodimentPractices();

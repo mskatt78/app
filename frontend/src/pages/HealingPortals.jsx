@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 import { toast } from "sonner";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
 const sanitizeToList = (value) => {
   if (Array.isArray(value)) {
@@ -111,8 +112,8 @@ const HealingPortals = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [portals, setPortals] = useState([]);
   const [selectedPortal, setSelectedPortal] = useState(null);
-  const [hasSubscription, setHasSubscription] = useState(false);
-  const [subscriptionChecked, setSubscriptionChecked] = useState(false);
+  const premium = usePremiumAccess({ api, user });
+  const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
 
   const loadPortals = useCallback(async () => {
     setLoading(true);
@@ -128,27 +129,13 @@ const HealingPortals = ({ user, api }) => {
     }
   }, [api]);
 
-  const loadSubscription = useCallback(async () => {
-    if (!user) {
-      setHasSubscription(false);
-      setSubscriptionChecked(true);
-      return;
-    }
-
-    try {
-      const { data } = await api.get("/payments/subscription-status");
-      setHasSubscription(Boolean(data?.is_subscribed));
-    } catch {
-      setHasSubscription(false);
-    } finally {
-      setSubscriptionChecked(true);
-    }
-  }, [api, user]);
-
   useEffect(() => {
     loadPortals();
-    loadSubscription();
-  }, [loadPortals, loadSubscription]);
+  }, [loadPortals]);
+
+  useEffect(() => {
+    finalizeCheckoutIfPresent({ search: window.location.search });
+  }, [finalizeCheckoutIfPresent]);
 
   const displayedPortals = useMemo(
     () => [...portals].sort((a, b) => (a.id === "portal-womb-healing" ? -1 : b.id === "portal-womb-healing" ? 1 : 0)),
@@ -158,10 +145,27 @@ const HealingPortals = ({ user, api }) => {
   const canAccessPortal = useCallback(
     (portal) => {
       if (!portal?.is_premium) return true;
-      return Boolean(user && hasSubscription);
+      return premium.isSectionUnlocked("healing_portals");
     },
-    [user, hasSubscription]
+    [premium]
   );
+
+  const fullAppProduct = premium.findProduct("full_app_unlock");
+  const portalProduct = premium.findProduct("healing_portals");
+
+  const handleUnlockPortals = async () => {
+    await premium.startPurchase({
+      productId: "healing_portals",
+      returnPath: "/healing-portals",
+    });
+  };
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/healing-portals",
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background" data-testid="healing-portals-page">
@@ -185,6 +189,27 @@ const HealingPortals = ({ user, api }) => {
               <Crown className="inline w-4 h-4 mr-1" />
               Premium Portal Access: Womb · Shadow · Heart · Ancestral · Trauma
             </p>
+            {!premium.isSectionUnlocked("healing_portals") && (
+              <div className="mt-3 flex flex-wrap gap-2" data-testid="healing-portals-unlock-actions">
+                <Button
+                  onClick={handleUnlockPortals}
+                  className="bg-fuchsia-500 hover:bg-fuchsia-600"
+                  data-testid="healing-portals-unlock-section-button"
+                  disabled={premium.purchaseLoadingId === "healing_portals" || premium.loading}
+                >
+                  {premium.purchaseLoadingId === "healing_portals" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : `Unlock Portals $${portalProduct?.price?.toFixed(2) || "69.00"}`}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-amber-400/40 text-amber-100"
+                  onClick={handleUnlockFullApp}
+                  data-testid="healing-portals-unlock-fullapp-button"
+                  disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
+                >
+                  {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "149.00"}</>}
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -332,8 +357,11 @@ const HealingPortals = ({ user, api }) => {
                       <Lock className="inline w-4 h-4 mr-1" /> This portal is part of Premium Membership.
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      <Button onClick={() => navigate("/pricing")} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="healing-portal-upgrade-button">
-                        Unlock Membership
+                      <Button onClick={handleUnlockPortals} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="healing-portal-upgrade-button" disabled={premium.purchaseLoadingId === "healing_portals"}>
+                        {premium.purchaseLoadingId === "healing_portals" ? "Opening checkout..." : "Unlock Portals"}
+                      </Button>
+                      <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="healing-portal-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                        {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : "Unlock Full App"}
                       </Button>
                       {!user ? (
                         <Button variant="outline" onClick={() => navigate("/")} data-testid="healing-portal-signin-button">
@@ -372,7 +400,7 @@ const HealingPortals = ({ user, api }) => {
                       ].filter(Boolean).join("\n\n")}
                       className="w-full"
                     />
-                    {!subscriptionChecked ? (
+                    {premium.loading ? (
                       <p className="text-xs text-muted-foreground" data-testid="healing-portal-subscription-checking">Checking premium access...</p>
                     ) : null}
                   </div>

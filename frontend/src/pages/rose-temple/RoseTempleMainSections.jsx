@@ -5,6 +5,7 @@ import { ROSE_FEMININE_IMAGES, teachings, templeIntro, sisterCircleTexture } fro
 const TEACHING_HOVER = { y: -2 };
 
 export const RoseTempleMainSections = ({
+  locked,
   loadingPractices,
   embodimentPractices,
   sacredRites,
@@ -14,6 +15,11 @@ export const RoseTempleMainSections = ({
 }) => {
   return (
     <main className="max-w-6xl mx-auto p-6 space-y-8" data-testid="rose-temple-main">
+      {locked && (
+        <div className="rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/10 p-4" data-testid="rose-temple-locked-note">
+          <p className="text-sm text-fuchsia-100">Preview mode only. Unlock Rose Temple to open teachings, rites, and embodiment modals.</p>
+        </div>
+      )}
       <section className="relative overflow-hidden rounded-3xl border border-rose-500/20 bg-gradient-to-br from-rose-500/10 via-pink-500/5 to-background p-8" data-testid="rose-temple-hero">
         <div className="grid lg:grid-cols-2 gap-8 items-center">
           <div>

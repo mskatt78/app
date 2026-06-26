@@ -28,7 +28,7 @@ SUBSCRIPTION_PLANS = {
 }
 
 # Products for one-time purchase
-PRODUCT_TYPES = ["retreat", "course", "live_session", "book", "bundle"]
+PRODUCT_TYPES = ["retreat", "course", "live_session", "book", "bundle", "premium_unlock"]
 
 # Course bundle pricing
 COURSE_BUNDLES = {
@@ -41,6 +41,35 @@ COURSE_BUNDLES = {
     }
 }
 
+PREMIUM_UNLOCK_PRODUCTS: dict[str, dict[str, Any]] = {
+    "premium_breathwork": {
+        "name": "Premium Breathlove Unlock",
+        "description": "Unlock all premium Breathlove sessions in Breathwork",
+        "price": 44.00,
+        "unlock_scope": "section",
+    },
+    "rose_temple": {
+        "name": "Rose Temple Unlock",
+        "description": "Unlock Rose Temple teachings and practices",
+        "price": 59.00,
+        "unlock_scope": "section",
+    },
+    "healing_portals": {
+        "name": "Healing Portals Unlock",
+        "description": "Unlock all premium Healing Portals",
+        "price": 69.00,
+        "unlock_scope": "section",
+    },
+    "full_app_unlock": {
+        "name": "Full App Unlock",
+        "description": "Unlock all premium sections across the app",
+        "price": 149.00,
+        "unlock_scope": "full_app",
+    },
+}
+
+PREMIUM_SECTION_IDS = ["premium_breathwork", "rose_temple", "healing_portals"]
+
 # ============ MODELS ============
 
 class PaymentRequest(BaseModel):
@@ -48,6 +77,7 @@ class PaymentRequest(BaseModel):
     product_id: Optional[str] = None  # ID of retreat/course/etc
     plan_id: Optional[str] = None  # For subscriptions: "monthly" or "yearly"
     origin_url: str  # Frontend origin for success/cancel URLs
+    return_path: Optional[str] = None  # Frontend route path for same-page unlock flow
     payment_method: str = "stripe"  # "stripe" or "paypal"
 
 class SubscriptionStatusResponse(BaseModel):
@@ -171,6 +201,28 @@ async def _activate_subscription(db: Any, user_id: str, plan_id: Optional[str], 
 
 
 async def _grant_purchase_access(db: Any, user_id: str, transaction: dict[str, Any]) -> None:
+    if transaction.get("product_type") == "premium_unlock":
+        unlock_id = str(transaction.get("product_id") or "").strip()
+        if not unlock_id:
+            return
+        await db.user_purchases.update_one(
+            {
+                "user_id": user_id,
+                "product_type": "premium_unlock",
+                "product_id": unlock_id,
+            },
+            {
+                "$setOnInsert": {
+                    "user_id": user_id,
+                    "product_type": "premium_unlock",
+                    "product_id": unlock_id,
+                    "purchased_at": datetime.now(timezone.utc).isoformat(),
+                }
+            },
+            upsert=True,
+        )
+        return
+
     if transaction.get("product_type") == "bundle":
         bundle_courses = str(transaction.get("metadata", {}).get("bundle_courses", ""))
         if not bundle_courses:
@@ -224,6 +276,9 @@ async def _resolve_payment_context(
     if payment_request.product_type == "bundle":
         return _resolve_bundle_payment_context(payment_request, metadata)
 
+    if payment_request.product_type == "premium_unlock":
+        return _resolve_premium_unlock_payment_context(payment_request, metadata)
+
     return await _resolve_catalog_payment_context(db, payment_request, metadata)
 
 
@@ -259,6 +314,24 @@ def _resolve_bundle_payment_context(
     return amount, product_name, metadata
 
 
+def _resolve_premium_unlock_payment_context(
+    payment_request: PaymentRequest,
+    metadata: dict[str, Any],
+) -> tuple[float, str, dict[str, Any]]:
+    if not payment_request.product_id:
+        raise HTTPException(status_code=400, detail="Premium unlock id required")
+
+    premium_product = PREMIUM_UNLOCK_PRODUCTS.get(payment_request.product_id)
+    if not premium_product:
+        raise HTTPException(status_code=400, detail="Invalid premium unlock id")
+
+    amount = float(str(premium_product["price"]))
+    product_name = str(premium_product["name"])
+    metadata["product_id"] = payment_request.product_id
+    metadata["unlock_scope"] = str(premium_product.get("unlock_scope") or "section")
+    return amount, product_name, metadata
+
+
 async def _resolve_catalog_payment_context(
     db: Any,
     payment_request: PaymentRequest,
@@ -279,6 +352,50 @@ async def _resolve_catalog_payment_context(
     product_name = product.get("title") or product.get("name", "Product")
     metadata["product_id"] = payment_request.product_id
     return amount, str(product_name), metadata
+
+
+def _normalize_return_path(return_path: Optional[str]) -> Optional[str]:
+    path = str(return_path or "").strip()
+    if not path:
+        return None
+    if not path.startswith("/"):
+        return None
+    if path.startswith("//"):
+        return None
+    return path
+
+
+async def _has_full_app_unlock(db: Any, user_id: str) -> bool:
+    purchase = await db.user_purchases.find_one(
+        {
+            "user_id": user_id,
+            "product_type": "premium_unlock",
+            "product_id": "full_app_unlock",
+        },
+        {"_id": 0, "product_id": 1},
+    )
+    return bool(purchase)
+
+
+async def _resolve_section_entitlements(
+    db: Any,
+    user_id: str,
+    has_subscription: bool,
+    has_full_app_unlock: bool,
+) -> dict[str, bool]:
+    if has_subscription or has_full_app_unlock:
+        return {section_id: True for section_id in PREMIUM_SECTION_IDS}
+
+    purchases = await db.user_purchases.find(
+        {
+            "user_id": user_id,
+            "product_type": "premium_unlock",
+            "product_id": {"$in": PREMIUM_SECTION_IDS},
+        },
+        {"_id": 0, "product_id": 1},
+    ).to_list(length=200)
+    unlocked_ids = {str(item.get("product_id") or "").strip() for item in purchases}
+    return {section_id: section_id in unlocked_ids for section_id in PREMIUM_SECTION_IDS}
 
 
 def _resolve_product_collection(product_type: str) -> str:
@@ -322,7 +439,12 @@ async def create_checkout_session(
 
     stripe_checkout = _create_stripe_checkout_client(request)
     amount, product_name, metadata = await _resolve_payment_context(db, payment_request, current_user)
-    checkout_request = _build_checkout_request(payment_request.origin_url, amount, metadata)
+    checkout_request = _build_checkout_request(
+        payment_request.origin_url,
+        amount,
+        metadata,
+        payment_request.return_path,
+    )
 
     try:
         session: CheckoutSessionResponse = await stripe_checkout.create_checkout_session(checkout_request)
@@ -350,9 +472,20 @@ def _create_stripe_checkout_client(request: Request) -> StripeCheckout:
     return StripeCheckout(api_key=stripe_api_key, webhook_url=webhook_url)
 
 
-def _build_checkout_request(origin_url: str, amount: float, metadata: dict[str, Any]) -> CheckoutSessionRequest:
-    success_url = f"{origin_url}/payment/success?session_id={{CHECKOUT_SESSION_ID}}"
-    cancel_url = f"{origin_url}/payment/cancel"
+def _build_checkout_request(
+    origin_url: str,
+    amount: float,
+    metadata: dict[str, Any],
+    return_path: Optional[str],
+) -> CheckoutSessionRequest:
+    normalized_return_path = _normalize_return_path(return_path)
+    if normalized_return_path:
+        separator = "&" if "?" in normalized_return_path else "?"
+        success_url = f"{origin_url}{normalized_return_path}{separator}session_id={{CHECKOUT_SESSION_ID}}"
+        cancel_url = f"{origin_url}{normalized_return_path}"
+    else:
+        success_url = f"{origin_url}/payment/success?session_id={{CHECKOUT_SESSION_ID}}"
+        cancel_url = f"{origin_url}/payment/cancel"
     return CheckoutSessionRequest(
         amount=amount,
         currency="usd",
@@ -566,6 +699,41 @@ async def get_subscription_status(current_user: User = Depends(get_current_user)
         status=subscription.get("status", "active")
     )
 
+
+@router.get("/entitlements")
+async def get_entitlements(current_user: User = Depends(get_current_user)) -> dict[str, Any]:
+    """Get premium unlock state for section gating and full-app unlock."""
+    db = get_db()
+    has_subscription = await _has_active_subscription(db, current_user.user_id)
+    has_full_unlock = await _has_full_app_unlock(db, current_user.user_id)
+    sections = await _resolve_section_entitlements(
+        db,
+        current_user.user_id,
+        has_subscription=has_subscription,
+        has_full_app_unlock=has_full_unlock,
+    )
+
+    purchases = await db.user_purchases.find(
+        {
+            "user_id": current_user.user_id,
+            "product_type": "premium_unlock",
+            "product_id": {"$in": [*PREMIUM_SECTION_IDS, "full_app_unlock"]},
+        },
+        {"_id": 0, "product_id": 1},
+    ).to_list(length=100)
+    purchased_unlocks = [
+        str(item.get("product_id") or "").strip()
+        for item in purchases
+        if str(item.get("product_id") or "").strip()
+    ]
+
+    return {
+        "has_subscription": has_subscription,
+        "has_full_app_unlock": has_full_unlock,
+        "sections": sections,
+        "purchased_unlocks": purchased_unlocks,
+    }
+
 @router.get("/my-purchases")
 async def get_my_purchases(current_user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get user's purchase history."""
@@ -593,6 +761,26 @@ async def check_product_access(
 ) -> dict[str, Any]:
     """Check if user has access to a specific product (course, retreat, etc.)."""
     db = get_db()
+
+    if product_type == "premium_unlock":
+        has_subscription = await _has_active_subscription(db, current_user.user_id)
+        has_full_unlock = await _has_full_app_unlock(db, current_user.user_id)
+        if has_subscription or has_full_unlock:
+            access_type = "subscription" if has_subscription else "full_app_unlock"
+            return {"has_access": True, "access_type": access_type}
+
+        purchase = await db.user_purchases.find_one(
+            {
+                "user_id": current_user.user_id,
+                "product_type": "premium_unlock",
+                "product_id": product_id,
+            },
+            {"_id": 0},
+        )
+        return {"has_access": bool(purchase), "access_type": "purchased" if purchase else None}
+
+    if await _has_full_app_unlock(db, current_user.user_id):
+        return {"has_access": True, "access_type": "full_app_unlock"}
     
     # Check for direct purchase
     purchase = await db.user_purchases.find_one({
@@ -623,11 +811,31 @@ async def get_all_course_access(current_user: User = Depends(get_current_user)) 
     purchased_courses = [p["product_id"] for p in purchases]
     
     has_subscription = await _has_active_subscription(db, current_user.user_id)
+    has_full_app_unlock = await _has_full_app_unlock(db, current_user.user_id)
     
     return {
         "purchased_courses": purchased_courses,
-        "has_subscription": has_subscription
+        "has_subscription": has_subscription or has_full_app_unlock,
+        "has_full_app_unlock": has_full_app_unlock,
     }
+
+
+@router.get("/premium-products")
+async def get_premium_products() -> dict[str, Any]:
+    """Get fixed premium unlock products for section and full-app purchases."""
+    products = []
+    for product_id, product_data in PREMIUM_UNLOCK_PRODUCTS.items():
+        products.append(
+            {
+                "id": product_id,
+                "name": product_data["name"],
+                "description": product_data["description"],
+                "price": float(str(product_data["price"])),
+                "currency": "usd",
+                "unlock_scope": product_data.get("unlock_scope", "section"),
+            }
+        )
+    return {"products": products}
 
 @router.get("/plans")
 async def get_subscription_plans() -> dict[str, Any]:

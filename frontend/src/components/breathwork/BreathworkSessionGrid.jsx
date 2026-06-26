@@ -1,25 +1,47 @@
 import { motion } from "framer-motion";
-import { Wind } from "lucide-react";
+import { Crown, Lock, Wind } from "lucide-react";
 
-export const BreathworkSessionGrid = ({ filteredSessions, elementColors, startSession }) => (
+export const BreathworkSessionGrid = ({
+  filteredSessions,
+  elementColors,
+  startSession,
+  canAccessSession,
+  onLockedSessionSelect,
+}) => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="breathwork-session-grid">
     {filteredSessions.map((session, index) => {
       const colors = elementColors[session.element] || elementColors.Air;
+      const locked = session.is_premium && !canAccessSession(session);
       return (
         <motion.div
           key={session.id}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.05 }}
-          className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
-          onClick={() => startSession(session)}
+          className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300 relative`}
+          onClick={() => (locked ? onLockedSessionSelect(session) : startSession(session))}
           data-testid={`session-card-${session.id}`}
         >
+          {locked && (
+            <div className="absolute inset-0 z-10 bg-black/60 backdrop-blur-[2px] flex items-center justify-center" data-testid={`breathwork-locked-overlay-${session.id}`}>
+              <div className="text-center px-4">
+                <Lock className="w-6 h-6 text-amber-300 mx-auto mb-2" />
+                <p className="text-sm text-amber-200">Premium Breathlove</p>
+                <p className="text-xs text-amber-100/70">Tap to unlock</p>
+              </div>
+            </div>
+          )}
           {session.image_url && (
             <div className="relative h-36 overflow-hidden">
               <img src={session.image_url} alt={session.name} className="w-full h-full object-cover" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm`}>{session.element}</span>
+              {session.is_premium && (
+                <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs bg-fuchsia-500/20 border border-fuchsia-400/30 text-fuchsia-100 flex items-center gap-1" data-testid={`breathwork-premium-badge-${session.id}`}>
+                  <Crown className="w-3 h-3" />
+                  {session.premium_label || "Premium"}
+                </span>
+              )}
             </div>
           )}
           <div className="p-6">
@@ -32,6 +54,13 @@ export const BreathworkSessionGrid = ({ filteredSessions, elementColors, startSe
 
             <h3 className="text-xl font-serif mb-2">{session.name}</h3>
             <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{session.description}</p>
+
+            {session.is_premium && !session.image_url && (
+              <div className="mb-3 inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] bg-fuchsia-500/20 border border-fuchsia-400/30 text-fuchsia-100" data-testid={`breathwork-premium-inline-${session.id}`}>
+                <Crown className="w-3 h-3" />
+                {session.premium_label || "Premium"}
+              </div>
+            )}
 
             <div className="flex items-center justify-between text-sm text-muted-foreground">
               <span>{session.duration_minutes} minutes</span>
@@ -59,6 +88,12 @@ export const BreathworkSessionGrid = ({ filteredSessions, elementColors, startSe
                 <p className="text-[10px] uppercase tracking-wider text-rose-300 mb-1">Safety</p>
                 <p className="text-[11px] text-rose-100/90 line-clamp-2">{session.safety_notes}</p>
               </div>
+            )}
+
+            {locked && (
+              <p className="mt-3 text-xs text-amber-200" data-testid={`breathwork-locked-text-${session.id}`}>
+                This Breathlove journey is locked. Purchase premium section access to begin.
+              </p>
             )}
 
             {session.frequency && (

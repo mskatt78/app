@@ -56,6 +56,7 @@ const createManagedTimeout = (callback, delayRange = [1000, 2000]) => {
 
 export const useBreathworkEngine = ({ api }) => {
   const [sessions, setSessions] = useState([]);
+  const [allSessions, setAllSessions] = useState([]);
   const [filteredSessions, setFilteredSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedElement, setSelectedElement] = useState("all");
@@ -367,8 +368,9 @@ export const useBreathworkEngine = ({ api }) => {
   const fetchSessions = useCallback(async () => {
     try {
       const response = await api.get("/breathwork/sessions");
-      setSessions(response.data);
-      setFilteredSessions(response.data);
+      setAllSessions(response.data || []);
+      setSessions(response.data || []);
+      setFilteredSessions(response.data || []);
     } catch (error) {
       appLogger.error("Failed to fetch breathwork sessions", error);
     } finally {
@@ -408,6 +410,12 @@ export const useBreathworkEngine = ({ api }) => {
     }
     setFilteredSessions(sessions.filter((session) => session.element === selectedElement));
   }, [selectedElement, sessions]);
+
+  const setPremiumFilter = useCallback((allowPremium) => {
+    const source = allSessions;
+    const nextSessions = allowPremium ? source : source.filter((session) => !session.is_premium);
+    setSessions(nextSessions);
+  }, [allSessions]);
 
   const shouldPlaySelectedSound = useMemo(
     () => isPlaying && Boolean(activeSession) && soundEnabled,
@@ -519,7 +527,9 @@ export const useBreathworkEngine = ({ api }) => {
     loading,
     selectedElement,
     setSelectedElement,
+    allSessions,
     filteredSessions,
+    setPremiumFilter,
     activeSession,
     isPlaying,
     breathPhase,

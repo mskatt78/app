@@ -1,0 +1,108 @@
+{
+  "summary": "Tested premium monetization features: 10 Breathlove sessions, payment checkout APIs, entitlements, Rose Temple/Healing Portals lock states, and Pricing page toggle. Backend: 19/20 tests passed. Frontend: All premium lock UI elements working correctly. Fixed minor double-dollar-sign UI bug in Rose Temple and Healing Portals pages.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "GET /api/payments/entitlements",
+        "issue": "Returns 200 for unauthenticated users (returns empty/default entitlements). This is acceptable behavior but test expected 401/403.",
+        "priority": "LOW"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration212_premium_monetization.py",
+    "/app/test_reports/pytest/pytest_iteration212.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "VERIFIED: GET /api/breathwork/sessions returns 10 premium Breathlove sessions (breathlove-1 through breathlove-10)",
+    "VERIFIED: All Breathlove sessions have is_premium=true, premium_unlock_id=premium_breathwork, premium_label=Breathlove",
+    "VERIFIED: POST /api/payments/create-checkout works for all 4 premium_unlock product_ids (premium_breathwork, rose_temple, healing_portals, full_app_unlock)",
+    "VERIFIED: GET /api/payments/entitlements returns sections map with premium_breathwork, rose_temple, healing_portals keys",
+    "VERIFIED: GET /api/payments/premium-products returns all 4 premium unlock products with correct prices",
+    "VERIFIED: Breathwork page shows premium lock overlay on Breathlove sessions for unauthenticated users",
+    "VERIFIED: Clicking locked Breathlove session opens unlock modal with section and full app buttons",
+    "VERIFIED: Rose Temple page shows premium gate panel with unlock buttons for unauthenticated users",
+    "VERIFIED: Healing Portals page shows premium banner and lock indicators on portal cards",
+    "VERIFIED: Pricing page has one-time/monthly toggle UI with placeholder note for monthly preview",
+    "FIXED: Double dollar sign bug in Rose Temple and Healing Portals Full App buttons (was $$149.00, now $149.00)"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration212_premium_monetization.py",
+    "/app/frontend/src/pages/rose-temple/RoseTempleContainer.jsx",
+    "/app/frontend/src/pages/HealingPortals.jsx"
+  ],
+  "success_rate": {
+    "backend": "95% (19/20 tests passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "QA user: demoqa_740fefc1@example.com / DemoPass123!",
+  "seed_data_creation": "N/A - used existing seed data",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Premium monetization features fully tested and working. 10 Breathlove sessions available with proper lock states. All 4 premium unlock products (premium_breathwork, rose_temple, healing_portals, full_app_unlock) can create Stripe checkout sessions. Entitlements API returns section-level unlock status. Pricing page has one-time/monthly toggle UI preview.",
+  "feature_verification": {
+    "breathwork_10_premium_sessions": {
+      "status": "PASS",
+      "details": "GET /api/breathwork/sessions returns breathlove-1 through breathlove-10 with is_premium=true"
+    },
+    "breathwork_premium_lock_ui": {
+      "status": "PASS",
+      "details": "Premium Breathlove sessions show lock overlay, clicking opens unlock modal with section + full app buttons"
+    },
+    "payment_checkout_premium_breathwork": {
+      "status": "PASS",
+      "details": "POST /api/payments/create-checkout with product_id=premium_breathwork returns checkout_url"
+    },
+    "payment_checkout_rose_temple": {
+      "status": "PASS",
+      "details": "POST /api/payments/create-checkout with product_id=rose_temple returns checkout_url"
+    },
+    "payment_checkout_healing_portals": {
+      "status": "PASS",
+      "details": "POST /api/payments/create-checkout with product_id=healing_portals returns checkout_url"
+    },
+    "payment_checkout_full_app_unlock": {
+      "status": "PASS",
+      "details": "POST /api/payments/create-checkout with product_id=full_app_unlock returns checkout_url"
+    },
+    "entitlements_api": {
+      "status": "PASS",
+      "details": "GET /api/payments/entitlements returns sections map with premium_breathwork, rose_temple, healing_portals"
+    },
+    "rose_temple_premium_gate": {
+      "status": "PASS",
+      "details": "Rose Temple shows premium gate panel with unlock buttons for unauthenticated users"
+    },
+    "healing_portals_premium_lock": {
+      "status": "PASS",
+      "details": "Healing Portals shows premium banner and lock indicators on 5 portal cards"
+    },
+    "pricing_page_toggle_ui": {
+      "status": "PASS",
+      "details": "Pricing page has one-time/monthly toggle tabs with placeholder note for monthly preview"
+    },
+    "return_path_flow": {
+      "status": "PASS",
+      "details": "Checkout with return_path includes session_id for same-page unlock verification"
+    }
+  },
+  "bugs_fixed": [
+    {
+      "file": "/app/frontend/src/pages/rose-temple/RoseTempleContainer.jsx",
+      "issue": "Double dollar sign in Full App button ($$149.00)",
+      "fix": "Changed $${...} to ${...} in JSX expression"
+    },
+    {
+      "file": "/app/frontend/src/pages/HealingPortals.jsx",
+      "issue": "Double dollar sign in Full App button ($$149.00)",
+      "fix": "Changed $${...} to ${...} in JSX expression"
+    }
+  ]
+}
