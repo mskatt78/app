@@ -2246,6 +2246,39 @@
   - Correct TTS voice mapping ✅
   - Completion reliability preserved ✅
 
+## Production Bug Fix: Guided overlay scroll + deeper ceremonial tone (Iteration 207)
+
+### User-reported issue
+- In production, user could not scroll further in guided practice flow, blocking proper completion.
+- User also requested longer, more mindful, earthy/elemental/ceremonial heart-coherence cosmic tone across practice guidance.
+
+### Fixes implemented
+- `frontend/src/components/guided/GuidedPracticeContent.jsx`
+  - Enabled reliable overlay scrolling on mobile:
+    - Added scroll container: `overflow-y-auto overscroll-contain`.
+  - Removed nested description-panel scroll trap:
+    - Changed panel from constrained nested scrolling to natural flow (`max-h-none overflow-visible`).
+
+- `frontend/src/components/guided/guidedNarrationUtils.js`
+  - Deepened narrative tone with explicit ceremonial Earth/Cosmic context additions:
+    - title-led ceremonial opener line,
+    - expansion context prompts,
+    - reflection prompts using shamanic earth-to-cosmos framing.
+
+- `frontend/src/pages/SomaticMovement.jsx`
+  - Added “Earth + Cosmic Coherence” practical guidance block inside detail dialog to strengthen embodied ceremonial framing.
+
+### Verification (required)
+- Testing agent report: `/app/test_reports/iteration_207.json`
+  - Frontend: **100%**
+  - Mobile viewport test executed (390x844)
+  - Verified:
+    - guided overlay scroll container present ✅
+    - nested scroll trap removed ✅
+    - play button no regression ✅
+    - ceremonial/earthy/cosmic narrative language present ✅
+    - somatic earth-cosmic guidance section present ✅
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
