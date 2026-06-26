@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import PracticeVideos from "../components/PracticeVideos";
 import { appLogger } from "../utils/logger";
+import { resolveDurationMinutes } from "../utils/durationUtils";
 
 const movementTrackFilters = ["all", "Somatic Movement", "Tai Chi", "Chi Gong"];
 
@@ -205,7 +206,7 @@ const SomaticMovement = ({ user, api }) => {
                       <div className="flex items-center gap-2">
                         <span className="text-sm text-muted-foreground flex items-center gap-1">
                           <Clock className="w-4 h-4" />
-                          {practice.duration_minutes} min
+                          {resolveDurationMinutes(practice.duration_minutes, 35)} min
                         </span>
                         <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
                           {practice.element}
@@ -216,7 +217,7 @@ const SomaticMovement = ({ user, api }) => {
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm text-muted-foreground flex items-center gap-1">
                           <Clock className="w-4 h-4" />
-                          {practice.duration_minutes} min
+                          {resolveDurationMinutes(practice.duration_minutes, 35)} min
                         </span>
                         <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
                           {practice.element}

@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect } from "react";
 import { CheckCircle2, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
@@ -39,12 +40,28 @@ export const GuidedPracticeContent = ({
     resolveDurationMinutes(practice.duration_minutes, minimumNarrationMinutes),
   );
 
+  useEffect(() => {
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousBodyTouchAction = document.body.style.touchAction;
+
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.touchAction = previousBodyTouchAction;
+    };
+  }, []);
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className={`fixed inset-0 z-[200] bg-gradient-to-b ${bgGradient} flex flex-col overflow-y-auto overscroll-contain`}
+      className={`fixed inset-0 z-[200] bg-gradient-to-b ${bgGradient} flex flex-col overflow-y-auto overscroll-contain touch-pan-y`}
       data-testid="guided-practice-overlay"
     >
       <div className="flex items-center justify-between px-5 pt-6 pb-3 flex-shrink-0">
@@ -72,7 +89,7 @@ export const GuidedPracticeContent = ({
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 px-5 flex flex-col pb-4 overflow-y-auto overscroll-contain" data-testid="guided-practice-scroll-container">
+      <div className="flex-1 min-h-0 px-5 flex flex-col pb-4 overflow-y-auto overscroll-contain touch-pan-y [-webkit-overflow-scrolling:touch]" data-testid="guided-practice-scroll-container">
         <AnimatePresence mode="wait">
           {isComplete ? (
             <motion.div
@@ -99,7 +116,7 @@ export const GuidedPracticeContent = ({
               </button>
             </motion.div>
           ) : (
-            <motion.div key="player" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 min-h-0 flex flex-col pb-4">
+            <motion.div key="player" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex-1 min-h-0 flex flex-col pb-16 sm:pb-8">
               <div className="text-center mt-6 mb-4">
                 <p className={`text-7xl font-serif font-light ${elColor} tabular-nums`}>
                   <span data-testid="guided-practice-timer">{formatTime(timeRemaining)}</span>
@@ -219,7 +236,7 @@ export const GuidedPracticeContent = ({
                 </div>
               </div>
 
-              <div className="flex items-center justify-center mb-4 mt-auto">
+              <div className="flex items-center justify-center mb-6 mt-2">
                 <button
                   onClick={handlePlay}
                   className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${

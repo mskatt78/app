@@ -1,0 +1,114 @@
+{
+  "summary": "Frontend-only testing of guided practice scroll fix. CRITICAL BUG FOUND: Touch scrolling still not working on mobile. The scroll structure has competing scroll contexts - outer overlay and inner container both have overflow-y-auto, but body has touch-action:none blocking touch events.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "GuidedPracticeContent.jsx",
+        "issue": "CRITICAL: Touch scrolling not working on mobile (390x844 and 375x812). Play button is at y=5367px but viewport is only 844px. User cannot scroll to reach play button via touch gestures.",
+        "selector": "[data-testid='guided-practice-overlay']",
+        "priority": "CRITICAL"
+      },
+      {
+        "component": "GuidedPracticeContent.jsx",
+        "issue": "Competing scroll contexts: Outer overlay has overflow-y-auto but doesn't scroll (scrollHeight=clientHeight=844). Inner container has scrollable content (scrollHeight=5354, clientHeight=683) but touch events blocked by body touch-action:none",
+        "selector": "[data-testid='guided-practice-scroll-container']",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "Build process",
+        "issues": ["Intermittent babel-metadata-plugin errors in AddToJournal.jsx - transient webpack issue that resolves after cache clear"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/frontend/src/components/guided/GuidedPracticeContent.jsx",
+    "/app/frontend/src/components/guided/guidedNarrationUtils.js"
+  ],
+  "action_items": [
+    "FIX SCROLL BUG: Remove overflow-y-auto from outer overlay (line 64) - it should NOT be a scroll container",
+    "Keep overflow-y-auto only on inner container (line 92) - this should be the sole scroll context",
+    "Consider removing body touch-action:none (line 50) or ensure inner container has touch-action:pan-y that overrides it",
+    "Alternative fix: Make outer overlay the scroll container by removing flex-1 min-h-0 from inner container and letting content flow naturally"
+  ],
+  "critical_code_review_comments": [
+    "Line 50: body.style.touchAction = 'none' blocks ALL touch events including scroll on child elements",
+    "Line 64: Outer overlay has overflow-y-auto but its content doesn't overflow (flex layout constrains it)",
+    "Line 92: Inner container has overflow-y-auto and IS scrollable (5354px content vs 683px viewport) but touch events blocked",
+    "Line 119: motion.div with flex-1 min-h-0 creates the actual scrollable content area",
+    "MINIMUM_NARRATION_MINUTES correctly set to 10 (line 29 in guidedNarrationUtils.js)",
+    "Duration labels resolve correctly via resolveDurationMinutes utility"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only test)",
+    "frontend": "40% - scroll bug still present"
+  },
+  "test_credentials": "N/A - public routes tested",
+  "seed_data_creation": "N/A",
+  "retest_needed": true,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Scroll bug NOT fixed. Programmatic scrolling works on inner container but touch gestures do not. Root cause: body touch-action:none blocks touch events. Fix requires either removing body touch-action:none or restructuring scroll containers.",
+  "feature_verification": {
+    "guided_overlay_scrolls_on_mobile": {
+      "status": "FAIL",
+      "details": "Touch scroll gestures do not work. Programmatic scroll works on inner container but touch events blocked by body touch-action:none. Play button at y=5367px is unreachable via touch scroll."
+    },
+    "no_scroll_lock_conflict": {
+      "status": "FAIL",
+      "details": "Scroll lock conflict exists: body has touch-action:none, outer overlay has overflow-y-auto (but doesn't scroll), inner container has overflow-y-auto (scrollable but touch blocked)"
+    },
+    "play_button_accessible": {
+      "status": "FAIL",
+      "details": "Play button at offsetTop=5367px is NOT accessible on mobile. User cannot scroll to it via touch. scrollIntoView() works programmatically but not via user touch."
+    },
+    "minimum_narration_duration_increased": {
+      "status": "PASS",
+      "details": "MINIMUM_NARRATION_MINUTES = 10 (increased from 7). Timer shows '10:00' and '10 MIN' label."
+    },
+    "somatic_duration_labels_resolve": {
+      "status": "PASS",
+      "details": "Duration labels resolve correctly. Example: 'Body Tapping' shows '8 minutes' in dialog, timer shows '10:00' (minimum floor applied)."
+    }
+  },
+  "mobile_viewport_tests": {
+    "390x844": {
+      "overlay_scrollHeight": 844,
+      "overlay_clientHeight": 844,
+      "overlay_canScroll": false,
+      "inner_scrollHeight": 5354,
+      "inner_clientHeight": 683,
+      "inner_canScroll": true,
+      "play_button_offsetTop": 5367,
+      "touch_scroll_worked": false
+    },
+    "375x812": {
+      "overlay_scrollHeight": 812,
+      "overlay_clientHeight": 812,
+      "overlay_canScroll": false,
+      "inner_scrollHeight": 5610,
+      "inner_clientHeight": 651,
+      "inner_canScroll": true,
+      "play_button_offsetTop": 5623,
+      "touch_scroll_worked": false
+    }
+  },
+  "root_cause_analysis": {
+    "issue": "Touch scrolling not working on guided practice overlay",
+    "root_cause": "body.style.touchAction = 'none' (line 50) blocks all touch events including scroll gestures on child elements. The inner scroll container has touch-pan-y class but it's overridden by the body's touch-action:none.",
+    "reproduction_steps": [
+      "1. Navigate to /somatic on mobile viewport (390x844 or 375x812)",
+      "2. Click any practice card",
+      "3. Click 'Start Guided Practice' button",
+      "4. Try to scroll down to see play button - FAILS",
+      "5. Play button is at y=5367px but viewport is only 844px"
+    ],
+    "suggested_fix": "Option 1: Remove body touch-action:none and rely on overflow:hidden for scroll lock. Option 2: Make outer overlay the sole scroll container by removing overflow-y-auto from inner container. Option 3: Use touch-action:pan-y on overlay with !important to override body."
+  }
+}
