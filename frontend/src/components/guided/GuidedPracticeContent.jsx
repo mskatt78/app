@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { CheckCircle2, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
+import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
 
 export const GuidedPracticeContent = ({
   practice,
@@ -28,6 +29,10 @@ export const GuidedPracticeContent = ({
   ambientLabel,
   toningLabel,
   toningActive,
+  playbackVoiceProfile,
+  playbackSpeedOption,
+  onVoiceProfileChange,
+  onSpeedOptionChange,
 }) => {
   const effectiveDurationMinutes = Math.max(
     minimumNarrationMinutes,
@@ -143,8 +148,26 @@ export const GuidedPracticeContent = ({
                 </div>
               )}
               {ttsPlaying && !ttsLoading && (
-                <div className={`text-center text-xs ${elColor} mb-4`}>
-                  Guided narration playing • section {Math.min(currentSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
+                <div className={`text-center text-xs ${elColor} mb-4`} data-testid="guided-segment-indicator">
+                  Guided narration playing • segment {Math.min(currentSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
+                  <div className="flex items-center justify-center gap-1 mt-2" data-testid="guided-segment-dots">
+                    {narrationSegments.map((_, index) => {
+                      const isActive = index === Math.min(currentSegmentIndex, Math.max(0, narrationSegments.length - 1));
+                      const isCompleteDot = index < currentSegmentIndex;
+                      return (
+                        <span
+                          key={`guided-segment-dot-${index}`}
+                          className={`h-1.5 rounded-full transition-all ${
+                            isActive
+                              ? "w-5 bg-white"
+                              : isCompleteDot
+                                ? "w-3 bg-white/80"
+                                : "w-2 bg-white/30"
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
               )}
               {toningActive && !ttsLoading && (
@@ -152,6 +175,40 @@ export const GuidedPracticeContent = ({
                   {toningLabel}
                 </div>
               )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4" data-testid="guided-practice-override-controls">
+                <label className="text-xs text-white/70" data-testid="guided-practice-voice-override-control">
+                  Voice
+                  <select
+                    value={playbackVoiceProfile}
+                    onChange={(event) => onVoiceProfileChange?.(event.target.value)}
+                    className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
+                    data-testid="guided-practice-voice-override-select"
+                  >
+                    {Object.values(GUIDED_VOICE_PROFILES).map((profile) => (
+                      <option key={profile.id} value={profile.id} className="text-black">
+                        {profile.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="text-xs text-white/70" data-testid="guided-practice-speed-override-control">
+                  Speed
+                  <select
+                    value={playbackSpeedOption}
+                    onChange={(event) => onSpeedOptionChange?.(event.target.value)}
+                    className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
+                    data-testid="guided-practice-speed-override-select"
+                  >
+                    {Object.values(GUIDED_SPEED_OPTIONS).map((speed) => (
+                      <option key={speed.id} value={speed.id} className="text-black">
+                        {speed.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
 
               <div className="rounded-2xl bg-white/5 p-5 mb-6 max-h-[36vh] overflow-y-auto overscroll-contain" data-testid="guided-practice-description">
                 <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Visualization Guide</p>

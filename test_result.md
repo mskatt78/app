@@ -9436,3 +9436,184 @@ agent_communication:
 agent_communication:
   - agent: "testing"
     message: "Backend sanity check completed (2026-06-24). Quick verification of health and dashboard endpoints. No feature-specific changes tested. Results: GET /api/health returns 200 ✓, GET /api/dashboard/daily returns 401 (auth-protected, acceptable) ✓, No 500 errors detected ✓. All sanity checks PASSED."
+
+frontend:
+  - task: "Guided overlay segment indicator"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/guided/GuidedPracticeContent.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ FAILED (2026-06-26): Segment indicator implementation exists (lines 150-172 in GuidedPracticeContent.jsx) with correct data-testids (guided-segment-indicator, guided-segment-dots), BUT narration is not starting due to TTS API 500 errors. Backend logs show: 'TTS generation failed: Validation error: Invalid voice: feminine. Must be one of [alloy, ash, coral, echo, fable, nova, onyx, sage, shimmer]'. ROOT CAUSE: Voice profile mapping bug - frontend sends 'feminine' but should send 'shimmer' (per guidedVoiceSettings.js mapping: feminine→shimmer, masculine→onyx, balanced→nova). The resolveGuidedVoiceId() function exists but is not being called before sending to TTS API. Segment indicator cannot be tested until TTS API integration is fixed."
+
+  - task: "Settings inline preview controls (speed, voice profile, override mode)"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/settings/SettingsGuidedAudioCard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ FAILED (2026-06-26): Settings page controls NOT rendering. Code review confirms SettingsGuidedAudioCard.jsx exists with all required data-testids (settings-guided-speed-select, settings-guided-voice-profile-select, settings-guided-practice-override-mode-select) and correct options (Slow/Normal/Fast, Feminine/Masculine/Balanced, Session only/Remember per practice). However, when navigating to /settings after authentication, page redirects to landing page instead of showing settings content. Page text shows landing page content, not settings. Only 8 data-testids found on page, none related to guided audio. ROOT CAUSE: Authentication issue - settings page requires auth but session is not persisting correctly after login. Settings route guard may be redirecting unauthenticated users to landing page."
+
+  - task: "Per-practice voice override in Guided overlay"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/guided/GuidedPracticeContent.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED (2026-06-26): Voice and speed override controls visible and functional in guided practice overlay. Tested on /meditations page. Controls found: guided-practice-voice-override-select (line 186) and guided-practice-speed-override-select (line 202). Successfully changed voice from 'feminine' to 'masculine' and speed from 'slow' to 'fast' without runtime errors. Controls render correctly in grid layout (lines 179-211). No console errors detected after value changes. Implementation working as expected."
+
+  - task: "Persistence behavior - Remember per practice mode"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/utils/guidedVoiceSettings.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "⚠️ NOT TESTED (2026-06-26): Cannot test persistence behavior because settings page controls are not accessible due to authentication redirect issue. Code review confirms implementation exists: setGuidedPracticePreference() function (lines 153-173) handles both 'remember' and 'session' modes, localStorage persistence via GUIDED_PRACTICE_OVERRIDES_KEY, and per-practice key storage. Requires settings page fix before testing can proceed."
+
+  - task: "Persistence behavior - Session only mode"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/utils/guidedVoiceSettings.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "⚠️ NOT TESTED (2026-06-26): Cannot test persistence behavior because settings page controls are not accessible due to authentication redirect issue. Code review confirms implementation exists: sessionPracticeOverrides Map (line 11) for session-only storage, cleared on page refresh. Requires settings page fix before testing can proceed."
+
+test_plan:
+  current_focus:
+    - "Settings page authentication redirect issue - HIGH PRIORITY"
+    - "TTS API voice profile mapping bug - HIGH PRIORITY"
+    - "Segment indicator testing (blocked by TTS fix)"
+    - "Persistence behavior testing (blocked by settings page fix)"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Guided Practice Overlay Features Testing (2026-06-26):
+      
+      VERIFICATION REQUEST: Test 4 new guided practice features:
+      1) Guided overlay segment indicator (text + dots)
+      2) Settings inline preview controls (speed, voice, override mode)
+      3) Per-practice voice override in overlay
+      4) Persistence behavior (remember vs session only)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST RESULTS SUMMARY: 1 PASSED, 2 FAILED, 2 BLOCKED
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASSED (1/4):
+      - Per-practice voice override in Guided overlay
+      
+      ❌ FAILED (2/4):
+      - Guided overlay segment indicator (TTS API integration bug)
+      - Settings inline preview controls (auth redirect issue)
+      
+      ⚠️ BLOCKED (2/4):
+      - Persistence behavior - Remember per practice (blocked by settings page)
+      - Persistence behavior - Session only (blocked by settings page)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      CRITICAL ISSUES FOUND
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      🔴 ISSUE 1: TTS API Voice Profile Mapping Bug (HIGH PRIORITY)
+      Location: TTS API integration
+      Problem: Frontend sends voice profile ID ('feminine') instead of voice name ('shimmer')
+      Backend Error: "TTS generation failed: Validation error: Invalid voice: feminine. Must be one of ['alloy', 'ash', 'coral', 'echo', 'fable', 'nova', 'onyx', 'sage', 'shimmer']"
+      Expected Mapping (per guidedVoiceSettings.js):
+        - feminine → shimmer
+        - masculine → onyx
+        - balanced → nova
+      Impact: Narration cannot start, segment indicator cannot be tested
+      Fix Required: Call resolveGuidedVoiceId() before sending voice to TTS API
+      
+      🔴 ISSUE 2: Settings Page Authentication Redirect (HIGH PRIORITY)
+      Location: /settings route
+      Problem: After successful login, /settings page redirects to landing page
+      Evidence: Page text shows landing page content, only 8 data-testids found (none guided-related)
+      Expected: Settings page with SettingsGuidedAudioCard showing speed/voice/override controls
+      Impact: Cannot test settings controls or persistence behavior
+      Fix Required: Investigate route guard logic, ensure auth session persists after login
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      DETAILED TEST RESULTS
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST 1: Per-Practice Voice Override in Guided Overlay ✅ PASSED
+      - Tested on /meditations page
+      - Voice override select found: guided-practice-voice-override-select
+      - Speed override select found: guided-practice-speed-override-select
+      - Successfully changed voice: feminine → masculine
+      - Successfully changed speed: slow → fast
+      - No runtime errors detected
+      - Controls render in grid layout (lines 179-211 in GuidedPracticeContent.jsx)
+      
+      TEST 2: Guided Overlay Segment Indicator ❌ FAILED
+      - Implementation exists: lines 150-172 in GuidedPracticeContent.jsx
+      - Correct data-testids: guided-segment-indicator, guided-segment-dots
+      - Expected text format: "Guided narration playing • segment X of Y"
+      - Dots render with dynamic styling (active/complete/inactive states)
+      - BLOCKED: TTS API returns 500 errors, narration never starts
+      - Backend logs show voice mapping error (see Issue 1 above)
+      - Cannot verify segment indicator until TTS integration fixed
+      
+      TEST 3: Settings Inline Preview Controls ❌ FAILED
+      - Code exists: SettingsGuidedAudioCard.jsx with all required controls
+      - Expected data-testids:
+        * settings-guided-speed-select (line 93)
+        * settings-guided-voice-profile-select (line 118)
+        * settings-guided-practice-override-mode-select (line 143)
+      - Expected options verified in code:
+        * Speed: Slow/Normal/Fast
+        * Voice: Feminine/Masculine/Balanced
+        * Override: Session only/Remember per practice
+      - BLOCKED: Settings page redirects to landing page after login
+      - No guided audio controls found on page (see Issue 2 above)
+      
+      TEST 4: Persistence Behavior ⚠️ NOT TESTED
+      - Remember per practice: Implementation exists (setGuidedPracticePreference, localStorage)
+      - Session only: Implementation exists (sessionPracticeOverrides Map)
+      - BLOCKED: Cannot access settings page to change override mode
+      - Requires Issue 2 fix before testing can proceed
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      NEXT STEPS FOR MAIN AGENT
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      1. FIX TTS API VOICE MAPPING (HIGH PRIORITY)
+         - Locate where voice profile is sent to TTS API
+         - Call resolveGuidedVoiceId(playbackVoiceProfile) to convert profile ID to voice name
+         - Test with backend logs to confirm correct voice names sent
+      
+      2. FIX SETTINGS PAGE AUTH REDIRECT (HIGH PRIORITY)
+         - Check route guard logic for /settings
+         - Verify auth session persistence after login
+         - Ensure SettingsContainer receives authenticated user prop
+      
+      3. RETEST AFTER FIXES
+         - Segment indicator (after TTS fix)
+         - Settings controls (after auth fix)
+         - Persistence behavior (after auth fix)
+

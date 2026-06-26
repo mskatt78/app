@@ -21,7 +21,15 @@ import {
   setGuidedNarrationMode,
 } from "../../utils/guidedNarrationSettings";
 import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
-import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../../utils/guidedVoiceSettings";
+import {
+  getGuidedPracticeOverrideMode,
+  getGuidedPracticePreference,
+  getGuidedSpeedOption,
+  getGuidedVoiceProfile,
+  resolveGuidedSpeedValue,
+  resolveGuidedVoiceId,
+  setGuidedPracticePreference,
+} from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
@@ -62,6 +70,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const [audioTapRequired, setAudioTapRequired] = useState(false);
   const [selectedNarrationMode, setSelectedNarrationMode] = useState(() => getGuidedNarrationMode());
   const [toningActive, setToningActive] = useState(false);
+  const [playbackVoiceProfile, setPlaybackVoiceProfile] = useState(() => getGuidedVoiceProfile());
+  const [playbackSpeedOption, setPlaybackSpeedOption] = useState(() => getGuidedSpeedOption());
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
@@ -81,6 +91,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const narrationPlanRef = useRef(narrationPlan);
   const practiceIdentityRef = useRef({ id: practice?.id, name: practice?.name });
   const narrationRunIdRef = useRef(0);
+  const practicePreferenceKey = useMemo(() => String(practice?.id || practice?.name || "guided-practice"), [practice?.id, practice?.name]);
 
   const element = (practice?.element || "spirit").toLowerCase();
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
@@ -162,15 +173,55 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [narrationPlan, practice?.id, practice?.name]);
 
   useEffect(() => {
+    const stored = getGuidedPracticePreference(practicePreferenceKey);
+    if (stored) {
+      setPlaybackVoiceProfile(stored.voiceProfile);
+      setPlaybackSpeedOption(stored.speedOption);
+      return;
+    }
+    setPlaybackVoiceProfile(getGuidedVoiceProfile());
+    setPlaybackSpeedOption(getGuidedSpeedOption());
+  }, [practicePreferenceKey]);
+
+  useEffect(() => {
     const handleStorage = (event) => {
       if (event.key === "guided_narration_mode" || event.key === "guided_narration_manual_override") {
         setSelectedNarrationMode(getGuidedNarrationMode());
+      }
+      if (event.key === "guided_voice_profile" || event.key === "guided_speed_option") {
+        const stored = getGuidedPracticePreference(practicePreferenceKey);
+        if (!stored) {
+          setPlaybackVoiceProfile(getGuidedVoiceProfile());
+          setPlaybackSpeedOption(getGuidedSpeedOption());
+        }
       }
     };
 
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+  }, [practicePreferenceKey]);
+
+  const handlePlaybackVoiceProfileChange = useCallback((nextProfile) => {
+    setPlaybackVoiceProfile(nextProfile);
+    const mode = getGuidedPracticeOverrideMode();
+    setGuidedPracticePreference(
+      practicePreferenceKey,
+      { voiceProfile: nextProfile, speedOption: playbackSpeedOption },
+      mode,
+    );
+    toast.success(`Voice override: ${nextProfile}`);
+  }, [playbackSpeedOption, practicePreferenceKey]);
+
+  const handlePlaybackSpeedOptionChange = useCallback((nextSpeedOption) => {
+    setPlaybackSpeedOption(nextSpeedOption);
+    const mode = getGuidedPracticeOverrideMode();
+    setGuidedPracticePreference(
+      practicePreferenceKey,
+      { voiceProfile: playbackVoiceProfile, speedOption: nextSpeedOption },
+      mode,
+    );
+    toast.success(`Speed override: ${nextSpeedOption}`);
+  }, [playbackVoiceProfile, practicePreferenceKey]);
 
   const handleAntiRepetitionModeChange = useCallback((mode) => {
     const nextMode = setGuidedNarrationMode(mode);
@@ -411,8 +462,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
           headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: narrationSegments[segmentIndex],
-          voice: resolveGuidedVoiceId("shimmer"),
-          speed: resolveGuidedSpeedValue() || DEFAULT_GUIDED_TTS_SPEED,
+          voice: resolveGuidedVoiceId(playbackVoiceProfile),
+          speed: resolveGuidedSpeedValue(playbackSpeedOption) || DEFAULT_GUIDED_TTS_SPEED,
         }),
         });
         if (response.ok) {
@@ -511,7 +562,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         setTtsLoading(false);
       }
     }
-  }, [generateSegmentUrl, muted, narrationSegments]);
+  }, [generateSegmentUrl, muted, narrationSegments, playbackVoiceProfile, playbackSpeedOption]);
 
   const startAmbientTrack = useCallback(() => {
     if (!audioCtxRef.current) {
@@ -593,6 +644,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     currentSegmentIndex,
     narrationSegments,
     narrationParagraphs,
+    playbackVoiceProfile,
+    playbackSpeedOption,
+    handlePlaybackVoiceProfileChange,
+    handlePlaybackSpeedOptionChange,
     handlePlay,
     isPlaying,
     ambientLabel: (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label,

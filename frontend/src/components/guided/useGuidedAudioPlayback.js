@@ -2,7 +2,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { DEFAULT_GUIDED_TTS_SPEED, ensureTitleLedNarrationOpen, startToningLayer } from "./guidedNarrationUtils";
 import { getEffectiveGuidedNarrationMode } from "../../utils/guidedNarrationSettings";
-import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../../utils/guidedVoiceSettings";
+import {
+  getGuidedPracticePreference,
+  resolveGuidedSpeedValue,
+  resolveGuidedVoiceId,
+} from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
 
 const MIN_NARRATION_MINUTES = 7;
@@ -53,6 +57,11 @@ export const useGuidedAudioPlayback = ({
     preferredSpeed: resolveGuidedSpeedValue() || DEFAULT_GUIDED_TTS_SPEED,
   }), [durationMinutes, element, label, practiceName, script, sourceTexts, steps]);
 
+  const practicePreference = useMemo(() => {
+    const key = String(practiceName || label || "").trim();
+    return key ? getGuidedPracticePreference(key) : null;
+  }, [label, practiceName]);
+
   const stopToning = useCallback(() => {
     try {
       toningLayerRef.current?.stop?.();
@@ -97,8 +106,10 @@ export const useGuidedAudioPlayback = ({
   }, [stopToning]);
 
   const getSegmentAudio = useCallback(async (segmentText, controller) => {
-    const voiceId = resolveGuidedVoiceId(voice);
-    const speedValue = resolveGuidedSpeedValue() || DEFAULT_GUIDED_TTS_SPEED;
+    const voiceId = resolveGuidedVoiceId(
+      practicePreference?.voiceProfile ? practicePreference.voiceProfile : voice,
+    );
+    const speedValue = resolveGuidedSpeedValue(practicePreference?.speedOption) || DEFAULT_GUIDED_TTS_SPEED;
     const key = `${voiceId}:${speedValue}::${segmentText}`;
     if (segmentCacheRef.current.has(key)) return segmentCacheRef.current.get(key);
 
@@ -126,7 +137,7 @@ export const useGuidedAudioPlayback = ({
     const url = `data:audio/mp3;base64,${response.data.audio_base64}`;
     segmentCacheRef.current.set(key, url);
     return url;
-  }, [api, voice]);
+  }, [api, practicePreference, voice]);
 
   const buildExpandedSegments = useCallback(async (controller) => {
     const {

@@ -25,6 +25,7 @@ const SettingsContainer = ({ user, api }) => {
     guidedToningIntensity,
     guidedSpeedOption,
     guidedVoiceProfile,
+    guidedPracticeOverrideMode,
     voiceProfiles,
     voiceProfileName,
     setVoiceProfileName,
@@ -47,6 +48,7 @@ const SettingsContainer = ({ user, api }) => {
     updateGuidedToningMode,
     updateGuidedSpeedOption,
     updateGuidedVoiceProfile,
+    updateGuidedPracticeOverrideMode,
     createVoiceProfile,
     removeVoiceProfile,
   } = useSettingsData({ api, user, navigate });
@@ -84,10 +86,12 @@ const SettingsContainer = ({ user, api }) => {
             guidedToningIntensity={guidedToningIntensity}
             guidedSpeedOption={guidedSpeedOption}
             guidedVoiceProfile={guidedVoiceProfile}
+            guidedPracticeOverrideMode={guidedPracticeOverrideMode}
             updateGuidedNarrationMode={updateGuidedNarrationMode}
             updateGuidedToningMode={updateGuidedToningMode}
             updateGuidedSpeedOption={updateGuidedSpeedOption}
             updateGuidedVoiceProfile={updateGuidedVoiceProfile}
+            updateGuidedPracticeOverrideMode={updateGuidedPracticeOverrideMode}
           />
 
           <SettingsCustomVoiceCard

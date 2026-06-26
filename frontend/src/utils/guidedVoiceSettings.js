@@ -2,9 +2,13 @@ import { appLogger } from "./logger";
 
 export const GUIDED_VOICE_PROFILE_KEY = "guided_voice_profile";
 export const GUIDED_SPEED_OPTION_KEY = "guided_speed_option";
+export const GUIDED_PRACTICE_OVERRIDE_MODE_KEY = "guided_practice_override_mode";
+export const GUIDED_PRACTICE_OVERRIDES_KEY = "guided_practice_overrides";
 
 let runtimeVoiceProfile = "feminine";
 let runtimeSpeedOption = "slow";
+let runtimePracticeOverrideMode = "session";
+const sessionPracticeOverrides = new Map();
 
 export const GUIDED_VOICE_PROFILES = {
   feminine: {
@@ -58,6 +62,11 @@ const normalizeSpeedOption = (value) => {
   return GUIDED_SPEED_OPTIONS[candidate] ? candidate : "slow";
 };
 
+const normalizeOverrideMode = (value) => {
+  const candidate = String(value || "").toLowerCase();
+  return candidate === "remember" ? "remember" : "session";
+};
+
 const readCookie = (key) => {
   try {
     const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -94,6 +103,87 @@ const writeStoredValue = (key, value, runtimeSetter) => {
   }
 };
 
+const readPracticeOverrides = () => {
+  try {
+    const raw = localStorage.getItem(GUIDED_PRACTICE_OVERRIDES_KEY);
+    const parsed = raw ? JSON.parse(raw) : {};
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (error) {
+    appLogger.warn("Unable to read guided practice overrides", error);
+    return {};
+  }
+};
+
+const writePracticeOverrides = (value) => {
+  try {
+    localStorage.setItem(GUIDED_PRACTICE_OVERRIDES_KEY, JSON.stringify(value));
+  } catch (error) {
+    appLogger.warn("Unable to persist guided practice overrides", error);
+  }
+};
+
+export const getGuidedPracticeOverrideMode = () => {
+  return normalizeOverrideMode(readStoredValue(GUIDED_PRACTICE_OVERRIDE_MODE_KEY, runtimePracticeOverrideMode));
+};
+
+export const setGuidedPracticeOverrideMode = (value) => {
+  const next = normalizeOverrideMode(value);
+  writeStoredValue(GUIDED_PRACTICE_OVERRIDE_MODE_KEY, next, (v) => {
+    runtimePracticeOverrideMode = v;
+  });
+  return next;
+};
+
+export const getGuidedPracticePreference = (practiceKey) => {
+  const key = String(practiceKey || "").trim();
+  if (!key) return null;
+
+  if (sessionPracticeOverrides.has(key)) {
+    return sessionPracticeOverrides.get(key);
+  }
+
+  const remembered = readPracticeOverrides()[key];
+  if (!remembered || typeof remembered !== "object") return null;
+
+  const voiceProfile = normalizeVoiceProfile(remembered.voiceProfile);
+  const speedOption = normalizeSpeedOption(remembered.speedOption);
+  return { voiceProfile, speedOption };
+};
+
+export const setGuidedPracticePreference = (practiceKey, preference, mode = "session") => {
+  const key = String(practiceKey || "").trim();
+  if (!key) return null;
+
+  const normalized = {
+    voiceProfile: normalizeVoiceProfile(preference?.voiceProfile),
+    speedOption: normalizeSpeedOption(preference?.speedOption),
+  };
+
+  const normalizedMode = normalizeOverrideMode(mode);
+  if (normalizedMode === "remember") {
+    const remembered = readPracticeOverrides();
+    remembered[key] = normalized;
+    writePracticeOverrides(remembered);
+    sessionPracticeOverrides.delete(key);
+  } else {
+    sessionPracticeOverrides.set(key, normalized);
+  }
+
+  return normalized;
+};
+
+export const clearGuidedPracticePreference = (practiceKey) => {
+  const key = String(practiceKey || "").trim();
+  if (!key) return;
+
+  sessionPracticeOverrides.delete(key);
+  const remembered = readPracticeOverrides();
+  if (remembered[key]) {
+    delete remembered[key];
+    writePracticeOverrides(remembered);
+  }
+};
+
 export const getGuidedVoiceProfile = () => {
   return normalizeVoiceProfile(readStoredValue(GUIDED_VOICE_PROFILE_KEY, runtimeVoiceProfile));
 };
@@ -124,7 +214,7 @@ export const resolveGuidedVoiceId = (explicitVoice) => {
   return GUIDED_VOICE_PROFILES[profile].voice;
 };
 
-export const resolveGuidedSpeedValue = () => {
-  const option = getGuidedSpeedOption();
+export const resolveGuidedSpeedValue = (explicitOption) => {
+  const option = explicitOption ? normalizeSpeedOption(explicitOption) : getGuidedSpeedOption();
   return GUIDED_SPEED_OPTIONS[option].speed;
 };

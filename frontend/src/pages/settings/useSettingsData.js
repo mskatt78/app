@@ -14,8 +14,10 @@ import {
 import {
   GUIDED_SPEED_OPTIONS,
   GUIDED_VOICE_PROFILES,
+  getGuidedPracticeOverrideMode,
   getGuidedSpeedOption,
   getGuidedVoiceProfile,
+  setGuidedPracticeOverrideMode,
   setGuidedSpeedOption,
   setGuidedVoiceProfile,
 } from "../../utils/guidedVoiceSettings";
@@ -34,6 +36,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
   const [guidedToningIntensity, setGuidedToningIntensityState] = useState(() => getGuidedToningIntensity());
   const [guidedSpeedOption, setGuidedSpeedOptionState] = useState(() => getGuidedSpeedOption());
   const [guidedVoiceProfile, setGuidedVoiceProfileState] = useState(() => getGuidedVoiceProfile());
+  const [guidedPracticeOverrideMode, setGuidedPracticeOverrideModeState] = useState(() => getGuidedPracticeOverrideMode());
   const [voiceProfiles, setVoiceProfiles] = useState([]);
   const [voiceProfileName, setVoiceProfileName] = useState("My Voice");
   const [voiceSampleFile, setVoiceSampleFile] = useState(null);
@@ -176,6 +179,12 @@ export const useSettingsData = ({ api, user, navigate }) => {
     toast.success(`Guided voice set to ${GUIDED_VOICE_PROFILES[nextMode].label}`);
   }, []);
 
+  const updateGuidedPracticeOverrideMode = useCallback((mode) => {
+    const nextMode = setGuidedPracticeOverrideMode(mode);
+    setGuidedPracticeOverrideModeState(nextMode);
+    toast.success(nextMode === "remember" ? "Per-practice override will be remembered" : "Per-practice override set to current session");
+  }, []);
+
   const createVoiceProfile = useCallback(async () => {
     if (!voiceSampleFile) {
       toast.error("Please select an audio sample first");
@@ -252,6 +261,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
     guidedToningIntensity,
     guidedSpeedOption,
     guidedVoiceProfile,
+    guidedPracticeOverrideMode,
     voiceProfiles,
     voiceProfileName,
     setVoiceProfileName,
@@ -274,6 +284,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
     updateGuidedToningMode,
     updateGuidedSpeedOption,
     updateGuidedVoiceProfile,
+    updateGuidedPracticeOverrideMode,
     createVoiceProfile,
     removeVoiceProfile,
   };

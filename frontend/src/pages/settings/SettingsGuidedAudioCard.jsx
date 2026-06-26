@@ -14,10 +14,12 @@ export const SettingsGuidedAudioCard = ({
   guidedToningIntensity,
   guidedSpeedOption,
   guidedVoiceProfile,
+  guidedPracticeOverrideMode,
   updateGuidedNarrationMode,
   updateGuidedToningMode,
   updateGuidedSpeedOption,
   updateGuidedVoiceProfile,
+  updateGuidedPracticeOverrideMode,
 }) => (
   <motion.div
     initial={CARD_INITIAL}
@@ -126,6 +128,28 @@ export const SettingsGuidedAudioCard = ({
       </Select>
       <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-voice-profile-active-note">
         {GUIDED_VOICE_PROFILES[guidedVoiceProfile]?.description}
+      </p>
+    </div>
+
+    <div className="mt-6 pt-5 border-t border-white/10" data-testid="settings-guided-practice-override-mode-card">
+      <h3 className="text-base font-medium mb-2 flex items-center gap-2">
+        <Sparkles className="w-4 h-4 text-primary" />
+        Per-Practice Override Mode
+      </h3>
+      <p className="text-sm text-muted-foreground mb-3" data-testid="settings-guided-practice-override-mode-description">
+        Controls whether voice/speed overrides set inside guided overlays apply just this session or are remembered per practice.
+      </p>
+      <Select value={guidedPracticeOverrideMode} onValueChange={updateGuidedPracticeOverrideMode}>
+        <SelectTrigger className="bg-card/50 border-white/10" data-testid="settings-guided-practice-override-mode-select">
+          <SelectValue placeholder="Select override mode" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="session" data-testid="settings-guided-practice-override-mode-session">Session only</SelectItem>
+          <SelectItem value="remember" data-testid="settings-guided-practice-override-mode-remember">Remember per practice</SelectItem>
+        </SelectContent>
+      </Select>
+      <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-practice-override-mode-active-note">
+        {guidedPracticeOverrideMode === "remember" ? "New per-practice choices are saved for future sessions." : "New per-practice choices reset when session ends."}
       </p>
     </div>
   </motion.div>

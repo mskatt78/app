@@ -27,6 +27,10 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       currentSegmentIndex={engine.currentSegmentIndex}
       narrationSegments={engine.narrationSegments}
       narrationParagraphs={engine.narrationParagraphs}
+      playbackVoiceProfile={engine.playbackVoiceProfile}
+      playbackSpeedOption={engine.playbackSpeedOption}
+      onVoiceProfileChange={engine.handlePlaybackVoiceProfileChange}
+      onSpeedOptionChange={engine.handlePlaybackSpeedOptionChange}
       handlePlay={engine.handlePlay}
       isPlaying={engine.isPlaying}
       formatTime={formatTime}
