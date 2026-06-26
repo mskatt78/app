@@ -51,7 +51,17 @@ export const usePremiumAccess = ({ api, user }) => {
         });
       }
     } catch (error) {
-      appLogger.warn("Failed to load premium access state", error);
+      const status = error?.response?.status;
+      if (status === 401 || status === 403) {
+        setEntitlements({
+          has_subscription: false,
+          has_full_app_unlock: false,
+          sections: EMPTY_SECTIONS,
+          purchased_unlocks: [],
+        });
+      } else {
+        appLogger.warn("Failed to load premium access state", error);
+      }
     } finally {
       if (!isMountedRef.current) return;
       setLoading(false);

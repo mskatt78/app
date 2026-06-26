@@ -703,6 +703,9 @@ async def get_subscription_status(current_user: User = Depends(get_current_user)
 @router.get("/entitlements")
 async def get_entitlements(current_user: User = Depends(get_current_user)) -> dict[str, Any]:
     """Get premium unlock state for section gating and full-app unlock."""
+    if not current_user or not str(current_user.user_id or "").strip():
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     db = get_db()
     has_subscription = await _has_active_subscription(db, current_user.user_id)
     has_full_unlock = await _has_full_app_unlock(db, current_user.user_id)

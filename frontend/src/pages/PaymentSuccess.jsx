@@ -63,43 +63,44 @@ const PaymentSuccess = ({ user, api }) => {
   }, [api, searchParams]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 sm:p-6" data-testid="payment-success-page">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="max-w-md w-full text-center"
+        data-testid="payment-success-card"
       >
         {status === "checking" && (
-          <div className="space-y-6">
-            <Loader2 className="w-16 h-16 mx-auto animate-spin text-primary" />
-            <h1 className="text-2xl font-serif">Processing Payment...</h1>
-            <p className="text-muted-foreground">Please wait while we confirm your payment.</p>
+          <div className="space-y-6" data-testid="payment-success-checking-state">
+            <Loader2 className="w-16 h-16 mx-auto animate-spin text-primary" data-testid="payment-success-checking-spinner" />
+            <h1 className="text-2xl font-serif" data-testid="payment-success-checking-title">Processing Payment...</h1>
+            <p className="text-muted-foreground" data-testid="payment-success-checking-description">Please wait while we confirm your payment.</p>
           </div>
         )}
 
         {status === "success" && (
-          <div className="space-y-6">
+          <div className="space-y-6" data-testid="payment-success-paid-state">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", duration: 0.5 }}
             >
-              <CheckCircle className="w-20 h-20 mx-auto text-green-500" />
+              <CheckCircle className="w-20 h-20 mx-auto text-green-500" data-testid="payment-success-icon" />
             </motion.div>
-            <h1 className="text-3xl font-serif">Payment Successful!</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-3xl font-serif" data-testid="payment-success-title">Payment Successful!</h1>
+            <p className="text-muted-foreground" data-testid="payment-success-description">
               Thank you for your purchase. Your access has been activated.
             </p>
             {paymentDetails && (
-              <div className="p-4 rounded-xl bg-white/5 text-left">
-                <p className="text-sm text-muted-foreground">Amount paid</p>
-                <p className="text-2xl font-bold">${paymentDetails.amount?.toFixed(2)} {paymentDetails.currency?.toUpperCase()}</p>
+              <div className="p-4 rounded-xl bg-white/5 text-left" data-testid="payment-success-amount-card">
+                <p className="text-sm text-muted-foreground" data-testid="payment-success-amount-label">Amount paid</p>
+                <p className="text-2xl font-bold" data-testid="payment-success-amount-value">${paymentDetails.amount?.toFixed(2)} {paymentDetails.currency?.toUpperCase()}</p>
               </div>
             )}
             <Button 
               onClick={() => navigate("/dashboard")} 
               className="w-full"
-              data-testid="continue-btn"
+              data-testid="payment-success-continue-button"
             >
               Continue to Dashboard
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -108,23 +109,25 @@ const PaymentSuccess = ({ user, api }) => {
         )}
 
         {status === "failed" && (
-          <div className="space-y-6">
-            <XCircle className="w-20 h-20 mx-auto text-red-500" />
-            <h1 className="text-2xl font-serif">Payment Issue</h1>
-            <p className="text-muted-foreground">
-              We couldn't confirm your payment. Please check your email for confirmation or try again.
+          <div className="space-y-6" data-testid="payment-success-failed-state">
+            <XCircle className="w-20 h-20 mx-auto text-red-500" data-testid="payment-success-failed-icon" />
+            <h1 className="text-2xl font-serif" data-testid="payment-success-failed-title">Payment Issue</h1>
+            <p className="text-muted-foreground" data-testid="payment-success-failed-description">
+              We couldn&apos;t confirm your payment. Please check your email for confirmation or try again.
             </p>
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4" data-testid="payment-success-failed-actions">
               <Button 
                 variant="outline"
                 onClick={() => navigate("/pricing")} 
                 className="flex-1"
+                data-testid="payment-success-try-again-button"
               >
                 Try Again
               </Button>
               <Button 
                 onClick={() => navigate("/dashboard")} 
                 className="flex-1"
+                data-testid="payment-success-dashboard-button"
               >
                 Dashboard
               </Button>

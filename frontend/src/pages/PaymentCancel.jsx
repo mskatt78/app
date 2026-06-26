@@ -19,7 +19,7 @@ const PaymentCancel = () => {
         <p className="text-muted-foreground" data-testid="payment-cancel-description">
           Your payment was cancelled. No charges have been made to your account.
         </p>
-        <div className="flex gap-4" data-testid="payment-cancel-actions">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4" data-testid="payment-cancel-actions">
           <Button 
             variant="outline"
             onClick={() => navigate("/pricing")} 
