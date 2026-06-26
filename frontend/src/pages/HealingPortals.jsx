@@ -197,7 +197,7 @@ const HealingPortals = ({ user, api }) => {
                   data-testid="healing-portals-unlock-section-button"
                   disabled={premium.purchaseLoadingId === "healing_portals" || premium.loading}
                 >
-                  {premium.purchaseLoadingId === "healing_portals" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : `Unlock Portals $${portalProduct?.price?.toFixed(2) || "69.00"}`}
+                  {premium.purchaseLoadingId === "healing_portals" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : `Unlock Portals ${portalProduct?.price?.toFixed(2) || "69.00"}`}
                 </Button>
                 <Button
                   variant="outline"

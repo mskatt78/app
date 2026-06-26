@@ -68,7 +68,7 @@ const RoseTempleContainer = ({ user, api }) => {
                 data-testid="rose-temple-unlock-section-button"
                 disabled={premium.purchaseLoadingId === "rose_temple" || premium.loading}
               >
-                {premium.purchaseLoadingId === "rose_temple" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : `Unlock Rose Temple $${roseProduct?.price?.toFixed(2) || "59.00"}`}
+                {premium.purchaseLoadingId === "rose_temple" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : `Unlock Rose Temple ${roseProduct?.price?.toFixed(2) || "59.00"}`}
               </Button>
               <Button
                 variant="outline"

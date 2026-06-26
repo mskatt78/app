@@ -2366,3 +2366,29 @@
 2. Today’s Guidance content/UX balancing (practical + ceremonial)
 3. Sister Circle enrichment modules (sister-love, crafting, ceremonies, rituals, prompts)
 
+## Premium Monetization + Breathlove Expansion (Iteration 212) — 2026-06-26
+
+### Implemented
+- Added **10 new premium Breathlove practices** (`breathlove-1` → `breathlove-10`) in `backend/data/all_content.py` with `is_premium=true`, `premium_unlock_id=premium_breathwork`, and heart-coherence/self-love positioning.
+- Added premium unlock infrastructure in `backend/routers/payments.py`:
+  - new `premium_unlock` product type
+  - fixed catalog endpoint: `GET /api/payments/premium-products`
+  - entitlement endpoint: `GET /api/payments/entitlements`
+  - section + full-app checkout support via `POST /api/payments/create-checkout` with optional `return_path` for same-page post-checkout verification.
+- Added frontend premium lock flows:
+  - `/breathwork`: lock overlays on premium Breathlove cards + unlock modal (section unlock + full app unlock)
+  - `/rose-temple`: page-level premium gate panel
+  - `/healing-portals`: section unlock/full app unlock CTA with entitlement-based lock states
+  - `/pricing`: added one-time vs monthly (preview) toggle UI.
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_212.json`
+  - Backend: **95% (19/20 pass)**
+  - Frontend: **100% pass**
+  - Verified all core premium monetization goals above.
+- Minor UI correction from testing was applied (currency label formatting in rose/healing unlock CTA).
+
+### Notes
+- Changes are implemented in **preview** and validated there.
+- Production deployment requires redeploy from latest preview code state.
+
