@@ -255,7 +255,7 @@ const SomaticMovement = ({ user, api }) => {
 
       {/* Practice Detail Dialog */}
       <Dialog open={!!selectedPractice} onOpenChange={() => setSelectedPractice(null)}>
-        <DialogContent className="bg-card border-white/10 max-w-lg">
+        <DialogContent className="bg-card border-white/10 max-w-lg max-h-[88vh] overflow-y-auto" data-testid="somatic-practice-dialog-content">
           {selectedPractice && (
             <>
               <DialogHeader>
@@ -271,7 +271,7 @@ const SomaticMovement = ({ user, api }) => {
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="space-y-6 mt-4">
+              <div className="space-y-6 mt-4 pb-4" data-testid="somatic-practice-dialog-scroll-container">
                 <p className="text-muted-foreground leading-relaxed">{selectedPractice.description}</p>
 
                 {selectedPractice.movement_track && (
@@ -303,7 +303,7 @@ const SomaticMovement = ({ user, api }) => {
                   <Clock className="w-5 h-5 text-primary" />
                   <div>
                     <p className="text-sm font-medium">Duration</p>
-                    <p className="text-muted-foreground">{selectedPractice.duration_minutes} minutes</p>
+                    <p className="text-muted-foreground">{resolveDurationMinutes(selectedPractice.duration_minutes, 35)} minutes</p>
                   </div>
                 </div>
 

@@ -1,0 +1,85 @@
+{
+  "summary": "Frontend-only test of SomaticMovement practice detail dialog scroll fix. ALL TESTS PASS. The fix (max-h-[88vh] overflow-y-auto on DialogContent) successfully enables scrolling on mobile viewports. Start Guided Practice button is reachable and clickable via natural wheel scroll.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "GuidedPracticeContent",
+        "issues": ["Minor: React hydration warnings about span inside select/option - cosmetic only, does not affect functionality"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/frontend/src/pages/SomaticMovement.jsx"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "FIX VERIFIED: DialogContent has max-h-[88vh] overflow-y-auto (line 258)",
+    "FIX VERIFIED: Dialog scrolls correctly on mobile viewports",
+    "FIX VERIFIED: Start Guided Practice button is reachable via scroll",
+    "FIX VERIFIED: Guided Practice Overlay opens successfully after button click"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only test)",
+    "frontend": "100%"
+  },
+  "test_credentials": "N/A - public routes tested",
+  "seed_data_creation": "N/A",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "SomaticMovement practice detail dialog scroll is FIXED. All mobile viewport tests pass. The fix applied max-h-[88vh] overflow-y-auto to DialogContent.",
+  "feature_verification": {
+    "somatic_dialog_scrolls_on_mobile": {
+      "status": "PASS",
+      "details": "Dialog has scrollHeight > clientHeight and overflow-y:auto. Wheel scroll changes scrollTop from 0 to 715."
+    },
+    "start_guided_practice_button_reachable": {
+      "status": "PASS",
+      "details": "Button initially not visible (top: 1427px), after scroll visible (top: 712px) and clickable."
+    },
+    "no_modal_content_truncation": {
+      "status": "PASS",
+      "details": "All content accessible via scroll. Screenshots confirm full content visibility."
+    },
+    "guided_overlay_scroll_no_regression": {
+      "status": "PASS",
+      "details": "Guided Practice Overlay opens successfully after clicking Start Guided Practice button."
+    }
+  },
+  "mobile_viewport_tests": {
+    "390x844_iPhone14Pro": {
+      "dialog_scrollHeight": 1456,
+      "dialog_clientHeight": 741,
+      "dialog_maxHeight": "742.72px (88vh)",
+      "dialog_overflowY": "auto",
+      "dialog_canScroll": true,
+      "startBtn_initiallyVisible": false,
+      "startBtn_initialTop": 1427.875,
+      "wheel_scroll_worked": true,
+      "scrollTop_after_wheel": 715,
+      "startBtn_visibleAfterScroll": true,
+      "startBtn_clickable": true,
+      "guidedOverlay_opened": true
+    },
+    "375x667_iPhoneSE": {
+      "dialog_scrollHeight": 1547,
+      "dialog_clientHeight": 585,
+      "dialog_maxHeight": "586.96px (88vh)",
+      "dialog_overflowY": "auto",
+      "dialog_canScroll": true,
+      "startBtn_initiallyVisible": false,
+      "startBtn_initialTop": 1508.44,
+      "wheel_scroll_worked": true,
+      "scrollTop_after_wheel": 962,
+      "startBtn_visibleAfterScroll": true,
+      "startBtn_clickable": true,
+      "guidedOverlay_opened": true
+    }
+  }
+}
