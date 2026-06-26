@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import { DEFAULT_GUIDED_TTS_SPEED, wait } from "./practiceTimerUtils";
+import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../../utils/guidedVoiceSettings";
 
 export const useNarrationCache = () => {
   const cacheRef = useRef(new Map());
@@ -23,11 +24,13 @@ export const useNarrationCache = () => {
     const backendUrl = process.env.REACT_APP_BACKEND_URL;
     const pending = (async () => {
       let data = null;
+      const resolvedVoice = resolveGuidedVoiceId();
+      const resolvedSpeed = resolveGuidedSpeedValue() || DEFAULT_GUIDED_TTS_SPEED;
       for (let attempt = 0; attempt < 3; attempt += 1) {
         const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text, voice: "nova", speed: DEFAULT_GUIDED_TTS_SPEED }),
+          body: JSON.stringify({ text, voice: resolvedVoice, speed: resolvedSpeed }),
           signal: controller.signal,
         });
         if (response.ok) {

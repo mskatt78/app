@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { appLogger } from "../../utils/logger";
 import { CHAKRA_CONFIG, normalizeNarrationText } from "./chakraConfig";
+import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../../utils/guidedVoiceSettings";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -54,10 +55,12 @@ export const useChakraCleansingData = () => {
 
       setAudioState({ loading: true, audioUrl: null, sectionKey });
       try {
+        const voiceId = resolveGuidedVoiceId();
+        const speedValue = resolveGuidedSpeedValue();
         const { data } = await api.post("/tts/generate-base64", {
           text: narrationText.slice(0, 3800),
-          voice: "nova",
-          speed: 0.85,
+          voice: voiceId,
+          speed: speedValue,
         });
         const binary = atob(data.audio_base64);
         const bytes = new Uint8Array(binary.length);

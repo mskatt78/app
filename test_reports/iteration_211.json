@@ -1,0 +1,107 @@
+{
+  "summary": "Frontend-only test of global voice/speed settings affecting all TTS paths. VERIFIED: Settings UI works correctly, cookies are set, and TTS requests use correct voice/speed values. Code review confirms all 5 TTS call sites use resolveGuidedVoiceId/resolveGuidedSpeedValue.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/frontend/src/utils/guidedVoiceSettings.js",
+    "/app/frontend/src/components/guided/useGuidedPracticeEngine.js",
+    "/app/frontend/src/components/guided/useGuidedAudioPlayback.js",
+    "/app/frontend/src/components/timer/useNarrationCache.js",
+    "/app/frontend/src/pages/WaterPractices.jsx",
+    "/app/frontend/src/pages/chakra-cleansing/useChakraCleansingData.js"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "ALL TTS CALL SITES VERIFIED: 5 locations use resolveGuidedVoiceId/resolveGuidedSpeedValue",
+    "Settings UI (SettingsGuidedAudioCard.jsx): Voice/speed selectors work, cookies set correctly",
+    "WaterPractices.jsx: Uses resolveGuidedVoiceId() and resolveGuidedSpeedValue() - TESTED via network intercept",
+    "useChakraCleansingData.js: Uses resolveGuidedVoiceId() and resolveGuidedSpeedValue() - TESTED via network intercept",
+    "useGuidedPracticeEngine.js: Uses resolveGuidedVoiceId(playbackVoiceProfile) and resolveGuidedSpeedValue(playbackSpeedOption)",
+    "useGuidedAudioPlayback.js: Uses resolveGuidedVoiceId() with practice preference fallback",
+    "useNarrationCache.js: Uses resolveGuidedVoiceId() and resolveGuidedSpeedValue()",
+    "No invalid voice profile IDs can be sent - all callers use normalized inputs"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend-only test)",
+    "frontend": "100%"
+  },
+  "test_credentials": "N/A - public routes tested",
+  "seed_data_creation": "N/A",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Global voice/speed settings are correctly integrated across all TTS paths. All 5 TTS call sites verified via code review and 2 verified via network request interception.",
+  "feature_verification": {
+    "settings_ui_voice_speed": {
+      "status": "PASS",
+      "details": "Voice profile selector and speed selector work correctly. Cookies guided_voice_profile and guided_speed_option are set."
+    },
+    "water_practices_tts": {
+      "status": "PASS",
+      "details": "TTS request captured with voice=onyx (masculine), speed=1.0 (fast) matching cookie settings."
+    },
+    "chakra_cleansing_tts": {
+      "status": "PASS",
+      "details": "TTS request captured with voice=nova (balanced), speed=0.9 (normal) matching cookie settings."
+    },
+    "guided_practice_overlay_tts": {
+      "status": "PASS (code review)",
+      "details": "useGuidedPracticeEngine.js uses resolveGuidedVoiceId(playbackVoiceProfile) and resolveGuidedSpeedValue(playbackSpeedOption)"
+    },
+    "guided_audio_button_tts": {
+      "status": "PASS (code review)",
+      "details": "useGuidedAudioPlayback.js uses resolveGuidedVoiceId() with practice preference fallback"
+    },
+    "timer_narration_cache_tts": {
+      "status": "PASS (code review)",
+      "details": "useNarrationCache.js uses resolveGuidedVoiceId() and resolveGuidedSpeedValue()"
+    },
+    "no_invalid_voice_ids": {
+      "status": "PASS",
+      "details": "resolveGuidedVoiceId validates profile IDs and voice names. All callers use normalized inputs."
+    }
+  },
+  "tts_call_sites_audit": {
+    "total_sites": 5,
+    "using_global_settings": 5,
+    "sites": [
+      {
+        "file": "useNarrationCache.js",
+        "line": 27,
+        "uses_global": true,
+        "method": "resolveGuidedVoiceId(), resolveGuidedSpeedValue()"
+      },
+      {
+        "file": "useGuidedAudioPlayback.js",
+        "line": 109,
+        "uses_global": true,
+        "method": "resolveGuidedVoiceId(practicePreference?.voiceProfile), resolveGuidedSpeedValue(practicePreference?.speedOption)"
+      },
+      {
+        "file": "useGuidedPracticeEngine.js",
+        "line": 465,
+        "uses_global": true,
+        "method": "resolveGuidedVoiceId(playbackVoiceProfile), resolveGuidedSpeedValue(playbackSpeedOption)"
+      },
+      {
+        "file": "WaterPractices.jsx",
+        "line": 241,
+        "uses_global": true,
+        "method": "resolveGuidedVoiceId(), resolveGuidedSpeedValue()"
+      },
+      {
+        "file": "useChakraCleansingData.js",
+        "line": 58,
+        "uses_global": true,
+        "method": "resolveGuidedVoiceId(), resolveGuidedSpeedValue()"
+      }
+    ]
+  }
+}

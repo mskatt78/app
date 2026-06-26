@@ -10,6 +10,7 @@ import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtoc
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
+import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../utils/guidedVoiceSettings";
 
 const getCategoryButtonClassName = (isActive) => {
   if (isActive) {
@@ -236,10 +237,12 @@ const WaterPractices = ({ user, api }) => {
     Take a moment to feel gratitude for this sacred practice with water.`;
     
     try {
+      const voiceId = resolveGuidedVoiceId();
+      const speedValue = resolveGuidedSpeedValue();
       const response = await api.post("/tts/generate-base64", {
         text: script,
-        voice: "nova",
-        speed: 0.85
+        voice: voiceId,
+        speed: speedValue,
       });
       
       if (response.data.audio_base64) {
