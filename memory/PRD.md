@@ -2142,6 +2142,52 @@
   - Daily morning/evening + ally/angel images valid
   - No broken image placeholders in high-impact routes
 
+## Guided Voice Controls + Early-Stop Fix (Iteration 205)
+
+### User request
+- Add voice speed options.
+- Apply controls everywhere guided voice is used.
+- Add feminine/masculine voice variety.
+- Fix bug: narration stopping early while showing completed.
+
+### Delivered
+- Added global guided voice settings utility:
+  - `frontend/src/utils/guidedVoiceSettings.js`
+  - Voice profiles:
+    - Feminine (Soft) → `shimmer`
+    - Masculine (Grounded) → `onyx`
+    - Balanced (Neutral) → `nova`
+  - Speed options:
+    - Slow `0.8`
+    - Normal `0.9`
+    - Fast `1.0`
+  - Cookie persistence + runtime sync support.
+
+- Settings UI expanded:
+  - `frontend/src/pages/settings/SettingsGuidedAudioCard.jsx`
+  - Added cards/selectors:
+    - Guided Voice Speed (Slow / Normal / Fast)
+    - Guided Voice Type (Feminine / Masculine / Balanced)
+
+- Wired settings across guided engines:
+  - `useGuidedAudioPlayback.js`
+  - `useGuidedPracticeEngine.js`
+  - Both now resolve selected global voice + speed.
+
+- Completion reliability fix:
+  - Tightened completion conditions so session is marked complete only when final segment truly ends.
+  - Prevents early “finished” state before narration completion.
+
+### Verification (required)
+- Testing agent report: `/app/test_reports/iteration_205.json`
+  - Frontend: **100%**
+- Verified pass:
+  - Speed options ✅
+  - Voice type options ✅
+  - Single-click playback ✅
+  - Completion reliability (no premature finish) ✅
+  - Title-led opener preserved ✅
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
