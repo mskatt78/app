@@ -2306,6 +2306,26 @@
   - no competing scroll contexts ✅
   - narration minimum floor 10 minutes preserved ✅
 
+## Final targeted fix: Somatic practice dialog scroll (Iteration 210)
+
+### User report
+- User still experiencing non-scrollable practice view (screenshot corresponded to SomaticMovement detail dialog).
+
+### Fix applied
+- `frontend/src/pages/SomaticMovement.jsx`
+  - Updated detail dialog container:
+    - `DialogContent` now includes `max-h-[88vh] overflow-y-auto`
+    - added dialog-level scroll container testids for QA
+  - Normalized duration display in dialog with `resolveDurationMinutes(...)`.
+
+### Verification (required)
+- Testing agent report: `/app/test_reports/iteration_210.json`
+  - Frontend: **100%**
+- Mobile viewport evidence:
+  - iPhone 14 Pro (390x844): scrollTop 0 → 715, Start button reachable/clickable ✅
+  - iPhone SE (375x667): scrollTop 0 → 962, Start button reachable/clickable ✅
+  - Guided overlay opens from scrolled state (no regression) ✅
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
