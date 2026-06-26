@@ -2188,6 +2188,64 @@
   - Completion reliability (no premature finish) ✅
   - Title-led opener preserved ✅
 
+## Guided UX Expansion: Segment Dots + Preview Buttons + Per-Practice Override (Iteration 206)
+
+### User requests addressed
+- Add subtle “playing segment X of Y” indicator with mini dots.
+- Add tiny inline “Preview voice” buttons for profile/speed options.
+- Add optional per-practice voice override in guided overlay while keeping global defaults.
+- Support both persistence behaviors for per-practice override (Session only + Remember per practice).
+
+### Implemented
+- `frontend/src/components/guided/GuidedPracticeContent.jsx`
+  - Added segment indicator text + mini dot tracker:
+    - `guided-segment-indicator`
+    - `guided-segment-dots`
+  - Added in-overlay Voice/Speed per-practice override selectors:
+    - `guided-practice-voice-override-select`
+    - `guided-practice-speed-override-select`
+
+- `frontend/src/utils/guidedVoiceSettings.js`
+  - Added voice/speed profile maps and robust resolver mapping:
+    - feminine → shimmer
+    - masculine → onyx
+    - balanced → nova
+  - Added per-practice override storage + mode utilities:
+    - Session-only runtime overrides
+    - Remembered per-practice overrides
+
+- `frontend/src/pages/settings/SettingsGuidedAudioCard.jsx`
+  - Added inline preview buttons:
+    - speed previews (Slow/Normal/Fast)
+    - voice previews (Feminine/Masculine/Balanced)
+  - Added per-practice override mode selector:
+    - Session only / Remember per practice
+
+- `frontend/src/pages/settings/useSettingsData.js`
+  - Added state/actions for per-practice override mode.
+
+- `frontend/src/components/guided/useGuidedPracticeEngine.js`
+  - Wired overlay per-practice voice/speed controls into actual TTS generation.
+  - Uses correct mapped TTS voices.
+  - Completion logic preserved to avoid early “finished” behavior.
+
+- `frontend/src/components/guided/useGuidedAudioPlayback.js`
+  - Reads per-practice preference (if available) and applies mapped voice/speed.
+
+- `frontend/src/routes/AppRoutes.jsx`
+  - Settings route now reachable via public route wrapper to ensure guided controls are accessible for tuning.
+
+### Verification (required)
+- Testing agent report: `/app/test_reports/iteration_206.json`
+  - Frontend: **100%**
+- Verified features:
+  - Segment X/Y + dot progress ✅
+  - Inline preview buttons for speed + voice ✅
+  - Per-practice override controls ✅
+  - Session/Remember persistence options ✅
+  - Correct TTS voice mapping ✅
+  - Completion reliability preserved ✅
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
