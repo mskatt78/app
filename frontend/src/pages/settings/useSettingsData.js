@@ -11,6 +11,14 @@ import {
   getGuidedToningIntensity,
   setGuidedToningIntensity,
 } from "../../utils/guidedToningSettings";
+import {
+  GUIDED_SPEED_OPTIONS,
+  GUIDED_VOICE_PROFILES,
+  getGuidedSpeedOption,
+  getGuidedVoiceProfile,
+  setGuidedSpeedOption,
+  setGuidedVoiceProfile,
+} from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
 import { DEFAULT_REMINDER_SETTINGS } from "./settingsConstants";
 
@@ -24,6 +32,8 @@ export const useSettingsData = ({ api, user, navigate }) => {
   const [reminderSettings, setReminderSettings] = useState(DEFAULT_REMINDER_SETTINGS);
   const [guidedNarrationMode, setGuidedNarrationModeState] = useState(() => getGuidedNarrationMode());
   const [guidedToningIntensity, setGuidedToningIntensityState] = useState(() => getGuidedToningIntensity());
+  const [guidedSpeedOption, setGuidedSpeedOptionState] = useState(() => getGuidedSpeedOption());
+  const [guidedVoiceProfile, setGuidedVoiceProfileState] = useState(() => getGuidedVoiceProfile());
   const [voiceProfiles, setVoiceProfiles] = useState([]);
   const [voiceProfileName, setVoiceProfileName] = useState("My Voice");
   const [voiceSampleFile, setVoiceSampleFile] = useState(null);
@@ -154,6 +164,18 @@ export const useSettingsData = ({ api, user, navigate }) => {
     toast.success(`Guided toning intensity set to ${GUIDED_TONING_INTENSITIES[nextMode].label}`);
   }, []);
 
+  const updateGuidedSpeedOption = useCallback((mode) => {
+    const nextMode = setGuidedSpeedOption(mode);
+    setGuidedSpeedOptionState(nextMode);
+    toast.success(`Guided speed set to ${GUIDED_SPEED_OPTIONS[nextMode].label}`);
+  }, []);
+
+  const updateGuidedVoiceProfile = useCallback((mode) => {
+    const nextMode = setGuidedVoiceProfile(mode);
+    setGuidedVoiceProfileState(nextMode);
+    toast.success(`Guided voice set to ${GUIDED_VOICE_PROFILES[nextMode].label}`);
+  }, []);
+
   const createVoiceProfile = useCallback(async () => {
     if (!voiceSampleFile) {
       toast.error("Please select an audio sample first");
@@ -228,6 +250,8 @@ export const useSettingsData = ({ api, user, navigate }) => {
     reminderSettings,
     guidedNarrationMode,
     guidedToningIntensity,
+    guidedSpeedOption,
+    guidedVoiceProfile,
     voiceProfiles,
     voiceProfileName,
     setVoiceProfileName,
@@ -248,6 +272,8 @@ export const useSettingsData = ({ api, user, navigate }) => {
     requestAccountDeletion,
     updateGuidedNarrationMode,
     updateGuidedToningMode,
+    updateGuidedSpeedOption,
+    updateGuidedVoiceProfile,
     createVoiceProfile,
     removeVoiceProfile,
   };

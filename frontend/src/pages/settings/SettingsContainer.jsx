@@ -23,6 +23,8 @@ const SettingsContainer = ({ user, api }) => {
     reminderSettings,
     guidedNarrationMode,
     guidedToningIntensity,
+    guidedSpeedOption,
+    guidedVoiceProfile,
     voiceProfiles,
     voiceProfileName,
     setVoiceProfileName,
@@ -43,6 +45,8 @@ const SettingsContainer = ({ user, api }) => {
     requestAccountDeletion,
     updateGuidedNarrationMode,
     updateGuidedToningMode,
+    updateGuidedSpeedOption,
+    updateGuidedVoiceProfile,
     createVoiceProfile,
     removeVoiceProfile,
   } = useSettingsData({ api, user, navigate });
@@ -78,8 +82,12 @@ const SettingsContainer = ({ user, api }) => {
           <SettingsGuidedAudioCard
             guidedNarrationMode={guidedNarrationMode}
             guidedToningIntensity={guidedToningIntensity}
+            guidedSpeedOption={guidedSpeedOption}
+            guidedVoiceProfile={guidedVoiceProfile}
             updateGuidedNarrationMode={updateGuidedNarrationMode}
             updateGuidedToningMode={updateGuidedToningMode}
+            updateGuidedSpeedOption={updateGuidedSpeedOption}
+            updateGuidedVoiceProfile={updateGuidedVoiceProfile}
           />
 
           <SettingsCustomVoiceCard

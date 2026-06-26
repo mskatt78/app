@@ -21,6 +21,7 @@ import {
   setGuidedNarrationMode,
 } from "../../utils/guidedNarrationSettings";
 import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
+import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
@@ -233,7 +234,9 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       clearInterval(timerRef.current);
       sessionEndRef.current = null;
       setIsPlaying(false);
-      setIsComplete(true);
+      if (currentSegmentIndexRef.current >= Math.max(0, narrationSegments.length - 1) || narrationSegments.length <= 1) {
+        setIsComplete(true);
+      }
       stopNarrationPlayback(false);
       stopAmbient();
       stopToning();
@@ -406,7 +409,11 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: narrationSegments[segmentIndex], voice: "shimmer", speed: DEFAULT_GUIDED_TTS_SPEED }),
+        body: JSON.stringify({
+          text: narrationSegments[segmentIndex],
+          voice: resolveGuidedVoiceId("shimmer"),
+          speed: resolveGuidedSpeedValue() || DEFAULT_GUIDED_TTS_SPEED,
+        }),
         });
         if (response.ok) {
           data = await response.json();
@@ -481,6 +488,13 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         setCurrentSegmentIndex(nextIndex);
         if (sessionEndRef.current && isPlayingRef.current && narrationSegments[nextIndex]) {
           playNarrationSegment(nextIndex);
+        } else if (!narrationSegments[nextIndex]) {
+          setIsComplete(true);
+          setIsPlaying(false);
+          stopAmbient();
+          stopToning();
+          sessionEndRef.current = null;
+          clearInterval(timerRef.current);
         }
       };
       const started = await audio.play().then(() => true).catch(() => false);

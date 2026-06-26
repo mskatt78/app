@@ -3,6 +3,7 @@ import { Sparkles, Volume2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { GUIDED_NARRATION_MODES } from "../../utils/guidedNarrationSettings";
 import { GUIDED_TONING_INTENSITIES } from "../../utils/guidedToningSettings";
+import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
 
 const CARD_INITIAL = { opacity: 0, y: 20 };
 const CARD_ANIMATE = { opacity: 1, y: 0 };
@@ -11,8 +12,12 @@ const CARD_TRANSITION = { delay: 0.12 };
 export const SettingsGuidedAudioCard = ({
   guidedNarrationMode,
   guidedToningIntensity,
+  guidedSpeedOption,
+  guidedVoiceProfile,
   updateGuidedNarrationMode,
   updateGuidedToningMode,
+  updateGuidedSpeedOption,
+  updateGuidedVoiceProfile,
 }) => (
   <motion.div
     initial={CARD_INITIAL}
@@ -71,6 +76,56 @@ export const SettingsGuidedAudioCard = ({
 
       <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-toning-active-note">
         {GUIDED_TONING_INTENSITIES[guidedToningIntensity]?.description}
+      </p>
+    </div>
+
+    <div className="mt-6 pt-5 border-t border-white/10" data-testid="settings-guided-speed-card">
+      <h3 className="text-base font-medium mb-2 flex items-center gap-2">
+        <Volume2 className="w-4 h-4 text-primary" />
+        Guided Voice Speed
+      </h3>
+      <p className="text-sm text-muted-foreground mb-3" data-testid="settings-guided-speed-description">
+        Choose how fast guided narration speaks across the app.
+      </p>
+      <Select value={guidedSpeedOption} onValueChange={updateGuidedSpeedOption}>
+        <SelectTrigger className="bg-card/50 border-white/10" data-testid="settings-guided-speed-select">
+          <SelectValue placeholder="Select speed" />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.values(GUIDED_SPEED_OPTIONS).map((option) => (
+            <SelectItem key={option.id} value={option.id} data-testid={`settings-guided-speed-option-${option.id}`}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-speed-active-note">
+        {GUIDED_SPEED_OPTIONS[guidedSpeedOption]?.description}
+      </p>
+    </div>
+
+    <div className="mt-6 pt-5 border-t border-white/10" data-testid="settings-guided-voice-profile-card">
+      <h3 className="text-base font-medium mb-2 flex items-center gap-2">
+        <Sparkles className="w-4 h-4 text-primary" />
+        Guided Voice Type
+      </h3>
+      <p className="text-sm text-muted-foreground mb-3" data-testid="settings-guided-voice-profile-description">
+        Choose feminine, masculine, or balanced guided voice style.
+      </p>
+      <Select value={guidedVoiceProfile} onValueChange={updateGuidedVoiceProfile}>
+        <SelectTrigger className="bg-card/50 border-white/10" data-testid="settings-guided-voice-profile-select">
+          <SelectValue placeholder="Select voice type" />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.values(GUIDED_VOICE_PROFILES).map((option) => (
+            <SelectItem key={option.id} value={option.id} data-testid={`settings-guided-voice-profile-option-${option.id}`}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <p className="text-xs text-muted-foreground mt-3" data-testid="settings-guided-voice-profile-active-note">
+        {GUIDED_VOICE_PROFILES[guidedVoiceProfile]?.description}
       </p>
     </div>
   </motion.div>

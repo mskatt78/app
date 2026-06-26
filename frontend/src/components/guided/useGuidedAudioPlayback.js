@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { DEFAULT_GUIDED_TTS_SPEED, ensureTitleLedNarrationOpen, startToningLayer } from "./guidedNarrationUtils";
 import { getEffectiveGuidedNarrationMode } from "../../utils/guidedNarrationSettings";
+import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
 
 const MIN_NARRATION_MINUTES = 7;
@@ -48,6 +49,8 @@ export const useGuidedAudioPlayback = ({
     label,
     element,
     durationMinutes,
+    preferredVoiceId: resolveGuidedVoiceId(voice),
+    preferredSpeed: resolveGuidedSpeedValue() || DEFAULT_GUIDED_TTS_SPEED,
   }), [durationMinutes, element, label, practiceName, script, sourceTexts, steps]);
 
   const stopToning = useCallback(() => {
@@ -94,14 +97,20 @@ export const useGuidedAudioPlayback = ({
   }, [stopToning]);
 
   const getSegmentAudio = useCallback(async (segmentText, controller) => {
-    const key = `${voice}::${segmentText}`;
+    const voiceId = resolveGuidedVoiceId(voice);
+    const speedValue = resolveGuidedSpeedValue() || DEFAULT_GUIDED_TTS_SPEED;
+    const key = `${voiceId}:${speedValue}::${segmentText}`;
     if (segmentCacheRef.current.has(key)) return segmentCacheRef.current.get(key);
 
     let response = null;
     let lastError = null;
     for (let attempt = 0; attempt < 3; attempt += 1) {
       try {
-        response = await api.post("/tts/generate-base64", { text: segmentText, voice, speed: DEFAULT_GUIDED_TTS_SPEED }, { signal: controller.signal });
+        response = await api.post(
+          "/tts/generate-base64",
+          { text: segmentText, voice: voiceId, speed: speedValue },
+          { signal: controller.signal },
+        );
         if (response?.data?.audio_base64) break;
       } catch (error) {
         lastError = error;
@@ -215,6 +224,7 @@ export const useGuidedAudioPlayback = ({
         stopPlayback();
       };
       audio.onended = () => {
+        audioRef.current = null;
         toningLayerRef.current?.setMuted?.(false, 0.2);
         playIndex(index + 1).catch((error) => {
           appLogger.warn("Guided sequential playback continuation failed", error);
