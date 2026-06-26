@@ -2279,6 +2279,33 @@
     - ceremonial/earthy/cosmic narrative language present ✅
     - somatic earth-cosmic guidance section present ✅
 
+## Critical Retest: Guided touch-scroll fixed on mobile (Iteration 209)
+
+### Context
+- User reported "still not scrolling" after previous production deployment.
+- Prior test (`iteration_208`) identified exact root cause:
+  - `body touch-action:none` blocked touch scroll gestures.
+  - competing outer/inner scroll contexts.
+
+### Final fix applied
+- `frontend/src/components/guided/GuidedPracticeContent.jsx`
+  - Removed `body.style.touchAction = "none"` lock.
+  - Removed outer overlay `overflow-y-auto` (no competing scroll container).
+  - Kept single inner scroll container with:
+    - `overflow-y-auto`
+    - `touch-pan-y`
+    - `[touch-action:pan-y]`
+    - `[-webkit-overflow-scrolling:touch]`
+
+### Verification (required retest)
+- Testing agent report: `/app/test_reports/iteration_209.json`
+  - Frontend: **100%**
+- Mobile viewport pass evidence:
+  - 390x844 and 375x812: touch scrolling works ✅
+  - play button reachable/clickable via scroll ✅
+  - no competing scroll contexts ✅
+  - narration minimum floor 10 minutes preserved ✅
+
 ## Bug Fix: Remove “Very Deep” wording + duplicate Daily sections (Iteration 197) — 2026-06-24
 
 ### User-reported issue
