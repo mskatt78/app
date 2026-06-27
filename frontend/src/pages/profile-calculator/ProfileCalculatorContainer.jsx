@@ -395,8 +395,17 @@ const ProfileCalculator = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
                     <Button 
                       variant="link" 
-                      onClick={() => navigate("/human-design")}
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        navigate("/human-design", {
+                          state: {
+                            fromProfileCalculator: true,
+                          },
+                        });
+                      }}
                       className="mt-2"
+                      data-testid="profile-to-human-design-link-btn"
                     >
                       Learn More About Human Design <ChevronRight className="w-4 h-4" />
                     </Button>

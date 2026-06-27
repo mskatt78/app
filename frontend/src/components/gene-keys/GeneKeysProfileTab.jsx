@@ -206,7 +206,15 @@ export const GeneKeysProfileTab = ({
             Explore your full Body Graph to understand your energy type and decision-making strategy.
           </p>
           <Button
-            onClick={() => navigate("/human-design")}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              navigate("/human-design", {
+                state: {
+                  fromGeneKeys: true,
+                },
+              });
+            }}
             className="w-full bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-500/30"
             data-testid="gk-to-hd-btn"
           >
