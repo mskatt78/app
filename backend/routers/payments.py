@@ -42,6 +42,12 @@ COURSE_BUNDLES = {
 }
 
 PREMIUM_UNLOCK_PRODUCTS: dict[str, dict[str, Any]] = {
+    "elemental_temples": {
+        "name": "Elemental Temples Unlock",
+        "description": "Unlock the full Elemental Temples immersion across all five elements",
+        "price": 79.00,
+        "unlock_scope": "section",
+    },
     "premium_mantras": {
         "name": "Premium Mantras Unlock",
         "description": "Unlock all premium mantra libraries and advanced ritual protocols",
@@ -74,7 +80,7 @@ PREMIUM_UNLOCK_PRODUCTS: dict[str, dict[str, Any]] = {
     },
 }
 
-PREMIUM_SECTION_IDS = ["premium_mantras", "premium_breathwork", "rose_temple", "healing_portals"]
+PREMIUM_SECTION_IDS = ["elemental_temples", "premium_mantras", "premium_breathwork", "rose_temple", "healing_portals"]
 
 # ============ MODELS ============
 

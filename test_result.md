@@ -10246,3 +10246,67 @@ agent_communication:
       CONCLUSION: Backend weekly reflection endpoint FULLY FUNCTIONAL. All test cases 
       passed. Auth working correctly. Schema complete. Days normalization working as 
       expected. Ready for production use.
+
+  - task: "Elemental Temples premium gating - banner rendering"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ElementalTemples.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ELEMENTAL TEMPLES PREMIUM BANNER PASSED (2026-06-27): Premium banner renders correctly for unauthenticated users on /elemental-temples page. All required elements verified: ✅ elemental-temples-premium-banner (visible), ✅ Banner title: 'Elemental Temples are now premium', ✅ elemental-temples-view-subscription-button (View Subscription), ✅ elemental-temples-unlock-button (Unlock Temples 79.00), ✅ elemental-temples-unlock-fullapp-button (Full App 369.00). Banner displays correctly with proper styling and all buttons functional. Premium banner implementation COMPLETE."
+
+  - task: "Elemental Temples premium gating - lock modal on guided actions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ElementalTemples.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ELEMENTAL TEMPLES PREMIUM LOCK MODAL PASSED (2026-06-27): Premium lock modal opens correctly when attempting guided actions without premium access. Tested multiple scenarios: 1) Clicked Earth temple card → detail view opened ✓. 2) Clicked 'Start Guided Practice for this Section' button → premium lock modal appeared ✓. 3) Navigated to Practices section → clicked practice card guided button → lock modal appeared ✓. 4) Navigated to Rituals section → clicked ritual guided button → lock modal appeared ✓. 5) Navigated to Ceremonies section → clicked ceremony guided button → lock modal appeared ✓. All modal elements verified: ✅ elemental-temples-premium-lock-modal, ✅ elemental-temples-premium-lock-title ('Elemental Temples'), ✅ elemental-temples-premium-lock-description, ✅ elemental-temples-premium-lock-unlock-button (Unlock 79.00), ✅ elemental-temples-premium-lock-fullapp-button (Full App 369.00), ✅ elemental-temples-premium-lock-subscription-button (View Subscription Plans), ✅ elemental-temples-premium-lock-close-button (Close). Premium gating working correctly - users cannot start guided practices without unlocking section."
+
+  - task: "Elemental Temples premium gating - modal close and page interactivity"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ElementalTemples.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ELEMENTAL TEMPLES MODAL CLOSE FUNCTIONALITY PASSED (2026-06-27): Modal close button works correctly and page remains fully interactive. Tested multiple close scenarios: 1) Clicked close button on lock modal → modal dismissed successfully ✓. 2) Page remains interactive after modal close → main page element visible ✓. 3) Can navigate back to grid view and click other temple cards ✓. 4) Can open and close modal multiple times without issues ✓. No blank screens, no crashes, no stuck states detected. Modal close functionality working perfectly."
+
+  - task: "Elemental Temples premium gating - no regressions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ElementalTemples.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ELEMENTAL TEMPLES NO REGRESSIONS PASSED (2026-06-27): Comprehensive regression testing completed. ✅ No blank screens detected - page has substantial content throughout all interactions. ✅ No error messages found on page. ✅ Page title correct: 'Shamanic Elements Soul Temple 2.0'. ✅ Main page element exists (data-testid='elemental-temples'). ✅ All 5 temple cards render correctly (Earth, Water, Fire, Air, Spirit). ✅ Temple detail views open correctly. ✅ Section navigation works (Why It Heals, Ancient Traditions, Embodiment, Practices, Rituals, Ceremonies, etc.). ✅ All guided action buttons trigger premium lock modal as expected. ✅ No crashes during any interaction. Premium gating feature is stable and production-ready."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+
+test_plan:
+  current_focus:
+    - "Elemental Temples premium gating validation complete"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: "ELEMENTAL TEMPLES PREMIUM GATING TESTING COMPLETE (2026-06-27): Comprehensive testing completed on /elemental-temples page for premium gating feature. All validation requirements PASSED: 1) Premium banner renders correctly for unauthenticated users with all required data-testids and buttons. 2) Clicking temple cards and attempting guided actions (main button, practice cards, ritual cards, ceremony cards) correctly opens premium lock modal instead of starting full access flow. 3) Modal close functionality works perfectly and page remains fully interactive. 4) No blank screens, crashes, or regressions detected. Feature is production-ready and working as designed."

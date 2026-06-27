@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { appLogger } from "../utils/logger";
 
 const EMPTY_SECTIONS = {
+  elemental_temples: false,
   premium_mantras: false,
   premium_breathwork: false,
   rose_temple: false,
