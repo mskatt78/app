@@ -1,0 +1,80 @@
+{
+  "summary": "Frontend testing for chant-style audio across ALL mantras and guided voice controls - verified OM, So Hum, and Sat Nam mantras all use chant-style audio (playChantForMantra function), single reliable voice control in guided overlay, no duplicate voice options controls.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "GuidedPracticeContent",
+        "issues": ["Console warning about <span> inside <select> - hydration warning but not breaking functionality"]
+      }
+    ]
+  },
+  "test_results": {
+    "om_mantra_chant_audio": {
+      "status": "PASS",
+      "details": "OM mantra uses chant-style audio via playChantForMantra function",
+      "toast_confirmation": "Shows 'OM chant resonance playing' toast when started",
+      "meditation_sound_toggle": "Shows 'ON - Bells & Om' toggle in modal",
+      "controls_present": ["chant-play-btn", "chant-reset-btn", "tempo-slow/normal/fast", "volume slider"]
+    },
+    "so_hum_mantra_chant_audio": {
+      "status": "PASS",
+      "details": "So Hum (non-OM) mantra uses chant-style audio",
+      "toast_confirmation": "Shows 'So Hum chant resonance playing' toast when started",
+      "meditation_sound_toggle": "Shows 'ON - Bells & Om' toggle in modal"
+    },
+    "sat_nam_mantra_chant_audio": {
+      "status": "PASS",
+      "details": "Sat Nam (non-OM) mantra uses chant-style audio",
+      "toast_confirmation": "Shows 'Sat Nam chant resonance playing' toast when started",
+      "meditation_sound_toggle": "Shows 'ON - Bells & Om' toggle in modal"
+    },
+    "mantra_player_controls": {
+      "status": "PASS",
+      "start_stop": "Play/Pause button toggles correctly",
+      "reset": "Reset button present and functional",
+      "tempo_controls": "Slow/Normal/Fast tempo buttons working",
+      "volume_control": "Volume slider and mute button present"
+    },
+    "guided_overlay_voice_controls": {
+      "status": "PASS",
+      "single_voice_button": "Single 'Play Voice Guidance' button present (data-testid='guided-play-voice-manual-btn')",
+      "voice_override_select": "Present with data-testid='guided-practice-voice-override-select'",
+      "speed_override_select": "Present with data-testid='guided-practice-speed-override-select'",
+      "no_duplicate_voice_options": "No 'guided-voice-options-row' found - duplicates removed",
+      "mute_button": "Present with data-testid='guided-mute-btn'",
+      "main_play_button": "Present with data-testid='guided-play-btn'",
+      "exit_button": "Present with data-testid='guided-exit-btn'"
+    },
+    "guided_audio_button": {
+      "status": "PASS",
+      "details": "GuidedAudioButton component uses single control stack (data-testid='guided-audio-control-stack')",
+      "no_duplicate_controls": "Only one guided-audio-btn per component"
+    }
+  },
+  "code_verification": {
+    "playChantForMantra_function": "Located in MantraAudio.js - generates chant-style audio for ALL mantras using Web Audio API",
+    "resolveMantraBaseFreq": "Determines base frequency based on mantra text (OM=136.1Hz, LAM=256Hz, etc.)",
+    "startMantraSound": "In MantrasLibraryContainer.jsx - calls playChantForMantra for every mantra (OM and non-OM)",
+    "toast_messages": "Shows '[MantraName] chant resonance playing' for all mantras"
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: Console hydration warning about <span> inside <select> in GuidedPracticeContent - not breaking but should be fixed for cleaner console"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only test)",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All mantras (OM and non-OM) now use chant-style audio via playChantForMantra function in MantraAudio.js. The function uses Web Audio API to generate syllable-based chanting sounds with base frequencies determined by mantra text. Guided overlays have single 'Play Voice Guidance' button with Voice/Speed override dropdowns. All duplicate Voice Options controls have been removed. Console 401 errors are expected for unauthenticated users (favorites API). Console 403 error for OM audio URL is expected since OM uses generated sound primarily."
+}

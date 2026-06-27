@@ -79,6 +79,96 @@ export const playOmTone = (ctx, gainNode, baseFreq = 136.1, duration = 6) => {
   });
 };
 
+const estimateSyllableCount = (text = "") => {
+  const cleaned = String(text || "").toLowerCase().replace(/[^a-z\s]/g, " ").trim();
+  if (!cleaned) return 2;
+  const words = cleaned.split(/\s+/).filter(Boolean);
+  const vowelGroups = words.reduce((total, word) => {
+    const matches = word.match(/[aeiouy]+/g);
+    return total + (matches ? matches.length : 1);
+  }, 0);
+  return Math.max(2, Math.min(12, vowelGroups));
+};
+
+const resolveMantraBaseFreq = (mantraText = "", element = "Spirit") => {
+  const text = String(mantraText || "").toLowerCase();
+
+  if (text.includes("om") || text.includes("aum")) return 136.1;
+  if (text.includes("lam")) return CHAKRA_FREQUENCIES.root;
+  if (text.includes("vam")) return CHAKRA_FREQUENCIES.sacral;
+  if (text.includes("ram")) return CHAKRA_FREQUENCIES.solar;
+  if (text.includes("yam")) return CHAKRA_FREQUENCIES.heart;
+  if (text.includes("ham")) return CHAKRA_FREQUENCIES.throat;
+  if (text.includes("so hum") || text.includes("sohum")) return 144;
+  if (text.includes("gayatri")) return 156;
+  if (text.includes("shanti")) return 148;
+
+  return ELEMENT_FREQUENCIES[element] ? ELEMENT_FREQUENCIES[element] / 2 : 144;
+};
+
+// Chant-style mantra rendering for ALL mantras
+export const playChantForMantra = (ctx, gainNode, mantraText = "", element = "Spirit", duration = 5) => {
+  const now = ctx.currentTime;
+  const baseFreq = resolveMantraBaseFreq(mantraText, element);
+  const syllableCount = estimateSyllableCount(mantraText);
+  const pulseDuration = Math.max(0.25, duration / syllableCount);
+
+  // Foundational hum
+  const hum = ctx.createOscillator();
+  const humGain = ctx.createGain();
+  const humFilter = ctx.createBiquadFilter();
+  hum.type = "sine";
+  hum.frequency.value = baseFreq * 0.5;
+  humFilter.type = "lowpass";
+  humFilter.frequency.value = baseFreq * 4;
+  humGain.gain.setValueAtTime(0.001, now);
+  humGain.gain.exponentialRampToValueAtTime(0.16, now + Math.min(0.5, duration * 0.15));
+  humGain.gain.exponentialRampToValueAtTime(0.01, now + duration);
+  hum.connect(humFilter);
+  humFilter.connect(humGain);
+  humGain.connect(gainNode);
+  hum.start(now);
+  hum.stop(now + duration + 0.05);
+
+  // Syllable pulses to simulate chanting cadence
+  for (let i = 0; i < syllableCount; i += 1) {
+    const pulseStart = now + i * pulseDuration;
+    const pulseEnd = Math.min(now + duration, pulseStart + pulseDuration * 0.95);
+
+    const tone = ctx.createOscillator();
+    const tone2 = ctx.createOscillator();
+    const toneGain = ctx.createGain();
+    const toneFilter = ctx.createBiquadFilter();
+
+    tone.type = "triangle";
+    tone2.type = "sine";
+    tone.frequency.setValueAtTime(baseFreq, pulseStart);
+    tone.frequency.linearRampToValueAtTime(baseFreq * 0.92, pulseEnd);
+    tone2.frequency.setValueAtTime(baseFreq * 1.98, pulseStart);
+
+    toneFilter.type = "bandpass";
+    toneFilter.Q.value = 2.2;
+    // Sweep mimics A-U-M vocal formant evolution
+    toneFilter.frequency.setValueAtTime(baseFreq * 8, pulseStart);
+    toneFilter.frequency.linearRampToValueAtTime(baseFreq * 5.2, pulseStart + (pulseEnd - pulseStart) * 0.6);
+    toneFilter.frequency.linearRampToValueAtTime(baseFreq * 3.8, pulseEnd);
+
+    toneGain.gain.setValueAtTime(0.0001, pulseStart);
+    toneGain.gain.linearRampToValueAtTime(0.22, pulseStart + (pulseEnd - pulseStart) * 0.2);
+    toneGain.gain.exponentialRampToValueAtTime(0.015, pulseEnd);
+
+    tone.connect(toneFilter);
+    tone2.connect(toneFilter);
+    toneFilter.connect(toneGain);
+    toneGain.connect(gainNode);
+
+    tone.start(pulseStart);
+    tone2.start(pulseStart);
+    tone.stop(pulseEnd + 0.02);
+    tone2.stop(pulseEnd + 0.02);
+  }
+};
+
 // Generate a repeating mantra chant rhythm
 export const createMantraChantPattern = (ctx, gainNode, mantraLength = 5, tempo = "normal") => {
   const tempoMultipliers = {
@@ -165,6 +255,7 @@ export default {
   createMantraAudioContext,
   playBellTone,
   playOmTone,
+  playChantForMantra,
   createMantraChantPattern,
   playMantraSound,
   CHAKRA_FREQUENCIES,

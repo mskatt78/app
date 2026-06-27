@@ -16,6 +16,7 @@ import {
   createMantraAudioContext, 
   playBellTone, 
   playOmTone, 
+  playChantForMantra,
   playMantraSound,
   ELEMENT_FREQUENCIES 
 } from "../../components/audio/MantraAudio";
@@ -41,9 +42,10 @@ const isOmMantra = (mantra) => String(mantra?.name || "").trim().toLowerCase() =
 
 const resolveMantraAudioUrl = (mantra) => {
   if (!mantra) return "";
-  if (mantra.audio_url) return mantra.audio_url;
+  // Keep OM fallback stream for users preferring direct external loop,
+  // but in-app chanting now runs from generated chant audio for ALL mantras.
   if (isOmMantra(mantra)) return OM_CHANT_LOOP_URL;
-  return "";
+  return mantra.audio_url || "";
 };
 
 const ELEMENT_NATURAL_DEFAULT = {
@@ -278,9 +280,9 @@ const MantrasLibrary = ({ user, api }) => {
     const durationPerRep = baseDuration * tempoMultipliers[tempo];
     const totalReps = selectedMantra.repetitions || 108;
     
-    // Start generated mantra sound if enabled
+    // Start generated chant-style mantra sound if enabled
     if (useGeneratedSound && !isMuted) {
-      startMantraSound(selectedMantra.element, durationPerRep);
+      startMantraSound(selectedMantra, durationPerRep);
     }
     
     intervalRef.current = setInterval(() => {
@@ -305,7 +307,13 @@ const MantrasLibrary = ({ user, api }) => {
             }
             // Play sound for new repetition
             if (useGeneratedSound && !isMuted && mantraAudioCtxRef.current && mantraGainRef.current) {
-              playMantraSound(mantraAudioCtxRef.current, mantraGainRef.current, selectedMantra.element, 3);
+              playChantForMantra(
+                mantraAudioCtxRef.current,
+                mantraGainRef.current,
+                selectedMantra.name,
+                selectedMantra.element,
+                Math.max(durationPerRep * 0.75, 2.8),
+              );
             }
             return newRep;
           });
@@ -317,7 +325,7 @@ const MantrasLibrary = ({ user, api }) => {
   };
   
   // Start generated mantra sound
-  const startMantraSound = (element, cycleDuration) => {
+  const startMantraSound = (mantra, cycleDuration) => {
     try {
       const ctx = createMantraAudioContext();
       mantraAudioCtxRef.current = ctx;
@@ -328,28 +336,34 @@ const MantrasLibrary = ({ user, api }) => {
       mantraGainRef.current = gainNode;
       
       // Play initial bell - louder and longer
-      playBellTone(ctx, gainNode, ELEMENT_FREQUENCIES[element] || 432, 4);
+      playBellTone(ctx, gainNode, ELEMENT_FREQUENCIES[mantra?.element] || 432, 2.2);
 
-      // For OM, start sustained chant immediately for authentic resonance
-      if (isOmMantra(selectedMantra)) {
-        playOmTone(ctx, gainNode, 136.1, Math.max(cycleDuration, 6));
-      }
+      // Chant-style synthesis for every mantra (OM and non-OM)
+      playChantForMantra(
+        ctx,
+        gainNode,
+        mantra?.name,
+        mantra?.element,
+        Math.max(cycleDuration * 0.9, 3.2),
+      );
       
       // Show toast that sound is playing
       toast.success(
         isOmMantra(selectedMantra)
           ? "OM chant resonance playing"
-          : "Mantra sound playing - adjust volume if needed"
+          : `${mantra?.name || "Mantra"} chant resonance playing`
       );
       
       // Set up recurring chant sounds - more frequent
       mantraIntervalRef.current = setInterval(() => {
         if (mantraAudioCtxRef.current && mantraGainRef.current) {
-          if (isOmMantra(selectedMantra)) {
-            playOmTone(mantraAudioCtxRef.current, mantraGainRef.current, 136.1, Math.max(cycleDuration * 0.8, 5));
-          } else {
-            playMantraSound(mantraAudioCtxRef.current, mantraGainRef.current, element, cycleDuration * 0.8);
-          }
+          playChantForMantra(
+            mantraAudioCtxRef.current,
+            mantraGainRef.current,
+            mantra?.name,
+            mantra?.element,
+            Math.max(cycleDuration * 0.8, 3),
+          );
         }
       }, cycleDuration * 1000);
       
