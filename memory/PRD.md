@@ -2488,3 +2488,26 @@
 - Fixes are implemented and validated in preview.
 - Production requires redeploy to receive these precision updates.
 
+## Guided Voice Controls Hardening (Iteration 216) — 2026-06-27
+
+### Why this was done
+- User reported guided overlays lacked a clear/manual voice option across sections after deployment.
+
+### Implemented
+- Updated shared guided overlay components:
+  - `frontend/src/components/guided/GuidedPracticeContent.jsx`
+  - `frontend/src/components/guided/useGuidedPracticeEngine.js`
+  - `frontend/src/components/GuidedPracticeOverlay.jsx`
+- Added always-visible manual controls in every guided overlay:
+  - `Play Voice Guidance`
+  - `Tap to Retry Voice`
+- Added retry behavior hook in engine (`handleRetryVoice`) and explicit manual voice-start handler (`handleStartVoiceOnly`).
+
+### Verification
+- Testing report: `/app/test_reports/iteration_216.json`
+  - Frontend: **100%**
+  - Verified on Sacred Ally + Angelic overlays:
+    - voice controls visible immediately,
+    - controls clickable and functional,
+    - no regressions in timer, play/pause, mute, or exit.
+
