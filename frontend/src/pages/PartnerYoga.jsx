@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Users, Heart, Star, ChevronDown, Clock } from "lucide-react";
@@ -17,13 +17,13 @@ const partnerPoses = [
     description: "Sit back-to-back or facing each other and gently assist your partner into a deep forward fold. This builds trust and deepens the stretch for both.",
     instructions: [
       "Sit facing each other with legs extended straight, feet touching or overlapping",
-      "Hold each other's wrists or hands",
+      "Hold each other&apos;s wrists or hands",
       "Partner A leans back while Partner B folds forward, using gentle tension to deepen the stretch",
       "Hold for 5-10 breaths, then switch — Partner B leans back while A folds forward",
       "Maintain steady eye contact or close your eyes and breathe together"
     ],
     benefits: ["Deep hamstring and spine stretch", "Builds trust and communication", "Synchronizes breath between partners", "Releases tension in lower back"],
-    modifications: ["Use a strap between you if you can't reach each other's hands", "Bend knees slightly if hamstrings are tight"],
+    modifications: ["Use a strap between you if you can't reach each other&apos;s hands", "Bend knees slightly if hamstrings are tight"],
     color: { text: "text-blue-300", bg: "bg-blue-500/10", border: "border-blue-500/20" }
   },
   {
@@ -37,14 +37,14 @@ const partnerPoses = [
     description: "Sit facing your partner, hold hands, and lift both sets of legs to create a diamond shape between you. Builds core strength and requires synchronized effort.",
     instructions: [
       "Sit facing your partner, knees bent, toes touching",
-      "Hold each other's wrists or hands firmly",
+      "Hold each other&apos;s wrists or hands firmly",
       "Lean back slightly and lift your feet, pressing soles against your partner's",
       "Slowly straighten legs as much as comfortable, creating a diamond or V shape",
       "Find balance together by equalizing weight through your hands",
       "Hold for 5-10 breaths"
     ],
     benefits: ["Strengthens core, hip flexors, and legs", "Requires and builds synchronized effort", "Fun and playful energy exchange", "Strengthens grip and arm connection"],
-    modifications: ["Keep knees bent for a gentler version", "Use a strap if you can't hold each other's hands"],
+    modifications: ["Keep knees bent for a gentler version", "Use a strap if you can't hold each other&apos;s hands"],
     color: { text: "text-orange-300", bg: "bg-orange-500/10", border: "border-orange-500/20" }
   },
   {
@@ -60,7 +60,7 @@ const partnerPoses = [
       "Stand side by side with your inside shoulders touching",
       "Each person shifts weight to their outside foot",
       "Bring inside feet up to rest on inner ankle, calf, or inner thigh",
-      "Wrap inside arms around each other's waists for support",
+      "Wrap inside arms around each other&apos;s waists for support",
       "Extend outside arms upward or meet overhead to join hands",
       "Find your collective balance, hold for 5-10 breaths",
       "Switch sides"
@@ -99,7 +99,7 @@ const partnerPoses = [
     difficulty: "Beginner",
     duration: 3,
     image_url: "https://images.pexels.com/photos/7593022/pexels-photo-7593022.jpeg?auto=compress&cs=tinysrgb&w=800",
-    description: "Kneel back to back with your partner. As both partners arch backward, they support each other's upper back and create a beautiful heart-opening backbend.",
+    description: "Kneel back to back with your partner. As both partners arch backward, they support each other&apos;s upper back and create a beautiful heart-opening backbend.",
     instructions: [
       "Kneel back-to-back, hips pressed together, knees hip-width apart",
       "Both partners place hands on lower back or reach for heels",
@@ -121,7 +121,7 @@ const partnerPoses = [
     difficulty: "Beginner",
     duration: 5,
     image_url: "https://images.unsplash.com/photo-1758599880222-550a42cb42bc?w=800&q=80",
-    description: "Sit back-to-back in easy pose and twist in opposite directions, placing hands on each other's knees for a gentle assisted spinal twist.",
+    description: "Sit back-to-back in easy pose and twist in opposite directions, placing hands on each other&apos;s knees for a gentle assisted spinal twist.",
     instructions: [
       "Sit back-to-back in easy pose (crossed legs)",
       "Both partners sit tall and take a deep breath in to lengthen the spine",
@@ -185,13 +185,13 @@ const PartnerYoga = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPose, setSelectedPose] = useState(null);
   const [difficultyFilter, setDifficultyFilter] = useState("all");
-  const [showGuided, setShowGuided] = useState(false);
+  const [guidedPractice, setGuidedPractice] = useState(null);
 
   const difficulties = ["all", "Beginner", "Intermediate", "Advanced"];
 
-  const filtered = difficultyFilter === "all"
+  const filtered = useMemo(() => (difficultyFilter === "all"
     ? partnerPoses
-    : partnerPoses.filter(p => p.difficulty === difficultyFilter);
+    : partnerPoses.filter(p => p.difficulty === difficultyFilter)), [difficultyFilter]);
 
   const difficultyColors = {
     Beginner: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -218,7 +218,7 @@ const PartnerYoga = ({ user, api }) => {
     return "After practice, take a short silent walk together and notice what has softened in your body and heart.";
   };
 
-  const buildGuidedPosePractice = (pose) => ({
+  const buildGuidedPosePractice = useCallback((pose) => ({
     id: `partner-guided-${pose.id}`,
     name: pose.name,
     description: pose.description,
@@ -226,7 +226,16 @@ const PartnerYoga = ({ user, api }) => {
     duration_minutes: pose.duration,
     steps: pose.instructions,
     affirmation: `We move as partners with presence, trust, and care in ${pose.name}.`,
-  });
+  }), []);
+
+  const launchGuidedPractice = useCallback((pose) => {
+    if (!pose) return;
+    const payload = buildGuidedPosePractice(pose);
+    setSelectedPose(null);
+    window.requestAnimationFrame(() => {
+      setGuidedPractice(payload);
+    });
+  }, [buildGuidedPosePractice]);
 
   return (
     <div className="min-h-screen bg-background" data-testid="partner-yoga">
@@ -262,7 +271,7 @@ const PartnerYoga = ({ user, api }) => {
           <p className="text-muted-foreground max-w-xl mx-auto">
             Deepen your practice and your connection. These poses use the weight, 
             support, and trust of a partner to explore new dimensions of each asana.
-            Always communicate openly and listen to each other's bodies.
+            Always communicate openly and listen to each other&apos;s bodies.
           </p>
         </motion.div>
 
@@ -347,7 +356,7 @@ const PartnerYoga = ({ user, api }) => {
               <p className="text-sm text-muted-foreground">
                 Always warm up individually before partner work. Communicate openly and frequently — 
                 ask and check in on pressure, comfort, and depth. The goal is not to push your partner 
-                deeper, but to create a safe container for mutual exploration. Respect each other's 
+                deeper, but to create a safe container for mutual exploration. Respect each other&apos;s 
                 boundaries and limitations. If either partner feels pain, come out of the pose immediately.
               </p>
             </div>
@@ -364,6 +373,7 @@ const PartnerYoga = ({ user, api }) => {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto"
             onClick={() => setSelectedPose(null)}
+            data-testid="partner-yoga-modal-overlay"
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
@@ -385,6 +395,7 @@ const PartnerYoga = ({ user, api }) => {
                   <button
                     onClick={() => setSelectedPose(null)}
                     className="absolute top-4 right-4 p-2 rounded-full bg-black/40 hover:bg-black/60 transition-colors backdrop-blur-sm"
+                    data-testid="partner-yoga-modal-close-icon"
                   >
                     <ArrowLeft className="w-5 h-5 rotate-180" />
                   </button>
@@ -406,7 +417,7 @@ const PartnerYoga = ({ user, api }) => {
                     </div>
                   </div>
                   {!selectedPose.image_url && (
-                    <button onClick={() => setSelectedPose(null)} className="p-2 rounded-full hover:bg-white/10 transition-colors">
+                    <button onClick={() => setSelectedPose(null)} className="p-2 rounded-full hover:bg-white/10 transition-colors" data-testid="partner-yoga-modal-close-icon-noimage">
                       <ArrowLeft className="w-5 h-5 rotate-180" />
                     </button>
                   )}
@@ -468,7 +479,7 @@ const PartnerYoga = ({ user, api }) => {
 
                 <Button
                   type="button"
-                  onClick={() => setShowGuided(true)}
+                  onClick={() => launchGuidedPractice(selectedPose)}
                   className="w-full"
                   data-testid="partner-yoga-begin-guided-practice-btn"
                 >
@@ -480,10 +491,10 @@ const PartnerYoga = ({ user, api }) => {
         )}
       </AnimatePresence>
 
-      {showGuided && selectedPose && (
+      {guidedPractice && (
         <GuidedPracticeOverlay
-          practice={buildGuidedPosePractice(selectedPose)}
-          onExit={() => setShowGuided(false)}
+          practice={guidedPractice}
+          onExit={() => setGuidedPractice(null)}
         />
       )}
     </div>

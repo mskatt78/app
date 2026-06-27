@@ -28,6 +28,8 @@ export default function ChakraCleansing() {
     setShowShare,
     showGuided,
     setShowGuided,
+    guidedPractice,
+    closeGuidedPractice,
     sectionItems,
     selectedPracticeBenefits,
     dailyCeremonySteps,
@@ -78,15 +80,13 @@ export default function ChakraCleansing() {
 
       {/* Guided Practice Full-Screen Overlay */}
       <AnimatePresence>
-        {showGuided && selectedPractice && (
+        {guidedPractice && (
           <GuidedPracticeOverlay
             practice={{
-              name: `${selectedPractice.chakra || selectedPractice.name} Chakra — Self-Healing`,
-              duration_minutes: resolveDurationMinutes(selectedPractice.duration_minutes, 20),
-              element: selectedPractice.element || "Spirit",
-              cleansing_guide: selectedPractice.cleansing_guide,
+              ...guidedPractice,
+              duration_minutes: resolveDurationMinutes(guidedPractice.duration_minutes, 20),
             }}
-            onExit={() => setShowGuided(false)}
+            onExit={closeGuidedPractice}
           />
         )}
       </AnimatePresence>

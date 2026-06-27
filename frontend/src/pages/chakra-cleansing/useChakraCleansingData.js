@@ -16,6 +16,7 @@ export const useChakraCleansingData = () => {
   const [expandedSection, setExpandedSection] = useState("guide");
   const [audioState, setAudioState] = useState({ loading: false, audioUrl: null, sectionKey: null });
   const [showShare, setShowShare] = useState(false);
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const [showGuided, setShowGuided] = useState(false);
 
   useEffect(() => {
@@ -148,6 +149,25 @@ export const useChakraCleansingData = () => {
     setAudioState({ loading: false, audioUrl: null, sectionKey: null });
   }, []);
 
+  useEffect(() => {
+    if (showGuided && selectedPractice) {
+      setGuidedPractice({
+        id: `chakra-guided-${selectedPractice.id || selectedPractice.name}`,
+        name: `${selectedPractice.chakra || selectedPractice.name} Chakra — Self-Healing`,
+        duration_minutes: selectedPractice.duration_minutes,
+        element: selectedPractice.element || "Spirit",
+        cleansing_guide: selectedPractice.cleansing_guide,
+        description: selectedPractice.description,
+      });
+      setSelectedPractice(null);
+      setShowGuided(false);
+    }
+  }, [showGuided, selectedPractice]);
+
+  const closeGuidedPractice = useCallback(() => {
+    setGuidedPractice(null);
+  }, []);
+
   return {
     loading,
     practices,
@@ -166,6 +186,8 @@ export const useChakraCleansingData = () => {
     setShowShare,
     showGuided,
     setShowGuided,
+    guidedPractice,
+    closeGuidedPractice,
     sectionItems,
     selectedPracticeBenefits,
     dailyCeremonySteps,

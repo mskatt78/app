@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -205,9 +205,10 @@ const WaterPractices = ({ user, api }) => {
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [activeCategory, setActiveCategory] = useState("blessing");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [showGuided, setShowGuided] = useState(false);
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const [audioLoading, setAudioLoading] = useState(false);
   const audioRef = useRef(null);
+  const guidedAudioCacheRef = useRef(new Map());
 
   // Cleanup audio on unmount
   useEffect(() => {
@@ -217,11 +218,45 @@ const WaterPractices = ({ user, api }) => {
         audioRef.current.src = '';
         audioRef.current = null;
       }
+      guidedAudioCacheRef.current.forEach((url) => {
+        try {
+          URL.revokeObjectURL(url);
+        } catch {
+          // noop
+        }
+      });
+      guidedAudioCacheRef.current.clear();
     };
-  }, [audioRef]);
+  }, []);
+
+  const pauseGuidedAudio = useCallback(() => {
+    if (!audioRef.current) return;
+    audioRef.current.pause();
+    setIsPlaying(false);
+  }, []);
+
+  const buildGuidedPracticePayload = useCallback((practice) => ({
+    id: `water-guided-${practice.id || practice.name}`,
+    name: practice.name,
+    duration_minutes: practice.duration_minutes || 20,
+    element: "Water",
+    steps: practice.steps,
+    description: practice.description,
+    affirmation: practice.affirmation,
+  }), []);
+
+  const launchGuidedOverlay = useCallback((practice) => {
+    if (!practice) return;
+    pauseGuidedAudio();
+    const payload = buildGuidedPracticePayload(practice);
+    setSelectedPractice(null);
+    window.requestAnimationFrame(() => {
+      setGuidedPractice(payload);
+    });
+  }, [buildGuidedPracticePayload, pauseGuidedAudio]);
 
   // Generate guided audio for water practice
-  const generateGuidedAudio = async () => {
+  const generateGuidedAudio = useCallback(async () => {
     if (!selectedPractice || !api) return;
     
     setAudioLoading(true);
@@ -239,24 +274,35 @@ const WaterPractices = ({ user, api }) => {
     try {
       const voiceId = resolveGuidedVoiceId();
       const speedValue = resolveGuidedSpeedValue();
-      const response = await api.post("/tts/generate-base64", {
-        text: script,
-        voice: voiceId,
-        speed: speedValue,
-      });
-      
-      if (response.data.audio_base64) {
+      const cacheKey = `${selectedPractice.id || selectedPractice.name}:${voiceId}:${speedValue}`;
+      let objectUrl = guidedAudioCacheRef.current.get(cacheKey);
+
+      if (!objectUrl) {
+        const response = await api.post("/tts/generate-base64", {
+          text: script,
+          voice: voiceId,
+          speed: speedValue,
+        });
+
+        if (!response?.data?.audio_base64) {
+          throw new Error("Missing audio payload");
+        }
+        objectUrl = `data:audio/mp3;base64,${response.data.audio_base64}`;
+        guidedAudioCacheRef.current.set(cacheKey, objectUrl);
+      }
+
+      if (objectUrl) {
         if (audioRef.current) {
           audioRef.current.pause();
         }
-        
-        audioRef.current = new Audio(`data:audio/mp3;base64,${response.data.audio_base64}`);
+
+        audioRef.current = new Audio(objectUrl);
         audioRef.current.onended = () => setIsPlaying(false);
         audioRef.current.onerror = () => {
           toast.error("Audio playback failed");
           setIsPlaying(false);
         };
-        
+
         await audioRef.current.play();
         setIsPlaying(true);
         toast.success("Guided audio started");
@@ -267,21 +313,23 @@ const WaterPractices = ({ user, api }) => {
     } finally {
       setAudioLoading(false);
     }
-  };
+  }, [api, selectedPractice]);
 
-  const toggleAudio = () => {
+  const toggleAudio = useCallback(() => {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
         setIsPlaying(false);
       } else {
-        audioRef.current.play();
+        audioRef.current.play().catch(() => {
+          toast.error("Could not resume audio");
+        });
         setIsPlaying(true);
       }
     } else {
       generateGuidedAudio();
     }
-  };
+  }, [generateGuidedAudio, isPlaying]);
 
   const categories = [
     { id: "blessing", name: "Water Blessings", icon: Heart, color: "text-blue-400" },
@@ -341,11 +389,13 @@ const WaterPractices = ({ user, api }) => {
       });
   }, [activeCategory, api, loading, waterPractices]);
 
-  const currentPractices = waterPractices.filter(
+  const currentPractices = useMemo(() => waterPractices.filter(
     (practice) => normalizeWaterCategory(practice.category) === activeCategory
-  );
-  const fallbackPractices = WATER_CATEGORY_FALLBACKS[activeCategory] || [];
-  const displayPractices = currentPractices.length > 0 ? currentPractices : fallbackPractices;
+  ), [activeCategory, waterPractices]);
+  const fallbackPractices = useMemo(() => WATER_CATEGORY_FALLBACKS[activeCategory] || [], [activeCategory]);
+  const displayPractices = useMemo(() => (
+    currentPractices.length > 0 ? currentPractices : fallbackPractices
+  ), [currentPractices, fallbackPractices]);
   const guidedAudioButtonContent = getGuidedAudioButtonContent(audioLoading, isPlaying);
 
   return (
@@ -354,7 +404,7 @@ const WaterPractices = ({ user, api }) => {
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={() => navigate("/menu")} className="p-2 rounded-full hover:bg-white/5 transition-colors">
+            <button onClick={() => navigate("/menu")} className="p-2 rounded-full hover:bg-white/5 transition-colors" data-testid="water-practices-back-btn">
               <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </button>
             <div>
@@ -434,6 +484,7 @@ const WaterPractices = ({ user, api }) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               onClick={() => setSelectedPractice(practice)}
+              data-testid={`water-practice-card-${practice.id}`}
               className="group cursor-pointer rounded-2xl overflow-hidden border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/5
                        hover:border-blue-500/40 transition-all duration-300"
             >
@@ -498,6 +549,7 @@ const WaterPractices = ({ user, api }) => {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             onClick={() => setSelectedPractice(null)}
+            data-testid="water-practice-modal-overlay"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -505,6 +557,7 @@ const WaterPractices = ({ user, api }) => {
               exit={{ scale: 0.9, opacity: 0 }}
               className="bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
+              data-testid="water-practice-modal"
             >
               <div className="p-6 space-y-6">
                 {/* Header */}
@@ -526,6 +579,7 @@ const WaterPractices = ({ user, api }) => {
                   <button 
                     onClick={() => setSelectedPractice(null)}
                     className="p-2 rounded-full hover:bg-white/10"
+                    data-testid="water-practice-modal-close-icon"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -676,7 +730,7 @@ const WaterPractices = ({ user, api }) => {
                   Close
                 </Button>
                 <Button
-                  onClick={() => setShowGuided(true)}
+                  onClick={() => launchGuidedOverlay(selectedPractice)}
                   className="w-full bg-violet-500 hover:bg-violet-600 flex items-center justify-center gap-2"
                   data-testid="water-guided-btn"
                 >
@@ -690,15 +744,10 @@ const WaterPractices = ({ user, api }) => {
 
       {/* Guided Practice Full-Screen Overlay */}
       <AnimatePresence>
-        {showGuided && selectedPractice && (
+        {guidedPractice && (
           <GuidedPracticeOverlay
-            practice={{
-              name: selectedPractice.name,
-              duration_minutes: selectedPractice.duration_minutes || 20,
-              element: "Water",
-              steps: selectedPractice.steps,
-            }}
-            onExit={() => setShowGuided(false)}
+            practice={guidedPractice}
+            onExit={() => setGuidedPractice(null)}
           />
         )}
       </AnimatePresence>
