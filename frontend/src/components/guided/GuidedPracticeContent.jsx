@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
@@ -36,6 +36,7 @@ export const GuidedPracticeContent = ({
   onVoiceProfileChange,
   onSpeedOptionChange,
 }) => {
+  const [showFullNarration, setShowFullNarration] = useState(false);
   const effectiveDurationMinutes = Math.max(
     minimumNarrationMinutes,
     resolveDurationMinutes(practice.duration_minutes, minimumNarrationMinutes),
@@ -53,6 +54,29 @@ export const GuidedPracticeContent = ({
       document.documentElement.style.overflow = previousHtmlOverflow;
     };
   }, []);
+
+  useEffect(() => {
+    setShowFullNarration(false);
+  }, [practice?.id, practice?.name]);
+
+  const renderedNarrationParagraphs = useMemo(() => {
+    if (showFullNarration) return narrationParagraphs;
+    return narrationParagraphs.slice(0, 12);
+  }, [narrationParagraphs, showFullNarration]);
+
+  const hasHiddenNarration = narrationParagraphs.length > renderedNarrationParagraphs.length;
+  const segmentDotWindow = useMemo(() => {
+    const total = narrationSegments.length;
+    if (total <= 18) {
+      return narrationSegments.map((_, index) => index);
+    }
+    const active = Math.min(currentSegmentIndex, Math.max(0, total - 1));
+    const start = Math.max(0, active - 4);
+    const end = Math.min(total - 1, active + 4);
+    const indexes = [];
+    for (let index = start; index <= end; index += 1) indexes.push(index);
+    return indexes;
+  }, [currentSegmentIndex, narrationSegments]);
 
   return (
     <motion.div
@@ -174,7 +198,7 @@ export const GuidedPracticeContent = ({
                 <div className={`text-center text-xs ${elColor} mb-4`} data-testid="guided-segment-indicator">
                   Guided narration playing • segment {Math.min(currentSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
                   <div className="flex items-center justify-center gap-1 mt-2" data-testid="guided-segment-dots">
-                    {narrationSegments.map((_, index) => {
+                    {segmentDotWindow.map((index) => {
                       const isActive = index === Math.min(currentSegmentIndex, Math.max(0, narrationSegments.length - 1));
                       const isCompleteDot = index < currentSegmentIndex;
                       return (
@@ -191,6 +215,11 @@ export const GuidedPracticeContent = ({
                       );
                     })}
                   </div>
+                  {narrationSegments.length > segmentDotWindow.length && (
+                    <p className="text-[10px] text-white/45 mt-2" data-testid="guided-segment-window-indicator">
+                      Showing nearby segments for smoother playback view
+                    </p>
+                  )}
                 </div>
               )}
               {toningActive && !ttsLoading && (
@@ -248,10 +277,34 @@ export const GuidedPracticeContent = ({
               <div className="rounded-2xl bg-white/5 p-5 mb-6 max-h-none overflow-visible" data-testid="guided-practice-description">
                 <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Visualization Guide</p>
                 <div className="space-y-3">
-                  {narrationParagraphs.map((paragraph, index) => (
+                  {renderedNarrationParagraphs.map((paragraph, index) => (
                     <p key={`${practice.id || practice.name}-${index}`} className="text-sm text-white/70 leading-relaxed">{paragraph.trim()}</p>
                   ))}
                 </div>
+                {hasHiddenNarration && (
+                  <div className="mt-3 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowFullNarration(true)}
+                      className="text-xs text-white/70 hover:text-white underline underline-offset-4"
+                      data-testid="guided-expand-full-script-button"
+                    >
+                      Show full narration script ({narrationParagraphs.length - renderedNarrationParagraphs.length} more paragraphs)
+                    </button>
+                  </div>
+                )}
+                {showFullNarration && narrationParagraphs.length > 12 && (
+                  <div className="mt-3 text-center">
+                    <button
+                      type="button"
+                      onClick={() => setShowFullNarration(false)}
+                      className="text-xs text-white/60 hover:text-white underline underline-offset-4"
+                      data-testid="guided-collapse-full-script-button"
+                    >
+                      Collapse long script view
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="flex items-center justify-center mb-6 mt-2">

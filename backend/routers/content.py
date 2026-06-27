@@ -3,10 +3,12 @@ from datetime import datetime, timezone
 import asyncio
 from collections import Counter
 from dataclasses import dataclass
+import hashlib
 import logging
 import os
 import re
 import secrets
+import time
 from typing import Any, Literal, Optional, Sequence
 import uuid
 from urllib.parse import quote, urlparse
@@ -25,6 +27,9 @@ TARGET_WORDS_PER_MINUTE = 132
 SEGMENT_TARGET_WORDS = 220
 FIRST_SEGMENT_TARGET_WORDS = 95
 MAX_PARAGRAPH_STEM_REPEAT_RATIO = 0.12
+SCRIPT_EXPANSION_CACHE_TTL_SECONDS = 60 * 45
+SCRIPT_EXPANSION_CACHE_MAX_ITEMS = 180
+script_expansion_cache: dict[str, tuple[float, dict[str, Any]]] = {}
 
 WIKIPEDIA_SUMMARY_ENDPOINT = "https://en.wikipedia.org/api/rest_v1/page/summary/{}"
 WIKIPEDIA_ACTION_API_ENDPOINT = "https://en.wikipedia.org/w/api.php"
@@ -1186,6 +1191,63 @@ def _flatten_text(value) -> list[str]:
         return dict_result
     converted = str(value).strip()
     return [converted] if converted else []
+
+
+def _truncate_for_cache_key(values: list[str], limit: int = 12, max_len: int = 180) -> list[str]:
+    compact: list[str] = []
+    for value in values[:limit]:
+        text = re.sub(r"\s+", " ", str(value or "")).strip().lower()
+        if not text:
+            continue
+        compact.append(text[:max_len])
+    return compact
+
+
+def _build_script_expansion_cache_key(request: ExpandScriptRequest) -> str:
+    payload = {
+        "practice_id": str(request.practice_id or ""),
+        "practice_name": re.sub(r"\s+", " ", str(request.practice_name or "")).strip().lower(),
+        "element": re.sub(r"\s+", " ", str(request.element or "")).strip().lower(),
+        "duration_minutes": round(float(request.duration_minutes or MIN_NARRATION_MINUTES), 2),
+        "anti_repetition_mode": request.anti_repetition_mode,
+        "include_toning": bool(request.include_toning),
+        "use_ai": bool(request.use_ai),
+        "steps": _truncate_for_cache_key(request.steps or [], limit=10, max_len=160),
+        "source_texts": _truncate_for_cache_key(request.source_texts or [], limit=14, max_len=180),
+    }
+    serialized = repr(payload).encode("utf-8")
+    return hashlib.sha256(serialized).hexdigest()
+
+
+def _prune_script_expansion_cache() -> None:
+    now = time.time()
+    expired = [key for key, (expires_at, _) in script_expansion_cache.items() if expires_at <= now]
+    for key in expired:
+        script_expansion_cache.pop(key, None)
+
+    if len(script_expansion_cache) <= SCRIPT_EXPANSION_CACHE_MAX_ITEMS:
+        return
+
+    overflow = len(script_expansion_cache) - SCRIPT_EXPANSION_CACHE_MAX_ITEMS
+    # dict keeps insertion order; pop earliest inserted keys first.
+    for key in list(script_expansion_cache.keys())[:overflow]:
+        script_expansion_cache.pop(key, None)
+
+
+def _get_cached_script_expansion(cache_key: str) -> dict[str, Any] | None:
+    entry = script_expansion_cache.get(cache_key)
+    if not entry:
+        return None
+    expires_at, value = entry
+    if expires_at <= time.time():
+        script_expansion_cache.pop(cache_key, None)
+        return None
+    return dict(value)
+
+
+def _set_cached_script_expansion(cache_key: str, payload: dict[str, Any]) -> None:
+    _prune_script_expansion_cache()
+    script_expansion_cache[cache_key] = (time.time() + SCRIPT_EXPANSION_CACHE_TTL_SECONDS, dict(payload))
 
 
 def _normalize_source_references(value: Any) -> list[str]:
@@ -2647,8 +2709,31 @@ def _finalize_script_paragraphs(
 @router.post("/content/expand-script", response_model=ExpandScriptResponse)
 async def expand_guided_script(request: ExpandScriptRequest) -> ExpandScriptResponse:
     """Expand guided practice text into long-form narration suitable for 7+ minute audio."""
+    cache_key = _build_script_expansion_cache_key(request)
+    cached_payload = _get_cached_script_expansion(cache_key)
+    if cached_payload:
+        return _build_expand_script_response(
+            practice_name=cached_payload["practice_name"],
+            target_minutes=cached_payload["target_minutes"],
+            target_words=cached_payload["target_words"],
+            used_ai=cached_payload["used_ai"],
+            paragraphs=cached_payload["selected_paragraphs"],
+            segments=cached_payload["segments"],
+        )
+
     context = await _build_expand_script_context(request)
     segments = _segment_paragraphs(context["selected_paragraphs"])
+    _set_cached_script_expansion(
+        cache_key,
+        {
+            "practice_name": context["practice_name"],
+            "target_minutes": context["target_minutes"],
+            "target_words": context["target_words"],
+            "used_ai": context["used_ai"],
+            "selected_paragraphs": context["selected_paragraphs"],
+            "segments": segments,
+        },
+    )
     return _build_expand_script_response(
         practice_name=context["practice_name"],
         target_minutes=context["target_minutes"],

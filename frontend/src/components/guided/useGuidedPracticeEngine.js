@@ -13,6 +13,7 @@ import {
   startToningLayer,
   flattenTextValue,
   buildNarrationPlan,
+  countWords,
 } from "./guidedNarrationUtils";
 import { auditDurationAlignment, resolveDurationMinutes } from "../../utils/durationUtils";
 import {
@@ -31,6 +32,11 @@ import {
   setGuidedPracticePreference,
 } from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
+
+const OVERLAY_TIMER_TICK_MS = 1000;
+const PREFETCH_SEGMENT_COUNT = 2;
+const MINIMUM_SPOKEN_MINUTES_FLOOR = 7;
+const NARRATION_WPM_AT_SPEED_ONE = 145;
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const narrationPlan = useMemo(() => buildNarrationPlan(practice || {}, stepsOverride), [practice, stepsOverride]);
@@ -72,6 +78,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const [toningActive, setToningActive] = useState(false);
   const [playbackVoiceProfile, setPlaybackVoiceProfile] = useState(() => getGuidedVoiceProfile());
   const [playbackSpeedOption, setPlaybackSpeedOption] = useState(() => getGuidedSpeedOption());
+  const minimumNarrationWordFloor = useMemo(() => {
+    const speed = resolveGuidedSpeedValue(playbackSpeedOption) || DEFAULT_GUIDED_TTS_SPEED;
+    return Math.max(680, Math.ceil(MINIMUM_SPOKEN_MINUTES_FLOOR * NARRATION_WPM_AT_SPEED_ONE * speed));
+  }, [playbackSpeedOption]);
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
@@ -120,13 +130,13 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         practice.cleansing_guide,
         practice.instructions,
       ].flatMap(flattenTextValue).filter(Boolean)
-    )).slice(0, 80);
+    )).slice(0, 48);
 
     const steps = Array.from(new Set(
       [stepsOverride, practice.steps, practice.process_steps, practice.cleansing_guide, practice.instructions]
         .flatMap(flattenTextValue)
         .filter(Boolean)
-    )).slice(0, 40);
+    )).slice(0, 24);
 
     return {
       practiceId: practice.id || null,
@@ -370,12 +380,25 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         const nextSegments = Array.isArray(data?.segments) ? data.segments.filter(Boolean) : [];
 
         if (nextParagraphs.length > 0 && nextSegments.length > 0 && !hasStartedRef.current && !isPlayingRef.current) {
-          setNarrationParagraphs(nextParagraphs);
-          setNarrationSegments(ensureTitleLedNarrationOpen(nextSegments, scriptExpansionContext.practiceName));
-          currentSegmentIndexRef.current = 0;
-          setCurrentSegmentIndex(0);
-          clearNarrationCache();
-          stopNarrationPlayback(true);
+          const responseWordCount = Number(data?.word_count || countWords(nextParagraphs.join(" ")));
+          const estimatedSpeechMinutes = responseWordCount / (NARRATION_WPM_AT_SPEED_ONE * (resolveGuidedSpeedValue(playbackSpeedOption) || DEFAULT_GUIDED_TTS_SPEED));
+          const hasLongFormFloor = responseWordCount >= minimumNarrationWordFloor || estimatedSpeechMinutes >= MINIMUM_SPOKEN_MINUTES_FLOOR;
+
+          if (hasLongFormFloor) {
+            setNarrationParagraphs(nextParagraphs);
+            setNarrationSegments(ensureTitleLedNarrationOpen(nextSegments, scriptExpansionContext.practiceName));
+            currentSegmentIndexRef.current = 0;
+            setCurrentSegmentIndex(0);
+            clearNarrationCache();
+            stopNarrationPlayback(true);
+          } else {
+            appLogger.warn("Expanded script below long-form floor; retaining local long-form narration plan", {
+              practice: scriptExpansionContext.practiceName,
+              responseWordCount,
+              estimatedSpeechMinutes,
+              minimumNarrationWordFloor,
+            });
+          }
         }
       } catch (error) {
         if (!controller.signal.aborted) {
@@ -402,11 +425,18 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         scriptAbortRef.current = null;
       }
     };
-  }, [scriptExpansionContext, clearNarrationCache, antiRepetitionMode, stopNarrationPlayback]);
+  }, [
+    scriptExpansionContext,
+    clearNarrationCache,
+    antiRepetitionMode,
+    stopNarrationPlayback,
+    minimumNarrationWordFloor,
+    playbackSpeedOption,
+  ]);
 
   useEffect(() => {
     if (isPlaying && !isComplete) {
-      timerRef.current = setInterval(syncRemainingFromClock, 250);
+      timerRef.current = setInterval(syncRemainingFromClock, OVERLAY_TIMER_TICK_MS);
       syncRemainingFromClock();
     } else {
       clearInterval(timerRef.current);
@@ -448,22 +478,31 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     if (audioCtxRef.current?.state !== "closed") audioCtxRef.current?.close();
   }, [clearNarrationCache, stopAmbient, stopNarrationPlayback, stopToning]);
 
+  const getSegmentCacheKey = useCallback((segmentIndex) => {
+    const voice = resolveGuidedVoiceId(playbackVoiceProfile);
+    const speed = resolveGuidedSpeedValue(playbackSpeedOption) || DEFAULT_GUIDED_TTS_SPEED;
+    return `${segmentIndex}|${voice}|${speed}`;
+  }, [playbackVoiceProfile, playbackSpeedOption]);
+
   const generateSegmentUrl = useCallback(async (segmentIndex) => {
     if (!narrationSegments[segmentIndex]) return null;
-    if (ttsCacheRef.current.has(segmentIndex)) return ttsCacheRef.current.get(segmentIndex);
-    if (ttsPendingRef.current.has(segmentIndex)) return ttsPendingRef.current.get(segmentIndex);
+    const cacheKey = getSegmentCacheKey(segmentIndex);
+    if (ttsCacheRef.current.has(cacheKey)) return ttsCacheRef.current.get(cacheKey);
+    if (ttsPendingRef.current.has(cacheKey)) return ttsPendingRef.current.get(cacheKey);
 
     const promise = (async () => {
       const backendUrl = process.env.REACT_APP_BACKEND_URL;
       let data = null;
+      const speedValue = resolveGuidedSpeedValue(playbackSpeedOption) || DEFAULT_GUIDED_TTS_SPEED;
+      const voiceId = resolveGuidedVoiceId(playbackVoiceProfile);
       for (let attempt = 0; attempt < 3; attempt += 1) {
         const response = await fetch(`${backendUrl}/api/tts/generate-base64`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           text: narrationSegments[segmentIndex],
-          voice: resolveGuidedVoiceId(playbackVoiceProfile),
-          speed: resolveGuidedSpeedValue(playbackSpeedOption) || DEFAULT_GUIDED_TTS_SPEED,
+          voice: voiceId,
+          speed: speedValue,
         }),
         });
         if (response.ok) {
@@ -479,24 +518,47 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
       const blob = new Blob([bytes], { type: "audio/mpeg" });
       const url = URL.createObjectURL(blob);
-      ttsCacheRef.current.set(segmentIndex, url);
+      ttsCacheRef.current.set(cacheKey, url);
       return url;
     })().finally(() => {
-      ttsPendingRef.current.delete(segmentIndex);
+      ttsPendingRef.current.delete(cacheKey);
     });
 
-    ttsPendingRef.current.set(segmentIndex, promise);
+    ttsPendingRef.current.set(cacheKey, promise);
     return promise;
-  }, [narrationSegments]);
+  }, [narrationSegments, playbackVoiceProfile, playbackSpeedOption, getSegmentCacheKey]);
+
+  useEffect(() => {
+    if (!practice || scriptLoading || !narrationReady || narrationSegments.length === 0) return;
+    const startIndex = Math.max(0, currentSegmentIndexRef.current);
+    const endIndex = Math.min(narrationSegments.length - 1, startIndex + PREFETCH_SEGMENT_COUNT - 1);
+    for (let index = startIndex; index <= endIndex; index += 1) {
+      generateSegmentUrl(index).catch((error) => {
+        appLogger.debug("Guided overlay prefetch failed", { index, error });
+      });
+    }
+  }, [practice?.id, practice?.name, scriptLoading, narrationReady, narrationSegments, generateSegmentUrl]);
 
   const playNarrationSegment = useCallback(async (segmentIndex) => {
     const activeRunId = narrationRunIdRef.current;
     if (!narrationSegments[segmentIndex]) return;
 
-    setTtsLoading(!ttsCacheRef.current.has(segmentIndex));
+    const cacheKey = getSegmentCacheKey(segmentIndex);
+    setTtsLoading(!ttsCacheRef.current.has(cacheKey));
     try {
       const url = await generateSegmentUrl(segmentIndex);
-      if (!url || !isPlayingRef.current || activeRunId !== narrationRunIdRef.current) return;
+      if (!url) {
+        const nextIndex = segmentIndex + 1;
+        if (isPlayingRef.current && activeRunId === narrationRunIdRef.current && narrationSegments[nextIndex]) {
+          appLogger.warn("Guided segment audio unavailable; skipping to next segment", {
+            currentSegment: segmentIndex,
+            nextSegment: nextIndex,
+          });
+          playNarrationSegment(nextIndex);
+        }
+        return;
+      }
+      if (!isPlayingRef.current || activeRunId !== narrationRunIdRef.current) return;
 
       generateSegmentUrl(segmentIndex + 1).catch((error) => {
         appLogger.debug("Guided segment prefetch warmup failed", error);
