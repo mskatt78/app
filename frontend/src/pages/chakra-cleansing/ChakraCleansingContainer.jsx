@@ -71,21 +71,15 @@ export default function ChakraCleansing({ api, user }) {
 
       <main className="max-w-6xl mx-auto px-4 py-8">
         {!chakraUnlocked && (
-          <section className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-violet-500/10 to-background p-4 mb-6" data-testid="chakra-premium-banner">
+          <section className="rounded-2xl border border-amber-500/10 bg-gradient-to-r from-amber-500/5 via-violet-500/5 to-background p-4 mb-6" data-testid="chakra-premium-banner">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-wider text-amber-300">Chakra Access Model</p>
-                <h2 className="text-xl font-serif text-amber-100" data-testid="chakra-premium-banner-title">~30% free, advanced chakra protocols premium</h2>
-                <p className="text-sm text-muted-foreground mt-1" data-testid="chakra-premium-banner-description">Subscription, section unlock, or full app unlock available.</p>
+                <p className="text-xs uppercase tracking-wider text-amber-300/70">Optional Premium</p>
+                <h2 className="text-lg font-serif text-amber-100/90" data-testid="chakra-premium-banner-title">Chakra healing remains accessible</h2>
+                <p className="text-sm text-muted-foreground mt-1" data-testid="chakra-premium-banner-description">Free protocols lead. Premium only adds advanced deepening paths.</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button variant="outline" className="border-cyan-400/40 text-cyan-100" onClick={() => navigate("/pricing")} data-testid="chakra-view-subscription-button">View Subscription</Button>
-                <Button onClick={handleUnlockChakra} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="chakra-unlock-button" disabled={premium.purchaseLoadingId === "chakra_cleansing" || premium.loading}>
-                  {premium.purchaseLoadingId === "chakra_cleansing" ? "Opening checkout..." : `Unlock ${chakraProduct?.price?.toFixed(2) || "59.00"}`}
-                </Button>
-                <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="chakra-unlock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}>
-                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-                </Button>
+                <Button variant="ghost" className="text-cyan-100/80 hover:text-cyan-50" onClick={() => navigate("/pricing")} data-testid="chakra-view-subscription-button">Optional premium</Button>
               </div>
             </div>
           </section>

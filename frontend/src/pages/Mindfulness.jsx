@@ -243,21 +243,15 @@ const Mindfulness = ({ user, api }) => {
 
       <main className="max-w-6xl mx-auto p-6">
         {!mindfulnessUnlocked && (
-          <section className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-cyan-500/10 to-background p-4 mb-8" data-testid="mindfulness-premium-banner">
+          <section className="rounded-2xl border border-amber-500/10 bg-gradient-to-r from-amber-500/5 via-cyan-500/5 to-background p-4 mb-8" data-testid="mindfulness-premium-banner">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-wider text-amber-300">Mindfulness Access Model</p>
-                <h2 className="text-xl font-serif text-amber-100" data-testid="mindfulness-premium-banner-title">~30% free, deeper protocols premium</h2>
-                <p className="text-sm text-muted-foreground mt-1" data-testid="mindfulness-premium-banner-description">Subscription, section unlock, or full app unlock available.</p>
+                <p className="text-xs uppercase tracking-wider text-amber-300/70">Optional Premium</p>
+                <h2 className="text-lg font-serif text-amber-100/90" data-testid="mindfulness-premium-banner-title">Mindfulness stays open and welcoming</h2>
+                <p className="text-sm text-muted-foreground mt-1" data-testid="mindfulness-premium-banner-description">Free practices lead the journey. Premium only adds advanced depth.</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button variant="outline" className="border-cyan-400/40 text-cyan-100" onClick={() => navigate("/pricing")} data-testid="mindfulness-view-subscription-button">View Subscription</Button>
-                <Button onClick={handleUnlockMindfulness} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="mindfulness-unlock-button" disabled={premium.purchaseLoadingId === "mindfulness_practices" || premium.loading}>
-                  {premium.purchaseLoadingId === "mindfulness_practices" ? "Opening checkout..." : `Unlock ${mindfulnessProduct?.price?.toFixed(2) || "49.00"}`}
-                </Button>
-                <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="mindfulness-unlock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}>
-                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-                </Button>
+                <Button variant="ghost" className="text-cyan-100/80 hover:text-cyan-50" onClick={() => navigate("/pricing")} data-testid="mindfulness-view-subscription-button">Optional premium</Button>
               </div>
             </div>
           </section>

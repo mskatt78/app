@@ -1,0 +1,96 @@
+{
+  "summary": "Verified free ratio rebalance from ~30% to ~60% free across all 7 sections. Backend SECTION_FREE_RATIO=0.60 confirmed working. Frontend banners softened with 'Optional Premium' language and healing-first messaging. Premium lock modal still functional for premium items.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend": {
+      "free_ratio_verification": {
+        "shamanic_practices": "PASS - 59.09% free (13/22)",
+        "heart_practices": "PASS - 60.00% free (6/10)",
+        "elemental_practices": "PASS - 60.00% free (6/10)",
+        "mindfulness": "PASS - 60.00% free (6/10)",
+        "meditations": "PASS - 66.67% free (4/6)",
+        "water_practices": "PASS - 59.09% free (13/22)",
+        "chakra_cleansing": "PASS - 61.54% free (8/13)"
+      },
+      "endpoints_return_data": "PASS - All 7 endpoints return valid arrays"
+    },
+    "frontend": {
+      "shamanic_practices_page": {
+        "page_loads": "PASS",
+        "softened_banner_title": "PASS - 'More pathways are now open for free'",
+        "softened_banner_description": "PASS - 'Keep exploring freely — premium simply unlocks deeper advanced journeys.'",
+        "optional_premium_button": "PASS - 'Optional premium'"
+      },
+      "heart_practices_page": {
+        "page_loads": "PASS",
+        "softened_banner_title": "PASS - 'Healing pathways stay open first'",
+        "softened_banner_description": "PASS - 'Free heart practices come first — premium only extends deeper advanced tracks.'",
+        "optional_premium_button": "PASS"
+      },
+      "elemental_practices_page": {
+        "page_loads": "PASS",
+        "softened_banner_title": "PASS - 'Elemental healing remains open'",
+        "softened_banner_description": "PASS - 'Most users can explore freely first. Premium is for deeper advanced mastery tracks.'",
+        "optional_premium_button": "PASS"
+      },
+      "mindfulness_page": {
+        "page_loads": "PASS",
+        "softened_banner_title": "PASS - 'Mindfulness stays open and welcoming'",
+        "softened_banner_description": "PASS - 'Free practices lead the journey. Premium only adds advanced depth.'",
+        "optional_premium_button": "PASS"
+      },
+      "meditations_page": {
+        "page_loads": "PASS",
+        "softened_banner_title": "PASS - 'Meditations remain open first'",
+        "softened_banner_description": "PASS - 'Free journeys are prioritized. Premium unlocks deeper advanced experiences.'",
+        "optional_premium_button": "PASS"
+      },
+      "water_practices_page": {
+        "page_loads": "PASS",
+        "softened_banner_title": "PASS - 'Water healing is now more open'",
+        "softened_banner_description": "PASS - 'You can explore freely first. Premium is for deeper advanced rites only.'",
+        "optional_premium_button": "PASS"
+      },
+      "chakra_cleansing_page": {
+        "page_loads": "PASS",
+        "softened_banner_title": "PASS - 'Chakra healing remains accessible'",
+        "softened_banner_description": "PASS - 'Free protocols lead. Premium only adds advanced deepening paths.'",
+        "optional_premium_button": "PASS"
+      },
+      "premium_lock_modal": {
+        "modal_opens_on_premium_click": "PASS - Tested on Throat Chakra Cleansing",
+        "modal_title": "PASS - Shows practice name",
+        "modal_description": "PASS - 'This chakra protocol is premium. Unlock section, subscribe, or unlock full app access.'",
+        "subscription_button": "PASS - 'View Subscription Plans'",
+        "section_unlock_button": "PASS - 'Unlock 59.00'",
+        "full_app_button": "PASS - 'Full App 369.00'",
+        "close_button": "PASS"
+      }
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_free_ratio_rebalance_iteration227.py",
+    "/app/test_reports/pytest/pytest_iteration227.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_free_ratio_rebalance_iteration227.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100% (all 7 pages verified with softened banners)"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Free ratio rebalance complete. Backend SECTION_FREE_RATIO changed from 0.30 to 0.60, resulting in ~60% free / ~40% premium across all sections. Frontend banners updated with healing-first, optional-premium messaging. All pages load without crash. Premium lock modal still works for premium items. Key banner copy changes: 'Optional Premium' label, titles like 'More pathways are now open for free', descriptions emphasizing 'explore freely first' and 'premium only adds advanced depth'."
+}

@@ -456,21 +456,15 @@ const WaterPractices = ({ user, api }) => {
 
       <main className="max-w-6xl mx-auto p-6 space-y-8">
         {!waterUnlocked && (
-          <section className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-blue-500/10 to-background p-4" data-testid="water-practices-premium-banner">
+          <section className="rounded-2xl border border-amber-500/10 bg-gradient-to-r from-amber-500/5 via-blue-500/5 to-background p-4" data-testid="water-practices-premium-banner">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-wider text-amber-300">Water Access Model</p>
-                <h2 className="text-xl font-serif text-amber-100" data-testid="water-practices-premium-banner-title">~30% free, advanced water rites premium</h2>
-                <p className="text-sm text-muted-foreground mt-1" data-testid="water-practices-premium-banner-description">Subscription, section unlock, or full app unlock available.</p>
+                <p className="text-xs uppercase tracking-wider text-amber-300/70">Optional Premium</p>
+                <h2 className="text-lg font-serif text-amber-100/90" data-testid="water-practices-premium-banner-title">Water healing is now more open</h2>
+                <p className="text-sm text-muted-foreground mt-1" data-testid="water-practices-premium-banner-description">You can explore freely first. Premium is for deeper advanced rites only.</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button variant="outline" className="border-cyan-400/40 text-cyan-100" onClick={() => navigate("/pricing")} data-testid="water-practices-view-subscription-button">View Subscription</Button>
-                <Button onClick={handleUnlockWaterPractices} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="water-practices-unlock-button" disabled={premium.purchaseLoadingId === "water_practices" || premium.loading}>
-                  {premium.purchaseLoadingId === "water_practices" ? "Opening checkout..." : `Unlock ${waterProduct?.price?.toFixed(2) || "59.00"}`}
-                </Button>
-                <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="water-practices-unlock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}>
-                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-                </Button>
+                <Button variant="ghost" className="text-cyan-100/80 hover:text-cyan-50" onClick={() => navigate("/pricing")} data-testid="water-practices-view-subscription-button">Optional premium</Button>
               </div>
             </div>
           </section>

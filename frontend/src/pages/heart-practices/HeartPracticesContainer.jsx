@@ -134,21 +134,15 @@ const HeartPracticesContainer = ({ api, user }) => {
 
       <main className="max-w-6xl mx-auto p-6 space-y-8">
         {!heartUnlocked && (
-          <section className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-background p-4" data-testid="heart-practices-premium-banner">
+          <section className="rounded-2xl border border-amber-500/10 bg-gradient-to-r from-amber-500/5 via-pink-500/5 to-background p-4" data-testid="heart-practices-premium-banner">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-wider text-amber-300">Heart Access Model</p>
-                <h2 className="text-xl font-serif text-amber-100" data-testid="heart-practices-premium-banner-title">~30% free, deeper heart rituals premium</h2>
-                <p className="text-sm text-muted-foreground mt-1" data-testid="heart-practices-premium-banner-description">Choose subscription, section unlock, or full app unlock.</p>
+                <p className="text-xs uppercase tracking-wider text-amber-300/70">Optional Premium</p>
+                <h2 className="text-lg font-serif text-amber-100/90" data-testid="heart-practices-premium-banner-title">Healing pathways stay open first</h2>
+                <p className="text-sm text-muted-foreground mt-1" data-testid="heart-practices-premium-banner-description">Free heart practices come first — premium only extends deeper advanced tracks.</p>
               </div>
               <div className="flex flex-wrap gap-2">
-                <Button variant="outline" className="border-cyan-400/40 text-cyan-100" onClick={() => navigate("/pricing")} data-testid="heart-practices-view-subscription-button">View Subscription</Button>
-                <Button onClick={handleUnlockHeartPractices} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="heart-practices-unlock-button" disabled={premium.purchaseLoadingId === "heart_practices" || premium.loading}>
-                  {premium.purchaseLoadingId === "heart_practices" ? "Opening checkout..." : `Unlock ${heartProduct?.price?.toFixed(2) || "59.00"}`}
-                </Button>
-                <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="heart-practices-unlock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}>
-                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-                </Button>
+                <Button variant="ghost" className="text-cyan-100/80 hover:text-cyan-50" onClick={() => navigate("/pricing")} data-testid="heart-practices-view-subscription-button">Optional premium</Button>
               </div>
             </div>
           </section>
