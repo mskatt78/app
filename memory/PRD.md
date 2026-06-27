@@ -2443,3 +2443,48 @@
   - Frontend: **100%**
   - No functional regressions reported.
 
+## Precision Accuracy Overhaul: Human Design + Gene Keys + City Timezone (Iteration 215) — 2026-06-27
+
+### Why this was done
+- User reported production mismatch and requested app-wide precision, especially Human Design and Gene Keys.
+- Source-of-truth target provided by user for validation: `Projector / Splenic / 6/2`.
+
+### Implemented
+- Added strict backend endpoint: `POST /api/birth-chart/human-design/calculate`
+  - Uses Swiss Ephemeris precision + exact solar arc design calculation (`88°`)
+  - Returns:
+    - type, authority, profile
+    - personality/design activations (gate/line/color)
+    - defined centers/channels, active gates
+    - incarnation cross
+    - variables (digestion, cognition, environment, perspective, motivation)
+    - Gene Keys activation quartet
+    - calculation audit (timezone, coords, Julian days, design local datetime)
+- Upgraded city/timezone resolution in `birth_chart.py`
+  - Added city geocode fallback + timezone resolution path
+  - Added explicit `Moonee Ponds` city mapping (`Australia/Melbourne`)
+  - Removed silent "New York" assumption for unresolved cities; now UTC fallback with warnings.
+- Frontend migration to strict precision pipeline
+  - `utils/humanDesignCalculator.js` now consumes strict backend endpoint
+  - Human Design page now shows precision audit panel and dynamic bodygraph definitions
+  - Profile Calculator now uses strict Gene Keys output from Human Design endpoint (not date-only approximation)
+  - Gene Keys page now requires full birth inputs (date + exact time + city + country) and computes from strict endpoint
+
+### Dependencies Added
+- Backend:
+  - `geopy`
+  - `timezonefinder`
+
+### Verification
+- Testing report: `/app/test_reports/iteration_215.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+- Verified sample target (`1978-01-27 18:56`, `Moonee Ponds`, `Australia`):
+  - `type_key=projector`
+  - `authority=Splenic`
+  - `profile=6/2`
+
+### Production Note
+- Fixes are implemented and validated in preview.
+- Production requires redeploy to receive these precision updates.
+
