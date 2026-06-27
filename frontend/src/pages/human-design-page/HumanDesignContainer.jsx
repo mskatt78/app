@@ -63,10 +63,17 @@ const HumanDesign = ({ api }) => {
 
       setHdProfile({
         profile: result.profile,
-        sunLine: result.personalitySun.line,
-        dLine: result.designSun.line,
-        sunGate: result.personalitySun.gate,
-        dGate: result.designSun.gate,
+        profileName: result.profileName,
+        sunLine: result.personalitySun?.line || result.consciousLine,
+        dLine: result.designSun?.line || result.unconsciousLine,
+        sunGate: result.personalitySun?.gate,
+        dGate: result.designSun?.gate,
+        activeGates: result.activeGates || [],
+        definedChannels: result.definedChannels || [],
+        definedCenters: result.definedCenters || [],
+        incarnationCross: result.incarnationCross,
+        variables: result.variables || {},
+        audit: result.audit || {},
       });
       setChosenType(humanDesignTypes.find((type) => type.id === result.typeKey) || null);
       setCalculatedAuthority(result.authority);

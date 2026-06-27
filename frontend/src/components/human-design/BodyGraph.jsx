@@ -1,11 +1,3 @@
-const DEFINED_CENTERS_BY_TYPE = {
-  generator: ["Sacral", "G", "Root"],
-  "manifesting-generator": ["Sacral", "Throat", "G", "Root"],
-  projector: ["G", "Ajna"],
-  manifestor: ["Throat", "Heart", "SolarPlexus"],
-  reflector: [],
-};
-
 const CENTER_COLORS = {
   Head: "#f0c040",
   Ajna: "#74c08a",
@@ -21,32 +13,49 @@ const CENTER_COLORS = {
 const UNDEFINED_COLOR = "transparent";
 const DEFINED_STROKE = "#ffffff55";
 
-export const BodyGraph = ({ typId }) => {
-  const defined = DEFINED_CENTERS_BY_TYPE[typId] || [];
-  const def = (name) => defined.includes(name);
+export const BodyGraph = ({ definedCenters = [], definedChannels = [] }) => {
+  const normalizedCenters = (definedCenters || []).map((center) => (typeof center === "string" ? center : center?.key));
+  const definedSet = new Set(normalizedCenters.filter(Boolean));
+  const channelSet = new Set((definedChannels || []).map((channel) => String(channel?.key || "")));
+
+  const def = (name) => definedSet.has(name);
   const fill = (name) => (def(name) ? CENTER_COLORS[name] : UNDEFINED_COLOR);
   const stroke = (name) => (def(name) ? DEFINED_STROKE : "#ffffff33");
 
   const channels = [
-    [[100, 30], [100, 46]],
-    [[100, 66], [100, 86]],
-    [[100, 116], [100, 136]],
-    [[116, 100], [132, 114]],
-    [[128, 144], [134, 130]],
-    [[100, 172], [100, 188]],
-    [[74, 156], [60, 162]],
-    [[100, 214], [100, 264]],
-    [[128, 200], [142, 200]],
-    [[52, 170], [80, 268]],
-    [[60, 156], [72, 200]],
-    [[150, 214], [122, 270]],
+    { key: "64-47", points: [[100, 30], [100, 46]] },
+    { key: "61-24", points: [[100, 66], [100, 86]] },
+    { key: "63-4", points: [[100, 116], [100, 136]] },
+    { key: "17-62", points: [[116, 100], [132, 114]] },
+    { key: "43-23", points: [[128, 144], [134, 130]] },
+    { key: "11-56", points: [[100, 172], [100, 188]] },
+    { key: "20-57", points: [[74, 156], [60, 162]] },
+    { key: "34-20", points: [[100, 214], [100, 264]] },
+    { key: "45-21", points: [[128, 200], [142, 200]] },
+    { key: "32-54", points: [[52, 170], [80, 268]] },
+    { key: "57-10", points: [[60, 156], [72, 200]] },
+    { key: "37-40", points: [[150, 214], [122, 270]] },
   ];
+
+  const isChannelDefined = (key) => channelSet.has(key) || channelSet.has(key.split("-").reverse().join("-"));
 
   return (
     <svg viewBox="0 0 200 310" className="w-full max-w-[220px] mx-auto drop-shadow-lg" data-testid="human-design-bodygraph">
-      {channels.map(([[x1, y1], [x2, y2]]) => (
-        <line key={`channel-${x1}-${y1}-${x2}-${y2}`} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#ffffff18" strokeWidth="4" />
-      ))}
+      {channels.map((channel) => {
+        const [[x1, y1], [x2, y2]] = channel.points;
+        const definedChannel = isChannelDefined(channel.key);
+        return (
+          <line
+            key={`channel-${channel.key}`}
+            x1={x1}
+            y1={y1}
+            x2={x2}
+            y2={y2}
+            stroke={definedChannel ? "#f5d37a" : "#ffffff18"}
+            strokeWidth={definedChannel ? "5" : "4"}
+          />
+        );
+      })}
 
       <polygon points="100,0 120,16 100,32 80,16" fill={fill("Head")} stroke={stroke("Head")} strokeWidth="1.5" />
       <polygon points="80,46 120,46 100,68" fill={fill("Ajna")} stroke={stroke("Ajna")} strokeWidth="1.5" />

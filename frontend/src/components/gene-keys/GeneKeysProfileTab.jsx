@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Calendar, Dna, Sparkles, User, Zap, ChevronRight } from "lucide-react";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import {
   KEY_ICONS,
@@ -16,12 +17,19 @@ export const GeneKeysProfileTab = ({
   birthYear,
   birthMonth,
   birthDay,
+  birthTime,
+  birthCity,
+  birthCountry,
   setBirthYear,
   setBirthMonth,
   setBirthDay,
+  setBirthTime,
+  setBirthCity,
+  setBirthCountry,
   years,
   months,
   days,
+  calculating,
   handleCalculate,
   navigate,
   setSelectedKey,
@@ -35,7 +43,7 @@ export const GeneKeysProfileTab = ({
           </div>
           <h3 className="text-2xl font-serif mb-2">Your <span className="italic text-primary">Hologenetic Profile</span></h3>
           <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-            Enter your date of birth to discover your 4 personal Gene Keys — the Activation Sequence encoded in your DNA.
+            Enter full birth details for strict Gene Keys precision (date, exact time, city, country).
           </p>
         </div>
 
@@ -75,9 +83,24 @@ export const GeneKeysProfileTab = ({
             </div>
           </div>
 
-          <Button onClick={handleCalculate} disabled={!birthYear || !birthMonth || !birthDay} className="w-full" data-testid="gk-calculate-btn">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">Birth Time</label>
+              <Input type="time" value={birthTime} onChange={(event) => setBirthTime(event.target.value)} className="bg-card/50 border-white/10" data-testid="gk-birth-time" />
+            </div>
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">Birth City</label>
+              <Input value={birthCity} onChange={(event) => setBirthCity(event.target.value)} className="bg-card/50 border-white/10" placeholder="e.g. Moonee Ponds" data-testid="gk-birth-city" />
+            </div>
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">Birth Country</label>
+              <Input value={birthCountry} onChange={(event) => setBirthCountry(event.target.value)} className="bg-card/50 border-white/10" placeholder="e.g. Australia" data-testid="gk-birth-country" />
+            </div>
+          </div>
+
+          <Button onClick={handleCalculate} disabled={calculating || !birthYear || !birthMonth || !birthDay || !birthTime || !birthCity || !birthCountry} className="w-full" data-testid="gk-calculate-btn">
             <Sparkles className="w-4 h-4 mr-2" />
-            Reveal My Gene Keys
+            {calculating ? "Calculating with strict precision..." : "Reveal My Gene Keys"}
           </Button>
         </div>
       </div>
@@ -101,17 +124,25 @@ export const GeneKeysProfileTab = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[profile.lifesWork, profile.evolution, profile.radiance, profile.purpose].map((sphere) => {
-            const gk = geneKeysData.find((entry) => entry.key === sphere.key);
-            const color = sphereColors[sphere.color];
-            const Icon = KEY_ICONS[sphere.color];
+            const gateNumber = Number(sphere.key || sphere.gate);
+            const gk = geneKeysData.find((entry) => entry.key === gateNumber);
+            const resolvedColor = sphere.color || {
+              "Life's Work": "amber",
+              Evolution: "emerald",
+              Radiance: "violet",
+              Purpose: "rose",
+            }[sphere.role || sphere.sphere] || "violet";
+            const color = sphereColors[resolvedColor];
+            const Icon = KEY_ICONS[resolvedColor] || Dna;
+            const sphereRole = sphere.role || sphere.sphere;
             return (
               <motion.div
-                key={sphere.role}
+                key={sphereRole}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className={`p-5 rounded-2xl border ${color.bg} ${color.border} cursor-pointer hover:scale-[1.02] transition-all`}
                 onClick={() => gk && setSelectedKey(gk)}
-                data-testid={`gk-sphere-${sphere.role.toLowerCase().replace(/[' ]/g, "-")}`}
+                data-testid={`gk-sphere-${sphereRole.toLowerCase().replace(/[' ]/g, "-")}`}
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className={`text-xs uppercase tracking-wider ${color.text}`}>{sphere.sphere}</span>
@@ -119,17 +150,17 @@ export const GeneKeysProfileTab = ({
                 </div>
                 <div className="flex items-center gap-3 mb-3">
                   <div className={`w-12 h-12 rounded-xl ${color.badge} flex items-center justify-center flex-shrink-0`}>
-                    <span className={`text-xl font-serif ${color.text}`}>{sphere.key}</span>
+                    <span className={`text-xl font-serif ${color.text}`}>{gateNumber}</span>
                   </div>
                   <div>
-                    <p className="font-semibold text-sm">{sphere.role}</p>
+                    <p className="font-semibold text-sm">{sphereRole}</p>
                     {gk && <p className={`text-xs ${color.text}`}>{gk.gift}</p>}
                   </div>
                   <Icon className={`w-4 h-4 ${color.text}`} />
                 </div>
                 {gk && (
                   <>
-                    <p className="text-xs text-muted-foreground mb-3 leading-relaxed">{SPHERE_DESCRIPTIONS[sphere.role]}</p>
+                    <p className="text-xs text-muted-foreground mb-3 leading-relaxed">{SPHERE_DESCRIPTIONS[sphereRole] || sphere.description}</p>
                     <div className="flex gap-2 text-xs">
                       <span className={`px-2 py-0.5 rounded-full ${color.bg} ${color.border} border ${color.text}`}>{gk.shadow}</span>
                       <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-muted-foreground">→ {gk.gift}</span>
@@ -148,10 +179,10 @@ export const GeneKeysProfileTab = ({
             Your Contemplation Path
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed italic">
-            "Begin with Gene Key {profile.lifesWork.key} — your Life&apos;s Work.
+            &ldquo;Begin with Gene Key {profile.lifesWork.key} — your Life&apos;s Work.
             Contemplate the shadow of <strong className="text-foreground">{geneKeysData.find((entry) => entry.key === profile.lifesWork.key)?.shadow}</strong> and
             how it wants to become the gift of <strong className="text-foreground">{geneKeysData.find((entry) => entry.key === profile.lifesWork.key)?.gift}</strong>.
-            This single contemplation can transform your entire vocation."
+            This single contemplation can transform your entire vocation.&rdquo;
           </p>
         </div>
 

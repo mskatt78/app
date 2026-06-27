@@ -21,10 +21,31 @@ try:
 except ImportError:
     SWISSEPH_AVAILABLE = False
 
+try:
+    from geopy.exc import GeocoderServiceError, GeocoderTimedOut
+    from geopy.geocoders import Nominatim
+    GEOPY_AVAILABLE = True
+except ImportError:
+    GEOPY_AVAILABLE = False
+    GeocoderServiceError = Exception
+    GeocoderTimedOut = Exception
+    Nominatim = None  # type: ignore[assignment]
+
+try:
+    from timezonefinder import TimezoneFinder
+    TIMEZONEFINDER_AVAILABLE = True
+except ImportError:
+    TIMEZONEFINDER_AVAILABLE = False
+    TimezoneFinder = None  # type: ignore[assignment]
+
 from .dependencies import get_db, get_current_user, User
 
 router = APIRouter(prefix="/birth-chart", tags=["astrology"])
 logger = logging.getLogger(__name__)
+
+GEOCODER = Nominatim(user_agent="soul-temple-birth-chart") if GEOPY_AVAILABLE else None
+TZ_FINDER = TimezoneFinder() if TIMEZONEFINDER_AVAILABLE else None
+GEOCODE_CACHE: dict[str, dict[str, Any]] = {}
 
 # Flag for Chiron availability (requires additional ephemeris files)
 CHIRON_AVAILABLE = False  # Set to True if sepl*.se1 files are properly installed
@@ -207,6 +228,7 @@ CITY_COORDS = {
     "tokyo": {"lat": 35.6762, "lon": 139.6503, "tz": "Asia/Tokyo"},
     "sydney": {"lat": -33.8688, "lon": 151.2093, "tz": "Australia/Sydney"},
     "melbourne": {"lat": -37.8136, "lon": 144.9631, "tz": "Australia/Melbourne"},
+    "moonee ponds": {"lat": -37.7647, "lon": 144.9192, "tz": "Australia/Melbourne"},
     "mumbai": {"lat": 19.0760, "lon": 72.8777, "tz": "Asia/Kolkata"},
     "delhi": {"lat": 28.6139, "lon": 77.2090, "tz": "Asia/Kolkata"},
     "bangalore": {"lat": 12.9716, "lon": 77.5946, "tz": "Asia/Kolkata"},
@@ -230,6 +252,101 @@ CITY_COORDS = {
     "seoul": {"lat": 37.5665, "lon": 126.9780, "tz": "Asia/Seoul"},
     "bangkok": {"lat": 13.7563, "lon": 100.5018, "tz": "Asia/Bangkok"},
     "jakarta": {"lat": -6.2088, "lon": 106.8456, "tz": "Asia/Jakarta"},
+}
+
+HD_GATE_SEQUENCE = [
+    41, 19, 13, 49, 30, 55, 37, 63, 22, 36, 25, 17, 21, 51, 42, 3,
+    27, 24, 2, 23, 8, 20, 16, 35, 45, 12, 15, 52, 39, 53, 62, 56,
+    31, 33, 7, 4, 29, 59, 40, 64, 47, 6, 46, 18, 48, 57, 32, 50,
+    28, 44, 1, 43, 14, 34, 9, 5, 26, 11, 10, 58, 38, 54, 61, 60,
+]
+
+HD_CHANNELS = [
+    (64, 47, "Head", "Ajna"),
+    (61, 24, "Head", "Ajna"),
+    (63, 4, "Head", "Ajna"),
+    (17, 62, "Ajna", "Throat"),
+    (43, 23, "Ajna", "Throat"),
+    (11, 56, "Ajna", "Throat"),
+    (16, 48, "Throat", "Spleen"),
+    (20, 57, "Throat", "Spleen"),
+    (20, 34, "Throat", "Sacral"),
+    (20, 10, "Throat", "G"),
+    (31, 7, "Throat", "G"),
+    (8, 1, "Throat", "G"),
+    (33, 13, "Throat", "G"),
+    (45, 21, "Throat", "Heart"),
+    (12, 22, "Throat", "SolarPlexus"),
+    (35, 36, "Throat", "SolarPlexus"),
+    (25, 51, "G", "Heart"),
+    (57, 10, "Spleen", "G"),
+    (5, 15, "Sacral", "G"),
+    (14, 2, "Sacral", "G"),
+    (29, 46, "Sacral", "G"),
+    (34, 10, "Sacral", "G"),
+    (44, 26, "Spleen", "Heart"),
+    (27, 50, "Sacral", "Spleen"),
+    (28, 38, "Spleen", "Root"),
+    (18, 58, "Spleen", "Root"),
+    (32, 54, "Spleen", "Root"),
+    (59, 6, "Sacral", "SolarPlexus"),
+    (37, 40, "SolarPlexus", "Heart"),
+    (39, 55, "SolarPlexus", "Root"),
+    (41, 30, "SolarPlexus", "Root"),
+    (53, 42, "Root", "Sacral"),
+    (60, 3, "Root", "Sacral"),
+    (52, 9, "Root", "Sacral"),
+    (19, 49, "Root", "SolarPlexus"),
+]
+
+HD_GATE_START_DEGREES = 302.0
+HD_GATE_SPAN = 360.0 / 64.0
+HD_LINE_SPAN = HD_GATE_SPAN / 6.0
+HD_COLOR_SPAN = HD_LINE_SPAN / 6.0
+
+HD_DIGESTION_BY_COLOR = {
+    1: "Consecutive",
+    2: "Alternating",
+    3: "Open Taste",
+    4: "Closed Taste",
+    5: "High Sound",
+    6: "Low Sound",
+}
+
+HD_COGNITION_BY_COLOR = {
+    1: "Smell",
+    2: "Taste",
+    3: "Outer Vision",
+    4: "Inner Vision",
+    5: "Feeling",
+    6: "Touch",
+}
+
+HD_ENVIRONMENT_BY_COLOR = {
+    1: "Caves",
+    2: "Markets",
+    3: "Kitchens",
+    4: "Mountains",
+    5: "Valleys",
+    6: "Shores",
+}
+
+HD_PERSPECTIVE_BY_COLOR = {
+    1: "Survival",
+    2: "Possibility",
+    3: "Power",
+    4: "Need",
+    5: "Probability",
+    6: "Personal",
+}
+
+HD_MOTIVATION_BY_COLOR = {
+    1: "Fear",
+    2: "Hope",
+    3: "Desire",
+    4: "Need",
+    5: "Guilt",
+    6: "Innocence",
 }
 
 
@@ -382,12 +499,57 @@ def _normalize_dragon_chart_record(record: dict[str, Any]) -> dict[str, Any]:
 
 
 def get_city_coordinates(city: str, country: str) -> Dict:
-    """Get coordinates and timezone for a city."""
-    city_key = city.lower().strip()
-    if city_key in CITY_COORDS:
-        return CITY_COORDS[city_key]
-    # Default fallback
-    return {"lat": 40.7128, "lon": -74.0060, "tz": "America/New_York"}
+    """Get coordinates and timezone for a city with geocoding fallback.
+
+    Strategy:
+    1) Exact local city cache
+    2) Offline curated CITY_COORDS
+    3) Live geocoder + timezone resolver (if available)
+    4) Explicit UTC fallback (never infer New York silently)
+    """
+    normalized_city = city.lower().strip()
+    normalized_country = country.lower().strip()
+    cache_key = f"{normalized_city}|{normalized_country}"
+
+    if cache_key in GEOCODE_CACHE:
+        return GEOCODE_CACHE[cache_key]
+
+    if normalized_city in CITY_COORDS:
+        result = CITY_COORDS[normalized_city]
+        GEOCODE_CACHE[cache_key] = result
+        return result
+
+    if GEOPY_AVAILABLE and GEOCODER is not None:
+        query = f"{city}, {country}".strip().strip(",")
+        try:
+            location = GEOCODER.geocode(query, addressdetails=False, language="en", timeout=8)
+            if location is not None:
+                latitude = float(location.latitude)
+                longitude = float(location.longitude)
+                timezone_name = "UTC"
+
+                if TIMEZONEFINDER_AVAILABLE and TZ_FINDER is not None:
+                    tz_candidate = TZ_FINDER.timezone_at(lat=latitude, lng=longitude)
+                    if tz_candidate:
+                        timezone_name = tz_candidate
+
+                result = {
+                    "lat": latitude,
+                    "lon": longitude,
+                    "tz": timezone_name,
+                }
+                GEOCODE_CACHE[cache_key] = result
+                return result
+        except (GeocoderTimedOut, GeocoderServiceError, ValueError) as error:
+            logger.warning(f"City geocode failed for '{query}': {error}")
+
+    logger.warning(
+        f"Using UTC fallback for unresolved city '{city}, {country}'. "
+        "Provide timezone_name for strict precision."
+    )
+    fallback_result = {"lat": 0.0, "lon": 0.0, "tz": "UTC"}
+    GEOCODE_CACHE[cache_key] = fallback_result
+    return fallback_result
 
 
 def datetime_to_julian(dt: datetime, tz_name: str) -> float:
@@ -818,6 +980,272 @@ def _compute_birth_chart(request: BirthChartRequest) -> BirthChartComputation:
     )
 
 
+def _normalize_longitude(longitude: float) -> float:
+    return float((longitude % 360 + 360) % 360)
+
+
+def _sun_longitude_at_jd(jd: float) -> float:
+    values, _ = swe.calc_ut(jd, swe.SUN)
+    return _normalize_longitude(values[0])
+
+
+def _signed_degree_difference(value: float, target: float) -> float:
+    return ((value - target + 540.0) % 360.0) - 180.0
+
+
+def _find_design_julian_day(birth_jd: float, personality_sun_longitude: float) -> float:
+    target_longitude = _normalize_longitude(personality_sun_longitude - 88.0)
+    guess_jd = birth_jd - 88.0
+    solar_speed_deg_per_day = 0.985647
+
+    for _ in range(20):
+        current_longitude = _sun_longitude_at_jd(guess_jd)
+        delta = _signed_degree_difference(current_longitude, target_longitude)
+        if abs(delta) < 0.00001:
+            break
+        guess_jd -= delta / solar_speed_deg_per_day
+
+    return guess_jd
+
+
+def _jd_to_local_iso(jd: float, timezone_name: str) -> str:
+    year, month, day, hour_decimal = swe.revjul(jd, swe.GREG_CAL)
+    hours = int(hour_decimal)
+    minutes = int((hour_decimal - hours) * 60)
+    seconds = int((((hour_decimal - hours) * 60) - minutes) * 60)
+
+    utc_dt = datetime(year, month, day, hours, minutes, seconds, tzinfo=timezone.utc)
+    local_dt = utc_dt.astimezone(pytz.timezone(timezone_name))
+    return local_dt.isoformat()
+
+
+def _longitude_to_hd_activation(longitude: float) -> dict[str, Any]:
+    normalized = _normalize_longitude(longitude)
+    shifted = _normalize_longitude(normalized - HD_GATE_START_DEGREES)
+    gate_index = int(shifted / HD_GATE_SPAN) % 64
+    gate = HD_GATE_SEQUENCE[gate_index]
+
+    within_gate = shifted - gate_index * HD_GATE_SPAN
+    line = max(1, min(6, int(within_gate / HD_LINE_SPAN) + 1))
+    color = max(1, min(6, int(within_gate / HD_COLOR_SPAN) + 1))
+
+    return {
+        "longitude": round(normalized, 6),
+        "gate": gate,
+        "line": line,
+        "color": color,
+    }
+
+
+def _planet_longitude_map(planets: list[dict[str, Any]]) -> dict[str, float]:
+    values: dict[str, float] = {}
+    for planet in planets:
+        name = str(planet.get("name") or "").strip()
+        if not name:
+            continue
+        values[name] = _normalize_longitude(float(planet.get("longitude") or 0.0))
+
+    if "Sun" in values and "Earth" not in values:
+        values["Earth"] = _normalize_longitude(values["Sun"] + 180.0)
+    if "North Node" in values and "South Node" not in values:
+        values["South Node"] = _normalize_longitude(values["North Node"] + 180.0)
+
+    return values
+
+
+def _build_hd_activations(longitudes: dict[str, float]) -> dict[str, dict[str, Any]]:
+    activations: dict[str, dict[str, Any]] = {}
+    for planet, longitude in longitudes.items():
+        activation = _longitude_to_hd_activation(longitude)
+        activation["planet"] = planet
+        activations[planet] = activation
+    return activations
+
+
+def _derive_channels_and_centers(active_gates: set[int]) -> tuple[list[dict[str, Any]], list[str]]:
+    channels: list[dict[str, Any]] = []
+    centers: set[str] = set()
+    for gate_a, gate_b, from_center, to_center in HD_CHANNELS:
+        if gate_a in active_gates and gate_b in active_gates:
+            channels.append(
+                {
+                    "key": f"{gate_a}-{gate_b}",
+                    "gates": [gate_a, gate_b],
+                    "from": from_center,
+                    "to": to_center,
+                }
+            )
+            centers.add(from_center)
+            centers.add(to_center)
+    return channels, sorted(centers)
+
+
+def _derive_type_and_authority(defined_centers: set[str], channels: list[dict[str, Any]]) -> tuple[str, str]:
+    has_sacral = "Sacral" in defined_centers
+    has_throat = "Throat" in defined_centers
+    has_motor = any(center in defined_centers for center in ["Sacral", "Heart", "SolarPlexus", "Root"])
+
+    throat_motor_channel = any(
+        "Throat" in [channel["from"], channel["to"]]
+        and any(center in [channel["from"], channel["to"]] for center in ["Sacral", "Heart", "SolarPlexus", "Root"])
+        for channel in channels
+    )
+
+    if not has_motor and not has_sacral:
+        type_key = "reflector"
+    elif has_sacral and throat_motor_channel:
+        type_key = "manifesting-generator"
+    elif has_sacral:
+        type_key = "generator"
+    elif has_motor and has_throat:
+        type_key = "manifestor"
+    else:
+        type_key = "projector"
+
+    if type_key == "reflector":
+        authority = "Lunar"
+    elif "SolarPlexus" in defined_centers:
+        authority = "Emotional"
+    elif has_sacral and type_key in {"generator", "manifesting-generator"}:
+        authority = "Sacral"
+    elif "Spleen" in defined_centers:
+        authority = "Splenic"
+    elif "Heart" in defined_centers:
+        authority = "Ego"
+    elif "G" in defined_centers:
+        authority = "Self-Projected"
+    else:
+        authority = "Mental"
+
+    return type_key, authority
+
+
+def _derive_cross_name(profile: str, p_sun: int, p_earth: int, d_sun: int, d_earth: int) -> str:
+    if profile == "4/1":
+        angle = "Juxtaposition"
+    else:
+        first_line = int(profile.split("/")[0])
+        angle = "Left Angle" if first_line >= 5 else "Right Angle"
+    return f"{angle} Cross ({p_sun}/{p_earth} · {d_sun}/{d_earth})"
+
+
+def _build_gene_keys_from_activations(personality: dict[str, dict[str, Any]], design: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    p_sun = personality.get("Sun", {})
+    p_earth = personality.get("Earth", {})
+    d_sun = design.get("Sun", {})
+    d_earth = design.get("Earth", {})
+
+    return {
+        "lifesWork": {
+            "gate": p_sun.get("gate"),
+            "line": p_sun.get("line"),
+            "sphere": "Life's Work",
+            "planet": "Conscious Sun",
+            "description": "Your vocation and conscious expression in the world.",
+        },
+        "evolution": {
+            "gate": p_earth.get("gate"),
+            "line": p_earth.get("line"),
+            "sphere": "Evolution",
+            "planet": "Conscious Earth",
+            "description": "Your core challenge that catalyzes growth.",
+        },
+        "radiance": {
+            "gate": d_sun.get("gate"),
+            "line": d_sun.get("line"),
+            "sphere": "Radiance",
+            "planet": "Unconscious Sun",
+            "description": "Your vitality and natural field of wellbeing.",
+        },
+        "purpose": {
+            "gate": d_earth.get("gate"),
+            "line": d_earth.get("line"),
+            "sphere": "Purpose",
+            "planet": "Unconscious Earth",
+            "description": "Your deeper core purpose and grounding frequency.",
+        },
+    }
+
+
+def _build_human_design_payload(request: BirthChartRequest) -> dict[str, Any]:
+    birth_computation = _compute_birth_chart(request)
+    personality_longitudes = _planet_longitude_map(birth_computation.planets)
+    personality_activations = _build_hd_activations(personality_longitudes)
+
+    personality_sun_longitude = float(personality_longitudes.get("Sun") or 0.0)
+    design_jd = _find_design_julian_day(birth_computation.jd, personality_sun_longitude)
+    design_planets = _calculate_chart_planets(design_jd)
+    design_longitudes = _planet_longitude_map(design_planets)
+    design_activations = _build_hd_activations(design_longitudes)
+
+    p_sun = personality_activations.get("Sun", {})
+    d_sun = design_activations.get("Sun", {})
+    profile = f"{p_sun.get('line', 1)}/{d_sun.get('line', 1)}"
+
+    active_gates = {
+        int(value.get("gate"))
+        for value in [*personality_activations.values(), *design_activations.values()]
+        if value.get("gate") is not None
+    }
+    channels, defined_centers_list = _derive_channels_and_centers(active_gates)
+    defined_centers = set(defined_centers_list)
+    type_key, authority = _derive_type_and_authority(defined_centers, channels)
+
+    p_earth = personality_activations.get("Earth", {})
+    d_earth = design_activations.get("Earth", {})
+    incarnation_cross_name = _derive_cross_name(
+        profile,
+        int(p_sun.get("gate") or 0),
+        int(p_earth.get("gate") or 0),
+        int(d_sun.get("gate") or 0),
+        int(d_earth.get("gate") or 0),
+    )
+
+    variables = {
+        "digestion": HD_DIGESTION_BY_COLOR.get(int(d_sun.get("color") or 1)),
+        "cognition": HD_COGNITION_BY_COLOR.get(int(d_sun.get("color") or 1)),
+        "environment": HD_ENVIRONMENT_BY_COLOR.get(int(d_sun.get("color") or 1)),
+        "perspective": HD_PERSPECTIVE_BY_COLOR.get(int(p_sun.get("color") or 1)),
+        "motivation": HD_MOTIVATION_BY_COLOR.get(int(p_sun.get("color") or 1)),
+    }
+
+    return {
+        "type_key": type_key,
+        "authority": authority,
+        "profile": profile,
+        "personality": personality_activations,
+        "design": design_activations,
+        "defined_centers": defined_centers_list,
+        "defined_channels": channels,
+        "active_gates": sorted(active_gates),
+        "incarnation_cross": {
+            "name": incarnation_cross_name,
+            "gates": {
+                "personality_sun": p_sun.get("gate"),
+                "personality_earth": p_earth.get("gate"),
+                "design_sun": d_sun.get("gate"),
+                "design_earth": d_earth.get("gate"),
+            },
+        },
+        "variables": variables,
+        "gene_keys_profile": _build_gene_keys_from_activations(personality_activations, design_activations),
+        "audit": {
+            "birth_input": {
+                "birth_date": request.birth_date,
+                "birth_time": request.birth_time,
+                "birth_city": request.birth_city,
+                "birth_country": request.birth_country,
+            },
+            "timezone_name": birth_computation.timezone_name,
+            "latitude": birth_computation.latitude,
+            "longitude": birth_computation.longitude,
+            "birth_julian_day": round(birth_computation.jd, 8),
+            "design_julian_day": round(design_jd, 8),
+            "design_local_datetime": _jd_to_local_iso(design_jd, birth_computation.timezone_name),
+        },
+    }
+
+
 @router.post("/calculate")
 async def calculate_birth_chart(request: BirthChartRequest) -> dict[str, Any]:
     """Calculate a complete birth chart using Swiss Ephemeris.
@@ -836,6 +1264,19 @@ async def calculate_birth_chart(request: BirthChartRequest) -> dict[str, Any]:
     except Exception as e:
         logger.error(f"Birth chart calculation error: {e}")
         raise HTTPException(status_code=400, detail=f"Could not calculate birth chart: {str(e)}")
+
+
+@router.post("/human-design/calculate")
+async def calculate_human_design(request: BirthChartRequest) -> dict[str, Any]:
+    """Calculate Human Design + Gene Keys profile using strict birth data precision."""
+    if not SWISSEPH_AVAILABLE:
+        raise HTTPException(status_code=500, detail="Swiss Ephemeris not available")
+
+    try:
+        return _build_human_design_payload(request)
+    except Exception as error:
+        logger.error(f"Human Design calculation error: {error}")
+        raise HTTPException(status_code=400, detail=f"Could not calculate Human Design: {str(error)}")
 
 
 @router.post("/save")

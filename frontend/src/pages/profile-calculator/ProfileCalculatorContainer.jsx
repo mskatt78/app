@@ -16,7 +16,6 @@ import {
   GENE_KEYS_DATA,
   HUMAN_DESIGN_TYPES,
   PROFILE_LINE_NAMES,
-  calculateGeneKeysProfile,
 } from "./profileCalculatorData";
 
 const ProfileCalculator = ({ user, api }) => {
@@ -45,15 +44,14 @@ const ProfileCalculator = ({ user, api }) => {
     setCalculating(true);
 
     try {
-      const gkProfile = calculateGeneKeysProfile(birthDate);
-      setGeneKeysProfile(gkProfile);
-
       const strictChart = await calculateHumanDesignChart(api, {
         birth_date: birthDate,
         birth_time: birthTime,
         birth_city: birthCity,
         birth_country: birthCountry,
       });
+
+      setGeneKeysProfile(strictChart.geneKeysProfile || null);
 
       const typeKeyMap = {
         "manifesting-generator": "manifestingGenerator",
@@ -70,6 +68,9 @@ const ProfileCalculator = ({ user, api }) => {
         type: HUMAN_DESIGN_TYPES[normalizedTypeKey],
         typeKey: normalizedTypeKey,
         authority: strictChart.authority,
+        incarnationCross: strictChart.incarnationCross,
+        variables: strictChart.variables,
+        audit: strictChart.audit,
         profile: {
           conscious: consciousLine,
           unconscious: unconsciousLine,
@@ -244,6 +245,7 @@ const ProfileCalculator = ({ user, api }) => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {Object.entries(geneKeysProfile).map(([key, sphere], index) => {
+                      if (!sphere?.gate) return null;
                       const geneKey = GENE_KEYS_DATA[sphere.gate];
                       const colors = {
                         lifesWork: "from-amber-500/10 to-orange-500/5 border-amber-500/20",
@@ -376,6 +378,17 @@ const ProfileCalculator = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
                     <p className="text-sm text-muted-foreground">
                       <strong>Calculation mode:</strong> This result is generated from your entered birth date, exact time, and place (not intuitive type selection).
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="profile-hd-accuracy-panel">
+                    <p className="text-xs uppercase tracking-wider text-violet-300 mb-2">Precision Details</p>
+                    <p className="text-sm mb-1" data-testid="profile-hd-incarnation-cross"><strong>Incarnation Cross:</strong> {humanDesignProfile.incarnationCross?.name || "—"}</p>
+                    <p className="text-sm text-muted-foreground" data-testid="profile-hd-variables">
+                      Digestion: {humanDesignProfile.variables?.digestion || "—"} · Environment: {humanDesignProfile.variables?.environment || "—"} · Perspective: {humanDesignProfile.variables?.perspective || "—"} · Motivation: {humanDesignProfile.variables?.motivation || "—"}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-2" data-testid="profile-hd-audit-timezone">
+                      Timezone used: {humanDesignProfile.audit?.timezone_name || "—"}
                     </p>
                   </div>
 

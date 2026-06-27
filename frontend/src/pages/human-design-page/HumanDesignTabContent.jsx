@@ -142,13 +142,15 @@ export const HumanDesignTabContent = ({
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-            {keyGates.map((gate, index) => (
+            {keyGates.map((gate, index) => {
+              const isActive = (hdProfile?.activeGates || []).includes(gate.number);
+              return (
               <motion.div
                 key={gate.number}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="p-4 rounded-xl bg-white/5 border border-white/10"
+                className={`p-4 rounded-xl border ${isActive ? "bg-violet-500/15 border-violet-400/40" : "bg-white/5 border-white/10"}`}
                 data-testid={`gate-${gate.number}`}
               >
                 <div className="flex items-center gap-3 mb-2">
@@ -159,12 +161,14 @@ export const HumanDesignTabContent = ({
                 </div>
                 <p className="text-xs text-muted-foreground">{gate.theme}</p>
                 <p className="text-xs text-indigo-400 mt-1">{gate.center} Center</p>
+                {isActive ? <p className="text-xs text-violet-300 mt-1" data-testid={`gate-active-${gate.number}`}>Activated in your chart</p> : null}
               </motion.div>
-            ))}
+              );
+            })}
           </div>
 
-          <p className="text-center text-sm text-muted-foreground">
-            Showing key gates. Your complete chart reveals which of the 64 gates are activated in your design.
+          <p className="text-center text-sm text-muted-foreground" data-testid="hd-gate-summary-text">
+            Showing key gates. Active now: {(hdProfile?.activeGates || []).length} total activations from your strict birth calculation.
           </p>
         </motion.div>
       )}

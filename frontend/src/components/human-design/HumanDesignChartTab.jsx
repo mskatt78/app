@@ -128,8 +128,8 @@ export const HumanDesignChartTab = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
           <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
             <p className="text-xs uppercase tracking-wider text-muted-foreground mb-4 text-center">BodyGraph</p>
-            <BodyGraph typId={chosenType.id} />
-            <p className="text-center text-xs text-muted-foreground mt-3">Coloured = typically defined</p>
+            <BodyGraph definedCenters={hdProfile.definedCenters || []} definedChannels={hdProfile.definedChannels || []} />
+            <p className="text-center text-xs text-muted-foreground mt-3">Colored = calculated defined centers/channels</p>
           </div>
 
           <div className="space-y-3">
@@ -154,6 +154,44 @@ export const HumanDesignChartTab = ({
             Profile {hdProfile.profile} — {PROFILE_LINES[hdProfile.sunLine]?.name} / {PROFILE_LINES[hdProfile.dLine]?.name}
           </p>
           <p className="text-sm text-muted-foreground">{PROFILE_LINES[hdProfile.sunLine]?.desc}</p>
+          <p className="text-xs text-violet-200 mt-2" data-testid="hd-profile-name">{hdProfile.profileName}</p>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/20" data-testid="hd-precision-audit-panel">
+          <p className="text-xs uppercase tracking-wider text-amber-300 mb-2">Calculation Audit</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+            <div>
+              <p className="text-muted-foreground">Timezone</p>
+              <p className="font-medium" data-testid="hd-audit-timezone">{hdProfile.audit?.timezone_name || "—"}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Coordinates</p>
+              <p className="font-medium" data-testid="hd-audit-coordinates">
+                {hdProfile.audit?.latitude != null && hdProfile.audit?.longitude != null
+                  ? `${Number(hdProfile.audit.latitude).toFixed(4)}, ${Number(hdProfile.audit.longitude).toFixed(4)}`
+                  : "—"}
+              </p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Incarnation Cross</p>
+              <p className="font-medium" data-testid="hd-audit-incarnation-cross">{hdProfile.incarnationCross?.name || "—"}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Digestion / Cognition</p>
+              <p className="font-medium" data-testid="hd-audit-digestion-cognition">{hdProfile.variables?.digestion || "—"} / {hdProfile.variables?.cognition || "—"}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Environment / Perspective</p>
+              <p className="font-medium" data-testid="hd-audit-environment-perspective">{hdProfile.variables?.environment || "—"} / {hdProfile.variables?.perspective || "—"}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Motivation</p>
+              <p className="font-medium" data-testid="hd-audit-motivation">{hdProfile.variables?.motivation || "—"}</p>
+            </div>
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground" data-testid="hd-audit-design-local-datetime">
+            Design Local Datetime: {hdProfile.audit?.design_local_datetime || "—"}
+          </p>
         </div>
 
         <div>

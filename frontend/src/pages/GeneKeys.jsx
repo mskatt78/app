@@ -2,11 +2,12 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Cloud, Crown, Dna, Eye, Gift, Moon, Sparkles, Star } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "../components/ui/button";
 import { GeneKeysModals } from "../components/gene-keys/GeneKeysModals";
 import { GeneKeysProfileTab } from "../components/gene-keys/GeneKeysProfileTab";
+import { calculateHumanDesignChart } from "../utils/humanDesignCalculator";
 import {
-  calculateHologenicProfile,
   geneKeysData,
   sequenceColors,
   sequences,
@@ -21,7 +22,7 @@ const tabs = [
   { id: "contemplation", label: "Contemplation" },
 ];
 
-const GeneKeys = () => {
+const GeneKeys = ({ api }) => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("profile");
   const [selectedKey, setSelectedKey] = useState(null);
@@ -31,6 +32,10 @@ const GeneKeys = () => {
   const [birthYear, setBirthYear] = useState("");
   const [birthMonth, setBirthMonth] = useState("");
   const [birthDay, setBirthDay] = useState("");
+  const [birthTime, setBirthTime] = useState("12:00");
+  const [birthCity, setBirthCity] = useState("");
+  const [birthCountry, setBirthCountry] = useState("");
+  const [calculating, setCalculating] = useState(false);
   const [profile, setProfile] = useState(null);
 
   const currentYear = new Date().getFullYear();
@@ -45,10 +50,28 @@ const GeneKeys = () => {
   ];
   const days = Array.from({ length: 31 }, (_, index) => String(index + 1).padStart(2, "0"));
 
-  const handleCalculate = () => {
-    if (!birthYear || !birthMonth || !birthDay) return;
-    const dateStr = `${birthYear}-${birthMonth}-${birthDay}`;
-    setProfile(calculateHologenicProfile(dateStr));
+  const handleCalculate = async () => {
+    if (!birthYear || !birthMonth || !birthDay || !birthTime || !birthCity || !birthCountry) {
+      toast.error("Please provide date, exact time, city, and country for precision Gene Keys.");
+      return;
+    }
+
+    setCalculating(true);
+    try {
+      const dateStr = `${birthYear}-${birthMonth}-${birthDay}`;
+      const strictChart = await calculateHumanDesignChart(api, {
+        birth_date: dateStr,
+        birth_time: birthTime,
+        birth_city: birthCity,
+        birth_country: birthCountry,
+      });
+      setProfile(strictChart.geneKeysProfile || null);
+      toast.success("Gene Keys profile calculated from strict birth precision.");
+    } catch (error) {
+      toast.error(error?.response?.data?.detail || "Could not calculate Gene Keys profile.");
+    } finally {
+      setCalculating(false);
+    }
   };
 
   const filteredKeys = useMemo(() => geneKeysData.filter((entry) => (
@@ -117,12 +140,19 @@ const GeneKeys = () => {
               birthYear={birthYear}
               birthMonth={birthMonth}
               birthDay={birthDay}
+              birthTime={birthTime}
+              birthCity={birthCity}
+              birthCountry={birthCountry}
               setBirthYear={setBirthYear}
               setBirthMonth={setBirthMonth}
               setBirthDay={setBirthDay}
+              setBirthTime={setBirthTime}
+              setBirthCity={setBirthCity}
+              setBirthCountry={setBirthCountry}
               years={years}
               months={months}
               days={days}
+              calculating={calculating}
               handleCalculate={handleCalculate}
               navigate={navigate}
               setSelectedKey={setSelectedKey}
@@ -161,8 +191,8 @@ const GeneKeys = () => {
 
               <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
                 <p className="text-lg font-serif italic text-foreground/80 max-w-2xl mx-auto">
-                  "The Gene Keys are a transmission. They work on you whether you understand them or not.
-                  All you have to do is contemplate them with an open heart."
+                  &ldquo;The Gene Keys are a transmission. They work on you whether you understand them or not.
+                  All you have to do is contemplate them with an open heart.&rdquo;
                 </p>
                 <p className="text-sm text-muted-foreground mt-3">— Richard Rudd, creator of the Gene Keys</p>
               </div>
