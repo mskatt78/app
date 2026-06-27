@@ -2815,3 +2815,42 @@
 ### Next prioritized items
 - **P2**: Optional enhancements to reflection quality (trend charts + quote extraction from voice-note transcripts when available).
 
+## Premium Update: Elemental Temples Paid Access — 2026-06-27
+
+### User request
+- “The Elemental Temple should be paid also please.”
+
+### Implemented
+- **Backend payments update** (`backend/routers/payments.py`)
+  - Added new premium unlock product:
+    - `elemental_temples`
+    - Name: Elemental Temples Unlock
+    - Price: `$79.00`
+    - Scope: `section`
+  - Added `elemental_temples` to `PREMIUM_SECTION_IDS` so entitlement resolution and access checks include this section.
+
+- **Frontend entitlement support** (`frontend/src/hooks/usePremiumAccess.js`)
+  - Added `elemental_temples` to default section entitlements map.
+
+- **Elemental Temples page gating** (`frontend/src/pages/ElementalTemples.jsx`)
+  - Added premium banner (unauth/locked users) with three paths:
+    - View Subscription
+    - Unlock Elemental Temples (section unlock)
+    - Full App unlock
+  - Added lock modal shown when locked users attempt guided temple actions.
+  - Wired checkout finalization handling for same-page return after payment session.
+  - Preserved existing visuals/content while gating premium access.
+
+### Validation
+- Backend check: `/api/payments/premium-products` includes `elemental_temples`.
+- Frontend smoke check passed (banner + CTA visibility).
+- Frontend specialist validation: PASS
+  - Banner testids present
+  - Guided actions trigger premium lock modal
+  - Lock modal CTAs and close behavior verified
+  - No blank screen/crash/regression
+
+### Current status
+- Elemental Temples premium gating is complete in preview and test-verified.
+
+
