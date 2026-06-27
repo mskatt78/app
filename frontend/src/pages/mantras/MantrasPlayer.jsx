@@ -44,6 +44,7 @@ export const MantrasPlayer = ({
   setIsMuted,
   setGuidedPractice,
   createGuidedMantraPractice,
+  hasPlayableAudio,
 }) => {
   return (
     <Dialog open={!!selectedMantra} onOpenChange={onClose}>
@@ -90,7 +91,7 @@ export const MantrasPlayer = ({
                 <p className="text-lg italic text-foreground/90">&ldquo;{selectedMantra.translation}&rdquo;</p>
               </div>
 
-              {selectedMantra.audio_url && !audioError ? (
+              {hasPlayableAudio && !audioError ? (
                 <div className="p-6 rounded-xl bg-primary/10 border border-primary/20">
                   <h4 className="text-sm uppercase tracking-wider text-primary mb-4 flex items-center gap-2">
                     <Volume2 className="w-4 h-4" />

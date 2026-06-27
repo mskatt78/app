@@ -21,17 +21,13 @@ const GuidedAudioButton = ({
   element = "Spirit",
   sourceTexts = [],
   steps = [],
-  optionsVisible = true,
 }) => {
   const effectiveLabel = practiceName ? `Play ${practiceName} Guided Voice` : (label || "Play Guided Voice");
 
   const {
     loading,
     playing,
-    hasFailed,
     handlePlay,
-    restartPlayback,
-    stopPlayback,
   } = useGuidedAudioPlayback({
     api,
     script,
@@ -45,7 +41,7 @@ const GuidedAudioButton = ({
   });
 
   return (
-    <div className="w-full space-y-2" data-testid="guided-audio-control-stack">
+    <div className="w-full" data-testid="guided-audio-control-stack">
       <button
         onClick={handlePlay}
         disabled={loading}
@@ -65,48 +61,6 @@ const GuidedAudioButton = ({
           <><Volume2 className="w-4 h-4" /><span>{effectiveLabel}</span></>
         )}
       </button>
-
-      {optionsVisible && (
-        <div className="w-full px-3 py-2 rounded-xl text-xs border border-white/15 bg-white/[0.03] text-white/75" data-testid="guided-audio-voice-options-row">
-          <div className="flex items-center justify-between gap-2">
-            <span className="font-medium text-white/80">Voice Options</span>
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={handlePlay}
-                disabled={loading}
-                className="px-2.5 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 disabled:opacity-50"
-                data-testid="guided-audio-option-play"
-              >
-                Play
-              </button>
-              <button
-                type="button"
-                onClick={restartPlayback}
-                disabled={loading}
-                className="px-2.5 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 disabled:opacity-50"
-                data-testid="guided-audio-option-restart"
-              >
-                Restart
-              </button>
-              <button
-                type="button"
-                onClick={stopPlayback}
-                disabled={loading}
-                className="px-2.5 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10 disabled:opacity-50"
-                data-testid="guided-audio-option-stop"
-              >
-                Stop
-              </button>
-            </div>
-          </div>
-          {hasFailed ? (
-            <p className="mt-2 text-[11px] text-amber-200" data-testid="guided-audio-failure-hint">
-              Voice temporarily unavailable. Use Restart to try again.
-            </p>
-          ) : null}
-        </div>
-      )}
     </div>
   );
 };

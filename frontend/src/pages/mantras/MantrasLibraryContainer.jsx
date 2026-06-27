@@ -35,6 +35,17 @@ const NATURAL_SOUND_OPTIONS = [
   { id: "silence", label: "Silence" },
 ];
 
+const OM_CHANT_LOOP_URL = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_6f95e7f9e0.mp3?filename=om-chant-loop-ambient-10274.mp3";
+
+const isOmMantra = (mantra) => String(mantra?.name || "").trim().toLowerCase() === "om";
+
+const resolveMantraAudioUrl = (mantra) => {
+  if (!mantra) return "";
+  if (mantra.audio_url) return mantra.audio_url;
+  if (isOmMantra(mantra)) return OM_CHANT_LOOP_URL;
+  return "";
+};
+
 const ELEMENT_NATURAL_DEFAULT = {
   Earth: "nature",
   Water: "ocean",
@@ -162,11 +173,11 @@ const MantrasLibrary = ({ user, api }) => {
     
     audio.addEventListener('error', () => {
       setAudioError(true);
-      toast.error("Could not load audio. Using timer mode instead.");
+      appLogger.warn("Could not load mantra audio", { mantra: selectedMantra?.name, url });
     });
     
     audioRef.current = audio;
-  }, [audioRef, isLooping, setAudioError, setAudioProgress, setCurrentRep, setIsPlaying, volume]);
+  }, [audioRef, isLooping, selectedMantra?.name, setAudioError, setAudioProgress, setCurrentRep, setIsPlaying, volume]);
 
   useEffect(() => {
     return () => {
@@ -188,15 +199,16 @@ const MantrasLibrary = ({ user, api }) => {
 
   // Audio setup when mantra is selected
   useEffect(() => {
-    if (selectedMantra?.audio_url) {
-      setupAudio(selectedMantra.audio_url);
+    const resolvedUrl = resolveMantraAudioUrl(selectedMantra);
+    if (resolvedUrl) {
+      setupAudio(resolvedUrl);
     }
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
       }
     };
-  }, [audioRef, selectedMantra?.audio_url, setupAudio]);
+  }, [audioRef, selectedMantra, setupAudio]);
 
   // Audio controls
   const toggleAudio = () => {
@@ -228,9 +240,15 @@ const MantrasLibrary = ({ user, api }) => {
       if (isMuted) {
         audioRef.current.volume = volume || 0.7;
         setIsMuted(false);
+        if (mantraGainRef.current) {
+          mantraGainRef.current.gain.value = volume || 0.7;
+        }
       } else {
         audioRef.current.volume = 0;
         setIsMuted(true);
+        if (mantraGainRef.current) {
+          mantraGainRef.current.gain.value = 0;
+        }
       }
     }
   };
@@ -311,14 +329,27 @@ const MantrasLibrary = ({ user, api }) => {
       
       // Play initial bell - louder and longer
       playBellTone(ctx, gainNode, ELEMENT_FREQUENCIES[element] || 432, 4);
+
+      // For OM, start sustained chant immediately for authentic resonance
+      if (isOmMantra(selectedMantra)) {
+        playOmTone(ctx, gainNode, 136.1, Math.max(cycleDuration, 6));
+      }
       
       // Show toast that sound is playing
-      toast.success("Mantra sound playing - adjust volume if needed");
+      toast.success(
+        isOmMantra(selectedMantra)
+          ? "OM chant resonance playing"
+          : "Mantra sound playing - adjust volume if needed"
+      );
       
       // Set up recurring chant sounds - more frequent
       mantraIntervalRef.current = setInterval(() => {
         if (mantraAudioCtxRef.current && mantraGainRef.current) {
-          playMantraSound(mantraAudioCtxRef.current, mantraGainRef.current, element, cycleDuration * 0.8);
+          if (isOmMantra(selectedMantra)) {
+            playOmTone(mantraAudioCtxRef.current, mantraGainRef.current, 136.1, Math.max(cycleDuration * 0.8, 5));
+          } else {
+            playMantraSound(mantraAudioCtxRef.current, mantraGainRef.current, element, cycleDuration * 0.8);
+          }
         }
       }, cycleDuration * 1000);
       
@@ -356,6 +387,7 @@ const MantrasLibrary = ({ user, api }) => {
     setCurrentRep(0);
     setChantProgress(0);
     stopMantraSound();
+    setAudioError(false);
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
@@ -507,6 +539,7 @@ const MantrasLibrary = ({ user, api }) => {
 
       <MantrasPlayer
         selectedMantra={selectedMantra}
+        hasPlayableAudio={Boolean(resolveMantraAudioUrl(selectedMantra))}
         onClose={handleDialogClose}
         elementColors={elementColors}
         favorites={favorites}

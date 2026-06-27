@@ -243,39 +243,6 @@ export const GuidedPracticeContent = ({
                   <Play className="w-3.5 h-3.5" />
                   {ttsPlaying ? "Restart Voice Guidance" : "Play Voice Guidance"}
                 </button>
-                <div className="w-full rounded-lg border border-white/20 bg-white/5 px-2 py-2" data-testid="guided-voice-options-row">
-                  <div className="flex items-center justify-between gap-2 text-[11px] text-white/75">
-                    <span className="font-medium text-white/80">Voice Options</span>
-                    <div className="flex gap-1.5">
-                      <button
-                        type="button"
-                        onClick={handleStartVoiceOnly}
-                        className="px-2 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10"
-                        data-testid="guided-option-play"
-                      >
-                        Play
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleStartVoiceOnly}
-                        className="px-2 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10"
-                        data-testid="guided-option-restart"
-                      >
-                        Restart
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (isPlaying) handlePlay();
-                        }}
-                        className="px-2 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10"
-                        data-testid="guided-option-stop"
-                      >
-                        Stop
-                      </button>
-                    </div>
-                  </div>
-                </div>
               </div>
 
               <div className="rounded-2xl bg-white/5 p-5 mb-6 max-h-none overflow-visible" data-testid="guided-practice-description">
