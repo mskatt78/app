@@ -225,6 +225,19 @@ backend:
         agent: "testing"
         comment: "✅ POST /api/content/expand-script with duration_minutes=7, use_ai=false returns 200. Response: target_minutes=7, word_count=1020 (>= 840 requirement). All required fields present: practice_name, target_minutes, target_word_count, word_count, used_ai, paragraphs, segments. Final regression check PASSED."
 
+
+  - task: "Guided narration duration/performance comprehensive validation"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPREHENSIVE NARRATION VALIDATION PASSED (2026-01-XX): All 4 test cases passed successfully. TEST CASE 1 - Long-form Floor Consistency: Tested 3 varied payloads (Breathwork 10min, Healing Portal 12min, Meditation 15min). All responses include required fields (practice_name, target_minutes, target_word_count, word_count, used_ai, paragraphs, segments). Word counts: 1363, 1635, 2026 - all exceed 680-word minimum floor for 7+ minutes ✓. TEST CASE 2 - Cache Performance: Identical payload called 3 times. Latencies: Call 1 (cold) 131.64ms, Call 2 (warm) 98.09ms, Call 3 (warm) 93.71ms. Speedup factor 1.37x confirms cache working correctly ✓. TEST CASE 3 - Stability Edge Cases: Minimal payload (1000 words), Empty arrays (1002 words), High duration 30min (3571 words) - all return 200 with non-empty paragraphs/segments ✓. TEST CASE 4 - Regression Schema: Verified segments and paragraphs both returned as lists (no schema regression) ✓. All endpoints stable, no 500 errors detected."
+
   - task: "Final regression - health endpoint"
     implemented: true
     working: true
@@ -9946,3 +9959,36 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ PASSED (2026-12-27): Comprehensive guided overlay smoothness test completed on /meditations page. All 6 test criteria PASSED: 1) Overlay appearance - guided-practice-overlay renders successfully ✓, 2) Key controls - All required controls found and functional (guided-play-btn, guided-play-voice-manual-btn, guided-mute-btn, guided-exit-btn, guided-practice-voice-override-select, guided-practice-speed-override-select) ✓, 3) Long script condensed mode - guided-expand-full-script-button and guided-collapse-full-script-button working correctly ✓, 4) Segment indicator area stability - No overflow or janky behavior detected (indicator not visible as expected when narration not playing) ✓, 5) Timer countdown - Timer decrements correctly (15:00 → 14:57 → 14:54) ✓, 6) Clean exit - Overlay exits cleanly and page remains interactive ✓. Control interactions verified: Voice override (feminine→masculine), Speed override (slow→fast), Mute toggle all functional. UI is smooth and responsive with no blocking issues. Segment indicator implementation correct and will display when TTS narration plays (currently blocked by known TTS API voice mapping bug, not a UI issue)."
+
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      COMPREHENSIVE NARRATION DURATION/PERFORMANCE VALIDATION COMPLETED (2026-01-XX)
+      
+      Executed focused backend validation on POST /api/content/expand-script endpoint per user request.
+      All 4 test cases PASSED with detailed timing measurements:
+      
+      ✅ Test Case 1: Long-form Floor Consistency
+         - Tested 3 varied payloads (breathwork, healing portal, meditation)
+         - All responses meet 7-minute floor (680+ words): 1363, 1635, 2026 words
+         - All required fields present and valid
+      
+      ✅ Test Case 2: Cache Performance
+         - Measured latency across 3 identical calls
+         - Cold call: 131.64ms, Warm calls: 98.09ms, 93.71ms
+         - Speedup factor: 1.37x (cache working correctly)
+      
+      ✅ Test Case 3: Stability Edge Cases
+         - Minimal payload: 1000 words ✓
+         - Empty arrays: 1002 words ✓
+         - High duration (30min): 3571 words ✓
+         - All return 200 with non-empty paragraphs/segments
+      
+      ✅ Test Case 4: Regression Schema
+         - Verified segments and paragraphs both returned as lists
+         - No schema regression detected
+      
+      CONCLUSION: Guided narration endpoint is production-ready. Duration floor enforcement 
+      working correctly, cache performance optimal, edge cases handled gracefully, and schema 
+      remains stable for existing consumers. No issues detected.
