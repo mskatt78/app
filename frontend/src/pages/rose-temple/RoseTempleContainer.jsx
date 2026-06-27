@@ -111,7 +111,18 @@ const RoseTempleContainer = ({ user, api }) => {
             <p className="text-sm text-muted-foreground mb-4" data-testid="rose-temple-premium-gate-description">
               Unlock this section-only offering or choose Full App unlock. Access activates immediately after payment.
             </p>
+            <p className="text-xs text-fuchsia-100/70 mb-3" data-testid="rose-temple-devotional-note">
+              Rose Temple is practiced as devotional embodiment: tenderness, truth, and practical integration in daily life.
+            </p>
             <div className="flex flex-wrap gap-2">
+              <Button
+                variant="outline"
+                className="border-cyan-400/40 text-cyan-100"
+                onClick={() => navigate("/pricing")}
+                data-testid="rose-temple-view-subscription-button"
+              >
+                View Subscription
+              </Button>
               <Button
                 className="bg-fuchsia-500 hover:bg-fuchsia-600"
                 onClick={handleUnlockRoseTemple}

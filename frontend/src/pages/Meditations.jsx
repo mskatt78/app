@@ -213,6 +213,9 @@ const Meditations = ({ user, api }) => {
               <p className="text-muted-foreground max-w-xl mx-auto">
                 Guided meditations to explore your inner landscape, heal, and transform.
               </p>
+              <p className="text-xs text-cyan-200/70 mt-2" data-testid="meditations-devotional-note">
+                Receive each meditation as transmission—slow breath, open body awareness, and close with one grounded life action.
+              </p>
             </motion.div>
 
             {/* Meditations Grid */}

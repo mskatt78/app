@@ -13,6 +13,7 @@ export const ShamanicHeader = ({ navigate }) => {
             Shamanic <span className="italic text-primary">Practices</span>
           </h1>
           <p className="text-sm text-muted-foreground">Deep journeys and ceremonial work</p>
+          <p className="text-xs text-amber-200/70" data-testid="shamanic-devotional-note">Enter every journey with reverence, safety pacing, and grounded reintegration before returning to daily life.</p>
         </div>
       </div>
     </header>

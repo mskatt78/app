@@ -1413,7 +1413,7 @@ def _build_admin_override_tutorials(practice_name: str, override_urls: Any) -> l
 
 
 def _enrich_breathwork_session_entry(session: dict[str, Any]) -> dict[str, Any]:
-    enriched = _apply_subject_image_alignment(session, "hybrid-curated")
+    enriched = _enrich_devotional_language(_apply_subject_image_alignment(session, "hybrid-curated"), "breathwork")
     session_name = str(enriched.get("name") or "Breathwork Session").strip()
     enriched.setdefault(
         "master_embodiment_protocol",
@@ -1435,7 +1435,7 @@ def _enrich_breathwork_session_entry(session: dict[str, Any]) -> dict[str, Any]:
 
 
 def _enrich_meditation_entry(meditation: dict[str, Any]) -> dict[str, Any]:
-    enriched = _apply_subject_image_alignment(meditation, "hybrid-curated")
+    enriched = _enrich_devotional_language(_apply_subject_image_alignment(meditation, "hybrid-curated"), "meditation")
     meditation_name = str(enriched.get("name") or "Meditation").strip()
     enriched.setdefault(
         "master_embodiment_protocol",
@@ -1487,7 +1487,7 @@ def _build_mantra_master_protocol(mantra: dict[str, Any]) -> dict[str, Any]:
 
 
 def _enrich_mantra_entry(mantra: dict[str, Any]) -> dict[str, Any]:
-    enriched = dict(mantra)
+    enriched = _enrich_devotional_language(dict(mantra), "mantra")
     name = str(enriched.get("name") or "Mantra").strip()
     translation = str(enriched.get("translation") or "").strip()
     meaning = str(enriched.get("meaning") or "").strip()
@@ -1592,6 +1592,62 @@ def _enrich_practice_links(item: dict[str, Any], domain: str) -> dict[str, Any]:
         links.append({"type": "yoga", "route": "/yoga", "label": f"{element.title()} yoga sequence"})
     links.append({"type": domain, "route": f"/{domain}", "label": "Explore related teachings"})
     enriched["linked_practices"] = links
+    return enriched
+
+
+DEVOTIONAL_DOMAIN_SUFFIX = {
+    "breathwork": "Move slowly, pace your inhale and exhale with consent, and let each cycle become a living ritual in your body.",
+    "mindfulness": "Treat attention as ceremony: witness without force, soften the jaw, and return to breath each time the mind wanders.",
+    "meditation": "Receive this as transmission, not performance—allow stillness to reveal what your nervous system is ready to heal and integrate.",
+    "somatic": "Prioritize body signals over intensity; micro-pauses and orienting are part of the medicine, not interruptions to it.",
+    "heart-practices": "Let tenderness and boundaries coexist, and convert insight into one grounded relational action within the next day.",
+    "shamanic-practices": "Enter with reverence, track safety continuously, and complete every descent with hydration, orientation, and embodied closure.",
+    "elemental-practices": "Work with this element as a relational field: breathe with it, feel it through posture, and close with a practical act of integration.",
+    "healing-portals": "This portal is designed as an immersive ceremonial container—slow your pace, track sensation, and let truth become embodied action.",
+    "feminine-embodiment": "Approach this as devotional embodiment: soften, listen deeply, and honor cyclical rhythm over productivity pressure.",
+}
+
+ELEMENT_EMBODIMENT_ANCHOR = {
+    "earth": "Anchor through feet, lower belly, and spinal weight.",
+    "water": "Soften chest and pelvic bowl while lengthening exhale.",
+    "fire": "Engage core with compassionate intensity, not force.",
+    "air": "Widen side-ribs and throat while maintaining gentle pace.",
+    "spirit": "Hold upright stillness and orient to safety every few breaths.",
+}
+
+
+def _enrich_devotional_language(item: dict[str, Any], domain: str) -> dict[str, Any]:
+    enriched = dict(item)
+    practice_name = str(enriched.get("name") or enriched.get("title") or enriched.get("id") or "this practice").strip()
+    element_key = _normalize_label_key(str(enriched.get("element") or "spirit"))
+    anchor = ELEMENT_EMBODIMENT_ANCHOR.get(element_key, ELEMENT_EMBODIMENT_ANCHOR["spirit"])
+    suffix = DEVOTIONAL_DOMAIN_SUFFIX.get(domain, "Practice slowly with breath awareness, consent, and clear integration.")
+
+    description = str(enriched.get("description") or "").strip()
+    lower = description.lower()
+    depth_keywords = ("ritual", "ceremony", "embod", "somatic", "integration", "devotion", "nervous system")
+    has_depth = len(description) >= 190 or sum(1 for token in depth_keywords if token in lower) >= 2
+
+    if description and not has_depth:
+        enriched["description"] = f"{description} {suffix} {anchor}".strip()
+    elif not description:
+        tagline = str(enriched.get("tagline") or "").strip()
+        if tagline:
+            enriched["description"] = f"{tagline}. {suffix} {anchor}".strip()
+
+    enriched.setdefault(
+        "devotional_invocation",
+        f"I enter {practice_name} with reverence, paced breath, and compassionate honesty.",
+    )
+    enriched.setdefault(
+        "embodiment_prompt",
+        f"During {practice_name}, track one breath shift, one body sensation, and one emotional tone without forcing change.",
+    )
+    enriched.setdefault(
+        "integration_vow",
+        f"Before closing {practice_name}, commit one grounded action within 24 hours that expresses this medicine.",
+    )
+
     return enriched
 
 
@@ -3669,7 +3725,13 @@ async def get_mindfulness_practices(category: Optional[str] = None, element: Opt
     
     practices = await db.mindfulness_practices.find(query, {"_id": 0}).to_list(length=50)
     practices = _append_mindfulness_supplements(practices, category, element)
-    return [_apply_subject_image_alignment(_enrich_practice_links(practice, "mindfulness"), "hybrid-curated") for practice in practices]
+    return [
+        _enrich_devotional_language(
+            _apply_subject_image_alignment(_enrich_practice_links(practice, "mindfulness"), "hybrid-curated"),
+            "mindfulness",
+        )
+        for practice in practices
+    ]
 
 
 @router.get("/mindfulness-practices")
@@ -3715,7 +3777,7 @@ async def get_somatic_practices(element: Optional[str] = None) -> list[dict[str,
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=100)
-    enriched_practices = [_enrich_somatic_practice(practice) for practice in practices]
+    enriched_practices = [_enrich_devotional_language(_enrich_somatic_practice(practice), "somatic") for practice in practices]
     return sorted(
         enriched_practices,
         key=lambda practice: (
@@ -3774,7 +3836,7 @@ async def get_heart_practices(category: Optional[str] = None) -> list[dict[str, 
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
     practices = await db.heart_practices.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_content_integrity(practice, "hybrid-curated") for practice in practices]
+    return [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "heart-practices") for practice in practices]
 
 
 @router.get("/heart-practices/{practice_id}")
@@ -3784,7 +3846,7 @@ async def get_heart_practice(practice_id: str) -> dict[str, Any]:
     practice = await db.heart_practices.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Heart practice not found")
-    return _enrich_content_integrity(practice, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "heart-practices")
 
 
 # ============ SHAMANIC PRACTICES ============
@@ -3799,7 +3861,10 @@ async def get_shamanic_practices(category: Optional[str] = None) -> list[dict[st
     
     practices = await db.shamanic_practices.find(query, {"_id": 0}).to_list(length=50)
     return [
-        _enrich_content_integrity(_enrich_practice_links(practice, "shamanic-practices"), "hybrid-curated")
+        _enrich_devotional_language(
+            _enrich_content_integrity(_enrich_practice_links(practice, "shamanic-practices"), "hybrid-curated"),
+            "shamanic-practices",
+        )
         for practice in practices
     ]
 
@@ -3811,7 +3876,7 @@ async def get_shamanic_practice(practice_id: str) -> dict[str, Any]:
     practice = await db.shamanic_practices.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Shamanic practice not found")
-    return _enrich_content_integrity(practice, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "shamanic-practices")
 
 
 # ============ ELEMENTAL PRACTICES ============
@@ -3826,7 +3891,10 @@ async def get_elemental_practices(element: Optional[str] = None) -> list[dict[st
     
     practices = await db.elemental_practices.find(query, {"_id": 0}).to_list(length=50)
     return [
-        _enrich_content_integrity(_enrich_practice_links(practice, "elemental-practices"), "hybrid-curated")
+        _enrich_devotional_language(
+            _enrich_content_integrity(_enrich_practice_links(practice, "elemental-practices"), "hybrid-curated"),
+            "elemental-practices",
+        )
         for practice in practices
     ]
 
@@ -3838,7 +3906,7 @@ async def get_elemental_practice(practice_id: str) -> dict[str, Any]:
     practice = await db.elemental_practices.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Elemental practice not found")
-    return _enrich_content_integrity(practice, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "elemental-practices")
 
 
 # ============ CREATIVE PROCESSES ============
@@ -4249,7 +4317,7 @@ async def get_healing_portals(portal_type: Optional[str] = None) -> list[dict[st
         query["portal_type"] = {"$regex": f"^{portal_type}$", "$options": "i"}
 
     items = await db.healing_portals.find(query, {"_id": 0}).to_list(length=300)
-    return [_enrich_content_integrity(item, "hybrid-curated") for item in items]
+    return [_enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "healing-portals") for item in items]
 
 
 @router.get("/healing-portals/{portal_id}")
@@ -4259,7 +4327,7 @@ async def get_healing_portal(portal_id: str) -> dict[str, Any]:
     item = await db.healing_portals.find_one({"id": portal_id}, {"_id": 0})
     if not item:
         raise HTTPException(status_code=404, detail="Healing portal not found")
-    return _enrich_content_integrity(item, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "healing-portals")
 
 
 # ============ SACRED ALLY AUDIO JOURNEYS & PATHWAYS ==========
@@ -4839,7 +4907,7 @@ async def get_feminine_embodiment(category: Optional[str] = None) -> list[dict[s
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     practices = await db.feminine_embodiment.find(query, {"_id": 0}).to_list(length=100)
-    return practices
+    return [_enrich_devotional_language(practice, "feminine-embodiment") for practice in practices]
 
 
 # ============ DAILY SACRED PRACTICE ============

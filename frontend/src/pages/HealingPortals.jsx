@@ -236,8 +236,19 @@ const HealingPortals = ({ user, api }) => {
               <Crown className="inline w-4 h-4 mr-1" />
               Premium Portal Access: Womb · Shadow · Heart · Ancestral · Trauma
             </p>
+            <p className="text-xs text-amber-100/70 mt-1" data-testid="healing-portals-devotional-note">
+              Enter each portal as ceremony: slow breath, body consent, and one grounded integration action.
+            </p>
             {!premium.isSectionUnlocked("healing_portals") && (
               <div className="mt-3 flex flex-wrap gap-2" data-testid="healing-portals-unlock-actions">
+                <Button
+                  variant="outline"
+                  className="border-cyan-400/40 text-cyan-100"
+                  onClick={() => navigate("/pricing")}
+                  data-testid="healing-portals-view-subscription-button"
+                >
+                  View Subscription
+                </Button>
                 <Button
                   onClick={handleUnlockPortals}
                   className="bg-fuchsia-500 hover:bg-fuchsia-600"
@@ -436,6 +447,14 @@ const HealingPortals = ({ user, api }) => {
                       <Lock className="inline w-4 h-4 mr-1" /> This portal is part of Premium Membership.
                     </p>
                     <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline"
+                        className="border-cyan-400/40 text-cyan-100"
+                        onClick={() => navigate("/pricing")}
+                        data-testid="healing-portal-subscription-button"
+                      >
+                        View Subscription Plans
+                      </Button>
                       <Button onClick={handleUnlockPortals} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="healing-portal-upgrade-button" disabled={premium.purchaseLoadingId === "healing_portals"}>
                         {premium.purchaseLoadingId === "healing_portals" ? "Opening checkout..." : "Unlock Portals"}
                       </Button>

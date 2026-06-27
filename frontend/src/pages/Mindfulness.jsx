@@ -222,6 +222,9 @@ const Mindfulness = ({ user, api }) => {
           <p className="text-muted-foreground max-w-xl mx-auto">
             Mindfulness brings us back to the present moment - the only place where life truly happens.
           </p>
+          <p className="text-xs text-cyan-200/70 mt-2" data-testid="mindfulness-devotional-note">
+            Hold attention as ceremony: witness gently, regulate with breath, and integrate one compassionate action after each practice.
+          </p>
         </motion.div>
 
         {loading ? (

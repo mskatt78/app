@@ -10,6 +10,7 @@ export const HeartPracticesHeader = ({ navigate }) => (
       <div>
         <h1 className="text-2xl font-serif">Heart <span className="italic text-primary">Practices</span></h1>
         <p className="text-sm text-muted-foreground">Open your heart center</p>
+        <p className="text-xs text-pink-200/70" data-testid="heart-practices-devotional-note">Practice tenderness with boundaries, and anchor each session into one loving real-world action.</p>
       </div>
     </div>
   </header>

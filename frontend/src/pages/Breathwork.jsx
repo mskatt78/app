@@ -109,6 +109,9 @@ const Breathwork = ({ api, user }) => {
                 <p className="text-sm text-muted-foreground mt-1" data-testid="breathwork-premium-banner-description">
                   {premiumSessionCount} premium Breathlove sessions available. {premiumBreathworkUnlocked ? "Unlocked for your account." : "Unlock instantly to practice now."}
                 </p>
+                <p className="text-xs text-fuchsia-100/70 mt-1" data-testid="breathwork-devotional-note">
+                  Breathe as ceremony: regulate first, move at the speed of safety, then embody one real-life integration step.
+                </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -123,6 +126,14 @@ const Breathwork = ({ api, user }) => {
 
                 {!premiumBreathworkUnlocked && (
                   <div className="flex flex-wrap gap-2">
+                    <Button
+                      variant="outline"
+                      className="border-cyan-400/40 text-cyan-100"
+                      onClick={() => navigate("/pricing")}
+                      data-testid="breathwork-view-subscription-button"
+                    >
+                      View Subscription
+                    </Button>
                     <Button
                       onClick={handleUnlockBreathlove}
                       className="bg-fuchsia-500 hover:bg-fuchsia-600"
@@ -198,6 +209,14 @@ const Breathwork = ({ api, user }) => {
                 This is a Premium Breathlove ritual. Unlock section access for immediate in-session use.
               </p>
               <div className="flex gap-2">
+                <Button
+                  onClick={() => navigate("/pricing")}
+                  variant="outline"
+                  className="flex-1 border-cyan-400/40 text-cyan-100"
+                  data-testid="breathwork-premium-lock-subscription-button"
+                >
+                  Subscription
+                </Button>
                 <Button
                   onClick={handleUnlockBreathlove}
                   className="flex-1 bg-fuchsia-500 hover:bg-fuchsia-600"

@@ -1,0 +1,72 @@
+{
+  "summary": "Verified app-wide devotional tone calibration and pre-publish experience. Backend: All 8 content APIs return devotional_invocation, embodiment_prompt, and integration_vow fields in first record. Frontend: All 9 pages show devotional notes in headers/banners. Premium gates show View Subscription button alongside section/full app unlock options.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend": {
+      "breathwork_sessions_devotional": "PASS - devotional_invocation, embodiment_prompt, integration_vow present",
+      "mindfulness_devotional": "PASS - devotional fields present",
+      "meditations_devotional": "PASS - devotional fields present",
+      "heart_practices_devotional": "PASS - devotional fields present",
+      "shamanic_practices_devotional": "PASS - devotional fields present",
+      "elemental_practices_devotional": "PASS - devotional fields present",
+      "healing_portals_devotional": "PASS - devotional fields present",
+      "feminine_embodiment_devotional": "PASS - devotional fields present",
+      "enriched_descriptions": "PASS - All 8 endpoints have enriched description text"
+    },
+    "frontend": {
+      "healing_portals_devotional_note": "PASS - 'Enter each portal as ceremony: slow breath, body consent, and one grounded integration action.'",
+      "healing_portals_subscription_cta": "PASS - View Subscription button visible in premium banner",
+      "healing_portals_modal_subscription_cta": "PASS - Subscription button visible in locked portal detail modal",
+      "rose_temple_devotional_note": "PASS - 'Rose Temple is practiced as devotional embodiment: tenderness, truth, and practical integration in daily life.'",
+      "rose_temple_subscription_cta": "PASS - View Subscription button visible in premium gate",
+      "breathwork_devotional_note": "PASS - 'Breathe as ceremony: regulate first, move at the speed of safety, then embody one real-life integration step.'",
+      "breathwork_subscription_cta": "PASS - View Subscription button visible in premium banner",
+      "breathwork_modal_subscription_cta": "PASS - Subscription button visible in premium lock modal alongside Unlock and Full App buttons",
+      "heart_practices_devotional_note": "PASS - 'Practice tenderness with boundaries, and anchor each session into one loving real-world action.'",
+      "shamanic_devotional_note": "PASS - 'Enter every journey with reverence, safety pacing, and grounded reintegration before returning to daily life.'",
+      "elemental_devotional_note": "PASS - 'Treat each element as a living relationship: breathe, feel, and close with embodied integration.'",
+      "meditations_devotional_note": "PASS - 'Receive each meditation as transmission—slow breath, open body awareness, and close with one grounded life action.'",
+      "mindfulness_devotional_note": "PASS - 'Hold attention as ceremony: witness gently, regulate with breath, and integrate one compassionate action after each practice.'"
+    }
+  },
+  "data_testid_verification": {
+    "healing-portals-devotional-note": "PASS",
+    "healing-portals-view-subscription-button": "PASS",
+    "healing-portal-subscription-button": "PASS (in modal)",
+    "rose-temple-devotional-note": "PASS",
+    "rose-temple-view-subscription-button": "PASS",
+    "breathwork-devotional-note": "PASS",
+    "breathwork-view-subscription-button": "PASS",
+    "breathwork-premium-lock-subscription-button": "PASS",
+    "heart-practices-devotional-note": "PASS",
+    "shamanic-devotional-note": "PASS",
+    "elemental-devotional-note": "PASS",
+    "meditations-devotional-note": "PASS",
+    "mindfulness-devotional-note": "PASS"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_devotional_enrichment.py",
+    "/app/test_reports/pytest/pytest_iteration223.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_devotional_enrichment.py"
+  ],
+  "success_rate": {
+    "backend": "100% (24/24 tests passed)",
+    "frontend": "100% (all devotional notes and subscription CTAs verified)"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Devotional tone calibration verified across all content APIs. Each endpoint returns devotional_invocation, embodiment_prompt, and integration_vow fields. Frontend pages show devotional notes in headers. Premium gates include View Subscription button alongside section unlock and full app unlock options. Console 401 errors for favorites/auth APIs are expected for unauthenticated users."
+}

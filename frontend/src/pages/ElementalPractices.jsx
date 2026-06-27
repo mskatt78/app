@@ -121,6 +121,7 @@ const ElementalPractices = ({ api }) => {
           <div>
             <h1 className="text-2xl font-serif">Elemental <span className="italic text-primary">Practices</span></h1>
             <p className="text-sm text-muted-foreground">Deep connection with the five elements</p>
+            <p className="text-xs text-cyan-200/70" data-testid="elemental-devotional-note">Treat each element as a living relationship: breathe, feel, and close with embodied integration.</p>
           </div>
         </div>
       </header>
