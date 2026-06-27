@@ -2511,3 +2511,35 @@
     - controls clickable and functional,
     - no regressions in timer, play/pause, mute, or exit.
 
+## App-wide Guided Voice + Deeper Ritual Delivery Sweep (Iteration 218) — 2026-06-27
+
+### Why this was done
+- User reported production still felt too simplified, with missing guided voice options and shallow healing modality delivery.
+
+### Implemented
+- Added shared deep ritual composer utility:
+  - `frontend/src/utils/guidedRitualComposer.js`
+  - Provides immersive, sensory, embodiment-first narrative scaffolding and ritual delivery pillars.
+- Upgraded guided voice controls globally:
+  - `GuidedAudioButton` now emphasizes explicit voice CTA + retry action (`Tap to Retry Voice`).
+  - `useGuidedAudioPlayback` switched to richer script expansion mode (`use_ai: true`) for more immersive narration.
+- Added/expanded guided voice and ritual depth panels across core healing sections:
+  - Healing Portals
+  - Rose Temple modals
+  - Angelic Alchemy modal
+  - Sacred Ally Alchemy modal
+  - Elemental Temples detail
+  - Retreats modality + retreat detail modal
+  - Ancient Wisdom detail modal
+  - Masculine archetype + practice modals
+  - Shamanic practice modal
+  - Yoga modal label clarification
+
+### Verification
+- Testing report: `/app/test_reports/iteration_218.json`
+  - Frontend: **100%**
+  - Confirmed guided voice CTAs + retry controls + embodied ritual depth panels across tested sections.
+
+### Production Note
+- Fixes validated in preview; production requires redeploy of latest preview build.
+
