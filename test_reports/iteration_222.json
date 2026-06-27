@@ -1,0 +1,65 @@
+{
+  "summary": "Verified mantras premium/free split and premium monetization features. Backend: 26 mantras returned with first 3 free (is_premium=false) and remaining 23 premium (is_premium=true). New mantras (ids 13-26) have all required fields (transliteration, sanskrit, meaning/translation, description, ritual_practice). Premium products include premium_mantras ($49) and full_app_unlock ($369). Subscription plans (monthly/yearly) exposed. Retreats returns empty list. Frontend: Premium banner shows 'First 3 free', Unlock Mantras and Full App buttons visible. Free mantras accessible without lock modal. Premium mantras show lock modal with both CTA paths.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend": {
+      "test_mantras_returns_26_items": "PASS - 26 mantras returned",
+      "test_first_3_mantras_are_free": "PASS - Mantras id=1,2,3 have is_premium=false",
+      "test_remaining_mantras_are_premium": "PASS - Mantras id=4-26 have is_premium=true",
+      "test_new_mantras_have_required_fields": "PASS - Mantras id=13-26 have transliteration, sanskrit, meaning/translation, description, ritual_practice",
+      "test_premium_products_includes_mantras_and_full_app": "PASS - premium_mantras ($49) and full_app_unlock ($369) present",
+      "test_subscription_plans_exposed": "PASS - monthly ($19.99) and yearly ($149.99) plans exposed",
+      "test_retreats_returns_empty_list": "PASS - Empty list returned"
+    },
+    "frontend": {
+      "premium_banner": "PASS - Shows 'First 3 free • 23 advanced premium mantras'",
+      "unlock_mantras_button": "PASS - data-testid='mantras-unlock-premium-button' visible with price $49.00",
+      "unlock_fullapp_button": "PASS - data-testid='mantras-unlock-fullapp-button' visible with price $369.00",
+      "free_mantras_accessible": "PASS - Mantras id=1,2,3 have no premium badge, open player directly",
+      "premium_mantras_locked": "PASS - Mantras id=4+ show premium badge, open lock modal",
+      "premium_lock_modal": "PASS - data-testid='mantra-premium-lock-modal' appears with unlock and full app buttons",
+      "premium_lock_unlock_button": "PASS - data-testid='mantra-premium-lock-unlock-button' present",
+      "premium_lock_fullapp_button": "PASS - data-testid='mantra-premium-lock-fullapp-button' present",
+      "premium_lock_close_button": "PASS - data-testid='mantra-premium-lock-close-button' present"
+    }
+  },
+  "data_testid_verification": {
+    "mantras-library": "PASS",
+    "mantras-premium-banner": "PASS",
+    "mantras-premium-banner-title": "PASS",
+    "mantras-unlock-premium-button": "PASS",
+    "mantras-unlock-fullapp-button": "PASS",
+    "mantras-library-grid": "PASS",
+    "mantra-card-{id}": "PASS",
+    "mantra-premium-badge-{id}": "PASS",
+    "mantra-premium-lock-modal": "PASS",
+    "mantra-premium-lock-unlock-button": "PASS",
+    "mantra-premium-lock-fullapp-button": "PASS",
+    "mantra-premium-lock-close-button": "PASS"
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_mantras_premium.py",
+    "/app/test_reports/pytest/pytest_iteration222.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_mantras_premium.py"
+  ],
+  "success_rate": {
+    "backend": "100% (7/7 tests passed)",
+    "frontend": "100% (all UI elements verified)"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Mantras premium/free split verified: first 3 mantras (Om, Om Mani Padme Hum, Lokah Samastah Sukhino Bhavantu) are free, remaining 23 are premium. Premium lock modal has both CTA paths (Unlock section $49, Full App $369). All data-testid attributes are present and unique. Console 401 errors for favorites API are expected for unauthenticated users."
+}

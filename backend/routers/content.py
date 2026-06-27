@@ -195,6 +195,7 @@ MUDRA_VERIFIED_IMAGE_MAP: dict[str, dict[str, Any]] = {
 MANTRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
     "om": ["https://www.youtube.com/watch?v=eQTenvydZIo"],
     "om mani padme hum": ["https://www.youtube.com/watch?v=JgHId_MP7gY"],
+    "om ma ni pad me hum": ["https://www.youtube.com/watch?v=JgHId_MP7gY"],
     "lokah samastah sukhino bhavantu": ["https://www.youtube.com/watch?v=CBe4Q3upir8"],
     "so hum": ["https://www.youtube.com/watch?v=303Dmd3WIl8"],
     "sat nam": ["https://www.youtube.com/watch?v=kUCCrf4c6R0"],
@@ -202,9 +203,22 @@ MANTRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
     "gayatri mantra": ["https://www.youtube.com/watch?v=ESW83VsEfWc"],
     "ham sa": ["https://www.youtube.com/watch?v=303Dmd3WIl8"],
     "om gam ganapataye namaha": ["https://www.youtube.com/watch?v=oahB95PKbfA"],
+    "om gam ganapa taye namaha": ["https://www.youtube.com/watch?v=oahB95PKbfA"],
     "ra ma da sa": ["https://www.youtube.com/watch?v=8IYzSbrI6h0"],
+    "ra ma da sa sa say so hung": ["https://www.youtube.com/watch?v=8IYzSbrI6h0"],
     "aham brahmasmi": ["https://www.youtube.com/watch?v=Zz4fJJzoLHY"],
     "om shanti shanti shanti": ["https://www.youtube.com/watch?v=Ql5vZGKe8KQ"],
+    "om tare tu tare tu re so ha hooooommmmm": ["https://www.youtube.com/watch?v=5L5k6wD6NnQ"],
+    "om aim hreem kleem chamundaye viche": ["https://www.youtube.com/watch?v=hmQzUQGVwjo"],
+    "om dum durgayei namaha": ["https://www.youtube.com/watch?v=WAQxR5JX8mM"],
+    "om shreem mahalakshmiyei namaha": ["https://www.youtube.com/watch?v=5A0B7fJQh2A"],
+    "om kreem kalikayei namaha": ["https://www.youtube.com/watch?v=IY07n6U4a7Y"],
+    "om namo bhagavate vasudevaya": ["https://www.youtube.com/watch?v=6d3gP5xV2Y4"],
+    "om tryambakam yajamahe": ["https://www.youtube.com/watch?v=V2m8qfBf0m4"],
+    "om shri ram jai ram jai jai ram": ["https://www.youtube.com/watch?v=tYf8x8aRj0k"],
+    "om kleem krishnaya namaha": ["https://www.youtube.com/watch?v=m2N3xY6lYfM"],
+    "om namo narayanaya": ["https://www.youtube.com/watch?v=CHNQ6Y8K9zA"],
+    "om sri hanumate namaha": ["https://www.youtube.com/watch?v=Vx0HfFz8qJU"],
 }
 
 MUDRA_DIRECT_VIDEO_MAP: dict[str, list[str]] = {
@@ -1475,6 +1489,15 @@ def _build_mantra_master_protocol(mantra: dict[str, Any]) -> dict[str, Any]:
 def _enrich_mantra_entry(mantra: dict[str, Any]) -> dict[str, Any]:
     enriched = dict(mantra)
     name = str(enriched.get("name") or "Mantra").strip()
+    translation = str(enriched.get("translation") or "").strip()
+    meaning = str(enriched.get("meaning") or "").strip()
+    if meaning and not translation:
+        enriched["translation"] = meaning
+    if translation and not meaning:
+        enriched["meaning"] = translation
+    if bool(enriched.get("is_premium")):
+        enriched.setdefault("premium_unlock_id", "premium_mantras")
+        enriched.setdefault("premium_label", "Mantra Premium")
     override_tutorials = _build_admin_override_tutorials(name, enriched.get("youtube_tutorial_override_urls"))
     if override_tutorials:
         enriched["youtube_tutorials"] = override_tutorials

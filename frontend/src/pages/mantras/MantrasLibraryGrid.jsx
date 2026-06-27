@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
-import { Heart, Music, Volume2 } from "lucide-react";
+import { Heart, Lock, Music, Volume2 } from "lucide-react";
 
 export const MantrasLibraryGrid = ({
   filteredMantras,
   favorites,
   elementColors,
   ensureElementNaturalDefault,
-  setSelectedMantra,
+  onSelectMantra,
+  canAccessMantra,
   toggleFavorite,
   formatReviewedDate,
 }) => {
@@ -16,6 +17,7 @@ export const MantrasLibraryGrid = ({
         const colors = elementColors[mantra.element] || elementColors.Spirit;
         const isFavorite = favorites.has(mantra.id);
         const hasAudio = !!mantra.audio_url;
+        const isLocked = Boolean(mantra.is_premium) && !canAccessMantra(mantra);
 
         return (
           <motion.div
@@ -27,12 +29,20 @@ export const MantrasLibraryGrid = ({
                       ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
             onClick={() => {
               ensureElementNaturalDefault(mantra);
-              setSelectedMantra(mantra);
+              onSelectMantra(mantra);
             }}
             data-testid={`mantra-card-${mantra.id}`}
           >
-            {hasAudio && (
+            {isLocked && (
               <div className="absolute top-4 left-4">
+                <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-100 text-xs" data-testid={`mantra-premium-badge-${mantra.id}`}>
+                  <Lock className="w-3 h-3" />
+                  Premium
+                </span>
+              </div>
+            )}
+            {hasAudio && (
+              <div className={`absolute ${isLocked ? "top-12" : "top-4"} left-4`}>
                 <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-primary/20 text-primary text-xs">
                   <Volume2 className="w-3 h-3" />
                   Audio

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward, Gauge, Minus, Plus, Sparkles } from "lucide-react";
+import { Crown, Heart, Lock, Music, Play, Pause, Volume2, VolumeX, RotateCcw, Repeat, SkipForward, Gauge, Minus, Plus, Sparkles } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog";
@@ -11,6 +11,7 @@ import { Input } from "../../components/ui/input";
 import { Textarea } from "../../components/ui/textarea";
 import GuidedPracticeOverlay from "../../components/GuidedPracticeOverlay";
 import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../../components/AmbientSoundPlayer";
+import { usePremiumAccess } from "../../hooks/usePremiumAccess";
 import { toast } from "sonner";
 import { 
   createMantraAudioContext, 
@@ -67,7 +68,9 @@ const safeCloseAudioContext = (contextRef) => {
 
 const MantrasLibrary = ({ user, api }) => {
   const navigate = useNavigate();
+  const premium = usePremiumAccess({ api, user });
   const {
+    mantras,
     filteredMantras,
     loading,
     selectedElement,
@@ -92,6 +95,7 @@ const MantrasLibrary = ({ user, api }) => {
   const [selectedMantra, setSelectedMantra] = useState(null);
   const [guidedPractice, setGuidedPractice] = useState(null);
   const [activeTab, setActiveTab] = useState("library"); // "library" or "custom"
+  const [selectedLockedMantra, setSelectedLockedMantra] = useState(null);
 
   // Chanting state
   const [isChanting, setIsChanting] = useState(false);
@@ -121,6 +125,14 @@ const MantrasLibrary = ({ user, api }) => {
   const [useGeneratedSound, setUseGeneratedSound] = useState(true); // Default to generated sound
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
+  const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
+  const mantraSectionUnlocked = premium.isSectionUnlocked("premium_mantras");
+  const mantraProduct = premium.findProduct("premium_mantras");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
+
+  useEffect(() => {
+    finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [finalizeCheckoutIfPresent]);
   
   const mantraCategories = [
     { value: "personal", label: "Personal Power" },
@@ -433,6 +445,7 @@ const MantrasLibrary = ({ user, api }) => {
 
   const handleDialogClose = () => {
     setSelectedMantra(null);
+    setSelectedLockedMantra(null);
     resetChanting();
     if (audioRef.current) {
       audioRef.current.pause();
@@ -497,6 +510,37 @@ const MantrasLibrary = ({ user, api }) => {
     };
   };
 
+  const canAccessMantra = useCallback((mantra) => {
+    if (!mantra?.is_premium) return true;
+    return mantraSectionUnlocked;
+  }, [mantraSectionUnlocked]);
+
+  const handleMantraCardSelect = useCallback((mantra) => {
+    ensureElementNaturalDefault(mantra);
+    if (!canAccessMantra(mantra)) {
+      setSelectedLockedMantra(mantra);
+      return;
+    }
+    setSelectedLockedMantra(null);
+    setSelectedMantra(mantra);
+  }, [canAccessMantra, ensureElementNaturalDefault]);
+
+  const handleUnlockMantras = useCallback(async () => {
+    await premium.startPurchase({
+      productId: "premium_mantras",
+      returnPath: "/mantras",
+    });
+  }, [premium]);
+
+  const handleUnlockFullApp = useCallback(async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/mantras",
+    });
+  }, [premium]);
+
+  const premiumMantraCount = (mantras || []).filter((mantra) => Boolean(mantra.is_premium)).length;
+
   const renderMainContent = () => {
     if (activeTab === "custom") {
       return (
@@ -528,7 +572,8 @@ const MantrasLibrary = ({ user, api }) => {
         favorites={favorites}
         elementColors={elementColors}
         ensureElementNaturalDefault={ensureElementNaturalDefault}
-        setSelectedMantra={setSelectedMantra}
+        onSelectMantra={handleMantraCardSelect}
+        canAccessMantra={canAccessMantra}
         toggleFavorite={toggleFavorite}
         formatReviewedDate={formatReviewedDate}
       />
@@ -548,6 +593,41 @@ const MantrasLibrary = ({ user, api }) => {
       />
 
       <main className="max-w-6xl mx-auto p-6">
+        <section className="mb-6 rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-fuchsia-500/10 to-background p-4" data-testid="mantras-premium-banner">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-wider text-amber-300">Mantras Access Model</p>
+              <h2 className="text-xl font-serif text-amber-100" data-testid="mantras-premium-banner-title">
+                First 3 free • {premiumMantraCount} advanced premium mantras
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1" data-testid="mantras-premium-banner-description">
+                Subscription or Full App unlock grants access across all premium mantra rituals.
+              </p>
+            </div>
+            {!mantraSectionUnlocked && (
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  onClick={handleUnlockMantras}
+                  className="bg-fuchsia-500 hover:bg-fuchsia-600"
+                  data-testid="mantras-unlock-premium-button"
+                  disabled={premium.purchaseLoadingId === "premium_mantras" || premium.loading}
+                >
+                  {premium.purchaseLoadingId === "premium_mantras" ? "Opening checkout..." : `Unlock Mantras ${mantraProduct?.price?.toFixed(2) || "49.00"}`}
+                </Button>
+                <Button
+                  onClick={handleUnlockFullApp}
+                  variant="outline"
+                  className="border-amber-400/40 text-amber-100"
+                  data-testid="mantras-unlock-fullapp-button"
+                  disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
+                >
+                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+                </Button>
+              </div>
+            )}
+          </div>
+        </section>
+
         {renderMainContent()}
       </main>
 
@@ -596,6 +676,55 @@ const MantrasLibrary = ({ user, api }) => {
           practice={guidedPractice}
           onExit={() => setGuidedPractice(null)}
         />
+      )}
+
+      {selectedLockedMantra && !mantraSectionUnlocked && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="mantra-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <div className="flex items-center gap-2 text-fuchsia-200 mb-2">
+              <Lock className="w-4 h-4" />
+              <p className="text-xs uppercase tracking-wider">Premium Mantra</p>
+            </div>
+            <h3 className="text-2xl font-serif mb-2" data-testid="mantra-premium-lock-title">{selectedLockedMantra.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="mantra-premium-lock-description">
+              This mantra is part of premium ritual libraries. Unlock this section, subscribe, or unlock the whole app.
+            </p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button
+                onClick={handleUnlockMantras}
+                className="bg-fuchsia-500 hover:bg-fuchsia-600"
+                data-testid="mantra-premium-lock-unlock-button"
+                disabled={premium.purchaseLoadingId === "premium_mantras"}
+              >
+                {premium.purchaseLoadingId === "premium_mantras" ? "Opening checkout..." : `Unlock ${mantraProduct?.price?.toFixed(2) || "49.00"}`}
+              </Button>
+              <Button
+                onClick={handleUnlockFullApp}
+                variant="outline"
+                className="border-amber-400/40 text-amber-100"
+                data-testid="mantra-premium-lock-fullapp-button"
+                disabled={premium.purchaseLoadingId === "full_app_unlock"}
+              >
+                {premium.purchaseLoadingId === "full_app_unlock" ? (
+                  "Opening checkout..."
+                ) : (
+                  <>
+                    <Crown className="w-4 h-4 mr-2" />
+                    Full App {fullAppProduct?.price?.toFixed(2) || "369.00"}
+                  </>
+                )}
+              </Button>
+            </div>
+            <Button
+              variant="ghost"
+              className="w-full mt-3"
+              onClick={() => setSelectedLockedMantra(null)}
+              data-testid="mantra-premium-lock-close-button"
+            >
+              Close
+            </Button>
+          </div>
+        </div>
       )}
 
       {/* Create/Edit Custom Mantra Dialog */}
