@@ -1,0 +1,89 @@
+{
+  "summary": "Comprehensive testing of premium tiering and monetization consistency across all sections. Backend: All 7 section endpoints return correct ~30% free / ~70% paid ratio with proper premium_unlock_id and premium_label metadata. Frontend: All pages display premium banners with 3 CTA options (Subscription, Section Unlock, Full App Unlock), and premium lock modals open correctly when clicking locked items.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_results": {
+    "backend": {
+      "premium_products_endpoint": "PASS - Returns all required section unlock products",
+      "shamanic_practices_tiering": "PASS - 7 free / 15 premium (32% free), has advanced entries (shamanic-advanced-*)",
+      "heart_practices_tiering": "PASS - Has free and premium items with correct metadata",
+      "elemental_practices_tiering": "PASS - Has free and premium items with correct metadata",
+      "mindfulness_tiering": "PASS - Has free and premium items with correct metadata",
+      "meditations_tiering": "PASS - Has free and premium items with correct metadata",
+      "water_practices_tiering": "PASS - Has free and premium items with correct metadata",
+      "chakra_cleansing_tiering": "PASS - Has free and premium items with correct metadata",
+      "premium_metadata_validation": "PASS - All premium items have premium_unlock_id and premium_label"
+    },
+    "frontend": {
+      "shamanic_practices_page": {
+        "page_loads": "PASS",
+        "premium_banner_visible": "PASS - Shows '~30% free pathways, advanced journeys premium'",
+        "subscription_button": "PASS - View Subscription button present",
+        "section_unlock_button": "PASS - Unlock 69.00 button present",
+        "full_app_unlock_button": "PASS - Full App 369.00 button present",
+        "practice_grid": "PASS - 22 practice cards loaded",
+        "premium_badges": "PASS - 15 premium badges on cards",
+        "lock_modal": "PASS - Opens with all 3 CTA options"
+      },
+      "heart_practices_page": {
+        "page_loads": "PASS",
+        "premium_banner_visible": "PASS - Shows '~30% free, deeper heart rituals premium'",
+        "subscription_button": "PASS",
+        "section_unlock_button": "PASS - Unlock 59.00",
+        "full_app_unlock_button": "PASS - Full App 369.00",
+        "locked_items": "PASS - 7 locked practice cards",
+        "lock_modal": "PASS - Opens with all 3 CTA options"
+      },
+      "elemental_practices_page": {
+        "page_loads": "PASS",
+        "premium_banner_visible": "PASS - Shows '~30% free, advanced elemental work premium'",
+        "locked_items": "PASS - 7 locked items"
+      },
+      "mindfulness_page": {
+        "page_loads": "PASS",
+        "premium_banner_visible": "PASS - Shows '~30% free, deeper protocols premium'",
+        "locked_items": "PASS - 7 locked items"
+      },
+      "meditations_page": {
+        "page_loads": "PASS",
+        "premium_banner_visible": "PASS - Shows '~30% free, deeper journeys premium'",
+        "locked_items": "PASS - 4 locked items"
+      },
+      "water_practices_page": {
+        "page_loads": "PASS",
+        "premium_banner_visible": "PASS - Shows '~30% free, advanced water rites premium'",
+        "locked_items": "PASS - 3 locked items"
+      },
+      "chakra_cleansing_page": {
+        "page_loads": "PASS",
+        "premium_banner_visible": "PASS - Shows '~30% free, advanced chakra protocols premium'",
+        "locked_items": "PASS - 9 locked items"
+      },
+      "home_page_regression": "PASS - Home page loads correctly with navigation"
+    }
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_premium_tiering_iteration226.py",
+    "/app/test_reports/pytest/pytest_iteration226.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_premium_tiering_iteration226.py"
+  ],
+  "success_rate": {
+    "backend": "100% (27/27 tests passed)",
+    "frontend": "100% (all pages verified)"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Premium tiering implementation complete across all sections. Backend endpoints apply _apply_free_paid_tiering() with ~30% free ratio. Frontend pages show premium banners with 3 CTA options (Subscription, Section Unlock $XX, Full App $369). Lock modals open when clicking premium items. All data-testids properly implemented. Shamanic section includes 6 advanced entries (shamanic-advanced-*). Premium products available: shamanic_practices ($69), heart_practices ($59), elemental_practices ($59), mindfulness_practices ($49), meditations ($49), water_practices ($59), chakra_cleansing ($59), full_app_unlock ($369)."
+}

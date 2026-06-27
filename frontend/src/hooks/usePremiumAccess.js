@@ -3,6 +3,15 @@ import { toast } from "sonner";
 import { appLogger } from "../utils/logger";
 
 const EMPTY_SECTIONS = {
+  shamanic_practices: false,
+  heart_practices: false,
+  elemental_practices: false,
+  mindfulness_practices: false,
+  meditations: false,
+  water_practices: false,
+  chakra_cleansing: false,
+  somatic_practices: false,
+  grounding_practices: false,
   elemental_temples: false,
   premium_mantras: false,
   premium_breathwork: false,

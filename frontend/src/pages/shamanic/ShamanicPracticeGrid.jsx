@@ -18,6 +18,8 @@ export const ShamanicPracticeGrid = ({
   loading,
   practices,
   isLocked,
+  isPremiumLocked,
+  onLockedPractice,
   navigate,
   setSelectedPractice,
 }) => {
@@ -35,7 +37,9 @@ export const ShamanicPracticeGrid = ({
         {practices.map((practice, index) => {
           const Icon = categoryIcons[practice.category] || Feather;
           const colors = categoryColors[practice.category] || categoryColors.journey;
-          const locked = isLocked(practice);
+          const achievementLocked = isLocked(practice);
+          const premiumLocked = isPremiumLocked(practice);
+          const locked = achievementLocked || premiumLocked;
 
           return (
             <motion.div
@@ -44,7 +48,17 @@ export const ShamanicPracticeGrid = ({
               animate={CARD_ANIMATE}
               transition={{ delay: index * 0.1 }}
               className={`group rounded-2xl overflow-hidden bg-card/50 border ${colors.border} transition-all duration-500 cursor-pointer relative`}
-              onClick={() => (locked ? navigate("/achievements") : setSelectedPractice(practice))}
+              onClick={() => {
+                if (!locked) {
+                  setSelectedPractice(practice);
+                  return;
+                }
+                if (premiumLocked) {
+                  onLockedPractice?.(practice);
+                  return;
+                }
+                navigate("/achievements");
+              }}
               data-testid={`practice-${practice.id}`}
             >
               {locked && (
@@ -63,11 +77,17 @@ export const ShamanicPracticeGrid = ({
                       <Lock className="w-6 h-6 text-amber-400" />
                     </motion.div>
                     <p className="text-amber-400 font-medium text-sm mb-1">Sacred Practice</p>
-                    <p className="text-xs text-amber-200/60 mb-3">Unlock through achievements</p>
-                    <div className="flex items-center justify-center gap-1 text-xs text-amber-400/80">
-                      <Trophy className="w-3 h-3" />
-                      <span>View progress</span>
-                    </div>
+                    {premiumLocked ? (
+                      <p className="text-xs text-amber-200/70 mb-2" data-testid={`shamanic-premium-badge-${practice.id}`}>Premium unlock required</p>
+                    ) : (
+                      <>
+                        <p className="text-xs text-amber-200/60 mb-3">Unlock through achievements</p>
+                        <div className="flex items-center justify-center gap-1 text-xs text-amber-400/80">
+                          <Trophy className="w-3 h-3" />
+                          <span>View progress</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </motion.div>
               )}

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  ArrowLeft, Brain, Filter, Clock, Play, Heart, Footprints, 
+  ArrowLeft, Brain, Filter, Clock, Lock, Play, Heart, Footprints, 
   Eye, Sparkles
 } from "lucide-react";
 import { Button } from "../components/ui/button";
@@ -13,15 +13,18 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import { appLogger } from "../utils/logger";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
 const Mindfulness = ({ user, api }) => {
   const navigate = useNavigate();
+  const premium = usePremiumAccess({ api, user });
   const [practices, setPractices] = useState([]);
   const [filteredPractices, setFilteredPractices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [guidedPractice, setGuidedPractice] = useState(null);
+  const [selectedLockedPractice, setSelectedLockedPractice] = useState(null);
 
   const stableMindfulKey = (prefix, value) => {
     const slug = String(value || "item")
@@ -32,6 +35,12 @@ const Mindfulness = ({ user, api }) => {
     return `${prefix}-${slug || "item"}`;
   };
   const [isPracticing, setIsPracticing] = useState(false);
+
+  const mindfulnessUnlocked = premium.isSectionUnlocked("mindfulness_practices");
+  const mindfulnessProduct = premium.findProduct("mindfulness_practices");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
+
+  const canAccessPractice = (practice) => !practice?.is_premium || mindfulnessUnlocked;
 
   const buildMindfulnessGuidedPractice = (practice) => {
     const steps = Array.isArray(practice.instructions) && practice.instructions.length > 0
@@ -53,9 +62,27 @@ const Mindfulness = ({ user, api }) => {
   };
 
   const startGuidedOverlay = (practice) => {
+    if (!canAccessPractice(practice)) {
+      setSelectedLockedPractice(practice);
+      return;
+    }
     setSelectedPractice(null);
     setIsPracticing(false);
     setGuidedPractice(buildMindfulnessGuidedPractice(practice));
+  };
+
+  const handleUnlockMindfulness = async () => {
+    await premium.startPurchase({
+      productId: "mindfulness_practices",
+      returnPath: "/mindfulness",
+    });
+  };
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/mindfulness",
+    });
   };
 
   const exitGuidedOverlay = async () => {
@@ -118,6 +145,10 @@ const Mindfulness = ({ user, api }) => {
 
     fetchPractices();
   }, [api]);
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
 
   useEffect(() => {
     if (selectedCategory === "all") {
@@ -211,6 +242,27 @@ const Mindfulness = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6">
+        {!mindfulnessUnlocked && (
+          <section className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-cyan-500/10 to-background p-4 mb-8" data-testid="mindfulness-premium-banner">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-amber-300">Mindfulness Access Model</p>
+                <h2 className="text-xl font-serif text-amber-100" data-testid="mindfulness-premium-banner-title">~30% free, deeper protocols premium</h2>
+                <p className="text-sm text-muted-foreground mt-1" data-testid="mindfulness-premium-banner-description">Subscription, section unlock, or full app unlock available.</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" className="border-cyan-400/40 text-cyan-100" onClick={() => navigate("/pricing")} data-testid="mindfulness-view-subscription-button">View Subscription</Button>
+                <Button onClick={handleUnlockMindfulness} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="mindfulness-unlock-button" disabled={premium.purchaseLoadingId === "mindfulness_practices" || premium.loading}>
+                  {premium.purchaseLoadingId === "mindfulness_practices" ? "Opening checkout..." : `Unlock ${mindfulnessProduct?.price?.toFixed(2) || "49.00"}`}
+                </Button>
+                <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="mindfulness-unlock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}>
+                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Intro */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -245,9 +297,22 @@ const Mindfulness = ({ user, api }) => {
                   transition={{ delay: index * 0.05 }}
                   className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden
                              ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
-                  onClick={() => setSelectedPractice(practice)}
+                  onClick={() => {
+                    if (!canAccessPractice(practice)) {
+                      setSelectedLockedPractice(practice);
+                      return;
+                    }
+                    setSelectedPractice(practice);
+                  }}
                   data-testid={`practice-card-${practice.id}`}
                 >
+                  {Boolean(practice.is_premium) && !canAccessPractice(practice) && (
+                    <div className="absolute top-3 left-3 z-10">
+                      <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-100 text-xs" data-testid={`mindfulness-premium-badge-${practice.id}`}>
+                        <Lock className="w-3 h-3" /> Premium
+                      </span>
+                    </div>
+                  )}
                   {practice.image_url && (
                     <div className="relative h-36 overflow-hidden">
                       <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover" loading="lazy" />
@@ -415,6 +480,25 @@ const Mindfulness = ({ user, api }) => {
           )}
         </DialogContent>
       </Dialog>
+
+      {selectedLockedPractice && !mindfulnessUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="mindfulness-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <h3 className="text-2xl font-serif mb-2" data-testid="mindfulness-premium-lock-title">{selectedLockedPractice.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="mindfulness-premium-lock-description">This mindfulness protocol is premium. Unlock section, subscribe, or unlock full app.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="mindfulness-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockMindfulness} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="mindfulness-premium-lock-unlock-button" disabled={premium.purchaseLoadingId === "mindfulness_practices"}>
+                {premium.purchaseLoadingId === "mindfulness_practices" ? "Opening checkout..." : `Unlock ${mindfulnessProduct?.price?.toFixed(2) || "49.00"}`}
+              </Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="mindfulness-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPractice(null)} data-testid="mindfulness-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

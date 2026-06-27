@@ -10,6 +10,7 @@ export const useShamanicPracticesData = (api) => {
   const [filter, setFilter] = useState("all");
   const [unlockedContent, setUnlockedContent] = useState([]);
   const [isPracticing, setIsPracticing] = useState(false);
+  const [selectedLockedPractice, setSelectedLockedPractice] = useState(null);
 
   const fetchPractices = useCallback(async () => {
     setLoading(true);
@@ -94,6 +95,8 @@ export const useShamanicPracticesData = (api) => {
     filter,
     setFilter,
     unlockedContent,
+    selectedLockedPractice,
+    setSelectedLockedPractice,
     isPracticing,
     setIsPracticing,
     isLocked,

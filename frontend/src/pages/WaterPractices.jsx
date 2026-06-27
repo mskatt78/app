@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Droplets, Sparkles, Heart, Moon, Sun, 
-  Play, X, Clock, Volume2, Star, Waves, Pause, Loader2
+  Play, X, Clock, Lock, Volume2, Star, Waves, Pause, Loader2
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
 import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../utils/guidedVoiceSettings";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
 const getCategoryButtonClassName = (isActive) => {
   if (isActive) {
@@ -202,13 +203,21 @@ const stableWaterKey = (prefix, value) => {
 
 const WaterPractices = ({ user, api }) => {
   const navigate = useNavigate();
+  const premium = usePremiumAccess({ api, user });
   const [selectedPractice, setSelectedPractice] = useState(null);
   const [activeCategory, setActiveCategory] = useState("blessing");
   const [isPlaying, setIsPlaying] = useState(false);
   const [guidedPractice, setGuidedPractice] = useState(null);
+  const [selectedLockedPractice, setSelectedLockedPractice] = useState(null);
   const [audioLoading, setAudioLoading] = useState(false);
   const audioRef = useRef(null);
   const guidedAudioCacheRef = useRef(new Map());
+
+  const waterUnlocked = premium.isSectionUnlocked("water_practices");
+  const waterProduct = premium.findProduct("water_practices");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
+
+  const canAccessPractice = useCallback((practice) => !practice?.is_premium || waterUnlocked, [waterUnlocked]);
 
   // Cleanup audio on unmount
   useEffect(() => {
@@ -247,13 +256,39 @@ const WaterPractices = ({ user, api }) => {
 
   const launchGuidedOverlay = useCallback((practice) => {
     if (!practice) return;
+    if (!canAccessPractice(practice)) {
+      setSelectedLockedPractice(practice);
+      return;
+    }
     pauseGuidedAudio();
     const payload = buildGuidedPracticePayload(practice);
     setSelectedPractice(null);
     window.requestAnimationFrame(() => {
       setGuidedPractice(payload);
     });
-  }, [buildGuidedPracticePayload, pauseGuidedAudio]);
+  }, [buildGuidedPracticePayload, canAccessPractice, pauseGuidedAudio]);
+
+  const handleOpenPractice = useCallback((practice) => {
+    if (!canAccessPractice(practice)) {
+      setSelectedLockedPractice(practice);
+      return;
+    }
+    setSelectedPractice(practice);
+  }, [canAccessPractice]);
+
+  const handleUnlockWaterPractices = useCallback(async () => {
+    await premium.startPurchase({
+      productId: "water_practices",
+      returnPath: "/water-practices",
+    });
+  }, [premium]);
+
+  const handleUnlockFullApp = useCallback(async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/water-practices",
+    });
+  }, [premium]);
 
   // Generate guided audio for water practice
   const generateGuidedAudio = useCallback(async () => {
@@ -364,6 +399,10 @@ const WaterPractices = ({ user, api }) => {
   }, [api]);
 
   useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
+
+  useEffect(() => {
     if (!api || loading) return;
     const alreadyLoaded = waterPractices.some((practice) => normalizeWaterCategory(practice.category) === activeCategory);
     if (alreadyLoaded) return;
@@ -416,6 +455,26 @@ const WaterPractices = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6 space-y-8">
+        {!waterUnlocked && (
+          <section className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-blue-500/10 to-background p-4" data-testid="water-practices-premium-banner">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-amber-300">Water Access Model</p>
+                <h2 className="text-xl font-serif text-amber-100" data-testid="water-practices-premium-banner-title">~30% free, advanced water rites premium</h2>
+                <p className="text-sm text-muted-foreground mt-1" data-testid="water-practices-premium-banner-description">Subscription, section unlock, or full app unlock available.</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" className="border-cyan-400/40 text-cyan-100" onClick={() => navigate("/pricing")} data-testid="water-practices-view-subscription-button">View Subscription</Button>
+                <Button onClick={handleUnlockWaterPractices} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="water-practices-unlock-button" disabled={premium.purchaseLoadingId === "water_practices" || premium.loading}>
+                  {premium.purchaseLoadingId === "water_practices" ? "Opening checkout..." : `Unlock ${waterProduct?.price?.toFixed(2) || "59.00"}`}
+                </Button>
+                <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="water-practices-unlock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}>
+                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
         {/* Hero */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -483,11 +542,18 @@ const WaterPractices = ({ user, api }) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              onClick={() => setSelectedPractice(practice)}
+              onClick={() => handleOpenPractice(practice)}
               data-testid={`water-practice-card-${practice.id}`}
               className="group cursor-pointer rounded-2xl overflow-hidden border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-cyan-500/5
                        hover:border-blue-500/40 transition-all duration-300"
             >
+              {Boolean(practice.is_premium) && !canAccessPractice(practice) && (
+                <div className="absolute top-3 left-3 z-10">
+                  <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-100 text-xs" data-testid={`water-practice-premium-badge-${practice.id}`}>
+                    <Lock className="w-3 h-3" /> Premium
+                  </span>
+                </div>
+              )}
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
@@ -751,6 +817,25 @@ const WaterPractices = ({ user, api }) => {
           />
         )}
       </AnimatePresence>
+
+      {selectedLockedPractice && !waterUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="water-practices-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <h3 className="text-2xl font-serif mb-2" data-testid="water-practices-premium-lock-title">{selectedLockedPractice.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="water-practices-premium-lock-description">This water ritual is premium. Unlock section, subscribe, or unlock full app access.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="water-practices-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockWaterPractices} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="water-practices-premium-lock-unlock-button" disabled={premium.purchaseLoadingId === "water_practices"}>
+                {premium.purchaseLoadingId === "water_practices" ? "Opening checkout..." : `Unlock ${waterProduct?.price?.toFixed(2) || "59.00"}`}
+              </Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="water-practices-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPractice(null)} data-testid="water-practices-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

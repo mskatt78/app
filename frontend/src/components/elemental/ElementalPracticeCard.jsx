@@ -1,10 +1,19 @@
 import { motion } from "framer-motion";
-import { ChevronRight, Clock, Play, Star } from "lucide-react";
+import { ChevronRight, Clock, Lock, Play, Star } from "lucide-react";
 import { difficultyColors, elementColors, elementIcons } from "./elementalConfig";
 
-export const ElementalPracticeCard = ({ practice, index, onSelect, onStartGuided, formatReviewedDate }) => {
+export const ElementalPracticeCard = ({
+  practice,
+  index,
+  onSelect,
+  onStartGuided,
+  canAccessPractice,
+  onLockedPractice,
+  formatReviewedDate,
+}) => {
   const Icon = elementIcons[practice.element] || Star;
   const colors = elementColors[practice.element] || elementColors.Spirit;
+  const locked = Boolean(practice.is_premium) && !canAccessPractice(practice);
 
   return (
     <motion.div
@@ -12,10 +21,23 @@ export const ElementalPracticeCard = ({ practice, index, onSelect, onStartGuided
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className={`group rounded-2xl overflow-hidden bg-card/50 border ${colors.border} hover:border-opacity-50 transition-all duration-500 cursor-pointer`}
-      onClick={() => onSelect(practice)}
+      className={`group rounded-2xl overflow-hidden bg-card/50 border ${colors.border} hover:border-opacity-50 transition-all duration-500 cursor-pointer relative`}
+      onClick={() => {
+        if (locked) {
+          onLockedPractice?.(practice);
+          return;
+        }
+        onSelect(practice);
+      }}
       data-testid={`practice-${practice.id}`}
     >
+      {locked && (
+        <div className="absolute top-3 left-3 z-10">
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-100 text-xs" data-testid={`elemental-practice-premium-badge-${practice.id}`}>
+            <Lock className="w-3 h-3" /> Premium
+          </span>
+        </div>
+      )}
       {practice.image_url && (
         <div className="relative h-48 overflow-hidden bg-black/45">
           <img
@@ -74,6 +96,10 @@ export const ElementalPracticeCard = ({ practice, index, onSelect, onStartGuided
           type="button"
           onClick={(event) => {
             event.stopPropagation();
+            if (locked) {
+              onLockedPractice?.(practice);
+              return;
+            }
             onStartGuided?.(practice);
           }}
           className={`mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${colors.bg} ${colors.text} border ${colors.border || "border-white/10"} hover:opacity-90 transition-opacity`}

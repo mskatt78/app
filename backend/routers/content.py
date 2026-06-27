@@ -384,6 +384,117 @@ MINDFULNESS_SUPPLEMENTS = [
     },
 ]
 
+SHAMANIC_ADVANCED_SUPPLEMENTS = [
+    {
+        "id": "shamanic-advanced-soul-retrieval",
+        "name": "Deep Soul Retrieval Descent",
+        "category": "journey",
+        "tradition": "Andean / Core Shamanic",
+        "duration_minutes": 38,
+        "description": "Advanced journey protocol for reclaiming exiled vitality fragments with strict safety, witness integration, and post-journey nervous-system repair.",
+        "preparation": "Set circle boundaries, identify support contact, and establish a 4-6 breath regulation rhythm before drumming begins.",
+        "journey_steps": [
+            "Name the lost essence quality you are reclaiming and anchor one body sensation to track throughout the descent.",
+            "Journey through lower-world imagery while keeping one hand on your heart for orienting safety.",
+            "Invite the returned essence through breath, voice, and micro-movement until warmth and coherence increase.",
+            "Seal retrieval with hydration, written integration notes, and one concrete life action within 24 hours.",
+        ],
+        "safety_notes": "Not for acute destabilization states. Pause if dissociation rises; orient to room, feet, and breath before continuing.",
+        "closing_prayer": "I welcome my returned essence with responsibility, tenderness, and grounded action.",
+    },
+    {
+        "id": "shamanic-advanced-ancestral-court",
+        "name": "Ancestral Court Reconciliation Rite",
+        "category": "healing",
+        "tradition": "West African Diaspora / Ritual Dialogue",
+        "duration_minutes": 34,
+        "description": "Ceremonial protocol to process inherited burden patterns and negotiate intergenerational repair through reverent ancestral witness work.",
+        "preparation": "Prepare photos/symbols, white candle, and two pages for dialogue notes (burden + blessing columns).",
+        "journey_steps": [
+            "Open with three offerings: breath, gratitude, and one truthful acknowledgment of inherited pain.",
+            "Name the lineage burden pattern and ask what boundary/action ends its repetition in your branch.",
+            "Receive one blessing quality and embody it with upright posture, softened jaw, and coherent exhale.",
+            "Close with a service vow expressed as one relational repair action this week.",
+        ],
+        "safety_notes": "Practice with support if trauma activation is high. Keep sessions time-bounded and ground physically after completion.",
+    },
+    {
+        "id": "shamanic-advanced-fire-vision-fast",
+        "name": "Fire Vision Fast (Short Form)",
+        "category": "ceremony",
+        "tradition": "Indigenous Fire Circle / Vision Quest Adaptation",
+        "duration_minutes": 42,
+        "description": "Guided abbreviated fast + fire protocol for clarifying purpose through disciplined silence, tracking inner resistance, and receiving directional vision.",
+        "preparation": "Hydrate well, avoid stimulants, and define a single guiding question before entering the fire watch.",
+        "journey_steps": [
+            "Hold silent watch for twelve breath cycles while gazing softly at the flame perimeter.",
+            "Speak your core question aloud once, then return to receptive silence with relaxed lower belly.",
+            "Record three phrases/images that repeat; treat repetition as signal rather than noise.",
+            "Translate insight into one measurable 7-day commitment.",
+        ],
+    },
+    {
+        "id": "shamanic-advanced-drum-protocol",
+        "name": "Three-World Drum Navigation Protocol",
+        "category": "journey",
+        "tradition": "Core Shamanic Drumming",
+        "duration_minutes": 36,
+        "description": "Precision drumming structure for transitioning through lower, middle, and upper world inquiry while preserving coherent return and integration.",
+        "preparation": "Set timer blocks (12/12/12), choose retrieval focus, and establish re-entry cue phrase before beginning.",
+        "journey_steps": [
+            "Lower world: seek embodied resource and protective ally support.",
+            "Middle world: witness current relational/systemic pattern without collapse.",
+            "Upper world: request directional teaching and future-aligned correction.",
+            "Return through reverse sequence and seal with breath, hydration, and grounding meal.",
+        ],
+    },
+    {
+        "id": "shamanic-advanced-shadow-bone",
+        "name": "Shadow Bone Oracle Integration",
+        "category": "integration",
+        "tradition": "Bone Casting / Symbolic Divination",
+        "duration_minutes": 30,
+        "description": "Advanced shadow integration sequence using symbolic pattern reading to identify avoidance loops and convert insight into embodied accountability.",
+        "preparation": "Choose 6-9 symbolic objects and assign one intentional domain to each before casting.",
+        "journey_steps": [
+            "Cast symbols once; read first pattern before cognitive editing begins.",
+            "Identify one avoided truth and one protective adaptation that can now soften.",
+            "Anchor correction through breath + posture + one sentence accountability vow.",
+            "Complete one practical repair action within 48 hours.",
+        ],
+    },
+    {
+        "id": "shamanic-advanced-river-rebirth",
+        "name": "River Rebirth Crossing",
+        "category": "ritual",
+        "tradition": "Water Crossing Rite",
+        "duration_minutes": 33,
+        "description": "Threshold crossing ritual for identity transitions, grief release, and re-entry into next-phase commitments with body-led consent.",
+        "preparation": "Mark crossing line physically, prepare dry grounding layer, and define old identity / new commitment statements.",
+        "journey_steps": [
+            "Speak the identity you are completing and name what it protected.",
+            "Cross water boundary slowly while extending exhale and relaxing shoulders.",
+            "Speak your next-phase commitment aloud three times with stable posture.",
+            "Close by writing non-negotiable support structures for the transition.",
+        ],
+    },
+]
+
+SECTION_FREE_RATIO = 0.30
+SECTION_MIN_FREE_ITEMS = 2
+
+SECTION_PREMIUM_LABELS = {
+    "mindfulness_practices": "Mindfulness Premium",
+    "meditations": "Meditations Premium",
+    "heart_practices": "Heart Practices Premium",
+    "shamanic_practices": "Shamanic Premium",
+    "elemental_practices": "Elemental Practices Premium",
+    "water_practices": "Water Practices Premium",
+    "chakra_cleansing": "Chakra Cleansing Premium",
+    "somatic_practices": "Somatic Premium",
+    "grounding_practices": "Grounding Premium",
+}
+
 YOGA_SEQUENCE_OF_DAY_LIBRARY = [
     {
         "id": "yoga-sequence-sunrise-awakening",
@@ -1777,6 +1888,64 @@ def _append_mindfulness_supplements(practices: list[dict[str, Any]], category: O
             continue
         additions.append(item)
     return practices + additions
+
+
+def _append_shamanic_supplements(practices: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(practice.get("id")) for practice in practices}
+    additions = []
+    for item in SHAMANIC_ADVANCED_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if category and str(item.get("category", "")).lower() != str(category).lower():
+            continue
+        additions.append(item)
+    return practices + additions
+
+
+def _parse_tier_sort_value(item: dict[str, Any]) -> tuple[int, str]:
+    raw_id = str(item.get("id") or "")
+    digits = "".join(char for char in raw_id if char.isdigit())
+    if digits:
+        return int(digits), str(item.get("name") or "")
+    return 10_000_000, str(item.get("name") or raw_id)
+
+
+def _apply_free_paid_tiering(
+    items: list[dict[str, Any]],
+    unlock_id: str,
+    free_ratio: float = SECTION_FREE_RATIO,
+    minimum_free: int = SECTION_MIN_FREE_ITEMS,
+) -> list[dict[str, Any]]:
+    if not items:
+        return []
+
+    ordered = sorted(items, key=_parse_tier_sort_value)
+    total_items = len(ordered)
+    free_count = max(minimum_free, int(round(total_items * free_ratio)))
+
+    if total_items > 3:
+        free_count = min(free_count, total_items - 1)
+    free_count = max(1, min(free_count, total_items))
+
+    free_ids = {str(item.get("id") or f"idx-{index}") for index, item in enumerate(ordered[:free_count])}
+    premium_label = SECTION_PREMIUM_LABELS.get(unlock_id, "Premium Access")
+
+    tiered: list[dict[str, Any]] = []
+    for index, item in enumerate(items):
+        enriched = dict(item)
+        item_id = str(item.get("id") or f"idx-{index}")
+        is_premium = item_id not in free_ids
+        enriched["is_premium"] = is_premium
+        if is_premium:
+            enriched.setdefault("premium_unlock_id", unlock_id)
+            enriched.setdefault("premium_label", premium_label)
+        else:
+            if str(enriched.get("premium_unlock_id") or "") == unlock_id:
+                enriched.pop("premium_unlock_id", None)
+            if str(enriched.get("premium_label") or "") == premium_label:
+                enriched.pop("premium_label", None)
+        tiered.append(enriched)
+    return tiered
 
 
 def _split_sentences(text: str) -> list[str]:
@@ -3810,13 +3979,14 @@ async def get_mindfulness_practices(category: Optional[str] = None, element: Opt
     
     practices = await db.mindfulness_practices.find(query, {"_id": 0}).to_list(length=50)
     practices = _append_mindfulness_supplements(practices, category, element)
-    return [
+    enriched = [
         _enrich_devotional_language(
             _apply_subject_image_alignment(_enrich_practice_links(practice, "mindfulness"), "hybrid-curated"),
             "mindfulness",
         )
         for practice in practices
     ]
+    return _apply_free_paid_tiering(enriched, "mindfulness_practices")
 
 
 @router.get("/mindfulness-practices")
@@ -3838,7 +4008,8 @@ async def get_meditations(category: Optional[str] = None, element: Optional[str]
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     meditations = await db.meditations.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_meditation_entry(meditation) for meditation in meditations]
+    enriched = [_enrich_meditation_entry(meditation) for meditation in meditations]
+    return _apply_free_paid_tiering(enriched, "meditations")
 
 
 @router.get("/meditations/{meditation_id}")
@@ -3863,13 +4034,14 @@ async def get_somatic_practices(element: Optional[str] = None) -> list[dict[str,
     
     practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=100)
     enriched_practices = [_enrich_devotional_language(_enrich_somatic_practice(practice), "somatic") for practice in practices]
-    return sorted(
+    sorted_practices = sorted(
         enriched_practices,
         key=lambda practice: (
             practice.get("movement_track_order", 99),
             str(practice.get("name", "")).lower(),
         ),
     )
+    return _apply_free_paid_tiering(sorted_practices, "somatic_practices")
 
 
 # ============ GROUNDING EXERCISES ============
@@ -3883,7 +4055,8 @@ async def get_grounding_exercises(element: Optional[str] = None) -> list[dict[st
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     exercises = await db.grounding_exercises.find(query, {"_id": 0}).to_list(length=50)
-    return [_apply_subject_image_alignment(exercise, "hybrid-curated") for exercise in exercises]
+    enriched = [_apply_subject_image_alignment(exercise, "hybrid-curated") for exercise in exercises]
+    return _apply_free_paid_tiering(enriched, "grounding_practices")
 
 
 # ============ PRESET RITUALS (Public) ============
@@ -3921,7 +4094,8 @@ async def get_heart_practices(category: Optional[str] = None) -> list[dict[str, 
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
     practices = await db.heart_practices.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "heart-practices") for practice in practices]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "heart-practices") for practice in practices]
+    return _apply_free_paid_tiering(enriched, "heart_practices")
 
 
 @router.get("/heart-practices/{practice_id}")
@@ -3944,14 +4118,16 @@ async def get_shamanic_practices(category: Optional[str] = None) -> list[dict[st
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
-    practices = await db.shamanic_practices.find(query, {"_id": 0}).to_list(length=50)
-    return [
+    practices = await db.shamanic_practices.find(query, {"_id": 0}).to_list(length=80)
+    practices = _append_shamanic_supplements(practices, category)
+    enriched = [
         _enrich_devotional_language(
             _enrich_content_integrity(_enrich_practice_links(practice, "shamanic-practices"), "hybrid-curated"),
             "shamanic-practices",
         )
         for practice in practices
     ]
+    return _apply_free_paid_tiering(enriched, "shamanic_practices")
 
 
 @router.get("/shamanic-practices/{practice_id}")
@@ -3975,13 +4151,14 @@ async def get_elemental_practices(element: Optional[str] = None) -> list[dict[st
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     practices = await db.elemental_practices.find(query, {"_id": 0}).to_list(length=50)
-    return [
+    enriched = [
         _enrich_devotional_language(
             _enrich_content_integrity(_enrich_practice_links(practice, "elemental-practices"), "hybrid-curated"),
             "elemental-practices",
         )
         for practice in practices
     ]
+    return _apply_free_paid_tiering(enriched, "elemental_practices")
 
 
 @router.get("/elemental-practices/{practice_id}")
@@ -4946,7 +5123,8 @@ async def get_chakra_cleansing(chakra: Optional[str] = None) -> list[dict[str, A
     if chakra:
         query["chakra"] = {"$regex": f"^{chakra}$", "$options": "i"}
     practices = await db.chakra_cleansing.find(query, {"_id": 0}).to_list(length=100)
-    return practices
+    enriched = [_enrich_devotional_language(practice, "healing-portals") for practice in practices]
+    return _apply_free_paid_tiering(enriched, "chakra_cleansing")
 
 
 @router.get("/chakra-cleansing/{chakra_id}")
@@ -5392,5 +5570,6 @@ async def get_water_practices(category: Optional[str] = None) -> list[dict[str, 
         query["category"] = category
     practices = await db.water_practices.find(query, {"_id": 0}).to_list(length=100)
     practices = _append_water_supplements(practices, category)
-    return [_apply_subject_image_alignment(practice, "hybrid-curated") for practice in practices]
+    enriched = [_enrich_devotional_language(_apply_subject_image_alignment(practice, "hybrid-curated"), "healing-portals") for practice in practices]
+    return _apply_free_paid_tiering(enriched, "water_practices")
 

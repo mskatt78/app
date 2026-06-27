@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { ChevronRight, Clock, Heart, Play } from "lucide-react";
+import { ChevronRight, Clock, Heart, Lock, Play } from "lucide-react";
 import { resolveReviewedDate } from "./heartPracticeConfig";
 import { formatDurationMinutesLabel } from "../../utils/durationUtils";
 
-export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, setSelectedPractice, onStartGuided }) => (
+export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, setSelectedPractice, onStartGuided, canAccessPractice, onLockedPractice }) => (
   <>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="heart-practices-grid">
       {practices.map((practice, index) => {
@@ -18,9 +18,22 @@ export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, s
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             className={`group rounded-2xl overflow-hidden bg-card/50 border ${colors.border} hover:border-opacity-50 transition-all duration-500 cursor-pointer`}
-            onClick={() => setSelectedPractice(practice)}
+            onClick={() => {
+              if (!canAccessPractice(practice)) {
+                onLockedPractice?.(practice);
+                return;
+              }
+              setSelectedPractice(practice);
+            }}
             data-testid={`practice-${practice.id}`}
           >
+            {Boolean(practice.is_premium) && !canAccessPractice(practice) && (
+              <div className="absolute top-3 left-3 z-10">
+                <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-100 text-xs" data-testid={`heart-practice-premium-badge-${practice.id}`}>
+                  <Lock className="w-3 h-3" /> Premium
+                </span>
+              </div>
+            )}
             {practice.image_url && (
               <div className="relative h-48 overflow-hidden">
                 <img
@@ -66,7 +79,11 @@ export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, s
                 type="button"
                 onClick={(event) => {
                   event.stopPropagation();
-                  onStartGuided?.(practice);
+                    if (!canAccessPractice(practice)) {
+                      onLockedPractice?.(practice);
+                      return;
+                    }
+                    onStartGuided?.(practice);
                 }}
                 className={`mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${colors.bg} ${colors.text} border ${colors.border || "border-white/10"} hover:opacity-90 transition-opacity`}
                 data-testid={`heart-card-start-guided-${practice.id}`}

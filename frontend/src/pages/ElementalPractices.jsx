@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Lock, Star } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { ElementalPracticeCard } from "../components/elemental/ElementalPracticeCard";
@@ -8,9 +8,11 @@ import { ElementalPracticeModal } from "../components/elemental/ElementalPractic
 import { elementColors, elementIcons, elementalFilters } from "../components/elemental/elementalConfig";
 import { appLogger } from "../utils/logger";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
-const ElementalPractices = ({ api }) => {
+const ElementalPractices = ({ api, user }) => {
   const navigate = useNavigate();
+  const premium = usePremiumAccess({ api, user });
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPractice, setSelectedPractice] = useState(null);
@@ -18,6 +20,13 @@ const ElementalPractices = ({ api }) => {
   const [isPracticing, setIsPracticing] = useState(false);
   const [showGuided, setShowGuided] = useState(false);
   const [guidedPractice, setGuidedPractice] = useState(null);
+  const [selectedLockedPractice, setSelectedLockedPractice] = useState(null);
+
+  const elementalUnlocked = premium.isSectionUnlocked("elemental_practices");
+  const elementalProduct = premium.findProduct("elemental_practices");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
+
+  const canAccessPractice = (practice) => !practice?.is_premium || elementalUnlocked;
 
   const buildElementalGuidedPractice = useCallback((practice) => {
     const steps = Array.isArray(practice.instructions) && practice.instructions.length > 0
@@ -40,8 +49,26 @@ const ElementalPractices = ({ api }) => {
   }, []);
 
   const handleStartCardGuided = useCallback((practice) => {
+    if (!canAccessPractice(practice)) {
+      setSelectedLockedPractice(practice);
+      return;
+    }
     setGuidedPractice(buildElementalGuidedPractice(practice));
-  }, [buildElementalGuidedPractice]);
+  }, [buildElementalGuidedPractice, elementalUnlocked]);
+
+  const handleUnlockElementalPractices = async () => {
+    await premium.startPurchase({
+      productId: "elemental_practices",
+      returnPath: "/elemental-practices",
+    });
+  };
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/elemental-practices",
+    });
+  };
 
   const handleExitCardGuided = useCallback(() => {
     const completed = guidedPractice;
@@ -86,6 +113,10 @@ const ElementalPractices = ({ api }) => {
   }, [fetchPractices]);
 
   useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
+
+  useEffect(() => {
     if (!selectedPractice) return undefined;
     const handleEscape = (event) => {
       if (event.key === "Escape") {
@@ -127,6 +158,27 @@ const ElementalPractices = ({ api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6 space-y-8">
+        {!elementalUnlocked && (
+          <section className="rounded-2xl border border-amber-500/20 bg-gradient-to-r from-amber-500/10 via-fuchsia-500/10 to-background p-4" data-testid="elemental-practices-premium-banner">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-amber-300">Elemental Access Model</p>
+                <h2 className="text-xl font-serif text-amber-100" data-testid="elemental-practices-premium-banner-title">~30% free, advanced elemental work premium</h2>
+                <p className="text-sm text-muted-foreground mt-1" data-testid="elemental-practices-premium-banner-description">Subscription, section unlock, or full app unlock available.</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Button variant="outline" className="border-cyan-400/40 text-cyan-100" onClick={() => navigate("/pricing")} data-testid="elemental-practices-view-subscription-button">View Subscription</Button>
+                <Button onClick={handleUnlockElementalPractices} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="elemental-practices-unlock-button" disabled={premium.purchaseLoadingId === "elemental_practices" || premium.loading}>
+                  {premium.purchaseLoadingId === "elemental_practices" ? "Opening checkout..." : `Unlock ${elementalProduct?.price?.toFixed(2) || "59.00"}`}
+                </Button>
+                <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="elemental-practices-unlock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}>
+                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+                </Button>
+              </div>
+            </div>
+          </section>
+        )}
+
         <div className="flex flex-wrap gap-2">
           {elementalFilters.map((element) => {
             const Icon = elementIcons[element] || Star;
@@ -155,8 +207,16 @@ const ElementalPractices = ({ api }) => {
               key={practice.id}
               practice={practice}
               index={index}
-              onSelect={setSelectedPractice}
+              onSelect={(candidate) => {
+                if (!canAccessPractice(candidate)) {
+                  setSelectedLockedPractice(candidate);
+                  return;
+                }
+                setSelectedPractice(candidate);
+              }}
               onStartGuided={handleStartCardGuided}
+              canAccessPractice={canAccessPractice}
+              onLockedPractice={setSelectedLockedPractice}
               formatReviewedDate={formatReviewedDate}
             />
           ))}
@@ -191,6 +251,26 @@ const ElementalPractices = ({ api }) => {
           toast.success("Elemental practice complete!");
         }}
       />
+
+      {selectedLockedPractice && !elementalUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="elemental-practices-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Elemental Practice</p></div>
+            <h3 className="text-2xl font-serif mb-2" data-testid="elemental-practices-premium-lock-title">{selectedLockedPractice.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="elemental-practices-premium-lock-description">This advanced elemental practice is premium. Unlock section, subscribe, or unlock full app.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="elemental-practices-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockElementalPractices} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="elemental-practices-premium-lock-unlock-button" disabled={premium.purchaseLoadingId === "elemental_practices"}>
+                {premium.purchaseLoadingId === "elemental_practices" ? "Opening checkout..." : `Unlock ${elementalProduct?.price?.toFixed(2) || "59.00"}`}
+              </Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="elemental-practices-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPractice(null)} data-testid="elemental-practices-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

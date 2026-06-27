@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { Clock, Heart, Loader2, Zap } from "lucide-react";
+import { Clock, Heart, Loader2, Lock, Zap } from "lucide-react";
 import { getChakraConfig } from "./chakraConfig";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 
-export const ChakraPracticeGrid = ({ loading, practices, onOpenPractice }) => {
+export const ChakraPracticeGrid = ({ loading, practices, onOpenPractice, canAccessPractice }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20" data-testid="chakra-practices-loading">
@@ -38,6 +38,13 @@ export const ChakraPracticeGrid = ({ loading, practices, onOpenPractice }) => {
             onClick={() => onOpenPractice(practice)}
             data-testid={`chakra-card-${practice.id}`}
           >
+            {Boolean(practice.is_premium) && !canAccessPractice(practice) && (
+              <div className="absolute top-3 left-3 z-10">
+                <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-100 text-xs" data-testid={`chakra-practice-premium-badge-${practice.id}`}>
+                  <Lock className="w-3 h-3" /> Premium
+                </span>
+              </div>
+            )}
             {practice.image_url ? (
               <div className="relative h-44 overflow-hidden">
                 <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />

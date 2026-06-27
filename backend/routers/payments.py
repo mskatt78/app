@@ -42,6 +42,60 @@ COURSE_BUNDLES = {
 }
 
 PREMIUM_UNLOCK_PRODUCTS: dict[str, dict[str, Any]] = {
+    "shamanic_practices": {
+        "name": "Shamanic Practices Unlock",
+        "description": "Unlock advanced shamanic journeys and ceremonial protocols",
+        "price": 69.00,
+        "unlock_scope": "section",
+    },
+    "heart_practices": {
+        "name": "Heart Practices Unlock",
+        "description": "Unlock deep relational and heart coherence practices",
+        "price": 59.00,
+        "unlock_scope": "section",
+    },
+    "elemental_practices": {
+        "name": "Elemental Practices Unlock",
+        "description": "Unlock advanced earth, water, fire, air, and spirit practices",
+        "price": 59.00,
+        "unlock_scope": "section",
+    },
+    "mindfulness_practices": {
+        "name": "Mindfulness Practices Unlock",
+        "description": "Unlock full mindfulness library and advanced regulation drills",
+        "price": 49.00,
+        "unlock_scope": "section",
+    },
+    "meditations": {
+        "name": "Meditations Unlock",
+        "description": "Unlock complete guided meditations and immersive journeys",
+        "price": 49.00,
+        "unlock_scope": "section",
+    },
+    "water_practices": {
+        "name": "Water Practices Unlock",
+        "description": "Unlock advanced water rituals, ceremonies, and energetic protocols",
+        "price": 59.00,
+        "unlock_scope": "section",
+    },
+    "chakra_cleansing": {
+        "name": "Chakra Cleansing Unlock",
+        "description": "Unlock full chakra cleansing protocols and guided activation practices",
+        "price": 59.00,
+        "unlock_scope": "section",
+    },
+    "somatic_practices": {
+        "name": "Somatic Practices Unlock",
+        "description": "Unlock advanced somatic integration and nervous-system regulation practices",
+        "price": 49.00,
+        "unlock_scope": "section",
+    },
+    "grounding_practices": {
+        "name": "Grounding Practices Unlock",
+        "description": "Unlock advanced grounding and stability practices",
+        "price": 39.00,
+        "unlock_scope": "section",
+    },
     "elemental_temples": {
         "name": "Elemental Temples Unlock",
         "description": "Unlock the full Elemental Temples immersion across all five elements",
@@ -80,7 +134,22 @@ PREMIUM_UNLOCK_PRODUCTS: dict[str, dict[str, Any]] = {
     },
 }
 
-PREMIUM_SECTION_IDS = ["elemental_temples", "premium_mantras", "premium_breathwork", "rose_temple", "healing_portals"]
+PREMIUM_SECTION_IDS = [
+    "shamanic_practices",
+    "heart_practices",
+    "elemental_practices",
+    "mindfulness_practices",
+    "meditations",
+    "water_practices",
+    "chakra_cleansing",
+    "somatic_practices",
+    "grounding_practices",
+    "elemental_temples",
+    "premium_mantras",
+    "premium_breathwork",
+    "rose_temple",
+    "healing_portals",
+]
 
 # ============ MODELS ============
 
