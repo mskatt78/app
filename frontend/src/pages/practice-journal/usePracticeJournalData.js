@@ -51,6 +51,163 @@ const calculateStreak = (entries) => {
   return streak;
 };
 
+const WEEKDAY_SEQUENCE = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const WEEKLY_REFLECTION_STOP_WORDS = new Set([
+  "about", "after", "again", "also", "always", "around", "because", "being", "between", "could",
+  "during", "every", "first", "focus", "from", "have", "into", "journey", "more", "need", "notes",
+  "over", "practice", "really", "still", "that", "their", "there", "these", "this", "through", "today",
+  "toward", "very", "what", "when", "where", "which", "with", "within", "would", "your", "feel", "felt",
+  "body", "heart", "sacred", "energy", "healing",
+]);
+
+const normalizeDate = (value) => {
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return null;
+  return parsed;
+};
+
+const tokenizeWeeklyText = (...values) => {
+  const joined = values
+    .filter(Boolean)
+    .map((value) => String(value))
+    .join(" ")
+    .toLowerCase();
+  const tokens = joined.match(/[a-zA-Z']+/g) || [];
+  return tokens.filter((token) => token.length >= 4 && !WEEKLY_REFLECTION_STOP_WORDS.has(token));
+};
+
+const buildWeeklyPlanFocus = (topType, keyThemes) => {
+  const normalizedType = topType || "practice";
+  const primaryTheme = keyThemes[0] || "integration";
+  const secondaryTheme = keyThemes[1] || "regulation";
+
+  const focuses = [
+    `Regulate through ${normalizedType} rhythm`,
+    `Deepen ${primaryTheme}`,
+    "Anchor embodied boundaries",
+    `Refine ${secondaryTheme}`,
+    "Nourish recovery and hydration",
+    "Expand devotional joy",
+    "Integrate insights into aligned action",
+  ];
+  const practices = [
+    `12-minute ${normalizedType} reset with long exhale pacing.`,
+    "Journal one body sensation and one emotional shift before and after practice.",
+    "Close one open loop with compassionate honesty and clear boundary language.",
+    "Apply one recurring insight in a concrete real-life moment.",
+    "Gentle movement + breath with low stimulation and deep replenishment.",
+    "Celebrate one visible change in mood, presence, or relationships.",
+    "Weekly review + choose one non-negotiable ritual anchor for next week.",
+  ];
+  const prompts = [
+    "Where did my breath become medicine today?",
+    `How did ${primaryTheme} shift my nervous system state?`,
+    "What boundary honored both tenderness and truth?",
+    `What did ${secondaryTheme} teach me about sustainable growth?`,
+    "What did rest reveal that effort could not?",
+    "What am I now ready to receive with less resistance?",
+    "Which one ritual keeps this alchemy embodied next week?",
+  ];
+
+  return WEEKDAY_SEQUENCE.map((day, index) => ({
+    day,
+    focus: focuses[index],
+    practice: practices[index],
+    journal_prompt: prompts[index],
+  }));
+};
+
+const buildWeeklyReflectionFromEntries = (entries, days = 7) => {
+  const now = new Date();
+  const cutoff = new Date(now);
+  cutoff.setDate(cutoff.getDate() - Math.max(1, days));
+
+  const inWindow = entries.filter((entry) => {
+    const date = normalizeDate(entry.created_at);
+    return date && date >= cutoff;
+  });
+  const sourceEntries = inWindow.length > 0 ? inWindow : entries.slice(0, 40);
+
+  if (!sourceEntries.length) {
+    return {
+      period_start: cutoff.toISOString().slice(0, 10),
+      period_end: now.toISOString().slice(0, 10),
+      days_considered: days,
+      entries_analyzed: 0,
+      total_minutes: 0,
+      average_mood_shift: 0,
+      top_practice_types: [],
+      key_themes: ["consistency", "grounding", "integration"],
+      energetic_summary: "No entries yet this week. Begin with one short daily check-in and observe your mood shift before and after practice.",
+      alchemy_focus: "Consistency over intensity",
+      integration_vow: "I commit to one daily ritual pulse, even if brief, and track its real effect on body and mood.",
+      weekly_alchemy_plan: buildWeeklyPlanFocus("practice", ["consistency", "grounding"]),
+      source: "local",
+      generated_at: new Date().toISOString(),
+    };
+  }
+
+  const parsedDates = sourceEntries.map((entry) => normalizeDate(entry.created_at)).filter(Boolean);
+  const sortedDates = parsedDates.sort((a, b) => a - b);
+  const periodStart = sortedDates[0]?.toISOString().slice(0, 10) || cutoff.toISOString().slice(0, 10);
+  const periodEnd = sortedDates[sortedDates.length - 1]?.toISOString().slice(0, 10) || now.toISOString().slice(0, 10);
+
+  const totalMinutes = sourceEntries.reduce((sum, entry) => sum + Math.max(0, Number(entry.duration_minutes) || 0), 0);
+  const moodShiftValues = sourceEntries.map((entry) => (Number(entry.mood_after) || 0) - (Number(entry.mood_before) || 0));
+  const averageMoodShift = moodShiftValues.length
+    ? Number((moodShiftValues.reduce((sum, value) => sum + value, 0) / moodShiftValues.length).toFixed(2))
+    : 0;
+
+  const practiceCounts = {};
+  sourceEntries.forEach((entry) => {
+    const type = String(entry.practice_type || "other").toLowerCase();
+    practiceCounts[type] = (practiceCounts[type] || 0) + 1;
+  });
+  const topPracticeTypes = Object.entries(practiceCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([type, count]) => ({ type, count }));
+
+  const tokenCounts = {};
+  sourceEntries.forEach((entry) => {
+    tokenizeWeeklyText(
+      entry.reflection,
+      entry.key_insights,
+      entry.spiritual_downloads,
+      entry.intentions,
+      entry.body_sensations,
+    ).forEach((token) => {
+      tokenCounts[token] = (tokenCounts[token] || 0) + 1;
+    });
+  });
+
+  const keyThemes = Object.entries(tokenCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([token]) => token.replaceAll("_", " "));
+
+  const dominantPracticeType = (topPracticeTypes[0]?.type || "practice").replaceAll("_", " ");
+  const dominantTheme = keyThemes[0] || "integration";
+
+  return {
+    period_start: periodStart,
+    period_end: periodEnd,
+    days_considered: days,
+    entries_analyzed: sourceEntries.length,
+    total_minutes: totalMinutes,
+    average_mood_shift: averageMoodShift,
+    top_practice_types: topPracticeTypes,
+    key_themes: keyThemes.length ? keyThemes : ["integration", "regulation", "clarity"],
+    energetic_summary: `This week you logged ${sourceEntries.length} entries and ${totalMinutes} practice minutes. Your strongest current is ${dominantPracticeType}, with an average mood shift of ${averageMoodShift >= 0 ? "+" : ""}${averageMoodShift.toFixed(2)}.`,
+    alchemy_focus: `Stabilize ${dominantTheme} through ${dominantPracticeType}`,
+    integration_vow: `I honor this week's alchemy by practicing ${dominantPracticeType} with steady pacing, integrating ${dominantTheme}, and completing one grounded action each day.`,
+    weekly_alchemy_plan: buildWeeklyPlanFocus(dominantPracticeType, keyThemes),
+    source: "local",
+    generated_at: new Date().toISOString(),
+  };
+};
+
 const normalizeEntryFromApi = (entry) => ({
   ...entry,
   id: entry.id || entry.entry_id,
@@ -117,6 +274,10 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
   const [expandedEntry, setExpandedEntry] = useState(null);
   const [currentPrompt, setCurrentPrompt] = useState(() => getRandomPrompt());
   const [sharingId, setSharingId] = useState(null);
+  const [showWeeklyReflection, setShowWeeklyReflection] = useState(false);
+  const [weeklyReflection, setWeeklyReflection] = useState(null);
+  const [weeklyReflectionLoading, setWeeklyReflectionLoading] = useState(false);
+  const [weeklyReflectionError, setWeeklyReflectionError] = useState("");
   const [formData, setFormData] = useState(createInitialJournalFormData());
 
   const isAuthenticated = Boolean(user?.user_id && api);
@@ -333,6 +494,41 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
     }
   }, [api, navigate, user?.email, user?.name]);
 
+  const generateWeeklyReflection = useCallback(async ({ force = false } = {}) => {
+    if (!force && weeklyReflection) {
+      setShowWeeklyReflection(true);
+      return;
+    }
+
+    setWeeklyReflectionLoading(true);
+    setWeeklyReflectionError("");
+    try {
+      if (isAuthenticated && api) {
+        const response = await api.get("/practice-journal/weekly-reflection", {
+          params: { days: 7 },
+        });
+        setWeeklyReflection(response?.data || null);
+      } else {
+        setWeeklyReflection(buildWeeklyReflectionFromEntries(entries, 7));
+      }
+    } catch (error) {
+      appLogger.warn("Weekly reflection API failed, using local synthesis", error);
+      setWeeklyReflectionError("Live weekly synthesis unavailable. Showing local reflection snapshot.");
+      setWeeklyReflection(buildWeeklyReflectionFromEntries(entries, 7));
+    } finally {
+      setWeeklyReflectionLoading(false);
+      setShowWeeklyReflection(true);
+    }
+  }, [api, entries, isAuthenticated, weeklyReflection]);
+
+  const openWeeklyReflection = useCallback(() => {
+    generateWeeklyReflection();
+  }, [generateWeeklyReflection]);
+
+  const closeWeeklyReflection = useCallback(() => {
+    setShowWeeklyReflection(false);
+  }, []);
+
   const filteredEntries = useMemo(() => entries.filter((entry) => {
     let matchesType = false;
     if (filterType === "all") {
@@ -370,6 +566,10 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
     expandedEntry,
     currentPrompt,
     sharingId,
+    showWeeklyReflection,
+    weeklyReflection,
+    weeklyReflectionLoading,
+    weeklyReflectionError,
     formData,
     filteredEntries,
     streak,
@@ -383,6 +583,9 @@ export const usePracticeJournalData = ({ api, navigate, user }) => {
     setExpandedEntry,
     setCurrentPrompt,
     setFormData,
+    openWeeklyReflection,
+    closeWeeklyReflection,
+    generateWeeklyReflection,
     handleSubmit,
     handleDelete,
     resetForm,

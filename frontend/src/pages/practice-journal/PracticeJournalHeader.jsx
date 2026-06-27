@@ -1,9 +1,10 @@
-import { ArrowLeft, BookOpen, Flame, Moon, Plus, Star, TrendingUp } from "lucide-react";
+import { ArrowLeft, BookOpen, Flame, Moon, Plus, Sparkles, Star, TrendingUp } from "lucide-react";
 import { Button } from "../../components/ui/button";
 
 export const PracticeJournalHeader = ({
   navigate,
   setShowForm,
+  onOpenWeeklyReflection,
   streak,
   milestone,
   totalEntries,
@@ -36,13 +37,23 @@ export const PracticeJournalHeader = ({
             </div>
           </div>
 
-          <Button
-            onClick={() => setShowForm(true)}
-            className="bg-emerald-600 hover:bg-emerald-700"
-            data-testid="new-entry-btn"
-          >
-            <Plus className="w-4 h-4 mr-2" /> New Entry
-          </Button>
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button
+              variant="outline"
+              onClick={onOpenWeeklyReflection}
+              className="border-emerald-500/40 text-emerald-200 hover:bg-emerald-500/10"
+              data-testid="practice-journal-open-weekly-reflection-button"
+            >
+              <Sparkles className="w-4 h-4 mr-2" /> Weekly Reflection
+            </Button>
+            <Button
+              onClick={() => setShowForm(true)}
+              className="bg-emerald-600 hover:bg-emerald-700"
+              data-testid="new-entry-btn"
+            >
+              <Plus className="w-4 h-4 mr-2" /> New Entry
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-3 gap-4 mt-6" data-testid="practice-journal-stats-grid">

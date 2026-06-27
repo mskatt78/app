@@ -5,6 +5,7 @@ import { PracticeJournalEmptyState } from "./PracticeJournalEmptyState";
 import { PracticeJournalFilters } from "./PracticeJournalFilters";
 import { PracticeJournalFormModal } from "./PracticeJournalFormModal";
 import { PracticeJournalHeader } from "./PracticeJournalHeader";
+import { PracticeJournalWeeklyReflectionModal } from "./PracticeJournalWeeklyReflectionModal";
 import { usePracticeJournalData } from "./usePracticeJournalData";
 
 export const PracticeJournalContainer = ({ user, api }) => {
@@ -19,6 +20,10 @@ export const PracticeJournalContainer = ({ user, api }) => {
     expandedEntry,
     currentPrompt,
     sharingId,
+    showWeeklyReflection,
+    weeklyReflection,
+    weeklyReflectionLoading,
+    weeklyReflectionError,
     formData,
     filteredEntries,
     streak,
@@ -31,6 +36,9 @@ export const PracticeJournalContainer = ({ user, api }) => {
     setExpandedEntry,
     setCurrentPrompt,
     setFormData,
+    openWeeklyReflection,
+    closeWeeklyReflection,
+    generateWeeklyReflection,
     handleSubmit,
     handleDelete,
     resetForm,
@@ -45,6 +53,7 @@ export const PracticeJournalContainer = ({ user, api }) => {
       <PracticeJournalHeader
         navigate={navigate}
         setShowForm={setShowForm}
+        onOpenWeeklyReflection={openWeeklyReflection}
         streak={streak}
         milestone={milestone}
         totalEntries={totalEntries}
@@ -87,6 +96,15 @@ export const PracticeJournalContainer = ({ user, api }) => {
         moonPhase={moonPhase}
         api={api}
         user={user}
+      />
+
+      <PracticeJournalWeeklyReflectionModal
+        show={showWeeklyReflection}
+        onClose={closeWeeklyReflection}
+        onRegenerate={generateWeeklyReflection}
+        reflection={weeklyReflection}
+        loading={weeklyReflectionLoading}
+        error={weeklyReflectionError}
       />
     </div>
   );

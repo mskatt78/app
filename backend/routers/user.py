@@ -5,9 +5,11 @@ from pydantic import BaseModel
 from typing import Any, Optional, List
 from datetime import datetime, timezone, timedelta
 import base64
+from collections import Counter
 import uuid
 import logging
 import os
+import re
 
 from .dependencies import get_db, get_current_user, User
 from services.object_storage import put_object, get_object, build_storage_path
@@ -91,6 +93,25 @@ class PracticeJournalEntryUpdate(PracticeJournalEntryCreate):
     pass
 
 
+WEEKDAY_SEQUENCE = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+]
+
+WEEKLY_REFLECTION_STOP_WORDS = {
+    "about", "after", "again", "along", "also", "always", "around", "because", "being", "between",
+    "could", "during", "every", "first", "focus", "from", "have", "into", "journey", "light", "maybe",
+    "mind", "more", "much", "need", "notes", "over", "practice", "really", "still", "that", "their",
+    "there", "these", "this", "through", "today", "toward", "very", "what", "when", "where", "which",
+    "with", "within", "would", "your", "feel", "felt", "body", "heart", "sacred", "energy", "healing",
+}
+
+
 class VoiceProfileCreate(BaseModel):
     name: str
     sample_file_id: str
@@ -170,6 +191,163 @@ def _safe_int(value: Any, fallback: int = 0) -> int:
         return int(value)
     except Exception:
         return fallback
+
+
+def _safe_float(value: Any, fallback: float = 0.0) -> float:
+    try:
+        return float(value)
+    except Exception:
+        return fallback
+
+
+def _parse_iso_datetime(value: Any) -> datetime | None:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except Exception:
+        return None
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def _tokenize_weekly_reflection_text(*texts: str) -> list[str]:
+    combined = " ".join(str(text or "") for text in texts)
+    tokens = re.findall(r"[a-zA-Z']+", combined.lower())
+    return [
+        token for token in tokens
+        if len(token) >= 4 and token not in WEEKLY_REFLECTION_STOP_WORDS
+    ]
+
+
+def _build_weekly_plan_focus(top_type: str, key_themes: list[str]) -> list[dict[str, str]]:
+    normalized_type = (top_type or "practice").strip().lower()
+    primary_theme = (key_themes[0] if key_themes else "integration").replace("_", " ")
+    secondary_theme = (key_themes[1] if len(key_themes) > 1 else "nervous-system regulation").replace("_", " ")
+
+    daily_focuses = [
+        f"Regulate through {normalized_type} rhythm",
+        f"Deepen {primary_theme}",
+        "Anchor embodied boundaries",
+        f"Refine {secondary_theme}",
+        "Nourish recovery and hydration",
+        "Expand devotional joy",
+        "Integrate insights into aligned action",
+    ]
+    daily_practices = [
+        f"12-minute {normalized_type} reset with long exhale pacing.",
+        "Journal one body sensation and one emotional shift before and after practice.",
+        "Close one open loop with compassionate honesty and clear boundary language.",
+        "Return to one recurring insight and apply it in a concrete real-life moment.",
+        "Gentle movement + breath with low stimulation and deep replenishment.",
+        "Celebrate one visible change in presence, mood, or relational quality.",
+        "Weekly review + choose one non-negotiable ritual anchor for next week.",
+    ]
+    daily_prompts = [
+        "Where did my breath become medicine today?",
+        f"How did {primary_theme} change my nervous system state?",
+        "What boundary honored both tenderness and truth?",
+        f"What did {secondary_theme} teach me about sustainable growth?",
+        "What did rest reveal that effort could not?",
+        "What am I now ready to receive with less resistance?",
+        "Which one ritual keeps this alchemy embodied next week?",
+    ]
+
+    plan: list[dict[str, str]] = []
+    for index, weekday in enumerate(WEEKDAY_SEQUENCE):
+        plan.append(
+            {
+                "day": weekday,
+                "focus": daily_focuses[index],
+                "practice": daily_practices[index],
+                "journal_prompt": daily_prompts[index],
+            }
+        )
+    return plan
+
+
+def _build_weekly_reflection_payload(entries: list[dict[str, Any]], days: int = 7) -> dict[str, Any]:
+    now = datetime.now(timezone.utc)
+    if not entries:
+        return {
+            "period_start": (now - timedelta(days=max(1, days - 1))).date().isoformat(),
+            "period_end": now.date().isoformat(),
+            "days_considered": days,
+            "entries_analyzed": 0,
+            "total_minutes": 0,
+            "average_mood_shift": 0.0,
+            "top_practice_types": [],
+            "key_themes": ["consistency", "grounding", "integration"],
+            "energetic_summary": "No entries yet this week. Begin with one short daily check-in and observe your mood shift before and after practice.",
+            "alchemy_focus": "Consistency over intensity",
+            "integration_vow": "I commit to one daily ritual pulse, even if brief, and track its real effect on body and mood.",
+            "weekly_alchemy_plan": _build_weekly_plan_focus("practice", ["consistency", "grounding"]),
+        }
+
+    parsed_dates = [_parse_iso_datetime(entry.get("created_at")) for entry in entries]
+    valid_dates = [item for item in parsed_dates if item is not None]
+    start_date = min(valid_dates).date().isoformat() if valid_dates else (now - timedelta(days=max(1, days - 1))).date().isoformat()
+    end_date = max(valid_dates).date().isoformat() if valid_dates else now.date().isoformat()
+
+    total_minutes = sum(max(0, _safe_int(entry.get("duration_minutes"), 0)) for entry in entries)
+    mood_shifts = [
+        _safe_float(entry.get("mood_after"), 0) - _safe_float(entry.get("mood_before"), 0)
+        for entry in entries
+    ]
+    average_mood_shift = round((sum(mood_shifts) / len(mood_shifts)) if mood_shifts else 0.0, 2)
+
+    practice_counter = Counter(
+        str(entry.get("practice_type") or "other").strip().lower()
+        for entry in entries
+        if str(entry.get("practice_type") or "").strip()
+    )
+    top_practice_types = [
+        {"type": practice_type, "count": count}
+        for practice_type, count in practice_counter.most_common(3)
+    ]
+
+    token_counter: Counter[str] = Counter()
+    for entry in entries:
+        token_counter.update(
+            _tokenize_weekly_reflection_text(
+                entry.get("reflection") or "",
+                entry.get("key_insights") or "",
+                entry.get("spiritual_downloads") or "",
+                entry.get("intentions") or "",
+                entry.get("body_sensations") or "",
+            )
+        )
+    key_themes = [token.replace("_", " ") for token, _ in token_counter.most_common(5)] or ["integration", "regulation", "clarity"]
+
+    dominant_type = (top_practice_types[0]["type"] if top_practice_types else "practice").replace("_", " ")
+    top_theme = key_themes[0]
+    energetic_summary = (
+        f"This week you logged {len(entries)} entries and {total_minutes} practice minutes. "
+        f"Your strongest current is {dominant_type}, with an average mood shift of {average_mood_shift:+.2f}. "
+        f"Recurring theme: {top_theme}."
+    )
+
+    integration_vow = (
+        f"I honor this week\'s alchemy by practicing {dominant_type} with steady pacing, integrating {top_theme}, "
+        "and completing one grounded action each day."
+    )
+
+    return {
+        "period_start": start_date,
+        "period_end": end_date,
+        "days_considered": days,
+        "entries_analyzed": len(entries),
+        "total_minutes": total_minutes,
+        "average_mood_shift": average_mood_shift,
+        "top_practice_types": top_practice_types,
+        "key_themes": key_themes,
+        "energetic_summary": energetic_summary,
+        "alchemy_focus": f"Stabilize {top_theme} through {dominant_type}",
+        "integration_vow": integration_vow,
+        "weekly_alchemy_plan": _build_weekly_plan_focus(dominant_type, key_themes),
+    }
 
 
 def _normalize_practice_journal_entry(document: dict[str, Any], file_map: dict[str, dict[str, Any]]) -> dict[str, Any]:
@@ -1266,6 +1444,44 @@ async def list_practice_journal_entries(user: User = Depends(get_current_user)) 
 
     file_map = await _build_voice_file_map_for_entries(db, user.user_id, entries)
     return [_normalize_practice_journal_entry(entry, file_map) for entry in entries]
+
+
+@router.get("/practice-journal/weekly-reflection")
+async def get_practice_journal_weekly_reflection(
+    days: int = 7,
+    user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    """Generate weekly reflection and alchemy plan from practice journal entries."""
+    db = get_db()
+    normalized_days = max(3, min(_safe_int(days, 7), 14))
+    cutoff_iso = (datetime.now(timezone.utc) - timedelta(days=normalized_days)).isoformat()
+
+    entries = await db.practice_journal_entries.find(
+        {
+            "user_id": user.user_id,
+            "is_deleted": {"$ne": True},
+            "created_at": {"$gte": cutoff_iso},
+        },
+        {
+            "_id": 0,
+            "entry_id": 1,
+            "practice_type": 1,
+            "duration_minutes": 1,
+            "mood_before": 1,
+            "mood_after": 1,
+            "body_sensations": 1,
+            "spiritual_downloads": 1,
+            "intentions": 1,
+            "key_insights": 1,
+            "reflection": 1,
+            "created_at": 1,
+        },
+    ).sort("created_at", -1).to_list(length=600)
+
+    payload = _build_weekly_reflection_payload(entries, normalized_days)
+    payload["source"] = "mongo"
+    payload["generated_at"] = _now_iso()
+    return payload
 
 
 @router.put("/practice-journal/{entry_id}")
