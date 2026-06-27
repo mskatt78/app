@@ -44,6 +44,7 @@ export const useGuidedAudioPlayback = ({
   const playbackRunIdRef = useRef(0);
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [hasFailed, setHasFailed] = useState(false);
 
   const playbackConfig = useMemo(() => ({
     script,
@@ -231,7 +232,8 @@ export const useGuidedAudioPlayback = ({
       audioRef.current = audio;
       toningLayerRef.current?.setMuted?.(true, 1);
       audio.onerror = () => {
-        toast.error("Audio playback error");
+        toast.error("Voice playback error");
+        setHasFailed(true);
         stopPlayback();
       };
       audio.onended = () => {
@@ -258,6 +260,7 @@ export const useGuidedAudioPlayback = ({
       if (!started) {
         toningLayerRef.current?.setMuted?.(false, 0.2);
         stopToning();
+        setHasFailed(true);
         setPlaying(false);
         setLoading(false);
         return;
@@ -309,7 +312,8 @@ export const useGuidedAudioPlayback = ({
     } catch (error) {
       if (!controller.signal.aborted && !isStoppedRef.current) {
         appLogger.error("Guided TTS playback failed", error);
-        toast.info("Guided audio unavailable — please try again shortly");
+        toast.info("Guided voice is temporarily unavailable");
+        setHasFailed(true);
         setPlaying(false);
         setLoading(false);
       }
@@ -320,9 +324,19 @@ export const useGuidedAudioPlayback = ({
     }
   }, [buildExpandedSegments, playSegmentsSequentially, playing, setupToningContext, stopPlayback]);
 
+  const restartPlayback = useCallback(async () => {
+    stopPlayback();
+    setHasFailed(false);
+    await wait(80);
+    await handlePlay();
+  }, [handlePlay, stopPlayback]);
+
   return {
     loading,
     playing,
+    hasFailed,
     handlePlay,
+    restartPlayback,
+    stopPlayback,
   };
 };

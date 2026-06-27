@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
-import { CheckCircle2, Pause, Play, RotateCcw, Volume2, VolumeX, X } from "lucide-react";
+import { CheckCircle2, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
 
@@ -25,7 +25,6 @@ export const GuidedPracticeContent = ({
   narrationParagraphs,
   handlePlay,
   handleStartVoiceOnly,
-  handleRetryVoice,
   isPlaying,
   formatTime,
   minimumNarrationMinutes,
@@ -234,6 +233,51 @@ export const GuidedPracticeContent = ({
                 </label>
               </div>
 
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4" data-testid="guided-voice-controls-panel">
+                <button
+                  type="button"
+                  onClick={handleStartVoiceOnly}
+                  className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/20 bg-white/10 hover:bg-white/15 text-white text-xs"
+                  data-testid="guided-play-voice-manual-btn"
+                >
+                  <Play className="w-3.5 h-3.5" />
+                  {ttsPlaying ? "Restart Voice Guidance" : "Play Voice Guidance"}
+                </button>
+                <div className="w-full rounded-lg border border-white/20 bg-white/5 px-2 py-2" data-testid="guided-voice-options-row">
+                  <div className="flex items-center justify-between gap-2 text-[11px] text-white/75">
+                    <span className="font-medium text-white/80">Voice Options</span>
+                    <div className="flex gap-1.5">
+                      <button
+                        type="button"
+                        onClick={handleStartVoiceOnly}
+                        className="px-2 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10"
+                        data-testid="guided-option-play"
+                      >
+                        Play
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleStartVoiceOnly}
+                        className="px-2 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10"
+                        data-testid="guided-option-restart"
+                      >
+                        Restart
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isPlaying) handlePlay();
+                        }}
+                        className="px-2 py-1 rounded-md border border-white/15 bg-white/5 hover:bg-white/10"
+                        data-testid="guided-option-stop"
+                      >
+                        Stop
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="rounded-2xl bg-white/5 p-5 mb-6 max-h-none overflow-visible" data-testid="guided-practice-description">
                 <p className="text-xs text-white/30 uppercase tracking-widest mb-3">Visualization Guide</p>
                 <div className="space-y-3">
@@ -265,27 +309,6 @@ export const GuidedPracticeContent = ({
                   aria-label={isPlaying ? "Pause" : "Play"}
                 >
                   {isPlaying ? <Pause className="w-8 h-8 text-white" /> : <Play className="w-8 h-8 text-white ml-1" />}
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4" data-testid="guided-voice-controls-panel">
-                <button
-                  type="button"
-                  onClick={handleStartVoiceOnly}
-                  className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/20 bg-white/10 hover:bg-white/15 text-white text-xs"
-                  data-testid="guided-play-voice-manual-btn"
-                >
-                  <Play className="w-3.5 h-3.5" />
-                  {ttsPlaying ? "Restart Voice Guidance" : "Play Voice Guidance"}
-                </button>
-                <button
-                  type="button"
-                  onClick={handleRetryVoice}
-                  className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 text-white/90 text-xs"
-                  data-testid="guided-retry-voice-btn"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" />
-                  Tap to Retry Voice
                 </button>
               </div>
 

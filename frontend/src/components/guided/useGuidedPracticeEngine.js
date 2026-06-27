@@ -633,19 +633,6 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     playNarrationSegment(currentSegmentIndexRef.current);
   }, [playNarrationSegment, startAmbientTrack, stopNarrationPlayback]);
 
-  const handleRetryVoice = useCallback(() => {
-    if (isCompleteRef.current) return;
-    setAudioTapRequired(false);
-    setTtsLoading(true);
-
-    if (!isPlayingRef.current) {
-      setIsPlaying(true);
-      sessionEndRef.current = Date.now() + (timeRemainingRef.current * 1000);
-    }
-    startAmbientTrack();
-    playNarrationSegment(currentSegmentIndexRef.current);
-  }, [playNarrationSegment, startAmbientTrack]);
-
   useEffect(() => {
     if (practice && narrationReady && !autoStartRef.current && !isComplete) {
       autoStartRef.current = true;
@@ -678,7 +665,6 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     handlePlaybackSpeedOptionChange,
     handlePlay,
     handleStartVoiceOnly,
-    handleRetryVoice,
     isPlaying,
     ambientLabel: (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label,
     toningLabel: ttsPlaying ? "Toning layer ducked during voice" : "Toning layer active",
