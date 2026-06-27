@@ -63,7 +63,7 @@ PREMIUM_UNLOCK_PRODUCTS: dict[str, dict[str, Any]] = {
     "full_app_unlock": {
         "name": "Full App Unlock",
         "description": "Unlock all premium sections across the app",
-        "price": 149.00,
+        "price": 369.00,
         "unlock_scope": "full_app",
     },
 }

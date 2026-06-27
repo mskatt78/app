@@ -145,7 +145,7 @@ const Breathwork = ({ api, user }) => {
                       data-testid="breathwork-unlock-fullapp-button"
                       disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
                     >
-                      {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "149.00"}</>}
+                      {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}</>}
                     </Button>
                   </div>
                 )}
@@ -213,7 +213,7 @@ const Breathwork = ({ api, user }) => {
                   data-testid="breathwork-premium-lock-fullapp-button"
                   disabled={premium.purchaseLoadingId === "full_app_unlock"}
                 >
-                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "149.00"}`}
+                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
                 </Button>
                 <Button variant="outline" onClick={() => setSelectedLockedSession(null)} className="flex-1" data-testid="breathwork-premium-lock-close-button">
                   Not now

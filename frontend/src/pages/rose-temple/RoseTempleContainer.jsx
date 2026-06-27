@@ -77,7 +77,7 @@ const RoseTempleContainer = ({ user, api }) => {
                 data-testid="rose-temple-unlock-fullapp-button"
                 disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
               >
-                {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "149.00"}</>}
+                {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}</>}
               </Button>
             </div>
           </div>
