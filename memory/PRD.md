@@ -2612,3 +2612,62 @@
 - **P1**: Final real-device app-store readiness evidence pass (iOS install + store asset validations).
 - **P2**: Weekly Reflection/Alchemy plan generator.
 
+## Full App-Wide Devotional Tone Calibration (Iteration 223) — 2026-06-27
+
+### User Direction
+- User selected **C (full app-wide language pass)** and postponed app-store pack/evidence for now.
+- Priority: optimize smoothness and depth before publishing.
+
+### Implemented in this iteration
+- Added backend-level devotional enrichment engine in `backend/routers/content.py`:
+  - New cross-domain enhancer: `_enrich_devotional_language(...)`
+  - Adds/normalizes:
+    - `description` depth expansion (domain + element-aware)
+    - `devotional_invocation`
+    - `embodiment_prompt`
+    - `integration_vow`
+- Applied enrichment broadly to content endpoints:
+  - `/api/breathwork/sessions`
+  - `/api/mindfulness`
+  - `/api/meditations`
+  - `/api/heart-practices`
+  - `/api/shamanic-practices`
+  - `/api/elemental-practices`
+  - `/api/healing-portals`
+  - `/api/feminine-embodiment`
+
+- Frontend devotional/consistency polish + subscription CTA continuity:
+  - `frontend/src/pages/HealingPortals.jsx`
+    - Added devotional note in premium banner
+    - Added `View Subscription` CTA in banner and lock modal
+  - `frontend/src/pages/rose-temple/RoseTempleContainer.jsx`
+    - Added devotional note in premium gate
+    - Added `View Subscription` CTA
+  - `frontend/src/pages/Breathwork.jsx`
+    - Added devotional note in premium banner
+    - Added subscription CTA in banner + premium lock modal
+  - Header/introduction devotional notes added:
+    - `HeartPracticesHeader.jsx`
+    - `ShamanicHeader.jsx`
+    - `ElementalPractices.jsx`
+    - `Meditations.jsx`
+    - `Mindfulness.jsx`
+
+### Validation
+- Lint: clean on all modified backend/frontend files.
+- API self-check: all 8 endpoints return devotional fields with enriched descriptions.
+- Smoke screenshot: Healing Portals confirms devotional copy + subscription CTA.
+- Full testing subagent report: `/app/test_reports/iteration_223.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+  - No open action items.
+
+### Current status
+- Preview is stable and calibrated for devotional depth + smooth premium/subscription pathways.
+- User deferred app-store evidence pack for now.
+
+### Next prioritized items
+- **P1**: Guided narration duration QA sweep (ensure spoken guidance reliably meets long-form expectations across guided overlays).
+- **P1**: Smoothness/performance pass (audio startup latency, modal transition fluidity on mobile).
+- **P2**: Weekly Reflection / Alchemy Plan generator.
+
