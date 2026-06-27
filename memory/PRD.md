@@ -2671,3 +2671,61 @@
 - **P1**: Smoothness/performance pass (audio startup latency, modal transition fluidity on mobile).
 - **P2**: Weekly Reflection / Alchemy Plan generator.
 
+## Guided Narration Duration QA + Smoothness Pass (Iteration 224) — 2026-06-27
+
+### User direction
+- User asked to execute both P1 items now:
+  1) Guided narration duration QA sweep for long-form consistency
+  2) Performance smoothness pass (audio start latency + mobile overlay fluidity)
+
+### Implemented
+- Backend (`backend/routers/content.py`)
+  - Added in-memory TTL caching for `/api/content/expand-script`:
+    - `SCRIPT_EXPANSION_CACHE_TTL_SECONDS = 45min`
+    - `SCRIPT_EXPANSION_CACHE_MAX_ITEMS = 180`
+  - Added normalized cache-key builder from request payload (`practice`, `element`, `duration`, `steps`, `source_texts`, mode flags).
+  - Added cache prune logic (expiry + capacity control).
+  - Wired cache read/write into `expand_guided_script` route to reduce repeated script expansion latency.
+
+- Frontend (`frontend/src/components/guided/useGuidedPracticeEngine.js`)
+  - Added long-form floor safety check after `/api/content/expand-script` response:
+    - Estimates spoken minutes and enforces minimum long-form floor before replacing local narration plan.
+  - Reduced expansion payload size sent from client (faster request payload):
+    - `sourceTexts` capped from 80 → 48
+    - `steps` capped from 40 → 24
+  - Improved timer render efficiency:
+    - Tick interval reduced from `250ms` to `1000ms` to lower re-render pressure.
+  - Added proactive TTS prefetch of first 2 segments after narration becomes ready.
+  - Improved TTS cache keying to include segment + voice + speed (avoids stale cross-profile collisions).
+  - Added resilient segment playback fallback (skip to next segment when one segment TTS fails).
+
+- Frontend (`frontend/src/components/guided/GuidedPracticeContent.jsx`)
+  - Added condensed long-script rendering for overlay smoothness:
+    - Renders first 12 paragraphs by default.
+    - Added expand/collapse controls:
+      - `guided-expand-full-script-button`
+      - `guided-collapse-full-script-button`
+  - Added windowed segment-dot rendering for large segment counts to prevent overflow/jank.
+
+### Validation
+- Self-checks:
+  - Expand-script API sample payloads returned long-form outputs (2.3k–3.1k+ words in sampled runs).
+  - Repeated-call latency improved (cache hits faster than cold runs).
+  - Guided overlay smoke test passed on `/meditations`.
+
+- Subagent testing:
+  - `/app/test_reports/iteration_224.json`
+    - Backend: **100%**
+    - Frontend: **100%**
+    - No open issues.
+  - `auto_frontend_testing_agent`: PASS (controls, timer, script expand/collapse, clean exit, no jank).
+  - `deep_testing_backend_v2`: PASS (schema + floor + cache timing + edge cases).
+
+### Current status
+- Guided narration is now more consistent for long-form use, with better startup smoothness and lighter overlay rendering behavior on mobile.
+- No regressions reported by testing agents.
+
+### Next prioritized items
+- **P1**: Continue broad UX smoothness pass across other heavy interactive pages (e.g., Water Practices, Chakra Cleansing, partner overlays).
+- **P2**: Weekly Reflection / Alchemy Plan generator.
+
