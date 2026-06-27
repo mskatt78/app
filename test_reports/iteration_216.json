@@ -1,0 +1,112 @@
+{
+  "summary": "Frontend-only testing of guided practice voice controls fix. Verified that 'Play Voice Guidance' and 'Tap to Retry Voice' buttons are visible and functional in GuidedPracticeOverlay on both Sacred Ally Alchemy and Angelic Alchemy pages. No regressions detected in play/pause, mute, exit, or timer functionality.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "GuidedPracticeOverlay",
+        "issues": ["Minor React hydration warning in console about span inside select/option - cosmetic only, does not affect functionality"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/frontend/src/components/guided/GuidedPracticeContent.jsx",
+    "/app/frontend/src/components/guided/useGuidedPracticeEngine.js",
+    "/app/frontend/src/components/GuidedPracticeOverlay.jsx"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (skipped per request)",
+    "frontend": "100%"
+  },
+  "test_credentials": "No auth required for public guided practice sections",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Voice controls fix verified. GuidedPracticeOverlay now shows explicit 'Play Voice Guidance' (data-testid='guided-play-voice-manual-btn') and 'Tap to Retry Voice' (data-testid='guided-retry-voice-btn') buttons immediately visible in the overlay. Both buttons are clickable and do not crash the timer/session.",
+  "test_results": {
+    "features_tested": [
+      {
+        "feature": "GuidedPracticeOverlay shows explicit manual voice controls",
+        "status": "PASS",
+        "details": "Both 'Play Voice Guidance' and 'Tap to Retry Voice' buttons are visible immediately in overlay"
+      },
+      {
+        "feature": "Buttons are visible immediately in overlay (not hidden behind other states)",
+        "status": "PASS",
+        "details": "Voice controls panel (data-testid='guided-voice-controls-panel') is visible on overlay open"
+      },
+      {
+        "feature": "Clicking Play Voice Guidance starts narration flow and does not crash timer/session",
+        "status": "PASS",
+        "details": "Button click triggers voice guidance, timer continues counting down normally"
+      },
+      {
+        "feature": "Clicking Tap to Retry Voice attempts narration restart and does not crash",
+        "status": "PASS",
+        "details": "Button click works without errors or crashes"
+      },
+      {
+        "feature": "Voice controls appear in overlays launched from Sacred Ally page",
+        "status": "PASS",
+        "details": "Tested on /sacred-ally-alchemy - all controls visible and functional"
+      },
+      {
+        "feature": "Voice controls appear in overlays launched from Angelic page",
+        "status": "PASS",
+        "details": "Tested on /angelic-alchemy - all controls visible and functional"
+      },
+      {
+        "feature": "No regressions in guided play/pause behavior",
+        "status": "PASS",
+        "details": "Main play/pause button (data-testid='guided-play-btn') works correctly, timer counts down"
+      },
+      {
+        "feature": "No regressions in exit behavior",
+        "status": "PASS",
+        "details": "Exit button (data-testid='guided-exit-btn') closes overlay and returns to main page"
+      },
+      {
+        "feature": "No regressions in mute behavior",
+        "status": "PASS",
+        "details": "Mute button (data-testid='guided-mute-btn') toggles correctly"
+      },
+      {
+        "feature": "No regressions in timer behavior",
+        "status": "PASS",
+        "details": "Timer (data-testid='guided-practice-timer') displays correctly and counts down when playing"
+      }
+    ],
+    "pages_tested": [
+      "/sacred-ally-alchemy",
+      "/angelic-alchemy"
+    ],
+    "ui_elements_verified": {
+      "guided-practice-overlay": "Visible on Start Guided Practice click",
+      "guided-voice-controls-panel": "Visible immediately in overlay",
+      "guided-play-voice-manual-btn": "Visible with text 'Play Voice Guidance' (changes to 'Restart Voice Guidance' after click)",
+      "guided-retry-voice-btn": "Visible with text 'Tap to Retry Voice'",
+      "guided-play-btn": "Main play/pause button visible and functional",
+      "guided-mute-btn": "Mute toggle visible and functional",
+      "guided-exit-btn": "Exit button visible and functional",
+      "guided-practice-timer": "Timer displays correctly (24:00 initial)",
+      "guided-practice-voice-override-select": "Voice profile dropdown visible",
+      "guided-practice-speed-override-select": "Speed option dropdown visible"
+    }
+  },
+  "verified_features": [
+    "Play Voice Guidance button visible immediately in GuidedPracticeOverlay",
+    "Tap to Retry Voice button visible immediately in GuidedPracticeOverlay",
+    "Both buttons are clickable and trigger voice guidance without crashing",
+    "Voice controls work on Sacred Ally Alchemy page",
+    "Voice controls work on Angelic Alchemy page",
+    "No regressions in play/pause, mute, exit, or timer functionality"
+  ]
+}

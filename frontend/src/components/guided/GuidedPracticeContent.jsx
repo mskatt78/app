@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
-import { CheckCircle2, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
+import { CheckCircle2, Pause, Play, RotateCcw, Volume2, VolumeX, X } from "lucide-react";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
 
@@ -24,6 +24,8 @@ export const GuidedPracticeContent = ({
   narrationSegments,
   narrationParagraphs,
   handlePlay,
+  handleStartVoiceOnly,
+  handleRetryVoice,
   isPlaying,
   formatTime,
   minimumNarrationMinutes,
@@ -161,6 +163,14 @@ export const GuidedPracticeContent = ({
                   Audio is ready — tap play once to begin voice guidance.
                 </div>
               )}
+
+              {!ttsPlaying && !ttsLoading && hasStarted && (
+                <div className="mb-4" data-testid="guided-voice-controls-hint-wrap">
+                  <p className="text-xs text-white/60 sm:col-span-2 text-center" data-testid="guided-voice-controls-hint">
+                    Voice is paused. Use Play Voice Guidance to resume narration.
+                  </p>
+                </div>
+              )}
               {ttsPlaying && !ttsLoading && (
                 <div className={`text-center text-xs ${elColor} mb-4`} data-testid="guided-segment-indicator">
                   Guided narration playing • segment {Math.min(currentSegmentIndex + 1, narrationSegments.length)} of {narrationSegments.length}
@@ -257,6 +267,33 @@ export const GuidedPracticeContent = ({
                   {isPlaying ? <Pause className="w-8 h-8 text-white" /> : <Play className="w-8 h-8 text-white ml-1" />}
                 </button>
               </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4" data-testid="guided-voice-controls-panel">
+                <button
+                  type="button"
+                  onClick={handleStartVoiceOnly}
+                  className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/20 bg-white/10 hover:bg-white/15 text-white text-xs"
+                  data-testid="guided-play-voice-manual-btn"
+                >
+                  <Play className="w-3.5 h-3.5" />
+                  {ttsPlaying ? "Restart Voice Guidance" : "Play Voice Guidance"}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleRetryVoice}
+                  className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/20 bg-white/5 hover:bg-white/10 text-white/90 text-xs"
+                  data-testid="guided-retry-voice-btn"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Tap to Retry Voice
+                </button>
+              </div>
+
+              {!isPlaying && !ttsPlaying && !ttsLoading && (
+                <div className="text-center mb-6" data-testid="guided-voice-helper-copy">
+                  <p className="text-xs text-white/60">Need voice guidance? Tap <span className="text-white">Play Voice Guidance</span> above.</p>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
