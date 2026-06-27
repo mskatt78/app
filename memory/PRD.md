@@ -2543,3 +2543,29 @@
 ### Production Note
 - Fixes validated in preview; production requires redeploy of latest preview build.
 
+## Mantra-Wide Chant Audio + Single Reliable Voice Controls (Iteration 221) — 2026-06-27
+
+### Why this was done
+- User requested chant-style sound across **all** mantras (not OM-only), and removal of duplicate/non-actioning voice options.
+
+### Implemented
+- Added universal chant synthesis engine for all mantras:
+  - `frontend/src/components/audio/MantraAudio.js`
+  - New `playChantForMantra(...)` with mantra-aware base frequency mapping (OM/AUM, LAM/VAM/RAM/YAM/HAM, So Hum, etc.) and syllable cadence shaping.
+- Updated mantra playback to use chant rendering across OM and non-OM:
+  - `frontend/src/pages/mantras/MantrasLibraryContainer.jsx`
+  - Chant cycle now triggers `playChantForMantra` for every mantra repetition.
+- Kept one reliable guided voice control and removed duplicate options:
+  - `frontend/src/components/guided/GuidedPracticeContent.jsx`
+  - `frontend/src/components/GuidedAudioButton.jsx`
+  - `frontend/src/components/guided/useGuidedAudioPlayback.js`
+
+### Verification
+- Testing report: `/app/test_reports/iteration_221.json`
+  - Frontend: **100%**
+  - Verified: OM + So Hum + Sat Nam all use chant-style audio.
+  - Verified: single guided voice CTA remains; duplicate voice options removed.
+
+### Production Note
+- Changes validated in preview; production requires redeploy of latest preview build.
+
