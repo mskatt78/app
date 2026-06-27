@@ -2729,3 +2729,48 @@
 - **P1**: Continue broad UX smoothness pass across other heavy interactive pages (e.g., Water Practices, Chakra Cleansing, partner overlays).
 - **P2**: Weekly Reflection / Alchemy Plan generator.
 
+## Heavy Guided Pages Smoothness Pass (Water + Chakra + Partner) — 2026-06-27
+
+### Scope completed
+- `/water-practices`
+- `/chakra-cleansing`
+- `/partner-yoga`
+
+### Key smoothness fixes implemented
+- **Water Practices** (`frontend/src/pages/WaterPractices.jsx`)
+  - Reworked guided flow to avoid stacked modal+overlay interaction conflicts:
+    - Modal now closes before full-screen guided overlay opens.
+  - Added guided payload builder and launch transition helper for cleaner state handoff.
+  - Added client-side guided audio caching per practice/voice/speed key.
+  - Added safer audio pause/resume handling and cleanup for smoother session transitions.
+  - Added/strengthened data-testid coverage for modal and card interactions.
+
+- **Chakra Cleansing**
+  - `frontend/src/pages/chakra-cleansing/useChakraCleansingData.js`
+  - `frontend/src/pages/chakra-cleansing/ChakraCleansingContainer.jsx`
+  - Shifted guided overlay launch to dedicated `guidedPractice` state so detail modal does not remain active under overlay.
+  - Added explicit guided close handler for stable teardown.
+
+- **Partner Yoga** (`frontend/src/pages/PartnerYoga.jsx`)
+  - Reworked modal→guided transition to close modal before guided overlay opens.
+  - Added memo/callback optimizations for filtered lists and guided payload generation.
+  - Added modal test ids and cleaned lint issues (escaped apostrophes).
+
+### Validation
+- Lint: clean on all updated files.
+- Manual smoke screenshot: Partner Yoga modal → guided overlay path confirmed.
+- Frontend specialist validation (`auto_frontend_testing_agent`):
+  - Water, Chakra, Partner all PASS.
+  - Verified no stuck interaction layers, no blocking modal remnants, no crashes.
+  - Guided controls present and functional on each overlay.
+- Backend smoke checks:
+  - `/api/water-practices` = 200
+  - `/api/chakra-cleansing` = 200
+
+### Current status
+- Heavy guided pages now have cleaner, smoother modal-to-overlay transitions and stable interaction behavior.
+- Ready for continued polish before publish.
+
+### Next prioritized items
+- **P2**: Weekly Reflection / Alchemy Plan generator.
+
