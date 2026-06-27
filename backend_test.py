@@ -1,24 +1,30 @@
 """
-Backend validation for guided narration duration/performance on preview base URL.
-Focus endpoint: POST /api/content/expand-script
+Backend validation for weekly reflection endpoint on preview base URL.
+Focus endpoint: GET /api/practice-journal/weekly-reflection
 
 Test cases:
-1) Long-form floor consistency - verify >= 7 minutes spoken floor (~680 words minimum)
-2) Cache performance - identical payload 3 times, report latency trend
-3) Stability edge cases - minimal payload, empty arrays, higher duration
-4) Regression - schema validation for segments/paragraphs as lists
+1) GET /api/practice-journal/weekly-reflection without auth => 401
+2) Login with voice.sync.qa@example.com / Pass1234! then GET endpoint => 200
+3) Validate schema fields:
+   - period_start, period_end, days_considered, entries_analyzed, total_minutes,
+   - average_mood_shift, top_practice_types, key_themes,
+   - energetic_summary, alchemy_focus, integration_vow,
+   - weekly_alchemy_plan (len 7), source, generated_at
+4) Validate each weekly_alchemy_plan item has day/focus/practice/journal_prompt.
+5) Validate days query param normalization: try days=2 and days=20 and confirm days_considered clamps to 3..14.
 """
 
 import requests
-import time
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any, Optional
 
 BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com"
-ENDPOINT = f"{BASE_URL}/api/content/expand-script"
+WEEKLY_REFLECTION_ENDPOINT = f"{BASE_URL}/api/practice-journal/weekly-reflection"
+LOGIN_ENDPOINT = f"{BASE_URL}/api/auth/login"
 
-# Minimum word count for 7 minutes spoken (using practical threshold)
-MIN_WORD_COUNT_7MIN = 680
+# Test credentials from test_credentials.md
+TEST_EMAIL = "voice.sync.qa@example.com"
+TEST_PASSWORD = "Pass1234!"
 
 def print_section(title: str):
     """Print a formatted section header."""
@@ -33,370 +39,289 @@ def print_result(test_name: str, passed: bool, details: str = ""):
     if details:
         print(f"  {details}")
 
-def validate_response_schema(response_data: Dict[str, Any]) -> tuple[bool, str]:
-    """Validate response has all required fields with correct types."""
+def login_and_get_token() -> Optional[str]:
+    """Login with test credentials and return auth token."""
+    try:
+        response = requests.post(
+            LOGIN_ENDPOINT,
+            json={"email": TEST_EMAIL, "password": TEST_PASSWORD},
+            timeout=10
+        )
+        
+        if response.status_code != 200:
+            print(f"❌ Login failed with status {response.status_code}: {response.text[:200]}")
+            return None
+        
+        data = response.json()
+        token = data.get("token") or data.get("session_token")
+        
+        if not token:
+            print(f"❌ Login response missing token/session_token: {json.dumps(data, indent=2)[:200]}")
+            return None
+        
+        print(f"✅ Login successful for {TEST_EMAIL}")
+        return token
+        
+    except Exception as e:
+        print(f"❌ Login exception: {str(e)}")
+        return None
+
+def test_case_1_unauthenticated_access():
+    """
+    Test Case 1: GET /api/practice-journal/weekly-reflection without auth => 401
+    """
+    print_section("TEST CASE 1: Unauthenticated Access")
+    
+    try:
+        response = requests.get(WEEKLY_REFLECTION_ENDPOINT, timeout=10)
+        
+        if response.status_code == 401:
+            print_result("Unauthenticated Access", True, 
+                       f"Correctly returned 401 Unauthorized")
+            return True
+        else:
+            print_result("Unauthenticated Access", False, 
+                       f"Expected 401, got {response.status_code}: {response.text[:200]}")
+            return False
+            
+    except Exception as e:
+        print_result("Unauthenticated Access", False, f"Exception: {str(e)}")
+        return False
+
+def validate_weekly_reflection_schema(data: Dict[str, Any]) -> tuple[bool, str]:
+    """Validate weekly reflection response schema."""
     required_fields = {
-        "practice_name": str,
-        "target_minutes": int,
-        "target_word_count": int,
-        "word_count": int,
-        "used_ai": bool,
-        "paragraphs": list,
-        "segments": list
+        "period_start": str,
+        "period_end": str,
+        "days_considered": int,
+        "entries_analyzed": int,
+        "total_minutes": int,
+        "average_mood_shift": (int, float),
+        "top_practice_types": list,
+        "key_themes": list,
+        "energetic_summary": str,
+        "alchemy_focus": str,
+        "integration_vow": str,
+        "weekly_alchemy_plan": list,
+        "source": str,
+        "generated_at": str,
     }
     
     for field, expected_type in required_fields.items():
-        if field not in response_data:
+        if field not in data:
             return False, f"Missing field: {field}"
-        if not isinstance(response_data[field], expected_type):
-            return False, f"Field {field} has wrong type: expected {expected_type.__name__}, got {type(response_data[field]).__name__}"
+        
+        if isinstance(expected_type, tuple):
+            if not isinstance(data[field], expected_type):
+                return False, f"Field {field} has wrong type: expected {expected_type}, got {type(data[field]).__name__}"
+        else:
+            if not isinstance(data[field], expected_type):
+                return False, f"Field {field} has wrong type: expected {expected_type.__name__}, got {type(data[field]).__name__}"
     
     return True, "Schema valid"
 
-def test_case_1_long_form_floor_consistency():
-    """
-    Test Case 1: Long-form floor consistency
-    For 3 varied payloads (breathwork, healing portal, meditation), verify:
-    - Response includes all required fields
-    - word_count indicates >= 7 minutes spoken floor (~680 words minimum)
-    """
-    print_section("TEST CASE 1: Long-form Floor Consistency")
+def validate_weekly_alchemy_plan(plan: list) -> tuple[bool, str]:
+    """Validate weekly_alchemy_plan structure."""
+    if len(plan) != 7:
+        return False, f"Expected 7 days in plan, got {len(plan)}"
     
-    test_payloads = [
-        {
-            "name": "Breathwork Practice",
-            "payload": {
-                "practice_name": "Heart-Opening Breathwork Journey",
-                "element": "air",
-                "duration_minutes": 10,
-                "steps": [
-                    "Find a comfortable seated position",
-                    "Begin with natural breathing",
-                    "Deepen your breath into the heart space",
-                    "Release and integrate"
-                ],
-                "source_texts": [
-                    "This breathwork practice opens the heart chakra and releases stored emotions.",
-                    "Allow each breath to expand your capacity for love and compassion."
-                ],
-                "use_ai": False,
-                "include_toning": True
-            }
-        },
-        {
-            "name": "Healing Portal Practice",
-            "payload": {
-                "practice_name": "Sacred Healing Portal Activation",
-                "element": "spirit",
-                "duration_minutes": 12,
-                "steps": [
-                    "Ground yourself in sacred space",
-                    "Call in your guides and protectors",
-                    "Open the healing portal",
-                    "Receive healing energy",
-                    "Close and seal the portal"
-                ],
-                "source_texts": [
-                    "Healing portals are gateways to higher dimensional healing frequencies.",
-                    "Trust the process as ancient wisdom flows through you."
-                ],
-                "use_ai": False,
-                "include_toning": False
-            }
-        },
-        {
-            "name": "Meditation Practice",
-            "payload": {
-                "practice_name": "Deep Peace Meditation",
-                "element": "water",
-                "duration_minutes": 15,
-                "steps": [
-                    "Settle into stillness",
-                    "Follow your breath",
-                    "Expand awareness",
-                    "Rest in peace"
-                ],
-                "source_texts": [
-                    "Peace is your natural state, always available beneath the surface.",
-                    "Let go of all effort and simply be."
-                ],
-                "use_ai": False,
-                "include_toning": True
-            }
-        }
-    ]
+    required_day_fields = ["day", "focus", "practice", "journal_prompt"]
     
-    all_passed = True
-    
-    for test_case in test_payloads:
-        print(f"\nTesting: {test_case['name']}")
-        print(f"  Duration: {test_case['payload']['duration_minutes']} minutes")
+    for i, day_item in enumerate(plan):
+        if not isinstance(day_item, dict):
+            return False, f"Day {i+1} is not a dict: {type(day_item).__name__}"
         
-        try:
-            response = requests.post(ENDPOINT, json=test_case['payload'], timeout=15)
-            
-            if response.status_code != 200:
-                print_result(test_case['name'], False, f"HTTP {response.status_code}: {response.text[:200]}")
-                all_passed = False
-                continue
-            
-            data = response.json()
-            
-            # Validate schema
-            schema_valid, schema_msg = validate_response_schema(data)
-            if not schema_valid:
-                print_result(test_case['name'], False, f"Schema validation failed: {schema_msg}")
-                all_passed = False
-                continue
-            
-            # Check required fields
-            practice_name = data.get('practice_name')
-            target_minutes = data.get('target_minutes')
-            target_word_count = data.get('target_word_count')
-            word_count = data.get('word_count')
-            used_ai = data.get('used_ai')
-            paragraphs = data.get('paragraphs', [])
-            segments = data.get('segments', [])
-            
-            # Verify word count floor (>= 680 words for 7 min minimum)
-            meets_floor = word_count >= MIN_WORD_COUNT_7MIN
-            
-            print(f"  ✓ practice_name: {practice_name}")
-            print(f"  ✓ target_minutes: {target_minutes}")
-            print(f"  ✓ target_word_count: {target_word_count}")
-            print(f"  ✓ word_count: {word_count}")
-            print(f"  ✓ used_ai: {used_ai}")
-            print(f"  ✓ paragraphs: {len(paragraphs)} items")
-            print(f"  ✓ segments: {len(segments)} items")
-            
-            if meets_floor:
-                print_result(f"{test_case['name']} - Word Floor", True, 
-                           f"word_count ({word_count}) >= {MIN_WORD_COUNT_7MIN} ✓")
-            else:
-                print_result(f"{test_case['name']} - Word Floor", False, 
-                           f"word_count ({word_count}) < {MIN_WORD_COUNT_7MIN}")
-                all_passed = False
-            
-        except Exception as e:
-            print_result(test_case['name'], False, f"Exception: {str(e)}")
-            all_passed = False
+        for field in required_day_fields:
+            if field not in day_item:
+                return False, f"Day {i+1} missing field: {field}"
+            if not isinstance(day_item[field], str):
+                return False, f"Day {i+1} field {field} is not string: {type(day_item[field]).__name__}"
+            if not day_item[field].strip():
+                return False, f"Day {i+1} field {field} is empty"
     
-    return all_passed
+    return True, "Weekly alchemy plan valid"
 
-def test_case_2_cache_performance():
+def test_case_2_authenticated_access(token: str):
     """
-    Test Case 2: Cache performance
-    Call identical payload 3 times and report observed latency trend.
-    Verify repeat calls are faster/stable (cache behavior).
+    Test Case 2: Login with voice.sync.qa@example.com / Pass1234! then GET endpoint => 200
     """
-    print_section("TEST CASE 2: Cache Performance")
-    
-    payload = {
-        "practice_name": "Cache Test Practice",
-        "element": "earth",
-        "duration_minutes": 8,
-        "steps": ["Step 1", "Step 2", "Step 3"],
-        "source_texts": ["Source text for cache testing."],
-        "use_ai": False,
-        "include_toning": False
-    }
-    
-    latencies = []
-    
-    for i in range(1, 4):
-        print(f"\nCall {i}/3:")
-        try:
-            start_time = time.time()
-            response = requests.post(ENDPOINT, json=payload, timeout=15)
-            end_time = time.time()
-            latency = (end_time - start_time) * 1000  # Convert to ms
-            
-            if response.status_code != 200:
-                print_result(f"Cache Test Call {i}", False, f"HTTP {response.status_code}")
-                return False
-            
-            data = response.json()
-            latencies.append(latency)
-            
-            print(f"  Latency: {latency:.2f} ms")
-            print(f"  Word count: {data.get('word_count')}")
-            
-        except Exception as e:
-            print_result(f"Cache Test Call {i}", False, f"Exception: {str(e)}")
-            return False
-    
-    # Analyze cache behavior
-    print(f"\n📊 Latency Analysis:")
-    print(f"  Call 1 (cold): {latencies[0]:.2f} ms")
-    print(f"  Call 2 (warm): {latencies[1]:.2f} ms")
-    print(f"  Call 3 (warm): {latencies[2]:.2f} ms")
-    
-    # Check if subsequent calls are faster or stable
-    avg_warm = (latencies[1] + latencies[2]) / 2
-    speedup = latencies[0] / avg_warm if avg_warm > 0 else 1
-    
-    print(f"  Average warm latency: {avg_warm:.2f} ms")
-    print(f"  Speedup factor: {speedup:.2f}x")
-    
-    # Cache is working if warm calls are significantly faster or at least stable
-    cache_working = speedup >= 1.5 or (latencies[1] < 100 and latencies[2] < 100)
-    
-    if cache_working:
-        print_result("Cache Performance", True, "Repeat calls show cache behavior (faster/stable)")
-    else:
-        print_result("Cache Performance", True, "Latency stable (cache may be working)")
-    
-    return True
-
-def test_case_3_stability_edge_cases():
-    """
-    Test Case 3: Stability edge cases
-    - Minimal payload (only practice_name)
-    - Empty steps/source_texts arrays
-    - Higher duration payload (e.g. 30 min)
-    Ensure all return valid 200 and non-empty paragraphs/segments.
-    """
-    print_section("TEST CASE 3: Stability Edge Cases")
-    
-    edge_cases = [
-        {
-            "name": "Minimal Payload",
-            "payload": {
-                "practice_name": "Minimal Practice"
-            }
-        },
-        {
-            "name": "Empty Arrays",
-            "payload": {
-                "practice_name": "Empty Arrays Practice",
-                "steps": [],
-                "source_texts": [],
-                "duration_minutes": 7
-            }
-        },
-        {
-            "name": "High Duration (30 min)",
-            "payload": {
-                "practice_name": "Extended Practice Session",
-                "duration_minutes": 30,
-                "steps": ["Begin", "Deepen", "Integrate"],
-                "source_texts": ["This is an extended practice for deep transformation."],
-                "use_ai": False
-            }
-        }
-    ]
-    
-    all_passed = True
-    
-    for test_case in edge_cases:
-        print(f"\nTesting: {test_case['name']}")
-        
-        try:
-            response = requests.post(ENDPOINT, json=test_case['payload'], timeout=20)
-            
-            if response.status_code != 200:
-                print_result(test_case['name'], False, f"HTTP {response.status_code}: {response.text[:200]}")
-                all_passed = False
-                continue
-            
-            data = response.json()
-            
-            # Validate schema
-            schema_valid, schema_msg = validate_response_schema(data)
-            if not schema_valid:
-                print_result(test_case['name'], False, f"Schema validation failed: {schema_msg}")
-                all_passed = False
-                continue
-            
-            paragraphs = data.get('paragraphs', [])
-            segments = data.get('segments', [])
-            word_count = data.get('word_count', 0)
-            
-            # Verify non-empty paragraphs and segments
-            has_paragraphs = len(paragraphs) > 0
-            has_segments = len(segments) > 0
-            
-            if has_paragraphs and has_segments:
-                print_result(test_case['name'], True, 
-                           f"Valid response: {len(paragraphs)} paragraphs, {len(segments)} segments, {word_count} words")
-            else:
-                print_result(test_case['name'], False, 
-                           f"Empty response: {len(paragraphs)} paragraphs, {len(segments)} segments")
-                all_passed = False
-            
-        except Exception as e:
-            print_result(test_case['name'], False, f"Exception: {str(e)}")
-            all_passed = False
-    
-    return all_passed
-
-def test_case_4_regression_schema():
-    """
-    Test Case 4: Regression
-    Ensure no schema regression for existing consumers.
-    Verify segments and paragraphs are returned as lists.
-    """
-    print_section("TEST CASE 4: Regression - Schema Validation")
-    
-    payload = {
-        "practice_name": "Schema Regression Test",
-        "duration_minutes": 10,
-        "steps": ["Step 1", "Step 2"],
-        "source_texts": ["Test text"],
-        "use_ai": False
-    }
+    print_section("TEST CASE 2: Authenticated Access")
     
     try:
-        response = requests.post(ENDPOINT, json=payload, timeout=15)
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.get(WEEKLY_REFLECTION_ENDPOINT, headers=headers, timeout=10)
         
         if response.status_code != 200:
-            print_result("Schema Regression", False, f"HTTP {response.status_code}")
-            return False
+            print_result("Authenticated Access", False, 
+                       f"Expected 200, got {response.status_code}: {response.text[:200]}")
+            return False, None
         
         data = response.json()
-        
-        # Validate schema
-        schema_valid, schema_msg = validate_response_schema(data)
-        if not schema_valid:
-            print_result("Schema Regression", False, f"Schema validation failed: {schema_msg}")
-            return False
-        
-        # Specifically check segments and paragraphs are lists
-        paragraphs = data.get('paragraphs')
-        segments = data.get('segments')
-        
-        paragraphs_is_list = isinstance(paragraphs, list)
-        segments_is_list = isinstance(segments, list)
-        
-        print(f"  ✓ paragraphs type: {type(paragraphs).__name__} (is list: {paragraphs_is_list})")
-        print(f"  ✓ segments type: {type(segments).__name__} (is list: {segments_is_list})")
-        
-        if paragraphs_is_list and segments_is_list:
-            print_result("Schema Regression", True, "segments and paragraphs are both lists ✓")
-            return True
-        else:
-            print_result("Schema Regression", False, "segments or paragraphs not returned as list")
-            return False
+        print_result("Authenticated Access", True, 
+                   f"Successfully retrieved weekly reflection (200 OK)")
+        return True, data
         
     except Exception as e:
-        print_result("Schema Regression", False, f"Exception: {str(e)}")
+        print_result("Authenticated Access", False, f"Exception: {str(e)}")
+        return False, None
+
+def test_case_3_schema_validation(data: Dict[str, Any]):
+    """
+    Test Case 3: Validate schema fields
+    """
+    print_section("TEST CASE 3: Schema Validation")
+    
+    schema_valid, schema_msg = validate_weekly_reflection_schema(data)
+    
+    if not schema_valid:
+        print_result("Schema Validation", False, schema_msg)
         return False
+    
+    print("✓ All required fields present with correct types:")
+    print(f"  - period_start: {data['period_start']}")
+    print(f"  - period_end: {data['period_end']}")
+    print(f"  - days_considered: {data['days_considered']}")
+    print(f"  - entries_analyzed: {data['entries_analyzed']}")
+    print(f"  - total_minutes: {data['total_minutes']}")
+    print(f"  - average_mood_shift: {data['average_mood_shift']}")
+    print(f"  - top_practice_types: {len(data['top_practice_types'])} items")
+    print(f"  - key_themes: {len(data['key_themes'])} items")
+    print(f"  - energetic_summary: {len(data['energetic_summary'])} chars")
+    print(f"  - alchemy_focus: {len(data['alchemy_focus'])} chars")
+    print(f"  - integration_vow: {len(data['integration_vow'])} chars")
+    print(f"  - weekly_alchemy_plan: {len(data['weekly_alchemy_plan'])} days")
+    print(f"  - source: {data['source']}")
+    print(f"  - generated_at: {data['generated_at']}")
+    
+    print_result("Schema Validation", True, "All required fields present and valid")
+    return True
+
+def test_case_4_weekly_plan_structure(data: Dict[str, Any]):
+    """
+    Test Case 4: Validate each weekly_alchemy_plan item has day/focus/practice/journal_prompt
+    """
+    print_section("TEST CASE 4: Weekly Alchemy Plan Structure")
+    
+    plan = data.get("weekly_alchemy_plan", [])
+    plan_valid, plan_msg = validate_weekly_alchemy_plan(plan)
+    
+    if not plan_valid:
+        print_result("Weekly Plan Structure", False, plan_msg)
+        return False
+    
+    print("✓ Weekly alchemy plan structure valid:")
+    for i, day_item in enumerate(plan):
+        print(f"  Day {i+1} ({day_item['day']}):")
+        print(f"    - focus: {day_item['focus'][:50]}...")
+        print(f"    - practice: {day_item['practice'][:50]}...")
+        print(f"    - journal_prompt: {day_item['journal_prompt'][:50]}...")
+    
+    print_result("Weekly Plan Structure", True, 
+               "All 7 days have day/focus/practice/journal_prompt fields")
+    return True
+
+def test_case_5_days_param_normalization(token: str):
+    """
+    Test Case 5: Validate days query param normalization: 
+    try days=2 and days=20 and confirm days_considered clamps to 3..14
+    """
+    print_section("TEST CASE 5: Days Parameter Normalization")
+    
+    test_cases = [
+        {"days": 2, "expected_min": 3, "expected_max": 3},
+        {"days": 20, "expected_min": 14, "expected_max": 14},
+        {"days": 7, "expected_min": 7, "expected_max": 7},
+    ]
+    
+    all_passed = True
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    for test_case in test_cases:
+        days_param = test_case["days"]
+        expected_min = test_case["expected_min"]
+        expected_max = test_case["expected_max"]
+        
+        try:
+            response = requests.get(
+                WEEKLY_REFLECTION_ENDPOINT,
+                headers=headers,
+                params={"days": days_param},
+                timeout=10
+            )
+            
+            if response.status_code != 200:
+                print_result(f"Days={days_param} normalization", False, 
+                           f"HTTP {response.status_code}: {response.text[:200]}")
+                all_passed = False
+                continue
+            
+            data = response.json()
+            days_considered = data.get("days_considered")
+            
+            if days_considered is None:
+                print_result(f"Days={days_param} normalization", False, 
+                           "Missing days_considered field")
+                all_passed = False
+                continue
+            
+            if expected_min <= days_considered <= expected_max:
+                print_result(f"Days={days_param} normalization", True, 
+                           f"Correctly normalized to {days_considered} (expected {expected_min}-{expected_max})")
+            else:
+                print_result(f"Days={days_param} normalization", False, 
+                           f"Got {days_considered}, expected {expected_min}-{expected_max}")
+                all_passed = False
+                
+        except Exception as e:
+            print_result(f"Days={days_param} normalization", False, f"Exception: {str(e)}")
+            all_passed = False
+    
+    return all_passed
 
 def main():
     """Run all test cases and provide summary."""
     print("\n" + "="*80)
-    print("  BACKEND VALIDATION: Guided Narration Duration/Performance")
-    print("  Endpoint: POST /api/content/expand-script")
+    print("  BACKEND VALIDATION: Weekly Reflection Endpoint")
+    print("  Endpoint: GET /api/practice-journal/weekly-reflection")
     print("  Base URL: https://breathwork-sanctuary.preview.emergentagent.com")
     print("="*80)
     
     results = {}
     
-    # Run all test cases
-    results['Test Case 1: Long-form Floor Consistency'] = test_case_1_long_form_floor_consistency()
-    results['Test Case 2: Cache Performance'] = test_case_2_cache_performance()
-    results['Test Case 3: Stability Edge Cases'] = test_case_3_stability_edge_cases()
-    results['Test Case 4: Regression Schema'] = test_case_4_regression_schema()
+    # Test Case 1: Unauthenticated access
+    results['Test Case 1: Unauthenticated Access'] = test_case_1_unauthenticated_access()
+    
+    # Login to get token for authenticated tests
+    print_section("LOGIN")
+    token = login_and_get_token()
+    
+    if not token:
+        print("\n❌ Cannot proceed with authenticated tests - login failed")
+        print_section("TEST SUMMARY")
+        print("✅ PASS - Test Case 1: Unauthenticated Access")
+        print("❌ FAIL - Remaining tests (login failed)")
+        return False
+    
+    # Test Case 2: Authenticated access
+    test_2_passed, reflection_data = test_case_2_authenticated_access(token)
+    results['Test Case 2: Authenticated Access'] = test_2_passed
+    
+    if not test_2_passed or not reflection_data:
+        print("\n❌ Cannot proceed with schema validation - authenticated access failed")
+        print_section("TEST SUMMARY")
+        for test_name, passed in results.items():
+            status = "✅ PASS" if passed else "❌ FAIL"
+            print(f"{status} - {test_name}")
+        return False
+    
+    # Test Case 3: Schema validation
+    results['Test Case 3: Schema Validation'] = test_case_3_schema_validation(reflection_data)
+    
+    # Test Case 4: Weekly plan structure
+    results['Test Case 4: Weekly Plan Structure'] = test_case_4_weekly_plan_structure(reflection_data)
+    
+    # Test Case 5: Days parameter normalization
+    results['Test Case 5: Days Parameter Normalization'] = test_case_5_days_param_normalization(token)
     
     # Print summary
     print_section("TEST SUMMARY")
