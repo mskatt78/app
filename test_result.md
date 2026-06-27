@@ -1365,6 +1365,56 @@ frontend:
       Auth-aware settings verification PASSED. All 9 test steps completed successfully. Email/password authentication working correctly. Settings page fully accessible with authenticated session. Reminder settings (enable toggle, time change, day selection) all functional. Save settings shows success toast. Export account data initiates download with success toast. Account deletion status correctly displayed (previous request shown). All decomposed settings cards (Profile, Reminders, Guided Audio, Notifications, Account Tools, Logout) render without crashes. Console shows only expected non-critical 401 auth errors. Settings page is production-ready with full authentication support.
 
 
+
+  - task: "Mantras API premium gating structure (26 items, first 3 free)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/mantras returns 200 with exactly 26 mantras. Premium gating structure verified: IDs 1-3 are is_premium=false (Om, Om Mani Padme Hum, Lokah Samastah Sukhino Bhavantu), IDs 4-26 are is_premium=true (23 premium mantras). Extended fields verified for IDs 13-26 (14 mantras): all include transliteration, sanskrit, meaning/translation, description, and ritual_practice fields. Sample extended mantra (ID 13 'Om Ma Ni Pad Me Hum') confirmed with all required fields populated. Mantras API premium structure PASSED."
+
+  - task: "Payments premium-products endpoint structure"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/payments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/payments/premium-products returns 200 with valid product structure. Contains required product IDs: premium_mantras (price: $49.00) and full_app_unlock (price: $369.00). Additional products found: premium_breathwork ($44.00), rose_temple ($59.00), healing_portals ($69.00). All products include id, name, description, price, currency (usd), and unlock_scope fields. Premium products endpoint PASSED."
+
+  - task: "Payments plans endpoint structure"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/payments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/payments/plans returns 200 with 2 subscription plans. Monthly plan found: id='monthly', name='Monthly Membership', price=$19.99, interval='month'. Yearly plan found: id='yearly', name='Yearly Membership', price=$149.99, interval='year'. Both plans include all required fields (id, name, price, interval). Payments plans endpoint PASSED."
+
+  - task: "Retreats endpoint empty state"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/retreats returns 200 with empty list []. Endpoint correctly returns empty array as expected. No placeholder or default retreats seeded. Retreats endpoint PASSED."
+
+
 agent_communication:
   - agent: "testing"
     message: |
@@ -9740,3 +9790,44 @@ agent_communication:
          - Settings controls (after auth fix)
          - Persistence behavior (after auth fix)
 
+
+
+
+  - agent: "testing"
+    message: |
+      Backend Verification Test - Preview URL (2026-12-XX):
+      
+      VERIFICATION REQUEST: Backend API validation for preview URL https://breathwork-sanctuary.preview.emergentagent.com
+      Focus: Mantras premium structure, payments endpoints, retreats endpoint
+      
+      ✅ ALL BACKEND TESTS PASSED (4/4 endpoints):
+      
+      1. ✅ GET /api/mantras - PASSED
+         - Returns exactly 26 mantras ✓
+         - IDs 1-3 are is_premium=false (free mantras) ✓
+         - IDs 4-26 are is_premium=true (23 premium mantras) ✓
+         - IDs 13-26 include extended fields (transliteration, sanskrit, meaning/translation, description, ritual_practice) ✓
+         - Sample data verified: ID 1 (Om - free), ID 4 (So Hum - premium), ID 13 (Om Ma Ni Pad Me Hum - extended) ✓
+      
+      2. ✅ GET /api/payments/premium-products - PASSED
+         - Returns valid products structure ✓
+         - Contains premium_mantras product (price: $49.00) ✓
+         - Contains full_app_unlock product (price: $369.00) ✓
+         - Additional products: premium_breathwork ($44.00), rose_temple ($59.00), healing_portals ($69.00) ✓
+         - All products include required fields (id, name, description, price, currency, unlock_scope) ✓
+      
+      3. ✅ GET /api/payments/plans - PASSED
+         - Returns 2 subscription plans ✓
+         - Monthly plan: id='monthly', price=$19.99, interval='month' ✓
+         - Yearly plan: id='yearly', price=$149.99, interval='year' ✓
+         - All required fields present ✓
+      
+      4. ✅ GET /api/retreats - PASSED
+         - Returns empty list [] as expected ✓
+         - No placeholder retreats seeded ✓
+      
+      SUMMARY:
+      All backend verification tests PASSED. Mantras API correctly implements premium gating with first-3-free model (IDs 1-3 free, 4-26 premium) and extended fields for IDs 13-26. Payments endpoints return correct product and plan structures with proper pricing. Retreats endpoint correctly returns empty state. No bugs found. All endpoints returning expected data structures and status codes.
+      
+      RECOMMENDATION:
+      Backend APIs are production-ready. Main agent can proceed with summary and finish.
