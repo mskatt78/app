@@ -2569,3 +2569,46 @@
 ### Production Note
 - Changes validated in preview; production requires redeploy of latest preview build.
 
+## Premium Mantra Expansion + Free/Paid Alignment (Iteration 222/223) — 2026-06-27
+
+### Why this was done
+- User confirmed priorities: full sweep (content + readiness direction), exact requested mantra set + additions, and premium model alignment.
+- User requested: first 3 mantras free, then paid access with subscription/full-app unlock options.
+
+### Implemented
+- Added and seeded expanded mantra corpus with deep ritual fields:
+  - `backend/data/all_content.py`
+  - 26 total mantras; IDs `1-3` free, IDs `4-26` premium.
+  - IDs `13-26` include: `transliteration`, `sanskrit`, `meaning`, `description`, `ritual_practice`.
+- Added mantra premium monetization product:
+  - `backend/routers/payments.py`
+  - New Stripe product id: `premium_mantras` (`$49`) while preserving `full_app_unlock` (`$369`) and subscription plans.
+- Extended mantra enrichment/tutorial mapping:
+  - `backend/routers/content.py`
+  - Added premium defaults and additional direct mantra tutorial mappings.
+- Updated mantra premium UX and lock flow:
+  - `frontend/src/pages/mantras/MantrasLibraryContainer.jsx`
+  - `frontend/src/pages/mantras/MantrasLibraryGrid.jsx`
+  - Premium banner now clearly communicates "First 3 free" model.
+  - Locked mantra modal now offers: section unlock, full app unlock, and subscription plan CTA.
+- Added premium section state support:
+  - `frontend/src/hooks/usePremiumAccess.js`
+  - Included `premium_mantras` section handling.
+
+### Verification
+- Automated test report: `/app/test_reports/iteration_222.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+- Additional verification:
+  - `auto_frontend_testing_agent`: PASS (banner, free/premium gating, lock modal CTA coverage).
+  - `deep_testing_backend_v2`: PASS (`/api/mantras`, `/api/payments/premium-products`, `/api/payments/plans`, `/api/retreats`).
+
+### Current Status
+- Preview is updated and validated.
+- Production requires redeploy to receive these updates.
+
+### Prioritized Next Tasks
+- **P1**: Continue devotional tone calibration in remaining non-mantra sections (Healing Portals, Rose Temple, etc.).
+- **P1**: Final real-device app-store readiness evidence pass (iOS install + store asset validations).
+- **P2**: Weekly Reflection/Alchemy plan generator.
+
