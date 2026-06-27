@@ -2774,3 +2774,44 @@
 ### Next prioritized items
 - **P2**: Weekly Reflection / Alchemy Plan generator.
 
+## P2 Weekly Reflection / Alchemy Plan Generator — 2026-06-27
+
+### Implemented
+- **Backend endpoint added** in `backend/routers/user.py`:
+  - `GET /api/practice-journal/weekly-reflection?days=7`
+  - Auth-protected synthesis of recent `practice_journal_entries`.
+  - Returns:
+    - period + stats (`entries_analyzed`, `total_minutes`, `average_mood_shift`)
+    - extracted `key_themes`
+    - `energetic_summary`, `alchemy_focus`, `integration_vow`
+    - 7-day `weekly_alchemy_plan` (Monday→Sunday) with `day/focus/practice/journal_prompt`
+  - Includes fallback output when no entries exist.
+  - Days parameter normalization/clamp implemented (3..14).
+
+- **Frontend feature added** in Practice Journal:
+  - New trigger button in header: **Weekly Reflection**
+    - `practice-journal-open-weekly-reflection-button`
+  - New modal component:
+    - `frontend/src/pages/practice-journal/PracticeJournalWeeklyReflectionModal.jsx`
+  - Wired in container + data hook:
+    - `PracticeJournalContainer.jsx`
+    - `usePracticeJournalData.js`
+  - Regenerate and close actions implemented.
+  - Local synthesis fallback retained if API call fails.
+
+### Validation
+- Lint: clean for backend and frontend changed files.
+- Backend manual verification: authenticated endpoint returns expected schema; unauth returns 401.
+- Testing agent report: `/app/test_reports/iteration_225.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+- Additional specialist checks:
+  - `auto_frontend_testing_agent`: PASS
+  - `deep_testing_backend_v2`: PASS
+
+### Current status
+- Weekly Reflection / Alchemy Plan generator is live in preview and fully test-verified.
+
+### Next prioritized items
+- **P2**: Optional enhancements to reflection quality (trend charts + quote extraction from voice-note transcripts when available).
+
