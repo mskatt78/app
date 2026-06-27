@@ -243,6 +243,31 @@ const SomaticMovement = ({ user, api }) => {
                         </span>
                       ))}
                     </div>
+                    <Button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setGuidedPractice({
+                          ...practice,
+                          category: "somatic",
+                          element: practice.element || "Water",
+                          duration_minutes: resolveDurationMinutes(practice.duration_minutes, 35),
+                          steps: Array.isArray(practice.instructions)
+                            ? practice.instructions
+                            : [
+                                practice.description || "Settle into your body with soft breath and awareness.",
+                                "Let movement emerge from sensation rather than force.",
+                                "Integrate slowly and close with grounding through feet and pelvis.",
+                              ],
+                        });
+                      }}
+                      variant="outline"
+                      className="w-full mt-3 border-white/15"
+                      data-testid={`somatic-card-start-guided-${practice.id}`}
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Start Guided Practice
+                    </Button>
                   </div>
                 </motion.div>
               );
@@ -334,6 +359,32 @@ const SomaticMovement = ({ user, api }) => {
                     <li className="text-xs text-emerald-100/90">• Pause every 3-4 minutes to receive a cosmic guidance line, then continue with embodied devotion.</li>
                   </ul>
                 </div>
+
+                <Button
+                  onClick={() => {
+                    setSelectedPractice(null);
+                    setGuidedPractice({
+                      ...selectedPractice,
+                      category: "somatic",
+                      element: selectedPractice.element || "Water",
+                      duration_minutes: resolveDurationMinutes(selectedPractice.duration_minutes, 35),
+                      steps: Array.isArray(selectedPractice.instructions)
+                        ? selectedPractice.instructions
+                        : [
+                            selectedPractice.description || "Settle into your body with soft breath and awareness.",
+                            "Let movement emerge from sensation rather than force.",
+                            "Integrate slowly and close with grounding through feet and pelvis.",
+                          ],
+                    });
+                  }}
+                  variant="outline"
+                  className="w-full border-white/15"
+                  size="lg"
+                  data-testid="somatic-modal-start-guided-overlay-btn"
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                  Begin Guided Practice (Voice + Ambient)
+                </Button>
 
                 <Button
                   onClick={() => handleStartGuided(selectedPractice)}

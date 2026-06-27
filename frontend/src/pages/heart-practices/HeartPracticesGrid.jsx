@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { ChevronRight, Clock, Heart } from "lucide-react";
+import { ChevronRight, Clock, Heart, Play } from "lucide-react";
 import { resolveReviewedDate } from "./heartPracticeConfig";
 import { formatDurationMinutesLabel } from "../../utils/durationUtils";
 
-export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, setSelectedPractice }) => (
+export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, setSelectedPractice, onStartGuided }) => (
   <>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="heart-practices-grid">
       {practices.map((practice, index) => {
@@ -62,6 +62,18 @@ export const HeartPracticesGrid = ({ practices, categoryIcons, categoryColors, s
                 </span>
                 <ChevronRight className={`w-4 h-4 ${colors.text} opacity-0 group-hover:opacity-100 transition-opacity`} />
               </div>
+              <button
+                type="button"
+                onClick={(event) => {
+                  event.stopPropagation();
+                  onStartGuided?.(practice);
+                }}
+                className={`mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${colors.bg} ${colors.text} border ${colors.border || "border-white/10"} hover:opacity-90 transition-opacity`}
+                data-testid={`heart-card-start-guided-${practice.id}`}
+              >
+                <Play className="w-3.5 h-3.5" />
+                Start Guided Practice
+              </button>
             </div>
           </motion.div>
         );

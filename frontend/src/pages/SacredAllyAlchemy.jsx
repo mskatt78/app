@@ -5,6 +5,8 @@ import { ArrowLeft, Sparkles, Flame, Waves, Wind, X, Feather, Star, ChevronRight
 import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { toast } from "sonner";
 
 const ALLY_FALLBACK_DATA = [
   {
@@ -794,6 +796,7 @@ export default function SacredAllyAlchemy({ api }) {
   const [recommendMoonPhase, setRecommendMoonPhase] = useState("full moon");
   const [showPracticeTools, setShowPracticeTools] = useState(false);
   const [roadmapExpanded, setRoadmapExpanded] = useState(false);
+  const [guidedPractice, setGuidedPractice] = useState(null);
 
   const ROADMAP_PHASES = [
     {
@@ -894,8 +897,54 @@ export default function SacredAllyAlchemy({ api }) {
     [pathways, selected?.id]
   );
 
+  const startSacredAllyGuidedPractice = (item) => {
+    const steps = [
+      ...(buildEmbodimentPractices(item) || []),
+      ...(deriveCeremonies(item) || []),
+      ...(item?.alchemy_teachings || []),
+      ...(item?.journal_prompts || []).slice(0, 2),
+    ].filter(Boolean);
+
+    setGuidedPractice({
+      id: `sacred-ally-guided-${item?.id || "session"}`,
+      name: `${item?.name || "Sacred Ally"} Guided Practice`,
+      category: "sacred_ally",
+      element: item?.element || "Spirit",
+      duration_minutes: 24,
+      steps: steps.length > 0 ? steps : [
+        item?.description || "Arrive and breathe into your chosen ally medicine.",
+        "Receive one teaching and anchor it into your body through breath and posture.",
+        "Close with gratitude and one embodied commitment.",
+      ],
+    });
+  };
+
+  const exitSacredAllyGuidedPractice = () => {
+    const completed = guidedPractice;
+    setGuidedPractice(null);
+    if (!completed) return;
+
+    api.post("/practice-history", {
+      practice_type: "sacred_ally",
+      practice_id: completed.id,
+      duration_minutes: completed.duration_minutes || 24,
+      element: completed.element || "Spirit",
+      notes: `Completed guided ${completed.name}`,
+    })
+      .then(() => toast.success("Sacred ally guided practice complete."))
+      .catch(() => {
+        // silent
+      });
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="sacred-ally-alchemy-page">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={exitSacredAllyGuidedPractice}
+      />
+
       <header className="border-b border-white/10 bg-card/40 backdrop-blur-xl sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-3">
           <button
@@ -954,9 +1003,17 @@ export default function SacredAllyAlchemy({ api }) {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="sacred-ally-grid">
             {cards.map((item) => (
-              <button
+              <div
                 key={item.id}
                 onClick={() => setSelected(item)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelected(item);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
                 className="text-left rounded-2xl border border-white/10 bg-card/50 hover:bg-card/70 transition-all overflow-hidden"
                 data-testid={`sacred-ally-card-${item.id}`}
               >
@@ -989,8 +1046,20 @@ export default function SacredAllyAlchemy({ api }) {
                       🜂 Ceremony: {firstLine(deriveCeremonies(item), "Invoke, embody, and seal your daily practice.")}
                     </p>
                   </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      startSacredAllyGuidedPractice(item);
+                    }}
+                    className="w-full border-amber-500/30 text-amber-100 hover:bg-amber-500/15 mt-2"
+                    data-testid={`sacred-ally-card-start-guided-${item.id}`}
+                  >
+                    Start Guided Practice
+                  </Button>
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         )}
@@ -1216,6 +1285,17 @@ export default function SacredAllyAlchemy({ api }) {
                 <SectionList title={selected.practical_rituals ? "Practical Alchemy Rituals" : "Rituals"} icon={Flame} items={selected.practical_rituals || selected.rituals} testId="sacred-ally-rituals" />
                 <SectionList title="Journal Prompts" icon={Feather} items={selected.journal_prompts} testId="sacred-ally-journal-prompts" />
                 <SectionList title="Affirmations" icon={Star} items={selected.affirmations} testId="sacred-ally-affirmations" />
+
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="sacred-ally-guided-practice-card">
+                  <p className="text-xs uppercase tracking-wider text-amber-200 mb-2">Guided Practice</p>
+                  <Button
+                    onClick={() => startSacredAllyGuidedPractice(selected)}
+                    className="w-full bg-amber-500/20 border border-amber-400/30 text-amber-100 hover:bg-amber-500/30"
+                    data-testid="sacred-ally-modal-start-guided-practice-button"
+                  >
+                    Start Guided Practice (Voice + Timer + Ambient)
+                  </Button>
+                </div>
 
                 <div className="rounded-xl border border-white/10 bg-white/5 p-3" data-testid="sacred-ally-source-integrity">
                   <p className="text-xs text-muted-foreground mb-2">Source Integrity</p>

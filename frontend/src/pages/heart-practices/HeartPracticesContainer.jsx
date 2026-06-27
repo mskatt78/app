@@ -117,6 +117,7 @@ const HeartPracticesContainer = ({ api }) => {
           categoryIcons={HEART_CATEGORY_ICONS}
           categoryColors={HEART_CATEGORY_COLORS}
           setSelectedPractice={setSelectedPractice}
+          onStartGuided={handleStartGuided}
         />
       </main>
 

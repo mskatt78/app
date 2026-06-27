@@ -1,7 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
+import { Play, X } from "lucide-react";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
 import AddToJournal from "../../components/AddToJournal";
+import { Button } from "../../components/ui/button";
 
 const OVERLAY_ANIMATION = { opacity: 0, scale: 0.96 };
 const OVERLAY_ENTER = { opacity: 1, scale: 1 };
@@ -10,9 +11,13 @@ export const RoseTempleModals = ({
   selectedTeaching,
   selectedPractice,
   selectedRite,
+  onStartGuidedTeaching,
+  onStartGuidedPractice,
+  onStartGuidedRite,
   onCloseTeaching,
   onClosePractice,
   onCloseRite,
+  api,
 }) => {
   return (
     <>
@@ -39,6 +44,9 @@ export const RoseTempleModals = ({
                     <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
                   </div>
                 ))}
+                <Button onClick={() => onStartGuidedTeaching?.(selectedTeaching)} className="w-full" data-testid="rose-teaching-modal-start-guided-btn">
+                  <Play className="w-4 h-4 mr-2" /> Start Guided Teaching Practice
+                </Button>
               </div>
             </motion.div>
           </div>
@@ -60,9 +68,13 @@ export const RoseTempleModals = ({
               </div>
               <p className="text-sm text-muted-foreground mb-4">{selectedPractice.description}</p>
               <GuidedAudioButton
-                text={selectedPractice.description || selectedPractice.content || "Rose Temple embodiment practice"}
+                api={api}
+                script={selectedPractice.description || selectedPractice.content || "Rose Temple embodiment practice"}
                 label={`Play ${selectedPractice.name} narration`}
               />
+              <Button onClick={() => onStartGuidedPractice?.(selectedPractice)} className="w-full mt-3" data-testid="rose-practice-modal-start-guided-btn">
+                <Play className="w-4 h-4 mr-2" /> Start Guided Practice
+              </Button>
             </motion.div>
           </div>
         )}
@@ -82,6 +94,9 @@ export const RoseTempleModals = ({
                 <button onClick={onCloseRite} data-testid="rose-rite-modal-close"><X className="w-5 h-5" /></button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">{selectedRite.description}</p>
+              <Button onClick={() => onStartGuidedRite?.(selectedRite)} className="w-full mb-3" data-testid="rose-rite-modal-start-guided-btn">
+                <Play className="w-4 h-4 mr-2" /> Start Guided Rite
+              </Button>
               <AddToJournal
                 practiceType="rose_temple_rite"
                 practiceName={selectedRite.title || selectedRite.name}

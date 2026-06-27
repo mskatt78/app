@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Globe } from "lucide-react";
+import { toast } from "sonner";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 // Icon mapping for element ids (React components can't be stored in MongoDB)
 import { ELEMENT_ICONS, STATIC_ELEMENTS, stableElementKey } from "./elemental-temples/elementalTempleData";
@@ -13,6 +15,55 @@ const ElementalTemples = ({ user, api }) => {
   const [activeTemple, setActiveTemple] = useState(null);
   const [activeSection, setActiveSection] = useState("why_it_heals");
   const [elements, setElements] = useState(STATIC_ELEMENTS);
+  const [guidedPractice, setGuidedPractice] = useState(null);
+
+  const startTempleGuidedPractice = (temple, sectionId = "embodiment") => {
+    const section = sectionId === "rituals"
+      ? temple.rituals?.[0]?.steps || []
+      : sectionId === "ceremonies"
+        ? temple.ceremonies?.[0]?.flow || []
+        : sectionId === "practices"
+          ? temple.practices?.map((practice) => practice.desc).filter(Boolean).slice(0, 8) || []
+          : temple.embodiment
+            ? [temple.embodiment]
+            : [];
+
+    const steps = section.length > 0
+      ? section
+      : [
+          temple.description,
+          temple.inner,
+          temple.outer,
+          `Close by speaking one ${temple.element} affirmation aloud with full breath and presence.`,
+        ].filter(Boolean);
+
+    setGuidedPractice({
+      id: `temple-guided-${temple.id}-${sectionId}`,
+      name: `${temple.name} · Guided ${sectionId.replace("_", " ")}`,
+      category: "elemental_temple",
+      element: temple.element || "Spirit",
+      duration_minutes: 20,
+      steps,
+    });
+  };
+
+  const exitTempleGuidedPractice = () => {
+    const completed = guidedPractice;
+    setGuidedPractice(null);
+    if (!completed) return;
+
+    api.post("/practice-history", {
+      practice_type: "elemental_temple",
+      practice_id: completed.id,
+      duration_minutes: completed.duration_minutes || 20,
+      element: completed.element || "Spirit",
+      notes: `Completed guided ${completed.name}`,
+    })
+      .then(() => toast.success("Elemental temple guided practice complete."))
+      .catch(() => {
+        // silent
+      });
+  };
 
   // Fetch fresh data from API (enriched content from MongoDB)
   useEffect(() => {
@@ -65,6 +116,12 @@ const ElementalTemples = ({ user, api }) => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="elemental-temples">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={exitTempleGuidedPractice}
+      />
+
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
@@ -106,6 +163,7 @@ const ElementalTemples = ({ user, api }) => {
               activeSection={activeSection}
               setActiveSection={setActiveSection}
               stableElementKey={stableElementKey}
+              onStartGuidedPractice={startTempleGuidedPractice}
             />
           )}
         </AnimatePresence>

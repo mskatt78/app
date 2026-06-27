@@ -236,6 +236,19 @@ const CreativeProcesses = ({ user, api }) => {
                         {process.duration_minutes || 30} min
                       </span>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleStartPractice(process);
+                      }}
+                      className={`mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${colors.bg} ${colors.text} border ${colors.border || "border-white/10"} hover:opacity-90 transition-opacity`}
+                      data-testid={`creative-card-start-guided-${process.id}`}
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                      Start Guided Practice
+                    </button>
                   </div>
                 </motion.div>
               );

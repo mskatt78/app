@@ -4,6 +4,7 @@ import { ArrowLeft, Crown, Flame, Heart, Loader2, Lock, Orbit, Shield, Sparkles 
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
@@ -112,6 +113,7 @@ const HealingPortals = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [portals, setPortals] = useState([]);
   const [selectedPortal, setSelectedPortal] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const premium = usePremiumAccess({ api, user });
   const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
 
@@ -150,6 +152,44 @@ const HealingPortals = ({ user, api }) => {
     [premium]
   );
 
+  const startPortalGuidedPractice = useCallback((portal) => {
+    const steps = [
+      portal?.opening_invocation,
+      portal?.description,
+      ...sanitizeToList(portal?.alchemy_teachings),
+      ...sanitizeToList(portal?.rituals),
+      ...sanitizeToList(portal?.ceremonies),
+      ...sanitizeToList(portal?.integration_practices),
+    ].filter(Boolean);
+
+    setGuidedPractice({
+      id: `healing-portal-guided-${portal?.id || "session"}`,
+      name: `${portal?.name || "Healing Portal"} Guided Practice`,
+      category: "healing_portal",
+      element: portal?.element || "Spirit",
+      duration_minutes: portal?.duration_minutes || 20,
+      steps: steps.length > 0 ? steps : ["Arrive, breathe, and complete one healing portal cycle with full embodied presence."],
+    });
+  }, []);
+
+  const exitPortalGuidedPractice = useCallback(() => {
+    const completed = guidedPractice;
+    setGuidedPractice(null);
+    if (!completed) return;
+
+    api.post("/practice-history", {
+      practice_type: "healing_portal",
+      practice_id: completed.id,
+      duration_minutes: completed.duration_minutes || 20,
+      element: completed.element || "Spirit",
+      notes: `Completed guided ${completed.name}`,
+    })
+      .then(() => toast.success("Healing portal guided practice complete."))
+      .catch(() => {
+        // silent
+      });
+  }, [api, guidedPractice]);
+
   const fullAppProduct = premium.findProduct("full_app_unlock");
   const portalProduct = premium.findProduct("healing_portals");
 
@@ -169,6 +209,12 @@ const HealingPortals = ({ user, api }) => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="healing-portals-page">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={exitPortalGuidedPractice}
+      />
+
       <header className="relative overflow-hidden border-b border-white/10 bg-gradient-to-b from-amber-950/40 via-fuchsia-950/20 to-background">
         <div className="max-w-6xl mx-auto px-4 py-8">
           <Button variant="ghost" size="sm" onClick={() => navigate("/menu")} className="mb-4 text-muted-foreground" data-testid="healing-portals-back-button">
@@ -234,12 +280,20 @@ const HealingPortals = ({ user, api }) => {
               const teachings = sanitizeToList(portal.alchemy_teachings);
 
               return (
-                <motion.button
+                <motion.div
                   key={portal.id}
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.06 }}
                   onClick={() => setSelectedPortal(portal)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setSelectedPortal(portal);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
                   className="text-left rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] hover:border-amber-300/40 transition-all duration-300 overflow-hidden"
                   data-testid={`healing-portal-card-${portal.id}`}
                 >
@@ -279,9 +333,22 @@ const HealingPortals = ({ user, api }) => {
                       <div className="text-xs text-amber-300 flex items-center gap-1" data-testid={`healing-portal-locked-${portal.id}`}>
                         <Lock className="w-3.5 h-3.5" /> Membership required
                       </div>
-                    ) : null}
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          startPortalGuidedPractice(portal);
+                        }}
+                        className="w-full mt-2 border-white/20"
+                        data-testid={`healing-portal-card-start-guided-${portal.id}`}
+                      >
+                        Start Guided Practice
+                      </Button>
+                    )}
                   </div>
-                </motion.button>
+                </motion.div>
               );
             })}
           </div>
@@ -372,6 +439,14 @@ const HealingPortals = ({ user, api }) => {
                   </div>
                 ) : (
                   <div className="space-y-3" data-testid="healing-portal-guided-audio-panel">
+                    <Button
+                      onClick={() => startPortalGuidedPractice(selectedPortal)}
+                      variant="outline"
+                      className="w-full border-white/20"
+                      data-testid="healing-portal-start-guided-overlay-button"
+                    >
+                      Start Guided Practice (Voice + Timer + Ambient)
+                    </Button>
                     <GuidedAudioButton
                       api={api}
                       label="Play Guided Healing Portal"

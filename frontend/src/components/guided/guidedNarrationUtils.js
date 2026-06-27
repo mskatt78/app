@@ -7,6 +7,7 @@ export const ELEMENT_AMBIENT = {
   water: { freq: 300, Q: 0.5, gain: 0.1, label: "Ocean Waves" },
   earth: { freq: 60, Q: 1, gain: 0.14, label: "Forest Depths" },
   air: { freq: 800, Q: 0.4, gain: 0.08, label: "Wind Breeze" },
+  moon: { freq: 244, Q: 0.9, gain: 0.09, label: "Moon Tides" },
   spirit: { freq: 432, Q: 1.5, gain: 0.09, label: "Crystal Bowls" },
 };
 
@@ -15,6 +16,7 @@ export const ELEMENT_BG = {
   water: "from-blue-950 via-cyan-950 to-black",
   earth: "from-emerald-950 via-green-950 to-black",
   air: "from-sky-950 via-cyan-950 to-black",
+  moon: "from-indigo-950 via-violet-950 to-black",
   spirit: "from-violet-950 via-purple-950 to-black",
 };
 
@@ -23,6 +25,7 @@ export const ELEMENT_COLOR = {
   water: "text-blue-400",
   earth: "text-emerald-400",
   air: "text-cyan-400",
+  moon: "text-indigo-300",
   spirit: "text-violet-400",
 };
 
@@ -38,6 +41,7 @@ const TONING_ROOT_FREQ = {
   water: 144,
   earth: 128,
   air: 192,
+  moon: 174,
   spirit: 216,
 };
 
@@ -48,6 +52,7 @@ export const resolveToningGain = (element = "spirit") => {
     water: 0.013,
     earth: 0.012,
     air: 0.011,
+    moon: 0.011,
     spirit: 0.012,
   };
   return gainMap[normalized] ?? gainMap.spirit;

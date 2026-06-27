@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { ChevronRight, Clock, Star } from "lucide-react";
+import { ChevronRight, Clock, Play, Star } from "lucide-react";
 import { difficultyColors, elementColors, elementIcons } from "./elementalConfig";
 
-export const ElementalPracticeCard = ({ practice, index, onSelect, formatReviewedDate }) => {
+export const ElementalPracticeCard = ({ practice, index, onSelect, onStartGuided, formatReviewedDate }) => {
   const Icon = elementIcons[practice.element] || Star;
   const colors = elementColors[practice.element] || elementColors.Spirit;
 
@@ -70,6 +70,18 @@ export const ElementalPracticeCard = ({ practice, index, onSelect, formatReviewe
           </span>
           <ChevronRight className={`w-4 h-4 ${colors.text} opacity-0 group-hover:opacity-100 transition-opacity`} />
         </div>
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+            onStartGuided?.(practice);
+          }}
+          className={`mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${colors.bg} ${colors.text} border ${colors.border || "border-white/10"} hover:opacity-90 transition-opacity`}
+          data-testid={`elemental-card-start-guided-${practice.id}`}
+        >
+          <Play className="w-3.5 h-3.5" />
+          Start Guided Practice
+        </button>
       </div>
     </motion.div>
   );

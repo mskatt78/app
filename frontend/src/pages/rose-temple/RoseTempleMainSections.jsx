@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { Loader2, Play } from "lucide-react";
 import { ROSE_FEMININE_IMAGES, teachings, templeIntro, sisterCircleTexture } from "./roseTempleConstants";
 
 const TEACHING_HOVER = { y: -2 };
@@ -12,6 +12,9 @@ export const RoseTempleMainSections = ({
   onSelectTeaching,
   onSelectPractice,
   onSelectRite,
+  onStartGuidedTeaching,
+  onStartGuidedPractice,
+  onStartGuidedRite,
 }) => {
   return (
     <main className="max-w-6xl mx-auto p-6 space-y-8" data-testid="rose-temple-main">
@@ -73,6 +76,20 @@ export const RoseTempleMainSections = ({
                   </div>
                   <h4 className="font-serif text-xl mb-2">{teaching.title}</h4>
                   <p className="text-sm text-muted-foreground line-clamp-3">{teaching.description}</p>
+                  {!locked && (
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        onStartGuidedTeaching?.(teaching);
+                      }}
+                      className="mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs bg-rose-500/10 border border-rose-500/20 text-rose-200 hover:bg-rose-500/15"
+                      data-testid={`rose-teaching-start-guided-${teaching.id}`}
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                      Start Guided Practice
+                    </button>
+                  )}
                 </div>
               </motion.button>
             );
@@ -95,6 +112,28 @@ export const RoseTempleMainSections = ({
               >
                 <h4 className="font-serif text-lg mb-1">{practice.name}</h4>
                 <p className="text-sm text-muted-foreground line-clamp-2">{practice.description}</p>
+                {!locked && (
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      onStartGuidedPractice?.(practice);
+                    }}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        onStartGuidedPractice?.(practice);
+                      }
+                    }}
+                    className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs bg-rose-500/10 border border-rose-500/20 text-rose-200"
+                    data-testid={`rose-practice-start-guided-${practice.id}`}
+                  >
+                    <Play className="w-3.5 h-3.5" />
+                    Start Guided
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -113,6 +152,28 @@ export const RoseTempleMainSections = ({
             >
               <h4 className="font-serif text-lg mb-1">{rite.title || rite.name}</h4>
               <p className="text-sm text-muted-foreground line-clamp-2">{rite.description}</p>
+              {!locked && (
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onStartGuidedRite?.(rite);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      onStartGuidedRite?.(rite);
+                    }
+                  }}
+                  className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs bg-rose-500/10 border border-rose-500/20 text-rose-200"
+                  data-testid={`rose-rite-start-guided-${rite.id}`}
+                >
+                  <Play className="w-3.5 h-3.5" />
+                  Start Guided
+                </span>
+              )}
             </button>
           ))}
         </div>

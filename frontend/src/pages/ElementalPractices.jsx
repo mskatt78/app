@@ -7,6 +7,7 @@ import { ElementalPracticeCard } from "../components/elemental/ElementalPractice
 import { ElementalPracticeModal } from "../components/elemental/ElementalPracticeModal";
 import { elementColors, elementIcons, elementalFilters } from "../components/elemental/elementalConfig";
 import { appLogger } from "../utils/logger";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 
 const ElementalPractices = ({ api }) => {
   const navigate = useNavigate();
@@ -16,6 +17,49 @@ const ElementalPractices = ({ api }) => {
   const [filter, setFilter] = useState("all");
   const [isPracticing, setIsPracticing] = useState(false);
   const [showGuided, setShowGuided] = useState(false);
+  const [guidedPractice, setGuidedPractice] = useState(null);
+
+  const buildElementalGuidedPractice = useCallback((practice) => {
+    const steps = Array.isArray(practice.instructions) && practice.instructions.length > 0
+      ? practice.instructions
+      : [
+          `Arrive in the ${practice.element || "Earth"} field through steady breath and body awareness.`,
+          practice.description || `Open to ${practice.name} with reverence and full presence.`,
+          "Continue through this sequence slowly and allow your awareness to integrate each phase.",
+          "Close with gratitude and grounding in your body.",
+        ];
+
+    return {
+      id: practice.id,
+      name: practice.name,
+      duration_minutes: practice.duration_minutes || 20,
+      element: practice.element || "Earth",
+      category: "elemental",
+      steps,
+    };
+  }, []);
+
+  const handleStartCardGuided = useCallback((practice) => {
+    setGuidedPractice(buildElementalGuidedPractice(practice));
+  }, [buildElementalGuidedPractice]);
+
+  const handleExitCardGuided = useCallback(() => {
+    const completed = guidedPractice;
+    setGuidedPractice(null);
+    if (!completed) return;
+
+    api.post("/practice-history", {
+      practice_type: "elemental",
+      practice_id: completed.id,
+      duration_minutes: completed.duration_minutes || 20,
+      element: completed.element,
+      notes: `Completed guided ${completed.name}`,
+    })
+      .then(() => toast.success(`${completed.name} complete. Elemental integration recorded.`))
+      .catch(() => {
+        // silent
+      });
+  }, [api, guidedPractice]);
 
   const formatReviewedDate = (value) => {
     if (!value) return null;
@@ -63,6 +107,12 @@ const ElementalPractices = ({ api }) => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="elemental-practices">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={handleExitCardGuided}
+      />
+
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5 p-4">
         <div className="max-w-6xl mx-auto flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")} data-testid="back-btn">
@@ -105,6 +155,7 @@ const ElementalPractices = ({ api }) => {
               practice={practice}
               index={index}
               onSelect={setSelectedPractice}
+              onStartGuided={handleStartCardGuided}
               formatReviewedDate={formatReviewedDate}
             />
           ))}

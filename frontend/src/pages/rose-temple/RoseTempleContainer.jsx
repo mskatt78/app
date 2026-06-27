@@ -6,12 +6,15 @@ import { RoseTempleModals } from "./RoseTempleModals";
 import { useRoseTempleData } from "./useRoseTempleData";
 import { usePremiumAccess } from "../../hooks/usePremiumAccess";
 import { Button } from "../../components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import GuidedPracticeOverlay from "../../components/GuidedPracticeOverlay";
+import { toast } from "sonner";
 
 const RoseTempleContainer = ({ user, api }) => {
   const navigate = useNavigate();
   const premium = usePremiumAccess({ api, user });
   const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const {
     selectedTeaching,
     selectedPractice,
@@ -46,8 +49,55 @@ const RoseTempleContainer = ({ user, api }) => {
     });
   };
 
+  const buildRoseGuidedPractice = (item, type = "teaching") => {
+    const steps = [
+      item?.description,
+      item?.content,
+      ...(Array.isArray(item?.content) ? item.content.map((row) => `${row.heading}: ${row.body}`) : []),
+      ...(Array.isArray(item?.instructions) ? item.instructions : []),
+      ...(Array.isArray(item?.ritual_steps) ? item.ritual_steps : []),
+    ].flat().filter((value) => typeof value === "string" && value.trim().length > 0).map((value) => value.trim());
+
+    return {
+      id: `rose-guided-${type}-${item?.id || item?.name || "session"}`,
+      name: `${item?.title || item?.name || "Rose Temple"} Guided Practice`,
+      category: "rose_temple",
+      element: "Water",
+      duration_minutes: item?.duration_minutes || 18,
+      steps: steps.length > 0 ? steps : ["Arrive softly, breathe through the heart, and integrate this teaching into embodied action."],
+    };
+  };
+
+  const startRoseGuidedPractice = (item, type = "teaching") => {
+    setGuidedPractice(buildRoseGuidedPractice(item, type));
+  };
+
+  const exitRoseGuidedPractice = () => {
+    const completed = guidedPractice;
+    setGuidedPractice(null);
+    if (!completed) return;
+
+    api.post("/practice-history", {
+      practice_type: "rose_temple",
+      practice_id: completed.id,
+      duration_minutes: completed.duration_minutes || 18,
+      element: completed.element || "Water",
+      notes: `Completed guided ${completed.name}`,
+    })
+      .then(() => toast.success("Rose Temple guided practice complete."))
+      .catch(() => {
+        // silent
+      });
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="rose-temple">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={exitRoseGuidedPractice}
+      />
+
       <RoseTempleHeader onBack={() => navigate("/dashboard")} unlocked={roseTempleUnlocked} />
 
       {!roseTempleUnlocked && (
@@ -101,6 +151,18 @@ const RoseTempleContainer = ({ user, api }) => {
           if (!roseTempleUnlocked) return;
           setSelectedRite(item);
         }}
+        onStartGuidedTeaching={(item) => {
+          if (!roseTempleUnlocked) return;
+          startRoseGuidedPractice(item, "teaching");
+        }}
+        onStartGuidedPractice={(item) => {
+          if (!roseTempleUnlocked) return;
+          startRoseGuidedPractice(item, "practice");
+        }}
+        onStartGuidedRite={(item) => {
+          if (!roseTempleUnlocked) return;
+          startRoseGuidedPractice(item, "rite");
+        }}
       />
 
       {roseTempleUnlocked && (
@@ -108,9 +170,13 @@ const RoseTempleContainer = ({ user, api }) => {
           selectedTeaching={selectedTeaching}
           selectedPractice={selectedPractice}
           selectedRite={selectedRite}
+          onStartGuidedTeaching={(item) => startRoseGuidedPractice(item, "teaching")}
+          onStartGuidedPractice={(item) => startRoseGuidedPractice(item, "practice")}
+          onStartGuidedRite={(item) => startRoseGuidedPractice(item, "rite")}
           onCloseTeaching={() => setSelectedTeaching(null)}
           onClosePractice={() => setSelectedPractice(null)}
           onCloseRite={() => setSelectedRite(null)}
+          api={api}
         />
       )}
     </div>

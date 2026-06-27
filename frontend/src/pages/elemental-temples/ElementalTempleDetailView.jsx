@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Leaf, Droplets, Zap, Eye, Globe, Heart, Moon, Sun, Music } from "lucide-react";
+import { Star, Leaf, Droplets, Zap, Eye, Globe, Heart, Moon, Sun, Music, Play } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
 export const ElementalTempleDetailView = ({
   activeTemple,
@@ -7,6 +8,7 @@ export const ElementalTempleDetailView = ({
   activeSection,
   setActiveSection,
   stableElementKey,
+  onStartGuidedPractice,
 }) => (
   <motion.div
     key={activeTemple.id}
@@ -37,6 +39,17 @@ export const ElementalTempleDetailView = ({
           {sec.label}
         </button>
       ))}
+    </div>
+
+    <div className="mb-6 flex justify-center" data-testid="elemental-temple-guided-quickstart-wrap">
+      <Button
+        onClick={() => onStartGuidedPractice?.(activeTemple, activeSection)}
+        className="bg-primary/20 border border-primary/40 text-primary hover:bg-primary/30"
+        data-testid="elemental-temple-guided-quickstart-button"
+      >
+        <Play className="w-4 h-4 mr-2" />
+        Start Guided Practice for this Section
+      </Button>
     </div>
 
     <AnimatePresence mode="wait">
@@ -131,6 +144,15 @@ export const ElementalTempleDetailView = ({
                 <span className={`text-xs ${activeTemple.color.text} uppercase tracking-wider`}>{practice.type}</span>
                 <h4 className="font-serif text-base mt-1 mb-2">{practice.name}</h4>
                 <p className="text-sm text-muted-foreground leading-relaxed">{practice.desc}</p>
+                <button
+                  type="button"
+                  onClick={() => onStartGuidedPractice?.(activeTemple, "practices")}
+                  className={`mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${activeTemple.color.bg} ${activeTemple.color.text} border ${activeTemple.color.border} hover:opacity-90 transition-opacity`}
+                  data-testid={`elemental-temple-practice-guided-${stableElementKey(activeTemple.id, practice.name)}`}
+                >
+                  <Play className="w-3.5 h-3.5" />
+                  Start Guided Practice
+                </button>
               </motion.div>
             ))}
           </div>
@@ -156,6 +178,15 @@ export const ElementalTempleDetailView = ({
                   </div>
                 </div>
                 <div className="p-5 bg-white/3 space-y-4">
+                  <button
+                    type="button"
+                    onClick={() => onStartGuidedPractice?.(activeTemple, "rituals")}
+                    className={`w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${activeTemple.color.bg} ${activeTemple.color.text} border ${activeTemple.color.border} hover:opacity-90 transition-opacity`}
+                    data-testid={`elemental-temple-ritual-guided-${stableElementKey(activeTemple.id, ritual.name)}`}
+                  >
+                    <Play className="w-3.5 h-3.5" />
+                    Start Guided Practice
+                  </button>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">You Will Need</p>
                     <div className="flex flex-wrap gap-2">
@@ -204,6 +235,15 @@ export const ElementalTempleDetailView = ({
                   </div>
                 </div>
                 <div className="p-5 bg-white/3 space-y-4">
+                  <button
+                    type="button"
+                    onClick={() => onStartGuidedPractice?.(activeTemple, "ceremonies")}
+                    className={`w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${activeTemple.color.bg} ${activeTemple.color.text} border ${activeTemple.color.border} hover:opacity-90 transition-opacity`}
+                    data-testid={`elemental-temple-ceremony-guided-${stableElementKey(activeTemple.id, ceremony.name)}`}
+                  >
+                    <Play className="w-3.5 h-3.5" />
+                    Start Guided Practice
+                  </button>
                   <p className="text-sm text-muted-foreground leading-relaxed">{ceremony.description}</p>
                   {ceremony.what_you_need && (
                     <div>
@@ -258,7 +298,7 @@ export const ElementalTempleDetailView = ({
                 </div>
                 <p className={`text-xs ${activeTemple.color.text} mb-3 italic`}>{blessing.when}</p>
                 <p className="text-sm text-muted-foreground leading-relaxed italic border-l-2 pl-4" style={{ borderColor: `var(--${activeTemple.color.accent}, currentColor)` }}>
-                  "{blessing.text}"
+                  &quot;{blessing.text}&quot;
                 </p>
               </motion.div>
             ))}
@@ -277,7 +317,7 @@ export const ElementalTempleDetailView = ({
                   transition={{ delay: i * 0.1 }}
                   className={`text-lg font-serif italic ${activeTemple.color.text} leading-relaxed`}
                 >
-                  "{aff}"
+                  &quot;{aff}&quot;
                 </motion.p>
               ))}
             </div>

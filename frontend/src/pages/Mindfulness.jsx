@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import PracticeTimer from "../components/PracticeTimer";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import { appLogger } from "../utils/logger";
@@ -20,6 +21,7 @@ const Mindfulness = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPractice, setSelectedPractice] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
 
   const stableMindfulKey = (prefix, value) => {
     const slug = String(value || "item")
@@ -30,6 +32,49 @@ const Mindfulness = ({ user, api }) => {
     return `${prefix}-${slug || "item"}`;
   };
   const [isPracticing, setIsPracticing] = useState(false);
+
+  const buildMindfulnessGuidedPractice = (practice) => {
+    const steps = Array.isArray(practice.instructions) && practice.instructions.length > 0
+      ? practice.instructions
+      : [
+          "Settle into your body and soften your breath.",
+          practice.description || `Open to ${practice.name} with calm attention.`,
+          "Notice sensations, thoughts, and emotions without judgment.",
+          "Close with gratitude and one conscious breath.",
+        ];
+
+    return {
+      ...practice,
+      category: "mindfulness",
+      element: practice.element || "Air",
+      duration_minutes: practice.duration_minutes || 12,
+      steps,
+    };
+  };
+
+  const startGuidedOverlay = (practice) => {
+    setSelectedPractice(null);
+    setIsPracticing(false);
+    setGuidedPractice(buildMindfulnessGuidedPractice(practice));
+  };
+
+  const exitGuidedOverlay = async () => {
+    const completed = guidedPractice;
+    setGuidedPractice(null);
+    if (!completed) return;
+
+    try {
+      await api.post("/practice-history", {
+        practice_type: "mindfulness",
+        practice_id: completed.id,
+        duration_minutes: completed.duration_minutes,
+        notes: `Completed guided ${completed.name}`,
+      });
+      toast.success("Guided mindfulness complete.");
+    } catch (error) {
+      appLogger.error("Failed to log guided mindfulness", error);
+    }
+  };
 
   const categories = [
     { value: "all", label: "All Practices" },
@@ -126,6 +171,12 @@ const Mindfulness = ({ user, api }) => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="mindfulness-page">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={exitGuidedOverlay}
+      />
+
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
@@ -230,6 +281,19 @@ const Mindfulness = ({ user, api }) => {
                       </span>
                     </div>
 
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        startGuidedOverlay(practice);
+                      }}
+                      className={`mt-3 w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-xs ${colors.bg} ${colors.text} border ${colors.border || "border-white/10"} hover:opacity-90 transition-opacity`}
+                      data-testid={`mindfulness-card-start-guided-${practice.id}`}
+                    >
+                      <Play className="w-3.5 h-3.5" />
+                      Start Guided Practice
+                    </button>
+
                     {practice.linked_practices?.length > 0 && (
                       <p className="mt-2 text-[11px] text-cyan-300/90" data-testid={`mindfulness-links-count-${practice.id}`}>
                         Linked practices: {practice.linked_practices.length}
@@ -306,6 +370,15 @@ const Mindfulness = ({ user, api }) => {
                     >
                       <Play className="w-4 h-4 mr-2" />
                       Begin Practice
+                    </Button>
+                    <Button
+                      onClick={() => startGuidedOverlay(selectedPractice)}
+                      variant="outline"
+                      className="w-full border-white/15"
+                      data-testid="mindfulness-start-guided-overlay-btn"
+                    >
+                      <Play className="w-4 h-4 mr-2" />
+                      Begin Guided Practice (Voice + Ambient)
                     </Button>
                   </>
                 ) : (

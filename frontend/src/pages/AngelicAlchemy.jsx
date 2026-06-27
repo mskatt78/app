@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Shield, Sparkles, Star, Feather, X, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { toast } from "sonner";
 
 const ANGELIC_FALLBACK_DATA = [
   {
@@ -532,6 +534,7 @@ const AngelicAlchemy = ({ api }) => {
   const [loading, setLoading] = useState(true);
   const [angels, setAngels] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -553,8 +556,49 @@ const AngelicAlchemy = ({ api }) => {
 
   const selectedProtocol = useMemo(() => buildArchangelMasterProtocol(selected), [selected]);
 
+  const startAngelicGuidedPractice = (item) => {
+    const protocol = buildArchangelMasterProtocol(item || {});
+    const steps = protocol.flatMap((phase) => phase.steps || []).filter(Boolean);
+    setGuidedPractice({
+      id: `angelic-guided-${item?.id || "session"}`,
+      name: `${item?.name || "Angelic Alchemy"} Guided Practice`,
+      category: "angelic",
+      element: item?.element || "Spirit",
+      duration_minutes: 24,
+      steps: steps.length > 0 ? steps : [
+        item?.description || "Arrive with steady breath and open awareness.",
+        "Receive one teaching and embody it physically through posture and breath.",
+        "Close by speaking an affirmation and choosing one service action.",
+      ],
+    });
+  };
+
+  const exitAngelicGuidedPractice = () => {
+    const completed = guidedPractice;
+    setGuidedPractice(null);
+    if (!completed) return;
+
+    api.post("/practice-history", {
+      practice_type: "angelic_alchemy",
+      practice_id: completed.id,
+      duration_minutes: completed.duration_minutes || 24,
+      element: completed.element || "Spirit",
+      notes: `Completed guided ${completed.name}`,
+    })
+      .then(() => toast.success("Angelic guided practice complete."))
+      .catch(() => {
+        // silent
+      });
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="angelic-alchemy-page">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={exitAngelicGuidedPractice}
+      />
+
       <header className="border-b border-white/10 bg-card/40 backdrop-blur-xl sticky top-0 z-20">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-3">
           <button
@@ -592,9 +636,17 @@ const AngelicAlchemy = ({ api }) => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="angelic-grid">
             {angels.map((item) => (
-              <button
+              <div
                 key={item.id}
                 onClick={() => setSelected(item)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelected(item);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
                 className="text-left rounded-2xl border border-white/10 bg-card/50 hover:bg-card/70 transition-all overflow-hidden"
                 data-testid={`angelic-card-${item.id}`}
               >
@@ -613,8 +665,20 @@ const AngelicAlchemy = ({ api }) => {
                     </span>
                   ) : null}
                   <p className="text-xs text-muted-foreground line-clamp-3" data-testid={`angelic-card-description-${item.id}`}>{item.description}</p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      startAngelicGuidedPractice(item);
+                    }}
+                    className="w-full border-cyan-500/30 text-cyan-200 hover:bg-cyan-500/15 mt-2"
+                    data-testid={`angelic-card-start-guided-${item.id}`}
+                  >
+                    Start Guided Practice
+                  </Button>
                 </div>
-              </button>
+              </div>
             ))}
           </div>
         )}
@@ -686,6 +750,17 @@ const AngelicAlchemy = ({ api }) => {
                 <SectionList title="Embodiment Integration Timeline" icon={Star} items={buildArchangelEmbodimentTimeline(selected)} testId="angelic-embodiment-timeline" />
                 <SectionList title="Journal Prompts" icon={Star} items={selected.journal_prompts} testId="angelic-journal-prompts" />
                 <SectionList title="Affirmations" icon={Shield} items={selected.affirmations} testId="angelic-affirmations" />
+
+                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="angelic-guided-practice-card">
+                  <p className="text-xs uppercase tracking-wider text-cyan-200 mb-2">Guided Practice</p>
+                  <Button
+                    onClick={() => startAngelicGuidedPractice(selected)}
+                    className="w-full bg-cyan-500/20 border border-cyan-400/30 text-cyan-100 hover:bg-cyan-500/30"
+                    data-testid="angelic-modal-start-guided-practice-button"
+                  >
+                    Start Guided Practice (Voice + Timer + Ambient)
+                  </Button>
+                </div>
 
                 <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-4 space-y-3" data-testid="angelic-master-protocol">
                   <h3 className="text-sm font-medium flex items-center gap-2">
