@@ -102,6 +102,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const practiceIdentityRef = useRef({ id: practice?.id, name: practice?.name });
   const narrationRunIdRef = useRef(0);
   const practicePreferenceKey = useMemo(() => String(practice?.id || practice?.name || "guided-practice"), [practice?.id, practice?.name]);
+  const narrationSegmentCount = narrationSegments.length;
 
   const element = (practice?.element || "spirit").toLowerCase();
   const bgGradient = ELEMENT_BG[element] || ELEMENT_BG.spirit;
@@ -295,14 +296,14 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       clearInterval(timerRef.current);
       sessionEndRef.current = null;
       setIsPlaying(false);
-      if (currentSegmentIndexRef.current >= Math.max(0, narrationSegments.length - 1) || narrationSegments.length <= 1) {
+      if (currentSegmentIndexRef.current >= Math.max(0, narrationSegmentCount - 1) || narrationSegmentCount <= 1) {
         setIsComplete(true);
       }
       stopNarrationPlayback(false);
       stopAmbient();
       stopToning();
     }
-  }, [stopAmbient, stopNarrationPlayback, stopToning]);
+  }, [narrationSegmentCount, stopAmbient, stopNarrationPlayback, stopToning]);
 
   const resetPracticeState = useCallback(() => {
     clearInterval(timerRef.current);
@@ -529,7 +530,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [narrationSegments, playbackVoiceProfile, playbackSpeedOption, getSegmentCacheKey]);
 
   useEffect(() => {
-    if (!practice || scriptLoading || !narrationReady || narrationSegments.length === 0) return;
+    if (!practiceKey || scriptLoading || !narrationReady || narrationSegments.length === 0) return;
     const startIndex = Math.max(0, currentSegmentIndexRef.current);
     const endIndex = Math.min(narrationSegments.length - 1, startIndex + PREFETCH_SEGMENT_COUNT - 1);
     for (let index = startIndex; index <= endIndex; index += 1) {
@@ -537,7 +538,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         appLogger.debug("Guided overlay prefetch failed", { index, error });
       });
     }
-  }, [practice?.id, practice?.name, scriptLoading, narrationReady, narrationSegments, generateSegmentUrl]);
+  }, [practiceKey, scriptLoading, narrationReady, narrationSegments, generateSegmentUrl]);
 
   const playNarrationSegment = useCallback(async (segmentIndex) => {
     const activeRunId = narrationRunIdRef.current;
@@ -624,7 +625,14 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         setTtsLoading(false);
       }
     }
-  }, [generateSegmentUrl, muted, narrationSegments, playbackVoiceProfile, playbackSpeedOption]);
+  }, [
+    generateSegmentUrl,
+    getSegmentCacheKey,
+    muted,
+    narrationSegments,
+    stopAmbient,
+    stopToning,
+  ]);
 
   const startAmbientTrack = useCallback(() => {
     if (!audioCtxRef.current) {
