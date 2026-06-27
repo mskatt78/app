@@ -1046,6 +1046,54 @@ frontend:
         agent: "testing"
         comment: "✓ /mantras page loads correctly. Route exists and page renders. No runtime errors detected. Test PASSED."
 
+  - task: "Mantras premium banner with first-3-free model"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mantras/MantrasLibraryContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MANTRAS PREMIUM BANNER VERIFICATION PASSED (2026-06-27): Premium banner displays correctly with all required elements. Banner title shows 'First 3 free • 23 advanced premium mantras' confirming first-3-free model. All required data-testids present: mantras-premium-banner ✓, mantras-premium-banner-title ✓, mantras-unlock-premium-button ✓, mantras-unlock-fullapp-button ✓, mantras-view-subscription-button ✓. Banner description explains subscription/full app unlock access model. All buttons functional and properly labeled with pricing ($49.00 for Mantras, $369.00 for Full App). Premium banner implementation COMPLETE."
+
+  - task: "Mantras free vs premium gating (first 3 free)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mantras/MantrasLibraryContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MANTRAS FREE VS PREMIUM GATING PASSED (2026-06-27): First-3-free model working correctly. FREE CARDS (1-3): All three free mantra cards (Om, Om Mani Padme Hum, Lokah Samastah Sukhino Bhavantu) have NO premium badge ✓, clicking opens player dialog directly ✓, NO lock modal appears ✓. PREMIUM CARDS (4+): Premium mantra card 4 (So Hum) has premium badge ✓, clicking opens lock modal (NOT player) ✓. Access control logic working as expected: canAccessMantra() correctly identifies premium mantras, handleMantraCardSelect() routes to lock modal for premium content. Free vs premium gating FULLY FUNCTIONAL."
+
+  - task: "Mantras premium lock modal functionality"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mantras/MantrasLibraryContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MANTRAS PREMIUM LOCK MODAL PASSED (2026-06-27): Lock modal displays correctly when clicking premium mantra card. All required elements present with correct data-testids: mantra-premium-lock-modal ✓, mantra-premium-lock-title (shows mantra name 'So Hum') ✓, mantra-premium-lock-description ✓, mantra-premium-lock-unlock-button ($49.00) ✓, mantra-premium-lock-fullapp-button ($369.00) ✓, mantra-premium-lock-subscription-button ✓, mantra-premium-lock-close-button ✓. CLOSE FUNCTIONALITY: Close button successfully closes modal ✓, user returns to library state (mantras-library-grid visible) ✓, no blank page or crash ✓. Lock modal implementation COMPLETE and FUNCTIONAL."
+
+  - task: "Mantras page no blank screen or crashes during premium interactions"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mantras/MantrasLibraryContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MANTRAS PAGE STABILITY VERIFIED (2026-06-27): No blank screens or crashes detected during premium gating interactions. Page remains responsive throughout all test scenarios: clicking free cards ✓, clicking premium cards ✓, opening/closing lock modal ✓, returning to library state ✓. Main content visible at all times ✓. No error messages on page ✓. Page title correct ('Shamanic Elements Soul Temple 2.0') ✓. Minor: One 403 error for external Pixabay audio CDN (non-critical, doesn't affect core functionality). All premium interaction flows stable and crash-free."
+
   - task: "Install prompt interactions functional"
     implemented: true
     working: true
@@ -9507,6 +9555,81 @@ test_plan:
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Mantras Premium Gating Testing (2026-06-27):
+      
+      VERIFICATION REQUEST: Test mantras page premium banner and first-3-free gating model:
+      1) Premium banner with first-3-free messaging
+      2) Free cards (1-3) open player directly
+      3) Premium cards (4+) open lock modal
+      4) Lock modal close functionality
+      5) No blank page/crash during interactions
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      TEST RESULTS SUMMARY: ALL TESTS PASSED ✅
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASSED (5/5):
+      - Premium banner with first-3-free model
+      - Free mantra cards (1-3) open player directly
+      - Premium mantra cards (4+) open lock modal
+      - Lock modal close functionality
+      - No blank page/crash during interactions
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      DETAILED TEST RESULTS
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST 1: Premium Banner Verification ✅ PASSED
+      - Banner element found: mantras-premium-banner
+      - Banner title: "First 3 free • 23 advanced premium mantras"
+      - Banner description present explaining access model
+      - All buttons present and functional:
+        * View Subscription button ✓
+        * Unlock Mantras $49.00 button ✓
+        * Full App $369.00 button ✓
+      - All required data-testids verified
+      
+      TEST 2: Free Mantra Cards (1-3) ✅ PASSED
+      - Card 1 (Om): NO premium badge ✓, opens player dialog ✓, NO lock modal ✓
+      - Card 2 (Om Mani Padme Hum): NO premium badge ✓, opens player dialog ✓, NO lock modal ✓
+      - Card 3 (Lokah Samastah Sukhino Bhavantu): NO premium badge ✓, opens player dialog ✓, NO lock modal ✓
+      - All free cards correctly bypass lock modal and open player directly
+      
+      TEST 3: Premium Mantra Card (4) ✅ PASSED
+      - Card 4 (So Hum): HAS premium badge ✓, opens lock modal ✓
+      - Lock modal elements verified:
+        * mantra-premium-lock-modal ✓
+        * mantra-premium-lock-title (shows "So Hum") ✓
+        * mantra-premium-lock-description ✓
+        * mantra-premium-lock-unlock-button ($49.00) ✓
+        * mantra-premium-lock-fullapp-button ($369.00) ✓
+        * mantra-premium-lock-subscription-button ✓
+        * mantra-premium-lock-close-button ✓
+      
+      TEST 4: Lock Modal Close Functionality ✅ PASSED
+      - Close button successfully closes modal
+      - Modal element removed from DOM after close
+      - User returns to library state (mantras-library-grid visible)
+      - No residual modal artifacts
+      
+      TEST 5: No Blank Page/Crash ✅ PASSED
+      - Page remains responsive throughout all interactions
+      - Main content visible at all times
+      - No error messages on page
+      - Page title correct: "Shamanic Elements Soul Temple 2.0"
+      - Minor: One 403 error for external Pixabay audio CDN (non-critical)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      CONCLUSION
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      All mantras premium gating flows working correctly. First-3-free model properly 
+      implemented with correct access control logic. Lock modal displays all required 
+      elements and closes cleanly. No crashes or blank screens detected.
 
 agent_communication:
   - agent: "testing"

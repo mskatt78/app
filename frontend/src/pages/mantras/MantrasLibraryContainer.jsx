@@ -607,6 +607,14 @@ const MantrasLibrary = ({ user, api }) => {
             {!mantraSectionUnlocked && (
               <div className="flex flex-wrap gap-2">
                 <Button
+                  onClick={() => navigate("/pricing")}
+                  variant="outline"
+                  className="border-cyan-400/40 text-cyan-100"
+                  data-testid="mantras-view-subscription-button"
+                >
+                  View Subscription
+                </Button>
+                <Button
                   onClick={handleUnlockMantras}
                   className="bg-fuchsia-500 hover:bg-fuchsia-600"
                   data-testid="mantras-unlock-premium-button"
@@ -690,6 +698,14 @@ const MantrasLibrary = ({ user, api }) => {
               This mantra is part of premium ritual libraries. Unlock this section, subscribe, or unlock the whole app.
             </p>
             <div className="grid sm:grid-cols-2 gap-2">
+              <Button
+                onClick={() => navigate("/pricing")}
+                variant="outline"
+                className="border-cyan-400/40 text-cyan-100 sm:col-span-2"
+                data-testid="mantra-premium-lock-subscription-button"
+              >
+                View Subscription Plans
+              </Button>
               <Button
                 onClick={handleUnlockMantras}
                 className="bg-fuchsia-500 hover:bg-fuchsia-600"
