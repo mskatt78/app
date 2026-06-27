@@ -2416,3 +2416,30 @@
     - `/app-readiness` no top-nav overlap,
     - premium state resets correctly after logout/auth loss.
 
+## Guided Practice Expansion Across Alchemy + Major Libraries (Iteration 214) — 2026-06-27
+
+### Implemented
+- Added **card-level + modal-level Guided Practice entry points** (Voice + Timer + Ambient overlay) across major ritual/teaching libraries:
+  - `SacredAllyAlchemy.jsx`
+  - `AngelicAlchemy.jsx`
+  - `heart-practices/HeartPracticesGrid.jsx`
+  - `CreativeProcesses.jsx`
+  - `SomaticMovement.jsx`
+  - `Mindfulness.jsx`
+  - `ElementalPractices.jsx` + `components/elemental/ElementalPracticeCard.jsx`
+  - `ElementalTemples.jsx` + `elemental-temples/ElementalTempleDetailView.jsx`
+  - `rose-temple/*` (card actions + modal guided actions, respecting lock state)
+  - `HealingPortals.jsx` (guided overlay action for accessible portals; hidden when locked)
+- Added/extended guided ambience mappings in `guidedNarrationUtils.js` for broader elemental context support.
+
+### Premium Lock Integrity
+- Confirmed guided controls are hidden/blocked where content is locked:
+  - Rose Temple locked state: guided actions hidden until unlock.
+  - Healing Portals locked cards: guided card actions hidden; premium lock panel remains authoritative.
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_214.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+  - No functional regressions reported.
+
