@@ -5,7 +5,9 @@ import { ArrowLeft, Shield, Sparkles, Star, Feather, X, ChevronRight, Loader2 } 
 import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 import { toast } from "sonner";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
 
 const ANGELIC_FALLBACK_DATA = [
   {
@@ -750,6 +752,25 @@ const AngelicAlchemy = ({ api }) => {
                 <SectionList title="Embodiment Integration Timeline" icon={Star} items={buildArchangelEmbodimentTimeline(selected)} testId="angelic-embodiment-timeline" />
                 <SectionList title="Journal Prompts" icon={Star} items={selected.journal_prompts} testId="angelic-journal-prompts" />
                 <SectionList title="Affirmations" icon={Shield} items={selected.affirmations} testId="angelic-affirmations" />
+
+                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="angelic-guided-voice-panel">
+                  <p className="text-xs uppercase tracking-wider text-cyan-200 mb-2">Guided Voice Transmission</p>
+                  <GuidedAudioButton
+                    api={api}
+                    script={composeDeepGuidedNarration({
+                      title: selected.name,
+                      element: selected.element || "Spirit",
+                      description: selected.description,
+                      teachings: selected.alchemy_teachings,
+                      rituals: selected.practical_rituals,
+                      embodiment: [...buildArchangelEmbodimentPractices(selected), ...ritualDeliveryPillars],
+                      integration: buildArchangelEmbodimentTimeline(selected),
+                    })}
+                    practiceName={selected.name}
+                    durationMinutes={22}
+                    className="w-full"
+                  />
+                </div>
 
                 <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="angelic-guided-practice-card">
                   <p className="text-xs uppercase tracking-wider text-cyan-200 mb-2">Guided Practice</p>

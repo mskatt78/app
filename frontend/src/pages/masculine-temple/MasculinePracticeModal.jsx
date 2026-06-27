@@ -3,6 +3,7 @@ import { BookOpen, Shield, Zap } from "lucide-react";
 import AddToJournal from "../../components/AddToJournal";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
 
 const normalizeBenefits = (benefits) => {
   if (!benefits) return [];
@@ -82,6 +83,15 @@ export const MasculinePracticeModal = ({ selectedPractice, setSelectedPractice, 
                 </div>
               )}
 
+              <div className="mb-4 p-4 rounded-xl bg-primary/5 border border-primary/20" data-testid="masculine-practice-ritual-depth-panel">
+                <h3 className="text-sm font-medium mb-2">Embodied Ritual Delivery</h3>
+                <ul className="space-y-1.5">
+                  {ritualDeliveryPillars.map((pillar) => (
+                    <li key={pillar} className="text-xs text-muted-foreground">• {pillar}</li>
+                  ))}
+                </ul>
+              </div>
+
               {benefits.length > 0 && (
                 <div className="mb-4">
                   <h3 className="text-sm font-medium mb-2">Benefits</h3>
@@ -98,7 +108,14 @@ export const MasculinePracticeModal = ({ selectedPractice, setSelectedPractice, 
               <div className="flex gap-3 mt-6">
                 <GuidedAudioButton
                   api={api}
-                  script={`${selectedPractice.name}. ${selectedPractice.description}. ${selectedPractice.practice_guide || ""}`}
+                  script={composeDeepGuidedNarration({
+                    title: selectedPractice.name,
+                    element: selectedPractice.element || "Fire",
+                    description: selectedPractice.description,
+                    teachings: [selectedPractice.extended_teachings],
+                    rituals: [selectedPractice.practice_guide],
+                    embodiment: [selectedPractice.why_this_heals, ...ritualDeliveryPillars],
+                  })}
                   label="Listen to Guided Practice"
                   className="flex-1"
                   durationMinutes={resolveDurationMinutes(selectedPractice.duration_minutes, 20)}

@@ -3,6 +3,7 @@ import { Play, X } from "lucide-react";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
 import AddToJournal from "../../components/AddToJournal";
 import { Button } from "../../components/ui/button";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
 
 const OVERLAY_ANIMATION = { opacity: 0, scale: 0.96 };
 const OVERLAY_ENTER = { opacity: 1, scale: 1 };
@@ -44,6 +45,22 @@ export const RoseTempleModals = ({
                     <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
                   </div>
                 ))}
+                <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3" data-testid="rose-teaching-guided-voice-panel">
+                  <p className="text-xs uppercase tracking-wider text-rose-200 mb-2">Guided Voice Transmission</p>
+                  <GuidedAudioButton
+                    api={api}
+                    script={composeDeepGuidedNarration({
+                      title: selectedTeaching.title,
+                      element: "Water",
+                      description: selectedTeaching.subtitle,
+                      teachings: (selectedTeaching.content || []).map((item) => `${item.heading}: ${item.body}`),
+                      embodiment: ritualDeliveryPillars,
+                    })}
+                    practiceName={selectedTeaching.title}
+                    durationMinutes={18}
+                    className="w-full"
+                  />
+                </div>
                 <Button onClick={() => onStartGuidedTeaching?.(selectedTeaching)} className="w-full" data-testid="rose-teaching-modal-start-guided-btn">
                   <Play className="w-4 h-4 mr-2" /> Start Guided Teaching Practice
                 </Button>
@@ -69,7 +86,12 @@ export const RoseTempleModals = ({
               <p className="text-sm text-muted-foreground mb-4">{selectedPractice.description}</p>
               <GuidedAudioButton
                 api={api}
-                script={selectedPractice.description || selectedPractice.content || "Rose Temple embodiment practice"}
+                script={composeDeepGuidedNarration({
+                  title: selectedPractice.name,
+                  element: "Water",
+                  description: selectedPractice.description || selectedPractice.content,
+                  embodiment: ritualDeliveryPillars,
+                })}
                 label={`Play ${selectedPractice.name} narration`}
               />
               <Button onClick={() => onStartGuidedPractice?.(selectedPractice)} className="w-full mt-3" data-testid="rose-practice-modal-start-guided-btn">
@@ -94,6 +116,19 @@ export const RoseTempleModals = ({
                 <button onClick={onCloseRite} data-testid="rose-rite-modal-close"><X className="w-5 h-5" /></button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">{selectedRite.description}</p>
+              <GuidedAudioButton
+                api={api}
+                script={composeDeepGuidedNarration({
+                  title: selectedRite.title || selectedRite.name,
+                  element: "Water",
+                  description: selectedRite.description,
+                  rituals: selectedRite.ritual_steps,
+                  embodiment: ritualDeliveryPillars,
+                })}
+                practiceName={selectedRite.title || selectedRite.name}
+                durationMinutes={16}
+                className="w-full mb-3"
+              />
               <Button onClick={() => onStartGuidedRite?.(selectedRite)} className="w-full mb-3" data-testid="rose-rite-modal-start-guided-btn">
                 <Play className="w-4 h-4 mr-2" /> Start Guided Rite
               </Button>

@@ -8,6 +8,8 @@ import {
 import { Button } from "../../components/ui/button";
 import { Badge } from "../../components/ui/badge";
 import { appLogger } from "../../utils/logger";
+import GuidedAudioButton from "../../components/GuidedAudioButton";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
 
 const HEALING_MODALITIES = [
   {
@@ -18,13 +20,14 @@ const HEALING_MODALITIES = [
     color: "from-emerald-500/20 to-teal-500/20",
     accent: "text-emerald-300",
     border: "border-emerald-500/30",
-    description: "Deep transformational work through Earth, Water, Fire, Air & Spirit. Each element carries its own medicine — grounding, flowing, transforming, releasing, and transcending.",
+    description: "A full ceremonial healing arc through Earth, Water, Fire, Air & Spirit. This is embodied ritual medicine: breath, somatic release, voice, prayer, and integration — not informational reading.",
     practices: [
       "Earth — Grounding ceremonies & ancestral healing",
       "Water — Emotional release & womb cleansing rituals",
       "Fire — Shadow work & transformational breathwork",
       "Air — Sound healing & voice activation",
-      "Spirit — Integration & light body activation"
+      "Spirit — Integration & light body activation",
+      "Sacred closure — vow, gratitude, and post-ritual integration tracking"
     ]
   },
   {
@@ -35,13 +38,14 @@ const HEALING_MODALITIES = [
     color: "from-rose-500/20 to-pink-500/20",
     accent: "text-rose-300",
     border: "border-rose-500/30",
-    description: "The womb is the seat of creation, intuition, and feminine power. This deep healing work addresses ancestral womb trauma and sacred feminine restoration.",
+    description: "Womb healing here is a full sensory rite: ancestral lineage repair, nervous-system safety, pelvic release, devotional prayer, and embodied restoration of feminine life-force.",
     practices: [
       "Womb clearing & ancestral lineage healing",
       "Sacred menstrual cycle reconnection",
       "Yoni steaming ceremonies",
       "Womb massage & somatic release",
-      "Divine feminine embodiment practices"
+      "Divine feminine embodiment practices",
+      "Integration rituals for boundaries, nourishment, and relational sovereignty"
     ]
   },
 ];
@@ -184,6 +188,31 @@ const RetreatsContainer = ({ api }) => {
                 <div className="p-3 rounded-lg bg-background/60 border border-white/10"><Users className="w-4 h-4 mb-1" /> {selectedRetreat.capacity || "Limited"} spots</div>
                 <div className="p-3 rounded-lg bg-background/60 border border-white/10"><DollarSign className="w-4 h-4 mb-1" /> {selectedRetreat.price ? `$${selectedRetreat.price}` : "Contact for pricing"}</div>
               </div>
+
+              <div className="mb-5" data-testid="retreat-details-guided-voice-panel">
+                <GuidedAudioButton
+                  api={api}
+                  practiceName={`${selectedRetreat.title || selectedRetreat.name} Retreat`}
+                  durationMinutes={20}
+                  element="Spirit"
+                  sourceTexts={[selectedRetreat.description, selectedRetreat.location, selectedRetreat.status]}
+                  script={composeDeepGuidedNarration({
+                    title: selectedRetreat.title || selectedRetreat.name,
+                    element: "Spirit",
+                    description: selectedRetreat.description,
+                    teachings: ritualDeliveryPillars,
+                    rituals: [
+                      "Open with a grounding breath cycle and intention statement.",
+                      "Move through one emotional release sequence and one restorative sequence.",
+                      "Close with integration journaling and a practical after-care vow.",
+                    ],
+                    closing: "Seal this retreat transmission by choosing one concrete act of self-care for today.",
+                  })}
+                  label="Play Retreat Guided Voice"
+                  className="w-full"
+                />
+              </div>
+
               {selectedRetreat.booking_url && (
                 <a href={selectedRetreat.booking_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground" data-testid="retreat-booking-link">
                   Book Now <ExternalLink className="w-4 h-4" />
@@ -203,11 +232,40 @@ const RetreatsContainer = ({ api }) => {
                 <button onClick={() => setActiveModality(null)} data-testid="retreat-modality-close-btn"><X className="w-5 h-5" /></button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">{activeModality.description}</p>
+              <div className="mb-4 rounded-xl border border-white/10 bg-white/5 p-3" data-testid="retreat-modality-ritual-depth-panel">
+                <p className="text-xs uppercase tracking-wider text-primary mb-2">Ritual Delivery Pillars</p>
+                <ul className="space-y-1.5">
+                  {ritualDeliveryPillars.map((pillar) => (
+                    <li key={pillar} className="text-xs text-muted-foreground">• {pillar}</li>
+                  ))}
+                </ul>
+              </div>
               <ul className="space-y-2 text-sm">
                 {activeModality.practices.map((practice) => (
                   <li key={practice} className="flex gap-2"><Check className="w-4 h-4 text-primary mt-0.5" /><span>{practice}</span></li>
                 ))}
               </ul>
+
+              <div className="mt-4" data-testid="retreat-modality-guided-voice-panel">
+                <GuidedAudioButton
+                  api={api}
+                  practiceName={`${activeModality.title} Ritual Transmission`}
+                  durationMinutes={18}
+                  element="Spirit"
+                  sourceTexts={[activeModality.description, ...activeModality.practices, ...ritualDeliveryPillars]}
+                  script={composeDeepGuidedNarration({
+                    title: activeModality.title,
+                    element: "Spirit",
+                    description: activeModality.description,
+                    teachings: ritualDeliveryPillars,
+                    rituals: activeModality.practices,
+                    invocation: "Take a hand to the womb-heart axis and let the breath soften into the lower body before beginning.",
+                    closing: "Seal this retreat modality by naming one supportive action for the next 24 hours.",
+                  })}
+                  label={`Play ${activeModality.title} Guided Voice`}
+                  className="w-full"
+                />
+              </div>
             </motion.div>
           </div>
         )}

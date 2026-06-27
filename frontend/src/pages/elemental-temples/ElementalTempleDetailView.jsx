@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Leaf, Droplets, Zap, Eye, Globe, Heart, Moon, Sun, Music, Play } from "lucide-react";
 import { Button } from "../../components/ui/button";
+import GuidedAudioButton from "../../components/GuidedAudioButton";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
 
 export const ElementalTempleDetailView = ({
   activeTemple,
@@ -9,6 +11,7 @@ export const ElementalTempleDetailView = ({
   setActiveSection,
   stableElementKey,
   onStartGuidedPractice,
+  api,
 }) => (
   <motion.div
     key={activeTemple.id}
@@ -42,14 +45,35 @@ export const ElementalTempleDetailView = ({
     </div>
 
     <div className="mb-6 flex justify-center" data-testid="elemental-temple-guided-quickstart-wrap">
-      <Button
-        onClick={() => onStartGuidedPractice?.(activeTemple, activeSection)}
-        className="bg-primary/20 border border-primary/40 text-primary hover:bg-primary/30"
-        data-testid="elemental-temple-guided-quickstart-button"
-      >
-        <Play className="w-4 h-4 mr-2" />
-        Start Guided Practice for this Section
-      </Button>
+      <div className="w-full max-w-xl space-y-2" data-testid="elemental-temple-guided-controls-stack">
+        <Button
+          onClick={() => onStartGuidedPractice?.(activeTemple, activeSection)}
+          className="w-full bg-primary/20 border border-primary/40 text-primary hover:bg-primary/30"
+          data-testid="elemental-temple-guided-quickstart-button"
+        >
+          <Play className="w-4 h-4 mr-2" />
+          Start Guided Practice for this Section
+        </Button>
+        <GuidedAudioButton
+          api={api}
+          script={composeDeepGuidedNarration({
+            title: `${activeTemple.name} ${sections.find((section) => section.id === activeSection)?.label || "Ritual"}`,
+            element: activeTemple.element || "Spirit",
+            description: activeTemple.description,
+            teachings: activeTemple.why_it_heals,
+            rituals: [
+              ...(activeTemple.practices || []).map((practice) => practice.desc),
+              ...(activeTemple.rituals || []).flatMap((ritual) => ritual.steps || []),
+              ...(activeTemple.ceremonies || []).flatMap((ceremony) => ceremony.flow || []),
+            ],
+            embodiment: [activeTemple.embodiment, ...ritualDeliveryPillars],
+            integration: activeTemple.integration,
+          })}
+          practiceName={`${activeTemple.name} Guided Voice`}
+          durationMinutes={20}
+          className="w-full"
+        />
+      </div>
     </div>
 
     <AnimatePresence mode="wait">

@@ -591,7 +591,7 @@ const YogaLibrary = ({ user, api }) => {
                     <GuidedAudioButton
                       api={api}
                       script={`Welcome to ${selectedPose.name}. ${selectedPose.description}. ${selectedPose.instructions?.join(". ") || "Move gently and breathe naturally."} Keep your awareness in the body and soften your jaw and shoulders as you hold the posture.`}
-                      title={`Guided ${selectedPose.name}`}
+                      label={`Play ${selectedPose.name} Guided Voice`}
                       element={selectedPose.element || "Spirit"}
                       durationMinutes={resolveDurationMinutes(selectedPose.duration_minutes, 8)}
                       practiceName={selectedPose.name}

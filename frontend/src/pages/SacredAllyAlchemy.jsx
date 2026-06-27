@@ -7,6 +7,7 @@ import { appLogger } from "../utils/logger";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
 
 const ALLY_FALLBACK_DATA = [
   {
@@ -1216,6 +1217,25 @@ export default function SacredAllyAlchemy({ api }) {
                 <SectionList title="Ceremonies" icon={Flame} items={deriveCeremonies(selected)} testId="sacred-ally-ceremonies" />
                 <SectionList title="Embodiment Practices" icon={Waves} items={buildEmbodimentPractices(selected)} testId="sacred-ally-embodiment-practices" />
                 <SectionList title="Embodiment Integration Timeline" icon={Feather} items={buildEmbodimentMilestones(selected)} testId="sacred-ally-embodiment-timeline" />
+
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="sacred-ally-guided-voice-panel">
+                  <p className="text-xs uppercase tracking-wider text-amber-100 mb-2">Guided Voice Transmission</p>
+                  <GuidedAudioButton
+                    api={api}
+                    script={composeDeepGuidedNarration({
+                      title: selected.name,
+                      element: selected.element || "Spirit",
+                      description: selected.description,
+                      teachings: selected.alchemy_teachings,
+                      rituals: deriveCeremonies(selected),
+                      embodiment: [...buildEmbodimentPractices(selected), ...ritualDeliveryPillars],
+                      integration: buildEmbodimentMilestones(selected),
+                    })}
+                    practiceName={selected.name}
+                    durationMinutes={22}
+                    className="w-full"
+                  />
+                </div>
 
                 <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-3" data-testid="sacred-ally-master-healing-protocol">
                   <h3 className="text-sm font-medium flex items-center gap-2">

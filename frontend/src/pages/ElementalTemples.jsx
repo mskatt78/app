@@ -164,6 +164,7 @@ const ElementalTemples = ({ user, api }) => {
               setActiveSection={setActiveSection}
               stableElementKey={stableElementKey}
               onStartGuidedPractice={startTempleGuidedPractice}
+              api={api}
             />
           )}
         </AnimatePresence>

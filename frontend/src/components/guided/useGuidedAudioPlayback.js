@@ -157,7 +157,7 @@ export const useGuidedAudioPlayback = ({
       practice_name: currentPracticeName || currentLabel || "Guided Practice",
       element: currentElement,
       duration_minutes: estimateMinutes(currentScript, currentDurationMinutes),
-      use_ai: false,
+      use_ai: true,
       anti_repetition_mode: getEffectiveGuidedNarrationMode({
         practiceName: currentPracticeName || currentLabel,
         element: currentElement,

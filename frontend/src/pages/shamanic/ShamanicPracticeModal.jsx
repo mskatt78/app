@@ -7,6 +7,7 @@ import GuidedAudioButton from "../../components/GuidedAudioButton";
 import PracticeTimer from "../../components/PracticeTimer";
 import { appLogger } from "../../utils/logger";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
 
 const OVERLAY_INITIAL = { opacity: 0 };
 const OVERLAY_ANIMATE = { opacity: 1 };
@@ -125,6 +126,15 @@ export const ShamanicPracticeModal = ({
                       element={selectedPractice.element || "Spirit"}
                       testIdPrefix="shamanic-practice-embodiment"
                     />
+
+                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/20" data-testid="shamanic-ritual-delivery-panel">
+                      <h3 className="text-sm font-medium mb-2">Embodied Ritual Delivery</h3>
+                      <ul className="space-y-1.5">
+                        {ritualDeliveryPillars.map((pillar) => (
+                          <li key={pillar} className="text-xs text-muted-foreground">• {pillar}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 </>
               ) : (
@@ -142,22 +152,17 @@ export const ShamanicPracticeModal = ({
                       api={api}
                       label="Play Guided Journey Narration"
                       durationMinutes={resolvedDurationMinutes}
-                      script={[
-                        `Welcome to this shamanic journey: ${selectedPractice.name}.`,
-                        selectedPractice.description || "",
-                        formatPreparationText(selectedPractice.preparation),
-                        getSteps(selectedPractice).length > 0
-                          ? `Your journey unfolds in ${getSteps(selectedPractice).length} steps. ${getSteps(selectedPractice)
-                              .map((step, index) => `Step ${index + 1}: ${step}`)
-                              .join(". ")}`
-                          : "",
-                        selectedPractice.closing_prayer
-                          ? `When you are ready to close, offer this prayer: ${selectedPractice.closing_prayer}`
-                          : "",
-                        "Gently return to your body. Wiggle your fingers and toes. Take three deep breaths. Welcome back.",
-                      ]
-                        .filter(Boolean)
-                        .join(" ")}
+                      script={composeDeepGuidedNarration({
+                        title: selectedPractice.name,
+                        element: selectedPractice.element || "Spirit",
+                        description: selectedPractice.description,
+                        teachings: [formatPreparationText(selectedPractice.preparation), selectedPractice.tradition],
+                        rituals: getSteps(selectedPractice),
+                        embodiment: ritualDeliveryPillars,
+                        closing: selectedPractice.closing_prayer
+                          ? `When complete, offer this closing prayer aloud: ${selectedPractice.closing_prayer}`
+                          : "Gently return to your body. Wiggle your fingers and toes. Take three deep breaths. Welcome back.",
+                      })}
                     />
                   </div>
 

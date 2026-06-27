@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Star, X } from "lucide-react";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
 
 export const MasculineArchetypeModal = ({ selectedArchetype, activeTab, setActiveTab, setSelectedArchetype, api }) => {
   return (
@@ -69,6 +70,14 @@ export const MasculineArchetypeModal = ({ selectedArchetype, activeTab, setActiv
                       <p className="text-sm text-muted-foreground leading-relaxed">{teaching.body}</p>
                     </div>
                   ))}
+                  <div className="p-4 rounded-xl bg-white/5 border border-white/10" data-testid="masculine-teachings-embodiment-panel">
+                    <p className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Embodied Integration</p>
+                    <ul className="space-y-1.5">
+                      {ritualDeliveryPillars.map((pillar) => (
+                        <li key={pillar} className="text-xs text-muted-foreground">• {pillar}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               )}
 
@@ -83,7 +92,15 @@ export const MasculineArchetypeModal = ({ selectedArchetype, activeTab, setActiv
                       <p className="text-sm text-muted-foreground leading-relaxed mb-3">{practice.desc}</p>
                       <GuidedAudioButton
                         api={api}
-                        script={`${selectedArchetype.name} practice: ${practice.name}. ${practice.desc}`}
+                        script={composeDeepGuidedNarration({
+                          title: `${selectedArchetype.title} • ${practice.name}`,
+                          element: "Fire",
+                          description: selectedArchetype.description,
+                          teachings: selectedArchetype.teachings?.map((row) => row.body),
+                          rituals: [practice.desc],
+                          embodiment: ritualDeliveryPillars,
+                          closing: "Anchor this archetypal medicine by acting from this quality in one real-world interaction today.",
+                        })}
                         label="Listen to practice"
                         className="text-xs"
                       />
@@ -113,7 +130,15 @@ export const MasculineArchetypeModal = ({ selectedArchetype, activeTab, setActiv
                   </div>
                   <GuidedAudioButton
                     api={api}
-                    script={`${selectedArchetype.name} ritual: ${selectedArchetype.ritual.name}. ${selectedArchetype.ritual.steps.join(". ")}. ${selectedArchetype.ritual.closing}`}
+                    script={composeDeepGuidedNarration({
+                      title: `${selectedArchetype.title} Ritual`,
+                      element: "Fire",
+                      description: selectedArchetype.description,
+                      teachings: selectedArchetype.teachings?.map((row) => row.body),
+                      rituals: selectedArchetype.ritual.steps,
+                      invocation: selectedArchetype.ritual.timing,
+                      closing: selectedArchetype.ritual.closing,
+                    })}
                     label="Listen to Guided Ritual"
                   />
                 </div>

@@ -3,6 +3,7 @@ import { BookOpen, ChevronRight, Eye, Gem, Heart, Sparkles, Star, X, Zap } from 
 import { Button } from "../../components/ui/button";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
 import { formatReviewedDate, TRADITION_MAP } from "./constants";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
 
 export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
   return (
@@ -71,7 +72,7 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                     <Sparkles className="w-3.5 h-3.5" />
                     Sacred Message
                   </h4>
-                  <p className="text-foreground italic leading-relaxed">"{selected.message}"</p>
+                  <p className="text-foreground italic leading-relaxed">&ldquo;{selected.message}&rdquo;</p>
                 </div>
               )}
 
@@ -81,7 +82,7 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                     <BookOpen className="w-3.5 h-3.5" />
                     Sacred Mantra / Invocation
                   </h4>
-                  <p className="text-sm italic text-muted-foreground leading-relaxed">"{selected.invocation}"</p>
+                  <p className="text-sm italic text-muted-foreground leading-relaxed">&ldquo;{selected.invocation}&rdquo;</p>
                   <div className="mt-3">
                     <GuidedAudioButton
                       api={api}
@@ -146,7 +147,15 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                   <div className="mt-3">
                     <GuidedAudioButton
                       api={api}
-                      script={`${selected.name} ceremony. ${selected.practice.map((step, index) => `Step ${index + 1}: ${step}`).join(". ")}`}
+                      script={composeDeepGuidedNarration({
+                        title: `${selected.name} Ceremony`,
+                        element: selected.element || "Spirit",
+                        description: selected.description,
+                        teachings: selected.teachings,
+                        rituals: selected.practice,
+                        invocation: selected.invocation,
+                        closing: selected.message,
+                      })}
                       label="Listen to Ceremony Steps"
                       voice="nova"
                       className="text-xs"
@@ -154,6 +163,15 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                   </div>
                 </div>
               )}
+
+              <div className="p-4 rounded-xl border border-primary/20 bg-primary/5" data-testid="ancient-wisdom-ritual-delivery-panel">
+                <p className="text-xs uppercase tracking-wider text-primary mb-2">Embodied Ritual Delivery</p>
+                <ul className="space-y-1.5">
+                  {ritualDeliveryPillars.map((pillar) => (
+                    <li key={pillar} className="text-xs text-muted-foreground">• {pillar}</li>
+                  ))}
+                </ul>
+              </div>
 
               {selected.crystals?.length > 0 && (
                 <div className="p-4 rounded-xl bg-violet-500/5 border border-violet-500/20">

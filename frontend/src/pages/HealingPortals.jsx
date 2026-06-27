@@ -7,6 +7,7 @@ import GuidedAudioButton from "../components/GuidedAudioButton";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
 
 const sanitizeToList = (value) => {
   if (Array.isArray(value)) {
@@ -393,6 +394,17 @@ const HealingPortals = ({ user, api }) => {
                 <PortalSection icon={Shield} title="Embodiment Integration Timeline" items={buildPortalEmbodimentTimeline(selectedPortal)} testId="healing-portal-embodiment-timeline-section" />
                 <PortalSection icon={Shield} title="Integration" items={sanitizeToList(selectedPortal.integration_practices)} testId="healing-portal-integration-section" />
 
+                <section className="rounded-xl border border-white/10 bg-white/[0.02] p-4" data-testid="healing-portal-ritual-delivery-panel">
+                  <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-300" /> Embodied Ritual Delivery
+                  </h3>
+                  <ul className="space-y-2">
+                    {ritualDeliveryPillars.map((pillar) => (
+                      <li key={pillar} className="text-xs text-muted-foreground">• {pillar}</li>
+                    ))}
+                  </ul>
+                </section>
+
                 <section className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-3" data-testid="healing-portal-master-container">
                   <h3 className="text-sm font-medium flex items-center gap-2">
                     <Flame className="w-4 h-4 text-amber-300" />
@@ -461,18 +473,18 @@ const HealingPortals = ({ user, api }) => {
                         ...sanitizeToList(selectedPortal.ceremonies),
                         ...sanitizeToList(selectedPortal.integration_practices),
                       ]}
-                      script={[
-                        selectedPortal.opening_invocation,
-                        selectedPortal.description,
-                        "Alchemy teachings:",
-                        ...sanitizeToList(selectedPortal.alchemy_teachings),
-                        "Ceremonial rituals:",
-                        ...sanitizeToList(selectedPortal.rituals),
-                        "Ceremonies:",
-                        ...sanitizeToList(selectedPortal.ceremonies),
-                        "Integration:",
-                        ...sanitizeToList(selectedPortal.integration_practices),
-                      ].filter(Boolean).join("\n\n")}
+                      script={composeDeepGuidedNarration({
+                        title: selectedPortal.name,
+                        element: selectedPortal.element || "Spirit",
+                        description: selectedPortal.description,
+                        teachings: sanitizeToList(selectedPortal.alchemy_teachings),
+                        rituals: sanitizeToList(selectedPortal.rituals),
+                        ceremonies: sanitizeToList(selectedPortal.ceremonies),
+                        embodiment: ritualDeliveryPillars,
+                        integration: sanitizeToList(selectedPortal.integration_practices),
+                        invocation: selectedPortal.opening_invocation,
+                        closing: selectedPortal.closing_blessing,
+                      })}
                       className="w-full"
                     />
                     {premium.loading ? (
