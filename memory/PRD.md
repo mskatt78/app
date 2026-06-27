@@ -2922,4 +2922,49 @@
 ### Next prioritized items
 - Optional P2: Add dynamic “recommended free starter path” per section to improve conversion to paid unlocks.
 
+## Healing-First Rebalance (Premium in Background) — 2026-06-27
+
+### User feedback addressed
+- User reported the experience felt too locked and unavailable for tour/preview mode.
+- Requested premium offers remain in the background while preserving healing accessibility.
+
+### Rebalance implemented
+- **Backend access model softened** in `backend/routers/content.py`:
+  - `SECTION_FREE_RATIO` changed from `0.30` → `0.60`
+  - `SECTION_MIN_FREE_ITEMS` changed from `2` → `3`
+  - Result: majority free access across core sections.
+
+- **Frontend premium tone softened** (no hard-sell feel):
+  - Updated banners in:
+    - Shamanic Practices
+    - Heart Practices
+    - Elemental Practices
+    - Mindfulness
+    - Meditations
+    - Water Practices
+    - Chakra Cleansing
+  - Copy now emphasizes:
+    - “Optional Premium”
+    - Open/free healing-first experience
+    - Premium only for deeper advanced tracks.
+  - Banner CTA reduced to a low-pressure **Optional premium** route.
+
+### Validation
+- Test report: `/app/test_reports/iteration_227.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+  - No action items.
+
+- Verified free ratios after rebalance:
+  - Shamanic: **59.09% free** (13/22)
+  - Heart: **60.00% free** (6/10)
+  - Elemental: **60.00% free** (6/10)
+  - Mindfulness: **60.00% free** (6/10)
+  - Meditations: **66.67% free** (4/6)
+  - Water: **59.09% free** (13/22)
+  - Chakra: **61.54% free** (8/13)
+
+### Current status
+- App now feels significantly more open for healing/tour use while retaining premium pathways for advanced depth.
+
 
