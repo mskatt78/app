@@ -2853,4 +2853,73 @@
 ### Current status
 - Elemental Temples premium gating is complete in preview and test-verified.
 
+## Full App Monetization Alignment + Deep Shamanic Expansion — 2026-06-27
+
+### User choices implemented
+- Ratio model: **~30% free / ~70% paid** per section.
+- Lock style: **item-level/hybrid** (keep section-level where already appropriate).
+- Rollout: **full app sweep in one pass**.
+- Shamanic depth: **deep expansion** with advanced protocols.
+- Locked CTAs everywhere: **Subscription + Section Unlock + Full App**.
+
+### Backend changes
+- `backend/routers/content.py`
+  - Added reusable monetization splitter: `_apply_free_paid_tiering(...)`.
+  - Applied tiering to key sections:
+    - `shamanic_practices`
+    - `heart_practices`
+    - `elemental_practices`
+    - `mindfulness_practices`
+    - `meditations`
+    - `water_practices`
+    - `chakra_cleansing`
+    - plus somatic + grounding datasets for consistency.
+  - Added 6 advanced shamanic protocols (`shamanic-advanced-*`) with deeper preparation/journey/safety/integration structures.
+
+- `backend/routers/payments.py`
+  - Added premium unlock products:
+    - `shamanic_practices` ($69)
+    - `heart_practices` ($59)
+    - `elemental_practices` ($59)
+    - `mindfulness_practices` ($49)
+    - `meditations` ($49)
+    - `water_practices` ($59)
+    - `chakra_cleansing` ($59)
+    - (plus somatic/grounding unlock IDs supported)
+  - Included these in `PREMIUM_SECTION_IDS` for entitlement resolution.
+
+### Frontend changes
+- `usePremiumAccess.js`
+  - Added entitlement keys for the new section IDs.
+
+- Premium gating + lock UX implemented on pages:
+  - `ShamanicPractices` (banner + card-level lock + modal)
+  - `HeartPractices` (banner + card-level lock + modal)
+  - `ElementalPractices` (banner + card-level lock + modal)
+  - `Mindfulness` (banner + card-level lock + modal)
+  - `Meditations` (banner + card-level lock + modal)
+  - `WaterPractices` (banner + card-level lock + modal)
+  - `ChakraCleansing` (banner + card-level lock + modal)
+
+### Validation
+- Automated test report: `/app/test_reports/iteration_226.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+  - No action items.
+- Key backend evidence from test run:
+  - Shamanic: 22 total (7 free / 15 premium) + advanced entries present.
+  - Heart: 10 total (3 free / 7 premium).
+  - Elemental: 10 total (3 free / 7 premium).
+  - Mindfulness: 10 total (3 free / 7 premium).
+  - Meditations: 6 total (2 free / 4 premium).
+  - Water: 22 total (7 free / 15 premium).
+  - Chakra: 13 total (4 free / 9 premium).
+
+### Current status
+- Monetization pattern now matches user request across major guided sections.
+- Deep Shamanic expansion and premium structure are live in preview and test-verified.
+
+### Next prioritized items
+- Optional P2: Add dynamic “recommended free starter path” per section to improve conversion to paid unlocks.
+
 
