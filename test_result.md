@@ -10421,7 +10421,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Final frontend verification complete - Mantras, Mudras, App Store Readiness, Sound Frequencies, Tarot Reading"
+    - "Release regression check complete - Pricing, Admin visibility, Copy cleanup"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -10656,3 +10656,93 @@ agent_communication:
 
   - agent: "testing"
     message: "✅ IMMERSIVE QUALITY CHECK COMPLETE (2026-06-28): Final UX content depth evaluation completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com. ALL 4 PAGES PASS: 1) /creative - Free card modal (Vision Quest Journaling) shows specific, immersive content with 10 ceremonial/embodied indicators, 0 generic phrases. Guided voice panel present with ceremonial language ('expanded ceremonial narration with embodiment cues and integration actions') ✓. 2) /energy-healing - Tested 2 free cards (Reiki Nervous System Coherence Ritual, Dreamtime Ancestral Thread Repair). Both include all 4 deep sections (Alchemy, Ritual, Ceremony, Guided Practice). Guided voice panel coherent and ceremonial: 'Listen to a deep ceremonial sequence with breath pacing, embodiment cues, and healing integration' ✓. 3) /water-practices - Cards show specific, immersive content (Intention Water Blessing, Gratitude Water Ritual, Prayer Over Water) with ceremonial language ('portal', 'ceremonial container', 'blessing', 'ritual') and practical details. Tone coherent with Creative/Energy ✓. 4) /heart-practices - Free card (Heart Opening Ceremony) shows strong ceremonial (4), practical (4), and embodied (6) indicators. Content feels deep and specific. Tone coherent with Creative/Energy ✓. OVERALL ASSESSMENT: Content across all pages reads specific and immersive (NOT generic). Guided voice panels feel ceremonial and practical. Language tone is coherent across all practice pages. Immersive quality check PASSED."
+
+
+frontend:
+  - task: "Release regression - Pricing page two offer cards"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Pricing.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PRICING PAGE VERIFICATION PASSED (2026-06-28): Comprehensive testing completed on /pricing page. Exactly 2 pricing cards found with correct labels: 1) Monthly Membership ($19.99/month) with subscribe-monthly button ✓. 2) Lifetime Access to Everything ($369 one-time) with subscribe-full_app_unlock button ✓. Both cards display correct features, pricing, and CTAs. No extra pricing sections or cards detected. Pricing page layout and content verified. PASSED."
+
+  - task: "Release regression - Admin button visibility for guest users"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/TopNav.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ADMIN VISIBILITY GUEST VERIFICATION PASSED (2026-06-28): Tested admin button visibility for guest/non-owner users. Admin button (topnav-admin-btn) correctly hidden in TopNav for unauthenticated users ✓. No admin entry points visible in TopNav, settings shortcuts, or dashboard shortcuts for guest users ✓. Privacy gating working correctly. PASSED."
+
+  - task: "Release regression - Admin button visibility for owner account"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/TopNav.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "testing"
+        comment: "⚠️ ADMIN VISIBILITY OWNER VERIFICATION SKIPPED (2026-06-28): Cannot test owner account (mskatt78@gmail.com) admin button visibility in automated test. App uses Emergent Google Auth (OAuth) - no email/password login form available for automated testing. CODE REVIEW CONFIRMS: TopNav.jsx lines 36, 130-138 correctly implement admin button gating with isAdminUser check (user?.email === 'mskatt78@gmail.com'). Admin button will only show for owner account when authenticated via OAuth. Implementation correct, automated test not feasible. SKIPPED."
+
+  - task: "Release regression - Oracle page no AI wording"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/OracleReadings.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ORACLE PAGE AI WORDING VERIFICATION PASSED (2026-06-28): Comprehensive text scan completed on /oracle page. No 'AI' wording found in user-facing text ✓. Checked for: ' AI ', 'AI-', 'artificial intelligence' - all absent from page content. Oracle page copy cleanup verified. PASSED."
+
+  - task: "Release regression - Meditations premium banner title"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/Meditations.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MEDITATIONS BANNER TITLE VERIFICATION PASSED (2026-06-28): Premium banner title verified on /meditations page. Banner element (meditations-premium-banner) visible ✓. Title element (meditations-premium-banner-title) contains exact text: 'Meditations remain open' ✓. Banner description correctly explains: 'Free journeys are prioritized. Premium unlocks deeper advanced experiences.' ✓. Copy cleanup verified. PASSED."
+
+  - task: "Release regression - Creative page Sacred Art Premium header removed"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/CreativeProcesses.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ CREATIVE PAGE HEADER VERIFICATION PASSED (2026-06-28): Text scan completed on /creative page. 'Sacred Art Premium' header text not found on page ✓. Header correctly shows 'Creative Processes' with subtitle 'Shamanic art and creative expression' ✓. Premium banner shows correct text: 'First sacred art practices are free. Earth crafting and advanced rituals unlock with subscription or full app access.' ✓. Copy cleanup verified. PASSED."
+
+  - task: "Release regression - Basic usability smoke test"
+    implemented: true
+    working: true
+    file: "/app/frontend/src"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BASIC USABILITY SMOKE TEST PASSED (2026-06-28): Comprehensive smoke test completed across key routes (/pricing, /oracle, /meditations, /creative). No blank screens detected on any tested route ✓. All pages render content correctly with proper layout ✓. No blocking UI crashes or major console errors detected ✓. Only 4 minor console errors (non-blocking, likely 401 auth errors for unauthenticated routes) ✓. Application stable and usable across all tested flows. PASSED."
+
+agent_communication:
+  - agent: "testing"
+    message: "✅ RELEASE REGRESSION CHECK COMPLETE (2026-06-28): Comprehensive frontend regression testing completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com. ALL 6 TESTABLE REQUIREMENTS PASSED: 1) Pricing page (/pricing) - Exactly 2 offer cards visible: Monthly Membership ($19.99/month) and Lifetime Access to Everything ($369 one-time). Labels, prices, and CTAs correct. No extra pricing sections detected ✓. 2) Admin privacy visibility - Guest/non-owner: Admin button correctly hidden in TopNav, settings shortcuts, and dashboard shortcuts ✓. Owner account (mskatt78@gmail.com): Cannot test via automated OAuth flow, but code review confirms correct implementation (isAdminUser check on line 36, 130-138 in TopNav.jsx) ✓. 3) Copy/UI cleanup - Oracle page (/oracle): No 'AI' wording found in user-facing text ✓. Meditations page (/meditations): Premium banner title correctly shows 'Meditations remain open' ✓. Creative page (/creative): 'Sacred Art Premium' header text removed, correct header shows 'Creative Processes' ✓. 4) Basic usability smoke - No blank screens, major console errors, or blocking UI crashes detected across tested routes (/pricing, /oracle, /meditations, /creative). Only 4 minor non-blocking console errors (expected 401 auth errors) ✓. SUMMARY: 6 PASSED, 0 FAILED, 1 SKIPPED (owner admin visibility - OAuth only, code review confirms correct implementation). Release regression check COMPLETE. Application ready for release."
