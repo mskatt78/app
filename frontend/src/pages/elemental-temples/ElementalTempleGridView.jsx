@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Lock } from "lucide-react";
 
 export const ElementalTempleGridView = ({
   elements,
   setActiveTemple,
   setActiveSection,
+  canAccessTemple,
+  onLockedTemple,
 }) => (
   <motion.div
     key="grid"
@@ -27,18 +29,33 @@ export const ElementalTempleGridView = ({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {elements.map((el, index) => {
         const Icon = el.icon;
+        const locked = !canAccessTemple(el);
         return (
           <motion.div
             key={el.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            onClick={() => { setActiveTemple(el); setActiveSection("why_it_heals"); }}
+            onClick={() => {
+              if (locked) {
+                onLockedTemple?.(el);
+                return;
+              }
+              setActiveTemple(el);
+              setActiveSection("why_it_heals");
+            }}
             data-testid={`temple-${el.id}`}
             className={`group cursor-pointer relative overflow-hidden rounded-2xl border
                        ${el.color.bg} ${el.color.border}
                        hover:scale-[1.02] transition-all duration-300 hover:shadow-xl ${el.color.glow}`}
           >
+            {locked && (
+              <div className="absolute top-3 left-3 z-10">
+                <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-fuchsia-500/20 border border-fuchsia-500/30 text-fuchsia-100 text-xs" data-testid={`elemental-temple-premium-badge-${el.id}`}>
+                  <Lock className="w-3 h-3" /> Premium
+                </span>
+              </div>
+            )}
             {el.image && (
               <div className="relative h-36 overflow-hidden">
                 <img

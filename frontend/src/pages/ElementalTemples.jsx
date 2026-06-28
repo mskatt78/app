@@ -20,13 +20,15 @@ const ElementalTemples = ({ user, api }) => {
   const [elements, setElements] = useState(STATIC_ELEMENTS);
   const [guidedPractice, setGuidedPractice] = useState(null);
   const [showTempleLock, setShowTempleLock] = useState(false);
+  const [selectedLockedTemple, setSelectedLockedTemple] = useState(null);
 
   const templesUnlocked = premium.isSectionUnlocked("elemental_temples");
-  const templeProduct = premium.findProduct("elemental_temples");
   const fullAppProduct = premium.findProduct("full_app_unlock");
+  const canAccessTemple = (temple) => !temple?.is_premium || templesUnlocked;
 
   const startTempleGuidedPractice = (temple, sectionId = "embodiment") => {
-    if (!templesUnlocked) {
+    if (!canAccessTemple(temple)) {
+      setSelectedLockedTemple(temple);
       setShowTempleLock(true);
       return;
     }
@@ -57,13 +59,6 @@ const ElementalTemples = ({ user, api }) => {
       element: temple.element || "Spirit",
       duration_minutes: 20,
       steps,
-    });
-  };
-
-  const handleUnlockElementalTemples = async () => {
-    await premium.startPurchase({
-      productId: "elemental_temples",
-      returnPath: "/elemental-temples",
     });
   };
 
@@ -189,10 +184,10 @@ const ElementalTemples = ({ user, api }) => {
               <div>
                 <p className="text-xs uppercase tracking-wider text-amber-300">Premium Temple Access</p>
                 <h2 className="text-xl font-serif text-amber-100" data-testid="elemental-temples-premium-banner-title">
-                  Elemental Temples are now premium
+                  Elemental Temples remain open first
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1" data-testid="elemental-temples-premium-banner-description">
-                  Unlock section access, choose subscription, or unlock the full app.
+                  Explore freely first. Continue with subscription or full app for deeper advanced temple layers.
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -203,16 +198,6 @@ const ElementalTemples = ({ user, api }) => {
                   data-testid="elemental-temples-view-subscription-button"
                 >
                   View Subscription
-                </Button>
-                <Button
-                  onClick={handleUnlockElementalTemples}
-                  className="bg-fuchsia-500 hover:bg-fuchsia-600"
-                  data-testid="elemental-temples-unlock-button"
-                  disabled={premium.purchaseLoadingId === "elemental_temples" || premium.loading}
-                >
-                  {premium.purchaseLoadingId === "elemental_temples"
-                    ? "Opening checkout..."
-                    : `Unlock Temples ${templeProduct?.price?.toFixed(2) || "79.00"}`}
                 </Button>
                 <Button
                   onClick={handleUnlockFullApp}
@@ -236,6 +221,11 @@ const ElementalTemples = ({ user, api }) => {
               elements={elements}
               setActiveTemple={setActiveTemple}
               setActiveSection={setActiveSection}
+              canAccessTemple={canAccessTemple}
+              onLockedTemple={(temple) => {
+                setSelectedLockedTemple(temple);
+                setShowTempleLock(true);
+              }}
             />
           ) : (
             <ElementalTempleDetailView
@@ -258,9 +248,9 @@ const ElementalTemples = ({ user, api }) => {
               <Lock className="w-4 h-4" />
               <p className="text-xs uppercase tracking-wider">Premium Temple</p>
             </div>
-            <h3 className="text-2xl font-serif mb-2" data-testid="elemental-temples-premium-lock-title">Elemental Temples</h3>
+            <h3 className="text-2xl font-serif mb-2" data-testid="elemental-temples-premium-lock-title">{selectedLockedTemple?.name || "Elemental Temples"}</h3>
             <p className="text-sm text-muted-foreground mb-4" data-testid="elemental-temples-premium-lock-description">
-              Unlock this section to access complete Elemental Temple rituals and guided immersions.
+              This advanced temple pathway is premium. Continue with subscription or full app access.
             </p>
             <div className="grid sm:grid-cols-2 gap-2">
               <Button
@@ -270,16 +260,6 @@ const ElementalTemples = ({ user, api }) => {
                 data-testid="elemental-temples-premium-lock-subscription-button"
               >
                 View Subscription Plans
-              </Button>
-              <Button
-                onClick={handleUnlockElementalTemples}
-                className="bg-fuchsia-500 hover:bg-fuchsia-600"
-                data-testid="elemental-temples-premium-lock-unlock-button"
-                disabled={premium.purchaseLoadingId === "elemental_temples"}
-              >
-                {premium.purchaseLoadingId === "elemental_temples"
-                  ? "Opening checkout..."
-                  : `Unlock ${templeProduct?.price?.toFixed(2) || "79.00"}`}
               </Button>
               <Button
                 onClick={handleUnlockFullApp}

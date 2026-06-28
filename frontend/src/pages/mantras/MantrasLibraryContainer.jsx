@@ -127,7 +127,6 @@ const MantrasLibrary = ({ user, api }) => {
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
   const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
   const mantraSectionUnlocked = premium.isSectionUnlocked("premium_mantras");
-  const mantraProduct = premium.findProduct("premium_mantras");
   const fullAppProduct = premium.findProduct("full_app_unlock");
 
   useEffect(() => {
@@ -525,13 +524,6 @@ const MantrasLibrary = ({ user, api }) => {
     setSelectedMantra(mantra);
   }, [canAccessMantra, ensureElementNaturalDefault]);
 
-  const handleUnlockMantras = useCallback(async () => {
-    await premium.startPurchase({
-      productId: "premium_mantras",
-      returnPath: "/mantras",
-    });
-  }, [premium]);
-
   const handleUnlockFullApp = useCallback(async () => {
     await premium.startPurchase({
       productId: "full_app_unlock",
@@ -598,10 +590,10 @@ const MantrasLibrary = ({ user, api }) => {
             <div>
               <p className="text-xs uppercase tracking-wider text-amber-300">Mantras Access Model</p>
               <h2 className="text-xl font-serif text-amber-100" data-testid="mantras-premium-banner-title">
-                First 3 free • {premiumMantraCount} advanced premium mantras
+                Mantra library open first • deeper layers premium
               </h2>
               <p className="text-sm text-muted-foreground mt-1" data-testid="mantras-premium-banner-description">
-                Subscription or Full App unlock grants access across all premium mantra rituals.
+                Continue freely, then choose subscription or full app if you want advanced tracks.
               </p>
             </div>
             {!mantraSectionUnlocked && (
@@ -613,14 +605,6 @@ const MantrasLibrary = ({ user, api }) => {
                   data-testid="mantras-view-subscription-button"
                 >
                   View Subscription
-                </Button>
-                <Button
-                  onClick={handleUnlockMantras}
-                  className="bg-fuchsia-500 hover:bg-fuchsia-600"
-                  data-testid="mantras-unlock-premium-button"
-                  disabled={premium.purchaseLoadingId === "premium_mantras" || premium.loading}
-                >
-                  {premium.purchaseLoadingId === "premium_mantras" ? "Opening checkout..." : `Unlock Mantras ${mantraProduct?.price?.toFixed(2) || "49.00"}`}
                 </Button>
                 <Button
                   onClick={handleUnlockFullApp}
@@ -695,7 +679,7 @@ const MantrasLibrary = ({ user, api }) => {
             </div>
             <h3 className="text-2xl font-serif mb-2" data-testid="mantra-premium-lock-title">{selectedLockedMantra.name}</h3>
             <p className="text-sm text-muted-foreground mb-4" data-testid="mantra-premium-lock-description">
-              This mantra is part of premium ritual libraries. Unlock this section, subscribe, or unlock the whole app.
+              This mantra is part of premium ritual libraries. Continue with subscription or full app access.
             </p>
             <div className="grid sm:grid-cols-2 gap-2">
               <Button
@@ -705,14 +689,6 @@ const MantrasLibrary = ({ user, api }) => {
                 data-testid="mantra-premium-lock-subscription-button"
               >
                 View Subscription Plans
-              </Button>
-              <Button
-                onClick={handleUnlockMantras}
-                className="bg-fuchsia-500 hover:bg-fuchsia-600"
-                data-testid="mantra-premium-lock-unlock-button"
-                disabled={premium.purchaseLoadingId === "premium_mantras"}
-              >
-                {premium.purchaseLoadingId === "premium_mantras" ? "Opening checkout..." : `Unlock ${mantraProduct?.price?.toFixed(2) || "49.00"}`}
               </Button>
               <Button
                 onClick={handleUnlockFullApp}

@@ -15,6 +15,7 @@ const RoseTempleContainer = ({ user, api }) => {
   const premium = usePremiumAccess({ api, user });
   const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
   const [guidedPractice, setGuidedPractice] = useState(null);
+  const [selectedLockedPractice, setSelectedLockedPractice] = useState(null);
   const {
     selectedTeaching,
     selectedPractice,
@@ -29,18 +30,10 @@ const RoseTempleContainer = ({ user, api }) => {
 
   const roseTempleUnlocked = premium.isSectionUnlocked("rose_temple");
   const fullAppProduct = premium.findProduct("full_app_unlock");
-  const roseProduct = premium.findProduct("rose_temple");
 
   useEffect(() => {
     finalizeCheckoutIfPresent({ search: window.location.search });
   }, [finalizeCheckoutIfPresent]);
-
-  const handleUnlockRoseTemple = async () => {
-    await premium.startPurchase({
-      productId: "rose_temple",
-      returnPath: "/rose-temple",
-    });
-  };
 
   const handleUnlockFullApp = async () => {
     await premium.startPurchase({
@@ -103,13 +96,13 @@ const RoseTempleContainer = ({ user, api }) => {
       {!roseTempleUnlocked && (
         <section className="max-w-6xl mx-auto p-6 pt-4" data-testid="rose-temple-premium-gate-panel">
           <div className="rounded-2xl border border-fuchsia-500/30 bg-gradient-to-r from-fuchsia-500/10 via-rose-500/10 to-background p-6">
-            <p className="text-xs uppercase tracking-wider text-fuchsia-200 mb-1">Premium Access</p>
+            <p className="text-xs uppercase tracking-wider text-fuchsia-200/80 mb-1">Optional Premium</p>
             <h2 className="text-2xl font-serif flex items-center gap-2 mb-2">
               <Lock className="w-5 h-5 text-fuchsia-300" />
-              Rose Temple is currently locked
+              Rose Temple remains open first
             </h2>
             <p className="text-sm text-muted-foreground mb-4" data-testid="rose-temple-premium-gate-description">
-              Unlock this section-only offering or choose Full App unlock. Access activates immediately after payment.
+              Keep exploring freely, then continue with subscription or full app access for deeper layers.
             </p>
             <p className="text-xs text-fuchsia-100/70 mb-3" data-testid="rose-temple-devotional-note">
               Rose Temple is practiced as devotional embodiment: tenderness, truth, and practical integration in daily life.
@@ -122,14 +115,6 @@ const RoseTempleContainer = ({ user, api }) => {
                 data-testid="rose-temple-view-subscription-button"
               >
                 View Subscription
-              </Button>
-              <Button
-                className="bg-fuchsia-500 hover:bg-fuchsia-600"
-                onClick={handleUnlockRoseTemple}
-                data-testid="rose-temple-unlock-section-button"
-                disabled={premium.purchaseLoadingId === "rose_temple" || premium.loading}
-              >
-                {premium.purchaseLoadingId === "rose_temple" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : `Unlock Rose Temple ${roseProduct?.price?.toFixed(2) || "59.00"}`}
               </Button>
               <Button
                 variant="outline"
@@ -146,49 +131,71 @@ const RoseTempleContainer = ({ user, api }) => {
       )}
 
       <RoseTempleMainSections
-        locked={!roseTempleUnlocked}
+        locked={false}
         loadingPractices={loadingPractices}
         embodimentPractices={embodimentPractices}
         sacredRites={sacredRites}
         onSelectTeaching={(item) => {
-          if (!roseTempleUnlocked) return;
           setSelectedTeaching(item);
         }}
         onSelectPractice={(item) => {
-          if (!roseTempleUnlocked) return;
+          if (item?.is_premium && !roseTempleUnlocked) {
+            setSelectedLockedPractice(item);
+            return;
+          }
           setSelectedPractice(item);
         }}
         onSelectRite={(item) => {
-          if (!roseTempleUnlocked) return;
           setSelectedRite(item);
         }}
         onStartGuidedTeaching={(item) => {
-          if (!roseTempleUnlocked) return;
           startRoseGuidedPractice(item, "teaching");
         }}
         onStartGuidedPractice={(item) => {
-          if (!roseTempleUnlocked) return;
+          if (item?.is_premium && !roseTempleUnlocked) {
+            setSelectedLockedPractice(item);
+            return;
+          }
           startRoseGuidedPractice(item, "practice");
         }}
         onStartGuidedRite={(item) => {
-          if (!roseTempleUnlocked) return;
           startRoseGuidedPractice(item, "rite");
         }}
       />
 
-      {roseTempleUnlocked && (
-        <RoseTempleModals
-          selectedTeaching={selectedTeaching}
-          selectedPractice={selectedPractice}
-          selectedRite={selectedRite}
-          onStartGuidedTeaching={(item) => startRoseGuidedPractice(item, "teaching")}
-          onStartGuidedPractice={(item) => startRoseGuidedPractice(item, "practice")}
-          onStartGuidedRite={(item) => startRoseGuidedPractice(item, "rite")}
-          onCloseTeaching={() => setSelectedTeaching(null)}
-          onClosePractice={() => setSelectedPractice(null)}
-          onCloseRite={() => setSelectedRite(null)}
-          api={api}
-        />
+      <RoseTempleModals
+        selectedTeaching={selectedTeaching}
+        selectedPractice={selectedPractice}
+        selectedRite={selectedRite}
+        onStartGuidedTeaching={(item) => startRoseGuidedPractice(item, "teaching")}
+        onStartGuidedPractice={(item) => startRoseGuidedPractice(item, "practice")}
+        onStartGuidedRite={(item) => startRoseGuidedPractice(item, "rite")}
+        onCloseTeaching={() => setSelectedTeaching(null)}
+        onClosePractice={() => setSelectedPractice(null)}
+        onCloseRite={() => setSelectedRite(null)}
+        api={api}
+      />
+
+      {selectedLockedPractice && !roseTempleUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="rose-temple-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <h3 className="text-2xl font-serif mb-2" data-testid="rose-temple-premium-lock-title">{selectedLockedPractice.name || selectedLockedPractice.title || "Rose Temple"}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="rose-temple-premium-lock-description">This advanced rose pathway is premium. Continue with subscription or full app access.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="rose-temple-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button
+                variant="outline"
+                className="border-amber-500/30 text-amber-200"
+                onClick={handleUnlockFullApp}
+                data-testid="rose-temple-premium-lock-fullapp-button"
+                disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
+              >
+                {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}</>}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPractice(null)} data-testid="rose-temple-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
       )}
     </div>
   );

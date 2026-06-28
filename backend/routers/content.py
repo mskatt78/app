@@ -480,8 +480,8 @@ SHAMANIC_ADVANCED_SUPPLEMENTS = [
     },
 ]
 
-SECTION_FREE_RATIO = 0.60
-SECTION_MIN_FREE_ITEMS = 3
+SECTION_FREE_RATIO = 0.25
+SECTION_MIN_FREE_ITEMS = 1
 
 SECTION_PREMIUM_LABELS = {
     "mindfulness_practices": "Mindfulness Premium",
@@ -1921,7 +1921,7 @@ def _apply_free_paid_tiering(
 
     ordered = sorted(items, key=_parse_tier_sort_value)
     total_items = len(ordered)
-    free_count = max(minimum_free, int(round(total_items * free_ratio)))
+    free_count = max(minimum_free, int(total_items * free_ratio))
 
     if total_items > 3:
         free_count = min(free_count, total_items - 1)
@@ -3110,7 +3110,8 @@ async def get_breathwork_sessions(element: Optional[str] = None) -> list[dict[st
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     sessions = await db.breathwork_sessions.find(query, {"_id": 0}).to_list(length=20)
-    return [_enrich_breathwork_session_entry(session) for session in sessions]
+    enriched = [_enrich_breathwork_session_entry(session) for session in sessions]
+    return _apply_free_paid_tiering(enriched, "premium_breathwork")
 
 
 @router.get("/breathwork/sessions/{session_id}")
@@ -3936,7 +3937,8 @@ async def get_mantras(element: Optional[str] = None) -> list[dict[str, Any]]:
     
     mantras = await db.mantras.find(query, {"_id": 0}).to_list(length=50)
     enriched = [_enrich_content_integrity(mantra, "hybrid-curated") for mantra in mantras]
-    return [_enrich_mantra_entry(mantra) for mantra in enriched]
+    enriched = [_enrich_mantra_entry(mantra) for mantra in enriched]
+    return _apply_free_paid_tiering(enriched, "premium_mantras")
 
 
 # ============ MUDRAS ROUTES ============
@@ -4579,7 +4581,8 @@ async def get_healing_portals(portal_type: Optional[str] = None) -> list[dict[st
         query["portal_type"] = {"$regex": f"^{portal_type}$", "$options": "i"}
 
     items = await db.healing_portals.find(query, {"_id": 0}).to_list(length=300)
-    return [_enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "healing-portals") for item in items]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "healing-portals") for item in items]
+    return _apply_free_paid_tiering(enriched, "healing_portals")
 
 
 @router.get("/healing-portals/{portal_id}")
@@ -5170,7 +5173,8 @@ async def get_feminine_embodiment(category: Optional[str] = None) -> list[dict[s
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     practices = await db.feminine_embodiment.find(query, {"_id": 0}).to_list(length=100)
-    return [_enrich_devotional_language(practice, "feminine-embodiment") for practice in practices]
+    enriched = [_enrich_devotional_language(practice, "feminine-embodiment") for practice in practices]
+    return _apply_free_paid_tiering(enriched, "rose_temple")
 
 
 # ============ DAILY SACRED PRACTICE ============
@@ -5540,7 +5544,8 @@ async def get_elemental_temples() -> list[dict[str, Any]]:
     """Get all 5 elemental temples with full content."""
     db = get_db()
     temples = await db.elemental_temples.find({}, {"_id": 0}).to_list(length=10)
-    return temples
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(temple, "hybrid-curated"), "elemental-practices") for temple in temples]
+    return _apply_free_paid_tiering(enriched, "elemental_temples")
 
 
 @router.get("/elements")

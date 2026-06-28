@@ -192,14 +192,7 @@ const HealingPortals = ({ user, api }) => {
   }, [api, guidedPractice]);
 
   const fullAppProduct = premium.findProduct("full_app_unlock");
-  const portalProduct = premium.findProduct("healing_portals");
-
-  const handleUnlockPortals = async () => {
-    await premium.startPurchase({
-      productId: "healing_portals",
-      returnPath: "/healing-portals",
-    });
-  };
+  
 
   const handleUnlockFullApp = async () => {
     await premium.startPurchase({
@@ -234,7 +227,7 @@ const HealingPortals = ({ user, api }) => {
           <div className="mt-4 p-4 rounded-xl border border-amber-500/20 bg-amber-500/10" data-testid="healing-portals-premium-banner">
             <p className="text-sm text-amber-100/90">
               <Crown className="inline w-4 h-4 mr-1" />
-              Premium Portal Access: Womb · Shadow · Heart · Ancestral · Trauma
+              Portal exploration remains open. Advanced layers are optional premium.
             </p>
             <p className="text-xs text-amber-100/70 mt-1" data-testid="healing-portals-devotional-note">
               Enter each portal as ceremony: slow breath, body consent, and one grounded integration action.
@@ -250,21 +243,13 @@ const HealingPortals = ({ user, api }) => {
                   View Subscription
                 </Button>
                 <Button
-                  onClick={handleUnlockPortals}
-                  className="bg-fuchsia-500 hover:bg-fuchsia-600"
-                  data-testid="healing-portals-unlock-section-button"
-                  disabled={premium.purchaseLoadingId === "healing_portals" || premium.loading}
-                >
-                  {premium.purchaseLoadingId === "healing_portals" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : `Unlock Portals ${portalProduct?.price?.toFixed(2) || "69.00"}`}
-                </Button>
-                <Button
                   variant="outline"
                   className="border-amber-400/40 text-amber-100"
                   onClick={handleUnlockFullApp}
                   data-testid="healing-portals-unlock-fullapp-button"
                   disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
                 >
-                  {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}</>}
+                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}</>}
                 </Button>
               </div>
             )}
@@ -454,9 +439,6 @@ const HealingPortals = ({ user, api }) => {
                         data-testid="healing-portal-subscription-button"
                       >
                         View Subscription Plans
-                      </Button>
-                      <Button onClick={handleUnlockPortals} className="bg-fuchsia-500 hover:bg-fuchsia-600" data-testid="healing-portal-upgrade-button" disabled={premium.purchaseLoadingId === "healing_portals"}>
-                        {premium.purchaseLoadingId === "healing_portals" ? "Opening checkout..." : "Unlock Portals"}
                       </Button>
                       <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="healing-portal-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
                         {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : "Unlock Full App"}

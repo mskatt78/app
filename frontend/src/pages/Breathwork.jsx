@@ -33,7 +33,6 @@ const Breathwork = ({ api, user }) => {
     setPremiumFilter(true);
   }, [catalogMode, setPremiumFilter]);
 
-  const premiumProduct = premium.findProduct("premium_breathwork");
   const fullAppProduct = premium.findProduct("full_app_unlock");
 
   const premiumSessionCount = useMemo(
@@ -44,13 +43,6 @@ const Breathwork = ({ api, user }) => {
   const canAccessSession = (session) => {
     if (!session?.is_premium) return true;
     return premiumBreathworkUnlocked;
-  };
-
-  const handleUnlockBreathlove = async () => {
-    await premium.startPurchase({
-      productId: "premium_breathwork",
-      returnPath: "/breathwork",
-    });
   };
 
   const handleUnlockFullApp = async () => {
@@ -107,7 +99,7 @@ const Breathwork = ({ api, user }) => {
                   Heart-coherence + self-love rituals
                 </h2>
                 <p className="text-sm text-muted-foreground mt-1" data-testid="breathwork-premium-banner-description">
-                  {premiumSessionCount} premium Breathlove sessions available. {premiumBreathworkUnlocked ? "Unlocked for your account." : "Unlock instantly to practice now."}
+                  {premiumSessionCount} advanced Breathlove sessions available. {premiumBreathworkUnlocked ? "Unlocked for your account." : "Continue freely first, then upgrade anytime."}
                 </p>
                 <p className="text-xs text-fuchsia-100/70 mt-1" data-testid="breathwork-devotional-note">
                   Breathe as ceremony: regulate first, move at the speed of safety, then embody one real-life integration step.
@@ -133,21 +125,6 @@ const Breathwork = ({ api, user }) => {
                       data-testid="breathwork-view-subscription-button"
                     >
                       View Subscription
-                    </Button>
-                    <Button
-                      onClick={handleUnlockBreathlove}
-                      className="bg-fuchsia-500 hover:bg-fuchsia-600"
-                      data-testid="breathwork-unlock-premium-button"
-                      disabled={premium.purchaseLoadingId === "premium_breathwork" || premium.loading}
-                    >
-                      {premium.purchaseLoadingId === "premium_breathwork" ? (
-                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</>
-                      ) : (
-                        <>
-                          <Sparkles className="w-4 h-4 mr-2" />
-                          Unlock ${premiumProduct?.price?.toFixed(2) || "44.00"}
-                        </>
-                      )}
                     </Button>
                     <Button
                       variant="outline"
@@ -206,7 +183,7 @@ const Breathwork = ({ api, user }) => {
             >
               <h3 className="text-2xl font-serif mb-2" data-testid="breathwork-premium-lock-title">{selectedLockedSession.name}</h3>
               <p className="text-sm text-muted-foreground mb-4" data-testid="breathwork-premium-lock-description">
-                This is a Premium Breathlove ritual. Unlock section access for immediate in-session use.
+                This is a Premium Breathlove ritual. Continue with subscription or full app access.
               </p>
               <div className="flex gap-2">
                 <Button
@@ -216,14 +193,6 @@ const Breathwork = ({ api, user }) => {
                   data-testid="breathwork-premium-lock-subscription-button"
                 >
                   Subscription
-                </Button>
-                <Button
-                  onClick={handleUnlockBreathlove}
-                  className="flex-1 bg-fuchsia-500 hover:bg-fuchsia-600"
-                  data-testid="breathwork-premium-lock-unlock-button"
-                  disabled={premium.purchaseLoadingId === "premium_breathwork"}
-                >
-                  {premium.purchaseLoadingId === "premium_breathwork" ? "Opening checkout..." : `Unlock ${premiumProduct?.price?.toFixed(2) || "44.00"}`}
                 </Button>
                 <Button
                   onClick={handleUnlockFullApp}
