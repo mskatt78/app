@@ -67,6 +67,32 @@
 - Retreat cleanup: PASS
 - Deployment blockers found by testing agent: **none**
 
+## Latest Verification Snapshot (Iteration 236/237 — 2026-06-28)
+- ✅ App-wide monetization normalization completed:
+  - All main content section endpoints now return **exactly 14 items** with **4 free + 10 premium**.
+  - Implemented centralized tier expansion in `backend/routers/content.py` so underfilled sections are expanded to consistent storefront depth.
+- ✅ Pricing page simplified to one location with two options only:
+  - `monthly` subscription
+  - `full_app_unlock` lifetime access
+  - Verified via `/api/payments/plans` and `/pricing` UI.
+- ✅ Admin privacy tightened to owner-only (`mskatt78@gmail.com`):
+  - Updated frontend admin visibility checks and env allowlist.
+  - Updated backend env allowlist for admin-restricted flows.
+- ✅ Oracle wording cleanup:
+  - Removed AI term from Oracle-related user copy and Oracle route language references.
+- ✅ Requested copy polish completed:
+  - Meditations banner title updated to "Meditations remain open".
+  - Removed "Sacred Art Premium" header from Creative Processes premium banner.
+- ✅ Regression/testing status:
+  - `testing_agent` iteration 236: backend and frontend both PASS.
+  - `deep_testing_backend_v2`: PASS across 23 content endpoints + pricing + retreats + expand-script floor.
+  - `auto_frontend_testing_agent`: PASS on pricing, oracle wording, healing portals, elemental temples, and lock/free flows.
+
+### Prioritized Remaining Backlog
+- **P1:** Final content quality pass on synthetic deepening variants for tonal uniqueness (if desired by owner).
+- **P1:** Final app-store submission checklist pack (icons/screenshots/legal copy review).
+- **P2:** Optional Sacred Journey Progress tracker and completion telemetry.
+
 ## Latest Verification Snapshot (Iteration 132)
 - Backend complexity cleanup regression: PASS (14/14)
 - Frontend hook/key cleanup regression: PASS (100%)
