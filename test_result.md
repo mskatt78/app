@@ -10623,3 +10623,19 @@ agent_communication:
 agent_communication:
   - agent: "testing"
     message: "FINAL BACKEND VALIDATION COMPLETE (2026-06-28): Comprehensive backend testing completed on preview deployment https://breathwork-sanctuary.preview.emergentagent.com. ALL 16 BACKEND TESTS PASSED: 1) API counts and tiering expectations verified for 12 endpoints (yoga/poses, somatic, breathwork/sessions, meditations, mindfulness, mantras, water-practices, heart-practices, sacred-ally-alchemy, angelic-alchemy, sacred-guardians, ancient-wisdom) - all counts and free/premium splits match exact requirements ✓. 2) Creative processes API verified with premium flags, earth-crafting entries (4), sacred-tool-birthing entries (4), and both category filters working correctly ✓. 3) Oracle cards coyote image verified as correct coyote image URL (not flower) ✓. FRONTEND TESTING NOT PERFORMED: Items 3-5 from review request (frontend lock behavior, crystal images, main menu navigation) are frontend-only tests and outside testing agent scope per system instructions. Main agent should verify these frontend aspects or request user validation."
+
+  - task: "Divination image corrections - Final visual sanity pass"
+    implemented: true
+    working: "partial"
+    file: "/app/frontend/src/pages/OracleReadings.jsx, /app/frontend/src/pages/TarotReading.jsx, /app/frontend/src/pages/RuneReadings.jsx, /app/frontend/src/pages/IChing.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "partial"
+        agent: "testing"
+        comment: "✅ DIVINATION IMAGE VERIFICATION COMPLETE (2026-06-28): Final visual sanity pass completed on 4 divination pages. RESULTS: 1) ❌ /oracle - Page loads but cards not appearing after draw button click in automated test. API verified working via curl (returns valid card with image_url). Console shows 401 errors for /api/oracle/readings (past readings endpoint requires auth). Guest endpoint /api/oracle/reading/guest works correctly. Issue: Cards not rendering in browser after API call - needs investigation. 2) ✅ /tarot - PASS. 22 gallery cards with images visible ✓. Card modal image visible ✓. Reading cards display images ✓. All image requirements met. 3) ✅ /rune-readings - PASS. Rune spread cards render with images visible ✓. Detail modal image visible ✓. All image requirements met. 4) ✅ /i-ching - PASS. Result card image visible ✓. Hexagram modal grid shows 8 hexagrams with images visible ✓. All image requirements met. SUMMARY: 3/4 pages PASS, 1/4 page has rendering issue (oracle cards not appearing). Coyote card image check: Cannot verify without multiple draws (random). All tested images using correct URLs (not fallback pexels images except I-Ching which uses pexels intentionally)."
+
+agent_communication:
+  - agent: "testing"
+    message: "DIVINATION IMAGE VERIFICATION COMPLETE (2026-06-28): Final visual sanity pass completed on divination pages as requested. PASS: Tarot (/tarot) - Gallery images visible, card modal images visible, reading card images visible. PASS: Runes (/rune-readings) - Spread card images visible, detail modal images visible. PASS: I-Ching (/i-ching) - Result card image visible, hexagram modal grid images visible (8 hexagrams). ISSUE: Oracle (/oracle) - Page loads but cards not rendering after draw button click. API verified working (curl test successful), but frontend not displaying cards. Console shows 401 errors for past readings endpoint (expected for unauthenticated). Recommend main agent investigate oracle card rendering issue - possible timing/state management problem."
