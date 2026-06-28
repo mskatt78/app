@@ -1,327 +1,378 @@
 #!/usr/bin/env python3
 """
-Backend Regression Test Suite for Breathwork Sanctuary
-Focus: Tiering consistency (23 endpoints), pricing plans, retreats cleanup, narration floor, stability
-Updated: 2026-06-29 - Final tiering enhancement validation
+Backend API Verification Script
+Tests exact counts, free/premium splits, and field requirements
 """
 
 import requests
 import json
-from typing import Dict, List, Any
-import sys
+from typing import Dict, List, Any, Tuple
 
 BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
 
-class TestResults:
-    def __init__(self):
-        self.passed = []
-        self.failed = []
-        self.warnings = []
-    
-    def add_pass(self, test_name: str, details: str = ""):
-        self.passed.append(f"✅ {test_name}: {details}")
-    
-    def add_fail(self, test_name: str, details: str):
-        self.failed.append(f"❌ {test_name}: {details}")
-    
-    def add_warning(self, test_name: str, details: str):
-        self.warnings.append(f"⚠️  {test_name}: {details}")
-    
-    def print_summary(self):
-        print("\n" + "="*80)
-        print("BACKEND REGRESSION TEST SUMMARY")
-        print("="*80)
-        
-        if self.failed:
-            print("\n🔴 FAILED TESTS:")
-            for fail in self.failed:
-                print(f"  {fail}")
-        
-        if self.warnings:
-            print("\n🟡 WARNINGS:")
-            for warn in self.warnings:
-                print(f"  {warn}")
-        
-        if self.passed:
-            print("\n🟢 PASSED TESTS:")
-            for pass_test in self.passed:
-                print(f"  {pass_test}")
-        
-        print("\n" + "="*80)
-        print(f"TOTAL: {len(self.passed)} passed, {len(self.failed)} failed, {len(self.warnings)} warnings")
-        print("="*80)
-        
-        return len(self.failed) == 0
+class Colors:
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    END = '\033[0m'
 
-results = TestResults()
+def print_pass(msg: str):
+    print(f"{Colors.GREEN}✓ {msg}{Colors.END}")
 
-def test_tiering_consistency(endpoint: str, expected_total: int, expected_free: int, expected_premium: int):
-    """Test tiering consistency for a given endpoint"""
-    test_name = f"Tiering: {endpoint}"
+def print_fail(msg: str):
+    print(f"{Colors.RED}✗ {msg}{Colors.END}")
+
+def print_info(msg: str):
+    print(f"{Colors.BLUE}ℹ {msg}{Colors.END}")
+
+def print_warn(msg: str):
+    print(f"{Colors.YELLOW}⚠ {msg}{Colors.END}")
+
+def test_endpoint_count_and_split(endpoint: str, expected_total: int = 14, expected_free: int = 4, expected_premium: int = 10) -> Tuple[bool, Dict[str, Any]]:
+    """Test endpoint returns exact count with correct free/premium split"""
+    url = f"{BASE_URL}{endpoint}"
+    print_info(f"Testing: {endpoint}")
+    
+    # Define the 5 main light code categories (excluding metadata categories)
+    main_light_code_categories = ['sacred_geometry', 'ancient_alphabets', 'light_language_symbols', 'galactic_codes', 'chakra_codes']
     
     try:
-        response = requests.get(f"{BASE_URL}{endpoint}", timeout=10)
+        response = requests.get(url, timeout=10)
+        
+        if response.status_code == 500:
+            print_fail(f"500 error on {endpoint}")
+            return False, {"error": "500 error", "endpoint": endpoint}
         
         if response.status_code != 200:
-            results.add_fail(test_name, f"HTTP {response.status_code} (expected 200)")
-            return
+            print_warn(f"Non-200 status: {response.status_code} on {endpoint}")
+            return False, {"error": f"Status {response.status_code}", "endpoint": endpoint}
         
         data = response.json()
         
         # Handle different response structures
         if isinstance(data, dict):
-            items = data.get('items') or data.get('practices') or data.get('sessions') or []
+            # Check for common list keys
+            items = data.get('items') or data.get('data') or data.get('results') or []
+            if not items and len(data) > 0:
+                # Might be a dict of categories
+                items = data
         else:
             items = data
         
-        total_count = len(items)
-        free_count = sum(1 for item in items if not item.get('is_premium', False))
-        premium_count = sum(1 for item in items if item.get('is_premium', False))
-        
-        # Check if counts match expectations
-        issues = []
-        if total_count != expected_total:
-            issues.append(f"total={total_count} (expected {expected_total})")
-        if free_count != expected_free:
-            issues.append(f"free={free_count} (expected {expected_free})")
-        if premium_count != expected_premium:
-            issues.append(f"premium={premium_count} (expected {expected_premium})")
-        
-        if issues:
-            results.add_fail(test_name, ", ".join(issues))
+        # Count items
+        if isinstance(items, list):
+            total_count = len(items)
+            free_count = sum(1 for item in items if isinstance(item, dict) and not item.get('is_premium', False))
+            premium_count = sum(1 for item in items if isinstance(item, dict) and item.get('is_premium', False))
+        elif isinstance(items, dict):
+            # For category-based responses (like light-codes)
+            total_count = 0
+            free_count = 0
+            premium_count = 0
+            for cat_name, category_items in items.items():
+                # For /light-codes endpoint, only count main categories
+                if endpoint == '/light-codes' and cat_name not in main_light_code_categories:
+                    continue
+                if isinstance(category_items, list):
+                    # Only count items that are dicts (not metadata strings)
+                    dict_items = [item for item in category_items if isinstance(item, dict)]
+                    total_count += len(dict_items)
+                    free_count += sum(1 for item in dict_items if not item.get('is_premium', False))
+                    premium_count += sum(1 for item in dict_items if item.get('is_premium', False))
         else:
-            results.add_pass(test_name, f"14 items: 4 free + 10 premium ✓")
+            print_fail(f"Unexpected data structure on {endpoint}")
+            return False, {"error": "Unexpected structure", "endpoint": endpoint}
+        
+        # Validate counts
+        count_pass = total_count == expected_total
+        free_pass = free_count == expected_free
+        premium_pass = premium_count == expected_premium
+        
+        if count_pass and free_pass and premium_pass:
+            print_pass(f"{endpoint}: {total_count} items ({free_count} free + {premium_count} premium)")
+            return True, {"total": total_count, "free": free_count, "premium": premium_count, "data": data}
+        else:
+            print_fail(f"{endpoint}: Expected {expected_total} ({expected_free} free + {expected_premium} premium), got {total_count} ({free_count} free + {premium_count} premium)")
+            return False, {"total": total_count, "free": free_count, "premium": premium_count, "expected_total": expected_total, "expected_free": expected_free, "expected_premium": expected_premium}
     
     except requests.exceptions.RequestException as e:
-        results.add_fail(test_name, f"Request error: {str(e)}")
+        print_fail(f"Request error on {endpoint}: {str(e)}")
+        return False, {"error": str(e), "endpoint": endpoint}
     except Exception as e:
-        results.add_fail(test_name, f"Unexpected error: {str(e)}")
+        print_fail(f"Unexpected error on {endpoint}: {str(e)}")
+        return False, {"error": str(e), "endpoint": endpoint}
 
-def test_pricing_plans():
-    """Test pricing plans endpoint"""
-    test_name = "Pricing Plans"
+def test_sacred_tool_birthing_fields() -> Tuple[bool, Dict[str, Any]]:
+    """Test sacred tool birthing entries include ceremonial + ethical fields"""
+    endpoint = "/creative-processes?category=sacred-tool-birthing"
+    url = f"{BASE_URL}{endpoint}"
+    print_info(f"Testing sacred tool birthing fields: {endpoint}")
     
     try:
-        response = requests.get(f"{BASE_URL}/payments/plans", timeout=10)
+        response = requests.get(url, timeout=10)
+        
+        if response.status_code == 500:
+            print_fail(f"500 error on {endpoint}")
+            return False, {"error": "500 error"}
         
         if response.status_code != 200:
-            results.add_fail(test_name, f"HTTP {response.status_code} (expected 200)")
-            return
+            print_warn(f"Non-200 status: {response.status_code}")
+            return False, {"error": f"Status {response.status_code}"}
         
         data = response.json()
+        items = data if isinstance(data, list) else data.get('items', [])
         
-        # Extract plans
-        plans = data.get('plans', []) if isinstance(data, dict) else data
+        if not items:
+            print_fail("No items returned")
+            return False, {"error": "No items"}
         
-        if len(plans) != 2:
-            results.add_fail(test_name, f"Found {len(plans)} plans (expected exactly 2)")
-            return
+        # Check required fields in all items
+        required_fields = ['ethical_materials', 'ceremony', 'ritual', 'guided_practice']
+        missing_fields = []
+        items_checked = 0
         
-        # Check for monthly and full_app_unlock plans
-        plan_ids = [p.get('id') or p.get('plan_id') for p in plans]
+        for item in items:
+            items_checked += 1
+            for field in required_fields:
+                if field not in item:
+                    missing_fields.append(f"Item {item.get('id', 'unknown')}: missing '{field}'")
         
-        has_monthly = 'monthly' in plan_ids
-        has_lifetime = 'full_app_unlock' in plan_ids
-        
-        if not has_monthly:
-            results.add_fail(test_name, "Missing 'monthly' plan")
-            return
-        
-        if not has_lifetime:
-            results.add_fail(test_name, "Missing 'full_app_unlock' plan")
-            return
-        
-        # Validate price values exist and are usable
-        issues = []
-        for plan in plans:
-            plan_id = plan.get('id') or plan.get('plan_id')
-            price = plan.get('price') or plan.get('amount')
-            
-            if price is None:
-                issues.append(f"{plan_id} missing price")
-            elif not isinstance(price, (int, float)):
-                issues.append(f"{plan_id} price not numeric: {type(price)}")
-        
-        if issues:
-            results.add_fail(test_name, ", ".join(issues))
+        if missing_fields:
+            print_fail(f"Missing required fields in {len(missing_fields)} cases:")
+            for missing in missing_fields[:5]:  # Show first 5
+                print(f"  - {missing}")
+            return False, {"missing_fields": missing_fields, "items_checked": items_checked}
         else:
-            results.add_pass(test_name, "2 plans (monthly + full_app_unlock) with valid prices ✓")
+            print_pass(f"All {items_checked} items have required ceremonial + ethical fields")
+            return True, {"items_checked": items_checked, "fields_verified": required_fields}
     
-    except requests.exceptions.RequestException as e:
-        results.add_fail(test_name, f"Request error: {str(e)}")
     except Exception as e:
-        results.add_fail(test_name, f"Unexpected error: {str(e)}")
+        print_fail(f"Error: {str(e)}")
+        return False, {"error": str(e)}
 
-def test_retreats_cleanup():
-    """Test retreats endpoint returns empty list"""
-    test_name = "Retreats Cleanup"
-    
-    try:
-        response = requests.get(f"{BASE_URL}/retreats", timeout=10)
-        
-        if response.status_code != 200:
-            results.add_fail(test_name, f"HTTP {response.status_code} (expected 200)")
-            return
-        
-        data = response.json()
-        
-        # Handle different response structures
-        if isinstance(data, dict):
-            retreats = data.get('retreats') or data.get('items') or []
-        else:
-            retreats = data
-        
-        if len(retreats) > 0:
-            results.add_fail(test_name, f"Found {len(retreats)} retreats (expected empty list)")
-        else:
-            results.add_pass(test_name, "Empty list ✓")
-    
-    except requests.exceptions.RequestException as e:
-        results.add_fail(test_name, f"Request error: {str(e)}")
-    except Exception as e:
-        results.add_fail(test_name, f"Unexpected error: {str(e)}")
-
-def test_guided_narration_floor():
-    """Test guided narration meets 7-minute floor"""
-    test_name = "Guided Narration Floor (7 min)"
-    
-    try:
-        payload = {
-            "practice_name": "Test Practice",
-            "target_minutes": 7,
-            "use_ai": False
-        }
-        
-        response = requests.post(
-            f"{BASE_URL}/content/expand-script",
-            json=payload,
-            timeout=15
-        )
-        
-        if response.status_code != 200:
-            results.add_fail(test_name, f"HTTP {response.status_code} (expected 200)")
-            return
-        
-        data = response.json()
-        
-        # Check required fields
-        target_minutes = data.get('target_minutes')
-        word_count = data.get('word_count')
-        segments = data.get('segments', [])
-        
-        if target_minutes != 7:
-            results.add_fail(test_name, f"target_minutes={target_minutes} (expected 7)")
-            return
-        
-        # Calculate minimum word count for 7 minutes (120 words per minute)
-        min_word_count = 7 * 120  # 840 words
-        
-        issues = []
-        if word_count is None:
-            issues.append("word_count missing")
-        elif word_count < min_word_count:
-            issues.append(f"word_count={word_count} < {min_word_count} (7min floor)")
-        
-        if not segments or len(segments) == 0:
-            issues.append("segments empty")
-        
-        if issues:
-            results.add_fail(test_name, ", ".join(issues))
-        else:
-            results.add_pass(test_name, f"word_count={word_count} >= {min_word_count}, segments non-empty ✓")
-    
-    except requests.exceptions.RequestException as e:
-        results.add_fail(test_name, f"Request error: {str(e)}")
-    except Exception as e:
-        results.add_fail(test_name, f"Unexpected error: {str(e)}")
-
-def test_general_stability():
-    """Test general stability - no 500s on key endpoints"""
-    test_name = "General Stability (No 500s)"
-    
-    endpoints_to_test = [
-        "/health",
-        "/meditations",
-        "/breathwork/sessions",
-        "/mantras",
-        "/mindfulness-practices",
-        "/heart-practices",
-        "/shamanic-practices",
-        "/creative-processes",
-        "/energy-healing",
-        "/water-practices",
-        "/payments/plans",
-        "/retreats"
+def test_light_code_ceremonial_fields() -> Tuple[bool, Dict[str, Any]]:
+    """Test light code category endpoints include ceremonial enrichment fields"""
+    categories = [
+        '/light-codes',
+        '/light-codes/sacred-geometry',
+        '/light-codes/ancient-alphabets',
+        '/light-codes/light-language'
     ]
     
+    required_fields = ['embodiment_ritual', 'light_coded_symbols', 'ceremony']
+    all_passed = True
+    results = {}
+    
+    # Define the 5 main light code categories (excluding metadata categories)
+    main_light_code_categories = ['sacred_geometry', 'ancient_alphabets', 'light_language_symbols', 'galactic_codes', 'chakra_codes']
+    
+    for endpoint in categories:
+        url = f"{BASE_URL}{endpoint}"
+        print_info(f"Testing light code ceremonial fields: {endpoint}")
+        
+        try:
+            response = requests.get(url, timeout=10)
+            
+            if response.status_code == 500:
+                print_fail(f"500 error on {endpoint}")
+                all_passed = False
+                results[endpoint] = {"error": "500 error"}
+                continue
+            
+            if response.status_code != 200:
+                print_warn(f"Non-200 status: {response.status_code}")
+                all_passed = False
+                results[endpoint] = {"error": f"Status {response.status_code}"}
+                continue
+            
+            data = response.json()
+            
+            # Handle different structures
+            items = []
+            if isinstance(data, list):
+                items = data
+            elif isinstance(data, dict):
+                # For /light-codes which returns categories
+                for cat_name, category_items in data.items():
+                    # Only check main light code categories, skip metadata categories
+                    if endpoint == '/light-codes' and cat_name not in main_light_code_categories:
+                        continue
+                    if isinstance(category_items, list):
+                        # Only include dict items (not metadata strings)
+                        dict_items = [item for item in category_items if isinstance(item, dict)]
+                        items.extend(dict_items)
+            
+            if not items:
+                print_fail(f"No items returned from {endpoint}")
+                all_passed = False
+                results[endpoint] = {"error": "No items"}
+                continue
+            
+            # Check required fields
+            missing_fields = []
+            items_checked = 0
+            
+            for item in items:
+                items_checked += 1
+                for field in required_fields:
+                    if field not in item:
+                        missing_fields.append(f"Item {item.get('id', 'unknown')}: missing '{field}'")
+            
+            if missing_fields:
+                print_fail(f"{endpoint}: Missing required fields in {len(missing_fields)} cases")
+                for missing in missing_fields[:3]:  # Show first 3
+                    print(f"  - {missing}")
+                all_passed = False
+                results[endpoint] = {"missing_fields": missing_fields, "items_checked": items_checked}
+            else:
+                print_pass(f"{endpoint}: All {items_checked} items have ceremonial enrichment fields")
+                results[endpoint] = {"items_checked": items_checked, "fields_verified": required_fields}
+        
+        except Exception as e:
+            print_fail(f"Error on {endpoint}: {str(e)}")
+            all_passed = False
+            results[endpoint] = {"error": str(e)}
+    
+    return all_passed, results
+
+def test_no_500_errors() -> Tuple[bool, List[str]]:
+    """Test all specified endpoints return no 500 errors"""
+    endpoints = [
+        '/creative-processes?category=sacred-tool-birthing',
+        '/light-codes',
+        '/light-codes/sacred-geometry',
+        '/light-codes/ancient-alphabets',
+        '/light-codes/light-language',
+        '/runes',
+        '/i-ching',
+        '/tarot/cards',
+        '/crystals/deep',
+        '/free-form-movement',
+        '/somatic-yoga',
+        '/earth-altars'
+    ]
+    
+    print_info("Testing for 500 errors across all endpoints...")
     errors_500 = []
     
-    for endpoint in endpoints_to_test:
+    for endpoint in endpoints:
+        url = f"{BASE_URL}{endpoint}"
         try:
-            response = requests.get(f"{BASE_URL}{endpoint}", timeout=10)
+            response = requests.get(url, timeout=10)
             if response.status_code == 500:
-                errors_500.append(f"{endpoint} returned 500")
-        except requests.exceptions.RequestException as e:
-            results.add_warning(test_name, f"{endpoint} request failed: {str(e)}")
+                errors_500.append(endpoint)
+                print_fail(f"500 error: {endpoint}")
+            else:
+                print_pass(f"No 500: {endpoint} (status: {response.status_code})")
+        except Exception as e:
+            print_warn(f"Request error on {endpoint}: {str(e)}")
     
     if errors_500:
-        results.add_fail(test_name, ", ".join(errors_500))
+        print_fail(f"Found {len(errors_500)} endpoints with 500 errors")
+        return False, errors_500
     else:
-        results.add_pass(test_name, f"All {len(endpoints_to_test)} endpoints returned non-500 status ✓")
+        print_pass("No 500 errors detected on any tested endpoint")
+        return True, []
 
 def main():
-    print("="*80)
-    print("BACKEND REGRESSION TEST - BREATHWORK SANCTUARY")
-    print("="*80)
-    print(f"Base URL: {BASE_URL}")
-    print("="*80)
+    print("\n" + "="*80)
+    print("BACKEND API VERIFICATION - FINAL REQUEST")
+    print("="*80 + "\n")
     
-    # Test 1: Tiering consistency for ALL 23 section endpoints
-    print("\n[1/5] Testing tiering consistency (23 endpoints)...")
-    test_tiering_consistency("/yoga/poses", 14, 4, 10)
-    test_tiering_consistency("/breathwork/sessions", 14, 4, 10)
-    test_tiering_consistency("/mantras", 14, 4, 10)
-    test_tiering_consistency("/mindfulness-practices", 14, 4, 10)
-    test_tiering_consistency("/meditations", 14, 4, 10)
-    test_tiering_consistency("/somatic", 14, 4, 10)
-    test_tiering_consistency("/grounding", 14, 4, 10)
-    test_tiering_consistency("/heart-practices", 14, 4, 10)
-    test_tiering_consistency("/shamanic-practices", 14, 4, 10)
-    test_tiering_consistency("/elemental-practices", 14, 4, 10)
-    test_tiering_consistency("/creative-processes", 14, 4, 10)
-    test_tiering_consistency("/sacred-guardians", 14, 4, 10)
-    test_tiering_consistency("/sacred-ally-alchemy", 14, 4, 10)
-    test_tiering_consistency("/angelic-alchemy", 14, 4, 10)
-    test_tiering_consistency("/healing-portals", 14, 4, 10)
-    test_tiering_consistency("/ancient-wisdom", 14, 4, 10)
-    test_tiering_consistency("/sound-frequencies", 14, 4, 10)
-    test_tiering_consistency("/energy-healing", 14, 4, 10)
-    test_tiering_consistency("/chakra-cleansing", 14, 4, 10)
-    test_tiering_consistency("/feminine-embodiment", 14, 4, 10)
-    test_tiering_consistency("/masculine-embodiment", 14, 4, 10)
-    test_tiering_consistency("/elemental-temples", 14, 4, 10)
-    test_tiering_consistency("/water-practices", 14, 4, 10)
+    results = {
+        "passed": [],
+        "failed": []
+    }
     
-    # Test 2: Pricing plans
-    print("\n[2/5] Testing pricing plans...")
-    test_pricing_plans()
+    # Test 1: Count and split validation for all endpoints
+    print("\n" + "-"*80)
+    print("TEST 1: Exact 14-count + 4 free / 10 premium validation")
+    print("-"*80 + "\n")
     
-    # Test 3: Retreats cleanup
-    print("\n[3/5] Testing retreats cleanup...")
-    test_retreats_cleanup()
+    endpoints_to_test = [
+        '/creative-processes?category=sacred-tool-birthing',
+        '/light-codes/sacred-geometry',
+        '/light-codes/ancient-alphabets',
+        '/light-codes/light-language',
+        '/runes',
+        '/i-ching',
+        '/tarot/cards',
+        '/crystals/deep',
+        '/free-form-movement',
+        '/somatic-yoga',
+        '/earth-altars'
+    ]
     
-    # Test 4: Guided narration floor
-    print("\n[4/5] Testing guided narration floor...")
-    test_guided_narration_floor()
+    for endpoint in endpoints_to_test:
+        passed, data = test_endpoint_count_and_split(endpoint)
+        if passed:
+            results["passed"].append(f"Count validation: {endpoint}")
+        else:
+            results["failed"].append(f"Count validation: {endpoint} - {data}")
     
-    # Test 5: General stability
-    print("\n[5/5] Testing general stability...")
-    test_general_stability()
+    # Test /light-codes separately (returns all 5 categories)
+    print_info("Testing /light-codes (all 5 categories combined)")
+    passed, data = test_endpoint_count_and_split('/light-codes', expected_total=70, expected_free=20, expected_premium=50)
+    if passed:
+        results["passed"].append("Count validation: /light-codes (all categories)")
+    else:
+        results["failed"].append(f"Count validation: /light-codes - {data}")
     
-    # Print summary
-    success = results.print_summary()
+    # Test 2: Sacred tool birthing ceremonial + ethical fields
+    print("\n" + "-"*80)
+    print("TEST 2: Sacred tool birthing ceremonial + ethical fields")
+    print("-"*80 + "\n")
     
-    sys.exit(0 if success else 1)
+    passed, data = test_sacred_tool_birthing_fields()
+    if passed:
+        results["passed"].append("Sacred tool birthing fields validation")
+    else:
+        results["failed"].append(f"Sacred tool birthing fields - {data}")
+    
+    # Test 3: Light code ceremonial enrichment fields
+    print("\n" + "-"*80)
+    print("TEST 3: Light code ceremonial enrichment fields")
+    print("-"*80 + "\n")
+    
+    passed, data = test_light_code_ceremonial_fields()
+    if passed:
+        results["passed"].append("Light code ceremonial fields validation")
+    else:
+        results["failed"].append(f"Light code ceremonial fields - {data}")
+    
+    # Test 4: No 500 errors
+    print("\n" + "-"*80)
+    print("TEST 4: No 500 errors on tested endpoints")
+    print("-"*80 + "\n")
+    
+    passed, errors = test_no_500_errors()
+    if passed:
+        results["passed"].append("No 500 errors validation")
+    else:
+        results["failed"].append(f"500 errors found on: {errors}")
+    
+    # Summary
+    print("\n" + "="*80)
+    print("SUMMARY")
+    print("="*80 + "\n")
+    
+    print(f"{Colors.GREEN}PASSED: {len(results['passed'])}{Colors.END}")
+    for item in results["passed"]:
+        print(f"  ✓ {item}")
+    
+    print(f"\n{Colors.RED}FAILED: {len(results['failed'])}{Colors.END}")
+    for item in results["failed"]:
+        print(f"  ✗ {item}")
+    
+    print("\n" + "="*80 + "\n")
+    
+    if len(results["failed"]) == 0:
+        print(f"{Colors.GREEN}ALL TESTS PASSED ✓{Colors.END}\n")
+        return 0
+    else:
+        print(f"{Colors.RED}SOME TESTS FAILED ✗{Colors.END}\n")
+        return 1
 
 if __name__ == "__main__":
-    main()
+    exit(main())
