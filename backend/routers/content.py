@@ -2356,6 +2356,43 @@ def _enrich_immersive_ritual_fields(item: dict[str, Any], domain: str) -> dict[s
     enriched.setdefault("ceremonies", final_ceremony)
     enriched.setdefault("practice", final_guided)
 
+    # Ensure rich voice/script-ready fields exist so frontend guided audio can produce
+    # longer, deeply embodied narration consistently across sections.
+    enriched.setdefault(
+        "voice_script",
+        "\n".join([
+            f"Welcome to {practice_name}. Enter slowly, with consent and reverence.",
+            *final_ceremony,
+            *final_ritual,
+            *final_guided,
+            "Close by naming one embodied action you will complete within 24 hours.",
+        ])
+    )
+    enriched.setdefault("embodiment", final_guided)
+    enriched.setdefault("embodiment_prompts", final_guided)
+    enriched.setdefault("ritual_practice", final_ritual)
+    enriched.setdefault("healing_trajectory", final_alchemy)
+    enriched.setdefault(
+        "precision_description",
+        f"{practice_name} is structured as an immersive {domain_label} ritual with somatic tracking, paced breath, and grounded integration.",
+    )
+    enriched.setdefault(
+        "nervous_system_cues",
+        [
+            "Soften jaw, tongue, and shoulders before each phase.",
+            "Lengthen exhale whenever activation rises.",
+            "Pause if intensity exceeds your consent window, then re-enter gently.",
+        ],
+    )
+    enriched.setdefault(
+        "integration_actions",
+        [
+            "Drink water and orient to your physical environment.",
+            "Journal one insight and one embodied next step.",
+            "Complete one practical action that expresses this medicine today.",
+        ],
+    )
+
     return enriched
 
 
@@ -4819,7 +4856,13 @@ async def get_creative_processes(category: Optional[str] = None) -> list[dict[st
     
     processes = await db.creative_processes.find(query, {"_id": 0}).to_list(length=50)
     processes = _append_earth_crafting_supplements(processes, category)
-    enriched = [_enrich_devotional_language(_enrich_content_integrity(process, "hybrid-curated"), "courses") for process in processes]
+    enriched = [
+        _enrich_devotional_language(
+            _enrich_content_integrity(process, "hybrid-curated"),
+            "courses",
+        )
+        for process in processes
+    ]
     return _apply_free_paid_tiering(enriched, "sacred_art_therapy")
 
 
@@ -5795,7 +5838,13 @@ async def get_energy_healing(modality: Optional[str] = None) -> list[dict[str, A
         query["modality"] = {"$regex": f"^{modality}$", "$options": "i"}
     practices = await db.energy_healing.find(query, {"_id": 0}).to_list(length=500)
     practices = _append_energy_healing_supplements(practices, modality)
-    enriched = [_enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated") for practice in practices]
+    enriched = [
+        _enrich_devotional_language(
+            _enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated"),
+            "healing-portals",
+        )
+        for practice in practices
+    ]
     return _apply_free_paid_tiering(enriched, "energy_healing")
 
 
@@ -5805,7 +5854,10 @@ async def get_energy_healing_practice(practice_id: str) -> dict[str, Any]:
     practice = await db.energy_healing.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Practice not found")
-    return _enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated")
+    return _enrich_devotional_language(
+        _enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated"),
+        "healing-portals",
+    )
 
 
 # ============ FREE FORM MOVEMENT ROUTES ============

@@ -10,6 +10,8 @@ import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import GuidedAudioButton from "../components/GuidedAudioButton";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
 
 const categoryIcons = {
   visual: Palette,
@@ -73,6 +75,48 @@ function buildPractice(process) {
     steps,
   };
 }
+
+const toList = (value) => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.filter(Boolean).map((v) => String(v).trim()).filter(Boolean);
+  return String(value)
+    .split(/\n|•|\.|;/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 8);
+};
+
+const buildCreativeImmersiveScript = (process) => composeDeepGuidedNarration({
+  title: process?.name || "Creative Ritual",
+  element: process?.element || "Spirit",
+  description: process?.precision_description || process?.description,
+  teachings: [
+    ...(toList(process?.alchemy)),
+    ...(toList(process?.healing_trajectory)),
+    ...(toList(process?.why_this_heals)),
+    ...(toList(process?.spiritual_purpose)),
+  ],
+  rituals: [
+    ...(toList(process?.ritual)),
+    ...(toList(process?.ritual_practice)),
+    ...(toList(process?.process_steps)),
+    ...(toList(process?.practice)),
+  ],
+  ceremonies: [
+    ...(toList(process?.ceremony)),
+    ...(toList(process?.ceremonies)),
+  ],
+  embodiment: [
+    ...(toList(process?.embodiment)),
+    ...(toList(process?.embodiment_prompts)),
+    ...ritualDeliveryPillars,
+  ],
+  integration: [
+    ...(toList(process?.integration_actions)),
+    ...(toList(process?.therapeutic_benefits)),
+  ],
+  invocation: process?.devotional_invocation,
+  closing: process?.integration_vow,
+});
 
 const CreativeProcesses = ({ user, api }) => {
   const stableProcessKey = (prefix, value) => {
@@ -420,6 +464,32 @@ const CreativeProcesses = ({ user, api }) => {
                             </div>
                           </div>
                         )}
+
+                        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4" data-testid="creative-guided-voice-panel">
+                          <p className="text-xs uppercase tracking-wider text-primary/80 mb-1">Immersive Guided Voice</p>
+                          <p className="text-xs text-muted-foreground mb-3">Play an expanded ceremonial narration with embodiment cues and integration actions.</p>
+                          <GuidedAudioButton
+                            api={api}
+                            script={buildCreativeImmersiveScript(selectedProcess)}
+                            practiceName={selectedProcess.name}
+                            durationMinutes={Math.max(12, Number(selectedProcess.duration_minutes || 18))}
+                            element={selectedProcess.element || "Spirit"}
+                            sourceTexts={[
+                              selectedProcess.description,
+                              selectedProcess.precision_description,
+                              selectedProcess.spiritual_purpose,
+                              selectedProcess.why_this_heals,
+                              ...(toList(selectedProcess.alchemy)),
+                              ...(toList(selectedProcess.ceremony)),
+                            ]}
+                            steps={[
+                              ...(toList(selectedProcess.ritual)),
+                              ...(toList(selectedProcess.process_steps)),
+                              ...(toList(selectedProcess.guided_practice)),
+                            ]}
+                            className="w-full"
+                          />
+                        </div>
                       </>
                     );
                   })()}

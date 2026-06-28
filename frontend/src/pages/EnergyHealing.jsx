@@ -7,6 +7,8 @@ import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtoc
 import { toast } from "sonner";
 import axios from "axios";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import GuidedAudioButton from "../components/GuidedAudioButton";
+import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -19,6 +21,47 @@ const MODALITY_COLORS = {
   quantum: { bg: "bg-blue-500/10", border: "border-blue-500/20", text: "text-blue-400" },
   sound: { bg: "bg-indigo-500/10", border: "border-indigo-500/20", text: "text-indigo-400" },
 };
+
+const toList = (value) => {
+  if (!value) return [];
+  if (Array.isArray(value)) return value.filter(Boolean).map((v) => String(v).trim()).filter(Boolean);
+  return String(value)
+    .split(/\n|•|\.|;/)
+    .map((line) => line.trim())
+    .filter((line) => line.length > 8);
+};
+
+const buildEnergyImmersiveScript = (practice) => composeDeepGuidedNarration({
+  title: practice?.name || "Energy Healing Ritual",
+  element: practice?.element || practice?.modality || "Spirit",
+  description: practice?.precision_description || practice?.description,
+  teachings: [
+    ...(toList(practice?.alchemy)),
+    ...(toList(practice?.healing_trajectory)),
+    ...(toList(practice?.how_it_works)),
+    ...(toList(practice?.self_healing_guide)),
+  ],
+  rituals: [
+    ...(toList(practice?.ritual)),
+    ...(toList(practice?.ritual_practice)),
+    ...(toList(practice?.practice)),
+  ],
+  ceremonies: [
+    ...(toList(practice?.ceremony)),
+    ...(toList(practice?.ceremonies)),
+  ],
+  embodiment: [
+    ...(toList(practice?.embodiment)),
+    ...(toList(practice?.embodiment_prompts)),
+    ...ritualDeliveryPillars,
+  ],
+  integration: [
+    ...(toList(practice?.integration_actions)),
+    ...(toList(practice?.benefits)),
+  ],
+  invocation: practice?.devotional_invocation,
+  closing: practice?.integration_vow,
+});
 
 export default function EnergyHealing() {
   const navigate = useNavigate();
@@ -267,6 +310,32 @@ export default function EnergyHealing() {
                   element={selectedPractice.element || selectedPractice.modality || "Spirit"}
                   testIdPrefix="energy-healing-embodiment"
                 />
+
+                <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mt-4" data-testid="energy-healing-guided-voice-panel">
+                  <p className="text-xs uppercase tracking-wider text-primary/80 mb-1">Immersive Guided Voice</p>
+                  <p className="text-xs text-muted-foreground mb-3">Listen to a deep ceremonial sequence with breath pacing, embodiment cues, and healing integration.</p>
+                  <GuidedAudioButton
+                    api={api}
+                    script={buildEnergyImmersiveScript(selectedPractice)}
+                    practiceName={selectedPractice.name}
+                    durationMinutes={Math.max(14, Number(selectedPractice.duration_minutes || 24))}
+                    element={selectedPractice.element || selectedPractice.modality || "Spirit"}
+                    sourceTexts={[
+                      selectedPractice.description,
+                      selectedPractice.precision_description,
+                      selectedPractice.self_healing_guide,
+                      selectedPractice.how_it_works,
+                      ...(toList(selectedPractice.alchemy)),
+                      ...(toList(selectedPractice.ceremony)),
+                    ]}
+                    steps={[
+                      ...(toList(selectedPractice.ritual)),
+                      ...(toList(selectedPractice.guided_practice)),
+                      ...(toList(selectedPractice.practice)),
+                    ]}
+                    className="w-full"
+                  />
+                </div>
 
                 <Button variant="ghost" onClick={() => setSelectedPractice(null)} className="w-full mt-4">Close</Button>
               </div>
