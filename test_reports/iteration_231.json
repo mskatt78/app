@@ -1,0 +1,86 @@
+{
+  "summary": "Comprehensive testing of premium locks, content counts, and image fixes for iteration 231. All backend tests pass (28/28). Frontend UI tests confirm premium lock behavior, crystal images restored, coyote image fixed, and Earth Crafting menu entry present.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_premium_locks_iteration231.py",
+    "/app/test_reports/pytest/pytest_iteration231.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_premium_locks_iteration231.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "test_credentials": "No credentials required - public routes tested",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All premium lock features verified working: Yoga (4 free/74 premium), Somatic (4 free/35 premium), Sacred Guardians (5 free/32 premium), Sound Frequencies (premium badges visible). Content counts verified: Water practices 17+, Heart practices 15+, Meditations 4+ free, Mindfulness 5+ free, Mantras 11+ free. Creative processes includes earth-crafting and sacred-tool-birthing categories. Coyote card has proper coyote image URL. Crystal images restored (0 missing). Partner yoga has trust ritual block. Sunrise/sunset has depth cards, why-this-heals, and integration blocks.",
+  "test_results_detail": {
+    "yoga_library": {
+      "total_poses": 78,
+      "free_poses": 4,
+      "premium_poses": 74,
+      "premium_banner": true,
+      "premium_lock_modal": true
+    },
+    "somatic_movement": {
+      "total_practices": 39,
+      "free_practices": 4,
+      "premium_practices": 35,
+      "premium_banner": true,
+      "premium_lock_modal": true
+    },
+    "sacred_guardians": {
+      "total_guardians": 37,
+      "free_guardians": 5,
+      "premium_guardians": 32,
+      "premium_banner": true,
+      "premium_lock_modal": true
+    },
+    "sound_frequencies": {
+      "premium_badges": 13,
+      "premium_banner": true
+    },
+    "creative_processes": {
+      "earth_crafting_items": 4,
+      "sacred_tool_birthing_items": 4
+    },
+    "crystals": {
+      "total_crystals": 27,
+      "crystals_with_images": 54,
+      "missing_images": 0
+    },
+    "partner_yoga": {
+      "total_poses": 8,
+      "trust_ritual_block": true,
+      "why_this_heals_block": true,
+      "integration_block": true
+    },
+    "sunrise_sunset": {
+      "total_practices": 7,
+      "depth_cards": true,
+      "why_this_heals": true,
+      "integration": true
+    },
+    "oracle_coyote": {
+      "coyote_image_url": "https://upload.wikimedia.org/wikipedia/commons/8/80/2009-Coyote-YNP.jpg",
+      "is_proper_coyote_image": true
+    },
+    "main_menu": {
+      "earth_crafting_entry": true,
+      "tool_birthing_entry": true
+    }
+  }
+}

@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check, Users, Accessibility } from "lucide-react";
+import { ArrowLeft, Leaf, Clock, Heart, Filter, Star, ChevronRight, X, AlertTriangle, Check, Users, Accessibility, Lock } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../components/ui/dialog";
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { appLogger } from "../utils/logger";
 import { resolveDurationMinutes } from "../utils/durationUtils";
 
@@ -27,11 +28,15 @@ const YogaLibrary = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [selectedElement, setSelectedElement] = useState("all");
   const [selectedPose, setSelectedPose] = useState(null);
+  const [selectedLockedPose, setSelectedLockedPose] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [mobilityMode, setMobilityMode] = useState(false);
   const [imageErrors, setImageErrors] = useState(new Set());
   const initialQueryPoseIdRef = useRef(searchParams.get("pose"));
+  const premium = usePremiumAccess({ api, user });
+  const yogaUnlocked = premium.isSectionUnlocked("yoga_poses");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
@@ -72,7 +77,11 @@ const YogaLibrary = ({ user, api }) => {
       if (initialQueryPoseIdRef.current) {
         const preselectedPose = response.data.find((pose) => pose.id === initialQueryPoseIdRef.current);
         if (preselectedPose) {
-          setSelectedPose(preselectedPose);
+          if (preselectedPose.is_premium && !yogaUnlocked) {
+            setSelectedLockedPose(preselectedPose);
+          } else {
+            setSelectedPose(preselectedPose);
+          }
         }
         initialQueryPoseIdRef.current = null;
       }
@@ -81,7 +90,7 @@ const YogaLibrary = ({ user, api }) => {
     } finally {
       setLoading(false);
     }
-  }, [api]);
+  }, [api, yogaUnlocked]);
 
   const fetchFavorites = useCallback(async () => {
     try {
@@ -97,6 +106,19 @@ const YogaLibrary = ({ user, api }) => {
     fetchPoses();
     fetchFavorites();
   }, [fetchFavorites, fetchPoses]);
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
+
+  const canAccessPose = useCallback((pose) => !pose?.is_premium || yogaUnlocked, [yogaUnlocked]);
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/yoga",
+    });
+  };
 
   const filteredPoses = useMemo(
     () => poses.filter((pose) => {
@@ -216,6 +238,21 @@ const YogaLibrary = ({ user, api }) => {
 
       {/* Element Summary */}
       <div className="max-w-6xl mx-auto px-6 py-4">
+        {!yogaUnlocked && (
+          <div className="mb-4 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="yoga-premium-banner">
+            <p className="text-xs uppercase tracking-wider text-amber-200/80">Premium Yoga Library</p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="yoga-premium-banner-description">
+              Foundational poses are free. Advanced poses unlock with subscription or full app access.
+            </p>
+            <div className="flex gap-2 mt-3">
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="yoga-premium-banner-subscription-button">View Subscription Plans</Button>
+              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="yoga-premium-banner-fullapp-button">
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-wrap gap-2">
           {elements.filter(e => e !== "all").map((el) => {
             const colors = elementColors[el];
@@ -302,7 +339,13 @@ const YogaLibrary = ({ user, api }) => {
                   transition={{ delay: index * 0.02 }}
                   className={`rounded-2xl border backdrop-blur-xl cursor-pointer relative group overflow-hidden
                              ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
-                  onClick={() => setSelectedPose(pose)}
+                  onClick={() => {
+                    if (!canAccessPose(pose)) {
+                      setSelectedLockedPose(pose);
+                      return;
+                    }
+                    setSelectedPose(pose);
+                  }}
                   data-testid={`pose-card-${pose.id}`}
                 >
                   {/* Image */}
@@ -335,6 +378,13 @@ const YogaLibrary = ({ user, api }) => {
                     {pose.difficulty && (
                       <span className={`absolute bottom-3 left-3 px-2 py-1 rounded-full text-xs ${difficultyColors[pose.difficulty] || difficultyColors.Beginner}`}>
                         {pose.difficulty}
+                      </span>
+                    )}
+
+                    {pose.is_premium && !canAccessPose(pose) && (
+                      <span className="absolute top-3 right-3 px-2 py-1 rounded-full text-[10px] bg-fuchsia-500/25 text-fuchsia-100 border border-fuchsia-300/40 backdrop-blur-sm" data-testid={`pose-premium-badge-${pose.id}`}>
+                        <Lock className="w-3 h-3 inline mr-1" />
+                        Premium
                       </span>
                     )}
 
@@ -754,6 +804,23 @@ const YogaLibrary = ({ user, api }) => {
           </Dialog>
         )}
       </AnimatePresence>
+
+      {selectedLockedPose && !yogaUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="yoga-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Yoga Pose</p></div>
+            <h3 className="text-2xl font-serif mb-2" data-testid="yoga-premium-lock-title">{selectedLockedPose.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="yoga-premium-lock-description">This advanced pose is premium. Continue with subscription or full app access.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="yoga-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="yoga-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPose(null)} data-testid="yoga-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

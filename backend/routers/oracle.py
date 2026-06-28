@@ -16,6 +16,10 @@ from data.archangel_oracle import ARCHANGEL_ORACLE
 router = APIRouter(prefix="/oracle", tags=["oracle"])
 logger = logging.getLogger(__name__)
 
+ORACLE_IMAGE_OVERRIDES = {
+    "coyote": "https://upload.wikimedia.org/wikipedia/commons/8/80/2009-Coyote-YNP.jpg",
+}
+
 
 def _secure_choice(items: list[Any]) -> Any | None:
     if not items:
@@ -37,6 +41,16 @@ def _secure_bool(probability: float = 0.5) -> bool:
     return secrets.randbelow(10000) < threshold
 
 
+def _normalize_oracle_card_image(card: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(card)
+    name = str(normalized.get("name") or "").lower()
+    for keyword, image_url in ORACLE_IMAGE_OVERRIDES.items():
+        if keyword in name:
+            normalized["image_url"] = image_url
+            break
+    return normalized
+
+
 class OracleReadingRequest(BaseModel):
     question: Optional[str] = None
     spread_type: str = "single"  # single, three_card, celtic_cross
@@ -51,7 +65,7 @@ async def create_oracle_reading(
     db = get_db()
     
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
-    selected_cards = [copy.deepcopy(c) for c in _secure_sample(ORACLE_CARDS, num_cards)]
+    selected_cards = [_normalize_oracle_card_image(copy.deepcopy(c)) for c in _secure_sample(ORACLE_CARDS, num_cards)]
     
     for i, card in enumerate(selected_cards):
         card["is_reversed"] = _secure_bool(0.5)
@@ -79,7 +93,7 @@ async def create_oracle_reading(
 async def create_guest_oracle_reading(data: OracleReadingRequest) -> dict[str, Any]:
     """Create an oracle reading without authentication (doesn't save to history)."""
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
-    selected_cards = [copy.deepcopy(c) for c in _secure_sample(ORACLE_CARDS, num_cards)]
+    selected_cards = [_normalize_oracle_card_image(copy.deepcopy(c)) for c in _secure_sample(ORACLE_CARDS, num_cards)]
     
     for i, card in enumerate(selected_cards):
         card["is_reversed"] = _secure_bool(0.5)
@@ -123,9 +137,9 @@ async def get_oracle_cards(element: Optional[str] = None) -> list[dict[str, Any]
     # Fall back to static cards if database is empty
     if not cards:
         if element:
-            return [c for c in ORACLE_CARDS if c["element"].lower() == element.lower()]
-        return ORACLE_CARDS
-    return cards
+            return [_normalize_oracle_card_image(c) for c in ORACLE_CARDS if c["element"].lower() == element.lower()]
+        return [_normalize_oracle_card_image(c) for c in ORACLE_CARDS]
+    return [_normalize_oracle_card_image(c) for c in cards]
 
 
 async def generate_oracle_interpretation(cards: List[dict[str, Any]], question: Optional[str], spread_type: str) -> str:

@@ -146,6 +146,22 @@ const SunriseSunsetPractices = ({ user, api }) => {
         "Name one truth you will speak clearly today.",
       ],
       affirmation: "My voice carries calm truth and aligned intention."
+    },
+    {
+      id: "sunrise-7",
+      name: "Golden Threshold Covenant",
+      description: "A dawn covenant ritual to align body, boundaries, and service before entering the day.",
+      duration_minutes: 14,
+      element: "Spirit",
+      best_time: "At first full sunlight",
+      benefits: ["Boundary clarity", "Purpose alignment", "Embodied commitment"],
+      steps: [
+        "Stand facing sunrise with one hand on heart and one on lower belly.",
+        "Breathe 4-in / 6-out for 12 cycles, softening jaw and shoulders.",
+        "Speak one boundary, one blessing, and one service vow for this day.",
+        "Seal by touching earth and naming one concrete action within 24 hours.",
+      ],
+      affirmation: "I cross this threshold in truth, coherence, and devoted action."
     }
   ];
 
@@ -303,6 +319,22 @@ const SunriseSunsetPractices = ({ user, api }) => {
         "Write: What one quality do I choose for tomorrow morning?",
       ],
       affirmation: "I close this day with clarity, compassion, and completion."
+    },
+    {
+      id: "sunset-8",
+      name: "Nightfall Cord-Cutting Integration",
+      description: "A gentle sunset release for emotional residue, over-functioning, and unspoken tension.",
+      duration_minutes: 16,
+      element: "Water",
+      best_time: "Just after sunset",
+      benefits: ["Emotional release", "Nervous system downshift", "Sleep readiness"],
+      steps: [
+        "Sit with a bowl of water and name what you are releasing from the day.",
+        "Trace a slow circle over heart and throat while exhaling for 8 counts.",
+        "Dip fingertips into water and touch forehead, heart, and navel to reset your field.",
+        "Close with gratitude and one line of self-forgiveness before rest.",
+      ],
+      affirmation: "I release with grace and rest in sacred peace."
     }
   ];
 

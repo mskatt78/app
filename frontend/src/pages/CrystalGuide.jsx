@@ -27,9 +27,8 @@ const isLikelyBrokenLegacyImage = (url) => {
   if (!url) return true;
   try {
     const parsed = new URL(url);
-    const isUnsplash = parsed.hostname.includes("images.unsplash.com");
-    const onlyWidthParam = parsed.searchParams.has("w") && [...parsed.searchParams.keys()].length === 1;
-    return isUnsplash && onlyWidthParam;
+    if (!["http:", "https:"].includes(parsed.protocol)) return true;
+    return false;
   } catch {
     return true;
   }
@@ -222,7 +221,7 @@ const CrystalGuide = ({ user, api }) => {
               <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </button>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Earth's Treasures</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Earth&apos;s Treasures</p>
               <h1 className="text-xl font-serif">Crystal <span className="italic text-primary">Wisdom</span></h1>
             </div>
           </div>

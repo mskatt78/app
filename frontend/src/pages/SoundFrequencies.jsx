@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowLeft, Waves, Music, Volume2, Clock, Sparkles,
-  Drum, Guitar, Wind, Droplets, Star, Heart, Filter
+  Drum, Guitar, Wind, Droplets, Star, Heart, Filter, Lock
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
 import { appLogger } from "../utils/logger";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
 const CATEGORIES = [
   { id: "all", label: "All Frequencies", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10" },
@@ -39,7 +40,11 @@ const SoundFrequencies = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedFreq, setSelectedFreq] = useState(null);
+  const [selectedLockedFreq, setSelectedLockedFreq] = useState(null);
   const [filteredFreqs, setFilteredFreqs] = useState([]);
+  const premium = usePremiumAccess({ api, user });
+  const soundUnlocked = premium.isSectionUnlocked("sound_frequencies");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
 
   useEffect(() => {
     const fetchFrequencies = async () => {
@@ -64,6 +69,19 @@ const SoundFrequencies = ({ user, api }) => {
       setFilteredFreqs(frequencies.filter(f => f.category === activeCategory));
     }
   }, [activeCategory, frequencies]);
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
+
+  const canAccessFrequency = (freq) => !freq?.is_premium || soundUnlocked;
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/sound-frequencies",
+    });
+  };
 
   const getColors = (element) => {
     return ELEMENT_COLORS[element] || ELEMENT_COLORS.Water;
@@ -133,6 +151,19 @@ const SoundFrequencies = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6">
+        {!soundUnlocked && (
+          <section className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="sound-premium-banner">
+            <p className="text-xs uppercase tracking-wider text-amber-200/80">Sound Healing Premium</p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="sound-premium-banner-description">First sound journeys are free. Advanced frequencies unlock with subscription or full app access.</p>
+            <div className="flex gap-2 mt-3">
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="sound-premium-banner-subscription-button">View Subscription Plans</Button>
+              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="sound-premium-banner-fullapp-button">
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+          </section>
+        )}
+
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -183,7 +214,13 @@ const SoundFrequencies = ({ user, api }) => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ delay: index * 0.05 }}
-                    onClick={() => setSelectedFreq(freq)}
+                    onClick={() => {
+                      if (!canAccessFrequency(freq)) {
+                        setSelectedLockedFreq(freq);
+                        return;
+                      }
+                      setSelectedFreq(freq);
+                    }}
                     className="group cursor-pointer"
                     data-testid={`freq-card-${freq.id}`}
                   >
@@ -203,6 +240,11 @@ const SoundFrequencies = ({ user, api }) => {
                           <span className={`px-2 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm border ${colors.border}`}>
                             {freq.element}
                           </span>
+                          {freq.is_premium && !canAccessFrequency(freq) && (
+                            <span className="px-2 py-1 rounded-full text-xs bg-fuchsia-500/25 text-fuchsia-100 border border-fuchsia-300/40 backdrop-blur-sm" data-testid={`sound-premium-badge-${freq.id}`}>
+                              <Lock className="w-3 h-3 inline mr-1" />Premium
+                            </span>
+                          )}
                         </div>
                         <div className="absolute top-3 right-3">
                           <span className="px-2 py-1 rounded-full text-xs bg-black/50 text-white/80 backdrop-blur-sm">
@@ -441,6 +483,23 @@ const SoundFrequencies = ({ user, api }) => {
           )}
         </DialogContent>
       </Dialog>
+
+      {selectedLockedFreq && !soundUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="sound-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Sound Journey</p></div>
+            <h3 className="text-2xl font-serif mb-2" data-testid="sound-premium-lock-title">{selectedLockedFreq.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="sound-premium-lock-description">This sound transmission is premium. Continue with subscription or full app access.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="sound-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="sound-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedFreq(null)} data-testid="sound-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

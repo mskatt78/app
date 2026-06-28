@@ -218,6 +218,28 @@ const PartnerYoga = ({ user, api }) => {
     return "After practice, take a short silent walk together and notice what has softened in your body and heart.";
   };
 
+  const getTrustRitual = (pose) => {
+    if (pose.id === "p5") {
+      return [
+        "Before touch, each partner says one yes and one no boundary for this pose.",
+        "Move only on exhales and pause immediately if either nervous system spikes.",
+        "Close by naming one appreciation and one request for future trust-building.",
+      ];
+    }
+    if (pose.id === "p7") {
+      return [
+        "Begin with hands on your own hearts for three breaths to anchor self-contact.",
+        "Use eye contact softly, not forcefully, and keep knees micro-bent for safety.",
+        "End with one mirrored inhale/exhale cycle before stepping apart.",
+      ];
+    }
+    return [
+      "Open with a 30-second consent check: what pace and intensity feel safe today?",
+      "Keep one hand on your own body while connecting to your partner to stay self-aware.",
+      "Complete with one shared grounding breath and one spoken integration vow.",
+    ];
+  };
+
   const buildGuidedPosePractice = useCallback((pose) => ({
     id: `partner-guided-${pose.id}`,
     name: pose.name,
@@ -476,6 +498,18 @@ const PartnerYoga = ({ user, api }) => {
                     <p className="text-sm text-muted-foreground">{getIntegrationPrompt(selectedPose)}</p>
                   </article>
                 </div>
+
+                <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/25" data-testid="partner-yoga-trust-ritual">
+                  <h3 className="font-serif text-sm mb-2 text-emerald-300">Trust & Connection Ritual</h3>
+                  <ol className="space-y-1.5">
+                    {getTrustRitual(selectedPose).map((line, index) => (
+                      <li key={`partner-trust-ritual-${index}`} className="text-sm text-emerald-100/90 flex items-start gap-2">
+                        <span className="text-emerald-300">{index + 1}.</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </article>
 
                 <Button
                   type="button"

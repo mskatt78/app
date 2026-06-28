@@ -3,10 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, X, Sparkles, Feather, Flame, Waves, Wind,
-  Star, Moon, Heart, Eye, ChevronRight, Zap
+  Star, Moon, Heart, Eye, ChevronRight, Zap, Lock
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
 const CATEGORIES = [
   { id: "all", label: "All Guardians", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
@@ -34,6 +35,10 @@ const SacredGuardians = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
   const [selected, setSelected] = useState(null);
+  const [selectedLockedGuardian, setSelectedLockedGuardian] = useState(null);
+  const premium = usePremiumAccess({ api, user });
+  const guardiansUnlocked = premium.isSectionUnlocked("sacred_guardians");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
 
   const formatReviewedDate = (value) => {
     if (!value) return null;
@@ -65,6 +70,19 @@ const SacredGuardians = ({ user, api }) => {
       setFiltered(guardians.filter(g => g.category === activeCategory));
     }
   }, [activeCategory, guardians]);
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
+
+  const canAccessGuardian = (guardian) => !guardian?.is_premium || guardiansUnlocked;
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/sacred-guardians",
+    });
+  };
 
   const resolveGuardianRitual = (guardian) => {
     if (Array.isArray(guardian?.ritual) && guardian.ritual.length) return guardian.ritual;
@@ -145,6 +163,19 @@ const SacredGuardians = ({ user, api }) => {
       </div>
 
       <main className="max-w-6xl mx-auto px-6 pb-16 -mt-6">
+        {!guardiansUnlocked && (
+          <section className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="guardians-premium-banner">
+            <p className="text-xs uppercase tracking-wider text-amber-200/80">Sacred Guardians Premium</p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="guardians-premium-banner-description">First guardians are free. Advanced guardians unlock with subscription or full app access.</p>
+            <div className="flex gap-2 mt-3">
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="guardians-premium-banner-subscription-button">View Subscription Plans</Button>
+              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="guardians-premium-banner-fullapp-button">
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+          </section>
+        )}
+
         {/* Category Filter */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -187,7 +218,13 @@ const SacredGuardians = ({ user, api }) => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: index * 0.03 }}
-                  onClick={() => setSelected(guardian)}
+                  onClick={() => {
+                    if (!canAccessGuardian(guardian)) {
+                      setSelectedLockedGuardian(guardian);
+                      return;
+                    }
+                    setSelected(guardian);
+                  }}
                   className={`cursor-pointer rounded-2xl overflow-hidden border group
                     ${catInfo.border} hover:scale-[1.03] transition-all duration-300`}
                   data-testid={`guardian-card-${guardian.id}`}
@@ -205,6 +242,11 @@ const SacredGuardians = ({ user, api }) => {
                       ${catInfo.bg} ${catInfo.color} border ${catInfo.border} backdrop-blur-sm`}>
                       <Icon className="w-3 h-3" />
                     </div>
+                    {guardian.is_premium && !canAccessGuardian(guardian) && (
+                      <div className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] bg-fuchsia-500/25 text-fuchsia-100 border border-fuchsia-300/40 backdrop-blur-sm" data-testid={`guardian-premium-badge-${guardian.id}`}>
+                        Premium
+                      </div>
+                    )}
                     <div className="absolute bottom-0 left-0 right-0 p-3">
                       <h3 className="text-sm font-serif text-white font-semibold leading-tight">{guardian.name}</h3>
                       <p className={`text-xs ${catInfo.color} mt-0.5`}>{catInfo.label}</p>
@@ -419,6 +461,23 @@ const SacredGuardians = ({ user, api }) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {selectedLockedGuardian && !guardiansUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="guardians-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Guardian</p></div>
+            <h3 className="text-2xl font-serif mb-2" data-testid="guardians-premium-lock-title">{selectedLockedGuardian.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="guardians-premium-lock-description">This guardian transmission is premium. Continue with subscription or full app access.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="guardians-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="guardians-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedGuardian(null)} data-testid="guardians-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

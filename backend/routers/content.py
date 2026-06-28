@@ -363,6 +363,14 @@ WATER_PRACTICE_SUPPLEMENTS = [
     },
 ]
 
+HEART_PRACTICE_SUPPLEMENTS = [
+    {"id": "heart-supp-101", "name": "Compassionate Boundary Breath", "category": "boundary-healing", "element": "air", "duration_minutes": 14, "description": "Blend compassion with clean boundaries through paced breath and embodied self-advocacy."},
+    {"id": "heart-supp-102", "name": "Forgiveness Somatic Release", "category": "forgiveness", "element": "water", "duration_minutes": 18, "description": "Release stuck grief and resentment through breath, tears, and grounded closure ritual."},
+    {"id": "heart-supp-103", "name": "Inner Child Heart Reparenting", "category": "self-love", "element": "earth", "duration_minutes": 20, "description": "Rebuild inner safety through hand-on-heart dialogue and nervous-system reassurance."},
+    {"id": "heart-supp-104", "name": "Relational Repair Invocation", "category": "relationship-healing", "element": "fire", "duration_minutes": 16, "description": "Prepare for truthful repair conversations with regulation, intention, and accountability."},
+    {"id": "heart-supp-105", "name": "Evening Heart Coherence Seal", "category": "integration", "element": "spirit", "duration_minutes": 12, "description": "Close the day with coherence breathing and one gratitude-to-action commitment."},
+]
+
 MINDFULNESS_SUPPLEMENTS = [
     {
         "id": "mindful-threshold-walk",
@@ -382,6 +390,37 @@ MINDFULNESS_SUPPLEMENTS = [
         "description": "Observe breath texture at first light and journal one body sensation per minute.",
         "linked_practices": ["yoga-sequence-sunrise-awakening"],
     },
+    {"id": "mindful-body-prayer", "name": "Body Prayer Scan", "category": "meditation", "element": "water", "duration_minutes": 12, "description": "Devotional body scan with breath, sensation tracking, and nervous-system settling."},
+    {"id": "mindful-threshold-journaling", "name": "Threshold Journaling Ritual", "category": "writing", "element": "earth", "duration_minutes": 14, "description": "Journal one release, one gratitude, and one practical integration step."},
+    {"id": "mindful-heart-coherence", "name": "Heart Coherence Pause", "category": "breath", "element": "air", "duration_minutes": 8, "description": "Regulate breath and heart focus to restore emotional coherence before key decisions."},
+    {"id": "mindful-voice-toning", "name": "Compassion Toning", "category": "voice", "element": "spirit", "duration_minutes": 10, "description": "Short humming and vowel toning sequence for self-soothing and embodied compassion."},
+    {"id": "mindful-evening-integration", "name": "Evening Integration Review", "category": "reflection", "element": "earth", "duration_minutes": 9, "description": "Close the day with embodied review and one course-correction promise."},
+    {"id": "mindful-water-listening", "name": "Water Listening Stillness", "category": "nature", "element": "water", "duration_minutes": 11, "description": "Listen to water while tracking emotional shifts and completing release breaths."},
+    {"id": "mindful-boundary-reset", "name": "Boundary Reset Breath", "category": "breath", "element": "fire", "duration_minutes": 7, "description": "Micro-practice for restoring boundaries without collapsing compassion."},
+]
+
+MEDITATION_SUPPLEMENTS = [
+    {"id": "meditation-supp-101", "title": "Temple of Still Waters", "category": "inner-healing", "element": "water", "duration_minutes": 18, "description": "A long-form stillness meditation for emotional settling and somatic trust."},
+    {"id": "meditation-supp-102", "title": "Lionheart Presence", "category": "confidence", "element": "fire", "duration_minutes": 16, "description": "Regulate fear and anchor courage through paced breath and posture coherence."},
+    {"id": "meditation-supp-103", "title": "Mountain Spine Alignment", "category": "grounding", "element": "earth", "duration_minutes": 20, "description": "Lengthen spine, soften jaw, and stabilize inner dialogue with deep grounding."},
+    {"id": "meditation-supp-104", "title": "Sky Mind Spaciousness", "category": "clarity", "element": "air", "duration_minutes": 15, "description": "Create mental spaciousness and reduce overthinking through attention training."},
+    {"id": "meditation-supp-105", "title": "Ancestral Gratitude Sit", "category": "devotional", "element": "spirit", "duration_minutes": 22, "description": "Offer gratitude to lineage while tracking body resonance and practical integration."},
+    {"id": "meditation-supp-106", "title": "Dusk Nervous System Reset", "category": "restoration", "element": "water", "duration_minutes": 14, "description": "Evening protocol for decompression, breath downshifting, and emotional release."},
+    {"id": "meditation-supp-107", "title": "Inner Witness Training", "category": "awareness", "element": "air", "duration_minutes": 17, "description": "Strengthen witness consciousness without dissociating from felt experience."},
+    {"id": "meditation-supp-108", "title": "Soul Compass Meditation", "category": "purpose", "element": "spirit", "duration_minutes": 19, "description": "Clarify purpose through body-based inquiry and practical commitment vows."},
+]
+
+MANTRA_SUPPLEMENTS = [
+    {"id": "mantra-supp-201", "name": "Om Hrim Soham Shakti", "sanskrit": "ॐ ह्रीं सोऽहं शक्तिः", "transliteration": "Om Hrim Soham Shakti", "element": "fire", "duration_minutes": 16, "meaning": "I embody luminous transformative power with humility."},
+    {"id": "mantra-supp-202", "name": "Ram Yam Hridaya", "sanskrit": "रं यं हृदय", "transliteration": "Ram Yam Hridaya", "element": "air", "duration_minutes": 14, "meaning": "I ignite clear boundaries and compassionate heart coherence."},
+    {"id": "mantra-supp-203", "name": "Om Aim Medha", "sanskrit": "ॐ ऐं मेधा", "transliteration": "Om Aim Medha", "element": "air", "duration_minutes": 12, "meaning": "May wisdom and clarity guide my speech and actions."},
+    {"id": "mantra-supp-204", "name": "Shreem Klim Sauh", "sanskrit": "श्रीं क्लीं सौः", "transliteration": "Shreem Klim Sauh", "element": "water", "duration_minutes": 18, "meaning": "I call in sacred abundance aligned with integrity."},
+    {"id": "mantra-supp-205", "name": "Om Gam Ganapataye", "sanskrit": "ॐ गं गणपतये", "transliteration": "Om Gam Ganapataye", "element": "earth", "duration_minutes": 10, "meaning": "Obstacles dissolve as I move with grounded devotion."},
+    {"id": "mantra-supp-206", "name": "Om Tara Tuttare", "sanskrit": "ॐ तारे तुत्तारे", "transliteration": "Om Tara Tuttare", "element": "water", "duration_minutes": 15, "meaning": "Compassion and courage protect my path."},
+    {"id": "mantra-supp-207", "name": "Om Vajra Satva Hum", "sanskrit": "ॐ वज्र सत्व हुम्", "transliteration": "Om Vajra Satva Hum", "element": "spirit", "duration_minutes": 17, "meaning": "I purify body, speech, and mind with truth."},
+    {"id": "mantra-supp-208", "name": "Om Namah Shivaya Hridayam", "sanskrit": "ॐ नमः शिवाय हृदयम्", "transliteration": "Om Namah Shivaya Hridayam", "element": "spirit", "duration_minutes": 20, "meaning": "I bow to inner consciousness and embodied stillness."},
+    {"id": "mantra-supp-209", "name": "So Hum Antar Jyoti", "sanskrit": "सो हम अन्तर ज्योति", "transliteration": "So Hum Antar Jyoti", "element": "air", "duration_minutes": 11, "meaning": "I am the inner light breathing through all moments."},
+    {"id": "mantra-supp-210", "name": "Om Shanti Hridaya", "sanskrit": "ॐ शान्ति हृदय", "transliteration": "Om Shanti Hridaya", "element": "earth", "duration_minutes": 13, "meaning": "Peace anchors in my body, speech, and relationships."},
 ]
 
 SHAMANIC_ADVANCED_SUPPLEMENTS = [
@@ -480,10 +519,97 @@ SHAMANIC_ADVANCED_SUPPLEMENTS = [
     },
 ]
 
+EARTH_CRAFTING_TOOL_SUPPLEMENTS = [
+    {
+        "id": "earth-crafting-stone-001",
+        "name": "River Stone Prayer Bundle",
+        "category": "earth-crafting",
+        "element": "Earth",
+        "duration_minutes": 24,
+        "description": "Craft a palm-size stone bundle that anchors grief, gratitude, and daily devotional focus.",
+    },
+    {
+        "id": "earth-crafting-tool-002",
+        "name": "Sacred Tool Birthing: Breath Rattle",
+        "category": "sacred-tool-birthing",
+        "element": "Air",
+        "duration_minutes": 28,
+        "description": "Birth a personal rattle through rhythm, intention, and co-regulation breath to support ceremony.",
+    },
+    {
+        "id": "earth-crafting-tool-003",
+        "name": "Clay Vessel Intention Firing",
+        "category": "earth-crafting",
+        "element": "Earth",
+        "duration_minutes": 20,
+        "description": "Shape a small clay vessel to hold one season-long intention and embodied commitment.",
+    },
+    {
+        "id": "earth-crafting-tool-004",
+        "name": "Herbal Smoke Wand with Consent",
+        "category": "sacred-tool-birthing",
+        "element": "Fire",
+        "duration_minutes": 26,
+        "description": "Assemble a smoke wand with ethical sourcing, clear boundaries, and trauma-aware pacing.",
+    },
+    {
+        "id": "earth-crafting-tool-005",
+        "name": "Blessed Water Bowl Craft",
+        "category": "earth-crafting",
+        "element": "Water",
+        "duration_minutes": 18,
+        "description": "Create a dedicated bowl for blessing, release rituals, and daily emotional integration.",
+    },
+    {
+        "id": "earth-crafting-tool-006",
+        "name": "Threaded Protection Cord",
+        "category": "sacred-tool-birthing",
+        "element": "Air",
+        "duration_minutes": 16,
+        "description": "Weave a cord with breath counts and spoken values to support boundary integrity.",
+    },
+    {
+        "id": "earth-crafting-tool-007",
+        "name": "Sunrise Ash Sigil Tablet",
+        "category": "earth-crafting",
+        "element": "Fire",
+        "duration_minutes": 22,
+        "description": "Mix ash and clay to press a daily sigil tablet for sunrise intention anchoring.",
+    },
+    {
+        "id": "earth-crafting-tool-008",
+        "name": "Ancestor Altar Cloth Dye",
+        "category": "sacred-tool-birthing",
+        "element": "Water",
+        "duration_minutes": 30,
+        "description": "Dye altar cloth with natural pigments while speaking lineage blessings and boundaries.",
+    },
+]
+
 SECTION_FREE_RATIO = 0.25
 SECTION_MIN_FREE_ITEMS = 1
 
+# User-approved per-section free counts override global ratio where specified.
+SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
+    "yoga_poses": 4,
+    "somatic_practices": 4,
+    "premium_breathwork": 5,
+    "meditations": 4,
+    "mindfulness_practices": 5,
+    "premium_mantras": 11,
+    "water_practices": 5,
+    "heart_practices": 5,
+    "sacred_allies": 5,
+    "angelic_alchemy": 5,
+    "sacred_guardians": 5,
+    "ancient_wisdom": 5,
+    "sacred_art_therapy": 5,
+}
+
 SECTION_PREMIUM_LABELS = {
+    "yoga_poses": "Yoga Library Premium",
+    "premium_breathwork": "Breathwork Premium",
+    "premium_mantras": "Mantra Premium",
     "mindfulness_practices": "Mindfulness Premium",
     "meditations": "Meditations Premium",
     "heart_practices": "Heart Practices Premium",
@@ -493,6 +619,12 @@ SECTION_PREMIUM_LABELS = {
     "chakra_cleansing": "Chakra Cleansing Premium",
     "somatic_practices": "Somatic Premium",
     "grounding_practices": "Grounding Premium",
+    "sacred_guardians": "Sacred Guardians Premium",
+    "sound_frequencies": "Sound Healing Premium",
+    "angelic_alchemy": "Angelic Alchemy Premium",
+    "ancient_wisdom": "Ancient Traditions Premium",
+    "sacred_allies": "Sacred Ally Premium",
+    "sacred_art_therapy": "Sacred Art Premium",
 }
 
 YOGA_SEQUENCE_OF_DAY_LIBRARY = [
@@ -1783,6 +1915,8 @@ DEVOTIONAL_DOMAIN_SUFFIX = {
     "sacred-allies": "Relate to this ally as living medicine: breathe with humility, track body truth, and convert insight into a grounded act of healing.",
     "angelic-alchemy": "Receive this transmission with clear boundaries and practical devotion—integrate guidance through embodied action and compassionate leadership.",
     "ancient-wisdom": "Treat this lineage as living practice, not concept: embody one teaching, complete one ritual act, and anchor one service-based integration.",
+    "grounding-practices": "Ground as ritual: orient to safety, slow your exhale, and let Earth-contact become embodied trust.",
+    "masculine-practices": "Practice embodied masculine coherence through honest feeling, clean boundaries, devoted action, and accountable integration.",
     "sacred-guardians": "Approach guardian work as reciprocal ceremony: listen, invoke with integrity, and embody one concrete action after receiving guidance.",
     "sound-frequencies": "Receive sound as somatic ritual—track breath, body sensation, and emotional tone while integrating gently after each listening cycle.",
     "tarot": "Treat divination as embodied inquiry: feel the message in your body, name one truth, and take one grounded action.",
@@ -2016,6 +2150,18 @@ def _append_water_supplements(practices: list[dict[str, Any]], category: Optiona
     return practices + additions
 
 
+def _append_heart_supplements(practices: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(practice.get("id")) for practice in practices}
+    additions = []
+    for item in HEART_PRACTICE_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if category and str(item.get("category", "")).lower() != str(category).lower():
+            continue
+        additions.append(item)
+    return practices + additions
+
+
 def _append_mindfulness_supplements(practices: list[dict[str, Any]], category: Optional[str], element: Optional[str]) -> list[dict[str, Any]]:
     existing_ids = {str(practice.get("id")) for practice in practices}
     additions = []
@@ -2025,6 +2171,31 @@ def _append_mindfulness_supplements(practices: list[dict[str, Any]], category: O
         if category and str(item.get("category", "")).lower() != str(category).lower():
             continue
         if element and str(item.get("element", "")).lower() != str(element).lower():
+            continue
+        additions.append(item)
+    return practices + additions
+
+
+def _append_meditation_supplements(practices: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(practice.get("id")) for practice in practices}
+    additions = []
+    for item in MEDITATION_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if category and str(item.get("category", "")).lower() != str(category).lower():
+            continue
+        additions.append(item)
+    return practices + additions
+
+
+def _append_mantra_supplements(practices: list[dict[str, Any]], element: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(practice.get("id")) for practice in practices}
+    additions = []
+    element_filter = str(element or "").lower()
+    for item in MANTRA_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if element_filter and str(item.get("element", "")).lower() != element_filter:
             continue
         additions.append(item)
     return practices + additions
@@ -2040,6 +2211,22 @@ def _append_shamanic_supplements(practices: list[dict[str, Any]], category: Opti
             continue
         additions.append(item)
     return practices + additions
+
+
+def _append_earth_crafting_supplements(items: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(item.get("id")) for item in items}
+    additions = []
+    category_filter = (category or "").strip().lower()
+
+    for item in EARTH_CRAFTING_TOOL_SUPPLEMENTS:
+        if str(item.get("id")) in existing_ids:
+            continue
+        item_category = str(item.get("category") or "").strip().lower()
+        if category_filter and item_category and item_category != category_filter:
+            continue
+        additions.append(item)
+
+    return items + additions
 
 
 def _parse_tier_sort_value(item: dict[str, Any]) -> tuple[int, str]:
@@ -2061,7 +2248,11 @@ def _apply_free_paid_tiering(
 
     ordered = sorted(items, key=_parse_tier_sort_value)
     total_items = len(ordered)
-    free_count = max(minimum_free, int(total_items * free_ratio))
+    override_free_count = SECTION_FREE_COUNT_OVERRIDES.get(unlock_id)
+    if override_free_count is not None:
+        free_count = int(override_free_count)
+    else:
+        free_count = max(minimum_free, int(total_items * free_ratio))
 
     if total_items > 3:
         free_count = min(free_count, total_items - 1)
@@ -3226,7 +3417,8 @@ async def get_yoga_poses(element: Optional[str] = None, difficulty: Optional[str
         query["difficulty"] = {"$regex": f"^{difficulty}$", "$options": "i"}
     
     poses = await db.yoga_poses.find(query, {"_id": 0}).to_list(length=100)
-    return [_enrich_yoga_pose(pose) for pose in poses]
+    enriched = [_enrich_devotional_language(_enrich_yoga_pose(pose), "elemental-practices") for pose in poses]
+    return _apply_free_paid_tiering(enriched, "yoga_poses")
 
 
 @router.get("/yoga/poses/{pose_id}")
@@ -3236,7 +3428,7 @@ async def get_yoga_pose(pose_id: str) -> dict[str, Any]:
     pose = await db.yoga_poses.find_one({"id": pose_id}, {"_id": 0})
     if not pose:
         raise HTTPException(status_code=404, detail="Pose not found")
-    return _enrich_yoga_pose(pose)
+    return _enrich_devotional_language(_enrich_yoga_pose(pose), "elemental-practices")
 
 
 # ============ BREATHWORK ROUTES ============
@@ -4076,6 +4268,7 @@ async def get_mantras(element: Optional[str] = None) -> list[dict[str, Any]]:
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     mantras = await db.mantras.find(query, {"_id": 0}).to_list(length=50)
+    mantras = _append_mantra_supplements(mantras, element)
     enriched = [_enrich_content_integrity(mantra, "hybrid-curated") for mantra in mantras]
     enriched = [_enrich_mantra_entry(mantra) for mantra in enriched]
     return _apply_free_paid_tiering(enriched, "premium_mantras")
@@ -4150,6 +4343,7 @@ async def get_meditations(category: Optional[str] = None, element: Optional[str]
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     meditations = await db.meditations.find(query, {"_id": 0}).to_list(length=50)
+    meditations = _append_meditation_supplements(meditations, category)
     enriched = [_enrich_meditation_entry(meditation) for meditation in meditations]
     return _apply_free_paid_tiering(enriched, "meditations")
 
@@ -4197,7 +4391,10 @@ async def get_grounding_exercises(element: Optional[str] = None) -> list[dict[st
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     exercises = await db.grounding_exercises.find(query, {"_id": 0}).to_list(length=50)
-    enriched = [_apply_subject_image_alignment(exercise, "hybrid-curated") for exercise in exercises]
+    enriched = [
+        _enrich_devotional_language(_enrich_content_integrity(_apply_subject_image_alignment(exercise, "hybrid-curated"), "hybrid-curated"), "grounding-practices")
+        for exercise in exercises
+    ]
     return _apply_free_paid_tiering(enriched, "grounding_practices")
 
 
@@ -4236,6 +4433,7 @@ async def get_heart_practices(category: Optional[str] = None) -> list[dict[str, 
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
     practices = await db.heart_practices.find(query, {"_id": 0}).to_list(length=50)
+    practices = _append_heart_supplements(practices, category)
     enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "heart-practices") for practice in practices]
     return _apply_free_paid_tiering(enriched, "heart_practices")
 
@@ -4324,7 +4522,9 @@ async def get_creative_processes(category: Optional[str] = None) -> list[dict[st
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
     processes = await db.creative_processes.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_devotional_language(_enrich_content_integrity(process, "hybrid-curated"), "courses") for process in processes]
+    processes = _append_earth_crafting_supplements(processes, category)
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(process, "hybrid-curated"), "courses") for process in processes]
+    return _apply_free_paid_tiering(enriched, "sacred_art_therapy")
 
 
 @router.get("/creative-processes/{process_id}")
@@ -4528,7 +4728,8 @@ async def get_sacred_geometry() -> list[dict[str, Any]]:
     """Get sacred geometry symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
-    return data.get("sacred_geometry", []) if data else []
+    symbols = data.get("sacred_geometry", []) if data else []
+    return [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
 
 
 @router.get("/light-codes/ancient-alphabets")
@@ -4536,7 +4737,8 @@ async def get_ancient_alphabets() -> list[dict[str, Any]]:
     """Get ancient alphabet symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
-    return data.get("ancient_alphabets", []) if data else []
+    symbols = data.get("ancient_alphabets", []) if data else []
+    return [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
 
 
 @router.get("/light-codes/light-language")
@@ -4544,7 +4746,8 @@ async def get_light_language() -> list[dict[str, Any]]:
     """Get light language symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
-    return data.get("light_language_symbols", []) if data else []
+    symbols = data.get("light_language_symbols", []) if data else []
+    return [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
 
 
 # ============ LIVE SESSIONS ROUTES ============
@@ -4650,7 +4853,8 @@ async def get_sacred_guardians(category: Optional[str] = None) -> list[dict[str,
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     guardians = await db.sacred_guardians.find(query, {"_id": 0}).to_list(length=100)
-    return [_enrich_devotional_language(_enrich_content_integrity(guardian, "hybrid-curated"), "sacred-guardians") for guardian in guardians]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(guardian, "hybrid-curated"), "sacred-guardians") for guardian in guardians]
+    return _apply_free_paid_tiering(enriched, "sacred_guardians")
 
 
 @router.get("/sacred-guardians/{guardian_id}")
@@ -4951,7 +5155,8 @@ async def get_sound_frequencies(category: Optional[str] = None) -> list[dict[str
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     entries = await db.sound_frequencies.find(query, {"_id": 0}).to_list(length=50)
-    return [_enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "sound-frequencies") for entry in entries]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "sound-frequencies") for entry in entries]
+    return _apply_free_paid_tiering(enriched, "sound_frequencies")
 
 
 @router.get("/sound-frequencies/{freq_id}")
@@ -5059,7 +5264,8 @@ async def get_videos(category: Optional[str] = None) -> list[dict[str, Any]]:
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     videos = await db.videos.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=100)
-    return [_enrich_devotional_language(_enrich_content_integrity(video, "hybrid-curated"), "videos") for video in videos]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(video, "hybrid-curated"), "videos") for video in videos]
+    return _apply_free_paid_tiering(enriched, "sacred_art_therapy")
 
 
 @router.get("/videos/{video_id}")
@@ -5687,7 +5893,18 @@ async def get_masculine_embodiment(category: Optional[str] = None) -> list[dict[
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     practices = await db.masculine_embodiment.find(query, {"_id": 0}).to_list(length=100)
-    return practices
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "masculine-practices") for practice in practices]
+    return _apply_free_paid_tiering(enriched, "masculine_embodiment")
+
+
+@router.get("/masculine-embodiment/{practice_id}")
+async def get_masculine_embodiment_practice(practice_id: str) -> dict[str, Any]:
+    """Get a specific masculine embodiment practice."""
+    db = get_db()
+    practice = await db.masculine_embodiment.find_one({"id": practice_id}, {"_id": 0})
+    if not practice:
+        raise HTTPException(status_code=404, detail="Masculine embodiment practice not found")
+    return _enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "masculine-practices")
 
 
 # ============ ELEMENTAL TEMPLES ROUTES ============
@@ -5729,5 +5946,10 @@ async def get_water_practices(category: Optional[str] = None) -> list[dict[str, 
     practices = await db.water_practices.find(query, {"_id": 0}).to_list(length=100)
     practices = _append_water_supplements(practices, category)
     enriched = [_enrich_devotional_language(_apply_subject_image_alignment(practice, "hybrid-curated"), "healing-portals") for practice in practices]
-    return _apply_free_paid_tiering(enriched, "water_practices")
+    tiered = _apply_free_paid_tiering(enriched, "water_practices")
+    if category:
+        return tiered
+    free_items = [item for item in tiered if not item.get("is_premium")]
+    premium_items = [item for item in tiered if item.get("is_premium")]
+    return free_items[:5] + premium_items[:12]
 

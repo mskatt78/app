@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft, Waves, Filter, Play, Clock,
+  ArrowLeft, Waves, Filter, Play, Clock, Lock,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
@@ -12,6 +12,7 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import PracticeVideos from "../components/PracticeVideos";
 import { appLogger } from "../utils/logger";
 import { resolveDurationMinutes } from "../utils/durationUtils";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
 const movementTrackFilters = ["all", "Somatic Movement", "Tai Chi", "Chi Gong"];
 
@@ -31,7 +32,11 @@ const SomaticMovement = ({ user, api }) => {
   const [selectedElement, setSelectedElement] = useState("all");
   const [selectedTrack, setSelectedTrack] = useState("all");
   const [selectedPractice, setSelectedPractice] = useState(null);
+  const [selectedLockedPractice, setSelectedLockedPractice] = useState(null);
   const [guidedPractice, setGuidedPractice] = useState(null);
+  const premium = usePremiumAccess({ api, user });
+  const somaticUnlocked = premium.isSectionUnlocked("somatic_practices");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
 
@@ -64,6 +69,19 @@ const SomaticMovement = ({ user, api }) => {
 
     setFilteredPractices(nextPractices);
   }, [selectedElement, selectedTrack, practices]);
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
+
+  const canAccessPractice = (practice) => !practice?.is_premium || somaticUnlocked;
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/somatic",
+    });
+  };
 
   const handleStartGuided = (practice) => {
     setSelectedPractice(null); // close dialog
@@ -167,6 +185,21 @@ const SomaticMovement = ({ user, api }) => {
           </p>
         </motion.div>
 
+        {!somaticUnlocked && (
+          <section className="mb-8 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="somatic-premium-banner">
+            <p className="text-xs uppercase tracking-wider text-amber-200/80">Somatic Premium Track</p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="somatic-premium-banner-description">
+              First somatic foundations are free. Advanced somatic sequences unlock with subscription or full app access.
+            </p>
+            <div className="flex gap-2 mt-3">
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="somatic-premium-banner-subscription-button">View Subscription Plans</Button>
+              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="somatic-premium-banner-fullapp-button">
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+          </section>
+        )}
+
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
@@ -183,7 +216,13 @@ const SomaticMovement = ({ user, api }) => {
                   transition={{ delay: index * 0.05 }}
                   className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden
                              ${colors.bg} ${colors.border} hover:scale-[1.02] transition-all duration-300`}
-                  onClick={() => setSelectedPractice(practice)}
+                  onClick={() => {
+                    if (!canAccessPractice(practice)) {
+                      setSelectedLockedPractice(practice);
+                      return;
+                    }
+                    setSelectedPractice(practice);
+                  }}
                   data-testid={`practice-card-${practice.id}`}
                 >
                   {practice.image_url && (
@@ -222,6 +261,11 @@ const SomaticMovement = ({ user, api }) => {
                         <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>
                           {practice.element}
                         </span>
+                        {practice.is_premium && !canAccessPractice(practice) && (
+                          <span className="px-2 py-1 rounded-full text-[10px] bg-fuchsia-500/25 text-fuchsia-100 border border-fuchsia-300/40" data-testid={`somatic-premium-badge-${practice.id}`}>
+                            <Lock className="w-3 h-3 inline mr-1" />Premium
+                          </span>
+                        )}
                       </div>
                     )}
                     <h3 className="text-xl font-serif mb-3">{practice.name}</h3>
@@ -247,6 +291,10 @@ const SomaticMovement = ({ user, api }) => {
                       type="button"
                       onClick={(event) => {
                         event.stopPropagation();
+                        if (!canAccessPractice(practice)) {
+                          setSelectedLockedPractice(practice);
+                          return;
+                        }
                         setGuidedPractice({
                           ...practice,
                           category: "somatic",
@@ -362,6 +410,11 @@ const SomaticMovement = ({ user, api }) => {
 
                 <Button
                   onClick={() => {
+                    if (!canAccessPractice(selectedPractice)) {
+                      setSelectedPractice(null);
+                      setSelectedLockedPractice(selectedPractice);
+                      return;
+                    }
                     setSelectedPractice(null);
                     setGuidedPractice({
                       ...selectedPractice,
@@ -387,7 +440,14 @@ const SomaticMovement = ({ user, api }) => {
                 </Button>
 
                 <Button
-                  onClick={() => handleStartGuided(selectedPractice)}
+                  onClick={() => {
+                    if (!canAccessPractice(selectedPractice)) {
+                      setSelectedPractice(null);
+                      setSelectedLockedPractice(selectedPractice);
+                      return;
+                    }
+                    handleStartGuided(selectedPractice);
+                  }}
                   className="w-full"
                   size="lg"
                   data-testid="start-guided-btn"
@@ -400,6 +460,23 @@ const SomaticMovement = ({ user, api }) => {
           )}
         </DialogContent>
       </Dialog>
+
+      {selectedLockedPractice && !somaticUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="somatic-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Somatic Practice</p></div>
+            <h3 className="text-2xl font-serif mb-2" data-testid="somatic-premium-lock-title">{selectedLockedPractice.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="somatic-premium-lock-description">This advanced somatic practice is premium. Continue with subscription or full app access.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="somatic-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="somatic-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPractice(null)} data-testid="somatic-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

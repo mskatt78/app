@@ -140,6 +140,7 @@ const MainMenuContainer = ({ user }) => {
       items: [
         { path: "/crystals", icon: Gem, label: "Crystal Guide", color: "text-pink-400", desc: "42 healing stones" },
         { path: "/light-codes", icon: Hexagon, label: "Light Codes", color: "text-violet-400", desc: "Sacred geometry" },
+        { path: "/creative?category=earth-crafting", icon: Mountain, label: "Earth Crafting & Tool Birthing", color: "text-emerald-300", desc: "Create sacred tools & ritual objects" },
       ]
     },
     {

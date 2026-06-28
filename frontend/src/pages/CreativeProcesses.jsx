@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Palette, Pen, Music, Camera, Sparkles,
-  Clock, Play,
+  Clock, Play, Lock,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
 const categoryIcons = {
   visual: Palette,
@@ -17,6 +18,8 @@ const categoryIcons = {
   nature: Camera,
   meditation: Sparkles,
   ceremony: Sparkles,
+  "earth-crafting": Sparkles,
+  "sacred-tool-birthing": Sparkles,
 };
 
 const categoryColors = {
@@ -26,9 +29,11 @@ const categoryColors = {
   nature:    { text: "text-emerald-400",bg: "bg-emerald-500/10",border: "border-emerald-500/20" },
   meditation:{ text: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/20" },
   ceremony:  { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
+  "earth-crafting": { text: "text-emerald-300", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
+  "sacred-tool-birthing": { text: "text-amber-300", bg: "bg-amber-500/10", border: "border-amber-500/20" },
 };
 
-const FILTER_CATS = ["all", "visual", "writing", "movement", "nature", "meditation", "ceremony"];
+const FILTER_CATS = ["all", "visual", "writing", "movement", "nature", "meditation", "ceremony", "earth-crafting", "sacred-tool-birthing"];
 
 function buildPractice(process) {
   const steps = [];
@@ -80,11 +85,23 @@ const CreativeProcesses = ({ user, api }) => {
   };
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const premium = usePremiumAccess({ api, user });
+  const creativeUnlocked = premium.isSectionUnlocked("sacred_art_therapy");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
+  const initialCategory = new URLSearchParams(location.search).get("category");
   const [processes, setProcesses] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState(FILTER_CATS.includes(initialCategory || "") ? initialCategory : "all");
   const [selectedProcess, setSelectedProcess] = useState(null);
+  const [selectedLockedProcess, setSelectedLockedProcess] = useState(null);
   const [guidedPractice, setGuidedPractice] = useState(null);
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
+
+  const canAccessProcess = (process) => !process?.is_premium || creativeUnlocked;
 
   useEffect(() => {
     const fetchProcesses = async () => {
@@ -105,9 +122,20 @@ const CreativeProcesses = ({ user, api }) => {
   }, [api, filter]);
 
   const handleStartPractice = (process) => {
+    if (!canAccessProcess(process)) {
+      setSelectedLockedProcess(process);
+      return;
+    }
     const practice = buildPractice(process);
     setSelectedProcess(null); // close detail modal first
     setGuidedPractice(practice);
+  };
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/creative",
+    });
   };
 
   const handleExitPractice = () => {
@@ -155,6 +183,21 @@ const CreativeProcesses = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6 space-y-8">
+        {!creativeUnlocked && (
+          <section className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="creative-premium-banner">
+            <p className="text-xs uppercase tracking-wider text-amber-200/80">Sacred Art Premium</p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="creative-premium-banner-description">
+              First sacred art practices are free. Earth crafting and advanced rituals unlock with subscription or full app access.
+            </p>
+            <div className="flex gap-2 mt-3">
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="creative-premium-banner-subscription-button">View Subscription Plans</Button>
+              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="creative-premium-banner-fullapp-button">
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+          </section>
+        )}
+
         {/* Category Filter */}
         <div className="flex flex-wrap gap-2">
           {FILTER_CATS.map((cat) => {
@@ -199,7 +242,13 @@ const CreativeProcesses = ({ user, api }) => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   className={`rounded-2xl border ${colors.bg} ${colors.border} cursor-pointer hover:scale-[1.02] transition-all duration-300 overflow-hidden`}
-                  onClick={() => setSelectedProcess(process)}
+                  onClick={() => {
+                    if (!canAccessProcess(process)) {
+                      setSelectedLockedProcess(process);
+                      return;
+                    }
+                    setSelectedProcess(process);
+                  }}
                   data-testid={`process-card-${process.id}`}
                 >
                   {process.image_url && (
@@ -230,6 +279,12 @@ const CreativeProcesses = ({ user, api }) => {
                       <p className={`text-xs ${colors.text} italic mb-2`}>{process.tradition}</p>
                     )}
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{process.description}</p>
+
+                    {process.is_premium && !canAccessProcess(process) && (
+                      <div className="mb-3 inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] bg-fuchsia-500/25 text-fuchsia-100 border border-fuchsia-300/40" data-testid={`creative-premium-badge-${process.id}`}>
+                        <Lock className="w-3 h-3" /> Premium
+                      </div>
+                    )}
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Clock className="w-3 h-3" />
@@ -387,6 +442,23 @@ const CreativeProcesses = ({ user, api }) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {selectedLockedProcess && !creativeUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="creative-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Sacred Art Practice</p></div>
+            <h3 className="text-2xl font-serif mb-2" data-testid="creative-premium-lock-title">{selectedLockedProcess.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="creative-premium-lock-description">This ritual is premium. Continue with subscription or full app access.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="creative-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="creative-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedProcess(null)} data-testid="creative-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
