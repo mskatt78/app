@@ -110,6 +110,29 @@
 - Navigation/content visibility is now hardened for guest users and alternate device route variants.
 - Pricing/admin privacy/narration floor/retreat cleanup remain passing from prior iterations.
 
+## Latest Verification Snapshot (Iteration 238+ — 2026-06-28)
+- ✅ User-requested Sacred Tool Birthing deepening completed (Earth Art / Sacred Tool Birthing scope):
+  - Added explicit sacred tool modalities including **rattles, medicine drums, wands, staffs, feathers**, and expanded tool-birthing ceremonies.
+  - Added ethical sourcing + reciprocity framework in content (`ethical_materials`) and surfaced in UI as **Ethical Sourcing & Reciprocity** panel.
+  - Added explicit ceremony structure and guided ritual content (`ceremony`, `ritual`, `guided_practice`, `process_steps`, `alchemy`).
+
+- ✅ App-wide tiering normalization expanded to additional subject endpoints:
+  - Enforced strict **4 free + 10 premium (14 total)** for: light codes categories, runes, i-ching, tarot cards, crystals (deep), free-form movement, somatic yoga, earth altars, sacred tool birthing category.
+  - Main and category Light Codes endpoints now consistently return 14 items each with premium metadata.
+
+- ✅ Light Codes ceremonial embodiment upgrade completed:
+  - Added ceremonial enrichment fields to symbols: `light_coded_symbols`, `embodiment_ritual`, `ceremony`, `guided_practice`.
+  - Added dedicated frontend section: **Ceremonial Symbol Keys**.
+  - Added premium lock flow for Light Codes guest users and a new modal tab **Ceremony & Symbols**.
+
+- ✅ QA/Testing status:
+  - `testing_agent` iteration 238: PASS (frontend + backend, 26 backend tests passed).
+  - `auto_frontend_testing_agent`: PASS (Light Codes lock flow, ceremonial section/tab, Creative sacred-tool-birthing panels, pricing regression).
+  - `deep_testing_backend_v2`: PASS (15/15 checks).
+
+### Deployment note
+- Changes are implemented and verified in preview codebase. To apply them on production, perform a fresh redeploy from latest preview state.
+
 ## Latest Verification Snapshot (Iteration 132)
 - Backend complexity cleanup regression: PASS (14/14)
 - Frontend hook/key cleanup regression: PASS (100%)
