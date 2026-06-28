@@ -10976,3 +10976,19 @@ backend:
 agent_communication:
   - agent: "testing"
     message: "✅ BACKEND VERIFICATION FOR LATEST FIXES COMPLETE (2026-06-30): Comprehensive backend verification completed on https://breathwork-sanctuary.preview.emergentagent.com/api for latest fixes. ALL 3 TEST AREAS PASSED: 1) KUNDALINI ALIASES: Both /sacred-ally-alchemy?ally_type=kundalini and /sacred-ally-alchemy?ally_type=kundulini return 200 with non-empty lists (14 items each), no 500 errors ✓. 2) ARCHANGELS: /oracle/archangels returns 200 with exactly 15 cards, no ObjectId serialization errors, no 500 ✓. 3) ANGELIC ALCHEMY: /angelic-alchemy returns 200 with non-empty list (14 items), no 500 ✓. SUMMARY: 4/4 tests PASSED (kundalini + kundulini + archangels + angelic-alchemy). All endpoints stable and working correctly. Backend verification complete."
+
+  - task: "Social links verification - Landing page hero and app footer"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/LandingPage.jsx, /app/frontend/src/components/AppFooter.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ SOCIAL LINKS VERIFICATION PASSED (2026-06-28): Comprehensive verification completed on https://breathwork-sanctuary.preview.emergentagent.com for social links implementation. ALL 4 REQUIREMENTS PASSED: 1) Landing page hero social links ✓: Facebook button (data-testid='landing-social-facebook-link') with icon+text, correct URL (https://www.facebook.com/share/1BPwWAwwrt/), target='_blank' ✓. YouTube button (data-testid='landing-social-youtube-link') with icon+text, correct URL (https://youtube.com/@skywatersacredembodiments9791?si=Oe0YSu-jhsfb9xdL), target='_blank' ✓. TikTok button (data-testid='landing-social-tiktok-link') with icon+text, correct URL (https://www.tiktok.com/@skywatersacredembodiment?_r=1&_t=ZS-97bHi2iASOa), target='_blank' ✓. 2) App footer social links ✓: Facebook link (data-testid='footer-facebook-link') with icon+text, correct URL, target='_blank' ✓. YouTube link (data-testid='footer-youtube-link') with icon+text, correct URL, target='_blank' ✓. TikTok link (data-testid='footer-tiktok-link') with icon+text, correct URL, target='_blank' ✓. 3) All links open in new tab ✓: All 6 links (3 landing + 3 footer) have target='_blank' and rel='noopener noreferrer' attributes verified. 4) All URLs match exactly ✓: Facebook, YouTube, and TikTok URLs match expected values exactly in both locations. All data-testids present and correct. Icons visible (Facebook and YouTube use lucide-react icons, TikTok uses custom ♪ symbol). Social links implementation COMPLETE and VERIFIED."
+
+agent_communication:
+  - agent: "testing"
+    message: "✅ SOCIAL LINKS VERIFICATION COMPLETE (2026-06-28): Verification completed for social links on landing page hero and app footer. RESULT: PASS. All requirements met: Landing page hero has Facebook, YouTube, TikTok buttons with icons+text ✓. App footer has Facebook, YouTube, TikTok links with icons+text ✓. All 6 links open in new tab (target='_blank') ✓. All URLs match exactly as specified ✓. All data-testids present and functional ✓. No issues detected. Implementation ready for production."

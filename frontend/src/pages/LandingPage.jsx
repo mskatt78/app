@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
-  Sun, Moon, Sparkles, Star, LogIn, Mail, Lock, User, Eye, EyeOff, ArrowRight, Download
+  Sun, Moon, Sparkles, Star, LogIn, Mail, Lock, User, Eye, EyeOff, ArrowRight, Download, Facebook, Youtube
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -12,6 +12,9 @@ import axios from "axios";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 const AUTH_PROVIDER_URL = process.env.REACT_APP_AUTH_PROVIDER_URL;
+const FACEBOOK_URL = "https://www.facebook.com/share/1BPwWAwwrt/";
+const YOUTUBE_URL = "https://youtube.com/@skywatersacredembodiments9791?si=Oe0YSu-jhsfb9xdL";
+const TIKTOK_URL = "https://www.tiktok.com/@skywatersacredembodiment?_r=1&_t=ZS-97bHi2iASOa";
 
 const LandingPage = ({ onLoginSuccess }) => {
   const navigate = useNavigate();
@@ -165,6 +168,45 @@ const LandingPage = ({ onLoginSuccess }) => {
               >
                 <Download className="w-4 h-4 mr-2" />
                 Install App
+              </Button>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-4" data-testid="landing-social-links-row">
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className="border-white/20 bg-black/20 text-white/90 hover:bg-black/40"
+                data-testid="landing-social-facebook-link"
+              >
+                <a href={FACEBOOK_URL} target="_blank" rel="noopener noreferrer">
+                  <Facebook className="w-4 h-4 mr-2" />
+                  Facebook
+                </a>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className="border-white/20 bg-black/20 text-white/90 hover:bg-black/40"
+                data-testid="landing-social-youtube-link"
+              >
+                <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer">
+                  <Youtube className="w-4 h-4 mr-2" />
+                  YouTube
+                </a>
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                asChild
+                className="border-white/20 bg-black/20 text-white/90 hover:bg-black/40"
+                data-testid="landing-social-tiktok-link"
+              >
+                <a href={TIKTOK_URL} target="_blank" rel="noopener noreferrer">
+                  <span className="w-4 h-4 mr-2 inline-flex items-center justify-center text-xs font-bold">♪</span>
+                  TikTok
+                </a>
               </Button>
             </div>
             

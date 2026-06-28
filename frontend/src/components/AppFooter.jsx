@@ -1,12 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, Heart } from "lucide-react";
+import { Shield, Heart, Facebook, Youtube } from "lucide-react";
 import { Dialog, DialogContent } from "./ui/dialog";
 import { FullDisclaimer } from "./HealthDisclaimer";
 
 const AppFooter = () => {
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const navigate = useNavigate();
+  const FACEBOOK_URL = "https://www.facebook.com/share/1BPwWAwwrt/";
+  const YOUTUBE_URL = "https://youtube.com/@skywatersacredembodiments9791?si=Oe0YSu-jhsfb9xdL";
+  const TIKTOK_URL = "https://www.tiktok.com/@skywatersacredembodiment?_r=1&_t=ZS-97bHi2iASOa";
   
   return (
     <>
@@ -51,6 +54,39 @@ const AppFooter = () => {
               >
                 Privacy Policy
               </button>
+              <span className="text-white/20">|</span>
+              <a
+                href={FACEBOOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors flex items-center gap-1"
+                data-testid="footer-facebook-link"
+              >
+                <Facebook className="w-3 h-3" />
+                Facebook
+              </a>
+              <span className="text-white/20">|</span>
+              <a
+                href={YOUTUBE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors flex items-center gap-1"
+                data-testid="footer-youtube-link"
+              >
+                <Youtube className="w-3 h-3" />
+                YouTube
+              </a>
+              <span className="text-white/20">|</span>
+              <a
+                href={TIKTOK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-primary transition-colors flex items-center gap-1"
+                data-testid="footer-tiktok-link"
+              >
+                <span className="w-3 h-3 inline-flex items-center justify-center text-[10px] font-bold">♪</span>
+                TikTok
+              </a>
               <span className="text-white/20">|</span>
               <button
                 onClick={() => navigate('/terms')}
