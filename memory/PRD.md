@@ -3424,3 +3424,63 @@
 - For production parity, redeploy latest preview changes.
 
 
+## Full Immersive Synchronization Pass — Creative + Energy + Cross-Section Coherence (2026-06-28)
+
+### User direction
+- Creative Processes still felt vague.
+- Energy Healing still felt like pictures/words, not felt embodiment.
+- Requested app-wide synchrony: voice + scripture/ritual + embodiment + healing coherence (not isolated fixes).
+- Keep gating model aligned with prior app baseline.
+
+### Implemented in preview
+
+#### 1) Backend immersive metadata synchronization expanded
+- `backend/routers/content.py`
+  - Strengthened `_enrich_immersive_ritual_fields(...)` to always include voice-ready and embodiment-ready fields:
+    - `voice_script`
+    - `precision_description`
+    - `nervous_system_cues`
+    - `integration_actions`
+    - `embodiment_prompts`
+    - plus `healing_trajectory`, `ritual_practice`
+  - Ensured these fields are available consistently in key routes:
+    - `/api/creative-processes`
+    - `/api/energy-healing`
+    - `/api/water-practices`
+    - `/api/heart-practices`
+    - `/api/sound-frequencies`
+    - `/api/elemental-temples`
+    - `/api/masculine-embodiment`
+    - `/api/light-codes/sacred-geometry`
+  - Energy Healing endpoint now applies devotional enrichment + immersive field stack for all entries.
+
+#### 2) Creative Processes upgraded from static text to immersive voice experience
+- `frontend/src/pages/CreativeProcesses.jsx`
+  - Added modal voice panel: `creative-guided-voice-panel`
+  - Added `GuidedAudioButton` with deep script composition from:
+    - alchemy, ritual, ceremony, embodiment, integration, purpose fields
+  - Uses expanded ceremonial narration (not shallow summary playback).
+
+#### 3) Energy Healing upgraded to felt immersive experience
+- `frontend/src/pages/EnergyHealing.jsx`
+  - Added modal voice panel: `energy-healing-guided-voice-panel`
+  - Added `GuidedAudioButton` with deeply composed script sourced from:
+    - alchemy, ritual, ceremony, guided arc, body cues, integration actions
+  - Keeps premium lock behavior while giving coherent free-card deep experience.
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_235.json`
+  - Backend: **100% (18 passed)**
+  - Frontend: **100%**
+  - Confirmed guided voice panels and unchanged premium lock behavior.
+- Final frontend specialist quality check: PASS
+  - `/creative`, `/energy-healing`, `/water-practices`, `/heart-practices`
+  - specifically confirmed “not generic” language tone and immersive specificity
+  - no runtime UI regressions.
+
+### Current status
+- Creative + Energy are now synchronized to the same immersive voice/ritual/embodiment standard in preview.
+- Cross-section metadata structure is now aligned for ongoing consistency.
+- Since issue context includes production, redeploy required for live parity.
+
+
