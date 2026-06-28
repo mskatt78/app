@@ -126,6 +126,12 @@ PREMIUM_UNLOCK_PRODUCTS: dict[str, dict[str, Any]] = {
         "price": 69.00,
         "unlock_scope": "section",
     },
+    "energy_healing": {
+        "name": "Energy Healing Unlock",
+        "description": "Unlock all premium energy healing modalities and advanced protocols",
+        "price": 59.00,
+        "unlock_scope": "section",
+    },
     "full_app_unlock": {
         "name": "Full App Unlock",
         "description": "Unlock all premium sections across the app",
@@ -149,6 +155,7 @@ PREMIUM_SECTION_IDS = [
     "premium_breathwork",
     "rose_temple",
     "healing_portals",
+    "energy_healing",
 ]
 
 # ============ MODELS ============

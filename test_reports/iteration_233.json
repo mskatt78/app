@@ -1,0 +1,112 @@
+{
+  "summary": "Comprehensive testing of Energy Healing section deepening and free/premium tiering for iteration 233. All backend tests pass (8/8). Frontend UI tests confirm premium banner, lock badges, modal behaviors, deep sections, and filters all work correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_energy_healing_iteration233.py",
+    "/app/test_reports/pytest/pytest_iteration233.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_energy_healing_iteration233.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "test_credentials": "No credentials required - public routes tested",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Energy Healing section fully tested: 14 total practices (5 from DB + 9 supplements), 5 FREE and 9 PREMIUM. Deep fields (alchemy, ritual, ceremony, guided_practice) present on all practices. Premium lock modal works correctly for locked cards. Detail modal shows all deep sections for free cards. Filters work correctly. Premium products endpoint includes energy_healing product at $59.00.",
+  "test_results_detail": {
+    "backend_api_tests": {
+      "energy_healing_endpoint": {
+        "status": "PASS",
+        "total_practices": 14,
+        "free_count": 5,
+        "premium_count": 9,
+        "deep_fields_present": ["alchemy", "ritual", "ceremony", "guided_practice"],
+        "supplements_included": 9
+      },
+      "premium_products_endpoint": {
+        "status": "PASS",
+        "energy_healing_product": {
+          "id": "energy_healing",
+          "name": "Energy Healing Unlock",
+          "price": 59.00,
+          "unlock_scope": "section"
+        }
+      },
+      "modality_filtering": {
+        "status": "PASS",
+        "available_modalities": ["Egyptian", "Australian", "Crystal", "Sound", "Quantum", "Reiki", "Sekhem", "Dreamtime", "Pranic"]
+      }
+    },
+    "frontend_ui_tests": {
+      "page_load": {
+        "status": "PASS",
+        "no_js_crashes": true
+      },
+      "premium_banner": {
+        "status": "PASS",
+        "text": "First 5 practices are free. The rest unlock with subscription or full app access.",
+        "buttons": ["View Subscription Plans", "Full App 369.00"]
+      },
+      "premium_badges": {
+        "status": "PASS",
+        "badges_displayed": 5,
+        "note": "Premium badges shown on first 5 DB entries (sorted by ID digits)"
+      },
+      "premium_lock_modal": {
+        "status": "PASS",
+        "testid": "energy-healing-premium-lock-modal",
+        "opens_on_locked_card_click": true,
+        "has_subscription_button": true,
+        "has_fullapp_button": true
+      },
+      "detail_modal": {
+        "status": "PASS",
+        "testid": "healing-detail-modal",
+        "opens_on_free_card_click": true,
+        "deep_sections_present": ["Alchemy", "Ritual Steps", "Ceremonial Arc", "Guided Practice Arc"],
+        "additional_content": ["Ritual Tools", "Meridian & Function Links", "Body / Ailment Connections", "Embodiment Protocol"]
+      },
+      "filters": {
+        "status": "PASS",
+        "all_modalities_count": 14,
+        "reiki_filter_count": 2,
+        "crystal_filter_count": 2,
+        "filter_reset_works": true
+      }
+    },
+    "free_premium_distribution": {
+      "free_practices": [
+        "Reiki Nervous System Coherence Ritual (energy-healing-supp-101)",
+        "Sekhem Solar Channel Purification (energy-healing-supp-102)",
+        "Dreamtime Ancestral Thread Repair (energy-healing-supp-103)",
+        "Meridian Field Recalibration (energy-healing-supp-104)",
+        "Crystal Grid Emotional Harmonization (energy-healing-supp-105)"
+      ],
+      "premium_practices": [
+        "Sekhem Egyptian Healing",
+        "Aboriginal Dreamtime Healing",
+        "Crystal Healing Therapy",
+        "Sound Bath Healing",
+        "Quantum Healing",
+        "Quantum Timeline Healing Prayer",
+        "Sound Current Aura Repair",
+        "Heart Shield Restoration",
+        "Sacred Breathlight Infusion"
+      ]
+    }
+  }
+}

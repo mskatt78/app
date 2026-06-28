@@ -371,6 +371,81 @@ HEART_PRACTICE_SUPPLEMENTS = [
     {"id": "heart-supp-105", "name": "Evening Heart Coherence Seal", "category": "integration", "element": "spirit", "duration_minutes": 12, "description": "Close the day with coherence breathing and one gratitude-to-action commitment."},
 ]
 
+ENERGY_HEALING_SUPPLEMENTS = [
+    {
+        "id": "energy-healing-supp-101",
+        "name": "Reiki Nervous System Coherence Ritual",
+        "modality": "Reiki",
+        "element": "Water",
+        "duration_minutes": 24,
+        "description": "A trauma-aware Reiki sequence for grounding, vagal settling, and emotional regulation.",
+    },
+    {
+        "id": "energy-healing-supp-102",
+        "name": "Sekhem Solar Channel Purification",
+        "modality": "Sekhem",
+        "element": "Fire",
+        "duration_minutes": 26,
+        "description": "Clear stagnant density and restore empowered solar flow through breath, symbol, and voice.",
+    },
+    {
+        "id": "energy-healing-supp-103",
+        "name": "Dreamtime Ancestral Thread Repair",
+        "modality": "Dreamtime",
+        "element": "Earth",
+        "duration_minutes": 32,
+        "description": "A lineage repair protocol integrating ancestral listening, body tracking, and practical integration.",
+    },
+    {
+        "id": "energy-healing-supp-104",
+        "name": "Meridian Field Recalibration",
+        "modality": "Pranic",
+        "element": "Air",
+        "duration_minutes": 22,
+        "description": "Clear energetic congestion along major channels and restore embodied flow through breath-led scanning.",
+    },
+    {
+        "id": "energy-healing-supp-105",
+        "name": "Crystal Grid Emotional Harmonization",
+        "modality": "Crystal",
+        "element": "Water",
+        "duration_minutes": 27,
+        "description": "Use focused crystal placement to regulate emotional states and stabilize the heart field.",
+    },
+    {
+        "id": "energy-healing-supp-106",
+        "name": "Quantum Timeline Healing Prayer",
+        "modality": "Quantum",
+        "element": "Spirit",
+        "duration_minutes": 30,
+        "description": "A structured timeline prayer for release, reconciliation, and coherent future embodiment.",
+    },
+    {
+        "id": "energy-healing-supp-107",
+        "name": "Sound Current Aura Repair",
+        "modality": "Sound",
+        "element": "Air",
+        "duration_minutes": 21,
+        "description": "Layered toning protocol to soften fragmentation and rebuild auric coherence.",
+    },
+    {
+        "id": "energy-healing-supp-108",
+        "name": "Heart Shield Restoration",
+        "modality": "Reiki",
+        "element": "Spirit",
+        "duration_minutes": 19,
+        "description": "Restore compassionate boundaries and heart-field integrity after relational overextension.",
+    },
+    {
+        "id": "energy-healing-supp-109",
+        "name": "Sacred Breathlight Infusion",
+        "modality": "Pranic",
+        "element": "Fire",
+        "duration_minutes": 18,
+        "description": "Infuse low-energy states with deliberate breathlight cycles and grounded integration closure.",
+    },
+]
+
 MINDFULNESS_SUPPLEMENTS = [
     {
         "id": "mindful-threshold-walk",
@@ -604,6 +679,7 @@ SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
     "sacred_guardians": 5,
     "ancient_wisdom": 5,
     "sacred_art_therapy": 5,
+    "energy_healing": 5,
 }
 
 SECTION_PREMIUM_LABELS = {
@@ -625,6 +701,7 @@ SECTION_PREMIUM_LABELS = {
     "ancient_wisdom": "Ancient Traditions Premium",
     "sacred_allies": "Sacred Ally Premium",
     "sacred_art_therapy": "Sacred Art Premium",
+    "energy_healing": "Energy Healing Premium",
 }
 
 YOGA_SEQUENCE_OF_DAY_LIBRARY = [
@@ -2202,7 +2279,42 @@ def _enrich_energy_healing_entry(entry: dict[str, Any]) -> dict[str, Any]:
         "Digestive stress and lower belly holding",
         "Upper-back guarding linked to emotional load",
     ])
+
+    enriched.setdefault("alchemy", [
+        f"{enriched.get('name', 'This modality')} teaches that healing is relational: regulate first, reveal safely, then integrate through grounded action.",
+        "Energetic release is paired with somatic tracking so insight becomes embodied change rather than spiritual bypass.",
+        "Compassionate boundaries are not separate from healing—they are the architecture that allows energy medicine to stabilize.",
+    ])
+    enriched.setdefault("ritual", [
+        "Begin with 12 rounds of 4-in / 6-out breath while orienting to safety in your environment.",
+        "Place one hand on heart and one on lower belly, then name your intention in one clear sentence.",
+        "Close with water, journaling, and one practical integration commitment for the next 24 hours.",
+    ])
+    enriched.setdefault("ceremony", [
+        "Threshold: invoke protection, consent, and compassionate pacing before entering depth work.",
+        "Descent: alternate energetic technique with somatic check-ins every few minutes.",
+        "Closure: seal your field with gratitude, boundaries, and embodied follow-through.",
+    ])
+    enriched.setdefault("guided_practice", [
+        "Arrival: orient eyes to the room, soften shoulders, and lengthen exhale.",
+        "Activation: run one full healing sequence while tracking sensation and emotional shifts.",
+        "Integration: anchor one truth line and one real-world action before ending.",
+    ])
     return enriched
+
+
+def _append_energy_healing_supplements(practices: list[dict[str, Any]], modality: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(practice.get("id")) for practice in practices}
+    additions = []
+    modality_filter = str(modality or "").strip().lower()
+
+    for item in ENERGY_HEALING_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if modality_filter and str(item.get("modality", "")).strip().lower() != modality_filter:
+            continue
+        additions.append(item)
+    return practices + additions
 
 
 def _append_water_supplements(practices: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
@@ -5565,7 +5677,9 @@ async def get_energy_healing(modality: Optional[str] = None) -> list[dict[str, A
     if modality:
         query["modality"] = {"$regex": f"^{modality}$", "$options": "i"}
     practices = await db.energy_healing.find(query, {"_id": 0}).to_list(length=100)
-    return [_enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated") for practice in practices]
+    practices = _append_energy_healing_supplements(practices, modality)
+    enriched = [_enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated") for practice in practices]
+    return _apply_free_paid_tiering(enriched, "energy_healing")
 
 
 @router.get("/energy-healing/{practice_id}")

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Sparkles, Clock, Heart, Shield, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Clock, Heart, Shield, ChevronDown, ChevronUp, Loader2, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
 import { toast } from "sonner";
 import axios from "axios";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -21,9 +22,13 @@ const MODALITY_COLORS = {
 
 export default function EnergyHealing() {
   const navigate = useNavigate();
+  const premium = usePremiumAccess({ api, user: null });
+  const energyUnlocked = premium.isSectionUnlocked("energy_healing");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
   const [practices, setPractices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedPractice, setSelectedPractice] = useState(null);
+  const [selectedLockedPractice, setSelectedLockedPractice] = useState(null);
   const [filterModality, setFilterModality] = useState("all");
   const [expandedSection, setExpandedSection] = useState("guide");
 
@@ -35,6 +40,19 @@ export default function EnergyHealing() {
       setPractices(data);
     } catch { toast.error("Failed to load practices"); }
     finally { setLoading(false); }
+  };
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
+
+  const canAccessPractice = (practice) => !practice?.is_premium || energyUnlocked;
+
+  const handleUnlockFullApp = async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/energy-healing",
+    });
   };
 
   const modalities = ["all", ...new Set(practices.map(p => p.modality).filter(Boolean))];
@@ -64,6 +82,19 @@ export default function EnergyHealing() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
+        {!energyUnlocked && (
+          <section className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="energy-healing-premium-banner">
+            <p className="text-xs uppercase tracking-wider text-amber-200/80">Energy Healing Premium</p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="energy-healing-premium-banner-description">First 5 practices are free. The rest unlock with subscription or full app access.</p>
+            <div className="flex gap-2 mt-3">
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="energy-healing-view-subscription-button">View Subscription Plans</Button>
+              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="energy-healing-unlock-fullapp-button">
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+          </section>
+        )}
+
         <div className="flex gap-2 flex-wrap mb-8">
           {modalities.map(m => (
             <button key={m} onClick={() => setFilterModality(m)}
@@ -91,13 +122,25 @@ export default function EnergyHealing() {
                 <motion.div key={practice.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                   className={`rounded-2xl border backdrop-blur-xl cursor-pointer overflow-hidden hover:scale-[1.02] transition-all duration-300 group ${colors.border} bg-white/[0.02]`}
-                  onClick={() => { setSelectedPractice(practice); setExpandedSection("guide"); }}
+                  onClick={() => {
+                    if (!canAccessPractice(practice)) {
+                      setSelectedLockedPractice(practice);
+                      return;
+                    }
+                    setSelectedPractice(practice);
+                    setExpandedSection("guide");
+                  }}
                   data-testid={`healing-card-${practice.id}`}>
                   {practice.image_url ? (
                     <div className="relative h-44 overflow-hidden">
                       <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                       <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm`}>{practice.modality}</span>
+                      {practice.is_premium && !canAccessPractice(practice) && (
+                        <span className="absolute top-3 left-3 px-2 py-1 rounded-full text-[10px] bg-fuchsia-500/25 text-fuchsia-100 border border-fuchsia-300/40 backdrop-blur-sm" data-testid={`energy-healing-premium-badge-${practice.id}`}>
+                          <Lock className="w-3 h-3 inline mr-1" />Premium
+                        </span>
+                      )}
                     </div>
                   ) : (
                     <div className={`h-32 flex items-center justify-center ${colors.bg}`}>
@@ -149,6 +192,10 @@ export default function EnergyHealing() {
                   { key: "guide", label: "Self-Healing Guide", icon: Heart, content: selectedPractice.self_healing_guide },
                   { key: "how", label: "How It Works", icon: Sparkles, content: selectedPractice.how_it_works },
                   { key: "history", label: "History & Origin", icon: Shield, content: selectedPractice.history },
+                  { key: "alchemy", label: "Alchemy", icon: Sparkles, content: selectedPractice.alchemy },
+                  { key: "ritual", label: "Ritual Steps", icon: Heart, content: selectedPractice.ritual },
+                  { key: "ceremony", label: "Ceremonial Arc", icon: Shield, content: selectedPractice.ceremony },
+                  { key: "guided", label: "Guided Practice Arc", icon: Sparkles, content: selectedPractice.guided_practice },
                 ].filter(s => s.content).map(section => (
                   <div key={section.key} className="mb-3 border border-white/10 rounded-xl overflow-hidden">
                     <button onClick={() => setExpandedSection(expandedSection === section.key ? null : section.key)}
@@ -227,6 +274,23 @@ export default function EnergyHealing() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {selectedLockedPractice && !energyUnlocked && (
+        <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="energy-healing-premium-lock-modal">
+          <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
+            <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Energy Healing</p></div>
+            <h3 className="text-2xl font-serif mb-2" data-testid="energy-healing-premium-lock-title">{selectedLockedPractice.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="energy-healing-premium-lock-description">This modality is premium. Continue with subscription or full app access.</p>
+            <div className="grid sm:grid-cols-2 gap-2">
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="energy-healing-premium-lock-subscription-button">View Subscription Plans</Button>
+              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="energy-healing-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+            <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPractice(null)} data-testid="energy-healing-premium-lock-close-button">Close</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

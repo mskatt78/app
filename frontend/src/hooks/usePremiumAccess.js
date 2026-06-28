@@ -20,6 +20,7 @@ const EMPTY_SECTIONS = {
   ancient_wisdom: false,
   sound_frequencies: false,
   sacred_art_therapy: false,
+  energy_healing: false,
   elemental_temples: false,
   premium_mantras: false,
   premium_breathwork: false,
