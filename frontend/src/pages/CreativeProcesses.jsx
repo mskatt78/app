@@ -425,6 +425,20 @@ const CreativeProcesses = ({ user, api }) => {
                           </div>
                         )}
 
+                        {selectedProcess.ethical_materials?.length > 0 && (
+                          <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-4" data-testid="creative-ethical-sourcing-panel">
+                            <h4 className="text-xs uppercase tracking-wider text-emerald-200 mb-2">Ethical Sourcing & Reciprocity</h4>
+                            <ul className="space-y-1.5">
+                              {selectedProcess.ethical_materials.map((line) => (
+                                <li key={stableProcessKey(`ethical-material-${selectedProcess.id}`, line)} className="text-sm text-emerald-100/90 flex gap-2">
+                                  <span className="shrink-0">•</span>
+                                  <span>{line}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
                         {selectedProcess.process_steps?.length > 0 && (
                           <div>
                             <h4 className={`text-xs uppercase tracking-wider ${colors.text} mb-2`}>Practice Steps</h4>
@@ -436,6 +450,20 @@ const CreativeProcesses = ({ user, api }) => {
                                 </li>
                               ))}
                             </ol>
+                          </div>
+                        )}
+
+                        {selectedProcess.ceremony?.length > 0 && (
+                          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4" data-testid="creative-ceremony-panel">
+                            <h4 className="text-xs uppercase tracking-wider text-amber-200 mb-2">Ceremony Sequence</h4>
+                            <ul className="space-y-1.5">
+                              {selectedProcess.ceremony.map((line) => (
+                                <li key={stableProcessKey(`ceremony-line-${selectedProcess.id}`, line)} className="text-sm text-amber-100/90 flex gap-2">
+                                  <span className="shrink-0">•</span>
+                                  <span>{line}</span>
+                                </li>
+                              ))}
+                            </ul>
                           </div>
                         )}
 

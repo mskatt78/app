@@ -30,7 +30,7 @@ export const IChingHexagramModal = ({ open, hexagrams, onClose, onSelectHexagram
             onClick={(event) => event.stopPropagation()}
           >
             <div className="sticky top-0 bg-card p-4 border-b border-white/10 flex items-center justify-between">
-              <h2 className="text-xl font-serif">The 64 Hexagrams</h2>
+              <h2 className="text-xl font-serif">Hexagram Library ({hexagrams.length})</h2>
               <button onClick={onClose} className="p-2 rounded-full hover:bg-white/10" data-testid="i-ching-close-hexagram-list-button">
                 <X className="w-5 h-5" />
               </button>
@@ -56,7 +56,7 @@ export const IChingHexagramModal = ({ open, hexagrams, onClose, onSelectHexagram
                   <p className="text-xs text-muted-foreground">{hex.number}. {hex.name}</p>
                 </div>
               ))}
-              {hexagrams.length < 64 && (
+              {hexagrams.length < 14 && (
                 <div className="col-span-full text-center py-8 text-muted-foreground">
                   <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p>More hexagrams coming soon...</p>

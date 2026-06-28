@@ -2,14 +2,23 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { appLogger } from "../../utils/logger";
 import { categories } from "./lightCodeConfig";
+import { usePremiumAccess } from "../../hooks/usePremiumAccess";
 
-export const useLightCodesData = (api) => {
+export const useLightCodesData = (api, user) => {
   const [lightCodes, setLightCodes] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("sacred_geometry");
   const [selectedSymbol, setSelectedSymbol] = useState(null);
+  const [selectedLockedSymbol, setSelectedLockedSymbol] = useState(null);
   const [modalTab, setModalTab] = useState("essence");
   const contentRef = useRef(null);
+  const premium = usePremiumAccess({ api, user });
+
+  const lightCodesUnlocked = premium.isSectionUnlocked("light_codes");
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
 
   useEffect(() => {
     const fetchLightCodes = async () => {
@@ -45,6 +54,10 @@ export const useLightCodesData = (api) => {
   };
 
   const openSymbol = (symbol) => {
+    if (symbol?.is_premium && !lightCodesUnlocked) {
+      setSelectedLockedSymbol(symbol);
+      return;
+    }
     setModalTab("essence");
     setSelectedSymbol(symbol);
   };
@@ -54,11 +67,15 @@ export const useLightCodesData = (api) => {
     loading,
     activeCategory,
     selectedSymbol,
+    selectedLockedSymbol,
     modalTab,
     activeCategoryInfo,
     currentSymbols,
+    lightCodesUnlocked,
+    premium,
     contentRef,
     setSelectedSymbol,
+    setSelectedLockedSymbol,
     setModalTab,
     selectCategory,
     openSymbol,

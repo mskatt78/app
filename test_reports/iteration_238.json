@@ -1,0 +1,88 @@
+{
+  "summary": "Iteration 238 - Full QA testing of content tiering (4 free + 10 premium = 14 items), Sacred Tool Birthing ceremonial content depth, and Light Codes ceremonial embodiment features. All 26 backend tests passed. Frontend UI tests confirm all requirements met.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/light-codes/sacred-geometry (and other individual category endpoints)",
+        "issue": "Individual category endpoints do NOT include embodiment_ritual and light_coded_symbols enrichment that the main /api/light-codes endpoint provides. This is inconsistent - the main endpoint uses _enrich_light_code_payload() which adds these fields, but individual endpoints only use _enrich_devotional_language() and _enrich_content_integrity().",
+        "priority": "LOW"
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration238_tiering_lightcodes.py",
+    "/app/test_reports/pytest/pytest_iteration238.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Consider applying _enrich_light_code_payload() enrichment to individual category endpoints (/light-codes/sacred-geometry, /light-codes/ancient-alphabets, /light-codes/light-language) for consistency with main /light-codes endpoint"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration238_tiering_lightcodes.py"
+  ],
+  "success_rate": {
+    "backend": "100% (26 passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Admin: mskatt78@gmail.com / ShamanicAdmin2026!",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 238 verified: (1) Content tiering returns exactly 14 items (4 free + 10 premium) for all specified endpoints: /creative-processes?category=sacred-tool-birthing, /light-codes/sacred-geometry, /light-codes/ancient-alphabets, /light-codes/light-language, /light-codes (all 5 categories), /runes, /i-ching, /tarot/cards, /crystals/deep, /free-form-movement, /somatic-yoga, /earth-altars. (2) Sacred Tool Birthing items include ethical_materials, ceremony, ritual, guided_practice fields and include rattles, drums, wands, staffs, feathers. (3) Light Codes main endpoint includes embodiment_ritual, ceremony, light_coded_symbols for all symbol categories. (4) Light Codes UI: premium banner visible for guest, symbol cards show FREE/PREMIUM badges, Ceremonial Symbol Keys section visible, lock modal triggers for premium symbols with subscription and full app CTAs. (5) Light Code modal includes Ceremony & Symbols tab with light-coded symbols, ceremonial embodiment steps, and ceremony sequence. (6) Creative Processes modal shows Ethical Sourcing & Reciprocity panel and Ceremony Sequence panel. (7) Pricing plans unchanged: monthly $19.99, full_app_unlock $369.",
+  "test_results_detail": {
+    "content_tiering": {
+      "endpoints_tested": [
+        "/api/creative-processes?category=sacred-tool-birthing",
+        "/api/light-codes/sacred-geometry",
+        "/api/light-codes/ancient-alphabets",
+        "/api/light-codes/light-language",
+        "/api/light-codes (5 categories)",
+        "/api/runes",
+        "/api/i-ching",
+        "/api/tarot/cards",
+        "/api/crystals/deep",
+        "/api/free-form-movement",
+        "/api/somatic-yoga",
+        "/api/earth-altars"
+      ],
+      "result": "All return exactly 14 items (4 free + 10 premium)"
+    },
+    "sacred_tool_birthing_content": {
+      "fields_verified": ["ethical_materials", "ceremony", "ritual", "guided_practice", "process_steps", "spiritual_purpose"],
+      "tools_included": ["rattle", "drum", "wand", "staff", "feather"],
+      "result": "PASS - all ceremonial content fields present"
+    },
+    "light_codes_content": {
+      "main_endpoint_fields": ["embodiment_ritual", "ceremony", "light_coded_symbols", "guided_practice"],
+      "symbol_categories": ["sacred_geometry", "ancient_alphabets", "light_language_symbols", "galactic_codes", "chakra_codes"],
+      "result": "PASS - all ceremonial content fields present in main endpoint"
+    },
+    "light_codes_ui": {
+      "premium_banner": "PASS - visible for guest with 4 free + 10 premium text",
+      "symbol_badges": "PASS - FREE and PREMIUM badges on cards",
+      "ceremonial_symbol_keys_section": "PASS - visible with symbol glyphs",
+      "lock_modal": "PASS - triggers for premium symbols with subscription and full app CTAs",
+      "modal_ceremony_tab": "PASS - includes light-coded symbols, ceremonial embodiment, ceremony sequence"
+    },
+    "creative_processes_ui": {
+      "premium_banner": "PASS - visible for guest",
+      "sacred_tool_birthing_filter": "PASS - active when category param set",
+      "process_cards": "PASS - 14 cards with 10 premium badges",
+      "modal_ethical_sourcing": "PASS - Ethical Sourcing & Reciprocity panel visible",
+      "modal_ceremony": "PASS - Ceremony Sequence panel visible",
+      "lock_modal": "PASS - triggers for premium processes"
+    },
+    "pricing_regression": {
+      "plans_count": 2,
+      "monthly_price": 19.99,
+      "lifetime_price": 369.0,
+      "result": "PASS - no regressions"
+    }
+  }
+}

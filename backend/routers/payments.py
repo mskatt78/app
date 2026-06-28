@@ -131,6 +131,42 @@ PREMIUM_UNLOCK_PRODUCTS: dict[str, dict[str, Any]] = {
         "price": 59.00,
         "unlock_scope": "section",
     },
+    "light_codes": {
+        "name": "Light Codes Unlock",
+        "description": "Unlock all premium light code symbols, ceremonial transmissions, and advanced activations",
+        "price": 59.00,
+        "unlock_scope": "section",
+    },
+    "crystals": {
+        "name": "Crystals Unlock",
+        "description": "Unlock all premium crystal teachings and advanced ceremonial protocols",
+        "price": 59.00,
+        "unlock_scope": "section",
+    },
+    "tarot": {
+        "name": "Tarot Unlock",
+        "description": "Unlock all premium tarot teachings and advanced readings",
+        "price": 49.00,
+        "unlock_scope": "section",
+    },
+    "runes": {
+        "name": "Runes Unlock",
+        "description": "Unlock all premium rune teachings and spread interpretations",
+        "price": 49.00,
+        "unlock_scope": "section",
+    },
+    "i_ching": {
+        "name": "I Ching Unlock",
+        "description": "Unlock all premium I Ching transmissions and line work",
+        "price": 49.00,
+        "unlock_scope": "section",
+    },
+    "free_form_movement": {
+        "name": "Sacred Movement Unlock",
+        "description": "Unlock all premium ecstatic and free-form movement journeys",
+        "price": 49.00,
+        "unlock_scope": "section",
+    },
     "full_app_unlock": {
         "name": "Full App Unlock",
         "description": "Unlock all premium sections across the app",
@@ -155,6 +191,12 @@ PREMIUM_SECTION_IDS = [
     "rose_temple",
     "healing_portals",
     "energy_healing",
+    "light_codes",
+    "crystals",
+    "tarot",
+    "runes",
+    "i_ching",
+    "free_form_movement",
 ]
 
 # ============ MODELS ============

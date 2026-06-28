@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Eye, Sparkles } from "lucide-react";
+import { Eye, Lock, Sparkles } from "lucide-react";
 
 export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryInfo, openSymbol }) => {
   if (loading) {
@@ -50,9 +50,9 @@ export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryI
                 <h3 className="text-xl font-serif group-hover:text-primary transition-colors" data-testid={`light-code-name-${symbol.id}`}>
                   {symbol.name}
                 </h3>
-                <div className={`flex items-center gap-1 text-sm ${activeCategoryInfo?.color}`}>
-                  <Eye className="w-4 h-4" />
-                  <span>Open</span>
+                <div className={`flex items-center gap-1 text-sm ${activeCategoryInfo?.color}`} data-testid={`light-code-open-state-${symbol.id}`}>
+                  {symbol.is_premium ? <Lock className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  <span>{symbol.is_premium ? "Premium" : "Open"}</span>
                 </div>
               </div>
               <p className="text-sm text-white/70 leading-relaxed line-clamp-3" data-testid={`light-code-description-${symbol.id}`}>
@@ -61,6 +61,12 @@ export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryI
             </div>
 
             <div className="flex flex-wrap gap-2">
+              <span
+                className={`px-3 py-1 rounded-full text-[11px] uppercase tracking-[0.18em] ${symbol.is_premium ? "bg-fuchsia-500/20 text-fuchsia-100 border border-fuchsia-400/40" : "bg-emerald-500/20 text-emerald-100 border border-emerald-400/40"}`}
+                data-testid={`light-code-tier-badge-${symbol.id}`}
+              >
+                {symbol.is_premium ? "Premium" : "Free"}
+              </span>
               {symbol.healing_lens && (
                 <span className="px-3 py-1 rounded-full bg-white/8 text-[11px] uppercase tracking-[0.18em] text-white/55" data-testid={`light-code-lens-${symbol.id}`}>
                   {symbol.healing_lens}

@@ -129,6 +129,46 @@ export const LightCodeModal = ({
                   </div>
                 </TabsContent>
 
+                <TabsContent value="ceremony" className="space-y-4" data-testid="light-code-tab-content-ceremony">
+                  <div className="rounded-2xl border border-violet-500/20 bg-violet-500/10 p-5" data-testid="light-code-ceremony-symbol-band">
+                    <p className="text-xs uppercase tracking-[0.22em] text-violet-200/70 mb-3">Light-coded symbols</p>
+                    <div className="flex flex-wrap gap-2">
+                      {(selectedSymbol.light_coded_symbols || [selectedSymbol.symbol || "✧"]).map((glyph, index) => (
+                        <span
+                          key={`${selectedSymbol.id || selectedSymbol.name}-glyph-${index}`}
+                          className="px-3 py-1 rounded-full bg-black/30 border border-white/20 text-white/90"
+                          data-testid={`light-code-ceremony-glyph-${index}`}
+                        >
+                          {glyph}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-5" data-testid="light-code-ceremony-embodiment">
+                    <p className="text-xs uppercase tracking-[0.22em] text-cyan-200/70 mb-3">Ceremonial embodiment</p>
+                    <ul className="space-y-2">
+                      {(selectedSymbol.embodiment_ritual || []).map((step, index) => (
+                        <li key={`${selectedSymbol.id || selectedSymbol.name}-embodiment-${index}`} className="text-sm text-white/80 leading-relaxed flex gap-2" data-testid={`light-code-embodiment-step-${index}`}>
+                          <span className="text-cyan-300 shrink-0">{index + 1}.</span>
+                          <span>{step}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5" data-testid="light-code-ceremony-sequence">
+                    <p className="text-xs uppercase tracking-[0.22em] text-amber-200/70 mb-3">Ceremony sequence</p>
+                    <ul className="space-y-2">
+                      {(selectedSymbol.ceremony || []).map((line, index) => (
+                        <li key={`${selectedSymbol.id || selectedSymbol.name}-ceremony-${index}`} className="text-sm text-white/80 leading-relaxed" data-testid={`light-code-ceremony-step-${index}`}>
+                          • {line}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </TabsContent>
+
                 <TabsContent value="practice" className="space-y-4" data-testid="light-code-tab-content-practice">
                   <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-5">
                     <p className="text-xs uppercase tracking-[0.22em] text-emerald-200/70 mb-3">Practice guide</p>

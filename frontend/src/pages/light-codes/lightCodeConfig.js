@@ -67,5 +67,6 @@ export const modalTabs = [
   { id: "essence", label: "Essence" },
   { id: "why", label: "Why It Heals" },
   { id: "traditions", label: "Ancient Traditions" },
+  { id: "ceremony", label: "Ceremony & Symbols" },
   { id: "practice", label: "Practice Guide" },
 ];

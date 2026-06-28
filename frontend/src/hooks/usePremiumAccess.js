@@ -26,6 +26,12 @@ const EMPTY_SECTIONS = {
   premium_breathwork: false,
   rose_temple: false,
   healing_portals: false,
+  light_codes: false,
+  crystals: false,
+  tarot: false,
+  runes: false,
+  i_ching: false,
+  free_form_movement: false,
 };
 
 const SESSION_STATUS_LIMIT = 10;

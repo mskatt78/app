@@ -776,6 +776,54 @@ EARTH_CRAFTING_TOOL_SUPPLEMENTS = [
         "duration_minutes": 30,
         "description": "Dye altar cloth with natural pigments while speaking lineage blessings and boundaries.",
     },
+    {
+        "id": "earth-crafting-tool-009",
+        "name": "Sacred Tool Birthing: Medicine Drum",
+        "category": "sacred-tool-birthing",
+        "element": "Earth",
+        "duration_minutes": 42,
+        "description": "Birth a hand drum with ethically sourced hide and frame, consecrate rhythm, and seal with gratitude ceremony.",
+    },
+    {
+        "id": "earth-crafting-tool-010",
+        "name": "Sacred Tool Birthing: Ceremony Wand",
+        "category": "sacred-tool-birthing",
+        "element": "Air",
+        "duration_minutes": 34,
+        "description": "Carve and bind a ceremonial wand from naturally fallen wood, plant resins, and intention-anchored thread.",
+    },
+    {
+        "id": "earth-crafting-tool-011",
+        "name": "Sacred Tool Birthing: Prayer Staff",
+        "category": "sacred-tool-birthing",
+        "element": "Earth",
+        "duration_minutes": 48,
+        "description": "Create a walking prayer staff with lineage-safe symbols, boundary vows, and integration procession.",
+    },
+    {
+        "id": "earth-crafting-tool-012",
+        "name": "Sacred Tool Birthing: Feather Fan",
+        "category": "sacred-tool-birthing",
+        "element": "Air",
+        "duration_minutes": 29,
+        "description": "Assemble a cleansing feather fan through ethical sourcing agreements, breath prayer, and smoke-free blessing ritual.",
+    },
+    {
+        "id": "earth-crafting-tool-013",
+        "name": "Sacred Tool Birthing: Boundary Rattle Pair",
+        "category": "sacred-tool-birthing",
+        "element": "Fire",
+        "duration_minutes": 36,
+        "description": "Birth paired rattles for invocation and closure, including consent ritual and ethical material blessings.",
+    },
+    {
+        "id": "earth-crafting-tool-014",
+        "name": "Sacred Tool Birthing: Herbal Offering Bowl",
+        "category": "sacred-tool-birthing",
+        "element": "Water",
+        "duration_minutes": 27,
+        "description": "Craft an offering bowl for herbs, flowers, and prayers while honoring reciprocal harvesting ethics.",
+    },
 ]
 
 SECTION_FREE_RATIO = 0.25
@@ -800,6 +848,12 @@ SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
     "ancient_wisdom": 4,
     "sacred_art_therapy": 4,
     "energy_healing": 4,
+    "light_codes": 4,
+    "crystals": 4,
+    "tarot": 4,
+    "runes": 4,
+    "i_ching": 4,
+    "free_form_movement": 4,
 }
 
 SECTION_PREMIUM_LABELS = {
@@ -822,6 +876,12 @@ SECTION_PREMIUM_LABELS = {
     "sacred_allies": "Sacred Ally Premium",
     "sacred_art_therapy": "Sacred Art Premium",
     "energy_healing": "Energy Healing Premium",
+    "light_codes": "Light Codes Premium",
+    "crystals": "Crystals Premium",
+    "tarot": "Tarot Premium",
+    "runes": "Runes Premium",
+    "i_ching": "I Ching Premium",
+    "free_form_movement": "Sacred Movement Premium",
 }
 
 YOGA_SEQUENCE_OF_DAY_LIBRARY = [
@@ -2420,6 +2480,51 @@ def _enrich_light_code_payload(payload: dict[str, Any]) -> dict[str, Any]:
         "Anchor interpretations in breath rhythm and body sensation logs.",
         "Use repeated symbol journaling to detect stable semantic patterns.",
     ])
+
+    symbol_sections = [
+        "sacred_geometry",
+        "ancient_alphabets",
+        "light_language_symbols",
+        "galactic_codes",
+        "chakra_codes",
+    ]
+
+    for section_name in symbol_sections:
+        raw_items = enriched.get(section_name)
+        if not isinstance(raw_items, list):
+            continue
+
+        section_enriched: list[dict[str, Any]] = []
+        for symbol in raw_items:
+            if not isinstance(symbol, dict):
+                continue
+            entry = dict(symbol)
+            symbol_char = str(entry.get("symbol") or "✧")
+            entry.setdefault("light_coded_symbols", [
+                symbol_char,
+                f"{symbol_char}·{symbol_char}",
+                f"⟡ {symbol_char} ⟡",
+            ])
+            entry.setdefault("embodiment_ritual", [
+                "Stand or sit upright, place one hand on heart and one hand on lower belly.",
+                f"Inhale while tracing {symbol_char} in the air; exhale and feel where the symbol lands in the body.",
+                "Close by naming one grounded action to embody this code in daily life.",
+            ])
+            entry.setdefault("ceremony", [
+                "Opening: light a candle and ask for the highest good to guide interpretation.",
+                "Transmission: gaze softly at the symbol for several breaths, then journal sensation and meaning.",
+                "Integration: speak one vow aloud and anchor it with a practical action.",
+            ])
+            entry.setdefault("guided_practice", [
+                "Phase 1 — Orient: soften shoulders and lengthen exhale for one minute.",
+                "Phase 2 — Encode: trace the symbol slowly while breathing in a 4/6 rhythm.",
+                "Phase 3 — Integrate: walk slowly for 2 minutes and embody the chosen quality.",
+            ])
+            section_enriched.append(entry)
+
+        section_enriched = [_enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "healing-portals") for item in section_enriched]
+        enriched[section_name] = _apply_free_paid_tiering(section_enriched, "light_codes")
+
     return enriched
 
 
@@ -2563,6 +2668,53 @@ def _append_earth_crafting_supplements(items: list[dict[str, Any]], category: Op
         additions.append(item)
 
     return items + additions
+
+
+def _enrich_sacred_tool_birthing_entry(item: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(item)
+    category = str(enriched.get("category") or "").strip().lower()
+    if category != "sacred-tool-birthing":
+        return enriched
+
+    name = str(enriched.get("name") or "Sacred Tool")
+    enriched.setdefault("ethical_materials", [
+        "Use naturally shed, reclaimed, or verifiably reciprocal materials whenever possible.",
+        "Do not harvest from protected species, sacred sites without permission, or ecologies under stress.",
+        "Offer reciprocity: donation, restoration action, or community support for any gathered material.",
+    ])
+    enriched.setdefault("materials", [
+        "Natural fibers, reclaimed wood, clay, seeds, shells, stones, or ethically sourced feathers/hides",
+        "Blessing water, candle, and journal for integration notes",
+        "Thread, cord, or binding material aligned to your intention",
+    ])
+    enriched.setdefault("ritual", [
+        "Open by naming lineage respect, consent, and the purpose of the tool you are birthing.",
+        "Cleanse materials with breath, water, or smoke-free prayer while speaking gratitude aloud.",
+        "Seal the completed tool with a boundary vow: when and how it will be used in service.",
+    ])
+    enriched.setdefault("ceremony", [
+        "Threshold: orient body, invoke protection, and commit to ethical sourcing before crafting.",
+        "Creation: craft in rhythmic breath cycles, pausing for sensation check-ins every few minutes.",
+        "Consecration: dedicate the tool with a spoken prayer and one concrete integrity commitment.",
+    ])
+    enriched.setdefault("guided_practice", [
+        f"Arrival: hold {name} materials in both hands and breathe slowly for one minute.",
+        "Embodiment: craft with deliberate tempo, staying aware of jaw, shoulders, and breath rhythm.",
+        "Integration: close with gratitude, document sourcing choices, and schedule first ceremonial use.",
+    ])
+    enriched.setdefault("alchemy", [
+        f"{name} becomes medicine when craft, ethics, and devotion remain inseparable.",
+        "The tool is not an object of status; it is a relational vow between body, Earth, and service.",
+        "Every sourcing decision is part of the ceremony and shapes the spiritual integrity of the outcome.",
+    ])
+    enriched.setdefault("process_steps", [
+        "Confirm ethical origin of each material and record provenance before assembly.",
+        "Set the crafting altar with one object for gratitude and one for accountability.",
+        "Craft in silence or prayerful chanting, then pause to feel whether the tool is complete.",
+        "Consecrate with breath, water, and intention; close with a grounded integration action.",
+    ])
+    enriched.setdefault("spiritual_purpose", "Birth sacred tools through ceremonial integrity, ecological reciprocity, and embodied devotion.")
+    return enriched
 
 
 def _parse_tier_sort_value(item: dict[str, Any]) -> tuple[int, str]:
@@ -4642,19 +4794,22 @@ async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = No
     if chakra:
         query["chakras"] = {"$regex": chakra, "$options": "i"}
     
-    crystals = await db.crystals.find(query, {"_id": 0}).to_list(length=50)
-    return crystals
+    crystals = await db.crystals.find(query, {"_id": 0}).to_list(length=100)
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(crystal, "hybrid-curated"), "elemental-practices") for crystal in crystals]
+    return _apply_free_paid_tiering(enriched, "crystals")
 
 
 @router.get("/crystals/deep")
 async def get_deep_crystals() -> list[dict[str, Any]]:
     """Get deep crystal healing data with rituals, meditations, and comprehensive guidance."""
     db = get_db()
-    crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=50)
+    crystals = await db.crystals_deep.find({}, {"_id": 0}).to_list(length=100)
     if not crystals:
         from data.crystals_deep import CRYSTALS_DEEP
         crystals = CRYSTALS_DEEP
-    return await _enrich_crystals_with_verified_images(crystals, db)
+    enriched = await _enrich_crystals_with_verified_images(crystals, db)
+    devotional = [_enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "elemental-practices") for item in enriched]
+    return _apply_free_paid_tiering(devotional, "crystals")
 
 
 @router.get("/crystals/deep/{crystal_id}")
@@ -4949,7 +5104,7 @@ async def get_creative_processes(category: Optional[str] = None) -> list[dict[st
     processes = _append_earth_crafting_supplements(processes, category)
     enriched = [
         _enrich_devotional_language(
-            _enrich_content_integrity(process, "hybrid-curated"),
+            _enrich_sacred_tool_birthing_entry(_enrich_content_integrity(process, "hybrid-curated")),
             "courses",
         )
         for process in processes
@@ -4964,7 +5119,7 @@ async def get_creative_process(process_id: str) -> dict[str, Any]:
     process = await db.creative_processes.find_one({"id": process_id}, {"_id": 0})
     if not process:
         raise HTTPException(status_code=404, detail="Creative process not found")
-    return _enrich_devotional_language(_enrich_content_integrity(process, "hybrid-curated"), "courses")
+    return _enrich_devotional_language(_enrich_sacred_tool_birthing_entry(_enrich_content_integrity(process, "hybrid-curated")), "courses")
 
 
 # ============ EARTH ALTARS ============
@@ -4974,7 +5129,8 @@ async def get_earth_altars() -> list[dict[str, Any]]:
     """Get earth altars from database."""
     db = get_db()
     altars = await db.earth_altars.find({}, {"_id": 0}).to_list(length=50)
-    return [_enrich_devotional_language(_enrich_content_integrity(altar, "hybrid-curated"), "elemental-practices") for altar in altars]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(altar, "hybrid-curated"), "elemental-practices") for altar in altars]
+    return _apply_free_paid_tiering(enriched, "sacred_art_therapy")
 
 
 @router.get("/earth-altars/{altar_id}")
@@ -4995,13 +5151,14 @@ async def get_runes() -> list[dict[str, Any]]:
     """Get all Elder Futhark runes."""
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
-    return [
+    enriched = [
         _normalize_divination_image(
             _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes"),
             "runes",
         )
         for rune in runes
     ]
+    return _apply_free_paid_tiering(enriched, "runes")
 
 
 @router.get("/runes/{rune_id}")
@@ -5102,13 +5259,14 @@ async def get_hexagrams() -> list[dict[str, Any]]:
     """Get all I Ching hexagrams."""
     db = get_db()
     hexagrams = await db.i_ching.find({}, {"_id": 0}).to_list(length=70)
-    return [
+    enriched = [
         _normalize_divination_image(
             _enrich_devotional_language(_enrich_content_integrity(hexagram, "hybrid-curated"), "i-ching"),
             "i-ching",
         )
         for hexagram in hexagrams
     ]
+    return _apply_free_paid_tiering(enriched, "i_ching")
 
 
 @router.get("/i-ching/{hexagram_number}")
@@ -5195,7 +5353,8 @@ async def get_sacred_geometry() -> list[dict[str, Any]]:
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
     symbols = data.get("sacred_geometry", []) if data else []
-    return [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
+    return _apply_free_paid_tiering(enriched, "light_codes")
 
 
 @router.get("/light-codes/ancient-alphabets")
@@ -5204,7 +5363,8 @@ async def get_ancient_alphabets() -> list[dict[str, Any]]:
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
     symbols = data.get("ancient_alphabets", []) if data else []
-    return [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
+    return _apply_free_paid_tiering(enriched, "light_codes")
 
 
 @router.get("/light-codes/light-language")
@@ -5213,7 +5373,8 @@ async def get_light_language() -> list[dict[str, Any]]:
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
     symbols = data.get("light_language_symbols", []) if data else []
-    return [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
+    return _apply_free_paid_tiering(enriched, "light_codes")
 
 
 # ============ LIVE SESSIONS ROUTES ============
@@ -5646,13 +5807,14 @@ async def get_tarot_cards(arcana: Optional[str] = None) -> list[dict[str, Any]]:
     if arcana:
         query["arcana"] = {"$regex": f"^{arcana}$", "$options": "i"}
     cards = await db.tarot_cards.find(query, {"_id": 0}).to_list(length=100)
-    return [
+    enriched = [
         _normalize_divination_image(
             _enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot"),
             "tarot",
         )
         for card in cards
     ]
+    return _apply_free_paid_tiering(enriched, "tarot")
 
 
 @router.get("/tarot/cards/{card_id}")
@@ -5915,7 +6077,8 @@ async def get_sacred_geometry_collection() -> list[dict[str, Any]]:
     """Get sacred geometry guides from dedicated collection."""
     db = get_db()
     guides = await db.sacred_geometry.find({}, {"_id": 0}).to_list(length=100)
-    return guides
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(guide, "hybrid-curated"), "healing-portals") for guide in guides]
+    return _apply_free_paid_tiering(enriched, "light_codes")
 
 
 # ============ ENERGY HEALING ROUTES ============
@@ -5961,7 +6124,8 @@ async def get_free_form_movement(category: Optional[str] = None) -> list[dict[st
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     practices = await db.free_form_movement.find(query, {"_id": 0}).to_list(length=100)
-    return practices
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in practices]
+    return _apply_free_paid_tiering(enriched, "free_form_movement")
 
 
 # ============ CHAKRA CLEANSING ROUTES ============
@@ -5998,7 +6162,8 @@ async def get_somatic_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
     if style:
         query["style"] = {"$regex": f"^{style}$", "$options": "i"}
     practices = await db.somatic_yoga.find(query, {"_id": 0}).to_list(length=100)
-    return practices
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in practices]
+    return _apply_free_paid_tiering(enriched, "somatic_practices")
 
 
 @router.get("/somatic-yoga/{practice_id}")

@@ -23,13 +23,13 @@ export const LightCodesHero = ({ activeCategoryInfo }) => (
           </div>
         </div>
         <div>
-          <p className="text-xs uppercase tracking-[0.32em] text-white/40 mb-3">Symbol, sound, and subtle anatomy</p>
+          <p className="text-xs uppercase tracking-[0.32em] text-white/40 mb-3">Symbol, ceremony, and subtle anatomy</p>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif leading-[1.05] max-w-3xl">
             Light Codes for the <span className="italic text-primary">body of consciousness</span>
           </h2>
         </div>
         <p className="text-sm sm:text-base text-white/70 max-w-2xl leading-relaxed" data-testid="light-codes-hero-description">
-          This temple gathers sacred geometry, temple alphabets, DNA helix transmissions, galactic remembrance, and chakra activations into one contemplative library. Each symbol now carries deeper healing philosophy, lineage context, and practice guidance — not just a surface meaning.
+          This temple gathers sacred geometry, temple alphabets, DNA helix transmissions, galactic remembrance, and chakra activations into one ceremonial library. Each symbol now carries embodied ritual steps, light-coded glyph sequences, lineage context, and practice guidance.
         </p>
       </div>
 
