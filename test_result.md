@@ -10746,3 +10746,67 @@ frontend:
 agent_communication:
   - agent: "testing"
     message: "✅ RELEASE REGRESSION CHECK COMPLETE (2026-06-28): Comprehensive frontend regression testing completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com. ALL 6 TESTABLE REQUIREMENTS PASSED: 1) Pricing page (/pricing) - Exactly 2 offer cards visible: Monthly Membership ($19.99/month) and Lifetime Access to Everything ($369 one-time). Labels, prices, and CTAs correct. No extra pricing sections detected ✓. 2) Admin privacy visibility - Guest/non-owner: Admin button correctly hidden in TopNav, settings shortcuts, and dashboard shortcuts ✓. Owner account (mskatt78@gmail.com): Cannot test via automated OAuth flow, but code review confirms correct implementation (isAdminUser check on line 36, 130-138 in TopNav.jsx) ✓. 3) Copy/UI cleanup - Oracle page (/oracle): No 'AI' wording found in user-facing text ✓. Meditations page (/meditations): Premium banner title correctly shows 'Meditations remain open' ✓. Creative page (/creative): 'Sacred Art Premium' header text removed, correct header shows 'Creative Processes' ✓. 4) Basic usability smoke - No blank screens, major console errors, or blocking UI crashes detected across tested routes (/pricing, /oracle, /meditations, /creative). Only 4 minor non-blocking console errors (expected 401 auth errors) ✓. SUMMARY: 6 PASSED, 0 FAILED, 1 SKIPPED (owner admin visibility - OAuth only, code review confirms correct implementation). Release regression check COMPLETE. Application ready for release."
+
+  - task: "Backend regression - Tiering consistency for 9 key endpoints"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ TIERING CONSISTENCY VERIFICATION PASSED (2026-06-29): Comprehensive backend testing completed on 9 key section endpoints. ALL ENDPOINTS PASS: 1) /meditations - 14 items (4 free + 10 premium) ✓. 2) /breathwork/sessions - 14 items (4 free + 10 premium) ✓. 3) /mantras - 14 items (4 free + 10 premium) ✓. 4) /mindfulness-practices - 14 items (4 free + 10 premium) ✓. 5) /heart-practices - 14 items (4 free + 10 premium) ✓. 6) /shamanic-practices - 14 items (4 free + 10 premium) ✓. 7) /creative-processes - 14 items (4 free + 10 premium) ✓. 8) /energy-healing - 14 items (4 free + 10 premium) ✓. 9) /water-practices - 14 items (4 free + 10 premium) ✓. All endpoints return exactly 14 items with correct free/premium split. Data structure includes is_premium flag, premium_unlock_id, and premium_label fields. Tiering consistency VERIFIED across all key sections."
+
+  - task: "Backend regression - Pricing plans endpoint validation"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/payments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PRICING PLANS VALIDATION PASSED (2026-06-29): GET /api/payments/plans returns 200 with exactly 2 plans. Plan 1: id='monthly', name='Monthly Membership', price=19.99, interval='month', features array (6 items) ✓. Plan 2: id='full_app_unlock', name='Lifetime Access to Everything', price=369.0, interval='lifetime', features array (4 items) ✓. Both plans have valid numeric prices and complete feature lists. Response shape is usable by frontend with clear id, name, price, interval, and features fields. Payment methods array includes 'stripe' and 'paypal'. Pricing plans endpoint FULLY VALIDATED."
+
+  - task: "Backend regression - Retreats cleanup verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ RETREATS CLEANUP VERIFIED (2026-06-29): GET /api/retreats returns 200 with empty list []. No default placeholder retreats seeded. Cleanup requirement met. Retreats endpoint ready for user-generated content only."
+
+  - task: "Backend regression - Guided narration 7-minute floor validation"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GUIDED NARRATION FLOOR VALIDATED (2026-06-29): POST /api/content/expand-script with target_minutes=7 and use_ai=false returns 200. Response: target_minutes=7 ✓, word_count=1000 (>= 840 minimum for 7 minutes at 120 words/min) ✓, segments array non-empty ✓. All required fields present: practice_name, target_minutes, target_word_count, word_count, used_ai, paragraphs, segments. 7-minute floor requirement MET with 19% margin above minimum."
+
+  - task: "Backend regression - General stability (no 500s)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GENERAL STABILITY VERIFIED (2026-06-29): Tested 12 key endpoints for 500 errors. ALL ENDPOINTS STABLE: /health, /meditations, /breathwork/sessions, /mantras, /mindfulness-practices, /heart-practices, /shamanic-practices, /creative-processes, /energy-healing, /water-practices, /payments/plans, /retreats. All returned non-500 status codes (200 OK). No server errors detected. Backend stability CONFIRMED."
+
+agent_communication:
+  - agent: "testing"
+    message: "✅ BACKEND REGRESSION COMPLETE (2026-06-29): Comprehensive backend-focused regression testing completed on https://breathwork-sanctuary.preview.emergentagent.com/api. ALL 5 REQUIREMENTS PASSED: 1) Tiering consistency - 9 key section endpoints (/meditations, /breathwork/sessions, /mantras, /mindfulness-practices, /heart-practices, /shamanic-practices, /creative-processes, /energy-healing, /water-practices) all return exactly 14 items with 4 free + 10 premium split ✓. 2) Pricing plans - /payments/plans returns exactly 2 plans (monthly at $19.99 and full_app_unlock at $369.00) with valid price values and usable shape for frontend ✓. 3) Retreats cleanup - /retreats returns empty list [] as expected ✓. 4) Guided narration floor - POST /content/expand-script with target_minutes=7 meets minimum 7-minute floor (word_count=1000 >= 840 required, segments non-empty) ✓. 5) General stability - All 12 tested endpoints return non-500 status codes, no server errors detected ✓. SUMMARY: 13 tests executed, 13 PASSED, 0 FAILED, 0 WARNINGS. Backend release ready for deployment."
