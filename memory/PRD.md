@@ -3289,3 +3289,70 @@
 - Since original report was on production, redeploy is required to make this live.
 
 
+## Energy Healing Deepening + Explicit Gating Pass (2026-06-28)
+
+### User request
+- "Energy Healing hasn’t been deepened — expand it same as others throughout app."
+- Confirmed scope:
+  - Deepen existing + add new practices
+  - Explicit free/premium counts (not default ratio only)
+  - Issue seen on both preview + production context
+
+### Implemented in preview
+
+#### Backend
+1. `backend/routers/content.py`
+   - Added `ENERGY_HEALING_SUPPLEMENTS` (+9 new deep modalities)
+   - Added appender ` _append_energy_healing_supplements(...)`
+   - Expanded `_enrich_energy_healing_entry(...)` with deep fields:
+     - `alchemy`
+     - `ritual`
+     - `ceremony`
+     - `guided_practice`
+   - Updated `/api/energy-healing` to:
+     - include supplements
+     - apply premium tiering via `_apply_free_paid_tiering(..., "energy_healing")`
+   - Added explicit count override:
+     - `SECTION_FREE_COUNT_OVERRIDES["energy_healing"] = 5`
+   - Added premium label:
+     - `SECTION_PREMIUM_LABELS["energy_healing"] = "Energy Healing Premium"`
+
+2. `backend/routers/payments.py`
+   - Added premium unlock product:
+     - `energy_healing` ($59.00, section unlock)
+   - Added to `PREMIUM_SECTION_IDS` for entitlement consistency.
+
+#### Frontend
+1. `frontend/src/pages/EnergyHealing.jsx`
+   - Added premium gating UX parity:
+     - premium banner + subscription/full-app CTAs
+     - premium badges on locked cards
+     - premium lock modal for locked entries
+   - Preserved free-card modal access.
+   - Added deep modal sections rendering:
+     - Alchemy
+     - Ritual Steps
+     - Ceremonial Arc
+     - Guided Practice Arc
+
+2. `frontend/src/hooks/usePremiumAccess.js`
+   - Added `energy_healing` section key in `EMPTY_SECTIONS` for stable client-side gating map.
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_233.json`
+  - Backend: **100% (8/8)**
+  - Frontend: **100%**
+  - Confirmed:
+    - 14 total energy practices (5 original + 9 supplements)
+    - 5 free / 9 premium distribution
+    - deep fields present for all items
+    - premium lock modal behavior correct
+    - filters and modal flows stable
+    - premium products endpoint includes `energy_healing`
+- Frontend specialist verification: PASS (banner, lock modal, deep sections, filters).
+
+### Current status
+- Energy Healing now has parity depth + explicit gating in preview.
+- For production parity: redeploy latest preview changes to live.
+
+
