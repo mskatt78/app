@@ -9,6 +9,14 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { CrystalDetailDialog } from "./crystal-guide/CrystalDetailDialog";
 import { appLogger } from "../utils/logger";
 
+const ELEMENT_IMAGE_FALLBACK = {
+  Earth: "https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&w=1200&q=80",
+  Water: "https://images.unsplash.com/photo-1512070679279-8988d32161be?auto=format&fit=crop&w=1200&q=80",
+  Fire: "https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?auto=format&fit=crop&w=1200&q=80",
+  Air: "https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1200&q=80",
+  Spirit: "https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?auto=format&fit=crop&w=1200&q=80",
+};
+
 const elementColors = {
   Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20", glow: "shadow-emerald-500/20" },
   Water: { text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20", glow: "shadow-blue-500/20" },
@@ -175,7 +183,8 @@ const CrystalGuide = ({ user, api }) => {
       return { src: originalImage, sourceType: "fallback" };
     }
 
-    return { src: null, sourceType: null };
+    const fallbackByElement = ELEMENT_IMAGE_FALLBACK[crystal?.element] || ELEMENT_IMAGE_FALLBACK.Spirit;
+    return { src: fallbackByElement, sourceType: "default" };
   };
 
   const handleImageError = (crystalId, sourceType) => {

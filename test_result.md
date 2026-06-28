@@ -10427,3 +10427,199 @@ agent_communication:
     message: "FOCUSED FRONTEND VERIFICATION COMPLETE (2026-06-28): Comprehensive testing completed on 4 user flows as requested. RESULTS: ✅ Sacred Allies page/modal (/sacred-ally-alchemy) - All sections render correctly, modal opens/closes properly, 310 cards loaded. ✅ Angelic Alchemy page/modal (/angelic-alchemy) - All sections render correctly, modal opens/closes properly, 98 cards loaded. ✅ Ancient Wisdom modal (/ancient-wisdom) - All sections render correctly, no overflow issues detected, 110 cards loaded. ✅ App Store readiness route (/app-readiness) - Page loads correctly, all checklist cards interactive, 7 asset items + 5 QA items + 15 metadata items present. IMPORTANT NOTE: App Store readiness route is /app-readiness (not /app-store-readiness). All 4 flows PASSED with no regressions detected. Screenshots captured for visual verification."
   - agent: "testing"
     message: "FINAL FRONTEND VERIFICATION BEFORE HANDOFF COMPLETE (2026-06-28): Comprehensive testing completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com for 5 critical flows. ALL TESTS PASSED: 1) /mantras - Mantra modal opens correctly, all 4 depth sections render (mantra-alchemy-teachings, mantra-ritual-list, mantra-ceremony-list, mantra-guided-practice-arc), modal dimensions 512x972px with NO visual overflow at desktop width ✓. 2) /mudras - Mudra modal opens correctly, all 4 depth sections render (mudra-alchemy-teachings, mudra-ritual-list, mudra-ceremony-list, mudra-guided-practice-arc) ✓. 3) /app-readiness - New section app-readiness-real-device-shotlist-card exists ✓, row app-readiness-real-device-shot-shot-home exists ✓, checkbox toggle updates progress text correctly (0% → 11%) ✓. 4) /sound-frequencies - All 3 depth blocks render (sound-frequency-alchemy-teachings, sound-frequency-ceremony-list, sound-frequency-guided-practice-arc), no crashes ✓. 5) /tarot - All 3 depth blocks render (tarot-alchemy-teachings, tarot-ceremony-list, tarot-guided-practice-arc), 22 cards loaded, no crashes ✓. NO REGRESSIONS DETECTED. All modal sections rendering correctly with proper content. Application ready for handoff."
+
+  - task: "Final validation - Yoga poses API tiering (4 free, rest premium)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/yoga/poses returns 200 with 78 total poses. Tiering verified: 4 free, 74 premium. Exactly 4 free poses as expected. PASSED."
+
+  - task: "Final validation - Somatic API tiering (4 free, rest premium)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/somatic returns 200 with 39 total practices. Tiering verified: 4 free, 35 premium. Exactly 4 free practices as expected. PASSED."
+
+  - task: "Final validation - Breathwork sessions API tiering (5 free, rest premium)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/breathwork/sessions returns 200 with 16 total sessions. Tiering verified: 5 free, 11 premium. Exactly 5 free sessions as expected. PASSED."
+
+  - task: "Final validation - Meditations API tiering (4 free, 10 premium, 14 total)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/meditations returns 200 with exactly 14 total meditations. Tiering verified: 4 free, 10 premium. All counts match expectations. PASSED."
+
+  - task: "Final validation - Mindfulness API tiering (5 free, 12 premium, 17 total)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/mindfulness returns 200 with exactly 17 total practices. Tiering verified: 5 free, 12 premium. All counts match expectations. PASSED."
+
+  - task: "Final validation - Mantras API tiering (11 free, 25 premium, 36 total)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/mantras returns 200 with exactly 36 total mantras. Tiering verified: 11 free, 25 premium. All counts match expectations. PASSED."
+
+  - task: "Final validation - Water practices API tiering (5 free, 12 premium, 17 total)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/water-practices returns 200 with exactly 17 total practices. Tiering verified: 5 free, 12 premium. All counts match expectations. PASSED."
+
+  - task: "Final validation - Heart practices API tiering (5 free, 10 premium, 15 total)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/heart-practices returns 200 with exactly 15 total practices. Tiering verified: 5 free, 10 premium. All counts match expectations. PASSED."
+
+  - task: "Final validation - Sacred Ally Alchemy API tiering (5 free, rest premium)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/sacred-ally-alchemy returns 200 with 31 total cards. Tiering verified: 5 free, 26 premium. Exactly 5 free cards as expected. PASSED."
+
+  - task: "Final validation - Angelic Alchemy API tiering (5 free, rest premium)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/angelic-alchemy returns 200 with 8 total cards. Tiering verified: 5 free, 3 premium. Exactly 5 free cards as expected. PASSED."
+
+  - task: "Final validation - Sacred Guardians API tiering (5 free, rest premium)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/sacred-guardians returns 200 with 37 total guardians. Tiering verified: 5 free, 32 premium. Exactly 5 free guardians as expected. PASSED."
+
+  - task: "Final validation - Ancient Wisdom API tiering (5 free, rest premium)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/ancient-wisdom returns 200 with 110 total wisdom entries. Tiering verified: 5 free, 105 premium. Exactly 5 free entries as expected. PASSED."
+
+  - task: "Final validation - Creative processes API with premium flags and categories"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/creative-processes returns 200 with premium flags present. Earth-crafting entries: 4 items. Sacred-tool-birthing entries: 4 items. All requirements met. PASSED."
+
+  - task: "Final validation - Creative processes earth-crafting category filter"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/creative-processes?category=earth-crafting returns 200 with 4 items (non-empty). Category filter working correctly. PASSED."
+
+  - task: "Final validation - Creative processes sacred-tool-birthing category filter"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/creative-processes?category=sacred-tool-birthing returns 200 with 4 items (non-empty). Category filter working correctly. PASSED."
+
+  - task: "Final validation - Oracle cards coyote image correctness"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/oracle/cards returns 200. Coyote card found with correct coyote image URL: https://upload.wikimedia.org/wikipedia/commons/8/80/2009-Coyote-YNP.jpg (NOT flower image). Image correctness verified. PASSED."
+
+agent_communication:
+  - agent: "testing"
+    message: "FINAL BACKEND VALIDATION COMPLETE (2026-06-28): Comprehensive backend testing completed on preview deployment https://breathwork-sanctuary.preview.emergentagent.com. ALL 16 BACKEND TESTS PASSED: 1) API counts and tiering expectations verified for 12 endpoints (yoga/poses, somatic, breathwork/sessions, meditations, mindfulness, mantras, water-practices, heart-practices, sacred-ally-alchemy, angelic-alchemy, sacred-guardians, ancient-wisdom) - all counts and free/premium splits match exact requirements ✓. 2) Creative processes API verified with premium flags, earth-crafting entries (4), sacred-tool-birthing entries (4), and both category filters working correctly ✓. 3) Oracle cards coyote image verified as correct coyote image URL (not flower) ✓. FRONTEND TESTING NOT PERFORMED: Items 3-5 from review request (frontend lock behavior, crystal images, main menu navigation) are frontend-only tests and outside testing agent scope per system instructions. Main agent should verify these frontend aspects or request user validation."
