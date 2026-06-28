@@ -910,7 +910,23 @@ export default function SacredAllyAlchemy({ api }) {
     });
   }, [allies, allyFilter]);
 
-  const cards = filteredAllies;
+  const kundaliniCards = useMemo(
+    () => allies.filter((item) => {
+      const id = String(item?.id || "").toLowerCase();
+      const allyType = String(item?.ally_type || "").toLowerCase();
+      const name = String(item?.name || "").toLowerCase();
+      const description = String(item?.description || "").toLowerCase();
+      return id.includes("kundalini") || allyType.includes("serpent") || name.includes("kundalini") || description.includes("kundalini");
+    }),
+    [allies]
+  );
+
+  const isKundaliniRoute = useMemo(() => {
+    const path = String(window.location.pathname || "").toLowerCase();
+    return path.includes("kundalini") || path.includes("kundulini");
+  }, []);
+
+  const cards = isKundaliniRoute ? kundaliniCards : filteredAllies;
 
   const requestDailyRecommendation = async () => {
     setDailyLoading(true);
@@ -1022,6 +1038,11 @@ export default function SacredAllyAlchemy({ api }) {
           <p className="text-sm text-muted-foreground leading-relaxed">
             Work deeply with Dragon Alchemy, Fairies, Wolves, Whales with Song Lines, Dolphins, and expanded Sacred Allies. Archangelic work now lives in its own dedicated section.
           </p>
+          {isKundaliniRoute && (
+            <p className="text-sm text-orange-200/90 mt-3" data-testid="kundalini-consciousness-route-note">
+              Kundalini Consciousness view is active: showing serpent-life-force allies and related embodied pathways.
+            </p>
+          )}
         </div>
 
         <div className="flex flex-wrap gap-2" data-testid="sacred-ally-filters">
@@ -1049,6 +1070,19 @@ export default function SacredAllyAlchemy({ api }) {
           <div className="h-56 rounded-2xl border border-white/10 bg-card/40 animate-pulse" data-testid="sacred-ally-loading" />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" data-testid="sacred-ally-grid">
+            {cards.length === 0 && (
+              <div className="col-span-full rounded-2xl border border-orange-500/30 bg-orange-500/10 p-5" data-testid="sacred-ally-empty-fallback">
+                <p className="text-sm text-orange-100">No allies matched this view yet. Resetting to all Sacred Allies.</p>
+                <Button
+                  variant="outline"
+                  className="mt-3 border-orange-400/40 text-orange-100"
+                  onClick={() => setAllyFilter("all")}
+                  data-testid="sacred-ally-empty-reset-button"
+                >
+                  Show All Sacred Allies
+                </Button>
+              </div>
+            )}
             {cards.map((item) => (
               <div
                 key={item.id}

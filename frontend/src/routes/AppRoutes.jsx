@@ -200,6 +200,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/creative-expression" element={publicElement(CreativeProcesses, PublicRoute, api)} />
       <Route path="/ecstatic-dance" element={publicElement(FreeFormMovement, PublicRoute, api)} />
       <Route path="/kundalini-consciousness" element={publicElement(SacredAllyAlchemy, PublicRoute, api)} />
+      <Route path="/kundulini-consciousness" element={publicElement(SacredAllyAlchemy, PublicRoute, api)} />
       <Route path="/voice-activation" element={publicElement(SoundFrequencies, PublicRoute, api)} />
       <Route path="/sun-moon" element={publicElement(AstrologyCalendar, PublicRoute, api)} />
       <Route path="/practice-journal" element={publicElement(PracticeJournal, PublicRoute, api)} />

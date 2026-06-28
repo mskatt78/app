@@ -79,6 +79,7 @@ const BottomNav = ({ user }) => {
     { path: resolvePath("/sacred-ally-alchemy"), icon: Sparkles, label: "Sacred Allies", color: "text-fuchsia-300" },
     { path: resolvePath("/creative", "/creative-processes"), icon: Palette, label: "Creative Expression", color: "text-violet-400" },
     { path: resolvePath("/free-form-movement"), icon: Flame, label: "Ecstatic Dance", color: "text-fuchsia-400" },
+    { path: resolvePath("/kundalini-consciousness", "/sacred-ally-alchemy"), icon: Wind, label: "Kundalini Consciousness", color: "text-orange-300" },
     { path: resolvePath("/numerology"), icon: Hash, label: "Numerology", color: "text-amber-400" },
     { path: resolvePath("/birth-chart"), icon: Star, label: "Birth Chart", color: "text-yellow-400" },
     { path: resolvePath("/oracle"), icon: Moon, label: "Oracle", color: "text-purple-400" },
@@ -86,6 +87,8 @@ const BottomNav = ({ user }) => {
     { path: resolvePath("/i-ching"), icon: Sparkles, label: "I Ching", color: "text-red-300" },
     { path: resolvePath("/gene-keys"), icon: Star, label: "Gene Keys", color: "text-violet-300" },
     { path: resolvePath("/human-design"), icon: Sparkles, label: "Human Design", color: "text-indigo-300" },
+    { path: resolvePath("/archangels"), icon: Star, label: "Archangels", color: "text-amber-300" },
+    { path: resolvePath("/angelic-alchemy"), icon: Sparkles, label: "Angelic Alchemy", color: "text-cyan-300" },
   ];
 
   const isActive = (path) => location.pathname === path;

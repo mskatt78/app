@@ -148,7 +148,7 @@ const MainMenuContainer = ({ user }) => {
         { path: resolvePath("/sound-frequencies"), icon: Volume2, label: "Voice Activation", color: "text-cyan-300", desc: "Toning, resonance, expression" },
         { path: "/creative", icon: Palette, label: "Sacred Art", color: "text-violet-400", desc: "Creative expression" },
         { path: resolvePath("/free-form-movement"), icon: Wind, label: "Ecstatic Dance", color: "text-fuchsia-400", desc: "Liberation through movement" },
-        { path: resolvePath("/sacred-ally-alchemy"), icon: Dna, label: "Kundalini Consciousness", color: "text-orange-300", desc: "Serpent current awakening" },
+        { path: resolvePath("/kundalini-consciousness", "/sacred-ally-alchemy"), icon: Dna, label: "Kundalini Consciousness", color: "text-orange-300", desc: "Serpent current awakening" },
       ]
     },
     {

@@ -427,6 +427,28 @@ const mergeArchangels = (items) => {
   }));
 };
 
+const mapOracleArchangelsToAngelicCards = (oracleCards = []) =>
+  (oracleCards || []).map((archangel) => ({
+    id: `oracle-${archangel.id}`,
+    name: `${archangel.name} · Oracle Transmission`,
+    angelic_order: "Archangel",
+    category: "angelic",
+    sacred_geometry: archangel.symbol || "Sacred Seal",
+    element: archangel.element || "Spirit",
+    description: archangel.domain || archangel.message || "Archangelic transmission",
+    alchemy_teachings: archangel.keywords || ["Guidance", "Protection", "Embodiment"],
+    practical_rituals: [archangel.how_to_invoke].filter(Boolean),
+    ceremonies: [archangel.prayer].filter(Boolean),
+    guided_practice: [archangel.message].filter(Boolean),
+    journal_prompts: [
+      `What is ${archangel.name} asking me to embody right now?`,
+      `Which practical action aligns with this guidance today?`,
+    ],
+    affirmations: [archangel.affirmation].filter(Boolean),
+    image_url: archangel.image_url,
+    source_references: ["/oracle/archangels"],
+  }));
+
 const safeItem = (value) => String(value || "").trim();
 
 const deepArchangelLine = (sectionTitle, baseText, index) => {
@@ -587,8 +609,12 @@ const AngelicAlchemy = ({ api }) => {
     const load = async () => {
       setLoading(true);
       try {
-        const { data } = await api.get("/angelic-alchemy");
-        const rows = mergeArchangels(data);
+        const [{ data }, { data: oracleData }] = await Promise.all([
+          api.get("/angelic-alchemy"),
+          api.get("/oracle/archangels"),
+        ]);
+        const oracleRows = mapOracleArchangelsToAngelicCards(Array.isArray(oracleData) ? oracleData : []);
+        const rows = mergeArchangels([...(Array.isArray(data) ? data : []), ...oracleRows]);
         setAngels(rows.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""))));
       } catch (error) {
         appLogger.error("Failed loading Angelic Alchemy", error);

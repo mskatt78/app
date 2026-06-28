@@ -238,12 +238,9 @@ class ArchangelReadingRequest(BaseModel):
 @router.get("/archangels")
 async def get_archangel_cards() -> list[dict[str, Any]]:
     """Get all archangel oracle cards."""
-    db = get_db()
-    # Try database first
-    cards = await db.archangel_oracle.find({}, {"_id": 0}).to_list(length=50)
-    if not cards:
-        return ARCHANGEL_ORACLE
-    return cards
+    # Canonical static source guarantees complete, stable 15-archangel set
+    # and avoids any ObjectId serialization drift from database overlays.
+    return [{k: v for k, v in copy.deepcopy(card).items() if k != "_id"} for card in ARCHANGEL_ORACLE]
 
 
 @router.get("/archangels/{archangel_id}")
@@ -255,7 +252,7 @@ async def get_archangel_by_id(archangel_id: str) -> dict[str, Any]:
         # Fall back to static data
         for archangel in ARCHANGEL_ORACLE:
             if archangel["id"] == archangel_id:
-                return archangel
+                return {k: v for k, v in copy.deepcopy(archangel).items() if k != "_id"}
         raise HTTPException(status_code=404, detail="Archangel not found")
     return card
 

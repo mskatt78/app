@@ -5501,7 +5501,11 @@ async def get_sacred_ally_alchemy(category: Optional[str] = None, ally_type: Opt
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     if ally_type:
-        query["ally_type"] = {"$regex": f"^{ally_type}$", "$options": "i"}
+        normalized_ally_type = str(ally_type or "").strip().lower()
+        if normalized_ally_type in {"kundalini", "kundulini", "serpent-kundalini", "kundalini-consciousness"}:
+            query["ally_type"] = {"$regex": "^serpent$", "$options": "i"}
+        else:
+            query["ally_type"] = {"$regex": f"^{ally_type}$", "$options": "i"}
 
     items = await db.sacred_ally_alchemy.find(query, {"_id": 0}).to_list(length=300)
     enriched = [
