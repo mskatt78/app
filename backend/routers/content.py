@@ -2584,6 +2584,29 @@ def _expand_section_items_to_target(items: list[dict[str, Any]], unlock_id: str)
     expanded_items = [dict(item) for item in items]
     source_items = [dict(item) for item in items]
     section_title = _humanize_unlock_id(unlock_id)
+    ceremonial_templates = [
+        "Open sacred space, name your intention, and invite your body to soften before beginning.",
+        "Move slowly through each phase while tracking breath, pulse, and emotional texture with compassion.",
+        "Close with grounding: hand to heart, hand to belly, and one clear integration commitment for today.",
+    ]
+    domain_seed = unlock_id.lower().strip()
+
+    domain_focus_map = {
+        "sacred_guardians": "Call your allies with humility and listen for guidance through sensation, image, and felt knowing.",
+        "sacred_ally_alchemy": "Practice relational alchemy: transmute reactivity into truth-telling, coherent breath, and embodied choice.",
+        "angelic_alchemy": "Anchor celestial guidance through practical devotion, clean boundaries, and compassionate action.",
+        "healing_portals": "Treat each round as nervous-system medicine: orient, regulate, release, and integrate before advancing.",
+        "elemental_temples": "Work elementally: earth for stability, water for flow, fire for courage, air for perspective, spirit for unity.",
+        "sound_frequencies": "Use tone, humming, and silence cycles to restore coherence across breath, fascia, and emotional field.",
+        "creative_processes": "Create as ceremony: gather materials prayerfully, build rhythm, and witness meaning as it emerges.",
+        "yoga_poses": "Prioritize alignment and safety, then add subtle bandha awareness and devotional breath pacing.",
+        "somatic_movement": "Favor slow transitions and pendulation so fascia unwinds without overwhelm.",
+        "breathwork_sessions": "Maintain a gentle intensity ladder and return to longer exhale phases for integration.",
+    }
+
+    default_domain_focus = (
+        "Hold this as a devotional practice: regulate pace, deepen embodiment, and complete with grounded integration."
+    )
     extension_index = 1
 
     while len(expanded_items) < SECTION_MAX_TIER_ITEMS:
@@ -2605,14 +2628,35 @@ def _expand_section_items_to_target(items: list[dict[str, Any]], unlock_id: str)
         if "title" in extension_item:
             extension_item["title"] = extension_title
 
-        deepening_suffix = (
-            "Slow your pace, hold each phase longer, and complete with a full-body grounding reflection."
-        )
+        ceremonial_line = ceremonial_templates[(extension_index - 1) % len(ceremonial_templates)]
+        domain_focus = domain_focus_map.get(domain_seed, default_domain_focus)
+        deepening_suffix = f"{ceremonial_line} {domain_focus}"
         extension_item["description"] = (
             f"{base_description} {deepening_suffix}".strip()
             if base_description
             else f"{section_title} deepening sequence {extension_index}. {deepening_suffix}"
         )
+
+        extension_item["alchemy"] = [
+            f"{section_title} deepening {extension_index}: breathe into your center and choose coherence over urgency.",
+            "Witness the pattern kindly, then transmute it through paced breath and aligned action.",
+            domain_focus,
+        ]
+        extension_item["ritual"] = [
+            "Light a candle or set a simple anchor object before beginning.",
+            "Speak one sentence of intention out loud, then begin with three slow exhales.",
+            "Close by journaling one practical integration step for the next 24 hours.",
+        ]
+        extension_item["ceremony"] = [
+            "Opening: orient to the room, feel your feet, and invite sacred presence.",
+            "Middle: complete the core sequence at a sustainable pace with devotional attention.",
+            "Closing: gratitude breath, integration touchpoint, and conscious return.",
+        ]
+        extension_item["guided_practice"] = [
+            "Phase 1 (Arrival): soften jaw, shoulders, and breath without forcing.",
+            "Phase 2 (Embodiment): continue slowly while tracking sensation and emotional movement.",
+            "Phase 3 (Integration): lengthen exhale and complete with grounded reflection.",
+        ]
 
         expanded_items.append(extension_item)
         extension_index += 1

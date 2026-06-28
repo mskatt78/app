@@ -17,6 +17,30 @@ import DailyPracticeWidget from "../../components/DailyPracticeWidget";
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 const AUTH_PROVIDER_URL = process.env.REACT_APP_AUTH_PROVIDER_URL;
 
+const routeExists = (path) => {
+  const normalized = String(path || "").split("?")[0].split("#")[0].replace(/\/$/, "") || "/";
+  const knownRoutes = new Set([
+    "/", "/menu", "/dashboard", "/yoga", "/partner-yoga", "/breathwork", "/meditations", "/crystals",
+    "/mantras", "/mudras", "/mindfulness", "/grounding", "/somatic", "/shamanic", "/elemental",
+    "/elemental-practices", "/heart-practices", "/sacred-ally-alchemy", "/angelic-alchemy", "/healing-portals",
+    "/creative", "/creative-processes", "/numerology", "/birth-chart", "/oracle", "/astrology",
+    "/rose-temple", "/elemental-temples", "/masculine-temple", "/seasonal-temple", "/sunrise-sunset",
+    "/water-practices", "/tarot", "/rune-readings", "/i-ching", "/gene-keys", "/human-design",
+    "/sacred-guardians", "/ancient-wisdom", "/sound-frequencies", "/free-form-movement", "/somatic-yoga",
+    "/chakra-cleansing", "/energy-healing", "/daily-practice", "/practice-journal", "/profile-calculator",
+    "/community", "/courses", "/retreats", "/pricing", "/reviews", "/archangels", "/earth-altars",
+  ]);
+  return knownRoutes.has(normalized);
+};
+
+const resolvePath = (primary, ...fallbacks) => {
+  const candidates = [primary, ...fallbacks].filter(Boolean);
+  for (const candidate of candidates) {
+    if (routeExists(candidate)) return candidate;
+  }
+  return primary;
+};
+
 const MainMenuContainer = ({ user }) => {
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -80,6 +104,8 @@ const MainMenuContainer = ({ user }) => {
       title: "Movement & Body",
       items: [
         { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400", desc: "78 sacred poses" },
+        { path: resolvePath("/somatic-yoga"), icon: Users, label: "Chair Yoga", color: "text-lime-300", desc: "Accessible mobility sequences" },
+        { path: resolvePath("/somatic", "/yoga"), icon: Waves, label: "Fascia Stretching", color: "text-cyan-300", desc: "Myofascial release + embodiment" },
         { path: "/breathwork", icon: Wind, label: "Breathwork", color: "text-cyan-400", desc: "Pranayama practices" },
         { path: "/mudras", icon: Hand, label: "Mudras", color: "text-orange-400", desc: "Sacred hand gestures" },
         { path: "/somatic", icon: Flame, label: "Somatic Movement", color: "text-red-400", desc: "Tai Chi & Qigong" },
@@ -112,11 +138,17 @@ const MainMenuContainer = ({ user }) => {
         { path: "/shamanic", icon: Moon, label: "Shamanic Practices", color: "text-indigo-400", desc: "Journey & soul retrieval" },
         { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening ceremonies" },
         { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Allies Alchemy", color: "text-fuchsia-300", desc: "Dragon, whales, wolves & expanded allies" },
+        { path: resolvePath("/sacred-guardians"), icon: Feather, label: "Power Animals", color: "text-emerald-300", desc: "Instinct, courage, protection" },
+        { path: resolvePath("/sacred-guardians"), icon: Star, label: "Spirit Animals", color: "text-violet-300", desc: "Guidance through symbols & dreams" },
+        { path: resolvePath("/sacred-ally-alchemy"), icon: Globe, label: "Galactic Allies", color: "text-cyan-300", desc: "Stellar lineages & transmissions" },
         { path: "/angelic-alchemy", icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300", desc: "Dedicated Archangel section" },
         { path: "/sacred-guardians", icon: Feather, label: "Sacred Guardians", color: "text-amber-400", desc: "Animals, dragons & angels" },
         { path: "/ancient-wisdom", icon: Globe, label: "Ancient Traditions", color: "text-yellow-400", desc: "Egyptian, Celtic & Avalon" },
         { path: "/sound-frequencies", icon: Volume2, label: "Sound Healing", color: "text-cyan-400", desc: "Frequencies & vibration" },
+        { path: resolvePath("/sound-frequencies"), icon: Volume2, label: "Voice Activation", color: "text-cyan-300", desc: "Toning, resonance, expression" },
         { path: "/creative", icon: Palette, label: "Sacred Art", color: "text-violet-400", desc: "Creative expression" },
+        { path: resolvePath("/free-form-movement"), icon: Wind, label: "Ecstatic Dance", color: "text-fuchsia-400", desc: "Liberation through movement" },
+        { path: resolvePath("/sacred-ally-alchemy"), icon: Dna, label: "Kundalini Consciousness", color: "text-orange-300", desc: "Serpent current awakening" },
       ]
     },
     {
@@ -130,6 +162,7 @@ const MainMenuContainer = ({ user }) => {
         { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
         { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400", desc: "Life path numbers" },
         { path: "/astrology", icon: Moon, label: "Moon Calendar", color: "text-blue-400", desc: "Lunar cycles & phases" },
+        { path: resolvePath("/astrology"), icon: Sunrise, label: "Sun & Moon", color: "text-yellow-300", desc: "Solar-lunar integration" },
         { path: "/gene-keys", icon: Dna, label: "Gene Keys", color: "text-violet-400", desc: "Shadow to Siddhi" },
         { path: "/human-design", icon: Hexagon, label: "Human Design", color: "text-indigo-400", desc: "Your energetic blueprint" },
         { path: "/profile-calculator", icon: Calculator, label: "Profile Calculator", color: "text-pink-400", desc: "Discover your type" },
@@ -140,7 +173,9 @@ const MainMenuContainer = ({ user }) => {
       items: [
         { path: "/crystals", icon: Gem, label: "Crystal Guide", color: "text-pink-400", desc: "42 healing stones" },
         { path: "/light-codes", icon: Hexagon, label: "Light Codes", color: "text-violet-400", desc: "Sacred geometry" },
-        { path: "/creative?category=earth-crafting", icon: Mountain, label: "Earth Crafting & Tool Birthing", color: "text-emerald-300", desc: "Create sacred tools & ritual objects" },
+        { path: "/creative?category=earth-crafting", icon: Mountain, label: "Earth Art Sacred Tool Birthing", color: "text-emerald-300", desc: "Create sacred tools & ritual objects" },
+        { path: resolvePath("/earth-altars", "/creative"), icon: Globe, label: "Earth Medicines", color: "text-emerald-300", desc: "Plant & earth altar pathways" },
+        { path: resolvePath("/angelic-alchemy"), icon: Sparkles, label: "Alchemy", color: "text-violet-300", desc: "Embodied transformation practices" },
       ]
     },
     {

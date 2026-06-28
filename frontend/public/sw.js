@@ -1,5 +1,5 @@
 // Service Worker for Temple of the Soul - Offline Support
-const CACHE_VERSION = 'v5';
+const CACHE_VERSION = 'v6';
 const STATIC_CACHE = `temple-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `temple-dynamic-${CACHE_VERSION}`;
 
@@ -17,15 +17,25 @@ const STATIC_ASSETS = [
 // API routes that can be cached
 const CACHEABLE_API_ROUTES = [
   '/api/meditations',
-  '/api/yoga-poses',
-  '/api/breathwork',
+  '/api/yoga/poses',
+  '/api/breathwork/sessions',
   '/api/mantras',
   '/api/mudras',
   '/api/crystals',
-  '/api/oracle-cards',
+  '/api/oracle/cards',
   '/api/runes',
-  '/api/iching',
-  '/api/light-codes'
+  '/api/i-ching',
+  '/api/light-codes',
+  '/api/sacred-guardians',
+  '/api/sacred-ally-alchemy',
+  '/api/angelic-alchemy',
+  '/api/sound-frequencies',
+  '/api/healing-portals',
+  '/api/elemental-temples',
+  '/api/creative-processes',
+  '/api/ancient-wisdom',
+  '/api/tarot/cards',
+  '/api/numerology/life-paths'
 ];
 
 // Install event - cache static assets
@@ -96,14 +106,32 @@ async function handleApiRequest(request) {
   const url = new URL(request.url);
   const isCacheable = CACHEABLE_API_ROUTES.some(route => url.pathname.includes(route));
 
+  if (isCacheable) {
+    try {
+      const networkResponse = await fetch(request, { cache: 'no-store' });
+      if (networkResponse.ok) {
+        const cache = await caches.open(DYNAMIC_CACHE);
+        cache.put(request, networkResponse.clone());
+      }
+      return networkResponse;
+    } catch (error) {
+      const cachedResponse = await caches.match(request);
+      if (cachedResponse) {
+        fetchAndCache(request);
+        return cachedResponse;
+      }
+      return new Response(
+        JSON.stringify({ error: 'Offline - Please check your connection' }),
+        {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' }
+        }
+      );
+    }
+  }
+
   try {
     const networkResponse = await fetch(request);
-    
-    // Cache successful GET requests for cacheable routes
-    if (networkResponse.ok && isCacheable) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put(request, networkResponse.clone());
-    }
     
     return networkResponse;
   } catch (error) {

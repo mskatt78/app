@@ -13,6 +13,7 @@ import {
   Moon,
   Hash,
   Star,
+  Users,
   Menu,
   X,
   Home,
@@ -20,6 +21,30 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+const routeExists = (path) => {
+  const normalized = String(path || "").split("?")[0].split("#")[0].replace(/\/$/, "") || "/";
+  const knownRoutes = new Set([
+    "/", "/menu", "/dashboard", "/yoga", "/partner-yoga", "/breathwork", "/meditations", "/crystals",
+    "/mantras", "/mudras", "/mindfulness", "/grounding", "/somatic", "/shamanic", "/elemental",
+    "/elemental-practices", "/heart-practices", "/sacred-ally-alchemy", "/angelic-alchemy", "/healing-portals",
+    "/creative", "/creative-processes", "/numerology", "/birth-chart", "/oracle", "/astrology",
+    "/rose-temple", "/elemental-temples", "/masculine-temple", "/seasonal-temple", "/sunrise-sunset",
+    "/water-practices", "/tarot", "/rune-readings", "/i-ching", "/gene-keys", "/human-design",
+    "/sacred-guardians", "/ancient-wisdom", "/sound-frequencies", "/free-form-movement", "/somatic-yoga",
+    "/chakra-cleansing", "/energy-healing", "/daily-practice", "/practice-journal", "/profile-calculator",
+    "/community", "/courses", "/retreats", "/pricing", "/reviews", "/archangels", "/earth-altars",
+  ]);
+  return knownRoutes.has(normalized);
+};
+
+const resolvePath = (primary, ...fallbacks) => {
+  const candidates = [primary, ...fallbacks].filter(Boolean);
+  for (const candidate of candidates) {
+    if (routeExists(candidate)) return candidate;
+  }
+  return primary;
+};
 
 const BottomNav = ({ user }) => {
   const navigate = useNavigate();
@@ -34,23 +59,33 @@ const BottomNav = ({ user }) => {
   ];
 
   const menuItems = [
-    { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400" },
-    { path: "/breathwork", icon: Wind, label: "Breathwork", color: "text-cyan-400" },
-    { path: "/meditations", icon: Brain, label: "Meditations", color: "text-purple-400" },
-    { path: "/crystals", icon: Gem, label: "Crystals", color: "text-pink-400" },
-    { path: "/mantras", icon: Music2, label: "Mantras", color: "text-amber-400" },
-    { path: "/mudras", icon: Hand, label: "Mudras", color: "text-orange-400" },
-    { path: "/mindfulness", icon: Heart, label: "Mindfulness", color: "text-rose-400" },
-    { path: "/grounding", icon: TreePine, label: "Grounding", color: "text-green-400" },
-    { path: "/somatic", icon: Flame, label: "Somatic", color: "text-red-400" },
-    { path: "/shamanic", icon: Moon, label: "Shamanic", color: "text-indigo-400" },
-    { path: "/elemental", icon: Sparkles, label: "Elemental", color: "text-teal-400" },
-    { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400" },
-    { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Ally Alchemy", color: "text-fuchsia-300" },
-    { path: "/creative", icon: Palette, label: "Creative", color: "text-violet-400" },
-    { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400" },
-    { path: "/birth-chart", icon: Star, label: "Birth Chart", color: "text-yellow-400" },
-    { path: "/oracle", icon: Moon, label: "Oracle", color: "text-purple-400" },
+    { path: resolvePath("/yoga"), icon: Sparkles, label: "Yoga Library", color: "text-emerald-400" },
+    { path: resolvePath("/partner-yoga"), icon: Users, label: "Partner Yoga", color: "text-teal-400" },
+    { path: resolvePath("/breathwork"), icon: Wind, label: "Breathwork", color: "text-cyan-400" },
+    { path: resolvePath("/meditations"), icon: Brain, label: "Meditations", color: "text-purple-400" },
+    { path: resolvePath("/crystals"), icon: Gem, label: "Crystals", color: "text-pink-400" },
+    { path: resolvePath("/mantras"), icon: Music2, label: "Mantras", color: "text-amber-400" },
+    { path: resolvePath("/mudras"), icon: Hand, label: "Mudras", color: "text-orange-400" },
+    { path: resolvePath("/mindfulness"), icon: Heart, label: "Mindfulness", color: "text-rose-400" },
+    { path: resolvePath("/grounding"), icon: TreePine, label: "Grounding", color: "text-green-400" },
+    { path: resolvePath("/somatic"), icon: Flame, label: "Somatic Movement", color: "text-red-400" },
+    { path: resolvePath("/somatic-yoga"), icon: Sparkles, label: "Chair Yoga", color: "text-lime-300" },
+    { path: resolvePath("/sound-frequencies"), icon: Music2, label: "Sound Healing", color: "text-cyan-300" },
+    { path: resolvePath("/shamanic", "/shamanic-practices"), icon: Moon, label: "Shamanic", color: "text-indigo-400" },
+    { path: resolvePath("/elemental", "/elemental-practices"), icon: Sparkles, label: "Elemental", color: "text-teal-400" },
+    { path: resolvePath("/elemental-temples"), icon: Sparkles, label: "All Temples", color: "text-teal-300" },
+    { path: resolvePath("/heart-practices"), icon: Heart, label: "Heart Practices", color: "text-pink-400" },
+    { path: resolvePath("/sacred-guardians"), icon: Star, label: "Sacred Guardians", color: "text-amber-300" },
+    { path: resolvePath("/sacred-ally-alchemy"), icon: Sparkles, label: "Sacred Allies", color: "text-fuchsia-300" },
+    { path: resolvePath("/creative", "/creative-processes"), icon: Palette, label: "Creative Expression", color: "text-violet-400" },
+    { path: resolvePath("/free-form-movement"), icon: Flame, label: "Ecstatic Dance", color: "text-fuchsia-400" },
+    { path: resolvePath("/numerology"), icon: Hash, label: "Numerology", color: "text-amber-400" },
+    { path: resolvePath("/birth-chart"), icon: Star, label: "Birth Chart", color: "text-yellow-400" },
+    { path: resolvePath("/oracle"), icon: Moon, label: "Oracle", color: "text-purple-400" },
+    { path: resolvePath("/tarot"), icon: Moon, label: "Tarot", color: "text-indigo-300" },
+    { path: resolvePath("/i-ching"), icon: Sparkles, label: "I Ching", color: "text-red-300" },
+    { path: resolvePath("/gene-keys"), icon: Star, label: "Gene Keys", color: "text-violet-300" },
+    { path: resolvePath("/human-design"), icon: Sparkles, label: "Human Design", color: "text-indigo-300" },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -83,12 +118,13 @@ const BottomNav = ({ user }) => {
                 <div className="grid grid-cols-3 gap-3">
                   {menuItems.map((item) => (
                     <motion.button
-                      key={item.path}
+                      key={`${item.path}-${item.label}`}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => {
                         navigate(item.path);
                         setShowMenu(false);
                       }}
+                      data-testid={`bottomnav-menu-item-${item.path.replace(/\//g, "-").replace(/^-+/, "")}-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
                       className={`flex flex-col items-center justify-center p-4 rounded-xl transition-all ${
                         isActive(item.path) 
                           ? "bg-primary/20 border border-primary/30" 

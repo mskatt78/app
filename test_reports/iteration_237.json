@@ -1,0 +1,107 @@
+{
+  "summary": "Iteration 237 - Post-hotfix verification of menu fallback registry, alias routes, SW cache version bump, and ceremonial deepening metadata. All 30 backend tests passed. Frontend UI tests confirm comprehensive section coverage on /menu (60 items across 9 sections), TopNav Explore overlay working with robust entries, and all 11 alias routes resolving correctly.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "BottomNav",
+        "issues": ["BottomNav component exists but is not rendered in App.js - only TopNav is used. This is acceptable as TopNav Explore overlay provides comprehensive navigation."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration237_section_coverage.py",
+    "/app/test_reports/pytest/pytest_iteration237.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration237_section_coverage.py"
+  ],
+  "success_rate": {
+    "backend": "100% (30 passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Admin: mskatt78@gmail.com / ShamanicAdmin2026!",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Iteration 237 verified: (1) Guest user on /menu sees 60 menu items across 9 sections including all requested entries (tarot, gene keys, human design, i ching, partner yoga, somatic movement, chair yoga, fascia stretching, all temples, earth art sacred tool birthing, sound healing, creative expression, ecstatic dance, kundalini consciousness, voice activation, sacred guardians, sacred allies, power animals, spirit animals, galactic allies, crystals, mantras, earth medicines, alchemy, mudras, ancient traditions, runes, sun & moon, numerology). (2) TopNav Explore overlay shows robust fallback entries with Sacred Temples section and All Practices section. (3) All 11 alias routes resolve correctly: /chair-yoga, /fascia-stretching, /power-animals, /spirit-animals, /galactic-allies, /earth-medicines, /creative-expression, /ecstatic-dance, /kundalini-consciousness, /voice-activation, /sun-moon. (4) Pricing page shows 2 plans ($19.99 monthly, $369 lifetime) with no admin email exposure. (5) Backend deepening synthetic entries include ceremonial enrichment fields (modality, element, tradition, journey_steps, materials, steps, benefits, category). (6) Content tiering maintains 14-item 4/10 structure on representative endpoints.",
+  "test_results_detail": {
+    "menu_section_coverage": {
+      "total_sections": 9,
+      "sections": [
+        "Daily Practice",
+        "Movement & Body",
+        "Mind & Spirit",
+        "Sacred Temples",
+        "Shamanic Wisdom",
+        "Divination & Guidance",
+        "Sacred Tools",
+        "Self-Healing & Energy Work",
+        "Community & Learning"
+      ],
+      "total_menu_items": 60,
+      "result": "PASS - comprehensive coverage"
+    },
+    "topnav_explore_overlay": {
+      "sacred_temples_section": ["Rose Temple", "Elemental Temples", "Masculine Temple", "Wheel of the Year"],
+      "all_practices_section": "40+ items including all requested entries",
+      "result": "PASS - robust fallback entries"
+    },
+    "alias_routes": {
+      "routes_tested": [
+        "/chair-yoga",
+        "/fascia-stretching",
+        "/power-animals",
+        "/spirit-animals",
+        "/galactic-allies",
+        "/earth-medicines",
+        "/creative-expression",
+        "/ecstatic-dance",
+        "/kundalini-consciousness",
+        "/voice-activation",
+        "/sun-moon"
+      ],
+      "all_resolved": true,
+      "result": "PASS - 11/11 routes resolve correctly"
+    },
+    "pricing_admin_privacy": {
+      "plans_count": 2,
+      "monthly_price": 19.99,
+      "lifetime_price": 369.0,
+      "admin_email_exposed": false,
+      "result": "PASS - no regressions"
+    },
+    "ceremonial_enrichment": {
+      "energy_healing": "PASS - has modality, element fields",
+      "shamanic_practices": "PASS - has tradition, journey_steps, preparation, safety_notes fields",
+      "heart_practices": "PASS - has element, category, linked_practices fields",
+      "water_practices": "PASS - has materials, steps, benefits, category fields"
+    },
+    "content_tiering": {
+      "endpoints_tested": [
+        "/api/water-practices",
+        "/api/meditations",
+        "/api/creative-processes",
+        "/api/heart-practices",
+        "/api/shamanic-practices",
+        "/api/energy-healing",
+        "/api/mindfulness-practices",
+        "/api/mantras"
+      ],
+      "result": "PASS - all maintain 14-item 4/10 tiering structure"
+    },
+    "expand_script": {
+      "target_minutes": 7,
+      "min_words_required": 924,
+      "actual_words": 998,
+      "result": "PASS - meets 7-minute word floor"
+    }
+  }
+}

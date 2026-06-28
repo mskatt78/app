@@ -174,6 +174,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/ancient-wisdom" element={publicElement(AncientWisdom, PublicRoute, api)} />
       <Route path="/sound-frequencies" element={publicElement(SoundFrequencies, PublicRoute, api)} />
       <Route path="/tarot" element={publicElement(TarotReading, PublicRoute, api)} />
+      <Route path="/tarot-reading" element={publicElement(TarotReading, PublicRoute, api)} />
       <Route path="/sacred-guardians" element={publicElement(SacredGuardians, PublicRoute, api)} />
       <Route path="/sacred-ally-alchemy" element={publicElement(SacredAllyAlchemy, PublicRoute, api)} />
       <Route path="/angelic-alchemy" element={publicElement(AngelicAlchemy, PublicRoute, api)} />
@@ -190,6 +191,17 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/somatic-yoga" element={publicElement(SomaticYoga, PublicRoute, api)} />
       <Route path="/chakra-cleansing" element={publicElement(ChakraCleansing, PublicRoute, api)} />
       <Route path="/healing-portals" element={publicElement(HealingPortals, PublicRoute, api)} />
+      <Route path="/chair-yoga" element={publicElement(SomaticYoga, PublicRoute, api)} />
+      <Route path="/fascia-stretching" element={publicElement(SomaticMovement, PublicRoute, api)} />
+      <Route path="/power-animals" element={publicElement(SacredGuardians, PublicRoute, api)} />
+      <Route path="/spirit-animals" element={publicElement(SacredGuardians, PublicRoute, api)} />
+      <Route path="/galactic-allies" element={publicElement(SacredAllyAlchemy, PublicRoute, api)} />
+      <Route path="/earth-medicines" element={publicElement(EarthAltars, PublicRoute, api)} />
+      <Route path="/creative-expression" element={publicElement(CreativeProcesses, PublicRoute, api)} />
+      <Route path="/ecstatic-dance" element={publicElement(FreeFormMovement, PublicRoute, api)} />
+      <Route path="/kundalini-consciousness" element={publicElement(SacredAllyAlchemy, PublicRoute, api)} />
+      <Route path="/voice-activation" element={publicElement(SoundFrequencies, PublicRoute, api)} />
+      <Route path="/sun-moon" element={publicElement(AstrologyCalendar, PublicRoute, api)} />
       <Route path="/practice-journal" element={publicElement(PracticeJournal, PublicRoute, api)} />
       <Route path="/videos" element={publicElement(VideosLibrary, PublicRoute, api)} />
       <Route path="/admin/login" element={<AdminLogin />} />
