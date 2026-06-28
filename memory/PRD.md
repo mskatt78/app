@@ -3240,3 +3240,52 @@
 - Since your issue was on production, redeploy is required to push this pass live.
 
 
+## Divination Full-Section Image Accuracy Sweep (2026-06-28)
+
+### User request
+- "Not just coyote, the whole section—make sure images are correct."
+- Scope confirmed: full Divination set (Oracle + Tarot + Runes + I Ching), with mixed style (accurate where required + mystical where symbolic).
+
+### Implemented in preview
+
+#### Backend image normalization (all divination endpoints)
+1. `backend/routers/content.py`
+   - Added unified divination image normalization helper for:
+     - Tarot
+     - Runes
+     - I Ching
+   - Added endpoint-level normalization so every returned item includes valid `image_url`.
+   - Added I Ching visual map by hexagram number (ensures image coverage, not just text-only `image` field).
+2. `backend/routers/oracle.py`
+   - Expanded oracle image overrides beyond coyote for section-wide card relevance and reliability.
+   - Added fallback guard so oracle cards never return non-http image URLs.
+
+#### Frontend rendering safeguards
+1. `frontend/src/pages/OracleReadings.jsx`
+   - Added resilient image fallback handler (prevents blank cards on failed image loads).
+2. `frontend/src/pages/TarotReading.jsx`
+   - Added fallback handler to gallery, reading cards, and detail modal images.
+3. `frontend/src/pages/rune-readings/RuneReadingsContainer.jsx`
+   - Added fallback handler for spread and detail modal images.
+4. `frontend/src/pages/i-ching/IChingHexagramModal.jsx`
+   - Added visible hexagram image blocks in library modal.
+5. `frontend/src/pages/i-ching/IChingResultCard.jsx`
+   - Added visible result image block + fallback handling.
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_232.json`
+  - Backend: 100% (9/9)
+  - Frontend: 100%
+  - Confirmed:
+    - Oracle cards: 22/22 valid image URLs
+    - Tarot cards: 22/22 valid image URLs
+    - Runes: 25/25 valid image URLs
+    - I Ching: 8/8 valid image URLs
+    - Coyote card image explicitly correct (real coyote URL)
+- Final frontend specialist retest: PASS for Oracle, Tarot, Runes, and I Ching image rendering.
+
+### Current status
+- Divination image correctness sweep is complete in preview (not just coyote).
+- Since original report was on production, redeploy is required to make this live.
+
+
