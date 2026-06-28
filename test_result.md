@@ -8509,6 +8509,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ Energy Healing embodiment integration PASSED. Page loads correctly at /energy-healing with data-testid='energy-healing-page'. Practice cards clickable. Modal renders successfully. Embodiment panel present with correct data-testid='energy-healing-embodiment-panel'. No runtime crashes. No blocking console errors."
+      - working: true
+        agent: "testing"
+        comment: "✅ ENERGY HEALING DEEPENING PASS VERIFICATION COMPLETE (2026-06-28): All 4 requirements PASSED. 1) Premium banner visible with both CTA buttons: 'View Subscription Plans' and 'Full App 369.00' buttons present, banner text shows 'First 5 practices are free. The rest unlock with subscription or full app access.' ✓. 2) Locked card opens premium lock modal: Clicked 'Sekhem Egyptian Healing' premium card, lock modal opened with title, description, subscription button, full app button, and close button ✓. 3) Free card opens detail modal with ALL 4 deep sections: Clicked 'Reiki Nervous System Coherence Ritual' free card, detail modal opened successfully with Alchemy, Ritual Steps, Ceremonial Arc, and Guided Practice Arc sections all present and expandable with content ✓. 4) Modality filters switch cards correctly: Tested Egyptian filter (1 card), Australian filter (1 card), reset to All Modalities (14 cards), all filters working correctly with visual active state ✓. Total 14 healing cards found, 5 premium badges detected (first-5-free model working). Energy Healing page deepening pass FULLY VERIFIED."
 
   - task: "Embodiment Integration - Somatic Yoga"
     implemented: true
