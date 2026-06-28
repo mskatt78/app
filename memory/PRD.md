@@ -133,6 +133,21 @@
 ### Deployment note
 - Changes are implemented and verified in preview codebase. To apply them on production, perform a fresh redeploy from latest preview state.
 
+## Latest Verification Snapshot (Iteration 239 — Kundalini + Archangels)
+- ✅ Fixed **Kundalini Consciousness empty-state risk**:
+  - Added backend alias handling so both `ally_type=kundalini` and typo `ally_type=kundulini` return populated serpent/kundalini ally data.
+  - Strengthened Sacred Ally UI to detect kundalini routes and show a dedicated kundalini view note + empty fallback reset action.
+  - Added typo route support `/kundulini-consciousness` in frontend routing.
+
+- ✅ Fixed **Missing Archangels completeness**:
+  - Hardened `/api/oracle/archangels` to always return canonical full **15 archangels** and strip `_id` to prevent ObjectId serialization failures.
+  - Angelic Alchemy page now merges `oracle/archangels` coverage into its rendered card dataset for complete archangel representation.
+  - Explore navigation now includes explicit **Archangels** and **Kundalini Consciousness** entries across top/bottom/main menus.
+
+- ✅ Verification status:
+  - Frontend test agent: PASS (8/8) — kundalini route populated, archangels complete, explore links present.
+  - Backend test agent: PASS (4/4) — kundalini/kundulini aliases populated, archangels endpoint returns 15, no 500.
+
 ## Latest Verification Snapshot (Iteration 132)
 - Backend complexity cleanup regression: PASS (14/14)
 - Frontend hook/key cleanup regression: PASS (100%)
