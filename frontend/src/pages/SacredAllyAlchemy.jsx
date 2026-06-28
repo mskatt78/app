@@ -571,6 +571,10 @@ const WITH_DEFAULT_FIELDS = [
   "alchemy_teachings",
   "rituals",
   "ceremonies",
+  "guided_practice",
+  "alchemy",
+  "ritual",
+  "ceremony",
   "journal_prompts",
   "affirmations",
 ];
@@ -653,6 +657,9 @@ const firstLine = (value, fallback = "") => {
 };
 
 const deriveCeremonies = (item) => {
+  if (Array.isArray(item?.ceremony) && item.ceremony.length > 0) {
+    return item.ceremony;
+  }
   if (Array.isArray(item?.ceremonies) && item.ceremonies.length > 0) {
     return item.ceremonies;
   }
@@ -663,6 +670,47 @@ const deriveCeremonies = (item) => {
       : [];
 
   return ritualLines.slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+};
+
+const deriveGuidedPractice = (item) => {
+  if (Array.isArray(item?.guided_practice) && item.guided_practice.length > 0) {
+    return item.guided_practice;
+  }
+  if (Array.isArray(item?.practice) && item.practice.length > 0) {
+    return item.practice;
+  }
+  const ritualLines = Array.isArray(item?.ritual)
+    ? item.ritual
+    : Array.isArray(item?.practical_rituals)
+      ? item.practical_rituals
+      : Array.isArray(item?.rituals)
+        ? item.rituals
+        : [];
+
+  return ritualLines.slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+};
+
+const deriveAlchemyTeachings = (item) => {
+  if (Array.isArray(item?.alchemy) && item.alchemy.length > 0) {
+    return item.alchemy;
+  }
+  if (Array.isArray(item?.alchemy_teachings) && item.alchemy_teachings.length > 0) {
+    return item.alchemy_teachings;
+  }
+  return [];
+};
+
+const deriveRituals = (item) => {
+  if (Array.isArray(item?.ritual) && item.ritual.length > 0) {
+    return item.ritual;
+  }
+  if (Array.isArray(item?.practical_rituals) && item.practical_rituals.length > 0) {
+    return item.practical_rituals;
+  }
+  if (Array.isArray(item?.rituals) && item.rituals.length > 0) {
+    return item.rituals;
+  }
+  return [];
 };
 
 const deepLine = (sectionTitle, baseText, index) => {
@@ -685,13 +733,9 @@ const deepLine = (sectionTitle, baseText, index) => {
 };
 
 const buildMasterHealingProtocol = (item) => {
-  const rituals = Array.isArray(item?.practical_rituals) && item.practical_rituals.length > 0
-    ? item.practical_rituals
-    : Array.isArray(item?.rituals)
-      ? item.rituals
-      : [];
+  const rituals = deriveRituals(item);
   const ceremonies = deriveCeremonies(item);
-  const teachings = Array.isArray(item?.alchemy_teachings) ? item.alchemy_teachings : [];
+  const teachings = deriveAlchemyTeachings(item);
   const prompts = Array.isArray(item?.journal_prompts) ? item.journal_prompts : [];
 
   return [
@@ -901,8 +945,10 @@ export default function SacredAllyAlchemy({ api }) {
   const startSacredAllyGuidedPractice = (item) => {
     const steps = [
       ...(buildEmbodimentPractices(item) || []),
+      ...(deriveGuidedPractice(item) || []),
       ...(deriveCeremonies(item) || []),
-      ...(item?.alchemy_teachings || []),
+      ...(deriveRituals(item) || []),
+      ...(deriveAlchemyTeachings(item) || []),
       ...(item?.journal_prompts || []).slice(0, 2),
     ].filter(Boolean);
 
@@ -1213,8 +1259,9 @@ export default function SacredAllyAlchemy({ api }) {
 
                 <p className="text-sm text-muted-foreground" data-testid="sacred-ally-modal-description">{selected.description}</p>
 
-                <SectionList title="Alchemy Teachings" icon={Sparkles} items={selected.alchemy_teachings} testId="sacred-ally-alchemy-teachings" />
+                <SectionList title="Alchemy Teachings" icon={Sparkles} items={deriveAlchemyTeachings(selected)} testId="sacred-ally-alchemy-teachings" />
                 <SectionList title="Ceremonies" icon={Flame} items={deriveCeremonies(selected)} testId="sacred-ally-ceremonies" />
+                <SectionList title="Guided Practice Arc" icon={Waves} items={deriveGuidedPractice(selected)} testId="sacred-ally-guided-practice-arc" />
                 <SectionList title="Embodiment Practices" icon={Waves} items={buildEmbodimentPractices(selected)} testId="sacred-ally-embodiment-practices" />
                 <SectionList title="Embodiment Integration Timeline" icon={Feather} items={buildEmbodimentMilestones(selected)} testId="sacred-ally-embodiment-timeline" />
 
@@ -1226,8 +1273,8 @@ export default function SacredAllyAlchemy({ api }) {
                       title: selected.name,
                       element: selected.element || "Spirit",
                       description: selected.description,
-                      teachings: selected.alchemy_teachings,
-                      rituals: deriveCeremonies(selected),
+                      teachings: deriveAlchemyTeachings(selected),
+                      rituals: [...deriveRituals(selected), ...deriveCeremonies(selected), ...deriveGuidedPractice(selected)],
                       embodiment: [...buildEmbodimentPractices(selected), ...ritualDeliveryPillars],
                       integration: buildEmbodimentMilestones(selected),
                     })}
@@ -1302,7 +1349,7 @@ export default function SacredAllyAlchemy({ api }) {
                   <SectionList title="Song Line Practices" icon={Waves} items={selected.song_line_practices} testId="sacred-ally-song-line-practices" />
                 )}
 
-                <SectionList title={selected.practical_rituals ? "Practical Alchemy Rituals" : "Rituals"} icon={Flame} items={selected.practical_rituals || selected.rituals} testId="sacred-ally-rituals" />
+                <SectionList title={selected.practical_rituals || selected.ritual ? "Practical Alchemy Rituals" : "Rituals"} icon={Flame} items={deriveRituals(selected)} testId="sacred-ally-rituals" />
                 <SectionList title="Journal Prompts" icon={Feather} items={selected.journal_prompts} testId="sacred-ally-journal-prompts" />
                 <SectionList title="Affirmations" icon={Star} items={selected.affirmations} testId="sacred-ally-affirmations" />
 

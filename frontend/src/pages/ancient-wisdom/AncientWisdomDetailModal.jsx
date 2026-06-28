@@ -6,6 +6,35 @@ import { formatReviewedDate, TRADITION_MAP } from "./constants";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
 
 export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
+  const resolveTeachings = (entry) => {
+    if (entry?.alchemy?.length) return entry.alchemy;
+    if (entry?.alchemy_teachings?.length) return entry.alchemy_teachings;
+    if (entry?.teachings?.length) return entry.teachings;
+    return [];
+  };
+
+  const resolveRituals = (entry) => {
+    if (entry?.ritual?.length) return entry.ritual;
+    if (entry?.rituals?.length) return entry.rituals;
+    if (entry?.practical_rituals?.length) return entry.practical_rituals;
+    if (entry?.practice?.length) return entry.practice;
+    return [];
+  };
+
+  const resolveCeremonies = (entry) => {
+    if (entry?.ceremony?.length) return entry.ceremony;
+    if (entry?.ceremonies?.length) return entry.ceremonies;
+    const rituals = resolveRituals(entry);
+    return rituals.slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+  };
+
+  const resolveGuidedPractice = (entry) => {
+    if (entry?.guided_practice?.length) return entry.guided_practice;
+    if (entry?.practice?.length) return entry.practice;
+    const rituals = resolveRituals(entry);
+    return rituals.slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+  };
+
   return (
     <AnimatePresence>
       {selected && (
@@ -95,14 +124,14 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                 </div>
               )}
 
-              {selected.teachings?.length > 0 && (
+              {resolveTeachings(selected)?.length > 0 && (
                 <div>
                   <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
                     <Eye className="w-4 h-4 text-primary" />
                     Sacred Teachings
                   </h4>
                   <div className="flex flex-wrap gap-2">
-                    {selected.teachings.map((teaching) => (
+                    {resolveTeachings(selected).map((teaching) => (
                       <span key={`teaching-${selected.id}-${teaching.slice(0, 40)}`} className="px-3 py-1 rounded-full bg-white/5 text-xs text-muted-foreground border border-white/10">
                         {teaching}
                       </span>
@@ -128,14 +157,14 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                 </div>
               )}
 
-              {selected.practice?.length > 0 && (
+              {resolveRituals(selected)?.length > 0 && (
                 <div>
                   <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
                     <Heart className="w-4 h-4 text-rose-400" />
                     Ceremony / Ritual Steps
                   </h4>
                   <ol className="space-y-2">
-                    {selected.practice.map((step, index) => (
+                    {resolveRituals(selected).map((step, index) => (
                       <li key={`practice-${selected.id}-${step.slice(0, 40)}`} className="flex items-start gap-3 text-sm text-muted-foreground">
                         <span className="w-6 h-6 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-xs text-rose-400 flex-shrink-0 mt-0.5">
                           {index + 1}
@@ -151,8 +180,8 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                         title: `${selected.name} Ceremony`,
                         element: selected.element || "Spirit",
                         description: selected.description,
-                        teachings: selected.teachings,
-                        rituals: selected.practice,
+                        teachings: resolveTeachings(selected),
+                        rituals: [...resolveRituals(selected), ...resolveCeremonies(selected), ...resolveGuidedPractice(selected)],
                         invocation: selected.invocation,
                         closing: selected.message,
                       })}
@@ -161,6 +190,44 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                       className="text-xs"
                     />
                   </div>
+                </div>
+              )}
+
+              {resolveCeremonies(selected)?.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-amber-300" />
+                    Ceremonial Arc
+                  </h4>
+                  <ol className="space-y-2" data-testid="ancient-wisdom-ceremony-list">
+                    {resolveCeremonies(selected).map((step, index) => (
+                      <li key={`ceremony-${selected.id}-${step.slice(0, 40)}`} className="flex items-start gap-3 text-sm text-muted-foreground">
+                        <span className="w-6 h-6 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-xs text-amber-300 flex-shrink-0 mt-0.5">
+                          {index + 1}
+                        </span>
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {resolveGuidedPractice(selected)?.length > 0 && (
+                <div>
+                  <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-cyan-300" />
+                    Guided Practice Arc
+                  </h4>
+                  <ol className="space-y-2" data-testid="ancient-wisdom-guided-practice-list">
+                    {resolveGuidedPractice(selected).slice(0, 6).map((step, index) => (
+                      <li key={`guided-${selected.id}-${step.slice(0, 40)}`} className="flex items-start gap-3 text-sm text-muted-foreground">
+                        <span className="w-6 h-6 rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-xs text-cyan-300 flex-shrink-0 mt-0.5">
+                          {index + 1}
+                        </span>
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
                 </div>
               )}
 

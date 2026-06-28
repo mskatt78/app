@@ -1778,6 +1778,9 @@ DEVOTIONAL_DOMAIN_SUFFIX = {
     "elemental-practices": "Work with this element as a relational field: breathe with it, feel it through posture, and close with a practical act of integration.",
     "healing-portals": "This portal is designed as an immersive ceremonial container—slow your pace, track sensation, and let truth become embodied action.",
     "feminine-embodiment": "Approach this as devotional embodiment: soften, listen deeply, and honor cyclical rhythm over productivity pressure.",
+    "sacred-allies": "Relate to this ally as living medicine: breathe with humility, track body truth, and convert insight into a grounded act of healing.",
+    "angelic-alchemy": "Receive this transmission with clear boundaries and practical devotion—integrate guidance through embodied action and compassionate leadership.",
+    "ancient-wisdom": "Treat this lineage as living practice, not concept: embody one teaching, complete one ritual act, and anchor one service-based integration.",
 }
 
 ELEMENT_EMBODIMENT_ANCHOR = {
@@ -1820,6 +1823,132 @@ def _enrich_devotional_language(item: dict[str, Any], domain: str) -> dict[str, 
         "integration_vow",
         f"Before closing {practice_name}, commit one grounded action within 24 hours that expresses this medicine.",
     )
+
+    enriched = _enrich_immersive_ritual_fields(enriched, domain)
+
+    return enriched
+
+
+def _extract_text_lines(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        chunks = [segment.strip() for segment in re.split(r"\n+|•|\*|-\s+", value) if segment and segment.strip()]
+        lines: list[str] = []
+        for chunk in chunks:
+            lines.extend(_split_sentences(chunk) or [chunk])
+        return [line.strip() for line in lines if len(line.strip()) > 10]
+    if isinstance(value, list):
+        lines: list[str] = []
+        for item in value:
+            lines.extend(_extract_text_lines(item))
+        return lines
+    if isinstance(value, dict):
+        lines: list[str] = []
+        for item in value.values():
+            lines.extend(_extract_text_lines(item))
+        return lines
+    return _extract_text_lines(str(value))
+
+
+def _coalesce_depth_lines(item: dict[str, Any], keys: Sequence[str], limit: int = 8) -> list[str]:
+    seen: set[str] = set()
+    lines: list[str] = []
+    for key in keys:
+        for line in _extract_text_lines(item.get(key)):
+            normalized = _normalize_label_key(line)
+            if not normalized or normalized in seen:
+                continue
+            seen.add(normalized)
+            lines.append(line)
+            if len(lines) >= limit:
+                return lines
+    return lines
+
+
+def _ensure_minimum_lines(primary: list[str], defaults: list[str], minimum: int = 3, limit: int = 8) -> list[str]:
+    merged: list[str] = []
+    seen: set[str] = set()
+    for source in (primary, defaults):
+        for line in source:
+            normalized = _normalize_label_key(line)
+            if not normalized or normalized in seen:
+                continue
+            seen.add(normalized)
+            merged.append(line)
+            if len(merged) >= limit:
+                break
+        if len(merged) >= limit:
+            break
+    if len(merged) >= minimum:
+        return merged
+    return (merged + defaults)[:max(minimum, len(merged))]
+
+
+def _enrich_immersive_ritual_fields(item: dict[str, Any], domain: str) -> dict[str, Any]:
+    enriched = dict(item)
+    practice_name = str(
+        enriched.get("name")
+        or enriched.get("title")
+        or enriched.get("id")
+        or "this practice"
+    ).strip()
+    element = str(enriched.get("element") or "spirit").strip().lower()
+    domain_label = str(domain or "practice").replace("-", " ")
+
+    default_alchemy = [
+        f"{practice_name} teaches relational alchemy: witness your pattern honestly, regulate your breath, and transmute reactivity into grounded presence.",
+        f"In this {domain_label} transmission, embodiment outranks theory—complete one somatic action that proves your insight is lived.",
+        f"Align your {element} current through devotion, pacing, and practical integrity so spiritual insight becomes daily medicine.",
+    ]
+    default_ritual = [
+        f"Opening ritual: place one hand on heart and one on lower belly, then breathe 4-in / 6-out for 12 rounds while naming your intention for {practice_name}.",
+        "Somatic regulation ritual: pause every two minutes to soften jaw, shoulders, and pelvis so intensity stays within your consent window.",
+        "Integration ritual: drink water, journal one truth line, and complete one grounded action before the day ends.",
+    ]
+    default_ceremony = [
+        f"Threshold ceremony: speak an invocation for {practice_name}, orient to safety in your space, and enter with reverence rather than urgency.",
+        "Descent ceremony: move through breath, voice, and posture in deliberate phases while tracking sensation and emotional signal changes.",
+        "Closing ceremony: seal your field with gratitude, boundary clarity, and one service-aligned commitment for the next 24 hours.",
+    ]
+    default_guided = [
+        "Guided phase 1 (arrival): orient your eyes to the room, lengthen exhale, and settle into grounded stillness.",
+        "Guided phase 2 (embodiment): alternate breath focus with one ritual step until your body feels coherent and present.",
+        "Guided phase 3 (integration): name one insight aloud and convert it into a specific, time-bound action.",
+    ]
+
+    alchemy_lines = _coalesce_depth_lines(
+        enriched,
+        ("alchemy", "alchemy_teachings", "teachings", "expanded_context", "description", "message", "deeper_teaching"),
+    )
+    ritual_lines = _coalesce_depth_lines(
+        enriched,
+        ("ritual", "rituals", "practical_rituals", "practice", "practice_guide", "instructions", "steps"),
+    )
+    ceremony_lines = _coalesce_depth_lines(
+        enriched,
+        ("ceremony", "ceremonies", "practice", "rituals", "practical_rituals", "practice_guide"),
+    )
+    guided_lines = _coalesce_depth_lines(
+        enriched,
+        ("guided_practice", "practice", "instructions", "steps", "rituals", "ceremonies"),
+    )
+
+    final_alchemy = _ensure_minimum_lines(alchemy_lines, default_alchemy)
+    final_ritual = _ensure_minimum_lines(ritual_lines, default_ritual)
+    final_ceremony = _ensure_minimum_lines(ceremony_lines, default_ceremony)
+    final_guided = _ensure_minimum_lines(guided_lines, default_guided)
+
+    enriched.setdefault("alchemy", final_alchemy)
+    enriched.setdefault("ritual", final_ritual)
+    enriched.setdefault("ceremony", final_ceremony)
+    enriched.setdefault("guided_practice", final_guided)
+
+    enriched.setdefault("alchemy_teachings", final_alchemy)
+    enriched.setdefault("rituals", final_ritual)
+    enriched.setdefault("practical_rituals", final_ritual)
+    enriched.setdefault("ceremonies", final_ceremony)
+    enriched.setdefault("practice", final_guided)
 
     return enriched
 
@@ -4533,7 +4662,11 @@ async def get_sacred_ally_alchemy(category: Optional[str] = None, ally_type: Opt
         query["ally_type"] = {"$regex": f"^{ally_type}$", "$options": "i"}
 
     items = await db.sacred_ally_alchemy.find(query, {"_id": 0}).to_list(length=300)
-    return [_enrich_content_integrity(item, "hybrid-curated") for item in items]
+    enriched = [
+        _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "sacred-allies")
+        for item in items
+    ]
+    return _apply_free_paid_tiering(enriched, "sacred_allies")
 
 
 @router.get("/sacred-ally-alchemy/{item_id}")
@@ -4543,7 +4676,7 @@ async def get_sacred_ally_alchemy_item(item_id: str) -> dict[str, Any]:
     item = await db.sacred_ally_alchemy.find_one({"id": item_id}, {"_id": 0})
     if not item:
         raise HTTPException(status_code=404, detail="Sacred ally alchemy entry not found")
-    return _enrich_content_integrity(item, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "sacred-allies")
 
 
 # ============ ANGELIC ALCHEMY ==========
@@ -4557,7 +4690,11 @@ async def get_angelic_alchemy(sacred_geometry: Optional[str] = None) -> list[dic
         query["sacred_geometry"] = {"$regex": sacred_geometry, "$options": "i"}
 
     items = await db.angelic_alchemy.find(query, {"_id": 0}).to_list(length=200)
-    return [_enrich_content_integrity(item, "hybrid-curated") for item in items]
+    enriched = [
+        _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "angelic-alchemy")
+        for item in items
+    ]
+    return _apply_free_paid_tiering(enriched, "angelic_alchemy")
 
 
 @router.get("/angelic-alchemy/{item_id}")
@@ -4567,7 +4704,7 @@ async def get_angelic_alchemy_item(item_id: str) -> dict[str, Any]:
     item = await db.angelic_alchemy.find_one({"id": item_id}, {"_id": 0})
     if not item:
         raise HTTPException(status_code=404, detail="Angelic alchemy entry not found")
-    return _enrich_content_integrity(item, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "angelic-alchemy")
 
 
 # ============ HEALING PORTALS ==========
@@ -4773,8 +4910,10 @@ async def get_ancient_wisdom(tradition: Optional[str] = None) -> list[dict[str, 
         entry_copy = dict(entry)
         entry_copy.setdefault("expanded_context", f"Extended context: {entry_copy.get('teaching') or entry_copy.get('description') or 'Traditional teaching depth.'}")
         entry_copy.setdefault("section_focus", entry_copy.get("tradition") or "cross-tradition")
-        enriched_entries.append(_enrich_content_integrity(entry_copy, "hybrid-curated"))
-    return enriched_entries
+        enriched_entries.append(
+            _enrich_devotional_language(_enrich_content_integrity(entry_copy, "hybrid-curated"), "ancient-wisdom")
+        )
+    return _apply_free_paid_tiering(enriched_entries, "ancient_wisdom")
 
 
 @router.get("/ancient-wisdom/{entry_id}")
@@ -4784,7 +4923,7 @@ async def get_ancient_wisdom_entry(entry_id: str) -> dict[str, Any]:
     entry = await db.ancient_wisdom.find_one({"id": entry_id}, {"_id": 0})
     if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
-    return _enrich_content_integrity(entry, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "ancient-wisdom")
 
 
 

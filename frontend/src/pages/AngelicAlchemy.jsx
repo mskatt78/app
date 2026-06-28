@@ -445,9 +445,54 @@ const deepArchangelLine = (sectionTitle, baseText, index) => {
   return `Archangelic integration ${index + 1}: apply this teaching to one real decision today so insight becomes lived transformation.`;
 };
 
+const deriveAngelicTeachings = (item) => {
+  if (Array.isArray(item?.alchemy) && item.alchemy.length > 0) {
+    return item.alchemy;
+  }
+  if (Array.isArray(item?.alchemy_teachings) && item.alchemy_teachings.length > 0) {
+    return item.alchemy_teachings;
+  }
+  return [];
+};
+
+const deriveAngelicRituals = (item) => {
+  if (Array.isArray(item?.ritual) && item.ritual.length > 0) {
+    return item.ritual;
+  }
+  if (Array.isArray(item?.practical_rituals) && item.practical_rituals.length > 0) {
+    return item.practical_rituals;
+  }
+  if (Array.isArray(item?.rituals) && item.rituals.length > 0) {
+    return item.rituals;
+  }
+  return [];
+};
+
+const deriveAngelicCeremonies = (item) => {
+  if (Array.isArray(item?.ceremony) && item.ceremony.length > 0) {
+    return item.ceremony;
+  }
+  if (Array.isArray(item?.ceremonies) && item.ceremonies.length > 0) {
+    return item.ceremonies;
+  }
+  const rituals = deriveAngelicRituals(item);
+  return rituals.slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+};
+
+const deriveAngelicGuidedPractice = (item) => {
+  if (Array.isArray(item?.guided_practice) && item.guided_practice.length > 0) {
+    return item.guided_practice;
+  }
+  if (Array.isArray(item?.practice) && item.practice.length > 0) {
+    return item.practice;
+  }
+  const rituals = deriveAngelicRituals(item);
+  return rituals.slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+};
+
 const buildArchangelMasterProtocol = (item) => {
-  const teachings = Array.isArray(item?.alchemy_teachings) ? item.alchemy_teachings : [];
-  const rituals = Array.isArray(item?.practical_rituals) ? item.practical_rituals : [];
+  const teachings = deriveAngelicTeachings(item);
+  const rituals = deriveAngelicRituals(item);
   const prompts = Array.isArray(item?.journal_prompts) ? item.journal_prompts : [];
 
   return [
@@ -560,7 +605,11 @@ const AngelicAlchemy = ({ api }) => {
 
   const startAngelicGuidedPractice = (item) => {
     const protocol = buildArchangelMasterProtocol(item || {});
-    const steps = protocol.flatMap((phase) => phase.steps || []).filter(Boolean);
+    const steps = [
+      ...protocol.flatMap((phase) => phase.steps || []),
+      ...deriveAngelicCeremonies(item || {}),
+      ...deriveAngelicGuidedPractice(item || {}),
+    ].filter(Boolean);
     setGuidedPractice({
       id: `angelic-guided-${item?.id || "session"}`,
       name: `${item?.name || "Angelic Alchemy"} Guided Practice`,
@@ -746,8 +795,10 @@ const AngelicAlchemy = ({ api }) => {
 
                 <p className="text-sm text-muted-foreground" data-testid="angelic-modal-description">{selected.description}</p>
 
-                <SectionList title="Alchemy Teachings" icon={Sparkles} items={selected.alchemy_teachings} testId="angelic-alchemy-teachings" />
-                <SectionList title="Practical Rituals" icon={Feather} items={selected.practical_rituals} testId="angelic-practical-rituals" />
+                <SectionList title="Alchemy Teachings" icon={Sparkles} items={deriveAngelicTeachings(selected)} testId="angelic-alchemy-teachings" />
+                <SectionList title="Practical Rituals" icon={Feather} items={deriveAngelicRituals(selected)} testId="angelic-practical-rituals" />
+                <SectionList title="Ceremonies" icon={Shield} items={deriveAngelicCeremonies(selected)} testId="angelic-ceremonies" />
+                <SectionList title="Guided Practice Arc" icon={Star} items={deriveAngelicGuidedPractice(selected)} testId="angelic-guided-practice-arc" />
                 <SectionList title="Embodiment Practices" icon={Shield} items={buildArchangelEmbodimentPractices(selected)} testId="angelic-embodiment-practices" />
                 <SectionList title="Embodiment Integration Timeline" icon={Star} items={buildArchangelEmbodimentTimeline(selected)} testId="angelic-embodiment-timeline" />
                 <SectionList title="Journal Prompts" icon={Star} items={selected.journal_prompts} testId="angelic-journal-prompts" />
@@ -761,8 +812,8 @@ const AngelicAlchemy = ({ api }) => {
                       title: selected.name,
                       element: selected.element || "Spirit",
                       description: selected.description,
-                      teachings: selected.alchemy_teachings,
-                      rituals: selected.practical_rituals,
+                      teachings: deriveAngelicTeachings(selected),
+                      rituals: [...deriveAngelicRituals(selected), ...deriveAngelicCeremonies(selected), ...deriveAngelicGuidedPractice(selected)],
                       embodiment: [...buildArchangelEmbodimentPractices(selected), ...ritualDeliveryPillars],
                       integration: buildArchangelEmbodimentTimeline(selected),
                     })}
