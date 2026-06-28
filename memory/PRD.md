@@ -2967,4 +2967,54 @@
 ### Current status
 - App now feels significantly more open for healing/tour use while retaining premium pathways for advanced depth.
 
+## Production Urgency Publish Sweep (Today) — 2026-06-28
+
+### User directive
+- User needs to publish today and requested a full sweep for anything missing/broken.
+- Explicit monetization rule finalized:
+  - **1/4 free per section**
+  - round-down for non-divisible counts
+  - lock path should be **Subscription + Full App only** (no section unlock CTA buttons)
+
+### Environment note
+- User reported issues on **production**.
+- All fixes were applied and validated in **preview** (production requires redeploy).
+
+### Completed fixes in this pass
+1. **Strict quarter-free model enforced backend-wide**
+   - `backend/routers/content.py`
+   - `SECTION_FREE_RATIO = 0.25`
+   - floor behavior retained via `int(total_items * free_ratio)`
+   - minimum free item retained (`SECTION_MIN_FREE_ITEMS = 1`)
+   - Applied to core content endpoints including breathwork/mantras/healing/feminine/elemental-temples.
+
+2. **Lock path normalized to subscription + full app**
+   - Removed section-unlock action paths from key lock modals/CTAs.
+   - Updated lock copy to soft, clear progression:
+     - continue with subscription
+     - or unlock full app
+
+3. **Sound Frequencies issue verified**
+   - `/api/sound-frequencies` returns non-empty dataset
+   - `/sound-frequencies` renders cards and modal content with audio controls.
+
+4. **Flow/voice alignment**
+   - Softened sales language to preserve sacred, embodied tone while keeping monetization structure.
+
+### Validation
+- Comprehensive testing report: `/app/test_reports/iteration_228.json`
+  - Backend: **100%**
+  - Frontend: **100%**
+  - No open action items.
+
+- Verified route health and key UX:
+  - `/sound-frequencies` loads with content + modal + audio player
+  - major healing routes load without crash
+  - lock modals show subscription + full app path
+  - no section unlock button present in tested lock modal path
+
+### Current status
+- Preview is now aligned to the final monetization rule and tested for publish-readiness.
+- Next required step for live site: **redeploy latest preview to production**.
+
 
