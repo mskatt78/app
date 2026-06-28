@@ -93,6 +93,23 @@
 - **P1:** Final app-store submission checklist pack (icons/screenshots/legal copy review).
 - **P2:** Optional Sacred Journey Progress tracker and completion telemetry.
 
+## Latest Verification Snapshot (Iteration 237 — device visibility hardening)
+- ✅ Resolved missing-sections risk for guest/mobile devices by hardening navigation visibility:
+  - Expanded `/menu` registry to include all requested discovery entries and aliases (60 items across 9 sections).
+  - Strengthened `TopNav` and `BottomNav` Explore menus with route-safe fallback resolution.
+  - Added alias routes (`/chair-yoga`, `/fascia-stretching`, `/power-animals`, `/spirit-animals`, `/galactic-allies`, `/earth-medicines`, `/creative-expression`, `/ecstatic-dance`, `/kundalini-consciousness`, `/voice-activation`, `/sun-moon`).
+  - Upgraded service worker cache version + cacheable API route map to reduce stale-client section drift across devices.
+- ✅ Applied requested P1 refinement:
+  - Synthetic deepening entries now include stronger ceremonial tone and structured `alchemy`, `ritual`, `ceremony`, and `guided_practice` arrays.
+- ✅ Regression status:
+  - `testing_agent` iteration 237: PASS (frontend 100%, backend 100% with 30 backend tests passed).
+  - Alias route resolution: 11/11 PASS.
+  - App-wide section tiering: PASS (14 items, 4 free + 10 premium).
+
+### Current Ready State Before Redeploy
+- Navigation/content visibility is now hardened for guest users and alternate device route variants.
+- Pricing/admin privacy/narration floor/retreat cleanup remain passing from prior iterations.
+
 ## Latest Verification Snapshot (Iteration 132)
 - Backend complexity cleanup regression: PASS (14/14)
 - Frontend hook/key cleanup regression: PASS (100%)
