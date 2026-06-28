@@ -148,6 +148,17 @@
   - Frontend test agent: PASS (8/8) — kundalini route populated, archangels complete, explore links present.
   - Backend test agent: PASS (4/4) — kundalini/kundulini aliases populated, archangels endpoint returns 15, no 500.
 
+## Latest Verification Snapshot (Iteration 240 — Social Links rollout)
+- ✅ Added creator social links in requested placement:
+  - Landing hero section social row (icon + text): Facebook, YouTube, TikTok.
+  - Global app footer social links (icon + text): Facebook, YouTube, TikTok.
+- ✅ Link behavior + target validation:
+  - All links open in new tab (`target="_blank"`, `rel="noopener noreferrer"`).
+  - URLs match exact user-provided destinations.
+- ✅ QA status:
+  - Frontend verification agent: PASS (all 6 links present, clickable, correct URLs, new-tab behavior confirmed).
+  - Backend sanity regression: PASS (critical APIs remain healthy).
+
 ## Latest Verification Snapshot (Iteration 132)
 - Backend complexity cleanup regression: PASS (14/14)
 - Frontend hook/key cleanup regression: PASS (100%)
