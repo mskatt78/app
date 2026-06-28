@@ -118,6 +118,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/terms" element={<TermsOfService />} />
       <Route path="/support" element={<SupportCenter />} />
       <Route path="/app-readiness" element={<AppStoreReadiness />} />
+      <Route path="/app-store-readiness" element={<AppStoreReadiness />} />
       <Route path="/demo" element={publicElement(DemoExperience, PublicRoute, api)} />
       <Route path="/links" element={<LinksPage />} />
       <Route path="/yoga" element={publicElement(YogaLibrary, PublicRoute, api)} />

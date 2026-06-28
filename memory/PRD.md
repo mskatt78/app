@@ -3018,3 +3018,71 @@
 - Next required step for live site: **redeploy latest preview to production**.
 
 
+## Full-App Immersive Depth + Verification Pass — 2026-06-28
+
+### User-approved execution scope
+- **1B**: full app-wide depth pass (start-to-end priority, beginning with Sacred Allies / Angelic Alchemy / Ancient Wisdom)
+- **2A**: include narration floor and retreats verification in same pass
+- **3B then 3A**: content expansion first, then full publish-ready testing sweep
+
+### Completed in this pass
+1. **Backend immersive enrichment layer added and wired into core vague sections**
+   - File: `backend/routers/content.py`
+   - Added domain-aware deep enrichment defaults + normalization for:
+     - `alchemy`
+     - `ritual`
+     - `ceremony`
+     - `guided_practice`
+   - Preserved compatibility by also ensuring legacy/expected aliases remain available:
+     - `alchemy_teachings`, `rituals`, `practical_rituals`, `ceremonies`, `practice`
+
+2. **Endpoint-level depth alignment + premium tier integrity preserved**
+   - Updated routes:
+     - `GET /api/sacred-ally-alchemy`
+     - `GET /api/sacred-ally-alchemy/{item_id}`
+     - `GET /api/angelic-alchemy`
+     - `GET /api/angelic-alchemy/{item_id}`
+     - `GET /api/ancient-wisdom`
+     - `GET /api/ancient-wisdom/{entry_id}`
+   - Added devotional enrichment flow on these routes and retained free/paid gating using existing `is_premium` model.
+
+3. **Frontend modals updated to gracefully render enriched schemas**
+   - `frontend/src/pages/SacredAllyAlchemy.jsx`
+     - Added resilient derive helpers for mixed/new fields (`alchemy`, `ritual`, `ceremony`, `guided_practice`)
+     - Added `Guided Practice Arc` section in detail modal
+     - Updated guided voice composition to include all ritual/ceremony/guided lines
+   - `frontend/src/pages/AngelicAlchemy.jsx`
+     - Added robust field resolvers + new sections (`Ceremonies`, `Guided Practice Arc`)
+     - Updated guided script composition and guided practice step orchestration
+   - `frontend/src/pages/ancient-wisdom/AncientWisdomDetailModal.jsx`
+     - Added resolver helpers and new rendered blocks for:
+       - `Ceremonial Arc`
+       - `Guided Practice Arc`
+     - Kept existing teachings/ritual rendering backwards compatible
+
+4. **App-store route consistency polish**
+   - Added alias route in `frontend/src/routes/AppRoutes.jsx`:
+     - `/app-store-readiness` → `AppStoreReadiness`
+   - Updated nav-hide handling in `frontend/src/App.js` to include `/app-store-readiness`
+
+### Verification results (this pass)
+- Manual API checks: PASS
+  - `/api/sacred-ally-alchemy`: enriched fields + tiering present
+  - `/api/angelic-alchemy`: enriched fields + tiering present
+  - `/api/ancient-wisdom`: enriched fields + tiering present
+  - `/api/retreats`: empty array (no placeholder retreats)
+- Narration floor check: PASS
+  - `/api/content/expand-script` returned word count well above 7-minute floor requirement
+- Testing agent report: `test_reports/iteration_229.json`
+  - Backend: **27/27 PASS**
+  - Frontend modal/integration checks: **PASS**
+- Frontend specialist verification (`auto_frontend_testing_agent`): PASS
+  - Sacred Allies, Angelic Alchemy, Ancient Wisdom modal flows confirmed
+  - App readiness route confirmed
+
+### Current status
+- Preview now has deeper immersive structures across targeted vague sections with stable rendering and preserved premium logic.
+- No regressions reported in this pass.
+- For live production parity, redeploy preview changes to production.
+
+

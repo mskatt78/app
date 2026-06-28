@@ -47,7 +47,7 @@ function AppRouter() {
     return <AuthCallback api={api} />;
   }
 
-  const noNavPages = ["/", "/dashboard", "/payment/success", "/payment/cancel", "/app-readiness"];
+  const noNavPages = ["/", "/dashboard", "/payment/success", "/payment/cancel", "/app-readiness", "/app-store-readiness"];
   const showNav = !noNavPages.includes(location.pathname) && !location.pathname.startsWith("/admin");
 
   return (
