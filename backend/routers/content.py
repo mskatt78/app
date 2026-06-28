@@ -1996,6 +1996,73 @@ def _extract_text_lines(value: Any) -> list[str]:
     return _extract_text_lines(str(value))
 
 
+DIVINATION_IMAGE_OVERRIDES: dict[str, str] = {
+    "oracle:the medicine wheel": "https://images.unsplash.com/photo-1529257414771-1960bceb4d44?auto=format&fit=crop&w=1200&q=80",
+    "oracle:the drum": "https://images.pexels.com/photos/4518456/pexels-photo-4518456.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:eagle spirit": "https://images.pexels.com/photos/258804/pexels-photo-258804.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:bear medicine": "https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:wolf pack": "https://images.pexels.com/photos/2923591/pexels-photo-2923591.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:serpent wisdom": "https://images.pexels.com/photos/45246/green-tree-python-python-tree-pythonidae-45246.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:owl vision": "https://images.pexels.com/photos/86596/owl-bird-eyes-eagle-owl-86596.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:deer spirit": "https://images.pexels.com/photos/33547/deer-stag-male-animal.jpg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:raven messenger": "https://images.pexels.com/photos/3132388/pexels-photo-3132388.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:butterfly emergence": "https://images.pexels.com/photos/326055/pexels-photo-326055.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:thunder being": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:moon mother": "https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:sun father": "https://images.pexels.com/photos/355465/pexels-photo-355465.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:turtle island": "https://images.pexels.com/photos/847393/pexels-photo-847393.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:hummingbird joy": "https://images.pexels.com/photos/349758/pexels-photo-349758.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:coyote trickster": "https://upload.wikimedia.org/wikipedia/commons/8/80/2009-Coyote-YNP.jpg",
+    "oracle:whale dreamer": "https://images.pexels.com/photos/892548/pexels-photo-892548.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:spider weaver": "https://images.pexels.com/photos/1227513/pexels-photo-1227513.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:jaguar power": "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:dragonfly dreams": "https://images.pexels.com/photos/53594/blue-dragonfly-anisoptera-insect-53594.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:phoenix rising": "https://images.pexels.com/photos/51951/forest-fire-fire-smoke-conservation-51951.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "oracle:star nations": "https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg?auto=compress&cs=tinysrgb&w=1200",
+}
+
+
+I_CHING_IMAGE_BY_NUMBER: dict[int, str] = {
+    1: "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    2: "https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    3: "https://images.pexels.com/photos/531321/pexels-photo-531321.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    4: "https://images.pexels.com/photos/1337825/pexels-photo-1337825.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    5: "https://images.pexels.com/photos/1001682/pexels-photo-1001682.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    6: "https://images.pexels.com/photos/2901209/pexels-photo-2901209.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    7: "https://images.pexels.com/photos/50594/army-soldiers-war-weapon-50594.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    8: "https://images.pexels.com/photos/247431/pexels-photo-247431.jpeg?auto=compress&cs=tinysrgb&w=1200",
+}
+
+
+def _normalize_divination_image(entry: dict[str, Any], domain: str) -> dict[str, Any]:
+    normalized = dict(entry)
+    name = str(normalized.get("name") or normalized.get("title") or "").strip().lower()
+    key = f"{domain}:{name}"
+    override = DIVINATION_IMAGE_OVERRIDES.get(key)
+
+    if domain == "i-ching":
+        number = normalized.get("number")
+        if isinstance(number, int):
+            override = I_CHING_IMAGE_BY_NUMBER.get(number, override)
+
+    image_url = str(normalized.get("image_url") or "").strip()
+    if override:
+        normalized["image_url"] = override
+    elif image_url.startswith("http://") or image_url.startswith("https://"):
+        normalized["image_url"] = image_url
+    else:
+        if domain == "runes":
+            normalized["image_url"] = "https://images.pexels.com/photos/606537/pexels-photo-606537.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        elif domain == "tarot":
+            normalized["image_url"] = "https://images.pexels.com/photos/7163688/pexels-photo-7163688.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        elif domain == "i-ching":
+            normalized["image_url"] = "https://images.pexels.com/photos/3815585/pexels-photo-3815585.jpeg?auto=compress&cs=tinysrgb&w=1200"
+        else:
+            normalized["image_url"] = "https://images.pexels.com/photos/7130560/pexels-photo-7130560.jpeg?auto=compress&cs=tinysrgb&w=1200"
+
+    return normalized
+
+
 def _coalesce_depth_lines(item: dict[str, Any], keys: Sequence[str], limit: int = 8) -> list[str]:
     seen: set[str] = set()
     lines: list[str] = []
@@ -4565,7 +4632,13 @@ async def get_runes() -> list[dict[str, Any]]:
     """Get all Elder Futhark runes."""
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
-    return [_enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes") for rune in runes]
+    return [
+        _normalize_divination_image(
+            _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes"),
+            "runes",
+        )
+        for rune in runes
+    ]
 
 
 @router.get("/runes/{rune_id}")
@@ -4575,7 +4648,10 @@ async def get_rune(rune_id: str) -> dict[str, Any]:
     rune = await db.runes.find_one({"id": rune_id}, {"_id": 0})
     if not rune:
         raise HTTPException(status_code=404, detail="Rune not found")
-    return _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes")
+    return _normalize_divination_image(
+        _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes"),
+        "runes",
+    )
 
 
 @router.get("/runes/draw/single")
@@ -4587,7 +4663,10 @@ async def draw_single_rune() -> dict[str, Any]:
         raise HTTPException(status_code=404, detail="No runes found")
     rune = _secure_choice(runes)
     rune["is_reversed"] = _secure_bool(0.3)  # 30% chance reversed
-    return _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes")
+    return _normalize_divination_image(
+        _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes"),
+        "runes",
+    )
 
 
 @router.get("/runes/draw/three")
@@ -4604,7 +4683,13 @@ async def draw_three_runes() -> list[dict[str, Any]]:
         rune["position"] = positions[i]
         rune["is_reversed"] = _secure_bool(0.3)
         result.append(rune)
-    return [_enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes") for rune in result]
+    return [
+        _normalize_divination_image(
+            _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes"),
+            "runes",
+        )
+        for rune in result
+    ]
 
 
 @router.get("/runes/draw/celtic-cross")
@@ -4638,7 +4723,13 @@ async def draw_celtic_cross() -> list[dict[str, Any]]:
         rune["position_meaning"] = position_meanings[i]
         rune["is_reversed"] = _secure_bool(0.3)
         result.append(rune)
-    return [_enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes") for rune in result]
+    return [
+        _normalize_divination_image(
+            _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes"),
+            "runes",
+        )
+        for rune in result
+    ]
 
 
 # ============ I CHING ROUTES ============
@@ -4648,7 +4739,13 @@ async def get_hexagrams() -> list[dict[str, Any]]:
     """Get all I Ching hexagrams."""
     db = get_db()
     hexagrams = await db.i_ching.find({}, {"_id": 0}).to_list(length=70)
-    return [_enrich_devotional_language(_enrich_content_integrity(hexagram, "hybrid-curated"), "i-ching") for hexagram in hexagrams]
+    return [
+        _normalize_divination_image(
+            _enrich_devotional_language(_enrich_content_integrity(hexagram, "hybrid-curated"), "i-ching"),
+            "i-ching",
+        )
+        for hexagram in hexagrams
+    ]
 
 
 @router.get("/i-ching/{hexagram_number}")
@@ -4658,7 +4755,10 @@ async def get_hexagram(hexagram_number: int) -> dict[str, Any]:
     hexagram = await db.i_ching.find_one({"number": hexagram_number}, {"_id": 0})
     if not hexagram:
         raise HTTPException(status_code=404, detail="Hexagram not found")
-    return _enrich_devotional_language(_enrich_content_integrity(hexagram, "hybrid-curated"), "i-ching")
+    return _normalize_divination_image(
+        _enrich_devotional_language(_enrich_content_integrity(hexagram, "hybrid-curated"), "i-ching"),
+        "i-ching",
+    )
 
 
 def _cast_coin_lines() -> tuple[list[int], list[int]]:
@@ -4707,8 +4807,11 @@ async def cast_i_ching() -> dict[str, Any]:
     hexagram = await _fetch_hexagram_or_fallback(db, hexagram_number)
 
     hexagram["lines_cast"] = lines
-    return _enrich_devotional_language(
-        _enrich_content_integrity(_append_changing_line_meanings(hexagram, changing_lines), "hybrid-curated"),
+    return _normalize_divination_image(
+        _enrich_devotional_language(
+            _enrich_content_integrity(_append_changing_line_meanings(hexagram, changing_lines), "hybrid-curated"),
+            "i-ching",
+        ),
         "i-ching",
     )
 
@@ -5180,7 +5283,13 @@ async def get_tarot_cards(arcana: Optional[str] = None) -> list[dict[str, Any]]:
     if arcana:
         query["arcana"] = {"$regex": f"^{arcana}$", "$options": "i"}
     cards = await db.tarot_cards.find(query, {"_id": 0}).to_list(length=100)
-    return [_enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot") for card in cards]
+    return [
+        _normalize_divination_image(
+            _enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot"),
+            "tarot",
+        )
+        for card in cards
+    ]
 
 
 @router.get("/tarot/cards/{card_id}")
@@ -5190,7 +5299,10 @@ async def get_tarot_card(card_id: str) -> dict[str, Any]:
     card = await db.tarot_cards.find_one({"id": card_id}, {"_id": 0})
     if not card:
         raise HTTPException(status_code=404, detail="Tarot card not found")
-    return _enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot")
+    return _normalize_divination_image(
+        _enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot"),
+        "tarot",
+    )
 
 
 @router.get("/tarot/reading")
@@ -5222,7 +5334,10 @@ async def get_tarot_reading(spread: str = "single") -> dict[str, Any]:
         is_reversed = _secure_bool(0.5)
         reading.append({
             "position": positions[i] if i < len(positions) else f"Card {i+1}",
-            "card": _enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot"),
+            "card": _normalize_divination_image(
+                _enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot"),
+                "tarot",
+            ),
             "reversed": is_reversed,
             "meaning": card["reversed_meaning"] if is_reversed else card["upright_meaning"]
         })

@@ -1,6 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles, X } from "lucide-react";
 
+const DIVINATION_FALLBACK_IMAGE = "https://images.pexels.com/photos/3815585/pexels-photo-3815585.jpeg?auto=compress&cs=tinysrgb&w=1200";
+
+const handleDivinationImageError = (event) => {
+  const img = event.currentTarget;
+  if (img.dataset.fallbackApplied === "true") return;
+  img.dataset.fallbackApplied = "true";
+  img.src = DIVINATION_FALLBACK_IMAGE;
+};
+
 export const IChingHexagramModal = ({ open, hexagrams, onClose, onSelectHexagram }) => {
   return (
     <AnimatePresence>
@@ -34,6 +43,15 @@ export const IChingHexagramModal = ({ open, hexagrams, onClose, onSelectHexagram
                   className="cursor-pointer p-4 rounded-xl bg-red-500/10 border border-red-500/20 hover:bg-red-500/20 transition-colors text-center"
                   data-testid={`i-ching-hexagram-item-${hex.number}`}
                 >
+                  <div className="h-20 rounded-lg overflow-hidden mb-2 border border-white/10" data-testid={`i-ching-hexagram-image-wrap-${hex.number}`}>
+                    <img
+                      src={hex.image_url || DIVINATION_FALLBACK_IMAGE}
+                      alt={hex.name}
+                      className="w-full h-full object-cover"
+                      onError={handleDivinationImageError}
+                      data-testid={`i-ching-hexagram-image-${hex.number}`}
+                    />
+                  </div>
                   <div className="text-2xl mb-1">{hex.chinese}</div>
                   <p className="text-xs text-muted-foreground">{hex.number}. {hex.name}</p>
                 </div>

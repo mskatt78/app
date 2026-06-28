@@ -15,6 +15,15 @@ const SPREADS = [
   { id: "celtic_cross", name: "Celtic Cross", description: "Deep, comprehensive reading", count: 10 },
 ];
 
+const DIVINATION_FALLBACK_IMAGE = "https://images.pexels.com/photos/7130560/pexels-photo-7130560.jpeg?auto=compress&cs=tinysrgb&w=1200";
+
+const handleDivinationImageError = (event) => {
+  const img = event.currentTarget;
+  if (img.dataset.fallbackApplied === "true") return;
+  img.dataset.fallbackApplied = "true";
+  img.src = DIVINATION_FALLBACK_IMAGE;
+};
+
 const TarotReading = ({ user, api }) => {
   const navigate = useNavigate();
   const [cards, setCards] = useState([]);
@@ -189,6 +198,7 @@ const TarotReading = ({ user, api }) => {
                             src={card.image_url}
                             alt={card.name}
                             className="w-full h-full object-cover"
+                            onError={handleDivinationImageError}
                           />
                         </div>
                         <p className="text-xs text-center mt-2 text-muted-foreground group-hover:text-foreground transition-colors">
@@ -251,6 +261,7 @@ const TarotReading = ({ user, api }) => {
                           src={item.card.image_url}
                           alt={item.card.name}
                           className="w-full h-full object-cover"
+                          onError={handleDivinationImageError}
                         />
                       </div>
                       <div className="text-center">
@@ -279,6 +290,7 @@ const TarotReading = ({ user, api }) => {
                           src={item.card.image_url}
                           alt={item.card.name}
                           className={`w-16 h-24 rounded-lg object-cover ${item.reversed ? "rotate-180" : ""}`}
+                          onError={handleDivinationImageError}
                         />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
@@ -335,6 +347,7 @@ const TarotReading = ({ user, api }) => {
                     src={selectedCard.image_url}
                     alt={selectedCard.name}
                     className="w-48 rounded-xl shadow-lg"
+                    onError={handleDivinationImageError}
                   />
                 </div>
 

@@ -13,6 +13,15 @@ import { RuneReadingsHeader } from "./RuneReadingsHeader";
 import { RuneSpreadSelector } from "./RuneSpreadSelector";
 import { RuneLibraryModal } from "./RuneLibraryModal";
 
+const DIVINATION_FALLBACK_IMAGE = "https://images.pexels.com/photos/7130560/pexels-photo-7130560.jpeg?auto=compress&cs=tinysrgb&w=1200";
+
+const handleDivinationImageError = (event) => {
+  const img = event.currentTarget;
+  if (img.dataset.fallbackApplied === "true") return;
+  img.dataset.fallbackApplied = "true";
+  img.src = DIVINATION_FALLBACK_IMAGE;
+};
+
 const RuneReadings = ({ user, api }) => {
   const navigate = useNavigate();
   const [runes, setRunes] = useState([]);
@@ -140,7 +149,7 @@ const RuneReadings = ({ user, api }) => {
                     >
                       {rune.image_url && (
                         <div className="h-32 overflow-hidden">
-                          <img src={rune.image_url} alt={rune.name} className="w-full h-full object-cover" />
+                          <img src={rune.image_url} alt={rune.name} className="w-full h-full object-cover" onError={handleDivinationImageError} />
                         </div>
                       )}
                       <div className="p-4 text-center">
@@ -198,7 +207,7 @@ const RuneReadings = ({ user, api }) => {
             >
               {selectedRune.image_url && (
                 <div className="h-48 overflow-hidden rounded-t-2xl">
-                  <img src={selectedRune.image_url} alt={selectedRune.name} className="w-full h-full object-cover" />
+                  <img src={selectedRune.image_url} alt={selectedRune.name} className="w-full h-full object-cover" onError={handleDivinationImageError} />
                 </div>
               )}
               <div className="p-6 space-y-4">

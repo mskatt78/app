@@ -18,6 +18,17 @@ logger = logging.getLogger(__name__)
 
 ORACLE_IMAGE_OVERRIDES = {
     "coyote": "https://upload.wikimedia.org/wikipedia/commons/8/80/2009-Coyote-YNP.jpg",
+    "medicine wheel": "https://images.unsplash.com/photo-1529257414771-1960bceb4d44?auto=format&fit=crop&w=1200&q=80",
+    "drum": "https://images.pexels.com/photos/4518456/pexels-photo-4518456.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "eagle": "https://images.pexels.com/photos/258804/pexels-photo-258804.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "bear": "https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "wolf": "https://images.pexels.com/photos/2923591/pexels-photo-2923591.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "serpent": "https://images.pexels.com/photos/45246/green-tree-python-python-tree-pythonidae-45246.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "owl": "https://images.pexels.com/photos/86596/owl-bird-eyes-eagle-owl-86596.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "deer": "https://images.pexels.com/photos/33547/deer-stag-male-animal.jpg?auto=compress&cs=tinysrgb&w=1200",
+    "raven": "https://images.pexels.com/photos/3132388/pexels-photo-3132388.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "whale": "https://images.pexels.com/photos/892548/pexels-photo-892548.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    "jaguar": "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg?auto=compress&cs=tinysrgb&w=1200",
 }
 
 
@@ -44,10 +55,13 @@ def _secure_bool(probability: float = 0.5) -> bool:
 def _normalize_oracle_card_image(card: dict[str, Any]) -> dict[str, Any]:
     normalized = dict(card)
     name = str(normalized.get("name") or "").lower()
+    image_url = str(normalized.get("image_url") or "").strip()
     for keyword, image_url in ORACLE_IMAGE_OVERRIDES.items():
         if keyword in name:
             normalized["image_url"] = image_url
             break
+    if not str(normalized.get("image_url") or "").startswith(("http://", "https://")):
+        normalized["image_url"] = "https://images.pexels.com/photos/7130560/pexels-photo-7130560.jpeg?auto=compress&cs=tinysrgb&w=1200"
     return normalized
 
 

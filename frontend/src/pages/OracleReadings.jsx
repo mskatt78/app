@@ -9,6 +9,15 @@ import { toast } from "sonner";
 import { ShareButton } from "../components/ShareModal";
 import { appLogger } from "../utils/logger";
 
+const DIVINATION_FALLBACK_IMAGE = "https://images.pexels.com/photos/7130560/pexels-photo-7130560.jpeg?auto=compress&cs=tinysrgb&w=1200";
+
+const handleDivinationImageError = (event) => {
+  const img = event.currentTarget;
+  if (img.dataset.fallbackApplied === "true") return;
+  img.dataset.fallbackApplied = "true";
+  img.src = DIVINATION_FALLBACK_IMAGE;
+};
+
 const OracleReadings = ({ user, api }) => {
   const navigate = useNavigate();
   const [question, setQuestion] = useState("");
@@ -133,7 +142,7 @@ const OracleReadings = ({ user, api }) => {
                         })}
                       </p>
                       {r.question && (
-                        <p className="text-sm italic text-foreground/80 mt-1">"{r.question}"</p>
+                        <p className="text-sm italic text-foreground/80 mt-1">&ldquo;{r.question}&rdquo;</p>
                       )}
                     </div>
                     <span className="px-3 py-1 rounded-full bg-primary/10 text-primary text-xs">
@@ -182,7 +191,7 @@ const OracleReadings = ({ user, api }) => {
                           src={card.image_url}
                           alt={card.name}
                           className="w-full h-full object-cover"
-                          onError={(e) => { e.target.style.display='none'; }}
+                          onError={handleDivinationImageError}
                         />
                         {/* Subtle gradient only at bottom for text readability */}
                         <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent" />
@@ -226,7 +235,7 @@ const OracleReadings = ({ user, api }) => {
                 </div>
                 {question && (
                   <p className="text-sm italic text-muted-foreground mb-4">
-                    Regarding: "{question}"
+                    Regarding: &ldquo;{question}&rdquo;
                   </p>
                 )}
                 <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">

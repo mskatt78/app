@@ -1,6 +1,15 @@
 import { motion } from "framer-motion";
 import { ShareButton } from "../../components/ShareModal";
 
+const DIVINATION_FALLBACK_IMAGE = "https://images.pexels.com/photos/3815585/pexels-photo-3815585.jpeg?auto=compress&cs=tinysrgb&w=1200";
+
+const handleDivinationImageError = (event) => {
+  const img = event.currentTarget;
+  if (img.dataset.fallbackApplied === "true") return;
+  img.dataset.fallbackApplied = "true";
+  img.src = DIVINATION_FALLBACK_IMAGE;
+};
+
 const renderLine = (value, lineNumber) => {
   const isYang = value === 7 || value === 9;
   const isOld = value === 6 || value === 9;
@@ -35,6 +44,15 @@ export const IChingResultCard = ({ result }) => {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-6" data-testid="i-ching-result-card">
       <div className="p-8 rounded-2xl bg-card border border-white/10 text-center">
+        <div className="h-52 rounded-xl overflow-hidden border border-white/10 mb-5" data-testid="i-ching-result-image-wrap">
+          <img
+            src={result.image_url || DIVINATION_FALLBACK_IMAGE}
+            alt={result.name}
+            className="w-full h-full object-cover"
+            onError={handleDivinationImageError}
+            data-testid="i-ching-result-image"
+          />
+        </div>
         <div className="flex flex-col-reverse items-center mb-6">
           {result.lines_cast?.map((value, index) => renderLine(value, index + 1))}
         </div>
