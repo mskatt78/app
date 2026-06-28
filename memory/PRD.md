@@ -3159,3 +3159,84 @@
 - For production parity: redeploy latest preview changes to live.
 
 
+## Production Follow-up Pass — Premium Lock Rebalance + Divination/Crystal Image Recovery + Earth Crafting Section (2026-06-28)
+
+### User report context
+- User reported issues from **production** and requested broad corrections across premium gating, depth consistency, image fidelity (Divination Coyote + Crystal images), and section continuity.
+- User-selected execution: two-step sweep (stabilize access/image issues first, then full sweep continuation).
+
+### Implemented in preview
+
+#### 1) Premium/free rebalance and count controls (backend)
+- Updated section-level free-count overrides to match requested distribution priorities:
+  - Yoga: 4 free
+  - Somatic: 4 free
+  - Breathwork: 5 free
+  - Meditations: 4 free
+  - Mindfulness: 5 free
+  - Mantras: 11 free
+  - Water practices: 5 free (and endpoint trimmed to 17 total: 5 free + 12 premium)
+  - Heart practices: 5 free (15 total after supplements: 5 free + 10 premium)
+  - Sacred Allies: 5 free
+  - Angelic Alchemy: 5 free
+  - Sacred Guardians: 5 free
+  - Ancient Wisdom: 5 free
+  - Sacred Art / Creative: 5 free
+- Added/expanded supplements for:
+  - Meditations (+8)
+  - Mindfulness (+7 additional depth entries)
+  - Mantras (+10)
+  - Heart practices (+5 deep entries)
+
+#### 2) Premium lock UX enforcement on previously weak pages
+- Added lock/banner/full-app CTA behavior to:
+  - `YogaLibrary.jsx`
+  - `SomaticMovement.jsx`
+  - `SacredGuardians.jsx`
+  - `SoundFrequencies.jsx`
+  - `CreativeProcesses.jsx`
+- Added/expanded premium section keys in `usePremiumAccess.js` to support these sections consistently.
+
+#### 3) Sacred Art + Earth Crafting & Sacred Tool Birthing
+- Backend:
+  - Added `EARTH_CRAFTING_TOOL_SUPPLEMENTS` and appender logic.
+  - `/api/creative-processes` now includes earth-crafting / sacred-tool-birthing items and is tiered.
+- Frontend:
+  - Creative filters now include:
+    - `earth-crafting`
+    - `sacred-tool-birthing`
+  - Added premium behavior in Creative page.
+  - Main menu now contains: **Earth Crafting & Tool Birthing** entry routing to `/creative?category=earth-crafting`.
+
+#### 4) Image integrity fixes
+- Divination/Oracle:
+  - Coyote image normalized through oracle router override.
+  - Updated static Coyote card URL in data source to a proper coyote image.
+- Crystal wisdom:
+  - Relaxed over-aggressive legacy image rejection in `CrystalGuide.jsx`.
+  - Added stable element-based fallback image mapping to avoid blank image blocks.
+
+#### 5) Additional depth refinements
+- Partner Yoga:
+  - Added explicit **Trust & Connection Ritual** section to detail flow.
+- Sunrise/Sunset:
+  - Added new deeper practices:
+    - `sunrise-7` Golden Threshold Covenant
+    - `sunset-8` Nightfall Cord-Cutting Integration
+
+### Verification
+- Lint: PASS across all modified backend/frontend files.
+- Testing agent report: `/app/test_reports/iteration_231.json`
+  - Backend: 28/28 pass
+  - Frontend: 100% pass for tested lock/image/navigation flows
+- Deep backend validation agent: PASS on all requested endpoint/count/image checks.
+- Manual smoke/UI checks performed:
+  - `/creative?category=earth-crafting` renders filters/cards
+  - main menu earth-crafting entry routes correctly
+  - crystals page shows no “Image unavailable” labels in smoke check
+
+### Current status
+- These fixes are now in **preview** and validated.
+- Since your issue was on production, redeploy is required to push this pass live.
+
+
