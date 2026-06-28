@@ -2573,6 +2573,53 @@ def _parse_tier_sort_value(item: dict[str, Any]) -> tuple[int, str]:
     return 10_000_000, str(item.get("name") or raw_id)
 
 
+def _humanize_unlock_id(unlock_id: str) -> str:
+    return unlock_id.replace("_", " ").strip().title()
+
+
+def _expand_section_items_to_target(items: list[dict[str, Any]], unlock_id: str) -> list[dict[str, Any]]:
+    if not items:
+        return []
+
+    expanded_items = [dict(item) for item in items]
+    source_items = [dict(item) for item in items]
+    section_title = _humanize_unlock_id(unlock_id)
+    extension_index = 1
+
+    while len(expanded_items) < SECTION_MAX_TIER_ITEMS:
+        base_item = source_items[(len(expanded_items) - len(items)) % len(source_items)]
+        base_id = str(base_item.get("id") or f"{unlock_id}-practice")
+        base_name = str(base_item.get("name") or base_item.get("title") or section_title)
+        base_description = str(
+            base_item.get("description")
+            or base_item.get("summary")
+            or base_item.get("message")
+            or ""
+        ).strip()
+
+        extension_item = dict(base_item)
+        extension_item["id"] = f"{base_id}-deepening-{extension_index}"
+
+        extension_title = f"{base_name} · Deepening Cycle {extension_index}"
+        extension_item["name"] = extension_title
+        if "title" in extension_item:
+            extension_item["title"] = extension_title
+
+        deepening_suffix = (
+            "Slow your pace, hold each phase longer, and complete with a full-body grounding reflection."
+        )
+        extension_item["description"] = (
+            f"{base_description} {deepening_suffix}".strip()
+            if base_description
+            else f"{section_title} deepening sequence {extension_index}. {deepening_suffix}"
+        )
+
+        expanded_items.append(extension_item)
+        extension_index += 1
+
+    return expanded_items
+
+
 def _apply_free_paid_tiering(
     items: list[dict[str, Any]],
     unlock_id: str,
@@ -2583,6 +2630,7 @@ def _apply_free_paid_tiering(
         return []
 
     ordered = sorted(items, key=_parse_tier_sort_value)
+    ordered = _expand_section_items_to_target(ordered, unlock_id)
     total_items = len(ordered)
     override_free_count = SECTION_FREE_COUNT_OVERRIDES.get(unlock_id, SECTION_DEFAULT_FREE_ITEMS)
     free_count = max(minimum_free, int(override_free_count))

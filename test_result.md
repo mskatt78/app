@@ -10810,3 +10810,20 @@ agent_communication:
 agent_communication:
   - agent: "testing"
     message: "✅ BACKEND REGRESSION COMPLETE (2026-06-29): Comprehensive backend-focused regression testing completed on https://breathwork-sanctuary.preview.emergentagent.com/api. ALL 5 REQUIREMENTS PASSED: 1) Tiering consistency - 9 key section endpoints (/meditations, /breathwork/sessions, /mantras, /mindfulness-practices, /heart-practices, /shamanic-practices, /creative-processes, /energy-healing, /water-practices) all return exactly 14 items with 4 free + 10 premium split ✓. 2) Pricing plans - /payments/plans returns exactly 2 plans (monthly at $19.99 and full_app_unlock at $369.00) with valid price values and usable shape for frontend ✓. 3) Retreats cleanup - /retreats returns empty list [] as expected ✓. 4) Guided narration floor - POST /content/expand-script with target_minutes=7 meets minimum 7-minute floor (word_count=1000 >= 840 required, segments non-empty) ✓. 5) General stability - All 12 tested endpoints return non-500 status codes, no server errors detected ✓. SUMMARY: 13 tests executed, 13 PASSED, 0 FAILED, 0 WARNINGS. Backend release ready for deployment."
+
+
+  - task: "Backend regression - Final tiering enhancement validation (23 endpoints)"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ FINAL TIERING ENHANCEMENT VALIDATION PASSED (2026-06-29): Comprehensive backend regression testing completed on ALL 23 section endpoints after final tiering enhancement in content.py. ALL ENDPOINTS PASS with EXACTLY 14 items (4 free + 10 premium): 1) /yoga/poses ✓, 2) /breathwork/sessions ✓, 3) /mantras ✓, 4) /mindfulness-practices ✓, 5) /meditations ✓, 6) /somatic ✓, 7) /grounding ✓, 8) /heart-practices ✓, 9) /shamanic-practices ✓, 10) /elemental-practices ✓, 11) /creative-processes ✓, 12) /sacred-guardians ✓, 13) /sacred-ally-alchemy ✓, 14) /angelic-alchemy ✓, 15) /healing-portals ✓, 16) /ancient-wisdom ✓, 17) /sound-frequencies ✓, 18) /energy-healing ✓, 19) /chakra-cleansing ✓, 20) /feminine-embodiment ✓, 21) /masculine-embodiment ✓, 22) /elemental-temples ✓, 23) /water-practices ✓. ADDITIONAL VALIDATIONS: /payments/plans returns exactly 2 plans (monthly + full_app_unlock) with valid prices ✓, /retreats returns empty list [] ✓, /content/expand-script meets 7-minute floor (word_count=1000 >= 840 required) ✓, All endpoints stable with no 500 errors ✓. SUMMARY: 27 tests executed, 27 PASSED, 0 FAILED, 0 WARNINGS. Final tiering enhancement FULLY VALIDATED across all content sections."
+
+agent_communication:
+  - agent: "testing"
+    message: "✅ FINAL TIERING ENHANCEMENT VALIDATION COMPLETE (2026-06-29): Comprehensive backend regression testing completed after final tiering enhancement in content.py. ALL 23 SECTION ENDPOINTS NOW VALIDATED: Every endpoint (/yoga/poses, /breathwork/sessions, /mantras, /mindfulness-practices, /meditations, /somatic, /grounding, /heart-practices, /shamanic-practices, /elemental-practices, /creative-processes, /sacred-guardians, /sacred-ally-alchemy, /angelic-alchemy, /healing-portals, /ancient-wisdom, /sound-frequencies, /energy-healing, /chakra-cleansing, /feminine-embodiment, /masculine-embodiment, /elemental-temples, /water-practices) returns EXACTLY 14 items with EXACTLY 4 free and 10 premium. Pricing plans endpoint returns [monthly, full_app_unlock] as expected. Retreats endpoint remains empty. Expand-script endpoint meets 7-minute floor requirement. All endpoints stable with no 500 errors. RESULT: 27/27 tests PASSED. Backend ready for production deployment with consistent tiering across all content sections."

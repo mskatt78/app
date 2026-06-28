@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Backend Regression Test Suite for Breathwork Sanctuary
-Focus: Tiering consistency, pricing plans, retreats cleanup, narration floor, stability
+Focus: Tiering consistency (23 endpoints), pricing plans, retreats cleanup, narration floor, stability
+Updated: 2026-06-29 - Final tiering enhancement validation
 """
 
 import requests
@@ -275,16 +276,30 @@ def main():
     print(f"Base URL: {BASE_URL}")
     print("="*80)
     
-    # Test 1: Tiering consistency for key section endpoints
-    print("\n[1/5] Testing tiering consistency...")
-    test_tiering_consistency("/meditations", 14, 4, 10)
+    # Test 1: Tiering consistency for ALL 23 section endpoints
+    print("\n[1/5] Testing tiering consistency (23 endpoints)...")
+    test_tiering_consistency("/yoga/poses", 14, 4, 10)
     test_tiering_consistency("/breathwork/sessions", 14, 4, 10)
     test_tiering_consistency("/mantras", 14, 4, 10)
     test_tiering_consistency("/mindfulness-practices", 14, 4, 10)
+    test_tiering_consistency("/meditations", 14, 4, 10)
+    test_tiering_consistency("/somatic", 14, 4, 10)
+    test_tiering_consistency("/grounding", 14, 4, 10)
     test_tiering_consistency("/heart-practices", 14, 4, 10)
     test_tiering_consistency("/shamanic-practices", 14, 4, 10)
+    test_tiering_consistency("/elemental-practices", 14, 4, 10)
     test_tiering_consistency("/creative-processes", 14, 4, 10)
+    test_tiering_consistency("/sacred-guardians", 14, 4, 10)
+    test_tiering_consistency("/sacred-ally-alchemy", 14, 4, 10)
+    test_tiering_consistency("/angelic-alchemy", 14, 4, 10)
+    test_tiering_consistency("/healing-portals", 14, 4, 10)
+    test_tiering_consistency("/ancient-wisdom", 14, 4, 10)
+    test_tiering_consistency("/sound-frequencies", 14, 4, 10)
     test_tiering_consistency("/energy-healing", 14, 4, 10)
+    test_tiering_consistency("/chakra-cleansing", 14, 4, 10)
+    test_tiering_consistency("/feminine-embodiment", 14, 4, 10)
+    test_tiering_consistency("/masculine-embodiment", 14, 4, 10)
+    test_tiering_consistency("/elemental-temples", 14, 4, 10)
     test_tiering_consistency("/water-practices", 14, 4, 10)
     
     # Test 2: Pricing plans
