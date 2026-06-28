@@ -22,9 +22,19 @@ const assetChecklist = [
     hint: "Capture core flows: landing, dashboard, guided session, admin/demo proof.",
   },
   {
+    id: "iphone-device-capture-plan",
+    title: "Real-device iPhone capture plan completed",
+    hint: "Use iPhone 15 Pro Max (1290×2796) or equivalent with native status bar visible.",
+  },
+  {
     id: "ipad-screenshots",
     title: "iPad screenshots prepared",
     hint: "Capture at least 2–4 key views for tablet moderation review.",
+  },
+  {
+    id: "ipad-device-capture-plan",
+    title: "Real-device iPad capture plan completed",
+    hint: "Use 12.9-inch iPad screenshots and verify no clipped overlays or cut-off text.",
   },
   {
     id: "store-description",
@@ -74,6 +84,16 @@ const qaChecklist = [
     title: "Offline fallback tested",
     hint: "Confirm service worker fallback page is reachable when connection drops.",
   },
+  {
+    id: "screenshot-proof-log",
+    title: "Screenshot proof log completed",
+    hint: "Mark each required capture route/size complete in SCREENSHOT_SHOTLIST.md.",
+  },
+  {
+    id: "metadata-cross-check",
+    title: "Store metadata cross-check complete",
+    hint: "App Store + Play Console values match this page and STORE_COPY_PACK.md.",
+  },
 ];
 
 const submissionMetadata = [
@@ -106,6 +126,77 @@ const submissionMetadata = [
     id: "admin-entry",
     label: "Admin entry path",
     value: "/admin",
+  },
+  {
+    id: "ios-shot-dimensions",
+    label: "iOS screenshot set",
+    value: "6.7\" + 6.5\" portrait (real-device captures)",
+  },
+  {
+    id: "ipad-shot-dimensions",
+    label: "iPad screenshot set",
+    value: "12.9\" portrait (real-device captures)",
+  },
+  {
+    id: "shotlist-source",
+    label: "Screenshot shot list source",
+    value: "/submission_kit/SCREENSHOT_SHOTLIST.md",
+  },
+  {
+    id: "review-notes-source",
+    label: "Reviewer notes source",
+    value: "/submission_kit/LEGAL_LINKS_AND_REVIEWER_NOTES.md",
+  },
+];
+
+const realDeviceShotList = [
+  {
+    id: "shot-home",
+    title: "Hero / Home",
+    route: "/",
+    requirement: "Primary CTA + sacred visual identity clearly visible",
+  },
+  {
+    id: "shot-guided",
+    title: "Guided Session In Progress",
+    route: "/somatic (open guided overlay)",
+    requirement: "Timer + active narration controls visible",
+  },
+  {
+    id: "shot-breathwork",
+    title: "Breathwork + Soundscape",
+    route: "/breathwork",
+    requirement: "Ambient sound selector visible",
+  },
+  {
+    id: "shot-mantra",
+    title: "Mantra deep modal",
+    route: "/mantras",
+    requirement: "Ritual/Ceremony/Guided sections visible",
+  },
+  {
+    id: "shot-mudra",
+    title: "Mudra deep modal",
+    route: "/mudras",
+    requirement: "Embodiment depth and guided CTA visible",
+  },
+  {
+    id: "shot-admin",
+    title: "Admin command center",
+    route: "/admin",
+    requirement: "Unified admin controls visible",
+  },
+  {
+    id: "shot-legal",
+    title: "Legal/Support proof",
+    route: "/privacy or /terms or /support",
+    requirement: "Public legal/support route clearly visible",
+  },
+  {
+    id: "shot-install",
+    title: "Install-ready proof",
+    route: "landing or top nav",
+    requirement: "Install CTA visible",
   },
 ];
 
@@ -311,6 +402,30 @@ export default function AppStoreReadiness() {
                   </Button>
                 </div>
               </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-[1.75rem] border border-white/10 bg-card/70 p-6" data-testid="app-readiness-real-device-shotlist-card">
+          <div className="flex items-center gap-2 mb-4">
+            <Smartphone className="w-5 h-5 text-primary" />
+            <h3 className="text-xl font-serif">Real-device screenshot shot list</h3>
+          </div>
+          <p className="text-sm text-muted-foreground mb-5" data-testid="app-readiness-real-device-shotlist-note">
+            Per your workflow preference, capture these manually on physical devices, then mark completion in the submission docs.
+          </p>
+
+          <div className="space-y-3" data-testid="app-readiness-real-device-shotlist-grid">
+            {realDeviceShotList.map((item) => (
+              <article
+                key={item.id}
+                className="rounded-xl border border-white/10 bg-black/20 p-4"
+                data-testid={`app-readiness-real-device-shot-${item.id}`}
+              >
+                <p className="text-sm font-medium text-foreground">{item.title}</p>
+                <p className="text-xs text-white/70 mt-1">Route: <code>{item.route}</code></p>
+                <p className="text-xs text-muted-foreground mt-1">Requirement: {item.requirement}</p>
+              </article>
             ))}
           </div>
         </section>

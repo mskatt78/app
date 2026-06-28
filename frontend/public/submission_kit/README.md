@@ -30,8 +30,12 @@ This folder is your complete, ready-to-use launch pack for:
 ## Quick Use Order
 
 1) Set your production URL in `LEGAL_LINKS_AND_REVIEWER_NOTES.md`
-2) Capture screenshots from `SCREENSHOT_SHOTLIST.md`
+2) Capture **real-device** screenshots from `SCREENSHOT_SHOTLIST.md` (6.7", 6.5", 12.9")
 3) Paste copy from `STORE_COPY_PACK.md`
 4) Complete all form fields using `SUBMISSION_FORMS_CHEATSHEET.md`
 5) Run `FINAL_RELEASE_QA_SCRIPT.md`
 6) Submit
+
+## Current Submission Mode
+- Screenshot workflow: **manual physical-device capture**
+- Metadata workflow: **cross-check against `/app-store-readiness` and this folder**

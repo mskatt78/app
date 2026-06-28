@@ -1,53 +1,38 @@
-# Screenshot Shotlist (Capture Plan)
+# Screenshot Shotlist (Real-Device Capture Plan)
 
-Use production domain for all captures.
+Use your **production domain** for every screenshot.
 
-## 1) Hero / Home Experience
-- Route: `/`
-- Capture: Landing hero with primary CTA
-- Caption: "A sacred space for healing, breath, and spiritual practice"
+## Device Specs (Required)
+- iPhone set: **6.7" + 6.5" portrait**
+- iPad set: **12.9" portrait**
+- Capture on physical device whenever possible (as requested)
+- Keep native status bar visible and avoid cropping UI controls
 
-## 2) Guided Practice In-Session
-- Route: any guided flow (e.g. `/somatic` -> open guided overlay)
-- Capture: Timer + narration active state
-- Caption: "Long-form guided sessions with immersive audio"
+## Master Capture Checklist
 
-## 3) Breathwork + Soundscape
-- Route: `/breathwork`
-- Capture: Sound options visible (Ocean, Rain, Forest, Wind, Fire)
-- Caption: "Personalized breathwork with natural ambient soundscapes"
+| ID | Route | Capture Goal | Caption Suggestion | iPhone 6.7" | iPhone 6.5" | iPad 12.9" |
+|---|---|---|---|---|---|---|
+| 01 | `/` | Hero + primary CTA | A sacred space for healing, breath, and spiritual practice | [ ] | [ ] | [ ] |
+| 02 | `/somatic` (open guided overlay) | Guided timer + narration active | Long-form guided sessions with immersive audio | [ ] | [ ] | [ ] |
+| 03 | `/breathwork` | Ambient sound options visible | Personalized breathwork with natural ambient soundscapes | [ ] | [ ] | [ ] |
+| 04 | `/mantras` | Mantra deep modal (ritual/ceremony/guided visible) | Mantra rituals with rhythm controls and healing depth | [ ] | [ ] | [ ] |
+| 05 | `/mudras` | Mudra deep modal + guided CTA | Ancient mudra practices with embodied ritual guidance | [ ] | [ ] | [ ] |
+| 06 | `/admin` | Unified admin dashboard | Centralized content and live experience management | [ ] | [ ] | [ ] |
+| 07 | `/privacy` or `/terms` or `/support` | Legal/support proof | Transparent support, privacy, and terms | [ ] | [ ] | [ ] |
+| 08 | landing/top nav | Install-ready CTA visible | Install-ready mobile experience | [ ] | [ ] | [ ] |
 
-## 4) Mantra Practice
-- Route: `/mantras`
-- Capture: Mantra dialog with natural sound selector + controls
-- Caption: "Mantra rituals with rhythm controls and healing context"
+## Quality Rules (Before Upload)
+- [ ] No text truncation or clipped modals
+- [ ] No debug UI, browser chrome, or dev banners
+- [ ] Visual tone remains dark/sacred and consistent
+- [ ] Guided overlay screenshots show clear timer state
+- [ ] Premium lock screens (if shown) remain elegant and readable
 
-## 5) Mudra / Meditation Depth
-- Route: `/mudras` or `/meditations`
-- Capture: Therapeutic context cards + guided CTA
-- Caption: "Ancient practices made practical for modern daily healing"
-
-## 6) Admin / Creator Operations
-- Route: `/admin`
-- Capture: Admin dashboard overview
-- Caption: "Centralized content and live experience management"
-
-## 7) Support + Legal Readiness
-- Route: `/support` and `/privacy` or `/terms`
-- Capture: support/legal pages
-- Caption: "Transparent support, privacy, and terms"
-
-## 8) Install Prompt / App-Like UX
-- Route: any major route with install access visible
-- Capture: install CTA visible in nav/landing
-- Caption: "Install-ready mobile experience"
-
----
-
-## Recommended Order for Store Gallery
+## Recommended Store Gallery Order
 1. Hero
 2. Guided in-session
 3. Breathwork soundscapes
-4. Mantra/Mudra
-5. Admin/live capability
-6. Support/legal
+4. Mantra depth
+5. Mudra depth
+6. Admin capability
+7. Legal/support trust proof

@@ -1687,7 +1687,7 @@ def _mudra_key(name: str) -> str:
 
 
 def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
-    enriched = dict(mudra)
+    enriched = _enrich_devotional_language(dict(mudra), "mudra")
     mudra_name = _mudra_key(mudra.get("name", ""))
     verified_image = MUDRA_VERIFIED_IMAGE_MAP.get(mudra_name)
 
@@ -1769,6 +1769,8 @@ def _enrich_practice_links(item: dict[str, Any], domain: str) -> dict[str, Any]:
 
 
 DEVOTIONAL_DOMAIN_SUFFIX = {
+    "mantra": "Chant as ceremony: keep pronunciation clear, breath steady, and allow vibration to become embodied medicine.",
+    "mudra": "Practice as a subtle ritual seal: reduce effort, refine sensation, and complete with grounded integration.",
     "breathwork": "Move slowly, pace your inhale and exhale with consent, and let each cycle become a living ritual in your body.",
     "mindfulness": "Treat attention as ceremony: witness without force, soften the jaw, and return to breath each time the mind wanders.",
     "meditation": "Receive this as transmission, not performance—allow stillness to reveal what your nervous system is ready to heal and integrate.",
@@ -1781,6 +1783,15 @@ DEVOTIONAL_DOMAIN_SUFFIX = {
     "sacred-allies": "Relate to this ally as living medicine: breathe with humility, track body truth, and convert insight into a grounded act of healing.",
     "angelic-alchemy": "Receive this transmission with clear boundaries and practical devotion—integrate guidance through embodied action and compassionate leadership.",
     "ancient-wisdom": "Treat this lineage as living practice, not concept: embody one teaching, complete one ritual act, and anchor one service-based integration.",
+    "sacred-guardians": "Approach guardian work as reciprocal ceremony: listen, invoke with integrity, and embody one concrete action after receiving guidance.",
+    "sound-frequencies": "Receive sound as somatic ritual—track breath, body sensation, and emotional tone while integrating gently after each listening cycle.",
+    "tarot": "Treat divination as embodied inquiry: feel the message in your body, name one truth, and take one grounded action.",
+    "runes": "Cast and interpret with reverence, pacing, and practical integration so symbolic wisdom becomes lived alignment.",
+    "i-ching": "Hold the oracle as living dialogue: regulate your nervous system first, then integrate with clarity and ethical action.",
+    "videos": "Use teachings as practice containers, not passive content: pause, embody, and complete one integration step after viewing.",
+    "courses": "Study as initiation—apply each lesson through ritualized action, reflection, and compassionate discipline.",
+    "books": "Read devotionally: extract one practice, embody one insight, and close each session with integration journaling.",
+    "retreats": "Enter retreat preparation as ceremony: align intention, boundaries, and embodied pacing before and after immersion.",
 }
 
 ELEMENT_EMBODIMENT_ANCHOR = {
@@ -4313,7 +4324,7 @@ async def get_creative_processes(category: Optional[str] = None) -> list[dict[st
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     
     processes = await db.creative_processes.find(query, {"_id": 0}).to_list(length=50)
-    return processes
+    return [_enrich_devotional_language(_enrich_content_integrity(process, "hybrid-curated"), "courses") for process in processes]
 
 
 @router.get("/creative-processes/{process_id}")
@@ -4323,7 +4334,7 @@ async def get_creative_process(process_id: str) -> dict[str, Any]:
     process = await db.creative_processes.find_one({"id": process_id}, {"_id": 0})
     if not process:
         raise HTTPException(status_code=404, detail="Creative process not found")
-    return process
+    return _enrich_devotional_language(_enrich_content_integrity(process, "hybrid-curated"), "courses")
 
 
 # ============ EARTH ALTARS ============
@@ -4333,7 +4344,7 @@ async def get_earth_altars() -> list[dict[str, Any]]:
     """Get earth altars from database."""
     db = get_db()
     altars = await db.earth_altars.find({}, {"_id": 0}).to_list(length=50)
-    return altars
+    return [_enrich_devotional_language(_enrich_content_integrity(altar, "hybrid-curated"), "elemental-practices") for altar in altars]
 
 
 @router.get("/earth-altars/{altar_id}")
@@ -4343,7 +4354,7 @@ async def get_earth_altar(altar_id: str) -> dict[str, Any]:
     altar = await db.earth_altars.find_one({"id": altar_id}, {"_id": 0})
     if not altar:
         raise HTTPException(status_code=404, detail="Earth altar not found")
-    return altar
+    return _enrich_devotional_language(_enrich_content_integrity(altar, "hybrid-curated"), "elemental-practices")
 
 
 
@@ -4354,7 +4365,7 @@ async def get_runes() -> list[dict[str, Any]]:
     """Get all Elder Futhark runes."""
     db = get_db()
     runes = await db.runes.find({}, {"_id": 0}).to_list(length=30)
-    return runes
+    return [_enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes") for rune in runes]
 
 
 @router.get("/runes/{rune_id}")
@@ -4364,7 +4375,7 @@ async def get_rune(rune_id: str) -> dict[str, Any]:
     rune = await db.runes.find_one({"id": rune_id}, {"_id": 0})
     if not rune:
         raise HTTPException(status_code=404, detail="Rune not found")
-    return rune
+    return _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes")
 
 
 @router.get("/runes/draw/single")
@@ -4376,7 +4387,7 @@ async def draw_single_rune() -> dict[str, Any]:
         raise HTTPException(status_code=404, detail="No runes found")
     rune = _secure_choice(runes)
     rune["is_reversed"] = _secure_bool(0.3)  # 30% chance reversed
-    return rune
+    return _enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes")
 
 
 @router.get("/runes/draw/three")
@@ -4393,7 +4404,7 @@ async def draw_three_runes() -> list[dict[str, Any]]:
         rune["position"] = positions[i]
         rune["is_reversed"] = _secure_bool(0.3)
         result.append(rune)
-    return result
+    return [_enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes") for rune in result]
 
 
 @router.get("/runes/draw/celtic-cross")
@@ -4427,7 +4438,7 @@ async def draw_celtic_cross() -> list[dict[str, Any]]:
         rune["position_meaning"] = position_meanings[i]
         rune["is_reversed"] = _secure_bool(0.3)
         result.append(rune)
-    return result
+    return [_enrich_devotional_language(_enrich_content_integrity(rune, "hybrid-curated"), "runes") for rune in result]
 
 
 # ============ I CHING ROUTES ============
@@ -4437,7 +4448,7 @@ async def get_hexagrams() -> list[dict[str, Any]]:
     """Get all I Ching hexagrams."""
     db = get_db()
     hexagrams = await db.i_ching.find({}, {"_id": 0}).to_list(length=70)
-    return hexagrams
+    return [_enrich_devotional_language(_enrich_content_integrity(hexagram, "hybrid-curated"), "i-ching") for hexagram in hexagrams]
 
 
 @router.get("/i-ching/{hexagram_number}")
@@ -4447,7 +4458,7 @@ async def get_hexagram(hexagram_number: int) -> dict[str, Any]:
     hexagram = await db.i_ching.find_one({"number": hexagram_number}, {"_id": 0})
     if not hexagram:
         raise HTTPException(status_code=404, detail="Hexagram not found")
-    return hexagram
+    return _enrich_devotional_language(_enrich_content_integrity(hexagram, "hybrid-curated"), "i-ching")
 
 
 def _cast_coin_lines() -> tuple[list[int], list[int]]:
@@ -4496,7 +4507,10 @@ async def cast_i_ching() -> dict[str, Any]:
     hexagram = await _fetch_hexagram_or_fallback(db, hexagram_number)
 
     hexagram["lines_cast"] = lines
-    return _append_changing_line_meanings(hexagram, changing_lines)
+    return _enrich_devotional_language(
+        _enrich_content_integrity(_append_changing_line_meanings(hexagram, changing_lines), "hybrid-curated"),
+        "i-ching",
+    )
 
 
 # ============ LIGHT CODES ROUTES ============
@@ -4636,7 +4650,7 @@ async def get_sacred_guardians(category: Optional[str] = None) -> list[dict[str,
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     guardians = await db.sacred_guardians.find(query, {"_id": 0}).to_list(length=100)
-    return [_enrich_content_integrity(guardian, "hybrid-curated") for guardian in guardians]
+    return [_enrich_devotional_language(_enrich_content_integrity(guardian, "hybrid-curated"), "sacred-guardians") for guardian in guardians]
 
 
 @router.get("/sacred-guardians/{guardian_id}")
@@ -4646,7 +4660,7 @@ async def get_sacred_guardian(guardian_id: str) -> dict[str, Any]:
     guardian = await db.sacred_guardians.find_one({"id": guardian_id}, {"_id": 0})
     if not guardian:
         raise HTTPException(status_code=404, detail="Guardian not found")
-    return _enrich_content_integrity(guardian, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(guardian, "hybrid-curated"), "sacred-guardians")
 
 
 # ============ SACRED ALLY ALCHEMY ==========
@@ -4937,7 +4951,7 @@ async def get_sound_frequencies(category: Optional[str] = None) -> list[dict[str
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     entries = await db.sound_frequencies.find(query, {"_id": 0}).to_list(length=50)
-    return entries
+    return [_enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "sound-frequencies") for entry in entries]
 
 
 @router.get("/sound-frequencies/{freq_id}")
@@ -4947,7 +4961,7 @@ async def get_sound_frequency(freq_id: str) -> dict[str, Any]:
     entry = await db.sound_frequencies.find_one({"id": freq_id}, {"_id": 0})
     if not entry:
         raise HTTPException(status_code=404, detail="Sound frequency not found")
-    return entry
+    return _enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "sound-frequencies")
 
 
 
@@ -4961,7 +4975,7 @@ async def get_tarot_cards(arcana: Optional[str] = None) -> list[dict[str, Any]]:
     if arcana:
         query["arcana"] = {"$regex": f"^{arcana}$", "$options": "i"}
     cards = await db.tarot_cards.find(query, {"_id": 0}).to_list(length=100)
-    return cards
+    return [_enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot") for card in cards]
 
 
 @router.get("/tarot/cards/{card_id}")
@@ -4971,7 +4985,7 @@ async def get_tarot_card(card_id: str) -> dict[str, Any]:
     card = await db.tarot_cards.find_one({"id": card_id}, {"_id": 0})
     if not card:
         raise HTTPException(status_code=404, detail="Tarot card not found")
-    return card
+    return _enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot")
 
 
 @router.get("/tarot/reading")
@@ -5003,7 +5017,7 @@ async def get_tarot_reading(spread: str = "single") -> dict[str, Any]:
         is_reversed = _secure_bool(0.5)
         reading.append({
             "position": positions[i] if i < len(positions) else f"Card {i+1}",
-            "card": card,
+            "card": _enrich_devotional_language(_enrich_content_integrity(card, "hybrid-curated"), "tarot"),
             "reversed": is_reversed,
             "meaning": card["reversed_meaning"] if is_reversed else card["upright_meaning"]
         })
@@ -5022,7 +5036,7 @@ async def get_retreats(status: Optional[str] = None) -> list[dict[str, Any]]:
     if status:
         query["status"] = {"$regex": f"^{status}$", "$options": "i"}
     retreats = await db.retreats.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=50)
-    return retreats
+    return [_enrich_devotional_language(_enrich_content_integrity(retreat, "hybrid-curated"), "retreats") for retreat in retreats]
 
 
 @router.get("/retreats/{retreat_id}")
@@ -5032,7 +5046,7 @@ async def get_retreat(retreat_id: str) -> dict[str, Any]:
     retreat = await db.retreats.find_one({"id": retreat_id}, {"_id": 0})
     if not retreat:
         raise HTTPException(status_code=404, detail="Retreat not found")
-    return retreat
+    return _enrich_devotional_language(_enrich_content_integrity(retreat, "hybrid-curated"), "retreats")
 
 
 # ============ VIDEOS ROUTES ============
@@ -5045,7 +5059,7 @@ async def get_videos(category: Optional[str] = None) -> list[dict[str, Any]]:
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     videos = await db.videos.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=100)
-    return videos
+    return [_enrich_devotional_language(_enrich_content_integrity(video, "hybrid-curated"), "videos") for video in videos]
 
 
 @router.get("/videos/{video_id}")
@@ -5055,7 +5069,7 @@ async def get_video(video_id: str) -> dict[str, Any]:
     video = await db.videos.find_one({"id": video_id}, {"_id": 0})
     if not video:
         raise HTTPException(status_code=404, detail="Video not found")
-    return video
+    return _enrich_devotional_language(_enrich_content_integrity(video, "hybrid-curated"), "videos")
 
 
 # ============ COURSES ROUTES ============
@@ -5070,7 +5084,7 @@ async def get_courses(category: Optional[str] = None, level: Optional[str] = Non
     if level:
         query["level"] = {"$regex": f"^{level}$", "$options": "i"}
     courses = await db.courses.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=100)
-    return [_enrich_content_integrity(course, "hybrid-curated") for course in courses]
+    return [_enrich_devotional_language(_enrich_content_integrity(course, "hybrid-curated"), "courses") for course in courses]
 
 
 @router.get("/courses/{course_id}")
@@ -5080,7 +5094,7 @@ async def get_course(course_id: str) -> dict[str, Any]:
     course = await db.courses.find_one({"id": course_id}, {"_id": 0})
     if not course:
         raise HTTPException(status_code=404, detail="Course not found")
-    return _enrich_content_integrity(course, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(course, "hybrid-curated"), "courses")
 
 
 @router.get("/books")
@@ -5088,7 +5102,7 @@ async def get_books() -> list[dict[str, Any]]:
     """Get books collection for the Books page."""
     db = get_db()
     books = await db.books.find({}, {"_id": 0}).sort("created_at", -1).to_list(length=100)
-    return [_enrich_content_integrity(book, "hybrid-curated") for book in books]
+    return [_enrich_devotional_language(_enrich_content_integrity(book, "hybrid-curated"), "books") for book in books]
 
 
 @router.get("/books/{book_id}")
@@ -5098,7 +5112,7 @@ async def get_book(book_id: str) -> dict[str, Any]:
     book = await db.books.find_one({"id": book_id}, {"_id": 0})
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
-    return _enrich_content_integrity(book, "hybrid-curated")
+    return _enrich_devotional_language(_enrich_content_integrity(book, "hybrid-curated"), "books")
 
 
 # ============ SACRED RITES ROUTES ============
@@ -5113,7 +5127,7 @@ async def get_sacred_rites() -> list[dict[str, Any]]:
             {"category": {"$regex": "^sacred_rites$", "$options": "i"}},
             {"_id": 0},
         ).to_list(length=20)
-    return rites
+    return [_enrich_devotional_language(_enrich_content_integrity(rite, "hybrid-curated"), "courses") for rite in rites]
 
 
 @router.get("/sacred-rites/{rite_id}")
@@ -5131,7 +5145,7 @@ async def get_sacred_rite(rite_id: str) -> dict[str, Any]:
         )
     if not rite:
         raise HTTPException(status_code=404, detail="Sacred rite not found")
-    return rite
+    return _enrich_devotional_language(_enrich_content_integrity(rite, "hybrid-curated"), "courses")
 
 
 # ============ COMMUNITY ROUTES ============

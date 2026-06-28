@@ -46,6 +46,31 @@ export const MantrasPlayer = ({
   createGuidedMantraPractice,
   hasPlayableAudio,
 }) => {
+  const resolveMantraAlchemy = (mantra) => {
+    if (Array.isArray(mantra?.alchemy) && mantra.alchemy.length) return mantra.alchemy;
+    if (Array.isArray(mantra?.alchemy_teachings) && mantra.alchemy_teachings.length) return mantra.alchemy_teachings;
+    return [];
+  };
+
+  const resolveMantraRitual = (mantra) => {
+    if (Array.isArray(mantra?.ritual) && mantra.ritual.length) return mantra.ritual;
+    if (Array.isArray(mantra?.rituals) && mantra.rituals.length) return mantra.rituals;
+    if (Array.isArray(mantra?.practical_rituals) && mantra.practical_rituals.length) return mantra.practical_rituals;
+    return [];
+  };
+
+  const resolveMantraCeremony = (mantra) => {
+    if (Array.isArray(mantra?.ceremony) && mantra.ceremony.length) return mantra.ceremony;
+    if (Array.isArray(mantra?.ceremonies) && mantra.ceremonies.length) return mantra.ceremonies;
+    return resolveMantraRitual(mantra).slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+  };
+
+  const resolveMantraGuided = (mantra) => {
+    if (Array.isArray(mantra?.guided_practice) && mantra.guided_practice.length) return mantra.guided_practice;
+    if (Array.isArray(mantra?.practice) && mantra.practice.length) return mantra.practice;
+    return resolveMantraRitual(mantra).slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+  };
+
   return (
     <Dialog open={!!selectedMantra} onOpenChange={onClose}>
       <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto">
@@ -478,6 +503,62 @@ export const MantrasPlayer = ({
                 <div className="p-4 rounded-xl bg-white/5 border border-white/10">
                   <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Recommended Music</h4>
                   <p className="text-sm text-foreground/80">{selectedMantra.music_recommendation}</p>
+                </div>
+              )}
+
+              {resolveMantraAlchemy(selectedMantra).length > 0 && (
+                <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="mantra-alchemy-teachings">
+                  <h4 className="text-xs uppercase tracking-wider text-indigo-300 mb-2">Alchemy Teachings</h4>
+                  <ul className="space-y-1.5">
+                    {resolveMantraAlchemy(selectedMantra).slice(0, 6).map((line, index) => (
+                      <li key={`mantra-alchemy-${index}`} className="text-xs text-indigo-100/85 flex items-start gap-2">
+                        <span>✦</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {resolveMantraRitual(selectedMantra).length > 0 && (
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20" data-testid="mantra-ritual-list">
+                  <h4 className="text-xs uppercase tracking-wider text-rose-300 mb-2">Ritual Steps</h4>
+                  <ol className="space-y-1.5">
+                    {resolveMantraRitual(selectedMantra).slice(0, 6).map((line, index) => (
+                      <li key={`mantra-ritual-${index}`} className="text-xs text-rose-100/85 flex items-start gap-2">
+                        <span className="text-rose-300">{index + 1}.</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {resolveMantraCeremony(selectedMantra).length > 0 && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mantra-ceremony-list">
+                  <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Ceremonial Arc</h4>
+                  <ol className="space-y-1.5">
+                    {resolveMantraCeremony(selectedMantra).slice(0, 6).map((line, index) => (
+                      <li key={`mantra-ceremony-${index}`} className="text-xs text-amber-100/85 flex items-start gap-2">
+                        <span className="text-amber-300">{index + 1}.</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {resolveMantraGuided(selectedMantra).length > 0 && (
+                <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mantra-guided-practice-arc">
+                  <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Guided Practice Arc</h4>
+                  <ol className="space-y-1.5">
+                    {resolveMantraGuided(selectedMantra).slice(0, 6).map((line, index) => (
+                      <li key={`mantra-guided-${index}`} className="text-xs text-cyan-100/85 flex items-start gap-2">
+                        <span className="text-cyan-300">{index + 1}.</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ol>
                 </div>
               )}
 

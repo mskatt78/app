@@ -86,6 +86,30 @@ const VideosLibrary = ({ api }) => {
     return LEVEL_COLORS[level?.toLowerCase()] || LEVEL_COLORS.beginner;
   };
 
+  const resolveVideoRitual = (video) => {
+    if (Array.isArray(video?.ritual) && video.ritual.length) return video.ritual;
+    if (Array.isArray(video?.rituals) && video.rituals.length) return video.rituals;
+    return [];
+  };
+
+  const resolveVideoCeremony = (video) => {
+    if (Array.isArray(video?.ceremony) && video.ceremony.length) return video.ceremony;
+    if (Array.isArray(video?.ceremonies) && video.ceremonies.length) return video.ceremonies;
+    return resolveVideoRitual(video).slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+  };
+
+  const resolveVideoGuided = (video) => {
+    if (Array.isArray(video?.guided_practice) && video.guided_practice.length) return video.guided_practice;
+    if (Array.isArray(video?.practice) && video.practice.length) return video.practice;
+    return resolveVideoRitual(video).slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+  };
+
+  const resolveVideoAlchemy = (video) => {
+    if (Array.isArray(video?.alchemy) && video.alchemy.length) return video.alchemy;
+    if (Array.isArray(video?.alchemy_teachings) && video.alchemy_teachings.length) return video.alchemy_teachings;
+    return [];
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="videos-library">
       {/* Hero Header */}
@@ -334,6 +358,48 @@ const VideosLibrary = ({ api }) => {
                   <p className="text-xs mt-3 text-primary">
                     Tradition: {selectedVideo.tradition}
                   </p>
+                )}
+
+                {resolveVideoAlchemy(selectedVideo).length > 0 && (
+                  <div className="mt-4 p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="video-alchemy-teachings">
+                    <h4 className="text-xs uppercase tracking-wider text-indigo-300 mb-2">Alchemy Teachings</h4>
+                    <ul className="space-y-1.5">
+                      {resolveVideoAlchemy(selectedVideo).slice(0, 6).map((line, index) => (
+                        <li key={`video-alchemy-${index}`} className="text-xs text-indigo-100/85 flex items-start gap-2">
+                          <span>✦</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {resolveVideoCeremony(selectedVideo).length > 0 && (
+                  <div className="mt-4 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="video-ceremony-list">
+                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Ceremonial Arc</h4>
+                    <ol className="space-y-1.5">
+                      {resolveVideoCeremony(selectedVideo).slice(0, 6).map((line, index) => (
+                        <li key={`video-ceremony-${index}`} className="text-xs text-amber-100/85 flex items-start gap-2">
+                          <span className="text-amber-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {resolveVideoGuided(selectedVideo).length > 0 && (
+                  <div className="mt-4 p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="video-guided-practice-arc">
+                    <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Guided Practice Arc</h4>
+                    <ol className="space-y-1.5">
+                      {resolveVideoGuided(selectedVideo).slice(0, 6).map((line, index) => (
+                        <li key={`video-guided-${index}`} className="text-xs text-cyan-100/85 flex items-start gap-2">
+                          <span className="text-cyan-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
                 )}
               </div>
             </motion.div>

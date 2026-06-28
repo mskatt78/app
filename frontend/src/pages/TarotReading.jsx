@@ -60,6 +60,30 @@ const TarotReading = ({ user, api }) => {
     setShowDeck(true);
   };
 
+  const resolveTarotRitual = (card) => {
+    if (Array.isArray(card?.ritual) && card.ritual.length) return card.ritual;
+    if (Array.isArray(card?.rituals) && card.rituals.length) return card.rituals;
+    return [];
+  };
+
+  const resolveTarotCeremony = (card) => {
+    if (Array.isArray(card?.ceremony) && card.ceremony.length) return card.ceremony;
+    if (Array.isArray(card?.ceremonies) && card.ceremonies.length) return card.ceremonies;
+    return resolveTarotRitual(card).slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+  };
+
+  const resolveTarotGuided = (card) => {
+    if (Array.isArray(card?.guided_practice) && card.guided_practice.length) return card.guided_practice;
+    if (Array.isArray(card?.practice) && card.practice.length) return card.practice;
+    return resolveTarotRitual(card).slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+  };
+
+  const resolveTarotAlchemy = (card) => {
+    if (Array.isArray(card?.alchemy) && card.alchemy.length) return card.alchemy;
+    if (Array.isArray(card?.alchemy_teachings) && card.alchemy_teachings.length) return card.alchemy_teachings;
+    return [];
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="tarot-reading">
       {/* Header */}
@@ -377,6 +401,48 @@ const TarotReading = ({ user, api }) => {
                   <p className="text-xs text-muted-foreground mb-2">Card&apos;s Advice</p>
                   <p className="font-serif italic text-foreground">&ldquo;{selectedCard.advice}&rdquo;</p>
                 </div>
+
+                {resolveTarotAlchemy(selectedCard).length > 0 && (
+                  <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="tarot-alchemy-teachings">
+                    <h4 className="text-xs uppercase tracking-wider text-indigo-300 mb-2">Alchemy Teachings</h4>
+                    <ul className="space-y-1.5">
+                      {resolveTarotAlchemy(selectedCard).slice(0, 6).map((line, index) => (
+                        <li key={`tarot-alchemy-${index}`} className="text-xs text-indigo-100/85 flex items-start gap-2">
+                          <span>✦</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {resolveTarotCeremony(selectedCard).length > 0 && (
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="tarot-ceremony-list">
+                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Ceremonial Arc</h4>
+                    <ol className="space-y-1.5">
+                      {resolveTarotCeremony(selectedCard).slice(0, 6).map((line, index) => (
+                        <li key={`tarot-ceremony-${index}`} className="text-xs text-amber-100/85 flex items-start gap-2">
+                          <span className="text-amber-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {resolveTarotGuided(selectedCard).length > 0 && (
+                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="tarot-guided-practice-arc">
+                    <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Guided Practice Arc</h4>
+                    <ol className="space-y-1.5">
+                      {resolveTarotGuided(selectedCard).slice(0, 6).map((line, index) => (
+                        <li key={`tarot-guided-${index}`} className="text-xs text-cyan-100/85 flex items-start gap-2">
+                          <span className="text-cyan-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
               </div>
             </>
           )}

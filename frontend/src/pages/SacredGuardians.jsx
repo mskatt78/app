@@ -66,6 +66,31 @@ const SacredGuardians = ({ user, api }) => {
     }
   }, [activeCategory, guardians]);
 
+  const resolveGuardianRitual = (guardian) => {
+    if (Array.isArray(guardian?.ritual) && guardian.ritual.length) return guardian.ritual;
+    if (Array.isArray(guardian?.rituals) && guardian.rituals.length) return guardian.rituals;
+    if (Array.isArray(guardian?.how_to_connect) && guardian.how_to_connect.length) return guardian.how_to_connect;
+    return [];
+  };
+
+  const resolveGuardianCeremony = (guardian) => {
+    if (Array.isArray(guardian?.ceremony) && guardian.ceremony.length) return guardian.ceremony;
+    if (Array.isArray(guardian?.ceremonies) && guardian.ceremonies.length) return guardian.ceremonies;
+    return resolveGuardianRitual(guardian).slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+  };
+
+  const resolveGuardianGuided = (guardian) => {
+    if (Array.isArray(guardian?.guided_practice) && guardian.guided_practice.length) return guardian.guided_practice;
+    if (Array.isArray(guardian?.practice) && guardian.practice.length) return guardian.practice;
+    return resolveGuardianRitual(guardian).slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+  };
+
+  const resolveGuardianAlchemy = (guardian) => {
+    if (Array.isArray(guardian?.alchemy) && guardian.alchemy.length) return guardian.alchemy;
+    if (Array.isArray(guardian?.alchemy_teachings) && guardian.alchemy_teachings.length) return guardian.alchemy_teachings;
+    return [];
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -337,6 +362,48 @@ const SacredGuardians = ({ user, api }) => {
                       <p className="text-xs text-violet-400 uppercase tracking-wider">Chakra Connection</p>
                       <p className="text-sm font-medium mt-0.5">{selected.chakra}</p>
                     </div>
+                  </div>
+                )}
+
+                {resolveGuardianAlchemy(selected).length > 0 && (
+                  <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="guardian-alchemy-teachings">
+                    <h4 className="text-xs uppercase tracking-wider text-indigo-300 mb-2">Alchemy Teachings</h4>
+                    <ul className="space-y-1.5">
+                      {resolveGuardianAlchemy(selected).slice(0, 6).map((line, index) => (
+                        <li key={`guardian-alchemy-${index}`} className="text-xs text-indigo-100/85 flex items-start gap-2">
+                          <span>✦</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {resolveGuardianCeremony(selected).length > 0 && (
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="guardian-ceremony-list">
+                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Ceremonial Arc</h4>
+                    <ol className="space-y-1.5">
+                      {resolveGuardianCeremony(selected).slice(0, 6).map((line, index) => (
+                        <li key={`guardian-ceremony-${index}`} className="text-xs text-amber-100/85 flex items-start gap-2">
+                          <span className="text-amber-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {resolveGuardianGuided(selected).length > 0 && (
+                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="guardian-guided-practice-arc">
+                    <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Guided Practice Arc</h4>
+                    <ol className="space-y-1.5">
+                      {resolveGuardianGuided(selected).slice(0, 6).map((line, index) => (
+                        <li key={`guardian-guided-${index}`} className="text-xs text-cyan-100/85 flex items-start gap-2">
+                          <span className="text-cyan-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                 )}
 

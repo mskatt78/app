@@ -108,6 +108,31 @@ const MudrasLibrary = ({ user, api }) => {
     };
   };
 
+  const resolveMudraRitual = (mudra) => {
+    if (Array.isArray(mudra?.ritual) && mudra.ritual.length) return mudra.ritual;
+    if (Array.isArray(mudra?.rituals) && mudra.rituals.length) return mudra.rituals;
+    if (Array.isArray(mudra?.practical_rituals) && mudra.practical_rituals.length) return mudra.practical_rituals;
+    return [];
+  };
+
+  const resolveMudraCeremony = (mudra) => {
+    if (Array.isArray(mudra?.ceremony) && mudra.ceremony.length) return mudra.ceremony;
+    if (Array.isArray(mudra?.ceremonies) && mudra.ceremonies.length) return mudra.ceremonies;
+    return resolveMudraRitual(mudra).slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+  };
+
+  const resolveMudraGuided = (mudra) => {
+    if (Array.isArray(mudra?.guided_practice) && mudra.guided_practice.length) return mudra.guided_practice;
+    if (Array.isArray(mudra?.practice) && mudra.practice.length) return mudra.practice;
+    return resolveMudraRitual(mudra).slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+  };
+
+  const resolveMudraAlchemy = (mudra) => {
+    if (Array.isArray(mudra?.alchemy) && mudra.alchemy.length) return mudra.alchemy;
+    if (Array.isArray(mudra?.alchemy_teachings) && mudra.alchemy_teachings.length) return mudra.alchemy_teachings;
+    return [];
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="mudras-library">
       {/* Header */}
@@ -334,6 +359,62 @@ const MudrasLibrary = ({ user, api }) => {
                     }.
                   </p>
                 </div>
+
+                {resolveMudraAlchemy(selectedMudra).length > 0 && (
+                  <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="mudra-alchemy-teachings">
+                    <h4 className="text-xs uppercase tracking-wider text-indigo-300 mb-2">Alchemy Teachings</h4>
+                    <ul className="space-y-1.5">
+                      {resolveMudraAlchemy(selectedMudra).slice(0, 6).map((line, index) => (
+                        <li key={`mudra-alchemy-${index}`} className="text-xs text-indigo-100/85 flex items-start gap-2">
+                          <span>✦</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {resolveMudraRitual(selectedMudra).length > 0 && (
+                  <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20" data-testid="mudra-ritual-list">
+                    <h4 className="text-xs uppercase tracking-wider text-rose-300 mb-2">Ritual Steps</h4>
+                    <ol className="space-y-1.5">
+                      {resolveMudraRitual(selectedMudra).slice(0, 6).map((line, index) => (
+                        <li key={`mudra-ritual-${index}`} className="text-xs text-rose-100/85 flex items-start gap-2">
+                          <span className="text-rose-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {resolveMudraCeremony(selectedMudra).length > 0 && (
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mudra-ceremony-list">
+                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Ceremonial Arc</h4>
+                    <ol className="space-y-1.5">
+                      {resolveMudraCeremony(selectedMudra).slice(0, 6).map((line, index) => (
+                        <li key={`mudra-ceremony-${index}`} className="text-xs text-amber-100/85 flex items-start gap-2">
+                          <span className="text-amber-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {resolveMudraGuided(selectedMudra).length > 0 && (
+                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mudra-guided-practice-arc">
+                    <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Guided Practice Arc</h4>
+                    <ol className="space-y-1.5">
+                      {resolveMudraGuided(selectedMudra).slice(0, 6).map((line, index) => (
+                        <li key={`mudra-guided-${index}`} className="text-xs text-cyan-100/85 flex items-start gap-2">
+                          <span className="text-cyan-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mudra-why-this-heals">

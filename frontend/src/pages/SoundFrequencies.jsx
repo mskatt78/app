@@ -69,6 +69,31 @@ const SoundFrequencies = ({ user, api }) => {
     return ELEMENT_COLORS[element] || ELEMENT_COLORS.Water;
   };
 
+  const resolveRitual = (entry) => {
+    if (Array.isArray(entry?.ritual) && entry.ritual.length) return entry.ritual;
+    if (Array.isArray(entry?.rituals) && entry.rituals.length) return entry.rituals;
+    if (Array.isArray(entry?.how_to_use) && entry.how_to_use.length) return entry.how_to_use;
+    return [];
+  };
+
+  const resolveCeremony = (entry) => {
+    if (Array.isArray(entry?.ceremony) && entry.ceremony.length) return entry.ceremony;
+    if (Array.isArray(entry?.ceremonies) && entry.ceremonies.length) return entry.ceremonies;
+    return resolveRitual(entry).slice(0, 3).map((line, index) => `Ceremony ${index + 1}: ${line}`);
+  };
+
+  const resolveGuided = (entry) => {
+    if (Array.isArray(entry?.guided_practice) && entry.guided_practice.length) return entry.guided_practice;
+    if (Array.isArray(entry?.practice) && entry.practice.length) return entry.practice;
+    return resolveRitual(entry).slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
+  };
+
+  const resolveAlchemy = (entry) => {
+    if (Array.isArray(entry?.alchemy) && entry.alchemy.length) return entry.alchemy;
+    if (Array.isArray(entry?.alchemy_teachings) && entry.alchemy_teachings.length) return entry.alchemy_teachings;
+    return [];
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="sound-frequencies">
       {/* Header */}
@@ -312,6 +337,48 @@ const SoundFrequencies = ({ user, api }) => {
                     ))}
                   </ul>
                 </div>
+
+                {resolveAlchemy(selectedFreq).length > 0 && (
+                  <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="sound-frequency-alchemy-teachings">
+                    <h4 className="text-sm uppercase tracking-wider text-indigo-300 mb-3">Alchemy Teachings</h4>
+                    <ul className="space-y-2">
+                      {resolveAlchemy(selectedFreq).slice(0, 6).map((line, index) => (
+                        <li key={`freq-alchemy-${index}`} className="text-sm text-indigo-100/85 flex items-start gap-2">
+                          <span>✦</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {resolveCeremony(selectedFreq).length > 0 && (
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="sound-frequency-ceremony-list">
+                    <h4 className="text-sm uppercase tracking-wider text-amber-300 mb-3">Ceremonial Arc</h4>
+                    <ol className="space-y-2">
+                      {resolveCeremony(selectedFreq).slice(0, 6).map((line, index) => (
+                        <li key={`freq-ceremony-${index}`} className="flex gap-3 text-sm text-amber-100/85">
+                          <span className="text-amber-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {resolveGuided(selectedFreq).length > 0 && (
+                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="sound-frequency-guided-practice-arc">
+                    <h4 className="text-sm uppercase tracking-wider text-cyan-300 mb-3">Guided Practice Arc</h4>
+                    <ol className="space-y-2">
+                      {resolveGuided(selectedFreq).slice(0, 6).map((line, index) => (
+                        <li key={`freq-guided-${index}`} className="flex gap-3 text-sm text-cyan-100/85">
+                          <span className="text-cyan-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
 
                 {/* Best For */}
                 <div>

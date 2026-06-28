@@ -16,6 +16,11 @@ Breathwork, Healing, Rituals
 ### Promotional Text
 Enter a sacred wellness space for guided breathwork, meditation, mantra, mudra, elemental healing, and personalized spiritual practice.
 
+### What’s New (for current submission)
+- Deepened ritual, ceremony, guided-practice, and alchemy content across key libraries
+- Improved guided depth consistency across mantras, mudras, and edge spiritual sections
+- Updated App Store readiness tooling with real-device screenshot workflow and metadata validation
+
 ### Keywords (comma-separated)
 breathwork,meditation,mantra,mudra,chakra,healing,wellness,spirituality,mindfulness,yoga
 
@@ -35,6 +40,11 @@ Core experiences include:
 Built for modern seekers, facilitators, and conscious wellness communities, this app blends ancient wisdom with clean, intuitive mobile design.
 
 Whether you are beginning your healing journey or deepening your spiritual discipline, Shamanic Elements Soul Temple offers a calm, beautiful, and practical sanctuary you can return to every day.
+
+### Reviewer-friendly value summary
+- Long-form guided experiences with immersive pacing
+- Structured ritual pathways (ceremony, practice arc, integration)
+- Centralized admin operations route for creator management
 
 ---
 
@@ -66,3 +76,8 @@ Ideal for:
 - Users seeking calm, emotional grounding, and spiritual reconnection
 
 If you want a ritual space that is practical, beautiful, and deeply restorative, this temple is for you.
+
+### Release notes (Play)
+- Expanded immersive ritual content depth across spiritual libraries
+- Refined guided-practice continuity and section alignment
+- Added complete real-device submission readiness workflow
