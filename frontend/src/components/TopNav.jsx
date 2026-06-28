@@ -33,8 +33,7 @@ const TopNav = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showMenu, setShowMenu] = useState(false);
-  const adminEmails = new Set(["mskatt78@gmail.com", "skywatersacredembodiments@gmail.com"]);
-  const isAdminUser = user?.email && adminEmails.has(user.email.toLowerCase());
+  const isAdminUser = user?.email && user.email.toLowerCase() === "mskatt78@gmail.com";
 
   const menuItems = [
     { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400" },

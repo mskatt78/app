@@ -6,7 +6,6 @@ import {
 } from "lucide-react";
 
 export const ADMIN_EMAILS = [
-  "skywatersacredembodiments@gmail.com",
   "mskatt78@gmail.com",
 ];
 

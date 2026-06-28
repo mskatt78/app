@@ -229,7 +229,6 @@ const CreativeProcesses = ({ user, api }) => {
       <main className="max-w-6xl mx-auto p-6 space-y-8">
         {!creativeUnlocked && (
           <section className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="creative-premium-banner">
-            <p className="text-xs uppercase tracking-wider text-amber-200/80">Sacred Art Premium</p>
             <p className="text-sm text-muted-foreground mt-1" data-testid="creative-premium-banner-description">
               First sacred art practices are free. Earth crafting and advanced rituals unlock with subscription or full app access.
             </p>

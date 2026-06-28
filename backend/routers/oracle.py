@@ -75,7 +75,7 @@ async def create_oracle_reading(
     data: OracleReadingRequest,
     user: User = Depends(get_current_user)
 ) -> dict[str, Any]:
-    """Create a new oracle reading with AI interpretation (authenticated - saves to history)."""
+    """Create a new oracle reading with dynamic interpretation (authenticated - saves to history)."""
     db = get_db()
     
     num_cards = {"single": 1, "three_card": 3, "celtic_cross": 10}.get(data.spread_type, 1)
@@ -85,7 +85,7 @@ async def create_oracle_reading(
         card["is_reversed"] = _secure_bool(0.5)
         card["position"] = i + 1
     
-    # Generate AI interpretation using Claude
+    # Generate interpretation using Claude
     interpretation = await generate_oracle_interpretation(selected_cards, data.question, data.spread_type)
     
     reading = {
@@ -113,7 +113,7 @@ async def create_guest_oracle_reading(data: OracleReadingRequest) -> dict[str, A
         card["is_reversed"] = _secure_bool(0.5)
         card["position"] = i + 1
     
-    # Generate AI interpretation using Claude
+    # Generate interpretation using Claude
     interpretation = await generate_oracle_interpretation(selected_cards, data.question, data.spread_type)
     
     reading = {
@@ -157,7 +157,7 @@ async def get_oracle_cards(element: Optional[str] = None) -> list[dict[str, Any]
 
 
 async def generate_oracle_interpretation(cards: List[dict[str, Any]], question: Optional[str], spread_type: str) -> str:
-    """Generate AI interpretation using Claude."""
+    """Generate oracle interpretation using Claude."""
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
@@ -198,12 +198,12 @@ elemental energies, and practical spiritual guidance for the seeker."""
         return response
         
     except Exception as e:
-        logger.error(f"AI interpretation failed: {e}")
+        logger.error(f"Oracle interpretation failed: {e}")
         return generate_fallback_interpretation(cards, question)
 
 
 def generate_fallback_interpretation(cards: List[dict[str, Any]], question: Optional[str]) -> str:
-    """Generate a basic interpretation without AI."""
+    """Generate a basic interpretation fallback."""
     elements = [c["element"] for c in cards]
     dominant_element = max(set(elements), key=elements.count)
     
@@ -274,7 +274,7 @@ async def create_guest_archangel_reading(data: ArchangelReadingRequest) -> dict[
         # Remove any potential MongoDB fields
         card.pop("_id", None)
     
-    # Generate AI interpretation
+    # Generate interpretation
     interpretation = await generate_archangel_interpretation(selected_cards, data.question, data.spread_type)
     
     reading = {
@@ -308,7 +308,7 @@ async def create_archangel_reading(
         # Remove any potential MongoDB fields
         card.pop("_id", None)
     
-    # Generate AI interpretation
+    # Generate interpretation
     interpretation = await generate_archangel_interpretation(selected_cards, data.question, data.spread_type)
     
     reading = {
@@ -339,7 +339,7 @@ async def get_archangel_readings(user: User = Depends(get_current_user)) -> list
 
 
 async def generate_archangel_interpretation(cards: List[dict[str, Any]], question: Optional[str], spread_type: str) -> str:
-    """Generate AI interpretation for archangel oracle reading."""
+    """Generate interpretation for archangel oracle reading."""
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
@@ -385,12 +385,12 @@ Provide a loving, encouraging interpretation that:
         return response
         
     except Exception as e:
-        logger.error(f"AI archangel interpretation failed: {e}")
+        logger.error(f"Archangel interpretation failed: {e}")
         return generate_archangel_fallback(cards, question)
 
 
 def generate_archangel_fallback(cards: List[dict[str, Any]], question: Optional[str]) -> str:
-    """Generate a basic archangel interpretation without AI."""
+    """Generate a basic archangel interpretation fallback."""
     intro = "The Archangels have come forward with loving guidance for you.\n\n"
     if question:
         intro += f"Regarding your question about {question[:80]}...\n\n"

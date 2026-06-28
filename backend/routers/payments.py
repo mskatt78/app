@@ -24,7 +24,6 @@ logger = logging.getLogger(__name__)
 # Define subscription plans and products
 SUBSCRIPTION_PLANS = {
     "monthly": {"name": "Monthly Membership", "price": 19.99, "interval": "month"},
-    "yearly": {"name": "Yearly Membership", "price": 149.99, "interval": "year"}
 }
 
 # Products for one-time purchase
@@ -948,19 +947,18 @@ async def get_subscription_plans() -> dict[str, Any]:
                 ]
             },
             {
-                "id": "yearly",
-                "name": "Yearly Membership",
-                "price": 149.99,
-                "interval": "year",
-                "savings": "Save $90/year",
+                "id": "full_app_unlock",
+                "name": "Lifetime Access to Everything",
+                "price": 369.00,
+                "interval": "lifetime",
+                "savings": "One-time payment",
                 "features": [
-                    "Everything in Monthly",
-                    "Priority access to live sessions",
-                    "Exclusive retreat discounts",
-                    "Personal oracle readings",
-                    "Early access to new content"
+                    "One-time unlock across all premium sections",
+                    "All guided practices and advanced ceremonial libraries",
+                    "No recurring billing",
+                    "Includes future premium section updates"
                 ]
-            }
+            },
         ],
         "payment_methods": ["stripe", "paypal"]
     }

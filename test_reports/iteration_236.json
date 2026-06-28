@@ -1,0 +1,86 @@
+{
+  "summary": "Iteration 236 - Full QA testing of content tiering (14 items: 4 free + 10 premium), pricing plans (2 cards), admin privacy (owner-only), Oracle wording (no AI), Meditations banner, Creative Processes header, retreats cleanup, and guided narration word floor. All 16 backend tests passed. Frontend UI tests confirm all requirements met.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration236_tiering_pricing.py",
+    "/app/test_reports/pytest/pytest_iteration236.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration236_tiering_pricing.py"
+  ],
+  "success_rate": {
+    "backend": "100% (16 passed)",
+    "frontend": "100%"
+  },
+  "test_credentials": "Admin: mskatt78@gmail.com / ShamanicAdmin2026!",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "All iteration 236 requirements verified: (1) Content tiering returns exactly 14 items (4 free + 10 premium) for all main sections (water-practices, meditations, creative-processes, heart-practices, shamanic-practices, energy-healing, mindfulness-practices, mantras). (2) Pricing plans endpoint returns exactly 2 plans: monthly ($19.99/month) and full_app_unlock ($369 lifetime). (3) Admin button only visible for owner email mskatt78@gmail.com in TopNav, Settings, and Dashboard. (4) Oracle page has no AI terminology. (5) Meditations banner title is 'Meditations remain open' (not Sacred Art Premium). (6) Creative Processes banner has no 'Sacred Art Premium' header. (7) Retreats endpoint returns empty list (cleanup verified). (8) Expand-script returns 1000+ words for 7-minute target (meets 924 word floor).",
+  "test_results_detail": {
+    "content_tiering": {
+      "endpoints_tested": [
+        "/api/water-practices",
+        "/api/meditations",
+        "/api/creative-processes",
+        "/api/heart-practices",
+        "/api/shamanic-practices",
+        "/api/energy-healing",
+        "/api/mindfulness-practices",
+        "/api/mantras"
+      ],
+      "result": "All return exactly 14 items (4 free + 10 premium)"
+    },
+    "pricing_plans": {
+      "endpoint": "/api/payments/plans",
+      "plans_count": 2,
+      "plan_ids": ["monthly", "full_app_unlock"],
+      "monthly_price": 19.99,
+      "lifetime_price": 369.0,
+      "result": "PASS - exactly 2 plans returned"
+    },
+    "admin_privacy": {
+      "owner_email": "mskatt78@gmail.com",
+      "topnav_check": "PASS - admin button only visible for owner",
+      "settings_check": "PASS - isAdminUser check uses owner email",
+      "dashboard_check": "PASS - ADMIN_EMAILS array contains only owner"
+    },
+    "oracle_wording": {
+      "ai_mentions": 0,
+      "artificial_intelligence_mentions": 0,
+      "result": "PASS - no AI terminology in Oracle page"
+    },
+    "meditations_banner": {
+      "title": "Meditations remain open",
+      "description": "Free journeys are prioritized. Premium unlocks deeper advanced experiences.",
+      "result": "PASS - no Sacred Art Premium text"
+    },
+    "creative_processes_banner": {
+      "description": "First sacred art practices are free. Earth crafting and advanced rituals unlock with subscription or full app access.",
+      "result": "PASS - no Sacred Art Premium header"
+    },
+    "retreats_cleanup": {
+      "endpoint": "/api/retreats",
+      "items_count": 0,
+      "result": "PASS - empty list (cleanup verified)"
+    },
+    "expand_script": {
+      "endpoint": "/api/content/expand-script",
+      "target_minutes": 7,
+      "min_words_required": 924,
+      "actual_words": 1000,
+      "segments_count": 6,
+      "result": "PASS - meets 7-minute word floor"
+    }
+  }
+}

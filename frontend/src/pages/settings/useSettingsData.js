@@ -50,7 +50,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
     sendTestNotification,
   } = useNotifications();
 
-  const isAdminUser = ["mskatt78@gmail.com", "skywatersacredembodiments@gmail.com"].includes((user?.email || "").toLowerCase());
+  const isAdminUser = (user?.email || "").toLowerCase() === "mskatt78@gmail.com";
 
   useEffect(() => {
     const fetchData = async () => {

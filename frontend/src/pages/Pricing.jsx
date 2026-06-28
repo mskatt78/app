@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
@@ -20,7 +20,14 @@ const Pricing = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [processingPlan, setProcessingPlan] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("stripe");
-  const [pricingMode, setPricingMode] = useState("one-time");
+  const [pricingMode, setPricingMode] = useState("sacred-access");
+
+  const displayPlans = useMemo(() => {
+    const order = ["monthly", "full_app_unlock"];
+    return [...plans]
+      .filter((plan) => order.includes(plan.id))
+      .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+  }, [plans]);
 
   const fetchData = useCallback(async () => {
     // Fetch plans (public endpoint - always works)
@@ -88,10 +95,13 @@ const Pricing = ({ user, api }) => {
   const handleSubscribe = async (planId) => {
     setProcessingPlan(planId);
     try {
+      const isLifetime = planId === "full_app_unlock";
       const response = await api.post("/payments/create-checkout", {
-        product_type: "subscription",
-        plan_id: planId,
+        product_type: isLifetime ? "premium_unlock" : "subscription",
+        product_id: isLifetime ? "full_app_unlock" : undefined,
+        plan_id: isLifetime ? undefined : planId,
         origin_url: window.location.origin,
+        return_path: "/pricing",
         payment_method: selectedPaymentMethod
       });
       
@@ -120,7 +130,7 @@ const Pricing = ({ user, api }) => {
           </button>
           <div>
             <p className="text-xs text-muted-foreground uppercase tracking-wider">Sacred Investment</p>
-            <h1 className="text-xl font-serif">Membership <span className="italic text-primary">Plans</span></h1>
+            <h1 className="text-xl font-serif">Sacred <span className="italic text-primary">Access</span></h1>
           </div>
         </div>
       </header>
@@ -149,25 +159,18 @@ const Pricing = ({ user, api }) => {
         {/* Hero Section */}
         <div className="text-center space-y-4">
           <h2 className="text-4xl font-serif">
-            Unlock Your <span className="italic text-primary">Full Potential</span>
+            Choose Your <span className="italic text-primary">Path</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join our sacred community and gain unlimited access to all yoga poses, shamanic practices, 
-            guided meditations, and transformative content.
+            One place for membership and lifetime access. Choose what fits your sacred journey.
           </p>
           <div className="flex items-center justify-center" data-testid="pricing-mode-tabs-wrap">
             <Tabs value={pricingMode} onValueChange={setPricingMode}>
               <TabsList className="bg-white/5 border border-white/10" data-testid="pricing-mode-tabs">
-                <TabsTrigger value="one-time" data-testid="pricing-mode-one-time">One-time</TabsTrigger>
-                <TabsTrigger value="monthly" data-testid="pricing-mode-monthly">Monthly (preview)</TabsTrigger>
+                <TabsTrigger value="sacred-access" data-testid="pricing-mode-sacred-access">Subscription + Lifetime</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
-          {pricingMode === "monthly" && (
-            <p className="text-xs text-muted-foreground" data-testid="pricing-monthly-placeholder-note">
-              Monthly/recurring options are shown as a UI preview. Current checkout remains one-time or existing membership plans.
-            </p>
-          )}
         </div>
 
         {/* Plans Grid */}
@@ -177,7 +180,7 @@ const Pricing = ({ user, api }) => {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {plans.map((plan, index) => (
+            {displayPlans.map((plan, index) => (
               <motion.div
                 key={plan.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -186,7 +189,7 @@ const Pricing = ({ user, api }) => {
               >
                 <Card 
                   className={`relative overflow-hidden h-full ${
-                    plan.id === "yearly" 
+                    plan.id === "full_app_unlock" 
                       ? "border-primary/50 bg-gradient-to-b from-primary/10 to-transparent" 
                       : "border-white/10 bg-card/50"
                   }`}
@@ -199,7 +202,7 @@ const Pricing = ({ user, api }) => {
                   
                   <CardHeader className="pb-4">
                     <div className="flex items-center gap-2 mb-2">
-                      {plan.id === "yearly" ? (
+                      {plan.id === "full_app_unlock" ? (
                         <Crown className="w-6 h-6 text-primary" />
                       ) : (
                         <Sparkles className="w-6 h-6 text-primary" />
@@ -208,7 +211,7 @@ const Pricing = ({ user, api }) => {
                     </div>
                     <div className="flex items-baseline gap-1">
                       <span className="text-4xl font-bold">${plan.price}</span>
-                      <span className="text-muted-foreground">/{plan.interval}</span>
+                      <span className="text-muted-foreground">{plan.interval === "lifetime" ? "one-time" : `/${plan.interval}`}</span>
                     </div>
                   </CardHeader>
                   
@@ -226,7 +229,7 @@ const Pricing = ({ user, api }) => {
                       onClick={() => handleSubscribe(plan.id)}
                       disabled={processingPlan !== null || subscription?.is_subscribed}
                       className={`w-full ${
-                        plan.id === "yearly" 
+                        plan.id === "full_app_unlock" 
                           ? "bg-primary hover:bg-primary/90" 
                           : "bg-white/10 hover:bg-white/20"
                       }`}
@@ -242,7 +245,7 @@ const Pricing = ({ user, api }) => {
                       ) : (
                         <>
                           <CreditCard className="w-4 h-4 mr-2" />
-                          Subscribe Now
+                          {plan.id === "full_app_unlock" ? "Get Lifetime Access" : "Subscribe Now"}
                         </>
                       )}
                     </Button>
@@ -267,7 +270,7 @@ const Pricing = ({ user, api }) => {
           </div>
           <div className="text-center p-6 rounded-2xl bg-white/5">
             <Zap className="w-10 h-10 text-yellow-400 mx-auto mb-4" />
-            <h3 className="font-medium mb-2">AI Oracle</h3>
+            <h3 className="font-medium mb-2">Oracle Readings</h3>
             <p className="text-sm text-muted-foreground">Personalized readings and spiritual guidance</p>
           </div>
         </div>

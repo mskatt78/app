@@ -780,6 +780,9 @@ EARTH_CRAFTING_TOOL_SUPPLEMENTS = [
 
 SECTION_FREE_RATIO = 0.25
 SECTION_MIN_FREE_ITEMS = 1
+SECTION_DEFAULT_FREE_ITEMS = 4
+SECTION_DEFAULT_PREMIUM_ITEMS = 10
+SECTION_MAX_TIER_ITEMS = SECTION_DEFAULT_FREE_ITEMS + SECTION_DEFAULT_PREMIUM_ITEMS
 
 # User-approved per-section free counts override global ratio where specified.
 SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
@@ -2581,24 +2584,20 @@ def _apply_free_paid_tiering(
 
     ordered = sorted(items, key=_parse_tier_sort_value)
     total_items = len(ordered)
-    override_free_count = SECTION_FREE_COUNT_OVERRIDES.get(unlock_id)
-    if override_free_count is not None:
-        free_count = int(override_free_count)
-    else:
-        free_count = max(minimum_free, int(total_items * free_ratio))
-
-    if total_items > 3:
-        free_count = min(free_count, total_items - 1)
+    override_free_count = SECTION_FREE_COUNT_OVERRIDES.get(unlock_id, SECTION_DEFAULT_FREE_ITEMS)
+    free_count = max(minimum_free, int(override_free_count))
     free_count = max(1, min(free_count, total_items))
 
-    free_ids = {str(item.get("id") or f"idx-{index}") for index, item in enumerate(ordered[:free_count])}
+    max_visible_items = min(total_items, free_count + SECTION_DEFAULT_PREMIUM_ITEMS)
+    selected_items = ordered[:max_visible_items]
+    visible_free_count = min(free_count, len(selected_items))
+
     premium_label = SECTION_PREMIUM_LABELS.get(unlock_id, "Premium Access")
 
     tiered: list[dict[str, Any]] = []
-    for index, item in enumerate(items):
+    for index, item in enumerate(selected_items):
         enriched = dict(item)
-        item_id = str(item.get("id") or f"idx-{index}")
-        is_premium = item_id not in free_ids
+        is_premium = index >= visible_free_count
         enriched["is_premium"] = is_premium
         if is_premium:
             enriched.setdefault("premium_unlock_id", unlock_id)
@@ -6345,9 +6344,5 @@ async def get_water_practices(category: Optional[str] = None) -> list[dict[str, 
     practices = _append_water_supplements(practices, category)
     enriched = [_enrich_devotional_language(_apply_subject_image_alignment(practice, "hybrid-curated"), "healing-portals") for practice in practices]
     tiered = _apply_free_paid_tiering(enriched, "water_practices")
-    if category:
-        return tiered
-    free_items = [item for item in tiered if not item.get("is_premium")]
-    premium_items = [item for item in tiered if item.get("is_premium")]
-    return free_items[:4] + premium_items[:12]
+    return tiered
 

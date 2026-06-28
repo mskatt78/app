@@ -224,7 +224,7 @@ const Meditations = ({ user, api }) => {
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-xs uppercase tracking-wider text-amber-300/70">Optional Premium</p>
-                <h2 className="text-lg font-serif text-amber-100/90" data-testid="meditations-premium-banner-title">Meditations remain open first</h2>
+                <h2 className="text-lg font-serif text-amber-100/90" data-testid="meditations-premium-banner-title">Meditations remain open</h2>
                 <p className="text-sm text-muted-foreground mt-1" data-testid="meditations-premium-banner-description">Free journeys are prioritized. Premium unlocks deeper advanced experiences.</p>
               </div>
               <div className="flex flex-wrap gap-2">

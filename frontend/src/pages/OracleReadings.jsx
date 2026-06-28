@@ -256,7 +256,7 @@ const OracleReadings = ({ user, api }) => {
                 New Reading
               </Button>
               <ShareButton 
-                title="My Oracle Reading from Soul Temple 2.0"
+                title="My Oracle Reading from Soul Temple"
                 description={`I drew ${reading.cards?.map(c => c.name).join(', ')} - ${reading.interpretation?.substring(0, 100)}...`}
                 className="border border-white/10 rounded-full px-4 py-2 hover:bg-white/5"
               />
