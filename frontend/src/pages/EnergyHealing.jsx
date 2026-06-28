@@ -85,7 +85,7 @@ export default function EnergyHealing() {
         {!energyUnlocked && (
           <section className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="energy-healing-premium-banner">
             <p className="text-xs uppercase tracking-wider text-amber-200/80">Energy Healing Premium</p>
-            <p className="text-sm text-muted-foreground mt-1" data-testid="energy-healing-premium-banner-description">First 5 practices are free. The rest unlock with subscription or full app access.</p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="energy-healing-premium-banner-description">First 4 practices are free. The rest unlock with subscription or full app access.</p>
             <div className="flex gap-2 mt-3">
               <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="energy-healing-view-subscription-button">View Subscription Plans</Button>
               <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="energy-healing-unlock-fullapp-button">
