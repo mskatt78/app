@@ -10348,9 +10348,74 @@ metadata:
   version: "1.0"
   test_sequence: 0
 
+  - task: "Mantras modal depth sections verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mantras/MantrasPlayer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MANTRAS MODAL DEPTH SECTIONS VERIFIED (2026-06-28): Comprehensive testing on /mantras route completed successfully. All 4 required modal sections FOUND and RENDERING: mantra-alchemy-teachings ✓, mantra-ritual-list ✓, mantra-ceremony-list ✓, mantra-guided-practice-arc ✓. Modal dimensions: 512px x 972px - NO visual overflow detected at desktop width (1920x1080). Modal opens/closes correctly. All depth blocks rendering with proper content. Mantras modal depth sections FULLY FUNCTIONAL."
+
+  - task: "Mudras modal depth sections verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/mudras/MudrasLibraryContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MUDRAS MODAL DEPTH SECTIONS VERIFIED (2026-06-28): Comprehensive testing on /mudras route completed successfully. All 4 required modal sections FOUND and RENDERING: mudra-alchemy-teachings ✓, mudra-ritual-list ✓, mudra-ceremony-list ✓, mudra-guided-practice-arc ✓. Modal opens/closes correctly. All depth blocks rendering with proper content. Mudras modal depth sections FULLY FUNCTIONAL."
+
+  - task: "App Store Readiness real-device shotlist section"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AppStoreReadiness.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ APP STORE READINESS REAL-DEVICE SHOTLIST VERIFIED (2026-06-28): Testing on /app-readiness route completed successfully. NEW SECTION EXISTS: app-readiness-real-device-shotlist-card ✓. FIRST ROW EXISTS: app-readiness-real-device-shot-shot-home ✓. CHECKBOX TOGGLE FUNCTIONALITY: Toggled first checkbox, progress text updated correctly from '0/9 complete (0%)' to '1/9 complete (11%)' ✓. All 8 shot list items present (shot-home, shot-guided, shot-breathwork, shot-mantra, shot-mudra, shot-admin, shot-legal, shot-install). Real-device shotlist section FULLY FUNCTIONAL."
+
+  - task: "Sound Frequencies modal depth blocks verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SoundFrequencies.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ SOUND FREQUENCIES MODAL DEPTH BLOCKS VERIFIED (2026-06-28): Spot-check testing on /sound-frequencies route completed successfully. All 3 depth blocks FOUND and RENDERING: sound-frequency-alchemy-teachings ✓, sound-frequency-ceremony-list ✓, sound-frequency-guided-practice-arc ✓. Modal opens/closes correctly. NO blank screens or crashes detected. All depth blocks rendering with proper content. Sound Frequencies modal depth blocks FULLY FUNCTIONAL."
+
+  - task: "Tarot Reading modal depth blocks verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/TarotReading.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ TAROT READING MODAL DEPTH BLOCKS VERIFIED (2026-06-28): Spot-check testing on /tarot route completed successfully. All 3 depth blocks FOUND and RENDERING: tarot-alchemy-teachings ✓, tarot-ceremony-list ✓, tarot-guided-practice-arc ✓. 22 tarot cards loaded correctly. Modal opens/closes correctly. NO blank screens or crashes detected. All depth blocks rendering with proper content. IMPORTANT NOTE: Route is /tarot (not /tarot-reading). Tarot Reading modal depth blocks FULLY FUNCTIONAL."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+
 test_plan:
   current_focus:
-    - "Focused frontend verification complete - Sacred Allies, Angelic Alchemy, Ancient Wisdom, App Store Readiness"
+    - "Final frontend verification complete - Mantras, Mudras, App Store Readiness, Sound Frequencies, Tarot Reading"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -10360,3 +10425,5 @@ agent_communication:
     message: "ELEMENTAL TEMPLES PREMIUM GATING TESTING COMPLETE (2026-06-27): Comprehensive testing completed on /elemental-temples page for premium gating feature. All validation requirements PASSED: 1) Premium banner renders correctly for unauthenticated users with all required data-testids and buttons. 2) Clicking temple cards and attempting guided actions (main button, practice cards, ritual cards, ceremony cards) correctly opens premium lock modal instead of starting full access flow. 3) Modal close functionality works perfectly and page remains fully interactive. 4) No blank screens, crashes, or regressions detected. Feature is production-ready and working as designed."
   - agent: "testing"
     message: "FOCUSED FRONTEND VERIFICATION COMPLETE (2026-06-28): Comprehensive testing completed on 4 user flows as requested. RESULTS: ✅ Sacred Allies page/modal (/sacred-ally-alchemy) - All sections render correctly, modal opens/closes properly, 310 cards loaded. ✅ Angelic Alchemy page/modal (/angelic-alchemy) - All sections render correctly, modal opens/closes properly, 98 cards loaded. ✅ Ancient Wisdom modal (/ancient-wisdom) - All sections render correctly, no overflow issues detected, 110 cards loaded. ✅ App Store readiness route (/app-readiness) - Page loads correctly, all checklist cards interactive, 7 asset items + 5 QA items + 15 metadata items present. IMPORTANT NOTE: App Store readiness route is /app-readiness (not /app-store-readiness). All 4 flows PASSED with no regressions detected. Screenshots captured for visual verification."
+  - agent: "testing"
+    message: "FINAL FRONTEND VERIFICATION BEFORE HANDOFF COMPLETE (2026-06-28): Comprehensive testing completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com for 5 critical flows. ALL TESTS PASSED: 1) /mantras - Mantra modal opens correctly, all 4 depth sections render (mantra-alchemy-teachings, mantra-ritual-list, mantra-ceremony-list, mantra-guided-practice-arc), modal dimensions 512x972px with NO visual overflow at desktop width ✓. 2) /mudras - Mudra modal opens correctly, all 4 depth sections render (mudra-alchemy-teachings, mudra-ritual-list, mudra-ceremony-list, mudra-guided-practice-arc) ✓. 3) /app-readiness - New section app-readiness-real-device-shotlist-card exists ✓, row app-readiness-real-device-shot-shot-home exists ✓, checkbox toggle updates progress text correctly (0% → 11%) ✓. 4) /sound-frequencies - All 3 depth blocks render (sound-frequency-alchemy-teachings, sound-frequency-ceremony-list, sound-frequency-guided-practice-arc), no crashes ✓. 5) /tarot - All 3 depth blocks render (tarot-alchemy-teachings, tarot-ceremony-list, tarot-guided-practice-arc), 22 cards loaded, no crashes ✓. NO REGRESSIONS DETECTED. All modal sections rendering correctly with proper content. Application ready for handoff."
