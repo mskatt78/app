@@ -5352,9 +5352,8 @@ async def get_sacred_geometry() -> list[dict[str, Any]]:
     """Get sacred geometry symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
-    symbols = data.get("sacred_geometry", []) if data else []
-    enriched = [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
-    return _apply_free_paid_tiering(enriched, "light_codes")
+    payload = _enrich_light_code_payload(data or {})
+    return payload.get("sacred_geometry", [])
 
 
 @router.get("/light-codes/ancient-alphabets")
@@ -5362,9 +5361,8 @@ async def get_ancient_alphabets() -> list[dict[str, Any]]:
     """Get ancient alphabet symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
-    symbols = data.get("ancient_alphabets", []) if data else []
-    enriched = [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
-    return _apply_free_paid_tiering(enriched, "light_codes")
+    payload = _enrich_light_code_payload(data or {})
+    return payload.get("ancient_alphabets", [])
 
 
 @router.get("/light-codes/light-language")
@@ -5372,9 +5370,8 @@ async def get_light_language() -> list[dict[str, Any]]:
     """Get light language symbols."""
     db = get_db()
     data = await db.light_codes.find_one({}, {"_id": 0})
-    symbols = data.get("light_language_symbols", []) if data else []
-    enriched = [_enrich_devotional_language(_enrich_content_integrity(symbol, "hybrid-curated"), "healing-portals") for symbol in symbols]
-    return _apply_free_paid_tiering(enriched, "light_codes")
+    payload = _enrich_light_code_payload(data or {})
+    return payload.get("light_language_symbols", [])
 
 
 # ============ LIVE SESSIONS ROUTES ============
