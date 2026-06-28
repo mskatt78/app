@@ -3086,3 +3086,76 @@
 - For live production parity, redeploy preview changes to production.
 
 
+## P1 Continuation — Full Edge-Library Depth Sweep + Real-Device Submission Kit Completion (2026-06-28)
+
+### User-confirmed choices
+- Scope: **B** → Mantras + Mudras + remaining edge libraries
+- Screenshot mode: **B** → prepare checklist/shot-list only (manual physical-device captures by user)
+- Metadata output: **A** → update in-app readiness page + submission docs files
+
+### Implemented (Backend)
+1. **Depth model standardized across additional edge endpoints** (`backend/routers/content.py`)
+   - Enriched with ritual schema (`alchemy`, `ritual`, `ceremony`, `guided_practice`) + devotional fields for:
+     - `/api/runes`, `/api/runes/{id}`, `/api/runes/draw/*`
+     - `/api/i-ching`, `/api/i-ching/{number}`, `/api/i-ching/cast/coins`
+     - `/api/sacred-guardians`, `/api/sacred-guardians/{id}`
+     - `/api/sound-frequencies`, `/api/sound-frequencies/{id}`
+     - `/api/tarot/cards`, `/api/tarot/cards/{id}`, tarot cards inside `/api/tarot/reading`
+     - `/api/retreats`, `/api/retreats/{id}`
+     - `/api/videos`, `/api/videos/{id}`
+     - `/api/courses`, `/api/courses/{id}`
+     - `/api/books`, `/api/books/{id}`
+     - `/api/creative-processes`, `/api/creative-processes/{id}`
+     - `/api/earth-altars`, `/api/earth-altars/{id}`
+     - `/api/sacred-rites`, `/api/sacred-rites/{id}`
+2. **Mudra enrichment parity fix**
+   - `_enrich_mudra_entry` now passes through devotional/depth enrichment, aligning mudras with mantra depth conventions.
+3. **Expanded domain language map**
+   - Added domain suffixes for mantra/mudra + edge libraries to preserve sacred tone consistency.
+
+### Implemented (Frontend)
+1. **Mantras modal depth rendering** (`frontend/src/pages/mantras/MantrasPlayer.jsx`)
+   - Added sections:
+     - `mantra-alchemy-teachings`
+     - `mantra-ritual-list`
+     - `mantra-ceremony-list`
+     - `mantra-guided-practice-arc`
+2. **Mudras modal depth rendering** (`frontend/src/pages/mudras/MudrasLibraryContainer.jsx`)
+   - Added sections:
+     - `mudra-alchemy-teachings`
+     - `mudra-ritual-list`
+     - `mudra-ceremony-list`
+     - `mudra-guided-practice-arc`
+3. **Edge-library modal rendering upgrades**
+   - `SoundFrequencies.jsx`: added alchemy/ceremony/guided blocks
+   - `TarotReading.jsx`: added alchemy/ceremony/guided blocks in card modal
+   - `SacredGuardians.jsx`: added alchemy/ceremony/guided blocks
+   - `VideosLibrary.jsx`: added alchemy/ceremony/guided blocks in video modal
+
+### App Store submission readiness completion (real-device workflow)
+1. **In-app readiness page updated** (`frontend/src/pages/AppStoreReadiness.jsx`)
+   - Added real-device checklist items and metadata rows
+   - Added new section card: `app-readiness-real-device-shotlist-card`
+   - Added explicit manual physical-device shot rows with route and requirement notes
+2. **Submission docs upgraded** (`/app/submission_kit/*`)
+   - `SCREENSHOT_SHOTLIST.md`: converted to real-device master matrix (6.7", 6.5", 12.9")
+   - `STORE_COPY_PACK.md`: added current submission “What’s New” + reviewer-friendly summary
+   - `SUBMISSION_FORMS_CHEATSHEET.md`: added pre-submission cross-check + metadata consistency block
+   - `README.md`: updated for manual physical-device screenshot workflow
+3. **Public mirrored docs synced**
+   - Copied updated files into `/app/frontend/public/submission_kit/`
+
+### Verification
+- API spot checks: PASS (depth fields present across mudras/sound/tarot/guardians/videos)
+- Testing agent report: `/app/test_reports/iteration_230.json`
+  - Backend: **25/25 PASS**
+  - Frontend: all required modal depth sections PASS
+  - App readiness: PASS (new real-device shot-list + metadata controls functional)
+- Frontend specialist verification: PASS
+  - Mantras, Mudras, Sound, Tarot, and App-readiness sections verified
+
+### Current status
+- P1 depth expansion and submission-kit completion are done in preview.
+- For production parity: redeploy latest preview changes to live.
+
+
