@@ -3356,3 +3356,71 @@
 - For production parity: redeploy latest preview changes to live.
 
 
+## Energy Healing Power/Embodiment Expansion (Massive Pass) + 4-Free Baseline Activation (2026-06-28)
+
+### User direction
+- Energy Healing still felt vague and weak.
+- Required outcomes:
+  - much deeper, powerful, embodying language
+  - broad expansion (not one item per modality)
+  - explicit free/premium behavior
+  - apply 4–5 free baseline consistently across sections/portals
+  - tone: deep ceremonial + body embodiment + trauma-aware
+
+### Implemented in preview
+
+#### 1) Energy Healing expanded from small list to large modality system
+- `backend/routers/content.py`
+  - Expanded supplements to create **122 total energy healing practices**
+  - Modalities covered: Egyptian, Australian, Crystal, Sound, Quantum, Reiki, Sekhem, Dreamtime, Pranic
+  - Per-modality count now **13–14 each** (target ~14 achieved)
+  - Added robust enrichment for every item:
+    - `alchemy`
+    - `ritual`
+    - `ceremony`
+    - `guided_practice`
+    - plus ritual tools / meridian links / body-ailment bridges
+
+#### 2) Explicit free/premium split for Energy Healing
+- Set override to **4 free** for `energy_healing`, rest premium.
+- Verified distribution: **4 free / 118 premium** (on full energy list).
+
+#### 3) Global baseline activation toward 4-free pattern
+- Updated section free-count overrides to 4 across major portals where requested (or already aligned).
+- Confirmed key routes now return 4 free in current preview for these sections:
+  - yoga, somatic, breathwork, meditations, mindfulness, mantras,
+  - water, heart, sacred allies, angelic, guardians, ancient wisdom,
+  - sound frequencies, sacred art/creative, energy healing.
+
+#### 4) Frontend Energy Healing parity updates
+- `frontend/src/pages/EnergyHealing.jsx`
+  - Premium banner text aligned to 4-free model
+  - lock badges + lock modal + CTA parity
+  - deep sections exposed in detail modal:
+    - Alchemy
+    - Ritual Steps
+    - Ceremonial Arc
+    - Guided Practice Arc
+  - 9 modality tabs actively filter and render populated cards
+
+### Verification
+- Testing agent report: `/app/test_reports/iteration_234.json`
+  - Backend: **21 passed / 5 skipped by test-script path assumptions**
+  - Frontend: **100% pass**
+  - Energy summary validated:
+    - total 122 practices
+    - modality spread 13–14 each
+    - deep fields present across all items
+    - premium lock flow works
+- Manual API checks confirm previously “skipped” sections are actually reachable and return 200 in preview.
+- Final frontend specialist verification: PASS
+  - banner text exact (`First 4 practices are free...`)
+  - all 9 modalities present and non-empty
+  - lock + detail modal behavior correct
+
+### Current status
+- Energy Healing is now significantly deeper, denser, and more embodied in preview.
+- Global free/premium baseline has been shifted toward the requested 4-free pattern.
+- For production parity, redeploy latest preview changes.
+
+
