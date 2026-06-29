@@ -72,6 +72,8 @@ const LinksPage = lazy(() => import("../pages/LinksPage"));
 const EnergyHealing = lazy(() => import("../pages/EnergyHealing"));
 const FreeFormMovement = lazy(() => import("../pages/FreeFormMovement"));
 const SomaticYoga = lazy(() => import("../pages/SomaticYoga"));
+const ChairYoga = lazy(() => import("../pages/ChairYoga"));
+const FasciaStretching = lazy(() => import("../pages/FasciaStretching"));
 const ChakraCleansing = lazy(() => import("../pages/ChakraCleansing"));
 const HealingPortals = lazy(() => import("../pages/HealingPortals"));
 const DailySacredPractice = lazy(() => import("../pages/DailySacredPractice"));
@@ -191,8 +193,8 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/somatic-yoga" element={publicElement(SomaticYoga, PublicRoute, api)} />
       <Route path="/chakra-cleansing" element={publicElement(ChakraCleansing, PublicRoute, api)} />
       <Route path="/healing-portals" element={publicElement(HealingPortals, PublicRoute, api)} />
-      <Route path="/chair-yoga" element={publicElement(SomaticYoga, PublicRoute, api)} />
-      <Route path="/fascia-stretching" element={publicElement(SomaticMovement, PublicRoute, api)} />
+      <Route path="/chair-yoga" element={publicElement(ChairYoga, PublicRoute, api)} />
+      <Route path="/fascia-stretching" element={publicElement(FasciaStretching, PublicRoute, api)} />
       <Route path="/power-animals" element={publicElement(SacredGuardians, PublicRoute, api)} />
       <Route path="/spirit-animals" element={publicElement(SacredGuardians, PublicRoute, api)} />
       <Route path="/galactic-allies" element={publicElement(SacredAllyAlchemy, PublicRoute, api)} />

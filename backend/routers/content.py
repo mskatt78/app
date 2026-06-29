@@ -6167,6 +6167,83 @@ async def get_somatic_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
     return _apply_free_paid_tiering(enriched, "somatic_practices")
 
 
+@router.get("/chair-yoga")
+async def get_chair_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
+    """Get chair yoga practices as a dedicated, accessibility-first stream."""
+    db = get_db()
+    query = {}
+    if style:
+        query["style"] = {"$regex": f"^{style}$", "$options": "i"}
+
+    practices = await db.somatic_yoga.find(query, {"_id": 0}).to_list(length=100)
+    adapted: list[dict[str, Any]] = []
+    for practice in practices:
+        entry = dict(practice)
+        base_name = str(entry.get("name") or "Chair Yoga Practice").strip()
+        if "chair" not in base_name.lower():
+            entry["name"] = f"Chair {base_name}"
+
+        base_description = str(entry.get("description") or "")
+        entry["description"] = (
+            f"{base_description} This chair adaptation keeps all key healing benefits while using seated options, wall support, and joint-safe pacing."
+        ).strip()
+        entry["category"] = "Chair Yoga"
+        entry["style"] = str(entry.get("style") or "Accessible").strip()
+        entry.setdefault("chair_support_level", "All levels")
+        entry.setdefault("props", ["Stable chair", "Optional blanket", "Optional yoga strap"])
+        entry.setdefault(
+            "guided_practice",
+            [
+                "Seat with both feet grounded, lengthen spine, and soften shoulders.",
+                "Move at 60% effort while keeping breath smooth and jaw relaxed.",
+                "Close with hand on heart and one seated grounding breath cycle.",
+            ],
+        )
+        adapted.append(entry)
+
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in adapted]
+    return _apply_free_paid_tiering(enriched, "somatic_practices")
+
+
+@router.get("/fascia-stretching")
+async def get_fascia_stretching(element: Optional[str] = None) -> list[dict[str, Any]]:
+    """Get fascia-focused stretching practices as a dedicated route."""
+    db = get_db()
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+
+    practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=100)
+    adapted: list[dict[str, Any]] = []
+    for practice in practices:
+        entry = dict(practice)
+        base_name = str(entry.get("name") or "Fascia Stretching").strip()
+        if "fascia" not in base_name.lower():
+            entry["name"] = f"{base_name} · Fascia Stretching"
+
+        fascia_focus = str(entry.get("somatic_fascia_focus") or "whole-body myofascial release and nervous-system regulation")
+        base_description = str(entry.get("description") or "")
+        entry["description"] = (
+            f"{base_description} Fascia focus: {fascia_focus}. Move slowly and hydrate before and after practice for tissue recovery."
+        ).strip()
+        entry["category"] = "Fascia Stretching"
+        entry["movement_track"] = "Fascia Stretching"
+        entry.setdefault("fascia_focus_area", fascia_focus)
+        entry.setdefault("props", ["Yoga mat", "Foam roller (optional)", "Massage ball (optional)"])
+        entry.setdefault(
+            "guided_practice",
+            [
+                "Begin with long exhales and subtle bouncing to wake connective tissue.",
+                "Hold each stretch at edge-of-sensation without forcing range.",
+                "Integrate by walking slowly and noticing rebound elasticity.",
+            ],
+        )
+        adapted.append(entry)
+
+    enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in adapted]
+    return _apply_free_paid_tiering(enriched, "somatic_practices")
+
+
 @router.get("/somatic-yoga/{practice_id}")
 async def get_somatic_yoga_practice(practice_id: str) -> dict[str, Any]:
     """Get a specific somatic yoga practice."""

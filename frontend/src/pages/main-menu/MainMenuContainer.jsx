@@ -104,8 +104,8 @@ const MainMenuContainer = ({ user }) => {
       title: "Movement & Body",
       items: [
         { path: "/yoga", icon: Sparkles, label: "Yoga Library", color: "text-emerald-400", desc: "78 sacred poses" },
-        { path: resolvePath("/somatic-yoga"), icon: Users, label: "Chair Yoga", color: "text-lime-300", desc: "Accessible mobility sequences" },
-        { path: resolvePath("/somatic", "/yoga"), icon: Waves, label: "Fascia Stretching", color: "text-cyan-300", desc: "Myofascial release + embodiment" },
+        { path: resolvePath("/chair-yoga", "/somatic-yoga"), icon: Users, label: "Chair Yoga", color: "text-lime-300", desc: "Accessible mobility sequences" },
+        { path: resolvePath("/fascia-stretching", "/somatic"), icon: Waves, label: "Fascia Stretching", color: "text-cyan-300", desc: "Myofascial release + embodiment" },
         { path: "/breathwork", icon: Wind, label: "Breathwork", color: "text-cyan-400", desc: "Pranayama practices" },
         { path: "/mudras", icon: Hand, label: "Mudras", color: "text-orange-400", desc: "Sacred hand gestures" },
         { path: "/somatic", icon: Flame, label: "Somatic Movement", color: "text-red-400", desc: "Tai Chi & Qigong" },
@@ -185,6 +185,8 @@ const MainMenuContainer = ({ user }) => {
         { path: "/chakra-cleansing", icon: Hexagon, label: "Chakra Cleansing", color: "text-violet-400", desc: "All 13 energy centers" },
         { path: "/energy-healing", icon: Sparkles, label: "Energy Healing", color: "text-amber-400", desc: "Reiki, Sekhem & Dreamtime" },
         { path: "/somatic-yoga", icon: Leaf, label: "Somatic Yoga", color: "text-emerald-400", desc: "Trauma release & healing" },
+        { path: "/chair-yoga", icon: Users, label: "Chair Yoga", color: "text-lime-300", desc: "Seated accessible practice" },
+        { path: "/fascia-stretching", icon: Waves, label: "Fascia Stretching", color: "text-cyan-300", desc: "Connective tissue release" },
         { path: "/free-form-movement", icon: Wind, label: "Free Form Movement", color: "text-fuchsia-400", desc: "Ecstatic dance & liberation" },
       ]
     },
