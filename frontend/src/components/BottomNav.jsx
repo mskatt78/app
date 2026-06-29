@@ -31,7 +31,7 @@ const routeExists = (path) => {
     "/creative", "/creative-processes", "/numerology", "/birth-chart", "/oracle", "/astrology",
     "/rose-temple", "/elemental-temples", "/masculine-temple", "/seasonal-temple", "/sunrise-sunset",
     "/water-practices", "/tarot", "/rune-readings", "/i-ching", "/gene-keys", "/human-design",
-    "/sacred-guardians", "/ancient-wisdom", "/sound-frequencies", "/free-form-movement", "/somatic-yoga",
+    "/sacred-guardians", "/ancient-wisdom", "/sound-frequencies", "/free-form-movement", "/somatic-yoga", "/chair-yoga", "/fascia-stretching",
     "/chakra-cleansing", "/energy-healing", "/daily-practice", "/practice-journal", "/profile-calculator",
     "/community", "/courses", "/retreats", "/pricing", "/reviews", "/archangels", "/earth-altars",
   ]);

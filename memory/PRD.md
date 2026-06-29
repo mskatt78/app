@@ -159,6 +159,21 @@
   - Frontend verification agent: PASS (all 6 links present, clickable, correct URLs, new-tab behavior confirmed).
   - Backend sanity regression: PASS (critical APIs remain healthy).
 
+## Latest Verification Snapshot (Iteration 239 — Somatic/Chair/Fascia split)
+- ✅ Implemented strict structural separation:
+  - **Somatic Yoga** remains its own dedicated route/page (`/somatic-yoga`).
+  - **Chair Yoga** now has its own dedicated route/page (`/chair-yoga`) with accessibility-focused copy and independent API source.
+  - **Fascia Stretching** now has its own dedicated route/page (`/fascia-stretching`) with fascia-specific copy and independent API source.
+- ✅ Backend separation completed:
+  - Added dedicated endpoints: `/api/chair-yoga` and `/api/fascia-stretching`.
+  - Each endpoint now returns strict tiering: **14 items (4 free + 10 premium)**.
+- ✅ Navigation/menu separation completed:
+  - Main Menu, TopNav Explore, and BottomNav menus all show separate entries for Somatic Yoga, Chair Yoga, and Fascia Stretching.
+  - Legacy route compatibility maintained for `/somatic` and `/somatic-yoga`.
+- ✅ QA status:
+  - Testing agent iteration 239: PASS (backend 14/14, frontend 100%).
+  - Confirmed independent page identities and API independence (`/chair-yoga` does not call somatic-yoga API, `/fascia-stretching` does not call somatic-yoga API).
+
 ## Latest Verification Snapshot (Iteration 132)
 - Backend complexity cleanup regression: PASS (14/14)
 - Frontend hook/key cleanup regression: PASS (100%)

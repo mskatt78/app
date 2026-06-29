@@ -656,6 +656,18 @@ backend:
         comment: "✅ No blank screens detected across tested pages: Landing page (/), Meditations page (/meditations), Breathwork page (/breathwork), Privacy page (/privacy), Terms page (/terms), Elemental Practices page (/elemental-practices). All pages render content correctly. Console errors detected are non-critical: 'Public route auth check failed: AxiosError' errors are expected for unauthenticated public route access. No console-breaking errors that prevent functionality."
 
 frontend:
+  - task: "Navigation dropdown - Somatic Yoga menu item missing"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/TopNav.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ BUG CONFIRMED (2026-06-29): Navigation dropdown validation revealed missing 'Somatic Yoga' menu item. ISSUE: /somatic-yoga route exists and renders correctly, but TopNav.jsx menuItems array (lines 62-104) has NO entry for 'Somatic Yoga'. Result: When user navigates to /somatic-yoga, top nav center label shows 'Explore' instead of 'Somatic Yoga'. Explore menu also missing 'Somatic Yoga' as separate entry (only shows 'Somatic Movement', 'Chair Yoga', 'Fascia Stretching'). REQUIRED FIX: Add menu item entry in TopNav.jsx: { path: resolvePath('/somatic-yoga'), icon: [appropriate icon], label: 'Somatic Yoga', color: '[appropriate color]' }. Ensure it appears in menuItems array alongside Chair Yoga (line 73) and Fascia Stretching (line 74). User's original report of seeing 'Chair Yoga' on /somatic-yoga page not reproduced (shows 'Explore' now), suggesting partial fix was attempted but incomplete."
+
   - task: "Weekly Reflection / Alchemy Plan Generator modal"
     implemented: true
     working: true
@@ -11009,3 +11021,6 @@ agent_communication:
 
   - agent: "testing"
     message: "✅ QUICK BACKEND REGRESSION SANITY COMPLETE (2026-06-28): Quick backend regression sanity check completed after frontend-only social link changes. RESULT: PASS. All 4 critical endpoints verified: /api/meditations (200 OK, valid non-empty JSON) ✓, /api/sacred-ally-alchemy?ally_type=kundalini (200 OK, valid non-empty JSON) ✓, /api/oracle/archangels (200 OK, valid non-empty JSON) ✓, /api/payments/plans (200 OK, valid non-empty JSON) ✓. No backend regressions detected. All endpoints stable and returning expected responses."
+
+  - agent: "testing"
+    message: "❌ NAVIGATION DROPDOWN BUG VALIDATION (2026-06-29): Targeted validation completed for navigation dropdown labels across yoga class routes. RESULT: PARTIAL FAIL. Bug confirmed: Somatic Yoga missing from navigation. FINDINGS: 1) /somatic-yoga route: Shows 'Explore' in top nav center label (NOT 'Somatic Yoga') ❌ - No menu item exists for Somatic Yoga. 2) /chair-yoga route: Shows 'Chair Yoga' correctly ✓. 3) /fascia-stretching route: Shows 'Fascia Stretching' correctly ✓. 4) Explore menu entries: Chair Yoga exists ✓, Fascia Stretching exists ✓, Somatic Yoga does NOT exist ❌ (only 'Somatic Movement' exists). ROOT CAUSE: TopNav.jsx menuItems array (line 62-104) has NO entry for 'Somatic Yoga' pointing to /somatic-yoga route. Line 72 has 'Somatic Movement' pointing to /somatic route, but /somatic-yoga route has no corresponding menu item. User's original bug report (seeing 'Chair Yoga' on /somatic-yoga page) not reproduced - currently shows 'Explore' instead, suggesting partial fix was applied but incomplete. REQUIRED FIX: Add 'Somatic Yoga' menu item to TopNav.jsx menuItems array pointing to /somatic-yoga route with appropriate icon and label."
