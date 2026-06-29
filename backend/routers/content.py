@@ -831,6 +831,7 @@ SECTION_MIN_FREE_ITEMS = 1
 SECTION_DEFAULT_FREE_ITEMS = 4
 SECTION_DEFAULT_PREMIUM_ITEMS = 10
 SECTION_MAX_TIER_ITEMS = SECTION_DEFAULT_FREE_ITEMS + SECTION_DEFAULT_PREMIUM_ITEMS
+SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses"}
 
 # User-approved per-section free counts override global ratio where specified.
 SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
@@ -2826,13 +2827,17 @@ def _apply_free_paid_tiering(
         return []
 
     ordered = sorted(items, key=_parse_tier_sort_value)
-    ordered = _expand_section_items_to_target(ordered, unlock_id)
+    if unlock_id not in SECTION_UNCAPPED_UNLOCK_IDS:
+        ordered = _expand_section_items_to_target(ordered, unlock_id)
     total_items = len(ordered)
     override_free_count = SECTION_FREE_COUNT_OVERRIDES.get(unlock_id, SECTION_DEFAULT_FREE_ITEMS)
     free_count = max(minimum_free, int(override_free_count))
     free_count = max(1, min(free_count, total_items))
 
-    max_visible_items = min(total_items, free_count + SECTION_DEFAULT_PREMIUM_ITEMS)
+    if unlock_id in SECTION_UNCAPPED_UNLOCK_IDS:
+        max_visible_items = total_items
+    else:
+        max_visible_items = min(total_items, free_count + SECTION_DEFAULT_PREMIUM_ITEMS)
     selected_items = ordered[:max_visible_items]
     visible_free_count = min(free_count, len(selected_items))
 
