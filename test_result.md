@@ -657,8 +657,8 @@ backend:
 
 frontend:
   - task: "Navigation dropdown - Somatic Yoga menu item missing"
-    implemented: false
-    working: false
+    implemented: true
+    working: true
     file: "/app/frontend/src/components/TopNav.jsx"
     stuck_count: 0
     priority: "high"
@@ -667,6 +667,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ BUG CONFIRMED (2026-06-29): Navigation dropdown validation revealed missing 'Somatic Yoga' menu item. ISSUE: /somatic-yoga route exists and renders correctly, but TopNav.jsx menuItems array (lines 62-104) has NO entry for 'Somatic Yoga'. Result: When user navigates to /somatic-yoga, top nav center label shows 'Explore' instead of 'Somatic Yoga'. Explore menu also missing 'Somatic Yoga' as separate entry (only shows 'Somatic Movement', 'Chair Yoga', 'Fascia Stretching'). REQUIRED FIX: Add menu item entry in TopNav.jsx: { path: resolvePath('/somatic-yoga'), icon: [appropriate icon], label: 'Somatic Yoga', color: '[appropriate color]' }. Ensure it appears in menuItems array alongside Chair Yoga (line 73) and Fascia Stretching (line 74). User's original report of seeing 'Chair Yoga' on /somatic-yoga page not reproduced (shows 'Explore' now), suggesting partial fix was attempted but incomplete."
+      - working: true
+        agent: "testing"
+        comment: "✅ TOPNAV LABEL BUG FIX VERIFIED (2026-06-29): Re-tested after latest TopNav patch. ALL 4 TESTS PASSED: TEST 1 - /somatic-yoga route: Top nav center label correctly shows 'Somatic Yoga' (not 'Explore', not 'Chair Yoga') ✓. TEST 2 - /chair-yoga route: Top nav center label correctly shows 'Chair Yoga' ✓. TEST 3 - /fascia-stretching route: Top nav center label correctly shows 'Fascia Stretching' ✓. TEST 4 - Explore menu: All three entries exist separately (Somatic Yoga, Chair Yoga, Fascia Stretching) ✓. Code verification: TopNav.jsx lines 73-75 now include all three menu items with proper paths, icons, labels, and colors. Bug FULLY RESOLVED."
 
   - task: "Weekly Reflection / Alchemy Plan Generator modal"
     implemented: true
@@ -10951,6 +10954,8 @@ frontend:
         comment: "✅ PRICING PAGE REGRESSION SMOKE PASSED (2026-06-28): Comprehensive testing completed on /pricing route. ALL 2 REQUIREMENTS PASSED: 1) Pricing page has only monthly + lifetime cards ✓. Found exactly 2 subscription buttons: subscribe-monthly and subscribe-full_app_unlock. 2) No major blank-page or fatal errors ✓. Pricing page element visible, no error messages detected on page. All interactions functional, no crashes detected."
 
 agent_communication:
+  - agent: "testing"
+    message: "✅ TOPNAV LABEL BUG FIX VERIFIED (2026-06-29): Re-tested navigation dropdown after latest TopNav patch. ALL 4 TESTS PASSED: 1) /somatic-yoga → top nav center label shows 'Somatic Yoga' (not 'Explore', not 'Chair Yoga') ✓. 2) /chair-yoga → top nav center label shows 'Chair Yoga' ✓. 3) /fascia-stretching → top nav center label shows 'Fascia Stretching' ✓. 4) Explore menu contains all three entries separately (Somatic Yoga, Chair Yoga, Fascia Stretching) ✓. Code verification: TopNav.jsx lines 73-75 now include all three menu items with proper paths, icons, labels, and colors. Bug FULLY RESOLVED."
   - agent: "testing"
     message: "✅ FINAL TIERING ENHANCEMENT VALIDATION COMPLETE (2026-06-29): Comprehensive backend regression testing completed after final tiering enhancement in content.py. ALL 23 SECTION ENDPOINTS NOW VALIDATED: Every endpoint (/yoga/poses, /breathwork/sessions, /mantras, /mindfulness-practices, /meditations, /somatic, /grounding, /heart-practices, /shamanic-practices, /elemental-practices, /creative-processes, /sacred-guardians, /sacred-ally-alchemy, /angelic-alchemy, /healing-portals, /ancient-wisdom, /sound-frequencies, /energy-healing, /chakra-cleansing, /feminine-embodiment, /masculine-embodiment, /elemental-temples, /water-practices) returns EXACTLY 14 items with EXACTLY 4 free and 10 premium. Pricing plans endpoint returns [monthly, full_app_unlock] as expected. Retreats endpoint remains empty. Expand-script endpoint meets 7-minute floor requirement. All endpoints stable with no 500 errors. RESULT: 27/27 tests PASSED. Backend ready for production deployment with consistent tiering across all content sections."
   - agent: "testing"
