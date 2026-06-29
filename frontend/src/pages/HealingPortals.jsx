@@ -9,6 +9,9 @@ import { toast } from "sonner";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
 
+const HEALING_PORTALS_CACHE_KEY = "healing-portals-cache-v1";
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const sanitizeToList = (value) => {
   if (Array.isArray(value)) {
     return value.map((item) => String(item || "").trim()).filter(Boolean);
@@ -120,17 +123,63 @@ const HealingPortals = ({ user, api }) => {
 
   const loadPortals = useCallback(async () => {
     setLoading(true);
+
+    const readCachedPortals = () => {
+      try {
+        const raw = window.localStorage.getItem(HEALING_PORTALS_CACHE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    };
+
+    const cachedPortals = readCachedPortals();
+    if (cachedPortals.length > 0 && portals.length === 0) {
+      setPortals(cachedPortals);
+    }
+
     try {
-      const { data } = await api.get("/healing-portals");
-      const sorted = (data || []).sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+      let responseData = null;
+      let lastError = null;
+
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        try {
+          const { data } = await api.get("/healing-portals");
+          responseData = data;
+          break;
+        } catch (error) {
+          lastError = error;
+          if (attempt < 2) {
+            await wait(450 * (attempt + 1));
+          }
+        }
+      }
+
+      if (!Array.isArray(responseData)) {
+        throw lastError || new Error("Healing portals response invalid");
+      }
+
+      const sorted = responseData.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
       setPortals(sorted);
+      try {
+        window.localStorage.setItem(HEALING_PORTALS_CACHE_KEY, JSON.stringify(sorted));
+      } catch {
+        // silent cache write failure
+      }
     } catch {
-      toast.error("Unable to load healing portals");
-      setPortals([]);
+      if (cachedPortals.length > 0) {
+        toast.info("Network unstable — showing cached healing portals.");
+        setPortals(cachedPortals);
+      } else {
+        toast.error("Unable to load healing portals");
+        setPortals([]);
+      }
     } finally {
       setLoading(false);
     }
-  }, [api]);
+  }, [api, portals.length]);
 
   useEffect(() => {
     loadPortals();
@@ -267,6 +316,14 @@ const HealingPortals = ({ user, api }) => {
             <Sparkles className="w-14 h-14 mx-auto mb-3 text-muted-foreground/40" />
             <h2 className="text-2xl font-serif mb-2">Portals are being prepared</h2>
             <p className="text-muted-foreground">Admin can add more portals from the admin collections.</p>
+            <Button
+              variant="outline"
+              className="mt-4 border-white/20"
+              onClick={loadPortals}
+              data-testid="healing-portals-retry-load-button"
+            >
+              Retry Loading Portals
+            </Button>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6" data-testid="healing-portals-grid">
