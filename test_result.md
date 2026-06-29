@@ -174,6 +174,18 @@ user_problem_statement: |
         agent: "testing"
         comment: "✅ CRYSTAL-TRUTH FIX VERIFIED (2026-05-17): GET /api/crystals/deep iolite record confirmed. image_url now points to Iolite-specific file (https://upload.wikimedia.org/wikipedia/commons/4/4b/Iolite.JPG), NOT old Cordierite cluster image. image_validation.status=verified with source references: wikipedia_title='File:Iolite.JPG', wikipedia_page_url='https://en.wikipedia.org/wiki/Cordierite'. All sanity checks passed: /api/health (200), /api/courses (200, 3 items), /api/meditations (200, 6 items). No 500 errors detected. Crystal-truth fix VERIFIED."
 
+  - task: "Yoga poses API restoration backend verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ YOGA RESTORATION BACKEND VERIFICATION PASSED (2026-06-29): Comprehensive backend API testing completed on GET /api/yoga/poses. ALL REQUIREMENTS MET: 1) Full list returned: 78 poses (significantly >14 expected) ✓. 2) Free/premium split: 4 free poses + 74 premium poses (correct split) ✓. 3) Endpoint returns 200 OK with valid JSON ✓. 4) Required fields verified: All spot-checked poses (5 samples) contain id, name, and is_premium fields ✓. 5) Free/premium ordering: First 4 poses are free (is_premium=False), remaining 74 poses are premium (is_premium=True) ✓. Backend yoga restoration FULLY VERIFIED. API correctly implements SECTION_FREE_COUNT_OVERRIDES with yoga_poses: 4 free count and SECTION_UNCAPPED_UNLOCK_IDS allowing full library display."
+
 backend:
 
   - task: "Quick backend regression sanity after frontend-only social link changes"
@@ -11035,3 +11047,6 @@ agent_communication:
 
   - agent: "testing"
     message: "❌ NAVIGATION DROPDOWN BUG VALIDATION (2026-06-29): Targeted validation completed for navigation dropdown labels across yoga class routes. RESULT: PARTIAL FAIL. Bug confirmed: Somatic Yoga missing from navigation. FINDINGS: 1) /somatic-yoga route: Shows 'Explore' in top nav center label (NOT 'Somatic Yoga') ❌ - No menu item exists for Somatic Yoga. 2) /chair-yoga route: Shows 'Chair Yoga' correctly ✓. 3) /fascia-stretching route: Shows 'Fascia Stretching' correctly ✓. 4) Explore menu entries: Chair Yoga exists ✓, Fascia Stretching exists ✓, Somatic Yoga does NOT exist ❌ (only 'Somatic Movement' exists). ROOT CAUSE: TopNav.jsx menuItems array (line 62-104) has NO entry for 'Somatic Yoga' pointing to /somatic-yoga route. Line 72 has 'Somatic Movement' pointing to /somatic route, but /somatic-yoga route has no corresponding menu item. User's original bug report (seeing 'Chair Yoga' on /somatic-yoga page) not reproduced - currently shows 'Explore' instead, suggesting partial fix was applied but incomplete. REQUIRED FIX: Add 'Somatic Yoga' menu item to TopNav.jsx menuItems array pointing to /somatic-yoga route with appropriate icon and label."
+
+  - agent: "testing"
+    message: "✅ YOGA RESTORATION BACKEND VERIFICATION COMPLETE (2026-06-29): Backend API verification completed for yoga restoration on https://breathwork-sanctuary.preview.emergentagent.com/api. RESULT: PASS. User request: Verify GET /api/yoga/poses returns full list (>14), free/premium split (4 free + rest premium), 200 status with valid JSON, required fields (id, name, is_premium). FINDINGS: 1) Full list returned: 78 poses (significantly >14 expected) ✓. 2) Free/premium split: 4 free poses + 74 premium poses (correct 4 free count from SECTION_FREE_COUNT_OVERRIDES) ✓. 3) Endpoint returns 200 OK with valid JSON ✓. 4) Required fields: All spot-checked poses contain id, name, is_premium fields ✓. 5) Free/premium ordering: First 4 poses are free (is_premium=False), remaining 74 are premium (is_premium=True) ✓. Backend implementation correctly uses SECTION_UNCAPPED_UNLOCK_IDS for yoga_poses allowing full library display. All requirements met. Backend yoga restoration FULLY VERIFIED and ready for production."
