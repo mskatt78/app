@@ -10,6 +10,7 @@ import {
 import { appLogger } from "../../utils/logger";
 
 const MIN_NARRATION_MINUTES = 7;
+const SCRIPT_EXPANSION_TIMEOUT_MS = 50000;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const splitSentences = (text) => String(text || "").split(/(?<=[.!?])\s+/).map((line) => line.trim()).filter((line) => line.length > 12);
 const extractStepsFromScript = (script) => {
@@ -173,14 +174,14 @@ export const useGuidedAudioPlayback = ({
     try {
       let timerId;
       const timeoutPromise = new Promise((_, reject) => {
-        timerId = window.setTimeout(() => reject(new Error("Script expansion timeout")), 16000);
+        timerId = window.setTimeout(() => reject(new Error("Script expansion timeout")), SCRIPT_EXPANSION_TIMEOUT_MS);
       });
 
       const response = await Promise.race([
         api.post("/content/expand-script", payload, { signal: controller.signal }),
         timeoutPromise,
       ]);
-      window.clearTimeout(timerId);
+      if (timerId) window.clearTimeout(timerId);
 
       const segments = Array.isArray(response?.data?.segments) ? response.data.segments.filter(Boolean) : [];
       if (segments.length > 0) {

@@ -11054,7 +11054,7 @@ agent_communication:
 frontend:
   - task: "Voice guidance button - Chair Yoga page"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/pages/ChairYoga.jsx, /app/frontend/src/components/GuidedAudioButton.jsx, /app/frontend/src/components/guided/useGuidedAudioPlayback.js"
     stuck_count: 0
     priority: "high"
@@ -11063,6 +11063,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ CHAIR YOGA VOICE GUIDANCE FAILED (2026-06-30): Comprehensive testing completed on /chair-yoga page. FINDINGS: 1) Page loads correctly ✓. 2) Free chair yoga card found (grounding-somatic-flow) ✓. 3) Modal opens successfully ✓. 4) Guided audio button exists and is visible (data-testid='guided-audio-btn') ✓. 5) Button text correct: 'Play Chair Grounding Somatic Flow Guided Voice' ✓. 6) Button click triggers loading state: 'Preparing audio...' ✓. 7) CRITICAL ISSUE: Button stays stuck in 'Preparing audio...' state indefinitely and NEVER transitions to playing state ('Stop Audio') ❌. ROOT CAUSE: Frontend timeout mismatch. Frontend has 16-second timeout (useGuidedAudioPlayback.js line 176), but backend /api/content/expand-script endpoint takes ~35 seconds to complete (verified via curl). Console logs show 'Script expansion timeout' error and request aborted (net::ERR_ABORTED). Backend uses GPT-5.2 LLM with 10-second timeout plus additional processing (deduplication, toning injection, stem diversity) totaling ~35 seconds. RESULT: Playback flow BROKEN - button never reaches playing state."
+      - working: true
+        agent: "testing"
+        comment: "✅ CHAIR YOGA VOICE GUIDANCE PASSED (2026-06-30): Re-tested after timeout fix. Frontend timeout increased from 16s to 50s (SCRIPT_EXPANSION_TIMEOUT_MS = 50000 in useGuidedAudioPlayback.js line 13). TEST RESULTS: 1) Page loads correctly ✓. 2) Free chair yoga card found and clicked ✓. 3) Modal opens successfully ✓. 4) Guided audio button visible with text 'Play Chair Grounding Somatic Flow Guided Voice' ✓. 5) Button click triggers loading state 'Preparing audio...' ✓. 6) CRITICAL FIX VERIFIED: Button successfully transitions to 'Stop Audio' state after 5.1 seconds ✓. State transitions observed: [0.0s] 'Preparing audio...' → [5.1s] 'Stop Audio'. No timeout errors. Playback flow WORKING correctly. Timeout fix VERIFIED."
 
   - task: "Voice guidance button - Yoga Library page"
     implemented: true
