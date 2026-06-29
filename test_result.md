@@ -11050,3 +11050,44 @@ agent_communication:
 
   - agent: "testing"
     message: "✅ YOGA RESTORATION BACKEND VERIFICATION COMPLETE (2026-06-29): Backend API verification completed for yoga restoration on https://breathwork-sanctuary.preview.emergentagent.com/api. RESULT: PASS. User request: Verify GET /api/yoga/poses returns full list (>14), free/premium split (4 free + rest premium), 200 status with valid JSON, required fields (id, name, is_premium). FINDINGS: 1) Full list returned: 78 poses (significantly >14 expected) ✓. 2) Free/premium split: 4 free poses + 74 premium poses (correct 4 free count from SECTION_FREE_COUNT_OVERRIDES) ✓. 3) Endpoint returns 200 OK with valid JSON ✓. 4) Required fields: All spot-checked poses contain id, name, is_premium fields ✓. 5) Free/premium ordering: First 4 poses are free (is_premium=False), remaining 74 are premium (is_premium=True) ✓. Backend implementation correctly uses SECTION_UNCAPPED_UNLOCK_IDS for yoga_poses allowing full library display. All requirements met. Backend yoga restoration FULLY VERIFIED and ready for production."
+
+frontend:
+  - task: "Voice guidance button - Chair Yoga page"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/ChairYoga.jsx, /app/frontend/src/components/GuidedAudioButton.jsx, /app/frontend/src/components/guided/useGuidedAudioPlayback.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CHAIR YOGA VOICE GUIDANCE FAILED (2026-06-30): Comprehensive testing completed on /chair-yoga page. FINDINGS: 1) Page loads correctly ✓. 2) Free chair yoga card found (grounding-somatic-flow) ✓. 3) Modal opens successfully ✓. 4) Guided audio button exists and is visible (data-testid='guided-audio-btn') ✓. 5) Button text correct: 'Play Chair Grounding Somatic Flow Guided Voice' ✓. 6) Button click triggers loading state: 'Preparing audio...' ✓. 7) CRITICAL ISSUE: Button stays stuck in 'Preparing audio...' state indefinitely and NEVER transitions to playing state ('Stop Audio') ❌. ROOT CAUSE: Frontend timeout mismatch. Frontend has 16-second timeout (useGuidedAudioPlayback.js line 176), but backend /api/content/expand-script endpoint takes ~35 seconds to complete (verified via curl). Console logs show 'Script expansion timeout' error and request aborted (net::ERR_ABORTED). Backend uses GPT-5.2 LLM with 10-second timeout plus additional processing (deduplication, toning injection, stem diversity) totaling ~35 seconds. RESULT: Playback flow BROKEN - button never reaches playing state."
+
+  - task: "Voice guidance button - Yoga Library page"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/YogaLibrary.jsx, /app/frontend/src/components/GuidedAudioButton.jsx, /app/frontend/src/components/guided/useGuidedAudioPlayback.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ YOGA VOICE GUIDANCE FAILED (2026-06-30): Comprehensive testing completed on /yoga page. FINDINGS: 1) Page loads correctly ✓. 2) Free yoga pose card found (pose-card-1 / Mountain Pose) ✓. 3) Modal opens successfully ✓. 4) Guided audio button exists and is visible (data-testid='guided-audio-btn') ✓. 5) Button text correct: 'Play Mountain Pose Guided Voice' ✓. 6) Button click triggers loading state: 'Preparing audio...' ✓. 7) CRITICAL ISSUE: Button stays stuck in 'Preparing audio...' state for 20+ seconds and NEVER transitions to playing state ('Stop Audio') ❌. Extended monitoring confirmed button remained in loading state indefinitely. ROOT CAUSE: Same as Chair Yoga - Frontend timeout mismatch. Frontend has 16-second timeout (useGuidedAudioPlayback.js line 176), but backend /api/content/expand-script endpoint takes ~35 seconds. Console logs show 'Script expansion timeout' error. RESULT: Playback flow BROKEN - button never reaches playing state."
+
+  - task: "Backend expand-script endpoint performance"
+    implemented: true
+    working: false
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ EXPAND-SCRIPT ENDPOINT PERFORMANCE ISSUE (2026-06-30): Backend endpoint /api/content/expand-script verified working but TOO SLOW. Direct curl test shows endpoint takes ~35 seconds to complete (200 OK response received). Endpoint uses GPT-5.2 LLM with 10-second timeout (line 3766) plus additional processing: deduplication, toning injection, stem diversity enforcement. Frontend timeout is 16 seconds (useGuidedAudioPlayback.js line 176), causing all voice guidance requests to abort before completion. REQUIRED FIX: Either (1) Increase frontend timeout to 40+ seconds, OR (2) Optimize backend processing to complete within 16 seconds, OR (3) Implement streaming/chunked response to provide faster initial feedback."
+
+agent_communication:
+  - agent: "testing"
+    message: "❌ VOICE GUIDANCE VERIFICATION FAILED (2026-06-30): Comprehensive voice guidance testing completed on /chair-yoga and /yoga pages. RESULT: FAIL. Both pages have CRITICAL BLOCKING ISSUE preventing voice guidance playback. SUMMARY: 1) CHAIR YOGA (/chair-yoga): Button exists and visible ✓, but playback flow BROKEN - button stuck in 'Preparing audio...' state, never transitions to playing ❌. 2) YOGA (/yoga): Button exists and visible ✓, but playback flow BROKEN - button stuck in 'Preparing audio...' state for 20+ seconds, never transitions to playing ❌. ROOT CAUSE: Frontend/backend timeout mismatch. Frontend timeout: 16 seconds (useGuidedAudioPlayback.js line 176). Backend processing time: ~35 seconds (verified via curl). Backend uses GPT-5.2 LLM (10s timeout) + additional processing (deduplication, toning, stem diversity). Result: Frontend aborts request before backend completes. Console logs confirm: 'Script expansion timeout' error and 'net::ERR_ABORTED'. REQUIRED FIX: Increase frontend timeout to 40+ seconds OR optimize backend to complete within 16 seconds OR implement streaming response. BLOCKING: Voice guidance feature is NON-FUNCTIONAL on both pages."
