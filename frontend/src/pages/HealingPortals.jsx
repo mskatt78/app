@@ -8,6 +8,7 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
+import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
 
 const HEALING_PORTALS_CACHE_KEY = "healing-portals-cache-v1";
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -446,6 +447,12 @@ const HealingPortals = ({ user, api }) => {
                 <PortalSection icon={Orbit} title="Embodiment Practices" items={buildPortalEmbodimentPractices(selectedPortal)} testId="healing-portal-embodiment-section" />
                 <PortalSection icon={Shield} title="Embodiment Integration Timeline" items={buildPortalEmbodimentTimeline(selectedPortal)} testId="healing-portal-embodiment-timeline-section" />
                 <PortalSection icon={Shield} title="Integration" items={sanitizeToList(selectedPortal.integration_practices)} testId="healing-portal-integration-section" />
+
+                <EmbodimentProtocolPanel
+                  practiceName={selectedPortal.name}
+                  element={selectedPortal.element || "Spirit"}
+                  testIdPrefix="healing-portals-embodiment"
+                />
 
                 <section className="rounded-xl border border-white/10 bg-white/[0.02] p-4" data-testid="healing-portal-ritual-delivery-panel">
                   <h3 className="text-sm font-medium mb-2 flex items-center gap-2">

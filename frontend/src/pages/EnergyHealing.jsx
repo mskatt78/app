@@ -311,6 +311,17 @@ export default function EnergyHealing() {
                   testIdPrefix="energy-healing-embodiment"
                 />
 
+                <section className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-4" data-testid="energy-healing-anatomy-emotion-education">
+                  <h3 className="text-sm font-medium mb-2">Body Signals Decoder (Beginner-Friendly)</h3>
+                  <ul className="space-y-1.5 text-xs text-muted-foreground">
+                    <li>• <span className="text-cyan-100">Heavy chest / sighing:</span> often linked to grief, protection fatigue, or unprocessed relational stress.</li>
+                    <li>• <span className="text-cyan-100">Solar knot / nausea:</span> often linked to over-control, fear, or boundary confusion.</li>
+                    <li>• <span className="text-cyan-100">Jaw / throat tension:</span> often linked to unspoken truth or fear of conflict.</li>
+                    <li>• <span className="text-cyan-100">Pelvic guarding:</span> often linked to safety, intimacy, or creative-energy shutdown.</li>
+                    <li>• <span className="text-cyan-100">Cold feet / leg heaviness:</span> often linked to survival stress and grounding depletion.</li>
+                  </ul>
+                </section>
+
                 <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 mt-4" data-testid="energy-healing-guided-voice-panel">
                   <p className="text-xs uppercase tracking-wider text-primary/80 mb-1">Immersive Guided Voice</p>
                   <p className="text-xs text-muted-foreground mb-3">Listen to a deep ceremonial sequence with breath pacing, embodiment cues, and healing integration.</p>

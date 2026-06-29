@@ -13,6 +13,7 @@ import PracticeVideos from "../components/PracticeVideos";
 import { appLogger } from "../utils/logger";
 import { resolveDurationMinutes } from "../utils/durationUtils";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
 
 const movementTrackFilters = ["all", "Fascia Stretching"];
 
@@ -359,6 +360,12 @@ const FasciaStretching = ({ user, api }) => {
                     <p className="text-sm text-emerald-100 mt-1">{selectedPractice.somatic_fascia_focus || selectedPractice.fascia_focus_area}</p>
                   </div>
                 )}
+
+                <EmbodimentProtocolPanel
+                  practiceName={selectedPractice.name}
+                  element={selectedPractice.element || "Water"}
+                  testIdPrefix="fascia-stretching-embodiment"
+                />
 
                 {selectedPractice.breath_hybrid_sequence?.length > 0 && (
                   <div className="space-y-2" data-testid="selected-breath-hybrid-sequence">

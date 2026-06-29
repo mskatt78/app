@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "../compon
 import { toast } from "sonner";
 import HealthDisclaimer from "../components/HealthDisclaimer";
 import GuidedAudioButton from "../components/GuidedAudioButton";
+import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { appLogger } from "../utils/logger";
 import { resolveDurationMinutes } from "../utils/durationUtils";
@@ -645,6 +646,16 @@ const YogaLibrary = ({ user, api }) => {
                       element={selectedPose.element || "Spirit"}
                       durationMinutes={resolveDurationMinutes(selectedPose.duration_minutes, 8)}
                       practiceName={selectedPose.name}
+                    />
+                  </div>
+                )}
+
+                {selectedPose && (
+                  <div className="pl-10 mt-4" data-testid="yoga-library-body-wisdom-panel-wrap">
+                    <EmbodimentProtocolPanel
+                      practiceName={selectedPose.name}
+                      element={selectedPose.element || "Earth"}
+                      testIdPrefix="yoga-library-embodiment"
                     />
                   </div>
                 )}

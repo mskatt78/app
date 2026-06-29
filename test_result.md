@@ -11290,3 +11290,173 @@ agent_communication:
       
       The page is production-ready with robust error handling and fallback mechanisms.
 
+
+frontend:
+  - task: "Body Wisdom Panel rollout - Fascia Stretching modals"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/FasciaStretching.jsx, /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Fascia Stretching body wisdom panel verified. Modal opens successfully. All required components present: EmbodimentProtocolPanel, Body Wisdom Map (with 3 region cards for Fire element), Guided Body Scan protocol (5 steps), Ceremonial Integration Cues (3 cues). Panel displays correctly with proper styling and data-testids."
+
+  - task: "Body Wisdom Panel rollout - Yoga Library modals"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx, /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Yoga Library body wisdom panel verified. Pose modal opens successfully (Mountain Pose tested). All required components present: EmbodimentProtocolPanel, Body Wisdom Map (with 3 region cards for Earth element), Guided Body Scan protocol (5 steps), Ceremonial Integration Cues (3 cues). Panel displays correctly within scrollable modal content."
+
+  - task: "Body Wisdom Panel rollout - Healing Portals modals"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/HealingPortals.jsx, /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Healing Portals body wisdom panel verified. Portal modal opens successfully (Womb Healing Portal tested). All required components present: EmbodimentProtocolPanel, Body Wisdom Map (with 3 region cards for Spirit element), Guided Body Scan protocol (5 steps), Ceremonial Integration Cues (3 cues). Panel displays correctly within portal detail modal."
+
+  - task: "Body Wisdom Panel rollout - Energy Healing modals with Body Signals Decoder"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/EnergyHealing.jsx, /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ Energy Healing body wisdom panel + Body Signals Decoder verified. Practice modal opens successfully. All required components present: EmbodimentProtocolPanel, Body Wisdom Map (with 3 region cards), Guided Body Scan protocol (5 steps), Ceremonial Integration Cues (3 cues), PLUS Body Signals Decoder education section (5 body signal explanations: heavy chest/sighing, solar knot/nausea, jaw/throat tension, pelvic guarding, cold feet/leg heaviness). All components display correctly with proper styling."
+
+metadata:
+  created_by: "testing_agent"
+  version: "2.1"
+  test_sequence: 13
+  run_ui: true
+  last_tested: "2026-06-29"
+
+test_plan:
+  current_focus:
+    - "Body Wisdom Panel rollout verification - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ BODY WISDOM PANEL ROLLOUT VERIFICATION COMPLETE (2026-06-29):
+      
+      Comprehensive validation completed for the new educational + ceremonial body-part detail rollout across all app areas on https://breathwork-sanctuary.preview.emergentagent.com
+      
+      TEST SCOPE:
+      Validated EmbodimentProtocolPanel integration across 4 routes:
+      1) /fascia-stretching -> free practice modal
+      2) /yoga -> free pose modal
+      3) /healing-portals -> portal modal
+      4) /energy-healing -> free practice modal (with additional Body Signals Decoder)
+      
+      ✅ ALL TESTS PASSED (4/4):
+      
+      1. ✅ /fascia-stretching - PASS
+         - Practice modal: "Shake and Release · Fascia Stretching" opened successfully
+         - EmbodimentProtocolPanel: ✅ Present (data-testid="fascia-stretching-embodiment-panel")
+         - Body Wisdom Map: ✅ Present with 3 region cards (Solar Core, Heart + Chest, Throat + Jaw for Fire element)
+         - Guided Body Scan: ✅ Present with 5-step protocol (Orient, Map, Name, Regulate, Integrate)
+         - Ceremonial Integration Cues: ✅ Present with 3 body region cues
+         - Screenshot: fascia-stretching-body-wisdom.png
+      
+      2. ✅ /yoga - PASS
+         - Pose modal: "Mountain Pose (Tadasana)" opened successfully
+         - EmbodimentProtocolPanel: ✅ Present (data-testid="yoga-library-embodiment-panel")
+         - Body Wisdom Map: ✅ Present with 3 region cards (Feet + Legs, Pelvis + Lower Belly, Solar Core for Earth element)
+         - Guided Body Scan: ✅ Present with 5-step protocol
+         - Ceremonial Integration Cues: ✅ Present with 3 body region cues
+         - Screenshot: yoga-body-wisdom.png
+      
+      3. ✅ /healing-portals - PASS
+         - Portal modal: "Womb Healing Portal" opened successfully
+         - EmbodimentProtocolPanel: ✅ Present (data-testid="healing-portals-embodiment-panel")
+         - Body Wisdom Map: ✅ Present with 3 region cards (Pelvis + Lower Belly, Heart + Chest, Brow + Crown for Spirit element)
+         - Guided Body Scan: ✅ Present with 5-step protocol
+         - Ceremonial Integration Cues: ✅ Present with 3 body region cues
+         - Screenshot: healing-portals-body-wisdom.png
+      
+      4. ✅ /energy-healing - PASS
+         - Practice modal: Energy healing practice opened successfully
+         - EmbodimentProtocolPanel: ✅ Present (data-testid="energy-healing-embodiment-panel")
+         - Body Wisdom Map: ✅ Present with 3 region cards
+         - Guided Body Scan: ✅ Present with 5-step protocol
+         - Ceremonial Integration Cues: ✅ Present with 3 body region cues
+         - Body Signals Decoder: ✅ PRESENT (data-testid="energy-healing-anatomy-emotion-education")
+           - Contains 5 beginner-friendly body signal explanations:
+             • Heavy chest / sighing → grief, protection fatigue, relational stress
+             • Solar knot / nausea → over-control, fear, boundary confusion
+             • Jaw / throat tension → unspoken truth, fear of conflict
+             • Pelvic guarding → safety, intimacy, creative-energy shutdown
+             • Cold feet / leg heaviness → survival stress, grounding depletion
+         - Screenshot: energy-healing-body-wisdom.png
+      
+      COMPONENT STRUCTURE VERIFIED:
+      - EmbodimentProtocolPanel component (lines 82-197 in EmbodimentProtocolPanel.jsx)
+      - Body Wisdom Map section with element-specific region cards (3 regions per element)
+      - Guided Body Scan protocol with 5 steps (Orient, Map, Name, Regulate, Integrate)
+      - Ceremonial Integration Cues with body-region-specific prompts
+      - 3-Step and 7-Day Embodiment Options displayed in grid layout
+      
+      ELEMENT-TO-REGION MAPPING WORKING CORRECTLY:
+      - Earth: feet_legs, pelvis_womb, solar_core
+      - Water: pelvis_womb, heart_chest, throat_jaw
+      - Fire: solar_core, heart_chest, throat_jaw
+      - Air: heart_chest, throat_jaw, brow_crown
+      - Spirit: pelvis_womb, heart_chest, brow_crown
+      
+      BODY WISDOM LIBRARY DATA VERIFIED:
+      Each region card displays:
+      - Region name (e.g., "Feet + Legs", "Solar Core")
+      - Anatomy description (e.g., "Foundation chain: feet, calves, hamstrings, hips")
+      - Function description (e.g., "Stability, locomotion, and force transfer")
+      - Emotion mapping (e.g., "Safety, belonging, trust in life support")
+      - Energy current (e.g., "Root current · grounding and survival coherence")
+      
+      CEREMONIAL INTEGRATION CUES VERIFIED:
+      Each cue provides body-region-specific somatic prompts:
+      - Example: "Feet + Legs: Slow exhale into your feet and ask: where do I need firmer boundaries or steadier support?"
+      - Example: "Heart + Chest: Lengthen exhale through the chest and ask what grief needs witnessing before love can move again."
+      
+      NO MAJOR UI REGRESSIONS DETECTED:
+      - All modals open correctly without crashes
+      - All panels render with proper styling (amber/cyan/fuchsia/emerald color schemes)
+      - Scrolling works correctly in all modals
+      - No console errors related to body wisdom panel rendering
+      - All data-testid attributes present and accessible
+      
+      CONSOLE LOGS:
+      - Only expected 401 auth errors for unauthenticated public route checks (non-critical)
+      - No JavaScript errors or React rendering errors
+      - No missing component warnings
+      
+      FINAL VERDICT:
+      ✅ PASS - Body Wisdom Panel rollout is FULLY FUNCTIONAL across all 4 routes:
+      - All EmbodimentProtocolPanel components render correctly
+      - Body Wisdom Map displays element-appropriate region cards
+      - Guided Body Scan protocol provides 5-step somatic guidance
+      - Ceremonial Integration Cues offer body-region-specific prompts
+      - Energy Healing includes additional Body Signals Decoder education section
+      - No UI regressions or crashes detected
+      - Feature is production-ready and provides comprehensive beginner-friendly anatomy + energy education
+      
+      The educational + ceremonial body-part detail rollout successfully enhances user understanding of somatic practices with accessible anatomy, emotion, and energy translations.
+
