@@ -11094,3 +11094,85 @@ frontend:
 agent_communication:
   - agent: "testing"
     message: "❌ VOICE GUIDANCE VERIFICATION FAILED (2026-06-30): Comprehensive voice guidance testing completed on /chair-yoga and /yoga pages. RESULT: FAIL. Both pages have CRITICAL BLOCKING ISSUE preventing voice guidance playback. SUMMARY: 1) CHAIR YOGA (/chair-yoga): Button exists and visible ✓, but playback flow BROKEN - button stuck in 'Preparing audio...' state, never transitions to playing ❌. 2) YOGA (/yoga): Button exists and visible ✓, but playback flow BROKEN - button stuck in 'Preparing audio...' state for 20+ seconds, never transitions to playing ❌. ROOT CAUSE: Frontend/backend timeout mismatch. Frontend timeout: 16 seconds (useGuidedAudioPlayback.js line 176). Backend processing time: ~35 seconds (verified via curl). Backend uses GPT-5.2 LLM (10s timeout) + additional processing (deduplication, toning, stem diversity). Result: Frontend aborts request before backend completes. Console logs confirm: 'Script expansion timeout' error and 'net::ERR_ABORTED'. REQUIRED FIX: Increase frontend timeout to 40+ seconds OR optimize backend to complete within 16 seconds OR implement streaming response. BLOCKING: Voice guidance feature is NON-FUNCTIONAL on both pages."
+
+  - task: "Voice guidance verification - Yoga family pages final check"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx, /app/frontend/src/pages/ChairYoga.jsx, /app/frontend/src/pages/SomaticYoga.jsx, /app/frontend/src/components/GuidedAudioButton.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VOICE GUIDANCE VERIFICATION PASSED - ALL YOGA FAMILY PAGES (2026-06-30): Final comprehensive voice guidance verification completed across all three yoga family pages on https://breathwork-sanctuary.preview.emergentagent.com. ALL 3 ROUTES PASSED: 1) /yoga (Yoga Library): Free pose card (Mountain Pose) opened ✓, guided audio button [data-testid='guided-audio-btn'] exists ✓, button clicked ✓, state transition: 'Play Mountain Pose Guided Voice' → 'Preparing audio...' → 'Stop Audio' completed in 3.6 seconds ✓. 2) /chair-yoga (Chair Yoga): Free practice card (Chair Grounding Somatic Flow) opened ✓, guided audio button exists ✓, button clicked ✓, state transition: 'Play Chair Grounding Somatic Flow Guided Voice' → 'Preparing audio...' → 'Stop Audio' completed in 3.6 seconds ✓. 3) /somatic-yoga (Somatic Yoga): Free practice card (Grounding Somatic Flow) opened ✓, guided audio button exists ✓, button clicked ✓, state transition: 'Play Grounding Somatic Flow Guided Voice' → 'Preparing audio...' → 'Stop Audio' completed in 7.6 seconds ✓. All transitions completed well within 55-second timeout window. No timeout errors detected. Voice guidance feature FULLY FUNCTIONAL across all yoga family pages. Previous timeout issue (frontend 16s vs backend 35s) has been RESOLVED with frontend timeout increase to 50s (SCRIPT_EXPANSION_TIMEOUT_MS = 50000)."
+
+metadata:
+  created_by: "testing_agent"
+  version: "2.0"
+  test_sequence: 11
+  run_ui: true
+  last_tested: "2026-06-30"
+
+test_plan:
+  current_focus:
+    - "Voice guidance verification - yoga family pages - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ VOICE GUIDANCE VERIFICATION COMPLETE - ALL YOGA FAMILY PAGES (2026-06-30):
+      
+      Final voice guidance verification completed successfully across all three yoga family pages.
+      
+      TEST SCOPE:
+      Validated voice guidance functionality on:
+      1) /yoga (Yoga Library)
+      2) /chair-yoga (Chair Yoga)
+      3) /somatic-yoga (Somatic Yoga)
+      
+      TEST METHODOLOGY:
+      For each route:
+      - Open a free card modal
+      - Confirm [data-testid="guided-audio-btn"] exists
+      - Click button and wait up to 55 seconds
+      - Confirm state transitions from "Preparing audio" to "Stop Audio"
+      
+      ✅ RESULTS - ALL PASSED (3/3):
+      
+      1. ✅ /yoga - PASS (3.6 seconds)
+         - Free pose: Mountain Pose (pose-card-1)
+         - Button text: "Play Mountain Pose Guided Voice"
+         - State transition: Initial → Preparing audio → Stop Audio
+         - Timing: 3.6 seconds (well within 55s limit)
+         - Screenshot: yoga-voice-guidance-success.png
+      
+      2. ✅ /chair-yoga - PASS (3.6 seconds)
+         - Free practice: Chair Grounding Somatic Flow
+         - Button text: "Play Chair Grounding Somatic Flow Guided Voice"
+         - State transition: Initial → Preparing audio → Stop Audio
+         - Timing: 3.6 seconds (well within 55s limit)
+         - Screenshot: chair-yoga-voice-guidance-success.png
+      
+      3. ✅ /somatic-yoga - PASS (7.6 seconds)
+         - Free practice: Grounding Somatic Flow
+         - Button text: "Play Grounding Somatic Flow Guided Voice"
+         - State transition: Initial → Preparing audio → Stop Audio
+         - Timing: 7.6 seconds (well within 55s limit)
+         - Screenshot: somatic-yoga-voice-guidance-success.png
+      
+      TECHNICAL NOTES:
+      - All button state transitions working correctly
+      - No timeout errors detected
+      - All transitions completed in 3.6-7.6 seconds (excellent performance)
+      - Previous timeout issue (frontend 16s vs backend 35s) has been RESOLVED
+      - Frontend timeout successfully increased to 50s (SCRIPT_EXPANSION_TIMEOUT_MS = 50000)
+      - GuidedAudioButton component working correctly across all pages
+      - useGuidedAudioPlayback hook functioning as expected
+      
+      CONCLUSION:
+      Voice guidance feature is FULLY FUNCTIONAL across all yoga family pages. All routes successfully generate and play guided audio with proper state management. Feature is production-ready.
+

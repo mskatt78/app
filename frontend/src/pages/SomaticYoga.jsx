@@ -4,8 +4,10 @@ import { ArrowLeft, Sparkles, Clock, Heart, Leaf, ChevronDown, ChevronUp, Loader
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
+import GuidedAudioButton from "../components/GuidedAudioButton";
 import { toast } from "sonner";
 import axios from "axios";
+import { resolveDurationMinutes } from "../utils/durationUtils";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -201,6 +203,26 @@ export default function SomaticYoga() {
                         <span key={`${selectedPractice.id || selectedPractice.name}-benefit-${String(b).slice(0, 24)}-${i}`} className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs">{typeof b === 'string' ? b.trim() : b}</span>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {selectedPractice && (
+                  <div className="mt-4" data-testid="somatic-yoga-voice-guidance-section">
+                    <GuidedAudioButton
+                      api={api}
+                      script={`Welcome to ${selectedPractice.name}. ${selectedPractice.description || "Begin with steady breath and internal awareness."} ${selectedPractice.practice_guide || "Move slowly and stay inside comfortable range."} ${selectedPractice.breathing_pattern ? `Breathing pattern: ${selectedPractice.breathing_pattern}.` : "Keep inhale and exhale even."}`}
+                      label={`Play ${selectedPractice.name} Voice Guidance`}
+                      element={selectedPractice.element || "Earth"}
+                      durationMinutes={resolveDurationMinutes(selectedPractice.duration_minutes, 8)}
+                      practiceName={selectedPractice.name}
+                      sourceTexts={[
+                        selectedPractice.description,
+                        selectedPractice.practice_guide,
+                        selectedPractice.body_focus,
+                        selectedPractice.breathing_pattern,
+                      ].filter(Boolean)}
+                      steps={Array.isArray(selectedPractice.instructions) ? selectedPractice.instructions : []}
+                    />
                   </div>
                 )}
 
