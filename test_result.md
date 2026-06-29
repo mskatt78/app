@@ -201,6 +201,19 @@ backend:
         comment: "✅ QUICK BACKEND REGRESSION SANITY PASSED (2026-06-28): All 4 critical endpoints verified after frontend-only social link changes. GET /api/meditations: 200 OK, valid non-empty JSON ✓. GET /api/sacred-ally-alchemy?ally_type=kundalini: 200 OK, valid non-empty JSON ✓. GET /api/oracle/archangels: 200 OK, valid non-empty JSON ✓. GET /api/payments/plans: 200 OK, valid non-empty JSON ✓. No backend regressions detected. All endpoints returning 200 with valid non-empty JSON responses."
 
 
+  - task: "Quick backend sanity - healing portals after frontend resilience patch"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py, /app/backend/routers/payments.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ QUICK BACKEND SANITY PASSED (2026-06-30): Backend verification completed after frontend-only resilience patch. GET /api/healing-portals: 200 OK, returns 14 healing portals (non-empty JSON list) ✓. GET /api/payments/premium-products: 200 OK, returns valid JSON dict with 'products' key ✓. No backend regressions detected. Both endpoints functioning correctly."
+
+
   - task: "Mantras API master_embodiment_protocol and youtube_tutorials"
     implemented: true
     working: true
