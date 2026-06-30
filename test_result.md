@@ -11593,14 +11593,112 @@ backend:
         agent: "testing"
         comment: "✅ CHAIR YOGA EXPANSION AND VOICE LATENCY VERIFICATION PASSED (2026-06-30): Comprehensive backend validation completed on https://breathwork-sanctuary.preview.emergentagent.com/api. ALL 3 TESTS PASSED: TEST 1 - Chair Yoga Expansion: GET /api/chair-yoga returns 15 practices (>14 requirement met) ✓. Premium structure verified: 4 free practices + 11 premium practices (correct split) ✓. First 4 practices are free, remaining 11 are premium (correct ordering) ✓. TEST 2 - Chair Practice ID Spot-Check: All 3 required new practice IDs exist: chair-yoga-201 (Chair Neck & Jaw Unwinding) ✓, chair-yoga-202 (Chair Hip Basin Flow) ✓, chair-yoga-208 (Chair Nervous System Reset) ✓. TEST 3 - Expand Script Endpoint Performance: POST /api/content/expand-script with target_minutes=7 payload returns 200 OK ✓. Response time: 0.10 seconds (excellent performance, <5s threshold) ✓. All required fields present: target_minutes, target_word_count, word_count, segments, paragraphs ✓. Segments non-empty (6 segments) ✓. Paragraphs non-empty (28 paragraphs) ✓. Word count: 1000 (non-zero, valid) ✓. No 500 errors detected. Chair Yoga expansion FULLY VERIFIED. Voice latency tuning (expand-script) FULLY VERIFIED. All backend requirements met."
 
+frontend:
+  - task: "Global body map diagram rollout - /fascia-stretching"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/FasciaStretching.jsx, /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GLOBAL BODY MAP DIAGRAM VALIDATION PASSED (2026-06-30): /fascia-stretching route tested successfully. Practice modal opens correctly. Interactive body map exists with 3 clickable body points. Front/Back view controls functional. Fascia Love Mode toggle exists and works (toggles between ON/OFF). Selected region panel displays all required layers: Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, and Fascia Lens. All requirements met."
+
+  - task: "Global body map diagram rollout - /yoga"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx, /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GLOBAL BODY MAP DIAGRAM VALIDATION PASSED (2026-06-30): /yoga route tested successfully. Pose modal opens correctly. Interactive body map exists with 3 clickable body points. Front/Back view controls functional. Fascia Love Mode toggle exists and works (toggles between OFF/ON). Selected region panel displays all required layers: Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, and Fascia Lens. All requirements met."
+
+  - task: "Global body map diagram rollout - /healing-portals"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/HealingPortals.jsx, /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GLOBAL BODY MAP DIAGRAM VALIDATION PASSED (2026-06-30): /healing-portals route tested successfully. Portal modal opens correctly. Interactive body map exists with 3 clickable body points. Front/Back view controls functional. Fascia Love Mode toggle exists and works (toggles between OFF/ON). Selected region panel displays all required layers: Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, and Fascia Lens. All requirements met."
+
+  - task: "Global body map diagram rollout - /energy-healing"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/EnergyHealing.jsx, /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GLOBAL BODY MAP DIAGRAM VALIDATION PASSED (2026-06-30): /energy-healing route tested successfully. Healing practice modal opens correctly. Interactive body map exists with 3 clickable body points. Front/Back view controls functional. Fascia Love Mode toggle exists and works (toggles between OFF/ON). Selected region panel displays all required layers: Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, and Fascia Lens. All requirements met."
+
 test_plan:
   current_focus:
-    - "Chair Yoga expansion and voice latency verification - COMPLETED"
+    - "Global body map diagram rollout validation - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      Global Body Map Diagram Rollout Validation (2026-06-30):
+      
+      VALIDATION REQUEST: Verify new global body map diagram rollout across 4 routes
+      Base URL: https://breathwork-sanctuary.preview.emergentagent.com
+      
+      ✅ ALL TESTS PASSED (4/4 routes):
+      
+      1. ✅ /fascia-stretching -> practice modal - PASSED
+         - Interactive body map: ✅ Present with 3 clickable body points
+         - Front/Back view controls: ✅ Functional
+         - Fascia Love Mode toggle: ✅ Works (ON → OFF)
+         - Selected region panel: ✅ Shows all 6 layers (Physical, Physical Function, Emotional, Energetic, Spiritual, Fascia)
+         - Screenshot: fascia-stretching-body-map.png
+      
+      2. ✅ /yoga -> pose modal - PASSED
+         - Interactive body map: ✅ Present with 3 clickable body points
+         - Front/Back view controls: ✅ Functional
+         - Fascia Love Mode toggle: ✅ Works (OFF → ON)
+         - Selected region panel: ✅ Shows all 6 layers (Physical, Physical Function, Emotional, Energetic, Spiritual, Fascia)
+         - Screenshot: yoga-body-map.png
+      
+      3. ✅ /healing-portals -> portal modal - PASSED
+         - Interactive body map: ✅ Present with 3 clickable body points
+         - Front/Back view controls: ✅ Functional
+         - Fascia Love Mode toggle: ✅ Works (OFF → ON)
+         - Selected region panel: ✅ Shows all 6 layers (Physical, Physical Function, Emotional, Energetic, Spiritual, Fascia)
+         - Screenshot: healing-portals-body-map.png
+      
+      4. ✅ /energy-healing -> practice modal - PASSED
+         - Interactive body map: ✅ Present with 3 clickable body points
+         - Front/Back view controls: ✅ Functional
+         - Fascia Love Mode toggle: ✅ Works (OFF → ON)
+         - Selected region panel: ✅ Shows all 6 layers (Physical, Physical Function, Emotional, Energetic, Spiritual, Fascia)
+         - Screenshot: energy-healing-body-map.png
+      
+      CRITICAL FINDINGS:
+      ✅ Global body map diagram component (EmbodimentProtocolPanel) successfully deployed across all 4 routes
+      ✅ Interactive diagram with clickable body points working on all routes
+      ✅ Front/Back view toggle controls functional on all routes
+      ✅ Fascia Love Mode toggle exists and works correctly on all routes
+      ✅ Selected region panel displays all required layers (physical, emotional, energetic, spiritual, fascia) on all routes
+      ✅ No UI crashes detected
+      ✅ All required sections remain visible
+      
+      SUMMARY:
+      Global body map diagram rollout is FULLY FUNCTIONAL across all 4 routes (/fascia-stretching, /yoga, /healing-portals, /energy-healing). All interactive features working correctly: clickable body points, Front/Back view controls, Fascia Love Mode toggle, and comprehensive selected region panel showing physical + emotional + energetic + spiritual + fascia layers. Feature is production-ready.
+
   - agent: "testing"
     message: |
       Backend Validation - Partner + Chair Expansion and Voice Latency Tuning (2026-06-30):
