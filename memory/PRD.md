@@ -174,6 +174,23 @@
   - Testing agent iteration 239: PASS (backend 14/14, frontend 100%).
   - Confirmed independent page identities and API independence (`/chair-yoga` does not call somatic-yoga API, `/fascia-stretching` does not call somatic-yoga API).
 
+## Latest Verification Snapshot (Iteration 241 — Partner/Chair expansion + guided voice startup)
+- ✅ Added requested practice expansion:
+  - **Partner Yoga**: expanded from 8 → **18** practices (+10 new).
+  - **Chair Yoga**: expanded with +10 curated chair supplements; live endpoint now returns **15** practices.
+- ✅ Access structure preserved with premium model:
+  - Partner Yoga now uses active premium gating (**4 free + remaining premium**).
+  - Chair Yoga remains premium-gated (**4 free + remaining premium**).
+- ✅ Voice guidance availability and startup optimization:
+  - Voice guidance remains enabled across Yoga, Chair Yoga, Somatic Yoga, and Partner Yoga guided flows.
+  - Reduced guided-script expansion latency by capping expansion target and tightening expansion timeout.
+  - Frontend QA observed startup timing:
+    - `/yoga`: ~0.6s (excellent)
+    - `/chair-yoga`: ~13.2s (acceptable and below prior timeout failure path)
+- ✅ Verification status:
+  - Frontend QA: PASS (expansion counts, premium behavior, guided voice controls).
+  - Backend QA: PASS (`/chair-yoga` expanded content, required new IDs present, `/content/expand-script` fast + valid).
+
 ## Latest Verification Snapshot (Iteration 132)
 - Backend complexity cleanup regression: PASS (14/14)
 - Frontend hook/key cleanup regression: PASS (100%)
