@@ -3669,3 +3669,27 @@
 ## Updated Priorities
 - **P1 complete in this cycle**: microcopy cadence harmonization + dense-card readability/accessibility pass
 - **P2 backlog**: Sacred Journey Progress dashboard tracker (pending user confirmation)
+
+
+## Latest Verification Snapshot (Iteration 243 — 2026-06-30)
+- ✅ Implemented requested **Mystery School expansion** with all four streams and ritual-layer depth:
+  - Egyptian Mystery School Teachings
+  - Priestess & Rose Lineage Teachings
+  - Emerald Tablet Teaching & Alchemy
+  - Merlin Teachings & Alchemy
+- ✅ Added full placement coverage per request (A/B/C/D):
+  - New dedicated route/page: `/mystery-school-teachings`
+  - Ancient Wisdom integration (hero stream links + teaching presence in curated supplements)
+  - Alchemy Hub integration (Mystery School source + CTA + merged cards/stats)
+- ✅ Backend architecture updates:
+  - New APIs: `/api/mystery-school` and `/api/mystery-school/{teaching_id}`
+  - 21-source-teaching datasets per stream with `alchemy`, `ritual`, `ceremony`, `guided_practice` fields
+  - Premium logic preserved exactly as existing app standard (tiered visibility: 4 free + 10 premium per stream)
+- ✅ Testing (iteration 243):
+  - Backend: **14/14 PASS**
+  - Frontend: **100% PASS** (stream tabs, modal ritual sections, navigation integrations)
+
+## Updated Priorities
+- **P0/P1 complete in this cycle**: Mystery School + Priestess/Rose + Emerald Tablet + Merlin integrations
+- **P1 next (optional)**: if desired, enable uncapped visibility for Mystery streams (currently kept tiered by request to preserve existing monetization logic)
+- **P2 backlog**: Sacred Journey Progress dashboard tracker (pending confirmation)
