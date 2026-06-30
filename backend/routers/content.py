@@ -1683,7 +1683,7 @@ SECTION_MIN_FREE_ITEMS = 1
 SECTION_DEFAULT_FREE_ITEMS = 4
 SECTION_DEFAULT_PREMIUM_ITEMS = 10
 SECTION_MAX_TIER_ITEMS = SECTION_DEFAULT_FREE_ITEMS + SECTION_DEFAULT_PREMIUM_ITEMS
-SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices"}
+SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "mystery_school"}
 
 # User-approved per-section free counts override global ratio where specified.
 SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {

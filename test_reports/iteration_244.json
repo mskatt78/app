@@ -1,0 +1,51 @@
+{
+  "summary": "Verified 21 teachings per lineage stream after mystery_school added to SECTION_UNCAPPED_UNLOCK_IDS. All 4 streams (Egyptian Mystery, Priestess & Rose, Emerald Tablet, Merlin Alchemy) return exactly 21 entries with correct tiering (4 free + 17 premium).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_mystery_school_21_entries.py",
+    "/app/test_reports/pytest/pytest_iteration244.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_mystery_school_21_entries.py"
+  ],
+  "success_rate": {
+    "backend": "100% (17/17 tests passed)",
+    "frontend": "100% (all 4 streams verified with 21 cards each)"
+  },
+  "test_credentials": "Guest mode used for all tests",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Mystery School 21-entry visibility change verified. Backend returns 21 items per stream with correct tiering (4 free at top, 17 premium). Frontend renders all 21 cards per stream with proper free/premium icons. Modal opens correctly with all 4 ritual sections.",
+  "test_details": {
+    "backend_verification": {
+      "egyptian_mystery": "21 entries (4 free, 17 premium)",
+      "priestess_rose": "21 entries (4 free, 17 premium)",
+      "emerald_tablet": "21 entries (4 free, 17 premium)",
+      "merlin_alchemy": "21 entries (4 free, 17 premium)",
+      "default_no_stream": "84 entries (all streams combined)"
+    },
+    "frontend_verification": {
+      "stream_tabs": "4 tabs present with '21 teachings (tiered access)' label",
+      "card_grid": "21 cards rendered per stream",
+      "premium_icons": "4 sparkles (free) + 17 locks (premium) per stream",
+      "modal": "Opens correctly with Alchemy Teachings, Ritual Steps, Ceremonial Arc, Guided Practice Arc sections"
+    }
+  },
+  "features_verified": {
+    "21_entries_per_stream": "PASS - All 4 streams return exactly 21 teachings",
+    "premium_tiering": "PASS - 4 free items at top, 17 premium items following",
+    "frontend_rendering": "PASS - All 21 cards visible per stream with correct icons",
+    "modal_functionality": "PASS - Modal opens and displays all ritual sections"
+  }
+}
