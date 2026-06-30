@@ -1,386 +1,308 @@
 #!/usr/bin/env python3
 """
-Backend verification for content expansion release.
-Validates 6 endpoints for tiered content, expanded IDs, and enriched fields.
+Backend API Testing Script
+Tests narration duration bounds, guided content endpoints, and retreat endpoint
 """
 
 import requests
 import json
 import sys
+from typing import Dict, Any, List
 
+# Base URL from frontend env
 BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
 
-def test_water_practices():
-    """Test 1: Validate /api/water-practices returns 14 tiered items with expanded IDs (water-practice-101+)."""
-    endpoint = "/water-practices"
-    url = f"{BASE_URL}{endpoint}"
-    
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            return {
-                "test": "Water Practices",
-                "passed": False,
-                "error": f"Expected 200, got {response.status_code}"
-            }
-        
-        data = response.json()
-        
-        # Check if we have at least 14 items
-        if len(data) < 14:
-            return {
-                "test": "Water Practices",
-                "passed": False,
-                "error": f"Expected at least 14 items, got {len(data)}"
-            }
-        
-        # Check for expanded IDs (water-practice-101+)
-        expanded_ids = [item for item in data if item.get('id', '').startswith('water-practice-1')]
-        
-        if not expanded_ids:
-            return {
-                "test": "Water Practices",
-                "passed": False,
-                "error": "No expanded IDs found (water-practice-101+)"
-            }
-        
-        return {
-            "test": "Water Practices",
-            "passed": True,
-            "total_items": len(data),
-            "expanded_ids_count": len(expanded_ids),
-            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]]
-        }
-        
-    except Exception as e:
-        return {
-            "test": "Water Practices",
-            "passed": False,
-            "error": str(e)
-        }
+class Colors:
+    GREEN = '\033[92m'
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    END = '\033[0m'
 
-def test_energy_healing():
-    """Test 2: Validate /api/energy-healing returns 14 tiered items with expanded IDs (energy-healing-supp-110+)."""
-    endpoint = "/energy-healing"
-    url = f"{BASE_URL}{endpoint}"
-    
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            return {
-                "test": "Energy Healing",
-                "passed": False,
-                "error": f"Expected 200, got {response.status_code}"
-            }
-        
-        data = response.json()
-        
-        # Check if we have at least 14 items
-        if len(data) < 14:
-            return {
-                "test": "Energy Healing",
-                "passed": False,
-                "error": f"Expected at least 14 items, got {len(data)}"
-            }
-        
-        # Check for expanded IDs (energy-healing-supp-110+)
-        expanded_ids = [item for item in data if 'energy-healing-supp-1' in item.get('id', '')]
-        
-        if not expanded_ids:
-            return {
-                "test": "Energy Healing",
-                "passed": False,
-                "error": "No expanded IDs found (energy-healing-supp-110+)"
-            }
-        
-        return {
-            "test": "Energy Healing",
-            "passed": True,
-            "total_items": len(data),
-            "expanded_ids_count": len(expanded_ids),
-            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]]
-        }
-        
-    except Exception as e:
-        return {
-            "test": "Energy Healing",
-            "passed": False,
-            "error": str(e)
-        }
+def print_success(msg: str):
+    print(f"{Colors.GREEN}✓ {msg}{Colors.END}")
 
-def test_ancient_wisdom():
-    """Test 3: Validate /api/ancient-wisdom returns 14 tiered items with expanded IDs (ancient-wisdom-supp-101+)."""
-    endpoint = "/ancient-wisdom"
-    url = f"{BASE_URL}{endpoint}"
-    
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            return {
-                "test": "Ancient Wisdom",
-                "passed": False,
-                "error": f"Expected 200, got {response.status_code}"
-            }
-        
-        data = response.json()
-        
-        # Check if we have at least 14 items
-        if len(data) < 14:
-            return {
-                "test": "Ancient Wisdom",
-                "passed": False,
-                "error": f"Expected at least 14 items, got {len(data)}"
-            }
-        
-        # Check for expanded IDs (ancient-wisdom-supp-101+)
-        expanded_ids = [item for item in data if 'ancient-wisdom-supp-1' in item.get('id', '')]
-        
-        if not expanded_ids:
-            return {
-                "test": "Ancient Wisdom",
-                "passed": False,
-                "error": "No expanded IDs found (ancient-wisdom-supp-101+)"
-            }
-        
-        return {
-            "test": "Ancient Wisdom",
-            "passed": True,
-            "total_items": len(data),
-            "expanded_ids_count": len(expanded_ids),
-            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]]
-        }
-        
-    except Exception as e:
-        return {
-            "test": "Ancient Wisdom",
-            "passed": False,
-            "error": str(e)
-        }
+def print_error(msg: str):
+    print(f"{Colors.RED}✗ {msg}{Colors.END}")
 
-def test_sacred_guardians():
-    """Test 4: Validate /api/sacred-guardians returns 14 tiered items with expanded IDs (sacred-guardian-supp-101+)."""
-    endpoint = "/sacred-guardians"
-    url = f"{BASE_URL}{endpoint}"
-    
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            return {
-                "test": "Sacred Guardians",
-                "passed": False,
-                "error": f"Expected 200, got {response.status_code}"
-            }
-        
-        data = response.json()
-        
-        # Check if we have at least 14 items
-        if len(data) < 14:
-            return {
-                "test": "Sacred Guardians",
-                "passed": False,
-                "error": f"Expected at least 14 items, got {len(data)}"
-            }
-        
-        # Check for expanded IDs (sacred-guardian-supp-101+)
-        expanded_ids = [item for item in data if 'sacred-guardian-supp-1' in item.get('id', '')]
-        
-        if not expanded_ids:
-            return {
-                "test": "Sacred Guardians",
-                "passed": False,
-                "error": "No expanded IDs found (sacred-guardian-supp-101+)"
-            }
-        
-        return {
-            "test": "Sacred Guardians",
-            "passed": True,
-            "total_items": len(data),
-            "expanded_ids_count": len(expanded_ids),
-            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]]
-        }
-        
-    except Exception as e:
-        return {
-            "test": "Sacred Guardians",
-            "passed": False,
-            "error": str(e)
-        }
+def print_info(msg: str):
+    print(f"{Colors.BLUE}ℹ {msg}{Colors.END}")
 
-def test_sacred_ally_alchemy():
-    """Test 5: Validate /api/sacred-ally-alchemy returns 14 tiered items with expanded IDs and star lineages."""
-    endpoint = "/sacred-ally-alchemy"
-    url = f"{BASE_URL}{endpoint}"
-    
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            return {
-                "test": "Sacred Ally Alchemy",
-                "passed": False,
-                "error": f"Expected 200, got {response.status_code}"
-            }
-        
-        data = response.json()
-        
-        # Check if we have at least 14 items
-        if len(data) < 14:
-            return {
-                "test": "Sacred Ally Alchemy",
-                "passed": False,
-                "error": f"Expected at least 14 items, got {len(data)}"
-            }
-        
-        # Check for expanded IDs (sacred-ally-supp-101+)
-        expanded_ids = [item for item in data if 'sacred-ally-supp-1' in item.get('id', '')]
-        
-        if not expanded_ids:
-            return {
-                "test": "Sacred Ally Alchemy",
-                "passed": False,
-                "error": "No expanded IDs found (sacred-ally-supp-101+)"
-            }
-        
-        # Check for star lineages (Pleiadian/Andromedan/Sirian)
-        # Star lineages are in the ally_type field
-        star_lineages = []
-        for item in data:
-            ally_type = item.get('ally_type', '')
-            if any(star in str(ally_type).lower() for star in ['pleiadian', 'andromedan', 'sirian']):
-                star_lineages.append(item['id'])
-        
-        if not star_lineages:
-            return {
-                "test": "Sacred Ally Alchemy",
-                "passed": False,
-                "error": "No star lineages found (Pleiadian/Andromedan/Sirian)"
-            }
-        
-        return {
-            "test": "Sacred Ally Alchemy",
-            "passed": True,
-            "total_items": len(data),
-            "expanded_ids_count": len(expanded_ids),
-            "star_lineages_count": len(star_lineages),
-            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]],
-            "sample_star_lineages": star_lineages[:3]
-        }
-        
-    except Exception as e:
-        return {
-            "test": "Sacred Ally Alchemy",
-            "passed": False,
-            "error": str(e)
-        }
+def print_warning(msg: str):
+    print(f"{Colors.YELLOW}⚠ {msg}{Colors.END}")
 
-def test_creative_processes():
-    """Test 6: Validate /api/creative-processes?category=sacred-tool-birthing returns enriched multi-day fields."""
-    endpoint = "/creative-processes?category=sacred-tool-birthing"
-    url = f"{BASE_URL}{endpoint}"
+def test_narration_duration_bounds():
+    """
+    Test 1: Narration duration bounds for /api/content/expand-script
+    Request duration_minutes values: 5, 7, 12, 20, 27
+    Expected target_minutes clamp: 7 for low values, 20 max cap, and exact for in-range values
+    """
+    print("\n" + "="*80)
+    print("TEST 1: Narration Duration Bounds - /api/content/expand-script")
+    print("="*80)
     
-    try:
-        response = requests.get(url, timeout=10)
-        if response.status_code != 200:
-            return {
-                "test": "Creative Processes (sacred-tool-birthing)",
-                "passed": False,
-                "error": f"Expected 200, got {response.status_code}"
-            }
-        
-        data = response.json()
-        
-        if not data:
-            return {
-                "test": "Creative Processes (sacred-tool-birthing)",
-                "passed": False,
-                "error": "Empty response"
-            }
-        
-        # Check for enriched multi-day fields (process_steps and multi_day_pathway)
-        multi_day_fields = ['process_steps', 'multi_day_pathway']
-        items_with_multi_day = []
-        
-        for item in data:
-            has_multi_day = any(field in item and item[field] for field in multi_day_fields)
-            if has_multi_day:
-                items_with_multi_day.append(item['id'])
-        
-        if not items_with_multi_day:
-            return {
-                "test": "Creative Processes (sacred-tool-birthing)",
-                "passed": False,
-                "error": "No enriched multi-day fields found (process_steps or multi_day_pathway)"
-            }
-        
-        return {
-            "test": "Creative Processes (sacred-tool-birthing)",
-            "passed": True,
-            "total_items": len(data),
-            "items_with_multi_day": len(items_with_multi_day),
-            "sample_ids": items_with_multi_day[:3]
-        }
-        
-    except Exception as e:
-        return {
-            "test": "Creative Processes (sacred-tool-birthing)",
-            "passed": False,
-            "error": str(e)
-        }
-
-def main():
-    """Run all content expansion tests."""
-    print("=" * 80)
-    print("BACKEND VERIFICATION - Content Expansion Release")
-    print("=" * 80)
-    print(f"Base URL: {BASE_URL}")
-    print()
-    
-    tests = [
-        test_water_practices,
-        test_energy_healing,
-        test_ancient_wisdom,
-        test_sacred_guardians,
-        test_sacred_ally_alchemy,
-        test_creative_processes
+    test_cases = [
+        {"duration_minutes": 5, "expected_target": 7, "description": "Below minimum (5) should clamp to 7"},
+        {"duration_minutes": 7, "expected_target": 7, "description": "Minimum value (7) should remain 7"},
+        {"duration_minutes": 12, "expected_target": 12, "description": "In-range value (12) should remain 12"},
+        {"duration_minutes": 20, "expected_target": 20, "description": "Maximum value (20) should remain 20"},
+        {"duration_minutes": 27, "expected_target": 20, "description": "Above maximum (27) should clamp to 20"},
     ]
     
-    results = []
+    all_passed = True
     
-    for test_func in tests:
-        print(f"Running {test_func.__doc__.split(':')[0].strip()}...", end=" ")
-        result = test_func()
-        results.append(result)
+    for test_case in test_cases:
+        duration = test_case["duration_minutes"]
+        expected_target = test_case["expected_target"]
+        description = test_case["description"]
         
-        if result["passed"]:
-            print(f"✅ PASS")
-            # Print details
-            for key, value in result.items():
-                if key not in ["test", "passed"]:
-                    print(f"   {key}: {value}")
+        print(f"\n{Colors.BLUE}Testing duration_minutes={duration}: {description}{Colors.END}")
+        
+        payload = {
+            "practice_name": "Test Practice",
+            "duration_minutes": duration,
+            "use_ai": False
+        }
+        
+        try:
+            response = requests.post(
+                f"{BASE_URL}/content/expand-script",
+                json=payload,
+                timeout=30
+            )
+            
+            # Check status code
+            if response.status_code != 200:
+                print_error(f"Expected 200, got {response.status_code}")
+                print_error(f"Response: {response.text}")
+                all_passed = False
+                continue
+            
+            # Parse response
+            data = response.json()
+            
+            # Check required fields
+            required_fields = ["target_minutes", "paragraphs", "segments"]
+            missing_fields = [field for field in required_fields if field not in data]
+            
+            if missing_fields:
+                print_error(f"Missing required fields: {missing_fields}")
+                all_passed = False
+                continue
+            
+            # Check target_minutes clamping
+            actual_target = data["target_minutes"]
+            if actual_target != expected_target:
+                print_error(f"target_minutes={actual_target}, expected {expected_target}")
+                all_passed = False
+                continue
+            
+            # Check paragraphs and segments are non-empty
+            if not data["paragraphs"]:
+                print_error("paragraphs array is empty")
+                all_passed = False
+                continue
+            
+            if not data["segments"]:
+                print_error("segments array is empty")
+                all_passed = False
+                continue
+            
+            print_success(f"duration_minutes={duration} → target_minutes={actual_target} (expected {expected_target})")
+            print_success(f"  paragraphs: {len(data['paragraphs'])} items")
+            print_success(f"  segments: {len(data['segments'])} items")
+            
+        except requests.exceptions.RequestException as e:
+            print_error(f"Request failed: {e}")
+            all_passed = False
+        except json.JSONDecodeError as e:
+            print_error(f"Invalid JSON response: {e}")
+            all_passed = False
+        except Exception as e:
+            print_error(f"Unexpected error: {e}")
+            all_passed = False
+    
+    if all_passed:
+        print(f"\n{Colors.GREEN}✅ TEST 1 PASSED: All narration duration bounds working correctly{Colors.END}")
+    else:
+        print(f"\n{Colors.RED}❌ TEST 1 FAILED: Some narration duration tests failed{Colors.END}")
+    
+    return all_passed
+
+def test_guided_content_endpoints():
+    """
+    Test 2: Guided content endpoint sanity
+    - /api/ancient-wisdom
+    - /api/mystery-school?stream=egyptian_mystery
+    - /api/mystery-school?stream=priestess_rose
+    - /api/mystery-school?stream=merlin_alchemy
+    - /api/mystery-school?stream=emerald_tablet
+    """
+    print("\n" + "="*80)
+    print("TEST 2: Guided Content Endpoints Sanity")
+    print("="*80)
+    
+    endpoints = [
+        {
+            "url": f"{BASE_URL}/ancient-wisdom",
+            "description": "Ancient Wisdom endpoint",
+            "expect_array": True
+        },
+        {
+            "url": f"{BASE_URL}/mystery-school?stream=egyptian_mystery",
+            "description": "Mystery School - Egyptian Mystery",
+            "expect_array": True
+        },
+        {
+            "url": f"{BASE_URL}/mystery-school?stream=priestess_rose",
+            "description": "Mystery School - Priestess Rose",
+            "expect_array": True
+        },
+        {
+            "url": f"{BASE_URL}/mystery-school?stream=merlin_alchemy",
+            "description": "Mystery School - Merlin Alchemy",
+            "expect_array": True
+        },
+        {
+            "url": f"{BASE_URL}/mystery-school?stream=emerald_tablet",
+            "description": "Mystery School - Emerald Tablet",
+            "expect_array": True
+        }
+    ]
+    
+    all_passed = True
+    
+    for endpoint in endpoints:
+        url = endpoint["url"]
+        description = endpoint["description"]
+        expect_array = endpoint["expect_array"]
+        
+        print(f"\n{Colors.BLUE}Testing: {description}{Colors.END}")
+        print(f"  URL: {url}")
+        
+        try:
+            response = requests.get(url, timeout=30)
+            
+            # Check status code
+            if response.status_code != 200:
+                print_error(f"Expected 200, got {response.status_code}")
+                print_error(f"Response: {response.text}")
+                all_passed = False
+                continue
+            
+            # Parse response
+            data = response.json()
+            
+            # Check if response is array when expected
+            if expect_array:
+                if not isinstance(data, list):
+                    print_error(f"Expected array, got {type(data).__name__}")
+                    all_passed = False
+                    continue
+                
+                if len(data) == 0:
+                    print_warning(f"Array is empty (0 items)")
+                else:
+                    print_success(f"Returns 200 with {len(data)} items")
+            else:
+                print_success(f"Returns 200 with valid JSON")
+            
+        except requests.exceptions.RequestException as e:
+            print_error(f"Request failed: {e}")
+            all_passed = False
+        except json.JSONDecodeError as e:
+            print_error(f"Invalid JSON response: {e}")
+            all_passed = False
+        except Exception as e:
+            print_error(f"Unexpected error: {e}")
+            all_passed = False
+    
+    if all_passed:
+        print(f"\n{Colors.GREEN}✅ TEST 2 PASSED: All guided content endpoints healthy{Colors.END}")
+    else:
+        print(f"\n{Colors.RED}❌ TEST 2 FAILED: Some guided content endpoints failed{Colors.END}")
+    
+    return all_passed
+
+def test_retreat_endpoint():
+    """
+    Test 3: Retreat endpoint sanity
+    GET /api/retreats returns 200 and valid JSON (empty or populated)
+    """
+    print("\n" + "="*80)
+    print("TEST 3: Retreat Endpoint Sanity - /api/retreats")
+    print("="*80)
+    
+    url = f"{BASE_URL}/retreats"
+    
+    print(f"\n{Colors.BLUE}Testing: GET /api/retreats{Colors.END}")
+    
+    try:
+        response = requests.get(url, timeout=30)
+        
+        # Check status code
+        if response.status_code != 200:
+            print_error(f"Expected 200, got {response.status_code}")
+            print_error(f"Response: {response.text}")
+            return False
+        
+        # Parse response
+        data = response.json()
+        
+        # Check if response is valid JSON (array or object)
+        if isinstance(data, list):
+            print_success(f"Returns 200 with valid JSON array ({len(data)} items)")
+        elif isinstance(data, dict):
+            print_success(f"Returns 200 with valid JSON object")
         else:
-            print(f"❌ FAIL")
-            print(f"   Error: {result['error']}")
-        print()
+            print_error(f"Unexpected response type: {type(data).__name__}")
+            return False
+        
+        print(f"\n{Colors.GREEN}✅ TEST 3 PASSED: Retreat endpoint healthy{Colors.END}")
+        return True
+        
+    except requests.exceptions.RequestException as e:
+        print_error(f"Request failed: {e}")
+        return False
+    except json.JSONDecodeError as e:
+        print_error(f"Invalid JSON response: {e}")
+        return False
+    except Exception as e:
+        print_error(f"Unexpected error: {e}")
+        return False
+
+def main():
+    """Run all backend tests"""
+    print(f"\n{Colors.BLUE}{'='*80}{Colors.END}")
+    print(f"{Colors.BLUE}BACKEND VERIFICATION TEST SUITE{Colors.END}")
+    print(f"{Colors.BLUE}Base URL: {BASE_URL}{Colors.END}")
+    print(f"{Colors.BLUE}{'='*80}{Colors.END}")
     
-    print("=" * 80)
-    print("SUMMARY")
-    print("=" * 80)
+    results = {
+        "test_1_narration_duration": test_narration_duration_bounds(),
+        "test_2_guided_content": test_guided_content_endpoints(),
+        "test_3_retreat_endpoint": test_retreat_endpoint()
+    }
     
-    passed_count = sum(1 for r in results if r["passed"])
+    # Summary
+    print("\n" + "="*80)
+    print("TEST SUMMARY")
+    print("="*80)
+    
+    passed_count = sum(1 for result in results.values() if result)
     total_count = len(results)
     
-    print(f"Passed: {passed_count}/{total_count}")
-    print()
+    for test_name, passed in results.items():
+        status = f"{Colors.GREEN}PASSED{Colors.END}" if passed else f"{Colors.RED}FAILED{Colors.END}"
+        print(f"{test_name}: {status}")
+    
+    print(f"\n{Colors.BLUE}Total: {passed_count}/{total_count} tests passed{Colors.END}")
     
     if passed_count == total_count:
-        print("✅ ALL TESTS PASSED - Content expansion verified successfully")
-        print("No regressions detected.")
+        print(f"\n{Colors.GREEN}✅ ALL TESTS PASSED{Colors.END}")
         return 0
     else:
-        print("❌ SOME TESTS FAILED - Content expansion issues detected")
-        print("\nFailed tests:")
-        for r in results:
-            if not r["passed"]:
-                print(f"  - {r['test']}: {r['error']}")
+        print(f"\n{Colors.RED}❌ SOME TESTS FAILED{Colors.END}")
         return 1
 
 if __name__ == "__main__":

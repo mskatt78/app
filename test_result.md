@@ -12518,3 +12518,103 @@ agent_communication:
       All narration profile controls working correctly. Guided overlay quick picker fully functional with Voice, Speed, and Narration Target selectors. App-wide guided alignment coherent. Mobile viewport renders correctly without overflow. PWA essentials properly configured for App Store submission. App is READY for App Store submission from a technical PWA perspective.
       
       NO CRITICAL ISSUES FOUND. ALL REQUIREMENTS MET.
+
+# ============================================================================
+# BACKEND VERIFICATION - NARRATION DURATION BOUNDS & GUIDED CONTENT - 2026-07-XX
+# ============================================================================
+
+backend:
+  - task: "Narration duration bounds for /api/content/expand-script"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ NARRATION DURATION BOUNDS VERIFICATION PASSED (2026-07-XX): Comprehensive testing completed on POST /api/content/expand-script with 5 duration_minutes test cases. ALL REQUIREMENTS MET: 1) Below minimum (duration_minutes=5): Correctly clamped to target_minutes=7 with 28 paragraphs and 6 segments ✓. 2) At minimum (duration_minutes=7): Correctly maintained target_minutes=7 with 28 paragraphs and 6 segments ✓. 3) In-range (duration_minutes=12): Correctly maintained target_minutes=12 with 50 paragraphs and 9 segments ✓. 4) At maximum (duration_minutes=20): Correctly maintained target_minutes=20 with 85 paragraphs and 14 segments ✓. 5) Above maximum (duration_minutes=27): Correctly clamped to target_minutes=20 with 85 paragraphs and 14 segments ✓. All responses returned 200 status with non-empty paragraphs and segments arrays. No server errors detected. Duration clamping logic working correctly with 7-minute floor and 20-minute ceiling."
+
+  - task: "Guided content endpoints sanity - Ancient Wisdom"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ANCIENT WISDOM ENDPOINT VERIFICATION PASSED (2026-07-XX): GET /api/ancient-wisdom returns 200 with valid JSON array containing 14 items. Endpoint healthy and returning non-empty content. No server errors detected."
+
+  - task: "Guided content endpoints sanity - Mystery School streams"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MYSTERY SCHOOL ENDPOINTS VERIFICATION PASSED (2026-07-XX): Comprehensive testing completed on GET /api/mystery-school with 4 stream parameters. ALL STREAMS HEALTHY: 1) stream=egyptian_mystery: Returns 200 with 21 items ✓. 2) stream=priestess_rose: Returns 200 with 21 items ✓. 3) stream=merlin_alchemy: Returns 200 with 21 items ✓. 4) stream=emerald_tablet: Returns 200 with 21 items ✓. All endpoints returning valid JSON arrays with non-empty content. No server errors detected."
+
+  - task: "Retreat endpoint sanity check"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ RETREAT ENDPOINT VERIFICATION PASSED (2026-07-XX): GET /api/retreats returns 200 with valid JSON array containing 1 item. Endpoint healthy and returning valid response. No server errors detected."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1002
+  run_ui: false
+
+test_plan:
+  current_focus: []
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      BACKEND VERIFICATION COMPLETED (2026-07-XX):
+      
+      ✅ ALL TEST CASES PASSED (3/3)
+      
+      TEST CASE 1: Narration Duration Bounds - /api/content/expand-script
+      ✓ duration_minutes=5 → target_minutes=7 (clamped to minimum floor)
+      ✓ duration_minutes=7 → target_minutes=7 (at minimum)
+      ✓ duration_minutes=12 → target_minutes=12 (in valid range)
+      ✓ duration_minutes=20 → target_minutes=20 (at maximum)
+      ✓ duration_minutes=27 → target_minutes=20 (clamped to maximum ceiling)
+      ✓ All responses: 200 status with non-empty paragraphs and segments arrays
+      ✓ Duration clamping logic: 7-minute floor, 20-minute ceiling working correctly
+      
+      TEST CASE 2: Guided Content Endpoints Sanity
+      ✓ /api/ancient-wisdom: 200 with 14 items
+      ✓ /api/mystery-school?stream=egyptian_mystery: 200 with 21 items
+      ✓ /api/mystery-school?stream=priestess_rose: 200 with 21 items
+      ✓ /api/mystery-school?stream=merlin_alchemy: 200 with 21 items
+      ✓ /api/mystery-school?stream=emerald_tablet: 200 with 21 items
+      ✓ All endpoints returning valid JSON arrays with non-empty content
+      
+      TEST CASE 3: Retreat Endpoint Sanity
+      ✓ /api/retreats: 200 with valid JSON array (1 item)
+      
+      NO CRITICAL ISSUES FOUND. ALL BACKEND APIS WORKING CORRECTLY.
+      
+      SUMMARY:
+      Backend verification pass completed successfully. All tested endpoints returning 200 status with valid responses. Narration duration bounds correctly implementing 7-20 minute clamping logic. Guided content endpoints (ancient-wisdom, mystery-school streams) all healthy with non-empty arrays. Retreat endpoint returning valid JSON. No server errors (500) detected in any tested endpoint.
+      
+      RECOMMENDATION:
+      All backend APIs verified and working correctly. Main agent can proceed to summarize and finish.
