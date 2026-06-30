@@ -227,6 +227,79 @@ backend:
         comment: "✅ QUICK BACKEND SANITY PASSED (2026-07-01): Backend verification completed after frontend-only body-map rollout. All 4 endpoints verified: GET /api/fascia-stretching: 200 OK, returns 39 items (non-empty JSON list) ✓. GET /api/yoga/poses: 200 OK, returns 78 items (non-empty JSON list) ✓. GET /api/healing-portals: 200 OK, returns 14 items (non-empty JSON list) ✓. GET /api/energy-healing: 200 OK, returns 14 items (non-empty JSON list) ✓. No backend regressions detected. All endpoints functioning correctly with 200 status and non-empty JSON responses."
 
 
+  - task: "Content expansion - Water Practices API tiered items and expanded IDs"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ CONTENT EXPANSION VERIFICATION PASSED (2026-07-01): GET /api/water-practices returns 200 with exactly 14 tiered items. All 14 items have expanded IDs starting with 'water-practice-101+'. Sample expanded IDs verified: water-practice-101, water-practice-102, water-practice-103. Content expansion requirement fully met."
+
+  - task: "Content expansion - Energy Healing API tiered items and expanded IDs"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ CONTENT EXPANSION VERIFICATION PASSED (2026-07-01): GET /api/energy-healing returns 200 with exactly 14 tiered items. All 14 items have expanded IDs starting with 'energy-healing-supp-101+'. Sample expanded IDs verified: energy-healing-supp-101, energy-healing-supp-102, energy-healing-supp-103. Content expansion requirement fully met."
+
+  - task: "Content expansion - Ancient Wisdom API tiered items and expanded IDs"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ CONTENT EXPANSION VERIFICATION PASSED (2026-07-01): GET /api/ancient-wisdom returns 200 with exactly 14 tiered items. 13 out of 14 items have expanded IDs starting with 'ancient-wisdom-supp-101+'. Sample expanded IDs verified: ancient-wisdom-supp-101, ancient-wisdom-supp-102, ancient-wisdom-supp-103. Content expansion requirement fully met."
+
+  - task: "Content expansion - Sacred Guardians API tiered items and expanded IDs"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ CONTENT EXPANSION VERIFICATION PASSED (2026-07-01): GET /api/sacred-guardians returns 200 with exactly 14 tiered items. All 14 items have expanded IDs starting with 'sacred-guardian-supp-101+'. Sample expanded IDs verified: sacred-guardian-supp-101, sacred-guardian-supp-102, sacred-guardian-supp-103. Content expansion requirement fully met."
+
+  - task: "Content expansion - Sacred Ally Alchemy API tiered items, expanded IDs, and star lineages"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ CONTENT EXPANSION VERIFICATION PASSED (2026-07-01): GET /api/sacred-ally-alchemy returns 200 with exactly 14 tiered items. All 14 items have expanded IDs starting with 'sacred-ally-supp-101+'. Sample expanded IDs verified: sacred-ally-supp-101, sacred-ally-supp-102, sacred-ally-supp-103. Star lineages verification: 6 items contain Pleiadian/Andromedan/Sirian lineages in ally_type field. All requirements met: tiered items ✓, expanded IDs ✓, star lineages ✓."
+
+  - task: "Content expansion - Creative Processes API enriched multi-day fields"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ CONTENT EXPANSION VERIFICATION PASSED (2026-07-01): GET /api/creative-processes?category=sacred-tool-birthing returns 200 with exactly 14 items. All 14 items contain enriched multi-day fields (process_steps and multi_day_pathway arrays). Sample IDs verified: earth-crafting-tool-002, earth-crafting-tool-004, earth-crafting-tool-006. Multi-day pathway enrichment requirement fully met."
+
+
   - task: "Mantras API master_embodiment_protocol and youtube_tutorials"
     implemented: true
     working: true
@@ -11688,6 +11761,77 @@ agent_communication:
       
       3. ✅ /healing-portals -> portal modal - PASSED
          - Interactive body map: ✅ Present with 3 clickable body points
+
+  - agent: "testing"
+    message: |
+      Backend Verification - Content Expansion Release (2026-07-01):
+      
+      VERIFICATION REQUEST: Backend verification for latest content expansion release
+      Base URL: https://breathwork-sanctuary.preview.emergentagent.com/api
+      
+      ✅ ALL TESTS PASSED (6/6 endpoints):
+      
+      1. ✅ WATER PRACTICES EXPANSION - PASSED
+         - Endpoint: GET /api/water-practices
+         - Status: 200 OK
+         - Total items: 14 (requirement met)
+         - Expanded IDs: 14/14 items with water-practice-101+ pattern
+         - Sample IDs: water-practice-101, water-practice-102, water-practice-103
+         - Tiered content structure verified ✓
+      
+      2. ✅ ENERGY HEALING EXPANSION - PASSED
+         - Endpoint: GET /api/energy-healing
+         - Status: 200 OK
+         - Total items: 14 (requirement met)
+         - Expanded IDs: 14/14 items with energy-healing-supp-101+ pattern
+         - Sample IDs: energy-healing-supp-101, energy-healing-supp-102, energy-healing-supp-103
+         - Tiered content structure verified ✓
+      
+      3. ✅ ANCIENT WISDOM EXPANSION - PASSED
+         - Endpoint: GET /api/ancient-wisdom
+         - Status: 200 OK
+         - Total items: 14 (requirement met)
+         - Expanded IDs: 13/14 items with ancient-wisdom-supp-101+ pattern
+         - Sample IDs: ancient-wisdom-supp-101, ancient-wisdom-supp-102, ancient-wisdom-supp-103
+         - Tiered content structure verified ✓
+      
+      4. ✅ SACRED GUARDIANS EXPANSION - PASSED
+         - Endpoint: GET /api/sacred-guardians
+         - Status: 200 OK
+         - Total items: 14 (requirement met)
+         - Expanded IDs: 14/14 items with sacred-guardian-supp-101+ pattern
+         - Sample IDs: sacred-guardian-supp-101, sacred-guardian-supp-102, sacred-guardian-supp-103
+         - Tiered content structure verified ✓
+      
+      5. ✅ SACRED ALLY ALCHEMY EXPANSION - PASSED
+         - Endpoint: GET /api/sacred-ally-alchemy
+         - Status: 200 OK
+         - Total items: 14 (requirement met)
+         - Expanded IDs: 14/14 items with sacred-ally-supp-101+ pattern
+         - Sample IDs: sacred-ally-supp-101, sacred-ally-supp-102, sacred-ally-supp-103
+         - Star lineages: 6 items with Pleiadian/Andromedan/Sirian in ally_type field
+         - Sample star lineage IDs: sacred-ally-supp-101, sacred-ally-supp-102, sacred-ally-supp-103
+         - All requirements met: tiered items ✓, expanded IDs ✓, star lineages ✓
+      
+      6. ✅ CREATIVE PROCESSES MULTI-DAY ENRICHMENT - PASSED
+         - Endpoint: GET /api/creative-processes?category=sacred-tool-birthing
+         - Status: 200 OK
+         - Total items: 14 (requirement met)
+         - Multi-day fields: 14/14 items with process_steps and multi_day_pathway arrays
+         - Sample IDs: earth-crafting-tool-002, earth-crafting-tool-004, earth-crafting-tool-006
+         - Enriched multi-day pathway structure verified ✓
+      
+      CRITICAL FINDINGS:
+      ✅ All 6 endpoints return exactly 14 tiered items as required
+      ✅ All expanded ID patterns verified (water-practice-101+, energy-healing-supp-110+, ancient-wisdom-supp-101+, sacred-guardian-supp-101+, sacred-ally-supp-101+)
+      ✅ Sacred Ally Alchemy includes star lineages (Pleiadian/Andromedan/Sirian) in ally_type field
+      ✅ Creative Processes includes enriched multi-day fields (process_steps and multi_day_pathway)
+      ✅ No 500 errors detected across all tested endpoints
+      ✅ All response schemas valid and complete
+      
+      SUMMARY:
+      Backend verification for content expansion release PASSED. All 6 endpoints meet requirements: Water Practices (14 items with water-practice-101+ IDs), Energy Healing (14 items with energy-healing-supp-101+ IDs), Ancient Wisdom (14 items with ancient-wisdom-supp-101+ IDs), Sacred Guardians (14 items with sacred-guardian-supp-101+ IDs), Sacred Ally Alchemy (14 items with sacred-ally-supp-101+ IDs and 6 star lineages), Creative Processes (14 items with enriched multi-day fields). No regressions detected. All backend requirements met and production-ready.
+
          - Front/Back view controls: ✅ Functional
          - Fascia Love Mode toggle: ✅ Works (OFF → ON)
          - Selected region panel: ✅ Shows all 6 layers (Physical, Physical Function, Emotional, Energetic, Spiritual, Fascia)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Quick backend sanity check after frontend body-map rollout.
-Verify 4 endpoints return 200 + non-empty JSON.
+Backend verification for content expansion release.
+Validates 6 endpoints for tiered content, expanded IDs, and enriched fields.
 """
 
 import requests
@@ -10,110 +10,377 @@ import sys
 
 BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
 
-ENDPOINTS = [
-    "/fascia-stretching",
-    "/yoga/poses",
-    "/healing-portals",
-    "/energy-healing"
-]
-
-def test_endpoint(endpoint):
-    """Test single endpoint for 200 status and non-empty JSON."""
+def test_water_practices():
+    """Test 1: Validate /api/water-practices returns 14 tiered items with expanded IDs (water-practice-101+)."""
+    endpoint = "/water-practices"
     url = f"{BASE_URL}{endpoint}"
+    
     try:
         response = requests.get(url, timeout=10)
-        status = response.status_code
-        
-        # Check status code
-        if status != 200:
+        if response.status_code != 200:
             return {
-                "endpoint": endpoint,
-                "status": status,
+                "test": "Water Practices",
                 "passed": False,
-                "error": f"Expected 200, got {status}"
+                "error": f"Expected 200, got {response.status_code}"
             }
         
-        # Check JSON response
-        try:
-            data = response.json()
-        except json.JSONDecodeError as e:
+        data = response.json()
+        
+        # Check if we have at least 14 items
+        if len(data) < 14:
             return {
-                "endpoint": endpoint,
-                "status": status,
+                "test": "Water Practices",
                 "passed": False,
-                "error": f"Invalid JSON: {str(e)}"
+                "error": f"Expected at least 14 items, got {len(data)}"
             }
         
-        # Check non-empty
-        if not data:
-            return {
-                "endpoint": endpoint,
-                "status": status,
-                "passed": False,
-                "error": "Empty JSON response"
-            }
+        # Check for expanded IDs (water-practice-101+)
+        expanded_ids = [item for item in data if item.get('id', '').startswith('water-practice-1')]
         
-        # Determine data size
-        data_size = len(data) if isinstance(data, list) else "dict"
+        if not expanded_ids:
+            return {
+                "test": "Water Practices",
+                "passed": False,
+                "error": "No expanded IDs found (water-practice-101+)"
+            }
         
         return {
-            "endpoint": endpoint,
-            "status": status,
+            "test": "Water Practices",
             "passed": True,
-            "data_size": data_size,
-            "data_type": type(data).__name__
+            "total_items": len(data),
+            "expanded_ids_count": len(expanded_ids),
+            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]]
         }
         
-    except requests.exceptions.RequestException as e:
+    except Exception as e:
         return {
-            "endpoint": endpoint,
-            "status": "N/A",
+            "test": "Water Practices",
             "passed": False,
-            "error": f"Request failed: {str(e)}"
+            "error": str(e)
+        }
+
+def test_energy_healing():
+    """Test 2: Validate /api/energy-healing returns 14 tiered items with expanded IDs (energy-healing-supp-110+)."""
+    endpoint = "/energy-healing"
+    url = f"{BASE_URL}{endpoint}"
+    
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            return {
+                "test": "Energy Healing",
+                "passed": False,
+                "error": f"Expected 200, got {response.status_code}"
+            }
+        
+        data = response.json()
+        
+        # Check if we have at least 14 items
+        if len(data) < 14:
+            return {
+                "test": "Energy Healing",
+                "passed": False,
+                "error": f"Expected at least 14 items, got {len(data)}"
+            }
+        
+        # Check for expanded IDs (energy-healing-supp-110+)
+        expanded_ids = [item for item in data if 'energy-healing-supp-1' in item.get('id', '')]
+        
+        if not expanded_ids:
+            return {
+                "test": "Energy Healing",
+                "passed": False,
+                "error": "No expanded IDs found (energy-healing-supp-110+)"
+            }
+        
+        return {
+            "test": "Energy Healing",
+            "passed": True,
+            "total_items": len(data),
+            "expanded_ids_count": len(expanded_ids),
+            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]]
+        }
+        
+    except Exception as e:
+        return {
+            "test": "Energy Healing",
+            "passed": False,
+            "error": str(e)
+        }
+
+def test_ancient_wisdom():
+    """Test 3: Validate /api/ancient-wisdom returns 14 tiered items with expanded IDs (ancient-wisdom-supp-101+)."""
+    endpoint = "/ancient-wisdom"
+    url = f"{BASE_URL}{endpoint}"
+    
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            return {
+                "test": "Ancient Wisdom",
+                "passed": False,
+                "error": f"Expected 200, got {response.status_code}"
+            }
+        
+        data = response.json()
+        
+        # Check if we have at least 14 items
+        if len(data) < 14:
+            return {
+                "test": "Ancient Wisdom",
+                "passed": False,
+                "error": f"Expected at least 14 items, got {len(data)}"
+            }
+        
+        # Check for expanded IDs (ancient-wisdom-supp-101+)
+        expanded_ids = [item for item in data if 'ancient-wisdom-supp-1' in item.get('id', '')]
+        
+        if not expanded_ids:
+            return {
+                "test": "Ancient Wisdom",
+                "passed": False,
+                "error": "No expanded IDs found (ancient-wisdom-supp-101+)"
+            }
+        
+        return {
+            "test": "Ancient Wisdom",
+            "passed": True,
+            "total_items": len(data),
+            "expanded_ids_count": len(expanded_ids),
+            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]]
+        }
+        
+    except Exception as e:
+        return {
+            "test": "Ancient Wisdom",
+            "passed": False,
+            "error": str(e)
+        }
+
+def test_sacred_guardians():
+    """Test 4: Validate /api/sacred-guardians returns 14 tiered items with expanded IDs (sacred-guardian-supp-101+)."""
+    endpoint = "/sacred-guardians"
+    url = f"{BASE_URL}{endpoint}"
+    
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            return {
+                "test": "Sacred Guardians",
+                "passed": False,
+                "error": f"Expected 200, got {response.status_code}"
+            }
+        
+        data = response.json()
+        
+        # Check if we have at least 14 items
+        if len(data) < 14:
+            return {
+                "test": "Sacred Guardians",
+                "passed": False,
+                "error": f"Expected at least 14 items, got {len(data)}"
+            }
+        
+        # Check for expanded IDs (sacred-guardian-supp-101+)
+        expanded_ids = [item for item in data if 'sacred-guardian-supp-1' in item.get('id', '')]
+        
+        if not expanded_ids:
+            return {
+                "test": "Sacred Guardians",
+                "passed": False,
+                "error": "No expanded IDs found (sacred-guardian-supp-101+)"
+            }
+        
+        return {
+            "test": "Sacred Guardians",
+            "passed": True,
+            "total_items": len(data),
+            "expanded_ids_count": len(expanded_ids),
+            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]]
+        }
+        
+    except Exception as e:
+        return {
+            "test": "Sacred Guardians",
+            "passed": False,
+            "error": str(e)
+        }
+
+def test_sacred_ally_alchemy():
+    """Test 5: Validate /api/sacred-ally-alchemy returns 14 tiered items with expanded IDs and star lineages."""
+    endpoint = "/sacred-ally-alchemy"
+    url = f"{BASE_URL}{endpoint}"
+    
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            return {
+                "test": "Sacred Ally Alchemy",
+                "passed": False,
+                "error": f"Expected 200, got {response.status_code}"
+            }
+        
+        data = response.json()
+        
+        # Check if we have at least 14 items
+        if len(data) < 14:
+            return {
+                "test": "Sacred Ally Alchemy",
+                "passed": False,
+                "error": f"Expected at least 14 items, got {len(data)}"
+            }
+        
+        # Check for expanded IDs (sacred-ally-supp-101+)
+        expanded_ids = [item for item in data if 'sacred-ally-supp-1' in item.get('id', '')]
+        
+        if not expanded_ids:
+            return {
+                "test": "Sacred Ally Alchemy",
+                "passed": False,
+                "error": "No expanded IDs found (sacred-ally-supp-101+)"
+            }
+        
+        # Check for star lineages (Pleiadian/Andromedan/Sirian)
+        # Star lineages are in the ally_type field
+        star_lineages = []
+        for item in data:
+            ally_type = item.get('ally_type', '')
+            if any(star in str(ally_type).lower() for star in ['pleiadian', 'andromedan', 'sirian']):
+                star_lineages.append(item['id'])
+        
+        if not star_lineages:
+            return {
+                "test": "Sacred Ally Alchemy",
+                "passed": False,
+                "error": "No star lineages found (Pleiadian/Andromedan/Sirian)"
+            }
+        
+        return {
+            "test": "Sacred Ally Alchemy",
+            "passed": True,
+            "total_items": len(data),
+            "expanded_ids_count": len(expanded_ids),
+            "star_lineages_count": len(star_lineages),
+            "sample_expanded_ids": [item['id'] for item in expanded_ids[:3]],
+            "sample_star_lineages": star_lineages[:3]
+        }
+        
+    except Exception as e:
+        return {
+            "test": "Sacred Ally Alchemy",
+            "passed": False,
+            "error": str(e)
+        }
+
+def test_creative_processes():
+    """Test 6: Validate /api/creative-processes?category=sacred-tool-birthing returns enriched multi-day fields."""
+    endpoint = "/creative-processes?category=sacred-tool-birthing"
+    url = f"{BASE_URL}{endpoint}"
+    
+    try:
+        response = requests.get(url, timeout=10)
+        if response.status_code != 200:
+            return {
+                "test": "Creative Processes (sacred-tool-birthing)",
+                "passed": False,
+                "error": f"Expected 200, got {response.status_code}"
+            }
+        
+        data = response.json()
+        
+        if not data:
+            return {
+                "test": "Creative Processes (sacred-tool-birthing)",
+                "passed": False,
+                "error": "Empty response"
+            }
+        
+        # Check for enriched multi-day fields (process_steps and multi_day_pathway)
+        multi_day_fields = ['process_steps', 'multi_day_pathway']
+        items_with_multi_day = []
+        
+        for item in data:
+            has_multi_day = any(field in item and item[field] for field in multi_day_fields)
+            if has_multi_day:
+                items_with_multi_day.append(item['id'])
+        
+        if not items_with_multi_day:
+            return {
+                "test": "Creative Processes (sacred-tool-birthing)",
+                "passed": False,
+                "error": "No enriched multi-day fields found (process_steps or multi_day_pathway)"
+            }
+        
+        return {
+            "test": "Creative Processes (sacred-tool-birthing)",
+            "passed": True,
+            "total_items": len(data),
+            "items_with_multi_day": len(items_with_multi_day),
+            "sample_ids": items_with_multi_day[:3]
+        }
+        
+    except Exception as e:
+        return {
+            "test": "Creative Processes (sacred-tool-birthing)",
+            "passed": False,
+            "error": str(e)
         }
 
 def main():
-    """Run all endpoint tests."""
-    print("=" * 70)
-    print("BACKEND SANITY CHECK - Body Map Rollout")
-    print("=" * 70)
+    """Run all content expansion tests."""
+    print("=" * 80)
+    print("BACKEND VERIFICATION - Content Expansion Release")
+    print("=" * 80)
     print(f"Base URL: {BASE_URL}")
     print()
     
-    results = []
-    all_passed = True
+    tests = [
+        test_water_practices,
+        test_energy_healing,
+        test_ancient_wisdom,
+        test_sacred_guardians,
+        test_sacred_ally_alchemy,
+        test_creative_processes
+    ]
     
-    for endpoint in ENDPOINTS:
-        print(f"Testing {endpoint}...", end=" ")
-        result = test_endpoint(endpoint)
+    results = []
+    
+    for test_func in tests:
+        print(f"Running {test_func.__doc__.split(':')[0].strip()}...", end=" ")
+        result = test_func()
         results.append(result)
         
         if result["passed"]:
-            print(f"✅ PASS (status={result['status']}, type={result['data_type']}, size={result['data_size']})")
+            print(f"✅ PASS")
+            # Print details
+            for key, value in result.items():
+                if key not in ["test", "passed"]:
+                    print(f"   {key}: {value}")
         else:
             print(f"❌ FAIL")
             print(f"   Error: {result['error']}")
-            all_passed = False
+        print()
     
-    print()
-    print("=" * 70)
+    print("=" * 80)
     print("SUMMARY")
-    print("=" * 70)
+    print("=" * 80)
     
     passed_count = sum(1 for r in results if r["passed"])
     total_count = len(results)
     
     print(f"Passed: {passed_count}/{total_count}")
+    print()
     
-    if all_passed:
-        print("\n✅ ALL TESTS PASSED - No backend regressions detected")
+    if passed_count == total_count:
+        print("✅ ALL TESTS PASSED - Content expansion verified successfully")
+        print("No regressions detected.")
         return 0
     else:
-        print("\n❌ SOME TESTS FAILED - Backend issues detected")
-        print("\nFailed endpoints:")
+        print("❌ SOME TESTS FAILED - Content expansion issues detected")
+        print("\nFailed tests:")
         for r in results:
             if not r["passed"]:
-                print(f"  - {r['endpoint']}: {r['error']}")
+                print(f"  - {r['test']}: {r['error']}")
         return 1
 
 if __name__ == "__main__":
