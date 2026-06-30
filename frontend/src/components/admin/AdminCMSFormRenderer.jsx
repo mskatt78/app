@@ -159,6 +159,10 @@ export const AdminCMSFormRenderer = ({
           <TextField name="name" label="Retreat Name" required />
           <TextareaField name="description" label="Description" />
           <div className="grid grid-cols-2 gap-4">
+            <SelectField name="retreat_mode" label="Retreat Mode" options={["physical", "online", "hybrid"]} />
+            <TextField name="online_session_url" label="Online Session URL" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <TextField name="location" label="Location" />
             <NumberField name="price" label="Price ($)" />
           </div>
@@ -169,6 +173,15 @@ export const AdminCMSFormRenderer = ({
           <NumberField name="capacity" label="Capacity" />
           <ArrayField name="features" label="Features" />
           <ArrayField name="includes" label="What's Included" />
+          <div className="grid grid-cols-2 gap-4">
+            <TextField name="instagram_url" label="Instagram URL" />
+            <TextField name="youtube_url" label="YouTube URL" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <TextField name="facebook_url" label="Facebook URL" />
+            <TextField name="tiktok_url" label="TikTok URL" />
+          </div>
+          <TextField name="website_url" label="Website URL" />
           <ImageField />
         </div>
       );

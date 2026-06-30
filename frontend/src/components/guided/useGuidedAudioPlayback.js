@@ -9,8 +9,8 @@ import {
 } from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
 
-const MIN_NARRATION_MINUTES = 7;
-const DEFAULT_QUICK_START_MINUTES = 7;
+const MIN_NARRATION_MINUTES = 15;
+const DEFAULT_QUICK_START_MINUTES = 15;
 const SCRIPT_EXPANSION_TIMEOUT_MS = 18000;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const splitSentences = (text) => String(text || "").split(/(?<=[.!?])\s+/).map((line) => line.trim()).filter((line) => line.length > 12);

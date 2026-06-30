@@ -35,7 +35,7 @@ import { appLogger } from "../../utils/logger";
 
 const OVERLAY_TIMER_TICK_MS = 1000;
 const PREFETCH_SEGMENT_COUNT = 2;
-const MINIMUM_SPOKEN_MINUTES_FLOOR = 7;
+const MINIMUM_SPOKEN_MINUTES_FLOOR = 15;
 const NARRATION_WPM_AT_SPEED_ONE = 145;
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {

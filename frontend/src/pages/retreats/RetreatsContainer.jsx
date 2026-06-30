@@ -97,6 +97,15 @@ const RetreatsContainer = ({ api }) => {
     [retreats],
   );
 
+  const modeLabel = (retreat) => {
+    const mode = String(retreat?.retreat_mode || "physical").toLowerCase();
+    if (mode === "hybrid") return "Physical + Online";
+    if (mode === "online") return "Online";
+    return "Physical";
+  };
+
+  const socialLinks = (retreat) => Array.isArray(retreat?.social_media_links) ? retreat.social_media_links : [];
+
   return (
     <div className="min-h-screen bg-background" data-testid="retreats-page">
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
@@ -164,7 +173,10 @@ const RetreatsContainer = ({ api }) => {
                   <div className="space-y-1 text-xs text-muted-foreground">
                     <p className="flex items-center gap-1"><Calendar className="w-3 h-3" /> {formatDate(retreat.start_date)}</p>
                     <p className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {retreat.location || "Location TBA"}</p>
-                    <p className="flex items-center gap-1"><Users className="w-3 h-3" /> {retreat.capacity || "Limited"} spots</p>
+                    <p className="flex items-center gap-1"><Users className="w-3 h-3" /> {retreat.capacity || retreat.max_participants || "Limited"} spots</p>
+                    <p className="flex items-center gap-1" data-testid={`retreat-mode-${retreat.retreat_id || retreat.id}`}>
+                      <Star className="w-3 h-3" /> {modeLabel(retreat)}
+                    </p>
                   </div>
                 </motion.button>
               ))}
@@ -185,8 +197,31 @@ const RetreatsContainer = ({ api }) => {
               <div className="grid grid-cols-2 gap-3 text-sm mb-5">
                 <div className="p-3 rounded-lg bg-background/60 border border-white/10"><Calendar className="w-4 h-4 mb-1" /> {formatDate(selectedRetreat.start_date)}</div>
                 <div className="p-3 rounded-lg bg-background/60 border border-white/10"><MapPin className="w-4 h-4 mb-1" /> {selectedRetreat.location || "Location TBA"}</div>
-                <div className="p-3 rounded-lg bg-background/60 border border-white/10"><Users className="w-4 h-4 mb-1" /> {selectedRetreat.capacity || "Limited"} spots</div>
+                <div className="p-3 rounded-lg bg-background/60 border border-white/10"><Users className="w-4 h-4 mb-1" /> {selectedRetreat.capacity || selectedRetreat.max_participants || "Limited"} spots</div>
                 <div className="p-3 rounded-lg bg-background/60 border border-white/10"><DollarSign className="w-4 h-4 mb-1" /> {selectedRetreat.price ? `$${selectedRetreat.price}` : "Contact for pricing"}</div>
+              </div>
+
+              <div className="mb-4 rounded-lg border border-white/10 bg-background/40 p-3" data-testid="retreat-mode-and-social-panel">
+                <p className="text-xs uppercase tracking-wider text-primary mb-2">Delivery & Social Links</p>
+                <p className="text-sm text-muted-foreground mb-2" data-testid="retreat-mode-detail">Mode: {modeLabel(selectedRetreat)}</p>
+                {socialLinks(selectedRetreat).length > 0 ? (
+                  <div className="flex flex-wrap gap-2" data-testid="retreat-social-links-list">
+                    {socialLinks(selectedRetreat).map((social, idx) => (
+                      <a
+                        key={`${social.platform}-${social.url}-${idx}`}
+                        href={social.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 text-xs hover:bg-white/10"
+                        data-testid={`retreat-social-link-${social.platform || idx}`}
+                      >
+                        {String(social.platform || "social").replace(/_/g, " ")} <ExternalLink className="w-3 h-3" />
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground" data-testid="retreat-social-links-empty">Add your social links in Admin to show them here.</p>
+                )}
               </div>
 
               <div className="mb-5" data-testid="retreat-details-guided-voice-panel">
@@ -216,6 +251,17 @@ const RetreatsContainer = ({ api }) => {
               {selectedRetreat.booking_url && (
                 <a href={selectedRetreat.booking_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground" data-testid="retreat-booking-link">
                   Book Now <ExternalLink className="w-4 h-4" />
+                </a>
+              )}
+              {!selectedRetreat.booking_url && selectedRetreat.online_session_url && (
+                <a
+                  href={selectedRetreat.online_session_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground"
+                  data-testid="retreat-online-join-link"
+                >
+                  Join Online <ExternalLink className="w-4 h-4" />
                 </a>
               )}
             </motion.div>

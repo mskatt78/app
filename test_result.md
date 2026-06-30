@@ -12142,3 +12142,86 @@ agent_communication:
       SUMMARY:
       Backend verification for polish pass PASSED. Mantras API returns 14 items with all required ceremonial enrichment fields (why_this_heals, integration_guide, alchemy, ritual, ceremony, guided_practice, master_embodiment_protocol). Mudras API remains stable with all 6 mudra supplements (mudra-supp-301..306) including complete ceremonial enrichment fields. No regressions detected on Sacred Ally Alchemy, Angelic Alchemy, Sacred Guardians, or Energy Healing endpoints after readability/copy harmonization changes. All backend requirements met and production-ready.
 
+
+
+# ============================================================================
+# BACKEND QA TEST - 2026-01-XX (Latest Testing Session)
+# ============================================================================
+
+backend:
+  - task: "Narration floor check - expand-script endpoint duration validation"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ NARRATION FLOOR CHECK PASSED (2026-01-XX): Comprehensive testing of POST /api/content/expand-script with duration_minutes=10, 15, 20. ALL REQUIREMENTS MET: 1) 10-minute request correctly floors to target_minutes=15 (MIN_NARRATION_MINUTES enforcement working) ✓. 2) 15-minute request remains at target_minutes=15 ✓. 3) 20-minute request remains at target_minutes=20 (no ceiling applied) ✓. 4) All responses include substantial script length: 10min→2021 words (target 1980), 15min→2021 words (target 1980), 20min→2682 words (target 2640) ✓. 5) All required fields present: practice_name, target_minutes, target_word_count, word_count, used_ai, paragraphs, segments ✓. 6) Word counts meet 80% threshold of target_word_count ✓. 7) No errors or timeouts detected ✓. Narration floor logic working correctly - duration requests below 15 minutes are floored to 15, while requests at or above 15 remain unchanged."
+
+  - task: "Mystery school image alignment - all streams health check"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MYSTERY SCHOOL IMAGE ALIGNMENT PASSED (2026-01-XX): Comprehensive testing of GET /api/mystery-school with all 4 streams. ALL REQUIREMENTS MET: 1) egyptian_mystery stream: 21 items, 100% valid image URLs (21/21) ✓. 2) priestess_rose stream: 21 items, 100% valid image URLs (21/21) ✓. 3) merlin_alchemy stream: 21 items, 100% valid image URLs (21/21) ✓. 4) emerald_tablet stream: 21 items, 100% valid image URLs (21/21) ✓. 5) All streams return non-empty arrays ✓. 6) All image_url fields are non-null and valid strings ✓. 7) No 500 errors or timeouts ✓. Mystery school image alignment working correctly across all streams."
+
+  - task: "Image alignment endpoints health - ancient wisdom, sacred ally, angelic alchemy"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ IMAGE ALIGNMENT ENDPOINTS PASSED (2026-01-XX): Comprehensive testing of GET /api/ancient-wisdom, /api/sacred-ally-alchemy, /api/angelic-alchemy. ALL REQUIREMENTS MET: 1) Ancient Wisdom: 14 items, 100% valid image URLs (14/14) ✓. 2) Sacred Ally Alchemy: 14 items, 100% valid image URLs (14/14) ✓. 3) Angelic Alchemy: 14 items, 100% valid image URLs (14/14) ✓. 4) All endpoints return non-empty arrays ✓. 5) All image_url fields are non-null and valid strings ✓. 6) No 500 errors or timeouts ✓. Image alignment working correctly across all tested endpoints."
+
+  - task: "Retreats schema compatibility verification"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ RETREATS SCHEMA COMPATIBILITY PASSED (2026-01-XX): Testing of GET /api/retreats endpoint. REQUIREMENTS MET: 1) Endpoint returns 200 status ✓. 2) Response is valid JSON list ✓. 3) Empty list returned (0 retreats) - acceptable per requirements ✓. 4) No 500 errors or timeouts ✓. Schema compatibility verified - endpoint ready to handle retreat data when populated. Note: If retreats are added in future, normalized fields should include: retreat_mode, supports_online, supports_physical, booking_url, online_session_url, social_media_links."
+
+  - task: "Backend regression checks - no 500 errors or timeouts"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BACKEND REGRESSION CHECKS PASSED (2026-01-XX): Comprehensive regression testing across all critical endpoints. ALL ENDPOINTS HEALTHY: 1) GET /api/health: 200 OK ✓. 2) GET /api/mystery-school?stream=egyptian_mystery: 200 OK ✓. 3) GET /api/ancient-wisdom: 200 OK ✓. 4) GET /api/sacred-ally-alchemy: 200 OK ✓. 5) GET /api/angelic-alchemy: 200 OK ✓. 6) GET /api/retreats: 200 OK ✓. NO ISSUES DETECTED: Zero 500 errors ✓, Zero timeouts ✓, All responses valid JSON ✓. Backend stability confirmed across all tested endpoints."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 999
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Backend QA Test - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: "Backend QA test completed successfully. All 5 test categories passed: 1) Narration floor check with duration validation (10/15/20 minutes) - target_minutes correctly floors to 15 minimum, 20-minute requests remain at 20. 2) Mystery school image alignment across all 4 streams (egyptian_mystery, priestess_rose, merlin_alchemy, emerald_tablet) - all return 21 items with 100% valid image URLs. 3) Image alignment endpoints (ancient-wisdom, sacred-ally-alchemy, angelic-alchemy) - all return 14 items with 100% valid image URLs. 4) Retreats schema compatibility - endpoint returns 200 with empty list (acceptable). 5) Regression checks - all endpoints return 200 with no 500 errors or timeouts. No critical issues detected. Backend is production-ready."

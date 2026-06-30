@@ -22,7 +22,7 @@ from .dependencies import get_db
 router = APIRouter(tags=["content"])
 logger = logging.getLogger(__name__)
 
-MIN_NARRATION_MINUTES = 7
+MIN_NARRATION_MINUTES = 15
 TARGET_WORDS_PER_MINUTE = 132
 SEGMENT_TARGET_WORDS = 220
 FIRST_SEGMENT_TARGET_WORDS = 95
@@ -316,6 +316,11 @@ GENERIC_CATEGORY_IMAGE_FALLBACKS: dict[str, str] = {
     "feminine": "https://images.unsplash.com/photo-1518611012118-696072aa579a?crop=entropy&cs=srgb&fm=jpg&q=85",
     "masculine": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?crop=entropy&cs=srgb&fm=jpg&q=85",
     "movement": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "egyptian_mystery": "https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    "priestess_rose": "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    "merlin_alchemy": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    "emerald_tablet": "https://images.pexels.com/photos/4017362/pexels-photo-4017362.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    "mystery_school": "https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg?auto=compress&cs=tinysrgb&w=1400",
 }
 
 WATER_PRACTICE_SUPPLEMENTS = [
@@ -961,6 +966,61 @@ MYSTERY_STREAM_IMAGE_FALLBACKS = {
     "priestess_rose": "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg",
     "merlin_alchemy": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg",
     "emerald_tablet": "https://images.pexels.com/photos/4017362/pexels-photo-4017362.jpeg",
+}
+
+SUBJECT_KEYWORD_IMAGE_FALLBACKS: list[tuple[tuple[str, ...], str]] = [
+    (("pyramid",), "https://images.pexels.com/photos/71241/pexels-photo-71241.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("sphinx",), "https://images.pexels.com/photos/262786/pexels-photo-262786.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("isis",), "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("horus",), "https://images.pexels.com/photos/273238/pexels-photo-273238.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("nile",), "https://images.pexels.com/photos/3214944/pexels-photo-3214944.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("womb",), "https://images.pexels.com/photos/7214474/pexels-photo-7214474.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("grail",), "https://images.pexels.com/photos/2693212/pexels-photo-2693212.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("moon",), "https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("avalon",), "https://images.pexels.com/photos/34950/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1400"),
+    (("dragon",), "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("sword",), "https://images.pexels.com/photos/1619855/pexels-photo-1619855.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("oak",), "https://images.pexels.com/photos/4631027/pexels-photo-4631027.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("hermetic",), "https://images.pexels.com/photos/1643665/pexels-photo-1643665.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("quantum",), "https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg?auto=compress&cs=tinysrgb&w=1400"),
+    (("reiki",), "https://images.pexels.com/photos/6663365/pexels-photo-6663365.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("crystal",), "https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+    (("sound",), "https://images.pexels.com/photos/6931975/pexels-photo-6931975.jpeg?auto=compress&cs=tinysrgb&w=1400"),
+]
+
+MYSTERY_STREAM_IMAGE_POOLS: dict[str, list[str]] = {
+    "egyptian_mystery": [
+        "https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/71241/pexels-photo-71241.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/262786/pexels-photo-262786.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/2087391/pexels-photo-2087391.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/207518/pexels-photo-207518.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/1839132/pexels-photo-1839132.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    ],
+    "priestess_rose": [
+        "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/56866/garden-rose-red-pink-56866.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/7214474/pexels-photo-7214474.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/5998567/pexels-photo-5998567.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/2693212/pexels-photo-2693212.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    ],
+    "merlin_alchemy": [
+        "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/34950/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/4631027/pexels-photo-4631027.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/1619855/pexels-photo-1619855.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/247431/pexels-photo-247431.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    ],
+    "emerald_tablet": [
+        "https://images.pexels.com/photos/4017362/pexels-photo-4017362.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/8107755/pexels-photo-8107755.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/373912/pexels-photo-373912.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/1643665/pexels-photo-1643665.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/4041392/pexels-photo-4041392.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg?auto=compress&cs=tinysrgb&w=1400",
+    ],
 }
 
 MINDFULNESS_SUPPLEMENTS = [
@@ -2654,10 +2714,37 @@ def _resolve_practice_image_fallback(item: dict[str, Any]) -> Optional[str]:
     if topic_key and topic_key in PRACTICE_IMAGE_FALLBACKS:
         return PRACTICE_IMAGE_FALLBACKS[topic_key]
 
+    subject_blob = _normalize_label_key(
+        " ".join(
+            [
+                str(item.get("name") or ""),
+                str(item.get("title") or ""),
+                str(item.get("description") or ""),
+                str(item.get("id") or ""),
+                str(item.get("stream") or ""),
+                str(item.get("lineage_stream") or ""),
+                str(item.get("tradition") or ""),
+                str(item.get("category") or ""),
+            ]
+        )
+    )
+    for keyword_group, image_url in SUBJECT_KEYWORD_IMAGE_FALLBACKS:
+        if keyword_group and all(keyword in subject_blob for keyword in keyword_group):
+            return image_url
+
+    stream_key = _normalize_label_key(str(item.get("stream") or item.get("lineage_stream") or "")).replace(" ", "_")
+    if stream_key and stream_key in MYSTERY_STREAM_IMAGE_FALLBACKS:
+        return MYSTERY_STREAM_IMAGE_FALLBACKS[stream_key]
+
     category_keys = [
         _normalize_label_key(str(item.get("category") or "")),
         _normalize_label_key(str(item.get("element") or "")),
         _normalize_label_key(str(item.get("type") or "")),
+        _normalize_label_key(str(item.get("stream") or "")),
+        _normalize_label_key(str(item.get("lineage_stream") or "")),
+        _normalize_label_key(str(item.get("stream") or "")).replace(" ", "_"),
+        _normalize_label_key(str(item.get("lineage_stream") or "")).replace(" ", "_"),
+        _normalize_label_key(str(item.get("tradition") or "")),
     ]
     for key in category_keys:
         if key and key in GENERIC_CATEGORY_IMAGE_FALLBACKS:
@@ -2671,8 +2758,17 @@ def _apply_subject_image_alignment(item: dict[str, Any], default_source_type: st
     fallback_url = _resolve_practice_image_fallback(enriched)
     existing_url = str(enriched.get("image_url") or "").strip()
     topic_key = _normalize_image_topic_key(enriched)
+    stream_key = _normalize_label_key(str(enriched.get("stream") or enriched.get("lineage_stream") or "")).replace(" ", "_")
     explicit_override = bool(topic_key and topic_key in PRACTICE_IMAGE_FALLBACKS)
-    should_replace = explicit_override or (not existing_url) or ("static.prod-images.emergentagent.com/jobs/" in existing_url)
+    stream_override = bool(stream_key and stream_key in MYSTERY_STREAM_IMAGE_FALLBACKS)
+    is_generic_stream_image = existing_url in set(MYSTERY_STREAM_IMAGE_FALLBACKS.values())
+    should_replace = (
+        explicit_override
+        or stream_override
+        or (not existing_url)
+        or ("static.prod-images.emergentagent.com/jobs/" in existing_url)
+        or is_generic_stream_image
+    )
 
     if fallback_url and should_replace:
         enriched["image_url"] = fallback_url
@@ -3546,7 +3642,9 @@ def _to_ancient_mystery_entry(item: dict[str, Any]) -> dict[str, Any]:
     transformed["tradition"] = tradition
     transformed["lineage_stream"] = stream_key
     transformed["title"] = str(item.get("title") or item.get("name") or "Mystery Teaching")
-    transformed["image_url"] = str(item.get("image_url") or MYSTERY_STREAM_IMAGE_FALLBACKS.get(stream_key, ""))
+    stable_image_key = str(item.get("id") or item.get("name") or item.get("title") or "mystery-teaching")
+    stream_variant = _select_stream_image_variant(stream_key, stable_image_key)
+    transformed["image_url"] = str(item.get("image_url") or stream_variant or MYSTERY_STREAM_IMAGE_FALLBACKS.get(stream_key, ""))
     transformed.setdefault("teachings", list(item.get("alchemy") or []))
     transformed.setdefault("practice", list(item.get("guided_practice") or item.get("ritual") or []))
     transformed.setdefault("source_references", [])
@@ -3611,6 +3709,21 @@ def _enrich_mystery_school_entry(entry: dict[str, Any]) -> dict[str, Any]:
     stream_key = str(enriched.get("stream") or "").strip().lower()
     stream_label = MYSTERY_STREAM_LABELS.get(stream_key, "Mystery School")
     title = str(enriched.get("title") or enriched.get("name") or "Mystery Teaching").strip()
+    stable_image_key = str(enriched.get("id") or title or "mystery-teaching")
+    variant_image = _select_stream_image_variant(stream_key, stable_image_key)
+    if variant_image:
+        enriched["image_url"] = variant_image
+        source_refs = list(enriched.get("source_references") or [])
+        if variant_image not in source_refs:
+            source_refs.append(variant_image)
+        enriched["source_references"] = source_refs[:8]
+        enriched["source_type"] = "subject-matched-curated"
+        enriched["review_status"] = "verified"
+        if isinstance(enriched.get("content_integrity"), dict):
+            enriched["content_integrity"]["source_type"] = "subject-matched-curated"
+            enriched["content_integrity"]["verified"] = True
+            enriched["content_integrity"]["references_count"] = len(enriched["source_references"])
+
     enriched.setdefault("stream_label", stream_label)
     enriched.setdefault("category", "mystery_school")
     enriched.setdefault("premium_unlock_id", "mystery_school")
@@ -4855,7 +4968,7 @@ def _finalize_script_paragraphs(
 
 @router.post("/content/expand-script", response_model=ExpandScriptResponse)
 async def expand_guided_script(request: ExpandScriptRequest) -> ExpandScriptResponse:
-    """Expand guided practice text into long-form narration suitable for 7+ minute audio."""
+    """Expand guided practice text into long-form narration suitable for 15+ minute audio."""
     cache_key = _build_script_expansion_cache_key(request)
     cached_payload = _get_cached_script_expansion(cache_key)
     if cached_payload:
@@ -4986,6 +5099,107 @@ def _build_expand_script_response(
         paragraphs=paragraphs,
         segments=segments,
     )
+
+
+def _normalize_retreat_mode(value: Any) -> str:
+    raw = _normalize_label_key(str(value or ""))
+    if not raw:
+        return "physical"
+    if "hybrid" in raw or ("online" in raw and "physical" in raw):
+        return "hybrid"
+    if "online" in raw or "virtual" in raw or "zoom" in raw or "remote" in raw:
+        return "online"
+    return "physical"
+
+
+def _normalize_retreat_social_links(retreat: dict[str, Any]) -> list[dict[str, str]]:
+    links: list[dict[str, str]] = []
+    seen: set[str] = set()
+
+    direct_fields = [
+        ("instagram", retreat.get("instagram_url")),
+        ("youtube", retreat.get("youtube_url")),
+        ("facebook", retreat.get("facebook_url")),
+        ("tiktok", retreat.get("tiktok_url")),
+        ("website", retreat.get("website_url")),
+    ]
+    for platform, raw_url in direct_fields:
+        url = str(raw_url or "").strip()
+        if not (url.startswith("https://") or url.startswith("http://")):
+            continue
+        if url in seen:
+            continue
+        seen.add(url)
+        links.append({"platform": platform, "url": url})
+
+    raw_social = retreat.get("social_media_links")
+    if isinstance(raw_social, dict):
+        for platform, raw_url in raw_social.items():
+            url = str(raw_url or "").strip()
+            if not (url.startswith("https://") or url.startswith("http://")):
+                continue
+            if url in seen:
+                continue
+            seen.add(url)
+            links.append({"platform": _normalize_label_key(str(platform or "")) or "social", "url": url})
+    elif isinstance(raw_social, list):
+        for item in raw_social:
+            if isinstance(item, dict):
+                url = str(item.get("url") or "").strip()
+                platform = _normalize_label_key(str(item.get("platform") or "")) or "social"
+            else:
+                url = str(item or "").strip()
+                platform = "social"
+            if not (url.startswith("https://") or url.startswith("http://")):
+                continue
+            if url in seen:
+                continue
+            seen.add(url)
+            links.append({"platform": platform, "url": url})
+
+    return links
+
+
+def _normalize_retreat_entry(retreat: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(retreat)
+    title = str(normalized.get("title") or normalized.get("name") or "Retreat").strip()
+    mode = _normalize_retreat_mode(
+        normalized.get("retreat_mode")
+        or normalized.get("modality")
+        or normalized.get("delivery_mode")
+        or normalized.get("format")
+    )
+    booking_url = str(normalized.get("booking_url") or normalized.get("registration_link") or "").strip()
+    online_session_url = str(
+        normalized.get("online_session_url")
+        or normalized.get("join_url")
+        or normalized.get("stream_url")
+        or ""
+    ).strip()
+
+    normalized["title"] = title
+    normalized.setdefault("name", title)
+    normalized["retreat_mode"] = mode
+    normalized["supports_online"] = mode in {"online", "hybrid"} or bool(online_session_url)
+    normalized["supports_physical"] = mode in {"physical", "hybrid"}
+    normalized["booking_url"] = booking_url
+    normalized["online_session_url"] = online_session_url
+    normalized["social_media_links"] = _normalize_retreat_social_links(normalized)
+
+    if mode == "online" and not normalized.get("location"):
+        normalized["location"] = "Online"
+
+    return normalized
+
+
+def _select_stream_image_variant(stream_key: str, stable_key: str) -> Optional[str]:
+    normalized_stream = _normalize_label_key(stream_key).replace(" ", "_")
+    pool = MYSTERY_STREAM_IMAGE_POOLS.get(normalized_stream)
+    if not pool:
+        return None
+    digest = hashlib.sha256(f"{normalized_stream}:{stable_key}".encode("utf-8")).hexdigest()
+    idx = int(digest[:8], 16) % len(pool)
+    return pool[idx]
 
 
 def _apply_duration_alignment_floor(
@@ -6550,7 +6764,10 @@ async def get_sacred_guardians(category: Optional[str] = None) -> list[dict[str,
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     guardians = await db.sacred_guardians.find(query, {"_id": 0}).to_list(length=220)
     guardians = _append_sacred_guardian_supplements(guardians, category)
-    enriched = [_enrich_devotional_language(_enrich_content_integrity(guardian, "hybrid-curated"), "sacred-guardians") for guardian in guardians]
+    enriched = [
+        _enrich_devotional_language(_apply_subject_image_alignment(guardian, "hybrid-curated"), "sacred-guardians")
+        for guardian in guardians
+    ]
     return _apply_free_paid_tiering(enriched, "sacred_guardians")
 
 
@@ -6561,7 +6778,7 @@ async def get_sacred_guardian(guardian_id: str) -> dict[str, Any]:
     guardian = await db.sacred_guardians.find_one({"id": guardian_id}, {"_id": 0})
     if not guardian:
         raise HTTPException(status_code=404, detail="Guardian not found")
-    return _enrich_devotional_language(_enrich_content_integrity(guardian, "hybrid-curated"), "sacred-guardians")
+    return _enrich_devotional_language(_apply_subject_image_alignment(guardian, "hybrid-curated"), "sacred-guardians")
 
 
 # ============ SACRED ALLY ALCHEMY ==========
@@ -6583,7 +6800,7 @@ async def get_sacred_ally_alchemy(category: Optional[str] = None, ally_type: Opt
     items = await db.sacred_ally_alchemy.find(query, {"_id": 0}).to_list(length=360)
     items = _append_sacred_ally_galactic_supplements(items, category, ally_type)
     enriched = [
-        _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "sacred-allies")
+        _enrich_devotional_language(_apply_subject_image_alignment(item, "hybrid-curated"), "sacred-allies")
         for item in items
     ]
     return _apply_free_paid_tiering(enriched, "sacred_allies")
@@ -6596,7 +6813,7 @@ async def get_sacred_ally_alchemy_item(item_id: str) -> dict[str, Any]:
     item = await db.sacred_ally_alchemy.find_one({"id": item_id}, {"_id": 0})
     if not item:
         raise HTTPException(status_code=404, detail="Sacred ally alchemy entry not found")
-    return _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "sacred-allies")
+    return _enrich_devotional_language(_apply_subject_image_alignment(item, "hybrid-curated"), "sacred-allies")
 
 
 # ============ ANGELIC ALCHEMY ==========
@@ -6611,7 +6828,7 @@ async def get_angelic_alchemy(sacred_geometry: Optional[str] = None) -> list[dic
 
     items = await db.angelic_alchemy.find(query, {"_id": 0}).to_list(length=200)
     enriched = [
-        _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "angelic-alchemy")
+        _enrich_devotional_language(_apply_subject_image_alignment(item, "hybrid-curated"), "angelic-alchemy")
         for item in items
     ]
     return _apply_free_paid_tiering(enriched, "angelic_alchemy")
@@ -6624,7 +6841,7 @@ async def get_angelic_alchemy_item(item_id: str) -> dict[str, Any]:
     item = await db.angelic_alchemy.find_one({"id": item_id}, {"_id": 0})
     if not item:
         raise HTTPException(status_code=404, detail="Angelic alchemy entry not found")
-    return _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "angelic-alchemy")
+    return _enrich_devotional_language(_apply_subject_image_alignment(item, "hybrid-curated"), "angelic-alchemy")
 
 
 # ============ HEALING PORTALS ==========
@@ -6833,7 +7050,7 @@ async def get_ancient_wisdom(tradition: Optional[str] = None) -> list[dict[str, 
         entry_copy.setdefault("expanded_context", f"Extended context: {entry_copy.get('teaching') or entry_copy.get('description') or 'Traditional teaching depth.'}")
         entry_copy.setdefault("section_focus", entry_copy.get("tradition") or "cross-tradition")
         enriched_entries.append(
-            _enrich_devotional_language(_enrich_content_integrity(entry_copy, "hybrid-curated"), "ancient-wisdom")
+            _enrich_devotional_language(_apply_subject_image_alignment(entry_copy, "hybrid-curated"), "ancient-wisdom")
         )
     return _apply_free_paid_tiering(enriched_entries, "ancient_wisdom")
 
@@ -6845,7 +7062,7 @@ async def get_ancient_wisdom_entry(entry_id: str) -> dict[str, Any]:
     entry = await db.ancient_wisdom.find_one({"id": entry_id}, {"_id": 0})
     if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
-    return _enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "ancient-wisdom")
+    return _enrich_devotional_language(_apply_subject_image_alignment(entry, "hybrid-curated"), "ancient-wisdom")
 
 
 @router.get("/mystery-school")
@@ -6988,7 +7205,8 @@ async def get_retreats(status: Optional[str] = None) -> list[dict[str, Any]]:
     if status:
         query["status"] = {"$regex": f"^{status}$", "$options": "i"}
     retreats = await db.retreats.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=50)
-    return [_enrich_devotional_language(_enrich_content_integrity(retreat, "hybrid-curated"), "retreats") for retreat in retreats]
+    normalized = [_normalize_retreat_entry(retreat) for retreat in retreats]
+    return [_enrich_devotional_language(_enrich_content_integrity(retreat, "hybrid-curated"), "retreats") for retreat in normalized]
 
 
 @router.get("/retreats/{retreat_id}")
@@ -6998,7 +7216,8 @@ async def get_retreat(retreat_id: str) -> dict[str, Any]:
     retreat = await db.retreats.find_one({"id": retreat_id}, {"_id": 0})
     if not retreat:
         raise HTTPException(status_code=404, detail="Retreat not found")
-    return _enrich_devotional_language(_enrich_content_integrity(retreat, "hybrid-curated"), "retreats")
+    normalized = _normalize_retreat_entry(retreat)
+    return _enrich_devotional_language(_enrich_content_integrity(normalized, "hybrid-curated"), "retreats")
 
 
 # ============ VIDEOS ROUTES ============

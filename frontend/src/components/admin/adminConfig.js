@@ -118,7 +118,8 @@ export const getDefaultFormData = (tab) => {
     },
     retreats: {
       name: "", description: "", location: "", start_date: "", end_date: "",
-      price: 0, currency: "USD", capacity: 20, image_url: "", features: [], includes: [], element: "Spirit"
+      price: 0, currency: "USD", capacity: 20, image_url: "", features: [], includes: [], element: "Spirit",
+      retreat_mode: "physical", online_session_url: "", instagram_url: "", youtube_url: "", facebook_url: "", tiktok_url: "", website_url: ""
     },
     books: {
       title: "", author: "", description: "", price: 0, currency: "USD",
@@ -173,6 +174,8 @@ export const getFormFields = (tab) => {
     retreats: [
       { name: "name", label: "Retreat Name", type: "text", required: true },
       { name: "description", label: "Description", type: "textarea" },
+      { name: "retreat_mode", label: "Retreat Mode", type: "select", options: ["physical", "online", "hybrid"] },
+      { name: "online_session_url", label: "Online Session URL", type: "text" },
       { name: "location", label: "Location", type: "text" },
       { name: "start_date", label: "Start Date", type: "date" },
       { name: "end_date", label: "End Date", type: "date" },
@@ -180,6 +183,11 @@ export const getFormFields = (tab) => {
       { name: "capacity", label: "Capacity", type: "number" },
       { name: "features", label: "Features", type: "array" },
       { name: "includes", label: "Includes", type: "array" },
+      { name: "instagram_url", label: "Instagram URL", type: "text" },
+      { name: "youtube_url", label: "YouTube URL", type: "text" },
+      { name: "facebook_url", label: "Facebook URL", type: "text" },
+      { name: "tiktok_url", label: "TikTok URL", type: "text" },
+      { name: "website_url", label: "Website URL", type: "text" },
       { name: "element", label: "Element", type: "select", options: ELEMENTS },
       { name: "image_url", label: "Image", type: "image" },
     ],
