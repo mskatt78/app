@@ -12225,3 +12225,116 @@ test_plan:
 agent_communication:
   - agent: "testing"
     message: "Backend QA test completed successfully. All 5 test categories passed: 1) Narration floor check with duration validation (10/15/20 minutes) - target_minutes correctly floors to 15 minimum, 20-minute requests remain at 20. 2) Mystery school image alignment across all 4 streams (egyptian_mystery, priestess_rose, merlin_alchemy, emerald_tablet) - all return 21 items with 100% valid image URLs. 3) Image alignment endpoints (ancient-wisdom, sacred-ally-alchemy, angelic-alchemy) - all return 14 items with 100% valid image URLs. 4) Retreats schema compatibility - endpoint returns 200 with empty list (acceptable). 5) Regression checks - all endpoints return 200 with no 500 errors or timeouts. No critical issues detected. Backend is production-ready."
+
+
+
+# ============================================================================
+# FRONTEND QA TEST - 2026-07-XX (Latest Testing Session)
+# ============================================================================
+
+frontend:
+  - task: "Mystery School image rendering - CRITICAL BUG"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/MysterySchoolTeachings.jsx"
+    stuck_count: 0
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL BUG FOUND (2026-07-XX): Mystery School cards are NOT rendering images despite backend API returning valid image_url fields. Backend verification: GET /api/mystery-school?stream=egyptian_mystery returns 21 items, each with valid image_url (e.g., 'https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg'). Frontend issue: MysterySchoolTeachings.jsx card component (lines 134-151) does NOT include <img> tag to display image_url. Cards only show text content (stream label, name, title, description) with gradient background. REQUIRED FIX: Add image rendering to Mystery School cards similar to Ancient Wisdom cards implementation (see AncientWisdomGrid.jsx lines 30-36 for reference). All 4 streams affected: egyptian_mystery (22 cards), priestess_rose (22 cards), merlin_alchemy (22 cards), emerald_tablet (22 cards). This is a CRITICAL visual regression - users cannot see the mystery school teaching images."
+
+  - task: "Ancient Wisdom image rendering"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ancient-wisdom/AncientWisdomGrid.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ANCIENT WISDOM IMAGE RENDERING PASSED (2026-07-XX): Ancient Wisdom page (/ancient-wisdom) loads successfully with proper image rendering. Tested 10 image elements: 10 loaded correctly, 0 broken images. Cards display images using <img> tag with proper styling (aspect-square, object-cover, lazy loading). Image overlay gradient and tradition badges working correctly. No blank or broken images detected."
+
+  - task: "Retreats UX - empty state and modal behavior"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/retreats/RetreatsContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ RETREATS UX VALIDATION PASSED (2026-07-XX): Retreats page (/retreats) loads successfully with graceful empty state behavior. Empty state message: 'No retreats listed yet. Add your own retreats from admin.' displayed correctly with proper styling. Page structure includes Healing Modalities section (Elemental Healing, Womb Healing) and Upcoming Retreats section. No console crashes or errors detected. After admin retreat creation, page successfully displays retreat card with proper modal behavior including mode label, social links section, and booking/join buttons."
+
+  - task: "Admin Retreat form - all required fields present"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/admin/adminConfig.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ADMIN RETREAT FORM FIELD COVERAGE PASSED (2026-07-XX): Admin login successful with credentials mskatt78@gmail.com. Navigated to /admin/manage/retreats. All required form fields verified: ✓ retreat_mode field (select with options: physical, online, hybrid), ✓ online_session_url field (text input), ✓ instagram_url field (text input), ✓ youtube_url field (text input), ✓ facebook_url field (text input), ✓ tiktok_url field (text input), ✓ website_url field (text input). Successfully created test retreat with name='QA Test Retreat - Hybrid Mode', retreat_mode='hybrid', instagram_url='https://instagram.com/test'. Retreat appears on /retreats page after creation. All form fields from adminConfig.js lines 174-193 implemented correctly."
+
+  - task: "Retreats modal - mode label and social links display"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/retreats/RetreatsContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ RETREATS MODAL BEHAVIOR PASSED (2026-07-XX): After creating test retreat, opened retreat card and verified modal behavior. Modal displays: ✓ Mode label showing 'Mode: Physical + Online' (hybrid mode correctly labeled as 'Physical + Online' per modeLabel function lines 100-105), ✓ Social links section with data-testid='retreat-mode-and-social-panel', ✓ Social links list displaying instagram link with proper styling and external link icon. Modal close button functional. All retreat modal requirements met."
+
+  - task: "Guided flow quick sanity - meditation overlay"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/GuidedPracticeOverlay.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GUIDED FLOW QUICK SANITY PASSED (2026-07-XX): Navigated to /meditations page, found 14 meditation cards. Clicked first meditation card to trigger guided practice flow. Guided practice overlay appeared successfully (data-testid='guided-practice-overlay'). No error toasts detected. UI elements functional: play button and timer visible. No UI freeze or crash detected during narration preparation. Guided flow start pipeline working correctly. No immediate errors during 3-second observation period."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1000
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Mystery School image rendering - CRITICAL BUG"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Frontend QA Test Completed (2026-07-XX):
+      
+      CRITICAL BUG FOUND:
+      ❌ Mystery School cards NOT rendering images despite backend API returning valid image_url fields
+      
+      TEST RESULTS SUMMARY:
+      1. ❌ Mystery/Ancient Visuals (CRITICAL): Ancient Wisdom images working (10/10 loaded), but Mystery School cards missing image rendering implementation. Backend returns valid image URLs but frontend component doesn't display them.
+      2. ✅ Retreats UX: Empty state behavior graceful, modal displays correctly after retreat creation
+      3. ✅ Admin Retreat Form: All 7 required fields present (retreat_mode, online_session_url, instagram_url, youtube_url, facebook_url, tiktok_url, website_url)
+      4. ✅ Guided Flow Sanity: Meditation overlay loads without errors, no UI freeze
+      
+      CONSOLE WARNINGS (non-critical):
+      - 401 errors for unauthenticated routes (expected)
+      - React duplicate key warnings in /sacred-guardians, /sacred-ally-alchemy, /sound-frequencies, /astrology (minor)
+      
+      REQUIRED ACTION:
+      Main agent must add image rendering to MysterySchoolTeachings.jsx card component. Reference AncientWisdomGrid.jsx implementation for proper image display pattern.
