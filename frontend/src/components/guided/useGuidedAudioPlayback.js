@@ -10,7 +10,8 @@ import {
 import { appLogger } from "../../utils/logger";
 
 const MIN_NARRATION_MINUTES = 7;
-const SCRIPT_EXPANSION_TIMEOUT_MS = 50000;
+const DEFAULT_QUICK_START_MINUTES = 7;
+const SCRIPT_EXPANSION_TIMEOUT_MS = 18000;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const splitSentences = (text) => String(text || "").split(/(?<=[.!?])\s+/).map((line) => line.trim()).filter((line) => line.length > 12);
 const extractStepsFromScript = (script) => {
@@ -23,6 +24,25 @@ const estimateMinutes = (script, providedMinutes) => {
   }
   const words = String(script || "").trim().split(/\s+/).filter(Boolean).length;
   return Math.max(MIN_NARRATION_MINUTES, Math.ceil(words / 120) || MIN_NARRATION_MINUTES);
+};
+
+const buildQuickStartText = ({ script, sourceTexts = [], steps = [], label, practiceName, element }) => {
+  const stepText = steps.filter(Boolean).slice(0, 3).join(" ");
+  const sourceText = sourceTexts.filter(Boolean).slice(0, 3).join(" ");
+  const base = String(script || "").trim();
+  const title = String(practiceName || label || "Guided Practice").trim();
+  const elementText = String(element || "spirit").trim();
+
+  const quick = [
+    `Welcome to ${title}.`,
+    `Begin with one grounding breath and soften your shoulders, jaw, and belly.`,
+    `This ${elementText} practice starts gently: stay inside comfort and follow your body.`,
+    base,
+    stepText,
+    sourceText,
+  ].filter(Boolean).join(" ");
+
+  return quick.split(/\s+/).slice(0, 120).join(" ");
 };
 
 export const useGuidedAudioPlayback = ({
@@ -154,10 +174,16 @@ export const useGuidedAudioPlayback = ({
     const mergedSources = [currentScript, ...currentSourceTexts].flatMap((value) => splitSentences(value)).filter(Boolean).slice(0, 80);
     const mergedSteps = [...currentSteps, ...extractStepsFromScript(currentScript)].flatMap((value) => splitSentences(value)).filter(Boolean).slice(0, 32);
 
-    const payload = {
+    const quickStartSegments = [
+      String(currentScript || "").trim(),
+      ...mergedSteps,
+      ...mergedSources.slice(0, 6),
+    ].filter(Boolean).slice(0, 3);
+
+      const payload = {
       practice_name: currentPracticeName || currentLabel || "Guided Practice",
       element: currentElement,
-      duration_minutes: estimateMinutes(currentScript, currentDurationMinutes),
+      duration_minutes: DEFAULT_QUICK_START_MINUTES,
       use_ai: true,
       anti_repetition_mode: getEffectiveGuidedNarrationMode({
         practiceName: currentPracticeName || currentLabel,
@@ -185,11 +211,14 @@ export const useGuidedAudioPlayback = ({
 
       const segments = Array.isArray(response?.data?.segments) ? response.data.segments.filter(Boolean) : [];
       if (segments.length > 0) {
+        if (quickStartSegments.length > 0) {
+          return [...quickStartSegments, ...segments];
+        }
         return segments;
       }
 
       if (fallback) {
-        return [fallback];
+        return quickStartSegments.length > 0 ? [...quickStartSegments, fallback] : [fallback];
       }
 
       return [];
@@ -304,6 +333,23 @@ export const useGuidedAudioPlayback = ({
     await setupToningContext();
 
     try {
+      // Quick-start segment so users hear audio almost immediately.
+      const quickStartText = buildQuickStartText(playbackConfig);
+      const quickStartUrl = await getSegmentAudio(quickStartText, controller);
+      if (!controller.signal.aborted && !isStoppedRef.current) {
+        const quickAudio = new Audio(quickStartUrl);
+        quickAudio.preload = "auto";
+        audioRef.current = quickAudio;
+        quickAudio.onended = null;
+        quickAudio.onerror = null;
+        await quickAudio.play().then(() => {
+          setPlaying(true);
+          setLoading(false);
+        }).catch(() => {
+          // continue to full segments flow
+        });
+      }
+
       const expandedSegments = await buildExpandedSegments(controller);
       const titleLedSegments = ensureTitleLedNarrationOpen(expandedSegments, playbackConfig.practiceName || playbackConfig.label);
       await playSegmentsSequentially(titleLedSegments, controller);

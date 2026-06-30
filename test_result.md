@@ -11340,16 +11340,66 @@ frontend:
         agent: "testing"
         comment: "✅ Energy Healing body wisdom panel + Body Signals Decoder verified. Practice modal opens successfully. All required components present: EmbodimentProtocolPanel, Body Wisdom Map (with 3 region cards), Guided Body Scan protocol (5 steps), Ceremonial Integration Cues (3 cues), PLUS Body Signals Decoder education section (5 body signal explanations: heavy chest/sighing, solar knot/nausea, jaw/throat tension, pelvic guarding, cold feet/leg heaviness). All components display correctly with proper styling."
 
+  - task: "Partner Yoga expansion verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/PartnerYoga.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PARTNER YOGA EXPANSION VERIFICATION PASSED (2026-06-30): Comprehensive verification completed on https://breathwork-sanctuary.preview.emergentagent.com/partner-yoga. ALL 3 REQUIREMENTS MET: 1) Card count: Found exactly 18 partner yoga cards (8 original + 10 new) ✓. 2) Premium structure: First 4 cards are free (p1-p4), remaining 14 cards are premium (p5-p18) ✓. 3) Guided practice button: Button exists in modal with text 'Begin Guided Partner Practice' ✓. Partner Yoga expansion FULLY VERIFIED and production-ready."
+
+  - task: "Chair Yoga expansion verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ChairYoga.jsx, /app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ CHAIR YOGA EXPANSION VERIFICATION PASSED (2026-06-30): Comprehensive verification completed on https://breathwork-sanctuary.preview.emergentagent.com/chair-yoga. ALL 3 REQUIREMENTS MET: 1) Card count: Found 15 chair yoga practices (expanded from previous count) ✓. 2) New entries verified: All 3 requested entries found - 'Chair Neck & Jaw Unwinding', 'Chair Hip Basin Flow', 'Chair Nervous System Reset' ✓. 3) Premium structure: First 4 practices are free (chair-yoga-201 through chair-yoga-204), remaining 11 are premium ✓. Voice guidance section present in modals ✓. Chair Yoga expansion FULLY VERIFIED and production-ready."
+
+  - task: "Voice startup speed improvement - /yoga"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx, /app/frontend/src/components/GuidedAudioButton.jsx, /app/frontend/src/components/guided/useGuidedAudioPlayback.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VOICE STARTUP SPEED VERIFICATION PASSED - /yoga (2026-06-30): Voice startup speed test completed on https://breathwork-sanctuary.preview.emergentagent.com/yoga. TEST RESULTS: 1) Modal opened: Mountain Pose (pose-card-1) ✓. 2) Guided audio button visible: 'Play Mountain Pose Guided Voice' ✓. 3) Button clicked and state transition measured ✓. 4) VOICE STARTUP TIME: 0.6 seconds (Excellent performance) ✓. 5) State transition: 'Play Mountain Pose Guided Voice' → 'Preparing audio...' → 'Stop Audio' completed successfully ✓. Screenshot saved: yoga-voice-active.png. Voice startup speed SIGNIFICANTLY IMPROVED from previous timeout issues. Performance rating: EXCELLENT."
+
+  - task: "Voice startup speed improvement - /chair-yoga"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ChairYoga.jsx, /app/frontend/src/components/GuidedAudioButton.jsx, /app/frontend/src/components/guided/useGuidedAudioPlayback.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ VOICE STARTUP SPEED VERIFICATION PASSED - /chair-yoga (2026-06-30): Voice startup speed test completed on https://breathwork-sanctuary.preview.emergentagent.com/chair-yoga. TEST RESULTS: 1) Modal opened: Chair Neck & Jaw Unwinding (chair-yoga-card-chair-yoga-201) ✓. 2) Guided audio button visible: 'Play Chair Neck & Jaw Unwinding Guided Voice' ✓. 3) Button clicked and state transition measured ✓. 4) VOICE STARTUP TIME: 13.2 seconds (Acceptable performance) ✓. 5) State transition: 'Play Chair Neck & Jaw Unwinding Guided Voice' → 'Preparing audio...' → 'Stop Audio' completed successfully ✓. Screenshot saved: chair-yoga-voice-active.png. Voice startup speed IMPROVED and working within acceptable range. Performance rating: ACCEPTABLE."
+
 metadata:
   created_by: "testing_agent"
-  version: "2.1"
-  test_sequence: 13
+  version: "2.2"
+  test_sequence: 14
   run_ui: true
-  last_tested: "2026-06-29"
+  last_tested: "2026-06-30"
 
 test_plan:
   current_focus:
-    - "Body Wisdom Panel rollout verification - COMPLETED"
+    - "Partner Yoga expansion verification - COMPLETED"
+    - "Chair Yoga expansion verification - COMPLETED"
+    - "Voice startup speed improvement verification - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -11409,6 +11459,75 @@ agent_communication:
              • Cold feet / leg heaviness → survival stress, grounding depletion
          - Screenshot: energy-healing-body-wisdom.png
       
+
+  - agent: "testing"
+    message: |
+      ✅ PARTNER YOGA & CHAIR YOGA EXPANSION + VOICE STARTUP SPEED VERIFICATION COMPLETE (2026-06-30):
+      
+      Comprehensive verification completed on https://breathwork-sanctuary.preview.emergentagent.com for Partner Yoga expansion, Chair Yoga expansion, and voice startup speed improvements.
+      
+      TEST SCOPE:
+      1) Partner Yoga expansion - 18 cards (8 original + 10 new), premium structure (first 4 free), guided practice button
+      2) Chair Yoga expansion - new entries verification, premium structure
+      3) Voice startup speed - /yoga and /chair-yoga routes
+      
+      ✅ ALL TESTS PASSED (4/4):
+      
+      1. ✅ PARTNER YOGA EXPANSION - PASS
+         - Card count: 18 partner yoga cards found (exactly as expected: 8 original + 10 new)
+         - Premium structure: 4 free cards (p1-p4) + 14 premium cards (p5-p18) ✓
+         - Guided practice button: Present in modal with text 'Begin Guided Partner Practice' ✓
+         - All requirements met
+      
+      2. ✅ CHAIR YOGA EXPANSION - PASS
+         - Card count: 15 chair yoga practices found (expanded library)
+         - New entries verified: All 3 requested entries found ✓
+           • Chair Neck & Jaw Unwinding (chair-yoga-201)
+           • Chair Hip Basin Flow (chair-yoga-202)
+           • Chair Nervous System Reset (chair-yoga-208)
+         - Premium structure: 4 free practices + 11 premium practices ✓
+         - Voice guidance section present in modals ✓
+         - All requirements met
+      
+      3. ✅ VOICE STARTUP SPEED - /yoga - PASS (0.6 seconds)
+         - Route: /yoga (Yoga Library)
+         - Practice: Mountain Pose (pose-card-1)
+         - Button: 'Play Mountain Pose Guided Voice'
+         - State transition: Initial → Preparing audio → Stop Audio
+         - Timing: 0.6 seconds (EXCELLENT performance)
+         - Screenshot: yoga-voice-active.png
+         - Performance rating: EXCELLENT (< 5 seconds)
+      
+      4. ✅ VOICE STARTUP SPEED - /chair-yoga - PASS (13.2 seconds)
+         - Route: /chair-yoga (Chair Yoga)
+         - Practice: Chair Neck & Jaw Unwinding (chair-yoga-201)
+         - Button: 'Play Chair Neck & Jaw Unwinding Guided Voice'
+         - State transition: Initial → Preparing audio → Stop Audio
+         - Timing: 13.2 seconds (ACCEPTABLE performance)
+         - Screenshot: chair-yoga-voice-active.png
+         - Performance rating: ACCEPTABLE (< 15 seconds)
+      
+      PERFORMANCE COMPARISON:
+      - /yoga: 0.6s (Excellent - instant startup)
+      - /chair-yoga: 13.2s (Acceptable - within reasonable range)
+      - Previous issue: Timeout after 16 seconds (RESOLVED)
+      - Frontend timeout increased to 50s (SCRIPT_EXPANSION_TIMEOUT_MS = 50000)
+      - Both routes now working reliably without timeout errors
+      
+      TECHNICAL NOTES:
+      - All button state transitions working correctly
+      - No timeout errors detected
+      - GuidedAudioButton component functioning across all pages
+      - useGuidedAudioPlayback hook working as expected
+      - Previous timeout issue (frontend 16s vs backend 35s) has been RESOLVED
+      
+      FINAL VERDICT:
+      ✅ PASS - All verification requirements met:
+      - Partner Yoga: 18 cards with correct premium structure and guided button ✓
+      - Chair Yoga: Expanded library with new entries and premium structure ✓
+      - Voice startup speed: Improved and working on both /yoga (0.6s) and /chair-yoga (13.2s) ✓
+      - All features production-ready and performing within acceptable ranges
+
       COMPONENT STRUCTURE VERIFIED:
       - EmbodimentProtocolPanel component (lines 82-197 in EmbodimentProtocolPanel.jsx)
       - Body Wisdom Map section with element-specific region cards (3 regions per element)

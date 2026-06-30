@@ -1,9 +1,12 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Users, Heart, Star, ChevronDown, Clock } from "lucide-react";
 import { Button } from "../components/ui/button";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import { Lock } from "lucide-react";
+import { toast } from "sonner";
 
 const partnerPoses = [
   {
@@ -178,6 +181,196 @@ const partnerPoses = [
     benefits: ["Deepens hamstring and spine stretch", "Creates safety through touch", "Teaches giving and receiving support", "Releases lower back tension"],
     modifications: ["A can bend knees for a less intense stretch", "B can use a light towel between hands and partner's back"],
     color: { text: "text-emerald-300", bg: "bg-emerald-500/10", border: "border-emerald-500/20" }
+  },
+  {
+    id: "p9",
+    name: "Partner Supported Child's Pose",
+    sanskrit: "Sahana Balasana",
+    element: "Water",
+    difficulty: "Beginner",
+    duration: 7,
+    image_url: "https://images.pexels.com/photos/4662354/pexels-photo-4662354.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "One partner rests while the other offers gentle back support and synchronized breath.",
+    instructions: [
+      "Partner A enters child&apos;s pose.",
+      "Partner B places light hands on upper back.",
+      "Synchronize 10 calming breaths.",
+      "Switch roles."
+    ],
+    benefits: ["Co-regulation", "Back body soothing", "Trust building"],
+    modifications: ["Use bolster under chest", "Keep touch light"],
+    color: { text: "text-blue-300", bg: "bg-blue-500/10", border: "border-blue-500/20" }
+  },
+  {
+    id: "p10",
+    name: "Partner Low Lunge Assist",
+    sanskrit: "Sahana Anjaneyasana",
+    element: "Earth",
+    difficulty: "Beginner",
+    duration: 8,
+    image_url: "https://images.pexels.com/photos/8436598/pexels-photo-8436598.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Guided low lunge with shoulder support to safely open hips together.",
+    instructions: [
+      "Partner A enters low lunge.",
+      "Partner B supports shoulders from behind.",
+      "Pulse gently with breath.",
+      "Switch sides and roles."
+    ],
+    benefits: ["Hip mobility", "Balance confidence", "Shared pacing"],
+    modifications: ["Use blocks", "Pad back knee"],
+    color: { text: "text-emerald-300", bg: "bg-emerald-500/10", border: "border-emerald-500/20" }
+  },
+  {
+    id: "p11",
+    name: "Back-to-Back Breath Ladder",
+    sanskrit: "Sahana Prana Krama",
+    element: "Air",
+    difficulty: "Beginner",
+    duration: 6,
+    image_url: "https://images.pexels.com/photos/6455776/pexels-photo-6455776.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Back-to-back breathing protocol to synchronize rhythm and emotional safety.",
+    instructions: [
+      "Sit back-to-back with tall spine.",
+      "3 rounds inhale 4/exhale 6.",
+      "3 rounds inhale 5/exhale 7.",
+      "Rest in silence together."
+    ],
+    benefits: ["Breath coherence", "Calmer nervous systems", "Trust"],
+    modifications: ["Sit on cushion", "Shorten exhale if needed"],
+    color: { text: "text-cyan-300", bg: "bg-cyan-500/10", border: "border-cyan-500/20" }
+  },
+  {
+    id: "p12",
+    name: "Partner Seated Side Bend",
+    sanskrit: "Sahana Parsva Sukhasana",
+    element: "Air",
+    difficulty: "Beginner",
+    duration: 7,
+    image_url: "https://images.pexels.com/photos/6455849/pexels-photo-6455849.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Side-body opening with connected arms to improve rib mobility and breath depth.",
+    instructions: [
+      "Sit side by side and connect outside hands.",
+      "Lift arms and arc gently away.",
+      "Hold 5 breaths each side.",
+      "Switch orientation."
+    ],
+    benefits: ["Rib opening", "Breath capacity", "Playful connection"],
+    modifications: ["Keep lower hand grounded", "Use strap"],
+    color: { text: "text-sky-300", bg: "bg-sky-500/10", border: "border-sky-500/20" }
+  },
+  {
+    id: "p13",
+    name: "Partner Reclined Twist",
+    sanskrit: "Sahana Supta Matsyendrasana",
+    element: "Water",
+    difficulty: "Beginner",
+    duration: 8,
+    image_url: "https://images.pexels.com/photos/4662326/pexels-photo-4662326.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Reclined spinal twist with safe partner support for decompression and emotional release.",
+    instructions: [
+      "Partner A reclines and twists knees to one side.",
+      "Partner B supports shoulder with gentle contact.",
+      "Hold for 6-8 breaths.",
+      "Switch sides and roles."
+    ],
+    benefits: ["Spinal decompression", "Digestive support", "Calm integration"],
+    modifications: ["Pillow under knees", "Reduce twist depth"],
+    color: { text: "text-indigo-300", bg: "bg-indigo-500/10", border: "border-indigo-500/20" }
+  },
+  {
+    id: "p14",
+    name: "Partner Supported Bridge",
+    sanskrit: "Sahana Setu Bandha",
+    element: "Fire",
+    difficulty: "Intermediate",
+    duration: 6,
+    image_url: "https://images.pexels.com/photos/6455827/pexels-photo-6455827.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Bridge with supportive cueing for safe heart opening and posterior activation.",
+    instructions: [
+      "Partner A enters bridge.",
+      "Partner B stabilizes with light hip support.",
+      "Hold 5 breaths and lower.",
+      "Switch roles."
+    ],
+    benefits: ["Glute activation", "Heart opening", "Shared confidence"],
+    modifications: ["Use block under sacrum", "Lift lower"],
+    color: { text: "text-amber-300", bg: "bg-amber-500/10", border: "border-amber-500/20" }
+  },
+  {
+    id: "p15",
+    name: "Partner Warrior Anchor",
+    sanskrit: "Sahana Virabhadrasana",
+    element: "Fire",
+    difficulty: "Intermediate",
+    duration: 7,
+    image_url: "https://images.pexels.com/photos/6456155/pexels-photo-6456155.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Mirrored warrior with hand anchor to train focus, power, and communication.",
+    instructions: [
+      "Face each other in warrior II.",
+      "Connect front hands with stable pressure.",
+      "Pulse deeper on exhales for 5 breaths.",
+      "Switch sides."
+    ],
+    benefits: ["Leg strength", "Embodied courage", "Team focus"],
+    modifications: ["Shorten stance", "Use wall support"],
+    color: { text: "text-orange-300", bg: "bg-orange-500/10", border: "border-orange-500/20" }
+  },
+  {
+    id: "p16",
+    name: "Partner Standing Quad Stretch",
+    sanskrit: "Sahana Nataraja Prep",
+    element: "Earth",
+    difficulty: "Beginner",
+    duration: 6,
+    image_url: "https://images.pexels.com/photos/8436530/pexels-photo-8436530.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Standing balance and quad stretch with mutual support for safety.",
+    instructions: [
+      "Face each other and hold forearms.",
+      "Bend one knee and hold ankle.",
+      "Breathe 6 rounds then switch.",
+      "Keep torso tall and steady."
+    ],
+    benefits: ["Balance", "Quad release", "Confidence"],
+    modifications: ["Use wall", "Hold pant leg"],
+    color: { text: "text-green-300", bg: "bg-green-500/10", border: "border-green-500/20" }
+  },
+  {
+    id: "p17",
+    name: "Partner Restorative Savasana",
+    sanskrit: "Sahana Savasana",
+    element: "Spirit",
+    difficulty: "Beginner",
+    duration: 10,
+    image_url: "https://images.pexels.com/photos/6455859/pexels-photo-6455859.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Deep co-regulated rest with hand-to-heart grounding and integration breath.",
+    instructions: [
+      "Lie side by side in savasana.",
+      "One hand to heart, one to belly.",
+      "Take 12 synchronized breaths.",
+      "Share one integration word."
+    ],
+    benefits: ["Deep regulation", "Emotional integration", "Bond repair"],
+    modifications: ["Bolster under knees", "Blanket for warmth"],
+    color: { text: "text-violet-300", bg: "bg-violet-500/10", border: "border-violet-500/20" }
+  },
+  {
+    id: "p18",
+    name: "Partner Heart Coherence Flow",
+    sanskrit: "Sahana Hridaya Flow",
+    element: "Spirit",
+    difficulty: "Intermediate",
+    duration: 9,
+    image_url: "https://images.pexels.com/photos/6455760/pexels-photo-6455760.jpeg?auto=compress&cs=tinysrgb&w=800",
+    description: "Flowing partner sequence combining breath and movement for relational coherence.",
+    instructions: [
+      "Stand with palms connected.",
+      "Inhale sweep up together.",
+      "Exhale fold halfway softly.",
+      "Repeat 8 rounds and close with gratitude breath."
+    ],
+    benefits: ["Heart coherence", "Rhythmic attunement", "Shared resilience"],
+    modifications: ["Slow tempo", "Reduce range"],
+    color: { text: "text-fuchsia-300", bg: "bg-fuchsia-500/10", border: "border-fuchsia-500/20" }
   }
 ];
 
@@ -186,12 +379,32 @@ const PartnerYoga = ({ user, api }) => {
   const [selectedPose, setSelectedPose] = useState(null);
   const [difficultyFilter, setDifficultyFilter] = useState("all");
   const [guidedPractice, setGuidedPractice] = useState(null);
+  const premium = usePremiumAccess({ api, user });
+  const partnerUnlocked = premium.isSectionUnlocked("somatic_practices");
+  const fullAppProduct = premium.findProduct("full_app_unlock");
+
+  useEffect(() => {
+    premium.finalizeCheckoutIfPresent({ search: window.location.search, clearUrl: true });
+  }, [premium]);
 
   const difficulties = ["all", "Beginner", "Intermediate", "Advanced"];
 
-  const filtered = useMemo(() => (difficultyFilter === "all"
-    ? partnerPoses
-    : partnerPoses.filter(p => p.difficulty === difficultyFilter)), [difficultyFilter]);
+  const tieredPoses = useMemo(
+    () => partnerPoses.map((pose, index) => ({
+      ...pose,
+      is_premium: index >= 4,
+      premium_unlock_id: "somatic_practices",
+      premium_label: "Partner & Somatic Premium",
+    })),
+    []
+  );
+
+  const filtered = useMemo(() => {
+    const pool = difficultyFilter === "all"
+      ? tieredPoses
+      : tieredPoses.filter((p) => p.difficulty === difficultyFilter);
+    return pool;
+  }, [difficultyFilter, tieredPoses]);
 
   const difficultyColors = {
     Beginner: "bg-green-500/20 text-green-400 border-green-500/30",
@@ -252,12 +465,23 @@ const PartnerYoga = ({ user, api }) => {
 
   const launchGuidedPractice = useCallback((pose) => {
     if (!pose) return;
+    if (pose.is_premium && !partnerUnlocked) {
+      toast.info("This partner practice is premium. Unlock with subscription or full app access.");
+      return;
+    }
     const payload = buildGuidedPosePractice(pose);
     setSelectedPose(null);
     window.requestAnimationFrame(() => {
       setGuidedPractice(payload);
     });
-  }, [buildGuidedPosePractice]);
+  }, [buildGuidedPosePractice, partnerUnlocked]);
+
+  const handleUnlockFullApp = useCallback(async () => {
+    await premium.startPurchase({
+      productId: "full_app_unlock",
+      returnPath: "/partner-yoga",
+    });
+  }, [premium]);
 
   return (
     <div className="min-h-screen bg-background" data-testid="partner-yoga">
@@ -318,6 +542,19 @@ const PartnerYoga = ({ user, api }) => {
         </div>
 
         {/* Pose Grid */}
+        {!partnerUnlocked && (
+          <section className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="partner-yoga-premium-banner">
+            <p className="text-xs uppercase tracking-wider text-amber-200/80">Partner Yoga Premium Track</p>
+            <p className="text-sm text-muted-foreground mt-1">First 4 partnered practices are open. Remaining partnered sequences unlock with subscription or full app access.</p>
+            <div className="flex gap-2 mt-3">
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="partner-yoga-premium-banner-subscription-button">View Subscription Plans</Button>
+              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="partner-yoga-premium-banner-fullapp-button">
+                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+              </Button>
+            </div>
+          </section>
+        )}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filtered.map((pose, index) => (
             <motion.div
@@ -357,7 +594,14 @@ const PartnerYoga = ({ user, api }) => {
                     <Clock className="w-3 h-3" />
                     <span>{pose.duration} min</span>
                   </div>
-                  <span className={pose.color.text}>{pose.element}</span>
+                  <div className="flex items-center gap-2">
+                    {pose.is_premium && (
+                      <span className="px-2 py-1 rounded-full text-[10px] bg-fuchsia-500/25 text-fuchsia-100 border border-fuchsia-300/40" data-testid={`partner-pose-premium-badge-${pose.id}`}>
+                        <Lock className="w-3 h-3 inline mr-1" />Premium
+                      </span>
+                    )}
+                    <span className={pose.color.text}>{pose.element}</span>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -516,9 +760,19 @@ const PartnerYoga = ({ user, api }) => {
                   onClick={() => launchGuidedPractice(selectedPose)}
                   className="w-full"
                   data-testid="partner-yoga-begin-guided-practice-btn"
+                  disabled={selectedPose.is_premium && !partnerUnlocked}
                 >
-                  Begin Guided Partner Practice
+                  {selectedPose.is_premium && !partnerUnlocked ? "Premium Practice — Unlock to Begin" : "Begin Guided Partner Practice"}
                 </Button>
+
+                {selectedPose.is_premium && !partnerUnlocked && (
+                  <div className="grid sm:grid-cols-2 gap-2" data-testid="partner-yoga-premium-lock-actions">
+                    <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="partner-yoga-premium-lock-subscription-button">View Subscription Plans</Button>
+                    <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="partner-yoga-premium-lock-fullapp-button">
+                      {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+                    </Button>
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>
