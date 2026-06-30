@@ -350,22 +350,18 @@ const MudrasLibrary = ({ user, api }) => {
                 </div>
 
                 {/* Practice Tip */}
-                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
+                <div className="p-4 rounded-xl bg-primary/15 border border-primary/30">
                   <p className="text-sm text-muted-foreground">
-                    <strong className="text-primary">Practice:</strong> Hold this mudra during meditation 
-                    for 5-15 minutes, or while doing breathwork to enhance its effects. 
-                    The <strong className="text-primary">{selectedMudra.element}</strong> element connection helps {
-                      getElementConnectionBenefit(selectedMudra.element)
-                    }.
+                    <strong className="text-primary">Practice Tip:</strong> Hold this mudra during meditation for 5-15 minutes, then carry its felt state into one grounded real-world action. The <strong className="text-primary">{selectedMudra.element}</strong> element connection supports {getElementConnectionBenefit(selectedMudra.element)}.
                   </p>
                 </div>
 
                 {resolveMudraAlchemy(selectedMudra).length > 0 && (
-                  <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="mudra-alchemy-teachings">
-                    <h4 className="text-xs uppercase tracking-wider text-indigo-300 mb-2">Alchemy Teachings</h4>
+                  <div className="p-4 rounded-xl bg-indigo-500/15 border border-indigo-500/30" data-testid="mudra-alchemy-teachings">
+                    <h4 className="text-[11px] uppercase tracking-wider text-indigo-200 mb-2">Alchemy Teachings</h4>
                     <ul className="space-y-1.5">
                       {resolveMudraAlchemy(selectedMudra).slice(0, 6).map((line, index) => (
-                        <li key={`mudra-alchemy-${index}`} className="text-xs text-indigo-100/85 flex items-start gap-2">
+                        <li key={`mudra-alchemy-${index}`} className="text-sm leading-relaxed text-indigo-50/95 flex items-start gap-2">
                           <span>✦</span>
                           <span>{line}</span>
                         </li>
@@ -375,11 +371,11 @@ const MudrasLibrary = ({ user, api }) => {
                 )}
 
                 {resolveMudraRitual(selectedMudra).length > 0 && (
-                  <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20" data-testid="mudra-ritual-list">
-                    <h4 className="text-xs uppercase tracking-wider text-rose-300 mb-2">Ritual Steps</h4>
+                  <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-500/30" data-testid="mudra-ritual-list">
+                    <h4 className="text-[11px] uppercase tracking-wider text-rose-200 mb-2">Ritual Steps</h4>
                     <ol className="space-y-1.5">
                       {resolveMudraRitual(selectedMudra).slice(0, 6).map((line, index) => (
-                        <li key={`mudra-ritual-${index}`} className="text-xs text-rose-100/85 flex items-start gap-2">
+                        <li key={`mudra-ritual-${index}`} className="text-sm leading-relaxed text-rose-50/95 flex items-start gap-2">
                           <span className="text-rose-300">{index + 1}.</span>
                           <span>{line}</span>
                         </li>
@@ -389,11 +385,11 @@ const MudrasLibrary = ({ user, api }) => {
                 )}
 
                 {resolveMudraCeremony(selectedMudra).length > 0 && (
-                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mudra-ceremony-list">
-                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Ceremonial Arc</h4>
+                  <div className="p-4 rounded-xl bg-amber-500/15 border border-amber-500/30" data-testid="mudra-ceremony-list">
+                    <h4 className="text-[11px] uppercase tracking-wider text-amber-200 mb-2">Ceremonial Arc</h4>
                     <ol className="space-y-1.5">
                       {resolveMudraCeremony(selectedMudra).slice(0, 6).map((line, index) => (
-                        <li key={`mudra-ceremony-${index}`} className="text-xs text-amber-100/85 flex items-start gap-2">
+                        <li key={`mudra-ceremony-${index}`} className="text-sm leading-relaxed text-amber-50/95 flex items-start gap-2">
                           <span className="text-amber-300">{index + 1}.</span>
                           <span>{line}</span>
                         </li>
@@ -403,11 +399,11 @@ const MudrasLibrary = ({ user, api }) => {
                 )}
 
                 {resolveMudraGuided(selectedMudra).length > 0 && (
-                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mudra-guided-practice-arc">
-                    <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Guided Practice Arc</h4>
+                  <div className="p-4 rounded-xl bg-cyan-500/15 border border-cyan-500/30" data-testid="mudra-guided-practice-arc">
+                    <h4 className="text-[11px] uppercase tracking-wider text-cyan-200 mb-2">Guided Practice Arc</h4>
                     <ol className="space-y-1.5">
                       {resolveMudraGuided(selectedMudra).slice(0, 6).map((line, index) => (
-                        <li key={`mudra-guided-${index}`} className="text-xs text-cyan-100/85 flex items-start gap-2">
+                        <li key={`mudra-guided-${index}`} className="text-sm leading-relaxed text-cyan-50/95 flex items-start gap-2">
                           <span className="text-cyan-300">{index + 1}.</span>
                           <span>{line}</span>
                         </li>
@@ -424,8 +420,8 @@ const MudrasLibrary = ({ user, api }) => {
                         "Mudras engage sensory-motor pathways that anchor awareness, calm internal agitation, and reinforce intentional breathing."}
                     </p>
                   </div>
-                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mudra-integration-guide">
-                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Integration</h4>
+                  <div className="p-4 rounded-xl bg-amber-500/15 border border-amber-500/30" data-testid="mudra-integration-guide">
+                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Integration Guide</h4>
                     <p className="text-sm text-amber-100/80 leading-relaxed">
                       {selectedMudra.integration_guide ||
                         "After release, place one palm on heart and one on belly for five slow breaths to integrate the energetic shift."}

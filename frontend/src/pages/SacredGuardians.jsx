@@ -408,11 +408,11 @@ const SacredGuardians = ({ user, api }) => {
                 )}
 
                 {resolveGuardianAlchemy(selected).length > 0 && (
-                  <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="guardian-alchemy-teachings">
-                    <h4 className="text-xs uppercase tracking-wider text-indigo-300 mb-2">Alchemy Teachings</h4>
+                  <div className="p-4 rounded-xl bg-indigo-500/15 border border-indigo-500/30" data-testid="guardian-alchemy-teachings">
+                    <h4 className="text-[11px] uppercase tracking-wider text-indigo-200 mb-2">Alchemy Teachings</h4>
                     <ul className="space-y-1.5">
                       {resolveGuardianAlchemy(selected).slice(0, 6).map((line, index) => (
-                        <li key={`guardian-alchemy-${index}`} className="text-xs text-indigo-100/85 flex items-start gap-2">
+                        <li key={`guardian-alchemy-${index}`} className="text-sm leading-relaxed text-indigo-50/95 flex items-start gap-2">
                           <span>✦</span>
                           <span>{line}</span>
                         </li>
@@ -422,11 +422,11 @@ const SacredGuardians = ({ user, api }) => {
                 )}
 
                 {resolveGuardianCeremony(selected).length > 0 && (
-                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="guardian-ceremony-list">
-                    <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Ceremonial Arc</h4>
+                  <div className="p-4 rounded-xl bg-amber-500/15 border border-amber-500/30" data-testid="guardian-ceremony-list">
+                    <h4 className="text-[11px] uppercase tracking-wider text-amber-200 mb-2">Ceremonial Arc</h4>
                     <ol className="space-y-1.5">
                       {resolveGuardianCeremony(selected).slice(0, 6).map((line, index) => (
-                        <li key={`guardian-ceremony-${index}`} className="text-xs text-amber-100/85 flex items-start gap-2">
+                        <li key={`guardian-ceremony-${index}`} className="text-sm leading-relaxed text-amber-50/95 flex items-start gap-2">
                           <span className="text-amber-300">{index + 1}.</span>
                           <span>{line}</span>
                         </li>
@@ -436,11 +436,11 @@ const SacredGuardians = ({ user, api }) => {
                 )}
 
                 {resolveGuardianGuided(selected).length > 0 && (
-                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="guardian-guided-practice-arc">
-                    <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Guided Practice Arc</h4>
+                  <div className="p-4 rounded-xl bg-cyan-500/15 border border-cyan-500/30" data-testid="guardian-guided-practice-arc">
+                    <h4 className="text-[11px] uppercase tracking-wider text-cyan-200 mb-2">Guided Practice Arc</h4>
                     <ol className="space-y-1.5">
                       {resolveGuardianGuided(selected).slice(0, 6).map((line, index) => (
-                        <li key={`guardian-guided-${index}`} className="text-xs text-cyan-100/85 flex items-start gap-2">
+                        <li key={`guardian-guided-${index}`} className="text-sm leading-relaxed text-cyan-50/95 flex items-start gap-2">
                           <span className="text-cyan-300">{index + 1}.</span>
                           <span>{line}</span>
                         </li>

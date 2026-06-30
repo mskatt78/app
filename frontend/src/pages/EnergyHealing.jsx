@@ -228,7 +228,7 @@ export default function EnergyHealing() {
                   {selectedPractice.duration_minutes && <span className="px-3 py-1 rounded-full text-xs bg-white/5 flex items-center gap-1"><Clock className="w-3 h-3" />{selectedPractice.duration_minutes} min</span>}
                 </div>
                 <h2 className="text-2xl font-serif mb-3">{selectedPractice.name}</h2>
-                <p className="text-muted-foreground mb-4">{selectedPractice.description}</p>
+                <p className="text-foreground/85 leading-relaxed mb-4">{selectedPractice.description}</p>
 
                 {/* Expandable sections */}
                 {[
@@ -250,7 +250,7 @@ export default function EnergyHealing() {
                       {expandedSection === section.key ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </button>
                     {expandedSection === section.key && (
-                      <div className="px-4 pb-4 text-sm text-muted-foreground whitespace-pre-line leading-relaxed">{section.content}</div>
+                      <div className="px-4 pb-4 text-sm text-foreground/85 whitespace-pre-line leading-relaxed">{section.content}</div>
                     )}
                   </div>
                 ))}

@@ -812,12 +812,12 @@ const SectionList = ({ title, icon: Icon, items, testId }) => (
     </h4>
     <ul className="space-y-2">
       {items?.map((item, idx) => (
-        <li key={`${title}-${idx}-${String(item).slice(0, 20)}`} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
-          <div className="flex items-start gap-2 text-sm text-muted-foreground">
+        <li key={`${title}-${idx}-${String(item).slice(0, 20)}`} className="rounded-lg border border-white/20 bg-white/[0.05] p-3">
+          <div className="flex items-start gap-2 text-sm leading-relaxed text-foreground/90">
             <ChevronRight className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
             <span>{item}</span>
           </div>
-          <p className="text-xs text-muted-foreground/80 mt-2 leading-relaxed" data-testid={`${testId}-deep-line-${idx}`}>
+          <p className="text-sm text-muted-foreground mt-2 leading-relaxed" data-testid={`${testId}-deep-line-${idx}`}>
             {deepLine(title, item, idx)}
           </p>
         </li>
@@ -1113,7 +1113,7 @@ export default function SacredAllyAlchemy({ api }) {
                 </div>
                 <div className="p-4 space-y-2">
                   <h3 className="text-base font-serif" data-testid={`sacred-ally-card-title-${item.id}`}>{item.name}</h3>
-                  <p className="text-xs text-muted-foreground line-clamp-3" data-testid={`sacred-ally-card-description-${item.id}`}>
+                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed" data-testid={`sacred-ally-card-description-${item.id}`}>
                     {item.description}
                   </p>
                   <div className="space-y-1.5" data-testid={`sacred-ally-card-practice-preview-${item.id}`}>

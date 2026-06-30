@@ -507,11 +507,11 @@ export const MantrasPlayer = ({
               )}
 
               {resolveMantraAlchemy(selectedMantra).length > 0 && (
-                <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20" data-testid="mantra-alchemy-teachings">
-                  <h4 className="text-xs uppercase tracking-wider text-indigo-300 mb-2">Alchemy Teachings</h4>
+                <div className="p-4 rounded-xl bg-indigo-500/15 border border-indigo-500/30" data-testid="mantra-alchemy-teachings">
+                  <h4 className="text-[11px] uppercase tracking-wider text-indigo-200 mb-2">Alchemy Teachings</h4>
                   <ul className="space-y-1.5">
                     {resolveMantraAlchemy(selectedMantra).slice(0, 6).map((line, index) => (
-                      <li key={`mantra-alchemy-${index}`} className="text-xs text-indigo-100/85 flex items-start gap-2">
+                      <li key={`mantra-alchemy-${index}`} className="text-sm leading-relaxed text-indigo-50/95 flex items-start gap-2">
                         <span>✦</span>
                         <span>{line}</span>
                       </li>
@@ -521,11 +521,11 @@ export const MantrasPlayer = ({
               )}
 
               {resolveMantraRitual(selectedMantra).length > 0 && (
-                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20" data-testid="mantra-ritual-list">
-                  <h4 className="text-xs uppercase tracking-wider text-rose-300 mb-2">Ritual Steps</h4>
+                <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-500/30" data-testid="mantra-ritual-list">
+                  <h4 className="text-[11px] uppercase tracking-wider text-rose-200 mb-2">Ritual Steps</h4>
                   <ol className="space-y-1.5">
                     {resolveMantraRitual(selectedMantra).slice(0, 6).map((line, index) => (
-                      <li key={`mantra-ritual-${index}`} className="text-xs text-rose-100/85 flex items-start gap-2">
+                      <li key={`mantra-ritual-${index}`} className="text-sm leading-relaxed text-rose-50/95 flex items-start gap-2">
                         <span className="text-rose-300">{index + 1}.</span>
                         <span>{line}</span>
                       </li>
@@ -535,11 +535,11 @@ export const MantrasPlayer = ({
               )}
 
               {resolveMantraCeremony(selectedMantra).length > 0 && (
-                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mantra-ceremony-list">
-                  <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Ceremonial Arc</h4>
+                <div className="p-4 rounded-xl bg-amber-500/15 border border-amber-500/30" data-testid="mantra-ceremony-list">
+                  <h4 className="text-[11px] uppercase tracking-wider text-amber-200 mb-2">Ceremonial Arc</h4>
                   <ol className="space-y-1.5">
                     {resolveMantraCeremony(selectedMantra).slice(0, 6).map((line, index) => (
-                      <li key={`mantra-ceremony-${index}`} className="text-xs text-amber-100/85 flex items-start gap-2">
+                      <li key={`mantra-ceremony-${index}`} className="text-sm leading-relaxed text-amber-50/95 flex items-start gap-2">
                         <span className="text-amber-300">{index + 1}.</span>
                         <span>{line}</span>
                       </li>
@@ -549,11 +549,11 @@ export const MantrasPlayer = ({
               )}
 
               {resolveMantraGuided(selectedMantra).length > 0 && (
-                <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mantra-guided-practice-arc">
-                  <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Guided Practice Arc</h4>
+                <div className="p-4 rounded-xl bg-cyan-500/15 border border-cyan-500/30" data-testid="mantra-guided-practice-arc">
+                  <h4 className="text-[11px] uppercase tracking-wider text-cyan-200 mb-2">Guided Practice Arc</h4>
                   <ol className="space-y-1.5">
                     {resolveMantraGuided(selectedMantra).slice(0, 6).map((line, index) => (
-                      <li key={`mantra-guided-${index}`} className="text-xs text-cyan-100/85 flex items-start gap-2">
+                      <li key={`mantra-guided-${index}`} className="text-sm leading-relaxed text-cyan-50/95 flex items-start gap-2">
                         <span className="text-cyan-300">{index + 1}.</span>
                         <span>{line}</span>
                       </li>
@@ -562,12 +562,10 @@ export const MantrasPlayer = ({
                 </div>
               )}
 
-              <div className="p-4 rounded-xl bg-white/5 border border-white/10">
+              <div className="p-4 rounded-xl bg-white/10 border border-white/20">
                 <p className="text-sm text-muted-foreground">
-                  <strong className="text-primary">Practice Tip:</strong> {selectedMantra.practice_tips || `Find a comfortable seated position.
-                  Close your eyes and focus on the sound and vibration of the mantra.
-                  Let each repetition deepen your connection to the ${selectedMantra.element.toLowerCase()} element
-                  and your ${selectedMantra.chakra} chakra.`}
+                  <strong className="text-primary">Practice Tip:</strong> {selectedMantra.practice_tips ||
+                    `Sit comfortably, soften your jaw, and let each repetition of ${selectedMantra.name} synchronize breath, voice, and heart attention.`}
                 </p>
               </div>
 
@@ -580,7 +578,7 @@ export const MantrasPlayer = ({
                   </p>
                 </div>
                 <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="mantra-integration-guide">
-                  <h4 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration</h4>
+                  <h4 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration Guide</h4>
                   <p className="text-sm text-violet-100/80 leading-relaxed">
                     {selectedMantra.integration_guide ||
                       "After chanting, sit in silence for 1-3 minutes, then complete one grounded action that reflects your mantra intention."}

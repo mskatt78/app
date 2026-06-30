@@ -583,12 +583,12 @@ const SectionList = ({ title, icon: Icon, items, testId }) => {
       </h4>
       <ul className="space-y-2">
         {items.map((item, idx) => (
-          <li key={`${testId}-${idx}`} className="rounded-lg border border-white/10 bg-white/[0.02] p-3">
-            <div className="flex items-start gap-2 text-sm text-muted-foreground">
+          <li key={`${testId}-${idx}`} className="rounded-lg border border-white/20 bg-white/[0.05] p-3">
+            <div className="flex items-start gap-2 text-sm leading-relaxed text-foreground/90">
               <ChevronRight className="w-3.5 h-3.5 text-cyan-300 mt-0.5 flex-shrink-0" />
               <span>{item}</span>
             </div>
-            <p className="text-xs text-muted-foreground/80 mt-2 leading-relaxed" data-testid={`${testId}-deep-line-${idx}`}>
+            <p className="text-sm text-muted-foreground mt-2 leading-relaxed" data-testid={`${testId}-deep-line-${idx}`}>
               {deepArchangelLine(title, item, idx)}
             </p>
           </li>
@@ -741,7 +741,7 @@ const AngelicAlchemy = ({ api }) => {
                       {item.sacred_geometry}
                     </span>
                   ) : null}
-                  <p className="text-xs text-muted-foreground line-clamp-3" data-testid={`angelic-card-description-${item.id}`}>{item.description}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-3 leading-relaxed" data-testid={`angelic-card-description-${item.id}`}>{item.description}</p>
                   <Button
                     type="button"
                     variant="outline"
