@@ -214,6 +214,19 @@ backend:
         comment: "✅ QUICK BACKEND SANITY PASSED (2026-06-30): Backend verification completed after frontend-only resilience patch. GET /api/healing-portals: 200 OK, returns 14 healing portals (non-empty JSON list) ✓. GET /api/payments/premium-products: 200 OK, returns valid JSON dict with 'products' key ✓. No backend regressions detected. Both endpoints functioning correctly."
 
 
+  - task: "Quick backend sanity after frontend body-map rollout"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ QUICK BACKEND SANITY PASSED (2026-07-01): Backend verification completed after frontend-only body-map rollout. All 4 endpoints verified: GET /api/fascia-stretching: 200 OK, returns 39 items (non-empty JSON list) ✓. GET /api/yoga/poses: 200 OK, returns 78 items (non-empty JSON list) ✓. GET /api/healing-portals: 200 OK, returns 14 items (non-empty JSON list) ✓. GET /api/energy-healing: 200 OK, returns 14 items (non-empty JSON list) ✓. No backend regressions detected. All endpoints functioning correctly with 200 status and non-empty JSON responses."
+
+
   - task: "Mantras API master_embodiment_protocol and youtube_tutorials"
     implemented: true
     working: true
