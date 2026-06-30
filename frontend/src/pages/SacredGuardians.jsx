@@ -210,9 +210,10 @@ const SacredGuardians = ({ user, api }) => {
             {filtered.map((guardian, index) => {
               const catInfo = CATEGORY_MAP[guardian.category] || CATEGORY_MAP.power_animal;
               const Icon = catInfo.icon;
+              const guardianCardKey = `${guardian.id || guardian.name || "guardian"}-${index}`;
               return (
                 <motion.div
-                  key={guardian.id}
+                  key={guardianCardKey}
                   layout
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}

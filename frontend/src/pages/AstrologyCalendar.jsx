@@ -328,8 +328,8 @@ const AstrologyCalendar = ({ api }) => {
                     <p className="text-sm text-muted-foreground mb-2">{month.dates}</p>
                     <p className={`text-xs ${colors.text}`}>{month.symbol} • {month.element}</p>
                     <div className="mt-4 flex flex-wrap gap-1">
-                      {month.themes?.slice(0, 2).map((theme) => (
-                        <span key={theme} className="px-2 py-1 rounded-full bg-white/5 text-xs">{theme}</span>
+                      {month.themes?.slice(0, 2).map((theme, themeIndex) => (
+                        <span key={`${month.id}-theme-${themeIndex}-${String(theme).slice(0, 18)}`} className="px-2 py-1 rounded-full bg-white/5 text-xs">{theme}</span>
                       ))}
                     </div>
                   </motion.div>

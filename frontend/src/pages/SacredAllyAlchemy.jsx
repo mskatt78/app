@@ -1083,9 +1083,9 @@ export default function SacredAllyAlchemy({ api }) {
                 </Button>
               </div>
             )}
-            {cards.map((item) => (
+            {cards.map((item, index) => (
               <div
-                key={item.id}
+                key={`${item.id || item.name || "sacred-ally"}-${index}`}
                 onClick={() => setSelected(item)}
                 onKeyDown={(event) => {
                   if (event.key === "Enter" || event.key === " ") {

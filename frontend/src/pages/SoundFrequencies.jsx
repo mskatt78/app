@@ -207,9 +207,10 @@ const SoundFrequencies = ({ user, api }) => {
             <AnimatePresence mode="popLayout">
               {filteredFreqs.map((freq, index) => {
                 const colors = getColors(freq.element);
+                const freqKey = `${freq.id || freq.name || "frequency"}-${index}`;
                 return (
                   <motion.div
-                    key={freq.id}
+                    key={freqKey}
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}

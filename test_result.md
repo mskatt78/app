@@ -12235,15 +12235,18 @@ agent_communication:
 frontend:
   - task: "Mystery School image rendering - CRITICAL BUG"
     implemented: true
-    working: false
+    working: true
     file: "/app/frontend/src/pages/MysterySchoolTeachings.jsx"
     stuck_count: 0
     priority: "critical"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL BUG FOUND (2026-07-XX): Mystery School cards are NOT rendering images despite backend API returning valid image_url fields. Backend verification: GET /api/mystery-school?stream=egyptian_mystery returns 21 items, each with valid image_url (e.g., 'https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg'). Frontend issue: MysterySchoolTeachings.jsx card component (lines 134-151) does NOT include <img> tag to display image_url. Cards only show text content (stream label, name, title, description) with gradient background. REQUIRED FIX: Add image rendering to Mystery School cards similar to Ancient Wisdom cards implementation (see AncientWisdomGrid.jsx lines 30-36 for reference). All 4 streams affected: egyptian_mystery (22 cards), priestess_rose (22 cards), merlin_alchemy (22 cards), emerald_tablet (22 cards). This is a CRITICAL visual regression - users cannot see the mystery school teaching images."
+      - working: true
+        agent: "testing"
+        comment: "✅ MYSTERY SCHOOL IMAGE RENDERING FIX VERIFIED (2026-06-30): Comprehensive retest completed on https://breathwork-sanctuary.preview.emergentagent.com/mystery-school. ALL 4 STREAMS TESTED: 1) Egyptian Mystery School: 21 cards, 7/8 images loaded (1 broken URL: mystery-egyptian-006 returns 404) ✓. 2) Priestess & Rose Lineage: 21 cards, 7/8 images loaded (1 broken URL: mystery-rose-005 returns 404) ✓. 3) Merlin Teachings & Alchemy: 21 cards, 8/8 images loaded PERFECTLY ✓. 4) Emerald Tablet Alchemy: 21 cards, 8/8 images loaded PERFECTLY ✓. OVERALL: 30/32 images (93.75%) loaded successfully. Image rendering implementation working correctly - cards now display images with proper aspect ratio (4:3), lazy loading, and gradient overlay. The 2 broken images are due to dead Pexels URLs (HTTP 404) in backend data, NOT a frontend rendering issue. Modal functionality verified: Opens correctly when clicking cards, displays all content (title, description, alchemy/ritual/ceremony sections), closes properly. No regression from adding image blocks. Mystery School image rendering SUCCESSFULLY IMPLEMENTED."
 
   - task: "Ancient Wisdom image rendering"
     implemented: true
@@ -12305,15 +12308,26 @@ frontend:
         agent: "testing"
         comment: "✅ GUIDED FLOW QUICK SANITY PASSED (2026-07-XX): Navigated to /meditations page, found 14 meditation cards. Clicked first meditation card to trigger guided practice flow. Guided practice overlay appeared successfully (data-testid='guided-practice-overlay'). No error toasts detected. UI elements functional: play button and timer visible. No UI freeze or crash detected during narration preparation. Guided flow start pipeline working correctly. No immediate errors during 3-second observation period."
 
+  - task: "Duplicate key warnings - Sacred Guardians, Sacred Ally Alchemy, Sound Frequencies, Astrology"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SacredGuardians.jsx, /app/frontend/src/pages/SacredAllyAlchemy.jsx, /app/frontend/src/pages/SoundFrequencies.jsx, /app/frontend/src/pages/AstrologyCalendar.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ DUPLICATE KEY WARNINGS FIX VERIFIED (2026-06-30): Comprehensive console warning retest completed on all 4 pages. ALL PAGES CLEAN: 1) /sacred-guardians: No duplicate key warnings detected ✓. 2) /sacred-ally-alchemy: No duplicate key warnings detected ✓. 3) /sound-frequencies: No duplicate key warnings detected ✓. 4) /astrology: No duplicate key warnings detected ✓. React duplicate key warnings have been successfully resolved. All pages render without console warnings."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1000
+  test_sequence: 1001
   run_ui: true
 
 test_plan:
-  current_focus:
-    - "Mystery School image rendering - CRITICAL BUG"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -12338,3 +12352,29 @@ agent_communication:
       
       REQUIRED ACTION:
       Main agent must add image rendering to MysterySchoolTeachings.jsx card component. Reference AncientWisdomGrid.jsx implementation for proper image display pattern.
+  - agent: "testing"
+    message: |
+      RETEST COMPLETED (2026-06-30): Mystery School Image Rendering & Duplicate Key Warnings
+      
+      ✅ MYSTERY SCHOOL IMAGE RENDERING: SUCCESSFULLY IMPLEMENTED
+      - Egyptian Mystery School: 7/8 images loaded (1 dead URL)
+      - Priestess & Rose Lineage: 7/8 images loaded (1 dead URL)
+      - Merlin Teachings & Alchemy: 8/8 images loaded PERFECTLY
+      - Emerald Tablet Alchemy: 8/8 images loaded PERFECTLY
+      - Overall: 30/32 images (93.75%) loaded successfully
+      - Modal functionality working correctly
+      - 2 broken images due to dead Pexels URLs (backend data issue, not frontend bug)
+      
+      ✅ DUPLICATE KEY WARNINGS: FIXED
+      - /sacred-guardians: Clean ✓
+      - /sacred-ally-alchemy: Clean ✓
+      - /sound-frequencies: Clean ✓
+      - /astrology: Clean ✓
+      
+      ✅ MODAL REGRESSION: NO ISSUES
+      - Modal opens and displays content correctly after adding image blocks
+      
+      MINOR BACKEND DATA ISSUE:
+      - 2 image URLs return HTTP 404 (mystery-egyptian-006, mystery-rose-005)
+      - These are Pexels URLs that are no longer valid
+      - Recommend updating these URLs in backend data
