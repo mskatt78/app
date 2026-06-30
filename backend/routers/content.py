@@ -995,7 +995,7 @@ MYSTERY_STREAM_IMAGE_POOLS: dict[str, list[str]] = {
         "https://images.pexels.com/photos/262786/pexels-photo-262786.jpeg?auto=compress&cs=tinysrgb&w=1400",
         "https://images.pexels.com/photos/2087391/pexels-photo-2087391.jpeg?auto=compress&cs=tinysrgb&w=1400",
         "https://images.pexels.com/photos/207518/pexels-photo-207518.jpeg?auto=compress&cs=tinysrgb&w=1400",
-        "https://images.pexels.com/photos/1839132/pexels-photo-1839132.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/325185/pexels-photo-325185.jpeg?auto=compress&cs=tinysrgb&w=1400",
     ],
     "priestess_rose": [
         "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1400",
@@ -1003,7 +1003,7 @@ MYSTERY_STREAM_IMAGE_POOLS: dict[str, list[str]] = {
         "https://images.pexels.com/photos/7214474/pexels-photo-7214474.jpeg?auto=compress&cs=tinysrgb&w=1400",
         "https://images.pexels.com/photos/5998567/pexels-photo-5998567.jpeg?auto=compress&cs=tinysrgb&w=1400",
         "https://images.pexels.com/photos/1252890/pexels-photo-1252890.jpeg?auto=compress&cs=tinysrgb&w=1400",
-        "https://images.pexels.com/photos/2693212/pexels-photo-2693212.jpeg?auto=compress&cs=tinysrgb&w=1400",
+        "https://images.pexels.com/photos/931162/pexels-photo-931162.jpeg?auto=compress&cs=tinysrgb&w=1400",
     ],
     "merlin_alchemy": [
         "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=1400",

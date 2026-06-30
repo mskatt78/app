@@ -3693,3 +3693,41 @@
 - **P0/P1 complete in this cycle**: Mystery School + Priestess/Rose + Emerald Tablet + Merlin integrations
 - **P1 next (optional)**: if desired, enable uncapped visibility for Mystery streams (currently kept tiered by request to preserve existing monetization logic)
 - **P2 backlog**: Sacred Journey Progress dashboard tracker (pending confirmation)
+
+
+## Latest Verification Snapshot (Iteration 245 — 2026-06-30)
+- ✅ Completed user-priority execution order: image alignment first, then narration floor, then retreat structure updates.
+- ✅ Thematic image correction completed:
+  - Backend now performs subject-aware image fallback resolution (title/name/stream/category keyword matching) in `backend/routers/content.py`.
+  - Mystery School streams now render diversified, stream-correct image pools (not one repeated generic image).
+  - Frontend Mystery School cards now visibly render images in `frontend/src/pages/MysterySchoolTeachings.jsx`.
+  - Replaced 2 dead URLs discovered in QA (`mystery-egyptian-006`, `mystery-rose-005`).
+- ✅ Guided narration floor raised globally to user-requested range baseline:
+  - Backend `MIN_NARRATION_MINUTES` increased from 7 → 15 in `/api/content/expand-script`.
+  - Frontend guided narration safeguards increased to 15-minute floor in:
+    - `frontend/src/components/guided/guidedNarrationUtils.js`
+    - `frontend/src/components/guided/useGuidedPracticeEngine.js`
+    - `frontend/src/components/guided/useGuidedAudioPlayback.js`
+  - Verified with live API tests: 10-min request auto-floors to 15; 20-min request remains 20.
+- ✅ Retreat data shape expanded for Physical/Online + Social links:
+  - Backend retreat normalization now adds/supports: `retreat_mode`, `supports_online`, `supports_physical`, `booking_url`, `online_session_url`, `social_media_links`.
+  - Frontend Retreats page shows mode + social links panel and fallback join button behavior.
+  - Admin Retreat CMS fields expanded: mode, online session URL, Instagram/YouTube/Facebook/TikTok/Website links.
+- ✅ Frontend stability refinements:
+  - Resolved duplicate-key warning hotspots flagged by QA in Guardians, Sacred Allies, Sound Frequencies, and Astrology themes.
+
+## Testing Summary (Iteration 245)
+- Backend deep test agent: **PASS** (all requested endpoints healthy; narration floor + image integrity + retreats API checks passed).
+- Frontend test agent (first pass): Found critical missing Mystery image rendering; fixed.
+- Frontend test agent (retest): **PASS** on critical scope (Mystery images rendering + modal behavior + duplicate-key warnings resolved).
+
+## Updated Priorities
+- **P0 complete in this cycle**: thematic image correctness for expanded content (including Mystery School visual rendering).
+- **P1 complete in this cycle**: narration minimum raised to 15+ minutes baseline and verified.
+- **P1 in progress**: app-wide app-store readiness polish continues (remaining final sweep items below).
+- **P2 backlog**: Sacred Journey Progress dashboard tracker (pending confirmation).
+
+## Next Action Items
+1. Final App Store readiness sweep (icons/splash/meta edge checks + route-level mobile QA pass).
+2. Add optional hard guardrail to ensure narrated voice remains within 15–20 min target band per selected session profile.
+3. Continue guided section alignment audit across any remaining lower-depth modalities.
