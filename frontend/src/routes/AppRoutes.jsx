@@ -51,6 +51,7 @@ const SacredGuardians = lazy(() => import("../pages/SacredGuardians"));
 const SacredAllyAlchemy = lazy(() => import("../pages/SacredAllyAlchemy"));
 const AngelicAlchemy = lazy(() => import("../pages/AngelicAlchemy"));
 const AllAlchemyHub = lazy(() => import("../pages/AllAlchemyHub"));
+const MysterySchoolTeachings = lazy(() => import("../pages/MysterySchoolTeachings"));
 const AncientWisdom = lazy(() => import("../pages/AncientWisdom"));
 const SoundFrequencies = lazy(() => import("../pages/SoundFrequencies"));
 const TarotReading = lazy(() => import("../pages/TarotReading"));
@@ -183,6 +184,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/angelic-alchemy" element={publicElement(AngelicAlchemy, PublicRoute, api)} />
       <Route path="/alchemy-hub" element={publicElement(AllAlchemyHub, PublicRoute, api)} />
       <Route path="/all-alchemy" element={publicElement(AllAlchemyHub, PublicRoute, api)} />
+      <Route path="/mystery-school-teachings" element={publicElement(MysterySchoolTeachings, PublicRoute, api)} />
       <Route path="/star-lineage" element={publicElement(StarLineageQuiz, PublicRoute, api)} />
       <Route path="/star-lineage/result/:lineageId" element={publicElement(StarLineageQuiz, PublicRoute, api)} />
       <Route path="/daily-practice" element={publicElement(DailySacredPractice, PublicRoute, api)} />

@@ -27,6 +27,7 @@ const resolveLegacyPath = (rawPathname) => {
     { match: ["mantras"], target: "/mantras" },
     { match: ["earthmedicines"], target: "/earth-altars" },
     { match: ["alchemy", "allalchemy", "alchemyhub"], target: "/alchemy-hub" },
+    { match: ["mystery", "egyptian", "emerald", "merlin", "priestess", "rose lineage"], target: "/mystery-school-teachings" },
     { match: ["mudras"], target: "/mudras" },
     { match: ["ancienttraditions", "ancientwisdom"], target: "/ancient-wisdom" },
     { match: ["runes", "runereadings"], target: "/rune-readings" },

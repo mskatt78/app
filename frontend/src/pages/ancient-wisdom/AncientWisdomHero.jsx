@@ -36,6 +36,36 @@ export const AncientWisdomHero = ({ navigate }) => {
             Journey through the sacred alchemical traditions of our world — Egyptian mysteries, Aboriginal Dreamtime,
             Celtic magic, Peruvian ceremonial wisdom, and the cosmic transmissions of Lemuria, Atlantis, and the Stars.
           </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-2" data-testid="ancient-wisdom-mystery-school-links">
+            <button
+              onClick={() => navigate("/mystery-school-teachings?stream=egyptian_mystery")}
+              className="px-3 py-2 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-200 text-sm hover:bg-amber-500/20 transition-colors"
+              data-testid="ancient-wisdom-open-egyptian-mystery-button"
+            >
+              Egyptian Mystery School
+            </button>
+            <button
+              onClick={() => navigate("/mystery-school-teachings?stream=priestess_rose")}
+              className="px-3 py-2 rounded-full border border-rose-500/30 bg-rose-500/10 text-rose-200 text-sm hover:bg-rose-500/20 transition-colors"
+              data-testid="ancient-wisdom-open-priestess-rose-button"
+            >
+              Priestess & Rose Lineage
+            </button>
+            <button
+              onClick={() => navigate("/mystery-school-teachings?stream=emerald_tablet")}
+              className="px-3 py-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-200 text-sm hover:bg-emerald-500/20 transition-colors"
+              data-testid="ancient-wisdom-open-emerald-tablet-button"
+            >
+              Emerald Tablet Alchemy
+            </button>
+            <button
+              onClick={() => navigate("/mystery-school-teachings?stream=merlin_alchemy")}
+              className="px-3 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-200 text-sm hover:bg-cyan-500/20 transition-colors"
+              data-testid="ancient-wisdom-open-merlin-button"
+            >
+              Merlin Teachings & Alchemy
+            </button>
+          </div>
         </motion.div>
       </div>
     </div>

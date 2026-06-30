@@ -40,7 +40,7 @@ const routeExists = (path) => {
     "/water-practices", "/tarot", "/rune-readings", "/i-ching", "/gene-keys", "/human-design",
     "/sacred-guardians", "/ancient-wisdom", "/sound-frequencies", "/free-form-movement", "/somatic-yoga", "/chair-yoga", "/fascia-stretching",
     "/chakra-cleansing", "/energy-healing", "/daily-practice", "/practice-journal", "/profile-calculator",
-    "/alchemy-hub", "/all-alchemy",
+    "/alchemy-hub", "/all-alchemy", "/mystery-school-teachings",
     "/community", "/courses", "/retreats", "/pricing", "/reviews", "/archangels", "/earth-altars",
   ]);
   return knownRoutes.has(normalized);
@@ -81,6 +81,7 @@ const TopNav = ({ user }) => {
     { path: resolvePath("/sacred-guardians"), icon: Shield, label: "Sacred Guardians", color: "text-amber-300" },
     { path: resolvePath("/sacred-guardians"), icon: Globe, label: "Power & Spirit Animals", color: "text-emerald-300" },
     { path: resolvePath("/alchemy-hub", "/all-alchemy"), icon: Sparkles, label: "All Alchemy Hub", color: "text-fuchsia-200" },
+    { path: resolvePath("/mystery-school-teachings"), icon: Star, label: "Mystery School", color: "text-amber-200" },
     { path: resolvePath("/angelic-alchemy"), icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300" },
     { path: resolvePath("/healing-portals"), icon: Orbit, label: "Healing Portals", color: "text-amber-300" },
     { path: resolvePath("/creative", "/creative-processes"), icon: Palette, label: "Creative Expression", color: "text-violet-400" },

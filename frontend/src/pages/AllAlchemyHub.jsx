@@ -9,9 +9,21 @@ import { appLogger } from "../utils/logger";
 const normalizeAlchemyItem = (item, source) => ({
   ...item,
   source,
-  sourceLabel: source === "sacred-allies" ? "Sacred Allies" : "Angelic Alchemy",
+  sourceLabel:
+    source === "sacred-allies"
+      ? "Sacred Allies"
+      : source === "mystery-school"
+        ? "Mystery School"
+        : "Angelic Alchemy",
   typeLabel: item?.ally_type || item?.category || item?.angelic_order || "Alchemy",
 });
+
+const MYSTERY_STREAMS = [
+  "egyptian_mystery",
+  "priestess_rose",
+  "emerald_tablet",
+  "merlin_alchemy",
+];
 
 export default function AllAlchemyHub({ user, api }) {
   const navigate = useNavigate();
@@ -24,9 +36,10 @@ export default function AllAlchemyHub({ user, api }) {
     let mounted = true;
     const fetchAlchemy = async () => {
       try {
-        const [sacredRes, angelicRes] = await Promise.all([
+        const [sacredRes, angelicRes, ...mysteryResults] = await Promise.all([
           api.get("/sacred-ally-alchemy"),
           api.get("/angelic-alchemy"),
+          ...MYSTERY_STREAMS.map((stream) => api.get("/mystery-school", { params: { stream } })),
         ]);
 
         if (!mounted) return;
@@ -38,7 +51,12 @@ export default function AllAlchemyHub({ user, api }) {
           ? angelicRes.data.map((item) => normalizeAlchemyItem(item, "angelic"))
           : [];
 
-        setItems([...sacred, ...angelic]);
+        const mystery = mysteryResults.flatMap((response) => {
+          if (!Array.isArray(response?.data)) return [];
+          return response.data.map((item) => normalizeAlchemyItem(item, "mystery-school"));
+        });
+
+        setItems([...sacred, ...angelic, ...mystery]);
       } catch (error) {
         appLogger.error("Failed loading alchemy hub", error);
       } finally {
@@ -59,17 +77,30 @@ export default function AllAlchemyHub({ user, api }) {
       const name = String(item?.name || "").toLowerCase();
       return name.includes("pleiadian") || name.includes("andromedan") || name.includes("sirian") || name.includes("star");
     }).length;
-    return { total, dragonCount, starLineageCount };
+    const mysteryCount = items.filter((item) => item.source === "mystery-school").length;
+    return { total, dragonCount, starLineageCount, mysteryCount };
   }, [items]);
 
   const handleCardClick = (item) => {
-    const sectionUnlocked = premium.isSectionUnlocked(item.source === "angelic" ? "angelic_alchemy" : "sacred_allies");
+    const unlockKey =
+      item.source === "angelic"
+        ? "angelic_alchemy"
+        : item.source === "mystery-school"
+          ? "mystery_school"
+          : "sacred_allies";
+
+    const sectionUnlocked = premium.isSectionUnlocked(unlockKey);
     if (item?.is_premium && !sectionUnlocked) {
       navigate("/pricing");
       return;
     }
 
-    const targetRoute = item.source === "angelic" ? "/angelic-alchemy" : "/sacred-ally-alchemy";
+    const targetRoute =
+      item.source === "angelic"
+        ? "/angelic-alchemy"
+        : item.source === "mystery-school"
+          ? `/mystery-school-teachings?stream=${item.stream || "egyptian_mystery"}`
+          : "/sacred-ally-alchemy";
     navigate(targetRoute);
   };
 
@@ -108,7 +139,7 @@ export default function AllAlchemyHub({ user, api }) {
                 Explore dragon, kundalini, and galactic lineages beside archangel pathways—without hopping between sections.
               </p>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-center" data-testid="all-alchemy-hub-stats">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center" data-testid="all-alchemy-hub-stats">
               <div className="rounded-xl bg-black/20 border border-white/10 px-3 py-2">
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Total</p>
                 <p className="text-lg font-semibold text-cyan-100" data-testid="all-alchemy-hub-total-count">{featuredStats.total}</p>
@@ -121,6 +152,10 @@ export default function AllAlchemyHub({ user, api }) {
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Star</p>
                 <p className="text-lg font-semibold text-fuchsia-100" data-testid="all-alchemy-hub-starlineage-count">{featuredStats.starLineageCount}</p>
               </div>
+              <div className="rounded-xl bg-black/20 border border-white/10 px-3 py-2">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">Mystery</p>
+                <p className="text-lg font-semibold text-amber-100" data-testid="all-alchemy-hub-mystery-count">{featuredStats.mysteryCount}</p>
+              </div>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">
@@ -129,6 +164,9 @@ export default function AllAlchemyHub({ user, api }) {
             </Button>
             <Button onClick={() => navigate("/angelic-alchemy")} className="bg-cyan-500/20 border border-cyan-500/30 text-cyan-100 hover:bg-cyan-500/30" data-testid="all-alchemy-hub-open-angelic-button">
               <Shield className="w-4 h-4 mr-2" /> Angelic Alchemy
+            </Button>
+            <Button onClick={() => navigate("/mystery-school-teachings")} className="bg-amber-500/20 border border-amber-500/30 text-amber-100 hover:bg-amber-500/30" data-testid="all-alchemy-hub-open-mystery-school-button">
+              <Star className="w-4 h-4 mr-2" /> Mystery School
             </Button>
           </div>
         </section>

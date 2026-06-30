@@ -28,7 +28,7 @@ const routeExists = (path) => {
     "/water-practices", "/tarot", "/rune-readings", "/i-ching", "/gene-keys", "/human-design",
     "/sacred-guardians", "/ancient-wisdom", "/sound-frequencies", "/free-form-movement", "/somatic-yoga", "/chair-yoga", "/fascia-stretching",
     "/chakra-cleansing", "/energy-healing", "/daily-practice", "/practice-journal", "/profile-calculator",
-    "/alchemy-hub", "/all-alchemy",
+    "/alchemy-hub", "/all-alchemy", "/mystery-school-teachings",
     "/community", "/courses", "/retreats", "/pricing", "/reviews", "/archangels", "/earth-altars",
   ]);
   return knownRoutes.has(normalized);
@@ -139,6 +139,7 @@ const MainMenuContainer = ({ user }) => {
         { path: "/shamanic", icon: Moon, label: "Shamanic Practices", color: "text-indigo-400", desc: "Journey & soul retrieval" },
         { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening ceremonies" },
         { path: resolvePath("/alchemy-hub", "/all-alchemy"), icon: Sparkles, label: "All Alchemy Hub", color: "text-fuchsia-200", desc: "Sacred allies + angelic in one section" },
+        { path: resolvePath("/mystery-school-teachings"), icon: BookOpen, label: "Mystery School Teachings", color: "text-amber-200", desc: "Egyptian, Rose, Emerald Tablet, Merlin" },
         { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Allies Alchemy", color: "text-fuchsia-300", desc: "Dragon, whales, wolves & expanded allies" },
         { path: resolvePath("/sacred-guardians"), icon: Feather, label: "Power Animals", color: "text-emerald-300", desc: "Instinct, courage, protection" },
         { path: resolvePath("/sacred-guardians"), icon: Star, label: "Spirit Animals", color: "text-violet-300", desc: "Guidance through symbols & dreams" },
