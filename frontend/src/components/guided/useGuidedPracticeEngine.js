@@ -233,7 +233,12 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       if (event.key === "guided_narration_mode" || event.key === "guided_narration_manual_override") {
         setSelectedNarrationMode(getGuidedNarrationMode());
       }
-      if (event.key === "guided_voice_profile" || event.key === "guided_speed_option") {
+      if (
+        event.key === "guided_voice_profile"
+        || event.key === "guided_speed_option"
+        || event.key === "guided_practice_overrides"
+        || event.key === "guided_narration_duration_by_modality"
+      ) {
         const stored = getGuidedPracticePreference(practicePreferenceKey);
         if (!stored) {
           setPlaybackVoiceProfile(getGuidedVoiceProfile());

@@ -3731,3 +3731,57 @@
 1. Final App Store readiness sweep (icons/splash/meta edge checks + route-level mobile QA pass).
 2. Add optional hard guardrail to ensure narrated voice remains within 15–20 min target band per selected session profile.
 3. Continue guided section alignment audit across any remaining lower-depth modalities.
+
+## Latest Verification Snapshot (Iteration 246 — 2026-06-30)
+- ✅ User-requested execution order completed in sequence:
+  1) Added optional narration profile controls per guided modality
+  2) Continued guided alignment across app-wide guided flows
+  3) Finished App Store readiness sweep (mobile/PWA/meta edges)
+
+- ✅ Narration profile controls (7–20 min) implemented:
+  - Added per-modality duration profile system in `frontend/src/utils/guidedNarrationSettings.js`.
+  - Added Settings controls in `SettingsGuidedAudioCard.jsx` for:
+    - General Guided
+    - Sunrise & Sunset
+    - Deep Healing
+    - Movement & Breathwork
+    - Ceremonial Journey
+  - Added quick picker in guided full-screen overlay (`GuidedPracticeContent.jsx`) with Voice / Speed / Narration Target controls.
+  - Per-practice override persistence now includes narration target minutes via `guidedVoiceSettings.js`.
+
+- ✅ Guided alignment continued for consistency:
+  - Overlay engine now respects modality defaults + per-practice overrides and uses them for script expansion requests.
+  - Guided button playback hook (`useGuidedAudioPlayback.js`) now reads modality duration defaults and applies profile-aware expansion duration.
+  - Narration minimum baseline updated from hard 15 to configurable 7–20 profile range.
+
+- ✅ Backend narration bounds updated to match UX controls:
+  - `backend/routers/content.py`: `MIN_NARRATION_MINUTES` set to `7` and max clamp set to `20`.
+  - `/api/content/expand-script` now enforces 7–20 duration targets safely.
+
+- ✅ App Store / PWA readiness sweep completed:
+  - Added `public/robots.txt`.
+  - Added `public/sitemap.xml` covering primary routes.
+  - Added `public/browserconfig.xml` and linked via `index.html` (`msapplication-config`).
+  - Added `apple-touch-icon-precomposed` link in `index.html`.
+  - Updated service worker cache version (`v7`) and expanded cacheable API route coverage (`/api/mystery-school`, `/api/water-practices`, `/api/retreats`, `/api/elemental-practices`, `/api/demo/highlights`).
+
+## Testing Summary (Iteration 246)
+- ✅ Frontend QA agent: **PASS**
+  - Settings narration profile controls verified
+  - Guided overlay quick picker verified
+  - App-wide guided flow sanity verified
+  - Mobile route sweep + PWA/meta checks verified
+- ✅ Backend deep testing agent: **PASS**
+  - `/api/content/expand-script` duration clamping verified (5→7, 7→7, 12→12, 20→20, 27→20)
+  - Mystery/ancient endpoints healthy
+  - Retreat endpoint healthy
+
+## Updated Priorities
+- **P0 complete**: narration profile controls and guided consistency alignment.
+- **P1 complete**: final App Store readiness sweep for this milestone.
+- **P2 backlog**: Sacred Journey Progress tracker (pending user confirmation).
+
+## Next Action Items
+1. Optional fine-tuning pass on modality-specific script style prompts (tone, cadence, archetypal language per modality).
+2. Add lightweight analytics for narration profile selection to learn which durations users keep.
+3. Continue backlog item: Sacred Journey Progress dashboard tracker.
