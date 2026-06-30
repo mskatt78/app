@@ -361,6 +361,216 @@ WATER_PRACTICE_SUPPLEMENTS = [
         ],
         "benefits": ["Intentional hydration", "Mental clarity", "Emotional coherence"],
     },
+    {
+        "id": "water-practice-101",
+        "name": "Elemental Tide Mapping",
+        "category": "blessing",
+        "duration_minutes": 16,
+        "description": "Track the emotional tides in your body and bless a glass of water with the exact medicine your nervous system needs.",
+        "materials": ["Clear glass", "Journal", "Small bowl of sea salt"],
+        "steps": [
+            "Scan your body and name the strongest emotional tide present.",
+            "Draw a small wave symbol in your journal beside that feeling.",
+            "Whisper a blessing into your water that matches the medicine needed (calm, courage, release, trust).",
+            "Sip slowly for seven breaths and record one embodied shift.",
+        ],
+        "benefits": ["Emotional literacy", "Nervous system regulation", "Intentional hydration"],
+    },
+    {
+        "id": "water-practice-102",
+        "name": "Blue Flame Purification Bowl",
+        "category": "ceremony",
+        "duration_minutes": 18,
+        "description": "A ceremonial cleanse where flame and water work together to release over-responsibility and energetic residue.",
+        "materials": ["Blue candle", "Ceremonial bowl", "Spring water"],
+        "steps": [
+            "Light a blue candle and place it behind your bowl of water.",
+            "Name one burden that is not yours to carry.",
+            "Trace three circles over the water and exhale the burden into the bowl.",
+            "Pour the water onto earth with gratitude and close with one boundary vow.",
+        ],
+        "benefits": ["Energetic release", "Boundary restoration", "Ritual completion"],
+    },
+    {
+        "id": "water-practice-103",
+        "name": "Ancestral River Whisper Rite",
+        "category": "ritual",
+        "duration_minutes": 20,
+        "description": "Offer a short prayer to your lineage through water, asking for wisdom without inheriting unresolved burden.",
+        "materials": ["Cup of water", "Ancestral photo or symbol", "Notebook"],
+        "steps": [
+            "Place ancestral symbol beside water and breathe steadily for one minute.",
+            "Speak gratitude for one inherited blessing.",
+            "Speak release for one inherited burden and ask for clean guidance.",
+            "Drink three mindful sips and journal one aligned action for the next day.",
+        ],
+        "benefits": ["Ancestral integration", "Emotional clarity", "Purpose alignment"],
+    },
+    {
+        "id": "water-practice-104",
+        "name": "Crystalline Coherence Drift",
+        "category": "crystalline",
+        "duration_minutes": 14,
+        "description": "Charge water with crystal coherence and breath pacing to settle scattered attention.",
+        "materials": ["Quartz point", "Glass jar", "Intention card"],
+        "steps": [
+            "Place quartz beside your jar and set one concise intention.",
+            "Breathe in for 4 and out for 6 over 12 cycles while holding the jar.",
+            "Whisper your intention three times into the water.",
+            "Drink half immediately and half after your next grounding task.",
+        ],
+        "benefits": ["Attention coherence", "Mental focus", "Subtle energy alignment"],
+    },
+    {
+        "id": "water-practice-105",
+        "name": "Sonic Rain Vessel Attunement",
+        "category": "frequency",
+        "duration_minutes": 12,
+        "description": "Use tone and vibration to entrain water with soothing frequencies before difficult conversations.",
+        "materials": ["Bowl of water", "Singing tone app or humming voice"],
+        "steps": [
+            "Generate a steady hum or tone for 3 minutes while gazing softly at the water.",
+            "Place one hand over throat and one over heart.",
+            "State one truth you will communicate with compassion.",
+            "Sip water slowly before speaking.",
+        ],
+        "benefits": ["Voice-heart coherence", "Communication calm", "Pre-conversation grounding"],
+    },
+    {
+        "id": "water-practice-106",
+        "name": "Hydration Prayer of Return",
+        "category": "blessing",
+        "duration_minutes": 10,
+        "description": "A compact morning prayer that turns routine hydration into devotional re-alignment.",
+        "materials": ["Morning water", "Quiet standing space"],
+        "steps": [
+            "Stand upright and soften your jaw and shoulders.",
+            "Speak: 'I return to my center, my truth, and my service.'",
+            "Drink water in four small rounds, pausing to feel your body each time.",
+            "Name one boundary and one blessing for the day.",
+        ],
+        "benefits": ["Morning centering", "Embodied intention", "Boundary clarity"],
+    },
+    {
+        "id": "water-practice-107",
+        "name": "Moonlit Nectar Devotion",
+        "category": "moon",
+        "duration_minutes": 15,
+        "description": "A moon-phase ritual to soothe emotional overdrive and invite intuitive repair.",
+        "materials": ["Moon water", "Silver bowl", "Rose petals"],
+        "steps": [
+            "Place moon water in a silver bowl with one rose petal.",
+            "Name what you are ready to soften, not force.",
+            "Touch water to forehead, throat, and heart.",
+            "Drink and close with three whispered words: 'Soften, trust, receive.'",
+        ],
+        "benefits": ["Emotional softening", "Intuitive access", "Sleep readiness"],
+    },
+    {
+        "id": "water-practice-108",
+        "name": "Salt Doorway Clearing",
+        "category": "cleansing",
+        "duration_minutes": 11,
+        "description": "Cleanse household thresholds with salt water to reduce energetic carryover and restore peace.",
+        "materials": ["Warm water", "Sea salt", "Small cloth"],
+        "steps": [
+            "Dissolve a pinch of salt into warm water.",
+            "Wipe doorframes clockwise while exhaling long and slow.",
+            "Name what is welcome in your home and what is complete.",
+            "Rinse cloth and close with gratitude at the main doorway.",
+        ],
+        "benefits": ["Household field reset", "Boundary hygiene", "Emotional containment"],
+    },
+    {
+        "id": "water-practice-109",
+        "name": "Ocean Pulse Recovery Soak",
+        "category": "healing",
+        "duration_minutes": 22,
+        "description": "A warm salt soak for palms and feet to downshift stress and return to body trust.",
+        "materials": ["Two warm basins", "Mineral salt", "Lavender oil (optional)"],
+        "steps": [
+            "Prepare warm basins and place feet and palms into water.",
+            "Breathe with a long exhale for 5 minutes.",
+            "Repeat quietly: 'My body is safe to soften now.'",
+            "Dry slowly and rest seated for two additional minutes.",
+        ],
+        "benefits": ["Stress recovery", "Somatic grounding", "Sleep support"],
+    },
+    {
+        "id": "water-practice-110",
+        "name": "Ceremonial Tears Alchemy",
+        "category": "ceremony",
+        "duration_minutes": 19,
+        "description": "A grief-honoring rite to transform emotional stagnation into compassionate movement.",
+        "materials": ["Bowl of water", "Hand towel", "Journal"],
+        "steps": [
+            "Place one hand on heart and one on lower belly.",
+            "Name the grief without editing or minimizing it.",
+            "Allow tears if present and touch fingertips to water between breaths.",
+            "Close by writing one supportive act you will offer yourself tonight.",
+        ],
+        "benefits": ["Grief processing", "Emotional honesty", "Self-compassion"],
+    },
+    {
+        "id": "water-practice-111",
+        "name": "Living Spring Intentional Sip",
+        "category": "blessing",
+        "duration_minutes": 9,
+        "description": "A short spring-water intention protocol for moments of indecision and fatigue.",
+        "materials": ["Fresh water", "Single clear sentence intention"],
+        "steps": [
+            "Hold the water and ask: 'What matters most right now?'",
+            "Speak one clear sentence of intention.",
+            "Take three tiny sips, each followed by one slow exhale.",
+            "Move immediately into one aligned action.",
+        ],
+        "benefits": ["Decision support", "Mental reset", "Action alignment"],
+    },
+    {
+        "id": "water-practice-112",
+        "name": "Pearl Frequency Heart Bath",
+        "category": "frequency",
+        "duration_minutes": 13,
+        "description": "A gentle vocal and breath resonance practice for heart repair and relational steadiness.",
+        "materials": ["Cup of water", "Soft humming tone"],
+        "steps": [
+            "Hum a low tone for six breaths while holding water at heart level.",
+            "Speak one forgiveness phrase toward yourself.",
+            "Sip and rest your tongue softly on the palate.",
+            "Finish by placing both palms on heart for one minute.",
+        ],
+        "benefits": ["Heart coherence", "Relational regulation", "Self-forgiveness"],
+    },
+    {
+        "id": "water-practice-113",
+        "name": "Starlight Water Lineage Blessing",
+        "category": "moon",
+        "duration_minutes": 17,
+        "description": "Charge water under stars to bless your path with humility, courage, and right timing.",
+        "materials": ["Night-charged water", "Sky-facing space"],
+        "steps": [
+            "Face the night sky and breathe slowly for twelve counts.",
+            "Name your lineage of support (ancestors, guides, Earth, stars).",
+            "Bless the water with one vow of integrity.",
+            "Drink and sit in silence for three minutes.",
+        ],
+        "benefits": ["Cosmic orientation", "Integrity anchoring", "Inner stillness"],
+    },
+    {
+        "id": "water-practice-114",
+        "name": "Riverstone Body Map Rinse",
+        "category": "cleansing",
+        "duration_minutes": 14,
+        "description": "Use water touch-points across the body map to release held stress and restore embodied presence.",
+        "materials": ["Small bowl of water", "Smooth stone"],
+        "steps": [
+            "Touch water to forehead, throat, sternum, navel, and soles of feet.",
+            "At each point, name one sensation without judging it.",
+            "Roll the riverstone in your palm while extending the exhale.",
+            "Complete with one grounding affirmation and a gentle shoulder shake.",
+        ],
+        "benefits": ["Somatic awareness", "Stress discharge", "Grounded presence"],
+    },
 ]
 
 HEART_PRACTICE_SUPPLEMENTS = [
@@ -561,6 +771,72 @@ ENERGY_HEALING_SUPPLEMENTS = [
     {"id": "energy-healing-pranic-210", "name": "Pranic Recovery Basin", "modality": "Pranic", "element": "Water", "duration_minutes": 17, "description": "Recover after overload with restorative pranic pooling and breath downregulation."},
     {"id": "energy-healing-pranic-211", "name": "Pranic Integrity Seal", "modality": "Pranic", "element": "Spirit", "duration_minutes": 12, "description": "Seal daily field integrity through brief ritualized completion practice."},
     {"id": "energy-healing-pranic-212", "name": "Pranic Daily Embodiment Close", "modality": "Pranic", "element": "Earth", "duration_minutes": 11, "description": "Close each day with practical integration, gratitude, and field reset."},
+    {"id": "energy-healing-supp-110", "name": "Solar-Lunar Pulse Harmonization", "modality": "Integrated", "element": "Fire & Water", "duration_minutes": 20, "description": "Balance sympathetic drive and parasympathetic recovery with alternating solar and lunar breath phases."},
+    {"id": "energy-healing-supp-111", "name": "Dragon Spine Voltage Clearing", "modality": "Dragon", "element": "Fire", "duration_minutes": 24, "description": "Clear spinal overcharge through paced movement, grounding breath, and intentional energetic containment."},
+    {"id": "energy-healing-supp-112", "name": "Kundalini Safety Arc", "modality": "Kundalini", "element": "Spirit", "duration_minutes": 22, "description": "A regulation-first kundalini protocol designed to awaken life-force without destabilizing the nervous system."},
+    {"id": "energy-healing-supp-113", "name": "Pleiadian Heart Field Bath", "modality": "Galactic", "element": "Water", "duration_minutes": 18, "description": "Soften emotional armor with star-lineage heart coherence visualization and compassionate breath pacing."},
+    {"id": "energy-healing-supp-114", "name": "Andromedan Nervous System Lattice", "modality": "Galactic", "element": "Air", "duration_minutes": 19, "description": "Rebuild energetic structure and focus through geometric breathing and embodied orientation cues."},
+    {"id": "energy-healing-supp-115", "name": "Sirian Temple Voice Alignment", "modality": "Galactic", "element": "Air", "duration_minutes": 17, "description": "Use vocal resonance to align throat expression with grounded truth and embodied integrity."},
+    {"id": "energy-healing-supp-116", "name": "Moon Meridian Repair Sequence", "modality": "Integrated", "element": "Water", "duration_minutes": 16, "description": "Release evening stress through meridian touch, long exhales, and lunar downshift pacing."},
+    {"id": "energy-healing-supp-117", "name": "Sunline Confidence Transmission", "modality": "Integrated", "element": "Fire", "duration_minutes": 15, "description": "Restore momentum with solar plexus activation and one actionable embodiment commitment."},
+    {"id": "energy-healing-supp-118", "name": "Earth Star Grounding Grid", "modality": "Pranic", "element": "Earth", "duration_minutes": 14, "description": "Anchor excess spiritual activation through root contact, weighted breath, and lower-body awareness."},
+    {"id": "energy-healing-supp-119", "name": "Aether Cord Reconciliation", "modality": "Quantum", "element": "Spirit", "duration_minutes": 21, "description": "Repair relational energetic cords with consent-centered release, compassion, and boundaries."},
+    {"id": "energy-healing-supp-120", "name": "Fascia Lightwave Melt", "modality": "Somatic", "element": "Water", "duration_minutes": 23, "description": "Melt fascia tension with wave-like breath and micro-mobility sequencing for whole-body relief."},
+    {"id": "energy-healing-supp-121", "name": "Oracle Wind Clarity Sweep", "modality": "Sound", "element": "Air", "duration_minutes": 13, "description": "Clear cognitive fog through breath, sound sweep, and focused attention rehearsal."},
+    {"id": "energy-healing-supp-122", "name": "Sacred Fire Boundary Consecration", "modality": "Sekhem", "element": "Fire", "duration_minutes": 18, "description": "Consecrate boundaries as sacred promises that protect life-force and relational integrity."},
+    {"id": "energy-healing-supp-123", "name": "Temple Water Integration Seal", "modality": "Reiki", "element": "Water", "duration_minutes": 12, "description": "Complete healing sessions by sealing the body field with water touch-points and gratitude prayer."},
+]
+
+ANCIENT_WISDOM_SUPPLEMENTS = [
+    {"id": "ancient-wisdom-supp-101", "name": "Temple of the Seven Springs", "tradition": "avalon", "title": "Waters of Remembering", "description": "A seven-stage Avalon spring rite for emotional healing, vow renewal, and embodied sovereignty.", "teachings": ["Water stores memory and can be consciously re-patterned.", "Vows spoken from regulation become stable medicine.", "Devotion must become daily action."], "practice": ["Touch water to brow, throat, heart, womb/navel, and palms.", "Speak one vow of integrity in each station.", "Journal one corrective action before sleep."], "image_url": "https://images.pexels.com/photos/1295138/pexels-photo-1295138.jpeg"},
+    {"id": "ancient-wisdom-supp-102", "name": "Celtic Well of Oaths", "tradition": "celtic", "title": "Boundary and Blessing Craft", "description": "A Celtic oath practice balancing fierce boundaries with compassionate leadership.", "teachings": ["Boundaries are sacred architecture.", "Speech is spellcraft; words shape destiny.", "Blessing without boundary becomes depletion."], "practice": ["Stand at dawn and state one no and one yes for your day.", "Anoint wrists with water and breathe 4/6 for twelve rounds.", "Close with gratitude for the boundary you upheld."], "image_url": "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg"},
+    {"id": "ancient-wisdom-supp-103", "name": "Kemetic Blue Lotus Vigil", "tradition": "egyptian", "title": "Heart-Mind Coherence Night Rite", "description": "An Egyptian dusk vigil using breath and contemplation to harmonize thought and feeling.", "teachings": ["Clarity is a devotional discipline.", "Mind and heart must negotiate, not dominate.", "Night contemplation prepares wise action."], "practice": ["Sit in candlelight for fifteen minutes.", "Inhale a guiding question, exhale a single honest answer.", "Write one concrete action for tomorrow morning."], "image_url": "https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg"},
+    {"id": "ancient-wisdom-supp-104", "name": "Andean Condor Descent", "tradition": "peruvian", "title": "Vision to Action Bridge", "description": "A mountain-lineage practice for translating high vision into grounded stewardship.", "teachings": ["Vision without embodiment becomes fantasy.", "Stewardship is spiritual maturity.", "Action completes revelation."], "practice": ["Face open sky and ask for one clear directive.", "Walk slowly while repeating that directive for nine breaths.", "Complete one practical expression before noon."], "image_url": "https://images.pexels.com/photos/1509582/pexels-photo-1509582.jpeg"},
+    {"id": "ancient-wisdom-supp-105", "name": "Lemurian Compassion Weave", "tradition": "lemurian", "title": "Relational Nervous System Healing", "description": "A heart-centric Lemurian weave for repairing relational ruptures with tenderness and accountability.", "teachings": ["Compassion and accountability belong together.", "Repair requires regulated presence.", "Listening is an embodied art."], "practice": ["Place one hand on heart and one on belly.", "Name the rupture without blame.", "Commit to one repair conversation and one self-repair act."], "image_url": "https://images.pexels.com/photos/775201/pexels-photo-775201.jpeg"},
+    {"id": "ancient-wisdom-supp-106", "name": "Atlantean Crystal Law", "tradition": "atlantean", "title": "Power-With Ethics", "description": "An Atlantean corrective teaching ensuring energetic power is anchored in ethics and service.", "teachings": ["Power amplifies intention, so ethics are non-negotiable.", "Service protects against spiritual narcissism.", "Precision is an act of care."], "practice": ["Hold a clear crystal and name your intent in one sentence.", "Ask: Who is served by this action?",
+"Seal with one measurable act of service."], "image_url": "https://images.pexels.com/photos/4017362/pexels-photo-4017362.jpeg"},
+    {"id": "ancient-wisdom-supp-107", "name": "Aboriginal Songline Return", "tradition": "aboriginal", "title": "Belonging Through Place", "description": "A place-based humility ritual to restore belonging and reciprocal relationship with land.", "teachings": ["Belonging is practiced through reciprocity.", "Listening to place precedes asking from place.", "Humility opens perception."], "practice": ["Walk in silence for ten minutes outdoors.", "Offer gratitude to land and its custodians.", "Commit one restorative action for your local ecology."], "image_url": "https://images.pexels.com/photos/726478/pexels-photo-726478.jpeg"},
+    {"id": "ancient-wisdom-supp-108", "name": "Pleiadian Rose Transmission", "tradition": "galactic", "title": "Emotional DNA Softening", "description": "A Pleiadian lineage ritual to soften inherited emotional armor and reopen devotional tenderness.", "teachings": ["Emotional healing is cosmic service.", "Tenderness is a strength practice.", "Heart repair reorganizes destiny."], "practice": ["Breathe sky-blue light into the heart for twelve cycles.", "Name one ancestral pattern you are ending.", "Seal with one relational gesture of care."], "image_url": "https://images.pexels.com/photos/196664/pexels-photo-196664.jpeg"},
+    {"id": "ancient-wisdom-supp-109", "name": "Andromedan Lattice Alignment", "tradition": "galactic", "title": "Geometric Nervous System Stability", "description": "An Andromedan coherence practice to rebuild structure after overwhelm or spiritual overextension.", "teachings": ["Structure protects sensitivity.", "Coherence is trainable.", "Embodied pacing prevents collapse."], "practice": ["Visualize a geometric lattice around your body.", "Breathe 4-in/6-out while tracing the lattice with awareness.", "Name one simplification that protects your energy."], "image_url": "https://images.pexels.com/photos/355465/pexels-photo-355465.jpeg"},
+    {"id": "ancient-wisdom-supp-110", "name": "Sirian Blue Star Discipline", "tradition": "galactic", "title": "Initiation Through Consistency", "description": "A Sirian initiation teaching focused on disciplined repetition as the path to mastery.", "teachings": ["Mystery is earned through consistency.", "Ritual repetition reshapes identity.", "Discipline can be devotional, not punitive."], "practice": ["Choose one 7-day ritual and keep it simple.", "Track completion before sleep each night.", "Offer gratitude for every day you kept your vow."], "image_url": "https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg"},
+    {"id": "ancient-wisdom-supp-111", "name": "Dragon Matriarch Fire Covenant", "tradition": "international", "title": "Sacred Courage and Protection", "description": "A dragon fire covenant for clean courage, truthful speech, and protective leadership.", "teachings": ["Courage without regulation becomes aggression.", "Protection begins with integrity.", "Fire must serve life."], "practice": ["Stand with grounded feet and soft knees.", "Speak one truth you have delayed speaking.", "Take one courageous, compassionate action within 24 hours."], "image_url": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg"},
+    {"id": "ancient-wisdom-supp-112", "name": "Moon Priestess Listening Seat", "tradition": "avalon", "title": "Cycles, Rest, and Intuition", "description": "A moon priestess seat practice restoring cyclical wisdom and rest-based power.", "teachings": ["Rest is part of sacred productivity.", "Cycles guide timing.", "Intuition speaks through the body."], "practice": ["Sit in low light and track body sensations for five minutes.", "Ask what cycle phase you are in emotionally.", "Align tomorrow's plan with your actual capacity."], "image_url": "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg"},
+    {"id": "ancient-wisdom-supp-113", "name": "Solar Priest Clarity Rite", "tradition": "egyptian", "title": "Purpose in Motion", "description": "A morning solar rite to translate insight into decisive, compassionate movement.", "teachings": ["Clarity requires motion.", "Purpose is renewed daily.", "Compassion and precision can coexist."], "practice": ["Face sunrise and breathe deeply for nine cycles.", "State one purpose sentence for the day.", "Complete the first aligned action before distractions begin."], "image_url": "https://images.pexels.com/photos/2480807/pexels-photo-2480807.jpeg"},
+    {"id": "ancient-wisdom-supp-114", "name": "Star Temple of Reconciliation", "tradition": "galactic", "title": "Lineage Healing Through Service", "description": "A cross-lineage star temple practice for reconciling old wounds through embodied service.", "teachings": ["Healing matures into service.", "Lineage repair is relational work.", "Service integrates spiritual insight."], "practice": ["Name one lineage pain point without blame.", "Offer one prayer for reconciliation.", "Take one concrete act of service that restores dignity."], "image_url": "https://images.pexels.com/photos/1252869/pexels-photo-1252869.jpeg"},
+]
+
+SACRED_GUARDIAN_SUPPLEMENTS = [
+    {"id": "sacred-guardian-supp-101", "name": "Blue Stag of Moon Wells", "category": "spirit_animal", "element": "Water", "description": "A moon-well guardian guiding emotional dignity, clean boundaries, and deep listening.", "symbolism": ["Emotional sovereignty", "Moon-bound wisdom", "Dignified boundaries"], "spiritual_gifts": ["Intuitive discernment", "Calm presence", "Emotional regulation"], "message": "Move slowly enough to hear what your heart already knows.", "how_to_connect": ["Evening walk under moonlight", "Water bowl reflection", "Journal one honest feeling"], "chakra": "Heart & Third Eye", "image_url": "https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg"},
+    {"id": "sacred-guardian-supp-102", "name": "Temple Jaguar of Precision", "category": "power_animal", "element": "Earth", "description": "Jaguar medicine for sovereign movement, energetic stealth, and decisive integrity.", "symbolism": ["Stealth and precision", "Boundary mastery", "Shadow courage"], "spiritual_gifts": ["Strategic focus", "Fear transmutation", "Grounded confidence"], "message": "You do not need noise to hold power; precision is enough.", "how_to_connect": ["Silent walking meditation", "Low-light breath practice", "One courageous micro-action"], "chakra": "Solar Plexus & Root", "image_url": "https://images.pexels.com/photos/792381/pexels-photo-792381.jpeg"},
+    {"id": "sacred-guardian-supp-103", "name": "Emerald Dragon Sentinel", "category": "dragon_energy", "element": "Earth", "description": "Dragon guardian of heart-protected leadership, ecological reciprocity, and grounded fire.", "symbolism": ["Protective leadership", "Earth stewardship", "Courage with tenderness"], "spiritual_gifts": ["Boundary fire", "Leadership integrity", "Resource protection"], "message": "Lead in a way that protects life, not ego.", "how_to_connect": ["Stand barefoot on earth", "Speak one leadership vow", "Complete one stewardship action"], "chakra": "Heart & Root", "image_url": "https://images.pexels.com/photos/2872418/pexels-photo-2872418.jpeg"},
+    {"id": "sacred-guardian-supp-104", "name": "Sirian Lion Gatekeeper", "category": "dragon_energy", "element": "Fire", "description": "A solar guardian from the Sirian current, strengthening noble action and disciplined devotion.", "symbolism": ["Solar courage", "Nobility", "Disciplined devotion"], "spiritual_gifts": ["Brave communication", "Purpose ignition", "Energetic protection"], "message": "Let your courage be clean, not performative.", "how_to_connect": ["Dawn prayer facing east", "Solar breath cycles", "Truthful speech practice"], "chakra": "Solar Plexus", "image_url": "https://images.pexels.com/photos/247502/pexels-photo-247502.jpeg"},
+    {"id": "sacred-guardian-supp-105", "name": "Andromedan Owl of Clear Sight", "category": "messenger", "element": "Air", "description": "A clear-sight messenger helping separate intuition from anxiety and signal from noise.", "symbolism": ["Night clarity", "Discernment", "Pattern recognition"], "spiritual_gifts": ["Intuitive accuracy", "Strategic insight", "Mental steadiness"], "message": "Clarity arrives when you stop arguing with what is true.", "how_to_connect": ["Night sky observation", "Single-question journaling", "Breath-led decision check"], "chakra": "Third Eye", "image_url": "https://images.pexels.com/photos/1054655/pexels-photo-1054655.jpeg"},
+    {"id": "sacred-guardian-supp-106", "name": "Rose Wolf of Devotional Pack", "category": "spirit_animal", "element": "Water", "description": "Pack medicine for relational healing, fierce tenderness, and reciprocal belonging.", "symbolism": ["Loyalty", "Relational repair", "Sacred belonging"], "spiritual_gifts": ["Trust rebuilding", "Compassionate boundaries", "Relational courage"], "message": "Belonging is built through repeated integrity.", "how_to_connect": ["Name your trusted circle", "Repair one strained conversation", "Offer one honest blessing"], "chakra": "Heart", "image_url": "https://images.pexels.com/photos/346941/pexels-photo-346941.jpeg"},
+    {"id": "sacred-guardian-supp-107", "name": "Golden Eagle of High Vision", "category": "messenger", "element": "Air", "description": "High-vision messenger that aligns long-term strategy with embodied values.", "symbolism": ["Perspective", "Leadership vision", "Purpose altitude"], "spiritual_gifts": ["Long-view clarity", "Decision confidence", "Mission focus"], "message": "Rise high enough to see what truly matters.", "how_to_connect": ["Elevated viewpoint meditation", "Three-year vision note", "One immediate aligned step"], "chakra": "Crown & Third Eye", "image_url": "https://images.pexels.com/photos/355241/pexels-photo-355241.jpeg"},
+    {"id": "sacred-guardian-supp-108", "name": "River Otter Joy Keeper", "category": "familiar", "element": "Water", "description": "A playful familiar restoring joy pathways when healing work becomes overly heavy.", "symbolism": ["Play as medicine", "Fluid resilience", "Social warmth"], "spiritual_gifts": ["Mood recovery", "Relational ease", "Creative flow"], "message": "Joy is not a distraction from healing; it is part of it.", "how_to_connect": ["Five-minute play break", "Water laughter ritual", "Gentle social reconnection"], "chakra": "Sacral", "image_url": "https://images.pexels.com/photos/301920/pexels-photo-301920.jpeg"},
+    {"id": "sacred-guardian-supp-109", "name": "Obsidian Raven Threshold", "category": "messenger", "element": "Air", "description": "Threshold raven medicine for endings, transitions, and truthful re-entry.", "symbolism": ["Threshold crossing", "Truth unveiling", "Ending completion"], "spiritual_gifts": ["Transition support", "Courageous truth", "Spiritual messaging"], "message": "You are at a threshold; cross with intention.", "how_to_connect": ["Doorway pause ritual", "Name what is complete", "Speak your next threshold vow"], "chakra": "Throat & Third Eye", "image_url": "https://images.pexels.com/photos/326900/pexels-photo-326900.jpeg"},
+    {"id": "sacred-guardian-supp-110", "name": "Aqua Serpent Renewal", "category": "dragon_energy", "element": "Water", "description": "Serpent-dragon hybrid guardian for kundalini-aware renewal and soft, paced awakening.", "symbolism": ["Shedding", "Renewal", "Life-force awakening"], "spiritual_gifts": ["Embodied transformation", "Trauma-aware activation", "Regulated power"], "message": "Shed what is complete; do not rush your becoming.", "how_to_connect": ["Spinal wave breath", "Hydration with intention", "Grounding after activation"], "chakra": "Root to Crown", "image_url": "https://images.pexels.com/photos/45246/green-tree-python-python-tree-python-green-45246.jpeg"},
+    {"id": "sacred-guardian-supp-111", "name": "Aurora Swan Messenger", "category": "messenger", "element": "Water", "description": "Swan messenger of graceful boundaries, relational elegance, and emotional truth.", "symbolism": ["Grace", "Relational beauty", "Heart truth"], "spiritual_gifts": ["Elegant communication", "Emotional expression", "Self-respect"], "message": "Grace is precision with compassion.", "how_to_connect": ["Slow neck and chest opening", "Speak one difficult truth gently", "Close with hand on heart"], "chakra": "Heart & Throat", "image_url": "https://images.pexels.com/photos/64219/swans-swan-water-bird-64219.jpeg"},
+    {"id": "sacred-guardian-supp-112", "name": "Temple Bee of Sacred Work", "category": "familiar", "element": "Earth", "description": "Bee familiar medicine for focused contribution, sustainable rhythm, and communal reciprocity.", "symbolism": ["Sacred work", "Communal service", "Steady rhythm"], "spiritual_gifts": ["Focus", "Productive devotion", "Collaborative care"], "message": "Tiny consistent acts become sacred architecture.", "how_to_connect": ["90-minute focus ritual", "One act of communal care", "Honey gratitude offering"], "chakra": "Solar Plexus", "image_url": "https://images.pexels.com/photos/460961/pexels-photo-460961.jpeg"},
+    {"id": "sacred-guardian-supp-113", "name": "Cedar Bear Night Protector", "category": "power_animal", "element": "Earth", "description": "Bear protection for deep rest, boundary repair, and recovery from overextension.", "symbolism": ["Rest as power", "Protective boundaries", "Embodied recovery"], "spiritual_gifts": ["Nervous system downshift", "Boundary restoration", "Sustainable strength"], "message": "Rest is a strategic spiritual practice.", "how_to_connect": ["Evening den ritual", "Boundary journaling", "Weighted grounding before sleep"], "chakra": "Root", "image_url": "https://images.pexels.com/photos/158340/brown-bear-wild-animal-nature-158340.jpeg"},
+    {"id": "sacred-guardian-supp-114", "name": "Luminous Falcon of Right Timing", "category": "messenger", "element": "Fire", "description": "Falcon messenger for right timing, decisive action, and strategic patience.", "symbolism": ["Right timing", "Precision action", "Strategic patience"], "spiritual_gifts": ["Timing discernment", "Decisive focus", "Calm execution"], "message": "Do not force timing; meet it with readiness.", "how_to_connect": ["Pause before action", "Name readiness signals", "Execute one aligned step"], "chakra": "Solar Plexus & Third Eye", "image_url": "https://images.pexels.com/photos/1097456/pexels-photo-1097456.jpeg"},
+]
+
+SACRED_ALLY_GALACTIC_SUPPLEMENTS = [
+    {"id": "sacred-ally-supp-101", "name": "Pleiadian Rose Grid Alchemy", "ally_type": "pleiadian", "category": "galactic_allies", "element": "water", "description": "Pleiadian heart-grid work for emotional repair, tenderness, and compassionate leadership.", "alchemy_teachings": ["Emotional mastery is a core star mission.", "Tenderness is structured strength.", "Heart coherence improves discernment."], "rituals": ["Blue-light breath for 12 cycles.", "Hand on heart and throat truth invocation.", "One compassionate action within 24 hours."], "ceremonies": ["Rose Grid Opening", "Heart Repair Vow", "Compassionate Action Seal"], "journal_prompts": ["Where does tenderness need structure?", "What old grief am I ready to release?"], "affirmations": ["I lead with coherent compassion."], "image_url": "https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg"},
+    {"id": "sacred-ally-supp-102", "name": "Andromedan Lattice Intelligence", "ally_type": "andromedan", "category": "galactic_allies", "element": "air", "description": "Andromedan geometric alignment for focus, resilience, and nervous-system structure.", "alchemy_teachings": ["Structure protects sensitivity.", "Coherence is built through repetition.", "Clean systems preserve life-force."], "rituals": ["Geometric breath square 4-4-4-4.", "Body-lattice visualization scan.", "Simplify one chaotic commitment."], "ceremonies": ["Lattice Alignment Ceremony", "Signal-to-Noise Reset", "Structure Commitment Rite"], "journal_prompts": ["What structure protects my mission?", "Where am I leaking energy?"], "affirmations": ["My energy is structured, clear, and precise."], "image_url": "https://images.pexels.com/photos/355465/pexels-photo-355465.jpeg"},
+    {"id": "sacred-ally-supp-103", "name": "Sirian Blue Flame Protocol", "ally_type": "sirian", "category": "galactic_allies", "element": "fire", "description": "Sirian discipline sequence for noble action, integrity, and sacred leadership.", "alchemy_teachings": ["Initiation is consistency.", "Leadership requires inner law.", "Power must be anchored in service."], "rituals": ["Dawn blue-flame visualization.", "Speak one integrity vow.", "Complete one courageous action."], "ceremonies": ["Blue Flame Invocation", "Noble Action Gate", "Integrity Seal"], "journal_prompts": ["Where is discipline asking to mature?", "What would noble action look like today?"], "affirmations": ["My power serves life and truth."], "image_url": "https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg"},
+    {"id": "sacred-ally-supp-104", "name": "Dragon Wombfire Reclamation", "ally_type": "dragon", "category": "dragon", "element": "fire", "description": "Dragon wombfire work for reclaiming suppressed power and safe embodied sovereignty.", "alchemy_teachings": ["Power and softness can coexist.", "Sovereignty starts in the body.", "Fire needs containment to heal."], "rituals": ["Pelvic bowl breathing.", "Boundary declaration with grounded stance.", "Courageous communication rehearsal."], "ceremonies": ["Wombfire Awakening", "Sovereignty Boundary Circle", "Action Oath"], "journal_prompts": ["Where do I silence my fire?", "What boundary protects my life-force?"], "affirmations": ["My fire is sacred, safe, and sovereign."], "image_url": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg"},
+    {"id": "sacred-ally-supp-105", "name": "Kundalini Serpent Safety Spiral", "ally_type": "serpent", "category": "kundalini", "element": "spirit", "description": "A trauma-aware serpent spiral for awakening life-force with regulation and pacing.", "alchemy_teachings": ["Awakening without regulation destabilizes.", "Slow is often the fastest safe path.", "Embodiment anchors expansion."], "rituals": ["Spinal wave movement.", "Long-exhale breath with orienting pauses.", "Grounding touch to feet and legs."], "ceremonies": ["Serpent Spiral Opening", "Regulated Rise", "Embodiment Closure"], "journal_prompts": ["What pace serves my nervous system?", "Where do I need more grounding?"], "affirmations": ["I rise in wisdom and regulation."], "image_url": "https://images.pexels.com/photos/45246/green-tree-python-python-tree-python-green-45246.jpeg"},
+    {"id": "sacred-ally-supp-106", "name": "Arcturian Healing Chamber Interface", "ally_type": "arcturian", "category": "galactic_allies", "element": "air", "description": "Arcturian chamber protocol for light-body recalibration and integrated recovery.", "alchemy_teachings": ["Healing is architectural.", "Light-body care requires embodiment.", "Recovery is strategic, not passive."], "rituals": ["Violet-gold chamber visualization.", "Breath-led field scan.", "Hydration and grounding close."], "ceremonies": ["Chamber Entry", "Cellular Light Infusion", "Grounded Re-Entry"], "journal_prompts": ["What does my body need to integrate?", "Where can I recover more intelligently?"], "affirmations": ["I receive healing with grounded wisdom."], "image_url": "https://images.pexels.com/photos/2150/sky-space-dark-galaxy.jpg"},
+    {"id": "sacred-ally-supp-107", "name": "Hydian Water Serpent Codes", "ally_type": "hydian", "category": "galactic_allies", "element": "water", "description": "Hydian serpent teachings for water memory healing, cyclical release, and DNA remembrance.", "alchemy_teachings": ["Water stores emotional history.", "Release is cyclical, not linear.", "Body is a cosmic archive."], "rituals": ["Moon water charging.", "Spine-to-heart breath wave.", "Water blessing before sleep."], "ceremonies": ["Hydian Water Blessing", "Serpent Memory Release", "DNA Gratitude Seal"], "journal_prompts": ["What memory is ready to be re-patterned?", "How can I honor my cycles?"], "affirmations": ["My waters remember healing and truth."], "image_url": "https://images.pexels.com/photos/355887/pexels-photo-355887.jpeg"},
+    {"id": "sacred-ally-supp-108", "name": "Cassiopeian Akashic Thread", "ally_type": "cassiopeian", "category": "galactic_allies", "element": "spirit", "description": "Cassiopeian threadwork for soul-memory access and purpose clarification.", "alchemy_teachings": ["Memory can be medicine.", "Purpose is remembered through practice.", "Sovereignty requires self-honesty."], "rituals": ["Crown-light breathing.", "Ask one akashic question.", "Document received signal."], "ceremonies": ["Akashic Doorway", "Purpose Clarification", "Service Commitment"], "journal_prompts": ["What soul lesson is repeating?", "What purpose is asking embodiment now?"], "affirmations": ["I remember and embody my sacred purpose."], "image_url": "https://images.pexels.com/photos/1252869/pexels-photo-1252869.jpeg"},
+    {"id": "sacred-ally-supp-109", "name": "Orion Boundary Spear", "ally_type": "orion", "category": "galactic_allies", "element": "fire", "description": "Orion ally work for strategic boundaries, clean decision-making, and mission focus.", "alchemy_teachings": ["Strategy protects compassion.", "Clarity demands commitment.", "Boundaries are mission support."], "rituals": ["Stance and breath alignment.", "Write one boundary decision.", "Execute one focused action."], "ceremonies": ["Spear of Clarity", "Mission Boundary Rite", "Focused Action Seal"], "journal_prompts": ["What decision am I postponing?", "Which boundary protects my mission?"], "affirmations": ["My clarity creates clean momentum."], "image_url": "https://images.pexels.com/photos/355241/pexels-photo-355241.jpeg"},
+    {"id": "sacred-ally-supp-110", "name": "Dragon of Emerald Earth", "ally_type": "dragon", "category": "dragon", "element": "earth", "description": "Emerald earth-dragon guidance for ecological devotion and grounded prosperity ethics.", "alchemy_teachings": ["Prosperity without reciprocity degrades spirit.", "Earth stewardship is sacred wealth.", "Embodied presence stabilizes leadership."], "rituals": ["Barefoot grounding with gratitude.", "Offer one ecological repair act.", "Bless income with reciprocity intention."], "ceremonies": ["Earth Dragon Invocation", "Reciprocity Vow", "Stewardship Action Gate"], "journal_prompts": ["Where can I practice reciprocity today?", "How does my work serve Earth?"], "affirmations": ["My prosperity is reciprocal and life-serving."], "image_url": "https://images.pexels.com/photos/6468/animal-snake-reptile-eye.jpg"},
+    {"id": "sacred-ally-supp-111", "name": "Kundalini Lotus Current", "ally_type": "serpent", "category": "kundalini", "element": "water", "description": "Lotus-serpent current for awakening creativity, sensual integrity, and emotional coherence.", "alchemy_teachings": ["Creativity needs nervous-system safety.", "Sensuality and integrity are allies.", "Coherence sustains awakening."], "rituals": ["Pelvic bowl breathing with soft jaw.", "Creative free-write for ten minutes.", "Ground with foot pressure and hydration."], "ceremonies": ["Lotus Opening", "Creative Current Activation", "Embodiment Seal"], "journal_prompts": ["What creative impulse needs protection?", "Where can I soften without collapsing?"], "affirmations": ["My creative life-force is safe and sacred."], "image_url": "https://images.pexels.com/photos/1054655/pexels-photo-1054655.jpeg"},
+    {"id": "sacred-ally-supp-112", "name": "Pleiadian Childlight Renewal", "ally_type": "pleiadian", "category": "galactic_allies", "element": "air", "description": "A Pleiadian renewal sequence for inner-child repair, joy restoration, and relational softness.", "alchemy_teachings": ["Joy is strategic medicine.", "Inner-child work is spiritual architecture.", "Softness restores relational intelligence."], "rituals": ["Heart humming for seven breaths.", "Write a supportive note to your younger self.", "Complete one playful restorative act."], "ceremonies": ["Childlight Invocation", "Tender Repair", "Joy Seal"], "journal_prompts": ["What did my younger self need to hear?", "What restores my joy safely?"], "affirmations": ["Joy and tenderness strengthen my path."], "image_url": "https://images.pexels.com/photos/196664/pexels-photo-196664.jpeg"},
+    {"id": "sacred-ally-supp-113", "name": "Andromedan Signal Purity", "ally_type": "andromedan", "category": "galactic_allies", "element": "air", "description": "Signal-purity work to reduce mental noise and sharpen intuitive precision.", "alchemy_teachings": ["Signal requires silence.", "Precision is compassionate.", "Simplicity protects intuition."], "rituals": ["Two-minute silence before decisions.", "Single-question inquiry practice.", "Action from first coherent answer."], "ceremonies": ["Signal Purity Gate", "Noise Release", "Precision Action Seal"], "journal_prompts": ["What noise can I release now?", "What is the cleanest next step?"], "affirmations": ["My signal is clear and trustworthy."], "image_url": "https://images.pexels.com/photos/110854/pexels-photo-110854.jpeg"},
+    {"id": "sacred-ally-supp-114", "name": "Sirian Temple Reconciliation", "ally_type": "sirian", "category": "galactic_allies", "element": "water", "description": "Sirian reconciliation current for restoring dignity after conflict through disciplined compassion.", "alchemy_teachings": ["Dignity and repair can coexist.", "Compassion needs structure.", "Reconciliation requires truthful action."], "rituals": ["Regulate breath before contact.", "Name impact without blame.", "Offer one specific repair action."], "ceremonies": ["Temple Reconciliation Opening", "Truth and Repair Dialogue", "Dignity Closure"], "journal_prompts": ["What repair is mine to make?", "How can I protect dignity for all involved?"], "affirmations": ["I reconcile with truth, dignity, and courage."], "image_url": "https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg"},
 ]
 
 MINDFULNESS_SUPPLEMENTS = [
@@ -2957,6 +3233,65 @@ def _append_water_supplements(practices: list[dict[str, Any]], category: Optiona
     return practices + additions
 
 
+def _append_sacred_guardian_supplements(items: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(item.get("id")) for item in items}
+    additions = []
+    category_filter = str(category or "").strip().lower()
+    for item in SACRED_GUARDIAN_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if category_filter and str(item.get("category", "")).strip().lower() != category_filter:
+            continue
+        additions.append(item)
+    return items + additions
+
+
+def _append_ancient_wisdom_supplements(items: list[dict[str, Any]], tradition: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(item.get("id")) for item in items}
+    additions = []
+    tradition_filter = str(tradition or "").strip().lower()
+    for item in ANCIENT_WISDOM_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+        if tradition_filter and str(item.get("tradition", "")).strip().lower() != tradition_filter:
+            continue
+        additions.append(item)
+    return items + additions
+
+
+def _append_sacred_ally_galactic_supplements(
+    items: list[dict[str, Any]],
+    category: Optional[str],
+    ally_type: Optional[str],
+) -> list[dict[str, Any]]:
+    existing_ids = {str(item.get("id")) for item in items}
+    additions = []
+    category_filter = str(category or "").strip().lower()
+    ally_filter = str(ally_type or "").strip().lower()
+    kundalini_aliases = {"kundalini", "kundulini", "serpent-kundalini", "kundalini-consciousness"}
+
+    for item in SACRED_ALLY_GALACTIC_SUPPLEMENTS:
+        if item["id"] in existing_ids:
+            continue
+
+        item_category = str(item.get("category", "")).strip().lower()
+        item_ally_type = str(item.get("ally_type", "")).strip().lower()
+
+        if category_filter and item_category != category_filter:
+            continue
+
+        if ally_filter:
+            if ally_filter in kundalini_aliases:
+                if item_ally_type != "serpent":
+                    continue
+            elif item_ally_type != ally_filter:
+                continue
+
+        additions.append(item)
+
+    return items + additions
+
+
 def _append_heart_supplements(practices: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
     existing_ids = {str(practice.get("id")) for practice in practices}
     additions = []
@@ -3054,14 +3389,16 @@ def _enrich_sacred_tool_birthing_entry(item: dict[str, Any]) -> dict[str, Any]:
         "Thread, cord, or binding material aligned to your intention",
     ])
     enriched.setdefault("ritual", [
-        "Open by naming lineage respect, consent, and the purpose of the tool you are birthing.",
-        "Cleanse materials with breath, water, or smoke-free prayer while speaking gratitude aloud.",
-        "Seal the completed tool with a boundary vow: when and how it will be used in service.",
+        "Day 0 orientation: name lineage respect, consent, and ecological reciprocity before touching materials.",
+        "Day 1 gathering blessing: cleanse each material with breath or water while speaking gratitude aloud.",
+        "Day 2 crafting vow: begin assembly only after body, breath, and intention are coherent.",
+        "Day 3 consecration: dedicate the tool with a spoken purpose prayer and service boundary.",
     ])
     enriched.setdefault("ceremony", [
-        "Threshold: orient body, invoke protection, and commit to ethical sourcing before crafting.",
-        "Creation: craft in rhythmic breath cycles, pausing for sensation check-ins every few minutes.",
-        "Consecration: dedicate the tool with a spoken prayer and one concrete integrity commitment.",
+        "Threshold night: orient body, invoke protection, and record where every material came from.",
+        "Crafting day: work in rhythmic breath cycles and pause every 15 minutes for sensation check-ins.",
+        "Rest day: leave the tool untouched for one sleep cycle so intention can settle into form.",
+        "Consecration day: awaken the tool with prayer, breath, sound, and one concrete integrity commitment.",
     ])
     enriched.setdefault("guided_practice", [
         f"Arrival: hold {name} materials in both hands and breathe slowly for one minute.",
@@ -3074,10 +3411,19 @@ def _enrich_sacred_tool_birthing_entry(item: dict[str, Any]) -> dict[str, Any]:
         "Every sourcing decision is part of the ceremony and shapes the spiritual integrity of the outcome.",
     ])
     enriched.setdefault("process_steps", [
-        "Confirm ethical origin of each material and record provenance before assembly.",
-        "Set the crafting altar with one object for gratitude and one for accountability.",
-        "Craft in silence or prayerful chanting, then pause to feel whether the tool is complete.",
-        "Consecrate with breath, water, and intention; close with a grounded integration action.",
+        "Day 0 (Preparation): confirm ethical origin of each material and record provenance before assembly.",
+        "Day 1 (Gathering): set a gratitude altar and introduce each material with breath and blessing.",
+        "Day 2 (Crafting): craft in silence or prayerful chanting with periodic nervous-system regulation breaks.",
+        "Day 3 (Resting): place the nearly finished tool in a clean cloth overnight with one protective prayer.",
+        "Day 4 (Consecration): activate with breath, water, sound, and explicit service vow.",
+        "Day 5 (Embodiment): use the tool in a short ceremony and document what changed in your body-field.",
+    ])
+    enriched.setdefault("multi_day_pathway", [
+        "Preparation (Day 0): ethical sourcing audit, reciprocity offering, and intention clarity.",
+        "Gathering (Day 1): ritual introduction of materials and body-based grounding.",
+        "Crafting (Day 2): focused construction with breath pacing and trauma-aware pauses.",
+        "Resting (Day 3): no crafting; allow integration, dreams, and symbolic messages to surface.",
+        "Consecration + Embodiment (Days 4-5): blessing, activation, first ceremonial use, and integration journaling.",
     ])
     enriched.setdefault("spiritual_purpose", "Birth sacred tools through ceremonial integrity, ecological reciprocity, and embodied devotion.")
     return enriched
@@ -5846,7 +6192,8 @@ async def get_sacred_guardians(category: Optional[str] = None) -> list[dict[str,
     query = {}
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
-    guardians = await db.sacred_guardians.find(query, {"_id": 0}).to_list(length=100)
+    guardians = await db.sacred_guardians.find(query, {"_id": 0}).to_list(length=220)
+    guardians = _append_sacred_guardian_supplements(guardians, category)
     enriched = [_enrich_devotional_language(_enrich_content_integrity(guardian, "hybrid-curated"), "sacred-guardians") for guardian in guardians]
     return _apply_free_paid_tiering(enriched, "sacred_guardians")
 
@@ -5877,7 +6224,8 @@ async def get_sacred_ally_alchemy(category: Optional[str] = None, ally_type: Opt
         else:
             query["ally_type"] = {"$regex": f"^{ally_type}$", "$options": "i"}
 
-    items = await db.sacred_ally_alchemy.find(query, {"_id": 0}).to_list(length=300)
+    items = await db.sacred_ally_alchemy.find(query, {"_id": 0}).to_list(length=360)
+    items = _append_sacred_ally_galactic_supplements(items, category, ally_type)
     enriched = [
         _enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "sacred-allies")
         for item in items
@@ -6120,7 +6468,8 @@ async def get_ancient_wisdom(tradition: Optional[str] = None) -> list[dict[str, 
     query = {}
     if tradition:
         query["tradition"] = {"$regex": f"^{tradition}$", "$options": "i"}
-    entries = await db.ancient_wisdom.find(query, {"_id": 0}).to_list(length=200)
+    entries = await db.ancient_wisdom.find(query, {"_id": 0}).to_list(length=260)
+    entries = _append_ancient_wisdom_supplements(entries, tradition)
     enriched_entries = []
     for entry in entries:
         entry_copy = dict(entry)

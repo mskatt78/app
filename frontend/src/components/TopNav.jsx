@@ -40,6 +40,7 @@ const routeExists = (path) => {
     "/water-practices", "/tarot", "/rune-readings", "/i-ching", "/gene-keys", "/human-design",
     "/sacred-guardians", "/ancient-wisdom", "/sound-frequencies", "/free-form-movement", "/somatic-yoga", "/chair-yoga", "/fascia-stretching",
     "/chakra-cleansing", "/energy-healing", "/daily-practice", "/practice-journal", "/profile-calculator",
+    "/alchemy-hub", "/all-alchemy",
     "/community", "/courses", "/retreats", "/pricing", "/reviews", "/archangels", "/earth-altars",
   ]);
   return knownRoutes.has(normalized);
@@ -79,6 +80,7 @@ const TopNav = ({ user }) => {
     { path: resolvePath("/sacred-ally-alchemy"), icon: Sparkles, label: "Sacred Allies", color: "text-fuchsia-300" },
     { path: resolvePath("/sacred-guardians"), icon: Shield, label: "Sacred Guardians", color: "text-amber-300" },
     { path: resolvePath("/sacred-guardians"), icon: Globe, label: "Power & Spirit Animals", color: "text-emerald-300" },
+    { path: resolvePath("/alchemy-hub", "/all-alchemy"), icon: Sparkles, label: "All Alchemy Hub", color: "text-fuchsia-200" },
     { path: resolvePath("/angelic-alchemy"), icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300" },
     { path: resolvePath("/healing-portals"), icon: Orbit, label: "Healing Portals", color: "text-amber-300" },
     { path: resolvePath("/creative", "/creative-processes"), icon: Palette, label: "Creative Expression", color: "text-violet-400" },
@@ -97,7 +99,7 @@ const TopNav = ({ user }) => {
     { path: resolvePath("/astrology"), icon: Moon, label: "Sun & Moon", color: "text-blue-400" },
     { path: resolvePath("/sound-frequencies"), icon: Music2, label: "Sound Healing", color: "text-cyan-400" },
     { path: resolvePath("/earth-altars", "/creative"), icon: TreePine, label: "Earth Medicines", color: "text-emerald-300" },
-    { path: resolvePath("/angelic-alchemy"), icon: Sparkles, label: "Alchemy", color: "text-violet-300" },
+    { path: resolvePath("/alchemy-hub", "/all-alchemy", "/angelic-alchemy"), icon: Sparkles, label: "Alchemy", color: "text-violet-300" },
     { path: resolvePath("/rose-temple"), icon: Flower2, label: "Rose Temple", color: "text-rose-400" },
     { path: resolvePath("/elemental-temples"), icon: Globe, label: "Elemental Temples", color: "text-teal-400" },
     { path: resolvePath("/masculine-temple"), icon: Shield, label: "Masculine Temple", color: "text-amber-400" },

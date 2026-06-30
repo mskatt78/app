@@ -162,6 +162,111 @@ const SunriseSunsetPractices = ({ user, api }) => {
         "Seal by touching earth and naming one concrete action within 24 hours.",
       ],
       affirmation: "I cross this threshold in truth, coherence, and devoted action."
+    },
+    {
+      id: "sunrise-8",
+      name: "Solar Spine Ignition",
+      description: "A focused sunrise spinal sequence that awakens life-force without overwhelming your system.",
+      duration_minutes: 11,
+      element: "Fire",
+      best_time: "Within 20 minutes of sunrise",
+      benefits: ["Spinal activation", "Motivation", "Embodied focus"],
+      steps: [
+        "Stand tall, inhale with arms overhead, exhale while softening knees.",
+        "Trace slow spinal waves for 2 minutes while breathing 4-in / 6-out.",
+        "Name one courageous action and bow toward the morning light.",
+      ],
+      affirmation: "My spine carries clear purpose and grounded courage."
+    },
+    {
+      id: "sunrise-9",
+      name: "Morning Lionheart Invocation",
+      description: "A dawn voice-and-breath protocol for confidence and compassionate leadership.",
+      duration_minutes: 10,
+      element: "Air",
+      best_time: "At first full daylight",
+      benefits: ["Voice confidence", "Emotional steadiness", "Leadership alignment"],
+      steps: [
+        "Place one hand on throat and one on heart.",
+        "Hum for five long exhales, then speak your daily truth sentence.",
+        "Close with one integrity vow for the day.",
+      ],
+      affirmation: "I speak with courage, clarity, and kindness."
+    },
+    {
+      id: "sunrise-10",
+      name: "Dawn Water Crowning",
+      description: "Bless and drink water at sunrise to crown your day with coherence and intention.",
+      duration_minutes: 9,
+      element: "Water",
+      best_time: "As sunlight reaches your space",
+      benefits: ["Hydration ritual", "Mental clarity", "Nervous system calm"],
+      steps: [
+        "Hold a glass of water at heart level and breathe for one minute.",
+        "Speak one blessing and one boundary into the water.",
+        "Drink in three slow rounds while tracking body sensation.",
+      ],
+      affirmation: "I begin this day clear, hydrated, and aligned."
+    },
+    {
+      id: "sunrise-11",
+      name: "Sun Gate Boundary Prayer",
+      description: "A practical sunrise prayer to protect your energy and shape your day with integrity.",
+      duration_minutes: 8,
+      element: "Spirit",
+      best_time: "Before entering work or digital spaces",
+      benefits: ["Boundary clarity", "Stress prevention", "Intentional action"],
+      steps: [
+        "Stand at a doorway and place one hand on your sternum.",
+        "Speak one sentence of what is welcome and what is not.",
+        "Take three long exhales and cross the threshold with awareness.",
+      ],
+      affirmation: "I choose what enters my field and what leaves it."
+    },
+    {
+      id: "sunrise-12",
+      name: "Aurora Focus Grid",
+      description: "A sunrise concentration ritual that channels attention into one high-impact priority.",
+      duration_minutes: 12,
+      element: "Air",
+      best_time: "After hydration, before notifications",
+      benefits: ["Focus", "Task clarity", "Reduced overwhelm"],
+      steps: [
+        "Write your single priority for the morning.",
+        "Breathe for 12 cycles while visualizing completion.",
+        "Start immediately with a 20-minute uninterrupted focus sprint.",
+      ],
+      affirmation: "My attention is sacred and purposefully directed."
+    },
+    {
+      id: "sunrise-13",
+      name: "Phoenix Dawn Recommitment",
+      description: "A renewal ritual for mornings after burnout, grief, or emotional heaviness.",
+      duration_minutes: 14,
+      element: "Fire",
+      best_time: "Any dawn when you need a reset",
+      benefits: ["Renewal", "Resilience", "Self-forgiveness"],
+      steps: [
+        "Name what ended and thank it for its lesson.",
+        "Breathe with hands on belly and heart for 2 minutes.",
+        "State one simple recommitment and take the first small action.",
+      ],
+      affirmation: "I rise renewed with humility and strength."
+    },
+    {
+      id: "sunrise-14",
+      name: "Stellar Compass Alignment",
+      description: "A sky-facing sunrise ritual that aligns daily choices with long-term soul direction.",
+      duration_minutes: 13,
+      element: "Spirit",
+      best_time: "Clear-sky morning or near a window",
+      benefits: ["Directionality", "Purpose coherence", "Emotional steadiness"],
+      steps: [
+        "Gaze upward softly and ask: 'What is mine to do today?'",
+        "Receive one clear phrase and write it down.",
+        "Anchor it by naming one concrete action and start within 10 minutes.",
+      ],
+      affirmation: "My daily steps honor my greater path."
     }
   ];
 
@@ -335,6 +440,111 @@ const SunriseSunsetPractices = ({ user, api }) => {
         "Close with gratitude and one line of self-forgiveness before rest.",
       ],
       affirmation: "I release with grace and rest in sacred peace."
+    },
+    {
+      id: "sunset-9",
+      name: "Moon Basin Emotional Reset",
+      description: "A lunar water-basin ritual for decompressing emotional overload before sleep.",
+      duration_minutes: 14,
+      element: "Water",
+      best_time: "After sunset and before devices",
+      benefits: ["Emotional reset", "Nervous system softening", "Sleep readiness"],
+      steps: [
+        "Fill a small basin with cool water and place it in front of you.",
+        "Dip fingertips and trace brow, throat, and heart.",
+        "Name one emotion you are releasing and one need you are honoring tonight.",
+      ],
+      affirmation: "My emotions are honored, and I return to calm."
+    },
+    {
+      id: "sunset-10",
+      name: "Evening Boundary Closure",
+      description: "Close the day with a boundary ritual so unresolved tension does not follow you into sleep.",
+      duration_minutes: 9,
+      element: "Earth",
+      best_time: "Immediately after work transitions",
+      benefits: ["Boundary repair", "Mental closure", "Rest quality"],
+      steps: [
+        "Stand at your doorway and exhale fully three times.",
+        "Say: 'Work is complete. My body returns home.'",
+        "Wash hands in warm water and release jaw and shoulders.",
+      ],
+      affirmation: "I close this chapter and return to myself."
+    },
+    {
+      id: "sunset-11",
+      name: "Starlight Nervous System Downshift",
+      description: "A gentle body-led protocol for transitioning from stimulation to restoration.",
+      duration_minutes: 12,
+      element: "Air",
+      best_time: "Before dinner or evening conversation",
+      benefits: ["Parasympathetic activation", "Reduced reactivity", "Evening clarity"],
+      steps: [
+        "Inhale 4 counts, exhale 8 counts for ten rounds.",
+        "Lengthen your exhale with a soft hum for five breaths.",
+        "Place hands on ribs and thank your body for carrying the day.",
+      ],
+      affirmation: "I downshift with grace and return to steadiness."
+    },
+    {
+      id: "sunset-12",
+      name: "Dusk Gratitude to Grief Bridge",
+      description: "A healing sunset bridge practice that allows gratitude and grief to coexist.",
+      duration_minutes: 16,
+      element: "Water",
+      best_time: "When emotions feel mixed or heavy",
+      benefits: ["Grief processing", "Heart opening", "Integration"],
+      steps: [
+        "Write one gratitude and one grief from today.",
+        "Place both hands over heart and breathe with each line.",
+        "Close by saying: 'Both can be true, and I can hold both.'",
+      ],
+      affirmation: "My heart is spacious enough for truth and tenderness."
+    },
+    {
+      id: "sunset-13",
+      name: "Twilight Spine Unwinding",
+      description: "A brief spinal unwinding flow to release accumulated fascia tension before bed.",
+      duration_minutes: 11,
+      element: "Earth",
+      best_time: "Post-dinner, pre-sleep",
+      benefits: ["Fascia release", "Body comfort", "Sleep preparation"],
+      steps: [
+        "Move through slow cat-cow for 2 minutes.",
+        "Add gentle side bends and seated twists with long exhale.",
+        "Lie down and feel your spine settle for one minute.",
+      ],
+      affirmation: "I release the day from my spine and return to ease."
+    },
+    {
+      id: "sunset-14",
+      name: "Night Prayer of Completion",
+      description: "A final completion prayer to end looping thoughts and enter sleep with trust.",
+      duration_minutes: 8,
+      element: "Spirit",
+      best_time: "Lights low, right before bed",
+      benefits: ["Mental closure", "Faithful surrender", "Restful sleep"],
+      steps: [
+        "Sit at bedside with one hand on heart and one on belly.",
+        "Speak three lines: what I completed, what I release, what I trust.",
+        "Take six long exhales and lie down without checking your phone.",
+      ],
+      affirmation: "This day is complete. I surrender into healing rest."
+    },
+    {
+      id: "sunset-15",
+      name: "Lunar Dream Gate Ritual",
+      description: "Open your dream gate with intentional moon-phase listening and gentle subconscious priming.",
+      duration_minutes: 13,
+      element: "Water",
+      best_time: "Last ritual before sleep",
+      benefits: ["Dream clarity", "Subconscious integration", "Intuitive insight"],
+      steps: [
+        "Write one question you want dream guidance on.",
+        "Touch moon water to forehead and heart.",
+        "Repeat your question softly three times and sleep.",
+      ],
+      affirmation: "My dreams guide me with clarity, safety, and truth."
     }
   ];
 
