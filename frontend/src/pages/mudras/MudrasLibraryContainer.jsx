@@ -420,13 +420,15 @@ const MudrasLibrary = ({ user, api }) => {
                   <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="mudra-why-this-heals">
                     <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Why this heals</h4>
                     <p className="text-sm text-cyan-100/80 leading-relaxed">
-                      Mudras engage sensory-motor pathways that help anchor awareness, calm internal agitation, and reinforce intentional breathing.
+                      {selectedMudra.why_this_heals ||
+                        "Mudras engage sensory-motor pathways that anchor awareness, calm internal agitation, and reinforce intentional breathing."}
                     </p>
                   </div>
                   <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="mudra-integration-guide">
                     <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-2">Integration</h4>
                     <p className="text-sm text-amber-100/80 leading-relaxed">
-                      After release, place one palm on heart and one on belly for five slow breaths to integrate the energetic shift.
+                      {selectedMudra.integration_guide ||
+                        "After release, place one palm on heart and one on belly for five slow breaths to integrate the energetic shift."}
                     </p>
                   </div>
                 </div>

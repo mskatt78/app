@@ -575,13 +575,15 @@ export const MantrasPlayer = ({
                 <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="mantra-why-this-heals">
                   <h4 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h4>
                   <p className="text-sm text-emerald-100/80 leading-relaxed">
-                    Repetition at stable rhythm helps settle fight-or-flight activation, while vocal resonance supports vagal tone and emotional regulation.
+                    {selectedMantra.why_this_heals ||
+                      "Rhythmic chanting and coherent breath entrain the nervous system, reduce stress reactivity, and deepen embodied steadiness."}
                   </p>
                 </div>
                 <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="mantra-integration-guide">
                   <h4 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration</h4>
                   <p className="text-sm text-violet-100/80 leading-relaxed">
-                    After chanting, sit in silence for 1-3 minutes. Let the vibration settle before returning to activity.
+                    {selectedMantra.integration_guide ||
+                      "After chanting, sit in silence for 1-3 minutes, then complete one grounded action that reflects your mantra intention."}
                   </p>
                 </div>
               </div>

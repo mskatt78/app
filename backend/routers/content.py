@@ -891,6 +891,93 @@ MANTRA_SUPPLEMENTS = [
     {"id": "mantra-supp-210", "name": "Om Shanti Hridaya", "sanskrit": "ॐ शान्ति हृदय", "transliteration": "Om Shanti Hridaya", "element": "earth", "duration_minutes": 13, "meaning": "Peace anchors in my body, speech, and relationships."},
 ]
 
+MUDRA_SUPPLEMENTS = [
+    {
+        "id": "mudra-supp-301",
+        "name": "Hakini Mudra",
+        "sanskrit_name": "Hakini Mudra",
+        "element": "Air",
+        "chakra": "Third Eye",
+        "benefits": [
+            "Focus and memory recall",
+            "Cognitive coherence",
+            "Breath-mind synchronization",
+        ],
+        "instructions": "Bring all fingertips of both hands to touch lightly in front of chest, tongue resting at upper palate, and breathe slowly.",
+        "practice_tips": "Practice before study, strategy, or high-stakes communication. Keep shoulders relaxed and eyes soft.",
+    },
+    {
+        "id": "mudra-supp-302",
+        "name": "Kubera Mudra",
+        "sanskrit_name": "Kubera Mudra",
+        "element": "Fire",
+        "chakra": "Solar Plexus",
+        "benefits": [
+            "Purposeful intention",
+            "Decisive action",
+            "Manifestation discipline",
+        ],
+        "instructions": "Join thumb, index, and middle fingertips while curling ring and little fingers inward. Hold with calm, stable breath.",
+        "practice_tips": "Use when setting practical goals. End by naming one measurable step for the next 24 hours.",
+    },
+    {
+        "id": "mudra-supp-303",
+        "name": "Uttarabodhi Mudra",
+        "sanskrit_name": "Uttarabodhi Mudra",
+        "element": "Spirit",
+        "chakra": "Heart & Crown",
+        "benefits": [
+            "Inner confidence",
+            "Uplifted mood",
+            "Spiritual clarity",
+        ],
+        "instructions": "Interlace fingers, extend index fingers upward, and keep thumbs crossed. Lift gently at heart center while breathing deeply.",
+        "practice_tips": "Excellent for morning prayer or before difficult transitions. Keep jaw and pelvic floor soft.",
+    },
+    {
+        "id": "mudra-supp-304",
+        "name": "Kalesvara Mudra",
+        "sanskrit_name": "Kalesvara Mudra",
+        "element": "Water",
+        "chakra": "Heart",
+        "benefits": [
+            "Impulse regulation",
+            "Emotional settling",
+            "Heart coherence",
+        ],
+        "instructions": "Touch middle fingertips together, curl remaining fingers inward, and keep thumbs touching at tips to form a heart-like seal.",
+        "practice_tips": "Use during stress spikes; extend exhale longer than inhale and soften eyes.",
+    },
+    {
+        "id": "mudra-supp-305",
+        "name": "Matangi Mudra",
+        "sanskrit_name": "Matangi Mudra",
+        "element": "Earth",
+        "chakra": "Solar Plexus",
+        "benefits": [
+            "Digestive calm",
+            "Core steadiness",
+            "Emotional centering",
+        ],
+        "instructions": "Interlace fingers and extend middle fingers together upward. Rest hands near solar plexus and breathe into lower ribs.",
+        "practice_tips": "Helpful before meals or decision fatigue. Hold for 5-8 minutes with grounded posture.",
+    },
+    {
+        "id": "mudra-supp-306",
+        "name": "Yoni Mudra",
+        "sanskrit_name": "Yoni Mudra",
+        "element": "Water",
+        "chakra": "Sacral",
+        "benefits": [
+            "Nervous-system restoration",
+            "Inner listening",
+            "Creative reset",
+        ],
+        "instructions": "Bring thumbs and index fingers together to form a downward triangle, other fingers interlaced, held near lower belly.",
+        "practice_tips": "Use in evening or after overstimulation. Pair with slow nasal breathing and low light.",
+    },
+]
+
 SHAMANIC_ADVANCED_SUPPLEMENTS = [
     {
         "id": "shamanic-advanced-soul-retrieval",
@@ -2709,6 +2796,40 @@ def _enrich_mantra_entry(mantra: dict[str, Any]) -> dict[str, Any]:
         enriched.setdefault("youtube_tutorials", _build_youtube_tutorial_links(name, "mantra chanting", MANTRA_DIRECT_VIDEO_MAP))
     if not enriched.get("master_embodiment_protocol"):
         enriched["master_embodiment_protocol"] = _build_mantra_master_protocol(enriched)
+
+    translation_line = str(enriched.get("translation") or enriched.get("meaning") or "Return to sacred steadiness.").strip()
+    element_name = str(enriched.get("element") or "spirit").strip().lower()
+    chakra_name = str(enriched.get("chakra") or "heart").strip().lower()
+
+    enriched.setdefault("alchemy", [
+        f"Sound entrainment: {name} stabilizes attention and lowers cognitive fragmentation through rhythmic repetition.",
+        f"Elemental embodiment: this mantra tones the {element_name} pathway to restore emotional and energetic coherence.",
+        f"Chakra resonance: direct awareness through the {chakra_name} center while chanting to integrate vibration into tissue memory.",
+        "Behavior bridge: translate post-chant clarity into one concrete action within 24 hours.",
+    ])
+    enriched.setdefault("ritual", [
+        "Prepare seat, spine, and jaw; begin with five long exhales before first repetition.",
+        f"Chant {name} in consistent cadence while tracking one body anchor (heart, belly, or hands).",
+        "Complete with one minute of silence and a handwritten integration note.",
+    ])
+    enriched.setdefault("ceremony", [
+        "Opening: invoke intention and name what is ready to be transformed.",
+        "Middle: maintain repetition with regulated breath and compassionate precision.",
+        "Closure: absorb resonance in stillness, then seal with one integrity vow.",
+    ])
+    enriched.setdefault("guided_practice", [
+        f"Phase 1 — Arrival: settle breath and introduce {name} gently for 2 minutes.",
+        "Phase 2 — Immersion: sustain repetitions with relaxed throat and coherent exhale rhythm.",
+        f"Phase 3 — Integration: receive the medicine line '{translation_line}' in silence and action planning.",
+    ])
+    enriched.setdefault(
+        "why_this_heals",
+        f"{name} combines patterned vocal resonance, breath regulation, and attentional training to settle stress reactivity and reinforce embodied emotional stability.",
+    )
+    enriched.setdefault(
+        "integration_guide",
+        "After chanting, keep one hand on heart and one on lower belly for five slow breaths; then take one grounded action that reflects your mantra intention.",
+    )
     enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "mantra"))
     return enriched
 
@@ -2779,6 +2900,37 @@ def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
                 "Day 7: Review changes in clarity, regulation, and consistency; set next-week progression.",
             ],
         }
+
+    element_name = str(enriched.get("element") or "spirit").strip().lower()
+    enriched.setdefault("alchemy", [
+        f"Somatic circuitry: {mudra_name} refines subtle current flow through gentle fingertip contact and breath pacing.",
+        f"Elemental attunement: this mudra supports {element_name} regulation while reducing mental scatter.",
+        "Neuroception support: hand seals provide tactile anchors that can lower hypervigilance and improve present-moment safety.",
+        "Integration ethic: release slowly and translate internal calm into practical relational behavior.",
+    ])
+    enriched.setdefault("ritual", [
+        f"Form {mudra_name} with soft pressure; avoid over-pressing fingertips.",
+        "Breathe 4-in/6-out for at least 12 cycles while tracking body sensation.",
+        "Close with wrist release and one grounded integration breath at the heart.",
+    ])
+    enriched.setdefault("ceremony", [
+        "Opening: orient posture and set one precise intention.",
+        f"Middle: hold {mudra_name} in calm concentration while observing energetic shifts.",
+        "Closure: release, re-ground, and name one concrete change you will embody next.",
+    ])
+    enriched.setdefault("guided_practice", [
+        f"Phase 1 — Setup: establish {mudra_name} and soften shoulders, jaw, and belly.",
+        "Phase 2 — Regulation: maintain mudra through paced breathing and subtle interoception checks.",
+        "Phase 3 — Integration: dissolve the mudra slowly and carry the felt state into immediate daily action.",
+    ])
+    enriched.setdefault(
+        "why_this_heals",
+        f"{mudra_name} combines tactile feedback, breath rhythm, and attentional containment to calm stress activation and improve mind-body coherence.",
+    )
+    enriched.setdefault(
+        "integration_guide",
+        "After releasing the mudra, place one palm on heart and one on lower belly for five breaths, then complete one grounded task to anchor the shift.",
+    )
 
     enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "mudra"))
 
@@ -3340,6 +3492,21 @@ def _append_mantra_supplements(practices: list[dict[str, Any]], element: Optiona
         if element_filter and str(item.get("element", "")).lower() != element_filter:
             continue
         additions.append(item)
+    return practices + additions
+
+
+def _append_mudra_supplements(practices: list[dict[str, Any]], element: Optional[str]) -> list[dict[str, Any]]:
+    existing_ids = {str(practice.get("id")) for practice in practices}
+    additions = []
+    element_filter = str(element or "").strip().lower()
+
+    for item in MUDRA_SUPPLEMENTS:
+        if str(item.get("id")) in existing_ids:
+            continue
+        if element_filter and str(item.get("element", "")).strip().lower() != element_filter:
+            continue
+        additions.append(item)
+
     return practices + additions
 
 
@@ -5579,7 +5746,8 @@ async def get_mudras(element: Optional[str] = None) -> list[dict[str, Any]]:
     if element:
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
-    mudras = await db.mudras.find(query, {"_id": 0}).to_list(length=100)
+    mudras = await db.mudras.find(query, {"_id": 0}).to_list(length=120)
+    mudras = _append_mudra_supplements(mudras, element)
 
     # Remove duplicated mudra records by normalized mudra name to avoid repeated images/content.
     unique_by_name: dict[str, dict[str, Any]] = {}
