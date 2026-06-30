@@ -17,8 +17,11 @@ import {
 } from "./guidedNarrationUtils";
 import { auditDurationAlignment, resolveDurationMinutes } from "../../utils/durationUtils";
 import {
+  getEffectiveGuidedNarrationDurationMinutes,
+  getGuidedNarrationDurationPresetOptions,
   getGuidedNarrationMode,
   getEffectiveGuidedNarrationMode,
+  normalizeGuidedNarrationDurationMinutes,
   setGuidedNarrationMode,
 } from "../../utils/guidedNarrationSettings";
 import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
@@ -35,7 +38,7 @@ import { appLogger } from "../../utils/logger";
 
 const OVERLAY_TIMER_TICK_MS = 1000;
 const PREFETCH_SEGMENT_COUNT = 2;
-const MINIMUM_SPOKEN_MINUTES_FLOOR = 15;
+const MINIMUM_SPOKEN_MINUTES_FLOOR = 7;
 const NARRATION_WPM_AT_SPEED_ONE = 145;
 
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
@@ -78,10 +81,26 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const [toningActive, setToningActive] = useState(false);
   const [playbackVoiceProfile, setPlaybackVoiceProfile] = useState(() => getGuidedVoiceProfile());
   const [playbackSpeedOption, setPlaybackSpeedOption] = useState(() => getGuidedSpeedOption());
+  const inferredNarrationDurationMinutes = useMemo(() => {
+    const hintedMinutes = getEffectiveGuidedNarrationDurationMinutes({
+      practiceName: practice?.name,
+      practiceType: practice?.category,
+      element: practice?.element,
+      sourceTexts: narrationPlan.paragraphs,
+      steps: narrationPlan.segments,
+    });
+    return normalizeGuidedNarrationDurationMinutes(hintedMinutes);
+  }, [narrationPlan.paragraphs, narrationPlan.segments, practice?.category, practice?.element, practice?.name]);
+  const [playbackNarrationDurationMinutes, setPlaybackNarrationDurationMinutes] = useState(inferredNarrationDurationMinutes);
+  const narrationDurationOptions = useMemo(() => getGuidedNarrationDurationPresetOptions(), []);
   const minimumNarrationWordFloor = useMemo(() => {
     const speed = resolveGuidedSpeedValue(playbackSpeedOption) || DEFAULT_GUIDED_TTS_SPEED;
-    return Math.max(680, Math.ceil(MINIMUM_SPOKEN_MINUTES_FLOOR * NARRATION_WPM_AT_SPEED_ONE * speed));
-  }, [playbackSpeedOption]);
+    const targetMinutes = Math.max(
+      MINIMUM_SPOKEN_MINUTES_FLOOR,
+      normalizeGuidedNarrationDurationMinutes(playbackNarrationDurationMinutes),
+    );
+    return Math.max(680, Math.ceil(targetMinutes * NARRATION_WPM_AT_SPEED_ONE * speed));
+  }, [playbackNarrationDurationMinutes, playbackSpeedOption]);
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
@@ -143,11 +162,20 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       practiceId: practice.id || null,
       practiceName: practice.name || "Guided Practice",
       element: practice.element || "Spirit",
-      durationMinutes: resolvedDurationMinutes,
+      durationMinutes: Math.max(
+        MINIMUM_SPOKEN_MINUTES_FLOOR,
+        Math.min(
+          20,
+          Math.min(
+            resolvedDurationMinutes,
+            normalizeGuidedNarrationDurationMinutes(playbackNarrationDurationMinutes),
+          ),
+        ),
+      ),
       sourceTexts,
       steps,
     };
-  }, [practice, resolvedDurationMinutes, stepsOverride]);
+  }, [playbackNarrationDurationMinutes, practice, resolvedDurationMinutes, stepsOverride]);
 
   const antiRepetitionMode = useMemo(() => {
     if (!scriptExpansionContext) {
@@ -188,11 +216,17 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     if (stored) {
       setPlaybackVoiceProfile(stored.voiceProfile);
       setPlaybackSpeedOption(stored.speedOption);
+      setPlaybackNarrationDurationMinutes(
+        normalizeGuidedNarrationDurationMinutes(
+          stored.narrationDurationMinutes ?? inferredNarrationDurationMinutes,
+        ),
+      );
       return;
     }
     setPlaybackVoiceProfile(getGuidedVoiceProfile());
     setPlaybackSpeedOption(getGuidedSpeedOption());
-  }, [practicePreferenceKey]);
+    setPlaybackNarrationDurationMinutes(inferredNarrationDurationMinutes);
+  }, [inferredNarrationDurationMinutes, practicePreferenceKey]);
 
   useEffect(() => {
     const handleStorage = (event) => {
@@ -204,35 +238,66 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         if (!stored) {
           setPlaybackVoiceProfile(getGuidedVoiceProfile());
           setPlaybackSpeedOption(getGuidedSpeedOption());
+          setPlaybackNarrationDurationMinutes(inferredNarrationDurationMinutes);
+        } else {
+          setPlaybackNarrationDurationMinutes(
+            normalizeGuidedNarrationDurationMinutes(
+              stored.narrationDurationMinutes ?? inferredNarrationDurationMinutes,
+            ),
+          );
         }
       }
     };
 
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-  }, [practicePreferenceKey]);
+  }, [inferredNarrationDurationMinutes, practicePreferenceKey]);
 
   const handlePlaybackVoiceProfileChange = useCallback((nextProfile) => {
     setPlaybackVoiceProfile(nextProfile);
     const mode = getGuidedPracticeOverrideMode();
     setGuidedPracticePreference(
       practicePreferenceKey,
-      { voiceProfile: nextProfile, speedOption: playbackSpeedOption },
+      {
+        voiceProfile: nextProfile,
+        speedOption: playbackSpeedOption,
+        narrationDurationMinutes: playbackNarrationDurationMinutes,
+      },
       mode,
     );
     toast.success(`Voice override: ${nextProfile}`);
-  }, [playbackSpeedOption, practicePreferenceKey]);
+  }, [playbackNarrationDurationMinutes, playbackSpeedOption, practicePreferenceKey]);
 
   const handlePlaybackSpeedOptionChange = useCallback((nextSpeedOption) => {
     setPlaybackSpeedOption(nextSpeedOption);
     const mode = getGuidedPracticeOverrideMode();
     setGuidedPracticePreference(
       practicePreferenceKey,
-      { voiceProfile: playbackVoiceProfile, speedOption: nextSpeedOption },
+      {
+        voiceProfile: playbackVoiceProfile,
+        speedOption: nextSpeedOption,
+        narrationDurationMinutes: playbackNarrationDurationMinutes,
+      },
       mode,
     );
     toast.success(`Speed override: ${nextSpeedOption}`);
-  }, [playbackVoiceProfile, practicePreferenceKey]);
+  }, [playbackNarrationDurationMinutes, playbackVoiceProfile, practicePreferenceKey]);
+
+  const handlePlaybackNarrationDurationMinutesChange = useCallback((nextMinutes) => {
+    const normalizedMinutes = normalizeGuidedNarrationDurationMinutes(nextMinutes);
+    setPlaybackNarrationDurationMinutes(normalizedMinutes);
+    const mode = getGuidedPracticeOverrideMode();
+    setGuidedPracticePreference(
+      practicePreferenceKey,
+      {
+        voiceProfile: playbackVoiceProfile,
+        speedOption: playbackSpeedOption,
+        narrationDurationMinutes: normalizedMinutes,
+      },
+      mode,
+    );
+    toast.success(`Narration target: ${normalizedMinutes} min`);
+  }, [playbackSpeedOption, playbackVoiceProfile, practicePreferenceKey]);
 
   const handleAntiRepetitionModeChange = useCallback((mode) => {
     const nextMode = setGuidedNarrationMode(mode);
@@ -383,7 +448,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         if (nextParagraphs.length > 0 && nextSegments.length > 0 && !hasStartedRef.current && !isPlayingRef.current) {
           const responseWordCount = Number(data?.word_count || countWords(nextParagraphs.join(" ")));
           const estimatedSpeechMinutes = responseWordCount / (NARRATION_WPM_AT_SPEED_ONE * (resolveGuidedSpeedValue(playbackSpeedOption) || DEFAULT_GUIDED_TTS_SPEED));
-          const hasLongFormFloor = responseWordCount >= minimumNarrationWordFloor || estimatedSpeechMinutes >= MINIMUM_SPOKEN_MINUTES_FLOOR;
+          const hasLongFormFloor = responseWordCount >= minimumNarrationWordFloor || estimatedSpeechMinutes >= Math.max(
+            MINIMUM_SPOKEN_MINUTES_FLOOR,
+            normalizeGuidedNarrationDurationMinutes(playbackNarrationDurationMinutes),
+          );
 
           if (hasLongFormFloor) {
             setNarrationParagraphs(nextParagraphs);
@@ -432,6 +500,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     antiRepetitionMode,
     stopNarrationPlayback,
     minimumNarrationWordFloor,
+    playbackNarrationDurationMinutes,
     playbackSpeedOption,
   ]);
 
@@ -731,8 +800,11 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     narrationParagraphs,
     playbackVoiceProfile,
     playbackSpeedOption,
+    playbackNarrationDurationMinutes,
+    narrationDurationOptions,
     handlePlaybackVoiceProfileChange,
     handlePlaybackSpeedOptionChange,
+    handlePlaybackNarrationDurationMinutesChange,
     handlePlay,
     handleStartVoiceOnly,
     isPlaying,

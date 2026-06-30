@@ -1,5 +1,5 @@
 import { GuidedPracticeContent } from "./guided/GuidedPracticeContent";
-import { MINIMUM_NARRATION_MINUTES, formatTime } from "./guided/guidedNarrationUtils";
+import { formatTime } from "./guided/guidedNarrationUtils";
 import { useGuidedPracticeEngine } from "./guided/useGuidedPracticeEngine";
 
 export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit }) {
@@ -35,10 +35,12 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       handleStartVoiceOnly={engine.handleStartVoiceOnly}
       isPlaying={engine.isPlaying}
       formatTime={formatTime}
-      minimumNarrationMinutes={MINIMUM_NARRATION_MINUTES}
+      minimumNarrationMinutes={engine.playbackNarrationDurationMinutes}
       ambientLabel={engine.ambientLabel}
       toningLabel={engine.toningLabel}
       toningActive={engine.toningActive}
+      narrationDurationOptions={engine.narrationDurationOptions}
+      onNarrationDurationChange={engine.handlePlaybackNarrationDurationMinutesChange}
     />
   );
 }

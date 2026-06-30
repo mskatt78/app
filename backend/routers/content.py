@@ -22,7 +22,8 @@ from .dependencies import get_db
 router = APIRouter(tags=["content"])
 logger = logging.getLogger(__name__)
 
-MIN_NARRATION_MINUTES = 15
+MIN_NARRATION_MINUTES = 7
+MAX_NARRATION_MINUTES = 20
 TARGET_WORDS_PER_MINUTE = 132
 SEGMENT_TARGET_WORDS = 220
 FIRST_SEGMENT_TARGET_WORDS = 95
@@ -4968,7 +4969,7 @@ def _finalize_script_paragraphs(
 
 @router.post("/content/expand-script", response_model=ExpandScriptResponse)
 async def expand_guided_script(request: ExpandScriptRequest) -> ExpandScriptResponse:
-    """Expand guided practice text into long-form narration suitable for 15+ minute audio."""
+    """Expand guided practice text into long-form narration suitable for configurable 7-20 minute audio."""
     cache_key = _build_script_expansion_cache_key(request)
     cached_payload = _get_cached_script_expansion(cache_key)
     if cached_payload:
@@ -5069,7 +5070,10 @@ def _enforce_word_floors(
 
 
 def _build_script_expansion_targets(request: ExpandScriptRequest) -> dict[str, Any]:
-    target_minutes = max(MIN_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES)))
+    target_minutes = max(
+        MIN_NARRATION_MINUTES,
+        min(MAX_NARRATION_MINUTES, int(round(request.duration_minutes or MIN_NARRATION_MINUTES))),
+    )
     target_words = max(MIN_NARRATION_MINUTES * TARGET_WORDS_PER_MINUTE, target_minutes * TARGET_WORDS_PER_MINUTE)
     anti_repetition_mode = "balanced" if request.anti_repetition_mode == "balanced" else "strict"
     return {

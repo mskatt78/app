@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { DEFAULT_GUIDED_TTS_SPEED, ensureTitleLedNarrationOpen, startToningLayer } from "./guidedNarrationUtils";
-import { getEffectiveGuidedNarrationMode } from "../../utils/guidedNarrationSettings";
+import {
+  getEffectiveGuidedNarrationDurationMinutes,
+  getEffectiveGuidedNarrationMode,
+  normalizeGuidedNarrationDurationMinutes,
+} from "../../utils/guidedNarrationSettings";
 import {
   getGuidedPracticePreference,
   resolveGuidedSpeedValue,
@@ -9,8 +13,8 @@ import {
 } from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
 
-const MIN_NARRATION_MINUTES = 15;
-const DEFAULT_QUICK_START_MINUTES = 15;
+const MIN_NARRATION_MINUTES = 7;
+const DEFAULT_QUICK_START_MINUTES = 12;
 const SCRIPT_EXPANSION_TIMEOUT_MS = 18000;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const splitSentences = (text) => String(text || "").split(/(?<=[.!?])\s+/).map((line) => line.trim()).filter((line) => line.length > 12);
@@ -82,6 +86,23 @@ export const useGuidedAudioPlayback = ({
     const key = String(practiceName || label || "").trim();
     return key ? getGuidedPracticePreference(key) : null;
   }, [label, practiceName]);
+
+  const effectiveNarrationMinutes = useMemo(() => {
+    const modalityDefault = getEffectiveGuidedNarrationDurationMinutes({
+      practiceName,
+      practiceType: label,
+      element,
+      sourceTexts,
+      steps,
+    });
+    const preferred = practicePreference?.narrationDurationMinutes;
+    const normalized = normalizeGuidedNarrationDurationMinutes(
+      preferred ?? durationMinutes ?? modalityDefault ?? DEFAULT_QUICK_START_MINUTES,
+    );
+    const durationCap = Number(durationMinutes);
+    if (!Number.isFinite(durationCap) || durationCap <= 0) return normalized;
+    return Math.max(MIN_NARRATION_MINUTES, Math.min(normalized, Math.min(20, Math.round(durationCap))));
+  }, [durationMinutes, element, label, practiceName, practicePreference?.narrationDurationMinutes, sourceTexts, steps]);
 
   const stopToning = useCallback(() => {
     try {
@@ -183,7 +204,7 @@ export const useGuidedAudioPlayback = ({
       const payload = {
       practice_name: currentPracticeName || currentLabel || "Guided Practice",
       element: currentElement,
-      duration_minutes: DEFAULT_QUICK_START_MINUTES,
+      duration_minutes: effectiveNarrationMinutes,
       use_ai: true,
       anti_repetition_mode: getEffectiveGuidedNarrationMode({
         practiceName: currentPracticeName || currentLabel,
@@ -226,7 +247,7 @@ export const useGuidedAudioPlayback = ({
       appLogger.warn("Guided script expansion fallback engaged", error);
       return fallback ? [fallback] : [];
     }
-  }, [api, playbackConfig]);
+  }, [api, effectiveNarrationMinutes, playbackConfig]);
 
   const playSegmentsSequentially = useCallback(async (segments, controller) => {
     const activeRunId = playbackRunIdRef.current;

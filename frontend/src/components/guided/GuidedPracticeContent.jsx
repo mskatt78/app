@@ -33,14 +33,29 @@ export const GuidedPracticeContent = ({
   toningActive,
   playbackVoiceProfile,
   playbackSpeedOption,
+  narrationDurationOptions,
+  onNarrationDurationChange,
   onVoiceProfileChange,
   onSpeedOptionChange,
 }) => {
   const [showFullNarration, setShowFullNarration] = useState(false);
-  const effectiveDurationMinutes = Math.max(
+  const effectiveDurationMinutes = resolveDurationMinutes(
+    practice.duration_minutes ?? practice.duration,
     minimumNarrationMinutes,
-    resolveDurationMinutes(practice.duration_minutes, minimumNarrationMinutes),
   );
+  const narrationTargetMinutes = Number(minimumNarrationMinutes) || 7;
+  const availableNarrationDurationOptions = useMemo(() => {
+    const options = Array.isArray(narrationDurationOptions) ? narrationDurationOptions : [];
+    const sessionCap = Math.max(7, Math.min(20, Math.round(effectiveDurationMinutes || 7)));
+    const filtered = options.filter((option) => option.minutes <= sessionCap);
+    return filtered.length > 0 ? filtered : options;
+  }, [effectiveDurationMinutes, narrationDurationOptions]);
+  const selectedNarrationOptionMinutes = useMemo(() => {
+    if (availableNarrationDurationOptions.length === 0) return narrationTargetMinutes;
+    const supported = availableNarrationDurationOptions.map((option) => Number(option.minutes));
+    if (supported.includes(narrationTargetMinutes)) return narrationTargetMinutes;
+    return supported[supported.length - 1] || narrationTargetMinutes;
+  }, [availableNarrationDurationOptions, narrationTargetMinutes]);
 
   useEffect(() => {
     const previousBodyOverflow = document.body.style.overflow;
@@ -148,7 +163,7 @@ export const GuidedPracticeContent = ({
                     ? "remaining"
                     : scriptLoading
                       ? "Preparing long-form guidance..."
-                      : `${effectiveDurationMinutes} min · ${ambientLabel}`}
+                      : `${effectiveDurationMinutes} min session · ${narrationTargetMinutes} min narration · ${ambientLabel}`}
                 </p>
               </div>
 
@@ -228,7 +243,7 @@ export const GuidedPracticeContent = ({
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4" data-testid="guided-practice-override-controls">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4" data-testid="guided-practice-override-controls">
                 <label className="text-xs text-white/70" data-testid="guided-practice-voice-override-control">
                   Voice
                   <select
@@ -256,6 +271,22 @@ export const GuidedPracticeContent = ({
                     {Object.values(GUIDED_SPEED_OPTIONS).map((speed) => (
                       <option key={speed.id} value={speed.id} className="text-black">
                         {speed.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="text-xs text-white/70" data-testid="guided-practice-duration-override-control">
+                  Narration Target
+                  <select
+                    value={String(selectedNarrationOptionMinutes)}
+                    onChange={(event) => onNarrationDurationChange?.(Number(event.target.value))}
+                    className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
+                    data-testid="guided-practice-duration-override-select"
+                  >
+                    {availableNarrationDurationOptions.map((durationOption) => (
+                      <option key={durationOption.id} value={durationOption.minutes} className="text-black">
+                        {durationOption.label}
                       </option>
                     ))}
                   </select>

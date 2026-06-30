@@ -29,7 +29,7 @@ export const ELEMENT_COLOR = {
   spirit: "text-violet-400",
 };
 
-export const MINIMUM_NARRATION_MINUTES = 15;
+export const MINIMUM_NARRATION_MINUTES = 7;
 export const TARGET_WORDS_PER_MINUTE = 120;
 export const SEGMENT_TARGET_WORDS = 220;
 export const FIRST_SEGMENT_TARGET_WORDS = 95;

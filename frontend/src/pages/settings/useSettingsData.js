@@ -3,6 +3,9 @@ import { toast } from "sonner";
 import { useNotifications } from "../../components/NotificationSystem";
 import {
   GUIDED_NARRATION_MODES,
+  GUIDED_NARRATION_MODALITY_CONFIG,
+  getGuidedNarrationDurationByModality,
+  setGuidedNarrationDurationForModality,
   getGuidedNarrationMode,
   setGuidedNarrationMode,
 } from "../../utils/guidedNarrationSettings";
@@ -33,6 +36,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
   const [rituals, setRituals] = useState([]);
   const [reminderSettings, setReminderSettings] = useState(DEFAULT_REMINDER_SETTINGS);
   const [guidedNarrationMode, setGuidedNarrationModeState] = useState(() => getGuidedNarrationMode());
+  const [guidedNarrationDurationByModality, setGuidedNarrationDurationByModalityState] = useState(() => getGuidedNarrationDurationByModality());
   const [guidedToningIntensity, setGuidedToningIntensityState] = useState(() => getGuidedToningIntensity());
   const [guidedSpeedOption, setGuidedSpeedOptionState] = useState(() => getGuidedSpeedOption());
   const [guidedVoiceProfile, setGuidedVoiceProfileState] = useState(() => getGuidedVoiceProfile());
@@ -161,6 +165,15 @@ export const useSettingsData = ({ api, user, navigate }) => {
     toast.success(`Guided narration mode set to ${modeLabel}`);
   }, []);
 
+  const updateGuidedNarrationDurationForModality = useCallback((modality, minutes) => {
+    const resolvedModality = GUIDED_NARRATION_MODALITY_CONFIG[modality] ? modality : "general";
+    const nextMap = setGuidedNarrationDurationForModality(resolvedModality, minutes);
+    setGuidedNarrationDurationByModalityState(nextMap);
+    const label = GUIDED_NARRATION_MODALITY_CONFIG[resolvedModality]?.label || "Guided";
+    const selectedMinutes = nextMap[resolvedModality];
+    toast.success(`${label} narration profile set to ${selectedMinutes} min`);
+  }, []);
+
   const updateGuidedToningMode = useCallback((mode) => {
     const nextMode = setGuidedToningIntensity(mode);
     setGuidedToningIntensityState(nextMode);
@@ -258,6 +271,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
     rituals,
     reminderSettings,
     guidedNarrationMode,
+    guidedNarrationDurationByModality,
     guidedToningIntensity,
     guidedSpeedOption,
     guidedVoiceProfile,
@@ -281,6 +295,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
     exportAccountData,
     requestAccountDeletion,
     updateGuidedNarrationMode,
+    updateGuidedNarrationDurationForModality,
     updateGuidedToningMode,
     updateGuidedSpeedOption,
     updateGuidedVoiceProfile,

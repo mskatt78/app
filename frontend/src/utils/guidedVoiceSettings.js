@@ -1,4 +1,8 @@
 import { appLogger } from "./logger";
+import {
+  DEFAULT_GUIDED_NARRATION_DURATION_MINUTES,
+  normalizeGuidedNarrationDurationMinutes,
+} from "./guidedNarrationSettings";
 
 export const GUIDED_VOICE_PROFILE_KEY = "guided_voice_profile";
 export const GUIDED_SPEED_OPTION_KEY = "guided_speed_option";
@@ -147,7 +151,10 @@ export const getGuidedPracticePreference = (practiceKey) => {
 
   const voiceProfile = normalizeVoiceProfile(remembered.voiceProfile);
   const speedOption = normalizeSpeedOption(remembered.speedOption);
-  return { voiceProfile, speedOption };
+  const narrationDurationMinutes = normalizeGuidedNarrationDurationMinutes(
+    remembered.narrationDurationMinutes ?? DEFAULT_GUIDED_NARRATION_DURATION_MINUTES,
+  );
+  return { voiceProfile, speedOption, narrationDurationMinutes };
 };
 
 export const setGuidedPracticePreference = (practiceKey, preference, mode = "session") => {
@@ -157,6 +164,9 @@ export const setGuidedPracticePreference = (practiceKey, preference, mode = "ses
   const normalized = {
     voiceProfile: normalizeVoiceProfile(preference?.voiceProfile),
     speedOption: normalizeSpeedOption(preference?.speedOption),
+    narrationDurationMinutes: normalizeGuidedNarrationDurationMinutes(
+      preference?.narrationDurationMinutes ?? DEFAULT_GUIDED_NARRATION_DURATION_MINUTES,
+    ),
   };
 
   const normalizedMode = normalizeOverrideMode(mode);

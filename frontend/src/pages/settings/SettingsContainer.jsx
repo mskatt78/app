@@ -22,6 +22,7 @@ const SettingsContainer = ({ user, api }) => {
     rituals,
     reminderSettings,
     guidedNarrationMode,
+    guidedNarrationDurationByModality,
     guidedToningIntensity,
     guidedSpeedOption,
     guidedVoiceProfile,
@@ -45,6 +46,7 @@ const SettingsContainer = ({ user, api }) => {
     exportAccountData,
     requestAccountDeletion,
     updateGuidedNarrationMode,
+    updateGuidedNarrationDurationForModality,
     updateGuidedToningMode,
     updateGuidedSpeedOption,
     updateGuidedVoiceProfile,
@@ -83,11 +85,13 @@ const SettingsContainer = ({ user, api }) => {
 
           <SettingsGuidedAudioCard
             guidedNarrationMode={guidedNarrationMode}
+            guidedNarrationDurationByModality={guidedNarrationDurationByModality}
             guidedToningIntensity={guidedToningIntensity}
             guidedSpeedOption={guidedSpeedOption}
             guidedVoiceProfile={guidedVoiceProfile}
             guidedPracticeOverrideMode={guidedPracticeOverrideMode}
             updateGuidedNarrationMode={updateGuidedNarrationMode}
+            updateGuidedNarrationDurationForModality={updateGuidedNarrationDurationForModality}
             updateGuidedToningMode={updateGuidedToningMode}
             updateGuidedSpeedOption={updateGuidedSpeedOption}
             updateGuidedVoiceProfile={updateGuidedVoiceProfile}

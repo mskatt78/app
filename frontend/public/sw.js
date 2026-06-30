@@ -1,5 +1,5 @@
-// Service Worker for Temple of the Soul - Offline Support
-const CACHE_VERSION = 'v6';
+// Service Worker for Shamanic Elements Soul Temple - Offline Support
+const CACHE_VERSION = 'v7';
 const STATIC_CACHE = `temple-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `temple-dynamic-${CACHE_VERSION}`;
 
@@ -34,6 +34,11 @@ const CACHEABLE_API_ROUTES = [
   '/api/elemental-temples',
   '/api/creative-processes',
   '/api/ancient-wisdom',
+  '/api/mystery-school',
+  '/api/water-practices',
+  '/api/retreats',
+  '/api/elemental-practices',
+  '/api/demo/highlights',
   '/api/tarot/cards',
   '/api/numerology/life-paths'
 ];
