@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Eye, Lock, Sparkles } from "lucide-react";
+import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
 
 export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryInfo, openSymbol }) => {
   if (loading) {
@@ -22,7 +23,7 @@ export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryI
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.04 }}
           onClick={() => openSymbol(symbol)}
-          className={`group text-left rounded-[1.75rem] overflow-hidden border ${activeCategoryInfo?.border} ${activeCategoryInfo?.bg} hover:-translate-y-1 transition-all duration-300`}
+          className={`group text-left rounded-[1.75rem] overflow-hidden border ${activeCategoryInfo?.border} ${activeCategoryInfo?.bg} hover:-translate-y-1 transition-all duration-300 shadow-[0_0_30px_rgba(234,194,99,0.1)]`}
           data-testid={`light-code-card-${symbol.id}`}
         >
           {symbol.image_url ? (
@@ -33,14 +34,32 @@ export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryI
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 data-testid={`light-code-image-${symbol.id}`}
               />
+              <div
+                className="absolute inset-0 mix-blend-screen"
+                style={{
+                  backgroundImage: `url(${getEncodedFrequencyImage(`${symbol.id}-overlay`)})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  opacity: 0.22,
+                }}
+                data-testid={`light-code-image-overlay-${symbol.id}`}
+              />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              <p className="absolute bottom-3 left-3 text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-full border border-yellow-300/30 bg-black/45 text-yellow-100/90" data-testid={`light-code-image-encoded-badge-${symbol.id}`}>
+                Encoded Frequency
+              </p>
               <div className="absolute top-4 right-4 w-11 h-11 rounded-full bg-black/45 backdrop-blur-md flex items-center justify-center border border-white/10">
                 <span className="text-xl">{symbol.symbol || "✨"}</span>
               </div>
             </div>
           ) : (
             <div className={`aspect-[4/3] flex items-center justify-center ${activeCategoryInfo?.bg}`}>
-              <span className="text-7xl">{symbol.symbol || "✨"}</span>
+              <img
+                src={getEncodedFrequencyImage(symbol.id || symbol.name)}
+                alt={symbol.name}
+                className="w-full h-full object-cover"
+                data-testid={`light-code-fallback-image-${symbol.id}`}
+              />
             </div>
           )}
 

@@ -1,4 +1,5 @@
 import { Sparkles } from "lucide-react";
+import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
 
 export const LightCodesSymbolRitualSection = ({ currentSymbols, activeCategoryInfo, openSymbol }) => {
   const symbolRows = currentSymbols.slice(0, 6);
@@ -21,9 +22,21 @@ export const LightCodesSymbolRitualSection = ({ currentSymbols, activeCategoryIn
             key={`${symbol.id}-symbol-key`}
             type="button"
             onClick={() => openSymbol(symbol)}
-            className="text-left rounded-2xl border border-white/10 bg-black/25 p-4 hover:bg-black/35 transition-colors"
+            className="relative text-left rounded-2xl border border-white/10 bg-black/25 p-4 hover:bg-black/35 transition-colors overflow-hidden"
             data-testid={`light-code-symbol-key-${symbol.id}`}
           >
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: `url(${symbol.image_url || getEncodedFrequencyImage(symbol.id)})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                opacity: 0.22,
+              }}
+              data-testid={`light-code-symbol-key-bg-${symbol.id}`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black/70" />
+            <div className="relative">
             <div className="flex items-center justify-between gap-3 mb-2">
               <span className="text-2xl" data-testid={`light-code-symbol-key-glyph-${symbol.id}`}>
                 {symbol.symbol || "✧"}
@@ -36,6 +49,7 @@ export const LightCodesSymbolRitualSection = ({ currentSymbols, activeCategoryIn
             <p className="text-xs text-white/60 mt-1 line-clamp-2" data-testid={`light-code-symbol-key-ritual-${symbol.id}`}>
               {(symbol.embodiment_ritual && symbol.embodiment_ritual[0]) || (symbol.ceremony && symbol.ceremony[0]) || "Open with breath, trace the symbol, and integrate with grounded action."}
             </p>
+            </div>
           </button>
         ))}
       </div>

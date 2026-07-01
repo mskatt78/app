@@ -4,6 +4,7 @@ import { Button } from "../components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Lock, Sparkles } from "lucide-react";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import { getEncodedFrequencyImage } from "../utils/lightCodeVisualTheme";
 
 const STREAM_OPTIONS = [
   { id: "egyptian_mystery", label: "Egyptian Mystery School", accent: "text-amber-200" },
@@ -134,18 +135,31 @@ export default function MysterySchoolTeachings({ api, user }) {
                 <button
                   key={item.id}
                   onClick={() => handleOpenTeaching(item)}
-                  className="text-left rounded-2xl border border-white/15 bg-gradient-to-br from-white/8 to-black/30 p-4 hover:border-amber-400/40 transition-colors"
+                  className="text-left rounded-2xl border border-white/15 bg-gradient-to-br from-white/8 to-black/30 p-4 hover:border-amber-400/40 transition-colors shadow-[0_0_30px_rgba(244,193,72,0.08)]"
                   data-testid={`mystery-school-card-${item.id}`}
                 >
                   <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 mb-3" data-testid={`mystery-school-card-image-wrap-${item.id}`}>
                     <img
-                      src={item.image_url}
+                      src={item.image_url || getEncodedFrequencyImage(item.id || item.name)}
                       alt={item.name}
                       className="w-full h-full object-cover"
                       loading="lazy"
                       data-testid={`mystery-school-card-image-${item.id}`}
                     />
+                    <div
+                      className="absolute inset-0 mix-blend-screen"
+                      style={{
+                        backgroundImage: `url(${getEncodedFrequencyImage(`${item.id}-overlay`)})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        opacity: 0.22,
+                      }}
+                      data-testid={`mystery-school-card-image-overlay-${item.id}`}
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+                    <p className="absolute bottom-2 left-2 text-[11px] px-2 py-1 rounded-full border border-yellow-200/30 bg-black/45 text-yellow-100/90" data-testid={`mystery-school-card-encoded-badge-${item.id}`}>
+                      Encoded Field
+                    </p>
                   </div>
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="text-[11px] uppercase tracking-[0.18em] text-amber-200/80" data-testid={`mystery-school-stream-${item.id}`}>

@@ -8,6 +8,7 @@ import GuidedAudioButton from "../components/GuidedAudioButton";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
+import { getEncodedFrequencyImage } from "../utils/lightCodeVisualTheme";
 
 const ALLY_FALLBACK_DATA = [
   {
@@ -579,7 +580,7 @@ const WITH_DEFAULT_FIELDS = [
   "affirmations",
 ];
 
-const GENERIC_ALLY_FALLBACK_IMAGE = "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/212855693ad33b5cc2d9428fc7c4f110428011f892af99f0e690eeecd787374d.png";
+const GENERIC_ALLY_FALLBACK_IMAGE = "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/41dd72171f39a8f45d612e8ae254d6f2f19e89c463e42dcd51bf7d66786d60f2.png";
 
 const ALLY_IMAGE_OVERRIDES = {
   "ally-serpent-kundalini-current": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/027083978eb967793f95c35ed9cf46b8d0b989de6694b151524bc5a0f565bc45.png",
@@ -624,7 +625,7 @@ const withVisualOverrides = (items) =>
       }
     });
 
-    merged.image_url = ALLY_IMAGE_OVERRIDES[merged.id] || merged.image_url || GENERIC_ALLY_FALLBACK_IMAGE;
+    merged.image_url = ALLY_IMAGE_OVERRIDES[merged.id] || merged.image_url || getEncodedFrequencyImage(merged.id || merged.name) || GENERIC_ALLY_FALLBACK_IMAGE;
 
     return merged;
   });
@@ -1095,10 +1096,20 @@ export default function SacredAllyAlchemy({ api }) {
                 }}
                 role="button"
                 tabIndex={0}
-                className="text-left rounded-2xl border border-white/10 bg-card/50 hover:bg-card/70 transition-all overflow-hidden"
+                className="text-left rounded-2xl border border-white/10 bg-card/50 hover:bg-card/70 transition-all overflow-hidden shadow-[0_0_30px_rgba(243,191,79,0.09)]"
                 data-testid={`sacred-ally-card-${item.id}`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: `url(${item.image_url || getEncodedFrequencyImage(item.id || item.name)})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      opacity: 0.18,
+                    }}
+                    data-testid={`sacred-ally-card-bg-${item.id}`}
+                  />
                   <img
                     src={item.image_url}
                     alt={item.name}
@@ -1107,8 +1118,21 @@ export default function SacredAllyAlchemy({ api }) {
                     onError={(event) => handleImageFallback(event, item.id)}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div
+                    className="absolute inset-0 mix-blend-screen"
+                    style={{
+                      backgroundImage: `url(${getEncodedFrequencyImage(`${item.id}-overlay`)})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      opacity: 0.2,
+                    }}
+                    data-testid={`sacred-ally-card-overlay-${item.id}`}
+                  />
                   <p className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded-full border border-white/20 bg-black/40 text-white/85" data-testid={`sacred-ally-card-category-${item.id}`}>
                     {item.category || item.ally_type}
+                  </p>
+                  <p className="absolute bottom-2 left-2 text-[10px] px-2 py-1 rounded-full border border-yellow-300/25 bg-black/45 text-yellow-100/90" data-testid={`sacred-ally-card-encoded-badge-${item.id}`}>
+                    Ceremonial Code
                   </p>
                 </div>
                 <div className="p-4 space-y-2">

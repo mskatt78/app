@@ -55,7 +55,7 @@ const LightCodesContainer = ({ user, api }) => {
               <p className="text-xs uppercase tracking-wider">Light Codes Tiering Active</p>
             </div>
             <p className="text-sm text-white/75 mt-1" data-testid="light-codes-premium-banner-text">
-              Each Light Code stream now holds 4 free + 10 premium transmissions. Unlock premium symbols through subscription or full app access.
+              Each Light Code stream now holds 4 free + 10 premium transmissions, including the new Encoded Frequency collection. Unlock premium symbols through subscription or full app access.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="light-codes-premium-banner-pricing-button">View Subscription</Button>

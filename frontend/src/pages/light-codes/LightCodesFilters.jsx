@@ -20,6 +20,11 @@ export const LightCodesFilters = ({ activeCategory, selectCategory }) => (
             <p className="font-medium">{category.name}</p>
             <p className="text-xs opacity-70 hidden sm:block">{category.description}</p>
           </div>
+          {category.id === "encoded_frequency" && (
+            <span className="px-2 py-0.5 rounded-full text-[10px] uppercase tracking-[0.16em] border border-yellow-300/40 bg-yellow-400/20 text-yellow-100" data-testid="category-encoded-frequency-badge">
+              New
+            </span>
+          )}
         </button>
       );
     })}

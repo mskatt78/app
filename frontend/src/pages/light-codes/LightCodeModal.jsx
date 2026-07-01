@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Volume2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Button } from "../../components/ui/button";
+import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
 
 export const LightCodeModal = ({
   selectedSymbol,
@@ -41,6 +42,16 @@ export const LightCodeModal = ({
 
           <div className="grid lg:grid-cols-[0.9fr_1.1fr]">
             <div className="relative min-h-[280px] lg:min-h-full">
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `url(${selectedSymbol.image_url || getEncodedFrequencyImage(selectedSymbol.id || selectedSymbol.name)})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  opacity: 0.22,
+                }}
+                data-testid="light-code-modal-image-bg"
+              />
               {selectedSymbol.image_url ? (
                 <img
                   src={selectedSymbol.image_url}

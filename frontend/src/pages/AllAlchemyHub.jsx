@@ -5,6 +5,7 @@ import { ArrowLeft, Sparkles, Flame, Star, Shield, Lock } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { appLogger } from "../utils/logger";
+import { getEncodedFrequencyImage } from "../utils/lightCodeVisualTheme";
 
 const normalizeAlchemyItem = (item, source) => ({
   ...item,
@@ -187,9 +188,24 @@ export default function AllAlchemyHub({ user, api }) {
                   type="button"
                   onClick={() => handleCardClick(item)}
                   whileHover={{ y: -4 }}
-                  className="text-left rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-black/20 p-4 hover:border-cyan-400/40 transition-all"
+                  className="relative overflow-hidden text-left rounded-2xl border border-white/10 bg-gradient-to-br from-white/5 to-black/20 p-4 hover:border-cyan-400/40 transition-all shadow-[0_0_28px_rgba(185,134,255,0.08)]"
                   data-testid={`all-alchemy-hub-card-${item.id || index}`}
                 >
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: `url(${item.image_url || getEncodedFrequencyImage(item.id || item.name || index)})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      opacity: 0.2,
+                    }}
+                    data-testid={`all-alchemy-hub-card-image-bg-${item.id || index}`}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-black/45 to-black/75" />
+                  <div className="relative">
+                  <p className="inline-flex items-center mb-3 text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-full border border-yellow-200/25 bg-black/45 text-yellow-100/90" data-testid={`all-alchemy-hub-encoded-badge-${item.id || index}`}>
+                    Encoded Aura
+                  </p>
                   <div className="flex items-center justify-between mb-3">
                     <span className="text-[11px] uppercase tracking-[0.18em] text-cyan-200/80" data-testid={`all-alchemy-hub-source-${item.id || index}`}>{item.sourceLabel}</span>
                     {locked ? <Lock className="w-4 h-4 text-fuchsia-300" /> : <Sparkles className="w-4 h-4 text-cyan-300" />}
@@ -202,6 +218,7 @@ export default function AllAlchemyHub({ user, api }) {
                   <div className="mt-4 flex items-center justify-between text-xs text-cyan-200/80">
                     <span className="inline-flex items-center gap-1"><Star className="w-3 h-3" /> Enter practice</span>
                     <span>{locked ? "Premium" : "Open"}</span>
+                  </div>
                   </div>
                 </motion.button>
               );

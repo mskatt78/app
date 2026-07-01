@@ -8,6 +8,7 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 import { toast } from "sonner";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
+import { getEncodedFrequencyImage } from "../utils/lightCodeVisualTheme";
 
 const ANGELIC_FALLBACK_DATA = [
   {
@@ -424,6 +425,7 @@ const mergeArchangels = (items) => {
   return Array.from(byId.values()).map((item) => ({
     ...item,
     ...(ANGELIC_VISUAL_OVERRIDES[item?.id] || {}),
+    image_url: (ANGELIC_VISUAL_OVERRIDES[item?.id]?.image_url) || item?.image_url || getEncodedFrequencyImage(item?.id || item?.name),
   }));
 };
 
@@ -724,14 +726,37 @@ const AngelicAlchemy = ({ api }) => {
                 }}
                 role="button"
                 tabIndex={0}
-                className="text-left rounded-2xl border border-white/10 bg-card/50 hover:bg-card/70 transition-all overflow-hidden"
+                className="text-left rounded-2xl border border-white/10 bg-card/50 hover:bg-card/70 transition-all overflow-hidden shadow-[0_0_30px_rgba(174,220,255,0.08)]"
                 data-testid={`angelic-card-${item.id}`}
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      backgroundImage: `url(${item.image_url || getEncodedFrequencyImage(item.id || item.name)})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      opacity: 0.2,
+                    }}
+                    data-testid={`angelic-card-bg-${item.id}`}
+                  />
                   <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" data-testid={`angelic-card-image-${item.id}`} />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div
+                    className="absolute inset-0 mix-blend-screen"
+                    style={{
+                      backgroundImage: `url(${getEncodedFrequencyImage(`${item.id}-overlay`)})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      opacity: 0.2,
+                    }}
+                    data-testid={`angelic-card-overlay-${item.id}`}
+                  />
                   <p className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded-full border border-white/20 bg-black/40 text-white/85" data-testid={`angelic-card-category-${item.id}`}>
                     {item.angelic_order || "Archangel"}
+                  </p>
+                  <p className="absolute bottom-2 left-2 text-[10px] px-2 py-1 rounded-full border border-cyan-300/25 bg-black/45 text-cyan-100/90" data-testid={`angelic-card-encoded-badge-${item.id}`}>
+                    Encoded Winglight
                   </p>
                 </div>
                 <div className="p-4 space-y-2">

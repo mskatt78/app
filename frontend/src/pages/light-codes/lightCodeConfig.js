@@ -1,6 +1,18 @@
-import { Hexagon, Square, Star, Globe, Zap } from "lucide-react";
+import { Hexagon, Square, Star, Globe, Zap, Orbit } from "lucide-react";
 
 export const categories = [
+  {
+    id: "encoded_frequency",
+    name: "Encoded Frequency",
+    icon: Orbit,
+    color: "text-yellow-200",
+    bg: "bg-yellow-500/10",
+    border: "border-yellow-500/30",
+    description: "High-order transmission sigils and ceremonial frequency seals",
+    philosophy: "Encoded frequencies act like living prayer-geometry: they bridge symbol, breath, and embodied remembrance through luminous pattern fields.",
+    lineage: "Temple sigil arts, visionary transmission streams, sacred geometry mysticism, and modern light-code ceremony",
+    integration: "Best for initiation windows, deep ritual nights, and coherence resets when your field feels fragmented.",
+  },
   {
     id: "sacred_geometry",
     name: "Sacred Geometry",

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Hexagon, Sparkles } from "lucide-react";
+import { getEncodedFrequencyMasterImage } from "../../utils/lightCodeVisualTheme";
 
 export const LightCodesHero = ({ activeCategoryInfo }) => (
   <motion.div
@@ -8,6 +9,16 @@ export const LightCodesHero = ({ activeCategoryInfo }) => (
     className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(120,119,198,0.22),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(45,212,191,0.18),_transparent_28%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(3,7,18,0.88))] px-6 py-10 sm:px-10 sm:py-14"
     data-testid="light-codes-hero"
   >
+    <div
+      className="absolute inset-0"
+      style={{
+        backgroundImage: `url(${getEncodedFrequencyMasterImage()})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        opacity: 0.24,
+      }}
+      data-testid="light-codes-hero-encoded-bg"
+    />
     <div className="absolute inset-0 opacity-30 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:36px_36px]" />
     <div className="relative grid gap-8 lg:grid-cols-[1.4fr_0.9fr] lg:items-end">
       <div className="space-y-6 text-left">

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { TRADITION_MAP } from "./constants";
+import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
 
 export const AncientWisdomGrid = ({ entries, setSelected }) => {
   if (entries.length === 0) {
@@ -24,15 +25,25 @@ export const AncientWisdomGrid = ({ entries, setSelected }) => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.02, duration: 0.3 }}
             onClick={() => setSelected(entry)}
-            className={`cursor-pointer rounded-2xl overflow-hidden border group ${tradition.border} hover:scale-[1.03] transition-all duration-300`}
+            className={`cursor-pointer rounded-2xl overflow-hidden border group ${tradition.border} hover:scale-[1.03] transition-all duration-300 shadow-[0_0_24px_rgba(214,177,93,0.08)]`}
             data-testid={`entry-card-${entry.id}`}
           >
             <div className="relative aspect-square overflow-hidden">
               <img
-                src={entry.image_url}
+                src={entry.image_url || getEncodedFrequencyImage(entry.id || entry.name)}
                 alt={entry.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 loading="lazy"
+              />
+              <div
+                className="absolute inset-0 mix-blend-screen"
+                style={{
+                  backgroundImage: `url(${getEncodedFrequencyImage(`${entry.id}-overlay`)})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  opacity: 0.2,
+                }}
+                data-testid={`ancient-wisdom-card-overlay-${entry.id}`}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
               <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 ${tradition.bg} ${tradition.color} border ${tradition.border} backdrop-blur-sm`}>
