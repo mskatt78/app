@@ -3886,3 +3886,23 @@
 1. Optional: add dedicated “Elemental Journey Tracks” tabs inside Shamanic page (Earth/Water/Fire/Air/Spirit) for faster discovery.
 2. Optional: add journey-specific onboarding safety checklist before first advanced journey.
 3. Continue backlog item: Sacred Journey Progress dashboard tracker.
+
+## Latest Verification Snapshot (Iteration 249 — 2026-07-01)
+- ✅ UX simplification applied per user request: removed confusing Embodiment Protocol controls:
+  - Removed **Front View** toggle
+  - Removed **Back View** toggle
+  - Removed **Fascia Love Mode** toggle
+
+### Scope of change
+- File updated: `frontend/src/components/practice/EmbodimentProtocolPanel.jsx`
+- Body diagram now uses a simplified single-view interaction while preserving region point selection.
+- Fascia copy language updated from "Fascia Love Mode" to neutral clarity-focused phrasing.
+
+### Validation
+- ✅ Frontend QA pass confirmed all 3 controls are absent from `/fascia-stretching` modal embodiment panel.
+- ✅ Diagram region point interaction still works.
+- ✅ No interaction-breaking console errors.
+
+## Updated Priorities
+- **P0 complete**: remove confusing fascia/front/back controls for end-user clarity.
+- **P1 backlog**: Sacred Journey Progress tracker and optional shamanic journey tabs.
