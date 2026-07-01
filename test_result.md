@@ -12881,3 +12881,71 @@ agent_communication:
       CONCLUSION:
       All Sacred Geometry cards are working correctly. The user's issue has been RESOLVED. No fixes needed.
 
+
+  - task: "Sacred Geometry canonical-mix updates - sg4, sg5, sg6 verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/light-codes/LightCodesSymbolsGrid.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ SACRED GEOMETRY CANONICAL-MIX VERIFICATION PASSED (2026-07-01): Final targeted QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com for Sacred Geometry canonical-mix updates. ALL 5 REQUIREMENTS MET: REQUIREMENT 1 - Navigate to /light-codes and select Sacred Geometry: ✓ Navigation successful, ✓ Sacred Geometry category button functional, ✓ Geometry accuracy note displays correctly ('Sacred Geometry mode is active: Platonic solids and core forms now prioritize geometry-accurate visual structures'). REQUIREMENT 2 - Verify sg4, sg5, sg6 cards appear geometry-canonical and readable: ✓ sg4 (Seed of Life) found with correct geometric image, ✓ sg5 (Vesica Piscis) found with correct geometric image, ✓ sg6 (Torus) found with correct geometric image. All three cards display correct geometric symbols/forms with clear readability. REQUIREMENT 3 - Confirm Geometry Verified badge on all three cards: ✓ sg4 has 'GEOMETRY VERIFIED' badge (emerald styling, top-left position), ✓ sg5 has 'GEOMETRY VERIFIED' badge, ✓ sg6 has 'GEOMETRY VERIFIED' badge. All three cards display the badge correctly. REQUIREMENT 4 - Confirm overlays remain subtle and geometry-first: ✓ All three cards have encoded frequency overlays with opacity 0.22 (subtle, ≤ 0.3 threshold), ✓ Geometry symbols remain clearly readable and prominent, ✓ 'ENCODED FREQUENCY' badge present but not intrusive, ✓ Good contrast between geometry and background. Overlays are subtle and geometry-first design confirmed. REQUIREMENT 5 - Open one card and verify modal works: ✓ sg4 (Seed of Life) modal opens correctly showing full content, ✓ Modal displays image with Seed of Life geometric pattern, ✓ Modal shows 5 tabs (Essence, Why It Heals, Ancient Traditions, Ceremony & Symbols, Practice Guide), ✓ Tab content loads correctly (Essence tab shows 'Seven overlapping circles forming the pattern of creation'), ✓ Modal close functionality works (Close button functional). Modal functionality fully working. ADDITIONAL VERIFICATION: ✓ Ceremonial Symbol Keys section displays all three cards (sg4, sg5, sg6) with GEOMETRY VERIFIED badges, ✓ sg4 is FREE tier, sg5 and sg6 are PREMIUM tier (correct tiering), ✓ No console errors detected (only expected 401 auth errors for public routes). VISUAL VERIFICATION: Screenshots confirm correct geometric forms prominently displayed (Seed of Life seven-circle pattern, Vesica Piscis lens shape, Torus toroidal form), encoded overlays subtle and in background only, geometry badges clearly visible with emerald styling. PASS/FAIL RESULT: ✅ PASS - All requirements met, no issues found."
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      SACRED GEOMETRY CANONICAL-MIX VERIFICATION COMPLETED (2026-07-01):
+      
+      ✅ PASS - ALL REQUIREMENTS MET
+      
+      User Request: Final targeted QA on preview URL for Sacred Geometry canonical-mix updates focusing on sg4 (Seed of Life), sg5 (Vesica Piscis), sg6 (Torus).
+      
+      TEST RESULTS:
+      
+      1. Navigation to /light-codes → Sacred Geometry: ✅ PASS
+         - Successfully navigated to /light-codes page
+         - Sacred Geometry category button clicked and functional
+         - Geometry accuracy note displays correctly
+      
+      2. Cards sg4, sg5, sg6 Appear Geometry-Canonical and Readable: ✅ PASS
+         - sg4 (Seed of Life): ✓ Found with correct seven-circle geometric pattern
+         - sg5 (Vesica Piscis): ✓ Found with correct lens-shaped geometric form
+         - sg6 (Torus): ✓ Found with correct toroidal geometric structure
+         - All three cards display clear, readable geometric symbols
+      
+      3. Geometry Verified Badge on All Three Cards: ✅ PASS
+         - sg4: ✓ 'GEOMETRY VERIFIED' badge present (emerald styling, top-left)
+         - sg5: ✓ 'GEOMETRY VERIFIED' badge present (emerald styling, top-left)
+         - sg6: ✓ 'GEOMETRY VERIFIED' badge present (emerald styling, top-left)
+      
+      4. Overlays Remain Subtle and Geometry-First: ✅ PASS
+         - Encoded frequency overlay opacity: 0.22 (subtle, ≤ 0.3 threshold)
+         - Geometry symbols remain clearly readable and prominent
+         - 'ENCODED FREQUENCY' badge present but not intrusive
+         - Good contrast between geometry and background
+         - Geometry-first design confirmed
+      
+      5. Modal Functionality for One Card: ✅ PASS
+         - Opened sg4 (Seed of Life) modal successfully
+         - Modal displays full content with geometric image
+         - 5 tabs present and functional (Essence, Why It Heals, Ancient Traditions, Ceremony & Symbols, Practice Guide)
+         - Tab content loads correctly
+         - Close button functional
+      
+      ADDITIONAL FINDINGS:
+      - Ceremonial Symbol Keys section displays all three cards with badges
+      - Correct tiering: sg4 is FREE, sg5 and sg6 are PREMIUM
+      - No critical console errors detected
+      
+      VISUAL VERIFICATION:
+      - Screenshots confirm correct geometric forms prominently displayed
+      - Encoded overlays subtle and in background only
+      - Geometry badges clearly visible with emerald styling
+      
+      FINAL RESULT: ✅ PASS
+      
+      All Sacred Geometry canonical-mix updates for sg4, sg5, sg6 are working correctly. No issues found.
+

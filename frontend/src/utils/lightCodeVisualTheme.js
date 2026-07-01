@@ -43,6 +43,9 @@ export const SACRED_GEOMETRY_IMAGE_OVERRIDES = {
   sg1: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/54024e7f3884fc52d12d585c570e4a29dbc0dce94e3ef6a5ce3a8ee67432bfd6.png", // Flower of Life
   sg2: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/f5d8d5e0a7fcc7beab8a072ca90f202985ed3e38d7f9315497867aff04f5e281.png", // Metatron's Cube
   sg3: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/057c2ca7ba1909a3f67c44ff8bff5047c1400227c7e705638e91b1288541ded1.png", // Sri Yantra
+  sg4: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/13db11fff33c318318e8b70049e8ae0598c812b77301f729d3fade38b5c11449.png", // Seed of Life
+  sg5: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0791a1640d746d4ea7e6cf67833b274d1be4a9abc575b372758a64072d3d1eb7.png", // Vesica Piscis
+  sg6: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/fc18055c35ee4c49236f62c5783ae8ec86e69e792254451040f95b04d3364338.png", // Torus
   sg9: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3551de1b0e0c5c399975286d0b2abf5b9585fa661fdc6a9ce405f55a8e6bc0bf.png", // Platonic set
   sg11: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a1227b39c0c144e9db1a14c5200f3d797a5c8d102a7eeba6a90be9723754d6d2.png", // Tetrahedron
   sg12: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0011d4643c6c97ad170adbe794c185cc89dbdcde1f3711189f34ff8a9f084d8a.png", // Cube
@@ -55,8 +58,8 @@ export const SACRED_GEOMETRY_SYMBOL_OVERRIDES = {
   sg2: "⎔",
   sg3: "۞",
   sg4: "❂",
-  sg5: "◍",
-  sg6: "⊙",
+  sg5: "◉",
+  sg6: "⦿",
   sg7: "✡",
   sg8: "🌀",
   sg9: "⬢",
