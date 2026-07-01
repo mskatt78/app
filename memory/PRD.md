@@ -3833,3 +3833,56 @@
 1. Optional: generate a second encoded image pack specifically for modal hero visuals (portrait ratio) to increase perceived uniqueness.
 2. Optional: add a per-category “style intensity” toggle (Subtle / Ceremonial / Full Transmission).
 3. Continue backlog item: Sacred Journey Progress dashboard tracker.
+
+## Latest Verification Snapshot (Iteration 248 — 2026-07-01)
+- ✅ Expanded **Shamanic section journeys** to match overall app depth and coherence.
+
+### Shamanic Journey Expansion Completed
+- Added 5 new elemental journey pathways in backend supplements (`backend/routers/content.py`):
+  - Earth Root Cavern Descent
+  - Water Moon River Journey
+  - Fire Solar Path Initiation
+  - Air Sky Bridge Journey
+  - Spirit Aurora Return Journey
+- Added deep journey fields to each where relevant:
+  - `journey_steps`, `guided_practice`, `ritual`, `ceremony`, `integration_actions`, `why_this_heals`, `healing_lens`, `extended_teachings`.
+- Added journey depth normalizer `_ensure_shamanic_journey_depth()` to guarantee rich content for journey-type entries from DB and supplements.
+- Updated shamanic route processing to apply this depth layer consistently in:
+  - `GET /api/shamanic-practices`
+  - `GET /api/shamanic-practices/{practice_id}`
+
+### Shamanic Visibility / Tiering
+- Updated section uncapped behavior to include `shamanic_practices` so expanded pathways are visible in the library:
+  - `SECTION_UNCAPPED_UNLOCK_IDS` now includes `shamanic_practices`.
+
+### Frontend Experience Enhancements (Shamanic)
+- Added elemental journey visual signals in grid cards:
+  - `shamanic-elemental-journey-badge-*`
+  - `shamanic-integration-actions-count-*`
+- Added new section guidance block on shamanic page:
+  - `shamanic-elemental-journeys-note`
+- Extended shamanic modal with deeper journey context panels:
+  - `shamanic-elemental-journey-panel`
+  - `shamanic-integration-actions-panel`
+  - `shamanic-why-heals-panel`
+
+## Testing Summary (Iteration 248)
+- ✅ Backend verification:
+  - `/api/shamanic-practices` now returns expanded set (27 items, 10 journey-type visible).
+  - Newly added elemental journey entries present and deep fields validated.
+- ✅ Frontend QA agent pass:
+  - Shamanic page loads and new note renders.
+  - Elemental journey badges/integration counters render.
+  - Shamanic modal deep panels render conditionally as expected.
+  - Guided journey flow launch still functional.
+  - No interaction-blocking console errors.
+
+## Updated Priorities
+- **P0 complete**: Light Codes geometry + depth alignment.
+- **P0 complete**: Shamanic journey expansion to match app-level depth and ceremonial coherence.
+- **P1 backlog**: Sacred Journey Progress tracker.
+
+## Next Action Items
+1. Optional: add dedicated “Elemental Journey Tracks” tabs inside Shamanic page (Earth/Water/Fire/Air/Spirit) for faster discovery.
+2. Optional: add journey-specific onboarding safety checklist before first advanced journey.
+3. Continue backlog item: Sacred Journey Progress dashboard tracker.
