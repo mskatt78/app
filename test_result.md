@@ -12784,7 +12784,7 @@ frontend:
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1003
+  test_sequence: 1004
   run_ui: false
 
 test_plan:
@@ -12794,6 +12794,65 @@ test_plan:
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      EMBODIMENT PANEL CONTROLS REMOVAL VERIFICATION COMPLETED (2026-07-01):
+      
+      ✅ PASS - ALL REQUIREMENTS MET
+      
+      User Request: Remove confusing controls 'Front', 'Back', and 'Fascia Love Mode' from embodiment panel on /fascia-stretching page.
+      
+      TEST RESULTS:
+      
+      1. Navigation to /fascia-stretching and Open Practice Modal: ✅ PASS
+         - Successfully navigated to /fascia-stretching page
+         - Found 39 practice cards loaded
+         - Clicked first practice card and modal opened successfully
+         - Embodiment protocol panel visible in modal
+      
+      2. 'Front View' Button Removal: ✅ PASS
+         - Tested multiple selectors for 'Front' button/control
+         - NO 'Front View' button found in embodiment panel
+         - Control successfully removed
+      
+      3. 'Back View' Button Removal: ✅ PASS
+         - Tested multiple selectors for 'Back' button/control
+         - NO 'Back View' button found in embodiment panel
+         - Control successfully removed
+      
+      4. 'Fascia Love Mode' Toggle Removal: ✅ PASS
+         - Tested multiple selectors for 'Fascia Love Mode' toggle/button
+         - NO 'Fascia Love Mode' control found in embodiment panel
+         - Control successfully removed
+      
+      5. Diagram Functionality: ✅ PASS
+         - Interactive Body Map Diagram present with 3 clickable region points
+         - Clicked first diagram point - Selected Region panel updated correctly
+         - Clicked second diagram point - Diagram is fully interactive
+         - Region selection working as expected
+      
+      6. No UI Breaks in Panel: ✅ PASS
+         - 3-Step Embodiment Option: ✓ Visible
+         - 7-Day Embodiment Option: ✓ Visible
+         - Body Wisdom Map: ✓ Visible with region cards
+         - Body Scan Protocol: ✓ Visible
+         - All key sections rendering correctly
+      
+      7. Console Errors: ✅ PASS
+         - No critical console errors detected
+         - Only expected 401 auth errors for public routes (non-critical)
+      
+      VISUAL VERIFICATION:
+      - Screenshots confirm embodiment panel displays correctly
+      - Interactive body diagram shows numbered points (1, 2, 3) for region selection
+      - Selected region panel shows all layers (Physical, Emotional, Energetic, Spiritual, Fascia)
+      - NO confusing Front/Back/Fascia Love Mode controls present
+      - Clean, simplified UI as requested
+      
+      FINAL RESULT: ✅ PASS
+      
+      All confusing controls ('Front', 'Back', 'Fascia Love Mode') successfully removed from embodiment panel. Diagram remains fully functional with interactive region selection. No UI breaks detected. User request fully satisfied.
+
   - agent: "testing"
     message: |
       FRONTEND QA - LIGHT CODES & CEREMONIAL STYLE ROLLOUT COMPLETED (2026-07-01):
@@ -12915,6 +12974,20 @@ agent_communication:
     priority: "high"
     needs_retesting: false
     status_history:
+
+
+  - task: "Embodiment panel controls removal - Front, Back, Fascia Love Mode"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ EMBODIMENT PANEL CONTROLS REMOVAL VERIFICATION PASSED (2026-07-01): Comprehensive targeted QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com for embodiment panel controls removal. ALL 7 REQUIREMENTS MET: REQUIREMENT 1 - Navigate to /fascia-stretching and open practice modal: ✓ Successfully navigated to /fascia-stretching page, ✓ Found 39 practice cards, ✓ Clicked first practice card and modal opened, ✓ Embodiment protocol panel visible. REQUIREMENT 2 - Confirm 'Front View' button NOT present: ✓ Tested multiple selectors (button:has-text('Front'), [data-testid*='front'], button:text-is('Front'), [aria-label*='Front'], button:has-text('Front View')), ✓ NO 'Front View' button found in embodiment panel, ✓ Control successfully removed. REQUIREMENT 3 - Confirm 'Back View' button NOT present: ✓ Tested multiple selectors (button:has-text('Back'), [data-testid*='back-view'], button:text-is('Back'), [aria-label*='Back View'], button:has-text('Back View')), ✓ NO 'Back View' button found in embodiment panel (excluded navigation back button at top), ✓ Control successfully removed. REQUIREMENT 4 - Confirm 'Fascia Love Mode' toggle NOT present: ✓ Tested multiple selectors (button:has-text('Fascia Love'), [data-testid*='fascia-love'], button:has-text('Love Mode'), [aria-label*='Fascia Love'], input[type='checkbox']:near(:text('Fascia Love')), label:has-text('Fascia Love Mode')), ✓ NO 'Fascia Love Mode' control found in embodiment panel, ✓ Control successfully removed. REQUIREMENT 5 - Confirm diagram still works by selecting region points: ✓ Interactive Body Map Diagram present with 3 clickable region points, ✓ Clicked first diagram point (data-testid='fascia-stretching-embodiment-diagram-point-*'), ✓ Selected Region panel updated with content (492 chars), ✓ Clicked second diagram point to verify interactivity, ✓ Diagram fully functional and interactive. REQUIREMENT 6 - Confirm no UI break in rest of panel: ✓ 3-Step Embodiment Option visible (data-testid='fascia-stretching-embodiment-three-step'), ✓ 7-Day Embodiment Option visible (data-testid='fascia-stretching-embodiment-seven-day'), ✓ Body Wisdom Map visible with region cards (data-testid='fascia-stretching-embodiment-body-wisdom-map'), ✓ Body Scan Protocol visible (data-testid='fascia-stretching-embodiment-body-scan-protocol'), ✓ All key sections rendering correctly, no UI breaks. REQUIREMENT 7 - Check console for critical errors: ✓ No critical console errors detected, ✓ Only expected 401 auth errors for public routes (non-critical). VISUAL VERIFICATION: Screenshots confirm embodiment panel displays correctly with Interactive Body Map Diagram showing numbered points (1, 2, 3) for region selection, Selected Region panel shows all layers (Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, Fascia Lens), NO confusing Front/Back/Fascia Love Mode controls present, clean simplified UI as requested. PASS/FAIL RESULT: ✅ PASS - All requirements met, confusing controls successfully removed, diagram fully functional, no issues found."
+
       - working: true
         agent: "testing"
         comment: "✅ SACRED GEOMETRY CANONICAL-MIX VERIFICATION PASSED (2026-07-01): Final targeted QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com for Sacred Geometry canonical-mix updates. ALL 5 REQUIREMENTS MET: REQUIREMENT 1 - Navigate to /light-codes and select Sacred Geometry: ✓ Navigation successful, ✓ Sacred Geometry category button functional, ✓ Geometry accuracy note displays correctly ('Sacred Geometry mode is active: Platonic solids and core forms now prioritize geometry-accurate visual structures'). REQUIREMENT 2 - Verify sg4, sg5, sg6 cards appear geometry-canonical and readable: ✓ sg4 (Seed of Life) found with correct geometric image, ✓ sg5 (Vesica Piscis) found with correct geometric image, ✓ sg6 (Torus) found with correct geometric image. All three cards display correct geometric symbols/forms with clear readability. REQUIREMENT 3 - Confirm Geometry Verified badge on all three cards: ✓ sg4 has 'GEOMETRY VERIFIED' badge (emerald styling, top-left position), ✓ sg5 has 'GEOMETRY VERIFIED' badge, ✓ sg6 has 'GEOMETRY VERIFIED' badge. All three cards display the badge correctly. REQUIREMENT 4 - Confirm overlays remain subtle and geometry-first: ✓ All three cards have encoded frequency overlays with opacity 0.22 (subtle, ≤ 0.3 threshold), ✓ Geometry symbols remain clearly readable and prominent, ✓ 'ENCODED FREQUENCY' badge present but not intrusive, ✓ Good contrast between geometry and background. Overlays are subtle and geometry-first design confirmed. REQUIREMENT 5 - Open one card and verify modal works: ✓ sg4 (Seed of Life) modal opens correctly showing full content, ✓ Modal displays image with Seed of Life geometric pattern, ✓ Modal shows 5 tabs (Essence, Why It Heals, Ancient Traditions, Ceremony & Symbols, Practice Guide), ✓ Tab content loads correctly (Essence tab shows 'Seven overlapping circles forming the pattern of creation'), ✓ Modal close functionality works (Close button functional). Modal functionality fully working. ADDITIONAL VERIFICATION: ✓ Ceremonial Symbol Keys section displays all three cards (sg4, sg5, sg6) with GEOMETRY VERIFIED badges, ✓ sg4 is FREE tier, sg5 and sg6 are PREMIUM tier (correct tiering), ✓ No console errors detected (only expected 401 auth errors for public routes). VISUAL VERIFICATION: Screenshots confirm correct geometric forms prominently displayed (Seed of Life seven-circle pattern, Vesica Piscis lens shape, Torus toroidal form), encoded overlays subtle and in background only, geometry badges clearly visible with emerald styling. PASS/FAIL RESULT: ✅ PASS - All requirements met, no issues found."

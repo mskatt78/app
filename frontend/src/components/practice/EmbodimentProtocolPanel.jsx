@@ -101,7 +101,7 @@ const getRegionCardsForMode = (element, fasciaMode) => {
     .filter((card) => card && card.fascia);
 };
 
-const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, diagramView, testIdPrefix, fasciaMode }) => (
+const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => (
   <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4" data-testid={`${testIdPrefix}-interactive-body-map`}>
     <h4 className="text-sm font-medium mb-3">Interactive Body Map Diagram</h4>
     <div className="grid lg:grid-cols-[220px_1fr] gap-4 items-start">
@@ -124,7 +124,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, diagramView, te
         </svg>
 
         {cards.map((card, index) => {
-          const point = card?.diagram?.[diagramView];
+          const point = card?.diagram?.front;
           if (!point) return null;
           const active = selectedRegionKey === card.key;
           return (
@@ -147,7 +147,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, diagramView, te
       <div className="space-y-3">
         <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-diagram-mode-copy`}>
           {fasciaMode
-            ? "Fascia Love Mode: focusing on connective tissue chains and stored stress patterns."
+            ? "Fascia-focused support: highlighting connective tissue chains and stored stress patterns."
             : "Tap points on the diagram to explore physical, emotional, energetic, and spiritual layers."}
         </p>
         <ul className="grid sm:grid-cols-2 gap-2">
@@ -184,8 +184,7 @@ export const EmbodimentProtocolPanel = ({
 }) => {
   const safePractice = String(practiceName || "this practice").trim();
   const safeElement = normalizeElement(element);
-  const [diagramView, setDiagramView] = useState("front");
-  const [fasciaMode, setFasciaMode] = useState(preferFasciaMode);
+  const fasciaMode = Boolean(preferFasciaMode);
 
   const threeStep = buildThreeStep(safePractice, safeElement);
   const sevenDay = buildSevenDay(safePractice);
@@ -197,12 +196,6 @@ export const EmbodimentProtocolPanel = ({
       setSelectedRegionKey(regionCards[0]?.key || "feet_legs");
     }
   }, [regionCards, selectedRegionKey]);
-
-  useEffect(() => {
-    if (preferFasciaMode) {
-      setFasciaMode(true);
-    }
-  }, [preferFasciaMode]);
 
   const selectedRegion = regionCards.find((card) => card.key === selectedRegionKey) || regionCards[0];
   const bodyScanProtocol = [
@@ -223,32 +216,9 @@ export const EmbodimentProtocolPanel = ({
         Embodiment Protocol (Practice + Integration)
       </h3>
 
-      <div className="flex flex-wrap gap-2" data-testid={`${testIdPrefix}-body-map-controls`}>
-        <button
-          type="button"
-          className={`px-3 py-1 rounded-full text-xs border ${diagramView === "front" ? "bg-cyan-500/30 border-cyan-300/60 text-cyan-100" : "bg-black/30 border-white/10 text-muted-foreground"}`}
-          onClick={() => setDiagramView("front")}
-          data-testid={`${testIdPrefix}-diagram-view-front`}
-        >
-          Front View
-        </button>
-        <button
-          type="button"
-          className={`px-3 py-1 rounded-full text-xs border ${diagramView === "back" ? "bg-cyan-500/30 border-cyan-300/60 text-cyan-100" : "bg-black/30 border-white/10 text-muted-foreground"}`}
-          onClick={() => setDiagramView("back")}
-          data-testid={`${testIdPrefix}-diagram-view-back`}
-        >
-          Back View
-        </button>
-        <button
-          type="button"
-          className={`px-3 py-1 rounded-full text-xs border ${fasciaMode ? "bg-fuchsia-500/30 border-fuchsia-300/60 text-fuchsia-100" : "bg-black/30 border-white/10 text-muted-foreground"}`}
-          onClick={() => setFasciaMode((prev) => !prev)}
-          data-testid={`${testIdPrefix}-fascia-mode-toggle`}
-        >
-          Fascia Love Mode {fasciaMode ? "ON" : "OFF"}
-        </button>
-      </div>
+      <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-body-map-simple-note`}>
+        Interactive body map is simplified for clarity. Tap a region to explore the physical, emotional, energetic, and spiritual layers.
+      </p>
 
       <div className="grid md:grid-cols-2 gap-3" data-testid={`${testIdPrefix}-options-grid`}>
         <div className="rounded-lg border border-white/10 bg-black/20 p-3" data-testid={`${testIdPrefix}-three-step`}>
@@ -308,7 +278,6 @@ export const EmbodimentProtocolPanel = ({
         cards={regionCards}
         selectedRegionKey={selectedRegion?.key}
         onSelectRegion={setSelectedRegionKey}
-        diagramView={diagramView}
         testIdPrefix={testIdPrefix}
         fasciaMode={fasciaMode}
       />
