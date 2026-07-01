@@ -3785,3 +3785,51 @@
 1. Optional fine-tuning pass on modality-specific script style prompts (tone, cadence, archetypal language per modality).
 2. Add lightweight analytics for narration profile selection to learn which durations users keep.
 3. Continue backlog item: Sacred Journey Progress dashboard tracker.
+
+## Latest Verification Snapshot (Iteration 247 — 2026-07-01)
+- ✅ Implemented new visual direction from user-provided references: "true Light Codes" ceremonial aesthetic (gold + violet + white-light mixture).
+- ✅ Generated a fresh custom image pack (10 new encoded assets) using the user references as style anchors:
+  - `encoded-frequency-divine-union`
+  - `encoded-frequency-spiral-seal`
+  - `encoded-frequency-stellar-column`
+  - `encoded-frequency-initiation-gate`
+  - `encoded-frequency-alchemy-loop`
+  - `encoded-frequency-angelic-wing-seal`
+  - `encoded-frequency-galactic-lattice`
+  - `encoded-frequency-chakra-axis`
+  - `encoded-frequency-rose-heart-sigil`
+  - `encoded-frequency-master-temple`
+
+- ✅ Added **new Light Codes collection** per user request:
+  - New category: `encoded_frequency` (keeps existing categories intact).
+  - Added category badge and philosophy metadata in `lightCodeConfig.js`.
+  - Added generated collection population logic in `useLightCodesData.js` (14-item encoded stream, tiered 4 free + 10 premium).
+
+- ✅ Applied ceremonial image treatment across requested sections (Light Codes + all Alchemy/Mystery):
+  - `Light Codes` cards + modal + symbol ritual section + hero now use encoded aura overlays.
+  - `Mystery School Teachings` cards now use encoded field overlays + badge.
+  - `All Alchemy Hub` cards now use encoded aura background + badge styling.
+  - `Sacred Ally Alchemy` cards now use ceremonial overlays + encoded badge.
+  - `Angelic Alchemy` cards now use encoded overlays + encoded badge.
+  - `Ancient Wisdom` grid now uses encoded overlay style.
+
+- ✅ Added new reusable visual utility:
+  - `frontend/src/utils/lightCodeVisualTheme.js`
+  - deterministic image selection for stable section/card visuals using generated encoded asset pool.
+
+## Testing Summary (Iteration 247)
+- ✅ Frontend QA agent: PASS across target routes:
+  - `/light-codes` Encoded Frequency category renders and modals function.
+  - `/mystery-school-teachings`, `/all-alchemy`, `/sacred-ally-alchemy`, `/angelic-alchemy`, `/ancient-wisdom` style rollout verified.
+  - mobile checks passed for `/light-codes` and `/all-alchemy` (no horizontal overflow).
+- ✅ Additional manual mystery modal verification performed on a known free card (`mystery-egyptian-001`) and modal opens successfully.
+
+## Updated Priorities
+- **P0 complete**: Light Codes visual alignment with user examples + new Encoded Frequency collection.
+- **P1 complete**: Cross-section ceremonial style consistency (all requested alchemy/mystery surfaces).
+- **P2 backlog**: Sacred Journey Progress tracker.
+
+## Next Action Items
+1. Optional: generate a second encoded image pack specifically for modal hero visuals (portrait ratio) to increase perceived uniqueness.
+2. Optional: add a per-category “style intensity” toggle (Subtle / Ceremonial / Full Transmission).
+3. Continue backlog item: Sacred Journey Progress dashboard tracker.
