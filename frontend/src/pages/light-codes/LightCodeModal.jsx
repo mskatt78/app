@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Volume2 } from "lucide-react";
+import { Brain, HandHeart, ScrollText, X, Volume2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Button } from "../../components/ui/button";
 import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
@@ -89,6 +89,21 @@ export const LightCodeModal = ({
                 </div>
               </div>
 
+              <div className="grid gap-3 sm:grid-cols-3" data-testid="light-code-modal-depth-triad">
+                <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4" data-testid="light-code-depth-symbolic-card">
+                  <div className="flex items-center gap-2 mb-2 text-cyan-200/80"><ScrollText className="w-4 h-4" /><span className="text-[11px] uppercase tracking-[0.2em]">Symbolic layer</span></div>
+                  <p className="text-xs text-white/75 leading-relaxed">Pattern, proportion, and archetypal meaning shape perception and orient attention.</p>
+                </div>
+                <div className="rounded-2xl border border-violet-500/20 bg-violet-500/10 p-4" data-testid="light-code-depth-neural-card">
+                  <div className="flex items-center gap-2 mb-2 text-violet-200/80"><Brain className="w-4 h-4" /><span className="text-[11px] uppercase tracking-[0.2em]">Neural layer</span></div>
+                  <p className="text-xs text-white/75 leading-relaxed">Coherent visual focus + paced breath can downshift stress loops and stabilize cognition.</p>
+                </div>
+                <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4" data-testid="light-code-depth-embodiment-card">
+                  <div className="flex items-center gap-2 mb-2 text-emerald-200/80"><HandHeart className="w-4 h-4" /><span className="text-[11px] uppercase tracking-[0.2em]">Embodiment layer</span></div>
+                  <p className="text-xs text-white/75 leading-relaxed">Activation is complete only when one practical behavior changes in daily life.</p>
+                </div>
+              </div>
+
               {selectedSymbol.pronunciation && (
                 <div className="flex items-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10" data-testid="light-code-modal-pronunciation">
                   <Volume2 className="w-5 h-5 text-primary" />
@@ -131,12 +146,24 @@ export const LightCodeModal = ({
                     <p className="text-xs uppercase tracking-[0.22em] text-cyan-200/70 mb-3">Why it heals</p>
                     <p className="text-sm text-white/80 leading-relaxed">{selectedSymbol.why_this_heals}</p>
                   </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/5 p-5" data-testid="light-code-tab-why-practical-anchor">
+                    <p className="text-xs uppercase tracking-[0.22em] text-white/40 mb-3">Practical anchor</p>
+                    <p className="text-sm text-white/75 leading-relaxed">
+                      Healing is validated by behavior. After this transmission, choose one concrete action you can complete in under 24 hours.
+                    </p>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="traditions" className="space-y-4" data-testid="light-code-tab-content-traditions">
                   <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5">
                     <p className="text-xs uppercase tracking-[0.22em] text-amber-200/70 mb-3">Ancient traditions</p>
                     <p className="text-sm text-white/80 leading-relaxed">{selectedSymbol.ancient_traditions}</p>
+                  </div>
+                  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5" data-testid="light-code-tab-traditions-context">
+                    <p className="text-xs uppercase tracking-[0.22em] text-amber-200/70 mb-3">Living context</p>
+                    <p className="text-sm text-white/80 leading-relaxed">
+                      These lineages used symbols as training technologies for perception, ethics, and collective coherence — not just visual motifs.
+                    </p>
                   </div>
                 </TabsContent>
 

@@ -1257,6 +1257,96 @@ SHAMANIC_ADVANCED_SUPPLEMENTS = [
             "Close by writing non-negotiable support structures for the transition.",
         ],
     },
+    {
+        "id": "shamanic-journey-earth-root-cavern",
+        "name": "Earth Root Cavern Descent",
+        "category": "journey",
+        "tradition": "Earth-Lineage Cave Journey",
+        "element": "Earth",
+        "duration_minutes": 34,
+        "description": "Elemental descent journey for rebuilding safety, boundaries, and grounded self-trust through cave imagery, ancestral stone witness, and deliberate re-entry.",
+        "preparation": "Prepare a weighted blanket or grounding stone, drink water, and define one boundary you are restoring.",
+        "journey_steps": [
+            "Open by touching floor or earth and stating: 'I return to stable ground within myself.'",
+            "Visualize descending into a cavern where each breath anchors your spine and lower belly.",
+            "Meet the Stone Elder and ask what structure your life now requires.",
+            "Seal with one practical boundary action and a nourishing meal after the journey.",
+        ],
+        "safety_notes": "If heavy grief or freeze rises, pause and orient to room objects before continuing. Keep feet warm and supported.",
+        "closing_prayer": "May my roots hold what my spirit is ready to become.",
+    },
+    {
+        "id": "shamanic-journey-water-moon-river",
+        "name": "Water Moon River Journey",
+        "category": "journey",
+        "tradition": "Lunar Water Temple",
+        "element": "Water",
+        "duration_minutes": 36,
+        "description": "Elemental water journey for emotional regulation, grief release, and relational renewal through moonlit river visualization and compassionate witnessing.",
+        "preparation": "Set a bowl of water nearby, reduce light levels, and identify one emotion you are ready to process gently.",
+        "journey_steps": [
+            "Begin with slow 4/6 breathing while visualizing moonlight reflecting on a calm river.",
+            "Enter the riverbank path and name the emotion you are carrying without judgment.",
+            "Offer that emotion into flowing water and receive one phrase of guidance in return.",
+            "Close by washing hands with intention and writing one relationship repair step.",
+        ],
+        "safety_notes": "Avoid flooding by pacing breath and keeping one hand on heart. Pause if activation exceeds your consent window.",
+        "closing_prayer": "May my waters move with honesty, compassion, and clean boundaries.",
+    },
+    {
+        "id": "shamanic-journey-fire-solar-path",
+        "name": "Fire Solar Path Initiation",
+        "category": "journey",
+        "tradition": "Solar Fire Rite",
+        "element": "Fire",
+        "duration_minutes": 32,
+        "description": "Elemental fire journey for courage, purpose activation, and disciplined action through solar visualization and vow-based integration.",
+        "preparation": "Sit upright with a candle or warm light source and define one action you have been avoiding.",
+        "journey_steps": [
+            "Ignite with three power breaths and call in clear, benevolent fire.",
+            "Walk the inner solar path, releasing self-doubt at each threshold gate.",
+            "Receive one precise directive for aligned action from your inner fire guide.",
+            "Seal by speaking your 72-hour commitment aloud three times.",
+        ],
+        "safety_notes": "Keep intensity regulated. Fire medicine is disciplined warmth, not overwhelm or force.",
+        "closing_prayer": "May my fire serve truth, compassion, and courageous right action.",
+    },
+    {
+        "id": "shamanic-journey-air-sky-bridge",
+        "name": "Air Sky Bridge Journey",
+        "category": "journey",
+        "tradition": "Wind-Oracle Breathwork",
+        "element": "Air",
+        "duration_minutes": 30,
+        "description": "Elemental air journey for perspective expansion, cognitive clarity, and intuitive discernment through sky-bridge symbolism and breath-led listening.",
+        "preparation": "Open a window if possible, soften jaw and tongue, and bring one question requiring discernment.",
+        "journey_steps": [
+            "Lengthen exhale and visualize stepping onto a luminous sky bridge.",
+            "Offer your question to the wind and listen for repeated phrases or symbols.",
+            "Differentiate fear noise from truth signal by checking body coherence on each insight.",
+            "Close with one communication action aligned to what you heard.",
+        ],
+        "safety_notes": "If racing thoughts increase, reduce pace and return to counted breathing before continuing.",
+        "closing_prayer": "May clear seeing and clean speech guide my next steps.",
+    },
+    {
+        "id": "shamanic-journey-spirit-aurora-return",
+        "name": "Spirit Aurora Return Journey",
+        "category": "journey",
+        "tradition": "Aurora Axis Ceremony",
+        "element": "Spirit",
+        "duration_minutes": 40,
+        "description": "Elemental spirit journey for soul coherence, meaning restoration, and life-direction integration through aurora-axis ascent and grounded return protocols.",
+        "preparation": "Set sacred space with one light source, one grounding object, and one written intention for your next life season.",
+        "journey_steps": [
+            "Enter stillness and visualize an aurora pillar linking Earth, heart, and sky.",
+            "Ascend through the pillar while repeating your intention in calm cadence.",
+            "Meet your highest supportive guide and request one integration vow for this season.",
+            "Return slowly through breath, touch, and orientation to room details before standing.",
+        ],
+        "safety_notes": "Always complete full re-entry: hydration, food, and practical grounding task before any major decision.",
+        "closing_prayer": "May spirit insight become embodied service, one grounded action at a time.",
+    },
 ]
 
 EARTH_CRAFTING_TOOL_SUPPLEMENTS = [
@@ -1744,7 +1834,7 @@ SECTION_MIN_FREE_ITEMS = 1
 SECTION_DEFAULT_FREE_ITEMS = 4
 SECTION_DEFAULT_PREMIUM_ITEMS = 10
 SECTION_MAX_TIER_ITEMS = SECTION_DEFAULT_FREE_ITEMS + SECTION_DEFAULT_PREMIUM_ITEMS
-SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "mystery_school"}
+SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "mystery_school", "shamanic_practices"}
 
 # User-approved per-section free counts override global ratio where specified.
 SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
@@ -3517,6 +3607,49 @@ def _enrich_light_code_payload(payload: dict[str, Any]) -> dict[str, Any]:
                 continue
             entry = dict(symbol)
             symbol_char = str(entry.get("symbol") or "✧")
+            symbol_name = str(entry.get("name") or "Light Code").strip()
+            section_label = str(section_name).replace("_", " ").strip()
+
+            if not str(entry.get("meaning") or "").strip():
+                entry["meaning"] = (
+                    f"{symbol_name} encodes a {section_label} principle that restores coherence between perception, breath, and embodied action. "
+                    "Its purpose is to move spiritual insight out of abstraction and into regulated, relational presence."
+                )
+
+            if not str(entry.get("healing_lens") or "").strip():
+                entry["healing_lens"] = (
+                    "Symbolic activation, imagination, subtle-body entrainment, and nervous-system regulation through paced attention."
+                )
+
+            if not str(entry.get("why_this_heals") or "").strip():
+                entry["why_this_heals"] = (
+                    f"{symbol_name} heals by giving the mind a coherent pattern and giving the body a paced ritual container. "
+                    "When attention, breath, and sensation are synchronized around one symbol, fragmentation decreases and agency returns. "
+                    "This combination supports emotional regulation, clearer boundaries, and more grounded decision-making."
+                )
+
+            if not str(entry.get("ancient_traditions") or "").strip():
+                entry["ancient_traditions"] = (
+                    "This stream draws from temple geometry, initiatory letter mysticism, contemplative iconography, and embodied ritual sciences "
+                    "that treated symbols as living instruments for transformation rather than decorative motifs."
+                )
+
+            if not str(entry.get("practice_guide") or "").strip():
+                entry["practice_guide"] = (
+                    f"1) Orient to safety and slow your exhale.\n"
+                    f"2) Gaze softly at {symbol_name} for 2-4 minutes without forcing interpretation.\n"
+                    "3) Track one body sensation, one emotional signal, and one belief pattern.\n"
+                    "4) Trace or visualize the symbol with breath for 12 cycles.\n"
+                    "5) Close by naming one practical integration action within 24 hours."
+                )
+
+            if not str(entry.get("extended_teachings") or "").strip():
+                entry["extended_teachings"] = (
+                    f"{symbol_name} is best understood as a ritual grammar for the psyche: pattern, proportion, and repetition train coherent attention. "
+                    "In ceremony, the symbol becomes a mirror that reveals where your system is fragmented and where it is ready to reorganize. "
+                    "Mastery is not in collecting symbols, but in practicing one symbol deeply enough that behavior changes."
+                )
+
             entry.setdefault("light_coded_symbols", [
                 symbol_char,
                 f"{symbol_char}·{symbol_char}",
@@ -3822,6 +3955,67 @@ def _append_shamanic_supplements(practices: list[dict[str, Any]], category: Opti
             continue
         additions.append(item)
     return practices + additions
+
+
+def _ensure_shamanic_journey_depth(practice: dict[str, Any]) -> dict[str, Any]:
+    enriched = dict(practice)
+    category = str(enriched.get("category") or "").strip().lower()
+    if category != "journey":
+        return enriched
+
+    name = str(enriched.get("name") or "Shamanic Journey").strip()
+    element = str(enriched.get("element") or "Spirit").strip().title()
+    base_steps = enriched.get("journey_steps") or enriched.get("visualization_steps") or enriched.get("steps") or []
+
+    if not isinstance(base_steps, list) or not base_steps:
+        base_steps = [
+            "Orient to safety and slow your exhale before beginning.",
+            "Name your intention and enter journey space with reverence.",
+            "Receive one clear teaching and return with grounded awareness.",
+        ]
+
+    enriched.setdefault("journey_steps", base_steps)
+    enriched.setdefault("guided_practice", [
+        "Phase 1 — Threshold: orient to room, body, and breath for coherent entry.",
+        "Phase 2 — Journey: move through imagery while tracking sensation and emotional signal changes.",
+        "Phase 3 — Return: complete re-entry with hydration, journaling, and practical action.",
+    ])
+    enriched.setdefault("ritual", [
+        f"Invoke {element} support and speak one truthful intention aloud.",
+        "Use paced breathing (4-in / 6-out) to prevent over-activation during the journey.",
+        "Close with one embodied integration commitment in the next 24 hours.",
+    ])
+    enriched.setdefault("ceremony", [
+        "Opening: establish sacred container, consent, and protection boundaries.",
+        "Middle: follow symbolic guidance while remaining anchored in body awareness.",
+        "Closure: seal the field with gratitude, orientation, and behavioral integration.",
+    ])
+    enriched.setdefault("integration_actions", [
+        "Hydrate and eat grounding food before returning to digital/social activity.",
+        "Journal one image, one teaching, and one embodied next step.",
+        "Take one practical action proving the teaching is integrated.",
+    ])
+    enriched.setdefault("post_journey_integration", [
+        "Rest 10-20 minutes after the journey to stabilize the nervous system.",
+        "Avoid overstimulation for the next hour while insights settle.",
+        "Review your notes after 24 hours and refine your action commitment.",
+    ])
+    enriched.setdefault(
+        "why_this_heals",
+        f"{name} heals by combining imaginal journeying, breath regulation, and disciplined integration. "
+        "The symbolic field opens insight while structured re-entry prevents fragmentation and translates revelation into grounded change.",
+    )
+    enriched.setdefault(
+        "healing_lens",
+        "Journey-state symbolism, nervous-system regulation, relational truth, and practical embodiment.",
+    )
+    enriched.setdefault(
+        "extended_teachings",
+        f"{name} is an initiatory process, not a one-time visualization. Repetition builds trust between psyche, body, and spirit. "
+        "The medicine matures through consistent integration: breath, boundary, and actionable service.",
+    )
+
+    return enriched
 
 
 def _append_earth_crafting_supplements(items: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
@@ -6329,6 +6523,7 @@ async def get_shamanic_practices(category: Optional[str] = None) -> list[dict[st
     
     practices = await db.shamanic_practices.find(query, {"_id": 0}).to_list(length=80)
     practices = _append_shamanic_supplements(practices, category)
+    practices = [_ensure_shamanic_journey_depth(practice) for practice in practices]
     enriched = [
         _enrich_devotional_language(
             _enrich_content_integrity(_enrich_practice_links(practice, "shamanic-practices"), "hybrid-curated"),
@@ -6346,7 +6541,8 @@ async def get_shamanic_practice(practice_id: str) -> dict[str, Any]:
     practice = await db.shamanic_practices.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Shamanic practice not found")
-    return _enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "shamanic-practices")
+    deepened = _ensure_shamanic_journey_depth(practice)
+    return _enrich_devotional_language(_enrich_content_integrity(deepened, "hybrid-curated"), "shamanic-practices")
 
 
 # ============ ELEMENTAL PRACTICES ============

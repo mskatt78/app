@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ChevronRight, Clock, Feather, Loader2, Lock, Sparkles, Trophy } from "lucide-react";
-import { categoryColors, categoryIcons, formatReviewedDate } from "./constants";
+import { categoryColors, categoryIcons, elementalJourneyIcons, formatReviewedDate, normalizeShamanicElement } from "./constants";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 
 const CARD_INITIAL = { opacity: 0, y: 20 };
@@ -40,6 +40,9 @@ export const ShamanicPracticeGrid = ({
           const achievementLocked = isLocked(practice);
           const premiumLocked = isPremiumLocked(practice);
           const locked = achievementLocked || premiumLocked;
+          const isJourney = String(practice.category || "").toLowerCase() === "journey";
+          const elementKey = normalizeShamanicElement(practice.element);
+          const ElementIcon = elementalJourneyIcons[elementKey] || Feather;
 
           return (
             <motion.div
@@ -132,6 +135,19 @@ export const ShamanicPracticeGrid = ({
                 {practice.linked_practices?.length > 0 && (
                   <p className="text-[11px] text-cyan-300/90 mb-2" data-testid={`shamanic-linked-practices-${practice.id}`}>
                     Linked pathways: {practice.linked_practices.length}
+                  </p>
+                )}
+
+                {isJourney && (
+                  <div className="mb-2 inline-flex items-center gap-1.5 px-2 py-1 rounded-full border border-cyan-400/30 bg-cyan-500/10 text-cyan-100/90 text-[11px]" data-testid={`shamanic-elemental-journey-badge-${practice.id}`}>
+                    <ElementIcon className="w-3 h-3" />
+                    <span>Elemental Journey · {elementKey}</span>
+                  </div>
+                )}
+
+                {isJourney && Array.isArray(practice.integration_actions) && practice.integration_actions.length > 0 && (
+                  <p className="text-[11px] text-emerald-300/90 mb-2" data-testid={`shamanic-integration-actions-count-${practice.id}`}>
+                    Integration anchors: {practice.integration_actions.length}
                   </p>
                 )}
 

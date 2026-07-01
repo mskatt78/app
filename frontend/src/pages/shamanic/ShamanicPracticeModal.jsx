@@ -8,6 +8,7 @@ import PracticeTimer from "../../components/PracticeTimer";
 import { appLogger } from "../../utils/logger";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
+import { normalizeShamanicElement } from "./constants";
 
 const OVERLAY_INITIAL = { opacity: 0 };
 const OVERLAY_ANIMATE = { opacity: 1 };
@@ -26,6 +27,8 @@ export const ShamanicPracticeModal = ({
   api,
 }) => {
   const resolvedDurationMinutes = selectedPractice ? resolveDurationMinutes(selectedPractice.duration_minutes, 30) : 30;
+  const elementKey = normalizeShamanicElement(selectedPractice?.element || "Spirit");
+  const isElementalJourney = String(selectedPractice?.category || "").toLowerCase() === "journey";
 
   return (
     <AnimatePresence>
@@ -91,6 +94,15 @@ export const ShamanicPracticeModal = ({
                       </div>
                     )}
 
+                    {isElementalJourney && (
+                      <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="shamanic-elemental-journey-panel">
+                        <h3 className="font-medium mb-2 text-cyan-200">Elemental Journey Pathway</h3>
+                        <p className="text-sm text-muted-foreground">
+                          This is a <span className="text-cyan-200/90">{elementKey}</span> aligned journey. Move slowly, regulate breath, and close with embodied action.
+                        </p>
+                      </div>
+                    )}
+
                     {getSteps(selectedPractice).length > 0 && (
                       <div>
                         <h3 className="font-medium mb-3">Journey Steps</h3>
@@ -111,6 +123,27 @@ export const ShamanicPracticeModal = ({
                       <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
                         <h3 className="font-medium mb-2 text-amber-400">Safety Notes</h3>
                         <p className="text-sm text-muted-foreground">{selectedPractice.safety_notes}</p>
+                      </div>
+                    )}
+
+                    {Array.isArray(selectedPractice.integration_actions) && selectedPractice.integration_actions.length > 0 && (
+                      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="shamanic-integration-actions-panel">
+                        <h3 className="font-medium mb-2 text-emerald-300">Post-Journey Integration Actions</h3>
+                        <ul className="space-y-2">
+                          {selectedPractice.integration_actions.map((step, index) => (
+                            <li key={`${selectedPractice.id}-integration-${index}`} className="text-sm text-muted-foreground flex gap-2" data-testid={`shamanic-integration-action-${index}`}>
+                              <span className="text-emerald-300">•</span>
+                              <span>{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {selectedPractice.why_this_heals && (
+                      <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="shamanic-why-heals-panel">
+                        <h3 className="font-medium mb-2 text-cyan-200">Why This Heals</h3>
+                        <p className="text-sm text-muted-foreground">{selectedPractice.why_this_heals}</p>
                       </div>
                     )}
 

@@ -1,4 +1,4 @@
-import { Compass, Drum, Eye, Feather, Moon, TreeDeciduous } from "lucide-react";
+import { Compass, Drum, Eye, Feather, Flame, Moon, TreeDeciduous, Waves, Wind } from "lucide-react";
 
 export const shamanicCategories = ["all", "journey", "power_animal", "ancestral", "divination", "ceremony", "shadow"];
 
@@ -19,6 +19,16 @@ export const categoryColors = {
   ceremony: { text: "text-orange-400", bg: "bg-orange-500/10", border: "border-orange-500/20" },
   shadow: { text: "text-slate-400", bg: "bg-slate-500/10", border: "border-slate-500/20" },
 };
+
+export const elementalJourneyIcons = {
+  earth: TreeDeciduous,
+  water: Waves,
+  fire: Flame,
+  air: Wind,
+  spirit: Compass,
+};
+
+export const normalizeShamanicElement = (value) => String(value || "Spirit").trim().toLowerCase();
 
 export const getDifficultyColor = (difficulty) => {
   if (difficulty === "Beginner") return "text-green-400 bg-green-500/10 border-green-500/20";

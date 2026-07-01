@@ -93,6 +93,13 @@ export default function ShamanicPracticesContainer({ api, user }) {
           </p>
         </div>
 
+        <section className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4" data-testid="shamanic-elemental-journeys-note">
+          <h3 className="text-sm uppercase tracking-[0.18em] text-cyan-200 mb-2">Shamanic Elemental Journeys</h3>
+          <p className="text-sm text-cyan-100/80">
+            Journey pathways now include Earth, Water, Fire, Air, and Spirit tracks with deeper ritual steps, safety pacing, and post-journey integration actions.
+          </p>
+        </section>
+
         <ShamanicPracticeGrid
           loading={loading}
           practices={practices}

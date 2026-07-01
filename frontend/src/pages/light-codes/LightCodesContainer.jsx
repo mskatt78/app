@@ -74,6 +74,23 @@ const LightCodesContainer = ({ user, api }) => {
         <LightCodesHero activeCategoryInfo={activeCategoryInfo} />
         <LightCodesFilters activeCategory={activeCategory} selectCategory={selectCategory} />
         <LightCodesCategoryInsights activeCategoryInfo={activeCategoryInfo} contentRef={contentRef} />
+        <section className="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-black/20 p-6" data-testid="light-codes-depth-framework">
+          <p className="text-xs uppercase tracking-[0.24em] text-white/45 mb-3">Temple depth framework</p>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-4" data-testid="light-codes-depth-framework-symbol">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-cyan-100/80 mb-2">1 · Symbolic intelligence</p>
+              <p className="text-sm text-white/75 leading-relaxed">Interpret each form as living grammar: pattern, polarity, proportion, and archetypal function.</p>
+            </div>
+            <div className="rounded-2xl border border-violet-400/20 bg-violet-500/10 p-4" data-testid="light-codes-depth-framework-ritual">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-violet-100/80 mb-2">2 · Ritual embodiment</p>
+              <p className="text-sm text-white/75 leading-relaxed">Use ceremonial pacing, breath rhythm, and somatic tracking so activation remains safe and coherent.</p>
+            </div>
+            <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4" data-testid="light-codes-depth-framework-integration">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-emerald-100/80 mb-2">3 · Integration action</p>
+              <p className="text-sm text-white/75 leading-relaxed">Close every transmission with one practical behavior shift in relationship, work, or self-regulation.</p>
+            </div>
+          </div>
+        </section>
         <LightCodesSymbolRitualSection currentSymbols={currentSymbols} activeCategoryInfo={activeCategoryInfo} openSymbol={openSymbol} />
         <LightCodesLinguisticFoundations lightCodes={lightCodes} />
         <LightCodesSymbolsGrid
