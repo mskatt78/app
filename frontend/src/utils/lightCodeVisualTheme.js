@@ -38,3 +38,31 @@ export const getEncodedFrequencyMasterImage = () =>
   "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/41dd72171f39a8f45d612e8ae254d6f2f19e89c463e42dcd51bf7d66786d60f2.png";
 
 export const getEncodedFrequencyPool = () => ENCODED_FREQUENCY_IMAGE_POOL;
+
+export const SACRED_GEOMETRY_IMAGE_OVERRIDES = {
+  sg1: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/54024e7f3884fc52d12d585c570e4a29dbc0dce94e3ef6a5ce3a8ee67432bfd6.png", // Flower of Life
+  sg2: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/f5d8d5e0a7fcc7beab8a072ca90f202985ed3e38d7f9315497867aff04f5e281.png", // Metatron's Cube
+  sg3: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/057c2ca7ba1909a3f67c44ff8bff5047c1400227c7e705638e91b1288541ded1.png", // Sri Yantra
+  sg9: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3551de1b0e0c5c399975286d0b2abf5b9585fa661fdc6a9ce405f55a8e6bc0bf.png", // Platonic set
+  sg11: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a1227b39c0c144e9db1a14c5200f3d797a5c8d102a7eeba6a90be9723754d6d2.png", // Tetrahedron
+  sg12: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0011d4643c6c97ad170adbe794c185cc89dbdcde1f3711189f34ff8a9f084d8a.png", // Cube
+  sg13: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/51fa492ddec543f2e7e004d43cb4f376d132616a4fc58cb2a9838df0cd131981.png", // Octahedron
+  sg14: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6729c38c87e9ff30193af7f78833f46184079edac67a8cac9088014e676108eb.png", // Icosahedron
+};
+
+export const SACRED_GEOMETRY_SYMBOL_OVERRIDES = {
+  sg1: "✿",
+  sg2: "⎔",
+  sg3: "۞",
+  sg4: "❂",
+  sg5: "◍",
+  sg6: "⊙",
+  sg7: "✡",
+  sg8: "🌀",
+  sg9: "⬢",
+  sg10: "∞",
+  sg11: "⏃",
+  sg12: "⧈",
+  sg13: "⋈",
+  sg14: "⬠",
+};

@@ -51,6 +51,11 @@ export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryI
               <div className="absolute top-4 right-4 w-11 h-11 rounded-full bg-black/45 backdrop-blur-md flex items-center justify-center border border-white/10">
                 <span className="text-xl">{symbol.symbol || "✨"}</span>
               </div>
+              {symbol.geometry_verified && (
+                <p className="absolute top-4 left-4 text-[10px] uppercase tracking-[0.16em] px-2 py-1 rounded-full border border-emerald-300/35 bg-black/45 text-emerald-100/90" data-testid={`light-code-geometry-verified-badge-${symbol.id}`}>
+                  Geometry Verified
+                </p>
+              )}
             </div>
           ) : (
             <div className={`aspect-[4/3] flex items-center justify-center ${activeCategoryInfo?.bg}`}>

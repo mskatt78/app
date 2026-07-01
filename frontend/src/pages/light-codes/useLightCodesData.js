@@ -3,7 +3,11 @@ import { toast } from "sonner";
 import { appLogger } from "../../utils/logger";
 import { categories } from "./lightCodeConfig";
 import { usePremiumAccess } from "../../hooks/usePremiumAccess";
-import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
+import {
+  getEncodedFrequencyImage,
+  SACRED_GEOMETRY_IMAGE_OVERRIDES,
+  SACRED_GEOMETRY_SYMBOL_OVERRIDES,
+} from "../../utils/lightCodeVisualTheme";
 
 const SOURCE_SECTIONS = [
   "sacred_geometry",
@@ -97,9 +101,14 @@ export const useLightCodesData = (api, user) => {
     const symbols = lightCodes[activeCategory] || [];
     return symbols.map((symbol, index) => {
       const stableKey = `${activeCategory}-${symbol?.id || symbol?.name || index}`;
+      const isSacredGeometry = activeCategory === "sacred_geometry";
+      const geometryImage = isSacredGeometry ? SACRED_GEOMETRY_IMAGE_OVERRIDES[symbol?.id] : null;
+      const geometrySymbol = isSacredGeometry ? SACRED_GEOMETRY_SYMBOL_OVERRIDES[symbol?.id] : null;
       return {
         ...symbol,
-        image_url: symbol?.image_url || getEncodedFrequencyImage(stableKey),
+        image_url: geometryImage || symbol?.image_url || getEncodedFrequencyImage(stableKey),
+        symbol: geometrySymbol || symbol?.symbol,
+        geometry_verified: isSacredGeometry && Boolean(geometryImage),
       };
     });
   }, [activeCategory, encodedFrequencySymbols, lightCodes]);

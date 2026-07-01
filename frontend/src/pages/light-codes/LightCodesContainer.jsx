@@ -57,6 +57,11 @@ const LightCodesContainer = ({ user, api }) => {
             <p className="text-sm text-white/75 mt-1" data-testid="light-codes-premium-banner-text">
               Each Light Code stream now holds 4 free + 10 premium transmissions, including the new Encoded Frequency collection. Unlock premium symbols through subscription or full app access.
             </p>
+            {activeCategory === "sacred_geometry" && (
+              <p className="text-xs text-emerald-100/90 mt-2" data-testid="light-codes-geometry-accuracy-note">
+                Sacred Geometry mode is active: Platonic solids and core forms now prioritize geometry-accurate visual structures.
+              </p>
+            )}
             <div className="mt-3 flex flex-wrap gap-2">
               <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="light-codes-premium-banner-pricing-button">View Subscription</Button>
               <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="light-codes-premium-banner-fullapp-button">

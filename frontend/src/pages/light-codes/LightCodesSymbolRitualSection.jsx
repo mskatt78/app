@@ -45,6 +45,11 @@ export const LightCodesSymbolRitualSection = ({ currentSymbols, activeCategoryIn
                 {symbol.is_premium ? "Premium" : "Free"}
               </span>
             </div>
+            {symbol.geometry_verified && (
+              <p className="text-[10px] uppercase tracking-[0.16em] text-emerald-100/90" data-testid={`light-code-symbol-key-geometry-verified-${symbol.id}`}>
+                Geometry Verified
+              </p>
+            )}
             <p className="text-sm font-medium line-clamp-1">{symbol.name}</p>
             <p className="text-xs text-white/60 mt-1 line-clamp-2" data-testid={`light-code-symbol-key-ritual-${symbol.id}`}>
               {(symbol.embodiment_ritual && symbol.embodiment_ritual[0]) || (symbol.ceremony && symbol.ceremony[0]) || "Open with breath, trace the symbol, and integrate with grounded action."}
