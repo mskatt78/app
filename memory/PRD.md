@@ -3906,3 +3906,81 @@
 ## Updated Priorities
 - **P0 complete**: remove confusing fascia/front/back controls for end-user clarity.
 - **P1 backlog**: Sacred Journey Progress tracker and optional shamanic journey tabs.
+
+## Latest Verification Snapshot (Iteration 250 — 2026-07-02)
+- ✅ Completed full **App-wide Shamanic Depth Pass** in one rollout (user requested all spiritually themed sections app-wide).
+
+### Backend Depth Standardization
+- Updated `backend/routers/content.py` devotional enrichment defaults to guarantee these deep fields across content returned through enrichment flow:
+  - `why_this_heals`
+  - `safety_notes`
+  - `integration_actions`
+- Existing deep fields continue to be enriched/maintained:
+  - `ritual`
+  - `ceremony`
+  - `guided_practice`
+
+### Frontend Shamanic Depth UX (Ceremonial panels + clear structure)
+- **Elemental Temples detail** (`ElementalTempleDetailView.jsx`)
+  - Added depth framework grid:
+    - `elemental-temple-why-heals-panel`
+    - `elemental-temple-safety-notes-panel`
+    - `elemental-temple-integration-actions-panel`
+
+- **Elemental Practice modal** (`ElementalPracticeModal.jsx`)
+  - Added:
+    - `elemental-practice-why-heals-panel`
+    - `elemental-practice-safety-notes-panel`
+    - `elemental-practice-integration-actions-panel`
+
+- **Rose Temple modals** (`RoseTempleModals.jsx`)
+  - Teaching modal depth pair:
+    - `rose-teaching-why-heals-panel`
+    - `rose-teaching-safety-notes-panel`
+  - Practice modal depth pair:
+    - `rose-practice-why-heals-panel`
+    - `rose-practice-safety-notes-panel`
+  - Rite modal depth pair:
+    - `rose-rite-why-heals-panel`
+    - `rose-rite-safety-notes-panel`
+
+- **Seasonal Temple** (`SeasonalTempleContainer.jsx`)
+  - Sabbat depth panels:
+    - `seasonal-sabbat-why-heals-panel`
+    - `seasonal-sabbat-safety-notes-panel`
+    - `seasonal-sabbat-integration-actions-panel`
+  - Craft depth panels:
+    - `seasonal-craft-why-heals-panel`
+    - `seasonal-craft-safety-notes-panel`
+
+- **Masculine Practice modal** (`MasculinePracticeModal.jsx`)
+  - Added:
+    - `masculine-practice-safety-notes-panel`
+    - `masculine-practice-integration-actions-panel`
+
+### Testing Summary (Iteration 250)
+- ✅ Backend deep verification PASS:
+  - `/api/elemental-practices`
+  - `/api/shamanic-practices`
+  - `/api/feminine-embodiment`
+  - `/api/sacred-rites`
+  - `/api/masculine-embodiment`
+  - all verified with non-empty deep fields in sample payloads.
+
+- ✅ Frontend comprehensive testing agent PASS (`/app/test_reports/iteration_245.json`)
+  - Elemental Temples detail depth panels verified.
+  - Elemental Practice modal depth panels verified.
+  - Rose Teaching/Practice modal depth panels verified.
+  - Seasonal Sabbat/Craft depth panels verified.
+  - Masculine Practice modal depth panels verified.
+  - Shamanic modal regression + depth verified.
+  - No critical navigation crashes.
+
+## Updated Priorities
+- **P0 complete**: full app-wide shamanic depth parity pass for spiritual sections.
+- **P1 backlog**: Sacred Journey Progress tracker.
+
+## Next Action Items
+1. Optional: unify depth-panel copy style tokens in a shared component for easier global updates.
+2. Optional: add "Depth Mode" toggle (Concise / Standard / Deep) for user personalization.
+3. Continue backlog: Sacred Journey Progress dashboard tracker.
