@@ -7,6 +7,7 @@ import {
 
 export const ADMIN_EMAILS = [
   "mskatt78@gmail.com",
+  "skywatersacredembodiments@gmail.com",
 ];
 
 export const elementColors = {

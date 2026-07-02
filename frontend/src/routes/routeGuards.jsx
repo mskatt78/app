@@ -120,12 +120,17 @@ export const AdminRoute = ({ children, api, adminEmails }) => {
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   const checkAdmin = useCallback(async () => {
+    const lockedAdminEmails = [
+      "mskatt78@gmail.com",
+      "skywatersacredembodiments@gmail.com",
+    ];
     try {
       const { data: userData } = await api.get("/auth/me");
       setUser(userData);
 
       const userEmail = (userData.email || "").toLowerCase();
-      const isAdmin = adminEmails.includes(userEmail) || userData.is_admin === true;
+      const effectiveAdminEmails = Array.from(new Set([...(adminEmails || []), ...lockedAdminEmails]));
+      const isAdmin = effectiveAdminEmails.includes(userEmail);
 
       if (isAdmin) {
         setIsAuthorized(true);

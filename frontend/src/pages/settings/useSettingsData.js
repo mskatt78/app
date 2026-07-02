@@ -54,7 +54,8 @@ export const useSettingsData = ({ api, user, navigate }) => {
     sendTestNotification,
   } = useNotifications();
 
-  const isAdminUser = (user?.email || "").toLowerCase() === "mskatt78@gmail.com";
+  const ADMIN_EMAILS = new Set(["mskatt78@gmail.com", "skywatersacredembodiments@gmail.com"]);
+  const isAdminUser = ADMIN_EMAILS.has((user?.email || "").toLowerCase());
 
   useEffect(() => {
     const fetchData = async () => {

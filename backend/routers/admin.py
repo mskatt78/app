@@ -25,6 +25,11 @@ STORAGE_URL = "https://integrations.emergentagent.com/objstore/api/v1/storage"
 EMERGENT_KEY = os.environ.get("EMERGENT_LLM_KEY")
 APP_NAME = "shamanic-soul-temple"
 
+LOCKED_ADMIN_EMAILS = {
+    "mskatt78@gmail.com",
+    "skywatersacredembodiments@gmail.com",
+}
+
 _storage_key = None
 
 SOURCE_AWARE_COLLECTIONS = {
@@ -264,8 +269,8 @@ def _clear_admin_cookie(response: Response) -> None:
 
 
 def _get_admin_emails() -> set[str]:
-    raw = os.environ["ADMIN_EMAILS"]
-    return {email.strip().lower() for email in raw.split(",") if email.strip()}
+    # Hard-lock admin access to owner-approved addresses only.
+    return set(LOCKED_ADMIN_EMAILS)
 
 
 def _is_admin_email(email: str) -> bool:

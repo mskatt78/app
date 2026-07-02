@@ -11,16 +11,10 @@ import { AdminRoute, AuthCallback, ProtectedRoute, PublicRoute } from "./routes/
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
-const ADMIN_EMAILS_RAW = process.env.REACT_APP_ADMIN_EMAILS;
-
-if (!ADMIN_EMAILS_RAW) {
-  throw new Error("Missing REACT_APP_ADMIN_EMAILS environment variable");
-}
-
-const ADMIN_EMAILS = ADMIN_EMAILS_RAW
-  .split(",")
-  .map((email) => email.trim().toLowerCase())
-  .filter(Boolean);
+const ADMIN_EMAILS = [
+  "mskatt78@gmail.com",
+  "skywatersacredembodiments@gmail.com",
+];
 
 const api = axios.create({
   baseURL: API,
