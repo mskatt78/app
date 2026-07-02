@@ -1,6 +1,7 @@
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Crown, Lock } from "lucide-react";
+import { Button } from "../../components/ui/button";
 
-export const SeasonalTempleHeader = ({ hemisphere, onBack, onHemisphereChange }) => {
+export const SeasonalTempleHeader = ({ hemisphere, onBack, onHemisphereChange, locked = false, onUnlock }) => {
   return (
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5" data-testid="seasonal-temple-header">
       <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
@@ -13,7 +14,20 @@ export const SeasonalTempleHeader = ({ hemisphere, onBack, onHemisphereChange })
             <h1 className="text-xl font-serif">Wheel of the <span className="italic text-amber-300">Year</span></h1>
           </div>
         </div>
-        <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/10" data-testid="hemisphere-toggle">
+        <div className="flex items-center gap-2">
+          {locked && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-amber-500/40 text-amber-200"
+              onClick={onUnlock}
+              data-testid="seasonal-temple-unlock-button"
+            >
+              <Lock className="w-3.5 h-3.5 mr-1" />
+              Unlock <Crown className="w-3.5 h-3.5 ml-1" />
+            </Button>
+          )}
+          <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/10" data-testid="hemisphere-toggle">
           <button
             onClick={() => onHemisphereChange("south")}
             data-testid="hemi-south"
@@ -28,6 +42,7 @@ export const SeasonalTempleHeader = ({ hemisphere, onBack, onHemisphereChange })
           >
             ☀️ North
           </button>
+          </div>
         </div>
       </div>
     </header>

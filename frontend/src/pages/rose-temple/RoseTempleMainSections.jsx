@@ -16,6 +16,8 @@ export const RoseTempleMainSections = ({
   onStartGuidedPractice,
   onStartGuidedRite,
 }) => {
+  const isPremiumByIndex = (index) => index >= 4;
+
   return (
     <main className="max-w-6xl mx-auto p-6 space-y-8" data-testid="rose-temple-main">
       {locked && (
@@ -57,7 +59,7 @@ export const RoseTempleMainSections = ({
       <section data-testid="rose-temple-teachings-grid">
         <h3 className="text-2xl font-serif mb-4">Temple Teachings</h3>
         <div className="grid md:grid-cols-2 gap-5">
-          {teachings.map((teaching) => {
+          {teachings.map((teaching, index) => {
             const Icon = teaching.icon;
             return (
               <motion.button
@@ -76,6 +78,9 @@ export const RoseTempleMainSections = ({
                   </div>
                   <h4 className="font-serif text-xl mb-2">{teaching.title}</h4>
                   <p className="text-sm text-muted-foreground line-clamp-3">{teaching.description}</p>
+                  {locked && isPremiumByIndex(index) && (
+                    <p className="mt-2 text-[11px] text-fuchsia-200/90" data-testid={`rose-teaching-lock-${teaching.id}`}>Premium</p>
+                  )}
                   {!locked && (
                     <button
                       type="button"
@@ -103,7 +108,7 @@ export const RoseTempleMainSections = ({
           <div className="flex justify-center py-10"><Loader2 className="w-7 h-7 animate-spin text-rose-300" /></div>
         ) : (
           <div className="grid md:grid-cols-2 gap-4">
-            {embodimentPractices.map((practice) => (
+            {embodimentPractices.map((practice, index) => (
               <button
                 key={practice.id}
                 onClick={() => onSelectPractice(practice)}
@@ -112,6 +117,9 @@ export const RoseTempleMainSections = ({
               >
                 <h4 className="font-serif text-lg mb-1">{practice.name}</h4>
                 <p className="text-sm text-muted-foreground line-clamp-2">{practice.description}</p>
+                {locked && (practice?.is_premium || isPremiumByIndex(index)) && (
+                  <p className="mt-2 text-[11px] text-fuchsia-200/90" data-testid={`rose-practice-lock-${practice.id}`}>Premium</p>
+                )}
                 {!locked && (
                   <span
                     role="button"
@@ -143,7 +151,7 @@ export const RoseTempleMainSections = ({
       <section data-testid="rose-temple-rites-grid">
         <h3 className="text-2xl font-serif mb-4">Sacred Rites</h3>
         <div className="grid md:grid-cols-2 gap-4">
-          {sacredRites.map((rite) => (
+          {sacredRites.map((rite, index) => (
             <button
               key={rite.id}
               onClick={() => onSelectRite(rite)}
@@ -152,6 +160,9 @@ export const RoseTempleMainSections = ({
             >
               <h4 className="font-serif text-lg mb-1">{rite.title || rite.name}</h4>
               <p className="text-sm text-muted-foreground line-clamp-2">{rite.description}</p>
+              {locked && (rite?.is_premium || isPremiumByIndex(index)) && (
+                <p className="mt-2 text-[11px] text-fuchsia-200/90" data-testid={`rose-rite-lock-${rite.id}`}>Premium</p>
+              )}
               {!locked && (
                 <span
                   role="button"

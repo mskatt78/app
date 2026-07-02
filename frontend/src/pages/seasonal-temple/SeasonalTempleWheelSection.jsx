@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { Lock, Star } from "lucide-react";
 
-export const SeasonalTempleWheelSection = ({ hemisphere, currentSabbat, sabbats, onSelectSabbat }) => {
+export const SeasonalTempleWheelSection = ({ hemisphere, currentSabbat, sabbats, onSelectSabbat, isLocked }) => {
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center mb-10 pt-4" data-testid="seasonal-temple-wheel-section">
       <h2 className="text-3xl font-serif mb-2">The Eight <span className="italic text-amber-300">Sacred Gates</span></h2>
@@ -34,6 +34,7 @@ export const SeasonalTempleWheelSection = ({ hemisphere, currentSabbat, sabbats,
               className={`absolute w-10 h-10 rounded-full border flex items-center justify-center transition-all hover:scale-110 ${sabbat.color.bg} ${sabbat.color.border} ${isCurrent ? "ring-2 ring-primary ring-offset-1 ring-offset-background scale-110" : ""}`}
               title={`${sabbat.name} — ${sabbat.dates[hemisphere]}`}
             >
+              {isLocked && <Lock className="w-3 h-3 absolute -top-1 -right-1 text-amber-200" />}
               <Icon className={`w-4 h-4 ${sabbat.color.text}`} />
             </button>
           );

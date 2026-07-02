@@ -99,10 +99,10 @@ const RoseTempleContainer = ({ user, api }) => {
             <p className="text-xs uppercase tracking-wider text-fuchsia-200/80 mb-1">Optional Premium</p>
             <h2 className="text-2xl font-serif flex items-center gap-2 mb-2">
               <Lock className="w-5 h-5 text-fuchsia-300" />
-              Rose Temple remains open first
+              Rose Temple access model
             </h2>
             <p className="text-sm text-muted-foreground mb-4" data-testid="rose-temple-premium-gate-description">
-              Keep exploring freely, then continue with subscription or full app access for deeper layers.
+              First 4 items are free. Additional pathways are premium via subscription or full app access.
             </p>
             <p className="text-xs text-fuchsia-100/70 mb-3" data-testid="rose-temple-devotional-note">
               Rose Temple is practiced as devotional embodiment: tenderness, truth, and practical integration in daily life.
@@ -131,7 +131,7 @@ const RoseTempleContainer = ({ user, api }) => {
       )}
 
       <RoseTempleMainSections
-        locked={false}
+        locked={!roseTempleUnlocked}
         loadingPractices={loadingPractices}
         embodimentPractices={embodimentPractices}
         sacredRites={sacredRites}
@@ -146,6 +146,10 @@ const RoseTempleContainer = ({ user, api }) => {
           setSelectedPractice(item);
         }}
         onSelectRite={(item) => {
+          if (item?.is_premium && !roseTempleUnlocked) {
+            setSelectedLockedPractice(item);
+            return;
+          }
           setSelectedRite(item);
         }}
         onStartGuidedTeaching={(item) => {
@@ -159,6 +163,10 @@ const RoseTempleContainer = ({ user, api }) => {
           startRoseGuidedPractice(item, "practice");
         }}
         onStartGuidedRite={(item) => {
+          if (item?.is_premium && !roseTempleUnlocked) {
+            setSelectedLockedPractice(item);
+            return;
+          }
           startRoseGuidedPractice(item, "rite");
         }}
       />
@@ -169,7 +177,13 @@ const RoseTempleContainer = ({ user, api }) => {
         selectedRite={selectedRite}
         onStartGuidedTeaching={(item) => startRoseGuidedPractice(item, "teaching")}
         onStartGuidedPractice={(item) => startRoseGuidedPractice(item, "practice")}
-        onStartGuidedRite={(item) => startRoseGuidedPractice(item, "rite")}
+        onStartGuidedRite={(item) => {
+          if (item?.is_premium && !roseTempleUnlocked) {
+            setSelectedLockedPractice(item);
+            return;
+          }
+          startRoseGuidedPractice(item, "rite");
+        }}
         onCloseTeaching={() => setSelectedTeaching(null)}
         onClosePractice={() => setSelectedPractice(null)}
         onCloseRite={() => setSelectedRite(null)}

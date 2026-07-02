@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
+import { Crown, Lock } from "lucide-react";
 
-export const SeasonalTempleCardsSection = ({ sabbats, currentSabbat, hemisphere, onSelectSabbat }) => {
+export const SeasonalTempleCardsSection = ({ sabbats, currentSabbat, hemisphere, onSelectSabbat, isLocked, onUnlock }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16" data-testid="seasonal-temple-cards-section">
       {sabbats.map((sabbat, index) => {
@@ -12,7 +13,7 @@ export const SeasonalTempleCardsSection = ({ sabbats, currentSabbat, hemisphere,
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
-            onClick={() => onSelectSabbat(sabbat)}
+            onClick={() => (isLocked ? onUnlock?.() : onSelectSabbat(sabbat))}
             data-testid={`sabbat-card-${sabbat.id}`}
             className={`cursor-pointer rounded-xl border transition-all hover:scale-[1.02] overflow-hidden ${sabbat.color.bg} ${sabbat.color.border} ${isCurrent ? "ring-1 ring-primary" : ""}`}
           >
@@ -31,6 +32,12 @@ export const SeasonalTempleCardsSection = ({ sabbats, currentSabbat, hemisphere,
               <h3 className="font-serif text-base mb-0.5">{sabbat.name}</h3>
               <p className={`text-xs ${sabbat.color.text} mb-2`}>{sabbat.dates[hemisphere]}</p>
               <p className="text-xs text-muted-foreground line-clamp-2">{sabbat.theme}</p>
+              {isLocked && (
+                <div className="mt-3 inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-amber-500/30 bg-amber-500/15 text-amber-100" data-testid={`sabbat-card-lock-${sabbat.id}`}>
+                  <Lock className="w-3 h-3" />
+                  Premium <Crown className="w-3 h-3" />
+                </div>
+              )}
             </div>
           </motion.div>
         );

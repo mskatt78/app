@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Zap } from "lucide-react";
+import { Crown, Lock, Zap } from "lucide-react";
 
-export const MasculineEmbodimentGrid = ({ embodimentPractices, setSelectedPractice }) => {
+export const MasculineEmbodimentGrid = ({ embodimentPractices, setSelectedPractice, isLocked }) => {
   if (embodimentPractices.length === 0) {
     return null;
   }
@@ -40,6 +40,11 @@ export const MasculineEmbodimentGrid = ({ embodimentPractices, setSelectedPracti
             <span className="text-xs text-orange-300 uppercase tracking-wider">{practice.category}</span>
             <h4 className="font-serif text-lg mt-1 group-hover:text-orange-300 transition-colors">{practice.name}</h4>
             <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{practice.description}</p>
+            {isLocked && (
+              <div className="mt-3 inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full border border-amber-500/30 bg-amber-500/15 text-amber-100" data-testid={`masculine-practice-lock-${practice.id}`}>
+                <Lock className="w-3 h-3" /> Premium <Crown className="w-3 h-3" />
+              </div>
+            )}
           </motion.div>
         ))}
       </div>

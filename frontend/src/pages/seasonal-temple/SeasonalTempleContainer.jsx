@@ -8,9 +8,13 @@ import { SeasonalTempleHeader } from "./SeasonalTempleHeader";
 import { SeasonalTempleWheelSection } from "./SeasonalTempleWheelSection";
 import { SeasonalTempleCardsSection } from "./SeasonalTempleCardsSection";
 import { SABBAT_TABS, getSabbatTabLabel } from "./seasonalTempleConstants";
+import { usePremiumAccess } from "../../hooks/usePremiumAccess";
 
-const SeasonalTemple = ({ user }) => {
+const SeasonalTemple = ({ api, user }) => {
   const navigate = useNavigate();
+  const premium = usePremiumAccess({ api, user });
+  const seasonalTempleUnlocked = premium.isSectionUnlocked("seasonal_temple");
+  const seasonalTempleLocked = !seasonalTempleUnlocked;
   const [hemisphere, setHemisphere] = useState(() => {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase();
@@ -32,12 +36,37 @@ const SeasonalTemple = ({ user }) => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="seasonal-temple">
-      <SeasonalTempleHeader hemisphere={hemisphere} onBack={() => navigate(-1)} onHemisphereChange={setHemisphere} />
+      <SeasonalTempleHeader
+        hemisphere={hemisphere}
+        onBack={() => navigate(-1)}
+        onHemisphereChange={setHemisphere}
+        locked={seasonalTempleLocked}
+        onUnlock={() => premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" })}
+      />
 
       <main className="max-w-5xl mx-auto p-6">
-        <SeasonalTempleWheelSection hemisphere={hemisphere} currentSabbat={currentSabbat} sabbats={SABBATS} onSelectSabbat={onSelectSabbat} />
+        <SeasonalTempleWheelSection
+          hemisphere={hemisphere}
+          currentSabbat={currentSabbat}
+          sabbats={SABBATS}
+          onSelectSabbat={(sabbat) => (seasonalTempleLocked ? premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" }) : onSelectSabbat(sabbat))}
+          isLocked={seasonalTempleLocked}
+        />
 
-        <SeasonalTempleCardsSection sabbats={SABBATS} currentSabbat={currentSabbat} hemisphere={hemisphere} onSelectSabbat={onSelectSabbat} />
+        <SeasonalTempleCardsSection
+          sabbats={SABBATS}
+          currentSabbat={currentSabbat}
+          hemisphere={hemisphere}
+          onSelectSabbat={onSelectSabbat}
+          isLocked={seasonalTempleLocked}
+          onUnlock={() => premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" })}
+        />
+
+        {!seasonalTempleUnlocked && (
+          <div className="mb-6 p-4 rounded-xl border border-amber-500/30 bg-amber-500/10" data-testid="seasonal-temple-lock-banner">
+            <p className="text-sm text-amber-100/90">Seasonal Temple is premium. Unlock to access full sabbat rituals, embodiment teachings, and earth crafting guidance.</p>
+          </div>
+        )}
 
         {/* ── Earth Crafting ─────────────────────────────────────────────────────── */}
         <div className="mb-10">
@@ -57,7 +86,7 @@ const SeasonalTemple = ({ user }) => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}
-                  onClick={() => setSelectedCraft(craft)}
+                  onClick={() => (seasonalTempleLocked ? premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" }) : setSelectedCraft(craft))}
                   data-testid={`craft-${craft.id}`}
                   className={`cursor-pointer p-5 rounded-xl border transition-all hover:scale-[1.02]
                              ${craft.color.bg} ${craft.color.border} group`}
@@ -102,7 +131,16 @@ const SeasonalTemple = ({ user }) => {
               {/* Tabs */}
               <div className={`flex border-b ${selectedSabbat.color.border}`}>
                 {SABBAT_TABS.map(tab => (
-                  <button key={tab} onClick={() => setActiveTab(tab)}
+                  <button
+                    key={tab}
+                    onClick={() => {
+                      if (seasonalTempleLocked && tab !== "overview") {
+                        premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" });
+                        return;
+                      }
+                      setActiveTab(tab);
+                    }}
+                data-testid={`seasonal-tab-${tab}`}
                     className={`flex-1 py-3 text-xs font-medium transition-all capitalize ${
                       activeTab === tab ? `${selectedSabbat.color.text} border-b-2 ${selectedSabbat.color.border}` : "text-muted-foreground hover:text-foreground"
                     }`}>
@@ -145,7 +183,12 @@ const SeasonalTemple = ({ user }) => {
                     </div>
                   </div>
                 )}
-                {activeTab === "ritual" && (
+                {activeTab === "ritual" && seasonalTempleLocked && (
+                  <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-5" data-testid="seasonal-tab-locked-ritual">
+                    <p className="text-sm text-amber-100/90">Unlock Seasonal Temple to access full ritual transmission.</p>
+                  </div>
+                )}
+                {activeTab === "ritual" && !seasonalTempleLocked && (
                   <div className="space-y-4">
                     <h3 className="font-serif text-lg">{selectedSabbat.ritual.name}</h3>
                     <ol className="space-y-3">
@@ -158,7 +201,12 @@ const SeasonalTemple = ({ user }) => {
                     </ol>
                   </div>
                 )}
-                {activeTab === "embodiment" && (
+                {activeTab === "embodiment" && seasonalTempleLocked && (
+                  <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-5" data-testid="seasonal-tab-locked-embodiment">
+                    <p className="text-sm text-amber-100/90">Unlock Seasonal Temple to access embodiment and integration pathways.</p>
+                  </div>
+                )}
+                {activeTab === "embodiment" && !seasonalTempleLocked && (
                   <div className={`p-5 rounded-xl ${selectedSabbat.color.bg} border ${selectedSabbat.color.border}`}>
                     <p className="text-sm text-muted-foreground leading-relaxed">{selectedSabbat.embodiment}</p>
                     <div className="mt-3 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3" data-testid="seasonal-sabbat-integration-actions-panel">
@@ -171,7 +219,12 @@ const SeasonalTemple = ({ user }) => {
                     </div>
                   </div>
                 )}
-                {activeTab === "nature" && (
+                {activeTab === "nature" && seasonalTempleLocked && (
+                  <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-5" data-testid="seasonal-tab-locked-nature">
+                    <p className="text-sm text-amber-100/90">Unlock Seasonal Temple to access full nature correspondences and plant teachings.</p>
+                  </div>
+                )}
+                {activeTab === "nature" && !seasonalTempleLocked && (
                   <div className="space-y-4">
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2">Crystals</p>
@@ -199,7 +252,7 @@ const SeasonalTemple = ({ user }) => {
 
       {/* ── Earth Crafting Modal ──────────────────────────────────────────────── */}
       <AnimatePresence>
-        {selectedCraft && (
+        {selectedCraft && !seasonalTempleLocked && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-start justify-center p-4 overflow-y-auto"
             onClick={() => setSelectedCraft(null)}>
