@@ -14007,3 +14007,77 @@ agent_communication:
       Implementation is correct based on code review and non-admin testing. The admin UI restriction
       logic is properly implemented. However, manual testing with Google OAuth login is recommended
       to confirm the complete end-to-end flow for admin users.
+
+  - agent: "testing"
+    message: |
+      ✅ SACRED ALLY INTERNAL BLOCKS REMOVAL QA COMPLETE (2026-07-02):
+      
+      Comprehensive frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com/sacred-ally-alchemy
+      to verify internal-only blocks are completely removed from the Sacred Ally Alchemy page.
+      
+      TEST RESULTS:
+      
+      1) ✅ INTERNAL-ONLY TEXT LABELS - ALL ABSENT
+         • "What to Practice Today" - NOT FOUND ✓
+         • "Potential Improvements Roadmap" - NOT FOUND ✓
+         • "Personalized Practice Tools" - NOT FOUND ✓
+         
+         Result: All internal-only text labels successfully removed from page.
+      
+      2) ✅ INTERNAL-ONLY DATA-TESTIDS - ALL ABSENT
+         • data-testid="sacred-ally-tools-toggle-card" - NOT FOUND ✓
+         • data-testid="sacred-ally-daily-recommendation-card" - NOT FOUND ✓
+         • data-testid="sacred-ally-roadmap-card" - NOT FOUND ✓
+         
+         Result: All internal-only UI components successfully removed from DOM.
+      
+      3) ✅ CORE SACRED ALLY FUNCTIONALITY - NO REGRESSION
+         • Page root (data-testid="sacred-ally-alchemy-page") - EXISTS ✓
+         • Hero section (data-testid="sacred-ally-hero-copy") - EXISTS ✓
+         • Filter section (data-testid="sacred-ally-filters") - EXISTS ✓
+         • Sacred Ally grid (data-testid="sacred-ally-grid") - EXISTS ✓
+         • Sacred Ally cards loaded: 286 cards ✓
+         
+         Result: Core page structure and content loading working perfectly.
+      
+      4) ✅ SACRED ALLY MODAL FUNCTIONALITY - NO REGRESSION
+         • Card click opens modal successfully ✓
+         • Modal (data-testid="sacred-ally-detail-modal") displays correctly ✓
+         • Modal title (data-testid="sacred-ally-modal-title") present: "Andromedan Lattice Intelligence" ✓
+         • Alchemy Teachings section (data-testid="sacred-ally-alchemy-teachings") present ✓
+         • Rituals section (data-testid="sacred-ally-rituals") present ✓
+         • Modal close button functional ✓
+         
+         Result: Modal functionality working perfectly with all expected sections.
+      
+      5) ✅ NO ERROR MESSAGES DETECTED
+         • No error elements found on page ✓
+         • No console errors blocking functionality ✓
+         
+         Result: Page rendering cleanly without errors.
+      
+      CODE VERIFICATION:
+      
+      Reviewed /app/frontend/src/pages/SacredAllyAlchemy.jsx (1322 lines):
+      • No code references to "What to Practice Today" ✓
+      • No code references to "Potential Improvements Roadmap" ✓
+      • No code references to "Personalized Practice Tools" ✓
+      • No data-testid="sacred-ally-tools-toggle-card" ✓
+      • No data-testid="sacred-ally-daily-recommendation-card" ✓
+      • No data-testid="sacred-ally-roadmap-card" ✓
+      
+      The component is clean and focused on core Sacred Ally functionality:
+      - Sacred Ally cards grid with filters
+      - Detail modal with alchemy teachings, rituals, ceremonies
+      - Guided practice functionality
+      - No internal development tools or roadmap sections
+      
+      FINAL VERDICT:
+      
+      ✅ ALL INTERNAL-ONLY BLOCKS SUCCESSFULLY REMOVED
+      ✅ CORE SACRED ALLY FUNCTIONALITY WORKING (NO REGRESSION)
+      ✅ PAGE RENDERING CLEANLY WITHOUT ERRORS
+      
+      The Sacred Ally Alchemy page is production-ready with all internal-only blocks removed
+      and core functionality fully operational.
+
