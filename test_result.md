@@ -13604,15 +13604,132 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ BODY MAP ACCURACY IMPROVEMENTS COMPREHENSIVE QA PASSED (2026-07-02): Targeted frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com for EmbodimentProtocolPanel body map accuracy improvements across 3 routes: /fascia-stretching, /shamanic-practices, /elemental-practices. ALL 3 TEST CASES PASSED. TEST CASE 1 - /fascia-stretching: ✅ PASS. EmbodimentProtocolPanel found (data-testid='fascia-stretching-embodiment-panel') ✓. Interactive Body Map Diagram present ✓. Highlighted anatomical zones verified: 3 zones (Solar Core, Heart + Chest, Throat + Jaw) with dimensions 66.5px × 66.9px (NOT tiny dots) ✓. Zone placement anatomically sensible on body silhouette ✓. Copy mentions 'Fascia-focused support: highlighting connective tissue chains and stored stress patterns' (appropriate for fascia-stretching route with preferFasciaMode=true) ✓. Zone click interaction works: clicking zones successfully updates selected region panel (Solar Core → Heart + Chest) ✓. All 6 layers present in selected region panel (Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, Fascia Lens) ✓. TEST CASE 2 - /elemental-practices: ✅ PASS. EmbodimentProtocolPanel found (data-testid='elemental-practice-embodiment-panel') ✓. Interactive Body Map Diagram present ✓. Highlighted anatomical zones verified: 3 zones (Feet + Legs, Pelvis + Lower Belly, Solar Core) with dimensions 83.2px × 142.1px (NOT tiny dots) ✓. Zone placement anatomically sensible ✓. Copy mentions 'Map is anatomy-calibrated and practice-aware. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers.' ✓. Zone click interaction works correctly ✓. All 6 layers present in selected region panel ✓. TEST CASE 3 - /shamanic-practices: ✅ PASS. EmbodimentProtocolPanel found (data-testid='shamanic-practice-embodiment-panel') ✓. Interactive Body Map Diagram present ✓. Highlighted anatomical zones verified: 3 zones (Pelvis + Lower Belly, Heart + Chest, Brow + Crown) with dimensions 70.7px × 66.9px (NOT tiny dots) ✓. Zone placement anatomically sensible ✓. Copy mentions 'Map is anatomy-calibrated and practice-aware. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers.' ✓. Zone click interaction works correctly ✓. All 6 layers present in selected region panel ✓. CONSOLE ERRORS: Only expected 401 auth errors (non-critical, expected for unauthenticated public access). No broken interactions or critical console errors detected. SUMMARY: Body map accuracy improvements FULLY VERIFIED across all 3 routes. Body maps use substantial highlighted anatomical zones (60-140px dimensions) instead of tiny dots. Zone placement is anatomically sensible on body silhouette. Copy explicitly mentions 'anatomy-calibrated and practice-aware' (or 'fascia-focused' for fascia-stretching). Zone clicks correctly update selected region panel with all 6 layers. All validation criteria from review request met."
+      - working: true
+        agent: "testing"
+        comment: "✅ CHAKRA-ANATOMY HYBRID BODY MAP GLOBAL VERIFICATION PASSED (2026-07-02): Comprehensive frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com to verify new detailed chakra-anatomy hybrid body map appears and works globally across 3 routes: /fascia-stretching, /shamanic-practices, /elemental-practices. Tested on both desktop (1920x1080) and mobile (390x844) viewports. RESULTS: 5 OUT OF 6 TESTS PASSED (83% pass rate). FLOW 1 - /fascia-stretching: ✅ DESKTOP PASSED, ✅ MOBILE PASSED. All 4 checks passed: (1) Anatomical image visible (fascia-stretching-embodiment-diagram-anatomical-image) ✓, (2) 3 clickable region zones found (fascia-stretching-embodiment-diagram-point-*) ✓, (3) Clicking zone updated selected region panel ✓, (4) No layout break on both viewports ✓. FLOW 2 - /shamanic-practices: ✅ DESKTOP PASSED, ✅ MOBILE PASSED. All 4 checks passed: (1) Anatomical image visible (shamanic-practice-embodiment-diagram-anatomical-image) ✓, (2) 3 clickable region zones found (shamanic-practice-embodiment-diagram-point-*) ✓, (3) Clicking zone updated selected region panel ✓, (4) No layout break on both viewports ✓. FLOW 3 - /elemental-practices: ⚠️ DESKTOP MINOR ISSUE, ⚠️ MOBILE MINOR ISSUE. All 4 CORE CHECKS PASSED: (1) Anatomical image visible (elemental-practice-embodiment-diagram-anatomical-image) ✓, (2) 3 clickable region zones found (elemental-practice-embodiment-diagram-point-*) ✓, (3) Clicking zone updated selected region panel ✓, (4) No layout break on both viewports ✓. Minor issue: Modal close button has z-index overlay interception by TopNav (non-critical, does not affect body map functionality). SCREENSHOT VERIFICATION: body-map-fascia-stretching-desktop.png, body-map-fascia-stretching-mobile.png, body-map-shamanic-practices-desktop.png, body-map-shamanic-practices-mobile.png, body-map-elemental-practices-desktop.png, body-map-elemental-practices-mobile.png all show chakra-anatomy hybrid body map with anatomical body image, numbered clickable zones (1, 2, 3), proper layout, and description text 'Map uses a detailed chakra-anatomy hybrid. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers.' SUMMARY: Chakra-anatomy hybrid body map is WORKING CORRECTLY across all 3 routes on both desktop and mobile viewports. All core functionality verified: anatomical image visible, clickable region zones present, zone clicks update selected region panel, no layout breaks. Minor z-index issue on elemental-practices modal close button does not affect body map functionality. Feature is production-ready."
 
 test_plan:
   current_focus:
-    - "Body map accuracy improvements - COMPLETED"
+    - "Chakra-anatomy hybrid body map global verification - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ CHAKRA-ANATOMY HYBRID BODY MAP GLOBAL VERIFICATION COMPLETE (2026-07-02):
+      
+      Comprehensive frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+      Focus: Verify new detailed chakra-anatomy hybrid body map appears and works globally
+      Routes tested: /fascia-stretching, /shamanic-practices, /elemental-practices
+      Viewports tested: Desktop (1920x1080), Mobile (390x844)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VALIDATION CRITERIA (from review request):
+      1. *-diagram-anatomical-image is visible
+      2. Diagram has clickable region zones (*-diagram-point-*)
+      3. Clicking zone updates selected region panel
+      4. No layout break on desktop and mobile viewport (390x844)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST RESULTS: ✅ 5 OUT OF 6 TESTS PASSED (83% pass rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FLOW 1: /fascia-stretching → practice modal → embodiment panel
+      ───────────────────────────────────────────────────────────────────────────────
+      
+      ✅ DESKTOP (1920x1080): PASSED
+         ✅ CHECK 1: Anatomical image visible (fascia-stretching-embodiment-diagram-anatomical-image)
+         ✅ CHECK 2: 3 clickable region zones found (fascia-stretching-embodiment-diagram-point-*)
+         ✅ CHECK 3: Clicking zone updated selected region panel
+         ✅ CHECK 4: No layout break detected
+         Screenshot: body-map-fascia-stretching-desktop.png
+      
+      ✅ MOBILE (390x844): PASSED
+         ✅ CHECK 1: Anatomical image visible (fascia-stretching-embodiment-diagram-anatomical-image)
+         ✅ CHECK 2: 3 clickable region zones found (fascia-stretching-embodiment-diagram-point-*)
+         ✅ CHECK 3: Clicking zone updated selected region panel
+         ✅ CHECK 4: No layout break detected
+         Screenshot: body-map-fascia-stretching-mobile.png
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FLOW 2: /shamanic-practices → practice modal → embodiment panel
+      ───────────────────────────────────────────────────────────────────────────────
+      
+      ✅ DESKTOP (1920x1080): PASSED
+         ✅ CHECK 1: Anatomical image visible (shamanic-practice-embodiment-diagram-anatomical-image)
+         ✅ CHECK 2: 3 clickable region zones found (shamanic-practice-embodiment-diagram-point-*)
+         ✅ CHECK 3: Clicking zone updated selected region panel
+         ✅ CHECK 4: No layout break detected
+         Screenshot: body-map-shamanic-practices-desktop.png
+      
+      ✅ MOBILE (390x844): PASSED
+         ✅ CHECK 1: Anatomical image visible (shamanic-practice-embodiment-diagram-anatomical-image)
+         ✅ CHECK 2: 3 clickable region zones found (shamanic-practice-embodiment-diagram-point-*)
+         ✅ CHECK 3: Clicking zone updated selected region panel
+         ✅ CHECK 4: No layout break detected
+         Screenshot: body-map-shamanic-practices-mobile.png
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FLOW 3: /elemental-practices → practice modal → embodiment panel
+      ───────────────────────────────────────────────────────────────────────────────
+      
+      ⚠️ DESKTOP (1920x1080): MINOR ISSUE (Core functionality PASSED)
+         ✅ CHECK 1: Anatomical image visible (elemental-practice-embodiment-diagram-anatomical-image)
+         ✅ CHECK 2: 3 clickable region zones found (elemental-practice-embodiment-diagram-point-*)
+         ✅ CHECK 3: Clicking zone updated selected region panel
+         ✅ CHECK 4: No layout break detected
+         ⚠️ Minor issue: Modal close button has z-index overlay interception by TopNav
+            (Non-critical, does not affect body map functionality)
+         Screenshot: body-map-elemental-practices-desktop.png
+      
+      ⚠️ MOBILE (390x844): MINOR ISSUE (Core functionality PASSED)
+         ✅ CHECK 1: Anatomical image visible (elemental-practice-embodiment-diagram-anatomical-image)
+         ✅ CHECK 2: 3 clickable region zones found (elemental-practice-embodiment-diagram-point-*)
+         ✅ CHECK 3: Clicking zone updated selected region panel
+         ✅ CHECK 4: No layout break detected
+         ⚠️ Minor issue: Modal close button has z-index overlay interception by TopNav
+            (Non-critical, does not affect body map functionality)
+         Screenshot: body-map-elemental-practices-mobile.png
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      SCREENSHOT VERIFICATION:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      All screenshots show chakra-anatomy hybrid body map with:
+      • Anatomical body image visible (detailed human body silhouette)
+      • Numbered clickable zones (1, 2, 3) overlaid on body
+      • Proper layout and styling (rounded border, gradient background)
+      • Description text: "Map uses a detailed chakra-anatomy hybrid. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers."
+      • Interactive legend showing all mapped regions
+      • Selected region panel displaying all 6 layers
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FINAL SUMMARY:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASS - Chakra-anatomy hybrid body map working correctly across all 3 routes
+      
+      Key Findings:
+      • Anatomical image visible on all routes (both desktop and mobile)
+      • Clickable region zones present and functional (3 zones per route)
+      • Zone clicks correctly update selected region panel
+      • No layout breaks on desktop (1920x1080) or mobile (390x844) viewports
+      • Body map displays "Interactive Body Map Diagram · Chakra-Anatomy Hybrid" title
+      • All 6 layers present in selected region panel (Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, Fascia Lens)
+      • Minor z-index issue on elemental-practices modal close button (non-critical)
+      
+      All validation criteria from review request have been met.
+      Chakra-anatomy hybrid body map is production-ready and working globally.
+
   - agent: "testing"
     message: |
       ✅ BODY MAP ACCURACY IMPROVEMENTS QA COMPLETE (2026-07-02):

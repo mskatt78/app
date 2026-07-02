@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Activity, CalendarDays, Footprints, HeartPulse, Sparkles, TimerReset } from "lucide-react";
 
+const ANATOMICAL_BODYMAP_IMAGE = "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6ed46ee0b34945fb844f1bc345a71268d9f69a8656ab6fced3cc0f4aa540165a.png";
+
 const normalizeElement = (value) => String(value || "Spirit").trim();
 
 const BODY_WISDOM_LIBRARY = {
@@ -121,25 +123,16 @@ const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
 
 const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => (
   <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4" data-testid={`${testIdPrefix}-interactive-body-map`}>
-    <h4 className="text-sm font-medium mb-3">Interactive Body Map Diagram</h4>
+    <h4 className="text-sm font-medium mb-3">Interactive Body Map Diagram · Chakra-Anatomy Hybrid</h4>
     <div className="grid lg:grid-cols-[220px_1fr] gap-4 items-start">
       <div className="relative mx-auto w-[210px] h-[420px] rounded-3xl border border-white/10 bg-black/30" data-testid={`${testIdPrefix}-diagram-canvas`}>
-        <svg viewBox="0 0 210 420" className="absolute inset-0 w-full h-full" aria-hidden="true">
-          <defs>
-            <linearGradient id="bodySilhouette" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#ffffff22" />
-              <stop offset="100%" stopColor="#ffffff0c" />
-            </linearGradient>
-          </defs>
-          <circle cx="105" cy="42" r="24" fill="url(#bodySilhouette)" stroke="#ffffff22" />
-          <rect x="78" y="66" width="54" height="128" rx="28" fill="url(#bodySilhouette)" stroke="#ffffff22" />
-          <rect x="54" y="86" width="22" height="102" rx="11" fill="url(#bodySilhouette)" stroke="#ffffff22" />
-          <rect x="134" y="86" width="22" height="102" rx="11" fill="url(#bodySilhouette)" stroke="#ffffff22" />
-          <rect x="84" y="194" width="18" height="150" rx="9" fill="url(#bodySilhouette)" stroke="#ffffff22" />
-          <rect x="108" y="194" width="18" height="150" rx="9" fill="url(#bodySilhouette)" stroke="#ffffff22" />
-          <rect x="80" y="344" width="24" height="48" rx="8" fill="url(#bodySilhouette)" stroke="#ffffff22" />
-          <rect x="106" y="344" width="24" height="48" rx="8" fill="url(#bodySilhouette)" stroke="#ffffff22" />
-        </svg>
+        <img
+          src={ANATOMICAL_BODYMAP_IMAGE}
+          alt="Anatomical chakra hybrid body map"
+          className="absolute inset-0 w-full h-full object-contain opacity-85"
+          data-testid={`${testIdPrefix}-diagram-anatomical-image`}
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
 
         {cards.map((card, index) => {
           const point = card?.diagram?.front;
@@ -184,7 +177,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
         <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-diagram-mode-copy`}>
           {fasciaMode
             ? "Fascia-focused support: highlighting connective tissue chains and stored stress patterns."
-            : "Map is anatomy-calibrated and practice-aware. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers."}
+            : "Map uses a detailed chakra-anatomy hybrid. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers."}
         </p>
         <ul className="grid sm:grid-cols-2 gap-2">
           {cards.map((card, index) => (
