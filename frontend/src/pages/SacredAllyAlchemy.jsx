@@ -115,11 +115,11 @@ const SACRED_ALLY_EXPANSION_PACK = [
     ally_type: "serpent",
     category: "sacred_allies",
     element: "spirit",
-    description: "Serpent alchemy awakens embodied life-force, spinal intelligence, and sacred renewal through conscious shedding.",
+    description: "Serpent alchemy supports embodied life-force, spinal intelligence, and sacred renewal through conscious uncoiling and shedding.",
     alchemy_teachings: [
       "Shedding identity layers is required for authentic rebirth.",
-      "Kundalini movement asks for regulation and grounded pacing.",
-      "Embodiment converts awakening into relational integrity.",
+      "Kundalini is living energy in all beings and responds to regulation and grounded pacing.",
+      "Embodiment converts uncoiling energy into relational integrity.",
     ],
     rituals: [
       "Spinal wave breath for 12 minutes with a gentle pelvic floor release.",
@@ -127,9 +127,9 @@ const SACRED_ALLY_EXPANSION_PACK = [
       "Grounding seal: knees bent, palms on lower belly, long exhales for 5 cycles.",
     ],
     ceremonies: [
-      "Coiled Light Ceremony: awaken and circulate life-force through breath and intention.",
+      "Coiled Light Ceremony: circulate living life-force through breath and intention.",
       "Sacred Shedding Ceremony: release old vows, contracts, and identities.",
-      "Embodiment Seal Ceremony: anchor awakened energy into one practical life action.",
+      "Embodiment Seal Ceremony: anchor uncoiling energy into one practical life action.",
     ],
     journal_prompts: [
       "What identity is complete and ready to shed now?",
@@ -1052,7 +1052,7 @@ export default function SacredAllyAlchemy({ api }) {
           {isKundaliniRoute && (
             <>
               <p className="text-sm text-orange-200/90 mt-3" data-testid="kundalini-consciousness-route-note">
-                Kundalini Consciousness view is active: showing serpent-life-force allies and related embodied pathways.
+                Kundalini Consciousness view is active: showing serpent life-force allies and pathways for safe uncoiling.
               </p>
               {kundaliniCards.length === 0 && (
                 <p className="text-xs text-orange-100/80 mt-2" data-testid="kundalini-consciousness-fallback-note">

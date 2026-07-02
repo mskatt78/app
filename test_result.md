@@ -13200,3 +13200,21 @@ agent_communication:
       FINAL RESULT: ✅ PASS
       
       All Shamanic Elemental Journeys requirements met. Section note, grid badges, integration counts, modal panels, and Begin button all working correctly. No issues found.
+
+
+
+  - task: "Kundalini language update - safe uncoiling framing"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SacredAllyAlchemy.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ KUNDALINI LANGUAGE UPDATE VERIFICATION PASSED (2026-07-02): Comprehensive language verification completed on https://breathwork-sanctuary.preview.emergentagent.com for Kundalini Consciousness section. ALL 3 TEST CASES PASSED: TEST CASE 1 - /kundalini-consciousness route note: Route note is present and visible with EXACT WORDING: 'Kundalini Consciousness view is active: showing serpent life-force allies and pathways for safe uncoiling.' ✓ Contains 'safe uncoiling' framing ✓, Contains 'life-force' framing ✓, Does NOT contain 'awakening' language ✓. TEST CASE 2 - First kundalini card modal (Serpent Alchemy · Kundalini Current): Card description EXACT WORDING: 'Serpent alchemy supports embodied life-force, spinal intelligence, and sacred renewal through conscious uncoiling and shedding.' ✓ Contains 'life-force' framing ✓, Contains 'uncoiling' framing ✓, Does NOT contain 'awakening' language ✓. Modal description matches card description with same safe language. Alchemy teachings section contains 'living energy' framing: 'Kundalini is living energy in all beings and responds to regulation and grounded pacing.' ✓ Does NOT contain 'awakening' language ✓. TEST CASE 3 - Main menu Kundalini item: Menu item exists with label 'Kundalini Consciousness' ✓. Menu displays label only (no separate description field). The 'living life-force' and 'safe uncoiling' framing appears in the route note when navigating to the page ✓. SUMMARY: Language update successfully verified across all three test areas. 'Awakening' framing has been completely removed. 'Living life-force' and 'safe uncoiling' framing is consistently used throughout the Kundalini Consciousness section. All visible text reflects the updated language guidelines. Kundalini language update FULLY VERIFIED."
+
+agent_communication:
+  - agent: "testing"
+    message: "✅ KUNDALINI LANGUAGE UPDATE QA COMPLETE (2026-07-02): Quick frontend QA completed on preview URL for Kundalini language update from 'awakening' framing to 'living life-force / safe uncoiling' framing. RESULT: PASS. All 3 test cases verified successfully: 1) /kundalini-consciousness route note contains 'safe uncoiling' and 'life-force' framing without 'awakening' claims ✓. 2) First kundalini card modal (Serpent Alchemy) uses 'embodied life-force' and 'conscious uncoiling' language in card description, modal description, and alchemy teachings ✓. 3) Main menu Kundalini Consciousness item exists and navigates to page with safe uncoiling framing ✓. EXACT WORDING VERIFIED: Route note: 'showing serpent life-force allies and pathways for safe uncoiling'. Card/Modal: 'embodied life-force, spinal intelligence, and sacred renewal through conscious uncoiling and shedding'. Teachings: 'Kundalini is living energy in all beings and responds to regulation and grounded pacing'. Language update successfully implemented. No issues found. Ready for production."
