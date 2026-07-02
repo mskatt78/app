@@ -19,6 +19,18 @@ const toList = (value) => {
   return [];
 };
 
+const getWombActivationText = (item) => {
+  if (!item) return "";
+  const activation = String(item.activation || item.womb_activation || "").trim();
+  if (activation) return activation;
+  const name = String(item.name || "").toLowerCase();
+  const title = String(item.title || "").toLowerCase();
+  if (name.includes("13th rite") || title.includes("womb")) {
+    return "My womb is not a space for storing wounds, suffering, trauma, or pain. My womb is a space for birthing and creating life in all forms and all ways.";
+  }
+  return "";
+};
+
 export default function MysterySchoolTeachings({ api, user }) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -213,6 +225,13 @@ export default function MysterySchoolTeachings({ api, user }) {
                   );
                 })}
               </div>
+
+              {getWombActivationText(selected) && (
+                <div className="p-4 rounded-xl border border-rose-300/30 bg-rose-500/10" data-testid="mystery-school-modal-womb-activation">
+                  <h4 className="text-[11px] uppercase tracking-wider text-rose-200 mb-2">13th Rite Of The Womb Activation</h4>
+                  <p className="text-sm leading-relaxed text-rose-100/95">“{getWombActivationText(selected)}”</p>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>

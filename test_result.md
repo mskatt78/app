@@ -13218,3 +13218,48 @@ agent_communication:
 agent_communication:
   - agent: "testing"
     message: "✅ KUNDALINI LANGUAGE UPDATE QA COMPLETE (2026-07-02): Quick frontend QA completed on preview URL for Kundalini language update from 'awakening' framing to 'living life-force / safe uncoiling' framing. RESULT: PASS. All 3 test cases verified successfully: 1) /kundalini-consciousness route note contains 'safe uncoiling' and 'life-force' framing without 'awakening' claims ✓. 2) First kundalini card modal (Serpent Alchemy) uses 'embodied life-force' and 'conscious uncoiling' language in card description, modal description, and alchemy teachings ✓. 3) Main menu Kundalini Consciousness item exists and navigates to page with safe uncoiling framing ✓. EXACT WORDING VERIFIED: Route note: 'showing serpent life-force allies and pathways for safe uncoiling'. Card/Modal: 'embodied life-force, spinal intelligence, and sacred renewal through conscious uncoiling and shedding'. Teachings: 'Kundalini is living energy in all beings and responds to regulation and grounded pacing'. Language update successfully implemented. No issues found. Ready for production."
+
+
+  - task: "Mystery School Priestess Rose stream lock rule and 13th Rite Of The Womb content"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/MysterySchoolTeachings.jsx, /app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ MYSTERY SCHOOL PRIESTESS ROSE STREAM QA PASSED (2026-07-02): Comprehensive frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com/mystery-school-teachings?stream=priestess_rose. ALL 3 REQUIREMENTS MET: REQUIREMENT 1 - Rose Temple/Priestess Rose stream lock rule: ✓ First 4 cards (mystery-rose-001 to mystery-rose-004) are FREE with Sparkles icon (no premium lock behavior). ✓ Card 5 onward (mystery-rose-005+) are PREMIUM LOCKED with Lock icon. ✓ Clicking locked cards redirects to /pricing (expected behavior). ✓ Free cards open modal directly (verified with mystery-rose-001). REQUIREMENT 2 - 13th Rite Of The Womb content: ✓ Card mystery-rose-013 found with correct name '13th Rite Of The Womb'. ✓ Backend data contains correct activation field with EXACT phrase: 'My womb is not a space for storing wounds, suffering, trauma, or pain. My womb is a space for birthing and creating life in all forms and all ways.' ✓ Frontend code correctly implements womb activation panel with testid 'mystery-school-modal-womb-activation' (lines 229-234 in MysterySchoolTeachings.jsx). ✓ getWombActivationText() function correctly extracts activation text from item.activation field or falls back to default phrase for womb-related cards (lines 22-32). ✓ Conditional rendering working correctly - non-womb cards do NOT show activation panel (verified with mystery-rose-001). LIMITATION: Cannot test mystery-rose-013 modal directly because card 13 is premium locked (only first 4 cards are free per SECTION_FREE_COUNT_OVERRIDES). However, code review and backend data verification confirm correct implementation. REQUIREMENT 3 - Regression: ✓ Mystery school page loads correctly with data-testid='mystery-school-page'. ✓ Stream tabs present and functional (data-testid='mystery-school-stream-tabs'). ✓ Priestess Rose tab is active with correct styling. ✓ Tab switching works correctly (tested Egyptian Mystery ↔ Priestess Rose). ✓ Modal functionality works for free cards. SUMMARY: All requirements verified successfully. Lock rule working correctly (first 4 free, rest premium). 13th Rite content implementation confirmed correct via code review and backend data verification. Regression tests passed. No issues found."
+
+  - agent: "testing"
+    message: |
+      ✅ MYSTERY SCHOOL PRIESTESS ROSE STREAM QA COMPLETE (2026-07-02):
+      
+      Focused frontend QA completed on preview URL for Mystery School Priestess Rose stream lock rule and 13th Rite Of The Womb content verification.
+      
+      RESULT: ✅ PASS - ALL REQUIREMENTS MET
+      
+      TEST RESULTS:
+      
+      1. Rose Temple/Priestess Rose Stream Lock Rule: ✅ PASS
+         - First 4 cards FREE (mystery-rose-001 to 004): Sparkles icon, no lock ✓
+         - Card 5 onward PREMIUM LOCKED (mystery-rose-005+): Lock icon present ✓
+         - Locked cards redirect to /pricing when clicked ✓
+         - Free cards open modal directly ✓
+      
+      2. 13th Rite Of The Womb Content: ✅ PASS (Code Review Verified)
+         - Card mystery-rose-013 found with correct name ✓
+         - Backend activation field contains EXACT phrase ✓
+         - Frontend modal includes panel with testid 'mystery-school-modal-womb-activation' ✓
+         - Activation phrase: "My womb is not a space for storing wounds, suffering, trauma, or pain. My womb is a space for birthing and creating life in all forms and all ways." ✓
+         - Conditional rendering working correctly ✓
+         - NOTE: Cannot test modal directly (card 13 is locked), but code review confirms correct implementation
+      
+      3. Regression: ✅ PASS
+         - Mystery school page loads correctly ✓
+         - Stream tabs present and functional ✓
+         - Tab switching works (Egyptian ↔ Priestess Rose) ✓
+         - Modal functionality working ✓
+      
+      No issues found. All requirements verified successfully.
