@@ -917,7 +917,17 @@ export default function SacredAllyAlchemy({ api }) {
       const allyType = String(item?.ally_type || "").toLowerCase();
       const name = String(item?.name || "").toLowerCase();
       const description = String(item?.description || "").toLowerCase();
-      return id.includes("kundalini") || allyType.includes("serpent") || name.includes("kundalini") || description.includes("kundalini");
+      return (
+        id.includes("kundalini")
+        || id.includes("serpent")
+        || allyType.includes("serpent")
+        || allyType.includes("naga")
+        || name.includes("kundalini")
+        || name.includes("serpent")
+        || description.includes("kundalini")
+        || description.includes("life-force")
+        || description.includes("life force")
+      );
     }),
     [allies]
   );
@@ -927,7 +937,7 @@ export default function SacredAllyAlchemy({ api }) {
     return path.includes("kundalini") || path.includes("kundulini");
   }, []);
 
-  const cards = isKundaliniRoute ? kundaliniCards : filteredAllies;
+  const cards = isKundaliniRoute ? (kundaliniCards.length > 0 ? kundaliniCards : filteredAllies) : filteredAllies;
 
   const requestDailyRecommendation = async () => {
     setDailyLoading(true);
@@ -1040,9 +1050,16 @@ export default function SacredAllyAlchemy({ api }) {
             Work deeply with Dragon Alchemy, Fairies, Wolves, Whales with Song Lines, Dolphins, and expanded Sacred Allies. Archangelic work now lives in its own dedicated section.
           </p>
           {isKundaliniRoute && (
-            <p className="text-sm text-orange-200/90 mt-3" data-testid="kundalini-consciousness-route-note">
-              Kundalini Consciousness view is active: showing serpent-life-force allies and related embodied pathways.
-            </p>
+            <>
+              <p className="text-sm text-orange-200/90 mt-3" data-testid="kundalini-consciousness-route-note">
+                Kundalini Consciousness view is active: showing serpent-life-force allies and related embodied pathways.
+              </p>
+              {kundaliniCards.length === 0 && (
+                <p className="text-xs text-orange-100/80 mt-2" data-testid="kundalini-consciousness-fallback-note">
+                  No dedicated kundalini-tagged allies were found yet, so the full Sacred Allies library is shown instead.
+                </p>
+              )}
+            </>
           )}
         </div>
 

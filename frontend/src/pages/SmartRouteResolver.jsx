@@ -19,7 +19,7 @@ const resolveLegacyPath = (rawPathname) => {
     { match: ["soundhealing"], target: "/sound-frequencies" },
     { match: ["creativeexpression"], target: "/creative" },
     { match: ["ecstaticdance"], target: "/free-form-movement" },
-    { match: ["kundaliniconsciousness", "kundalini"], target: "/sacred-ally-alchemy" },
+    { match: ["kundaliniconsciousness", "kundalini"], target: "/kundalini-consciousness" },
     { match: ["voiceactivation"], target: "/sound-frequencies" },
     { match: ["sacredguardians"], target: "/sacred-guardians" },
     { match: ["sacredallies", "poweranimals", "spiritanimals", "galacticallies"], target: "/sacred-ally-alchemy" },

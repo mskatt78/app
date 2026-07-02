@@ -34,6 +34,7 @@ const routeExists = (path) => {
     "/sacred-guardians", "/ancient-wisdom", "/sound-frequencies", "/free-form-movement", "/somatic-yoga", "/chair-yoga", "/fascia-stretching",
     "/chakra-cleansing", "/energy-healing", "/daily-practice", "/practice-journal", "/profile-calculator",
     "/community", "/courses", "/retreats", "/pricing", "/reviews", "/archangels", "/earth-altars",
+    "/kundalini-consciousness", "/kundulini-consciousness", "/kundalini",
   ]);
   return knownRoutes.has(normalized);
 };
