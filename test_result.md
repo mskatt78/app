@@ -13933,3 +13933,77 @@ agent_communication:
       2. Testing non-admin email rejection (403)
       3. Testing direct admin password login (working)
       4. Testing admin collections endpoint auth behavior (working)
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ ADMIN UI RESTRICTION FRONTEND QA COMPLETE (2026-07-02):
+      
+      Comprehensive frontend UI testing completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+      to verify admin UI entry points are restricted to whitelisted emails only.
+      
+      TEST RESULTS:
+      
+      1) ✅ NON-ADMIN USER VERIFICATION - PASSED
+         Tested with: demoqa_740fefc1@example.com / DemoPass123!
+         
+         All 4 admin UI entry points correctly HIDDEN:
+         • TopNav admin button (data-testid="topnav-admin-btn") - NOT VISIBLE ✓
+         • Dashboard sidebar admin button (data-testid="dashboard-admin-btn") - NOT VISIBLE ✓
+         • Dashboard header admin button (data-testid="dashboard-header-admin-btn") - NOT VISIBLE ✓
+         • Settings admin button (data-testid="settings-admin-btn") - NOT VISIBLE ✓
+         
+         Result: Non-admin users cannot see any admin UI entry points.
+      
+      2) ⚠️ ADMIN USER VERIFICATION - BLOCKED BY GOOGLE OAUTH
+         Attempted to test: mskatt78@gmail.com / ShamanicAdmin2026!
+         
+         Issue: Backend returns "Please sign in with Google" for email/password login.
+         Admin account (mskatt78@gmail.com) is registered with Google OAuth, not email/password.
+         
+         Cannot verify admin UI visibility in automated test environment due to Google OAuth requirement.
+         Manual testing with Google OAuth login required to confirm admin UI appears.
+      
+      3) ✅ CODE VERIFICATION - PASSED
+         Both whitelisted emails confirmed in code:
+         
+         Backend whitelist (/app/backend/routers/admin.py line 28-31):
+         LOCKED_ADMIN_EMAILS = {
+             "mskatt78@gmail.com",
+             "skywatersacredembodiments@gmail.com",
+         }
+         
+         Frontend whitelist (/app/frontend/src/components/TopNav.jsx line 62):
+         const ADMIN_EMAILS = new Set(["mskatt78@gmail.com", "skywatersacredembodiments@gmail.com"]);
+         
+         Frontend Dashboard (/app/frontend/src/pages/Dashboard.jsx line 12):
+         Uses ADMIN_EMAILS from dashboardConfig
+         
+         Frontend Settings (/app/frontend/src/pages/settings/useSettingsData.js):
+         Uses isAdminUser prop derived from ADMIN_EMAILS check
+         
+         Admin UI rendering logic:
+         const isAdminUser = user?.email && ADMIN_EMAILS.has(user.email.toLowerCase());
+         
+         All 4 admin entry points conditionally rendered with:
+         {isAdminUser && <button>Admin</button>}
+      
+      IMPLEMENTATION VERIFICATION:
+      
+      ✅ Admin whitelist correctly implemented in both backend and frontend
+      ✅ Both emails (mskatt78@gmail.com, skywatersacredembodiments@gmail.com) whitelisted
+      ✅ Non-admin users cannot see admin UI entry points
+      ✅ Admin UI elements conditionally rendered based on email whitelist check
+      ✅ Case-insensitive email comparison (.toLowerCase()) implemented
+      
+      LIMITATION:
+      
+      ⚠️ Cannot verify admin UI visibility end-to-end in automated test due to Google OAuth requirement.
+      Manual verification recommended: Sign in with mskatt78@gmail.com via Google OAuth and confirm
+      all 4 admin entry points are visible (TopNav, Dashboard sidebar, Dashboard header, Settings).
+      
+      RECOMMENDATION FOR MAIN AGENT:
+      
+      Implementation is correct based on code review and non-admin testing. The admin UI restriction
+      logic is properly implemented. However, manual testing with Google OAuth login is recommended
+      to confirm the complete end-to-end flow for admin users.
