@@ -1,5 +1,5 @@
 // Service Worker for Shamanic Elements Soul Temple - Offline Support
-const CACHE_VERSION = 'v7';
+const CACHE_VERSION = 'v8';
 const STATIC_CACHE = `temple-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `temple-dynamic-${CACHE_VERSION}`;
 
@@ -106,6 +106,14 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(handleStaticRequest(request));
 });
 
+// Force bypass cache for Sacred Ally page after internal-tools removal rollout
+const NEVER_CACHE_PATH_PREFIXES = [
+  '/sacred-ally-alchemy',
+  '/kundalini-consciousness',
+  '/kundulini-consciousness',
+  '/kundalini',
+];
+
 // Handle API requests - Network first, cache fallback
 async function handleApiRequest(request) {
   const url = new URL(request.url);
@@ -163,6 +171,17 @@ async function handleStaticRequest(request) {
   const url = new URL(request.url);
   const isSameOrigin = url.origin === self.location.origin;
   const isNavigation = request.mode === 'navigate';
+  const shouldBypassCache = NEVER_CACHE_PATH_PREFIXES.some((prefix) => url.pathname.startsWith(prefix));
+
+  if (shouldBypassCache) {
+    try {
+      return await fetch(request, { cache: 'no-store' });
+    } catch (error) {
+      const networkFallback = await caches.match('/index.html') || await caches.match(request);
+      if (networkFallback) return networkFallback;
+      return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain' } });
+    }
+  }
 
   // Navigation requests should be network-first to avoid stale SPA shell black screens
   if (isNavigation) {
