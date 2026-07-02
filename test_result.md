@@ -13578,3 +13578,195 @@ agent_communication:
       
       RECOMMENDATION: Ready for production. Optional: Manual spot-check of Rose Temple teaching/practice/rite modals to confirm end-to-end depth panel visibility.
 
+
+frontend:
+  - task: "Body map accuracy improvements - EmbodimentProtocolPanel global validation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ BODY MAP ACCURACY IMPROVEMENTS COMPREHENSIVE QA PASSED (2026-07-02): Targeted frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com for EmbodimentProtocolPanel body map accuracy improvements across 3 routes: /fascia-stretching, /shamanic-practices, /elemental-practices. ALL 3 TEST CASES PASSED. TEST CASE 1 - /fascia-stretching: ✅ PASS. EmbodimentProtocolPanel found (data-testid='fascia-stretching-embodiment-panel') ✓. Interactive Body Map Diagram present ✓. Highlighted anatomical zones verified: 3 zones (Solar Core, Heart + Chest, Throat + Jaw) with dimensions 66.5px × 66.9px (NOT tiny dots) ✓. Zone placement anatomically sensible on body silhouette ✓. Copy mentions 'Fascia-focused support: highlighting connective tissue chains and stored stress patterns' (appropriate for fascia-stretching route with preferFasciaMode=true) ✓. Zone click interaction works: clicking zones successfully updates selected region panel (Solar Core → Heart + Chest) ✓. All 6 layers present in selected region panel (Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, Fascia Lens) ✓. TEST CASE 2 - /elemental-practices: ✅ PASS. EmbodimentProtocolPanel found (data-testid='elemental-practice-embodiment-panel') ✓. Interactive Body Map Diagram present ✓. Highlighted anatomical zones verified: 3 zones (Feet + Legs, Pelvis + Lower Belly, Solar Core) with dimensions 83.2px × 142.1px (NOT tiny dots) ✓. Zone placement anatomically sensible ✓. Copy mentions 'Map is anatomy-calibrated and practice-aware. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers.' ✓. Zone click interaction works correctly ✓. All 6 layers present in selected region panel ✓. TEST CASE 3 - /shamanic-practices: ✅ PASS. EmbodimentProtocolPanel found (data-testid='shamanic-practice-embodiment-panel') ✓. Interactive Body Map Diagram present ✓. Highlighted anatomical zones verified: 3 zones (Pelvis + Lower Belly, Heart + Chest, Brow + Crown) with dimensions 70.7px × 66.9px (NOT tiny dots) ✓. Zone placement anatomically sensible ✓. Copy mentions 'Map is anatomy-calibrated and practice-aware. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers.' ✓. Zone click interaction works correctly ✓. All 6 layers present in selected region panel ✓. CONSOLE ERRORS: Only expected 401 auth errors (non-critical, expected for unauthenticated public access). No broken interactions or critical console errors detected. SUMMARY: Body map accuracy improvements FULLY VERIFIED across all 3 routes. Body maps use substantial highlighted anatomical zones (60-140px dimensions) instead of tiny dots. Zone placement is anatomically sensible on body silhouette. Copy explicitly mentions 'anatomy-calibrated and practice-aware' (or 'fascia-focused' for fascia-stretching). Zone clicks correctly update selected region panel with all 6 layers. All validation criteria from review request met."
+
+test_plan:
+  current_focus:
+    - "Body map accuracy improvements - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ BODY MAP ACCURACY IMPROVEMENTS QA COMPLETE (2026-07-02):
+      
+      Targeted frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+      Focus: EmbodimentProtocolPanel body map accuracy improvements
+      Routes tested: /fascia-stretching, /shamanic-practices, /elemental-practices
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VALIDATION CRITERIA (from review request):
+      1. Body map has highlighted anatomical zones (not tiny inaccurate dots)
+      2. Zone placement appears anatomically sensible for listed regions
+      3. Copy says map is anatomy-calibrated and practice-aware
+      4. Clicking each visible zone updates selected region panel correctly
+      5. No broken interactions/console errors
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST RESULTS: ✅ ALL 3 ROUTES PASSED
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST CASE 1: /fascia-stretching → practice modal → embodiment panel
+      ───────────────────────────────────────────────────────────────────────────────
+      Route: /fascia-stretching
+      Practice tested: First practice card
+      
+      ✅ EmbodimentProtocolPanel: FOUND
+         data-testid: fascia-stretching-embodiment-panel
+      
+      ✅ Interactive Body Map Diagram: FOUND
+         data-testid: fascia-stretching-embodiment-interactive-body-map
+      
+      ✅ Highlighted Anatomical Zones: VERIFIED (NOT tiny dots)
+         Zone count: 3
+         Zone dimensions: 66.5px × 66.9px
+         Zones found:
+         1. Solar Core
+         2. Heart + Chest
+         3. Throat + Jaw
+      
+      ✅ Zone Placement: ANATOMICALLY SENSIBLE
+         Zones positioned correctly on body silhouette
+         Legend lists all mapped regions
+      
+      ✅ Copy Text: VERIFIED
+         "Fascia-focused support: highlighting connective tissue chains and stored stress patterns."
+         Note: Uses fascia-focused mode (preferFasciaMode=true) instead of standard anatomy-calibrated copy
+      
+      ✅ Zone Click Interaction: WORKING
+         Initial region: Solar Core
+         Clicked zone: Heart + Chest
+         Selected region panel updated correctly
+      
+      ✅ Selected Region Panel Layers: ALL 6 PRESENT
+         • Physical Anatomy ✓
+         • Physical Function ✓
+         • Emotional Layer ✓
+         • Energetic Layer ✓
+         • Spiritual Layer ✓
+         • Fascia Lens ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST CASE 2: /elemental-practices → practice modal → embodiment panel
+      ───────────────────────────────────────────────────────────────────────────────
+      Route: /elemental-practices
+      Practice tested: Earth Body Meditation
+      
+      ✅ EmbodimentProtocolPanel: FOUND
+         data-testid: elemental-practice-embodiment-panel
+      
+      ✅ Interactive Body Map Diagram: FOUND
+         data-testid: elemental-practice-embodiment-interactive-body-map
+      
+      ✅ Highlighted Anatomical Zones: VERIFIED (NOT tiny dots)
+         Zone count: 3
+         Zone dimensions: 83.2px × 142.1px
+         Zones found:
+         1. Feet + Legs
+         2. Pelvis + Lower Belly
+         3. Solar Core
+      
+      ✅ Zone Placement: ANATOMICALLY SENSIBLE
+         Zones positioned correctly on body silhouette
+         Legend lists all mapped regions
+      
+      ✅ Copy Text: ANATOMY-CALIBRATED AND PRACTICE-AWARE ✓
+         "Map is anatomy-calibrated and practice-aware. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers."
+      
+      ✅ Zone Click Interaction: WORKING
+         Zone clicks successfully update selected region panel
+      
+      ✅ Selected Region Panel Layers: ALL 6 PRESENT
+         • Physical Anatomy ✓
+         • Physical Function ✓
+         • Emotional Layer ✓
+         • Energetic Layer ✓
+         • Spiritual Layer ✓
+         • Fascia Lens ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST CASE 3: /shamanic-practices → practice modal → embodiment panel
+      ───────────────────────────────────────────────────────────────────────────────
+      Route: /shamanic-practices
+      Practice tested: Power Animal Journey
+      
+      ✅ EmbodimentProtocolPanel: FOUND
+         data-testid: shamanic-practice-embodiment-panel
+      
+      ✅ Interactive Body Map Diagram: FOUND
+         data-testid: shamanic-practice-embodiment-interactive-body-map
+      
+      ✅ Highlighted Anatomical Zones: VERIFIED (NOT tiny dots)
+         Zone count: 3
+         Zone dimensions: 70.7px × 66.9px
+         Zones found:
+         1. Pelvis + Lower Belly
+         2. Heart + Chest
+         3. Brow + Crown
+      
+      ✅ Zone Placement: ANATOMICALLY SENSIBLE
+         Zones positioned correctly on body silhouette
+         Legend lists all mapped regions
+      
+      ✅ Copy Text: ANATOMY-CALIBRATED AND PRACTICE-AWARE ✓
+         "Map is anatomy-calibrated and practice-aware. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers."
+      
+      ✅ Zone Click Interaction: WORKING
+         Zone clicks successfully update selected region panel
+      
+      ✅ Selected Region Panel Layers: ALL 6 PRESENT
+         • Physical Anatomy ✓
+         • Physical Function ✓
+         • Emotional Layer ✓
+         • Energetic Layer ✓
+         • Spiritual Layer ✓
+         • Fascia Lens ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CONSOLE ERRORS CHECK:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ No critical console errors detected
+      ⚠️ Only expected 401 auth errors (non-critical, expected for unauthenticated public access)
+      ✅ No broken interactions
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FINAL SUMMARY:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASS - Body map accuracy improvements working correctly across all 3 routes
+      
+      Key Findings:
+      • Body maps use substantial highlighted anatomical zones (60-140px dimensions)
+      • Zones are NOT tiny dots - they are large, clickable anatomical areas
+      • Zone placement is anatomically sensible on body silhouette
+      • Copy explicitly mentions "anatomy-calibrated and practice-aware" (or "fascia-focused" for fascia-stretching)
+      • Zone clicks correctly update selected region panel
+      • Selected region panel displays all 6 layers (anatomy, function, emotion, energy, spiritual, fascia)
+      • Legend lists all mapped anatomical regions
+      • No broken interactions or critical console errors
+      
+      All validation criteria from review request have been met.
+      Body map accuracy improvements are production-ready.
+

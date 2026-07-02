@@ -13,7 +13,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Root current · grounding and survival coherence",
     spiritual: "Teaches trust, right timing, and your relationship to being supported by life.",
     fascia: "Superficial back line + lateral lines store survival stress and movement confidence.",
-    diagram: { front: { x: 52, y: 85 }, back: { x: 50, y: 86 } },
+    diagram: { front: { x: 50, y: 82 }, zone: { x: 50, y: 78, w: 40, h: 34 } },
     cue: "Slow exhale into your feet and ask: where do I need firmer boundaries or steadier support?",
   },
   pelvis_womb: {
@@ -25,7 +25,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Sacral current · creativity, intimacy, fluidity",
     spiritual: "Holds consent, creativity, and the sacred yes/no of your embodied truth.",
     fascia: "Deep front line + psoas web often carry fear-freeze patterns and relational guarding.",
-    diagram: { front: { x: 50, y: 67 }, back: { x: 50, y: 69 } },
+    diagram: { front: { x: 50, y: 64 }, zone: { x: 50, y: 64, w: 34, h: 16 } },
     cue: "Soften jaw and lower belly; ask what your body is protecting and what it now feels safe to release.",
   },
   solar_core: {
@@ -37,7 +37,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Solar current · personal power and direction",
     spiritual: "Refines will into integrity: power used in service rather than control.",
     fascia: "Diaphragm-thoracolumbar fascia can lock with over-efforting and chronic vigilance.",
-    diagram: { front: { x: 50, y: 52 }, back: { x: 50, y: 55 } },
+    diagram: { front: { x: 50, y: 50 }, zone: { x: 50, y: 50, w: 32, h: 16 } },
     cue: "Breathe into the diaphragm and name one decision your body already knows.",
   },
   heart_chest: {
@@ -49,7 +49,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Heart current · connection, compassion, coherence",
     spiritual: "Opens the path from wound-protection into compassionate discernment.",
     fascia: "Arm lines + chest fascia influence protective postures and relational armoring.",
-    diagram: { front: { x: 50, y: 38 }, back: { x: 50, y: 41 } },
+    diagram: { front: { x: 50, y: 36 }, zone: { x: 50, y: 36, w: 36, h: 16 } },
     cue: "Lengthen exhale through the chest and ask what grief needs witnessing before love can move again.",
   },
   throat_jaw: {
@@ -61,7 +61,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Throat current · expression, resonance, authenticity",
     spiritual: "Purifies expression so your voice becomes medicine, not performance.",
     fascia: "Tongue-jaw-neck fascia often tighten when truth is withheld or conflict is feared.",
-    diagram: { front: { x: 50, y: 24 }, back: { x: 50, y: 25 } },
+    diagram: { front: { x: 50, y: 23 }, zone: { x: 50, y: 23, w: 24, h: 12 } },
     cue: "Release the jaw and hum softly; ask what truth wants a clean and kind expression.",
   },
   brow_crown: {
@@ -73,7 +73,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Third-eye/crown current · perception and meaning",
     spiritual: "Restores clear seeing, surrender, and alignment with higher discernment.",
     fascia: "Scalp and suboccipital fascial tension mirror cognitive overload and hypervigilance.",
-    diagram: { front: { x: 50, y: 13 }, back: { x: 50, y: 13 } },
+    diagram: { front: { x: 50, y: 11 }, zone: { x: 50, y: 11, w: 22, h: 10 } },
     cue: "Soften the eyes and back of head, then ask what becomes clear when urgency drops.",
   },
 };
@@ -86,19 +86,37 @@ const ELEMENT_REGION_MAP = {
   Spirit: ["pelvis_womb", "heart_chest", "brow_crown"],
 };
 
-const getRegionCards = (element) => {
-  const keys = ELEMENT_REGION_MAP[element] || ELEMENT_REGION_MAP.Spirit;
-  return keys.map((key) => BODY_WISDOM_LIBRARY[key]).filter(Boolean);
+const PRACTICE_REGION_KEYWORDS = [
+  { region: "throat_jaw", words: ["throat", "jaw", "voice", "neck", "vagus", "larynx", "tongue"] },
+  { region: "heart_chest", words: ["heart", "chest", "lung", "breast", "rib", "grief"] },
+  { region: "solar_core", words: ["solar", "core", "gut", "digest", "stomach", "diaphragm"] },
+  { region: "pelvis_womb", words: ["pelvis", "womb", "hip", "psoas", "sacral", "yoni", "root bowl"] },
+  { region: "feet_legs", words: ["feet", "legs", "knee", "ankle", "ground", "root", "hamstring", "calf"] },
+  { region: "brow_crown", words: ["crown", "brow", "third eye", "head", "skull", "pineal", "clarity"] },
+];
+
+const inferPracticeRegionKeys = (practiceName) => {
+  const source = String(practiceName || "").toLowerCase();
+  if (!source) return [];
+  return PRACTICE_REGION_KEYWORDS
+    .filter((entry) => entry.words.some((word) => source.includes(word)))
+    .map((entry) => entry.region);
 };
 
-const getRegionCardsForMode = (element, fasciaMode) => {
+const getRegionCards = (element, practiceName) => {
   const keys = ELEMENT_REGION_MAP[element] || ELEMENT_REGION_MAP.Spirit;
+  const inferred = inferPracticeRegionKeys(practiceName);
+  const mergedKeys = Array.from(new Set([...inferred, ...keys]));
+  const chosen = mergedKeys.length > 0 ? mergedKeys.slice(0, 4) : keys;
+  return chosen.map((key) => BODY_WISDOM_LIBRARY[key]).filter(Boolean);
+};
+
+const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
+  const cards = getRegionCards(element, practiceName);
   if (!fasciaMode) {
-    return keys.map((key) => BODY_WISDOM_LIBRARY[key]).filter(Boolean);
+    return cards;
   }
-  return keys
-    .map((key) => BODY_WISDOM_LIBRARY[key])
-    .filter((card) => card && card.fascia);
+  return cards.filter((card) => card && card.fascia);
 };
 
 const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => (
@@ -126,19 +144,37 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
         {cards.map((card, index) => {
           const point = card?.diagram?.front;
           if (!point) return null;
+          const zone = card?.diagram?.zone || { x: point.x, y: point.y, w: 14, h: 10 };
           const active = selectedRegionKey === card.key;
           return (
             <button
               key={`${card.key}-point`}
               type="button"
               onClick={() => onSelectRegion(card.key)}
-              className={`absolute -translate-x-1/2 -translate-y-1/2 w-7 h-7 rounded-full text-[10px] font-semibold border transition ${active ? "bg-cyan-400/80 text-black border-cyan-100" : "bg-black/55 text-cyan-100 border-cyan-300/40 hover:bg-cyan-500/30"}`}
-              style={{ left: `${point.x}%`, top: `${point.y}%` }}
+              className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition ${
+                active
+                  ? "bg-cyan-400/35 border-cyan-100/90 shadow-[0_0_0_2px_rgba(34,211,238,0.35)]"
+                  : "bg-cyan-400/10 border-cyan-200/40 hover:bg-cyan-400/20 hover:border-cyan-100/70"
+              }`}
+              style={{
+                left: `${zone.x}%`,
+                top: `${zone.y}%`,
+                width: `${zone.w}%`,
+                height: `${zone.h}%`,
+              }}
               data-testid={`${testIdPrefix}-diagram-point-${card.key}`}
               aria-label={`Select ${card.region}`}
               title={card.region}
             >
-              {index + 1}
+              <span
+                className={`absolute -top-2 -right-2 w-5 h-5 rounded-full text-[10px] font-semibold border flex items-center justify-center ${
+                  active
+                    ? "bg-cyan-300 text-black border-cyan-100"
+                    : "bg-black/70 text-cyan-100 border-cyan-300/50"
+                }`}
+              >
+                {index + 1}
+              </span>
             </button>
           );
         })}
@@ -148,7 +184,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
         <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-diagram-mode-copy`}>
           {fasciaMode
             ? "Fascia-focused support: highlighting connective tissue chains and stored stress patterns."
-            : "Tap points on the diagram to explore physical, emotional, energetic, and spiritual layers."}
+            : "Map is anatomy-calibrated and practice-aware. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers."}
         </p>
         <ul className="grid sm:grid-cols-2 gap-2">
           {cards.map((card, index) => (
@@ -188,7 +224,7 @@ export const EmbodimentProtocolPanel = ({
 
   const threeStep = buildThreeStep(safePractice, safeElement);
   const sevenDay = buildSevenDay(safePractice);
-  const regionCards = useMemo(() => getRegionCardsForMode(safeElement, fasciaMode), [safeElement, fasciaMode]);
+  const regionCards = useMemo(() => getRegionCardsForMode(safeElement, fasciaMode, safePractice), [safeElement, fasciaMode, safePractice]);
   const [selectedRegionKey, setSelectedRegionKey] = useState(regionCards[0]?.key || "feet_legs");
 
   useEffect(() => {
