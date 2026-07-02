@@ -111,6 +111,16 @@ const SeasonalTemple = ({ user }) => {
                 ))}
               </div>
               <div className="p-6">
+                <div className="grid sm:grid-cols-2 gap-3 mb-4" data-testid="seasonal-sabbat-depth-grid">
+                  <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="seasonal-sabbat-why-heals-panel">
+                    <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
+                    <p className="text-xs text-muted-foreground">Seasonal rites heal by synchronizing body rhythms with cyclical time, reducing fragmentation and restoring orientation.</p>
+                  </div>
+                  <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="seasonal-sabbat-safety-notes-panel">
+                    <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Safety Notes</p>
+                    <p className="text-xs text-muted-foreground">Adapt intensity to your capacity, especially during grief/release rituals. Ground physically after deep emotional work.</p>
+                  </div>
+                </div>
                 {activeTab === "overview" && (
                   <div className="space-y-4">
                     <div>
@@ -151,6 +161,14 @@ const SeasonalTemple = ({ user }) => {
                 {activeTab === "embodiment" && (
                   <div className={`p-5 rounded-xl ${selectedSabbat.color.bg} border ${selectedSabbat.color.border}`}>
                     <p className="text-sm text-muted-foreground leading-relaxed">{selectedSabbat.embodiment}</p>
+                    <div className="mt-3 rounded-lg border border-emerald-500/20 bg-emerald-500/10 p-3" data-testid="seasonal-sabbat-integration-actions-panel">
+                      <p className="text-[11px] uppercase tracking-wider text-emerald-200 mb-2">Integration Actions</p>
+                      <ul className="space-y-1.5">
+                        <li className="text-xs text-muted-foreground">• Journal one seasonal lesson and one practical action for this week.</li>
+                        <li className="text-xs text-muted-foreground">• Complete one land-honoring act (offering, cleanup, planting, or gratitude ritual).</li>
+                        <li className="text-xs text-muted-foreground">• Share one embodied insight with a trusted person or community circle.</li>
+                      </ul>
+                    </div>
                   </div>
                 )}
                 {activeTab === "nature" && (
@@ -202,6 +220,16 @@ const SeasonalTemple = ({ user }) => {
                 <p className="mt-3 text-sm text-muted-foreground">{selectedCraft.description}</p>
               </div>
               <div className="p-6 space-y-4">
+                <div className="grid sm:grid-cols-2 gap-3" data-testid="seasonal-craft-depth-grid">
+                  <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="seasonal-craft-why-heals-panel">
+                    <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
+                    <p className="text-xs text-muted-foreground">Earth crafting integrates attention through hands, breath, and symbol, restoring regulation through tangible ritual action.</p>
+                  </div>
+                  <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="seasonal-craft-safety-notes-panel">
+                    <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Safety Notes</p>
+                    <p className="text-xs text-muted-foreground">Move slowly with tools/fire and adapt actions to your physical capacity. Close by grounding and hydration.</p>
+                  </div>
+                </div>
                 <ol className="space-y-3">
                   {selectedCraft.steps.map((step, i) => (
                     <li key={`${selectedCraft.id}-step-${String(step).slice(0, 24)}-${i}`} className="flex items-start gap-3 text-sm text-muted-foreground">

@@ -27,6 +27,25 @@ export const ElementalTempleDetailView = ({
       <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed">{activeTemple.description}</p>
     </div>
 
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-8" data-testid="elemental-temple-depth-framework-grid">
+      <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-4" data-testid="elemental-temple-why-heals-panel">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-cyan-200 mb-2">Why This Heals</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">Elemental ritual restores coherence by aligning breath, symbolism, and embodied action in one regulated practice container.</p>
+      </div>
+      <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4" data-testid="elemental-temple-safety-notes-panel">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-amber-200 mb-2">Safety Notes</p>
+        <p className="text-xs text-muted-foreground leading-relaxed">Move at consent pace. If activation rises, orient to environment, lengthen exhale, and return only after grounding.</p>
+      </div>
+      <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4" data-testid="elemental-temple-integration-actions-panel">
+        <p className="text-[11px] uppercase tracking-[0.18em] text-emerald-200 mb-2">Integration Actions</p>
+        <ul className="space-y-1.5">
+          <li className="text-xs text-muted-foreground">• Journal one element teaching and one next action.</li>
+          <li className="text-xs text-muted-foreground">• Complete one practical act aligned to this element.</li>
+          <li className="text-xs text-muted-foreground">• Revisit the ritual within 72 hours for reinforcement.</li>
+        </ul>
+      </div>
+    </div>
+
     <div className="flex flex-wrap gap-2 mb-8 justify-center">
       {sections.map((sec) => (
         <button

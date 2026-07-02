@@ -72,6 +72,32 @@ export const MasculinePracticeModal = ({ selectedPractice, setSelectedPractice, 
                 </div>
               )}
 
+              {selectedPractice.safety_notes && (
+                <div className="mb-4" data-testid="masculine-practice-safety-notes-panel">
+                  <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-amber-400" /> Safety Notes
+                  </h3>
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
+                    {selectedPractice.safety_notes}
+                  </div>
+                </div>
+              )}
+
+              {Array.isArray(selectedPractice.integration_actions) && selectedPractice.integration_actions.length > 0 && (
+                <div className="mb-4" data-testid="masculine-practice-integration-actions-panel">
+                  <h3 className="text-sm font-medium mb-2 flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-emerald-400" /> Integration Actions
+                  </h3>
+                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                    <ul className="space-y-1.5">
+                      {selectedPractice.integration_actions.map((step, index) => (
+                        <li key={`${selectedPractice.id || selectedPractice.name}-integration-${index}`} className="text-sm text-muted-foreground">• {step}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              )}
+
               {selectedPractice.extended_teachings && (
                 <div className="mb-4">
                   <h3 className="text-sm font-medium mb-2 flex items-center gap-2">

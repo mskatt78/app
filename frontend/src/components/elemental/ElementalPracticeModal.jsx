@@ -137,6 +137,34 @@ export const ElementalPracticeModal = ({
                       </div>
                     )}
 
+                    {selectedPractice.why_this_heals && (
+                      <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="elemental-practice-why-heals-panel">
+                        <h3 className="font-medium mb-2 text-cyan-200">Why This Heals</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedPractice.why_this_heals}</p>
+                      </div>
+                    )}
+
+                    {selectedPractice.safety_notes && (
+                      <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="elemental-practice-safety-notes-panel">
+                        <h3 className="font-medium mb-2 text-amber-300">Safety Notes</h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{selectedPractice.safety_notes}</p>
+                      </div>
+                    )}
+
+                    {Array.isArray(selectedPractice.integration_actions) && selectedPractice.integration_actions.length > 0 && (
+                      <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="elemental-practice-integration-actions-panel">
+                        <h3 className="font-medium mb-2 text-emerald-200">Integration Actions</h3>
+                        <ul className="space-y-2">
+                          {selectedPractice.integration_actions.map((step, index) => (
+                            <li key={`${selectedPractice.id}-integration-${index}`} className="text-sm text-muted-foreground flex gap-2" data-testid={`elemental-practice-integration-action-${index}`}>
+                              <span className="text-emerald-300">•</span>
+                              <span>{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
                     <EmbodimentProtocolPanel
                       practiceName={selectedPractice.name}
                       element={selectedPractice.element || "Earth"}

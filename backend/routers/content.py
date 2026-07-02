@@ -3333,6 +3333,24 @@ def _enrich_devotional_language(item: dict[str, Any], domain: str) -> dict[str, 
         f"Before closing {practice_name}, commit one grounded action within 24 hours that expresses this medicine.",
     )
 
+    enriched.setdefault(
+        "why_this_heals",
+        f"{practice_name} heals by synchronizing breath pacing, symbolic attention, and embodied action. "
+        "When ritual is practiced with safety, nervous-system awareness, and integration, insight becomes durable change rather than temporary activation.",
+    )
+    enriched.setdefault(
+        "safety_notes",
+        "Move at a consent-based pace. If activation spikes, pause and orient to room details, feet contact, and long exhales before continuing.",
+    )
+    enriched.setdefault(
+        "integration_actions",
+        [
+            "Hydrate and orient to your physical environment after practice.",
+            "Journal one insight and one practical next step.",
+            "Complete one grounded action within 24 hours that proves integration.",
+        ],
+    )
+
     enriched = _enrich_immersive_ritual_fields(enriched, domain)
 
     return enriched

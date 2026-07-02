@@ -45,6 +45,16 @@ export const RoseTempleModals = ({
                     <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
                   </div>
                 ))}
+                <div className="grid sm:grid-cols-2 gap-3" data-testid="rose-teaching-depth-grid">
+                  <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="rose-teaching-why-heals-panel">
+                    <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
+                    <p className="text-xs text-muted-foreground">Deep feminine transmission repairs body-trust by pairing symbolic meaning with embodied pacing and relational integration.</p>
+                  </div>
+                  <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="rose-teaching-safety-notes-panel">
+                    <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Safety Notes</p>
+                    <p className="text-xs text-muted-foreground">If activation rises, slow your breath, orient to your environment, and return only when your body feels safe.</p>
+                  </div>
+                </div>
                 <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3" data-testid="rose-teaching-guided-voice-panel">
                   <p className="text-xs uppercase tracking-wider text-rose-200 mb-2">Guided Voice Transmission</p>
                   <GuidedAudioButton
@@ -84,6 +94,16 @@ export const RoseTempleModals = ({
                 <button onClick={onClosePractice} data-testid="rose-practice-modal-close"><X className="w-5 h-5" /></button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">{selectedPractice.description}</p>
+              <div className="grid sm:grid-cols-2 gap-3 mb-4" data-testid="rose-practice-depth-grid">
+                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="rose-practice-why-heals-panel">
+                  <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
+                  <p className="text-xs text-muted-foreground">Rose practices stabilize emotional coherence by combining breath rhythm, tenderness, and practical integration actions.</p>
+                </div>
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="rose-practice-safety-notes-panel">
+                  <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Safety Notes</p>
+                  <p className="text-xs text-muted-foreground">Work slowly and pause when intensity exceeds consent. Ground through feet, hydration, and orientation before re-entering.</p>
+                </div>
+              </div>
               <GuidedAudioButton
                 api={api}
                 script={composeDeepGuidedNarration({
@@ -116,6 +136,16 @@ export const RoseTempleModals = ({
                 <button onClick={onCloseRite} data-testid="rose-rite-modal-close"><X className="w-5 h-5" /></button>
               </div>
               <p className="text-sm text-muted-foreground mb-4">{selectedRite.description}</p>
+              <div className="grid sm:grid-cols-2 gap-3 mb-4" data-testid="rose-rite-depth-grid">
+                <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="rose-rite-why-heals-panel">
+                  <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
+                  <p className="text-xs text-muted-foreground">Rites create threshold containers where symbolic release and embodied commitment reorganize identity toward coherence.</p>
+                </div>
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="rose-rite-safety-notes-panel">
+                  <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Safety Notes</p>
+                  <p className="text-xs text-muted-foreground">Use paced breath and clear boundaries. If overwhelm appears, pause, orient, and complete grounding before closure.</p>
+                </div>
+              </div>
               <GuidedAudioButton
                 api={api}
                 script={composeDeepGuidedNarration({
