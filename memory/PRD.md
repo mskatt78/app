@@ -3984,3 +3984,35 @@
 1. Optional: unify depth-panel copy style tokens in a shared component for easier global updates.
 2. Optional: add "Depth Mode" toggle (Concise / Standard / Deep) for user personalization.
 3. Continue backlog: Sacred Journey Progress dashboard tracker.
+
+## Latest Verification Snapshot (Iteration 251 — 2026-07-02)
+- ✅ Admin access hard-locked to exactly two owner-approved emails:
+  - `mskatt78@gmail.com`
+  - `skywatersacredembodiments@gmail.com`
+
+### Backend hard lock
+- File: `backend/routers/admin.py`
+- Added constant `LOCKED_ADMIN_EMAILS` with only the two approved addresses.
+- Updated `_get_admin_emails()` to return this locked set directly (not env-driven list).
+- Result: `POST /api/admin/session-login` rejects non-whitelisted authenticated users with `403`.
+
+### Frontend admin visibility alignment
+- Updated frontend admin-email checks to the same two-email lock in:
+  - `frontend/src/App.js`
+  - `frontend/src/pages/dashboard/dashboardConfig.js`
+  - `frontend/src/components/TopNav.jsx`
+  - `frontend/src/pages/settings/useSettingsData.js`
+  - `frontend/src/routes/routeGuards.jsx`
+
+### Testing Summary (Iteration 251)
+- ✅ Backend deep testing PASS:
+  - Non-admin email rejected on session login (`403`).
+  - Admin password login still functional.
+  - `/api/admin/collections` auth handling healthy (401 unauthenticated, 200 with valid admin session).
+- ✅ Frontend testing PASS for non-admin restriction:
+  - Admin entry points hidden for non-admin user in TopNav, Dashboard, and Settings.
+- ℹ️ Admin-visible UI for owner emails cannot be fully automated in this environment due to Google OAuth-only sign-in for owner accounts; code-level verification confirms whitelist and conditional rendering are correct.
+
+## Updated Priorities
+- **P0 complete**: strict two-email admin lock implemented across backend + frontend.
+- **P1 backlog**: Sacred Journey Progress tracker.
