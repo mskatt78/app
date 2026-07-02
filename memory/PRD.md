@@ -4016,3 +4016,27 @@
 ## Updated Priorities
 - **P0 complete**: strict two-email admin lock implemented across backend + frontend.
 - **P1 backlog**: Sacred Journey Progress tracker.
+
+## Latest Verification Snapshot (Iteration 252 — 2026-07-02)
+- ✅ Removed internal/planning UI blocks from public app surface on Sacred Ally page:
+  - "Personalized Practice Tools"
+  - "What to Practice Today"
+  - "Potential Improvements Roadmap"
+
+### Scope
+- File updated: `frontend/src/pages/SacredAllyAlchemy.jsx`
+- Removed associated state + request handlers + UI rendering blocks for recommendation/roadmap display.
+
+### Validation
+- ✅ Frontend QA PASS on `/sacred-ally-alchemy`:
+  - Text labels absent
+  - testids absent:
+    - `sacred-ally-tools-toggle-card`
+    - `sacred-ally-daily-recommendation-card`
+    - `sacred-ally-roadmap-card`
+  - Core card grid + modal behavior unchanged
+  - No critical regressions
+
+## Updated Priorities
+- **P0 complete**: internal planning/descriptions removed from public Sacred Ally app experience.
+- **P1 backlog**: Sacred Journey Progress tracker.
