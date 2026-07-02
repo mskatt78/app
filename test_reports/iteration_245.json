@@ -1,0 +1,83 @@
+{
+  "summary": "Comprehensive e2e testing of shamanic depth parity across all spiritual sections. All depth framework panels (why_this_heals, safety_notes, integration_actions) are correctly displayed in all tested modals and views.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_depth_framework_iteration245.py",
+    "/app/test_reports/pytest/pytest_iteration245.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_depth_framework_iteration245.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All depth framework panels verified across: Elemental Temples detail view, Elemental Practice Modal, Rose Temple teaching/practice modals, Seasonal Temple sabbat/craft modals, Masculine Practice Modal, and Shamanic Practices modal. All panels show why_this_heals, safety_notes, and integration_actions correctly.",
+  "tested_features": {
+    "elemental_temples_detail": {
+      "status": "PASS",
+      "panels_found": ["why_this_heals", "safety_notes", "integration_actions"],
+      "route": "/elemental-temples",
+      "notes": "Depth framework grid visible after clicking on temple card"
+    },
+    "elemental_practice_modal": {
+      "status": "PASS",
+      "panels_found": ["why_this_heals", "safety_notes", "integration_actions", "embodiment_protocol"],
+      "route": "/elemental-practices",
+      "notes": "Fire Breath Activation modal shows all depth panels with Begin Guided Practice button"
+    },
+    "rose_temple_teaching_modal": {
+      "status": "PASS",
+      "panels_found": ["why_this_heals", "safety_notes", "depth_grid"],
+      "route": "/rose-temple",
+      "notes": "The Rose Lineage teaching modal shows depth panels"
+    },
+    "rose_temple_practice_modal": {
+      "status": "PASS",
+      "panels_found": ["why_this_heals", "safety_notes"],
+      "route": "/rose-temple",
+      "notes": "Breast & Heart Healing practice modal shows depth panels"
+    },
+    "seasonal_temple_sabbat_modal": {
+      "status": "PASS",
+      "panels_found": ["why_this_heals", "safety_notes", "integration_actions", "depth_grid"],
+      "route": "/seasonal-temple",
+      "notes": "Samhain sabbat modal shows depth panels with Embodiment tab for integration actions"
+    },
+    "seasonal_temple_craft_modal": {
+      "status": "PASS",
+      "panels_found": ["why_this_heals", "safety_notes"],
+      "route": "/seasonal-temple",
+      "notes": "Medicine Wheel craft modal shows depth panels"
+    },
+    "masculine_practice_modal": {
+      "status": "PASS",
+      "panels_found": ["why_this_heals", "safety_notes", "integration_actions", "practice_guide"],
+      "route": "/masculine-temple",
+      "notes": "Body Honoring Practice modal shows all depth panels"
+    },
+    "shamanic_practices_modal": {
+      "status": "PASS",
+      "panels_found": ["why_this_heals", "safety_notes", "integration_actions", "embodiment_protocol", "ritual_delivery"],
+      "route": "/shamanic-practices",
+      "notes": "Power Animal Journey modal shows all depth panels with existing deep journey panels"
+    }
+  },
+  "regression_check": {
+    "status": "PASS",
+    "notes": "No critical crashes navigating spiritual sections. All pages load correctly."
+  }
+}
