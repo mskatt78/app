@@ -14862,3 +14862,175 @@ agent_communication:
       the GuidedPracticeOverlay component with voice/speed/duration controls. This
       button should be placed after the Guided Practice Arc section or as a prominent
       CTA in the modal.
+
+  - task: "Embodiment protocol panel behavior - simple highlighted zones validation"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ EMBODIMENT PROTOCOL PANEL BEHAVIOR VALIDATION PASSED (2026-07-03): Comprehensive frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com/fascia-stretching modal flow. ALL 6 REQUIREMENTS MET: REQUIREMENT 1 - Body map appears as simple highlighted zones, no numeric labels/circle numbering: ✓ Found 3 diagram points with testid pattern 'diagram-point-*', ✓ NO visible numeric labels detected in any diagram point (only screen-reader-only text), ✓ Body map shows simple highlighted colored zones on anatomical silhouette. REQUIREMENT 2 - Clicking a highlighted zone updates selected region panel: ✓ Clicking first diagram point (solar_core) shows 492 chars content, ✓ Clicking second diagram point (heart_chest) updates to 478 chars content, ✓ Selected region panel successfully updates with different content for each zone. REQUIREMENT 3 - Focus behavior includes both visible zoom/focus in diagram and side panel update: ✓ Focus/zoom element found with testid 'diagram-focus-zoom', ✓ Transform applied: 'transform: translate(0px, 32.34px) scale(1.28)', ✓ Visible zoom effect present on diagram, ✓ Side panel updates correctly when zones clicked. REQUIREMENT 4 - Visual clarity improved: selected zone is strongly highlighted: ✓ Selected zone has strong visual styling with classes: 'bg-lime-500/25 border-lime-100/80 shadow-[0_0_0_2px_rgba(132,204,22,0.35)]', ✓ Box-shadow applied for glow effect, ✓ Background color with opacity (rgba(132, 204, 22, 0.25)), ✓ Border styling with lime color, ✓ Strong visual distinction between selected and unselected zones. REQUIREMENT 5 - Testid patterns match requirements: ✓ Found 32 elements with 'embodiment' in testid, ✓ Found 3 elements with 'diagram-point-*' testid pattern, ✓ All required testids present and accessible. REQUIREMENT 6 - No critical console errors: ✓ No critical console errors detected, ✓ Only expected 401 auth errors (non-critical). VISUAL VERIFICATION: Screenshots confirm body map displays anatomical silhouette with colored highlighted zones (NO numeric labels), selected zones have strong visual highlighting with glow/shadow effects, selected region panel shows all 6 layers (Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, Fascia Lens), clicking different zones updates both diagram focus and side panel content. PASS/FAIL RESULT: ✅ PASS - All requirements met, embodiment protocol panel behavior working correctly."
+
+test_plan:
+  current_focus:
+    - "Embodiment protocol panel behavior validation - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ EMBODIMENT PROTOCOL PANEL BEHAVIOR VALIDATION COMPLETE (2026-07-03):
+      
+      Comprehensive frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+      Focus: /fascia-stretching modal flow - embodiment protocol panel behavior
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VALIDATION CRITERIA (from review request):
+      1. Body map appears as simple highlighted zones, no numeric labels/circle numbering
+      2. Clicking a highlighted zone updates selected region panel
+      3. Focus behavior includes both visible zoom/focus in diagram and side panel update
+      4. Visual clarity improved: selected zone is strongly highlighted
+      5. Use testids containing 'embodiment' and 'diagram-point-*'
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST RESULTS: ✅ 6 OUT OF 6 TESTS PASSED (100% pass rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST 1: Body map appears as simple highlighted zones (NO numeric labels)
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Found 3 diagram points with testid pattern 'diagram-point-*'
+      - Verified NO visible numeric labels in any diagram point
+      - Only screen-reader-only text present (accessibility)
+      - Body map shows simple highlighted colored zones on anatomical silhouette
+      - Visual: Colored rectangular zones overlay body diagram (lime/green, teal, purple colors)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST 2: Clicking highlighted zone updates selected region panel
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Initial selected region: Solar Core (492 chars content)
+      - Clicked first diagram point: fascia-stretching-embodiment-diagram-point-solar_core
+      - Clicked second diagram point: fascia-stretching-embodiment-diagram-point-heart_chest
+      - Content updated from 492 chars to 478 chars
+      - Selected region panel successfully updates with different content for each zone
+      - All 6 layers displayed: Physical Anatomy, Physical Function, Emotional Layer, 
+        Energetic Layer, Spiritual Layer, Fascia Lens
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST 3: Focus behavior with zoom/focus in diagram
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Focus/zoom element found (data-testid='fascia-stretching-embodiment-diagram-focus-zoom')
+      - Transform applied: 'transform: translate(0px, 32.34px) scale(1.28)'
+      - Visible zoom effect present on diagram (1.28x scale)
+      - Diagram dynamically adjusts focus based on selected zone
+      - Side panel updates correctly when zones clicked
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST 4: Visual clarity - selected zone strongly highlighted
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Selected zone classes: 'bg-lime-500/25 border-lime-100/80 shadow-[0_0_0_2px_rgba(132,204,22,0.35)]'
+      - Strong visual indicators present:
+        * Glow effect: shadow-[0_0_0_2px_rgba(132,204,22,0.35)]
+        * Border styling: border-lime-100/80
+        * Background fill: bg-lime-500/25
+      - Computed styles:
+        * Opacity: 1
+        * Box-shadow: rgba(132, 204, 22, ...) glow effect
+        * Background: rgba(132, 204, 22, 0.25)
+      - Strong visual distinction between selected and unselected zones
+      - Unselected zones: subtle white/5 background with white/25 border
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST 5: Testid patterns match requirements
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Found 32 elements with 'embodiment' in testid
+      - Found 3 elements with 'diagram-point-*' testid pattern
+      - Specific testids verified:
+        * fascia-stretching-embodiment-panel
+        * fascia-stretching-embodiment-diagram-point-solar_core
+        * fascia-stretching-embodiment-diagram-point-heart_chest
+        * fascia-stretching-embodiment-diagram-point-throat_jaw
+        * fascia-stretching-embodiment-diagram-focus-zoom
+      - All required testid patterns present and accessible
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST 6: Console errors check
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - No critical console errors detected
+      - Only expected 401 auth errors (non-critical, expected for unauthenticated access)
+      - No JavaScript errors or warnings
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VISUAL VERIFICATION (Screenshots):
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      Screenshot 1: body-map-no-labels.png
+      - Body map displays anatomical silhouette with colored highlighted zones
+      - NO numeric labels visible (1, 2, 3, etc.)
+      - Clean, simple visual presentation
+      - Zones are colored rectangles overlaying body diagram
+      
+      Screenshot 2: zone-click-updates-panel.png
+      - Selected region panel shows detailed information
+      - Heart + Chest region selected (teal/cyan highlight)
+      - All 6 layers visible in panel:
+        * Physical Anatomy: Rib fascia, sternum, intercostals, upper thoracic spine
+        * Physical Function: Respiration capacity, arm freedom, relational openness
+        * Emotional Layer: Grief, tenderness, forgiveness, protection
+        * Energetic Layer: Heart current · connection, compassion, coherence
+        * Spiritual Layer: Opens the path from wound-protection into compassionate discernment
+        * Fascia Lens: Arm lines + chest fascia influence protective postures and relational armoring
+      
+      Screenshot 3: selected-zone-highlighted.png
+      - Solar Core zone selected with strong lime/green highlighting
+      - Visible glow effect around selected zone
+      - Clear visual distinction from unselected zones
+      - Body map shows focused/zoomed view on selected region
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FINAL SUMMARY:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASS (6/6 tests) - Embodiment protocol panel behavior working correctly
+      
+      Key Findings:
+      • Body map uses simple highlighted zones (NO numeric labels) ✓
+      • Clicking zones updates selected region panel with detailed content ✓
+      • Focus behavior includes visible zoom (scale 1.28) and side panel update ✓
+      • Selected zones have strong visual highlighting (glow, shadow, border effects) ✓
+      • All required testid patterns present ('embodiment', 'diagram-point-*') ✓
+      • No critical console errors ✓
+      
+      IMPLEMENTATION DETAILS:
+      • Body map displays anatomical silhouette with colored rectangular zones
+      • Zones use chakra-based color coding (lime for solar, teal for heart, purple for crown)
+      • Selected zone has strong visual styling: fill color, border, and glow shadow
+      • Unselected zones have subtle white/5 background with hover effects
+      • Diagram dynamically zooms/focuses on selected region (1.28x scale with translate)
+      • Selected region panel shows 6 comprehensive layers for each body zone
+      • Fascia mode active: copy mentions "Fascia focus is active: highlighted zones emphasize connective tissue stress lines"
+      
+      RECOMMENDATION:
+      Feature is production-ready. All validation criteria met. No issues found.
+      Embodiment protocol panel behavior is working correctly on /fascia-stretching modal flow.

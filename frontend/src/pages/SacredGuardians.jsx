@@ -8,6 +8,9 @@ import {
 import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+
+const FALLBACK_GUARDIAN_IMAGE = "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/ed68a7232984385ac7731392c7ad673cf719d7139109325a82dc4650afcb88a1.png";
 
 const CATEGORIES = [
   { id: "all", label: "All Guardians", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
@@ -35,6 +38,7 @@ const SacredGuardians = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
   const [selected, setSelected] = useState(null);
+  const [guidedPractice, setGuidedPractice] = useState(null);
   const [selectedLockedGuardian, setSelectedLockedGuardian] = useState(null);
   const premium = usePremiumAccess({ api, user });
   const guardiansUnlocked = premium.isSectionUnlocked("sacred_guardians");
@@ -109,6 +113,46 @@ const SacredGuardians = ({ user, api }) => {
     return [];
   };
 
+  const handleGuardianImageError = (event) => {
+    const target = event.currentTarget;
+    if (target.dataset.fallbackApplied === "true") return;
+    target.dataset.fallbackApplied = "true";
+    target.src = FALLBACK_GUARDIAN_IMAGE;
+  };
+
+  const startGuardianGuidedPractice = (guardian) => {
+    if (!guardian) return;
+    const guidedSteps = resolveGuardianGuided(guardian);
+    if (!guidedSteps.length) return;
+
+    setGuidedPractice({
+      id: `guardian-guided-${guardian.id || guardian.name || "practice"}`,
+      name: `${guardian.name} · Guided Guardian Transmission`,
+      category: "sacred_guardians",
+      element: guardian.element || "Spirit",
+      duration_minutes: 15,
+      description: guardian.description || "",
+      steps: guidedSteps,
+    });
+    setSelected(null);
+  };
+
+  const handleExitGuardianGuidedPractice = () => {
+    const completed = guidedPractice;
+    setGuidedPractice(null);
+    if (!completed) return;
+
+    api.post("/practice-history", {
+      practice_type: "sacred_guardians",
+      practice_id: completed.id,
+      duration_minutes: completed.duration_minutes || 15,
+      element: completed.element || "Spirit",
+      notes: `Completed guided guardian transmission: ${completed.name}`,
+    }).catch(() => {
+      // silent tracking failure
+    });
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -119,6 +163,12 @@ const SacredGuardians = ({ user, api }) => {
 
   return (
     <div className="min-h-screen bg-background" data-testid="sacred-guardians-page">
+      <GuidedPracticeOverlay
+        practice={guidedPractice}
+        stepsOverride={guidedPractice?.steps}
+        onExit={handleExitGuardianGuidedPractice}
+      />
+
       {/* Hero Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
@@ -126,6 +176,7 @@ const SacredGuardians = ({ user, api }) => {
             src="https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/ed68a7232984385ac7731392c7ad673cf719d7139109325a82dc4650afcb88a1.png"
             alt="Sacred Guardians"
             className="w-full h-full object-cover opacity-30"
+            onError={handleGuardianImageError}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/40 to-background" />
         </div>
@@ -237,6 +288,8 @@ const SacredGuardians = ({ user, api }) => {
                       alt={guardian.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       loading="lazy"
+                      onError={handleGuardianImageError}
+                      data-testid={`guardian-image-${guardian.id}`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs flex items-center gap-1
@@ -295,6 +348,8 @@ const SacredGuardians = ({ user, api }) => {
                   src={selected.image_url}
                   alt={selected.name}
                   className="w-full h-full object-cover"
+                  onError={handleGuardianImageError}
+                  data-testid="guardian-detail-image"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-black/40 to-transparent" />
                 <button
@@ -447,6 +502,13 @@ const SacredGuardians = ({ user, api }) => {
                         </li>
                       ))}
                     </ol>
+                    <Button
+                      className="w-full mt-3"
+                      onClick={() => startGuardianGuidedPractice(selected)}
+                      data-testid="guardian-start-guided-practice-button"
+                    >
+                      Begin Guided Practice
+                    </Button>
                   </div>
                 )}
 

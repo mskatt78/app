@@ -80,6 +80,45 @@ const BODY_WISDOM_LIBRARY = {
   },
 };
 
+const REGION_VISUAL_STYLES = {
+  feet_legs: {
+    chakra: { fill: "bg-red-500/30", border: "border-red-200/80", glow: "shadow-[0_0_0_2px_rgba(239,68,68,0.35)]", chip: "bg-red-500/15 border-red-400/40 text-red-100" },
+    fascia: { fill: "bg-amber-500/25", border: "border-amber-200/80", glow: "shadow-[0_0_0_2px_rgba(245,158,11,0.35)]", chip: "bg-amber-500/15 border-amber-400/40 text-amber-100" },
+  },
+  pelvis_womb: {
+    chakra: { fill: "bg-orange-500/30", border: "border-orange-200/80", glow: "shadow-[0_0_0_2px_rgba(249,115,22,0.35)]", chip: "bg-orange-500/15 border-orange-400/40 text-orange-100" },
+    fascia: { fill: "bg-rose-500/25", border: "border-rose-200/80", glow: "shadow-[0_0_0_2px_rgba(244,63,94,0.35)]", chip: "bg-rose-500/15 border-rose-400/40 text-rose-100" },
+  },
+  solar_core: {
+    chakra: { fill: "bg-yellow-400/35", border: "border-yellow-100/80", glow: "shadow-[0_0_0_2px_rgba(250,204,21,0.35)]", chip: "bg-yellow-500/15 border-yellow-400/40 text-yellow-100" },
+    fascia: { fill: "bg-lime-500/25", border: "border-lime-100/80", glow: "shadow-[0_0_0_2px_rgba(132,204,22,0.35)]", chip: "bg-lime-500/15 border-lime-400/40 text-lime-100" },
+  },
+  heart_chest: {
+    chakra: { fill: "bg-emerald-500/30", border: "border-emerald-100/80", glow: "shadow-[0_0_0_2px_rgba(16,185,129,0.35)]", chip: "bg-emerald-500/15 border-emerald-400/40 text-emerald-100" },
+    fascia: { fill: "bg-teal-500/25", border: "border-teal-100/80", glow: "shadow-[0_0_0_2px_rgba(20,184,166,0.35)]", chip: "bg-teal-500/15 border-teal-400/40 text-teal-100" },
+  },
+  throat_jaw: {
+    chakra: { fill: "bg-sky-500/30", border: "border-sky-100/80", glow: "shadow-[0_0_0_2px_rgba(14,165,233,0.35)]", chip: "bg-sky-500/15 border-sky-400/40 text-sky-100" },
+    fascia: { fill: "bg-cyan-500/25", border: "border-cyan-100/80", glow: "shadow-[0_0_0_2px_rgba(6,182,212,0.35)]", chip: "bg-cyan-500/15 border-cyan-400/40 text-cyan-100" },
+  },
+  brow_crown: {
+    chakra: { fill: "bg-violet-500/30", border: "border-violet-100/80", glow: "shadow-[0_0_0_2px_rgba(139,92,246,0.35)]", chip: "bg-violet-500/15 border-violet-400/40 text-violet-100" },
+    fascia: { fill: "bg-fuchsia-500/25", border: "border-fuchsia-100/80", glow: "shadow-[0_0_0_2px_rgba(217,70,239,0.35)]", chip: "bg-fuchsia-500/15 border-fuchsia-400/40 text-fuchsia-100" },
+  },
+};
+
+const getRegionVisualStyle = (key, fasciaMode) => {
+  const defaultStyle = {
+    fill: "bg-cyan-500/25",
+    border: "border-cyan-100/70",
+    glow: "shadow-[0_0_0_2px_rgba(34,211,238,0.35)]",
+    chip: "bg-cyan-500/15 border-cyan-400/40 text-cyan-100",
+  };
+  const source = REGION_VISUAL_STYLES[key];
+  if (!source) return defaultStyle;
+  return fasciaMode ? source.fascia : source.chakra;
+};
+
 const ELEMENT_REGION_MAP = {
   Earth: ["feet_legs", "pelvis_womb", "solar_core"],
   Water: ["pelvis_womb", "heart_chest", "throat_jaw"],
@@ -121,76 +160,99 @@ const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
   return cards.filter((card) => card && card.fascia);
 };
 
-const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => (
-  <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4" data-testid={`${testIdPrefix}-interactive-body-map`}>
-    <h4 className="text-sm font-medium mb-3">Interactive Body Map Diagram · Chakra-Anatomy Hybrid</h4>
-    <div className="grid lg:grid-cols-[220px_1fr] gap-4 items-start">
-      <div className="relative mx-auto w-[210px] h-[420px] rounded-3xl border border-white/10 bg-black/30" data-testid={`${testIdPrefix}-diagram-canvas`}>
-        <img
-          src={ANATOMICAL_BODYMAP_IMAGE}
-          alt="Anatomical chakra hybrid body map"
-          className="absolute inset-0 w-full h-full object-contain opacity-85"
-          data-testid={`${testIdPrefix}-diagram-anatomical-image`}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/10 to-black/30" />
+const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => {
+  const selectedCard = cards.find((card) => card.key === selectedRegionKey) || cards[0];
+  const focusZone = selectedCard?.diagram?.zone || { x: 50, y: 50, w: 24, h: 14 };
+  const canvasWidth = 210;
+  const canvasHeight = 420;
+  const focusX = (focusZone.x / 100) * canvasWidth;
+  const focusY = (focusZone.y / 100) * canvasHeight;
+  const translateX = (canvasWidth / 2 - focusX) * 0.55;
+  const translateY = (canvasHeight / 2 - focusY) * 0.55;
 
-        {cards.map((card, index) => {
-          const point = card?.diagram?.front;
-          if (!point) return null;
-          const zone = card?.diagram?.zone || { x: point.x, y: point.y, w: 14, h: 10 };
-          const active = selectedRegionKey === card.key;
-          return (
-            <button
-              key={`${card.key}-point`}
-              type="button"
-              onClick={() => onSelectRegion(card.key)}
-              className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 transition ${
-                active
-                  ? "bg-cyan-400/35 border-cyan-100/90 shadow-[0_0_0_2px_rgba(34,211,238,0.35)]"
-                  : "bg-cyan-400/10 border-cyan-200/40 hover:bg-cyan-400/20 hover:border-cyan-100/70"
-              }`}
-              style={{
-                left: `${zone.x}%`,
-                top: `${zone.y}%`,
-                width: `${zone.w}%`,
-                height: `${zone.h}%`,
-              }}
-              data-testid={`${testIdPrefix}-diagram-point-${card.key}`}
-              aria-label={`Select ${card.region}`}
-              title={card.region}
-            >
-              <span
-                className={`absolute -top-2 -right-2 w-5 h-5 rounded-full text-[10px] font-semibold border flex items-center justify-center ${
-                  active
-                    ? "bg-cyan-300 text-black border-cyan-100"
-                    : "bg-black/70 text-cyan-100 border-cyan-300/50"
-                }`}
-              >
-                {index + 1}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+  return (
+    <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4" data-testid={`${testIdPrefix}-interactive-body-map`}>
+      <h4 className="text-sm font-medium mb-3">Simple Body Focus Map · Select highlighted region</h4>
+      <div className="grid lg:grid-cols-[220px_1fr] gap-4 items-start">
+        <div className="relative mx-auto w-[210px] h-[420px] rounded-3xl border border-white/10 bg-black/30 overflow-hidden" data-testid={`${testIdPrefix}-diagram-canvas`}>
+          <div
+            className="absolute inset-0 transition-transform duration-500 ease-out"
+            style={{ transform: `translate(${translateX}px, ${translateY}px) scale(1.28)` }}
+            data-testid={`${testIdPrefix}-diagram-focus-zoom`}
+          >
+            <img
+              src={ANATOMICAL_BODYMAP_IMAGE}
+              alt="Simple highlighted body map"
+              className="absolute inset-0 w-full h-full object-contain opacity-85"
+              data-testid={`${testIdPrefix}-diagram-anatomical-image`}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-black/30" />
 
-      <div className="space-y-3">
-        <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-diagram-mode-copy`}>
-          {fasciaMode
-            ? "Fascia-focused support: highlighting connective tissue chains and stored stress patterns."
-            : "Map uses a detailed chakra-anatomy hybrid. Tap highlighted zones to explore physical, emotional, energetic, and spiritual layers."}
-        </p>
-        <ul className="grid sm:grid-cols-2 gap-2">
-          {cards.map((card, index) => (
-            <li key={`${card.key}-legend`} className="text-xs text-muted-foreground rounded-lg border border-white/10 bg-black/20 px-2 py-1" data-testid={`${testIdPrefix}-diagram-legend-${card.key}`}>
-              <span className="text-cyan-200 mr-1">{index + 1}.</span>
-              {card.region}
-            </li>
-          ))}
-        </ul>
+            {cards.map((card) => {
+              const point = card?.diagram?.front;
+              if (!point) return null;
+              const zone = card?.diagram?.zone || { x: point.x, y: point.y, w: 14, h: 10 };
+              const active = selectedRegionKey === card.key;
+              const visual = getRegionVisualStyle(card.key, fasciaMode);
+              return (
+                <button
+                  key={`${card.key}-point`}
+                  type="button"
+                  onClick={() => onSelectRegion(card.key)}
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-xl border-2 transition-all duration-300 ${
+                    active
+                      ? `${visual.fill} ${visual.border} ${visual.glow}`
+                      : "bg-white/5 border-white/25 hover:bg-white/15 hover:border-white/40"
+                  }`}
+                  style={{
+                    left: `${zone.x}%`,
+                    top: `${zone.y}%`,
+                    width: `${zone.w}%`,
+                    height: `${zone.h}%`,
+                  }}
+                  data-testid={`${testIdPrefix}-diagram-point-${card.key}`}
+                  aria-label={`Select ${card.region}`}
+                  title={card.region}
+                >
+                  <span className="sr-only">{card.region}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-diagram-mode-copy`}>
+            {fasciaMode
+              ? "Fascia focus is active: highlighted zones emphasize connective tissue stress lines. Tap any zone for deeper guidance."
+              : "Chakra-color focus is active: tap any highlighted zone to zoom and view targeted guidance for that area."}
+          </p>
+          <ul className="grid sm:grid-cols-2 gap-2">
+            {cards.map((card) => {
+              const active = selectedRegionKey === card.key;
+              const visual = getRegionVisualStyle(card.key, fasciaMode);
+              return (
+                <li key={`${card.key}-legend`} data-testid={`${testIdPrefix}-diagram-legend-${card.key}`}>
+                  <button
+                    type="button"
+                    onClick={() => onSelectRegion(card.key)}
+                    className={`w-full text-left text-xs rounded-lg border px-2 py-1.5 transition ${
+                      active
+                        ? `${visual.chip} shadow-sm`
+                        : "border-white/10 bg-black/20 text-muted-foreground hover:border-white/25"
+                    }`}
+                  >
+                    {card.region}
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const buildThreeStep = (practiceName, element) => [
   `Somatic Grounding (3-5 min): root both feet, soften jaw/shoulders, and track where ${practiceName} is felt in your ${element.toLowerCase()} body awareness.`,
@@ -284,21 +346,25 @@ export const EmbodimentProtocolPanel = ({
       <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-4" data-testid={`${testIdPrefix}-body-wisdom-map`}>
         <h4 className="text-sm font-medium flex items-center gap-2 mb-3">
           <HeartPulse className="w-4 h-4 text-cyan-300" />
-          Body Wisdom Map · Beginner Anatomy + Energy Translation
+          Body Wisdom Focus · Tap to highlight
         </h4>
         <div className="grid md:grid-cols-3 gap-3">
           {regionCards.map((card) => (
-            <article
+            <button
+              type="button"
+              onClick={() => setSelectedRegionKey(card.key)}
               key={`${testIdPrefix}-${card.region}`}
-              className="rounded-lg border border-white/10 bg-black/20 p-3 space-y-2"
+              className={`text-left rounded-lg border p-3 space-y-2 transition ${
+                selectedRegion?.key === card.key
+                  ? "border-cyan-300/60 bg-cyan-500/15"
+                  : "border-white/10 bg-black/20 hover:border-cyan-200/40"
+              }`}
               data-testid={`${testIdPrefix}-region-card-${card.region.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
             >
               <p className="text-xs uppercase tracking-wider text-cyan-200">{card.region}</p>
               <p className="text-xs text-muted-foreground"><span className="text-cyan-100">Anatomy:</span> {card.anatomy}</p>
-              <p className="text-xs text-muted-foreground"><span className="text-cyan-100">Function:</span> {card.function}</p>
-              <p className="text-xs text-muted-foreground"><span className="text-cyan-100">Emotion:</span> {card.emotion}</p>
-              <p className="text-xs text-muted-foreground"><span className="text-cyan-100">Energy:</span> {card.energy}</p>
-            </article>
+              <p className="text-xs text-muted-foreground"><span className="text-cyan-100">Focus:</span> {card.energy}</p>
+            </button>
           ))}
         </div>
       </div>
