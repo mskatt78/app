@@ -4040,3 +4040,46 @@
 ## Updated Priorities
 - **P0 complete**: internal planning/descriptions removed from public Sacred Ally app experience.
 - **P1 backlog**: Sacred Journey Progress tracker.
+
+## Latest Verification Snapshot (Iteration 253 — 2026-07-02)
+- ✅ Addressed report: “All temples are still full access”
+
+### Temple Access Lock Hardening
+- **Rose Temple**
+  - Fixed lock prop wiring so temple sections respect premium state (`locked={!roseTempleUnlocked}`).
+  - Added premium lock handling for sacred rites open/start-guided actions.
+  - Updated premium gate copy to explicit model: first 4 free, additional pathways premium.
+  - Added index-based premium indicators for teachings/practices/rites (4 free, 5+ premium visual state).
+
+- **Seasonal Temple**
+  - Added premium gate wiring via `usePremiumAccess` with `seasonal_temple` lock key.
+  - Added lock banner and lock-aware interactions:
+    - wheel node click
+    - sabbat card click
+    - craft card click
+    all route to `/pricing` when locked.
+  - Locked tabs (ritual/embodiment/nature) now trigger upgrade flow and/or show locked messaging.
+
+- **Masculine Temple**
+  - Added premium gate wiring via `usePremiumAccess` with `masculine_temple` lock key.
+  - Added lock banner + unlock CTA.
+  - Archetype and embodiment card interactions now blocked behind premium and route to purchase when locked.
+  - Added premium indicators on cards for clear user feedback.
+
+- **Premium hook updates**
+  - Added missing section keys in `EMPTY_SECTIONS`:
+    - `seasonal_temple`
+    - `masculine_temple`
+
+### Testing Summary (Iteration 253)
+- ✅ Frontend temple lock QA PASS:
+  - Elemental Temples: premium cards lock + purchase flow verified.
+  - Rose Temple: free/premium behavior and lock modal flow verified.
+  - Seasonal Temple: lock banner + content lock behavior verified.
+  - Masculine Temple: lock banner + premium indicators + blocked interactions verified.
+- ✅ Follow-up Seasonal retest PASS:
+  - sabbat card, wheel node, and craft card now reliably navigate to `/pricing` when locked.
+
+## Updated Priorities
+- **P0 complete**: temple access restrictions enforced across Rose, Seasonal, Masculine, and Elemental temple flows.
+- **P1 backlog**: Sacred Journey Progress tracker.
