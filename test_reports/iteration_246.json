@@ -1,0 +1,72 @@
+{
+  "summary": "Comprehensive frontend testing of temple lock enforcement for non-premium users. All four temple sections (Elemental, Rose, Seasonal, Masculine) correctly implement premium locks with appropriate UI indicators and upgrade flows.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "N/A (frontend only test)",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Temple lock enforcement verified working correctly for non-premium users across all four temple sections.",
+  "tested_features": {
+    "elemental_temples": {
+      "status": "PASS",
+      "premium_banner": "Visible with 'View Subscription' and 'Full App 369.00' buttons",
+      "premium_temples": "Water Temple marked as premium (1 of 5 base temples)",
+      "lock_modal": "Appears when clicking premium Water Temple with upgrade options",
+      "free_temples": "Earth, Fire, Air, Spirit temples accessible without lock",
+      "notes": "Lock enforcement working correctly. Only Water Temple is premium among base temples."
+    },
+    "rose_temple": {
+      "status": "PASS",
+      "premium_gate_panel": "Visible with 'First 4 items are free' message",
+      "locked_note": "Preview mode active note visible",
+      "practice_locks": "10 practice lock indicators found (items after index 4)",
+      "rite_locks": "3 rite lock indicators found",
+      "lock_modal": "Appears when clicking premium practice (e.g., Moon Lodge Retreat)",
+      "notes": "Lock enforcement working correctly with first 4 free, rest premium model."
+    },
+    "seasonal_temple": {
+      "status": "PASS",
+      "lock_banner": "Visible with premium message",
+      "unlock_button": "Visible in header",
+      "sabbat_locks": "8 sabbat card lock indicators (all sabbats show Premium badge)",
+      "wheel_locks": "Lock icons visible on wheel",
+      "click_behavior": "Clicking sabbat card redirects to /pricing page",
+      "notes": "Lock enforcement working correctly. All sabbats locked for non-premium users."
+    },
+    "masculine_temple": {
+      "status": "PASS",
+      "lock_banner": "Visible with premium message",
+      "unlock_button": "Visible",
+      "embodiment_locks": "14 embodiment practice lock indicators",
+      "archetype_locks": "5 archetype lock indicators",
+      "click_behavior": "Clicking archetype shows toast 'Please sign in first to unlock premium sections'",
+      "notes": "Lock enforcement working correctly. All content locked for non-premium users."
+    },
+    "regression_check": {
+      "status": "PASS",
+      "pages_tested": ["/elemental-temples", "/rose-temple", "/seasonal-temple", "/masculine-temple"],
+      "notes": "All temple pages load successfully without crashes while lock flows are active."
+    }
+  },
+  "premium_access_model_summary": {
+    "elemental_temples": "Most temples free (Earth, Fire, Air, Spirit), Water Temple premium",
+    "rose_temple": "First 4 items free, remaining premium",
+    "seasonal_temple": "All sabbats/crafts premium",
+    "masculine_temple": "All archetypes/practices premium"
+  }
+}
