@@ -34,6 +34,10 @@ const SeasonalTemple = ({ api, user }) => {
     setActiveTab("overview");
   };
 
+  const promptSeasonalUpgrade = () => {
+    navigate("/pricing");
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="seasonal-temple">
       <SeasonalTempleHeader
@@ -41,7 +45,7 @@ const SeasonalTemple = ({ api, user }) => {
         onBack={() => navigate(-1)}
         onHemisphereChange={setHemisphere}
         locked={seasonalTempleLocked}
-        onUnlock={() => premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" })}
+        onUnlock={promptSeasonalUpgrade}
       />
 
       <main className="max-w-5xl mx-auto p-6">
@@ -49,7 +53,7 @@ const SeasonalTemple = ({ api, user }) => {
           hemisphere={hemisphere}
           currentSabbat={currentSabbat}
           sabbats={SABBATS}
-          onSelectSabbat={(sabbat) => (seasonalTempleLocked ? premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" }) : onSelectSabbat(sabbat))}
+          onSelectSabbat={(sabbat) => (seasonalTempleLocked ? promptSeasonalUpgrade() : onSelectSabbat(sabbat))}
           isLocked={seasonalTempleLocked}
         />
 
@@ -59,7 +63,7 @@ const SeasonalTemple = ({ api, user }) => {
           hemisphere={hemisphere}
           onSelectSabbat={onSelectSabbat}
           isLocked={seasonalTempleLocked}
-          onUnlock={() => premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" })}
+          onUnlock={promptSeasonalUpgrade}
         />
 
         {!seasonalTempleUnlocked && (
@@ -86,7 +90,7 @@ const SeasonalTemple = ({ api, user }) => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.08 }}
-                  onClick={() => (seasonalTempleLocked ? premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" }) : setSelectedCraft(craft))}
+                  onClick={() => (seasonalTempleLocked ? promptSeasonalUpgrade() : setSelectedCraft(craft))}
                   data-testid={`craft-${craft.id}`}
                   className={`cursor-pointer p-5 rounded-xl border transition-all hover:scale-[1.02]
                              ${craft.color.bg} ${craft.color.border} group`}
@@ -135,7 +139,7 @@ const SeasonalTemple = ({ api, user }) => {
                     key={tab}
                     onClick={() => {
                       if (seasonalTempleLocked && tab !== "overview") {
-                        premium.startPurchase({ productId: "seasonal_temple", returnPath: "/seasonal-temple" });
+                        promptSeasonalUpgrade();
                         return;
                       }
                       setActiveTab(tab);

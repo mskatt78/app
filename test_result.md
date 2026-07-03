@@ -1198,6 +1198,18 @@ frontend:
         agent: "testing"
         comment: "✓ /seasonal-temple page loads correctly. Page element with data-testid='seasonal-temple' renders. No runtime errors detected. Primary content renders correctly. Test PASSED."
 
+  - task: "Seasonal Temple lock interaction - sabbat cards, wheel nodes, craft cards navigate to /pricing"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/seasonal-temple/SeasonalTempleContainer.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ SEASONAL TEMPLE LOCK INTERACTION VERIFICATION PASSED (2026-07-03): Comprehensive testing completed on https://breathwork-sanctuary.preview.emergentagent.com/seasonal-temple as non-premium user. ALL 4 TESTS PASSED: TEST 1 - Page Access: /seasonal-temple page loads successfully with lock banner 'Seasonal Temple is premium. Unlock to access full sabbat rituals, embodiment teachings, and earth crafting guidance.' ✓. TEST 2 - Sabbat Card Click: Found 16 sabbat cards, clicked first card (sabbat-card-samhain), successfully navigated to /pricing ✓. TEST 3 - Wheel Node Click: Found 8 wheel nodes, clicked first node (wheel-samhain), successfully navigated to /pricing ✓. TEST 4 - Craft Card Click: Found 5 craft cards, clicked first card (craft-medicine-wheel), successfully navigated to /pricing ✓. SUMMARY: All lock interactions correctly trigger upgrade path to /pricing page. Premium lock behavior working as expected for non-premium users. Pricing page displays correctly with Monthly Membership ($19.99/month) and Lifetime Access ($369 one-time) options. Seasonal Temple lock interaction FULLY FUNCTIONAL."
+
   - task: "Yoga Library page regression smoke test"
     implemented: true
     working: true
@@ -1609,6 +1621,42 @@ frontend:
 agent_communication:
   - agent: "testing"
     message: |
+      Seasonal Temple Lock Interaction Quick Retest (2026-07-03):
+      
+      VERIFICATION REQUEST: Quick retest on preview URL for Seasonal Temple lock interaction only
+      Test URL: https://breathwork-sanctuary.preview.emergentagent.com/seasonal-temple
+      
+      ✅ ALL TESTS PASSED (4/4):
+      
+      1. ✅ /SEASONAL-TEMPLE AS LOCKED/NON-PREMIUM USER - PASSED
+         - Page loads successfully: ✓
+         - Lock banner present: ✓ ("Seasonal Temple is premium. Unlock to access full sabbat rituals, embodiment teachings, and earth crafting guidance.")
+         - Page accessible but locked for non-premium users: ✓
+      
+      2. ✅ SABBAT CARD CLICK → NAVIGATE TO /PRICING - PASSED
+         - Found 16 sabbat cards: ✓
+         - Clicked first sabbat card (sabbat-card-samhain): ✓
+         - Successfully navigated to /pricing: ✓
+         - Pricing page displays correctly with Monthly Membership ($19.99/month) and Lifetime Access ($369 one-time): ✓
+      
+      3. ✅ WHEEL NODE CLICK → NAVIGATE TO /PRICING - PASSED
+         - Found 8 wheel nodes: ✓
+         - Clicked first wheel node (wheel-samhain): ✓
+         - Successfully navigated to /pricing: ✓
+         - Pricing page displays correctly: ✓
+      
+      4. ✅ CRAFT CARD CLICK → NAVIGATE TO /PRICING - PASSED
+         - Found 5 craft cards: ✓
+         - Clicked first craft card (craft-medicine-wheel): ✓
+         - Successfully navigated to /pricing: ✓
+         - Pricing page displays correctly: ✓
+      
+      SUMMARY:
+      All Seasonal Temple lock interactions working correctly. All three interaction types (sabbat cards, wheel nodes, craft cards) properly trigger the upgrade path to /pricing page. Lock indicators visible on UI elements (lock banner, premium badges on cards). Pricing page displays correctly with subscription and lifetime access options. No issues detected. Seasonal Temple lock interaction FULLY FUNCTIONAL.
+
+
+  - agent: "testing"
+    message: |
       LightCodes Decomposition Regression Test (2026-05-31):
       
       VERIFICATION REQUEST: Final frontend regression for LightCodes decomposition to under 300 lines using config module
@@ -1825,7 +1873,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Shamanic Elemental Journeys QA - COMPLETED"
+    - "Seasonal Temple lock interaction - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
