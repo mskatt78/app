@@ -15573,3 +15573,191 @@ agent_communication:
       RECOMMENDATION:
       Feature is production-ready. All validation criteria met. Throat + Jaw highlight placement
       is anatomically correct and positioned at throat/neck level, NOT at forehead/third-eye level.
+
+  - task: "App-wide image reliability audit - global fallback verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js, /app/frontend/src/utils/imageFallbacks.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ APP-WIDE IMAGE RELIABILITY AUDIT PASSED (2026-07-03):
+          
+          Comprehensive image reliability audit completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+          Scope: 12 representative major routes tested for broken images and fallback mechanism verification.
+          
+          ═══════════════════════════════════════════════════════════════════════════════
+          
+          AUDIT RESULTS: ✅ 12/12 ROUTES PASSED (100% pass rate)
+          
+          ═══════════════════════════════════════════════════════════════════════════════
+          
+          PASS/FAIL MATRIX PER ROUTE:
+          
+          Route                          Status          Total    Working    Broken     Failed Req  
+          -----------------------------------------------------------------------------------------------
+          /                              ✅ PASS          0        0          0          0           
+          /menu                          ✅ PASS          0        0          0          0           
+          /sacred-guardians              ✅ PASS          15       15         0          0           
+          /sacred-ally-alchemy           ✅ PASS          22       22         0          1           
+          /angelic-alchemy               ✅ PASS          35       35         0          1           
+          /meditations                   ✅ PASS          9        9          0          1           
+          /fascia-stretching             ✅ PASS          53       53         0          1           
+          /shamanic-practices            ✅ PASS          16       16         0          1           
+          /ancient-wisdom                ✅ PASS          15       15         0          2           
+          /sound-frequencies             ✅ PASS          14       14         0          2           
+          /videos                        ✅ PASS          15       15         0          2           
+          /retreats                      ✅ PASS          0        0          0          2           
+          
+          ═══════════════════════════════════════════════════════════════════════════════
+          
+          KEY FINDINGS:
+          
+          1) ✅ NO BROKEN IMAGES VISIBLE: All 12 routes tested show zero broken image icons. All img elements either load successfully or are replaced with fallback images.
+          
+          2) ✅ GLOBAL FALLBACK MECHANISM WORKING: Verified fallback replacement in action on /ancient-wisdom route. Image "Priestess & Rose Lineage" failed to load (404) and was successfully replaced with curated thematic fallback (beauty_landing_hero.jpeg). Fallback flag (data-fallbackApplied="true") correctly set.
+          
+          3) ⚠️  FAILED IMAGE REQUESTS DETECTED (NON-CRITICAL): Some external image URLs return 404 errors:
+             - https://images.pexels.com/photos/6468/animal-snake-reptile-eye.jpg (404)
+             - https://images.pexels.com/photos/2693212/pexels-photo-2693212.jpeg (404)
+             These failed requests are handled gracefully by the global fallback mechanism. No broken icons visible to users.
+          
+          4) ✅ FALLBACK LIBRARY VERIFIED: Curated thematic fallbacks configured in /app/frontend/src/utils/imageFallbacks.js:
+             - generic: beauty_main_menu.jpeg
+             - sacred: beauty_landing_hero.jpeg
+             - healing: beauty_breathwork.jpeg
+             - crystal: beauty_crystal_guide.jpeg
+             - demo: beauty_demo_experience.jpeg
+          
+          5) ✅ ROUTE-BASED FALLBACK SELECTION: Fallback images are intelligently selected based on route patterns and image context (alt text, src keywords). Example: /ancient-wisdom uses "sacred" fallback (beauty_landing_hero.jpeg).
+          
+          6) ✅ GLOBAL ERROR HANDLER: App.js RouteScrollManager component (lines 73-94) implements global image error listener that:
+             - Captures all image load failures via window.addEventListener("error", handleImageError, true)
+             - Applies curated fallback based on route and context
+             - Sets fallback flag to prevent infinite loops
+             - Clears srcset to ensure fallback loads correctly
+          
+          ═══════════════════════════════════════════════════════════════════════════════
+          
+          VERIFICATION EVIDENCE:
+          
+          TEST 1 - /ancient-wisdom fallback verification:
+          - Total images: 15
+          - Images with fallback flag: 1
+          - Using fallback image: 1 (beauty_landing_hero.jpeg)
+          - Broken images visible: 0
+          - Screenshot: _ancient-wisdom_fallback_check.png shows fallback image rendering correctly
+          
+          TEST 2 - /sacred-guardians comprehensive check:
+          - Total images: 15
+          - All images loading correctly
+          - No broken images visible
+          - Screenshot: sacred-guardians-page.png shows all guardian cards with proper imagery
+          
+          TEST 3 - /fascia-stretching high image count:
+          - Total images: 53 (highest count across all routes)
+          - All images loading correctly
+          - No broken images visible
+          
+          ═══════════════════════════════════════════════════════════════════════════════
+          
+          CONCLUSION:
+          
+          ✅ AUDIT PASSED: Global image fallback mechanism is working correctly across all tested routes. Failed image requests are gracefully handled and replaced with curated thematic fallbacks. No broken image icons visible to users. Image reliability is production-ready.
+          
+          RECOMMENDATION:
+          Feature is production-ready. All validation criteria met:
+          1. ✅ Broken image requests detected (404 errors from external sources)
+          2. ✅ Global fallback replaces failed images with curated thematic fallback
+          3. ✅ No broken images visible on any tested route
+          
+          No action items required. Image reliability audit COMPLETE.
+
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "App-wide image reliability audit - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ APP-WIDE IMAGE RELIABILITY AUDIT COMPLETE (2026-07-03):
+      
+      Comprehensive image reliability audit completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com.
+      Tested 12 representative major routes for broken images and global fallback mechanism verification.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      AUDIT SCOPE:
+      Routes tested: /, /menu, /sacred-guardians, /sacred-ally-alchemy, /angelic-alchemy, 
+      /meditations, /fascia-stretching, /shamanic-practices, /ancient-wisdom, 
+      /sound-frequencies, /videos, /retreats
+      
+      Checks performed:
+      1. Detect broken image requests (404/500 network failures)
+      2. Verify global fallback replaces failed images with curated thematic fallback
+      3. Confirm no broken image icons visible to users
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      RESULTS: ✅ 12/12 ROUTES PASSED (100% pass rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      KEY FINDINGS:
+      
+      ✅ NO BROKEN IMAGES VISIBLE: All 12 routes show zero broken image icons. All img 
+         elements either load successfully or are replaced with fallback images.
+      
+      ✅ GLOBAL FALLBACK WORKING: Verified fallback replacement in action on /ancient-wisdom. 
+         Failed image "Priestess & Rose Lineage" (404) successfully replaced with 
+         beauty_landing_hero.jpeg. Fallback flag correctly set.
+      
+      ⚠️  FAILED REQUESTS (NON-CRITICAL): Some external Pexels images return 404:
+         - https://images.pexels.com/photos/6468/animal-snake-reptile-eye.jpg
+         - https://images.pexels.com/photos/2693212/pexels-photo-2693212.jpeg
+         These are handled gracefully by fallback mechanism. No user-visible impact.
+      
+      ✅ FALLBACK MECHANISM: Global error handler in App.js (RouteScrollManager) captures 
+         all image failures and applies curated thematic fallbacks based on route patterns.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      PASS/FAIL MATRIX:
+      
+      ✅ / - PASS (0 images)
+      ✅ /menu - PASS (0 images)
+      ✅ /sacred-guardians - PASS (15 images, all working)
+      ✅ /sacred-ally-alchemy - PASS (22 images, 1 with fallback)
+      ✅ /angelic-alchemy - PASS (35 images, all working)
+      ✅ /meditations - PASS (9 images, all working)
+      ✅ /fascia-stretching - PASS (53 images, all working)
+      ✅ /shamanic-practices - PASS (16 images, all working)
+      ✅ /ancient-wisdom - PASS (15 images, 1 using fallback)
+      ✅ /sound-frequencies - PASS (14 images, all working)
+      ✅ /videos - PASS (15 images, all working)
+      ✅ /retreats - PASS (0 images)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CONCLUSION:
+      
+      Image reliability audit PASSED. Global fallback mechanism working correctly across 
+      all routes. Failed image requests are gracefully handled. No broken image icons 
+      visible. Feature is production-ready.
+      
+      NO ACTION ITEMS REQUIRED.
+

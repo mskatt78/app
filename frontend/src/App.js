@@ -8,6 +8,7 @@ import InstallPrompt from "./components/InstallPrompt";
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 import { AppRoutes } from "./routes/AppRoutes";
 import { AdminRoute, AuthCallback, ProtectedRoute, PublicRoute } from "./routes/routeGuards";
+import { clearImageSourceSet, getCuratedFallbackImage } from "./utils/imageFallbacks";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -68,6 +69,29 @@ function RouteScrollManager() {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleImageError = (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLImageElement)) return;
+      if (target.dataset.fallbackApplied === "true") return;
+
+      const fallback = getCuratedFallbackImage({
+        pathname: window.location.pathname,
+        currentSrc: target.currentSrc || target.src || "",
+        alt: target.alt || "",
+      });
+
+      if (!fallback) return;
+
+      target.dataset.fallbackApplied = "true";
+      clearImageSourceSet(target);
+      target.src = fallback;
+    };
+
+    window.addEventListener("error", handleImageError, true);
+    return () => window.removeEventListener("error", handleImageError, true);
+  }, []);
 
   return null;
 }
