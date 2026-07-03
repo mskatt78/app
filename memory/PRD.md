@@ -74,6 +74,20 @@
   - `testing_agent` iteration 247: frontend 100%, backend 14/14 PASS.
   - `deep_testing_backend_v2`: PASS across sacred guardians tiering/diversity, retreats cleanup, script expansion floor, and health endpoint.
 
+## Latest Verification Snapshot (Iteration 248 — 2026-07-03)
+- ✅ App-wide image reliability hardening completed:
+  - Added global image error handler in `frontend/src/App.js` to catch failed `<img>` loads app-wide.
+  - Added route-aware curated fallback resolver in `frontend/src/utils/imageFallbacks.js`.
+  - Fallback behavior now auto-replaces failed image URLs with thematic placeholders instead of broken-image icons.
+- ✅ Embodiment map precision corrections completed:
+  - Solar Core highlight constrained to upper-abdomen and forced yellow in both chakra and fascia modes.
+  - Throat+Jaw zone moved to correct neck level (no third-eye overlap).
+  - Subject-priority default selection and single-zone highlight behavior enforced.
+- ✅ QA status:
+  - `auto_frontend_testing_agent` app-wide image audit: PASS on 12/12 representative routes.
+  - Confirmed failed external image requests are now gracefully replaced (no visual broken icons).
+  - Embodiment panel validation: PASS for color, position, and one-zone-only behavior.
+
 ## Latest Verification Snapshot (Iteration 131)
 - Frontend regression: PASS
 - Backend regression: PASS
