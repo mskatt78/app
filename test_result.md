@@ -15448,3 +15448,128 @@ agent_communication:
       RECOMMENDATION:
       Feature is production-ready. All validation criteria met. No issues found.
       Embodiment protocol panel behavior is working correctly on /fascia-stretching modal flow.
+
+  - task: "Throat + Jaw highlight placement validation in EmbodimentProtocolPanel on /fascia-stretching modal"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ THROAT + JAW HIGHLIGHT PLACEMENT VALIDATION PASSED (2026-07-03): Comprehensive validation completed on /fascia-stretching modal preview. ALL 3 VALIDATION CRITERIA MET: CRITERION 1 - Throat + Jaw chip selection: ✓ Opened fascia stretching practice modal, ✓ EmbodimentProtocolPanel loaded with testIdPrefix='fascia-stretching-embodiment', ✓ Throat + Jaw region card button exists (data-testid='fascia-stretching-embodiment-region-card-throat-jaw'), ✓ Clicked Throat + Jaw button successfully, ✓ Selected region panel updated to show 'Throat + Jaw' text. CRITERION 2 - Highlighted zone at throat/neck level (NOT forehead/third-eye): ✓ Throat + Jaw diagram point exists (data-testid='fascia-stretching-embodiment-diagram-point-throat_jaw'), ✓ Highlight positioned at 35.5% from top of body map canvas, ✓ Anatomically correct for throat/neck level (expected range: 25-70%, throat typically 30-40%), ✓ NOT at forehead/third-eye level (which would be <25% from top, around 11% in code), ✓ Brow + Crown diagram point NOT visible (confirmed no misplacement to forehead). CRITERION 3 - Only one zone visible: ✓ Total visible diagram points: 1 (only throat_jaw), ✓ No other zones rendered simultaneously, ✓ Single highlight behavior confirmed. VISUAL VERIFICATION: Screenshot (throat_jaw_highlight.png) shows modal with Body Wisdom Focus section displaying 3 region cards (Solar Core, Heart + Chest, Throat + Jaw), Throat + Jaw card selected with cyan highlight, body diagram shows single highlighted zone at throat/neck area (35.5% from top). Code verification: EmbodimentProtocolPanel.jsx lines 57-68 define throat_jaw with diagram coordinates { front: { x: 50, y: 30 }, zone: { x: 50, y: 30, w: 12, h: 6 } }, confirming y=30% is throat/neck level. Lines 69-80 define brow_crown with y=11% (forehead level), confirming throat_jaw is correctly positioned BELOW forehead. Console errors: Only expected 401 auth errors (non-critical). FINAL RESULT: ✅ PASS (3/3 criteria) - Throat + Jaw highlight placement is anatomically correct at throat/neck level, NOT at forehead/third-eye level, with only one zone visible. Feature is production-ready."
+
+test_plan:
+  current_focus:
+    - "Throat + Jaw highlight placement validation - COMPLETED"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ THROAT + JAW HIGHLIGHT PLACEMENT VALIDATION COMPLETE (2026-07-03):
+      
+      Validated throat_jaw highlight placement in EmbodimentProtocolPanel on /fascia-stretching modal preview.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VALIDATION CRITERIA (from review request):
+      1. Select 'Throat + Jaw' chip
+      2. Confirm highlighted zone appears at throat/neck level and NOT at third-eye/forehead level
+      3. Confirm only one zone visible
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST RESULTS: ✅ 3 OUT OF 3 CRITERIA PASSED (100% pass rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 1: Select 'Throat + Jaw' chip
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Navigated to /fascia-stretching page
+      - Clicked first practice card to open modal
+      - EmbodimentProtocolPanel loaded successfully
+      - Throat + Jaw region card button found (data-testid='fascia-stretching-embodiment-region-card-throat-jaw')
+      - Clicked Throat + Jaw button successfully
+      - Selected region panel updated to show "Throat + Jaw" text
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 2: Highlighted zone at throat/neck level (NOT forehead/third-eye)
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Throat + Jaw diagram point exists (data-testid='fascia-stretching-embodiment-diagram-point-throat_jaw')
+      - Highlight positioned at 35.5% from top of body map canvas
+      - Anatomically correct for throat/neck level (expected range: 25-70%, throat typically 30-40%)
+      - NOT at forehead/third-eye level (which would be <25% from top)
+      - Brow + Crown diagram point NOT visible (data-testid='fascia-stretching-embodiment-diagram-point-brow_crown' count: 0)
+      - Code verification: throat_jaw defined at y=30% (line 66), brow_crown at y=11% (line 78)
+      - Relative vertical position evidence: 35.5% from top = throat/neck level ✓
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 3: Only one zone visible
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Total visible diagram points: 1
+      - Only throat_jaw zone rendered
+      - No other zones visible simultaneously
+      - Single highlight behavior confirmed
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VISUAL VERIFICATION (Screenshot):
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      Screenshot: throat_jaw_highlight.png
+      - Practice detail modal with embodiment protocol panel
+      - Body Wisdom Focus section with 3 region cards (Solar Core, Heart + Chest, Throat + Jaw)
+      - THROAT + JAW card selected (cyan highlight border)
+      - Body diagram shows single highlighted zone at throat/neck area
+      - Zone positioned at 35.5% from top of body map (throat/neck level)
+      - Clean, focused presentation with only one highlight
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CODE VERIFICATION:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      File: /app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx
+      
+      throat_jaw definition (lines 57-68):
+      - region: "Throat + Jaw"
+      - anatomy: "Deep front line through tongue, hyoid, SCM, cervical fascia"
+      - diagram: { front: { x: 50, y: 30 }, zone: { x: 50, y: 30, w: 12, h: 6 } }
+      - y-coordinate: 30% from top = throat/neck level ✓
+      
+      brow_crown definition (lines 69-80):
+      - region: "Brow + Crown"
+      - anatomy: "Suboccipitals, scalp fascia, eye-muscle tension patterns"
+      - diagram: { front: { x: 50, y: 11 }, zone: { x: 50, y: 11, w: 12, h: 6 } }
+      - y-coordinate: 11% from top = forehead/third-eye level
+      
+      Confirmation: throat_jaw (y=30%) is positioned BELOW brow_crown (y=11%), anatomically correct.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FINAL SUMMARY:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASS (3/3 criteria) - Throat + Jaw highlight placement validated successfully
+      
+      Key Findings:
+      • Throat + Jaw chip selection working correctly ✓
+      • Highlight positioned at throat/neck level (35.5% from top, y=30% in code) ✓
+      • NOT at forehead/third-eye level (brow_crown at y=11% not visible) ✓
+      • Only ONE highlight zone visible at a time ✓
+      • Selected region panel correctly shows "Throat + Jaw" ✓
+      • Anatomical positioning verified in code (throat_jaw y=30%, brow_crown y=11%) ✓
+      
+      RECOMMENDATION:
+      Feature is production-ready. All validation criteria met. Throat + Jaw highlight placement
+      is anatomically correct and positioned at throat/neck level, NOT at forehead/third-eye level.

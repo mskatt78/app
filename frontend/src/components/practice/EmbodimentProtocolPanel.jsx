@@ -63,7 +63,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Throat current · expression, resonance, authenticity",
     spiritual: "Purifies expression so your voice becomes medicine, not performance.",
     fascia: "Tongue-jaw-neck fascia often tighten when truth is withheld or conflict is feared.",
-    diagram: { front: { x: 50, y: 23 }, zone: { x: 50, y: 23, w: 14, h: 7 } },
+    diagram: { front: { x: 50, y: 30 }, zone: { x: 50, y: 30, w: 12, h: 6 } },
     cue: "Release the jaw and hum softly; ask what truth wants a clean and kind expression.",
   },
   brow_crown: {
