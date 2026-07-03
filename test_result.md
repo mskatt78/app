@@ -14904,12 +14904,96 @@ agent_communication:
 
 test_plan:
   current_focus:
-    - "EmbodimentProtocolPanel default highlight selection validation - COMPLETED"
+    - "Solar core visual adjustment validation on /fascia-stretching modal - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ SOLAR CORE VISUAL ADJUSTMENT VALIDATION COMPLETE (2026-07-03):
+      
+      Validated latest solar_core visual adjustment on /fascia-stretching modal preview.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VALIDATION CRITERIA (from review request):
+      1. Solar Core highlighted ring sits above sacral and clearly on upper abdomen (not overlapping orange sacral center)
+      2. Overlay highlight color for selected solar_core is strong yellow, not orange
+      3. Only one highlight zone visible
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST RESULTS: ✅ 3 OUT OF 3 CRITERIA PASSED (100% pass rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 1: Solar Core position - above sacral, clearly on upper abdomen
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Solar core positioned at 46.2% from top of body map
+      - Upper abdomen range confirmed (expected: 35-55%)
+      - Pelvis/womb (sacral) zone NOT visible in Fire element practice
+      - NO overlap with sacral center (sacral zone not rendered for this practice)
+      - Solar core clearly positioned in upper abdomen region
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 2: Highlight color is YELLOW, not orange
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Background color: rgba(253, 224, 71, 0.55)
+      - RGB values: R=253, G=224, B=71
+      - Color analysis: YELLOW confirmed (R and G are high and similar, B is low)
+      - CSS classes: bg-yellow-300/55 border-yellow-100
+      - NOT orange (orange would have R > 230, G < 180)
+      - Strong yellow highlight verified
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 3: Only one highlight zone visible
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Total diagram zones: 1
+      - Visible zones (non-transparent background): 1
+      - Visible zone ID: fascia-stretching-embodiment-diagram-point-solar_core
+      - Single highlight behavior confirmed
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VISUAL VERIFICATION (Screenshots):
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      Screenshot 1: solar-core-modal-initial.png
+      - Practice detail modal with embodiment protocol panel
+      - Body Wisdom Focus section with 3 region buttons
+      - SOLAR CORE button selected (highlighted in teal)
+      
+      Screenshot 2: solar-core-body-map.png
+      - Simple Body Focus Map with anatomical silhouette
+      - Single YELLOW highlighted zone visible on upper abdomen
+      - Zone positioned at 46.2% from top of body map
+      - Clean, focused presentation with only one highlight
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FINAL SUMMARY:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASS (3/3 criteria) - Solar core visual adjustment validated successfully
+      
+      Key Findings:
+      • Solar core positioned at upper abdomen (46.2% from top of body map) ✓
+      • NO overlap with sacral center (sacral zone not visible for Fire practice) ✓
+      • Highlight color is YELLOW rgba(253, 224, 71, 0.55) - NOT orange ✓
+      • Only ONE highlight zone visible at a time ✓
+      • CSS classes correctly use 'yellow' (bg-yellow-300/55) ✓
+      
+      RECOMMENDATION:
+      Feature is production-ready. All validation criteria met. Solar core visual adjustment
+      is working correctly with proper positioning, yellow color, and single highlight behavior.
+  
   - agent: "testing"
     message: |
       ✅ EMBODIMENT PROTOCOL PANEL DEFAULT HIGHLIGHT SELECTION VALIDATION COMPLETE (2026-07-03):

@@ -39,7 +39,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Solar current · personal power and direction",
     spiritual: "Refines will into integrity: power used in service rather than control.",
     fascia: "Diaphragm-thoracolumbar fascia can lock with over-efforting and chronic vigilance.",
-    diagram: { front: { x: 50, y: 48 }, zone: { x: 50, y: 48, w: 12, h: 6 } },
+    diagram: { front: { x: 50, y: 43 }, zone: { x: 50, y: 43, w: 11, h: 5 } },
     cue: "Breathe into the diaphragm and name one decision your body already knows.",
   },
   heart_chest: {
@@ -90,8 +90,8 @@ const REGION_VISUAL_STYLES = {
     fascia: { fill: "bg-rose-500/25", border: "border-rose-200/80", glow: "shadow-[0_0_0_2px_rgba(244,63,94,0.35)]", chip: "bg-rose-500/15 border-rose-400/40 text-rose-100" },
   },
   solar_core: {
-    chakra: { fill: "bg-yellow-400/35", border: "border-yellow-100/80", glow: "shadow-[0_0_0_2px_rgba(250,204,21,0.35)]", chip: "bg-yellow-500/15 border-yellow-400/40 text-yellow-100" },
-    fascia: { fill: "bg-yellow-400/35", border: "border-yellow-100/80", glow: "shadow-[0_0_0_2px_rgba(250,204,21,0.35)]", chip: "bg-yellow-500/15 border-yellow-400/40 text-yellow-100" },
+    chakra: { fill: "bg-yellow-300/55", border: "border-yellow-100", glow: "shadow-[0_0_0_2px_rgba(253,224,71,0.45)]", chip: "bg-yellow-500/20 border-yellow-300/60 text-yellow-100" },
+    fascia: { fill: "bg-yellow-300/55", border: "border-yellow-100", glow: "shadow-[0_0_0_2px_rgba(253,224,71,0.45)]", chip: "bg-yellow-500/20 border-yellow-300/60 text-yellow-100" },
   },
   heart_chest: {
     chakra: { fill: "bg-emerald-500/30", border: "border-emerald-100/80", glow: "shadow-[0_0_0_2px_rgba(16,185,129,0.35)]", chip: "bg-emerald-500/15 border-emerald-400/40 text-emerald-100" },
