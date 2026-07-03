@@ -470,16 +470,19 @@ async def ensure_indexes() -> None:
 
 async def cleanup_legacy_retreats_once() -> None:
     """Remove legacy placeholder retreats a single time without affecting future user-created entries."""
-    marker_id = "retreats_cleanup_2026_03"
+    marker_id = "retreats_cleanup_2026_07"
 
     try:
         marker = await db.app_meta.find_one({"id": marker_id}, {"_id": 0})
         if marker:
             return
 
-        retreats = await db.retreats.find({}, {"_id": 0, "title": 1}).to_list(length=50)
+        retreats = await db.retreats.find({}, {"_id": 0}).to_list(length=50)
         titles = _extract_retreat_titles(retreats)
-        placeholder_flags = [_is_placeholder_retreat_title(title) for title in titles]
+        placeholder_flags = [
+            _is_placeholder_retreat_title(title) or _is_effectively_empty_retreat(retreat)
+            for title, retreat in zip(titles, retreats)
+        ]
         should_clear = _should_clear_legacy_retreats(retreats, placeholder_flags)
 
         deleted_count = 0
@@ -517,7 +520,48 @@ def _is_placeholder_retreat_title(title: str) -> bool:
         or title.startswith("test_")
         or title.startswith("test-")
         or title.startswith("pytest")
+        or title == "retreat"
+        or title == "new retreat"
+        or title == "sample retreat"
+        or title == "placeholder retreat"
         or title == "sacred journey retreat"
+    )
+
+
+def _is_effectively_empty_retreat(retreat: dict) -> bool:
+    meaningful_fields = (
+        "title",
+        "name",
+        "description",
+        "location",
+        "facilitator",
+        "highlights",
+        "includes",
+        "healing_modalities",
+        "registration_link",
+        "online_session_url",
+        "website_url",
+        "image_url",
+    )
+    has_meaningful_text = any(str(retreat.get(field) or "").strip() for field in meaningful_fields)
+    has_schedule = any(str(retreat.get(field) or "").strip() for field in ("start_date", "end_date", "duration_days"))
+    has_pricing = any(str(retreat.get(field) or "").strip() for field in ("price", "deposit"))
+    has_capacity = str(retreat.get("max_participants") or "").strip() != ""
+    has_mode = str(retreat.get("retreat_mode") or "").strip() != ""
+    social_media_links = retreat.get("social_media_links")
+    has_social = False
+    if isinstance(social_media_links, dict):
+        has_social = any(str(value or "").strip() for value in social_media_links.values())
+    elif isinstance(social_media_links, list):
+        has_social = any(str(item or "").strip() for item in social_media_links)
+
+    return not (
+        has_meaningful_text
+        or has_schedule
+        or has_pricing
+        or has_social
+        or has_capacity
+        or has_mode
     )
 
 

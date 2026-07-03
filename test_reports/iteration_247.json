@@ -1,0 +1,79 @@
+{
+  "summary": "Comprehensive testing of Sacred Guardians, Retreats, and Guided Narration features. All backend APIs pass (14/14 tests). Frontend Sacred Guardians page works correctly with proper category diversity in free tier and premium gating. Guided practice overlay functions correctly with long-form narration.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration247_guardians_retreats.py",
+    "/app/test_reports/pytest/pytest_iteration247.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_iteration247_guardians_retreats.py"
+  ],
+  "success_rate": {
+    "backend": "100% (14/14 tests passed)",
+    "frontend": "100%"
+  },
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All targeted features verified working correctly. Sacred Guardians has 4 free guardians with diverse categories (power_animal, spirit_animal, dragon_energy, angel). Retreats endpoint returns empty list (no placeholder entries). Guided narration expand-script returns 1391+ words (~10.5 min at 132 WPM), well above 7-min floor.",
+  "tested_features": {
+    "sacred_guardians_endpoint": {
+      "status": "PASS",
+      "details": "Returns 14 guardians total, 4 free with diverse categories",
+      "free_tier_guardians": ["Wolf (power_animal)", "White Stag (spirit_animal)", "Fire Dragon (dragon_energy)", "Archangel Michael (angel)"],
+      "category_diversity": "4 unique categories in free tier"
+    },
+    "sacred_guardians_premium_gating": {
+      "status": "PASS",
+      "details": "Exactly 4 free guardians, 10 premium guardians with proper lock behavior",
+      "premium_lock_modal": "Shows correctly when clicking premium guardian"
+    },
+    "sacred_guardians_images": {
+      "status": "PASS",
+      "details": "All guardians have thematically correct images from emergentagent.com static storage",
+      "image_style": "Mystical painterly hybrid style, not generic"
+    },
+    "retreats_endpoint": {
+      "status": "PASS",
+      "details": "Returns empty list (no placeholder seeded entries)",
+      "placeholder_filtering": "Working correctly"
+    },
+    "guided_narration_expansion": {
+      "status": "PASS",
+      "details": "Returns 1391 words, 40 paragraphs, 8 segments (~10.5 min at 132 WPM)",
+      "meets_7_min_floor": true
+    },
+    "guided_practice_overlay": {
+      "status": "PASS",
+      "details": "Full-screen overlay opens correctly with voice/speed/duration controls",
+      "narration_display": "Shows 15 MIN SESSION · 18 MIN NARRATION for Inner Peace Journey"
+    },
+    "sacred_guardians_detail_modal": {
+      "status": "PASS",
+      "details": "Modal shows all sections: Alchemy Teachings, Ceremony, Guided Practice Arc",
+      "data_testids": "guardian-detail-modal, guardian-alchemy-teachings, guardian-ceremony-list, guardian-guided-practice-arc"
+    },
+    "regression_check": {
+      "status": "PASS",
+      "pages_tested": ["/sacred-guardians", "/meditations"],
+      "notes": "No UI/runtime errors on key public pages"
+    }
+  },
+  "api_verification": {
+    "GET /api/sacred-guardians": "200 OK - 14 guardians with proper tiering",
+    "GET /api/sacred-guardians/{id}": "200 OK - Individual guardian fetch works",
+    "GET /api/retreats": "200 OK - Empty list (no placeholders)",
+    "POST /api/content/expand-script": "200 OK - Returns long-form script meeting 7-min floor",
+    "GET /api/health": "200 OK - API healthy"
+  }
+}

@@ -2800,6 +2800,15 @@ def _normalize_image_topic_key(item: dict[str, Any]) -> str:
     )
 
 
+def _is_sacred_guardian_entry(item: dict[str, Any]) -> bool:
+    category = _normalize_label_key(str(item.get("category") or ""))
+    if category in {"power_animal", "spirit_animal", "dragon_energy", "angel", "familiar", "messenger"}:
+        return True
+
+    item_id = str(item.get("id") or "").strip().lower()
+    return item_id.startswith(("pa-", "sa-", "de-", "ang-", "fam-", "msg-"))
+
+
 def _resolve_practice_image_fallback(item: dict[str, Any]) -> Optional[str]:
     topic_key = _normalize_image_topic_key(item)
     if topic_key and topic_key in PRACTICE_IMAGE_FALLBACKS:
@@ -2853,11 +2862,13 @@ def _apply_subject_image_alignment(item: dict[str, Any], default_source_type: st
     explicit_override = bool(topic_key and topic_key in PRACTICE_IMAGE_FALLBACKS)
     stream_override = bool(stream_key and stream_key in MYSTERY_STREAM_IMAGE_FALLBACKS)
     is_generic_stream_image = existing_url in set(MYSTERY_STREAM_IMAGE_FALLBACKS.values())
+    is_seeded_static_image = "static.prod-images.emergentagent.com/jobs/" in existing_url
+    preserve_guardian_seeded_image = is_seeded_static_image and _is_sacred_guardian_entry(enriched)
     should_replace = (
         explicit_override
         or stream_override
         or (not existing_url)
-        or ("static.prod-images.emergentagent.com/jobs/" in existing_url)
+        or (is_seeded_static_image and not preserve_guardian_seeded_image)
         or is_generic_stream_image
     )
 
@@ -4122,6 +4133,63 @@ def _humanize_unlock_id(unlock_id: str) -> str:
     return unlock_id.replace("_", " ").strip().title()
 
 
+SACRED_GUARDIAN_CATEGORY_ROTATION = [
+    "power animal",
+    "spirit animal",
+    "dragon energy",
+    "angel",
+    "familiar",
+    "messenger",
+]
+
+
+def _prioritize_sacred_guardians_for_tiering(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    if not items:
+        return []
+
+    queues: dict[str, list[dict[str, Any]]] = {category: [] for category in SACRED_GUARDIAN_CATEGORY_ROTATION}
+    ordered_original = [dict(item) for item in items]
+    selected_ids: set[str] = set()
+
+    for item in ordered_original:
+        normalized_category = _normalize_label_key(str(item.get("category") or ""))
+        if normalized_category in queues:
+            queues[normalized_category].append(item)
+
+    prioritized: list[dict[str, Any]] = []
+    while True:
+        progressed = False
+        for category in SACRED_GUARDIAN_CATEGORY_ROTATION:
+            if not queues[category]:
+                continue
+            candidate = queues[category].pop(0)
+            candidate_id = str(candidate.get("id") or "")
+            if candidate_id and candidate_id in selected_ids:
+                continue
+            if candidate_id:
+                selected_ids.add(candidate_id)
+            prioritized.append(candidate)
+            progressed = True
+        if not progressed:
+            break
+
+    for item in ordered_original:
+        item_id = str(item.get("id") or "")
+        if item_id and item_id in selected_ids:
+            continue
+        if item_id:
+            selected_ids.add(item_id)
+        prioritized.append(item)
+
+    return prioritized
+
+
+def _prepare_section_items_for_tiering(items: list[dict[str, Any]], unlock_id: str) -> list[dict[str, Any]]:
+    if unlock_id == "sacred_guardians":
+        return _prioritize_sacred_guardians_for_tiering(items)
+    return sorted(items, key=_parse_tier_sort_value)
+
+
 def _expand_section_items_to_target(items: list[dict[str, Any]], unlock_id: str) -> list[dict[str, Any]]:
     if not items:
         return []
@@ -4218,7 +4286,7 @@ def _apply_free_paid_tiering(
     if not items:
         return []
 
-    ordered = sorted(items, key=_parse_tier_sort_value)
+    ordered = _prepare_section_items_for_tiering(items, unlock_id)
     if unlock_id not in SECTION_UNCAPPED_UNLOCK_IDS:
         ordered = _expand_section_items_to_target(ordered, unlock_id)
     total_items = len(ordered)
@@ -5326,6 +5394,38 @@ def _normalize_retreat_mode(value: Any) -> str:
     if "online" in raw or "virtual" in raw or "zoom" in raw or "remote" in raw:
         return "online"
     return "physical"
+
+
+def _is_effectively_empty_retreat(retreat: dict[str, Any]) -> bool:
+    meaningful_fields = (
+        "title",
+        "name",
+        "description",
+        "location",
+        "facilitator",
+        "highlights",
+        "includes",
+        "healing_modalities",
+        "registration_link",
+        "online_session_url",
+        "website_url",
+        "image_url",
+    )
+    has_meaningful_text = any(str(retreat.get(field) or "").strip() for field in meaningful_fields)
+    has_schedule = any(str(retreat.get(field) or "").strip() for field in ("start_date", "end_date", "duration_days"))
+    has_pricing = any(str(retreat.get(field) or "").strip() for field in ("price", "deposit"))
+    has_social = bool(_normalize_retreat_social_links(retreat))
+    has_capacity = str(retreat.get("max_participants") or "").strip() != ""
+    has_mode = str(retreat.get("retreat_mode") or "").strip() != ""
+
+    return not (
+        has_meaningful_text
+        or has_schedule
+        or has_pricing
+        or has_social
+        or has_capacity
+        or has_mode
+    )
 
 
 def _normalize_retreat_social_links(retreat: dict[str, Any]) -> list[dict[str, str]]:
@@ -6981,7 +7081,6 @@ async def get_sacred_guardians(category: Optional[str] = None) -> list[dict[str,
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     guardians = await db.sacred_guardians.find(query, {"_id": 0}).to_list(length=220)
-    guardians = _append_sacred_guardian_supplements(guardians, category)
     enriched = [
         _enrich_devotional_language(_apply_subject_image_alignment(guardian, "hybrid-curated"), "sacred-guardians")
         for guardian in guardians
@@ -7423,6 +7522,7 @@ async def get_retreats(status: Optional[str] = None) -> list[dict[str, Any]]:
     if status:
         query["status"] = {"$regex": f"^{status}$", "$options": "i"}
     retreats = await db.retreats.find(query, {"_id": 0}).sort("created_at", -1).to_list(length=50)
+    retreats = [retreat for retreat in retreats if not _is_effectively_empty_retreat(retreat)]
     normalized = [_normalize_retreat_entry(retreat) for retreat in retreats]
     return [_enrich_devotional_language(_enrich_content_integrity(retreat, "hybrid-curated"), "retreats") for retreat in normalized]
 
@@ -7433,6 +7533,8 @@ async def get_retreat(retreat_id: str) -> dict[str, Any]:
     db = get_db()
     retreat = await db.retreats.find_one({"id": retreat_id}, {"_id": 0})
     if not retreat:
+        raise HTTPException(status_code=404, detail="Retreat not found")
+    if _is_effectively_empty_retreat(retreat):
         raise HTTPException(status_code=404, detail="Retreat not found")
     normalized = _normalize_retreat_entry(retreat)
     return _enrich_devotional_language(_enrich_content_integrity(normalized, "hybrid-curated"), "retreats")
