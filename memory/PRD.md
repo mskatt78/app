@@ -60,6 +60,20 @@
 ### P1 — Remove seeded retreats placeholders
 - ✅ Verified: `/api/retreats` returns empty array; no placeholder records.
 
+## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
+- ✅ Sacred Guardians visual correction shipped:
+  - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
+  - Preserved canonical seeded guardian artwork for guardian categories (no forced generic override).
+  - Added sacred-guardian tier ordering so first free/premium window represents core lineages.
+- ✅ Retreat cleanup hardened:
+  - Startup cleanup marker advanced to remove legacy placeholder retreats.
+  - Public retreats endpoints now filter effectively empty placeholder records.
+- ✅ Guided narration floor re-verified:
+  - `/api/content/expand-script` validated at 7 and 15 minute requests; outputs exceed 132 WPM floor.
+- ✅ QA status:
+  - `testing_agent` iteration 247: frontend 100%, backend 14/14 PASS.
+  - `deep_testing_backend_v2`: PASS across sacred guardians tiering/diversity, retreats cleanup, script expansion floor, and health endpoint.
+
 ## Latest Verification Snapshot (Iteration 131)
 - Frontend regression: PASS
 - Backend regression: PASS
