@@ -39,7 +39,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Solar current · personal power and direction",
     spiritual: "Refines will into integrity: power used in service rather than control.",
     fascia: "Diaphragm-thoracolumbar fascia can lock with over-efforting and chronic vigilance.",
-    diagram: { front: { x: 50, y: 49 }, zone: { x: 50, y: 49, w: 18, h: 9 } },
+    diagram: { front: { x: 50, y: 48 }, zone: { x: 50, y: 48, w: 12, h: 6 } },
     cue: "Breathe into the diaphragm and name one decision your body already knows.",
   },
   heart_chest: {
@@ -91,7 +91,7 @@ const REGION_VISUAL_STYLES = {
   },
   solar_core: {
     chakra: { fill: "bg-yellow-400/35", border: "border-yellow-100/80", glow: "shadow-[0_0_0_2px_rgba(250,204,21,0.35)]", chip: "bg-yellow-500/15 border-yellow-400/40 text-yellow-100" },
-    fascia: { fill: "bg-lime-500/25", border: "border-lime-100/80", glow: "shadow-[0_0_0_2px_rgba(132,204,22,0.35)]", chip: "bg-lime-500/15 border-lime-400/40 text-lime-100" },
+    fascia: { fill: "bg-yellow-400/35", border: "border-yellow-100/80", glow: "shadow-[0_0_0_2px_rgba(250,204,21,0.35)]", chip: "bg-yellow-500/15 border-yellow-400/40 text-yellow-100" },
   },
   heart_chest: {
     chakra: { fill: "bg-emerald-500/30", border: "border-emerald-100/80", glow: "shadow-[0_0_0_2px_rgba(16,185,129,0.35)]", chip: "bg-emerald-500/15 border-emerald-400/40 text-emerald-100" },
@@ -154,14 +154,17 @@ const getRegionCards = (element, practiceName) => {
 
 const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
   const cards = getRegionCards(element, practiceName);
+  const priorityOrder = ["solar_core", "heart_chest", "throat_jaw", "pelvis_womb", "feet_legs", "brow_crown"];
+  const sortByPriority = (a, b) => priorityOrder.indexOf(a.key) - priorityOrder.indexOf(b.key);
   if (!fasciaMode) {
-    return cards.slice(0, 3);
+    return cards.slice(0, 3).sort(sortByPriority);
   }
-  return cards.filter((card) => card && card.fascia).slice(0, 3);
+  return cards.filter((card) => card && card.fascia).slice(0, 3).sort(sortByPriority);
 };
 
 const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => {
   const selectedCard = cards.find((card) => card.key === selectedRegionKey) || cards[0];
+  const visibleCards = selectedCard ? [selectedCard] : [];
   const focusZone = selectedCard?.diagram?.zone || { x: 50, y: 50, w: 24, h: 14 };
   const canvasWidth = 210;
   const canvasHeight = 420;
@@ -172,7 +175,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
 
   return (
     <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4" data-testid={`${testIdPrefix}-interactive-body-map`}>
-      <h4 className="text-sm font-medium mb-3">Simple Body Focus Map · Main subject highlights only</h4>
+      <h4 className="text-sm font-medium mb-3">Simple Body Focus Map · One selected area highlighted</h4>
       <div className="grid lg:grid-cols-[220px_1fr] gap-4 items-start">
         <div className="relative mx-auto w-[210px] h-[420px] rounded-3xl border border-white/10 bg-black/30 overflow-hidden" data-testid={`${testIdPrefix}-diagram-canvas`}>
           <div
@@ -188,7 +191,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-black/30" />
 
-            {cards.map((card) => {
+            {visibleCards.map((card) => {
               const point = card?.diagram?.front;
               if (!point) return null;
               const zone = card?.diagram?.zone || { x: point.x, y: point.y, w: 14, h: 10 };
