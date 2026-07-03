@@ -14875,14 +14875,136 @@ agent_communication:
         agent: "testing"
         comment: "✅ EMBODIMENT PROTOCOL PANEL BEHAVIOR VALIDATION PASSED (2026-07-03): Comprehensive frontend QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com/fascia-stretching modal flow. ALL 6 REQUIREMENTS MET: REQUIREMENT 1 - Body map appears as simple highlighted zones, no numeric labels/circle numbering: ✓ Found 3 diagram points with testid pattern 'diagram-point-*', ✓ NO visible numeric labels detected in any diagram point (only screen-reader-only text), ✓ Body map shows simple highlighted colored zones on anatomical silhouette. REQUIREMENT 2 - Clicking a highlighted zone updates selected region panel: ✓ Clicking first diagram point (solar_core) shows 492 chars content, ✓ Clicking second diagram point (heart_chest) updates to 478 chars content, ✓ Selected region panel successfully updates with different content for each zone. REQUIREMENT 3 - Focus behavior includes both visible zoom/focus in diagram and side panel update: ✓ Focus/zoom element found with testid 'diagram-focus-zoom', ✓ Transform applied: 'transform: translate(0px, 32.34px) scale(1.28)', ✓ Visible zoom effect present on diagram, ✓ Side panel updates correctly when zones clicked. REQUIREMENT 4 - Visual clarity improved: selected zone is strongly highlighted: ✓ Selected zone has strong visual styling with classes: 'bg-lime-500/25 border-lime-100/80 shadow-[0_0_0_2px_rgba(132,204,22,0.35)]', ✓ Box-shadow applied for glow effect, ✓ Background color with opacity (rgba(132, 204, 22, 0.25)), ✓ Border styling with lime color, ✓ Strong visual distinction between selected and unselected zones. REQUIREMENT 5 - Testid patterns match requirements: ✓ Found 32 elements with 'embodiment' in testid, ✓ Found 3 elements with 'diagram-point-*' testid pattern, ✓ All required testids present and accessible. REQUIREMENT 6 - No critical console errors: ✓ No critical console errors detected, ✓ Only expected 401 auth errors (non-critical). VISUAL VERIFICATION: Screenshots confirm body map displays anatomical silhouette with colored highlighted zones (NO numeric labels), selected zones have strong visual highlighting with glow/shadow effects, selected region panel shows all 6 layers (Physical Anatomy, Physical Function, Emotional Layer, Energetic Layer, Spiritual Layer, Fascia Lens), clicking different zones updates both diagram focus and side panel content. PASS/FAIL RESULT: ✅ PASS - All requirements met, embodiment protocol panel behavior working correctly."
 
+  - task: "EmbodimentProtocolPanel precision update - solar core positioning fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ EMBODIMENT PROTOCOL PANEL PRECISION UPDATE VALIDATION PASSED (2026-07-03): Comprehensive validation completed on /fascia-stretching modal to verify updated panel precision. ALL 4 REQUIREMENTS MET: REQUIREMENT 1 - Only main subject sections highlighted (max ~3 zones): ✓ Exactly 3 zones highlighted (solar_core, heart_chest, throat_jaw), ✓ Meets max 3 zones requirement. REQUIREMENT 2 - Solar core centered at upper abdomen, NOT covering lower chakra regions: ✓ Solar core positioned at 49.3% from top of canvas (perfect upper abdomen placement in 40-60% range), ✓ Pelvis/womb (lower chakra) NOT highlighted - no overlap concern, ✓ Solar core zone dimensions: y=49%, height=9% (spans 44.5%-53.5% vertically), ✓ Well separated from pelvis_womb at y=64%. REQUIREMENT 3 - Non-selected zones subtle/minimal (not heavily filled): ✓ Non-selected zones (heart_chest, throat_jaw) have transparent backgrounds (rgba(0,0,0,0)), ✓ Only selected zone has visible fill (rgba(132,204,22,0.25) lime green), ✓ Non-selected zones have subtle white/20 borders. REQUIREMENT 4 - Click interactions work (zoom focus + side panel update): ✓ Clicking zones updates side panel content (492→478→488 chars), ✓ Zoom focus transform updates correctly (translate: 2.31px→32.34px→62.37px), ✓ Both zoom and side panel update working perfectly. VISUAL VERIFICATION: Screenshots confirm solar core is clearly positioned at upper abdomen (not lower chakra), only 3 zones visible with clean highlighting, non-selected zones are subtle with transparent backgrounds, selected zones have strong visual distinction with glow/shadow effects. PRECISION FIX VERIFIED: Solar core positioning update is working correctly - centered at upper abdomen (49.3% from top) and no longer covering lower chakra regions. Feature is production-ready."
+
 test_plan:
   current_focus:
-    - "Embodiment protocol panel behavior validation - COMPLETED"
+    - "EmbodimentProtocolPanel precision update - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ EMBODIMENT PROTOCOL PANEL PRECISION UPDATE VALIDATION COMPLETE (2026-07-03):
+      
+      Validated updated EmbodimentProtocolPanel precision on /fascia-stretching modal.
+      Focus: Solar core positioning fix and zone highlighting precision.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VALIDATION CRITERIA (from review request):
+      1. Only main subject sections are highlighted (max ~3 zones visible)
+      2. Solar core highlight is centered at upper abdomen and no longer mostly covering lower chakra regions
+      3. Non-selected zones are subtle/minimal (not heavily filled)
+      4. Click highlighted zones and confirm both zoom focus + side panel update still work
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST RESULTS: ✅ 4 OUT OF 4 REQUIREMENTS PASSED (100% pass rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      REQUIREMENT 1: Only main subject sections highlighted (max ~3 zones)
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Exactly 3 zones highlighted: solar_core, heart_chest, throat_jaw
+      - Meets max 3 zones requirement
+      - Clean, focused presentation with only primary zones visible
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      REQUIREMENT 2: Solar core centered at upper abdomen (NOT lower chakra)
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS - PRECISION FIX VERIFIED
+      - Solar core positioned at 49.3% from top of canvas
+      - Perfect upper abdomen placement (expected range: 40-60%)
+      - Solar core zone: y=49%, height=9% (spans 44.5%-53.5% vertically)
+      - Pelvis/womb (lower chakra) at y=64% - well separated
+      - NO overlap between solar core and lower chakra regions
+      - Positioning fix working correctly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      REQUIREMENT 3: Non-selected zones subtle/minimal (not heavily filled)
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Non-selected zones (heart_chest, throat_jaw): transparent backgrounds (rgba(0,0,0,0))
+      - Only selected zone has visible fill: rgba(132,204,22,0.25) lime green
+      - Non-selected zones have subtle white/20 borders
+      - Clear visual hierarchy: selected zones prominent, non-selected subtle
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      REQUIREMENT 4: Click interactions (zoom focus + side panel update)
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Side panel updates correctly when clicking zones:
+        * Solar core: 492 chars
+        * Heart + Chest: 478 chars
+        * Throat + Jaw: 488 chars
+      - Zoom focus transform updates dynamically:
+        * Initial: translate(0px, 2.31px) scale(1.28)
+        * Heart + Chest: translate(0px, 32.34px) scale(1.28)
+        * Throat + Jaw: translate(0px, 62.37px) scale(1.28)
+      - Both zoom and side panel update working perfectly
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VISUAL VERIFICATION (Screenshots):
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      Screenshot 1: embodiment-panel-initial.png
+      - Body map shows 3 highlighted zones on anatomical silhouette
+      - Solar core clearly positioned at upper abdomen (NOT lower chakra)
+      - Clean, focused presentation
+      
+      Screenshot 2: embodiment-panel-zone-clicked.png
+      - Throat + Jaw zone selected with detailed side panel
+      - All 6 layers visible: Physical Anatomy, Physical Function, Emotional Layer,
+        Energetic Layer, Spiritual Layer, Fascia Lens
+      - Zoom focus adjusted to throat region
+      
+      Screenshot 3: embodiment-panel-selected-zone.png
+      - Solar core selected with strong lime/yellow highlighting
+      - Clear visual distinction from non-selected zones
+      - Glow effect and border styling visible
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FINAL SUMMARY:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASS (4/4 requirements) - EmbodimentProtocolPanel precision update verified
+      
+      Key Findings:
+      • Only 3 zones highlighted (max 3 requirement met) ✓
+      • Solar core centered at upper abdomen (49.3% from top) ✓
+      • Solar core NO LONGER covering lower chakra regions ✓
+      • Non-selected zones are subtle with transparent backgrounds ✓
+      • Click interactions work perfectly (zoom + side panel) ✓
+      
+      PRECISION FIX CONFIRMED:
+      The solar core positioning update is working correctly. Solar core is now:
+      - Centered at upper abdomen (49.3% from top)
+      - Well separated from lower chakra regions (pelvis at 64%)
+      - No overlap with pelvis/womb zone
+      
+      RECOMMENDATION:
+      Feature is production-ready. All precision requirements met. Solar core positioning
+      fix successfully implemented and verified.
+  
   - agent: "testing"
     message: |
       ✅ EMBODIMENT PROTOCOL PANEL BEHAVIOR VALIDATION COMPLETE (2026-07-03):

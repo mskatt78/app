@@ -15,7 +15,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Root current · grounding and survival coherence",
     spiritual: "Teaches trust, right timing, and your relationship to being supported by life.",
     fascia: "Superficial back line + lateral lines store survival stress and movement confidence.",
-    diagram: { front: { x: 50, y: 82 }, zone: { x: 50, y: 78, w: 40, h: 34 } },
+    diagram: { front: { x: 50, y: 82 }, zone: { x: 50, y: 82, w: 26, h: 20 } },
     cue: "Slow exhale into your feet and ask: where do I need firmer boundaries or steadier support?",
   },
   pelvis_womb: {
@@ -27,7 +27,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Sacral current · creativity, intimacy, fluidity",
     spiritual: "Holds consent, creativity, and the sacred yes/no of your embodied truth.",
     fascia: "Deep front line + psoas web often carry fear-freeze patterns and relational guarding.",
-    diagram: { front: { x: 50, y: 64 }, zone: { x: 50, y: 64, w: 34, h: 16 } },
+    diagram: { front: { x: 50, y: 64 }, zone: { x: 50, y: 64, w: 20, h: 10 } },
     cue: "Soften jaw and lower belly; ask what your body is protecting and what it now feels safe to release.",
   },
   solar_core: {
@@ -39,7 +39,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Solar current · personal power and direction",
     spiritual: "Refines will into integrity: power used in service rather than control.",
     fascia: "Diaphragm-thoracolumbar fascia can lock with over-efforting and chronic vigilance.",
-    diagram: { front: { x: 50, y: 50 }, zone: { x: 50, y: 50, w: 32, h: 16 } },
+    diagram: { front: { x: 50, y: 49 }, zone: { x: 50, y: 49, w: 18, h: 9 } },
     cue: "Breathe into the diaphragm and name one decision your body already knows.",
   },
   heart_chest: {
@@ -51,7 +51,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Heart current · connection, compassion, coherence",
     spiritual: "Opens the path from wound-protection into compassionate discernment.",
     fascia: "Arm lines + chest fascia influence protective postures and relational armoring.",
-    diagram: { front: { x: 50, y: 36 }, zone: { x: 50, y: 36, w: 36, h: 16 } },
+    diagram: { front: { x: 50, y: 36 }, zone: { x: 50, y: 36, w: 20, h: 10 } },
     cue: "Lengthen exhale through the chest and ask what grief needs witnessing before love can move again.",
   },
   throat_jaw: {
@@ -63,7 +63,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Throat current · expression, resonance, authenticity",
     spiritual: "Purifies expression so your voice becomes medicine, not performance.",
     fascia: "Tongue-jaw-neck fascia often tighten when truth is withheld or conflict is feared.",
-    diagram: { front: { x: 50, y: 23 }, zone: { x: 50, y: 23, w: 24, h: 12 } },
+    diagram: { front: { x: 50, y: 23 }, zone: { x: 50, y: 23, w: 14, h: 7 } },
     cue: "Release the jaw and hum softly; ask what truth wants a clean and kind expression.",
   },
   brow_crown: {
@@ -75,7 +75,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Third-eye/crown current · perception and meaning",
     spiritual: "Restores clear seeing, surrender, and alignment with higher discernment.",
     fascia: "Scalp and suboccipital fascial tension mirror cognitive overload and hypervigilance.",
-    diagram: { front: { x: 50, y: 11 }, zone: { x: 50, y: 11, w: 22, h: 10 } },
+    diagram: { front: { x: 50, y: 11 }, zone: { x: 50, y: 11, w: 12, h: 6 } },
     cue: "Soften the eyes and back of head, then ask what becomes clear when urgency drops.",
   },
 };
@@ -155,9 +155,9 @@ const getRegionCards = (element, practiceName) => {
 const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
   const cards = getRegionCards(element, practiceName);
   if (!fasciaMode) {
-    return cards;
+    return cards.slice(0, 3);
   }
-  return cards.filter((card) => card && card.fascia);
+  return cards.filter((card) => card && card.fascia).slice(0, 3);
 };
 
 const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => {
@@ -172,7 +172,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
 
   return (
     <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4" data-testid={`${testIdPrefix}-interactive-body-map`}>
-      <h4 className="text-sm font-medium mb-3">Simple Body Focus Map · Select highlighted region</h4>
+      <h4 className="text-sm font-medium mb-3">Simple Body Focus Map · Main subject highlights only</h4>
       <div className="grid lg:grid-cols-[220px_1fr] gap-4 items-start">
         <div className="relative mx-auto w-[210px] h-[420px] rounded-3xl border border-white/10 bg-black/30 overflow-hidden" data-testid={`${testIdPrefix}-diagram-canvas`}>
           <div
@@ -202,7 +202,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
                   className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-xl border-2 transition-all duration-300 ${
                     active
                       ? `${visual.fill} ${visual.border} ${visual.glow}`
-                      : "bg-white/5 border-white/25 hover:bg-white/15 hover:border-white/40"
+                      : "bg-transparent border-white/20 hover:border-white/40"
                   }`}
                   style={{
                     left: `${zone.x}%`,
@@ -224,8 +224,8 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
         <div className="space-y-3">
           <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-diagram-mode-copy`}>
             {fasciaMode
-              ? "Fascia focus is active: highlighted zones emphasize connective tissue stress lines. Tap any zone for deeper guidance."
-              : "Chakra-color focus is active: tap any highlighted zone to zoom and view targeted guidance for that area."}
+              ? "Fascia focus is active: only the primary fascia-relevant sections are highlighted for this practice."
+              : "Chakra-color focus is active: only the main sections for this subject are highlighted."}
           </p>
           <ul className="grid sm:grid-cols-2 gap-2">
             {cards.map((card) => {
