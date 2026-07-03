@@ -14890,12 +14890,112 @@ agent_communication:
         agent: "testing"
         comment: "✅ EMBODIMENT PROTOCOL PANEL FINAL BEHAVIOR VALIDATION PASSED (2026-07-03): Comprehensive final validation completed on /fascia-stretching modal preview. ALL 4 VALIDATION CRITERIA MET: CRITERION 1 - Solar core highlight is YELLOW (not lime/green/orange/red): ✓ Solar core background color: rgba(250, 204, 21, 0.35), ✓ RGB values: R=250, G=204, B=21, ✓ Color analysis confirms YELLOW (high R and G, low B, similar R/G values), ✓ CSS classes: bg-yellow-400/35 border-yellow-100/80, ✓ NOT lime/green (would have G > R), NOT orange (would have R > 230, G < 180), NOT red (would have low G). CRITERION 2 - Only ONE zone highlighted at a time: ✓ Initial state: 1 visible zone (solar_core), ✓ After switching to Heart + Chest: 1 visible zone, ✓ After switching to Throat + Jaw: 1 visible zone, ✓ All non-selected zones have transparent backgrounds (rgba(0,0,0,0)). CRITERION 3 - Solar core zone size is compact and centered at upper abdomen: ✓ Zone dimensions: 15.2% width x 7.6% height (compact, < 20% x 15%), ✓ Y position: 44.7% from top (upper abdomen range 40-55%), ✓ Code definition: x=50%, y=48%, w=12%, h=6% (matches observed behavior). CRITERION 4 - Switching selected region moves single highlight to that region only: ✓ Tested 3 regions (Solar Core, Heart + Chest, Throat + Jaw), ✓ Each switch showed exactly 1 visible zone, ✓ Highlight moved correctly to selected region, ✓ Side panel content updated for each region, ✓ Zoom focus transform updated dynamically. VISUAL VERIFICATION: Screenshots confirm yellow solar core highlight (not lime/green), only one zone visible at a time on body diagram, compact solar core centered at upper abdomen, switching regions moves single highlight correctly. FINAL RESULT: ✅ PASS (4/4 criteria) - EmbodimentProtocolPanel final behavior validated and production-ready."
 
+  - task: "EmbodimentProtocolPanel default highlight selection for Fire/Solar subjects"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/practice/EmbodimentProtocolPanel.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ EMBODIMENT PROTOCOL PANEL DEFAULT HIGHLIGHT SELECTION VALIDATION PASSED (2026-07-03): Comprehensive validation completed on /fascia-stretching modal with Fire element practice 'Breath of Fire Flow'. ALL 4 VALIDATION CRITERIA MET: CRITERION 1 - Default selected zone is solar_core for Fire element: ✓ Opened Fire element practice (Breath of Fire Flow), ✓ Solar Core region card has active/selected styling (border-cyan-300/60 bg-cyan-500/15), ✓ Selected region panel shows 'Solar Core' text, ✓ Default selection logic working correctly (Fire element → solar_core primary region). CRITERION 2 - Highlighted solar_core is YELLOW and only one zone visible: ✓ Solar core zone background: rgba(250, 204, 21, 0.35), ✓ RGB values: R=250, G=204, B=21 (confirmed YELLOW), ✓ CSS classes: bg-yellow-400/35 border-yellow-100/80, ✓ Only 1 zone found on diagram (solar_core), ✓ Single highlight confirmed. CRITERION 3 - Switching between region chips moves single highlight correctly: ✓ Switched to Heart + Chest: Only 1 zone highlighted (heart_chest), selected panel updated, ✓ Switched to Throat + Jaw: Only 1 zone highlighted (throat_jaw), selected panel updated, ✓ Single highlight moves correctly with each switch. CRITERION 4 - No default highlight on sacral/root when solar is active: ✓ Sacral/pelvis zone (pelvis_womb) not present on diagram, ✓ Root/feet zone (feet_legs) not present on diagram, ✓ Confirmed no sacral/root highlight when solar subject is active. VISUAL VERIFICATION: Screenshot shows modal with 3 region cards (Solar Core, Heart + Chest, Throat + Jaw), Solar Core selected by default with yellow highlight on body diagram, only one zone visible at a time. Console errors: Only expected 401 auth errors (non-critical). FINAL RESULT: ✅ PASS (4/4 criteria) - Default highlight selection for Fire/Solar subjects working correctly and production-ready."
+
 test_plan:
   current_focus:
-    - "EmbodimentProtocolPanel final behavior validation - COMPLETED"
+    - "EmbodimentProtocolPanel default highlight selection validation - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ EMBODIMENT PROTOCOL PANEL DEFAULT HIGHLIGHT SELECTION VALIDATION COMPLETE (2026-07-03):
+      
+      Validated EmbodimentProtocolPanel default highlight selection on /fascia-stretching modal with Fire element practice.
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VALIDATION CRITERIA (from review request):
+      1. Default selected/highlighted zone should be solar_core for fire/solar-related subject names
+      2. Highlighted solar_core remains yellow and only one highlighted zone is visible
+      3. Switching between region chips still moves single highlight correctly
+      4. No default highlight on sacral/root when solar subject is active
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      TEST RESULTS: ✅ 4 OUT OF 4 CRITERIA PASSED (100% pass rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 1: Default selected zone is solar_core for Fire element
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Tested with Fire element practice: "Breath of Fire Flow"
+      - Solar Core region card has active/selected styling
+      - Selected region panel displays "Solar Core" text
+      - Default selection logic: Fire element → solar_core primary region
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 2: Highlighted solar_core is YELLOW and only one zone visible
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Solar core zone background: rgba(250, 204, 21, 0.35)
+      - RGB values: R=250, G=204, B=21 (confirmed YELLOW)
+      - CSS classes: bg-yellow-400/35 border-yellow-100/80
+      - Only 1 zone found on diagram (solar_core)
+      - Single highlight confirmed
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 3: Switching between region chips moves single highlight correctly
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Switched to Heart + Chest: Only 1 zone highlighted (heart_chest)
+      - Switched to Throat + Jaw: Only 1 zone highlighted (throat_jaw)
+      - Selected panel updated correctly for each switch
+      - Single highlight moves correctly with each region change
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      CRITERION 4: No default highlight on sacral/root when solar is active
+      ───────────────────────────────────────────────────────────────────────────────
+      ✅ PASS
+      - Sacral/pelvis zone (pelvis_womb) not present on diagram
+      - Root/feet zone (feet_legs) not present on diagram
+      - Confirmed no sacral/root highlight when solar subject is active
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      VISUAL VERIFICATION (Screenshot):
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      Screenshot: embodiment-default-solar-highlight.png
+      - Modal shows 3 region cards: Solar Core, Heart + Chest, Throat + Jaw
+      - Solar Core selected by default with yellow highlight on body diagram
+      - Only one zone visible at a time
+      - Body diagram shows anatomical silhouette with single highlighted zone
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      FINAL SUMMARY:
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      ✅ PASS (4/4 criteria) - Default highlight selection working correctly
+      
+      Key Findings:
+      • Fire element practices default to solar_core region ✓
+      • Solar core highlight is YELLOW (rgba(250, 204, 21, 0.35)) ✓
+      • Only ONE zone highlighted at a time (single highlight behavior) ✓
+      • Switching regions moves single highlight correctly ✓
+      • No sacral/root zones present when solar is active ✓
+      
+      RECOMMENDATION:
+      Feature is production-ready. All validation criteria met. No issues found.
+      Default highlight selection for Fire/Solar subjects is working correctly on /fascia-stretching modal flow.
 
 agent_communication:
   - agent: "testing"

@@ -128,13 +128,21 @@ const ELEMENT_REGION_MAP = {
 };
 
 const PRACTICE_REGION_KEYWORDS = [
+  { region: "solar_core", words: ["solar", "plexus", "core", "gut", "digest", "stomach", "diaphragm", "confidence", "power", "will", "agency"] },
   { region: "throat_jaw", words: ["throat", "jaw", "voice", "neck", "vagus", "larynx", "tongue"] },
-  { region: "heart_chest", words: ["heart", "chest", "lung", "breast", "rib", "grief"] },
-  { region: "solar_core", words: ["solar", "core", "gut", "digest", "stomach", "diaphragm"] },
+  { region: "heart_chest", words: ["heart", "chest", "lung", "breast", "rib", "grief", "compassion"] },
   { region: "pelvis_womb", words: ["pelvis", "womb", "hip", "psoas", "sacral", "yoni", "root bowl"] },
   { region: "feet_legs", words: ["feet", "legs", "knee", "ankle", "ground", "root", "hamstring", "calf"] },
   { region: "brow_crown", words: ["crown", "brow", "third eye", "head", "skull", "pineal", "clarity"] },
 ];
+
+const ELEMENT_PRIMARY_REGION = {
+  Earth: "feet_legs",
+  Water: "pelvis_womb",
+  Fire: "solar_core",
+  Air: "heart_chest",
+  Spirit: "heart_chest",
+};
 
 const inferPracticeRegionKeys = (practiceName) => {
   const source = String(practiceName || "").toLowerCase();
@@ -145,21 +153,27 @@ const inferPracticeRegionKeys = (practiceName) => {
 };
 
 const getRegionCards = (element, practiceName) => {
+  const priorityOrder = ["solar_core", "heart_chest", "throat_jaw", "pelvis_womb", "feet_legs", "brow_crown"];
+  const sortByPriority = (a, b) => priorityOrder.indexOf(a.key) - priorityOrder.indexOf(b.key);
   const keys = ELEMENT_REGION_MAP[element] || ELEMENT_REGION_MAP.Spirit;
   const inferred = inferPracticeRegionKeys(practiceName);
   const mergedKeys = Array.from(new Set([...inferred, ...keys]));
   const chosen = mergedKeys.length > 0 ? mergedKeys.slice(0, 4) : keys;
-  return chosen.map((key) => BODY_WISDOM_LIBRARY[key]).filter(Boolean);
+  return chosen.map((key) => BODY_WISDOM_LIBRARY[key]).filter(Boolean).sort(sortByPriority);
+};
+
+const getPrimaryRegionKey = (element, practiceName) => {
+  const inferred = inferPracticeRegionKeys(practiceName);
+  if (inferred.length > 0) return inferred[0];
+  return ELEMENT_PRIMARY_REGION[element] || ELEMENT_PRIMARY_REGION.Spirit;
 };
 
 const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
   const cards = getRegionCards(element, practiceName);
-  const priorityOrder = ["solar_core", "heart_chest", "throat_jaw", "pelvis_womb", "feet_legs", "brow_crown"];
-  const sortByPriority = (a, b) => priorityOrder.indexOf(a.key) - priorityOrder.indexOf(b.key);
   if (!fasciaMode) {
-    return cards.slice(0, 3).sort(sortByPriority);
+    return cards.slice(0, 3);
   }
-  return cards.filter((card) => card && card.fascia).slice(0, 3).sort(sortByPriority);
+  return cards.filter((card) => card && card.fascia).slice(0, 3);
 };
 
 const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => {
@@ -283,7 +297,17 @@ export const EmbodimentProtocolPanel = ({
   const threeStep = buildThreeStep(safePractice, safeElement);
   const sevenDay = buildSevenDay(safePractice);
   const regionCards = useMemo(() => getRegionCardsForMode(safeElement, fasciaMode, safePractice), [safeElement, fasciaMode, safePractice]);
+  const primaryRegionKey = useMemo(() => getPrimaryRegionKey(safeElement, safePractice), [safeElement, safePractice]);
   const [selectedRegionKey, setSelectedRegionKey] = useState(regionCards[0]?.key || "feet_legs");
+
+  useEffect(() => {
+    if (!primaryRegionKey) return;
+    if (regionCards.some((card) => card.key === primaryRegionKey)) {
+      setSelectedRegionKey(primaryRegionKey);
+      return;
+    }
+    setSelectedRegionKey(regionCards[0]?.key || "feet_legs");
+  }, [primaryRegionKey, regionCards]);
 
   useEffect(() => {
     if (!regionCards.find((card) => card.key === selectedRegionKey)) {
