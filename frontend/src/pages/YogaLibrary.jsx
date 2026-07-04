@@ -354,7 +354,7 @@ const YogaLibrary = ({ user, api }) => {
                     <img
                       src={hasImageError ? getPlaceholderImage(pose.element) : (pose.image_url || getPlaceholderImage(pose.element))}
                       alt={pose.name}
-                      className="w-full h-full object-contain object-center bg-black/35"
+                      className="w-full h-full object-cover object-center bg-black/35"
                       onError={() => handleImageError(pose.id)}
                       data-testid={`pose-image-${pose.id}`}
                     />
@@ -415,12 +415,12 @@ const YogaLibrary = ({ user, api }) => {
                     
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{pose.description}</p>
 
-                    {pose.content_integrity?.verified && (
+                    {pose.content_integrity?.verified && pose.image_source === "wikimedia_commons_verified" && (
                       <p className="text-[11px] text-cyan-300/90 mb-1" data-testid={`pose-integrity-${pose.id}`}>
                         Verified references ({pose.content_integrity.references_count || 0})
                       </p>
                     )}
-                    {formatReviewedDate(pose.content_integrity?.last_reviewed_at) && (
+                    {formatReviewedDate(pose.content_integrity?.last_reviewed_at) && pose.image_source === "wikimedia_commons_verified" && (
                       <p className="text-[11px] text-muted-foreground mb-3" data-testid={`pose-reviewed-at-${pose.id}`}>
                         Last reviewed: {formatReviewedDate(pose.content_integrity?.last_reviewed_at)}
                       </p>
@@ -458,7 +458,7 @@ const YogaLibrary = ({ user, api }) => {
                 <img
                   src={imageErrors.has(selectedPose.id) ? getPlaceholderImage(selectedPose.element) : (selectedPose.image_url || getPlaceholderImage(selectedPose.element))}
                   alt={selectedPose.name}
-                  className="w-full h-full object-contain object-center bg-black/45"
+                  className="w-full h-full object-cover object-center bg-black/45"
                   onError={() => handleImageError(selectedPose.id)}
                   data-testid="selected-pose-image"
                 />

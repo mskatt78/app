@@ -2596,7 +2596,6 @@ def _enrich_yoga_pose(pose: dict[str, Any]) -> dict[str, Any]:
     enriched = dict(pose)
     pose_name_key = _normalize_label_key(enriched.get("name", ""))
     realism_override = _lookup_yoga_realism_override(pose_name_key)
-    override = _lookup_yoga_override(pose_name_key)
     source_type = "hybrid-curated"
 
     if realism_override:
@@ -2613,20 +2612,6 @@ def _enrich_yoga_pose(pose: dict[str, Any]) -> dict[str, Any]:
             "verified_at": datetime.now(timezone.utc).isoformat(),
         }
         source_type = "real_asana_curated"
-    elif override:
-        enriched["image_url"] = override["image_url"]
-        enriched["source_references"] = _merge_source_references(
-            enriched.get("source_references"),
-            override.get("source_references"),
-        )
-        enriched["image_source"] = "wikimedia_commons_verified"
-        enriched["image_validation"] = {
-            "status": "verified",
-            "source_type": "wikimedia_commons",
-            "score": 0.94,
-            "verified_at": datetime.now(timezone.utc).isoformat(),
-        }
-        source_type = "wikipedia_commons_verified"
     else:
         enriched["image_url"] = YOGA_REALISM_DEFAULT_IMAGE
         priority = _yoga_pending_verification_priority(enriched, pose_name_key)
