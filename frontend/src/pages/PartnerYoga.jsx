@@ -16,7 +16,7 @@ const partnerPoses = [
     element: "Water",
     difficulty: "Beginner",
     duration: 5,
-    image_url: "https://images.pexels.com/photos/8436521/pexels-photo-8436521.jpeg?auto=compress&cs=tinysrgb&w=900",
+    image_url: "https://images.unsplash.com/photo-1758274538040-98eb11624eba?crop=entropy&cs=srgb&fm=jpg&q=85",
     description: "Sit back-to-back or facing each other and gently assist your partner into a deep forward fold. This builds trust and deepens the stretch for both.",
     instructions: [
       "Sit facing each other with legs extended straight, feet touching or overlapping",
