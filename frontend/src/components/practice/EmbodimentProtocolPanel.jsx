@@ -90,7 +90,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Sacral current · creativity, intimacy, fluidity",
     spiritual: "Holds consent, creativity, and the sacred yes/no of your embodied truth.",
     fascia: "Deep front line + psoas web often carry fear-freeze patterns and relational guarding.",
-    diagram: { front: { x: 50, y: 64 }, zone: { x: 50, y: 64, w: 20, h: 10 } },
+    diagram: { front: { x: 50, y: 57 }, zone: { x: 50, y: 57, w: 16, h: 8 } },
     cue: "Soften jaw and lower belly; ask what your body is protecting and what it now feels safe to release.",
   },
   solar_core: {

@@ -15889,12 +15889,69 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Enhanced anatomy overlays validation - COMPLETED"
+    - "Pelvis/lower-belly highlight placement validation - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ PELVIS/LOWER-BELLY HIGHLIGHT PLACEMENT VALIDATION COMPLETE (2026-07-04):
+      
+      Comprehensive UI validation completed on preview URL for pelvis/lower-belly region highlight placement across multiple sections using EmbodimentProtocolPanel.
+      
+      VALIDATION REQUIREMENTS:
+      1. Test in at least two sections (fascia-stretching and chakra-cleansing if accessible)
+      2. Select Pelvis + Lower Belly region
+      3. Verify highlighted zone sits in lower abdomen/pelvic bowl area (NOT near knees)
+      4. Confirm one-zone-only behavior remains
+      
+      TEST RESULTS:
+      
+      ✅ SECTION 1: /chakra-cleansing
+         - Pelvis + Lower Belly region: AVAILABLE
+         - Highlight position: 55.1% from canvas top (within expected 50-65% range)
+         - Visual verification: Highlighted zone in LOWER ABDOMEN/PELVIC BOWL area ✓
+         - NOT near knees (knees would be 75%+ from top) ✓
+         - Active styling: Orange/rose colors applied correctly ✓
+         - One-zone-only behavior: CONFIRMED (only 1 zone highlighted at a time) ✓
+      
+      ✅ SECTION 2: /water-practices
+         - Pelvis + Lower Belly region: AVAILABLE
+         - Highlight position: 55.1% from canvas top (within expected 50-65% range)
+         - Visual verification: Highlighted zone in LOWER ABDOMEN/PELVIC BOWL area ✓
+         - NOT near knees ✓
+         - One-zone-only behavior: CONFIRMED ✓
+      
+      ⚠️  SECTION 3: /fascia-stretching (ATTEMPTED)
+         - Pelvis + Lower Belly region: NOT AVAILABLE
+         - Available regions: Solar Core, Heart + Chest, Throat + Jaw
+         - Note: This is expected behavior - different practices focus on different body regions
+      
+      POSITION EVIDENCE:
+      - Canvas dimensions: 210px × 420px
+      - Pelvis zone top edge: 50.0% from canvas top
+      - Pelvis zone center: 55.1% from canvas top
+      - Pelvis zone size: ~16-20% width × ~8-10% height
+      - Horizontal position: Centered (~40-50% from left)
+      
+      COMPARISON TO OTHER REGIONS (from code):
+      - Brow/Crown: 11% from top (head area)
+      - Throat/Jaw: 30% from top (throat area)
+      - Heart/Chest: 36% from top (chest area)
+      - Solar Core: 43% from top (upper abdomen)
+      - Pelvis/Womb: 57% from top (LOWER ABDOMEN/PELVIC BOWL) ✓
+      - Feet/Legs: 82% from top (legs/feet area)
+      
+      VALIDATION VERDICT: ✅ PASS
+      
+      The pelvis/lower-belly highlight is correctly positioned at 55.1% from top, which places it firmly in the lower abdomen/pelvic bowl area. This is significantly ABOVE the knees area (which would be 75%+ from top) and appropriately BELOW the solar core/upper abdomen (43% from top).
+      
+      One-zone-only behavior is properly enforced across all tested sections. Clicking different region chips correctly switches the highlight to only the newly selected zone.
+      
+      NO ACTION ITEMS REQUIRED. Pelvis/lower-belly highlight placement is correct and production-ready.
+
   - agent: "testing"
     message: |
       ✅ EMBODIMENT MAP CHAKRA COLOR VALIDATION COMPLETE (2026-07-04):
