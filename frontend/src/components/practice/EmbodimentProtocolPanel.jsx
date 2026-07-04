@@ -14,6 +14,74 @@ const ANATOMY_MODE_BASE_IMAGES = {
   healing: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c6ad4e7774ec38340bb32da1038f9e09388b81e1f36a207951b7f337b263c4cf.png",
 };
 
+const INTEGRATED_ATLAS_PANELS = [
+  {
+    key: "skeletal",
+    label: "Skeletal",
+    image: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/504d793ad49eb9ac8ea7bdb0f3e3a118e126da0003b486f9b8d6488bc441081d.png",
+    description: "Bones, stability, alignment",
+  },
+  {
+    key: "muscle",
+    label: "Muscle",
+    image: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/86b7d8b24966f579bca2a232f1136218841ddf797fb939fc90b740617a486951.png",
+    description: "Strength, movement, support",
+  },
+  {
+    key: "fascia",
+    label: "Fascia",
+    image: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/fb718661a5c6ae14e37d015a70b7d010ada537ada9c88e39932053c87876e11b.png",
+    description: "Connective web, tension pathways",
+  },
+  {
+    key: "organs",
+    label: "Organs",
+    image: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/1b2fef635d9743f4db4ac453141377bbf9c468fa67e43e404c30f29a09f38d07.png",
+    description: "Internal systems & vitality",
+  },
+  {
+    key: "lymphatic",
+    label: "Lymphatic",
+    image: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a9eddd9382f8af8e924d30ed893aff2daca42dccb6ff01041fd87b4260f1a83e.png",
+    description: "Detox, immunity, fluid pathways",
+  },
+  {
+    key: "chakra",
+    label: "Chakras",
+    image: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c1c0d2d88901446aa1fa6dbd159d461b3370fec78dc5a6392aa961a2f403c01e.png",
+    description: "Energy centers & consciousness",
+  },
+  {
+    key: "meridian",
+    label: "Meridians",
+    image: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9d02c5eb65c75ca03313a7059724c784a75d38c655b8eb2ea01bcc3b4d78ecb8.png",
+    description: "Flow channels & regulation",
+  },
+  {
+    key: "emotional",
+    label: "Emotional",
+    image: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/f0016e490c3740e7b03ba6090c46e202927bb5a1bf26b3cb2f25a9a751f3a16d.png",
+    description: "Emotion-body mapping",
+  },
+];
+
+const INTEGRATED_ATLAS_LAYOUT_BY_MODE = {
+  chakra: ["chakra", "meridian", "emotional", "fascia", "lymphatic", "organs"],
+  fascia: ["fascia", "muscle", "skeletal", "lymphatic", "meridian", "emotional"],
+  muscle: ["muscle", "skeletal", "fascia", "organs", "balance", "chakra"],
+  organ: ["organs", "lymphatic", "meridian", "chakra", "emotional", "fascia"],
+  meridian: ["meridian", "chakra", "organs", "lymphatic", "emotional", "fascia"],
+  emotional: ["emotional", "chakra", "organs", "meridian", "fascia", "muscle"],
+  balance: ["skeletal", "muscle", "fascia", "chakra", "meridian", "organs"],
+  healing: ["organs", "lymphatic", "chakra", "meridian", "emotional", "fascia"],
+};
+
+const getIntegratedAtlasPanelsForMode = (anatomyMode) => {
+  const keyOrder = INTEGRATED_ATLAS_LAYOUT_BY_MODE[anatomyMode] || ["fascia", "muscle", "organs", "chakra", "meridian", "emotional"];
+  const panelMap = new Map(INTEGRATED_ATLAS_PANELS.map((panel) => [panel.key, panel]));
+  return keyOrder.map((key) => panelMap.get(key)).filter(Boolean);
+};
+
 const normalizeElement = (value) => String(value || "Spirit").trim();
 const normalizeChakraKey = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z]+/g, "_");
 const normalizeAnatomyMode = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z]+/g, "_");
@@ -620,6 +688,7 @@ export const EmbodimentProtocolPanel = ({
     if (SUPPORTED_ANATOMY_MODES.has(safeRequestedMode)) return safeRequestedMode;
     return inferAnatomyModeFromContext(safePractice, safeElement, safeChakraKey, fasciaMode);
   }, [safeRequestedMode, safePractice, safeElement, safeChakraKey, fasciaMode]);
+  const integratedAtlasPanels = useMemo(() => getIntegratedAtlasPanelsForMode(resolvedAnatomyMode), [resolvedAnatomyMode]);
 
   const threeStep = buildThreeStep(safePractice, safeElement);
   const sevenDay = buildSevenDay(safePractice);
@@ -667,6 +736,34 @@ export const EmbodimentProtocolPanel = ({
       <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-body-map-simple-note`}>
         Interactive body map is simplified for clarity. Tap a region to explore the physical, emotional, energetic, and spiritual layers.
       </p>
+
+      <section className="rounded-xl border border-amber-500/20 bg-[#1a1410] p-4" data-testid={`${testIdPrefix}-integrated-atlas-board`}>
+        <h4 className="text-sm font-medium text-amber-100 mb-1">Integrated Anatomy Atlas</h4>
+        <p className="text-xs text-amber-200/75 mb-3">True layered diagram references (fascia, muscle, organs, meridians, chakras, emotions).</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {integratedAtlasPanels.map((panel) => (
+            <article
+              key={`${testIdPrefix}-atlas-${panel.key}`}
+              className="rounded-lg border border-amber-300/15 bg-black/25 overflow-hidden"
+              data-testid={`${testIdPrefix}-atlas-panel-${panel.key}`}
+            >
+              <div className="relative aspect-[3/4]">
+                <img
+                  src={panel.image}
+                  alt={`${panel.label} anatomy reference`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading="lazy"
+                  data-testid={`${testIdPrefix}-atlas-image-${panel.key}`}
+                />
+              </div>
+              <div className="p-2">
+                <p className="text-[11px] uppercase tracking-wider text-amber-100">{panel.label}</p>
+                <p className="text-[11px] text-amber-200/75">{panel.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <div className="grid md:grid-cols-2 gap-3" data-testid={`${testIdPrefix}-options-grid`}>
         <div className="rounded-lg border border-white/10 bg-black/20 p-3" data-testid={`${testIdPrefix}-three-step`}>
