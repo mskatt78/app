@@ -16029,3 +16029,88 @@ agent_communication:
       
       NO CRITICAL ISSUES. NO ACTION ITEMS REQUIRED. Feature is production-ready.
 
+
+  - agent: "testing"
+    message: |
+      ✅ ANATOMY-MODE IMAGE-BACKED DIAGRAMS VALIDATION COMPLETE (2026-07-04):
+      
+      Comprehensive validation of updated anatomy-mode image-backed diagrams completed on preview URL.
+      
+      VALIDATION REQUIREMENTS:
+      1. Verify correct image URLs for 5 routes (fascia, chakra, muscle, organ, meridian)
+      2. Confirm fascia overlay present on /fascia-stretching
+      3. Confirm chakra highlights work on /chakra-cleansing
+      4. Verify one-zone highlight behavior remains
+      5. Confirm no runtime errors
+      
+      TEST RESULTS - IMAGE URL VERIFICATION (5/5 PASSED):
+      
+      ✅ ROUTE 1: /fascia-stretching
+         - Expected image ending: fb718661a5c6ae14e37d015a70b7d010ada537ada9c88e39932053c87876e11b.png
+         - Status: FOUND ✓
+         - Full URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/fb718661a5c6ae14e37d015a70b7d010ada537ada9c88e39932053c87876e11b.png
+         - Alt text: "fascia anatomical map"
+         - Dimensions: 208x418
+         - Fascia overlay testid: PRESENT (fascia-web-overlay found)
+      
+      ✅ ROUTE 2: /chakra-cleansing
+         - Expected image ending: c1c0d2d88901446aa1fa6dbd159d461b3370fec78dc5a6392aa961a2f403c01e.png
+         - Status: FOUND ✓
+         - Full URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c1c0d2d88901446aa1fa6dbd159d461b3370fec78dc5a6392aa961a2f403c01e.png
+         - Alt text: "chakra anatomical map"
+         - Dimensions: 208x418
+         - Chakra highlights: WORKING (tested with Causal Chakra Cleansing practice)
+      
+      ✅ ROUTE 3: /chair-yoga
+         - Expected image ending: 86b7d8b24966f579bca2a232f1136218841ddf797fb939fc90b740617a486951.png
+         - Status: FOUND ✓
+         - Full URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/86b7d8b24966f579bca2a232f1136218841ddf797fb939fc90b740617a486951.png
+         - Alt text: "muscle anatomical map"
+         - Dimensions: 208x418
+      
+      ✅ ROUTE 4: /water-practices
+         - Expected image ending: 1b2fef635d9743f4db4ac453141377bbf9c468fa67e43e404c30f29a09f38d07.png
+         - Status: FOUND ✓
+         - Full URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/1b2fef635d9743f4db4ac453141377bbf9c468fa67e43e404c30f29a09f38d07.png
+         - Alt text: "organ anatomical map"
+         - Dimensions: 208x418
+      
+      ✅ ROUTE 5: /energy-healing
+         - Expected image ending: 9d02c5eb65c75ca03313a7059724c784a75d38c655b8eb2ea01bcc3b4d78ecb8.png
+         - Status: FOUND ✓
+         - Full URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9d02c5eb65c75ca03313a7059724c784a75d38c655b8eb2ea01bcc3b4d78ecb8.png
+         - Alt text: "meridian anatomical map"
+         - Dimensions: 208x418
+      
+      ONE-ZONE HIGHLIGHT BEHAVIOR VERIFICATION:
+      ✅ Region chips present and functional on /fascia-stretching
+      ✅ Clicking different region chips switches active state correctly
+      ✅ Visual verification: Screenshots confirm only one region chip has active styling at a time
+      ✅ Region chips tested: SOLAR CORE, HEART + CHEST, THROAT + JAW
+      
+      RUNTIME ERRORS CHECK:
+      ✅ No error messages detected on any tested route
+      ✅ No console-breaking errors
+      ✅ All modals open and close cleanly
+      
+      CODE VERIFICATION:
+      ✅ ANATOMY_MODE_BASE_IMAGES object in EmbodimentProtocolPanel.jsx (lines 6-14) contains all 5 required image URLs
+      ✅ Image URLs match exactly with review request specifications
+      ✅ anatomyMode prop correctly set on all tested routes:
+         - FasciaStretching.jsx: anatomyMode="fascia"
+         - ChakraDetailModal.jsx: anatomyMode="chakra"
+         - ChairYoga.jsx: anatomyMode="muscle"
+         - WaterPractices.jsx: anatomyMode="organ"
+         - EnergyHealing.jsx: anatomyMode="meridian"
+      
+      VALIDATION SUMMARY: 5/5 ROUTES PASSED (100%)
+      
+      ALL VALIDATION CRITERIA MET:
+      1. ✅ Correct image URLs verified for all 5 routes
+      2. ✅ Fascia overlay present on /fascia-stretching with correct testid
+      3. ✅ Chakra highlights working on /chakra-cleansing
+      4. ✅ One-zone highlight behavior remains functional
+      5. ✅ No runtime errors detected
+      
+      NO CRITICAL ISSUES. NO ACTION ITEMS REQUIRED. Feature is production-ready.
+

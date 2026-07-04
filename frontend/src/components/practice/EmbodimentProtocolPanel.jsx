@@ -3,6 +3,17 @@ import { Activity, CalendarDays, Footprints, HeartPulse, Sparkles, TimerReset } 
 
 const ANATOMICAL_BODYMAP_IMAGE = "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6ed46ee0b34945fb844f1bc345a71268d9f69a8656ab6fced3cc0f4aa540165a.png";
 
+const ANATOMY_MODE_BASE_IMAGES = {
+  chakra: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c1c0d2d88901446aa1fa6dbd159d461b3370fec78dc5a6392aa961a2f403c01e.png",
+  fascia: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/fb718661a5c6ae14e37d015a70b7d010ada537ada9c88e39932053c87876e11b.png",
+  muscle: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/86b7d8b24966f579bca2a232f1136218841ddf797fb939fc90b740617a486951.png",
+  organ: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/1b2fef635d9743f4db4ac453141377bbf9c468fa67e43e404c30f29a09f38d07.png",
+  meridian: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9d02c5eb65c75ca03313a7059724c784a75d38c655b8eb2ea01bcc3b4d78ecb8.png",
+  emotional: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/f0016e490c3740e7b03ba6090c46e202927bb5a1bf26b3cb2f25a9a751f3a16d.png",
+  balance: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/2f119999561afa0d2342c8a8de7931366bafdf29fca5d94727fe37684b45296f.png",
+  healing: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c6ad4e7774ec38340bb32da1038f9e09388b81e1f36a207951b7f337b263c4cf.png",
+};
+
 const normalizeElement = (value) => String(value || "Spirit").trim();
 const normalizeChakraKey = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z]+/g, "_");
 const normalizeAnatomyMode = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z]+/g, "_");
@@ -349,6 +360,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, a
   const focusY = (focusZone.y / 100) * canvasHeight;
   const translateX = (canvasWidth / 2 - focusX) * 0.55;
   const translateY = (canvasHeight / 2 - focusY) * 0.55;
+  const modeBaseImage = ANATOMY_MODE_BASE_IMAGES[anatomyMode] || ANATOMICAL_BODYMAP_IMAGE;
 
   return (
     <div className="rounded-xl border border-violet-500/20 bg-violet-500/10 p-4" data-testid={`${testIdPrefix}-interactive-body-map`}>
@@ -361,8 +373,8 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, a
             data-testid={`${testIdPrefix}-diagram-focus-zoom`}
           >
             <img
-              src={ANATOMICAL_BODYMAP_IMAGE}
-              alt="Simple highlighted body map"
+              src={modeBaseImage}
+              alt={`${anatomyMode} anatomical map`}
               className="absolute inset-0 w-full h-full object-contain opacity-85"
               data-testid={`${testIdPrefix}-diagram-anatomical-image`}
             />
