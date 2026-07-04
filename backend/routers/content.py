@@ -317,9 +317,9 @@ PRACTICE_IMAGE_FALLBACKS: dict[str, str] = {
 YOGA_REALISM_IMAGE_OVERRIDES: dict[str, str] = {
     "mountain pose": "https://images.pexels.com/photos/3822906/pexels-photo-3822906.jpeg?auto=compress&cs=tinysrgb&w=900",
     "tree pose": "https://images.pexels.com/photos/8436521/pexels-photo-8436521.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "warrior i": "https://images.pexels.com/photos/8436724/pexels-photo-8436724.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "warrior ii": "https://images.pexels.com/photos/8436734/pexels-photo-8436734.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "warrior iii": "https://images.unsplash.com/photo-1665214037157-9e5abe7dc448?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "warrior i": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/40d4a921d74510e183b689d880a200f1fea92e601da0a1e4ab65bcd813d74cf3.png",
+    "warrior ii": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/13846b6540f84776e5cdb22e2d6a9565ae97b8be4148b2e825f404f85f75f717.png",
+    "warrior iii": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0f3360689b3fac1592f4a202c41df55a7f3726714c09ac2b5aa25527e6389d91.png",
     "reverse warrior": "https://images.pexels.com/photos/4662438/pexels-photo-4662438.jpeg?auto=compress&cs=tinysrgb&w=900",
     "extended side angle": "https://images.pexels.com/photos/8436718/pexels-photo-8436718.jpeg?auto=compress&cs=tinysrgb&w=900",
     "standing forward fold": "https://images.pexels.com/photos/6456149/pexels-photo-6456149.jpeg?auto=compress&cs=tinysrgb&w=900",

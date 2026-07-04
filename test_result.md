@@ -16880,3 +16880,48 @@ agent_communication:
       CONCLUSION:
       Badge behavior is CORRECT and working as designed. "Verified Source" badge only appears for wikimedia_commons_verified sources. However, the hero image content does not accurately represent Warrior I pose - it shows meditation poses instead of the standing warrior pose. This is a content accuracy issue, not a badge or broken image issue.
 
+
+  - agent: "main"
+    message: |
+      Fixed Warrior I hero image to show explicit Warrior I standing pose. Updated image source to use Emergent CDN with correct Warrior I asana photo showing front knee bent, rear leg straight, and both arms overhead. Requesting final verification.
+
+test_plan:
+  current_focus:
+    - "Warrior I modal final verification - hero image fix"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+  - agent: "testing"
+    message: |
+      ✅✅✅ WARRIOR I MODAL FINAL VERIFICATION PASSED (2026-07-04):
+      
+      Comprehensive final verification completed on /yoga-library (route: /yoga) for Warrior I modal.
+      
+      STRICT PASS/FAIL CHECKLIST:
+      1) ✅ PASS - Open Warrior I modal: Modal opens successfully when clicking pose card
+      2) ✅ PASS - Hero image shows explicit Warrior I standing shape:
+         - Front knee bent: ✓ (left leg forward with bent knee)
+         - Rear leg straight: ✓ (right leg back, fully extended)
+         - Both arms overhead: ✓ (arms raised above head)
+         - Standing pose: ✓ (NOT sitting/meditation)
+      3) ✅ PASS - No misleading 'Verified Source' badge: Badge correctly NOT shown for non-wikimedia image_source
+      4) ✅ PASS - No broken images: Hero image loaded successfully (848x1264 dimensions)
+      
+      TECHNICAL DETAILS:
+      - Image URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/40d4a921d74510e183b689d880a200f1fea92e601da0a1e4ab65bcd813d74cf3.png
+      - Image dimensions: 848x1264 (portrait orientation)
+      - Image status: Loaded successfully (naturalWidth > 0)
+      - Verified Source badge: NOT present (correct)
+      - Pending Source badge: NOT present
+      - Pose name confirmed: "Warrior I"
+      
+      SCREENSHOTS CAPTURED:
+      - warrior-i-verification-initial.png (yoga library page)
+      - warrior-i-modal-opened.png (modal with hero image)
+      - warrior-i-modal-final.png (final state)
+      
+      FINAL VERDICT: ✅✅✅ STRICT PASS
+      
+      All 4 requirements met. Hero image now correctly depicts Warrior I standing pose with accurate anatomical positioning (front knee bent, rear leg straight, both arms overhead). No misleading badges present. No broken images detected. Fix is PRODUCTION-READY.
+
