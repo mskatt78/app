@@ -315,7 +315,7 @@ PRACTICE_IMAGE_FALLBACKS: dict[str, str] = {
 }
 
 YOGA_REALISM_IMAGE_OVERRIDES: dict[str, str] = {
-    "mountain pose": "https://images.pexels.com/photos/3822906/pexels-photo-3822906.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "mountain pose": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/8f26fde74d308a156a30442cbc2eaf5c4354ea4cfac73c38bfbd15983bbdf0c8.png",
     "tree pose": "https://images.pexels.com/photos/8436521/pexels-photo-8436521.jpeg?auto=compress&cs=tinysrgb&w=900",
     "warrior i": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/40d4a921d74510e183b689d880a200f1fea92e601da0a1e4ab65bcd813d74cf3.png",
     "warrior ii": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/13846b6540f84776e5cdb22e2d6a9565ae97b8be4148b2e825f404f85f75f717.png",
