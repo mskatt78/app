@@ -389,7 +389,7 @@ const YogaLibrary = ({ user, api }) => {
                       </span>
                     )}
 
-                    {(pose.image_source === "wikimedia_commons_verified" || pose.content_integrity?.verified) && (
+                    {(pose.image_source === "wikimedia_commons_verified") && (
                       <span
                         className="absolute bottom-3 right-3 px-2 py-1 rounded-full text-[10px] bg-black/55 text-emerald-200 border border-emerald-300/30 backdrop-blur-sm"
                         data-testid={`verified-source-badge-${pose.id}`}
@@ -489,7 +489,7 @@ const YogaLibrary = ({ user, api }) => {
                     <span className={`px-3 py-1 rounded-full text-xs ${elementColors[selectedPose.element]?.bg} ${elementColors[selectedPose.element]?.text} border ${elementColors[selectedPose.element]?.border}`}>
                       {selectedPose.element}
                     </span>
-                    {(selectedPose.image_source === "wikimedia_commons_verified" || selectedPose.content_integrity?.verified) && (
+                    {(selectedPose.image_source === "wikimedia_commons_verified") && (
                       <span
                         className="px-2 py-1 rounded-full text-[10px] bg-black/55 text-emerald-200 border border-emerald-300/30 backdrop-blur-sm"
                         data-testid="selected-pose-verified-source-badge"

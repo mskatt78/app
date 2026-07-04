@@ -15914,7 +15914,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Partner Yoga & Yoga Library image realism validation - COMPLETED"
+    - "Warrior I modal verification - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -16839,4 +16839,44 @@ agent_communication:
       SCREENSHOT: partner-yoga-final-validation.png
       
       FINAL VERDICT: ✅ PASS - p1 now shows single realistic partner yoga photo, no broken images detected.
+
+  - agent: "testing"
+    message: |
+      ⚠️ WARRIOR I MODAL VERIFICATION COMPLETED (2026-07-04):
+      
+      Re-tested /yoga-library (route: /yoga) focusing on Warrior I modal from screenshot context.
+      
+      VERIFICATION CHECKLIST:
+      1) ✅ Open Warrior I detail modal: PASS - Modal opens successfully
+      2) ⚠️ Hero image is realistic asana pose: PARTIAL FAIL - Image is realistic photo from Pexels but shows people sitting in meditation poses, NOT Warrior I standing pose
+      3) ✅ "Verified Source" badge behavior: PASS - Badge correctly NOT shown (image_source=real_asana_curated, NOT wikimedia_commons_verified)
+      4) ✅ No misleading badge for real_asana_curated: PASS - No "Verified Source" badge present
+      5) ✅ No broken images: PASS - Hero image loads successfully (naturalWidth > 0)
+      
+      EXACT OBSERVED STATE FOR WARRIOR I:
+      - Pose ID: warrior-1
+      - Image Source: real_asana_curated
+      - Modal Badge State: NONE (no badge displayed)
+      - Hero Image URL: https://images.pexels.com/photos/8436724/pexels-photo-8436724.jpeg?auto=compress&cs=tinysrgb&w=900
+      - Hero Image Status: Loaded successfully (not broken)
+      - Visual Content: Shows people in yoga studio sitting in meditation poses (NOT Warrior I standing pose)
+      
+      BADGE VERIFICATION RESULT:
+      ✅ PASS - Badge logic is correct:
+         - image_source = "real_asana_curated" (NOT "wikimedia_commons_verified")
+         - Badge displayed = NONE (correct - no "Verified Source" badge shown)
+         - No misleading "Verified Source" badge present
+      
+      CONTENT ACCURACY ISSUE:
+      ⚠️ MINOR ISSUE - Hero image shows meditation poses instead of Warrior I standing pose:
+         - Expected: Person in Warrior I pose (standing, arms raised, front leg bent, back leg straight)
+         - Actual: People sitting in meditation poses in yoga studio
+         - Image is realistic and professional quality, but does NOT depict the correct asana
+      
+      SCREENSHOTS CAPTURED:
+      - yoga-page-initial.png
+      - warrior-i-modal.png
+      
+      CONCLUSION:
+      Badge behavior is CORRECT and working as designed. "Verified Source" badge only appears for wikimedia_commons_verified sources. However, the hero image content does not accurately represent Warrior I pose - it shows meditation poses instead of the standing warrior pose. This is a content accuracy issue, not a badge or broken image issue.
 
