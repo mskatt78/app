@@ -16,7 +16,7 @@ const partnerPoses = [
     element: "Water",
     difficulty: "Beginner",
     duration: 5,
-    image_url: "https://images.pexels.com/photos/4127317/pexels-photo-4127317.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.pexels.com/photos/8436521/pexels-photo-8436521.jpeg?auto=compress&cs=tinysrgb&w=900",
     description: "Sit back-to-back or facing each other and gently assist your partner into a deep forward fold. This builds trust and deepens the stretch for both.",
     instructions: [
       "Sit facing each other with legs extended straight, feet touching or overlapping",
@@ -36,7 +36,7 @@ const partnerPoses = [
     element: "Fire",
     difficulty: "Intermediate",
     duration: 3,
-    image_url: "https://images.pexels.com/photos/7593000/pexels-photo-7593000.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.pexels.com/photos/6456155/pexels-photo-6456155.jpeg?auto=compress&cs=tinysrgb&w=900",
     description: "Sit facing your partner, hold hands, and lift both sets of legs to create a diamond shape between you. Builds core strength and requires synchronized effort.",
     instructions: [
       "Sit facing your partner, knees bent, toes touching",
@@ -57,7 +57,7 @@ const partnerPoses = [
     element: "Earth",
     difficulty: "Beginner",
     duration: 3,
-    image_url: "https://images.pexels.com/photos/5837039/pexels-photo-5837039.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.unsplash.com/photo-1766069565396-b63c9254bbf0?crop=entropy&cs=srgb&fm=jpg&q=85",
     description: "Stand side by side and balance together, with each person bringing the inner foot up and wrapping inner arms. Creates stability through connection.",
     instructions: [
       "Stand side by side with your inside shoulders touching",
@@ -79,7 +79,7 @@ const partnerPoses = [
     element: "Air",
     difficulty: "Advanced",
     duration: 5,
-    image_url: "https://images.pexels.com/photos/4971855/pexels-photo-4971855.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.pexels.com/photos/8436530/pexels-photo-8436530.jpeg?auto=compress&cs=tinysrgb&w=900",
     description: "One partner (the base) lies on their back with feet raised; the flyer balances on the base's feet while arching into a backbend. Requires trust, core strength, and communication.",
     instructions: [
       "BASE: Lie on your back, arms extended alongside body, knees bent. Press feet toward the ceiling, slightly wider than hip-width",
@@ -322,7 +322,7 @@ const partnerPoses = [
     element: "Earth",
     difficulty: "Beginner",
     duration: 6,
-    image_url: "https://images.pexels.com/photos/8436530/pexels-photo-8436530.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.unsplash.com/photo-1527701758614-2b486f8c0d29?crop=entropy&cs=srgb&fm=jpg&q=85",
     description: "Standing balance and quad stretch with mutual support for safety.",
     instructions: [
       "Face each other and hold forearms.",
@@ -341,7 +341,7 @@ const partnerPoses = [
     element: "Spirit",
     difficulty: "Beginner",
     duration: 10,
-    image_url: "https://images.pexels.com/photos/6455859/pexels-photo-6455859.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.pexels.com/photos/8436496/pexels-photo-8436496.jpeg?auto=compress&cs=tinysrgb&w=900",
     description: "Deep co-regulated rest with hand-to-heart grounding and integration breath.",
     instructions: [
       "Lie side by side in savasana.",
@@ -360,7 +360,7 @@ const partnerPoses = [
     element: "Spirit",
     difficulty: "Intermediate",
     duration: 9,
-    image_url: "https://images.pexels.com/photos/6455760/pexels-photo-6455760.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.pexels.com/photos/6455760/pexels-photo-6455760.jpeg?auto=compress&cs=tinysrgb&w=900",
     description: "Flowing partner sequence combining breath and movement for relational coherence.",
     instructions: [
       "Stand with palms connected.",
@@ -576,6 +576,7 @@ const PartnerYoga = ({ user, api }) => {
                     alt={pose.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
+                    data-testid={`partner-pose-image-${pose.id}`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   <span className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs border backdrop-blur-sm ${difficultyColors[pose.difficulty]}`}>

@@ -15904,7 +15904,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Single-main-atlas interaction validation - COMPLETED"
+    - "Partner Yoga & Yoga Library image realism validation - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -16538,4 +16538,171 @@ agent_communication:
       5. ✅ No runtime errors, map remains responsive
       
       NO CRITICAL ISSUES. NO ACTION ITEMS REQUIRED. Feature is production-ready.
+
+
+  - agent: "testing"
+    message: |
+      ❌ PARTNER YOGA & YOGA LIBRARY IMAGE REALISM VALIDATION (2026-07-04):
+      
+      Comprehensive image realism validation completed on /partner-yoga and /yoga-library pages.
+      
+      VALIDATION REQUIREMENTS:
+      1) Partner yoga cards display realistic pose photos and no obvious mismatched non-yoga imagery
+      2) Specifically verify "Partner Warrior Anchor" and "Partner Standing Quad Stretch" cards show realistic matching partner-yoga-like photos
+      3) Yoga Library cards (sample warrior/tree/bridge/forward-fold) show real asana photos and not generic placeholders
+      4) No broken images shown in these pages
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      PART 1: PARTNER YOGA PAGE (/partner-yoga)
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      OVERALL STATUS: ❌ FAIL - Multiple image mismatches detected
+      
+      TECHNICAL METRICS:
+      - Total cards found: 18
+      - Total images found: 18
+      - Images loaded successfully: 18/18 (100%)
+      - Broken images: 0
+      
+      SPECIFIC CHECKS (REQUESTED POSES):
+      
+      1) ❌ "Partner Warrior Anchor" (p15):
+         - Card found: ✓
+         - Image loaded: ✓
+         - Image source: https://images.pexels.com/photos/6456155/pexels-photo-6456155.jpeg?auto=compress&cs=tinysrgb&w=800
+         - ISSUE: Image shows a person with a DUMBBELL in a gym setting (NOT partner yoga)
+         - Expected: Two people doing warrior pose together with hand anchor
+         - Verdict: ❌ MISMATCH - Non-partner yoga image
+      
+      2) ✅ "Partner Standing Quad Stretch" (p16):
+         - Card found: ✓
+         - Image loaded: ✓
+         - Image source: https://images.unsplash.com/photo-1527701758614-2b486f8c0d29?crop=entropy&cs=srgb&fm=jpg&q=85
+         - Image shows: Two people in purple/black athletic wear doing standing quad stretch pose together
+         - Verdict: ✅ PASS - Realistic partner yoga photo
+      
+      ADDITIONAL MISMATCHES FOUND (Visual inspection of screenshots):
+      
+      3) ❌ "Double Boat Pose" (p2):
+         - Image shows: Person with a DUMBBELL (NOT partner yoga)
+         - Expected: Two people doing boat pose together
+         - Verdict: ❌ MISMATCH - Non-partner yoga image
+      
+      4) ⚠️ "Partner Seated Forward Fold" (p1):
+         - Image shows: Grid of 4 small images (appears to be a collage)
+         - Expected: Single clear photo of partner forward fold
+         - Verdict: ⚠️ UNCLEAR - May not be a realistic single partner yoga photo
+      
+      5) ❌ "Partner Reclined Twist" (p13):
+         - Image shows: Solo person lying down (appears to be individual, not partner)
+         - Expected: Two people doing reclined twist together
+         - Verdict: ❌ MISMATCH - Solo pose, not partner yoga
+      
+      6) ❌ "Partner Supported Bridge" (p14):
+         - Image shows: Solo person in gym setting (appears to be individual, not partner)
+         - Expected: Two people doing bridge pose with support
+         - Verdict: ❌ MISMATCH - Solo pose, not partner yoga
+      
+      PASSES (Realistic partner yoga photos):
+      - ✅ "Partner Standing Quad Stretch" (p16) - Two people doing quad stretch
+      - ✅ "Partner Restorative Savasana" (p17) - Two people lying in savasana
+      - ✅ "Partner Heart Coherence Flow" (p18) - Two people standing together
+      
+      SUMMARY: 5-6 MISMATCHES out of 18 cards (28-33% failure rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      PART 2: YOGA LIBRARY PAGE (/yoga-library)
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      OVERALL STATUS: ⚠️ MOSTLY PASS - One mismatch detected
+      
+      TECHNICAL METRICS:
+      - Total cards found: 78
+      - Total images found: 78
+      - Images loaded successfully: 78/78 (100%)
+      - Broken images: 0
+      - All images have "Verified Source" badges ✓
+      
+      SAMPLE POSES VERIFICATION (warrior/tree/bridge/forward-fold):
+      
+      ✅ WARRIOR POSES:
+      - "Warrior I" - Realistic asana photo ✓
+      - "Warrior II" - Realistic asana photo ✓
+      - "Warrior III" - Realistic asana photo ✓
+      - "Reverse Warrior" - Realistic asana photo ✓
+      - "Seated Warrior" - Found in list ✓
+      
+      ✅ TREE POSES:
+      - "Tree Pose" - Realistic asana photo ✓
+      - "Seated Tree Pose" - Found in list ✓
+      
+      ✅ BRIDGE POSE:
+      - "Bridge Pose" - Realistic asana photo ✓
+      
+      ✅ FORWARD FOLD POSES:
+      - "Standing Forward Fold" - Realistic asana photo ✓
+      - "Wide-Legged Forward Fold" - Realistic asana photo ✓
+      - "Seated Forward Fold" - Found in list ✓
+      
+      ADDITIONAL POSES VERIFIED:
+      - ✅ "Mountain Pose" - Realistic asana photo ✓
+      - ✅ "Upward Facing Dog" - Realistic asana photo ✓
+      - ✅ "Boat Pose" - Realistic asana photo ✓
+      - ✅ "Plank Pose" - Realistic asana photo ✓
+      - ✅ "Side Plank" - Realistic asana photo ✓
+      - ✅ "Extended Triangle" - Realistic asana photo ✓
+      - ✅ "Goddess Pose" - Realistic asana photo ✓
+      - ✅ "Half Moon Pose" - Realistic asana photo ✓
+      
+      MISMATCH FOUND:
+      
+      ❌ "Cobra Pose":
+         - Image shows: CARTOON/ILLUSTRATION of a cobra (animated/drawn style)
+         - Expected: Realistic photo of person in cobra pose
+         - Verdict: ❌ MISMATCH - Cartoon illustration, not realistic asana photo
+      
+      SUMMARY: 1 MISMATCH out of 78 cards (1.3% failure rate)
+      
+      ═══════════════════════════════════════════════════════════════════════════════
+      FINAL VERDICT
+      ═══════════════════════════════════════════════════════════════════════════════
+      
+      PASS/FAIL BY REQUIREMENT:
+      
+      1) ❌ Partner yoga cards display realistic pose photos:
+         - FAIL - 5-6 cards show non-partner yoga imagery (dumbbells, solo poses)
+         - Mismatches: p15 (Warrior Anchor), p2 (Double Boat), p13 (Reclined Twist), p14 (Supported Bridge)
+      
+      2) ⚠️ Specific partner yoga cards:
+         - ❌ "Partner Warrior Anchor" (p15): Shows dumbbell, NOT partner yoga
+         - ✅ "Partner Standing Quad Stretch" (p16): Shows realistic partner yoga ✓
+      
+      3) ✅ Yoga Library sample poses show real asana photos:
+         - PASS - All requested sample poses (warrior/tree/bridge/forward-fold) show realistic photos
+         - Minor issue: 1 cartoon (Cobra Pose) out of 78 total
+      
+      4) ✅ No broken images:
+         - PASS - All images loaded successfully (0 broken images)
+      
+      CRITICAL ISSUES REQUIRING MAIN AGENT ACTION:
+      
+      1. PARTNER YOGA IMAGE MISMATCHES (HIGH PRIORITY):
+         - p15 "Partner Warrior Anchor": Replace dumbbell image with actual partner warrior pose
+         - p2 "Double Boat Pose": Replace dumbbell image with actual partner boat pose
+         - p13 "Partner Reclined Twist": Replace solo image with partner reclined twist
+         - p14 "Partner Supported Bridge": Replace solo image with partner bridge pose
+      
+      2. YOGA LIBRARY CARTOON IMAGE (LOW PRIORITY):
+         - "Cobra Pose": Replace cartoon illustration with realistic asana photo
+      
+      SCREENSHOTS CAPTURED:
+      - partner-yoga-initial.png
+      - partner-yoga-specific-poses.png
+      - partner-yoga-top-cards.png
+      - yoga-library-full-initial.png
+      - yoga-library-full-scrolled-1.png
+      - yoga-library-full-scrolled-2.png
+      
+      CONCLUSION:
+      Partner Yoga page has SIGNIFICANT image realism issues with 28-33% of cards showing non-partner yoga imagery. Yoga Library page is mostly correct with only 1 cartoon out of 78 poses. Main agent must update partner yoga image URLs to show actual partner yoga poses.
 
