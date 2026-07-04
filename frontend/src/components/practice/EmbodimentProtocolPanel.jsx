@@ -101,7 +101,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Sacral current · creativity, intimacy, fluidity",
     spiritual: "Holds consent, creativity, and the sacred yes/no of your embodied truth.",
     fascia: "Deep front line + psoas web often carry fear-freeze patterns and relational guarding.",
-    diagram: { front: { x: 50, y: 52 }, zone: { x: 50, y: 52, w: 13, h: 6 } },
+    diagram: { front: { x: 50, y: 54 }, zone: { x: 50, y: 54, w: 15, h: 8 } },
     cue: "Soften jaw and lower belly; ask what your body is protecting and what it now feels safe to release.",
   },
   solar_core: {
@@ -137,7 +137,7 @@ const BODY_WISDOM_LIBRARY = {
     energy: "Throat current · expression, resonance, authenticity",
     spiritual: "Purifies expression so your voice becomes medicine, not performance.",
     fascia: "Tongue-jaw-neck fascia often tighten when truth is withheld or conflict is feared.",
-    diagram: { front: { x: 50, y: 30 }, zone: { x: 50, y: 30, w: 12, h: 6 } },
+    diagram: { front: { x: 50, y: 30 }, zone: { x: 50, y: 30, w: 13, h: 8 } },
     cue: "Release the jaw and hum softly; ask what truth wants a clean and kind expression.",
   },
   brow_crown: {
