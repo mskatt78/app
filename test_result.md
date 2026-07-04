@@ -15889,7 +15889,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Anatomy-mode-specific embodiment diagrams validation - COMPLETED"
+    - "Enhanced anatomy overlays validation - COMPLETED"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -15940,4 +15940,35 @@ agent_communication:
       - /elemental-practices: Cards visible but clicking does not open modal with embodiment panel (different UX flow)
       
       NO CRITICAL ISSUES. Core anatomy-mode overlay functionality working correctly across all testable routes.
+
+  - agent: "testing"
+    message: |
+      ✅ ENHANCED ANATOMY OVERLAYS VALIDATION COMPLETE (2026-07-04):
+      
+      Focused frontend validation of enhanced anatomy overlays completed on preview URL across all 8 requested routes.
+      
+      COMPREHENSIVE PASS/FAIL MATRIX:
+      ✅ Fascia (/fascia-stretching) → fascia-web-overlay FOUND | Responsive: YES | Single Highlight: ENFORCED
+      ✅ Muscle - Chair Yoga (/chair-yoga) → muscle-overlay FOUND | Responsive: YES | Single Highlight: ENFORCED
+      ✅ Muscle - Somatic Yoga (/somatic-yoga) → muscle-overlay FOUND | Responsive: YES | Single Highlight: ENFORCED
+      ✅ Organ (/water-practices) → organ-overlay FOUND | Responsive: YES | Single Highlight: ENFORCED
+      ✅ Meridian (/energy-healing) → meridian-overlay FOUND | Responsive: YES | Single Highlight: ENFORCED
+      ✅ Emotional (/heart-practices) → emotional-overlay FOUND | Responsive: YES | Single Highlight: ENFORCED
+      ✅ Balance (/shamanic-practices) → balance-overlay FOUND | Responsive: YES | Single Highlight: ENFORCED
+      ✅ Healing (/healing-portals) → healing-overlay FOUND | Responsive: YES | Single Highlight: ENFORCED
+      
+      VALIDATION RESULTS: 8/8 ROUTES PASSED (100%)
+      
+      ALL THREE VALIDATION CRITERIA MET:
+      1. ✅ New overlays render correctly (all testids present and verified)
+      2. ✅ App remains responsive (no hangs/crashes while opening modals and switching region chips)
+      3. ✅ One selected highlight zone enforced (verified by clicking multiple region chips - only 1 zone highlighted at a time)
+      
+      TECHNICAL DETAILS:
+      - All anatomy-mode-specific SVG overlays render with correct testid patterns
+      - Region chip switching works smoothly across all routes
+      - Modal interactions are stable with no console errors
+      - Single-zone highlighting constraint properly enforced across all anatomy modes
+      
+      NO CRITICAL ISSUES. NO ACTION ITEMS REQUIRED. Feature is production-ready.
 

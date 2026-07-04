@@ -402,30 +402,50 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, a
             {anatomyMode === "fascia" && (
               <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-fascia-web-overlay`}>
                 <g stroke="rgba(245, 158, 11, 0.55)" strokeWidth="0.8" fill="none">
-                  <path d="M50 10 C40 22, 38 35, 50 50 C62 35, 60 22, 50 10 Z" />
-                  <path d="M50 50 C36 56, 33 67, 38 82" />
-                  <path d="M50 50 C64 56, 67 67, 62 82" />
-                  <path d="M50 50 C45 56, 44 66, 44 76" />
-                  <path d="M50 50 C55 56, 56 66, 56 76" />
+                  <path d="M50 8 C39 19, 36 33, 50 48 C64 33, 61 19, 50 8 Z" />
+                  <path d="M50 12 C44 20, 43 28, 50 36 C57 28, 56 20, 50 12 Z" />
+                  <path d="M50 48 C36 55, 33 67, 38 82" />
+                  <path d="M50 48 C64 55, 67 67, 62 82" />
+                  <path d="M50 48 C45 56, 44 66, 44 77" />
+                  <path d="M50 48 C55 56, 56 66, 56 77" />
+                  <path d="M50 48 C49 58, 49 70, 50 82" />
                   <path d="M38 82 C34 88, 33 93, 34 98" />
                   <path d="M62 82 C66 88, 67 93, 66 98" />
-                  <path d="M34 34 C28 40, 26 48, 27 58" />
-                  <path d="M66 34 C72 40, 74 48, 73 58" />
-                  <path d="M50 24 C42 28, 38 34, 34 42" />
-                  <path d="M50 24 C58 28, 62 34, 66 42" />
+                  <path d="M44 77 C42 84, 41 90, 42 96" />
+                  <path d="M56 77 C58 84, 59 90, 58 96" />
+                  <path d="M34 33 C28 40, 26 49, 27 59" />
+                  <path d="M66 33 C72 40, 74 49, 73 59" />
+                  <path d="M50 24 C42 28, 38 35, 34 44" />
+                  <path d="M50 24 C58 28, 62 35, 66 44" />
+                  <path d="M30 50 C36 52, 42 53, 50 53 C58 53, 64 52, 70 50" />
+                  <path d="M32 62 C38 63, 44 64, 50 64 C56 64, 62 63, 68 62" />
+                  <path d="M35 74 C40 75, 45 76, 50 76 C55 76, 60 75, 65 74" />
+                  <path d="M38 86 C42 87, 46 88, 50 88 C54 88, 58 87, 62 86" />
                 </g>
               </svg>
             )}
 
             {anatomyMode === "muscle" && (
               <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-muscle-overlay`}>
-                <g stroke="rgba(239, 68, 68, 0.55)" strokeWidth="1" fill="none">
-                  <path d="M45 18 C43 26, 42 34, 43 42" />
-                  <path d="M55 18 C57 26, 58 34, 57 42" />
-                  <path d="M42 44 C40 56, 40 68, 42 80" />
-                  <path d="M58 44 C60 56, 60 68, 58 80" />
-                  <path d="M36 34 C30 44, 30 56, 35 66" />
-                  <path d="M64 34 C70 44, 70 56, 65 66" />
+                <g stroke="rgba(239, 68, 68, 0.58)" strokeWidth="0.95" fill="none">
+                  <path d="M45 17 C43 24, 42 31, 43 39" />
+                  <path d="M55 17 C57 24, 58 31, 57 39" />
+                  <path d="M43 39 C40 46, 40 56, 43 66" />
+                  <path d="M57 39 C60 46, 60 56, 57 66" />
+                  <path d="M43 66 C40 74, 40 84, 43 95" />
+                  <path d="M57 66 C60 74, 60 84, 57 95" />
+                  <path d="M36 33 C30 42, 30 54, 35 66" />
+                  <path d="M64 33 C70 42, 70 54, 65 66" />
+                  <path d="M37 45 C34 52, 34 59, 37 66" />
+                  <path d="M63 45 C66 52, 66 59, 63 66" />
+                  <path d="M47 53 C46 58, 46 63, 47 68" />
+                  <path d="M53 53 C54 58, 54 63, 53 68" />
+                </g>
+                <g fill="rgba(239, 68, 68, 0.16)">
+                  <ellipse cx="43" cy="54" rx="3.2" ry="7.4" />
+                  <ellipse cx="57" cy="54" rx="3.2" ry="7.4" />
+                  <ellipse cx="43" cy="78" rx="3" ry="8" />
+                  <ellipse cx="57" cy="78" rx="3" ry="8" />
                 </g>
               </svg>
             )}
@@ -433,10 +453,18 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, a
             {anatomyMode === "organ" && (
               <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-organ-overlay`}>
                 <g stroke="rgba(236, 72, 153, 0.55)" strokeWidth="0.9" fill="rgba(236, 72, 153, 0.14)">
-                  <ellipse cx="50" cy="36" rx="11" ry="8" />
-                  <ellipse cx="46" cy="47" rx="7" ry="6" />
-                  <ellipse cx="54" cy="47" rx="7" ry="6" />
-                  <ellipse cx="50" cy="58" rx="10" ry="7" />
+                  <ellipse cx="50" cy="34" rx="10" ry="7" />
+                  <ellipse cx="44" cy="44" rx="6" ry="5" />
+                  <ellipse cx="56" cy="44" rx="6" ry="5" />
+                  <ellipse cx="50" cy="55" rx="9" ry="6" />
+                  <ellipse cx="46" cy="64" rx="5" ry="4" />
+                  <ellipse cx="54" cy="64" rx="5" ry="4" />
+                </g>
+                <g stroke="rgba(236, 72, 153, 0.45)" strokeWidth="0.7" fill="none">
+                  <path d="M50 27 C50 30, 50 33, 50 36" />
+                  <path d="M44 44 C46 47, 48 50, 50 52" />
+                  <path d="M56 44 C54 47, 52 50, 50 52" />
+                  <path d="M50 52 C50 56, 50 60, 50 64" />
                 </g>
               </svg>
             )}
@@ -445,10 +473,19 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, a
               <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-meridian-overlay`}>
                 <g stroke="rgba(56, 189, 248, 0.55)" strokeWidth="0.8" fill="none" strokeDasharray="2 2">
                   <path d="M50 8 C48 20, 48 35, 50 50 C52 65, 52 80, 50 98" />
-                  <path d="M42 20 C40 36, 40 52, 42 70" />
-                  <path d="M58 20 C60 36, 60 52, 58 70" />
-                  <path d="M34 30 C30 42, 30 58, 34 72" />
-                  <path d="M66 30 C70 42, 70 58, 66 72" />
+                  <path d="M42 14 C40 28, 40 44, 42 62 C43 72, 43 84, 42 96" />
+                  <path d="M58 14 C60 28, 60 44, 58 62 C57 72, 57 84, 58 96" />
+                  <path d="M34 22 C30 35, 30 52, 34 70 C35 79, 35 88, 34 97" />
+                  <path d="M66 22 C70 35, 70 52, 66 70 C65 79, 65 88, 66 97" />
+                  <path d="M26 34 C22 45, 22 58, 26 72" />
+                  <path d="M74 34 C78 45, 78 58, 74 72" />
+                </g>
+                <g fill="rgba(56, 189, 248, 0.35)">
+                  <circle cx="50" cy="22" r="1.1" />
+                  <circle cx="50" cy="38" r="1.1" />
+                  <circle cx="50" cy="54" r="1.1" />
+                  <circle cx="50" cy="70" r="1.1" />
+                  <circle cx="50" cy="86" r="1.1" />
                 </g>
               </svg>
             )}
@@ -459,6 +496,12 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, a
                   <circle cx="50" cy="36" r="9" />
                   <circle cx="50" cy="48" r="7" />
                   <circle cx="50" cy="62" r="8" />
+                  <circle cx="44" cy="62" r="4" />
+                  <circle cx="56" cy="62" r="4" />
+                </g>
+                <g stroke="rgba(16, 185, 129, 0.35)" strokeWidth="0.7" fill="none">
+                  <path d="M50 27 C46 32, 46 40, 50 45 C54 40, 54 32, 50 27 Z" />
+                  <path d="M50 48 C46 53, 46 60, 50 65 C54 60, 54 53, 50 48 Z" />
                 </g>
               </svg>
             )}
@@ -469,6 +512,16 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, a
                   <path d="M50 6 L50 98" />
                   <path d="M28 36 L72 36" />
                   <path d="M30 62 L70 62" />
+                  <path d="M34 82 L66 82" />
+                  <path d="M40 20 L60 20" />
+                  <path d="M38 36 L42 62" />
+                  <path d="M62 36 L58 62" />
+                </g>
+                <g fill="rgba(148, 163, 184, 0.25)">
+                  <circle cx="50" cy="20" r="1.4" />
+                  <circle cx="50" cy="36" r="1.4" />
+                  <circle cx="50" cy="62" r="1.4" />
+                  <circle cx="50" cy="82" r="1.4" />
                 </g>
               </svg>
             )}
@@ -479,6 +532,15 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, a
                   <path d="M50 14 C42 22, 42 34, 50 42 C58 34, 58 22, 50 14 Z" />
                   <path d="M50 44 C40 52, 40 64, 50 72 C60 64, 60 52, 50 44 Z" />
                   <path d="M50 74 C44 80, 44 89, 50 95 C56 89, 56 80, 50 74 Z" />
+                  <path d="M50 14 L50 95" />
+                  <path d="M42 30 C46 32, 54 32, 58 30" />
+                  <path d="M41 58 C45 60, 55 60, 59 58" />
+                  <path d="M44 85 C47 86, 53 86, 56 85" />
+                </g>
+                <g fill="rgba(34, 197, 94, 0.25)">
+                  <circle cx="50" cy="28" r="1.2" />
+                  <circle cx="50" cy="58" r="1.2" />
+                  <circle cx="50" cy="86" r="1.2" />
                 </g>
               </svg>
             )}
