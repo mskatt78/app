@@ -308,6 +308,7 @@ export default function EnergyHealing() {
                 <EmbodimentProtocolPanel
                   practiceName={selectedPractice.name}
                   element={selectedPractice.element || selectedPractice.modality || "Spirit"}
+                  anatomyMode="meridian"
                   testIdPrefix="energy-healing-embodiment"
                 />
 

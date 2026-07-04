@@ -229,6 +229,7 @@ export default function SomaticYoga() {
                 <EmbodimentProtocolPanel
                   practiceName={selectedPractice.name}
                   element={selectedPractice.element || "Earth"}
+                  anatomyMode="muscle"
                   testIdPrefix="somatic-yoga-embodiment"
                 />
 

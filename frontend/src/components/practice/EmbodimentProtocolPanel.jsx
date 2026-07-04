@@ -5,6 +5,68 @@ const ANATOMICAL_BODYMAP_IMAGE = "https://static.prod-images.emergentagent.com/j
 
 const normalizeElement = (value) => String(value || "Spirit").trim();
 const normalizeChakraKey = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z]+/g, "_");
+const normalizeAnatomyMode = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z]+/g, "_");
+
+const SUPPORTED_ANATOMY_MODES = new Set([
+  "chakra",
+  "fascia",
+  "muscle",
+  "organ",
+  "meridian",
+  "emotional",
+  "balance",
+  "healing",
+]);
+
+const ANATOMY_MODE_THEME = {
+  chakra: {
+    title: "Chakra Focus Map",
+    subtitle: "Chakra-specific highlights with strict color alignment.",
+  },
+  fascia: {
+    title: "Fascia Web Map",
+    subtitle: "Spider-web fascial chains with connective tissue emphasis.",
+  },
+  muscle: {
+    title: "Muscle Focus Map",
+    subtitle: "Primary muscle groups and movement chains.",
+  },
+  organ: {
+    title: "Organ Focus Map",
+    subtitle: "Core organ regions linked to the selected practice.",
+  },
+  meridian: {
+    title: "Meridian Flow Map",
+    subtitle: "Energetic channel lines and pathway orientation.",
+  },
+  emotional: {
+    title: "Emotional Body Map",
+    subtitle: "Where emotional patterns tend to localize in the body.",
+  },
+  balance: {
+    title: "Balance Alignment Map",
+    subtitle: "Centerline, stability axis, and bilateral balance zones.",
+  },
+  healing: {
+    title: "Healing Integration Map",
+    subtitle: "Recovery-oriented highlights for restoration and regulation.",
+  },
+};
+
+const inferAnatomyModeFromContext = (practiceName, element, chakraKey, preferFasciaMode) => {
+  if (preferFasciaMode) return "fascia";
+  if (chakraKey) return "chakra";
+
+  const source = `${practiceName || ""} ${element || ""}`.toLowerCase();
+  if (/(fascia|myofascial|connective tissue|psoas)/.test(source)) return "fascia";
+  if (/(meridian|qi|chi|acupressure|channel)/.test(source)) return "meridian";
+  if (/(organ|liver|kidney|stomach|digestive|womb|heart space)/.test(source)) return "organ";
+  if (/(emotion|trauma|grief|heart|feelings|nervous system)/.test(source)) return "emotional";
+  if (/(balance|alignment|stability|equilibrium)/.test(source)) return "balance";
+  if (/(heal|healing|restore|recovery|regulation)/.test(source)) return "healing";
+  if (/(yoga|somatic|movement|muscle|mobility|stretch)/.test(source)) return "muscle";
+  return "healing";
+};
 
 const BODY_WISDOM_LIBRARY = {
   feet_legs: {
@@ -108,6 +170,65 @@ const REGION_VISUAL_STYLES = {
   },
 };
 
+const MODE_VISUAL_OVERRIDES = {
+  fascia: {
+    feet_legs: { fill: "bg-amber-400/30", border: "border-amber-100/90", glow: "shadow-[0_0_0_2px_rgba(251,191,36,0.4)]", chip: "bg-amber-500/20 border-amber-300/60 text-amber-100" },
+    pelvis_womb: { fill: "bg-rose-400/30", border: "border-rose-100/90", glow: "shadow-[0_0_0_2px_rgba(251,113,133,0.4)]", chip: "bg-rose-500/20 border-rose-300/60 text-rose-100" },
+    solar_core: { fill: "bg-yellow-300/55", border: "border-yellow-100", glow: "shadow-[0_0_0_2px_rgba(253,224,71,0.45)]", chip: "bg-yellow-500/20 border-yellow-300/60 text-yellow-100" },
+    heart_chest: { fill: "bg-emerald-400/30", border: "border-emerald-100/90", glow: "shadow-[0_0_0_2px_rgba(52,211,153,0.4)]", chip: "bg-emerald-500/20 border-emerald-300/60 text-emerald-100" },
+    throat_jaw: { fill: "bg-sky-400/30", border: "border-sky-100/90", glow: "shadow-[0_0_0_2px_rgba(56,189,248,0.4)]", chip: "bg-sky-500/20 border-sky-300/60 text-sky-100" },
+    brow_crown: { fill: "bg-indigo-400/30", border: "border-indigo-100/90", glow: "shadow-[0_0_0_2px_rgba(129,140,248,0.4)]", chip: "bg-indigo-500/20 border-indigo-300/60 text-indigo-100" },
+  },
+  muscle: {
+    feet_legs: { fill: "bg-red-500/35", border: "border-red-100/90", glow: "shadow-[0_0_0_2px_rgba(239,68,68,0.42)]", chip: "bg-red-500/20 border-red-300/60 text-red-100" },
+    pelvis_womb: { fill: "bg-orange-500/35", border: "border-orange-100/90", glow: "shadow-[0_0_0_2px_rgba(249,115,22,0.42)]", chip: "bg-orange-500/20 border-orange-300/60 text-orange-100" },
+    solar_core: { fill: "bg-amber-500/40", border: "border-amber-100/90", glow: "shadow-[0_0_0_2px_rgba(245,158,11,0.42)]", chip: "bg-amber-500/20 border-amber-300/60 text-amber-100" },
+    heart_chest: { fill: "bg-rose-500/35", border: "border-rose-100/90", glow: "shadow-[0_0_0_2px_rgba(244,63,94,0.42)]", chip: "bg-rose-500/20 border-rose-300/60 text-rose-100" },
+    throat_jaw: { fill: "bg-blue-500/35", border: "border-blue-100/90", glow: "shadow-[0_0_0_2px_rgba(59,130,246,0.42)]", chip: "bg-blue-500/20 border-blue-300/60 text-blue-100" },
+    brow_crown: { fill: "bg-violet-500/35", border: "border-violet-100/90", glow: "shadow-[0_0_0_2px_rgba(139,92,246,0.42)]", chip: "bg-violet-500/20 border-violet-300/60 text-violet-100" },
+  },
+  organ: {
+    feet_legs: { fill: "bg-stone-500/30", border: "border-stone-100/80", glow: "shadow-[0_0_0_2px_rgba(168,162,158,0.38)]", chip: "bg-stone-500/20 border-stone-300/60 text-stone-100" },
+    pelvis_womb: { fill: "bg-pink-500/32", border: "border-pink-100/85", glow: "shadow-[0_0_0_2px_rgba(236,72,153,0.38)]", chip: "bg-pink-500/20 border-pink-300/60 text-pink-100" },
+    solar_core: { fill: "bg-yellow-400/42", border: "border-yellow-100/90", glow: "shadow-[0_0_0_2px_rgba(250,204,21,0.4)]", chip: "bg-yellow-500/20 border-yellow-300/60 text-yellow-100" },
+    heart_chest: { fill: "bg-lime-500/35", border: "border-lime-100/85", glow: "shadow-[0_0_0_2px_rgba(132,204,22,0.38)]", chip: "bg-lime-500/20 border-lime-300/60 text-lime-100" },
+    throat_jaw: { fill: "bg-cyan-500/35", border: "border-cyan-100/85", glow: "shadow-[0_0_0_2px_rgba(6,182,212,0.38)]", chip: "bg-cyan-500/20 border-cyan-300/60 text-cyan-100" },
+    brow_crown: { fill: "bg-purple-500/35", border: "border-purple-100/85", glow: "shadow-[0_0_0_2px_rgba(168,85,247,0.38)]", chip: "bg-purple-500/20 border-purple-300/60 text-purple-100" },
+  },
+  meridian: {
+    feet_legs: { fill: "bg-teal-500/30", border: "border-teal-100/85", glow: "shadow-[0_0_0_2px_rgba(20,184,166,0.38)]", chip: "bg-teal-500/20 border-teal-300/60 text-teal-100" },
+    pelvis_womb: { fill: "bg-cyan-500/30", border: "border-cyan-100/85", glow: "shadow-[0_0_0_2px_rgba(6,182,212,0.38)]", chip: "bg-cyan-500/20 border-cyan-300/60 text-cyan-100" },
+    solar_core: { fill: "bg-emerald-500/35", border: "border-emerald-100/85", glow: "shadow-[0_0_0_2px_rgba(16,185,129,0.38)]", chip: "bg-emerald-500/20 border-emerald-300/60 text-emerald-100" },
+    heart_chest: { fill: "bg-blue-500/32", border: "border-blue-100/85", glow: "shadow-[0_0_0_2px_rgba(59,130,246,0.38)]", chip: "bg-blue-500/20 border-blue-300/60 text-blue-100" },
+    throat_jaw: { fill: "bg-indigo-500/32", border: "border-indigo-100/85", glow: "shadow-[0_0_0_2px_rgba(99,102,241,0.38)]", chip: "bg-indigo-500/20 border-indigo-300/60 text-indigo-100" },
+    brow_crown: { fill: "bg-violet-500/32", border: "border-violet-100/85", glow: "shadow-[0_0_0_2px_rgba(139,92,246,0.38)]", chip: "bg-violet-500/20 border-violet-300/60 text-violet-100" },
+  },
+  emotional: {
+    feet_legs: { fill: "bg-red-400/32", border: "border-red-100/85", glow: "shadow-[0_0_0_2px_rgba(248,113,113,0.38)]", chip: "bg-red-500/20 border-red-300/60 text-red-100" },
+    pelvis_womb: { fill: "bg-orange-400/32", border: "border-orange-100/85", glow: "shadow-[0_0_0_2px_rgba(251,146,60,0.38)]", chip: "bg-orange-500/20 border-orange-300/60 text-orange-100" },
+    solar_core: { fill: "bg-yellow-300/50", border: "border-yellow-100/90", glow: "shadow-[0_0_0_2px_rgba(253,224,71,0.4)]", chip: "bg-yellow-500/20 border-yellow-300/60 text-yellow-100" },
+    heart_chest: { fill: "bg-emerald-400/35", border: "border-emerald-100/90", glow: "shadow-[0_0_0_2px_rgba(52,211,153,0.4)]", chip: "bg-emerald-500/20 border-emerald-300/60 text-emerald-100" },
+    throat_jaw: { fill: "bg-sky-400/32", border: "border-sky-100/85", glow: "shadow-[0_0_0_2px_rgba(56,189,248,0.38)]", chip: "bg-sky-500/20 border-sky-300/60 text-sky-100" },
+    brow_crown: { fill: "bg-indigo-500/32", border: "border-indigo-100/85", glow: "shadow-[0_0_0_2px_rgba(99,102,241,0.38)]", chip: "bg-indigo-500/20 border-indigo-300/60 text-indigo-100" },
+  },
+  balance: {
+    feet_legs: { fill: "bg-slate-500/30", border: "border-slate-100/85", glow: "shadow-[0_0_0_2px_rgba(100,116,139,0.38)]", chip: "bg-slate-500/20 border-slate-300/60 text-slate-100" },
+    pelvis_womb: { fill: "bg-zinc-500/30", border: "border-zinc-100/85", glow: "shadow-[0_0_0_2px_rgba(113,113,122,0.38)]", chip: "bg-zinc-500/20 border-zinc-300/60 text-zinc-100" },
+    solar_core: { fill: "bg-amber-500/38", border: "border-amber-100/90", glow: "shadow-[0_0_0_2px_rgba(245,158,11,0.4)]", chip: "bg-amber-500/20 border-amber-300/60 text-amber-100" },
+    heart_chest: { fill: "bg-emerald-500/32", border: "border-emerald-100/85", glow: "shadow-[0_0_0_2px_rgba(16,185,129,0.38)]", chip: "bg-emerald-500/20 border-emerald-300/60 text-emerald-100" },
+    throat_jaw: { fill: "bg-blue-500/30", border: "border-blue-100/85", glow: "shadow-[0_0_0_2px_rgba(59,130,246,0.38)]", chip: "bg-blue-500/20 border-blue-300/60 text-blue-100" },
+    brow_crown: { fill: "bg-violet-500/30", border: "border-violet-100/85", glow: "shadow-[0_0_0_2px_rgba(139,92,246,0.38)]", chip: "bg-violet-500/20 border-violet-300/60 text-violet-100" },
+  },
+  healing: {
+    feet_legs: { fill: "bg-emerald-500/30", border: "border-emerald-100/85", glow: "shadow-[0_0_0_2px_rgba(16,185,129,0.38)]", chip: "bg-emerald-500/20 border-emerald-300/60 text-emerald-100" },
+    pelvis_womb: { fill: "bg-teal-500/30", border: "border-teal-100/85", glow: "shadow-[0_0_0_2px_rgba(20,184,166,0.38)]", chip: "bg-teal-500/20 border-teal-300/60 text-teal-100" },
+    solar_core: { fill: "bg-lime-500/35", border: "border-lime-100/85", glow: "shadow-[0_0_0_2px_rgba(132,204,22,0.38)]", chip: "bg-lime-500/20 border-lime-300/60 text-lime-100" },
+    heart_chest: { fill: "bg-green-500/35", border: "border-green-100/85", glow: "shadow-[0_0_0_2px_rgba(34,197,94,0.38)]", chip: "bg-green-500/20 border-green-300/60 text-green-100" },
+    throat_jaw: { fill: "bg-cyan-500/30", border: "border-cyan-100/85", glow: "shadow-[0_0_0_2px_rgba(6,182,212,0.38)]", chip: "bg-cyan-500/20 border-cyan-300/60 text-cyan-100" },
+    brow_crown: { fill: "bg-indigo-500/30", border: "border-indigo-100/85", glow: "shadow-[0_0_0_2px_rgba(99,102,241,0.38)]", chip: "bg-indigo-500/20 border-indigo-300/60 text-indigo-100" },
+  },
+};
+
 const CHAKRA_REGION_MAP = {
   earth_star: "feet_legs",
   root: "feet_legs",
@@ -131,7 +252,7 @@ const THIRD_EYE_INDIGO_STYLE = {
   chip: "bg-indigo-500/20 border-indigo-300/60 text-indigo-100",
 };
 
-const getRegionVisualStyle = (key, fasciaMode, chakraKey = "") => {
+const getRegionVisualStyle = (key, anatomyMode, chakraKey = "") => {
   const defaultStyle = {
     fill: "bg-cyan-500/25",
     border: "border-cyan-100/70",
@@ -143,9 +264,14 @@ const getRegionVisualStyle = (key, fasciaMode, chakraKey = "") => {
     return THIRD_EYE_INDIGO_STYLE;
   }
 
+  const modeOverrides = MODE_VISUAL_OVERRIDES[anatomyMode];
+  if (modeOverrides?.[key]) {
+    return modeOverrides[key];
+  }
+
   const source = REGION_VISUAL_STYLES[key];
   if (!source) return defaultStyle;
-  return fasciaMode ? source.fascia : source.chakra;
+  return anatomyMode === "fascia" ? source.fascia : source.chakra;
 };
 
 const ELEMENT_REGION_MAP = {
@@ -213,7 +339,7 @@ const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
   return cards.filter((card) => card && card.fascia).slice(0, 3);
 };
 
-const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode, chakraKey }) => {
+const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, anatomyMode, chakraKey }) => {
   const selectedCard = cards.find((card) => card.key === selectedRegionKey) || cards[0];
   const visibleCards = selectedCard ? [selectedCard] : [];
   const focusZone = selectedCard?.diagram?.zone || { x: 50, y: 50, w: 24, h: 14 };
@@ -247,7 +373,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
               if (!point) return null;
               const zone = card?.diagram?.zone || { x: point.x, y: point.y, w: 14, h: 10 };
               const active = selectedRegionKey === card.key;
-              const visual = getRegionVisualStyle(card.key, fasciaMode, chakraKey);
+              const visual = getRegionVisualStyle(card.key, anatomyMode, chakraKey);
               return (
                 <button
                   key={`${card.key}-point`}
@@ -264,6 +390,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
                     width: `${zone.w}%`,
                     height: `${zone.h}%`,
                   }}
+                  data-mode={anatomyMode}
                   data-testid={`${testIdPrefix}-diagram-point-${card.key}`}
                   aria-label={`Select ${card.region}`}
                   title={card.region}
@@ -272,19 +399,100 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
                 </button>
               );
             })}
+            {anatomyMode === "fascia" && (
+              <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-fascia-web-overlay`}>
+                <g stroke="rgba(245, 158, 11, 0.55)" strokeWidth="0.8" fill="none">
+                  <path d="M50 10 C40 22, 38 35, 50 50 C62 35, 60 22, 50 10 Z" />
+                  <path d="M50 50 C36 56, 33 67, 38 82" />
+                  <path d="M50 50 C64 56, 67 67, 62 82" />
+                  <path d="M50 50 C45 56, 44 66, 44 76" />
+                  <path d="M50 50 C55 56, 56 66, 56 76" />
+                  <path d="M38 82 C34 88, 33 93, 34 98" />
+                  <path d="M62 82 C66 88, 67 93, 66 98" />
+                  <path d="M34 34 C28 40, 26 48, 27 58" />
+                  <path d="M66 34 C72 40, 74 48, 73 58" />
+                  <path d="M50 24 C42 28, 38 34, 34 42" />
+                  <path d="M50 24 C58 28, 62 34, 66 42" />
+                </g>
+              </svg>
+            )}
+
+            {anatomyMode === "muscle" && (
+              <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-muscle-overlay`}>
+                <g stroke="rgba(239, 68, 68, 0.55)" strokeWidth="1" fill="none">
+                  <path d="M45 18 C43 26, 42 34, 43 42" />
+                  <path d="M55 18 C57 26, 58 34, 57 42" />
+                  <path d="M42 44 C40 56, 40 68, 42 80" />
+                  <path d="M58 44 C60 56, 60 68, 58 80" />
+                  <path d="M36 34 C30 44, 30 56, 35 66" />
+                  <path d="M64 34 C70 44, 70 56, 65 66" />
+                </g>
+              </svg>
+            )}
+
+            {anatomyMode === "organ" && (
+              <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-organ-overlay`}>
+                <g stroke="rgba(236, 72, 153, 0.55)" strokeWidth="0.9" fill="rgba(236, 72, 153, 0.14)">
+                  <ellipse cx="50" cy="36" rx="11" ry="8" />
+                  <ellipse cx="46" cy="47" rx="7" ry="6" />
+                  <ellipse cx="54" cy="47" rx="7" ry="6" />
+                  <ellipse cx="50" cy="58" rx="10" ry="7" />
+                </g>
+              </svg>
+            )}
+
+            {anatomyMode === "meridian" && (
+              <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-meridian-overlay`}>
+                <g stroke="rgba(56, 189, 248, 0.55)" strokeWidth="0.8" fill="none" strokeDasharray="2 2">
+                  <path d="M50 8 C48 20, 48 35, 50 50 C52 65, 52 80, 50 98" />
+                  <path d="M42 20 C40 36, 40 52, 42 70" />
+                  <path d="M58 20 C60 36, 60 52, 58 70" />
+                  <path d="M34 30 C30 42, 30 58, 34 72" />
+                  <path d="M66 30 C70 42, 70 58, 66 72" />
+                </g>
+              </svg>
+            )}
+
+            {anatomyMode === "emotional" && (
+              <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-emotional-overlay`}>
+                <g fill="rgba(16, 185, 129, 0.18)" stroke="rgba(16, 185, 129, 0.45)" strokeWidth="0.8">
+                  <circle cx="50" cy="36" r="9" />
+                  <circle cx="50" cy="48" r="7" />
+                  <circle cx="50" cy="62" r="8" />
+                </g>
+              </svg>
+            )}
+
+            {anatomyMode === "balance" && (
+              <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-balance-overlay`}>
+                <g stroke="rgba(148, 163, 184, 0.55)" strokeWidth="0.9" fill="none">
+                  <path d="M50 6 L50 98" />
+                  <path d="M28 36 L72 36" />
+                  <path d="M30 62 L70 62" />
+                </g>
+              </svg>
+            )}
+
+            {anatomyMode === "healing" && (
+              <svg className="absolute inset-0 pointer-events-none" viewBox="0 0 100 100" data-testid={`${testIdPrefix}-healing-overlay`}>
+                <g stroke="rgba(34, 197, 94, 0.5)" strokeWidth="0.9" fill="none">
+                  <path d="M50 14 C42 22, 42 34, 50 42 C58 34, 58 22, 50 14 Z" />
+                  <path d="M50 44 C40 52, 40 64, 50 72 C60 64, 60 52, 50 44 Z" />
+                  <path d="M50 74 C44 80, 44 89, 50 95 C56 89, 56 80, 50 74 Z" />
+                </g>
+              </svg>
+            )}
           </div>
         </div>
 
         <div className="space-y-3">
           <p className="text-xs text-muted-foreground" data-testid={`${testIdPrefix}-diagram-mode-copy`}>
-            {fasciaMode
-              ? "Fascia focus is active: only the primary fascia-relevant sections are highlighted for this practice."
-              : "Chakra-color focus is active: only the main sections for this subject are highlighted."}
+            {ANATOMY_MODE_THEME[anatomyMode]?.subtitle || "Focused body-region highlighting is active."}
           </p>
           <ul className="grid sm:grid-cols-2 gap-2">
             {cards.map((card) => {
               const active = selectedRegionKey === card.key;
-              const visual = getRegionVisualStyle(card.key, fasciaMode, chakraKey);
+              const visual = getRegionVisualStyle(card.key, anatomyMode, chakraKey);
               return (
                 <li key={`${card.key}-legend`} data-testid={`${testIdPrefix}-diagram-legend-${card.key}`}>
                   <button
@@ -325,6 +533,7 @@ export const EmbodimentProtocolPanel = ({
   practiceName,
   element,
   chakraName,
+  anatomyMode,
   preferFasciaMode = false,
   testIdPrefix = "embodiment",
 }) => {
@@ -332,6 +541,11 @@ export const EmbodimentProtocolPanel = ({
   const safeElement = normalizeElement(element);
   const safeChakraKey = normalizeChakraKey(chakraName);
   const fasciaMode = Boolean(preferFasciaMode);
+  const safeRequestedMode = normalizeAnatomyMode(anatomyMode);
+  const resolvedAnatomyMode = useMemo(() => {
+    if (SUPPORTED_ANATOMY_MODES.has(safeRequestedMode)) return safeRequestedMode;
+    return inferAnatomyModeFromContext(safePractice, safeElement, safeChakraKey, fasciaMode);
+  }, [safeRequestedMode, safePractice, safeElement, safeChakraKey, fasciaMode]);
 
   const threeStep = buildThreeStep(safePractice, safeElement);
   const sevenDay = buildSevenDay(safePractice);
@@ -415,7 +629,7 @@ export const EmbodimentProtocolPanel = ({
       <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-4" data-testid={`${testIdPrefix}-body-wisdom-map`}>
         <h4 className="text-sm font-medium flex items-center gap-2 mb-3">
           <HeartPulse className="w-4 h-4 text-cyan-300" />
-          Body Wisdom Focus · Tap to highlight
+          {ANATOMY_MODE_THEME[resolvedAnatomyMode]?.title || "Body Wisdom Focus"} · Tap to highlight
         </h4>
         <div className="grid md:grid-cols-3 gap-3">
           {regionCards.map((card) => (
@@ -443,7 +657,7 @@ export const EmbodimentProtocolPanel = ({
         selectedRegionKey={selectedRegion?.key}
         onSelectRegion={setSelectedRegionKey}
         testIdPrefix={testIdPrefix}
-        fasciaMode={fasciaMode}
+        anatomyMode={resolvedAnatomyMode}
         chakraKey={safeChakraKey}
       />
 

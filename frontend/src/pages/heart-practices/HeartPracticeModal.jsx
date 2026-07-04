@@ -110,6 +110,7 @@ export const HeartPracticeModal = ({
                 <EmbodimentProtocolPanel
                   practiceName={selectedPractice.name}
                   element={selectedPractice.element || "Water"}
+                  anatomyMode="emotional"
                   testIdPrefix="heart-practice-embodiment"
                 />
               </div>

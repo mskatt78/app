@@ -756,6 +756,7 @@ const WaterPractices = ({ user, api }) => {
                 <EmbodimentProtocolPanel
                   practiceName={selectedPractice.name}
                   element="Water"
+                  anatomyMode="organ"
                   testIdPrefix="water-practice-embodiment"
                 />
 

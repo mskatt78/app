@@ -655,6 +655,7 @@ const YogaLibrary = ({ user, api }) => {
                     <EmbodimentProtocolPanel
                       practiceName={selectedPose.name}
                       element={selectedPose.element || "Earth"}
+                      anatomyMode="muscle"
                       testIdPrefix="yoga-library-embodiment"
                     />
                   </div>

@@ -451,6 +451,7 @@ const HealingPortals = ({ user, api }) => {
                 <EmbodimentProtocolPanel
                   practiceName={selectedPortal.name}
                   element={selectedPortal.element || "Spirit"}
+                  anatomyMode="healing"
                   testIdPrefix="healing-portals-embodiment"
                 />
 

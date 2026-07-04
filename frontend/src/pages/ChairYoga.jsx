@@ -229,6 +229,7 @@ export default function ChairYoga() {
                 <EmbodimentProtocolPanel
                   practiceName={selectedPractice.name}
                   element={selectedPractice.element || "Earth"}
+                  anatomyMode="muscle"
                   testIdPrefix="chair-yoga-embodiment"
                 />
 

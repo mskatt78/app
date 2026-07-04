@@ -157,6 +157,7 @@ export const ShamanicPracticeModal = ({
                     <EmbodimentProtocolPanel
                       practiceName={selectedPractice.name}
                       element={selectedPractice.element || "Spirit"}
+                      anatomyMode="balance"
                       testIdPrefix="shamanic-practice-embodiment"
                     />
 

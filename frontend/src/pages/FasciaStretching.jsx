@@ -364,6 +364,7 @@ const FasciaStretching = ({ user, api }) => {
                 <EmbodimentProtocolPanel
                   practiceName={selectedPractice.name}
                   element={selectedPractice.element || "Water"}
+                  anatomyMode="fascia"
                   preferFasciaMode
                   testIdPrefix="fascia-stretching-embodiment"
                 />

@@ -168,6 +168,7 @@ export const ElementalPracticeModal = ({
                     <EmbodimentProtocolPanel
                       practiceName={selectedPractice.name}
                       element={selectedPractice.element || "Earth"}
+                      anatomyMode="balance"
                       testIdPrefix="elemental-practice-embodiment"
                     />
                   </div>

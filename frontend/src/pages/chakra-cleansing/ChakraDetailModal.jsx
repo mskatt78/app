@@ -190,6 +190,7 @@ export const ChakraDetailModal = ({
                 practiceName={selectedPractice.name}
                 element={selectedPractice.element || selectedPractice.chakra || "Spirit"}
                 chakraName={selectedPractice.chakra}
+                anatomyMode="chakra"
                 testIdPrefix="chakra-practice-embodiment"
               />
 
