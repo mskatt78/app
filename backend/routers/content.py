@@ -328,7 +328,7 @@ YOGA_REALISM_IMAGE_OVERRIDES: dict[str, str] = {
     "pigeon pose": "https://images.pexels.com/photos/4662491/pexels-photo-4662491.jpeg?auto=compress&cs=tinysrgb&w=900",
     "downward dog": "https://images.pexels.com/photos/6456136/pexels-photo-6456136.jpeg?auto=compress&cs=tinysrgb&w=900",
     "crow pose": "https://images.pexels.com/photos/4662511/pexels-photo-4662511.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "camel pose": "https://images.pexels.com/photos/6456112/pexels-photo-6456112.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "camel pose": "https://images.unsplash.com/photo-1661307987465-1db8d7a8796f?crop=entropy&cs=srgb&fm=jpg&q=85",
     "headstand": "https://images.pexels.com/photos/4662467/pexels-photo-4662467.jpeg?auto=compress&cs=tinysrgb&w=900",
     "shoulder stand": "https://images.pexels.com/photos/6455823/pexels-photo-6455823.jpeg?auto=compress&cs=tinysrgb&w=900",
 }
@@ -343,7 +343,7 @@ YOGA_REALISM_KEYWORD_OVERRIDES: list[tuple[tuple[str, ...], str]] = [
     (("twist", "parivrtta", "marichyasana"), "https://images.pexels.com/photos/6455776/pexels-photo-6455776.jpeg?auto=compress&cs=tinysrgb&w=900"),
     (("pigeon", "kapotasana"), "https://images.pexels.com/photos/4662491/pexels-photo-4662491.jpeg?auto=compress&cs=tinysrgb&w=900"),
     (("downward", "adho mukha"), "https://images.pexels.com/photos/6456136/pexels-photo-6456136.jpeg?auto=compress&cs=tinysrgb&w=900"),
-    (("cobra", "bhujangasana"), "https://images.pexels.com/photos/6456112/pexels-photo-6456112.jpeg?auto=compress&cs=tinysrgb&w=900"),
+    (("cobra", "bhujangasana"), "https://images.unsplash.com/photo-1661307987465-1db8d7a8796f?crop=entropy&cs=srgb&fm=jpg&q=85"),
     (("headstand", "sirsasana"), "https://images.pexels.com/photos/4662467/pexels-photo-4662467.jpeg?auto=compress&cs=tinysrgb&w=900"),
     (("shoulder stand", "sarvangasana"), "https://images.pexels.com/photos/6455823/pexels-photo-6455823.jpeg?auto=compress&cs=tinysrgb&w=900"),
 ]

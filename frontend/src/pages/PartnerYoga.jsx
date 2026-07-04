@@ -36,7 +36,7 @@ const partnerPoses = [
     element: "Fire",
     difficulty: "Intermediate",
     duration: 3,
-    image_url: "https://images.pexels.com/photos/6456155/pexels-photo-6456155.jpeg?auto=compress&cs=tinysrgb&w=900",
+    image_url: "https://images.unsplash.com/photo-1758274537594-ae71243befa5?crop=entropy&cs=srgb&fm=jpg&q=85",
     description: "Sit facing your partner, hold hands, and lift both sets of legs to create a diamond shape between you. Builds core strength and requires synchronized effort.",
     instructions: [
       "Sit facing your partner, knees bent, toes touching",
@@ -265,7 +265,7 @@ const partnerPoses = [
     element: "Water",
     difficulty: "Beginner",
     duration: 8,
-    image_url: "https://images.pexels.com/photos/4662326/pexels-photo-4662326.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.unsplash.com/photo-1527701758614-2b486f8c0d29?crop=entropy&cs=srgb&fm=jpg&q=85",
     description: "Reclined spinal twist with safe partner support for decompression and emotional release.",
     instructions: [
       "Partner A reclines and twists knees to one side.",
@@ -284,7 +284,7 @@ const partnerPoses = [
     element: "Fire",
     difficulty: "Intermediate",
     duration: 6,
-    image_url: "https://images.pexels.com/photos/6455827/pexels-photo-6455827.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.unsplash.com/photo-1610637180280-897c3973c885?crop=entropy&cs=srgb&fm=jpg&q=85",
     description: "Bridge with supportive cueing for safe heart opening and posterior activation.",
     instructions: [
       "Partner A enters bridge.",
@@ -303,7 +303,7 @@ const partnerPoses = [
     element: "Fire",
     difficulty: "Intermediate",
     duration: 7,
-    image_url: "https://images.pexels.com/photos/6456155/pexels-photo-6456155.jpeg?auto=compress&cs=tinysrgb&w=800",
+    image_url: "https://images.unsplash.com/photo-1765873205154-a80487d51bd7?crop=entropy&cs=srgb&fm=jpg&q=85",
     description: "Mirrored warrior with hand anchor to train focus, power, and communication.",
     instructions: [
       "Face each other in warrior II.",
