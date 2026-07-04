@@ -189,6 +189,7 @@ export const ChakraDetailModal = ({
               <EmbodimentProtocolPanel
                 practiceName={selectedPractice.name}
                 element={selectedPractice.element || selectedPractice.chakra || "Spirit"}
+                chakraName={selectedPractice.chakra}
                 testIdPrefix="chakra-practice-embodiment"
               />
 

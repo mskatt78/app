@@ -4,6 +4,7 @@ import { Activity, CalendarDays, Footprints, HeartPulse, Sparkles, TimerReset } 
 const ANATOMICAL_BODYMAP_IMAGE = "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6ed46ee0b34945fb844f1bc345a71268d9f69a8656ab6fced3cc0f4aa540165a.png";
 
 const normalizeElement = (value) => String(value || "Spirit").trim();
+const normalizeChakraKey = (value) => String(value || "").trim().toLowerCase().replace(/[^a-z]+/g, "_");
 
 const BODY_WISDOM_LIBRARY = {
   feet_legs: {
@@ -82,24 +83,24 @@ const BODY_WISDOM_LIBRARY = {
 
 const REGION_VISUAL_STYLES = {
   feet_legs: {
-    chakra: { fill: "bg-red-500/30", border: "border-red-200/80", glow: "shadow-[0_0_0_2px_rgba(239,68,68,0.35)]", chip: "bg-red-500/15 border-red-400/40 text-red-100" },
-    fascia: { fill: "bg-amber-500/25", border: "border-amber-200/80", glow: "shadow-[0_0_0_2px_rgba(245,158,11,0.35)]", chip: "bg-amber-500/15 border-amber-400/40 text-amber-100" },
+    chakra: { fill: "bg-red-500/35", border: "border-red-100/90", glow: "shadow-[0_0_0_2px_rgba(239,68,68,0.42)]", chip: "bg-red-500/20 border-red-300/60 text-red-100" },
+    fascia: { fill: "bg-red-500/35", border: "border-red-100/90", glow: "shadow-[0_0_0_2px_rgba(239,68,68,0.42)]", chip: "bg-red-500/20 border-red-300/60 text-red-100" },
   },
   pelvis_womb: {
-    chakra: { fill: "bg-orange-500/30", border: "border-orange-200/80", glow: "shadow-[0_0_0_2px_rgba(249,115,22,0.35)]", chip: "bg-orange-500/15 border-orange-400/40 text-orange-100" },
-    fascia: { fill: "bg-rose-500/25", border: "border-rose-200/80", glow: "shadow-[0_0_0_2px_rgba(244,63,94,0.35)]", chip: "bg-rose-500/15 border-rose-400/40 text-rose-100" },
+    chakra: { fill: "bg-orange-500/35", border: "border-orange-100/90", glow: "shadow-[0_0_0_2px_rgba(249,115,22,0.42)]", chip: "bg-orange-500/20 border-orange-300/60 text-orange-100" },
+    fascia: { fill: "bg-orange-500/35", border: "border-orange-100/90", glow: "shadow-[0_0_0_2px_rgba(249,115,22,0.42)]", chip: "bg-orange-500/20 border-orange-300/60 text-orange-100" },
   },
   solar_core: {
     chakra: { fill: "bg-yellow-300/55", border: "border-yellow-100", glow: "shadow-[0_0_0_2px_rgba(253,224,71,0.45)]", chip: "bg-yellow-500/20 border-yellow-300/60 text-yellow-100" },
     fascia: { fill: "bg-yellow-300/55", border: "border-yellow-100", glow: "shadow-[0_0_0_2px_rgba(253,224,71,0.45)]", chip: "bg-yellow-500/20 border-yellow-300/60 text-yellow-100" },
   },
   heart_chest: {
-    chakra: { fill: "bg-emerald-500/30", border: "border-emerald-100/80", glow: "shadow-[0_0_0_2px_rgba(16,185,129,0.35)]", chip: "bg-emerald-500/15 border-emerald-400/40 text-emerald-100" },
-    fascia: { fill: "bg-teal-500/25", border: "border-teal-100/80", glow: "shadow-[0_0_0_2px_rgba(20,184,166,0.35)]", chip: "bg-teal-500/15 border-teal-400/40 text-teal-100" },
+    chakra: { fill: "bg-green-500/35", border: "border-green-100/90", glow: "shadow-[0_0_0_2px_rgba(34,197,94,0.42)]", chip: "bg-green-500/20 border-green-300/60 text-green-100" },
+    fascia: { fill: "bg-green-500/35", border: "border-green-100/90", glow: "shadow-[0_0_0_2px_rgba(34,197,94,0.42)]", chip: "bg-green-500/20 border-green-300/60 text-green-100" },
   },
   throat_jaw: {
-    chakra: { fill: "bg-sky-500/30", border: "border-sky-100/80", glow: "shadow-[0_0_0_2px_rgba(14,165,233,0.35)]", chip: "bg-sky-500/15 border-sky-400/40 text-sky-100" },
-    fascia: { fill: "bg-cyan-500/25", border: "border-cyan-100/80", glow: "shadow-[0_0_0_2px_rgba(6,182,212,0.35)]", chip: "bg-cyan-500/15 border-cyan-400/40 text-cyan-100" },
+    chakra: { fill: "bg-blue-500/35", border: "border-blue-100/90", glow: "shadow-[0_0_0_2px_rgba(59,130,246,0.42)]", chip: "bg-blue-500/20 border-blue-300/60 text-blue-100" },
+    fascia: { fill: "bg-blue-500/35", border: "border-blue-100/90", glow: "shadow-[0_0_0_2px_rgba(59,130,246,0.42)]", chip: "bg-blue-500/20 border-blue-300/60 text-blue-100" },
   },
   brow_crown: {
     chakra: { fill: "bg-violet-500/30", border: "border-violet-100/80", glow: "shadow-[0_0_0_2px_rgba(139,92,246,0.35)]", chip: "bg-violet-500/15 border-violet-400/40 text-violet-100" },
@@ -107,13 +108,41 @@ const REGION_VISUAL_STYLES = {
   },
 };
 
-const getRegionVisualStyle = (key, fasciaMode) => {
+const CHAKRA_REGION_MAP = {
+  earth_star: "feet_legs",
+  root: "feet_legs",
+  sacral: "pelvis_womb",
+  solar: "solar_core",
+  heart: "heart_chest",
+  higher_heart: "heart_chest",
+  throat: "throat_jaw",
+  third_eye: "brow_crown",
+  crown: "brow_crown",
+  causal: "brow_crown",
+  soul_star: "brow_crown",
+  stellar: "brow_crown",
+  universal: "brow_crown",
+};
+
+const THIRD_EYE_INDIGO_STYLE = {
+  fill: "bg-indigo-500/35",
+  border: "border-indigo-100/90",
+  glow: "shadow-[0_0_0_2px_rgba(99,102,241,0.42)]",
+  chip: "bg-indigo-500/20 border-indigo-300/60 text-indigo-100",
+};
+
+const getRegionVisualStyle = (key, fasciaMode, chakraKey = "") => {
   const defaultStyle = {
     fill: "bg-cyan-500/25",
     border: "border-cyan-100/70",
     glow: "shadow-[0_0_0_2px_rgba(34,211,238,0.35)]",
     chip: "bg-cyan-500/15 border-cyan-400/40 text-cyan-100",
   };
+
+  if (key === "brow_crown" && chakraKey === "third_eye") {
+    return THIRD_EYE_INDIGO_STYLE;
+  }
+
   const source = REGION_VISUAL_STYLES[key];
   if (!source) return defaultStyle;
   return fasciaMode ? source.fascia : source.chakra;
@@ -168,6 +197,14 @@ const getPrimaryRegionKey = (element, practiceName) => {
   return ELEMENT_PRIMARY_REGION[element] || ELEMENT_PRIMARY_REGION.Spirit;
 };
 
+const getPrimaryRegionKeyWithChakra = (element, practiceName, chakraName) => {
+  const chakraKey = normalizeChakraKey(chakraName);
+  if (chakraKey && CHAKRA_REGION_MAP[chakraKey]) {
+    return CHAKRA_REGION_MAP[chakraKey];
+  }
+  return getPrimaryRegionKey(element, practiceName);
+};
+
 const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
   const cards = getRegionCards(element, practiceName);
   if (!fasciaMode) {
@@ -176,7 +213,7 @@ const getRegionCardsForMode = (element, fasciaMode, practiceName) => {
   return cards.filter((card) => card && card.fascia).slice(0, 3);
 };
 
-const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode }) => {
+const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, fasciaMode, chakraKey }) => {
   const selectedCard = cards.find((card) => card.key === selectedRegionKey) || cards[0];
   const visibleCards = selectedCard ? [selectedCard] : [];
   const focusZone = selectedCard?.diagram?.zone || { x: 50, y: 50, w: 24, h: 14 };
@@ -210,7 +247,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
               if (!point) return null;
               const zone = card?.diagram?.zone || { x: point.x, y: point.y, w: 14, h: 10 };
               const active = selectedRegionKey === card.key;
-              const visual = getRegionVisualStyle(card.key, fasciaMode);
+              const visual = getRegionVisualStyle(card.key, fasciaMode, chakraKey);
               return (
                 <button
                   key={`${card.key}-point`}
@@ -247,7 +284,7 @@ const BodyDiagram = ({ cards, selectedRegionKey, onSelectRegion, testIdPrefix, f
           <ul className="grid sm:grid-cols-2 gap-2">
             {cards.map((card) => {
               const active = selectedRegionKey === card.key;
-              const visual = getRegionVisualStyle(card.key, fasciaMode);
+              const visual = getRegionVisualStyle(card.key, fasciaMode, chakraKey);
               return (
                 <li key={`${card.key}-legend`} data-testid={`${testIdPrefix}-diagram-legend-${card.key}`}>
                   <button
@@ -287,17 +324,22 @@ const buildSevenDay = (practiceName) => [
 export const EmbodimentProtocolPanel = ({
   practiceName,
   element,
+  chakraName,
   preferFasciaMode = false,
   testIdPrefix = "embodiment",
 }) => {
   const safePractice = String(practiceName || "this practice").trim();
   const safeElement = normalizeElement(element);
+  const safeChakraKey = normalizeChakraKey(chakraName);
   const fasciaMode = Boolean(preferFasciaMode);
 
   const threeStep = buildThreeStep(safePractice, safeElement);
   const sevenDay = buildSevenDay(safePractice);
   const regionCards = useMemo(() => getRegionCardsForMode(safeElement, fasciaMode, safePractice), [safeElement, fasciaMode, safePractice]);
-  const primaryRegionKey = useMemo(() => getPrimaryRegionKey(safeElement, safePractice), [safeElement, safePractice]);
+  const primaryRegionKey = useMemo(
+    () => getPrimaryRegionKeyWithChakra(safeElement, safePractice, safeChakraKey),
+    [safeElement, safePractice, safeChakraKey]
+  );
   const [selectedRegionKey, setSelectedRegionKey] = useState(regionCards[0]?.key || "feet_legs");
 
   useEffect(() => {
@@ -402,6 +444,7 @@ export const EmbodimentProtocolPanel = ({
         onSelectRegion={setSelectedRegionKey}
         testIdPrefix={testIdPrefix}
         fasciaMode={fasciaMode}
+        chakraKey={safeChakraKey}
       />
 
       {selectedRegion && (
