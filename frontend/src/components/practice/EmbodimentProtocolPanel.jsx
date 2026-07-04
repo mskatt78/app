@@ -65,21 +65,11 @@ const INTEGRATED_ATLAS_PANELS = [
   },
 ];
 
-const INTEGRATED_ATLAS_LAYOUT_BY_MODE = {
-  chakra: ["chakra", "meridian", "emotional", "fascia", "lymphatic", "organs"],
-  fascia: ["fascia", "muscle", "skeletal", "lymphatic", "meridian", "emotional"],
-  muscle: ["muscle", "skeletal", "fascia", "organs", "balance", "chakra"],
-  organ: ["organs", "lymphatic", "meridian", "chakra", "emotional", "fascia"],
-  meridian: ["meridian", "chakra", "organs", "lymphatic", "emotional", "fascia"],
-  emotional: ["emotional", "chakra", "organs", "meridian", "fascia", "muscle"],
-  balance: ["skeletal", "muscle", "fascia", "chakra", "meridian", "organs"],
-  healing: ["organs", "lymphatic", "chakra", "meridian", "emotional", "fascia"],
-};
+const MAIN_ATLAS_PANEL_ORDER = ["skeletal", "muscle", "fascia", "organs", "lymphatic", "chakra", "meridian", "emotional"];
 
-const getIntegratedAtlasPanelsForMode = (anatomyMode) => {
-  const keyOrder = INTEGRATED_ATLAS_LAYOUT_BY_MODE[anatomyMode] || ["fascia", "muscle", "organs", "chakra", "meridian", "emotional"];
+const getMainIntegratedAtlasPanels = () => {
   const panelMap = new Map(INTEGRATED_ATLAS_PANELS.map((panel) => [panel.key, panel]));
-  return keyOrder.map((key) => panelMap.get(key)).filter(Boolean);
+  return MAIN_ATLAS_PANEL_ORDER.map((key) => panelMap.get(key)).filter(Boolean);
 };
 
 const normalizeElement = (value) => String(value || "Spirit").trim();
@@ -688,7 +678,20 @@ export const EmbodimentProtocolPanel = ({
     if (SUPPORTED_ANATOMY_MODES.has(safeRequestedMode)) return safeRequestedMode;
     return inferAnatomyModeFromContext(safePractice, safeElement, safeChakraKey, fasciaMode);
   }, [safeRequestedMode, safePractice, safeElement, safeChakraKey, fasciaMode]);
-  const integratedAtlasPanels = useMemo(() => getIntegratedAtlasPanelsForMode(resolvedAnatomyMode), [resolvedAnatomyMode]);
+  const mainAtlasPanels = useMemo(() => getMainIntegratedAtlasPanels(), []);
+  const [activeAtlasKey, setActiveAtlasKey] = useState(resolvedAnatomyMode);
+
+  useEffect(() => {
+    const mappedKey = ["chakra", "fascia", "muscle", "organ", "meridian", "emotional"].includes(resolvedAnatomyMode)
+      ? resolvedAnatomyMode
+      : (resolvedAnatomyMode === "healing" ? "organs" : "skeletal");
+    setActiveAtlasKey(mappedKey);
+  }, [resolvedAnatomyMode]);
+
+  const activeAtlasPanel = useMemo(
+    () => mainAtlasPanels.find((panel) => panel.key === activeAtlasKey) || mainAtlasPanels[0],
+    [mainAtlasPanels, activeAtlasKey]
+  );
 
   const threeStep = buildThreeStep(safePractice, safeElement);
   const sevenDay = buildSevenDay(safePractice);
@@ -738,30 +741,48 @@ export const EmbodimentProtocolPanel = ({
       </p>
 
       <section className="rounded-xl border border-amber-500/20 bg-[#1a1410] p-4" data-testid={`${testIdPrefix}-integrated-atlas-board`}>
-        <h4 className="text-sm font-medium text-amber-100 mb-1">Integrated Anatomy Atlas</h4>
-        <p className="text-xs text-amber-200/75 mb-3">True layered diagram references (fascia, muscle, organs, meridians, chakras, emotions).</p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {integratedAtlasPanels.map((panel) => (
-            <article
-              key={`${testIdPrefix}-atlas-${panel.key}`}
-              className="rounded-lg border border-amber-300/15 bg-black/25 overflow-hidden"
-              data-testid={`${testIdPrefix}-atlas-panel-${panel.key}`}
-            >
-              <div className="relative aspect-[3/4]">
-                <img
-                  src={panel.image}
-                  alt={`${panel.label} anatomy reference`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  loading="lazy"
-                  data-testid={`${testIdPrefix}-atlas-image-${panel.key}`}
-                />
-              </div>
-              <div className="p-2">
-                <p className="text-[11px] uppercase tracking-wider text-amber-100">{panel.label}</p>
-                <p className="text-[11px] text-amber-200/75">{panel.description}</p>
-              </div>
-            </article>
-          ))}
+        <h4 className="text-sm font-medium text-amber-100 mb-1">Main Integrated Anatomy Atlas</h4>
+        <p className="text-xs text-amber-200/75 mb-3">One master atlas: tap a system to switch the main diagram instantly.</p>
+        <div className="rounded-lg border border-amber-300/15 bg-black/20 p-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3" data-testid={`${testIdPrefix}-atlas-system-tabs`}>
+            {mainAtlasPanels.map((panel) => {
+              const active = panel.key === activeAtlasPanel?.key;
+              return (
+                <button
+                  key={`${testIdPrefix}-atlas-tab-${panel.key}`}
+                  type="button"
+                  onClick={() => setActiveAtlasKey(panel.key)}
+                  className={`rounded-md border px-2 py-1.5 text-[11px] transition ${
+                    active
+                      ? "border-amber-200/80 bg-amber-500/20 text-amber-100"
+                      : "border-amber-300/20 bg-black/30 text-amber-200/70 hover:border-amber-200/50"
+                  }`}
+                  data-testid={`${testIdPrefix}-atlas-tab-${panel.key}`}
+                >
+                  {panel.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <article
+            className="rounded-lg border border-amber-300/15 bg-black/25 overflow-hidden"
+            data-testid={`${testIdPrefix}-atlas-main-panel`}
+          >
+            <div className="relative aspect-[3/4]">
+              <img
+                src={activeAtlasPanel?.image}
+                alt={`${activeAtlasPanel?.label} anatomy reference`}
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+                data-testid={`${testIdPrefix}-atlas-main-image`}
+              />
+            </div>
+            <div className="p-2">
+              <p className="text-[11px] uppercase tracking-wider text-amber-100" data-testid={`${testIdPrefix}-atlas-main-label`}>{activeAtlasPanel?.label}</p>
+              <p className="text-[11px] text-amber-200/75" data-testid={`${testIdPrefix}-atlas-main-description`}>{activeAtlasPanel?.description}</p>
+            </div>
+          </article>
         </div>
       </section>
 
