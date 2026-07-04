@@ -88,6 +88,24 @@
   - Confirmed failed external image requests are now gracefully replaced (no visual broken icons).
   - Embodiment panel validation: PASS for color, position, and one-zone-only behavior.
 
+## Latest Verification Snapshot (Iteration 249 — 2026-07-03)
+- ✅ Mode-specific anatomy diagram system implemented in shared embodiment panel:
+  - `chakra` mode: strict chakra highlight mapping and colors.
+  - `fascia` mode: added fascia spider-web overlay to mimic myofascial chain structure.
+  - `muscle`, `organ`, `meridian`, `emotional`, `balance`, `healing` modes: added dedicated visual overlays and contextual highlight palettes.
+- ✅ Cross-page integration applied:
+  - FasciaStretching -> `anatomyMode="fascia"`
+  - ChakraCleansing -> `anatomyMode="chakra"` + explicit `chakraName`
+  - YogaLibrary/ChairYoga/SomaticYoga -> `anatomyMode="muscle"`
+  - WaterPractices -> `anatomyMode="organ"`
+  - EnergyHealing -> `anatomyMode="meridian"`
+  - HeartPracticeModal -> `anatomyMode="emotional"`
+  - HealingPortals -> `anatomyMode="healing"`
+  - ShamanicPracticeModal + ElementalPracticeModal -> `anatomyMode="balance"`
+- ✅ QA status:
+  - Frontend validation confirmed correct overlays on all testable routes.
+  - Single-zone highlight behavior preserved; no runtime errors detected on tested routes.
+
 ## Latest Verification Snapshot (Iteration 131)
 - Frontend regression: PASS
 - Backend regression: PASS
