@@ -17009,3 +17009,25 @@ agent_communication:
       
       No issues found. All yoga pose verifications are working correctly.
 
+
+
+  - agent: "testing"
+    message: |
+      ✅ IMAGE REALISM AUDIT COMPLETE (2026-07-05)
+      
+      Comprehensive semantic image-topic mismatch audit completed across 12 routes on preview URL.
+      
+      CRITICAL FINDINGS:
+      - 3 routes FAIL with semantic mismatches: /chair-yoga, /somatic-yoga, /shamanic-practices
+      - 7 routes PASS with correct imagery: /partner-yoga, /chakra-cleansing, /energy-healing, /water-practices, /sacred-guardians, /sacred-ally-alchemy, /angelic-alchemy
+      - 1 route has 9 broken images: /fascia-stretching
+      - 1 route has routing issue: /yoga-library (redirects to home page)
+      
+      PRIORITY FIXES NEEDED:
+      1. Replace Indian woman with bangles image (photo-1774020039240-5420f9ea4b27) - used incorrectly in 4 cards
+      2. Replace beach yoga silhouette (photo-1544367567-0f2fcb009e0b) - used incorrectly in 5 chair-yoga cards
+      3. Replace purple abstract energy image (bfa160f5c1406c20b01733894e46ad000bdda5bc9011a4095489ab158ff91537.png) - used in somatic-yoga Hip Release card
+      4. Fix 9 broken images in /fascia-stretching
+      5. Fix /yoga-library routing issue
+      
+      Detailed mismatch list provided in testing summary.
