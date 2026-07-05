@@ -351,34 +351,34 @@ YOGA_REALISM_KEYWORD_OVERRIDES: list[tuple[tuple[str, ...], str]] = [
 YOGA_REALISM_DEFAULT_IMAGE = "https://images.pexels.com/photos/3822906/pexels-photo-3822906.jpeg?auto=compress&cs=tinysrgb&w=900"
 
 SECTION_IMAGE_DEFAULTS: dict[str, str] = {
-    "somatic_practices": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "somatic_practices": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
     "energy_healing": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=srgb&fm=jpg&q=85",
     "shamanic_practices": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
-    "water_practices": "https://images.unsplash.com/photo-1774020039240-5420f9ea4b27?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "water_practices": "https://images.unsplash.com/photo-1506947411487-a56738267384?crop=entropy&cs=srgb&fm=jpg&q=85",
     "yoga_poses": YOGA_REALISM_DEFAULT_IMAGE,
 }
 
 GENERIC_CATEGORY_IMAGE_FALLBACKS: dict[str, str] = {
     "grounding": "https://images.pexels.com/photos/2998999/pexels-photo-2998999.jpeg?auto=compress&cs=tinysrgb&w=800",
     "earth": "https://images.pexels.com/photos/2998999/pexels-photo-2998999.jpeg?auto=compress&cs=tinysrgb&w=800",
-    "water": "https://images.unsplash.com/photo-1774020039240-5420f9ea4b27?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "water": "https://images.unsplash.com/photo-1506947411487-a56738267384?crop=entropy&cs=srgb&fm=jpg&q=85",
     "moon": "https://images.unsplash.com/photo-1589347155881-96a4c76f147d?crop=entropy&cs=srgb&fm=jpg&q=85",
     "moon-water": "https://images.unsplash.com/photo-1589347155881-96a4c76f147d?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "blessing": "https://images.unsplash.com/photo-1774020039240-5420f9ea4b27?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "ceremony": "https://images.unsplash.com/photo-1774020039240-5420f9ea4b27?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "ritual": "https://images.unsplash.com/photo-1774020039240-5420f9ea4b27?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "blessing": "https://images.unsplash.com/photo-1506947411487-a56738267384?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "ceremony": "https://images.unsplash.com/photo-1506947411487-a56738267384?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "ritual": "https://images.unsplash.com/photo-1506947411487-a56738267384?crop=entropy&cs=srgb&fm=jpg&q=85",
     "frequency": "https://images.unsplash.com/photo-1553792006-995530772e9b?crop=entropy&cs=srgb&fm=jpg&q=85",
     "crystalline": "https://images.unsplash.com/photo-1553792006-995530772e9b?crop=entropy&cs=srgb&fm=jpg&q=85",
     "cleansing": "https://images.pexels.com/photos/9447948/pexels-photo-9447948.jpeg?auto=compress&cs=tinysrgb&w=800",
-    "somatic": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "release": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "stress": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "somatic": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "release": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "stress": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
     "healing": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=srgb&fm=jpg&q=85",
     "chakra": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=srgb&fm=jpg&q=85",
     "energy": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=srgb&fm=jpg&q=85",
     "feminine": "https://images.unsplash.com/photo-1518611012118-696072aa579a?crop=entropy&cs=srgb&fm=jpg&q=85",
     "masculine": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?crop=entropy&cs=srgb&fm=jpg&q=85",
-    "movement": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?crop=entropy&cs=srgb&fm=jpg&q=85",
+    "movement": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
     "egyptian_mystery": "https://images.pexels.com/photos/1671325/pexels-photo-1671325.jpeg?auto=compress&cs=tinysrgb&w=1400",
     "priestess_rose": "https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1400",
     "merlin_alchemy": "https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=1400",
@@ -1698,6 +1698,33 @@ CHAIR_YOGA_SUPPLEMENTS = [
         ],
     },
 ]
+
+CHAIR_YOGA_IMAGE_OVERRIDES: dict[str, str] = {
+    "chair-yoga-201": "https://images.pexels.com/photos/3822843/pexels-photo-3822843.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-202": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-203": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-204": "https://images.pexels.com/photos/3822512/pexels-photo-3822512.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-205": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-206": "https://images.pexels.com/photos/3822472/pexels-photo-3822472.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-207": "https://images.pexels.com/photos/3822116/pexels-photo-3822116.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-208": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-209": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-210": "https://images.pexels.com/photos/3822512/pexels-photo-3822512.jpeg?auto=compress&cs=tinysrgb&w=900",
+}
+
+SOMATIC_IMAGE_OVERRIDES: dict[str, str] = {
+    "grounding-somatic-flow": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "hip-release-somatic": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "neck-shoulder-somatic": "https://images.pexels.com/photos/3822843/pexels-photo-3822843.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "restorative-somatic-yoga": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "trauma-release-somatic": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+}
+
+SHAMANIC_IMAGE_OVERRIDES: dict[str, str] = {
+    "2": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    "6": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    "16": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
+}
 
 PARTNER_YOGA_SUPPLEMENTS = [
     {
@@ -4293,6 +4320,24 @@ def _ensure_section_images(items: list[dict[str, Any]], section_key: str) -> lis
     return normalized
 
 
+def _apply_id_image_overrides(items: list[dict[str, Any]], overrides: dict[str, str]) -> list[dict[str, Any]]:
+    if not items or not overrides:
+        return items
+
+    patched: list[dict[str, Any]] = []
+    for item in items:
+        entry = dict(item)
+        item_id = str(entry.get("id") or "")
+        override = overrides.get(item_id)
+        if override:
+            entry["image_url"] = override
+            entry["source_type"] = "curated-realism-override"
+            entry["review_status"] = "reviewed"
+            entry["source_references"] = _merge_source_references(entry.get("source_references"), [override])
+        patched.append(entry)
+    return patched
+
+
 def _expand_section_items_to_target(items: list[dict[str, Any]], unlock_id: str) -> list[dict[str, Any]]:
     if not items:
         return []
@@ -6746,6 +6791,7 @@ async def get_shamanic_practices(category: Optional[str] = None) -> list[dict[st
     practices = await db.shamanic_practices.find(query, {"_id": 0}).to_list(length=80)
     practices = _append_shamanic_supplements(practices, category)
     practices = [_apply_subject_image_alignment(_ensure_shamanic_journey_depth(practice), "hybrid-curated") for practice in practices]
+    practices = _apply_id_image_overrides(practices, SHAMANIC_IMAGE_OVERRIDES)
     enriched = [
         _enrich_devotional_language(
             _enrich_content_integrity(_enrich_practice_links(practice, "shamanic-practices"), "hybrid-curated"),
@@ -7912,6 +7958,7 @@ async def get_somatic_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
     if style:
         query["style"] = {"$regex": f"^{style}$", "$options": "i"}
     practices = await db.somatic_yoga.find(query, {"_id": 0}).to_list(length=100)
+    practices = _apply_id_image_overrides(practices, SOMATIC_IMAGE_OVERRIDES)
     enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in practices]
     return _apply_free_paid_tiering(enriched, "somatic_practices")
 
@@ -7950,6 +7997,12 @@ async def get_chair_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
             ],
         )
         entry = _apply_subject_image_alignment(entry, "hybrid-curated")
+        chair_override = CHAIR_YOGA_IMAGE_OVERRIDES.get(str(entry.get("id") or ""))
+        if chair_override:
+            entry["image_url"] = chair_override
+            entry["source_type"] = "chair-yoga-curated-realism"
+            entry["review_status"] = "reviewed"
+            entry["source_references"] = _merge_source_references(entry.get("source_references"), [chair_override])
         adapted.append(entry)
 
     enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in adapted]
@@ -7989,6 +8042,7 @@ async def get_fascia_stretching(element: Optional[str] = None) -> list[dict[str,
                 "Integrate by walking slowly and noticing rebound elasticity.",
             ],
         )
+        entry = _apply_subject_image_alignment(entry, "hybrid-curated")
         adapted.append(entry)
 
     enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in adapted]

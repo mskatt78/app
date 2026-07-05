@@ -17031,3 +17031,70 @@ agent_communication:
       5. Fix /yoga-library routing issue
       
       Detailed mismatch list provided in testing summary.
+
+  - agent: "testing"
+    message: |
+      ❌ FOCUSED MISMATCH RE-VERIFICATION RESULTS (2026-07-05)
+      
+      Re-ran focused verification on previously failing routes as requested.
+      
+      STRICT PASS/FAIL PER ROUTE:
+      
+      ❌ /chair-yoga: FAIL
+         - CRITICAL MISMATCH FOUND: "Chair Hip Release & Emotional Freedom" card (bottom right in scrolled view) 
+           displays PURPLE ABSTRACT IMAGE - this is semantically incorrect for chair yoga
+         - Other visible cards (8 total) show appropriate seated/supported yoga imagery
+         - Issue: One card still has wrong image type
+      
+      ✅ /somatic-yoga: PASS
+         - "Hip Release & Emotional Freedom" card (middle card, top row) shows person on mat
+         - NO purple abstract image detected
+         - Fix VERIFIED - purple abstract mismatch has been corrected
+      
+      ✅ /shamanic-practices: PASS
+         - "Soul Retrieval Visualization" card shows dramatic sky/landscape image
+         - Image URL confirmed: https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg
+         - NO Indian woman with bangles/water portrait (photo-1774020039240) detected
+         - Fix VERIFIED - bangle/water portrait mismatch has been corrected
+      
+      ❌ /fascia-stretching: FAIL (from previous test)
+         - 9 broken images confirmed:
+           1. Body Tapping
+           2. Spinal Wave
+           3. Joint Rotations
+           4. Tiger Stretches
+           5. Breath and Movement Sync
+           6. Slow Motion Walking
+           7. Containment Hold
+           8. Kidney Tapping
+           9. Closing Form
+         - All broken images return naturalWidth = 0
+      
+      SUMMARY:
+      - 2 routes PASS: /somatic-yoga ✅, /shamanic-practices ✅
+      - 2 routes FAIL: /chair-yoga ❌ (1 purple abstract mismatch), /fascia-stretching ❌ (9 broken images)
+      
+      REMAINING ISSUES:
+      1. /chair-yoga: "Chair Hip Release & Emotional Freedom" card still shows purple abstract image
+      2. /fascia-stretching: 9 broken image URLs need to be fixed or replaced
+
+
+  - task: "Focused mismatch re-verification - chair-yoga, somatic-yoga, shamanic-practices, fascia-stretching"
+    implemented: true
+    working: false
+    file: "/app/backend/data (image URLs)"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ FOCUSED RE-VERIFICATION PARTIAL PASS (2026-07-05): Re-tested 4 previously failing routes. RESULTS: ✅ /somatic-yoga PASS - Hip Release & Emotional Freedom no longer shows purple abstract (fix verified). ✅ /shamanic-practices PASS - Soul Retrieval Visualization no longer shows Indian woman with bangles (fix verified). ❌ /chair-yoga FAIL - 'Chair Hip Release & Emotional Freedom' card still shows purple abstract image (1 mismatch remaining). ❌ /fascia-stretching FAIL - 9 broken images confirmed (Body Tapping, Spinal Wave, Joint Rotations, Tiger Stretches, Breath and Movement Sync, Slow Motion Walking, Containment Hold, Kidney Tapping, Closing Form). 2 of 4 routes now passing. 2 routes still need fixes."
+
+test_plan:
+  current_focus:
+    - "Focused mismatch re-verification - chair-yoga, somatic-yoga, shamanic-practices, fascia-stretching"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
