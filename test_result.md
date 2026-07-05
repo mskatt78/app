@@ -17446,3 +17446,93 @@ agent_communication:
       
       FINAL VERDICT: ✅ Backend is READY for production
 
+
+
+#====================================================================================================
+# TARGETED MODAL RELIABILITY TEST - 2026-07-05
+#====================================================================================================
+
+user_request: |
+  Targeted frontend re-test on preview for modal reliability only:
+  1) Route /chakra-cleansing: open at least 2 chakra cards and confirm detail modal opens each time and closes cleanly.
+  2) Route /shamanic-practices: open at least 2 cards (including Soul Retrieval Visualization if visible) and confirm modal opens/closes cleanly.
+  3) While modal open, confirm image visible, no broken image icon.
+  4) Report strict PASS/FAIL for both routes with no ambiguity.
+
+frontend:
+  - task: "Modal reliability - /chakra-cleansing route"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/chakra-cleansing/ChakraDetailModal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - /chakra-cleansing modal reliability verified (2026-07-05). Tested 3 chakra cards successfully: 1) Causal Chakra Cleansing - modal opened, image visible (800x533), modal closed cleanly via backdrop click ✓. 2) Crown Chakra Cleansing - modal opened, image visible (800x600), modal closed cleanly via backdrop click ✓. 3) Earth Star Chakra Cleansing - modal opened, image visible (800x533), modal closed cleanly via backdrop click ✓. All images loaded correctly with no broken image icons. Modal close mechanism works via backdrop click (Escape key not implemented but not required). All requirements met."
+
+  - task: "Modal reliability - /shamanic-practices route"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/shamanic/ShamanicPracticeModal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - /shamanic-practices modal reliability verified (2026-07-05). Tested 2 cards including Soul Retrieval Visualization: 1) Soul Retrieval Visualization - modal opened, image visible (1400x787), modal closed cleanly via close button ✓. 2) Power Animal Journey - modal opened, image visible (800x533), modal closed cleanly via close button ✓. All images loaded correctly with no broken image icons. Modal has dedicated close button (data-testid='close-modal') which works perfectly. All requirements met."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 1000
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Modal reliability testing completed"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ TARGETED MODAL RELIABILITY TEST COMPLETED - STRICT PASS/FAIL RESULTS
+      
+      Test Date: 2026-07-05
+      Test Scope: Modal open/close reliability and image visibility on /chakra-cleansing and /shamanic-practices routes
+      
+      STRICT PASS/FAIL RESULTS:
+      
+      ✅ /chakra-cleansing: PASS
+         - Tested: 3 chakra cards (Causal, Crown, Earth Star)
+         - Modal opens: ✓ All 3 cards opened modals successfully
+         - Images visible: ✓ All images loaded correctly (naturalWidth: 800, naturalHeight: 533-600)
+         - No broken images: ✓ No broken image icons detected
+         - Modal closes: ✓ All modals closed cleanly via backdrop click
+         - Note: Escape key not implemented but backdrop click works reliably
+      
+      ✅ /shamanic-practices: PASS
+         - Tested: 2 cards including Soul Retrieval Visualization (as requested)
+         - Modal opens: ✓ Both cards opened modals successfully
+         - Images visible: ✓ All images loaded correctly (Soul Retrieval: 1400x787, Power Animal: 800x533)
+         - No broken images: ✓ No broken image icons detected
+         - Modal closes: ✓ All modals closed cleanly via dedicated close button
+         - Note: Modal has proper close button (data-testid='close-modal')
+      
+      ✅ OVERALL VERDICT: PASS
+      
+      Both routes demonstrate reliable modal functionality:
+      - Modals open consistently when cards are clicked
+      - Images load and display correctly without broken icons
+      - Modals close cleanly using available close mechanisms
+      - No blocking issues detected
+      
+      MINOR OBSERVATIONS (NON-BLOCKING):
+      - /chakra-cleansing modal does not respond to Escape key (only backdrop click works)
+      - /shamanic-practices modal has dedicated close button which provides better UX
+      
+      Both implementations are acceptable and production-ready.
