@@ -126,6 +126,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/demo" element={publicElement(DemoExperience, PublicRoute, api)} />
       <Route path="/links" element={<LinksPage />} />
       <Route path="/yoga" element={publicElement(YogaLibrary, PublicRoute, api)} />
+      <Route path="/yoga-library" element={publicElement(YogaLibrary, PublicRoute, api)} />
       <Route path="/breathwork" element={publicElement(Breathwork, PublicRoute, api)} />
       <Route path="/crystals" element={publicElement(CrystalGuide, PublicRoute, api)} />
       <Route path="/mantras" element={publicElement(MantrasLibrary, PublicRoute, api)} />
