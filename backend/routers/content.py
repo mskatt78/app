@@ -1715,6 +1715,7 @@ CHAIR_YOGA_IMAGE_OVERRIDES: dict[str, str] = {
 SOMATIC_IMAGE_OVERRIDES: dict[str, str] = {
     "grounding-somatic-flow": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
     "hip-release-somatic": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-hip-release-somatic": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
     "neck-shoulder-somatic": "https://images.pexels.com/photos/3822843/pexels-photo-3822843.jpeg?auto=compress&cs=tinysrgb&w=900",
     "restorative-somatic-yoga": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
     "trauma-release-somatic": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
@@ -1724,6 +1725,18 @@ SHAMANIC_IMAGE_OVERRIDES: dict[str, str] = {
     "2": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
     "6": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
     "16": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
+}
+
+FASCIA_IMAGE_OVERRIDES: dict[str, str] = {
+    "27": "https://images.pexels.com/photos/6456155/pexels-photo-6456155.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "28": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "29": "https://images.pexels.com/photos/6456149/pexels-photo-6456149.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "32": "https://images.pexels.com/photos/3822512/pexels-photo-3822512.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "33": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "34": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "36": "https://images.pexels.com/photos/3822843/pexels-photo-3822843.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "38": "https://images.pexels.com/photos/3822472/pexels-photo-3822472.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "39": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
 }
 
 PARTNER_YOGA_SUPPLEMENTS = [
@@ -8006,6 +8019,7 @@ async def get_chair_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
         adapted.append(entry)
 
     enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in adapted]
+    enriched = _apply_id_image_overrides(enriched, SOMATIC_IMAGE_OVERRIDES)
     return _apply_free_paid_tiering(enriched, "somatic_practices")
 
 
@@ -8046,6 +8060,7 @@ async def get_fascia_stretching(element: Optional[str] = None) -> list[dict[str,
         adapted.append(entry)
 
     enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in adapted]
+    enriched = _apply_id_image_overrides(enriched, FASCIA_IMAGE_OVERRIDES)
     return _apply_free_paid_tiering(enriched, "somatic_practices")
 
 

@@ -17081,7 +17081,7 @@ agent_communication:
 
   - task: "Focused mismatch re-verification - chair-yoga, somatic-yoga, shamanic-practices, fascia-stretching"
     implemented: true
-    working: false
+    working: true
     file: "/app/backend/data (image URLs)"
     stuck_count: 0
     priority: "high"
@@ -17090,6 +17090,42 @@ agent_communication:
       - working: false
         agent: "testing"
         comment: "❌ FOCUSED RE-VERIFICATION PARTIAL PASS (2026-07-05): Re-tested 4 previously failing routes. RESULTS: ✅ /somatic-yoga PASS - Hip Release & Emotional Freedom no longer shows purple abstract (fix verified). ✅ /shamanic-practices PASS - Soul Retrieval Visualization no longer shows Indian woman with bangles (fix verified). ❌ /chair-yoga FAIL - 'Chair Hip Release & Emotional Freedom' card still shows purple abstract image (1 mismatch remaining). ❌ /fascia-stretching FAIL - 9 broken images confirmed (Body Tapping, Spinal Wave, Joint Rotations, Tiger Stretches, Breath and Movement Sync, Slow Motion Walking, Containment Hold, Kidney Tapping, Closing Form). 2 of 4 routes now passing. 2 routes still need fixes."
+      - working: true
+        agent: "testing"
+        comment: "✅ STRICT RE-VERIFICATION COMPLETE - ALL ROUTES PASS (2026-07-05): Comprehensive re-verification completed on preview URL for all 4 previously failing routes. ALL 4 ROUTES NOW PASS: 1) ✅ /chair-yoga PASS - 'Chair Hip Release & Emotional Freedom' card NO LONGER shows purple abstract image (bfa160f5c1406c20b01733894e46ad000bdda5bc9011a4095489ab158ff91537). Purple abstract mismatch FIXED. 2) ✅ /fascia-stretching PASS - Previously broken images (Body Tapping, Joint Rotations) are NOW FIXED. All 9 previously broken cards now render images correctly with naturalWidth > 0. No broken image icons detected. 3) ✅ /somatic-yoga PASS - 'Hip Release & Emotional Freedom' card continues to show correct imagery (person on mat, NOT purple abstract). No regression detected. 4) ✅ /shamanic-practices PASS - 'Soul Retrieval Visualization' card continues to show correct imagery (dramatic sky/landscape, NOT Indian woman with bangles photo-1774020039240). No regression detected. VERIFICATION METHOD: Comprehensive image URL scanning across all page images, checking for specific problematic image URLs (purple abstract hash, Indian woman photo ID). All previously reported mismatches and broken images are now RESOLVED. Image realism audit requirements FULLY MET."
+
+  - agent: "testing"
+    message: |
+      ✅ STRICT RE-VERIFICATION COMPLETE - ALL ROUTES PASS (2026-07-05)
+      
+      Comprehensive re-verification completed on preview URL for all 4 previously failing routes.
+      
+      FINAL RESULTS - ALL PASS:
+      
+      ✅ /chair-yoga: PASS
+         - "Chair Hip Release & Emotional Freedom" card NO LONGER shows purple abstract image
+         - Purple abstract mismatch (bfa160f5c1406c20b01733894e46ad000bdda5bc9011a4095489ab158ff91537) FIXED
+      
+      ✅ /fascia-stretching: PASS
+         - Previously broken images (Body Tapping, Joint Rotations) are NOW FIXED
+         - All 9 previously broken cards now render images correctly (naturalWidth > 0)
+         - No broken image icons detected
+      
+      ✅ /somatic-yoga: PASS
+         - "Hip Release & Emotional Freedom" card continues to show correct imagery (person on mat)
+         - NO purple abstract detected - remains correct after latest changes
+      
+      ✅ /shamanic-practices: PASS
+         - "Soul Retrieval Visualization" card continues to show correct imagery (dramatic sky/landscape)
+         - NO Indian woman with bangles (photo-1774020039240) detected - remains correct after latest changes
+      
+      VERIFICATION METHOD:
+      - Comprehensive image URL scanning across all page images
+      - Checked for specific problematic image URLs (purple abstract hash, Indian woman photo ID)
+      - Verified image loading status (naturalWidth > 0 for all images)
+      
+      All previously reported mismatches and broken images are now RESOLVED.
+      Image realism audit requirements FULLY MET.
 
 test_plan:
   current_focus:
