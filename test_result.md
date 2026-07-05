@@ -17260,3 +17260,189 @@ test_plan:
       
       All critical sections passed stability audit. No blocking issues detected. Minor UX improvements can be addressed post-launch.
 
+
+#====================================================================================================
+# DEEP BACKEND VERIFICATION - 2026-01-XX
+#====================================================================================================
+
+user_request: |
+  Run backend deep verification on https://breathwork-sanctuary.preview.emergentagent.com and provide pass/fail report.
+  
+  Test set:
+  1) Health and core APIs:
+  - GET /api/health => 200
+  - GET /api/yoga/poses => non-empty list with image_url present
+  - GET /api/chair-yoga => non-empty list with image_url present
+  - GET /api/fascia-stretching => non-empty list with image_url present
+  - GET /api/shamanic-practices => non-empty list with image_url present
+  - GET /api/sacred-guardians => 14 items and premium/free split present
+  
+  2) Image integrity checks:
+  - For endpoints above, verify no missing image_url fields.
+  
+  3) Premium gating checks:
+  - yoga poses include is_premium split (4 free then premium behavior expected)
+  - sacred-guardians include is_premium split (4 free then premium expected)
+  
+  4) Narration/timer backend support:
+  - POST /api/content/expand-script with duration 7 and 15; verify word_count supports requested minimum duration floor.
+  
+  5) Guided/TTS backend smoke:
+  - POST /api/tts/generate-base64 with short sample script; verify successful response and non-empty audio payload.
+
+backend:
+  - task: "Deep backend verification - Health endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - GET /api/health returns 200 OK with status: healthy. Health endpoint verification PASSED."
+
+  - task: "Deep backend verification - Yoga poses API"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - GET /api/yoga/poses returns 200 with 78 poses. Premium split verified: 4 free poses, 74 premium poses. All poses have image_url field present. No missing images detected. Yoga poses API verification PASSED."
+
+  - task: "Deep backend verification - Chair yoga API"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - GET /api/chair-yoga returns 200 with 15 items. All items have image_url field present. No missing images detected. Chair yoga API verification PASSED."
+
+  - task: "Deep backend verification - Fascia stretching API"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - GET /api/fascia-stretching returns 200 with 39 items. All items have image_url field present. No missing images detected. Fascia stretching API verification PASSED."
+
+  - task: "Deep backend verification - Shamanic practices API"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - GET /api/shamanic-practices returns 200 with 27 items. All items have image_url field present. No missing images detected. Shamanic practices API verification PASSED."
+
+  - task: "Deep backend verification - Sacred guardians API"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - GET /api/sacred-guardians returns 200 with exactly 14 items. Premium split verified: 4 free items, 10 premium items. All items have image_url field present. No missing images detected. Sacred guardians API verification PASSED."
+
+  - task: "Deep backend verification - Expand script 7min"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - POST /api/content/expand-script with duration_minutes=7 returns 200. Response: target_minutes=7, word_count=1002 (>= 672 minimum floor). Word count supports requested minimum duration floor. Expand script 7min verification PASSED."
+
+  - task: "Deep backend verification - Expand script 15min"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/content.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - POST /api/content/expand-script with duration_minutes=15 returns 200. Response: target_minutes=15, word_count=2041 (>= 1440 minimum floor). Word count supports requested minimum duration floor. Expand script 15min verification PASSED."
+
+  - task: "Deep backend verification - TTS generate"
+    implemented: true
+    working: true
+    file: "/app/backend/routers/tts.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PASS - POST /api/tts/generate-base64 with short sample script returns 200. Response contains non-empty audio_base64 payload: 160000 chars (~117.2KB). TTS generate verification PASSED."
+
+metadata:
+  created_by: "testing_agent"
+  version: "1.0"
+  test_sequence: 999
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Deep backend verification - All tests completed"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ DEEP BACKEND VERIFICATION COMPLETED SUCCESSFULLY
+      
+      All 9 backend tests PASSED with no blocking or non-blocking issues:
+      
+      1. Health and Core APIs (6/6 PASS):
+         ✅ GET /api/health => 200 OK
+         ✅ GET /api/yoga/poses => 78 items, all with image_url, 4 free + 74 premium
+         ✅ GET /api/chair-yoga => 15 items, all with image_url
+         ✅ GET /api/fascia-stretching => 39 items, all with image_url
+         ✅ GET /api/shamanic-practices => 27 items, all with image_url
+         ✅ GET /api/sacred-guardians => 14 items, all with image_url, 4 free + 10 premium
+      
+      2. Image Integrity (6/6 PASS):
+         ✅ All endpoints verified - NO missing image_url fields detected
+      
+      3. Premium Gating (2/2 PASS):
+         ✅ Yoga poses: 4 free + 74 premium split verified
+         ✅ Sacred guardians: 4 free + 10 premium split verified
+      
+      4. Narration/Timer Backend Support (2/2 PASS):
+         ✅ POST /api/content/expand-script (7min): word_count 1002 >= 672 floor
+         ✅ POST /api/content/expand-script (15min): word_count 2041 >= 1440 floor
+      
+      5. Guided/TTS Backend Smoke (1/1 PASS):
+         ✅ POST /api/tts/generate-base64: 160000 chars audio payload (~117.2KB)
+      
+      BLOCKING ISSUES: None
+      NON-BLOCKING ISSUES: None
+      
+      FINAL VERDICT: ✅ Backend is READY for production
+

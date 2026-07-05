@@ -1,309 +1,592 @@
 #!/usr/bin/env python3
 """
-Backend API Testing Script
-Tests narration duration bounds, guided content endpoints, and retreat endpoint
+Deep Backend Verification Script
+Tests all critical backend APIs for Breathwork Sanctuary
 """
 
 import requests
 import json
 import sys
-from typing import Dict, Any, List
+from typing import Dict, List, Any
 
-# Base URL from frontend env
-BASE_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
+# Backend URL from environment
+BACKEND_URL = "https://breathwork-sanctuary.preview.emergentagent.com/api"
 
-class Colors:
-    GREEN = '\033[92m'
-    RED = '\033[91m'
-    YELLOW = '\033[93m'
-    BLUE = '\033[94m'
-    END = '\033[0m'
-
-def print_success(msg: str):
-    print(f"{Colors.GREEN}✓ {msg}{Colors.END}")
-
-def print_error(msg: str):
-    print(f"{Colors.RED}✗ {msg}{Colors.END}")
-
-def print_info(msg: str):
-    print(f"{Colors.BLUE}ℹ {msg}{Colors.END}")
-
-def print_warning(msg: str):
-    print(f"{Colors.YELLOW}⚠ {msg}{Colors.END}")
-
-def test_narration_duration_bounds():
-    """
-    Test 1: Narration duration bounds for /api/content/expand-script
-    Request duration_minutes values: 5, 7, 12, 20, 27
-    Expected target_minutes clamp: 7 for low values, 20 max cap, and exact for in-range values
-    """
-    print("\n" + "="*80)
-    print("TEST 1: Narration Duration Bounds - /api/content/expand-script")
-    print("="*80)
-    
-    test_cases = [
-        {"duration_minutes": 5, "expected_target": 7, "description": "Below minimum (5) should clamp to 7"},
-        {"duration_minutes": 7, "expected_target": 7, "description": "Minimum value (7) should remain 7"},
-        {"duration_minutes": 12, "expected_target": 12, "description": "In-range value (12) should remain 12"},
-        {"duration_minutes": 20, "expected_target": 20, "description": "Maximum value (20) should remain 20"},
-        {"duration_minutes": 27, "expected_target": 20, "description": "Above maximum (27) should clamp to 20"},
-    ]
-    
-    all_passed = True
-    
-    for test_case in test_cases:
-        duration = test_case["duration_minutes"]
-        expected_target = test_case["expected_target"]
-        description = test_case["description"]
+class BackendVerifier:
+    def __init__(self):
+        self.results = []
+        self.blocking_issues = []
+        self.non_blocking_issues = []
         
-        print(f"\n{Colors.BLUE}Testing duration_minutes={duration}: {description}{Colors.END}")
+    def log_result(self, test_name: str, passed: bool, details: str, blocking: bool = False):
+        """Log a test result"""
+        status = "✅ PASS" if passed else "❌ FAIL"
+        self.results.append({
+            "test": test_name,
+            "passed": passed,
+            "details": details,
+            "blocking": blocking
+        })
         
-        payload = {
-            "practice_name": "Test Practice",
-            "duration_minutes": duration,
-            "use_ai": False
-        }
+        if not passed:
+            if blocking:
+                self.blocking_issues.append(f"{test_name}: {details}")
+            else:
+                self.non_blocking_issues.append(f"{test_name}: {details}")
         
+        print(f"{status} - {test_name}")
+        print(f"  {details}\n")
+    
+    def test_health_endpoint(self):
+        """Test 1: Health endpoint returns 200"""
         try:
+            response = requests.get(f"{BACKEND_URL}/health", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                self.log_result(
+                    "Health Endpoint",
+                    True,
+                    f"Returns 200 OK with status: {data.get('status', 'N/A')}"
+                )
+            else:
+                self.log_result(
+                    "Health Endpoint",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=True
+                )
+        except Exception as e:
+            self.log_result(
+                "Health Endpoint",
+                False,
+                f"Exception: {str(e)}",
+                blocking=True
+            )
+    
+    def test_yoga_poses(self):
+        """Test 2: Yoga poses endpoint - list, image_url, premium split"""
+        try:
+            response = requests.get(f"{BACKEND_URL}/yoga/poses", timeout=10)
+            
+            if response.status_code != 200:
+                self.log_result(
+                    "Yoga Poses API",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=True
+                )
+                return
+            
+            data = response.json()
+            
+            # Check non-empty list
+            if not isinstance(data, list) or len(data) == 0:
+                self.log_result(
+                    "Yoga Poses API",
+                    False,
+                    f"Expected non-empty list, got {type(data)} with length {len(data) if isinstance(data, list) else 'N/A'}",
+                    blocking=True
+                )
+                return
+            
+            # Check image_url presence
+            missing_images = [i for i, pose in enumerate(data) if not pose.get('image_url')]
+            
+            # Check premium split (4 free, rest premium)
+            free_poses = [p for p in data if not p.get('is_premium', True)]
+            premium_poses = [p for p in data if p.get('is_premium', False)]
+            
+            issues = []
+            if missing_images:
+                issues.append(f"{len(missing_images)} poses missing image_url")
+            
+            if len(free_poses) != 4:
+                issues.append(f"Expected 4 free poses, got {len(free_poses)}")
+            
+            if len(premium_poses) == 0:
+                issues.append("No premium poses found")
+            
+            if issues:
+                self.log_result(
+                    "Yoga Poses API",
+                    False,
+                    f"Total: {len(data)} poses. Issues: {', '.join(issues)}",
+                    blocking=True
+                )
+            else:
+                self.log_result(
+                    "Yoga Poses API",
+                    True,
+                    f"Total: {len(data)} poses. Free: {len(free_poses)}, Premium: {len(premium_poses)}. All have image_url."
+                )
+        except Exception as e:
+            self.log_result(
+                "Yoga Poses API",
+                False,
+                f"Exception: {str(e)}",
+                blocking=True
+            )
+    
+    def test_chair_yoga(self):
+        """Test 3: Chair yoga endpoint - list and image_url"""
+        try:
+            response = requests.get(f"{BACKEND_URL}/chair-yoga", timeout=10)
+            
+            if response.status_code != 200:
+                self.log_result(
+                    "Chair Yoga API",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=True
+                )
+                return
+            
+            data = response.json()
+            
+            if not isinstance(data, list) or len(data) == 0:
+                self.log_result(
+                    "Chair Yoga API",
+                    False,
+                    f"Expected non-empty list, got {type(data)} with length {len(data) if isinstance(data, list) else 'N/A'}",
+                    blocking=True
+                )
+                return
+            
+            missing_images = [i for i, item in enumerate(data) if not item.get('image_url')]
+            
+            if missing_images:
+                self.log_result(
+                    "Chair Yoga API",
+                    False,
+                    f"Total: {len(data)} items. {len(missing_images)} missing image_url",
+                    blocking=True
+                )
+            else:
+                self.log_result(
+                    "Chair Yoga API",
+                    True,
+                    f"Total: {len(data)} items. All have image_url."
+                )
+        except Exception as e:
+            self.log_result(
+                "Chair Yoga API",
+                False,
+                f"Exception: {str(e)}",
+                blocking=True
+            )
+    
+    def test_fascia_stretching(self):
+        """Test 4: Fascia stretching endpoint - list and image_url"""
+        try:
+            response = requests.get(f"{BACKEND_URL}/fascia-stretching", timeout=10)
+            
+            if response.status_code != 200:
+                self.log_result(
+                    "Fascia Stretching API",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=True
+                )
+                return
+            
+            data = response.json()
+            
+            if not isinstance(data, list) or len(data) == 0:
+                self.log_result(
+                    "Fascia Stretching API",
+                    False,
+                    f"Expected non-empty list, got {type(data)} with length {len(data) if isinstance(data, list) else 'N/A'}",
+                    blocking=True
+                )
+                return
+            
+            missing_images = [i for i, item in enumerate(data) if not item.get('image_url')]
+            
+            if missing_images:
+                self.log_result(
+                    "Fascia Stretching API",
+                    False,
+                    f"Total: {len(data)} items. {len(missing_images)} missing image_url",
+                    blocking=True
+                )
+            else:
+                self.log_result(
+                    "Fascia Stretching API",
+                    True,
+                    f"Total: {len(data)} items. All have image_url."
+                )
+        except Exception as e:
+            self.log_result(
+                "Fascia Stretching API",
+                False,
+                f"Exception: {str(e)}",
+                blocking=True
+            )
+    
+    def test_shamanic_practices(self):
+        """Test 5: Shamanic practices endpoint - list and image_url"""
+        try:
+            response = requests.get(f"{BACKEND_URL}/shamanic-practices", timeout=10)
+            
+            if response.status_code != 200:
+                self.log_result(
+                    "Shamanic Practices API",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=True
+                )
+                return
+            
+            data = response.json()
+            
+            if not isinstance(data, list) or len(data) == 0:
+                self.log_result(
+                    "Shamanic Practices API",
+                    False,
+                    f"Expected non-empty list, got {type(data)} with length {len(data) if isinstance(data, list) else 'N/A'}",
+                    blocking=True
+                )
+                return
+            
+            missing_images = [i for i, item in enumerate(data) if not item.get('image_url')]
+            
+            if missing_images:
+                self.log_result(
+                    "Shamanic Practices API",
+                    False,
+                    f"Total: {len(data)} items. {len(missing_images)} missing image_url",
+                    blocking=True
+                )
+            else:
+                self.log_result(
+                    "Shamanic Practices API",
+                    True,
+                    f"Total: {len(data)} items. All have image_url."
+                )
+        except Exception as e:
+            self.log_result(
+                "Shamanic Practices API",
+                False,
+                f"Exception: {str(e)}",
+                blocking=True
+            )
+    
+    def test_sacred_guardians(self):
+        """Test 6: Sacred guardians endpoint - 14 items and premium split"""
+        try:
+            response = requests.get(f"{BACKEND_URL}/sacred-guardians", timeout=10)
+            
+            if response.status_code != 200:
+                self.log_result(
+                    "Sacred Guardians API",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=True
+                )
+                return
+            
+            data = response.json()
+            
+            if not isinstance(data, list):
+                self.log_result(
+                    "Sacred Guardians API",
+                    False,
+                    f"Expected list, got {type(data)}",
+                    blocking=True
+                )
+                return
+            
+            # Check for 14 items
+            if len(data) != 14:
+                self.log_result(
+                    "Sacred Guardians API",
+                    False,
+                    f"Expected 14 items, got {len(data)}",
+                    blocking=True
+                )
+                return
+            
+            # Check premium split (4 free, 10 premium expected)
+            free_items = [p for p in data if not p.get('is_premium', True)]
+            premium_items = [p for p in data if p.get('is_premium', False)]
+            
+            # Check image_url presence
+            missing_images = [i for i, item in enumerate(data) if not item.get('image_url')]
+            
+            issues = []
+            if missing_images:
+                issues.append(f"{len(missing_images)} items missing image_url")
+            
+            if len(free_items) != 4:
+                issues.append(f"Expected 4 free items, got {len(free_items)}")
+            
+            if len(premium_items) != 10:
+                issues.append(f"Expected 10 premium items, got {len(premium_items)}")
+            
+            if issues:
+                self.log_result(
+                    "Sacred Guardians API",
+                    False,
+                    f"Total: {len(data)} items. Issues: {', '.join(issues)}",
+                    blocking=True
+                )
+            else:
+                self.log_result(
+                    "Sacred Guardians API",
+                    True,
+                    f"Total: 14 items. Free: {len(free_items)}, Premium: {len(premium_items)}. All have image_url."
+                )
+        except Exception as e:
+            self.log_result(
+                "Sacred Guardians API",
+                False,
+                f"Exception: {str(e)}",
+                blocking=True
+            )
+    
+    def test_expand_script_7min(self):
+        """Test 7: Expand script endpoint - 7 minute duration"""
+        try:
+            payload = {
+                "practice_name": "Deep Breathwork Journey",
+                "duration_minutes": 7,
+                "use_ai": False,
+                "practice_type": "breathwork",
+                "elements": ["breath", "grounding"]
+            }
+            
             response = requests.post(
-                f"{BASE_URL}/content/expand-script",
+                f"{BACKEND_URL}/content/expand-script",
                 json=payload,
-                timeout=30
+                timeout=15
             )
             
-            # Check status code
             if response.status_code != 200:
-                print_error(f"Expected 200, got {response.status_code}")
-                print_error(f"Response: {response.text}")
-                all_passed = False
-                continue
+                self.log_result(
+                    "Expand Script 7min",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=True
+                )
+                return
             
-            # Parse response
             data = response.json()
             
             # Check required fields
-            required_fields = ["target_minutes", "paragraphs", "segments"]
-            missing_fields = [field for field in required_fields if field not in data]
+            required_fields = ['target_minutes', 'target_word_count', 'word_count']
+            missing_fields = [f for f in required_fields if f not in data]
             
             if missing_fields:
-                print_error(f"Missing required fields: {missing_fields}")
-                all_passed = False
-                continue
+                self.log_result(
+                    "Expand Script 7min",
+                    False,
+                    f"Missing fields: {', '.join(missing_fields)}",
+                    blocking=True
+                )
+                return
             
-            # Check target_minutes clamping
-            actual_target = data["target_minutes"]
-            if actual_target != expected_target:
-                print_error(f"target_minutes={actual_target}, expected {expected_target}")
-                all_passed = False
-                continue
+            # Verify word count supports minimum duration floor (7 min = ~840 words minimum)
+            target_word_count = data.get('target_word_count', 0)
+            word_count = data.get('word_count', 0)
+            min_expected = 840  # 7 minutes * 120 words/min
             
-            # Check paragraphs and segments are non-empty
-            if not data["paragraphs"]:
-                print_error("paragraphs array is empty")
-                all_passed = False
-                continue
-            
-            if not data["segments"]:
-                print_error("segments array is empty")
-                all_passed = False
-                continue
-            
-            print_success(f"duration_minutes={duration} → target_minutes={actual_target} (expected {expected_target})")
-            print_success(f"  paragraphs: {len(data['paragraphs'])} items")
-            print_success(f"  segments: {len(data['segments'])} items")
-            
-        except requests.exceptions.RequestException as e:
-            print_error(f"Request failed: {e}")
-            all_passed = False
-        except json.JSONDecodeError as e:
-            print_error(f"Invalid JSON response: {e}")
-            all_passed = False
+            if word_count < min_expected * 0.8:  # Allow 80% threshold
+                self.log_result(
+                    "Expand Script 7min",
+                    False,
+                    f"Word count {word_count} below minimum floor {min_expected * 0.8}",
+                    blocking=True
+                )
+            else:
+                self.log_result(
+                    "Expand Script 7min",
+                    True,
+                    f"Duration: {data.get('target_minutes')}min, Word count: {word_count} (>= {min_expected * 0.8})"
+                )
         except Exception as e:
-            print_error(f"Unexpected error: {e}")
-            all_passed = False
+            self.log_result(
+                "Expand Script 7min",
+                False,
+                f"Exception: {str(e)}",
+                blocking=True
+            )
     
-    if all_passed:
-        print(f"\n{Colors.GREEN}✅ TEST 1 PASSED: All narration duration bounds working correctly{Colors.END}")
-    else:
-        print(f"\n{Colors.RED}❌ TEST 1 FAILED: Some narration duration tests failed{Colors.END}")
-    
-    return all_passed
-
-def test_guided_content_endpoints():
-    """
-    Test 2: Guided content endpoint sanity
-    - /api/ancient-wisdom
-    - /api/mystery-school?stream=egyptian_mystery
-    - /api/mystery-school?stream=priestess_rose
-    - /api/mystery-school?stream=merlin_alchemy
-    - /api/mystery-school?stream=emerald_tablet
-    """
-    print("\n" + "="*80)
-    print("TEST 2: Guided Content Endpoints Sanity")
-    print("="*80)
-    
-    endpoints = [
-        {
-            "url": f"{BASE_URL}/ancient-wisdom",
-            "description": "Ancient Wisdom endpoint",
-            "expect_array": True
-        },
-        {
-            "url": f"{BASE_URL}/mystery-school?stream=egyptian_mystery",
-            "description": "Mystery School - Egyptian Mystery",
-            "expect_array": True
-        },
-        {
-            "url": f"{BASE_URL}/mystery-school?stream=priestess_rose",
-            "description": "Mystery School - Priestess Rose",
-            "expect_array": True
-        },
-        {
-            "url": f"{BASE_URL}/mystery-school?stream=merlin_alchemy",
-            "description": "Mystery School - Merlin Alchemy",
-            "expect_array": True
-        },
-        {
-            "url": f"{BASE_URL}/mystery-school?stream=emerald_tablet",
-            "description": "Mystery School - Emerald Tablet",
-            "expect_array": True
-        }
-    ]
-    
-    all_passed = True
-    
-    for endpoint in endpoints:
-        url = endpoint["url"]
-        description = endpoint["description"]
-        expect_array = endpoint["expect_array"]
-        
-        print(f"\n{Colors.BLUE}Testing: {description}{Colors.END}")
-        print(f"  URL: {url}")
-        
+    def test_expand_script_15min(self):
+        """Test 8: Expand script endpoint - 15 minute duration"""
         try:
-            response = requests.get(url, timeout=30)
+            payload = {
+                "practice_name": "Extended Meditation",
+                "duration_minutes": 15,
+                "use_ai": False,
+                "practice_type": "meditation",
+                "elements": ["mindfulness", "body scan"]
+            }
             
-            # Check status code
+            response = requests.post(
+                f"{BACKEND_URL}/content/expand-script",
+                json=payload,
+                timeout=15
+            )
+            
             if response.status_code != 200:
-                print_error(f"Expected 200, got {response.status_code}")
-                print_error(f"Response: {response.text}")
-                all_passed = False
-                continue
+                self.log_result(
+                    "Expand Script 15min",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=True
+                )
+                return
             
-            # Parse response
             data = response.json()
             
-            # Check if response is array when expected
-            if expect_array:
-                if not isinstance(data, list):
-                    print_error(f"Expected array, got {type(data).__name__}")
-                    all_passed = False
-                    continue
-                
-                if len(data) == 0:
-                    print_warning(f"Array is empty (0 items)")
-                else:
-                    print_success(f"Returns 200 with {len(data)} items")
-            else:
-                print_success(f"Returns 200 with valid JSON")
+            # Verify word count supports minimum duration floor (15 min = ~1800 words minimum)
+            word_count = data.get('word_count', 0)
+            min_expected = 1800  # 15 minutes * 120 words/min
             
-        except requests.exceptions.RequestException as e:
-            print_error(f"Request failed: {e}")
-            all_passed = False
-        except json.JSONDecodeError as e:
-            print_error(f"Invalid JSON response: {e}")
-            all_passed = False
+            if word_count < min_expected * 0.8:  # Allow 80% threshold
+                self.log_result(
+                    "Expand Script 15min",
+                    False,
+                    f"Word count {word_count} below minimum floor {min_expected * 0.8}",
+                    blocking=True
+                )
+            else:
+                self.log_result(
+                    "Expand Script 15min",
+                    True,
+                    f"Duration: {data.get('target_minutes')}min, Word count: {word_count} (>= {min_expected * 0.8})"
+                )
         except Exception as e:
-            print_error(f"Unexpected error: {e}")
-            all_passed = False
+            self.log_result(
+                "Expand Script 15min",
+                False,
+                f"Exception: {str(e)}",
+                blocking=True
+            )
     
-    if all_passed:
-        print(f"\n{Colors.GREEN}✅ TEST 2 PASSED: All guided content endpoints healthy{Colors.END}")
-    else:
-        print(f"\n{Colors.RED}❌ TEST 2 FAILED: Some guided content endpoints failed{Colors.END}")
+    def test_tts_generate(self):
+        """Test 9: TTS generate endpoint - smoke test"""
+        try:
+            payload = {
+                "text": "Welcome to this sacred breathwork journey. Take a deep breath in, and slowly release.",
+                "voice": "alloy"
+            }
+            
+            response = requests.post(
+                f"{BACKEND_URL}/tts/generate-base64",
+                json=payload,
+                timeout=20
+            )
+            
+            if response.status_code != 200:
+                self.log_result(
+                    "TTS Generate",
+                    False,
+                    f"Expected 200, got {response.status_code}",
+                    blocking=False  # Non-blocking as TTS is supplementary
+                )
+                return
+            
+            data = response.json()
+            
+            # Check for audio_base64 field
+            audio_base64 = data.get('audio_base64', '')
+            
+            if not audio_base64:
+                self.log_result(
+                    "TTS Generate",
+                    False,
+                    "Response missing audio_base64 field or empty",
+                    blocking=False
+                )
+            elif len(audio_base64) < 1000:
+                self.log_result(
+                    "TTS Generate",
+                    False,
+                    f"Audio payload suspiciously small: {len(audio_base64)} chars",
+                    blocking=False
+                )
+            else:
+                self.log_result(
+                    "TTS Generate",
+                    True,
+                    f"Audio payload size: {len(audio_base64)} chars (~{len(audio_base64) * 0.75 / 1024:.1f}KB)"
+                )
+        except Exception as e:
+            self.log_result(
+                "TTS Generate",
+                False,
+                f"Exception: {str(e)}",
+                blocking=False
+            )
     
-    return all_passed
-
-def test_retreat_endpoint():
-    """
-    Test 3: Retreat endpoint sanity
-    GET /api/retreats returns 200 and valid JSON (empty or populated)
-    """
-    print("\n" + "="*80)
-    print("TEST 3: Retreat Endpoint Sanity - /api/retreats")
-    print("="*80)
-    
-    url = f"{BASE_URL}/retreats"
-    
-    print(f"\n{Colors.BLUE}Testing: GET /api/retreats{Colors.END}")
-    
-    try:
-        response = requests.get(url, timeout=30)
+    def print_summary(self):
+        """Print final summary"""
+        print("\n" + "="*80)
+        print("BACKEND VERIFICATION SUMMARY")
+        print("="*80 + "\n")
         
-        # Check status code
-        if response.status_code != 200:
-            print_error(f"Expected 200, got {response.status_code}")
-            print_error(f"Response: {response.text}")
-            return False
+        passed = sum(1 for r in self.results if r['passed'])
+        failed = sum(1 for r in self.results if not r['passed'])
         
-        # Parse response
-        data = response.json()
+        print(f"Total Tests: {len(self.results)}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {failed}")
+        print()
         
-        # Check if response is valid JSON (array or object)
-        if isinstance(data, list):
-            print_success(f"Returns 200 with valid JSON array ({len(data)} items)")
-        elif isinstance(data, dict):
-            print_success(f"Returns 200 with valid JSON object")
+        if self.blocking_issues:
+            print("🚨 BLOCKING ISSUES:")
+            for issue in self.blocking_issues:
+                print(f"  - {issue}")
+            print()
+        
+        if self.non_blocking_issues:
+            print("⚠️  NON-BLOCKING ISSUES:")
+            for issue in self.non_blocking_issues:
+                print(f"  - {issue}")
+            print()
+        
+        if failed == 0:
+            print("✅ VERDICT: Backend is READY for production")
+            return 0
+        elif len(self.blocking_issues) == 0:
+            print("⚠️  VERDICT: Backend is READY with minor issues")
+            return 0
         else:
-            print_error(f"Unexpected response type: {type(data).__name__}")
-            return False
-        
-        print(f"\n{Colors.GREEN}✅ TEST 3 PASSED: Retreat endpoint healthy{Colors.END}")
-        return True
-        
-    except requests.exceptions.RequestException as e:
-        print_error(f"Request failed: {e}")
-        return False
-    except json.JSONDecodeError as e:
-        print_error(f"Invalid JSON response: {e}")
-        return False
-    except Exception as e:
-        print_error(f"Unexpected error: {e}")
-        return False
+            print("❌ VERDICT: Backend has BLOCKING issues - NOT READY")
+            return 1
 
 def main():
-    """Run all backend tests"""
-    print(f"\n{Colors.BLUE}{'='*80}{Colors.END}")
-    print(f"{Colors.BLUE}BACKEND VERIFICATION TEST SUITE{Colors.END}")
-    print(f"{Colors.BLUE}Base URL: {BASE_URL}{Colors.END}")
-    print(f"{Colors.BLUE}{'='*80}{Colors.END}")
-    
-    results = {
-        "test_1_narration_duration": test_narration_duration_bounds(),
-        "test_2_guided_content": test_guided_content_endpoints(),
-        "test_3_retreat_endpoint": test_retreat_endpoint()
-    }
-    
-    # Summary
-    print("\n" + "="*80)
-    print("TEST SUMMARY")
     print("="*80)
+    print("DEEP BACKEND VERIFICATION")
+    print("Target: https://breathwork-sanctuary.preview.emergentagent.com")
+    print("="*80 + "\n")
     
-    passed_count = sum(1 for result in results.values() if result)
-    total_count = len(results)
+    verifier = BackendVerifier()
     
-    for test_name, passed in results.items():
-        status = f"{Colors.GREEN}PASSED{Colors.END}" if passed else f"{Colors.RED}FAILED{Colors.END}"
-        print(f"{test_name}: {status}")
+    # Run all tests
+    print("1. HEALTH AND CORE APIs")
+    print("-" * 80)
+    verifier.test_health_endpoint()
+    verifier.test_yoga_poses()
+    verifier.test_chair_yoga()
+    verifier.test_fascia_stretching()
+    verifier.test_shamanic_practices()
+    verifier.test_sacred_guardians()
     
-    print(f"\n{Colors.BLUE}Total: {passed_count}/{total_count} tests passed{Colors.END}")
+    print("\n2. NARRATION/TIMER BACKEND SUPPORT")
+    print("-" * 80)
+    verifier.test_expand_script_7min()
+    verifier.test_expand_script_15min()
     
-    if passed_count == total_count:
-        print(f"\n{Colors.GREEN}✅ ALL TESTS PASSED{Colors.END}")
-        return 0
-    else:
-        print(f"\n{Colors.RED}❌ SOME TESTS FAILED{Colors.END}")
-        return 1
+    print("\n3. GUIDED/TTS BACKEND SMOKE")
+    print("-" * 80)
+    verifier.test_tts_generate()
+    
+    # Print summary
+    exit_code = verifier.print_summary()
+    sys.exit(exit_code)
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
