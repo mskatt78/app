@@ -60,6 +60,20 @@
 ### P1 — Remove seeded retreats placeholders
 - ✅ Verified: `/api/retreats` returns empty array; no placeholder records.
 
+## Fork Continuation Verification Snapshot (2026-07-13)
+- ✅ P0 endpoint stability verified in preview:
+  - `/api/tai-chi`, `/api/chi-gong`, `/api/mystery-schools`, `/api/alchemy-hub`, `/api/water-practices` all return 200 with valid JSON payloads.
+- ✅ Guided narration floor re-validated against user standard:
+  - `/api/content/expand-script` produces long-form scripts with sustained word floor for 7+ minute spoken guidance.
+  - Runtime sampling with generated TTS segments confirmed spoken output exceeds 7 minutes for a 15-minute target session.
+- ✅ Sound Frequencies playback reliability hardened:
+  - Added server-side reliability guard to strip blocked/unreliable Wikimedia audio URLs from `audio_url` payloads.
+  - Frontend now consistently falls back to `AmbientSoundPlayer` instead of presenting dead custom audio links.
+- ✅ Retreats cleanup preserved:
+  - `/api/retreats` remains empty (no seeded dummy retreats).
+- ✅ Visual smoke verification:
+  - Breathwork and Meditations pages load with real-photo background overlays and no blocking runtime errors.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
