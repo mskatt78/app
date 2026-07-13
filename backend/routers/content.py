@@ -1767,19 +1767,16 @@ SHAMANIC_IMAGE_OVERRIDES: dict[str, str] = {
 }
 
 FASCIA_IMAGE_OVERRIDES: dict[str, str] = {
-    "27": "https://images.pexels.com/photos/6456155/pexels-photo-6456155.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "27": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/56d1b835c3d146835e77e254e9a1f5cd645a0e4e7543a113666e9eb4b8d46135.png",
     "28": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
     "29": "https://images.pexels.com/photos/6456149/pexels-photo-6456149.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "32": "https://images.pexels.com/photos/3822512/pexels-photo-3822512.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "32": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a80b0d8f70bbcb1d93016204498ac4b3e7c593d630fa0c03f632dde4edbe860b.png",
     "33": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
     "34": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
     "36": "https://images.pexels.com/photos/3822843/pexels-photo-3822843.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "38": "https://images.pexels.com/photos/3822472/pexels-photo-3822472.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "39": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "27": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/56d1b835c3d146835e77e254e9a1f5cd645a0e4e7543a113666e9eb4b8d46135.png",
-    "31": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/843111a63f9c77eeb358a19b903234735e0099ca6e0f42513248b12d39f8c070.png",
-    "32": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a80b0d8f70bbcb1d93016204498ac4b3e7c593d630fa0c03f632dde4edbe860b.png",
     "37": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6970f348854cc5dd6b41558af7fe07ffe314ca326076ad7a2455d43df0885f71.png",
+    "38": "https://images.pexels.com/photos/3822472/pexels-photo-3822472.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "31": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/843111a63f9c77eeb358a19b903234735e0099ca6e0f42513248b12d39f8c070.png",
     "39": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/42c6edcc77557a519bff5e40533fdf4b0560cbb33a9a92d9ac3fe0dc7a5be692.png",
 }
 
