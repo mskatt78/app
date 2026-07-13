@@ -2639,13 +2639,21 @@ def _lookup_yoga_realism_override(pose_name_key: str) -> Optional[str]:
         if _normalize_label_key(raw_key) == pose_name_key:
             return override
 
+    tokenized = set(_normalize_label_key(pose_name_key).split())
+    best_score = 0.0
+    best_override: Optional[str] = None
     for keywords, override in YOGA_REALISM_KEYWORD_OVERRIDES:
-        if all(keyword in pose_name_key for keyword in keywords):
-            return override
+        keyword_set = {_normalize_label_key(keyword) for keyword in keywords}
+        if not keyword_set:
+            continue
+        overlap = len(tokenized.intersection(keyword_set))
+        score = overlap / len(keyword_set)
+        if score > best_score and overlap > 0:
+            best_score = score
+            best_override = override
 
-    for keywords, override in YOGA_REALISM_KEYWORD_OVERRIDES:
-        if any(keyword in pose_name_key for keyword in keywords):
-            return override
+    if best_score >= 0.8 and best_override:
+        return best_override
 
     return None
 
@@ -5798,7 +5806,15 @@ async def get_yoga_poses(element: Optional[str] = None, difficulty: Optional[str
     
     poses = await db.yoga_poses.find(query, {"_id": 0}).to_list(length=100)
     enriched = [_enrich_devotional_language(_enrich_yoga_pose(pose), "elemental-practices") for pose in poses]
-    return _apply_free_paid_tiering(enriched, "yoga_poses")
+    tiered = _apply_free_paid_tiering(enriched, "yoga_poses")
+    for pose in tiered:
+        pose_name_key = _normalize_label_key(str(pose.get("name") or ""))
+        if pose_name_key in {"corpse pose", "easy pose"}:
+            pose["is_premium"] = False
+            pose["premium_unlock_id"] = None
+            pose["premium_label"] = None
+            pose["premium_description"] = None
+    return tiered
 
 
 @router.get("/yoga/poses/{pose_id}")
