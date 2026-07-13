@@ -17620,3 +17620,96 @@ agent_communication:
       3. ✓ Multiple pose cards visible
       
       No blocking issues detected. Yoga Library is functioning correctly.
+
+  - task: "Semantic image mismatch audit across 20 routes"
+    implemented: true
+    working: false
+    file: "Multiple route pages"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ SEMANTIC IMAGE MISMATCH AUDIT COMPLETED (2026-07-13): Comprehensive audit of 20 routes revealed CRITICAL SEMANTIC MISMATCHES on Chair Yoga and Somatic Yoga pages.
+          
+          AUDIT SCOPE: 20 routes tested for image-content semantic alignment and broken images.
+          
+          ✅ PASS ROUTES (17 routes - no semantic mismatches or broken images):
+          - /yoga-library (78 images)
+          - /partner-yoga (18 images - partner yoga poses correctly shown)
+          - /fascia-stretching (53 images)
+          - /chakra-cleansing (14 images - chakra imagery appropriate)
+          - /energy-healing (14 images)
+          - /water-practices (0 images - text-only cards, no broken images)
+          - /shamanic-practices (27 images - shamanic journey imagery appropriate)
+          - /sacred-guardians (15 images - animal/spirit guide imagery correct)
+          - /sacred-ally-alchemy (22 images - star lineage/animal alchemy imagery correct)
+          - /angelic-alchemy (35 images - archangel imagery appropriate)
+          - /healing-portals (0 images - text-only cards, no broken images)
+          - /daily-practice (2 images)
+          - /meditations (9 images)
+          - /mindfulness (10 images - mindfulness practice imagery appropriate)
+          - /grounding (14 images - grounding practice imagery appropriate)
+          - /creative-processes (7 images)
+          - /sound-frequencies (14 images)
+          - /elemental-practices (14 images - elemental imagery appropriate)
+          
+          ❌ FAIL ROUTES (2 routes - CLEAR SEMANTIC MISMATCHES):
+          
+          1. /chair-yoga (15 images total) - MULTIPLE SEMANTIC MISMATCHES:
+             - "Chair Grounded Strength Builder" → Shows colorful umbrella/parasol stand (beach vendor setup) - NOT chair yoga
+             - "Chair Core Stability Spiral" → Shows same colorful umbrella/parasol stand - NOT chair yoga
+             - "Chair Neck & Shoulder Stress Release" → Shows person working on motorcycle - NOT chair yoga
+             - "Chair Neck & Jaw Unwinding" → Shows person working on motorcycle - NOT chair yoga
+             
+          2. /somatic-yoga (5 images total) - SEMANTIC MISMATCH:
+             - "Neck & Shoulder Stress Release" → Shows person working on motorcycle - NOT somatic yoga
+          
+          📊 BROKEN IMAGES: 0 (no broken/404 images detected across all routes)
+          
+          🔍 ROUTES WITH NO IMAGES (by design):
+          - /water-practices (0 images - uses text-only card design)
+          - /healing-portals (0 images - uses text-only card design)
+          
+          CONSOLIDATED ACTIONABLE MISMATCH LIST FOR CODE PATCHING:
+          
+          Route: /chair-yoga
+          - Card: "Chair Grounded Strength Builder" - Replace umbrella stand image with chair yoga strength pose
+          - Card: "Chair Core Stability Spiral" - Replace umbrella stand image with chair core stability pose
+          - Card: "Chair Neck & Shoulder Stress Release" - Replace motorcycle image with chair neck/shoulder release pose
+          - Card: "Chair Neck & Jaw Unwinding" - Replace motorcycle image with chair jaw unwinding pose
+          
+          Route: /somatic-yoga
+          - Card: "Neck & Shoulder Stress Release" - Replace motorcycle image with somatic neck/shoulder release pose
+          
+          SEVERITY: HIGH - These are obvious semantic mismatches where images completely fail to represent the practice content. Users would be confused seeing umbrella stands and motorcycles on yoga practice pages.
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      SEMANTIC IMAGE AUDIT COMPLETE - CRITICAL MISMATCHES FOUND
+      
+      Completed comprehensive semantic image mismatch audit across all 20 requested routes.
+      
+      SUMMARY:
+      - 17 routes PASS (no semantic mismatches)
+      - 2 routes FAIL (chair-yoga, somatic-yoga)
+      - 5 total semantic mismatches identified
+      - 0 broken images
+      
+      CRITICAL ISSUES REQUIRING IMMEDIATE FIX:
+      
+      /chair-yoga has 4 mismatched images:
+      1. "Chair Grounded Strength Builder" - umbrella stand (should be chair yoga)
+      2. "Chair Core Stability Spiral" - umbrella stand (should be chair yoga)
+      3. "Chair Neck & Shoulder Stress Release" - motorcycle repair (should be chair yoga)
+      4. "Chair Neck & Jaw Unwinding" - motorcycle repair (should be chair yoga)
+      
+      /somatic-yoga has 1 mismatched image:
+      1. "Neck & Shoulder Stress Release" - motorcycle repair (should be somatic yoga)
+      
+      These are NOT style preferences - these are completely wrong images that don't represent the practice at all.
+      
+      RECOMMENDATION: Replace these 5 images with appropriate yoga/somatic practice imagery before production deployment.
