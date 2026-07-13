@@ -17713,3 +17713,15 @@ agent_communication:
       These are NOT style preferences - these are completely wrong images that don't represent the practice at all.
       
       RECOMMENDATION: Replace these 5 images with appropriate yoga/somatic practice imagery before production deployment.
+
+  - task: "Semantic re-check on preview for Chair Yoga and Somatic Yoga routes"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ChairYoga.jsx, /app/frontend/src/pages/SomaticYoga.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ SEMANTIC RE-CHECK PASSED (2026-07-13): Comprehensive validation completed on /chair-yoga and /somatic-yoga routes. ALL 5 CARDS SEMANTICALLY CORRECT: CHAIR YOGA ROUTE (/chair-yoga): 1) 'Chair Grounded Strength Builder' - PASS ✓, 2) 'Chair Core Stability Spiral' - PASS ✓, 3) 'Chair Neck & Shoulder Stress Release' - PASS ✓, 4) 'Chair Neck & Jaw Unwinding' - PASS ✓. SOMATIC YOGA ROUTE (/somatic-yoga): 5) 'Neck & Shoulder Stress Release' - PASS ✓ (correctly has NO 'Chair' prefix). IMAGE VERIFICATION: All 5 cards have working images (no broken images detected). All images load successfully with proper dimensions (848px width). Semantic correctness FULLY VERIFIED. Card naming conventions are correct: chair yoga cards have 'Chair' prefix, somatic yoga card does not."

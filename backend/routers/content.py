@@ -1700,23 +1700,23 @@ CHAIR_YOGA_SUPPLEMENTS = [
 ]
 
 CHAIR_YOGA_IMAGE_OVERRIDES: dict[str, str] = {
-    "chair-yoga-201": "https://images.pexels.com/photos/3822843/pexels-photo-3822843.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-201": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/156782f4e4ae8730026c0bc8e4275f0db69e9456d2cc9d208fdedef030c23e8b.png",
     "chair-yoga-202": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
     "chair-yoga-203": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "chair-yoga-204": "https://images.pexels.com/photos/3822512/pexels-photo-3822512.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-204": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/8afaeb5390476f4b1cfe27aa13da60eb9da63c3dc625fa8be939efc81e050e7d.png",
     "chair-yoga-205": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
     "chair-yoga-206": "https://images.pexels.com/photos/3822472/pexels-photo-3822472.jpeg?auto=compress&cs=tinysrgb&w=900",
     "chair-yoga-207": "https://images.pexels.com/photos/3822116/pexels-photo-3822116.jpeg?auto=compress&cs=tinysrgb&w=900",
     "chair-yoga-208": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
     "chair-yoga-209": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "chair-yoga-210": "https://images.pexels.com/photos/3822512/pexels-photo-3822512.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-210": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c5415267bc7d75dda0a05cd1b2887643e68c554db0f9d7f96320217e8af33762.png",
 }
 
 SOMATIC_IMAGE_OVERRIDES: dict[str, str] = {
     "grounding-somatic-flow": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
     "hip-release-somatic": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
     "chair-hip-release-somatic": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "neck-shoulder-somatic": "https://images.pexels.com/photos/3822843/pexels-photo-3822843.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "neck-shoulder-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7460d2d56b7ffd7dafdbf4c40237fa996f5f52dd7c03eda7bcf09522402c962d.png",
     "restorative-somatic-yoga": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
     "trauma-release-somatic": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
 }
