@@ -3548,6 +3548,64 @@ def _enrich_sound_frequency_entry(entry: dict[str, Any]) -> dict[str, Any]:
         enriched.pop("audio_source", None)
         enriched.pop("audio_license", None)
 
+    journey_name = str(enriched.get("name") or "Sound Frequency Journey").strip()
+    element_name = str(enriched.get("element") or "Spirit").strip().lower()
+    healing_focus = ""
+    healing_properties = enriched.get("healing_properties")
+    if isinstance(healing_properties, list) and healing_properties:
+        healing_focus = str(healing_properties[0]).strip()
+
+    enriched.setdefault(
+        "alchemy",
+        [
+            f"Vibrational entrainment: {journey_name} supports {healing_focus or 'nervous-system coherence'} through paced sonic exposure.",
+            f"Elemental support: this listening arc regulates {element_name} pathways through breath-linked sound immersion.",
+            "Somatic safety: track jaw, throat, chest, and belly sensation to prevent dissociation during deep listening.",
+            "Integration bridge: convert post-listening clarity into one practical action within 24 hours.",
+        ],
+    )
+    enriched.setdefault(
+        "ritual",
+        [
+            "Prepare environment: lower light, reduce interruptions, and choose grounded posture.",
+            "Begin with 8-12 slow breaths before pressing play to reduce baseline stress activation.",
+            "Close with one minute of silence and hydration before re-entering activity.",
+        ],
+    )
+    enriched.setdefault(
+        "ceremony",
+        [
+            "Opening: state one intention and orient to breath, posture, and emotional baseline.",
+            "Middle: receive sound as embodied ritual while tracking real-time sensation shifts.",
+            "Closure: complete one integration note and one practical behavior commitment.",
+        ],
+    )
+    enriched.setdefault(
+        "guided_practice",
+        [
+            "Phase 1 — Arrival: soften jaw, shoulders, and belly while lengthening exhale.",
+            "Phase 2 — Immersion: continue listening with periodic interoception checks every few minutes.",
+            "Phase 3 — Integration: sit in silence, journal one shift, and anchor a real-world action.",
+        ],
+    )
+    enriched.setdefault(
+        "why_this_heals",
+        f"{journey_name} combines rhythmic auditory stimulation, breath pacing, and focused attention to reduce stress reactivity and improve embodied emotional regulation.",
+    )
+    enriched.setdefault(
+        "integration_guide",
+        "After listening, place one palm on heart and one on lower belly for five breaths, then complete one grounded action reflecting the state you cultivated.",
+    )
+    enriched.setdefault(
+        "master_embodiment_protocol",
+        _build_modality_master_protocol(
+            journey_name,
+            "sound frequency journey",
+            "relaxed jaw, lengthened exhale, and heart-belly awareness",
+        ),
+    )
+    enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "meditation"))
+
     return enriched
 
 
@@ -4084,6 +4142,81 @@ def _append_ancient_wisdom_supplements(items: list[dict[str, Any]], tradition: O
             continue
         additions.append(item)
     return items + additions
+
+
+def _enrich_ancient_wisdom_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    enriched = _enrich_devotional_language(_apply_subject_image_alignment(dict(entry), "hybrid-curated"), "ancient-wisdom")
+    title = str(enriched.get("name") or enriched.get("title") or "Ancient Wisdom Teaching").strip()
+    tradition = str(enriched.get("tradition") or "international").strip().replace("_", " ").title()
+    teaching_line = (
+        str(enriched.get("teaching") or "").strip()
+        or str(enriched.get("description") or "").strip()
+        or "Traditional teaching depth"
+    )
+
+    enriched.setdefault("expanded_context", f"Extended context: {teaching_line}.")
+    enriched.setdefault("section_focus", str(enriched.get("tradition") or "cross-tradition"))
+    enriched.setdefault(
+        "alchemy",
+        [
+            f"Lineage intelligence: {title} encodes practical ceremonial ethics from {tradition} streams.",
+            "Embodiment principle: wisdom must be tested through behavior, not held as abstract concept.",
+            "Nervous-system literacy: pacing, regulation, and consent create sustainable spiritual depth.",
+            "Integration ethic: complete one relational or practical action to anchor each teaching.",
+        ],
+    )
+    enriched.setdefault(
+        "ritual",
+        [
+            "Orient to safety and intention before entering sacred study or practice.",
+            "Name one teaching sentence and embody it through breath, posture, and action.",
+            "Close with gratitude, journaling, and one concrete integration commitment.",
+        ],
+    )
+    enriched.setdefault(
+        "ceremony",
+        [
+            "Opening: invoke humility, boundaries, and clear devotional intention.",
+            "Middle: engage ritual sequence with periodic body-based regulation check-ins.",
+            "Closure: seal with prayer, practical action, and compassionate accountability.",
+        ],
+    )
+    enriched.setdefault(
+        "guided_practice",
+        [
+            "Phase 1 — Preparation: posture, breath coherence, and emotional orientation.",
+            "Phase 2 — Transmission: receive one teaching and map it to a real-life challenge.",
+            "Phase 3 — Embodiment: complete one immediate, grounded action before ending.",
+        ],
+    )
+    enriched.setdefault(
+        "why_this_heals",
+        f"{title} supports healing by integrating ceremonial meaning, nervous-system regulation, and practical ethical action into one coherent embodied pathway.",
+    )
+    enriched.setdefault(
+        "integration_guide",
+        "Within 24 hours, complete one practical action that proves this teaching is embodied (boundary, repair, service, or aligned communication).",
+    )
+    enriched.setdefault(
+        "master_embodiment_protocol",
+        _build_modality_master_protocol(
+            title,
+            f"{tradition} wisdom ritual",
+            "upright spine, softened jaw, and compassionate focus",
+        ),
+    )
+    enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "meditation"))
+
+    override_tutorials = _build_admin_override_tutorials(title, enriched.get("youtube_tutorial_override_urls"))
+    if override_tutorials:
+        enriched["youtube_tutorials"] = override_tutorials
+    else:
+        enriched.setdefault(
+            "youtube_tutorials",
+            _build_youtube_tutorial_links(title, f"{tradition} ritual practice", None),
+        )
+
+    return enriched
 
 
 def _to_ancient_mystery_entry(item: dict[str, Any]) -> dict[str, Any]:
@@ -7689,14 +7822,7 @@ async def get_ancient_wisdom(tradition: Optional[str] = None) -> list[dict[str, 
     entries = await db.ancient_wisdom.find(query, {"_id": 0}).to_list(length=260)
     entries = _append_ancient_wisdom_supplements(entries, tradition)
     entries = _append_mystery_school_to_ancient(entries, tradition)
-    enriched_entries = []
-    for entry in entries:
-        entry_copy = dict(entry)
-        entry_copy.setdefault("expanded_context", f"Extended context: {entry_copy.get('teaching') or entry_copy.get('description') or 'Traditional teaching depth.'}")
-        entry_copy.setdefault("section_focus", entry_copy.get("tradition") or "cross-tradition")
-        enriched_entries.append(
-            _enrich_devotional_language(_apply_subject_image_alignment(entry_copy, "hybrid-curated"), "ancient-wisdom")
-        )
+    enriched_entries = [_enrich_ancient_wisdom_entry(entry) for entry in entries]
     return _apply_free_paid_tiering(enriched_entries, "ancient_wisdom")
 
 
@@ -7707,7 +7833,7 @@ async def get_ancient_wisdom_entry(entry_id: str) -> dict[str, Any]:
     entry = await db.ancient_wisdom.find_one({"id": entry_id}, {"_id": 0})
     if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
-    return _enrich_devotional_language(_apply_subject_image_alignment(entry, "hybrid-curated"), "ancient-wisdom")
+    return _enrich_ancient_wisdom_entry(entry)
 
 
 @router.get("/mystery-school")

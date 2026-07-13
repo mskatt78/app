@@ -337,6 +337,22 @@ const AstrologyCalendar = ({ api }) => {
               })}
             </div>
 
+          <section className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="sun-moon-depth-panels">
+            <article className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5" data-testid="sun-moon-why-this-heals">
+              <p className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</p>
+              <p className="text-sm text-emerald-100/85 leading-relaxed">
+                Sun and moon tracking stabilizes life rhythm by aligning action cycles, emotional pacing, and nervous-system recovery with natural timing.
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5" data-testid="sun-moon-integration-guide">
+              <p className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</p>
+              <p className="text-sm text-violet-100/85 leading-relaxed">
+                Each day, choose one lunar-aligned behavior: protect energy, complete one purposeful action, and close with evening reflection.
+              </p>
+            </article>
+          </section>
+
             <div className="mt-12">
               <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-4">Full Wheel</h4>
               <div className="flex flex-wrap gap-2">

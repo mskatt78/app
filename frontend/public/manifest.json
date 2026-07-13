@@ -106,7 +106,20 @@
       "src": "screenshot-tablet.jpeg",
       "sizes": "834x1112",
       "type": "image/jpeg",
+      "form_factor": "wide",
       "label": "Tablet home screen"
+    },
+    {
+      "src": "screenshot-1.png",
+      "sizes": "1200x801",
+      "type": "image/png",
+      "label": "Guided practice and ritual flow"
+    },
+    {
+      "src": "screenshot-2.png",
+      "sizes": "1200x801",
+      "type": "image/png",
+      "label": "Breathwork and sound healing dashboard"
     }
   ],
   "shortcuts": [

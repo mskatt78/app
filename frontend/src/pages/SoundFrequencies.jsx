@@ -112,6 +112,12 @@ const SoundFrequencies = ({ user, api }) => {
     return [];
   };
 
+  const resolveBestForTags = (entry) => {
+    if (Array.isArray(entry?.best_for_tags) && entry.best_for_tags.length) return entry.best_for_tags;
+    if (Array.isArray(entry?.best_for) && entry.best_for.length) return entry.best_for;
+    return [];
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="sound-frequencies">
       {/* Header */}
@@ -423,6 +429,49 @@ const SoundFrequencies = ({ user, api }) => {
                   </div>
                 )}
 
+                {(selectedFreq.why_this_heals || selectedFreq.integration_guide) && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-testid="sound-frequency-healing-integration-grid">
+                    <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="sound-frequency-why-this-heals">
+                      <h4 className="text-sm uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h4>
+                      <p className="text-sm text-emerald-100/85 leading-relaxed">
+                        {selectedFreq.why_this_heals || "Sound medicine supports regulation by pairing rhythmic vibration with breath pacing, emotional witnessing, and embodied safety."}
+                      </p>
+                    </article>
+
+                    <article className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="sound-frequency-integration-guide">
+                      <h4 className="text-sm uppercase tracking-wider text-violet-300 mb-2">Integration guide</h4>
+                      <p className="text-sm text-violet-100/85 leading-relaxed">
+                        {selectedFreq.integration_guide || "After listening, hydrate, journal one shift in body or mood, then complete one practical action while calm is still present."}
+                      </p>
+                    </article>
+                  </div>
+                )}
+
+                {(selectedFreq.master_embodiment_protocol?.preparation_phase || []).length > 0 && (
+                  <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="sound-frequency-master-embodiment-protocol">
+                    <h4 className="text-sm uppercase tracking-wider text-amber-300 mb-3">Master Embodiment Protocol</h4>
+                    <div className="space-y-3">
+                      {[
+                        { key: "preparation_phase", label: "Preparation" },
+                        { key: "embodiment_phase", label: "Embodiment" },
+                        { key: "integration_phase", label: "Integration" },
+                      ].map((section) => (
+                        <div key={section.key} className="p-3 rounded-lg bg-black/20 border border-white/10" data-testid={`sound-frequency-master-${section.key}`}>
+                          <p className="text-xs text-amber-200 font-medium mb-2">{section.label}</p>
+                          <ul className="space-y-1.5">
+                            {(selectedFreq.master_embodiment_protocol?.[section.key] || []).slice(0, 4).map((step, index) => (
+                              <li key={`sound-frequency-${section.key}-${index}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                                <span className="text-amber-300">✦</span>
+                                <span>{step}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Best For */}
                 <div>
                   <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3 flex items-center gap-2">
@@ -430,7 +479,7 @@ const SoundFrequencies = ({ user, api }) => {
                     Best For
                   </h4>
                   <div className="flex flex-wrap gap-2">
-                    {selectedFreq.best_for?.map((item, i) => (
+                    {resolveBestForTags(selectedFreq).map((item, i) => (
                       <span key={i} className="px-3 py-1 rounded-full bg-yellow-500/10 text-yellow-300 text-sm">
                         {item}
                       </span>

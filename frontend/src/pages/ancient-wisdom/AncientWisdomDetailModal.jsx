@@ -35,6 +35,12 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
     return rituals.slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
   };
 
+  const resolveBestForTags = (entry) => {
+    if (Array.isArray(entry?.best_for_tags) && entry.best_for_tags.length) return entry.best_for_tags;
+    if (Array.isArray(entry?.best_for) && entry.best_for.length) return entry.best_for;
+    return [];
+  };
+
   return (
     <AnimatePresence>
       {selected && (
@@ -228,6 +234,81 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
                       </li>
                     ))}
                   </ol>
+                </div>
+              )}
+
+              {(selected.why_this_heals || selected.integration_guide) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-testid="ancient-wisdom-healing-integration-grid">
+                  <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="ancient-wisdom-why-this-heals">
+                    <p className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</p>
+                    <p className="text-sm text-emerald-100/85 leading-relaxed">
+                      {selected.why_this_heals || "This teaching restores coherence by pairing wisdom transmission with embodied regulation and practical action."}
+                    </p>
+                  </article>
+                  <article className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="ancient-wisdom-integration-guide">
+                    <p className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</p>
+                    <p className="text-sm text-violet-100/85 leading-relaxed">
+                      {selected.integration_guide || "Anchor one concrete action within 24 hours so this teaching becomes lived behavior, not only inspiration."}
+                    </p>
+                  </article>
+                </div>
+              )}
+
+              {resolveBestForTags(selected).length > 0 && (
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="ancient-wisdom-best-for-tags">
+                  <p className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Best For</p>
+                  <div className="flex flex-wrap gap-2">
+                    {resolveBestForTags(selected).map((tag) => (
+                      <span key={`ancient-best-for-${selected.id}-${tag}`} className="px-2 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-[11px] text-emerald-100">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selected.master_embodiment_protocol && (
+                <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="ancient-wisdom-master-embodiment-protocol">
+                  <p className="text-xs uppercase tracking-wider text-amber-300 mb-3">Master Embodiment Protocol</p>
+                  <div className="space-y-3">
+                    {[
+                      { key: "preparation_phase", label: "Preparation" },
+                      { key: "embodiment_phase", label: "Embodiment" },
+                      { key: "integration_phase", label: "Integration" },
+                    ].map((section) => (
+                      <div key={section.key} className="p-3 rounded-lg bg-black/20 border border-white/10" data-testid={`ancient-wisdom-master-${section.key}`}>
+                        <p className="text-xs text-amber-200 font-medium mb-2">{section.label}</p>
+                        <ul className="space-y-1.5">
+                          {(selected.master_embodiment_protocol?.[section.key] || []).slice(0, 5).map((step, index) => (
+                            <li key={`ancient-master-${section.key}-${index}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                              <span className="text-amber-300">✦</span>
+                              <span>{step}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {(selected.youtube_tutorials || []).length > 0 && (
+                <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="ancient-wisdom-youtube-tutorials">
+                  <p className="text-xs uppercase tracking-wider text-cyan-300 mb-2">YouTube Tutorials</p>
+                  <div className="space-y-2">
+                    {selected.youtube_tutorials.map((item, index) => (
+                      <a
+                        key={`ancient-youtube-${selected.id}-${index}`}
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block text-sm text-cyan-100 underline underline-offset-2 break-words"
+                        data-testid={`ancient-wisdom-youtube-link-${index}`}
+                      >
+                        {item.title}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               )}
 

@@ -244,6 +244,30 @@ const OracleReadings = ({ user, api }) => {
               </motion.div>
             )}
 
+            {showCards && reading?.cards?.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: reading.cards?.length * 0.3 + 0.7 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-3"
+                data-testid="oracle-reading-integration-grid"
+              >
+                <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="oracle-reading-why-this-heals">
+                  <h4 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h4>
+                  <p className="text-sm text-emerald-100/85 leading-relaxed">
+                    Oracle reflection supports healing by moving insight from abstraction into embodied choice, emotional honesty, and aligned action.
+                  </p>
+                </article>
+
+                <article className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="oracle-reading-integration-guide">
+                  <h4 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</h4>
+                  <p className="text-sm text-violet-100/85 leading-relaxed">
+                    Within 24 hours, complete one grounded action inspired by this reading: a boundary, repair, communication, or service step.
+                  </p>
+                </article>
+              </motion.div>
+            )}
+
             {/* New Reading Button */}
             <div className="flex justify-center gap-4">
               <Button

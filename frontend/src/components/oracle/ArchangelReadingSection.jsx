@@ -93,7 +93,7 @@ export const ArchangelReadingSection = ({
       {reading.question && (
         <div className="bg-card rounded-xl p-4 border border-white/10">
           <p className="text-sm text-muted-foreground">Your Question:</p>
-          <p className="italic">"{reading.question}"</p>
+          <p className="italic">&ldquo;{reading.question}&rdquo;</p>
         </div>
       )}
 
@@ -120,7 +120,7 @@ export const ArchangelReadingSection = ({
                 <div className="text-sm text-muted-foreground space-y-1"><p>Element: {card.element}</p><p>Crystal: {card.crystal}</p></div>
               </div>
               <div className="px-5 pb-5 pt-2 border-t border-white/10">
-                <p className="text-sm italic text-center">{card.is_reversed ? `"${card.reversed_meaning}"` : `"${card.message?.slice(0, 120)}..."`}</p>
+                <p className="text-sm italic text-center">{card.is_reversed ? `“${card.reversed_meaning}”` : `“${card.message?.slice(0, 120)}...”`}</p>
               </div>
             </motion.div>
           ))}
@@ -135,6 +135,30 @@ export const ArchangelReadingSection = ({
       )}
 
       {showCards && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: reading.cards.length * 0.3 + 0.6 }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-3"
+          data-testid="archangel-reading-integration-grid"
+        >
+          <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="archangel-reading-why-this-heals">
+            <h4 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h4>
+            <p className="text-sm text-emerald-100/85 leading-relaxed">
+              Archangel readings help regulate fear and uncertainty by pairing compassionate symbolism with practical next-step guidance.
+            </p>
+          </article>
+
+          <article className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="archangel-reading-integration-guide">
+            <h4 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</h4>
+            <p className="text-sm text-violet-100/85 leading-relaxed">
+              Choose one angel-aligned action today: truthful communication, boundary repair, compassionate service, or prayerful grounding.
+            </p>
+          </article>
+        </motion.div>
+      )}
+
+      {showCards && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reading.cards.length * 0.3 + 0.8 }} className="space-y-4">
           <h3 className="text-lg font-serif">Learn More About Your Archangels</h3>
           {reading.cards.map((card) => (
@@ -144,7 +168,7 @@ export const ArchangelReadingSection = ({
                 <Button variant="ghost" size="sm" onClick={() => { setSelectedArchangel(card); setShowBrowse(true); }} data-testid={`archangel-view-profile-${card.id}`}>View Full Profile</Button>
               </div>
               <p className="text-sm text-muted-foreground mb-3">{card.love_guidance}</p>
-              <div className="bg-primary/10 rounded-lg p-3"><p className="text-sm italic text-primary">"{card.affirmation}"</p></div>
+              <div className="bg-primary/10 rounded-lg p-3"><p className="text-sm italic text-primary">&ldquo;{card.affirmation}&rdquo;</p></div>
             </div>
           ))}
         </motion.div>

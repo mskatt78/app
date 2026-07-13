@@ -82,7 +82,7 @@ export default function SupportCenter() {
               <li>Open the shared link in your default browser — avoid Instagram/Facebook/Messenger in-app browsers.</li>
               <li>iPhone/iPad: use Safari only, then Share → Add to Home Screen.</li>
               <li>Android: use Chrome, then menu (⋮) → Install app / Add to Home screen.</li>
-              <li>If install still fails, close tab and reopen the link from Support Center once, then retry install.</li>
+              <li>If install still fails, reopen the app from this Support Center and retry from your default browser install flow.</li>
             </ol>
             <div className="flex flex-wrap gap-3 mt-4">
               <Button

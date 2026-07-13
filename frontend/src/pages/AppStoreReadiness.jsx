@@ -94,6 +94,11 @@ const qaChecklist = [
     title: "Store metadata cross-check complete",
     hint: "App Store + Play Console values match this page and STORE_COPY_PACK.md.",
   },
+  {
+    id: "safe-area-mobile-pass",
+    title: "Safe-area + notch devices validated",
+    hint: "Confirm no clipped controls on iPhone dynamic island/notch and Android gesture-nav screens.",
+  },
 ];
 
 const submissionMetadata = [
@@ -105,17 +110,17 @@ const submissionMetadata = [
   {
     id: "support-url",
     label: "Support URL",
-    value: "/support",
+    value: "https://breathwork-sanctuary.preview.emergentagent.com/support",
   },
   {
     id: "privacy-url",
     label: "Privacy URL",
-    value: "/privacy",
+    value: "https://breathwork-sanctuary.preview.emergentagent.com/privacy",
   },
   {
     id: "terms-url",
     label: "Terms URL",
-    value: "/terms",
+    value: "https://breathwork-sanctuary.preview.emergentagent.com/terms",
   },
   {
     id: "reviewer-demo-path",
