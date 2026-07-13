@@ -166,7 +166,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         MINIMUM_SPOKEN_MINUTES_FLOOR,
         Math.min(
           20,
-          Math.min(
+          Math.max(
             resolvedDurationMinutes,
             normalizeGuidedNarrationDurationMinutes(playbackNarrationDurationMinutes),
           ),

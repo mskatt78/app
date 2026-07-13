@@ -753,6 +753,244 @@ WATER_PRACTICES = [
         ],
         "affirmation": "The crystal kingdom speaks to my cells through this sacred water.",
         "category": "frequency"
+    },
+    {
+        "id": "water-intention-grid",
+        "name": "Intention Grid Water Temple",
+        "description": "Build a simple directional water grid to hold one intention in a coherent field for the day.",
+        "duration_minutes": 18,
+        "benefits": [
+            "Clearer intention embodiment",
+            "Nervous system steadiness",
+            "Relational coherence"
+        ],
+        "materials": [
+            "4 small glasses of water",
+            "Compass or directional awareness",
+            "Single-sentence intention"
+        ],
+        "steps": [
+            "Place one glass each at East, South, West, North around your space",
+            "Speak one quality into each direction (clarity, courage, compassion, trust)",
+            "Sit in the center and breathe 4 in / 6 out for 12 rounds",
+            "Combine the waters into one glass and drink mindfully"
+        ],
+        "affirmation": "I drink from a coherent field and act from aligned intention.",
+        "category": "ceremony"
+    },
+    {
+        "id": "water-throat-clear",
+        "name": "Throat River Release",
+        "description": "Hydrate and tone the throat pathway before honest communication or voice work.",
+        "duration_minutes": 12,
+        "benefits": [
+            "Voice-heart coherence",
+            "Reduced communication anxiety",
+            "Throat chakra support"
+        ],
+        "materials": [
+            "Warm water",
+            "Pinch of sea salt",
+            "Quiet space"
+        ],
+        "steps": [
+            "Sip warm salted water slowly",
+            "Hum softly on exhale for 2 minutes",
+            "Place one hand on throat and one on heart",
+            "Speak one truth line with compassion"
+        ],
+        "affirmation": "My voice moves like a clear river—honest, kind, and grounded.",
+        "category": "frequency"
+    },
+    {
+        "id": "water-grief-bowl",
+        "name": "Grief Bowl of Return",
+        "description": "A contained water ritual to honor grief without collapse, then return to body safety.",
+        "duration_minutes": 20,
+        "benefits": [
+            "Grief processing",
+            "Emotional containment",
+            "Gentle integration"
+        ],
+        "materials": [
+            "Ceremonial bowl",
+            "Warm water",
+            "Hand towel"
+        ],
+        "steps": [
+            "Hold bowl at heart level and name one loss",
+            "Allow tears if present, touching water between breaths",
+            "Place bowl down and orient eyes to the room",
+            "Drink one glass of clean water and journal one support action"
+        ],
+        "affirmation": "I honor what hurts and return to the body with compassion.",
+        "category": "ritual"
+    },
+    {
+        "id": "water-dawn-dew",
+        "name": "Dawn Dew Alignment",
+        "description": "Morning hydration rite for resetting mindset before screen time and obligations.",
+        "duration_minutes": 9,
+        "benefits": [
+            "Morning clarity",
+            "Regulated start",
+            "Intentional momentum"
+        ],
+        "materials": [
+            "Morning glass of water",
+            "Open window or outdoor air"
+        ],
+        "steps": [
+            "Stand upright with bare feet if possible",
+            "Take 7 slow breaths before your first sip",
+            "Name one boundary and one priority for today",
+            "Drink slowly and begin with your highest-value action"
+        ],
+        "affirmation": "I begin clear, grounded, and aligned with what matters.",
+        "category": "blessing"
+    },
+    {
+        "id": "water-evening-unwind",
+        "name": "Evening Water Unwind",
+        "description": "A short evening protocol to release mental residue and prepare for sleep.",
+        "duration_minutes": 14,
+        "benefits": [
+            "Sleep readiness",
+            "Lower cognitive load",
+            "Parasympathetic support"
+        ],
+        "materials": [
+            "Warm water",
+            "Optional chamomile",
+            "Dim light"
+        ],
+        "steps": [
+            "Sit with warm water and exhale longer than inhale",
+            "Write down unresolved thoughts",
+            "Sip in four rounds, pausing to soften jaw and belly",
+            "Close with one sentence: 'Today is complete.'"
+        ],
+        "affirmation": "I release this day and allow restorative rest.",
+        "category": "healing"
+    },
+    {
+        "id": "water-boundary-bath",
+        "name": "Boundary Salt Bath Prayer",
+        "description": "Restore energetic boundaries after social intensity, caregiving, or emotional overload.",
+        "duration_minutes": 25,
+        "benefits": [
+            "Boundary restoration",
+            "Nervous system downshift",
+            "Energetic clearing"
+        ],
+        "materials": [
+            "Warm bath",
+            "Mineral salt",
+            "Small candle"
+        ],
+        "steps": [
+            "Add mineral salt to warm bath",
+            "Name what is yours and what is not yours",
+            "Submerge shoulders and breathe 4 in / 8 out",
+            "Rinse briefly with clean water and hydrate"
+        ],
+        "affirmation": "I keep my field clear, compassionate, and sovereign.",
+        "category": "cleansing"
+    },
+    {
+        "id": "water-riverstone-focus",
+        "name": "Riverstone Focus Infusion",
+        "description": "A concentration ritual for scattered days using tactile anchoring and intentional hydration.",
+        "duration_minutes": 11,
+        "benefits": [
+            "Improved focus",
+            "Reduced overwhelm",
+            "Embodied concentration"
+        ],
+        "materials": [
+            "Glass of water",
+            "Smooth stone",
+            "Notebook"
+        ],
+        "steps": [
+            "Hold the stone while looking softly at the water",
+            "Name one task and one completion condition",
+            "Drink half the water and begin immediately",
+            "Drink remaining half after first focused block"
+        ],
+        "affirmation": "My attention is steady and my effort is coherent.",
+        "category": "blessing"
+    },
+    {
+        "id": "water-lunar-restoration",
+        "name": "Lunar Restoration Vessel",
+        "description": "A moon-attuned hydration sequence for emotional reset and intuitive listening.",
+        "duration_minutes": 16,
+        "benefits": [
+            "Emotional softening",
+            "Intuitive access",
+            "Hormonal rhythm support"
+        ],
+        "materials": [
+            "Moon-charged water",
+            "Silver or white cloth",
+            "Quiet reflection space"
+        ],
+        "steps": [
+            "Place moon water on white cloth under soft light",
+            "Ask: 'What am I ready to soften?'",
+            "Take 3 mindful sips with long exhales",
+            "Journal one intuitive instruction and follow it gently"
+        ],
+        "affirmation": "I soften into right timing and receive clear inner guidance.",
+        "category": "moon"
+    },
+    {
+        "id": "water-fire-steam",
+        "name": "Fire & Water Steam Reset",
+        "description": "Combine steam and hydration to shift stagnation and re-energize without overdriving.",
+        "duration_minutes": 15,
+        "benefits": [
+            "Sinus and breath support",
+            "State shift",
+            "Energetic revitalization"
+        ],
+        "materials": [
+            "Bowl of hot water",
+            "Towel",
+            "Cool drinking water"
+        ],
+        "steps": [
+            "Inhale steam gently for 2-3 minutes",
+            "Rest and take slow breaths",
+            "Drink cool water in small sips",
+            "Repeat once if needed, then ground with feet on floor"
+        ],
+        "affirmation": "I transform stagnation into clear, steady vitality.",
+        "category": "healing"
+    },
+    {
+        "id": "water-heart-coherence",
+        "name": "Heart Coherence Water Pulse",
+        "description": "Use water as a support for heart-rate coherence and relational calm.",
+        "duration_minutes": 13,
+        "benefits": [
+            "Heart-brain coherence",
+            "Calmer social response",
+            "Emotional regulation"
+        ],
+        "materials": [
+            "Glass of water",
+            "Timer"
+        ],
+        "steps": [
+            "Breathe 5-second inhale and 5-second exhale",
+            "Recall one sincere moment of gratitude",
+            "Sip water while maintaining coherent breathing",
+            "Close by sending one kind message to someone"
+        ],
+        "affirmation": "My heart leads with steadiness, warmth, and integrity.",
+        "category": "frequency"
     }
 ]
 

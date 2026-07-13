@@ -171,7 +171,17 @@ const Meditations = ({ user, api }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background" data-testid="meditations-page">
+    <div className="min-h-screen bg-background relative" data-testid="meditations-page">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-20"
+        style={{
+          backgroundImage: "url(https://images.pexels.com/photos/775417/pexels-photo-775417.jpeg?auto=compress&cs=tinysrgb&w=1600)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        data-testid="meditations-page-background-image"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/85 via-background/92 to-background" data-testid="meditations-page-background-overlay" />
       {/* Full-screen Guided Practice Overlay */}
       <AnimatePresence>
         {guidedPractice && (
@@ -218,7 +228,7 @@ const Meditations = ({ user, api }) => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-6">
+      <main className="relative z-10 max-w-6xl mx-auto p-6">
         {!meditationsUnlocked && (
           <section className="rounded-2xl border border-amber-500/10 bg-gradient-to-r from-amber-500/5 via-fuchsia-500/5 to-background p-4 mb-8" data-testid="meditations-premium-banner">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

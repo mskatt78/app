@@ -728,9 +728,20 @@ export const EmbodimentProtocolPanel = ({
 
   return (
     <section
-      className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-4"
+      className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 space-y-4 relative overflow-hidden"
       data-testid={`${testIdPrefix}-panel`}
     >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-15"
+        style={{
+          backgroundImage: "url(https://images.pexels.com/photos/814499/pexels-photo-814499.jpeg?auto=compress&cs=tinysrgb&w=1400)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        data-testid={`${testIdPrefix}-panel-background-image`}
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/55 via-black/65 to-black/80" data-testid={`${testIdPrefix}-panel-background-overlay`} />
+      <div className="relative z-10 space-y-4" data-testid={`${testIdPrefix}-panel-foreground`}>
       <h3 className="text-sm font-medium flex items-center gap-2">
         <Activity className="w-4 h-4 text-amber-300" />
         Embodiment Protocol (Practice + Integration)
@@ -896,6 +907,7 @@ export const EmbodimentProtocolPanel = ({
         <TimerReset className="w-3.5 h-3.5 text-amber-300" />
         Tip: choose either the quick 3-step path or the full 7-day path each time you complete this practice.
       </p>
+      </div>
     </section>
   );
 };

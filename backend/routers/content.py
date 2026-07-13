@@ -1977,7 +1977,7 @@ SECTION_MIN_FREE_ITEMS = 1
 SECTION_DEFAULT_FREE_ITEMS = 4
 SECTION_DEFAULT_PREMIUM_ITEMS = 10
 SECTION_MAX_TIER_ITEMS = SECTION_DEFAULT_FREE_ITEMS + SECTION_DEFAULT_PREMIUM_ITEMS
-SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "shamanic_practices"}
+SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "shamanic_practices", "water_practices"}
 
 # User-approved per-section free counts override global ratio where specified.
 SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
@@ -3476,6 +3476,77 @@ def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
     )
 
     enriched.setdefault("best_for_tags", _resolve_best_for_tags(enriched, "mudra"))
+
+    return enriched
+
+
+PUBLIC_DOMAIN_AUDIO_BY_AMBIENT_TYPE: dict[str, str] = {
+    "dolphin": "https://upload.wikimedia.org/wikipedia/commons/8/87/Whales_and_Dolphins_whale_nature_sounds_songs_nueva_esparta.ogg",
+    "whale": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Humpbackwhale2.ogg",
+    "crystal_bowls": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Small_tibetan_singing_bowl.ogg",
+    "singing_bowls": "https://upload.wikimedia.org/wikipedia/commons/9/95/Singing_bowl.ogg",
+    "gentle_water": "https://upload.wikimedia.org/wikipedia/commons/9/97/Waves.ogg",
+    "tuning_fork": "https://upload.wikimedia.org/wikipedia/commons/1/14/Tuning-fork-440Hz.ogg",
+    "gong": "https://upload.wikimedia.org/wikipedia/commons/8/88/Gong_or_bell_vibrant.ogg",
+    "drums": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
+    "solfeggio_528": "https://upload.wikimedia.org/wikipedia/commons/1/14/Tuning-fork-440Hz.ogg",
+    "didgeridoo": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Didgeridoo_sound.ogg",
+    "chimes": "https://upload.wikimedia.org/wikipedia/commons/3/35/Windchimes.ogg",
+    "harp": "https://upload.wikimedia.org/wikipedia/commons/9/95/Singing_bowl.ogg",
+    "drums_gentle": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
+    "drums_journey": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
+    "drums_awakening": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
+    "drums_fire": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
+    "drums_return": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
+}
+
+
+UNRELIABLE_AUDIO_HOST_TOKENS: tuple[str, ...] = (
+    "upload.wikimedia.org",
+    "commons.wikimedia.org",
+    "wikipedia.org",
+    "wikimedia.org",
+)
+
+
+def _is_reliable_public_audio_url(value: str) -> bool:
+    candidate = str(value or "").strip()
+    if not candidate:
+        return False
+
+    parsed = urlparse(candidate)
+    if parsed.scheme not in {"http", "https"}:
+        return False
+
+    host = (parsed.netloc or "").lower()
+    if not host:
+        return False
+
+    return not any(token in host for token in UNRELIABLE_AUDIO_HOST_TOKENS)
+
+
+def _enrich_sound_frequency_entry(entry: dict[str, Any]) -> dict[str, Any]:
+    enriched = _enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "sound-frequencies")
+    ambient_type = _normalize_label_key(str(enriched.get("ambient_type") or "")).replace(" ", "_")
+    explicit_audio_url = str(enriched.get("audio_url") or "").strip()
+    if explicit_audio_url and not _is_reliable_public_audio_url(explicit_audio_url):
+        enriched.pop("audio_url", None)
+        explicit_audio_url = ""
+
+    if not explicit_audio_url:
+        fallback_audio = PUBLIC_DOMAIN_AUDIO_BY_AMBIENT_TYPE.get(ambient_type)
+        if fallback_audio and _is_reliable_public_audio_url(fallback_audio):
+            enriched["audio_url"] = fallback_audio
+
+    if str(enriched.get("audio_url") or "").strip():
+        enriched.setdefault("audio_source", "public-domain")
+        enriched.setdefault(
+            "audio_license",
+            "Public-domain / free-use audio source. Verify attribution needs before commercial redistribution.",
+        )
+    else:
+        enriched.pop("audio_source", None)
+        enriched.pop("audio_license", None)
 
     return enriched
 
@@ -7651,6 +7722,12 @@ async def get_mystery_school_teachings(stream: Optional[str] = None) -> list[dic
     return _apply_free_paid_tiering(enriched, "mystery_school")
 
 
+@router.get("/mystery-schools")
+async def get_mystery_schools_alias(stream: Optional[str] = None) -> list[dict[str, Any]]:
+    """Alias endpoint for clients requesting plural mystery schools route."""
+    return await get_mystery_school_teachings(stream=stream)
+
+
 @router.get("/mystery-school/{teaching_id}")
 async def get_mystery_school_teaching(teaching_id: str) -> dict[str, Any]:
     """Get one mystery school teaching by id."""
@@ -7669,6 +7746,87 @@ async def get_mystery_school_teaching(teaching_id: str) -> dict[str, Any]:
     return _enrich_mystery_school_entry(teaching)
 
 
+@router.get("/mystery-schools/{teaching_id}")
+async def get_mystery_school_teaching_alias(teaching_id: str) -> dict[str, Any]:
+    """Alias endpoint for plural mystery schools detail route."""
+    return await get_mystery_school_teaching(teaching_id)
+
+
+@router.get("/alchemy-hub")
+async def get_alchemy_hub(
+    category: Optional[str] = None,
+    ally_type: Optional[str] = None,
+    sacred_geometry: Optional[str] = None,
+    stream: Optional[str] = None,
+) -> list[dict[str, Any]]:
+    """Unified alchemy endpoint combining sacred allies, angelic alchemy, and mystery schools."""
+    sacred_allies = await get_sacred_ally_alchemy(category=category, ally_type=ally_type)
+    angelic = await get_angelic_alchemy(sacred_geometry=sacred_geometry)
+    mystery = await get_mystery_school_teachings(stream=stream)
+
+    unified: list[dict[str, Any]] = []
+    for entry in sacred_allies:
+        merged = dict(entry)
+        merged.setdefault("source", "sacred_allies")
+        unified.append(merged)
+    for entry in angelic:
+        merged = dict(entry)
+        merged.setdefault("source", "angelic_alchemy")
+        unified.append(merged)
+    for entry in mystery:
+        merged = dict(entry)
+        merged.setdefault("source", "mystery_school")
+        unified.append(merged)
+
+    return unified
+
+
+@router.get("/alchemy-hub/{item_id}")
+async def get_alchemy_hub_item(item_id: str) -> dict[str, Any]:
+    """Unified alchemy detail endpoint by item id."""
+    normalized_target = str(item_id or "").strip().lower()
+    dataset = await get_alchemy_hub()
+    for entry in dataset:
+        if str(entry.get("id") or "").strip().lower() == normalized_target:
+            return entry
+    raise HTTPException(status_code=404, detail="Alchemy item not found")
+
+
+@router.get("/tai-chi")
+async def get_tai_chi_practices(element: Optional[str] = None) -> list[dict[str, Any]]:
+    """Dedicated Tai Chi endpoint for strict route compatibility."""
+    db = get_db()
+    query: dict[str, Any] = {
+        "category": {"$regex": "tai\\s*chi", "$options": "i"},
+    }
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+
+    practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=120)
+    enriched = [_enrich_devotional_language(_enrich_somatic_practice(practice), "somatic") for practice in practices]
+    sorted_practices = sorted(enriched, key=lambda practice: str(practice.get("name", "")).lower())
+    return _apply_free_paid_tiering(sorted_practices, "somatic_practices")
+
+
+@router.get("/chi-gong")
+async def get_chi_gong_practices(element: Optional[str] = None) -> list[dict[str, Any]]:
+    """Dedicated Chi Gong/Qigong endpoint for strict route compatibility."""
+    db = get_db()
+    query: dict[str, Any] = {
+        "$or": [
+            {"category": {"$regex": "chi\\s*gong", "$options": "i"}},
+            {"category": {"$regex": "qigong", "$options": "i"}},
+        ]
+    }
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+
+    practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=120)
+    enriched = [_enrich_devotional_language(_enrich_somatic_practice(practice), "somatic") for practice in practices]
+    sorted_practices = sorted(enriched, key=lambda practice: str(practice.get("name", "")).lower())
+    return _apply_free_paid_tiering(sorted_practices, "somatic_practices")
+
+
 
 # ============ SOUND FREQUENCIES ROUTES ============
 
@@ -7680,7 +7838,7 @@ async def get_sound_frequencies(category: Optional[str] = None) -> list[dict[str
     if category:
         query["category"] = {"$regex": f"^{category}$", "$options": "i"}
     entries = await db.sound_frequencies.find(query, {"_id": 0}).to_list(length=50)
-    enriched = [_enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "sound-frequencies") for entry in entries]
+    enriched = [_enrich_sound_frequency_entry(entry) for entry in entries]
     return _apply_free_paid_tiering(enriched, "sound_frequencies")
 
 
@@ -7691,7 +7849,7 @@ async def get_sound_frequency(freq_id: str) -> dict[str, Any]:
     entry = await db.sound_frequencies.find_one({"id": freq_id}, {"_id": 0})
     if not entry:
         raise HTTPException(status_code=404, detail="Sound frequency not found")
-    return _enrich_devotional_language(_enrich_content_integrity(entry, "hybrid-curated"), "sound-frequencies")
+    return _enrich_sound_frequency_entry(entry)
 
 
 

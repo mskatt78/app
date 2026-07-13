@@ -53,7 +53,17 @@ const Breathwork = ({ api, user }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background" data-testid="breathwork">
+    <div className="min-h-screen bg-background relative" data-testid="breathwork">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-25"
+        style={{
+          backgroundImage: "url(https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1600)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+        data-testid="breathwork-page-background-image"
+      />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/85 via-background/92 to-background" data-testid="breathwork-page-background-overlay" />
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -88,7 +98,7 @@ const Breathwork = ({ api, user }) => {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto p-6">
+      <main className="relative z-10 max-w-6xl mx-auto p-6">
         {!engine.activeSession && (
           <section className="mb-6 rounded-2xl border border-fuchsia-500/20 bg-gradient-to-r from-fuchsia-500/10 via-pink-500/10 to-background p-4" data-testid="breathwork-premium-banner">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">

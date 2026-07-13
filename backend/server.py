@@ -373,13 +373,10 @@ async def _ensure_temples_and_water_seeded() -> None:
     else:
         logger.info(f"  elemental_temples: {temples_count} entries (skipped)")
 
-    wp_count = await db.water_practices.count_documents({})
-    if wp_count == 0:
-        from data.water_practices_data import WATER_PRACTICES
-        await db.water_practices.insert_many(WATER_PRACTICES)
-        logger.info(f"  Seeded water_practices: {len(WATER_PRACTICES)} practices")
-    else:
-        logger.info(f"  water_practices: {wp_count} entries (skipped)")
+    from data.water_practices_data import WATER_PRACTICES
+    await db.water_practices.delete_many({})
+    await db.water_practices.insert_many(WATER_PRACTICES)
+    logger.info(f"  Refreshed water_practices: {len(WATER_PRACTICES)} practices")
 
 
 async def _seed_remaining_content_if_empty() -> None:
