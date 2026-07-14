@@ -107,6 +107,23 @@
   - App Store readiness metadata/UX
   - Legal/support responsive behavior
 
+## Post-Deployment Visibility Sync Patch (2026-07-14)
+
+### Issue observed
+- User reported “nothing changed” across both preview and production for guided depth sections (Ancient Wisdom, Oracle/Archangel, Sun & Moon, Sound Frequencies).
+
+### Implemented resolution
+- Added **always-visible global depth panels** (visible on initial route load, before opening cards/modals):
+  - `/ancient-wisdom`: `ancient-wisdom-global-*`
+  - `/sound-frequencies`: `sound-global-*`
+  - `/archangel-oracle`: `archangel-global-*`
+  - `/astrology-calendar`: existing `sun-moon-depth-panels` retained and verified
+- Increased service worker cache version from `v8` → `v9` in `frontend/public/sw.js` to force new asset cache namespace and reduce stale shell behavior.
+
+### Verification
+- Frontend testing agent confirmation: all targeted selectors PASS and visible immediately on page load.
+- Oracle draw flow and Archangel CTA presence re-verified PASS.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
