@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { BookOpen, ChevronRight, Crown, Lock } from "lucide-react";
+import { getMasculineTempleImage } from "../../utils/shamanicImageTheme";
 
 export const MasculineArchetypeGrid = ({ archetypes, openArchetype, isLocked }) => {
   return (
@@ -24,15 +25,13 @@ export const MasculineArchetypeGrid = ({ archetypes, openArchetype, isLocked }) 
               data-testid={`archetype-${archetype.id}`}
               className={`group cursor-pointer rounded-2xl border backdrop-blur-xl overflow-hidden ${archetype.color.bg} ${archetype.color.border} hover:scale-[1.02] transition-all duration-300`}
             >
-              {archetype.image && (
-                <div className="relative h-40 overflow-hidden">
-                  <img src={archetype.image} alt={archetype.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
-                  <div className={`absolute top-4 left-4 w-10 h-10 rounded-xl ${archetype.color.bg} border ${archetype.color.border} flex items-center justify-center backdrop-blur-sm`}>
-                    <Icon className={`w-5 h-5 ${archetype.color.text}`} />
-                  </div>
+              <div className="relative h-40 overflow-hidden">
+                <img src={getMasculineTempleImage(archetype)} alt={archetype.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" data-testid={`masculine-archetype-image-${archetype.id}`} />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                <div className={`absolute top-4 left-4 w-10 h-10 rounded-xl ${archetype.color.bg} border ${archetype.color.border} flex items-center justify-center backdrop-blur-sm`}>
+                  <Icon className={`w-5 h-5 ${archetype.color.text}`} />
                 </div>
-              )}
+              </div>
               <div className="p-5">
                 <h3 className="text-xl font-serif mb-1">{archetype.title}</h3>
                 <p className={`text-sm ${archetype.color.text} mb-3 uppercase tracking-wider`}>{archetype.subtitle}</p>

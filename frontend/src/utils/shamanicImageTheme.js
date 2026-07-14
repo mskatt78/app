@@ -190,3 +190,35 @@ export const getLightCodeImage = (symbol, offset = 0) => {
   if (lineage.includes("alphabet") || lineage.includes("language")) return pickFromPool([SHAMANIC_IMAGES.oracleAltar, SHAMANIC_IMAGES.mudraSacredHands], seed);
   return pickFromPool([SHAMANIC_IMAGES.mysterySchoolChamber, SHAMANIC_IMAGES.cosmicSky, SHAMANIC_IMAGES.oracleAltar], seed);
 };
+
+export const getRoseTempleImage = (source, offset = 0) => {
+  const seed = hashSeed(source?.id || source?.title || source?.name || "rose") + offset;
+  return pickFromPool([
+    SHAMANIC_IMAGES.moonRitual,
+    SHAMANIC_IMAGES.meditationWaterfall,
+    SHAMANIC_IMAGES.oracleAltar,
+    SHAMANIC_IMAGES.forestYoga,
+    SHAMANIC_IMAGES.mudraSacredHands,
+  ], seed);
+};
+
+export const getSeasonalTempleImage = (sabbat, offset = 0) => {
+  const element = String(sabbat?.element || "Earth").toLowerCase();
+  const seed = hashSeed(sabbat?.id || sabbat?.name) + offset;
+  if (element.includes("fire")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.soundMountainChant, SHAMANIC_IMAGES.templeMystic], seed);
+  if (element.includes("water")) return pickFromPool([SHAMANIC_IMAGES.moonRitual, SHAMANIC_IMAGES.soundOceanAltar, SHAMANIC_IMAGES.meditationWaterfall], seed);
+  if (element.includes("air")) return pickFromPool([SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.cosmicSky, SHAMANIC_IMAGES.breathworkStableB], seed);
+  if (element.includes("spirit")) return pickFromPool([SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.oracleAltar, SHAMANIC_IMAGES.cosmicSky], seed);
+  return pickFromPool([SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.breathworkStableC], seed);
+};
+
+export const getMasculineTempleImage = (item, offset = 0) => {
+  const archetypeId = String(item?.id || item?.name || "masculine").toLowerCase();
+  const seed = hashSeed(item?.id || item?.name) + offset;
+  if (archetypeId.includes("warrior")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.breathworkStableC, SHAMANIC_IMAGES.templeMystic], seed);
+  if (archetypeId.includes("king")) return pickFromPool([SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.breathworkStableB, SHAMANIC_IMAGES.mysterySchoolChamber], seed);
+  if (archetypeId.includes("magician")) return pickFromPool([SHAMANIC_IMAGES.mysterySchoolChamber, SHAMANIC_IMAGES.oracleAltar, SHAMANIC_IMAGES.cosmicSky], seed);
+  if (archetypeId.includes("lover")) return pickFromPool([SHAMANIC_IMAGES.moonRitual, SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.forestYoga], seed);
+  if (archetypeId.includes("ancestral")) return pickFromPool([SHAMANIC_IMAGES.guardianMoonForest, SHAMANIC_IMAGES.sacredAllyForestRitual, SHAMANIC_IMAGES.templeMystic], seed);
+  return pickFromPool([SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.breathworkStableA], seed);
+};

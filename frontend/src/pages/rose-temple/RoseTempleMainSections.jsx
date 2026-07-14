@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Loader2, Play } from "lucide-react";
 import { ROSE_FEMININE_IMAGES, teachings, templeIntro, sisterCircleTexture } from "./roseTempleConstants";
+import { getRoseTempleImage } from "../../utils/shamanicImageTheme";
 
 const TEACHING_HOVER = { y: -2 };
 
@@ -35,9 +36,10 @@ export const RoseTempleMainSections = ({
             {ROSE_FEMININE_IMAGES.slice(0, 4).map((imageUrl, index) => (
               <img
                 key={imageUrl}
-                src={imageUrl}
+                src={getRoseTempleImage({ id: `rose-hero-${index}` })}
                 alt={`Rose temple ${index + 1}`}
                 className="rounded-2xl h-36 w-full object-cover border border-rose-500/20"
+                data-testid={`rose-temple-hero-image-${index}`}
               />
             ))}
           </div>
@@ -70,7 +72,7 @@ export const RoseTempleMainSections = ({
                 className="text-left rounded-2xl border border-white/10 bg-card/60 overflow-hidden"
                 data-testid={`rose-teaching-${teaching.id}`}
               >
-                {teaching.image && <img src={teaching.image} alt={teaching.title} className="w-full h-40 object-cover" />}
+                {teaching.image && <img src={getRoseTempleImage(teaching)} alt={teaching.title} className="w-full h-40 object-cover" data-testid={`rose-teaching-image-${teaching.id}`} />}
                 <div className="p-5">
                   <div className="flex items-center gap-2 mb-2">
                     <Icon className="w-5 h-5 text-rose-300" />

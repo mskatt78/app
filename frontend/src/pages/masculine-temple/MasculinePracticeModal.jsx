@@ -4,6 +4,7 @@ import AddToJournal from "../../components/AddToJournal";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
+import { getMasculineTempleImage } from "../../utils/shamanicImageTheme";
 
 const normalizeBenefits = (benefits) => {
   if (!benefits) return [];
@@ -34,12 +35,10 @@ export const MasculinePracticeModal = ({ selectedPractice, setSelectedPractice, 
             className="bg-card rounded-2xl max-w-2xl w-full my-8"
             data-testid="embodiment-modal"
           >
-            {selectedPractice.image_url && (
-              <div className="relative h-48 rounded-t-2xl overflow-hidden">
-                <img src={selectedPractice.image_url} alt={selectedPractice.name} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-              </div>
-            )}
+            <div className="relative h-48 rounded-t-2xl overflow-hidden">
+              <img src={getMasculineTempleImage(selectedPractice, 1)} alt={selectedPractice.name} className="w-full h-full object-cover" data-testid="masculine-practice-modal-image" />
+              <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
+            </div>
 
             <div className="p-6">
               <div className="flex items-center gap-2 mb-2">

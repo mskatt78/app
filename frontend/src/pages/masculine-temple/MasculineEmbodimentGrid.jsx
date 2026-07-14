@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Crown, Lock, Zap } from "lucide-react";
+import { getMasculineTempleImage } from "../../utils/shamanicImageTheme";
 
 export const MasculineEmbodimentGrid = ({ embodimentPractices, setSelectedPractice, isLocked }) => {
   if (embodimentPractices.length === 0) {
@@ -31,12 +32,10 @@ export const MasculineEmbodimentGrid = ({ embodimentPractices, setSelectedPracti
             className="p-5 rounded-xl bg-orange-500/10 border border-orange-500/20 cursor-pointer hover:scale-[1.02] transition-all group"
             data-testid={`embodiment-${practice.id}`}
           >
-            {practice.image_url && (
-              <div className="relative h-32 rounded-lg overflow-hidden mb-4">
-                <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              </div>
-            )}
+            <div className="relative h-32 rounded-lg overflow-hidden mb-4">
+              <img src={getMasculineTempleImage(practice)} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" data-testid={`masculine-practice-image-${practice.id}`} />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            </div>
             <span className="text-xs text-orange-300 uppercase tracking-wider">{practice.category}</span>
             <h4 className="font-serif text-lg mt-1 group-hover:text-orange-300 transition-colors">{practice.name}</h4>
             <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{practice.description}</p>
