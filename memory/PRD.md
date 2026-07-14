@@ -240,6 +240,34 @@
   - Meditations 14/14 loaded
 - ✅ Mobile 390x844 checks pass without major overflow/cropping defects.
 
+## Secondary Temple Image Parity (Rose + Seasonal + Masculine) — 2026-07-14
+
+### Implemented
+- Extended deterministic image mapper (`shamanicImageTheme.js`) with temple-specific resolvers:
+  - `getRoseTempleImage`
+  - `getSeasonalTempleImage`
+  - `getMasculineTempleImage`
+
+- Applied to temple components:
+  - Rose Temple:
+    - `rose-temple/RoseTempleMainSections.jsx` (hero image grid + teaching card images)
+  - Seasonal Temple:
+    - `seasonal-temple/SeasonalTempleCardsSection.jsx` (all sabbat card images)
+  - Masculine Temple:
+    - `masculine-temple/MasculineArchetypeGrid.jsx` (archetype cards)
+    - `masculine-temple/MasculineEmbodimentGrid.jsx` (practice cards)
+    - `masculine-temple/MasculinePracticeModal.jsx` (practice modal hero image)
+
+### QA outcomes
+- Seasonal Temple: PASS
+- Rose Temple: initial variation issue detected and fixed; final retest PASS
+  - Teaching image uniqueness now 2/2
+- Masculine Temple: PASS for archetype/practice card images and responsive checks
+  - Modal image code path updated; automated modal interaction constrained by premium lock in guest context.
+
+### Result
+- Secondary temples now follow the same deterministic shamanic image policy as primary sections, with strong visual coherence and reduced repetition.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
