@@ -19105,7 +19105,7 @@ agent_communication:
     implemented: true
     working: false
     file: "/app/frontend/src/pages/Breathwork.jsx, /app/frontend/src/pages/Meditations.jsx, /app/frontend/src/pages/mudras/MudrasLibraryContainer.jsx, /app/frontend/src/pages/MysterySchool.jsx, /app/frontend/src/pages/SacredGuardians.jsx, /app/frontend/src/pages/SacredAllyAlchemy.jsx, /app/frontend/src/pages/LightCodes.jsx"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -19299,4 +19299,108 @@ agent_communication:
       3. Selector collision fix may have inadvertently affected image loading logic for breathwork/meditations
       
       🎯 VERDICT: ❌ PARTIAL PASS - Selector-collision fix successfully resolved /mystery-school and /light-codes, but introduced new regressions on /breathwork and /meditations. Net result: still 5/7 routes passing (same as before), but different routes are now failing.
+
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ IMAGE-POOL HOTFIX TARGETED RETEST - PARTIAL IMPROVEMENT (2026-07-14)
+          
+          Targeted retest completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com after image-pool hotfix.
+          Routes tested: /breathwork, /meditations
+          Mobile viewport: 390x844
+          
+          📊 COMPARISON - BEFORE vs AFTER HOTFIX:
+          
+          BEFORE HOTFIX (2026-07-14 earlier):
+          - /breathwork: 2/8 broken (breathwork-session-image-breathlove-3, breathwork-session-image-4)
+          - /meditations: 2/8 broken (meditation-image-6, meditation-image-meditation-supp-101)
+          - Total broken: 4 images
+          
+          AFTER HOTFIX (current test):
+          - /breathwork: 1/14 broken (breathwork-session-image-5)
+          - /meditations: 1/14 broken (meditation-image-meditation-supp-101)
+          - Total broken: 2 images
+          
+          ✅ IMPROVEMENTS:
+          - breathwork-session-image-breathlove-3: FIXED ✓
+          - breathwork-session-image-4: FIXED ✓
+          - meditation-image-6: FIXED ✓
+          
+          ❌ REMAINING ISSUES:
+          
+          1) breathwork-session-image-5 (NEW ISSUE):
+             - URL: https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7de214d334ee145343ed2f5bd1c20519d7256224c68255b0c12aa2c9c536494b.png
+             - Status: URL returns 200 OK (2MB PNG file exists on CDN)
+             - Browser status: complete=False, naturalWidth=0, naturalHeight=0
+             - Issue persists even after 8-second extended wait
+             - Root cause: Browser rendering failure (not a 404 or missing file)
+          
+          2) meditation-image-meditation-supp-101 (PERSISTING ISSUE):
+             - URL: https://images.unsplash.com/photo-1524863479829-916d8e77f114?crop=entropy&cs=srgb&fm=jpg&q=85
+             - Status: URL returns 200 OK (1.9MB JPEG from Unsplash)
+             - Browser status: complete=False, naturalWidth=0, naturalHeight=0
+             - Issue persists even after 8-second extended wait
+             - Root cause: Browser rendering failure (not a 404 or missing file)
+          
+          ✅ POSITIVE FINDINGS:
+          - /breathwork: 13/14 images loaded (93% success rate) ✓
+          - /meditations: 13/14 images loaded (93% success rate) ✓
+          - Mobile 390x844: No horizontal overflow on both routes ✓
+          - Shamanic/mystical styling maintained on both routes ✓
+          - Console logs: Only expected 401 auth errors (non-critical) ✓
+          - All testid selectors present and working correctly ✓
+          
+          🔍 TECHNICAL ANALYSIS:
+          Both broken images have valid URLs that return 200 OK when tested directly with curl. The browser shows complete=False and naturalWidth=0, indicating the images are not loading at all (not just slow loading). This suggests:
+          1. Possible image corruption or invalid format despite 200 OK response
+          2. Browser-specific rendering issue with large files (2MB PNG, 1.9MB JPEG)
+          3. CSP or CORS blocking (though Unsplash has proper CORS headers)
+          4. Lazy loading configuration issue
+          
+          🎯 VERDICT: ❌ FAIL - Image-pool hotfix achieved 50% improvement (4 broken → 2 broken), but 2 images remain broken on /breathwork and /meditations. Both routes show 93% success rate (13/14 images loaded), which is close to passing but not 100%.
+          
+          PASS/FAIL RESULT: ❌ FAIL
+          Broken selector IDs: breathwork-session-image-5, meditation-image-meditation-supp-101
+
+  - agent: "testing"
+    message: |
+      ❌ IMAGE-POOL HOTFIX TARGETED RETEST - PARTIAL IMPROVEMENT (50% reduction in broken images)
+      
+      Targeted retest completed on preview URL after image-pool hotfix. Routes tested: /breathwork, /meditations.
+      
+      📊 HOTFIX EFFECTIVENESS:
+      - Before: 4 broken images (2 on /breathwork, 2 on /meditations)
+      - After: 2 broken images (1 on /breathwork, 1 on /meditations)
+      - Improvement: 50% reduction in broken images ✓
+      
+      ✅ FIXED BY HOTFIX:
+      - breathwork-session-image-breathlove-3 ✓
+      - breathwork-session-image-4 ✓
+      - meditation-image-6 ✓
+      
+      ❌ STILL BROKEN:
+      - breathwork-session-image-5 (NEW issue, not in previous test)
+      - meditation-image-meditation-supp-101 (PERSISTING issue from previous test)
+      
+      🔍 ROOT CAUSE:
+      Both broken images have valid URLs returning 200 OK (2MB PNG, 1.9MB JPEG). Browser shows complete=False, naturalWidth=0 even after 8s wait. This is NOT a 404 or missing file issue - it's a browser rendering failure. Possible causes:
+      1. Image corruption or invalid format despite 200 OK
+      2. Large file size causing browser rendering issues
+      3. CSP/CORS blocking (less likely, Unsplash has proper headers)
+      4. Lazy loading configuration issue
+      
+      ✅ POSITIVE FINDINGS:
+      - 93% success rate on both routes (13/14 images loaded)
+      - Mobile 390x844: No overflow ✓
+      - Shamanic/mystical styling maintained ✓
+      - All testid selectors working ✓
+      
+      🎯 VERDICT: ❌ FAIL - Hotfix improved situation (50% reduction), but 2 images remain broken.
+      
+      RECOMMENDATION: Investigate browser rendering issues for these specific large images. Consider:
+      1. Re-encoding/optimizing the 2MB PNG and 1.9MB JPEG
+      2. Testing with different image formats or compression
+      3. Checking CSP headers for image-src directives
+      4. Verifying lazy loading implementation
+
 
