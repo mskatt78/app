@@ -12,6 +12,7 @@ import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtoc
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { appLogger } from "../utils/logger";
 import { resolveDurationMinutes } from "../utils/durationUtils";
+import { getSubjectPoseImage } from "../utils/yogaPoseImageMapper";
 
 const YogaLibrary = ({ user, api }) => {
   const stablePoseKey = (prefix, value) => {
@@ -209,7 +210,8 @@ const YogaLibrary = ({ user, api }) => {
   };
 
   const getDisplayPoseImage = (pose) => {
-    if (pose?.image_url && !imageErrors.has(pose?.id)) return pose.image_url;
+    const subjectImage = getSubjectPoseImage(pose, "");
+    if (subjectImage && !imageErrors.has(pose?.id)) return subjectImage;
     const seed = getPoseSeed(pose);
     if (imageErrors.has(pose?.id)) {
       return getShamanicImageFromPool(pose?.element, seed + 1);

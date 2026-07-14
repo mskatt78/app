@@ -8,6 +8,7 @@ import GuidedAudioButton from "../components/GuidedAudioButton";
 import { toast } from "sonner";
 import axios from "axios";
 import { resolveDurationMinutes } from "../utils/durationUtils";
+import { getSubjectPoseImage } from "../utils/yogaPoseImageMapper";
 
 const api = axios.create({ baseURL: `${process.env.REACT_APP_BACKEND_URL}/api` });
 
@@ -55,7 +56,8 @@ export default function SomaticYoga() {
   };
 
   const getPracticeImage = (practice, index = 0) => {
-    if (practice?.image_url) return practice.image_url;
+    const subjectImage = getSubjectPoseImage(practice, "");
+    if (subjectImage) return subjectImage;
     const baseIndex = Number.parseInt(String(practice?.id || index), 10);
     const safeIndex = Number.isFinite(baseIndex) ? baseIndex : index;
     return SOMATIC_YOGA_SHAMANIC_IMAGES[safeIndex % SOMATIC_YOGA_SHAMANIC_IMAGES.length];

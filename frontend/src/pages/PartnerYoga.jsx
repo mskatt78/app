@@ -7,6 +7,7 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { Lock } from "lucide-react";
 import { toast } from "sonner";
+import { getSubjectPoseImage } from "../utils/yogaPoseImageMapper";
 
 const PARTNER_YOGA_SHAMANIC_IMAGES = [
   "https://images.unsplash.com/photo-1531179123855-27851c4f160e?crop=entropy&cs=srgb&fm=jpg&q=85",
@@ -392,7 +393,8 @@ const getShamanicPartnerImage = (poseId, fallbackIndex = 0) => {
 };
 
 const getPartnerPoseImage = (pose, fallbackIndex = 0) => {
-  if (pose?.image_url) return pose.image_url;
+  const subjectImage = getSubjectPoseImage(pose, "");
+  if (subjectImage) return subjectImage;
   return getShamanicPartnerImage(pose?.id, fallbackIndex);
 };
 
