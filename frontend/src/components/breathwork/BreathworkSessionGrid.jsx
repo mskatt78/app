@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Crown, Lock, Wind } from "lucide-react";
+import { getBreathworkImage } from "../../utils/shamanicImageTheme";
 
 export const BreathworkSessionGrid = ({
   filteredSessions,
@@ -31,31 +32,27 @@ export const BreathworkSessionGrid = ({
               </div>
             </div>
           )}
-          {session.image_url && (
-            <div className="relative h-36 overflow-hidden">
-              <img src={session.image_url} alt={session.name} className="w-full h-full object-cover" loading="lazy" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm`}>{session.element}</span>
-              {session.is_premium && (
-                <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs bg-fuchsia-500/20 border border-fuchsia-400/30 text-fuchsia-100 flex items-center gap-1" data-testid={`breathwork-premium-badge-${session.id}`}>
-                  <Crown className="w-3 h-3" />
-                  {session.premium_label || "Premium"}
-                </span>
-              )}
-            </div>
-          )}
-          <div className="p-6">
-            {!session.image_url && (
-              <div className="flex items-start justify-between mb-4">
-                <div className={`p-3 rounded-xl ${colors.bg}`}><Wind className={`w-6 h-6 ${colors.text}`} /></div>
-                <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>{session.element}</span>
-              </div>
+          <div className="relative h-36 overflow-hidden">
+            <img src={getBreathworkImage(session)} alt={session.name} className="w-full h-full object-cover" loading="lazy" data-testid={`breathwork-session-image-${session.id}`} />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+            <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text} backdrop-blur-sm`}>{session.element}</span>
+            {session.is_premium && (
+              <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs bg-fuchsia-500/20 border border-fuchsia-400/30 text-fuchsia-100 flex items-center gap-1" data-testid={`breathwork-premium-badge-${session.id}`}>
+                <Crown className="w-3 h-3" />
+                {session.premium_label || "Premium"}
+              </span>
             )}
+          </div>
+          <div className="p-6">
+            <div className="flex items-start justify-between mb-4">
+              <div className={`p-3 rounded-xl ${colors.bg}`}><Wind className={`w-6 h-6 ${colors.text}`} /></div>
+              <span className={`px-3 py-1 rounded-full text-xs ${colors.bg} ${colors.text}`}>{session.element}</span>
+            </div>
 
             <h3 className="text-xl font-serif mb-2">{session.name}</h3>
             <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{session.description}</p>
 
-            {session.is_premium && !session.image_url && (
+            {session.is_premium && (
               <div className="mb-3 inline-flex items-center gap-1 px-2 py-1 rounded-full text-[11px] bg-fuchsia-500/20 border border-fuchsia-400/30 text-fuchsia-100" data-testid={`breathwork-premium-inline-${session.id}`}>
                 <Crown className="w-3 h-3" />
                 {session.premium_label || "Premium"}

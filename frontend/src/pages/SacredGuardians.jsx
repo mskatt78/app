@@ -9,8 +9,9 @@ import { Button } from "../components/ui/button";
 import { appLogger } from "../utils/logger";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { getGuardianImage } from "../utils/shamanicImageTheme";
 
-const FALLBACK_GUARDIAN_IMAGE = "https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/ed68a7232984385ac7731392c7ad673cf719d7139109325a82dc4650afcb88a1.png";
+const FALLBACK_GUARDIAN_IMAGE = getGuardianImage({ id: "guardian-fallback", category: "guardian", name: "Guardian Fallback" });
 
 const CATEGORIES = [
   { id: "all", label: "All Guardians", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/20" },
@@ -173,7 +174,7 @@ const SacredGuardians = ({ user, api }) => {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://static.prod-images.emergentagent.com/jobs/0191da63-58fb-4ee1-838d-801a94a094dc/images/ed68a7232984385ac7731392c7ad673cf719d7139109325a82dc4650afcb88a1.png"
+            src={getGuardianImage({ id: "guardian-hero", category: "angel", name: "Guardian Hero" })}
             alt="Sacred Guardians"
             className="w-full h-full object-cover opacity-30"
             onError={handleGuardianImageError}
@@ -284,7 +285,7 @@ const SacredGuardians = ({ user, api }) => {
                   {/* Image */}
                   <div className="relative aspect-square overflow-hidden">
                     <img
-                      src={guardian.image_url}
+                      src={getGuardianImage(guardian)}
                       alt={guardian.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       loading="lazy"
@@ -345,7 +346,7 @@ const SacredGuardians = ({ user, api }) => {
               {/* Hero Image */}
               <div className="relative h-64 overflow-hidden rounded-t-3xl sm:rounded-t-3xl">
                 <img
-                  src={selected.image_url}
+                  src={getGuardianImage(selected, 1)}
                   alt={selected.name}
                   className="w-full h-full object-cover"
                   onError={handleGuardianImageError}

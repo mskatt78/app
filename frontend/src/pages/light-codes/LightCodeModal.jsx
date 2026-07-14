@@ -3,6 +3,7 @@ import { Brain, HandHeart, ScrollText, X, Volume2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs";
 import { Button } from "../../components/ui/button";
 import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
+import { getLightCodeImage } from "../../utils/shamanicImageTheme";
 
 export const LightCodeModal = ({
   selectedSymbol,
@@ -45,7 +46,7 @@ export const LightCodeModal = ({
               <div
                 className="absolute inset-0"
                 style={{
-                  backgroundImage: `url(${selectedSymbol.image_url || getEncodedFrequencyImage(selectedSymbol.id || selectedSymbol.name)})`,
+                  backgroundImage: `url(${getLightCodeImage(selectedSymbol)})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   opacity: 0.22,
@@ -54,7 +55,7 @@ export const LightCodeModal = ({
               />
               {selectedSymbol.image_url ? (
                 <img
-                  src={selectedSymbol.image_url}
+                  src={getLightCodeImage(selectedSymbol, 1)}
                   alt={selectedSymbol.name}
                   className="w-full h-full object-cover lg:absolute lg:inset-0"
                   data-testid="light-code-modal-image"

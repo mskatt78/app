@@ -9,6 +9,7 @@ import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useEffect, useMemo, useState } from "react";
+import { getBreathworkImage } from "../utils/shamanicImageTheme";
 
 const Breathwork = ({ api, user }) => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const Breathwork = ({ api, user }) => {
       <div
         className="pointer-events-none absolute inset-0 opacity-25"
         style={{
-          backgroundImage: "url(https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=1600)",
+          backgroundImage: `url(${getBreathworkImage({ id: "breathwork-hero", element: "Air", name: "Breathwork Hero" })})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}

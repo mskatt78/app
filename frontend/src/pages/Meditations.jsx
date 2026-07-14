@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import { getMeditationImage } from "../utils/shamanicImageTheme";
 
 // Convert a meditation record into a multi-step practice object for GuidedPracticeOverlay
 function buildMeditationPractice(meditation) {
@@ -175,7 +176,7 @@ const Meditations = ({ user, api }) => {
       <div
         className="pointer-events-none absolute inset-0 opacity-20"
         style={{
-          backgroundImage: "url(https://images.pexels.com/photos/775417/pexels-photo-775417.jpeg?auto=compress&cs=tinysrgb&w=1600)",
+          backgroundImage: `url(${getMeditationImage({ id: "meditations-hero", category: "spiritual", name: "Meditations Hero" })})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -293,38 +294,26 @@ const Meditations = ({ user, api }) => {
                       </div>
                     )}
                     {/* Card Image */}
-                    {meditation.image_url ? (
-                      <div className="relative h-40 overflow-hidden bg-black/45">
-                        <img
-                          src={meditation.image_url}
-                          alt={meditation.name}
-                          className="w-full h-full object-contain object-center transition-transform duration-500"
-                          loading="lazy"
-                          data-testid={`meditation-image-${meditation.id}`}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-                        <span className="absolute bottom-3 left-3 text-lg font-serif text-white drop-shadow-lg">
-                          {meditation.name}
-                        </span>
-                        <span className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs text-white">
-                          <Clock className="w-3 h-3" />
-                          {meditation.duration_minutes} min
-                        </span>
-                      </div>
-                    ) : (
-                      <div className={`p-4 ${colors.bg} flex items-center justify-between`}>
-                        <Icon className={`w-6 h-6 ${colors.text}`} />
-                        <span className="text-sm text-muted-foreground flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {meditation.duration_minutes} min
-                        </span>
-                      </div>
-                    )}
+                    <div className="relative h-40 overflow-hidden bg-black/45">
+                      <img
+                        src={getMeditationImage(meditation)}
+                        alt={meditation.name}
+                        className="w-full h-full object-cover object-center transition-transform duration-500"
+                        loading="lazy"
+                        data-testid={`meditation-image-${meditation.id}`}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <span className="absolute bottom-3 left-3 text-lg font-serif text-white drop-shadow-lg">
+                        {meditation.name}
+                      </span>
+                      <span className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs text-white">
+                        <Clock className="w-3 h-3" />
+                        {meditation.duration_minutes} min
+                      </span>
+                    </div>
 
                     <div className={`p-4 ${colors.bg}`}>
-                      {!meditation.image_url && (
-                        <h3 className="text-xl font-serif mb-2">{meditation.name}</h3>
-                      )}
+                      <h3 className="text-xl font-serif mb-2">{meditation.name}</h3>
                       <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                         {meditation.description}
                       </p>

@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Lock, Sparkles } from "lucide-react";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { getEncodedFrequencyImage } from "../utils/lightCodeVisualTheme";
+import { getMysterySchoolImage } from "../utils/shamanicImageTheme";
 
 const STREAM_OPTIONS = [
   { id: "egyptian_mystery", label: "Egyptian Mystery School", accent: "text-amber-200" },
@@ -152,7 +153,7 @@ export default function MysterySchoolTeachings({ api, user }) {
                 >
                   <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 mb-3" data-testid={`mystery-school-card-image-wrap-${item.id}`}>
                     <img
-                      src={item.image_url || getEncodedFrequencyImage(item.id || item.name)}
+                      src={getMysterySchoolImage(item)}
                       alt={item.name}
                       className="w-full h-full object-cover"
                       loading="lazy"

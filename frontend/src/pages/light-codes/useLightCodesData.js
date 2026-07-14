@@ -8,6 +8,7 @@ import {
   SACRED_GEOMETRY_IMAGE_OVERRIDES,
   SACRED_GEOMETRY_SYMBOL_OVERRIDES,
 } from "../../utils/lightCodeVisualTheme";
+import { getLightCodeImage } from "../../utils/shamanicImageTheme";
 
 const SOURCE_SECTIONS = [
   "sacred_geometry",
@@ -43,7 +44,7 @@ const buildEncodedFrequencySymbols = (lightCodes) => {
         name: `Encoded ${entry?.name || `Transmission ${index + 1}`}`,
         title: entry?.title || "Encoded Frequency Transmission",
         description: entry?.description || entry?.meaning || "A high-order ceremonial light code for symbolic activation and embodied integration.",
-        image_url: getEncodedFrequencyImage(codeId),
+        image_url: getLightCodeImage({ id: codeId, name: entry?.name, source_section: entry?.source_section }),
         source_section: entry?.source_section,
         is_premium: isPremium,
         premium_unlock_id: "light_codes",
@@ -106,7 +107,7 @@ export const useLightCodesData = (api, user) => {
       const geometrySymbol = isSacredGeometry ? SACRED_GEOMETRY_SYMBOL_OVERRIDES[symbol?.id] : null;
       return {
         ...symbol,
-        image_url: geometryImage || symbol?.image_url || getEncodedFrequencyImage(stableKey),
+        image_url: geometryImage || getLightCodeImage({ ...symbol, id: stableKey, source_section: activeCategory }),
         symbol: geometrySymbol || symbol?.symbol,
         geometry_verified: isSacredGeometry && Boolean(geometryImage),
       };

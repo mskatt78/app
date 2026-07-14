@@ -13,6 +13,12 @@ const SHAMANIC_IMAGES = {
   soundCaveGong: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/77f171f6c1e0449bb1ce3665b4413e9053d2302cec1ff5a4663d702c72b2bdb2.png",
   soundOceanAltar: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c9f076563d68fd0574f48bc1a26c56964c434afcdf620374437790100c6886f8.png",
   soundMountainChant: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/51516d7b833450408ae57309eca108f7d16fd01310f5e6092ef7091426e0ab82.png",
+  mysterySchoolChamber: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3d456e1fcb601ea7091a2a18c276724f71794ea4ab40407c7858829f4a1b7e76.png",
+  guardianMoonForest: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/31c73e80d68981f4ce758effad06dce9dd9ee34a55a024c7a444c950bc8552e3.png",
+  meditationWaterfall: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/49aa975597b7cf54dd5dac469787039f1f582f1865a22d5424d93e1ed28d2e05.png",
+  mudraSacredHands: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e70c56e081a1442d2ea734ae70261fda5b420d504b60adb27a758c1d049cf142.png",
+  sacredAllyForestRitual: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/db95874a2ea02e9c5a00c90b8bf6a54969097de2ca3175947a418b727ef12e46.png",
+  breathworkMountainCeremony: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6196812a89428e23c419420626565e895ae53e9e37ec917757baeb87a7bf0bd6.png",
 };
 
 const hashSeed = (value) => {
@@ -112,3 +118,69 @@ export const getArchangelImage = (angel, offset = 0) => {
 };
 
 export const getAstrologySkyImage = () => SHAMANIC_IMAGES.cosmicSky;
+
+export const getBreathworkImage = (session, offset = 0) => {
+  const element = String(session?.element || "Air").toLowerCase();
+  const seed = hashSeed(session?.id || session?.name) + offset;
+  if (element.includes("fire")) return pickFromPool([SHAMANIC_IMAGES.breathworkMountainCeremony, SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.soundMountainChant], seed);
+  if (element.includes("water")) return pickFromPool([SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.soundOceanAltar, SHAMANIC_IMAGES.moonRitual], seed);
+  if (element.includes("earth")) return pickFromPool([SHAMANIC_IMAGES.breathworkMountainCeremony, SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.templeMystic], seed);
+  if (element.includes("air")) return pickFromPool([SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.breathworkMountainCeremony, SHAMANIC_IMAGES.cosmicSky], seed);
+  return pickFromPool([SHAMANIC_IMAGES.breathworkMountainCeremony, SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.templeMystic], seed);
+};
+
+export const getMeditationImage = (meditation, offset = 0) => {
+  const category = String(meditation?.category || "spiritual").toLowerCase();
+  const seed = hashSeed(meditation?.id || meditation?.name) + offset;
+  if (category.includes("nature")) return pickFromPool([SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.moonRitual], seed);
+  if (category.includes("ground")) return pickFromPool([SHAMANIC_IMAGES.breathworkMountainCeremony, SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.forestYoga], seed);
+  if (category.includes("heart") || category.includes("healing")) return pickFromPool([SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.oracleAltar, SHAMANIC_IMAGES.moonRitual], seed);
+  return pickFromPool([SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.cosmicSky, SHAMANIC_IMAGES.forestYoga], seed);
+};
+
+export const getMudraImage = (mudra, offset = 0) => {
+  const element = String(mudra?.element || "Spirit").toLowerCase();
+  const seed = hashSeed(mudra?.id || mudra?.name) + offset;
+  if (element.includes("fire")) return pickFromPool([SHAMANIC_IMAGES.mudraSacredHands, SHAMANIC_IMAGES.fireCeremony], seed);
+  if (element.includes("water")) return pickFromPool([SHAMANIC_IMAGES.mudraSacredHands, SHAMANIC_IMAGES.moonRitual], seed);
+  if (element.includes("earth")) return pickFromPool([SHAMANIC_IMAGES.mudraSacredHands, SHAMANIC_IMAGES.templeMystic], seed);
+  if (element.includes("air")) return pickFromPool([SHAMANIC_IMAGES.mudraSacredHands, SHAMANIC_IMAGES.forestYoga], seed);
+  return pickFromPool([SHAMANIC_IMAGES.mudraSacredHands, SHAMANIC_IMAGES.oracleAltar, SHAMANIC_IMAGES.templeMystic], seed);
+};
+
+export const getMysterySchoolImage = (item, offset = 0) => {
+  const stream = String(item?.stream || item?.stream_label || "mystery").toLowerCase();
+  const seed = hashSeed(item?.id || item?.name) + offset;
+  if (stream.includes("emerald")) return pickFromPool([SHAMANIC_IMAGES.mysterySchoolChamber, SHAMANIC_IMAGES.templeMystic], seed);
+  if (stream.includes("rose") || stream.includes("priestess")) return pickFromPool([SHAMANIC_IMAGES.oracleAltar, SHAMANIC_IMAGES.moonRitual], seed);
+  if (stream.includes("merlin")) return pickFromPool([SHAMANIC_IMAGES.mysterySchoolChamber, SHAMANIC_IMAGES.forestYoga], seed);
+  return pickFromPool([SHAMANIC_IMAGES.mysterySchoolChamber, SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.oracleAltar], seed);
+};
+
+export const getGuardianImage = (guardian, offset = 0) => {
+  const category = String(guardian?.category || "guardian").toLowerCase();
+  const seed = hashSeed(guardian?.id || guardian?.name) + offset;
+  if (category.includes("dragon")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.guardianMoonForest], seed);
+  if (category.includes("angel")) return pickFromPool([SHAMANIC_IMAGES.archangel, SHAMANIC_IMAGES.guardianMoonForest], seed);
+  if (category.includes("messenger") || category.includes("familiar")) return pickFromPool([SHAMANIC_IMAGES.guardianMoonForest, SHAMANIC_IMAGES.forestYoga], seed);
+  return pickFromPool([SHAMANIC_IMAGES.guardianMoonForest, SHAMANIC_IMAGES.sacredAllyForestRitual, SHAMANIC_IMAGES.forestYoga], seed);
+};
+
+export const getSacredAllyImage = (ally, offset = 0) => {
+  const type = String(ally?.ally_type || ally?.category || "ally").toLowerCase();
+  const seed = hashSeed(ally?.id || ally?.name) + offset;
+  if (type.includes("dragon")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.sacredAllyForestRitual], seed);
+  if (type.includes("wolf") || type.includes("jaguar") || type.includes("raven")) return pickFromPool([SHAMANIC_IMAGES.sacredAllyForestRitual, SHAMANIC_IMAGES.guardianMoonForest], seed);
+  if (type.includes("angel")) return pickFromPool([SHAMANIC_IMAGES.archangel, SHAMANIC_IMAGES.templeMystic], seed);
+  if (type.includes("whale") || type.includes("dolphin")) return pickFromPool([SHAMANIC_IMAGES.soundOceanAltar, SHAMANIC_IMAGES.moonRitual], seed);
+  return pickFromPool([SHAMANIC_IMAGES.sacredAllyForestRitual, SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.guardianMoonForest], seed);
+};
+
+export const getLightCodeImage = (symbol, offset = 0) => {
+  const lineage = String(symbol?.lineage || symbol?.source_section || symbol?.category || "light").toLowerCase();
+  const seed = hashSeed(symbol?.id || symbol?.name) + offset;
+  if (lineage.includes("galactic")) return pickFromPool([SHAMANIC_IMAGES.cosmicSky, SHAMANIC_IMAGES.archangel], seed);
+  if (lineage.includes("chakra") || lineage.includes("geometry")) return pickFromPool([SHAMANIC_IMAGES.mysterySchoolChamber, SHAMANIC_IMAGES.templeMystic], seed);
+  if (lineage.includes("alphabet") || lineage.includes("language")) return pickFromPool([SHAMANIC_IMAGES.oracleAltar, SHAMANIC_IMAGES.mudraSacredHands], seed);
+  return pickFromPool([SHAMANIC_IMAGES.mysterySchoolChamber, SHAMANIC_IMAGES.cosmicSky, SHAMANIC_IMAGES.oracleAltar], seed);
+};

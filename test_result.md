@@ -19100,3 +19100,157 @@ agent_communication:
       
       Non-yoga image overhaul is COMPLETE and production-ready. No issues found.
 
+
+  - task: "Latest non-yoga shamanic image parity sweep - 7 routes (/breathwork, /meditations, /mudras, /mystery-school, /sacred-guardians, /sacred-ally-alchemy, /light-codes)"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/Breathwork.jsx, /app/frontend/src/pages/Meditations.jsx, /app/frontend/src/pages/mudras/MudrasLibraryContainer.jsx, /app/frontend/src/pages/MysterySchool.jsx, /app/frontend/src/pages/SacredGuardians.jsx, /app/frontend/src/pages/SacredAllyAlchemy.jsx, /app/frontend/src/pages/LightCodes.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ LATEST NON-YOGA SHAMANIC IMAGE PARITY SWEEP - PARTIAL PASS (5/7 routes) (2026-07-14)
+          
+          Comprehensive image QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+          Desktop viewport: 1920x1080
+          Mobile viewport: 390x844
+          
+          ✅ PASSED (5/7 routes):
+          
+          1) ✅ /breathwork: PASS
+             - Selector: [data-testid^="breathwork-session-image-"]
+             - Total images found: 14
+             - First 8 images checked: 8/8 loaded successfully ✓
+             - Image variety: 75% (6 unique out of 8 images) - EXCELLENT variety ✓
+             - Visual style: Shamanic/nature-based meditation scenes (forest settings, beach rituals, mountain meditation) ✓
+             - No broken images ✓
+             - Mobile 390x844: No horizontal overflow ✓
+          
+          2) ✅ /meditations: PASS
+             - Selector: [data-testid^="meditation-image-"]
+             - Total images found: 14
+             - First 8 images checked: 8/8 loaded successfully ✓
+             - Image variety: 50% (4 unique out of 8 images) - GOOD variety ✓
+             - Visual style: Mystical temple interiors, mountain meditation, shamanic settings ✓
+             - No broken images ✓
+             - Mobile 390x844: No horizontal overflow ✓
+          
+          3) ✅ /mudras: PASS
+             - Selector: [data-testid^="mudra-image-"] (cards) and [data-testid^="mudra-modal-image-"] (modal)
+             - Total images found: 18
+             - First 8 images checked: 8/8 loaded successfully ✓
+             - Image variety: 50% (4 unique out of 8 images) - GOOD variety ✓
+             - Modal image: [data-testid^="mudra-modal-image-"] present and loaded ✓
+             - Visual style: Mix of nature scenes (forest, moonlit) and temple interiors ✓
+             - No broken images ✓
+             - Mobile 390x844: No horizontal overflow ✓
+          
+          4) ✅ /sacred-guardians: PASS
+             - Selector: [data-testid^="guardian-image-"] (cards) and [data-testid="guardian-detail-image"] (modal)
+             - Total images found: 14
+             - First 8 images checked: 8/8 loaded successfully ✓
+             - Image variety: 62% (5 unique out of 8 images) - GOOD variety ✓
+             - Modal detail image: [data-testid="guardian-detail-image"] present and loaded ✓
+             - Visual style: Shamanic forest scenes, fire ceremonies, angels, spirit animals, dragon energy ✓
+             - No broken images ✓
+             - Mobile 390x844: No horizontal overflow ✓
+          
+          5) ✅ /sacred-ally-alchemy: PASS
+             - Selector: [data-testid^="sacred-ally-card-image-"] (cards) and modal image inside [data-testid="sacred-ally-detail-modal"]
+             - Total images found: 22
+             - First 8 images checked: 8/8 loaded successfully ✓
+             - Image variety: 50% (4 unique out of 8 images) - GOOD variety ✓
+             - Modal detail image: Image inside [data-testid="sacred-ally-detail-modal"] present and loaded ✓
+             - Visual style: Temple interiors, forest shamanic scenes, mystical light beings, galactic allies ✓
+             - No broken images ✓
+             - Mobile 390x844: No horizontal overflow ✓
+          
+          ❌ FAILED (2/7 routes):
+          
+          1) ❌ /mystery-school: FAIL - CRITICAL BROKEN IMAGE ISSUE
+             - Selector: [data-testid^="mystery-school-card-image-"]
+             - Total images found: 42
+             - First 8 images checked: 3/8 loaded successfully, 5/8 BROKEN ✗
+             - Image variety: 100% (3 unique out of 3 loaded images) - variety is good for images that load
+             - ❌ CRITICAL ISSUE: ~60% of images have EMPTY src attributes
+             
+             DETAILED BREAKDOWN:
+             - Image 1: EMPTY src ✗
+             - Image 2: Loaded ✓ (House of Life Initiation)
+             - Image 3: EMPTY src ✗
+             - Image 4: EMPTY src ✗
+             - Image 5: Loaded ✓ (Ma'at Feather Alignment)
+             - Image 6: EMPTY src ✗
+             - Image 7: EMPTY src ✗
+             - Image 8: Loaded ✓ (Sekhem Current Discipline)
+             
+             ROOT CAUSE: Image src attributes are not being set for majority of cards. Pattern shows every 3rd-4th image loads correctly, but most have empty src="".
+             
+             VISUAL STYLE (for images that DO load): Egyptian mystery school aesthetic with temple interiors - CORRECT shamanic/mystical tone ✓
+             
+             Mobile 390x844: No horizontal overflow ✓
+          
+          2) ❌ /light-codes: FAIL - CRITICAL BROKEN IMAGE ISSUE
+             - Selector: [data-testid^="light-code-image-"] (cards) and [data-testid="light-code-modal-image"] (modal)
+             - Total images found: 42
+             - First 8 images checked: 3/8 loaded successfully, 5/8 BROKEN ✗
+             - Image variety: 67% (2 unique out of 3 loaded images) - variety is acceptable for images that load
+             - Modal image: [data-testid="light-code-modal-image"] present and loaded ✓
+             - ❌ CRITICAL ISSUE: ~60% of images have EMPTY src attributes
+             
+             DETAILED BREAKDOWN:
+             - Image 1: Loaded ✓ (Encoded Flower of Life)
+             - Image 2: EMPTY src ✗
+             - Image 3: EMPTY src ✗
+             - Image 4: Loaded ✓ (Encoded Metatron's Cube)
+             - Image 5: EMPTY src ✗
+             - Image 6: EMPTY src ✗
+             - Image 7: Loaded ✓ (Encoded Sri Yantra)
+             - Image 8: EMPTY src ✗
+             
+             ROOT CAUSE: Image src attributes are not being set for majority of cards. Pattern shows every 3rd-4th image loads correctly, but most have empty src="".
+             
+             VISUAL STYLE (for images that DO load): Sacred geometry with cosmic/mystical backgrounds - CORRECT shamanic/mystical tone ✓
+             
+             Mobile 390x844: No horizontal overflow ✓
+          
+          📊 FINAL STATISTICS:
+          - Total routes tested: 7
+          - Routes passed: 5/7 (71%)
+          - Routes failed: 2/7 (29%)
+          - Critical issues: 2 (mystery-school and light-codes broken images)
+          - Total images checked: 56 (8 per route)
+          - Broken images: 10 (5 on mystery-school, 5 on light-codes)
+          - Missing testids: 0 (all selectors present)
+          - Mobile responsiveness: All routes passed (no horizontal overflow at 390x844)
+          - Visual style coherence: All routes passed (shamanic/mystical tone maintained)
+          
+          🎯 VERDICT: ❌ PARTIAL PASS - 5/7 routes meet requirements. /mystery-school and /light-codes have CRITICAL broken image bug where ~60% of card images have empty src attributes. This is NOT a variety issue - it's a broken image loading issue that prevents most images from displaying at all.
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ❌ LATEST NON-YOGA SHAMANIC IMAGE PARITY SWEEP - PARTIAL PASS (5/7 routes)
+      
+      Comprehensive QA completed on preview URL. 5/7 ROUTES PASSED, 2/7 ROUTES FAILED:
+      
+      ✅ PASSED:
+      - /breathwork: 6/8 unique images (75% variety), 0 broken, modal N/A, mobile OK
+      - /meditations: 4/8 unique images (50% variety), 0 broken, modal N/A, mobile OK
+      - /mudras: 4/8 unique images (50% variety), 0 broken, modal loaded ✓, mobile OK
+      - /sacred-guardians: 5/8 unique images (62% variety), 0 broken, modal loaded ✓, mobile OK
+      - /sacred-ally-alchemy: 4/8 unique images (50% variety), 0 broken, modal loaded ✓, mobile OK
+      
+      ❌ FAILED:
+      - /mystery-school: 3/8 images loaded, 5/8 BROKEN (empty src attributes) - CRITICAL BUG
+      - /light-codes: 3/8 images loaded, 5/8 BROKEN (empty src attributes) - CRITICAL BUG
+      
+      CRITICAL ISSUE: Both /mystery-school and /light-codes have ~60% of card images with EMPTY src="" attributes. Pattern shows every 3rd-4th image loads correctly, but most cards have no src set. This is a broken image loading bug, NOT a variety issue. The images that DO load have correct shamanic/mystical aesthetic and good variety.
+      
+      All testids present, visual style coherent across all routes, mobile responsiveness OK (no overflow at 390x844).
+      
+      RECOMMENDATION: Investigate image src assignment logic for /mystery-school and /light-codes routes. Likely issue in image mapping or data fetching for these specific sections.
+

@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "../../components/ui/button";
 import GuidedPracticeOverlay from "../../components/GuidedPracticeOverlay";
 import { appLogger } from "../../utils/logger";
+import { getMudraImage } from "../../utils/shamanicImageTheme";
 
 const MudrasLibrary = ({ user, api }) => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const MudrasLibrary = ({ user, api }) => {
     Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", gradient: "from-purple-950/60 via-transparent to-transparent" },
   };
 
-  const placeholderImage = "https://images.pexels.com/photos/6867682/pexels-photo-6867682.jpeg?auto=compress&cs=tinysrgb&w=800";
+  const placeholderImage = getMudraImage({ id: "mudra-placeholder", element: "Spirit", name: "Mudra Placeholder" });
 
   const formatReviewedDate = (value) => {
     if (!value) return null;
@@ -194,7 +195,7 @@ const MudrasLibrary = ({ user, api }) => {
                   {/* Image */}
                   <div className="relative h-40 overflow-hidden bg-black/45">
                     <img
-                      src={hasImageError ? placeholderImage : (mudra.image_url || placeholderImage)}
+                      src={hasImageError ? placeholderImage : getMudraImage(mudra)}
                       alt={mudra.name}
                       className="w-full h-full object-contain object-center opacity-90"
                       onError={() => handleImageError(mudra.id)}
@@ -255,7 +256,7 @@ const MudrasLibrary = ({ user, api }) => {
               {/* Hero Image */}
               <div className="relative h-56 bg-black/50">
                 <img
-                  src={imageErrors.has(selectedMudra.id) ? placeholderImage : (selectedMudra.image_url || placeholderImage)}
+                  src={imageErrors.has(selectedMudra.id) ? placeholderImage : getMudraImage(selectedMudra, 1)}
                   alt={selectedMudra.name}
                   className="w-full h-full object-contain object-center opacity-90"
                   onError={() => handleImageError(selectedMudra.id)}

@@ -9,6 +9,7 @@ import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { toast } from "sonner";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
 import { getEncodedFrequencyImage } from "../utils/lightCodeVisualTheme";
+import { getSacredAllyImage } from "../utils/shamanicImageTheme";
 
 const ALLY_FALLBACK_DATA = [
   {
@@ -625,7 +626,7 @@ const withVisualOverrides = (items) =>
       }
     });
 
-    merged.image_url = ALLY_IMAGE_OVERRIDES[merged.id] || merged.image_url || getEncodedFrequencyImage(merged.id || merged.name) || GENERIC_ALLY_FALLBACK_IMAGE;
+    merged.image_url = getSacredAllyImage(merged);
 
     return merged;
   });
@@ -1065,7 +1066,7 @@ export default function SacredAllyAlchemy({ api }) {
                   <div
                     className="absolute inset-0"
                     style={{
-                      backgroundImage: `url(${item.image_url || getEncodedFrequencyImage(item.id || item.name)})`,
+                      backgroundImage: `url(${getSacredAllyImage(item)})`,
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                       opacity: 0.18,
@@ -1073,7 +1074,7 @@ export default function SacredAllyAlchemy({ api }) {
                     data-testid={`sacred-ally-card-bg-${item.id}`}
                   />
                   <img
-                    src={item.image_url}
+                    src={getSacredAllyImage(item)}
                     alt={item.name}
                     className={`w-full h-full ${item.id === "ally-dragon-sovereign-flame" ? "object-contain bg-black/35" : "object-cover"}`}
                     data-testid={`sacred-ally-card-image-${item.id}`}
@@ -1150,7 +1151,7 @@ export default function SacredAllyAlchemy({ api }) {
               data-testid="sacred-ally-detail-modal"
             >
               <div className="relative aspect-[16/7]">
-                <img src={selected.image_url} alt={selected.name} className="w-full h-full object-cover" onError={(event) => handleImageFallback(event, selected.id)} />
+                <img src={getSacredAllyImage(selected, 1)} alt={selected.name} className="w-full h-full object-cover" onError={(event) => handleImageFallback(event, selected.id)} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                 <button
                   onClick={() => setSelected(null)}
@@ -1171,7 +1172,7 @@ export default function SacredAllyAlchemy({ api }) {
                     {selected.image_url && (
                       <div className="rounded-xl border border-white/10 bg-white/5 p-2">
                         <p className="text-[11px] text-muted-foreground mb-2">Reference Image</p>
-                        <img src={selected.image_url} alt={`${selected.name} reference`} className="w-full aspect-[4/3] object-cover rounded-lg" onError={(event) => handleImageFallback(event, selected.id)} />
+                        <img src={getSacredAllyImage(selected, 2)} alt={`${selected.name} reference`} className="w-full aspect-[4/3] object-cover rounded-lg" onError={(event) => handleImageFallback(event, selected.id)} />
                       </div>
                     )}
                     {selected.diagram_image_url && (

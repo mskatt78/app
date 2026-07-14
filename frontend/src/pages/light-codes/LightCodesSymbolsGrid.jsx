@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Eye, Lock, Sparkles } from "lucide-react";
 import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
+import { getLightCodeImage } from "../../utils/shamanicImageTheme";
 
 export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryInfo, openSymbol }) => {
   if (loading) {
@@ -29,7 +30,7 @@ export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryI
           {symbol.image_url ? (
             <div className="relative aspect-[4/3] overflow-hidden">
               <img
-                src={symbol.image_url}
+                src={getLightCodeImage(symbol)}
                 alt={symbol.name}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 data-testid={`light-code-image-${symbol.id}`}
@@ -60,7 +61,7 @@ export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryI
           ) : (
             <div className={`aspect-[4/3] flex items-center justify-center ${activeCategoryInfo?.bg}`}>
               <img
-                src={getEncodedFrequencyImage(symbol.id || symbol.name)}
+                src={getLightCodeImage(symbol, 1)}
                 alt={symbol.name}
                 className="w-full h-full object-cover"
                 data-testid={`light-code-fallback-image-${symbol.id}`}
