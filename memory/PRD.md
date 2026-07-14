@@ -186,6 +186,60 @@
   - Sound Frequencies: 9/14 unique visible cards (improved from 4/14)
   - Archangel: 5/12 unique visible cards
 
+## Parity Sweep Continuation (All Remaining Non‑Yoga Sections) — 2026-07-14
+
+### User directive applied
+- Scope: **All remaining non-yoga sections**
+- Style: **50/50 mystical + photoreal shamanic**
+- Asset strategy: **Generated custom assets as primary where available**
+
+### Implemented
+- Expanded shared deterministic mapper: `frontend/src/utils/shamanicImageTheme.js`
+  - Added section resolvers:
+    - `getBreathworkImage`
+    - `getMeditationImage`
+    - `getMudraImage`
+    - `getMysterySchoolImage`
+    - `getGuardianImage`
+    - `getSacredAllyImage`
+    - `getLightCodeImage`
+
+- Applied mapper across routes/components:
+  - Breathwork: `Breathwork.jsx`, `components/breathwork/BreathworkSessionGrid.jsx`
+  - Meditations: `Meditations.jsx`
+  - Mudras: `pages/mudras/MudrasLibraryContainer.jsx`
+  - Mystery School: `MysterySchoolTeachings.jsx`
+  - Sacred Guardians: `SacredGuardians.jsx`
+  - Sacred Ally Alchemy: `SacredAllyAlchemy.jsx`
+  - Light Codes: `light-codes/useLightCodesData.js`, `light-codes/LightCodeModal.jsx`, `light-codes/LightCodesSymbolsGrid.jsx`
+
+- Generated additional custom shamanic assets for:
+  - mystery school chamber
+  - guardian moon forest
+  - meditation sanctuary
+  - mudra sacred hands
+  - sacred ally ritual scene
+  - breathwork mountain ceremony
+
+### QA and fixes performed
+- Full 7-route image QA surfaced selector-collision false negatives on Mystery School/Light Codes; fixed by renaming overlay/wrapper test IDs so image selectors target only `<img>` nodes.
+- Follow-up QA surfaced two browser rendering failures on large CDN image files in Breathwork/Meditations.
+- Resolved by replacing unstable heavy URLs with stable fast-loading curated Unsplash assets in breathwork/meditation pools.
+
+### Final verification status
+- ✅ Comprehensive pass established across all targeted routes:
+  - /breathwork
+  - /meditations
+  - /mudras
+  - /mystery-school
+  - /sacred-guardians
+  - /sacred-ally-alchemy
+  - /light-codes
+- ✅ Final targeted retest confirms **100% image load success** for previously failing routes:
+  - Breathwork 14/14 loaded
+  - Meditations 14/14 loaded
+- ✅ Mobile 390x844 checks pass without major overflow/cropping defects.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
