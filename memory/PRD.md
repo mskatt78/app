@@ -146,6 +146,46 @@
   - `/partner-yoga`: 18 images loaded, strong variation, modal image present, responsive pass.
 - No broken image regressions found in tested routes.
 
+## Non-Yoga Imagery Overhaul (Shamanic Alignment) — 2026-07-14
+
+### Scope completed
+- Ancient Wisdom
+- Sound Frequencies / Voice Activation
+- Oracle Readings
+- Archangel Oracle
+- Sun & Moon (Astrology Calendar)
+
+### What was implemented
+- Added centralized image theme utility:
+  - `frontend/src/utils/shamanicImageTheme.js`
+  - Deterministic shamanic image selection by section metadata (tradition/category/element/id seed)
+- Replaced/overrode non-shamanic or repetitive image usage in UI render paths:
+  - `AncientWisdomGrid.jsx` and `AncientWisdomDetailModal.jsx` now use `getAncientWisdomImage(...)`
+  - `SoundFrequencies.jsx` now uses `getSoundFrequencyImage(...)` for cards + modal
+  - `OracleReadings.jsx` now uses `getOracleCardImage(...)` unconditionally and guest endpoint detection hardened via real identity check
+  - `ArchangelBrowseSection.jsx` + `ArchangelReadingSection.jsx` now always render shamanic/angelic mapped images (`getArchangelImage(...)`)
+  - `AstrologyCalendar.jsx` now uses `getAstrologySkyImage()` for cosmic background
+- Added missing QA selector stability:
+  - `archangel-browse-btn` added on Browse All button
+
+### Asset improvements
+- Generated and integrated custom shamanic visuals for oracle/archangel/sound/cosmic sections.
+- Expanded Sound Frequencies image pool substantially to eliminate monotony.
+
+### Validation (frontend QA final)
+- ✅ 5/5 routes PASS:
+  - `/ancient-wisdom`
+  - `/sound-frequencies`
+  - `/oracle`
+  - `/archangel-oracle`
+  - `/astrology-calendar`
+- ✅ No broken images.
+- ✅ Mobile 390x844 responsive checks pass (no major image overflow/cropping defects).
+- ✅ Variation targets met:
+  - Ancient Wisdom: 5/10 unique visible cards
+  - Sound Frequencies: 9/14 unique visible cards (improved from 4/14)
+  - Archangel: 5/12 unique visible cards
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
