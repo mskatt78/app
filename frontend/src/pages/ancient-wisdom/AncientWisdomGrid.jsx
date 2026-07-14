@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { TRADITION_MAP } from "./constants";
 import { getEncodedFrequencyImage } from "../../utils/lightCodeVisualTheme";
+import { getAncientWisdomImage } from "../../utils/shamanicImageTheme";
 
 export const AncientWisdomGrid = ({ entries, setSelected }) => {
   if (entries.length === 0) {
@@ -31,10 +32,11 @@ export const AncientWisdomGrid = ({ entries, setSelected }) => {
           >
             <div className="relative aspect-square overflow-hidden">
               <img
-                src={entry.image_url || getEncodedFrequencyImage(entry.id || entry.name)}
+                src={getAncientWisdomImage(entry)}
                 alt={entry.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 loading="lazy"
+                data-testid={`ancient-wisdom-card-image-${entry.id}`}
               />
               <div
                 className="absolute inset-0 mix-blend-screen"

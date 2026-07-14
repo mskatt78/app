@@ -3,6 +3,7 @@ import { Feather, Loader2, Moon, RotateCcw, Sparkles, Star, Sun } from "lucide-r
 import { Button } from "../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import { getArchangelImage } from "../../utils/shamanicImageTheme";
 
 export const ArchangelReadingSection = ({
   reading,
@@ -110,7 +111,7 @@ export const ArchangelReadingSection = ({
             >
               {reading.cards.length > 1 && <div className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 flex items-center justify-center text-sm">{index + 1}</div>}
               {card.is_reversed && <div className="absolute top-3 left-3 z-10 px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-xs">Shadow</div>}
-              {card.image_url && <div className="aspect-square overflow-hidden"><img src={card.image_url} alt={card.name} className="w-full h-full object-cover" /></div>}
+              <div className="aspect-square overflow-hidden"><img src={getArchangelImage(card)} alt={card.name} className="w-full h-full object-cover" data-testid={`archangel-reading-card-image-${index}`} /></div>
               <div className="p-5 text-center">
                 <h3 className="text-xl font-serif mb-1">{card.name}</h3>
                 <p className="text-sm text-primary mb-3">{card.title}</p>

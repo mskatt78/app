@@ -8,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { toast } from "sonner";
 import { ShareButton } from "../components/ShareModal";
 import { appLogger } from "../utils/logger";
+import { getOracleCardImage } from "../utils/shamanicImageTheme";
 
-const DIVINATION_FALLBACK_IMAGE = "https://images.pexels.com/photos/7130560/pexels-photo-7130560.jpeg?auto=compress&cs=tinysrgb&w=1200";
+const DIVINATION_FALLBACK_IMAGE = "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/05b27da2262f66dfed11e77dd106f85adb9a0ef9afa29751453dd2d4215f984d.png";
 
 const handleDivinationImageError = (event) => {
   const img = event.currentTarget;
@@ -53,8 +54,8 @@ const OracleReadings = ({ user, api }) => {
     setShowCards(false);
     
     try {
-      // Use guest endpoint if not logged in, regular endpoint if logged in
-      const endpoint = user ? "/oracle/reading" : "/oracle/reading/guest";
+      const hasUserIdentity = Boolean(user?.id || user?.email || user?.access_token);
+      const endpoint = hasUserIdentity ? "/oracle/reading" : "/oracle/reading/guest";
       const response = await api.post(endpoint, {
         question: question || null,
         spread_type: spreadType,
@@ -63,7 +64,7 @@ const OracleReadings = ({ user, api }) => {
       setReading(response.data);
       setTimeout(() => setShowCards(true), 500);
       toast.success("The spirits have spoken");
-      if (user) {
+      if (hasUserIdentity) {
         fetchPastReadings();
       }
     } catch (error) {
@@ -185,31 +186,23 @@ const OracleReadings = ({ user, api }) => {
                                shadow-[0_0_30px_rgba(212,175,55,0.15)] flex-shrink-0"
                     data-testid={`oracle-card-${index}`}
                   >
-                    {card.image_url ? (
-                      <div className="relative h-56 overflow-hidden">
-                        <img
-                          src={card.image_url}
-                          alt={card.name}
-                          className="w-full h-full object-cover"
-                          onError={handleDivinationImageError}
-                        />
-                        {/* Subtle gradient only at bottom for text readability */}
-                        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent" />
-                        <span className="absolute bottom-3 left-2 right-2 text-sm font-serif text-white drop-shadow-lg leading-tight">{card.name}</span>
-                        {card.is_reversed && (
-                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-red-900/70 text-red-200 text-xs border border-red-500/30">
-                            Reversed
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="h-40 flex flex-col items-center justify-center bg-white/5">
-                        <div className="w-12 h-12 mx-auto mb-2 rounded-full flex items-center justify-center bg-white/10">
-                          <Eye className={`w-6 h-6 ${elementColors[card.element]}`} />
-                        </div>
-                        <h4 className="font-serif text-base px-2">{card.name}</h4>
-                      </div>
-                    )}
+                    <div className="relative h-56 overflow-hidden">
+                      <img
+                        src={getOracleCardImage(card)}
+                        alt={card.name}
+                        className="w-full h-full object-cover"
+                        onError={handleDivinationImageError}
+                        data-testid={`oracle-card-image-${index}`}
+                      />
+                      {/* Subtle gradient only at bottom for text readability */}
+                      <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/80 to-transparent" />
+                      <span className="absolute bottom-3 left-2 right-2 text-sm font-serif text-white drop-shadow-lg leading-tight">{card.name}</span>
+                      {card.is_reversed && (
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-red-900/70 text-red-200 text-xs border border-red-500/30">
+                          Reversed
+                        </span>
+                      )}
+                    </div>
                     <div className="p-3">
                       <p className={`text-xs font-medium ${elementColors[card.element]} mb-1`}>{card.element}</p>
                       <p className="text-xs text-muted-foreground leading-relaxed">

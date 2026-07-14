@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Feather, Heart, Star } from "lucide-react";
 import { Button } from "../ui/button";
+import { getArchangelImage } from "../../utils/shamanicImageTheme";
 
 export const ArchangelBrowseSection = ({
   showBrowse,
@@ -21,11 +22,9 @@ export const ArchangelBrowseSection = ({
         </Button>
 
         <div className={`rounded-2xl bg-gradient-to-br ${elementColors[selectedArchangel.element]} border overflow-hidden`}>
-          {selectedArchangel.image_url && (
-            <div className="aspect-video overflow-hidden">
-              <img src={selectedArchangel.image_url} alt={selectedArchangel.name} className="w-full h-full object-cover object-top" />
-            </div>
-          )}
+          <div className="aspect-video overflow-hidden">
+            <img src={getArchangelImage(selectedArchangel, 1)} alt={selectedArchangel.name} className="w-full h-full object-cover object-top" data-testid="archangel-selected-image" />
+          </div>
 
           <div className="p-6">
             <div className="flex items-start gap-4 mb-6">
@@ -52,7 +51,7 @@ export const ArchangelBrowseSection = ({
               </div>
               <div className="bg-white/5 rounded-xl p-4">
                 <h3 className="font-medium text-primary mb-2 flex items-center gap-2"><Heart className="w-4 h-4" /> Message for You</h3>
-                <p className="italic text-foreground leading-relaxed">"{selectedArchangel.message}"</p>
+                <p className="italic text-foreground leading-relaxed">&ldquo;{selectedArchangel.message}&rdquo;</p>
               </div>
               <div>
                 <h3 className="font-medium text-primary mb-2 flex items-center gap-2"><Heart className="w-4 h-4" /> Love Guidance</h3>
@@ -68,11 +67,11 @@ export const ArchangelBrowseSection = ({
               </div>
               <div className="bg-primary/10 rounded-xl p-4 border border-primary/20">
                 <h3 className="font-medium text-primary mb-2">Affirmation</h3>
-                <p className="text-foreground italic">"{selectedArchangel.affirmation}"</p>
+                <p className="text-foreground italic">&ldquo;{selectedArchangel.affirmation}&rdquo;</p>
               </div>
               <div>
                 <h3 className="font-medium text-primary mb-2">Prayer</h3>
-                <p className="text-muted-foreground italic leading-relaxed">"{selectedArchangel.prayer}"</p>
+                <p className="text-muted-foreground italic leading-relaxed">&ldquo;{selectedArchangel.prayer}&rdquo;</p>
               </div>
               <div>
                 <h3 className="font-medium text-primary mb-2">Signs of Presence</h3>
@@ -106,11 +105,9 @@ export const ArchangelBrowseSection = ({
             className={`rounded-xl bg-gradient-to-br ${elementColors[angel.element]} border cursor-pointer transition-all hover:shadow-lg hover:shadow-primary/10 overflow-hidden`}
             data-testid={`archangel-browse-card-${angel.id}`}
           >
-            {angel.image_url && (
-              <div className="aspect-square overflow-hidden">
-                <img src={angel.image_url} alt={angel.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              </div>
-            )}
+            <div className="aspect-square overflow-hidden">
+              <img src={getArchangelImage(angel)} alt={angel.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" data-testid={`archangel-card-image-${angel.id}`} />
+            </div>
             <div className="p-4">
               <div className="flex items-center gap-3 mb-2">
                 <Feather className={`w-5 h-5 ${elementTextColors[angel.element]}`} />

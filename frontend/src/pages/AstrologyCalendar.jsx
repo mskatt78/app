@@ -12,6 +12,7 @@ import {
   getTimezoneOptionKey,
 } from "../components/astrology/astrologyCalendarConfig";
 import { appLogger } from "../utils/logger";
+import { getAstrologySkyImage } from "../utils/shamanicImageTheme";
 
 const HEMISPHERE_PREF_KEY = "astrologyHemispherePreference";
 const TIMEZONE_PREF_KEY = "astrologyTimezonePreference";
@@ -171,10 +172,11 @@ const AstrologyCalendar = ({ api }) => {
       <div
         className="fixed inset-0 opacity-20 pointer-events-none"
         style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1769921824705-ff05243792de?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1ODB8MHwxfHNlYXJjaHwxfHxuZWJ1bGElMjBzdGFycyUyMGdhbGF4eSUyMGRlZXAlMjBzcGFjZSUyMGNvbG9yZnVsfGVufDB8fHx8MTc3MTUwNDE3OHww&ixlib=rb-4.1.0&q=85')",
+          backgroundImage: `url('${getAstrologySkyImage()}')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
+        data-testid="astrology-cosmic-background-image"
       />
 
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">

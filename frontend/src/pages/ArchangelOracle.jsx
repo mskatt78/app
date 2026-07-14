@@ -109,6 +109,7 @@ const ArchangelOracle = ({ user, api }) => {
               size="sm"
               onClick={() => { setShowBrowse(!showBrowse); setSelectedArchangel(null); }}
               className="text-muted-foreground hover:text-primary"
+              data-testid="archangel-browse-btn"
             >
               <BookOpen className="w-4 h-4 mr-1" />
               Browse All

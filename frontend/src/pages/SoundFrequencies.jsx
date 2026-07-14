@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
 import { appLogger } from "../utils/logger";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import { getSoundFrequencyImage } from "../utils/shamanicImageTheme";
 
 const CATEGORIES = [
   { id: "all", label: "All Frequencies", icon: Sparkles, color: "text-amber-400", bg: "bg-amber-500/10" },
@@ -252,9 +253,10 @@ const SoundFrequencies = ({ user, api }) => {
                       {/* Image */}
                       <div className="relative h-48 overflow-hidden">
                         <img
-                          src={freq.image_url}
+                          src={getSoundFrequencyImage(freq)}
                           alt={freq.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          data-testid={`sound-frequency-card-image-${freq.id}`}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                         
@@ -341,9 +343,10 @@ const SoundFrequencies = ({ user, api }) => {
                 {/* Image */}
                 <div className="rounded-xl overflow-hidden">
                   <img
-                    src={selectedFreq.image_url}
+                    src={getSoundFrequencyImage(selectedFreq, 1)}
                     alt={selectedFreq.name}
                     className="w-full h-64 object-cover"
+                    data-testid="sound-frequency-selected-image"
                   />
                 </div>
 

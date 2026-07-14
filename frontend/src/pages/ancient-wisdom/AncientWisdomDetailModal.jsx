@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import GuidedAudioButton from "../../components/GuidedAudioButton";
 import { formatReviewedDate, TRADITION_MAP } from "./constants";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../../utils/guidedRitualComposer";
+import { getAncientWisdomImage } from "../../utils/shamanicImageTheme";
 
 export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
   const resolveTeachings = (entry) => {
@@ -59,7 +60,7 @@ export const AncientWisdomDetailModal = ({ selected, setSelected, api }) => {
             data-testid="wisdom-detail-modal"
           >
             <div className="relative h-64 overflow-hidden rounded-t-3xl">
-              <img src={selected.image_url} alt={selected.name} className="w-full h-full object-cover" />
+              <img src={getAncientWisdomImage(selected, 1)} alt={selected.name} className="w-full h-full object-cover" data-testid="ancient-wisdom-selected-image" />
               <div className="absolute inset-0 bg-gradient-to-t from-background via-black/40 to-transparent" />
               <button
                 onClick={() => setSelected(null)}

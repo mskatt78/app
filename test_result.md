@@ -18923,3 +18923,91 @@ agent_communication:
 agent_communication:
   - agent: "testing"
     message: "Yoga imagery QA completed successfully on all 4 routes (/yoga, /chair-yoga, /somatic-yoga, /partner-yoga). All images load correctly, good variety in first 8 cards (no monotonous repetition), modal images present, responsive layout working at 390x844, and all images are from Unsplash with nature/spiritual/shamanic themes. 0 failures, 0 warnings. All requirements from review request met. Ready for production."
+
+  - task: "Final image QA - Non-yoga sections (/ancient-wisdom, /sound-frequencies, /oracle, /archangel-oracle, /astrology-calendar)"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/AncientWisdom.jsx, /app/frontend/src/pages/SoundFrequencies.jsx, /app/frontend/src/pages/OracleReadings.jsx, /app/frontend/src/pages/ArchangelOracle.jsx, /app/frontend/src/pages/AstrologyCalendar.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: |
+          ❌ FINAL IMAGE QA - PARTIAL PASS (4/5 routes) (2026-07-14)
+          
+          Comprehensive image QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+          Mobile viewport: 390x844
+          
+          ✅ PASS (4/5 routes):
+          
+          1) ✅ /ancient-wisdom: PASS
+             - Card images: 14 found, all loaded ✓
+             - data-testid^="ancient-wisdom-card-image-" present ✓
+             - Image variety: 50% (7 unique out of 14) - good variety, no monotony ✓
+             - Modal image: data-testid="ancient-wisdom-selected-image" present and loaded ✓
+             - Style check: Mystical/shamanic tone confirmed (keywords: shamanic, sacred, ancient) ✓
+             - No broken images ✓
+          
+          2) ✅ /oracle: PASS
+             - Draw button: data-testid="draw-cards-btn" works ✓
+             - Oracle card images: 1 found (single card reading), loaded ✓
+             - data-testid^="oracle-card-image-" present ✓
+             - Style check: Oracle/shamanic coherence confirmed (keywords: oracle, shamanic, guidance) ✓
+             - No broken images ✓
+          
+          3) ✅ /archangel-oracle: PASS
+             - Browse button: data-testid="archangel-browse-btn" exists and works ✓
+             - Grid images: 15 found, all loaded ✓
+             - data-testid^="archangel-card-image-" present ✓
+             - Selected profile image: data-testid="archangel-selected-image" present and loaded ✓
+             - No broken images ✓
+          
+          4) ✅ /astrology-calendar: PASS
+             - Background image: data-testid="astrology-cosmic-background-image" exists and loaded ✓
+             - Style check: Cosmic mystical tone confirmed (keywords: moon, sun) ✓
+             - No broken images ✓
+          
+          ❌ FAIL (1/5 routes):
+          
+          1) ❌ /sound-frequencies: FAIL - SEVERE MONOTONY ISSUE
+             - Card images: 14 found, all loaded ✓
+             - data-testid^="sound-frequency-card-image-" present ✓
+             - Modal image: data-testid="sound-frequency-selected-image" present and loaded ✓
+             - Style check: Sound-healing + ritual coherence confirmed ✓
+             - No broken images ✓
+             - ❌ CRITICAL ISSUE: Severe repetitive monotony - only 29% variety (4 unique images out of 14 cards)
+             
+             ROOT CAUSE: getSoundFrequencyImage function in /app/frontend/src/utils/shamanicImageTheme.js uses limited image pools (2-3 images per category):
+             - Lines 46-47: Shamanic/drum/fire → 2 images (fireCeremony, forestYoga)
+             - Lines 49-50: Nature/cetacean/water → 2 images (moonRitual, forestYoga)
+             - Lines 52-53: Frequency/instrument/bowl → 2 images (soundBowls, oracleAltar)
+             - Line 56: Default fallback → 3 images (soundBowls, templeMystic, forestYoga)
+             
+             IMPACT: First 14 visible cards show only 4 unique images, creating severe repetitive monotony that fails the "no severe repetitive monotony in first visible cards" requirement.
+             
+             RECOMMENDATION: Expand image pools for sound frequencies to include at least 8-10 unique images to achieve 50%+ variety ratio (similar to ancient-wisdom which has 50% variety).
+          
+          📊 FINAL STATISTICS:
+          - Total routes tested: 5
+          - Routes passed: 4/5 (80%)
+          - Routes failed: 1/5 (20%)
+          - Critical issues: 1 (sound-frequencies monotony)
+          - Broken images: 0
+          - Missing testids: 0
+          
+          🎯 VERDICT: PARTIAL PASS - 4/5 routes meet requirements. Sound-frequencies requires image variety improvement to pass.
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      Final image QA completed on non-yoga sections. PARTIAL PASS: 4/5 routes passed.
+      
+      ✅ PASSED: /ancient-wisdom, /oracle, /archangel-oracle, /astrology-calendar
+      ❌ FAILED: /sound-frequencies (severe monotony - only 29% image variety, needs 50%+)
+      
+      All images load correctly (no broken images), all testids present, style checks passed.
+      
+      CRITICAL ISSUE: Sound-frequencies shows only 4 unique images out of 14 cards due to limited image pools in getSoundFrequencyImage function. Needs expansion to 8-10 unique images for 50%+ variety.
+
