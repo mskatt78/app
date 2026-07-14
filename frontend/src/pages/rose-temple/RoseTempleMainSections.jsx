@@ -72,7 +72,7 @@ export const RoseTempleMainSections = ({
                 className="text-left rounded-2xl border border-white/10 bg-card/60 overflow-hidden"
                 data-testid={`rose-teaching-${teaching.id}`}
               >
-                {teaching.image && <img src={getRoseTempleImage(teaching)} alt={teaching.title} className="w-full h-40 object-cover" data-testid={`rose-teaching-image-${teaching.id}`} />}
+                {teaching.image && <img src={getRoseTempleImage(teaching, index + 2)} alt={teaching.title} className="w-full h-40 object-cover" data-testid={`rose-teaching-image-${teaching.id}`} />}
                 <div className="p-5">
                   <div className="flex items-center gap-2 mb-2">
                     <Icon className="w-5 h-5 text-rose-300" />
