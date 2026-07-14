@@ -43,10 +43,10 @@ export const LightCodesSymbolsGrid = ({ loading, currentSymbols, activeCategoryI
                   backgroundPosition: "center",
                   opacity: 0.22,
                 }}
-                data-testid={`light-code-image-overlay-${symbol.id}`}
+                data-testid={`light-code-overlay-${symbol.id}`}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              <p className="absolute bottom-3 left-3 text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-full border border-yellow-300/30 bg-black/45 text-yellow-100/90" data-testid={`light-code-image-encoded-badge-${symbol.id}`}>
+              <p className="absolute bottom-3 left-3 text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-full border border-yellow-300/30 bg-black/45 text-yellow-100/90" data-testid={`light-code-encoded-badge-${symbol.id}`}>
                 Encoded Frequency
               </p>
               <div className="absolute top-4 right-4 w-11 h-11 rounded-full bg-black/45 backdrop-blur-md flex items-center justify-center border border-white/10">

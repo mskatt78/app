@@ -19254,3 +19254,49 @@ agent_communication:
       
       RECOMMENDATION: Investigate image src assignment logic for /mystery-school and /light-codes routes. Likely issue in image mapping or data fetching for these specific sections.
 
+  - agent: "testing"
+    message: |
+      ✅ POST SELECTOR-COLLISION FIX RE-TEST - MIXED RESULTS (5/7 routes PASS, 2/7 routes FAIL)
+      
+      Re-ran comprehensive image QA after selector-collision fix on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+      
+      🎉 GOOD NEWS - SELECTOR-COLLISION FIX SUCCESSFUL:
+      ✅ /mystery-school: NOW PASSING (was 5/8 broken → now 8/8 loaded) - FIXED!
+      ✅ /light-codes: NOW PASSING (was 5/8 broken → now 8/8 loaded) - FIXED!
+      
+      ✅ CONTINUED PASSING:
+      - /mudras: 8/8 loaded (50% variety), modal image LOADED ✓, mobile OK
+      - /sacred-guardians: 8/8 loaded (62% variety), modal image LOADED ✓, mobile OK
+      - /sacred-ally-alchemy: 8/8 loaded (50% variety), modal image LOADED ✓, mobile OK
+      
+      ❌ NEW REGRESSIONS INTRODUCED:
+      - /breathwork: NOW FAILING (was passing → now 2/8 broken) - REGRESSION!
+        * Broken images: breathwork-session-image-breathlove-3, breathwork-session-image-4
+        * Both share same src URL: 6196812a89428e23c419420626565e895ae53e9e37ec917757baeb87a7bf0bd6.png
+        * URL returns 200 OK when tested directly (2MB PNG file exists on CDN)
+        * Images fail to load even after 5s extended wait time
+      
+      - /meditations: NOW FAILING (was passing → now 2/8 broken) - REGRESSION!
+        * Broken images: meditation-image-6, meditation-image-meditation-supp-101
+        * Different src URLs: a38d45a08aa3a740e035d72eb2624cc1ae965768ec5dfa4073bf0c6dae06a5e5.png, 05b27da2262f66dfed11e77dd106f85adb9a0ef9afa29751453dd2d4215f984d.png
+        * Both URLs return 200 OK when tested directly (2MB and 1.8MB PNG files exist on CDN)
+        * Images fail to load even after 5s extended wait time
+      
+      📊 FINAL STATISTICS:
+      - Total routes tested: 7
+      - Routes passed: 5/7 (71%)
+      - Routes failed: 2/7 (29%)
+      - Selector-collision fix: ✅ SUCCESSFUL (mystery-school and light-codes now working)
+      - New regressions: ❌ 2 routes (breathwork and meditations now broken)
+      - All modal images tested: ✅ LOADED (mudras, sacred-guardians, light-codes)
+      - Mobile responsiveness: ✅ ALL ROUTES PASS (no overflow at 390x844)
+      - Visual style coherence: ✅ ALL ROUTES PASS (shamanic/mystical tone maintained)
+      
+      🔍 ROOT CAUSE ANALYSIS:
+      The broken images on /breathwork and /meditations are NOT missing files (404) or empty src attributes. The image URLs are valid and return 200 OK with 1.8-2MB PNG files. The issue appears to be:
+      1. Browser rendering failure for these specific large images
+      2. Possible image corruption or invalid PNG format despite 200 OK response
+      3. Selector collision fix may have inadvertently affected image loading logic for breathwork/meditations
+      
+      🎯 VERDICT: ❌ PARTIAL PASS - Selector-collision fix successfully resolved /mystery-school and /light-codes, but introduced new regressions on /breathwork and /meditations. Net result: still 5/7 routes passing (same as before), but different routes are now failing.
+

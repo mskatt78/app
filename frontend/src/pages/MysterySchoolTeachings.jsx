@@ -151,7 +151,7 @@ export default function MysterySchoolTeachings({ api, user }) {
                   className="text-left rounded-2xl border border-white/15 bg-gradient-to-br from-white/8 to-black/30 p-4 hover:border-amber-400/40 transition-colors shadow-[0_0_30px_rgba(244,193,72,0.08)]"
                   data-testid={`mystery-school-card-${item.id}`}
                 >
-                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 mb-3" data-testid={`mystery-school-card-image-wrap-${item.id}`}>
+                  <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-white/10 mb-3" data-testid={`mystery-school-card-media-wrap-${item.id}`}>
                     <img
                       src={getMysterySchoolImage(item)}
                       alt={item.name}
@@ -167,7 +167,7 @@ export default function MysterySchoolTeachings({ api, user }) {
                         backgroundPosition: "center",
                         opacity: 0.22,
                       }}
-                      data-testid={`mystery-school-card-image-overlay-${item.id}`}
+                      data-testid={`mystery-school-card-overlay-${item.id}`}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
                     <p className="absolute bottom-2 left-2 text-[11px] px-2 py-1 rounded-full border border-yellow-200/30 bg-black/45 text-yellow-100/90" data-testid={`mystery-school-card-encoded-badge-${item.id}`}>
