@@ -23,6 +23,8 @@ const SHAMANIC_IMAGES = {
   breathworkStableB: "https://images.unsplash.com/photo-1610295272575-7376b67b3e96?crop=entropy&cs=srgb&fm=jpg&q=85",
   meditationStableA: "https://images.unsplash.com/photo-1524863479829-916d8e77f114?crop=entropy&cs=srgb&fm=jpg&q=85",
   meditationStableB: "https://images.unsplash.com/photo-1559595500-e15296bdbb48?crop=entropy&cs=srgb&fm=jpg&q=85",
+  breathworkStableC: "https://images.unsplash.com/photo-1526916027372-0c0852cef5d3?crop=entropy&cs=srgb&fm=jpg&q=85",
+  meditationStableC: "https://images.unsplash.com/photo-1499482125586-91609c0b5fd4?crop=entropy&cs=srgb&fm=jpg&q=85",
 };
 
 const hashSeed = (value) => {
@@ -126,20 +128,20 @@ export const getAstrologySkyImage = () => SHAMANIC_IMAGES.cosmicSky;
 export const getBreathworkImage = (session, offset = 0) => {
   const element = String(session?.element || "Air").toLowerCase();
   const seed = hashSeed(session?.id || session?.name) + offset;
-  if (element.includes("fire")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.soundMountainChant, SHAMANIC_IMAGES.breathworkStableA], seed);
-  if (element.includes("water")) return pickFromPool([SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.soundOceanAltar, SHAMANIC_IMAGES.breathworkStableA], seed);
-  if (element.includes("earth")) return pickFromPool([SHAMANIC_IMAGES.breathworkStableB, SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.templeMystic], seed);
-  if (element.includes("air")) return pickFromPool([SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.breathworkStableA, SHAMANIC_IMAGES.breathworkStableB], seed);
-  return pickFromPool([SHAMANIC_IMAGES.breathworkStableA, SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.templeMystic], seed);
+  if (element.includes("fire")) return pickFromPool([SHAMANIC_IMAGES.breathworkStableA, SHAMANIC_IMAGES.breathworkStableC, SHAMANIC_IMAGES.breathworkStableB], seed);
+  if (element.includes("water")) return pickFromPool([SHAMANIC_IMAGES.breathworkStableA, SHAMANIC_IMAGES.meditationStableA, SHAMANIC_IMAGES.breathworkStableC], seed);
+  if (element.includes("earth")) return pickFromPool([SHAMANIC_IMAGES.breathworkStableB, SHAMANIC_IMAGES.breathworkStableC, SHAMANIC_IMAGES.meditationStableB], seed);
+  if (element.includes("air")) return pickFromPool([SHAMANIC_IMAGES.breathworkStableC, SHAMANIC_IMAGES.breathworkStableA, SHAMANIC_IMAGES.meditationStableC], seed);
+  return pickFromPool([SHAMANIC_IMAGES.breathworkStableA, SHAMANIC_IMAGES.breathworkStableB, SHAMANIC_IMAGES.breathworkStableC], seed);
 };
 
 export const getMeditationImage = (meditation, offset = 0) => {
   const category = String(meditation?.category || "spiritual").toLowerCase();
   const seed = hashSeed(meditation?.id || meditation?.name) + offset;
-  if (category.includes("nature")) return pickFromPool([SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.meditationStableA], seed);
-  if (category.includes("ground")) return pickFromPool([SHAMANIC_IMAGES.breathworkStableB, SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.forestYoga], seed);
-  if (category.includes("heart") || category.includes("healing")) return pickFromPool([SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.meditationStableA, SHAMANIC_IMAGES.moonRitual], seed);
-  return pickFromPool([SHAMANIC_IMAGES.meditationWaterfall, SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.forestYoga, SHAMANIC_IMAGES.meditationStableB], seed);
+  if (category.includes("nature")) return pickFromPool([SHAMANIC_IMAGES.meditationStableA, SHAMANIC_IMAGES.meditationStableC, SHAMANIC_IMAGES.breathworkStableC], seed);
+  if (category.includes("ground")) return pickFromPool([SHAMANIC_IMAGES.meditationStableB, SHAMANIC_IMAGES.breathworkStableB, SHAMANIC_IMAGES.meditationStableC], seed);
+  if (category.includes("heart") || category.includes("healing")) return pickFromPool([SHAMANIC_IMAGES.meditationStableA, SHAMANIC_IMAGES.meditationStableB, SHAMANIC_IMAGES.meditationStableC], seed);
+  return pickFromPool([SHAMANIC_IMAGES.meditationStableA, SHAMANIC_IMAGES.meditationStableB, SHAMANIC_IMAGES.meditationStableC, SHAMANIC_IMAGES.breathworkStableA], seed);
 };
 
 export const getMudraImage = (mudra, offset = 0) => {
