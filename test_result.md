@@ -19011,3 +19011,92 @@ agent_communication:
       
       CRITICAL ISSUE: Sound-frequencies shows only 4 unique images out of 14 cards due to limited image pools in getSoundFrequencyImage function. Needs expansion to 8-10 unique images for 50%+ variety.
 
+
+  - task: "Final confirmation QA - Non-yoga image overhaul (all 5 routes)"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AncientWisdom.jsx, /app/frontend/src/pages/SoundFrequencies.jsx, /app/frontend/src/pages/OracleReadings.jsx, /app/frontend/src/pages/ArchangelOracle.jsx, /app/frontend/src/pages/AstrologyCalendar.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ FINAL CONFIRMATION QA - ALL ROUTES PASSED (2026-07-14)
+          
+          Comprehensive final confirmation QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+          Desktop viewport: 1920x1080
+          Mobile viewport: 390x844
+          
+          🎉 ALL 5 ROUTES PASSED:
+          
+          1) ✅ /ancient-wisdom: PASS
+             - Card images: 14 found, all loaded ✓
+             - data-testid^="ancient-wisdom-card-image-" present ✓
+             - Image variety: 50% (5 unique out of first 10 cards) - MEETS ≥4 requirement ✓
+             - Modal image: data-testid="ancient-wisdom-selected-image" present and loaded ✓
+             - Style check: Mystical/shamanic tone confirmed ✓
+             - No broken images ✓
+             - Mobile 390x844: No major overflow/cropping defects ✓
+          
+          2) ✅ /sound-frequencies: PASS ⭐ MAJOR IMPROVEMENT
+             - Card images: 14 found, all loaded ✓
+             - data-testid^="sound-frequency-card-image-" present ✓
+             - Image variety: 64% (9 unique out of first 14 cards) - MEETS ≥7 requirement ✓
+             - Modal image: data-testid="sound-frequency-selected-image" present and loaded ✓
+             - Style check: Sound-healing + ritual coherence confirmed ✓
+             - No broken images ✓
+             - Mobile 390x844: No major overflow/cropping defects ✓
+             - ⭐ IMPROVEMENT: Image variety increased from 29% (4/14) to 64% (9/14) - PASSES requirement
+          
+          3) ✅ /oracle: PASS
+             - Draw button: Found and functional ✓
+             - Oracle card images: data-testid^="oracle-card-image-" present after draw ✓
+             - Card image loaded successfully ✓
+             - Style check: Oracle/shamanic coherence confirmed ✓
+             - No broken images ✓
+          
+          4) ✅ /archangel-oracle: PASS
+             - Browse button: data-testid="archangel-browse-btn" exists and works ✓
+             - Grid images: 15 found, all loaded ✓
+             - data-testid^="archangel-card-image-" present ✓
+             - Image variety: 42% (5 unique out of first 12 cards) - MEETS ≥5 requirement ✓
+             - Selected profile image: data-testid="archangel-selected-image" present and loaded ✓
+             - No broken images ✓
+             - Mobile 390x844: No major overflow/cropping defects ✓
+          
+          5) ✅ /astrology-calendar: PASS
+             - Background image: data-testid="astrology-cosmic-background-image" exists ✓
+             - Cosmic background loaded via CSS background-image ✓
+             - Style check: Cosmic mystical tone confirmed ✓
+             - No broken images ✓
+          
+          📊 FINAL STATISTICS:
+          - Total routes tested: 5
+          - Routes passed: 5/5 (100%) ✅
+          - Routes failed: 0/5 (0%)
+          - Critical issues: 0
+          - Broken images: 0
+          - Missing testids: 0
+          - Mobile responsiveness: All routes passed (no major overflow/cropping)
+          
+          🎯 VERDICT: ✅ COMPLETE PASS - All 5 routes meet requirements. Non-yoga image overhaul FULLY VERIFIED and production-ready.
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ FINAL CONFIRMATION QA COMPLETE - ALL ROUTES PASSED
+      
+      Comprehensive QA completed on preview URL. ALL 5 ROUTES PASSED:
+      
+      ✅ /ancient-wisdom: 5/10 unique images (50% variety, meets ≥4 requirement)
+      ✅ /sound-frequencies: 9/14 unique images (64% variety, meets ≥7 requirement) ⭐ MAJOR IMPROVEMENT from 29%
+      ✅ /oracle: Draw flow working, card images present
+      ✅ /archangel-oracle: 5/12 unique images (42% variety, meets ≥5 requirement)
+      ✅ /astrology-calendar: Cosmic background image present
+      
+      All images load correctly (no broken images), all testids present, visual style remains shamanic/mystical, mobile responsiveness verified (390x844, no major overflow/cropping).
+      
+      Non-yoga image overhaul is COMPLETE and production-ready. No issues found.
+
