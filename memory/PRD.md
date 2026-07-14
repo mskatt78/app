@@ -268,6 +268,40 @@
 ### Result
 - Secondary temples now follow the same deterministic shamanic image policy as primary sections, with strong visual coherence and reduced repetition.
 
+## Subject-Accuracy Image Correction (Yoga + Global Image Precedence) — 2026-07-14
+
+### User issue
+- "Images don't represent the subject or information" (reported on both preview + production)
+- Priority: Yoga sections + any section requiring actual subject images.
+
+### Fix implemented
+- Switched image policy to **subject-first**:
+  - If item has a valid `image_url`, frontend now uses that image first.
+  - Deterministic shamanic pool is only fallback when item-level image is missing/broken.
+
+- Applied to core mapper functions in `frontend/src/utils/shamanicImageTheme.js`:
+  - `getAncientWisdomImage`, `getSoundFrequencyImage`, `getOracleCardImage`, `getArchangelImage`
+  - `getBreathworkImage`, `getMeditationImage`, `getMudraImage`
+  - `getMysterySchoolImage`, `getGuardianImage`, `getSacredAllyImage`, `getLightCodeImage`
+  - `getRoseTempleImage`, `getSeasonalTempleImage`, `getMasculineTempleImage`
+
+- Yoga route updates:
+  - `YogaLibrary.jsx`: card/modal now use pose `image_url` first; fallback only on image error.
+  - `ChairYoga.jsx`, `SomaticYoga.jsx`: card/modal use practice `image_url` first.
+  - `PartnerYoga.jsx`: pose-level `image_url` preserved first via `getPartnerPoseImage(...)`, deterministic fallback only if absent.
+
+### Validation
+- Frontend testing agent PASS (subject-accuracy focused):
+  - `/yoga`: 78/78 images loaded
+  - `/chair-yoga`: 15/15 images loaded + modal image pass
+  - `/somatic-yoga`: 5/5 images loaded + modal image pass
+  - `/partner-yoga`: 18/18 images loaded + modal image pass
+  - Secondary sample checks PASS: `/ancient-wisdom`, `/sound-frequencies`, `/sacred-guardians`
+  - Mobile 390x844 checks PASS: no horizontal overflow on `/yoga` and `/partner-yoga`.
+
+### Outcome
+- Yoga and connected routes now prioritize true subject imagery aligned to card/practice information, while retaining deterministic shamanic fallback for resilience.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
