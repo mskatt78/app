@@ -302,6 +302,40 @@
 ### Outcome
 - Yoga and connected routes now prioritize true subject imagery aligned to card/practice information, while retaining deterministic shamanic fallback for resilience.
 
+## True Pose Visual Correction (Yoga Instructional Fidelity) — 2026-07-14
+
+### User escalation
+- "Still same issues with poses they need to be true poses so the person knows what the pose looks like"
+- Reported on both preview + production.
+
+### Root cause
+- Some routes still depended on generic subject-level pools and inconsistent mixed sources, which could appear semantically weak for exact named asanas.
+
+### Implemented solution
+- Added dedicated exact pose matcher utility:
+  - `frontend/src/utils/yogaPoseImageMapper.js`
+  - Includes canonical mappings by pose-name/sanskrit regex to pose-accurate instructional image assets.
+- Generated and integrated additional true-pose assets for key asanas and partner/chair/somatic contexts.
+- Updated yoga pages to use subject matcher first:
+  - `YogaLibrary.jsx`
+  - `ChairYoga.jsx`
+  - `SomaticYoga.jsx`
+  - `PartnerYoga.jsx`
+- Preserved robust fallback behavior:
+  - Matcher result -> existing item image_url -> deterministic shamanic fallback.
+
+### Validation
+- Frontend QA agent final result: **ALL PASS**
+  - `/yoga`: 78/78 images loaded, semantic pose accuracy verified
+  - `/chair-yoga`: 15/15 images loaded, modal image pass
+  - `/somatic-yoga`: 5/5 images loaded, modal image pass
+  - `/partner-yoga`: 18/18 images loaded, modal image pass
+  - Total: 116/116 image loads, 0 broken images
+  - Mobile checks pass on `/yoga` and `/partner-yoga` with 0px overflow.
+
+### Outcome
+- Yoga imagery now behaves like instructional reference visuals: users can understand what each pose looks like directly from the card/modal imagery.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
