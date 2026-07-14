@@ -391,6 +391,11 @@ const getShamanicPartnerImage = (poseId, fallbackIndex = 0) => {
   return PARTNER_YOGA_SHAMANIC_IMAGES[safe % PARTNER_YOGA_SHAMANIC_IMAGES.length];
 };
 
+const getPartnerPoseImage = (pose, fallbackIndex = 0) => {
+  if (pose?.image_url) return pose.image_url;
+  return getShamanicPartnerImage(pose?.id, fallbackIndex);
+};
+
 const PartnerYoga = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPose, setSelectedPose] = useState(null);
@@ -599,7 +604,7 @@ const PartnerYoga = ({ user, api }) => {
               {pose.image_url && (
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={getShamanicPartnerImage(pose.id, index)}
+                    src={getPartnerPoseImage(pose, index)}
                     alt={pose.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -681,7 +686,7 @@ const PartnerYoga = ({ user, api }) => {
               {selectedPose.image_url && (
                 <div className="relative h-56 overflow-hidden">
                   <img
-                    src={getShamanicPartnerImage(selectedPose.id, 0)}
+                    src={getPartnerPoseImage(selectedPose, 0)}
                     alt={selectedPose.name}
                     className="w-full h-full object-cover"
                     data-testid="partner-yoga-selected-image"

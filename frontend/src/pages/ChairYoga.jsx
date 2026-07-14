@@ -54,6 +54,7 @@ export default function ChairYoga() {
   };
 
   const getPracticeImage = (practice, index = 0) => {
+    if (practice?.image_url) return practice.image_url;
     const baseIndex = Number.parseInt(String(practice?.id || index), 10);
     const safeIndex = Number.isFinite(baseIndex) ? baseIndex : index;
     return CHAIR_YOGA_SHAMANIC_IMAGES[safeIndex % CHAIR_YOGA_SHAMANIC_IMAGES.length];

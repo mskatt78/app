@@ -37,6 +37,16 @@ const pickFromPool = (pool, seed) => {
   return pool[Math.abs(seed) % pool.length];
 };
 
+const resolvePreferredImage = (...candidates) => {
+  for (const candidate of candidates) {
+    const value = String(candidate || "").trim();
+    if (value.startsWith("http://") || value.startsWith("https://")) {
+      return value;
+    }
+  }
+  return "";
+};
+
 const ANCIENT_POOLS = {
   egyptian: [SHAMANIC_IMAGES.templeMystic, SHAMANIC_IMAGES.oracleAltar],
   avalon: [SHAMANIC_IMAGES.moonRitual, SHAMANIC_IMAGES.forestYoga],
@@ -50,12 +60,16 @@ const ANCIENT_POOLS = {
 };
 
 export const getAncientWisdomImage = (entry, offset = 0) => {
+  const preferred = resolvePreferredImage(entry?.image_url);
+  if (preferred) return preferred;
   const tradition = String(entry?.tradition || "international").toLowerCase();
   const seed = hashSeed(entry?.id || entry?.name) + offset;
   return pickFromPool(ANCIENT_POOLS[tradition] || ANCIENT_POOLS.international, seed);
 };
 
 export const getSoundFrequencyImage = (freq, offset = 0) => {
+  const preferred = resolvePreferredImage(freq?.image_url);
+  if (preferred) return preferred;
   const category = String(freq?.category || "").toLowerCase();
   const ambient = String(freq?.ambient_type || "").toLowerCase();
   const element = String(freq?.element || "").toLowerCase();
@@ -101,6 +115,8 @@ export const getSoundFrequencyImage = (freq, offset = 0) => {
 };
 
 export const getOracleCardImage = (card, offset = 0) => {
+  const preferred = resolvePreferredImage(card?.image_url);
+  if (preferred) return preferred;
   const element = String(card?.element || "Spirit").toLowerCase();
   const seed = hashSeed(card?.id || card?.name) + offset;
 
@@ -113,6 +129,8 @@ export const getOracleCardImage = (card, offset = 0) => {
 };
 
 export const getArchangelImage = (angel, offset = 0) => {
+  const preferred = resolvePreferredImage(angel?.image_url);
+  if (preferred) return preferred;
   const element = String(angel?.element || "Spirit").toLowerCase();
   const seed = hashSeed(angel?.id || angel?.name) + offset;
 
@@ -126,6 +144,8 @@ export const getArchangelImage = (angel, offset = 0) => {
 export const getAstrologySkyImage = () => SHAMANIC_IMAGES.cosmicSky;
 
 export const getBreathworkImage = (session, offset = 0) => {
+  const preferred = resolvePreferredImage(session?.image_url);
+  if (preferred) return preferred;
   const element = String(session?.element || "Air").toLowerCase();
   const seed = hashSeed(session?.id || session?.name) + offset;
   if (element.includes("fire")) return pickFromPool([SHAMANIC_IMAGES.breathworkStableA, SHAMANIC_IMAGES.breathworkStableC, SHAMANIC_IMAGES.breathworkStableB], seed);
@@ -136,6 +156,8 @@ export const getBreathworkImage = (session, offset = 0) => {
 };
 
 export const getMeditationImage = (meditation, offset = 0) => {
+  const preferred = resolvePreferredImage(meditation?.image_url);
+  if (preferred) return preferred;
   const category = String(meditation?.category || "spiritual").toLowerCase();
   const seed = hashSeed(meditation?.id || meditation?.name) + offset;
   if (category.includes("nature")) return pickFromPool([SHAMANIC_IMAGES.meditationStableA, SHAMANIC_IMAGES.meditationStableC, SHAMANIC_IMAGES.breathworkStableC], seed);
@@ -145,6 +167,8 @@ export const getMeditationImage = (meditation, offset = 0) => {
 };
 
 export const getMudraImage = (mudra, offset = 0) => {
+  const preferred = resolvePreferredImage(mudra?.image_url);
+  if (preferred) return preferred;
   const element = String(mudra?.element || "Spirit").toLowerCase();
   const seed = hashSeed(mudra?.id || mudra?.name) + offset;
   if (element.includes("fire")) return pickFromPool([SHAMANIC_IMAGES.mudraSacredHands, SHAMANIC_IMAGES.fireCeremony], seed);
@@ -155,6 +179,8 @@ export const getMudraImage = (mudra, offset = 0) => {
 };
 
 export const getMysterySchoolImage = (item, offset = 0) => {
+  const preferred = resolvePreferredImage(item?.image_url);
+  if (preferred) return preferred;
   const stream = String(item?.stream || item?.stream_label || "mystery").toLowerCase();
   const seed = hashSeed(item?.id || item?.name) + offset;
   if (stream.includes("emerald")) return pickFromPool([SHAMANIC_IMAGES.mysterySchoolChamber, SHAMANIC_IMAGES.templeMystic], seed);
@@ -164,6 +190,8 @@ export const getMysterySchoolImage = (item, offset = 0) => {
 };
 
 export const getGuardianImage = (guardian, offset = 0) => {
+  const preferred = resolvePreferredImage(guardian?.image_url);
+  if (preferred) return preferred;
   const category = String(guardian?.category || "guardian").toLowerCase();
   const seed = hashSeed(guardian?.id || guardian?.name) + offset;
   if (category.includes("dragon")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.guardianMoonForest], seed);
@@ -173,6 +201,8 @@ export const getGuardianImage = (guardian, offset = 0) => {
 };
 
 export const getSacredAllyImage = (ally, offset = 0) => {
+  const preferred = resolvePreferredImage(ally?.image_url);
+  if (preferred) return preferred;
   const type = String(ally?.ally_type || ally?.category || "ally").toLowerCase();
   const seed = hashSeed(ally?.id || ally?.name) + offset;
   if (type.includes("dragon")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.sacredAllyForestRitual], seed);
@@ -183,6 +213,8 @@ export const getSacredAllyImage = (ally, offset = 0) => {
 };
 
 export const getLightCodeImage = (symbol, offset = 0) => {
+  const preferred = resolvePreferredImage(symbol?.image_url);
+  if (preferred) return preferred;
   const lineage = String(symbol?.lineage || symbol?.source_section || symbol?.category || "light").toLowerCase();
   const seed = hashSeed(symbol?.id || symbol?.name) + offset;
   if (lineage.includes("galactic")) return pickFromPool([SHAMANIC_IMAGES.cosmicSky, SHAMANIC_IMAGES.archangel], seed);
@@ -192,6 +224,8 @@ export const getLightCodeImage = (symbol, offset = 0) => {
 };
 
 export const getRoseTempleImage = (source, offset = 0) => {
+  const preferred = resolvePreferredImage(source?.image_url, source?.image);
+  if (preferred) return preferred;
   const seed = hashSeed(source?.id || source?.title || source?.name || "rose") + offset;
   return pickFromPool([
     SHAMANIC_IMAGES.moonRitual,
@@ -203,6 +237,8 @@ export const getRoseTempleImage = (source, offset = 0) => {
 };
 
 export const getSeasonalTempleImage = (sabbat, offset = 0) => {
+  const preferred = resolvePreferredImage(sabbat?.image_url, sabbat?.image);
+  if (preferred) return preferred;
   const element = String(sabbat?.element || "Earth").toLowerCase();
   const seed = hashSeed(sabbat?.id || sabbat?.name) + offset;
   if (element.includes("fire")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.soundMountainChant, SHAMANIC_IMAGES.templeMystic], seed);
@@ -213,6 +249,8 @@ export const getSeasonalTempleImage = (sabbat, offset = 0) => {
 };
 
 export const getMasculineTempleImage = (item, offset = 0) => {
+  const preferred = resolvePreferredImage(item?.image_url, item?.image);
+  if (preferred) return preferred;
   const archetypeId = String(item?.id || item?.name || "masculine").toLowerCase();
   const seed = hashSeed(item?.id || item?.name) + offset;
   if (archetypeId.includes("warrior")) return pickFromPool([SHAMANIC_IMAGES.fireCeremony, SHAMANIC_IMAGES.breathworkStableC, SHAMANIC_IMAGES.templeMystic], seed);

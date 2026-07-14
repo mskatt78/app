@@ -209,6 +209,7 @@ const YogaLibrary = ({ user, api }) => {
   };
 
   const getDisplayPoseImage = (pose) => {
+    if (pose?.image_url && !imageErrors.has(pose?.id)) return pose.image_url;
     const seed = getPoseSeed(pose);
     if (imageErrors.has(pose?.id)) {
       return getShamanicImageFromPool(pose?.element, seed + 1);

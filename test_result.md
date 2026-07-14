@@ -19504,3 +19504,143 @@ agent_communication:
       URL Uniqueness Count: 2/2 teaching images (100% unique)
       
       Previous critical issue (identical teaching images) has been fully resolved. All images now display proper variation.
+
+  - task: "Subject-accuracy image fix - Yoga routes comprehensive QA"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx, /app/frontend/src/pages/ChairYoga.jsx, /app/frontend/src/pages/SomaticYoga.jsx, /app/frontend/src/pages/PartnerYoga.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ SUBJECT-ACCURACY IMAGE FIX QA - COMPLETE PASS (2026-07-15)
+          
+          Comprehensive QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com for subject-accuracy image fix across all yoga routes.
+          
+          🎯 TEST SCOPE: 4 PRIMARY ROUTES + 3 SECONDARY ROUTES + 2 MOBILE VIEWPORT CHECKS
+          
+          ✅ PRIMARY ROUTES (ALL PASSED - 4/4):
+          
+          1) ✅ /yoga: PASS
+             - Card images: 78/78 loaded (100% success rate) ✓
+             - Selector: [data-testid^="pose-image-"] ✓
+             - Image variety: Excellent (yoga poses, meditation scenes, nature settings)
+             - Subject relevance: All images show yoga poses and meditation practices ✓
+             - No broken images ✓
+             - Modal image: N/A (no modal selector specified)
+          
+          2) ✅ /chair-yoga: PASS
+             - Card images: 15/15 loaded (100% success rate) ✓
+             - Selector: [data-testid^="chair-yoga-card-image-"] ✓
+             - Modal image: [data-testid="chair-yoga-selected-image"] LOADED ✓
+             - Image variety: Good (chair yoga poses, seated practices)
+             - Subject relevance: All images show chair yoga and seated practices ✓
+             - No broken images ✓
+          
+          3) ✅ /somatic-yoga: PASS
+             - Card images: 5/5 loaded (100% success rate) ✓
+             - Selector: [data-testid^="somatic-yoga-card-image-"] ✓
+             - Modal image: [data-testid="somatic-yoga-selected-image"] LOADED ✓
+             - Image variety: Good (somatic practices, gentle movements)
+             - Subject relevance: All images show somatic yoga practices ✓
+             - No broken images ✓
+          
+          4) ✅ /partner-yoga: PASS
+             - Card images: 18/18 loaded (100% success rate) ✓
+             - Selector: [data-testid^="partner-pose-image-"] ✓
+             - Modal image: [data-testid="partner-yoga-selected-image"] LOADED ✓
+             - Image variety: Excellent (partner poses, connected practices)
+             - Subject relevance: All images show partner yoga and connected practices ✓
+             - No broken images ✓
+          
+          ✅ SECONDARY ROUTES SAMPLE CHECK (ALL PASSED - 3/3):
+          
+          1) ✅ /ancient-wisdom: PASS
+             - First card image loaded: ancient-wisdom-card-image-aboriginal-mimi-2 ✓
+          
+          2) ✅ /sound-frequencies: PASS
+             - First card image loaded: sound-frequency-card-image-freq-drum-awakening ✓
+          
+          3) ✅ /sacred-guardians: PASS
+             - First card image loaded: guardian-image-pa-wolf ✓
+          
+          ✅ MOBILE VIEWPORT CHECK (ALL PASSED - 2/2):
+          
+          1) ✅ /yoga (390x844): PASS
+             - Horizontal overflow: 0px ✓
+             - No cropping/overflow defects ✓
+             - Screenshot saved: mobile__yoga.png
+          
+          2) ✅ /partner-yoga (390x844): PASS
+             - Horizontal overflow: 0px ✓
+             - No cropping/overflow defects ✓
+             - Screenshot saved: mobile__partner-yoga.png
+          
+          📊 FINAL STATISTICS:
+          - Total primary routes tested: 4
+          - Primary routes passed: 4/4 (100%) ✅
+          - Total card images checked: 116 (78 + 15 + 5 + 18)
+          - Card images loaded: 116/116 (100% success rate) ✅
+          - Broken images: 0 ✅
+          - Modal images tested: 3 (chair-yoga, somatic-yoga, partner-yoga)
+          - Modal images loaded: 3/3 (100%) ✅
+          - Secondary routes passed: 3/3 (100%) ✅
+          - Mobile viewport checks passed: 2/2 (100%) ✅
+          - Missing testids: 0 (all selectors present and working) ✅
+          
+          🎯 SUBJECT-ACCURACY VERIFICATION:
+          All images across all yoga routes are subject-relevant and appropriate for their specific practice type:
+          - /yoga: Traditional yoga poses and meditation scenes ✓
+          - /chair-yoga: Chair-based yoga and seated practices ✓
+          - /somatic-yoga: Gentle somatic movements and body awareness practices ✓
+          - /partner-yoga: Partner poses and connected practices ✓
+          
+          No random unrelated mystical art detected. All images are contextually appropriate for their respective yoga practice types.
+          
+          🎯 OVERALL VERDICT: ✅ COMPLETE PASS
+          
+          Subject-accuracy image fix is FULLY VERIFIED and production-ready. All requirements met:
+          ✓ Images load (no broken cards)
+          ✓ Card images appear subject-relevant for specific practice type
+          ✓ Modal/detail images render for each route
+          ✓ All data-testid selectors validated
+          ✓ Secondary sample checks passed
+          ✓ Mobile viewport checks passed (no overflow/cropping issues)
+
+agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ SUBJECT-ACCURACY IMAGE FIX QA - COMPLETE PASS (2026-07-15)
+      
+      Comprehensive QA completed on preview URL for subject-accuracy image fix. ALL REQUIREMENTS MET:
+      
+      PRIMARY ROUTES (4/4 PASSED):
+      ✅ /yoga: 78/78 images loaded, all subject-relevant yoga poses
+      ✅ /chair-yoga: 15/15 images loaded, modal image working, all chair yoga practices
+      ✅ /somatic-yoga: 5/5 images loaded, modal image working, all somatic practices
+      ✅ /partner-yoga: 18/18 images loaded, modal image working, all partner poses
+      
+      SECONDARY ROUTES (3/3 PASSED):
+      ✅ /ancient-wisdom: First card image loaded
+      ✅ /sound-frequencies: First card image loaded
+      ✅ /sacred-guardians: First card image loaded
+      
+      MOBILE VIEWPORT (2/2 PASSED):
+      ✅ /yoga: 0px overflow on 390x844
+      ✅ /partner-yoga: 0px overflow on 390x844
+      
+      📊 STATISTICS:
+      - 116/116 card images loaded (100% success rate)
+      - 3/3 modal images working (100%)
+      - 0 broken images
+      - All data-testid selectors validated
+      - No random unrelated mystical art detected
+      - All images subject-relevant for their practice type
+      
+      🎯 VERDICT: ✅ COMPLETE PASS
+      
+      Subject-accuracy image fix is production-ready. No issues found.
+
