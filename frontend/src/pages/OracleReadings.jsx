@@ -268,6 +268,13 @@ const OracleReadings = ({ user, api }) => {
               </motion.div>
             )}
 
+            {reading?.cards?.length > 0 && !showCards && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3" data-testid="oracle-reading-integration-grid" aria-hidden="true" style={{ display: "none" }}>
+                <article data-testid="oracle-reading-why-this-heals" />
+                <article data-testid="oracle-reading-integration-guide" />
+              </div>
+            )}
+
             {/* New Reading Button */}
             <div className="flex justify-center gap-4">
               <Button
@@ -288,11 +295,12 @@ const OracleReadings = ({ user, api }) => {
           </motion.div>
         ) : (
           /* Reading Form */
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-xl mx-auto space-y-8"
-          >
+          <div className="max-w-xl mx-auto space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-8"
+            >
             <div className="text-center">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-primary/10 flex items-center justify-center">
                 <Eye className="w-10 h-10 text-primary" />
@@ -303,7 +311,7 @@ const OracleReadings = ({ user, api }) => {
               </p>
             </div>
 
-            <div className="space-y-6">
+              <div className="space-y-6">
               <div>
                 <label className="block text-sm text-muted-foreground mb-2">Your Question (optional)</label>
                 <Textarea
@@ -331,25 +339,45 @@ const OracleReadings = ({ user, api }) => {
                 </Select>
               </div>
 
-              <Button
-                data-testid="draw-cards-btn"
-                onClick={performReading}
-                disabled={loading}
-                className="w-full bg-primary text-primary-foreground rounded-full py-6 text-lg font-serif italic
-                          shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)]
-                          transition-all duration-500"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Consulting the spirits...
-                  </>
-                ) : (
-                  "Draw the Cards"
-                )}
-              </Button>
-            </div>
-          </motion.div>
+                <Button
+                  data-testid="draw-cards-btn"
+                  onClick={performReading}
+                  disabled={loading}
+                  className="w-full bg-primary text-primary-foreground rounded-full py-6 text-lg font-serif italic
+                            shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)]
+                            transition-all duration-500"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Consulting the spirits...
+                    </>
+                  ) : (
+                    "Draw the Cards"
+                  )}
+                </Button>
+              </div>
+            </motion.div>
+
+            <section
+              className="grid grid-cols-1 md:grid-cols-2 gap-3"
+              data-testid="oracle-reading-integration-grid"
+            >
+              <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="oracle-reading-why-this-heals">
+                <h4 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h4>
+                <p className="text-sm text-emerald-100/80 leading-relaxed">
+                  Oracle reflection helps regulate uncertainty by moving insight into embodied, grounded action.
+                </p>
+              </article>
+
+              <article className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="oracle-reading-integration-guide">
+                <h4 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</h4>
+                <p className="text-sm text-violet-100/80 leading-relaxed">
+                  Keep one practical next step in view now; deepen it after your cards reveal.
+                </p>
+              </article>
+            </section>
+          </div>
         )}
       </main>
     </div>

@@ -18653,3 +18653,135 @@ agent_communication:
       
       Application backend is PRODUCTION-READY for P1 pass. No regressions detected. All endpoints returning correct data with proper depth fields.
 
+
+
+  - agent: "testing"
+    message: |
+      🔄 P1 PASS FRONTEND QA RE-RUN AFTER LATEST FIXES - PARTIAL PASS (2026-07-15 02:00 UTC)
+      
+      Re-ran comprehensive frontend QA on preview URL https://breathwork-sanctuary.preview.emergentagent.com after main agent's latest fixes.
+      
+      🎯 TEST SCOPE: 7 TEST CATEGORIES (RE-VALIDATION OF PREVIOUSLY FAILED AREAS)
+      
+      📊 OVERALL RESULTS:
+      - Categories Passed: 5/7 (71.4%)
+      - Categories Failed: 2/7 (28.6%)
+      - Individual Checks Passed: 45
+      - Individual Checks Failed: 4
+      - Success Rate: 91.8%
+      
+      ✅ PASSED TESTS (5/7 categories):
+      
+      1. ✅ Sound Frequencies Resilient Playback UX (7/7 checks passed)
+         - Route: /sound-frequencies
+         - Found 14 frequency cards
+         - Opened first 2 cards successfully
+         - ALL depth sections render correctly:
+           * data-testid="sound-frequency-why-this-heals" ✓
+           * data-testid="sound-frequency-integration-guide" ✓
+           * data-testid="sound-frequency-master-embodiment-protocol" ✓
+         - Fallback synthesized audio flow present (no audio_url) ✓
+         - No playback-crash UX detected ✓
+         - VERDICT: PRODUCTION-READY ✓
+      
+      2. ✅ Oracle Reading Integration Grid (4/4 checks passed) - **PREVIOUSLY FAILED, NOW FIXED!**
+         - Route: /oracle
+         - Integration grid present BEFORE reading ✓
+         - Clicked draw cards button, reading completed successfully
+         - Integration grid present AFTER reading ✓
+         - data-testid="oracle-reading-integration-grid" present ✓
+         - data-testid="oracle-reading-why-this-heals" present ✓
+         - data-testid="oracle-reading-integration-guide" present ✓
+         - VERDICT: PRODUCTION-READY ✓
+         - **FIX CONFIRMED**: Main agent successfully added integration grid depth panels to OracleReadings.jsx
+      
+      3. ✅ Astrology Calendar Sun-Moon Depth Panels (3/3 checks passed) - **PREVIOUSLY FAILED, NOW FIXED!**
+         - Route: /astrology-calendar
+         - Scrolled to bottom to ensure panels in view
+         - data-testid="sun-moon-depth-panels" present ✓
+         - data-testid="sun-moon-why-this-heals" present ✓
+         - data-testid="sun-moon-integration-guide" present ✓
+         - VERDICT: PRODUCTION-READY ✓
+         - **FIX CONFIRMED**: Main agent successfully added sun-moon depth panels to AstrologyCalendar.jsx
+      
+      4. ✅ App Store Readiness Page (7/7 checks passed)
+         - Route: /app-store-readiness
+         - data-testid="app-readiness-page" present ✓
+         - data-testid="app-readiness-progress-card" present ✓
+         - data-testid="app-readiness-qa-card" present ✓
+         - data-testid="app-readiness-metadata-card" present ✓
+         - Support URL visible: https://breathwork-sanctuary.preview.emergentagent.com/support ✓
+         - Privacy URL visible: https://breathwork-sanctuary.preview.emergentagent.com/privacy ✓
+         - Terms URL visible: https://breathwork-sanctuary.preview.emergentagent.com/terms ✓
+         - VERDICT: PRODUCTION-READY ✓
+      
+      5. ✅ Legal/Support Responsiveness (21/21 checks passed)
+         - Routes tested: /privacy, /terms, /support
+         - Viewports tested: Desktop (1920x1080), Tablet (1024x768), Mobile (390x844)
+         - /privacy: No overflow at all viewports ✓, Content visible (2462 chars desktop, 2436 chars mobile) ✓, 15 interactive elements at mobile ✓
+         - /terms: No overflow at all viewports ✓, Content visible (2192 chars desktop, 2166 chars mobile) ✓, 15 interactive elements at mobile ✓
+         - /support: No overflow at all viewports ✓, Content visible (2415 chars desktop, 2389 chars mobile) ✓, 24 interactive elements at mobile ✓
+         - VERDICT: PRODUCTION-READY ✓
+      
+      ❌ FAILED TESTS (2/7 categories):
+      
+      1. ❌ Ancient Wisdom Depth Modal Flow (2 passed, 1 failed)
+         - Route: /ancient-wisdom
+         - Issue: Page loads but NO wisdom cards found
+         - No horizontal overflow at desktop ✓
+         - No horizontal overflow at mobile ✓
+         - **CRITICAL ISSUE**: Found 0 wisdom-card elements (need 2 for testing)
+         - Investigation findings:
+           * Page content length: 2049 chars (page is loading)
+           * Found 28 elements with 'card' in testid
+           * Found 0 elements with data-testid^="wisdom-card-"
+           * Screenshot shows cards ARE visible on page (Mimi Spirits, Temple of Seven Springs, Celtic Well of Oaths, etc.)
+         - **ROOT CAUSE**: Testid selector mismatch - cards are rendering but don't have data-testid="wisdom-card-*" attributes
+         - **REQUIRED FIX**: Add data-testid="wisdom-card-{id}" to card elements in AncientWisdomGrid.jsx or AncientWisdomContainer.jsx
+         - Priority: MEDIUM - Cards are functional, only testid missing for automated testing
+      
+      2. ❌ Archangel Oracle Depth Panels (1 passed, 3 failed) - **PREVIOUSLY FAILED, STILL FAILING**
+         - Route: /archangel-oracle
+         - data-testid="receive-guidance-btn" present ✅ (testid issue was fixed)
+         - Clicked receive guidance button
+         - **CRITICAL ISSUE**: Button stuck in loading state "Connecting with the Archangels..." for 11+ seconds
+         - No archangel cards appeared (0 cards found after 11 seconds)
+         - Integration grid depth panels NOT present (could not test due to API hang)
+         - data-testid="archangel-reading-integration-grid" NOT present ❌
+         - data-testid="archangel-reading-why-this-heals" NOT present ❌
+         - data-testid="archangel-reading-integration-guide" NOT present ❌
+         - Investigation findings:
+           * Archangel-related testids on page: archangel-oracle, archangel-reading-setup, archangel-spread-select, archangel-spread-option-single, archangel-spread-option-three_card
+           * No archangel-card-* testids appeared
+           * No error messages in console (only expected 401 auth errors)
+           * Button remains in loading state indefinitely
+         - **ROOT CAUSE**: Backend API call /api/oracle/archangels/reading (or similar) is hanging/not completing
+         - **REQUIRED FIX**: 
+           1. Check backend logs for /api/oracle/archangels/reading endpoint
+           2. Verify API route exists and is not timing out
+           3. Check if guest endpoint /api/oracle/archangels/reading/guest exists for unauthenticated users
+           4. Verify ArchangelReadingSection.jsx is calling correct API endpoint
+         - Priority: HIGH - Blocks testing of archangel depth panels (which ARE correctly implemented in code)
+      
+      🎯 VERDICT: SIGNIFICANT PROGRESS - 2 OF 3 PREVIOUSLY FAILED TESTS NOW PASSING
+      
+      **FIXES CONFIRMED:**
+      ✅ Oracle reading integration grid depth panels - NOW WORKING
+      ✅ Astrology Calendar sun-moon depth panels - NOW WORKING
+      
+      **REMAINING ISSUES:**
+      ❌ Ancient Wisdom - Testid selector issue (cards render but missing data-testid attributes)
+      ❌ Archangel Oracle - Backend API hanging/not completing (prevents testing of depth panels)
+      
+      **PRODUCTION-READY FEATURES (5/7):**
+      ✓ Sound Frequencies resilient playback UX
+      ✓ Oracle reading integration grid depth panels
+      ✓ Astrology Calendar sun-moon depth panels
+      ✓ App Store Readiness page UX
+      ✓ Legal/support route responsiveness
+      
+      **REQUIRES FIXES (2/7):**
+      ❌ Ancient Wisdom - Add data-testid="wisdom-card-{id}" to card elements
+      ❌ Archangel Oracle - Fix backend API endpoint /api/oracle/archangels/reading (hanging/timeout issue)
+      
+      Application is 71.4% ready for P1 pass (up from 57%). Main agent successfully fixed 2 of 3 critical issues. Recommend fixing remaining 2 issues before final P1 pass validation.
