@@ -18363,20 +18363,223 @@ backend:
         agent: "testing"
         comment: "✅ P1 PASS VERIFICATION COMPLETED (2026-07-15): POST /api/content/expand-script with 15-minute sample payload (Deep Healing Meditation) returns 200 OK. Response contains all required fields: target_minutes=15, target_word_count=1980, word_count=2044, segments=11. Word count (2044) exceeds target (1980) and meets minimum threshold (1584 = 80% of target). Segments contain meaningful content with proper text formatting. Sample segments verified with coherent narration text. Narration floor sanity PASSED."
 
+frontend:
+  - task: "Ancient Wisdom depth modal flow - P1 pass guided content depth alignment"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/ancient-wisdom/AncientWisdomDetailModal.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ ANCIENT WISDOM DEPTH MODAL FLOW - PASS (2026-07-15): Comprehensive testing completed on /ancient-wisdom. ALL REQUIREMENTS MET: 1) Opened first 2 cards successfully ✓. 2) ALL depth sections render correctly in modal: data-testid='ancient-wisdom-why-this-heals' (253 chars), data-testid='ancient-wisdom-integration-guide' (158 chars), data-testid='ancient-wisdom-master-embodiment-protocol' (912 chars), data-testid='ancient-wisdom-best-for-tags' (35 chars), data-testid='ancient-wisdom-youtube-tutorials' (92 chars) ✓. 3) No horizontal scroll detected (scrollWidth: 670, clientWidth: 670) ✓. 4) Tested at desktop viewport (1920x1080) - no overlap/cutoff ✓. Ancient wisdom depth modal flow PRODUCTION-READY."
+
+  - task: "Sound Frequencies resilient playback UX - P1 pass guided content depth + audio fallback"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/SoundFrequencies.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ SOUND FREQUENCIES RESILIENT PLAYBACK UX - PASS (2026-07-15): Comprehensive testing completed on /sound-frequencies. ALL REQUIREMENTS MET: 1) Opened 2 frequency cards successfully (14 total cards found) ✓. 2) ALL depth sections render correctly in modal: data-testid='sound-frequency-why-this-heals', data-testid='sound-frequency-integration-guide', data-testid='sound-frequency-master-embodiment-protocol' ✓. 3) Custom audio player (data-testid='custom-audio-player') correctly ABSENT when audio_url not present - ambient fallback controls working correctly ✓. 4) No playback-crash UX detected ✓. Sound frequencies resilient playback UX PRODUCTION-READY."
+
+  - task: "Oracle reading integration grid depth panels"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/pages/OracleReadings.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ ORACLE READING INTEGRATION GRID - FAIL (2026-07-15): Testing on /oracle revealed MISSING depth panels. Oracle reading flow works (draw button clickable, reading initiates), but integration grid with depth panels NOT rendering. MISSING ELEMENTS: data-testid='oracle-reading-integration-grid', data-testid='oracle-reading-why-this-heals', data-testid='oracle-reading-integration-guide'. These testids are NOT present in HTML after reading completes. REQUIRED FIX: Add integration grid depth panels to OracleReadings.jsx post-reading section (similar to ArchangelReadingSection.jsx lines 137-158). Reading appears to load but depth panels are not implemented."
+
+  - task: "Archangel Oracle reading integration grid depth panels"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/components/oracle/ArchangelReadingSection.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ ARCHANGEL ORACLE RECEIVE BUTTON - FAIL (2026-07-15): Testing on /archangel-oracle revealed MISSING testid. Page loads correctly but data-testid='receive-guidance-btn' is NOT present in HTML. Found button with 'Guidance' text but missing correct data-testid attribute. REQUIRED FIX: Verify ArchangelReadingSection.jsx line 76 has correct data-testid='receive-guidance-btn' on the button element. This appears to be a testid naming issue. Note: Integration grid depth panels (data-testid='archangel-reading-integration-grid', 'archangel-reading-why-this-heals', 'archangel-reading-integration-guide') ARE correctly implemented in ArchangelReadingSection.jsx lines 137-158, but could not be tested due to button testid issue."
+
+  - task: "Astrology Calendar sun-moon readiness depth panels"
+    implemented: false
+    working: false
+    file: "/app/frontend/src/pages/AstrologyCalendar.jsx"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "❌ ASTROLOGY CALENDAR SUN-MOON DEPTH PANELS - FAIL (2026-07-15): Testing on /astrology-calendar revealed MISSING depth panels section. Page loads correctly with all calendar functionality working, but sun-moon depth panels NOT present. MISSING ELEMENTS: data-testid='sun-moon-depth-panels', data-testid='sun-moon-why-this-heals', data-testid='sun-moon-integration-guide'. These testids are NOT present in HTML (checked after scroll to bottom). REQUIRED FIX: Add sun-moon depth panels section to AstrologyCalendar.jsx (similar to lines 340-354 in the code review, but these lines appear to not be rendering or are missing from deployed version). Depth panels should explain why sun/moon tracking heals and provide integration guide."
+
+  - task: "App Store Readiness page UX - P1 pass App Store readiness polish"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AppStoreReadiness.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ APP STORE READINESS PAGE UX - PASS (2026-07-15): Comprehensive testing completed on /app-store-readiness. ALL REQUIREMENTS MET: 1) Main page element (data-testid='app-readiness-page') renders correctly ✓. 2) Progress card (data-testid='app-readiness-progress-card') present with checklist ✓. 3) QA card (data-testid='app-readiness-qa-card') present with QA checklist ✓. 4) Metadata card (data-testid='app-readiness-metadata-card') present with all metadata entries ✓. 5) Support URL metadata (data-testid='app-readiness-metadata-value-support-url'): https://breathwork-sanctuary.preview.emergentagent.com/support ✓. 6) Privacy URL metadata (data-testid='app-readiness-metadata-value-privacy-url'): https://breathwork-sanctuary.preview.emergentagent.com/privacy ✓. 7) Terms URL metadata (data-testid='app-readiness-metadata-value-terms-url'): https://breathwork-sanctuary.preview.emergentagent.com/terms ✓. 8) Launch status block (data-testid='app-readiness-launch-status') present ✓. 9) No content clipping detected ✓. App Store Readiness page PRODUCTION-READY."
+
+  - task: "Legal/support route responsiveness - P1 pass App Store readiness polish"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/PrivacyPolicy.jsx, /app/frontend/src/pages/TermsOfService.jsx, /app/frontend/src/pages/SupportCenter.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ LEGAL/SUPPORT ROUTE RESPONSIVENESS - PASS (2026-07-15): Comprehensive testing completed on /privacy, /terms, /support at 3 viewports (Desktop 1920x1080, Tablet 1024x768, Mobile 390x844). ALL REQUIREMENTS MET: 1) /privacy - No major overflow at all viewports ✓, Content visible (2462 chars desktop, 2436 chars mobile) ✓, 15 interactive elements at mobile ✓. 2) /terms - No major overflow at all viewports ✓, Content visible (2192 chars desktop, 2166 chars mobile) ✓, 15 interactive elements at mobile ✓. 3) /support - No major overflow at all viewports ✓, Content visible (2415 chars desktop, 2389 chars mobile) ✓, 24 interactive elements at mobile ✓. 4) No blocked text detected ✓. 5) Links/buttons remain tappable at mobile viewport ✓. Legal/support routes PRODUCTION-READY."
+
 metadata:
   created_by: "testing_agent"
   version: "1.0"
-  test_sequence: 1004
-  run_ui: false
+  test_sequence: 1005
+  run_ui: true
 
 test_plan:
   current_focus:
-    - "P1 pass backend verification completed - All tests passed"
+    - "Oracle reading integration grid depth panels - MISSING"
+    - "Archangel Oracle receive button testid - MISSING"
+    - "Astrology Calendar sun-moon depth panels - MISSING"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
+  - agent: "testing"
+    message: |
+      ✅ P1 PASS FRONTEND QA COMPLETED - PARTIAL PASS (2026-07-15)
+      
+      Completed comprehensive P1 pass frontend QA on preview URL https://breathwork-sanctuary.preview.emergentagent.com
+      
+      🎯 TEST SCOPE: 7 TEST CATEGORIES (P1 PASS GUIDED CONTENT DEPTH + APP STORE READINESS)
+      
+      ✅ PASSED TESTS (4/7 categories, 51 individual checks):
+      
+      1. ✅ Ancient Wisdom Depth Modal Flow (11 checks passed)
+         - Route: /ancient-wisdom
+         - Opened first 2 cards successfully
+         - ALL depth sections render correctly:
+           * data-testid="ancient-wisdom-why-this-heals" (253 chars) ✓
+           * data-testid="ancient-wisdom-integration-guide" (158 chars) ✓
+           * data-testid="ancient-wisdom-master-embodiment-protocol" (912 chars) ✓
+           * data-testid="ancient-wisdom-best-for-tags" (35 chars) ✓
+           * data-testid="ancient-wisdom-youtube-tutorials" (92 chars) ✓
+         - No horizontal scroll detected (scrollWidth: 670, clientWidth: 670) ✓
+         - Desktop viewport (1920x1080) - no overlap/cutoff ✓
+         - VERDICT: PRODUCTION-READY ✓
+      
+      2. ✅ Sound Frequencies Resilient Playback UX (7 checks passed)
+         - Route: /sound-frequencies
+         - Found 14 frequency cards
+         - Opened 2 frequency cards successfully
+         - ALL depth sections render correctly:
+           * data-testid="sound-frequency-why-this-heals" ✓
+           * data-testid="sound-frequency-integration-guide" ✓
+           * data-testid="sound-frequency-master-embodiment-protocol" ✓
+         - Custom audio player (data-testid="custom-audio-player") correctly ABSENT when audio_url not present ✓
+         - Ambient fallback controls working correctly ✓
+         - No playback-crash UX detected ✓
+         - VERDICT: PRODUCTION-READY ✓
+      
+      3. ✅ App Store Readiness Page UX (9 checks passed)
+         - Route: /app-store-readiness
+         - Main page element (data-testid="app-readiness-page") renders ✓
+         - Progress card (data-testid="app-readiness-progress-card") present ✓
+         - QA card (data-testid="app-readiness-qa-card") present ✓
+         - Metadata card (data-testid="app-readiness-metadata-card") present ✓
+         - Support URL metadata visible: https://breathwork-sanctuary.preview.emergentagent.com/support ✓
+         - Privacy URL metadata visible: https://breathwork-sanctuary.preview.emergentagent.com/privacy ✓
+         - Terms URL metadata visible: https://breathwork-sanctuary.preview.emergentagent.com/terms ✓
+         - Launch status block (data-testid="app-readiness-launch-status") present ✓
+         - No content clipping detected ✓
+         - VERDICT: PRODUCTION-READY ✓
+      
+      4. ✅ Legal/Support Route Responsiveness (21 checks passed)
+         - Routes tested: /privacy, /terms, /support
+         - Viewports tested: Desktop (1920x1080), Tablet (1024x768), Mobile (390x844)
+         - /privacy: No overflow at all viewports ✓, Content visible (2462 chars) ✓, 15 interactive elements at mobile ✓
+         - /terms: No overflow at all viewports ✓, Content visible (2192 chars) ✓, 15 interactive elements at mobile ✓
+         - /support: No overflow at all viewports ✓, Content visible (2415 chars) ✓, 24 interactive elements at mobile ✓
+         - No blocked text detected ✓
+         - Links/buttons remain tappable at mobile viewport ✓
+         - VERDICT: PRODUCTION-READY ✓
+      
+      ❌ FAILED TESTS (3/7 categories, 3 critical issues):
+      
+      1. ❌ Oracle Reading Integration Grid Depth Panels
+         - Route: /oracle
+         - Issue: Oracle reading flow works (draw button clickable, reading initiates) but integration grid with depth panels NOT rendering
+         - MISSING ELEMENTS:
+           * data-testid="oracle-reading-integration-grid" - NOT in HTML
+           * data-testid="oracle-reading-why-this-heals" - NOT in HTML
+           * data-testid="oracle-reading-integration-guide" - NOT in HTML
+         - Root Cause: Depth panels not implemented in OracleReadings.jsx post-reading section
+         - REQUIRED FIX: Add integration grid depth panels to OracleReadings.jsx (similar to ArchangelReadingSection.jsx lines 137-158)
+         - Priority: HIGH - P1 pass requirement
+      
+      2. ❌ Archangel Oracle Receive Button Testid
+         - Route: /archangel-oracle
+         - Issue: Page loads correctly but data-testid="receive-guidance-btn" is NOT present in HTML
+         - Found button with "Guidance" text but missing correct data-testid attribute
+         - Root Cause: Testid naming issue in ArchangelReadingSection.jsx
+         - REQUIRED FIX: Verify ArchangelReadingSection.jsx line 76 has correct data-testid="receive-guidance-btn" on button element
+         - Note: Integration grid depth panels ARE correctly implemented in ArchangelReadingSection.jsx lines 137-158, but could not be tested due to button testid issue
+         - Priority: HIGH - Blocks testing of archangel depth panels
+      
+      3. ❌ Astrology Calendar Sun-Moon Depth Panels
+         - Route: /astrology-calendar
+         - Issue: Page loads correctly with all calendar functionality working, but sun-moon depth panels NOT present
+         - MISSING ELEMENTS:
+           * data-testid="sun-moon-depth-panels" - NOT in HTML
+           * data-testid="sun-moon-why-this-heals" - NOT in HTML
+           * data-testid="sun-moon-integration-guide" - NOT in HTML
+         - Checked after scroll to bottom - panels not present anywhere on page
+         - Root Cause: Depth panels section not implemented or not rendering in AstrologyCalendar.jsx
+         - REQUIRED FIX: Add sun-moon depth panels section to AstrologyCalendar.jsx (code review shows lines 340-354 should have this, but not rendering in deployed version)
+         - Priority: HIGH - P1 pass requirement
+      
+      📊 FINAL STATISTICS:
+      - Total test categories: 7
+      - Categories passed: 4/7 (57%)
+      - Categories failed: 3/7 (43%)
+      - Individual checks passed: 51
+      - Individual checks failed: 3
+      - Critical issues: 3 (all P1 pass requirements)
+      
+      🎯 VERDICT: PARTIAL PASS - 3 CRITICAL ISSUES REQUIRE FIXES
+      
+      PRODUCTION-READY FEATURES:
+      ✓ Ancient Wisdom depth modal flow - ALL depth sections working
+      ✓ Sound Frequencies resilient playback UX - ALL depth sections + fallback working
+      ✓ App Store Readiness page UX - ALL metadata and checklists working
+      ✓ Legal/support route responsiveness - ALL routes responsive at all viewports
+      
+      REQUIRES FIXES BEFORE P1 PASS:
+      ❌ Oracle reading integration grid depth panels - NOT IMPLEMENTED
+      ❌ Archangel Oracle receive button testid - INCORRECT TESTID
+      ❌ Astrology Calendar sun-moon depth panels - NOT IMPLEMENTED
+      
+      All 3 failed tests are P1 pass requirements for guided content depth alignment. Application is 57% ready for P1 pass. Recommend fixing these 3 issues before final P1 pass validation.
+
   - agent: "testing"
     message: |
       ✅ P1 PASS BACKEND VERIFICATION COMPLETED - ALL TESTS PASSED (2026-07-15)
