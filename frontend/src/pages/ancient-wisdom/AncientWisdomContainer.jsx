@@ -24,6 +24,23 @@ const AncientWisdom = ({ user, api }) => {
 
       <main className="max-w-6xl mx-auto px-6 pb-20 -mt-6">
         <AncientWisdomFilters traditions={TRADITIONS} activeTab={activeTab} setActiveTab={setActiveTab} />
+
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" data-testid="ancient-wisdom-global-depth-panels">
+          <article className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5" data-testid="ancient-wisdom-global-why-this-heals">
+            <p className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</p>
+            <p className="text-sm text-emerald-100/85 leading-relaxed">
+              Ancient teachings heal when they are embodied, not only studied — pairing ritual intelligence with real nervous-system regulation.
+            </p>
+          </article>
+
+          <article className="rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5" data-testid="ancient-wisdom-global-integration-guide">
+            <p className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</p>
+            <p className="text-sm text-violet-100/85 leading-relaxed">
+              Open any tradition card to access full embodiment depth: ritual arc, guided phases, master protocol, and practical next-step integration.
+            </p>
+          </article>
+        </section>
+
         <AncientWisdomGrid entries={filteredEntries} setSelected={setSelected} />
       </main>
       <AncientWisdomDetailModal selected={selected} setSelected={setSelected} api={api} />

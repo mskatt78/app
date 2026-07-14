@@ -118,6 +118,24 @@ const ArchangelOracle = ({ user, api }) => {
       </header>
 
       <main className="max-w-4xl mx-auto p-6">
+        {!reading && !showBrowse && !selectedArchangel && (
+          <section className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6" data-testid="archangel-global-depth-panels">
+            <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="archangel-global-why-this-heals">
+              <h3 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h3>
+              <p className="text-sm text-emerald-100/85 leading-relaxed">
+                Archangel reflection transforms fear into clarity by pairing symbolic guidance with grounded action and emotional regulation.
+              </p>
+            </article>
+
+            <article className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="archangel-global-integration-guide">
+              <h3 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</h3>
+              <p className="text-sm text-violet-100/85 leading-relaxed">
+                Draw a reading, then complete one angel-aligned act today: clear communication, boundary protection, or compassionate service.
+              </p>
+            </article>
+          </section>
+        )}
+
         <ArchangelBrowseSection
           showBrowse={showBrowse}
           setShowBrowse={setShowBrowse}

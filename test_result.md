@@ -18890,3 +18890,20 @@ agent_communication:
       ✅ Archangel Oracle API - NOW WORKING (was animation timing, not API issue)
       
       Application is 100% ready for P1 pass. All 7 categories meet production requirements. No remaining issues.
+
+
+  - task: "Quick confirmation QA - Depth sections visibility fixes"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AncientWisdom.jsx, /app/frontend/src/pages/SoundFrequencies.jsx, /app/frontend/src/pages/ArchangelOracle.jsx, /app/frontend/src/pages/AstrologyCalendar.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ DEPTH SECTIONS VISIBILITY QA PASSED (2026-07-14): Quick confirmation QA completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com. ALL 6 VERIFICATION POINTS PASSED: 1) /ancient-wisdom depth sections: ancient-wisdom-global-depth-panels ✓, ancient-wisdom-global-why-this-heals ✓, ancient-wisdom-global-integration-guide ✓. 2) /sound-frequencies depth sections: sound-global-depth-panels ✓, sound-global-why-this-heals ✓, sound-global-integration-guide ✓. 3) /archangel-oracle depth sections: archangel-global-depth-panels ✓, archangel-global-why-this-heals ✓, archangel-global-integration-guide ✓. 4) /astrology-calendar depth sections: sun-moon-depth-panels ✓, sun-moon-why-this-heals ✓, sun-moon-integration-guide ✓. 5) /oracle draw flow: Working correctly (draw button and cards present) ✓. 6) /archangels receive-guidance-btn: Present ✓. All 12 depth section testids are VISIBLE IMMEDIATELY on page load without opening cards/modals. Oracle draw flow functional. Archangels receive-guidance-btn present. Visibility fixes FULLY VERIFIED."
+
+agent_communication:
+  - agent: "testing"
+    message: "Quick confirmation QA completed successfully. All depth sections are visible immediately on page load across all 4 routes (/ancient-wisdom, /sound-frequencies, /archangel-oracle, /astrology-calendar). Oracle draw flow and archangels receive-guidance-btn also verified. All 6 verification points PASSED. No issues found."

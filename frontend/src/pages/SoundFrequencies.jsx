@@ -157,6 +157,22 @@ const SoundFrequencies = ({ user, api }) => {
       </header>
 
       <main className="max-w-6xl mx-auto p-6">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-6" data-testid="sound-global-depth-panels">
+          <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="sound-global-why-this-heals">
+            <h3 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h3>
+            <p className="text-sm text-emerald-100/85 leading-relaxed">
+              Sound medicine supports nervous-system coherence by combining resonance, breath pacing, and embodied attention.
+            </p>
+          </article>
+
+          <article className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="sound-global-integration-guide">
+            <h3 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</h3>
+            <p className="text-sm text-violet-100/85 leading-relaxed">
+              Open any frequency card to view full depth: ritual, ceremony, guided phases, embodiment protocol, and practical integration.
+            </p>
+          </article>
+        </section>
+
         {!soundUnlocked && (
           <section className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="sound-premium-banner">
             <p className="text-xs uppercase tracking-wider text-amber-200/80">Sound Healing Premium</p>
