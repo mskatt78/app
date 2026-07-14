@@ -124,6 +124,28 @@
 - Frontend testing agent confirmation: all targeted selectors PASS and visible immediately on page load.
 - Oracle draw flow and Archangel CTA presence re-verified PASS.
 
+## Yoga Imagery Overhaul (Shamanic Alignment) — 2026-07-14
+
+### User direction
+- Environment: both preview + production reported issues.
+- Priority: "All start with yoga's".
+- Problems reported: missing images + repetitive images + non-shamanic/irrelevant visuals.
+
+### Implemented fixes
+- Replaced yoga image strategy with curated **nature-ritual / shamanic-leaning** image pools and deterministic rotation:
+  - `/yoga` (`YogaLibrary.jsx`): removed dependence on mixed/repetitive legacy pose image URLs; now uses element-based shamanic image pools (`Earth/Water/Fire/Air/Spirit`) for card and modal rendering.
+  - `/chair-yoga` (`ChairYoga.jsx`): added dedicated shamanic image set and deterministic image resolver for cards + modal.
+  - `/somatic-yoga` (`SomaticYoga.jsx`): added dedicated shamanic image set and deterministic image resolver for cards + modal.
+  - `/partner-yoga` (`PartnerYoga.jsx`): added dedicated shamanic partner image set, replaced page hero background, and routed card + modal images through the new resolver.
+
+### Validation status
+- Frontend testing agent result: **ALL 4 yoga routes PASS**.
+  - `/yoga`: 78 images loaded, healthy variation in first visible set, modal image present, responsive pass.
+  - `/chair-yoga`: 15 images loaded, variation pass, modal image present, responsive pass.
+  - `/somatic-yoga`: 5 images loaded, strong variation, modal image present, responsive pass.
+  - `/partner-yoga`: 18 images loaded, strong variation, modal image present, responsive pass.
+- No broken image regressions found in tested routes.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
