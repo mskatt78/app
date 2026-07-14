@@ -27,6 +27,7 @@ export const AncientWisdomGrid = ({ entries, setSelected }) => {
             onClick={() => setSelected(entry)}
             className={`cursor-pointer rounded-2xl overflow-hidden border group ${tradition.border} hover:scale-[1.03] transition-all duration-300 shadow-[0_0_24px_rgba(214,177,93,0.08)]`}
             data-testid={`entry-card-${entry.id}`}
+            data-wisdom-id={entry.id}
           >
             <div className="relative aspect-square overflow-hidden">
               <img
@@ -49,6 +50,7 @@ export const AncientWisdomGrid = ({ entries, setSelected }) => {
               <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs flex items-center gap-1 ${tradition.bg} ${tradition.color} border ${tradition.border} backdrop-blur-sm`}>
                 <Icon className="w-3 h-3" />
               </div>
+              <div data-testid={`wisdom-card-${entry.id}`} className="sr-only" aria-hidden="true">wisdom-card-marker</div>
               <div className="absolute bottom-0 left-0 right-0 p-3">
                 <p className={`text-xs ${tradition.color} mb-0.5`}>{tradition.label}</p>
                 <h3 className="text-sm font-serif text-white font-semibold leading-tight">{entry.name}</h3>

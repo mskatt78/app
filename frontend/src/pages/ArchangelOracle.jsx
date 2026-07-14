@@ -55,7 +55,8 @@ const ArchangelOracle = ({ user, api }) => {
     setShowBrowse(false);
 
     try {
-      const endpoint = user ? "/oracle/archangels/reading" : "/oracle/archangels/reading/guest";
+      const hasUserIdentity = Boolean(user?.id || user?.email || user?.access_token);
+      const endpoint = hasUserIdentity ? "/oracle/archangels/reading" : "/oracle/archangels/reading/guest";
       const response = await api.post(endpoint, {
         question: question || null,
         spread_type: spreadType,
