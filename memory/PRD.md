@@ -74,6 +74,39 @@
 - ✅ Visual smoke verification:
   - Breathwork and Meditations pages load with real-photo background overlays and no blocking runtime errors.
 
+## P1 Content-Depth Alignment + App Store Readiness Sweep (2026-07-14)
+
+### Completed (validated)
+- ✅ **Balanced guided-depth uplift across lighter sections** (50/50 ceremonial + practical tone):
+  - Ancient Wisdom entries now enriched with: `why_this_heals`, `integration_guide`, `master_embodiment_protocol`, `best_for_tags`, and robust YouTube tutorial links.
+  - Sound Frequencies entries now enriched with: `alchemy`, `ritual`, `ceremony`, `guided_practice`, `why_this_heals`, `integration_guide`, `master_embodiment_protocol`, `best_for_tags`.
+  - Oracle + Archangel reading interfaces now include explicit post-reading integration panels (`why this heals` + `integration guide`).
+  - Sun/Moon (Astrology Calendar) now includes dedicated depth panels for healing rationale and daily integration guidance.
+
+- ✅ **App Store / PWA readiness sweep continued**:
+  - Manifest screenshots package expanded and normalized for broader store review context.
+  - App Store Readiness page enhanced with safe-area/notch checklist item and explicit public metadata URL values.
+  - Legal/support UX reviewed and retained as mobile-safe, route-complete, and store-link ready.
+
+- ✅ **Routing + QA hardening**:
+  - Added route aliases for consistency with QA/user navigation expectations:
+    - `/oracle-readings` → Oracle Readings
+    - `/archangel-oracle` → Archangel Oracle
+    - `/astrology-calendar` → Astrology Calendar
+  - Added Ancient Wisdom card test markers (`data-testid="wisdom-card-*"`) for deterministic automated verification.
+  - Archangel reading endpoint selection hardened to avoid false-authenticated path selection in anonymous sessions.
+
+### Validation evidence
+- Backend verification agent: PASS across depth fields, endpoint stability, and narration expansion sanity.
+- Frontend verification agent (final pass): **7/7 categories PASS**
+  - Ancient Wisdom depth modal
+  - Sound Frequencies resilient playback and depth panels
+  - Oracle depth panel flow
+  - Archangel depth panel flow
+  - Sun/Moon depth panels
+  - App Store readiness metadata/UX
+  - Legal/support responsive behavior
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
