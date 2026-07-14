@@ -18907,3 +18907,19 @@ agent_communication:
 agent_communication:
   - agent: "testing"
     message: "Quick confirmation QA completed successfully. All depth sections are visible immediately on page load across all 4 routes (/ancient-wisdom, /sound-frequencies, /archangel-oracle, /astrology-calendar). Oracle draw flow and archangels receive-guidance-btn also verified. All 6 verification points PASSED. No issues found."
+
+  - task: "Yoga imagery updates - /yoga, /chair-yoga, /somatic-yoga, /partner-yoga routes"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/YogaLibrary.jsx, /app/frontend/src/pages/ChairYoga.jsx, /app/frontend/src/pages/SomaticYoga.jsx, /app/frontend/src/pages/PartnerYoga.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ YOGA IMAGERY QA PASSED (2026-07-14): Comprehensive yoga imagery verification completed on preview URL https://breathwork-sanctuary.preview.emergentagent.com. ALL 4 ROUTES PASSED WITH 0 FAILURES AND 0 WARNINGS. ROUTE 1 - /yoga: 78 card images found, 8/8 first cards loaded successfully ✓, 6 unique images in first 8 cards (good variety, no monotonous repetition) ✓, modal image (selected-pose-image) present and loaded ✓, no horizontal overflow at 390x844 mobile viewport ✓, images from Unsplash nature/spiritual stock ✓. ROUTE 2 - /chair-yoga: 15 card images found, 8/8 first cards loaded successfully ✓, 4 unique images in first 8 cards (good variety) ✓, modal image (chair-yoga-selected-image) present and loaded ✓, no horizontal overflow at 390x844 ✓, images from Unsplash ✓. ROUTE 3 - /somatic-yoga: 5 card images found, all 5 loaded successfully ✓, 5 unique images (perfect variety) ✓, modal image (somatic-yoga-selected-image) present and loaded ✓, no horizontal overflow at 390x844 ✓, images from Unsplash ✓. ROUTE 4 - /partner-yoga: 18 card images found, 8/8 first cards loaded successfully ✓, 8 unique images in first 8 cards (perfect variety, no repetition) ✓, modal image (partner-yoga-selected-image) present and loaded ✓, no horizontal overflow at 390x844 ✓, images from Unsplash ✓. ALL REQUIREMENTS MET: Images load on cards (not blank/broken) across all routes ✓, repetition quality check passed (no monotonous same-image repetition) ✓, imagery style check passed (nature-ritual/spiritual/shamanic Unsplash images) ✓, modal/detail image presence verified for all routes ✓, responsive check at 390x844 passed (no severe cropping glitches or horizontal overflow) ✓. All data-testid selectors working correctly: pose-image-*, chair-yoga-card-image-*, somatic-yoga-card-image-*, partner-pose-image-*. Yoga imagery updates FULLY VERIFIED and production-ready."
+
+agent_communication:
+  - agent: "testing"
+    message: "Yoga imagery QA completed successfully on all 4 routes (/yoga, /chair-yoga, /somatic-yoga, /partner-yoga). All images load correctly, good variety in first 8 cards (no monotonous repetition), modal images present, responsive layout working at 390x844, and all images are from Unsplash with nature/spiritual/shamanic themes. 0 failures, 0 warnings. All requirements from review request met. Ready for production."

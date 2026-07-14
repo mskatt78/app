@@ -20,6 +20,13 @@ const STYLE_COLORS = {
   grounding: { bg: "bg-amber-500/10", border: "border-amber-500/20", text: "text-amber-400", icon: Feather },
 };
 
+const CHAIR_YOGA_SHAMANIC_IMAGES = [
+  "https://images.unsplash.com/photo-1562088287-6d37803aca2f?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1562088287-bde35a1ea917?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1610295272575-7376b67b3e96?crop=entropy&cs=srgb&fm=jpg&q=85",
+];
+
 export default function ChairYoga() {
   const navigate = useNavigate();
   const [practices, setPractices] = useState([]);
@@ -44,6 +51,12 @@ export default function ChairYoga() {
   const getStyleConfig = (style) => {
     const key = Object.keys(STYLE_COLORS).find(k => style?.toLowerCase().includes(k));
     return STYLE_COLORS[key] || STYLE_COLORS.gentle;
+  };
+
+  const getPracticeImage = (practice, index = 0) => {
+    const baseIndex = Number.parseInt(String(practice?.id || index), 10);
+    const safeIndex = Number.isFinite(baseIndex) ? baseIndex : index;
+    return CHAIR_YOGA_SHAMANIC_IMAGES[safeIndex % CHAIR_YOGA_SHAMANIC_IMAGES.length];
   };
 
   return (
@@ -125,7 +138,7 @@ export default function ChairYoga() {
                   data-testid={`chair-yoga-card-${practice.id}`}>
                   {practice.image_url ? (
                     <div className="relative h-44 overflow-hidden">
-                      <img src={practice.image_url} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+                      <img src={getPracticeImage(practice, index)} alt={practice.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" data-testid={`chair-yoga-card-image-${practice.id}`} />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                       <span className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs ${config.bg} ${config.text} backdrop-blur-sm capitalize`}>{practice.style || practice.category}</span>
                     </div>
@@ -161,7 +174,7 @@ export default function ChairYoga() {
               data-testid="chair-yoga-detail-modal">
               {selectedPractice.image_url && (
                 <div className="relative h-48 overflow-hidden rounded-t-2xl">
-                  <img src={selectedPractice.image_url} alt={selectedPractice.name} className="w-full h-full object-cover" />
+                  <img src={getPracticeImage(selectedPractice, 0)} alt={selectedPractice.name} className="w-full h-full object-cover" data-testid="chair-yoga-selected-image" />
                   <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
                 </div>
               )}

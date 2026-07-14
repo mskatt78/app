@@ -49,6 +49,39 @@ const YogaLibrary = ({ user, api }) => {
     Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20", gradient: "from-purple-500/20 to-purple-900/40" },
   };
 
+  const SHAMANIC_YOGA_IMAGE_POOLS = {
+    Earth: [
+      "https://images.unsplash.com/photo-1524863479829-916d8e77f114?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1559595500-e15296bdbb48?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1526916027372-0c0852cef5d3?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1549951490-363c7e240302?crop=entropy&cs=srgb&fm=jpg&q=85",
+    ],
+    Water: [
+      "https://images.unsplash.com/photo-1554245120-94a6fc6feb96?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1600618528240-fb9fc964b853?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1603983616619-faf118d6c374?crop=entropy&cs=srgb&fm=jpg&q=85",
+    ],
+    Fire: [
+      "https://images.unsplash.com/photo-1619872752556-f0f148e6c724?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1609433861367-c3ab700c51d1?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1560233026-ad254fa8da38?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1534096210335-a3b961613bb5?crop=entropy&cs=srgb&fm=jpg&q=85",
+    ],
+    Air: [
+      "https://images.unsplash.com/photo-1610295272575-7376b67b3e96?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1499482125586-91609c0b5fd4?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1608404862898-ca7de5c2eb4a?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1672196621056-f57290a64aee?crop=entropy&cs=srgb&fm=jpg&q=85",
+    ],
+    Spirit: [
+      "https://images.unsplash.com/photo-1531179123855-27851c4f160e?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1543858828-7cf1a9beb95c?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1522075782449-e45a34f1ddfb?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "https://images.unsplash.com/photo-1525217973983-abea5c8e7f45?crop=entropy&cs=srgb&fm=jpg&q=85",
+    ],
+  };
+
   const difficultyColors = {
     Beginner: "bg-green-500/20 text-green-400",
     Intermediate: "bg-yellow-500/20 text-yellow-400",
@@ -163,15 +196,28 @@ const YogaLibrary = ({ user, api }) => {
     setImageErrors(prev => new Set([...prev, poseId]));
   };
 
+  const getPoseSeed = (pose) => {
+    if (!pose) return 0;
+    const numericId = Number.parseInt(String(pose.id || ""), 10);
+    if (Number.isFinite(numericId)) return Math.abs(numericId);
+    return String(pose.name || "pose").split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  };
+
+  const getShamanicImageFromPool = (element, offset = 0) => {
+    const pool = SHAMANIC_YOGA_IMAGE_POOLS[element] || SHAMANIC_YOGA_IMAGE_POOLS.Earth;
+    return pool[(offset + pool.length) % pool.length];
+  };
+
+  const getDisplayPoseImage = (pose) => {
+    const seed = getPoseSeed(pose);
+    if (imageErrors.has(pose?.id)) {
+      return getShamanicImageFromPool(pose?.element, seed + 1);
+    }
+    return getShamanicImageFromPool(pose?.element, seed);
+  };
+
   const getPlaceholderImage = (element) => {
-    const placeholders = {
-      Earth: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800",
-      Water: "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800",
-      Fire: "https://images.unsplash.com/photo-1573384666979-2b1e160d2d08?w=800",
-      Air: "https://images.unsplash.com/photo-1557897467-d59fb33eb834?w=800",
-      Spirit: "https://images.unsplash.com/photo-1767611067414-b11b40fd0612?w=800",
-    };
-    return placeholders[element] || placeholders.Earth;
+    return getShamanicImageFromPool(element, 0);
   };
 
   return (
@@ -352,7 +398,7 @@ const YogaLibrary = ({ user, api }) => {
                   {/* Image */}
                   <div className="relative h-40 overflow-hidden">
                     <img
-                      src={hasImageError ? getPlaceholderImage(pose.element) : (pose.image_url || getPlaceholderImage(pose.element))}
+                      src={hasImageError ? getPlaceholderImage(pose.element) : getDisplayPoseImage(pose)}
                       alt={pose.name}
                       className="w-full h-full object-cover object-center bg-black/35"
                       onError={() => handleImageError(pose.id)}
@@ -456,7 +502,7 @@ const YogaLibrary = ({ user, api }) => {
               {/* Hero Image */}
               <div className="relative h-64">
                 <img
-                  src={imageErrors.has(selectedPose.id) ? getPlaceholderImage(selectedPose.element) : (selectedPose.image_url || getPlaceholderImage(selectedPose.element))}
+                  src={imageErrors.has(selectedPose.id) ? getPlaceholderImage(selectedPose.element) : getDisplayPoseImage(selectedPose)}
                   alt={selectedPose.name}
                   className="w-full h-full object-cover object-center bg-black/45"
                   onError={() => handleImageError(selectedPose.id)}

@@ -8,6 +8,17 @@ import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { Lock } from "lucide-react";
 import { toast } from "sonner";
 
+const PARTNER_YOGA_SHAMANIC_IMAGES = [
+  "https://images.unsplash.com/photo-1531179123855-27851c4f160e?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1688824650598-c7dfe2164695?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1543858828-7cf1a9beb95c?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1525217973983-abea5c8e7f45?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1781007097557-488433aa5bdc?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1783816297677-97862899eedc?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1758274538040-98eb11624eba?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://images.unsplash.com/photo-1758274537594-ae71243befa5?crop=entropy&cs=srgb&fm=jpg&q=85",
+];
+
 const partnerPoses = [
   {
     id: "p1",
@@ -374,6 +385,12 @@ const partnerPoses = [
   }
 ];
 
+const getShamanicPartnerImage = (poseId, fallbackIndex = 0) => {
+  const numeric = Number.parseInt(String(poseId || ""), 10);
+  const safe = Number.isFinite(numeric) ? numeric : fallbackIndex;
+  return PARTNER_YOGA_SHAMANIC_IMAGES[safe % PARTNER_YOGA_SHAMANIC_IMAGES.length];
+};
+
 const PartnerYoga = ({ user, api }) => {
   const navigate = useNavigate();
   const [selectedPose, setSelectedPose] = useState(null);
@@ -488,7 +505,7 @@ const PartnerYoga = ({ user, api }) => {
       <div
         className="pointer-events-none absolute inset-0 opacity-20"
         style={{
-          backgroundImage: "url(https://images.pexels.com/photos/8436521/pexels-photo-8436521.jpeg?auto=compress&cs=tinysrgb&w=1600)",
+          backgroundImage: "url(https://images.unsplash.com/photo-1531179123855-27851c4f160e?crop=entropy&cs=srgb&fm=jpg&q=85)",
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -582,7 +599,7 @@ const PartnerYoga = ({ user, api }) => {
               {pose.image_url && (
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={pose.image_url}
+                    src={getShamanicPartnerImage(pose.id, index)}
                     alt={pose.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
@@ -664,9 +681,10 @@ const PartnerYoga = ({ user, api }) => {
               {selectedPose.image_url && (
                 <div className="relative h-56 overflow-hidden">
                   <img
-                    src={selectedPose.image_url}
+                    src={getShamanicPartnerImage(selectedPose.id, 0)}
                     alt={selectedPose.name}
                     className="w-full h-full object-cover"
+                    data-testid="partner-yoga-selected-image"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
                   <button
