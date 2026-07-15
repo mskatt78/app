@@ -403,7 +403,7 @@ const YogaLibrary = ({ user, api }) => {
                     <img
                       src={hasImageError ? getPlaceholderImage(pose.element) : getDisplayPoseImage(pose)}
                       alt={pose.name}
-                      className="w-full h-full object-cover object-center bg-black/35"
+                      className="w-full h-full object-contain object-center bg-black/35"
                       onError={() => handleImageError(pose.id)}
                       data-testid={`pose-image-${pose.id}`}
                     />
@@ -507,7 +507,7 @@ const YogaLibrary = ({ user, api }) => {
                 <img
                   src={imageErrors.has(selectedPose.id) ? getPlaceholderImage(selectedPose.element) : getDisplayPoseImage(selectedPose)}
                   alt={selectedPose.name}
-                  className="w-full h-full object-cover object-center bg-black/45"
+                  className="w-full h-full object-contain object-center bg-black/45"
                   onError={() => handleImageError(selectedPose.id)}
                   data-testid="selected-pose-image"
                 />

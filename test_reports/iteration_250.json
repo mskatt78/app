@@ -1,0 +1,100 @@
+{
+  "summary": "Iteration 250 - Verified expanded yoga pose image mappings (19 new poses) plus 11 previously fixed poses. All 30 target poses render correct custom images from emergentagent.com. Chair Yoga (15 practices), Somatic Yoga (5 practices), Healing Portals (14 portals), and Creative Processes (14 processes with no duplicates) all working correctly with no regressions.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/test_reports/iteration_250.json"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "yogaPoseImageMapper.js POSE_MATCHERS array correctly maps all 30 target poses to custom emergentagent.com images",
+    "Chair Yoga and Somatic Yoga pages render valid images with no broken states",
+    "Healing Portals renders 18 portal cards (14 unique portals) for guest users",
+    "Creative Processes has no duplicate IDs or names - deduplication working correctly"
+  ],
+  "updated_files": [],
+  "success_rate": {
+    "backend": "100% (all API endpoints returning correct data)",
+    "frontend": "100% (all UI tests passed)"
+  },
+  "test_credentials": {},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All yoga pose image mappings verified working. The yogaPoseImageMapper.js contains POSE_MATCHERS array with regex patterns that map pose names/sanskrit names to CUSTOM_POSE_IMAGES keys. All 30 target poses (19 expanded + 11 previously fixed) render custom images from static.prod-images.emergentagent.com. Chair Yoga (15 practices), Somatic Yoga (5 practices), Healing Portals (14 portals), Creative Processes (14 processes) all healthy.",
+  "features_tested": {
+    "expanded_yoga_pose_images": {
+      "status": "PASS",
+      "details": "All 19 expanded poses have correct custom images from emergentagent.com",
+      "poses_verified": [
+        "Legs Up the Wall",
+        "Frog Pose",
+        "Thread the Needle",
+        "Sleeping Swan",
+        "Extended Side Angle",
+        "Dancer Pose",
+        "Wheel Pose",
+        "Headstand",
+        "Shoulder Stand",
+        "Plow Pose",
+        "Wild Thing",
+        "Revolved Triangle",
+        "Bird of Paradise",
+        "Corpse Pose",
+        "Prayer Pose",
+        "Firefly Pose",
+        "Eight Angle Pose",
+        "Fire Log Pose",
+        "Easy Pose"
+      ]
+    },
+    "previously_fixed_yoga_poses": {
+      "status": "PASS",
+      "details": "All 11 previously fixed poses still have correct custom images",
+      "poses_verified": [
+        "Standing Forward Fold",
+        "Upward Facing Dog",
+        "Boat Pose",
+        "Reverse Warrior",
+        "Crow Pose",
+        "Locust Pose",
+        "Bow Pose",
+        "Pigeon Pose",
+        "Reclined Bound Angle",
+        "Happy Baby Pose",
+        "Supine Twist"
+      ]
+    },
+    "chair_yoga": {
+      "status": "PASS",
+      "details": "15 practices with valid images, no broken image states"
+    },
+    "somatic_yoga": {
+      "status": "PASS",
+      "details": "5 practices with valid images, no broken image states"
+    },
+    "healing_portals": {
+      "status": "PASS",
+      "details": "18 portal cards rendered (14 unique portals), no empty state"
+    },
+    "creative_processes": {
+      "status": "PASS",
+      "details": "14 processes with no duplicate IDs or names"
+    }
+  },
+  "api_verification": {
+    "GET /api/yoga/poses": "200 OK - Returns 78 poses, all 30 target poses present",
+    "GET /api/chair-yoga": "200 OK - Returns 15 practices",
+    "GET /api/somatic-yoga": "200 OK - Returns 5 practices",
+    "GET /api/healing-portals": "200 OK - Returns 14 portals",
+    "GET /api/creative-processes": "200 OK - Returns 14 processes with no duplicates"
+  },
+  "console_observations": "Console shows expected 401 errors for auth endpoints (/api/auth/me, /api/premium/status) - these are expected for public routes without authentication. No runtime errors blocking user flow."
+}
