@@ -19,6 +19,7 @@ const CUSTOM_POSE_IMAGES = {
   padmasana: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/baf3989536bfcb2249fd490c34d5e29fab59147c41944bb9dab7535fc1df68f8.png",
   matsyasana: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ab77a8b226bf42ac02b4127a2781728b6d95bead9c7530695b914279da51b32e.png",
   ustrasana: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/688d41df9573600e37e7ac7e20a7046d51f89fd71b16ec7703e532b04ea00523.png",
+  garudasana: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/f8f7ac4b73b84ccfb7c5cb5b76c418fec1dfcdb78befe1f8dd27346a4eeeb834.png",
 
   chair_neck_jaw_unwinding: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/219f1433f63f15995c915be9c70a0768e8a59557dfbdab8b0fcaa6933bdcfae5.png",
   chair_spinal_twist: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ffd8fda6fac5f647d31663b76104e8d5b3e836c449edc080ee554dc817757199.png",
@@ -63,7 +64,7 @@ const POSE_MATCHERS = [
   { match: /virabhadrasana iii|warrior iii/, key: "virabhadrasana_iii" },
   { match: /virabhadrasana ii|warrior ii/, key: "virabhadrasana_ii" },
   { match: /virabhadrasana i|warrior i/, key: "virabhadrasana_i" },
-  { match: /utthita trikonasana|triangle|trikonasana/, key: "utthita_trikonasana" },
+  { match: /utthita trikonasana|extended triangle|triangle|trikonasana/, key: "utthita_trikonasana" },
   { match: /setu bandhasana|bridge pose/, key: "setu_bandhasana" },
   { match: /malasana|garland/, key: "malasana" },
   { match: /utkatasana|chair pose/, key: "utkatasana" },
@@ -75,6 +76,7 @@ const POSE_MATCHERS = [
   { match: /adho mukha svanasana|adho mukha|downward dog/, key: "adho_mukha_svanasana" },
   { match: /paschimottanasana|seated forward fold/, key: "paschimottanasana" },
   { match: /balasana|child.?s pose/, key: "balasana" },
+  { match: /garudasana|eagle pose|eagle/, key: "garudasana" },
   { match: /padmasana|lotus/, key: "padmasana" },
   { match: /matsyasana|fish pose/, key: "matsyasana" },
   { match: /ustrasana|camel/, key: "ustrasana" },
@@ -82,12 +84,20 @@ const POSE_MATCHERS = [
 
 export const getSubjectPoseImage = (item, fallbackImage = "") => {
   const preferred = pick(item?.image_url, item?.image);
-  const normalizedName = normalize(item?.name);
-  const normalizedSanskrit = normalize(item?.sanskrit_name || item?.sanskrit || item?.pose_sanskrit);
-  const haystack = `${normalizedName} ${normalizedSanskrit}`;
+  const rawName = String(item?.name || "").toLowerCase();
+  const rawSanskrit = String(item?.sanskrit_name || item?.sanskrit || item?.pose_sanskrit || "").toLowerCase();
+  const rawHaystack = `${rawName} ${rawSanskrit}`;
+
+  const normalizedName = normalize(item?.name).replace(/_/g, " ");
+  const normalizedSanskrit = normalize(item?.sanskrit_name || item?.sanskrit || item?.pose_sanskrit).replace(/_/g, " ");
+  const normalizedHaystack = `${normalizedName} ${normalizedSanskrit}`;
+
+  if (item?.id === "chair-eagle-arms") {
+    return CUSTOM_POSE_IMAGES.chair_spinal_twist || preferred || fallbackImage;
+  }
 
   for (const matcher of POSE_MATCHERS) {
-    if (matcher.match.test(haystack)) {
+    if (matcher.match.test(rawHaystack) || matcher.match.test(normalizedHaystack)) {
       return CUSTOM_POSE_IMAGES[matcher.key] || preferred || fallbackImage;
     }
   }
