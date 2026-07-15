@@ -1738,6 +1738,105 @@ CHAIR_YOGA_SUPPLEMENTS = [
     },
 ]
 
+YOGA_POSE_SUPPLEMENTS = [
+    {
+        "id": "half-hero-pose",
+        "name": "Half Hero Pose",
+        "sanskrit_name": "Ardha Virasana",
+        "element": "Spirit",
+        "difficulty": "Intermediate",
+        "duration_minutes": 4,
+        "description": "A grounding kneeling variation that opens one quadriceps line while keeping the spine upright and steady.",
+        "benefits": ["Stretches quadriceps", "Supports knee mobility", "Improves posture"],
+        "contraindications": ["Knee injury", "Ankle injury"],
+        "instructions": [
+            "Begin in a kneeling seat and extend one leg or keep one knee bent for comfort.",
+            "Lengthen through the spine and keep shoulders relaxed.",
+            "Breathe slowly for 5-8 breaths, then switch sides.",
+        ],
+        "chakras": ["Root", "Heart"],
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ea988a22561e7934728f1c814858b31fd1f26573a10d8138cebab8d7908e4977.png",
+    },
+    {
+        "id": "half-split",
+        "name": "Half Split",
+        "sanskrit_name": "Ardha Hanumanasana",
+        "element": "Water",
+        "difficulty": "Beginner",
+        "duration_minutes": 4,
+        "description": "A hamstring-opening prep for deeper split work with mindful alignment and controlled breath.",
+        "benefits": ["Lengthens hamstrings", "Improves pelvic control", "Supports split preparation"],
+        "contraindications": ["Hamstring strain"],
+        "instructions": [
+            "From low lunge, shift hips back and straighten front leg.",
+            "Flex front foot and keep spine long.",
+            "Hold for 5-8 breaths per side.",
+        ],
+        "chakras": ["Sacral", "Root"],
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/680df810502d1d87ce273b273f5a718bf163479af499502770cf486209158906.png",
+    },
+    {
+        "id": "side-split",
+        "name": "Side Split",
+        "sanskrit_name": "Samakonasana",
+        "element": "Water",
+        "difficulty": "Advanced",
+        "duration_minutes": 3,
+        "description": "A full lateral split requiring deep inner-thigh flexibility, patience, and alignment awareness.",
+        "benefits": ["Opens adductors", "Builds pelvic mobility", "Develops flexibility discipline"],
+        "contraindications": ["Groin injury", "Hamstring injury"],
+        "instructions": [
+            "Warm up thoroughly with hip-openers first.",
+            "Slide legs apart gradually while supporting with hands/blocks.",
+            "Breathe steadily and avoid forcing depth.",
+        ],
+        "chakras": ["Sacral", "Root"],
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/f193fb7fe07ab1b80e178551ec5bfc4023c76d749882da823b4aa89807d086dd.png",
+    },
+    {
+        "id": "forward-split",
+        "name": "Forward Split",
+        "sanskrit_name": "Hanumanasana",
+        "element": "Water",
+        "difficulty": "Advanced",
+        "duration_minutes": 3,
+        "description": "A full front split with squared hips that symbolizes devotion, surrender, and focused commitment.",
+        "benefits": ["Deep hip-flexor opening", "Hamstring flexibility", "Split mobility progression"],
+        "contraindications": ["Hip injury", "Hamstring injury", "Knee pain"],
+        "instructions": [
+            "From low lunge, slide front heel forward and back knee behind.",
+            "Square hips and use blocks under hands for support.",
+            "Hold with smooth breath and gradual depth.",
+        ],
+        "chakras": ["Sacral", "Heart"],
+        "image_url": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/5728f197ab3de5e1512bd5b9b3b3710d02954fc37bc706c37b97069861ae7899.png",
+    },
+]
+
+
+def _append_yoga_pose_supplements(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    existing_ids = {str(item.get("id") or "").strip() for item in items}
+    existing_names = {
+        _normalize_label_key(str(item.get("name") or ""))
+        for item in items
+        if str(item.get("name") or "").strip()
+    }
+
+    additions: list[dict[str, Any]] = []
+    for supplement in YOGA_POSE_SUPPLEMENTS:
+        supplement_id = str(supplement.get("id") or "").strip()
+        supplement_name_key = _normalize_label_key(str(supplement.get("name") or ""))
+        if supplement_id in existing_ids:
+            continue
+        if supplement_name_key and supplement_name_key in existing_names:
+            continue
+        additions.append(dict(supplement))
+        existing_ids.add(supplement_id)
+        if supplement_name_key:
+            existing_names.add(supplement_name_key)
+
+    return items + additions
+
 CHAIR_YOGA_IMAGE_OVERRIDES: dict[str, str] = {
     "chair-yoga-201": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/219f1433f63f15995c915be9c70a0768e8a59557dfbdab8b0fcaa6933bdcfae5.png",
     "chair-yoga-202": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ffd8fda6fac5f647d31663b76104e8d5b3e836c449edc080ee554dc817757199.png",
@@ -6087,7 +6186,36 @@ async def get_yoga_poses(element: Optional[str] = None, difficulty: Optional[str
         query["difficulty"] = {"$regex": f"^{difficulty}$", "$options": "i"}
     
     poses = await db.yoga_poses.find(query, {"_id": 0}).to_list(length=100)
-    enriched = [_enrich_devotional_language(_enrich_yoga_pose(pose), "elemental-practices") for pose in poses]
+    poses = _append_yoga_pose_supplements(poses)
+
+    deduped_poses: list[dict[str, Any]] = []
+    seen_pose_keys: set[str] = set()
+    seen_generic_names: set[str] = set()
+    duplicate_id_prefixes = (
+        "warrior-",
+        "tree-pose",
+        "cobra-pose",
+        "childs-pose",
+        "downward-dog",
+    )
+    for pose in poses:
+        pose_id = str(pose.get("id") or "")
+        if any(pose_id.startswith(prefix) for prefix in duplicate_id_prefixes):
+            continue
+
+        name_key = _normalize_label_key(str(pose.get("name") or ""))
+        sanskrit_key = _normalize_label_key(str(pose.get("sanskrit_name") or ""))
+        if name_key in seen_generic_names:
+            continue
+
+        dedupe_key = f"{name_key}::{sanskrit_key}"
+        if dedupe_key in seen_pose_keys:
+            continue
+        seen_pose_keys.add(dedupe_key)
+        seen_generic_names.add(name_key)
+        deduped_poses.append(pose)
+
+    enriched = [_enrich_devotional_language(_enrich_yoga_pose(pose), "elemental-practices") for pose in deduped_poses]
     tiered = _apply_free_paid_tiering(enriched, "yoga_poses")
     return _enforce_yoga_pose_realism(tiered)
 
@@ -8384,6 +8512,7 @@ async def get_somatic_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
     if style:
         query["style"] = {"$regex": f"^{style}$", "$options": "i"}
     practices = await db.somatic_yoga.find(query, {"_id": 0}).to_list(length=100)
+    practices = _dedupe_content_items_by_id_or_name(practices)
     practices = _apply_id_image_overrides(practices, SOMATIC_IMAGE_OVERRIDES)
     enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "healing-portals") for practice in practices]
     return _apply_free_paid_tiering(enriched, "somatic_practices")
@@ -8399,6 +8528,7 @@ async def get_chair_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
 
     practices = await db.somatic_yoga.find(query, {"_id": 0}).to_list(length=100)
     practices = _append_chair_yoga_supplements(practices, style)
+    practices = _dedupe_content_items_by_id_or_name(practices)
     adapted: list[dict[str, Any]] = []
     for practice in practices:
         entry = dict(practice)

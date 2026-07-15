@@ -1,0 +1,99 @@
+{
+  "summary": "Iteration 251 - Verified yoga pose dedupe, new split/half-hero variants, and image mappings. All 75 poses render with no duplicates. 73/75 poses (97%) have custom emergentagent.com images. Healing Portals (18 cards, 14 unique portals) and Creative Processes (14 processes, no duplicates) working correctly. Chair Yoga (15 practices) and Somatic Yoga (5 practices) healthy with valid images.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_yoga_poses_iteration251.py",
+    "/app/test_reports/pytest/pytest_iteration251.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Backend dedupe logic in get_yoga_poses() correctly filters duplicates by name and ID",
+    "YOGA_POSE_SUPPLEMENTS array adds Half Hero, Half Split, Side Split, Forward Split variants",
+    "Frontend yogaPoseImageMapper.js POSE_MATCHERS correctly maps 73/75 poses to custom images",
+    "Healing Portals renders 18 cards (14 unique portals with deepening cycles)",
+    "Creative Processes has 14 processes with no duplicate names or IDs"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_yoga_poses_iteration251.py"
+  ],
+  "success_rate": {
+    "backend": "100% (13/13 tests passed)",
+    "frontend": "100% (all UI tests passed)"
+  },
+  "test_credentials": {},
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "All yoga pose dedupe and image mapping verified. 75 poses total with no duplicates. 73/75 have custom emergentagent.com images. Split variants (side/forward/half/standing) and Half Hero Pose all present with correct images. Chair Yoga (15), Somatic Yoga (5), Healing Portals (14 unique), Creative Processes (14) all healthy.",
+  "features_tested": {
+    "yoga_poses_dedupe": {
+      "status": "PASS",
+      "details": "No duplicate pose names or IDs in 75 poses"
+    },
+    "split_variants": {
+      "status": "PASS",
+      "details": "Side Split, Forward Split, Half Split, Standing Split all present with custom images"
+    },
+    "half_hero_pose": {
+      "status": "PASS",
+      "details": "Half Hero Pose (Ardha Virasana) present with custom emergentagent.com image"
+    },
+    "requested_poses": {
+      "status": "PASS",
+      "poses_verified": [
+        "Hero Pose",
+        "Half Hero Pose",
+        "Staff Pose",
+        "Fire Log Pose",
+        "Seated Meditation",
+        "Prayer Pose",
+        "Side Split",
+        "Forward Split",
+        "Half Split",
+        "Standing Split",
+        "Supported Headstand",
+        "Firefly Pose",
+        "Eight Angle Pose",
+        "Embryo Pose",
+        "Thunderbolt Pose",
+        "Upward Facing Dog"
+      ]
+    },
+    "pose_image_mapping": {
+      "status": "PASS",
+      "details": "73/75 poses (97%) have custom emergentagent.com images via yogaPoseImageMapper.js"
+    },
+    "healing_portals": {
+      "status": "PASS",
+      "details": "18 portal cards rendered (14 unique portals with deepening cycles), no empty state"
+    },
+    "creative_processes": {
+      "status": "PASS",
+      "details": "14 processes with no duplicate names or IDs"
+    },
+    "chair_yoga": {
+      "status": "PASS",
+      "details": "15 practices with valid images"
+    },
+    "somatic_yoga": {
+      "status": "PASS",
+      "details": "5 practices with valid images"
+    }
+  },
+  "api_verification": {
+    "GET /api/yoga/poses": "200 OK - Returns 75 poses, no duplicates, all requested poses present",
+    "GET /api/chair-yoga": "200 OK - Returns 15 practices",
+    "GET /api/somatic-yoga": "200 OK - Returns 5 practices",
+    "GET /api/healing-portals": "200 OK - Returns 14 unique portals",
+    "GET /api/creative-processes": "200 OK - Returns 14 processes with no duplicates"
+  },
+  "console_observations": "Console shows expected 401 errors for auth endpoints (/api/auth/me, /api/premium/status, /api/favorites) - these are expected for public routes without authentication. No runtime errors blocking user flow."
+}
