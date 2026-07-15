@@ -10,8 +10,26 @@ import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { composeDeepGuidedNarration, ritualDeliveryPillars } from "../utils/guidedRitualComposer";
 import { EmbodimentProtocolPanel } from "../components/practice/EmbodimentProtocolPanel";
 
-const HEALING_PORTALS_CACHE_KEY = "healing-portals-cache-v1";
+const HEALING_PORTALS_CACHE_KEY = "healing-portals-cache-v2";
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const normalizePortalList = (value) => {
+  const rawList = Array.isArray(value)
+    ? value
+    : (Array.isArray(value?.items) ? value.items : []);
+
+  const seen = new Set();
+  const normalized = [];
+  for (const item of rawList) {
+    const id = String(item?.id || "").trim();
+    const nameKey = String(item?.name || "").trim().toLowerCase();
+    const key = id || nameKey;
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    normalized.push(item);
+  }
+  return normalized;
+};
 
 const sanitizeToList = (value) => {
   if (Array.isArray(value)) {
@@ -158,11 +176,13 @@ const HealingPortals = ({ user, api }) => {
         }
       }
 
-      if (!Array.isArray(responseData)) {
+      const normalizedData = normalizePortalList(responseData);
+
+      if (!normalizedData.length) {
         throw lastError || new Error("Healing portals response invalid");
       }
 
-      const sorted = responseData.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
+      const sorted = normalizedData.sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")));
       setPortals(sorted);
       try {
         window.localStorage.setItem(HEALING_PORTALS_CACHE_KEY, JSON.stringify(sorted));

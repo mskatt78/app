@@ -4475,18 +4475,49 @@ def _ensure_shamanic_journey_depth(practice: dict[str, Any]) -> dict[str, Any]:
 
 def _append_earth_crafting_supplements(items: list[dict[str, Any]], category: Optional[str]) -> list[dict[str, Any]]:
     existing_ids = {str(item.get("id")) for item in items}
+    existing_names = {
+        _normalize_label_key(str(item.get("name") or ""))
+        for item in items
+        if str(item.get("name") or "").strip()
+    }
     additions = []
     category_filter = (category or "").strip().lower()
 
     for item in EARTH_CRAFTING_TOOL_SUPPLEMENTS:
-        if str(item.get("id")) in existing_ids:
+        supplement_id = str(item.get("id") or "").strip()
+        supplement_name_key = _normalize_label_key(str(item.get("name") or ""))
+
+        if supplement_id and supplement_id in existing_ids:
+            continue
+        if supplement_name_key and supplement_name_key in existing_names:
             continue
         item_category = str(item.get("category") or "").strip().lower()
         if category_filter and item_category and item_category != category_filter:
             continue
-        additions.append(item)
+        additions.append(dict(item))
+        if supplement_id:
+            existing_ids.add(supplement_id)
+        if supplement_name_key:
+            existing_names.add(supplement_name_key)
 
     return items + additions
+
+
+def _dedupe_content_items_by_id_or_name(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Remove duplicate list entries by stable id first, then normalized name fallback."""
+    deduped: list[dict[str, Any]] = []
+    seen_keys: set[str] = set()
+
+    for item in items:
+        item_id = str(item.get("id") or "").strip()
+        name_key = _normalize_label_key(str(item.get("name") or ""))
+        unique_key = f"id:{item_id}" if item_id else f"name:{name_key}"
+        if unique_key in seen_keys:
+            continue
+        seen_keys.add(unique_key)
+        deduped.append(item)
+
+    return deduped
 
 
 def _enrich_sacred_tool_birthing_entry(item: dict[str, Any]) -> dict[str, Any]:
@@ -7170,6 +7201,7 @@ async def get_creative_processes(category: Optional[str] = None) -> list[dict[st
     
     processes = await db.creative_processes.find(query, {"_id": 0}).to_list(length=50)
     processes = _append_earth_crafting_supplements(processes, category)
+    processes = _dedupe_content_items_by_id_or_name(processes)
     enriched = [
         _enrich_devotional_language(
             _enrich_sacred_tool_birthing_entry(_enrich_content_integrity(process, "hybrid-curated")),
