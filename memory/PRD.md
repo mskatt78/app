@@ -336,6 +336,52 @@
 ### Outcome
 - Yoga imagery now behaves like instructional reference visuals: users can understand what each pose looks like directly from the card/modal imagery.
 
+## Final Stability Lock Pass (Image Drift + Wrong Subject Regressions) — 2026-07-15
+
+### User-reported failures addressed
+- Recurrent image drift after unrelated updates.
+- Wrong subject images in shamanic cards (including soul retrieval mismatch).
+- Grounding depth not visible enough in modal flow.
+- Mantras needed direct voice controls.
+
+### Root causes fixed
+1. **Global fallback hijack removed**
+   - Removed route-level global image error handler in `frontend/src/App.js` that could replace broken section images with unrelated generic placeholders.
+   - This was a key reason "perfect" sections could regress after unrelated changes.
+
+2. **Broken shamanic override URLs replaced with working locked URLs**
+   - Updated `SHAMANIC_IMAGE_OVERRIDES` in `backend/routers/content.py` for IDs **2, 6, 16** and advanced soul retrieval alias to known-good, loading assets.
+
+3. **Subject-accurate overrides strengthened**
+   - Replaced weak/misleading chair/somatic overrides with pose-true or therapy-true assets.
+   - Preserved subject-first strategy: explicit item images first, fallback only when necessary.
+
+4. **Grounding depth visibility improved**
+   - Added modal depth panels in `GroundingPractices.jsx`:
+     - `grounding-depth-panels`
+     - `grounding-why-this-heals`
+     - integration + master protocol sections.
+
+5. **Mantras voice controls added**
+   - Added SpeechSynthesis controls in `MantrasPlayer.jsx`:
+     - `mantra-voice-play-button`
+     - `mantra-voice-stop-button`
+
+6. **Route stability alias added**
+   - Added `/somatic-movement` alias route to ensure the expected page path always resolves.
+
+### Final verification (post-fix)
+- Frontend targeted blocker QA: **PASS**
+  - `/shamanic-practices` (mobile): IDs 2/6/16 all load (`naturalHeight=848`)
+  - `/grounding`: depth panels present in modal
+  - `/mantras`: voice controls present
+  - `/yoga`: first 10 cards load (sanity pass)
+- Backend/Frontend lint: clean.
+
+### Result
+- Regressions causing cross-section image swaps were neutralized.
+- Critical user-reported incorrect images and missing depth/voice flows are now fixed in preview and ready to deploy to production.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
