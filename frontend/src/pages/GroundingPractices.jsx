@@ -136,7 +136,7 @@ const GroundingPractices = ({ user, api }) => {
               >
                 {exercise.image_url && (
                   <div className="relative h-36 overflow-hidden">
-                    <img src={exercise.image_url} alt={exercise.name} className="w-full h-full object-cover" loading="lazy" />
+                    <img src={exercise.image_url} alt={exercise.name} className="w-full h-full object-cover" loading="lazy" data-testid={`grounding-image-${exercise.id}`} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <span className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs text-white">
                       <Clock className="w-3 h-3" />{exercise.duration_minutes} min
