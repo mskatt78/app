@@ -1739,31 +1739,34 @@ CHAIR_YOGA_SUPPLEMENTS = [
 ]
 
 CHAIR_YOGA_IMAGE_OVERRIDES: dict[str, str] = {
-    "chair-yoga-201": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/156782f4e4ae8730026c0bc8e4275f0db69e9456d2cc9d208fdedef030c23e8b.png",
-    "chair-yoga-202": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-201": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/219f1433f63f15995c915be9c70a0768e8a59557dfbdab8b0fcaa6933bdcfae5.png",
+    "chair-yoga-202": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ffd8fda6fac5f647d31663b76104e8d5b3e836c449edc080ee554dc817757199.png",
     "chair-yoga-203": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "chair-yoga-204": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/8afaeb5390476f4b1cfe27aa13da60eb9da63c3dc625fa8be939efc81e050e7d.png",
-    "chair-yoga-205": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "chair-yoga-206": "https://images.pexels.com/photos/3822472/pexels-photo-3822472.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "chair-yoga-207": "https://images.pexels.com/photos/3822116/pexels-photo-3822116.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-204": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-205": "https://images.pexels.com/photos/3822472/pexels-photo-3822472.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-206": "https://images.pexels.com/photos/3822116/pexels-photo-3822116.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-207": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
     "chair-yoga-208": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "chair-yoga-209": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "chair-yoga-210": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c5415267bc7d75dda0a05cd1b2887643e68c554db0f9d7f96320217e8af33762.png",
+    "chair-yoga-209": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "chair-yoga-210": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
 }
 
 SOMATIC_IMAGE_OVERRIDES: dict[str, str] = {
-    "grounding-somatic-flow": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "hip-release-somatic": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "chair-hip-release-somatic": "https://images.pexels.com/photos/3823063/pexels-photo-3823063.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "grounding-somatic-flow": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
+    "hip-release-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
+    "chair-hip-release-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
     "neck-shoulder-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7460d2d56b7ffd7dafdbf4c40237fa996f5f52dd7c03eda7bcf09522402c962d.png",
-    "restorative-somatic-yoga": "https://images.pexels.com/photos/3822622/pexels-photo-3822622.jpeg?auto=compress&cs=tinysrgb&w=900",
-    "trauma-release-somatic": "https://images.pexels.com/photos/3823059/pexels-photo-3823059.jpeg?auto=compress&cs=tinysrgb&w=900",
+    "restorative-somatic-yoga": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
+    "trauma-release-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
 }
 
 SHAMANIC_IMAGE_OVERRIDES: dict[str, str] = {
-    "2": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
-    "6": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
-    "16": "https://images.pexels.com/photos/1118873/pexels-photo-1118873.jpeg?auto=compress&cs=tinysrgb&w=1400",
+    "1": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e2187dc925022591a07767fa4fe66f7f0da2e1c4ef036f9e62c2854d8d7582e8.png",
+    "2": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e49ec07ac8fb044f0d451c7ff4bde78438076284ec5f8352a6d0416acfe8b81c.png",
+    "3": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/90d1be94049f7a56540de35f579a149e42b1754de16dfd2438f83590d34e6ca9.png",
+    "6": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3ed91938c4e98ec27f8dd8e64b5014f46f1af706f4f591adfebe22290c1978f5.png",
+    "16": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/57070f5f638a49ad5f8497f561735e7ae790066f8c4882c7613c37316ecd2218.png",
+    "shamanic-advanced-soul-retrieval": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e49ec07ac8fb044f0d451c7ff4bde78438076284ec5f8352a6d0416acfe8b81c.png",
 }
 
 FASCIA_IMAGE_OVERRIDES: dict[str, str] = {

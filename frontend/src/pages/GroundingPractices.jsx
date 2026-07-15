@@ -263,6 +263,63 @@ const GroundingPractices = ({ user, api }) => {
                       </div>
                     )}
 
+                    {(selectedExercise.alchemy || selectedExercise.ritual || selectedExercise.ceremony || selectedExercise.why_this_heals || selectedExercise.integration_guide || selectedExercise.master_embodiment_protocol) && (
+                      <div className="space-y-4" data-testid="grounding-depth-panels">
+                        {Array.isArray(selectedExercise.alchemy) && selectedExercise.alchemy.length > 0 && (
+                          <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20" data-testid="grounding-alchemy-panel">
+                            <h4 className="text-xs uppercase tracking-wider text-cyan-300 mb-2">Alchemy</h4>
+                            <ul className="space-y-1.5">
+                              {selectedExercise.alchemy.slice(0, 4).map((line, index) => (
+                                <li key={`grounding-alchemy-${index}`} className="text-sm text-muted-foreground flex items-start gap-2">
+                                  <span className="text-cyan-300">✦</span>
+                                  <span>{line}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {(selectedExercise.why_this_heals || selectedExercise.integration_guide) && (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-testid="grounding-healing-integration-grid">
+                            <article className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20" data-testid="grounding-why-this-heals">
+                              <h4 className="text-xs uppercase tracking-wider text-emerald-300 mb-2">Why this heals</h4>
+                              <p className="text-sm text-muted-foreground">{selectedExercise.why_this_heals || "Grounding regulates stress reactivity by restoring body orientation and sensory safety in the present moment."}</p>
+                            </article>
+
+                            <article className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/20" data-testid="grounding-integration-guide">
+                              <h4 className="text-xs uppercase tracking-wider text-violet-300 mb-2">Integration guide</h4>
+                              <p className="text-sm text-muted-foreground">{selectedExercise.integration_guide || "After practice, complete one concrete action while grounded: hydrate, journal, communicate clearly, or complete one calm task."}</p>
+                            </article>
+                          </div>
+                        )}
+
+                        {selectedExercise.master_embodiment_protocol && (
+                          <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="grounding-master-embodiment-protocol">
+                            <h4 className="text-xs uppercase tracking-wider text-amber-300 mb-3">Master Embodiment Protocol</h4>
+                            <div className="space-y-3">
+                              {[
+                                { key: "preparation_phase", label: "Preparation" },
+                                { key: "embodiment_phase", label: "Embodiment" },
+                                { key: "integration_phase", label: "Integration" },
+                              ].map((section) => (
+                                <div key={section.key} className="p-3 rounded-lg bg-black/20 border border-white/10" data-testid={`grounding-master-${section.key}`}>
+                                  <p className="text-xs text-amber-200 font-medium mb-2">{section.label}</p>
+                                  <ul className="space-y-1.5">
+                                    {(selectedExercise.master_embodiment_protocol?.[section.key] || []).slice(0, 4).map((step, index) => (
+                                      <li key={`grounding-master-${section.key}-${index}`} className="text-xs text-muted-foreground flex items-start gap-2">
+                                        <span className="text-amber-300">✦</span>
+                                        <span>{step}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                     <Button
                       onClick={() => {
                         if (!selectedExercise) return;

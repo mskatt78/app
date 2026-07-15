@@ -112,6 +112,7 @@ export const ShamanicPracticeGrid = ({
                     src={practice.image_url}
                     alt={practice.name}
                     className={`w-full h-full object-cover transition-transform duration-500 ${locked ? "" : "group-hover:scale-105"}`}
+                    data-testid={`shamanic-practice-image-${practice.id}`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
                   <div className={`absolute top-4 right-4 px-3 py-1 rounded-full ${colors.bg} ${colors.text}`}>

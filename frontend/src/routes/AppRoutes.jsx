@@ -157,6 +157,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/astrology-calendar" element={publicElement(AstrologyCalendar, PublicRoute, api)} />
       <Route path="/astrology/charts" element={publicElement(AstrologyChartsHub, PublicRoute, api)} />
       <Route path="/somatic" element={publicElement(SomaticMovement, PublicRoute, api)} />
+      <Route path="/somatic-movement" element={publicElement(SomaticMovement, PublicRoute, api)} />
       <Route path="/favorites" element={protectedElement(Favorites, ProtectedRoute, api)} />
       <Route path="/rituals" element={protectedElement(RitualBuilder, ProtectedRoute, api)} />
       <Route path="/achievements" element={protectedElement(Achievements, ProtectedRoute, api)} />

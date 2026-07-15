@@ -46,6 +46,33 @@ export const MantrasPlayer = ({
   createGuidedMantraPractice,
   hasPlayableAudio,
 }) => {
+  const canUseSpeechSynthesis = typeof window !== "undefined" && "speechSynthesis" in window;
+
+  const speakMantra = () => {
+    if (!selectedMantra || !canUseSpeechSynthesis) return;
+    try {
+      window.speechSynthesis.cancel();
+      const text = [selectedMantra.sanskrit, selectedMantra.translation, selectedMantra.description].filter(Boolean).join(". ");
+      if (!text.trim()) return;
+      const utterance = new window.SpeechSynthesisUtterance(text);
+      utterance.rate = Math.max(0.6, Math.min(1.1, tempoMultipliers?.[tempo] || 0.85));
+      utterance.pitch = 1;
+      utterance.volume = isMuted ? 0 : volume;
+      window.speechSynthesis.speak(utterance);
+    } catch (_error) {
+      // no-op
+    }
+  };
+
+  const stopMantraVoice = () => {
+    if (!canUseSpeechSynthesis) return;
+    try {
+      window.speechSynthesis.cancel();
+    } catch (_error) {
+      // no-op
+    }
+  };
+
   const resolveMantraAlchemy = (mantra) => {
     if (Array.isArray(mantra?.alchemy) && mantra.alchemy.length) return mantra.alchemy;
     if (Array.isArray(mantra?.alchemy_teachings) && mantra.alchemy_teachings.length) return mantra.alchemy_teachings;
@@ -114,6 +141,29 @@ export const MantrasPlayer = ({
               <div>
                 <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-2">Translation</h4>
                 <p className="text-lg italic text-foreground/90">&ldquo;{selectedMantra.translation}&rdquo;</p>
+              </div>
+
+              <div className="flex flex-wrap gap-2" data-testid="mantra-voice-controls">
+                <Button
+                  onClick={speakMantra}
+                  variant="outline"
+                  className="border-primary/40"
+                  data-testid="mantra-voice-play-button"
+                  disabled={!canUseSpeechSynthesis}
+                >
+                  <Volume2 className="w-4 h-4 mr-2" />
+                  Voice Mantra
+                </Button>
+                <Button
+                  onClick={stopMantraVoice}
+                  variant="ghost"
+                  className="border border-white/10"
+                  data-testid="mantra-voice-stop-button"
+                  disabled={!canUseSpeechSynthesis}
+                >
+                  <Pause className="w-4 h-4 mr-2" />
+                  Stop Voice
+                </Button>
               </div>
 
               {hasPlayableAudio && !audioError ? (
