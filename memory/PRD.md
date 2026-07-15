@@ -44,6 +44,30 @@
 
 ## Functional Requirements Status
 
+## Latest Verification Snapshot (Iteration 249 — 2026-07-15)
+- ✅ **Yoga pose accuracy hotfix (targeted P0 set) completed**:
+  - Updated strict pose matcher in `frontend/src/utils/yogaPoseImageMapper.js` with deterministic mappings for:
+    - Standing Forward Fold, Upward Facing Dog, Boat Pose, Reverse Warrior, Crow Pose,
+      Locust Pose, Bow Pose, Pigeon Pose, Reclined Bound Angle, Happy Baby Pose, Supine Twist.
+  - Added exact matcher coverage for both English and Sanskrit aliases to prevent semantic drift.
+
+- ✅ **Healing Portals visibility hardening completed**:
+  - `frontend/src/pages/HealingPortals.jsx` now normalizes response payloads (`array` or `{items}` shape),
+    deduplicates by `id/name`, and uses refreshed cache key to avoid stale blank states.
+  - Verified route renders correctly for guest users with portal cards visible.
+
+- ✅ **Creative Processes duplicate defense completed**:
+  - `backend/routers/content.py` now includes stronger dedupe protections:
+    - supplement append guard by both `id` and normalized `name`
+    - route-level `_dedupe_content_items_by_id_or_name(...)` before tiering
+  - Eliminates duplicate creative items in all category views.
+
+- ✅ **Validation status (testing agent iteration 249)**:
+  - Backend: **100% (15/15 pass)**
+  - Frontend: **100% pass**
+  - Confirmed no regressions for Chair Yoga / Somatic Yoga image rendering.
+
+
 ### P0 — Code Quality + Modularization
 - ✅ Completed for high-priority oversized pages:
   - Human Design
