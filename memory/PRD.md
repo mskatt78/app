@@ -90,6 +90,29 @@
   - Frontend: **100% pass**
   - Verified target yoga mapping set: **30/30 PASS**
 
+## Latest Verification Snapshot (Iteration 251 — 2026-07-15)
+- ✅ **Expanded yoga image alignment + duplicate cleanup completed (user B/B/B)**:
+  - Added deterministic mapping support for newly requested set:
+    - Hero Pose, Half Hero Pose, Staff Pose, Fire Log Pose, Seated Meditation, Prayer Pose,
+      Side Split, Forward Split, Half Split, Standing Split, Supported Headstand,
+      Firefly Pose, Eight Angle Pose, Embryo Pose, Thunderbolt Pose, Upward Facing Dog.
+  - Added seated/alias coverage for:
+    - Seated ankle circles, seated cat-cow, seated eagle arms, laying/lying down,
+      eagle legs, seated neck rolls, seated swan/pigeon, seated side stretch,
+      seated spinal twist (+ laying-down alias), seated tree, seated warriors.
+
+- ✅ **Backend dedupe hardening**:
+  - `get_yoga_poses` now applies stronger duplicate filtering and still preserves valid seated/chair entries.
+  - Added `YOGA_POSE_SUPPLEMENTS` entries for missing variants:
+    - Half Hero Pose, Half Split, Side Split, Forward Split.
+
+- ✅ **Validation status (testing agent iteration 251)**:
+  - Backend: **100% (13/13 pass)**
+  - Frontend: **100% pass**
+  - Yoga list: **75 poses, no duplicate names/IDs**
+  - Pose image mapping: **73/75 (97%) custom emergentagent images**
+  - No regressions in Healing Portals, Creative Processes, Chair Yoga, Somatic Yoga.
+
 
 ### P0 — Code Quality + Modularization
 - ✅ Completed for high-priority oversized pages:
