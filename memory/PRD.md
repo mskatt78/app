@@ -382,6 +382,23 @@
 - Regressions causing cross-section image swaps were neutralized.
 - Critical user-reported incorrect images and missing depth/voice flows are now fixed in preview and ready to deploy to production.
 
+## Final Blocker Closure Addendum (2026-07-15)
+
+### Additional hard fixes after user re-check
+- Replaced failing shamanic image URLs for IDs **2, 6, 16** (soul retrieval / death-rebirth / womb-hara) with confirmed loading assets.
+- Added route alias `/somatic-movement` to prevent route mismatch confusion.
+- Added deterministic card image test IDs for shamanic cards to improve future regression detection.
+- Added grounding card image test IDs and confirmed modal depth panel selectors are present and discoverable.
+
+### Re-validated outcomes
+- `/shamanic-practices` mobile: IDs 2/6/16 load and render (no broken placeholders).
+- `/grounding` modal: depth panels present (`grounding-depth-panels`, `grounding-why-this-heals`).
+- `/mantras` modal: voice controls present (`mantra-voice-play-button`, `mantra-voice-stop-button`).
+- `/yoga` sanity: first 10 card images load; no regression introduced.
+
+### Stability expectation
+- Global fallback hijack removal + explicit URL locks + section-specific selectors now prevent the previous cross-section drift pattern where unrelated updates changed "perfect" images.
+
 ## Latest Verification Snapshot (Iteration 247 — 2026-07-03)
 - ✅ Sacred Guardians visual correction shipped:
   - Removed supplemental guardian injection from `/api/sacred-guardians` response path.
