@@ -67,6 +67,29 @@
   - Frontend: **100% pass**
   - Confirmed no regressions for Chair Yoga / Somatic Yoga image rendering.
 
+## Latest Verification Snapshot (Iteration 250 — 2026-07-15)
+- ✅ **Full yoga image alignment expansion completed (user scope C + aliases B)**:
+  - Added deterministic custom mappings in `frontend/src/utils/yogaPoseImageMapper.js` for the expanded list from user note context, including:
+    - Legs Up the Wall, Frog Pose, Thread the Needle, Sleeping Swan, Extended Side Angle,
+      Dancer Pose, Wheel Pose, Headstand, Shoulder Stand, Plow Pose, Wild Thing,
+      Revolved Triangle, Bird of Paradise, Corpse Pose, Prayer Pose, Firefly Pose,
+      Eight Angle Pose, Fire Log Pose, Easy Pose.
+  - Preserved and revalidated prior corrected set of 11 poses (Forward Fold, Upward Dog, Boat, Reverse Warrior, Crow, Locust, Bow, Pigeon, Reclined Bound Angle, Happy Baby, Supine Twist).
+  - Added extra seated/chair alias mappings (seated cat-cow, seated eagle arms, seated forward fold, seated spinal twist, seated pigeon, seated tree, seated warrior, seated side stretch, seated neck rolls, seated chest opener) for stronger subject-locking.
+
+- ✅ **Yoga visual-fit consistency improved**:
+  - Updated yoga card/modal image rendering in `YogaLibrary.jsx` from `object-cover` to `object-contain` to preserve full anatomical visibility and reduce cropping drift.
+
+- ✅ **Regression safety maintained**:
+  - Healing Portals remains visible and populated for guests.
+  - Creative Processes remains duplicate-free by ID/name.
+  - Chair Yoga and Somatic Yoga image rendering remains healthy.
+
+- ✅ **Validation status (testing agent iteration 250)**:
+  - Backend: **100% pass**
+  - Frontend: **100% pass**
+  - Verified target yoga mapping set: **30/30 PASS**
+
 
 ### P0 — Code Quality + Modularization
 - ✅ Completed for high-priority oversized pages:
