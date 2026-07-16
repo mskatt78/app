@@ -2079,7 +2079,7 @@ SECTION_MIN_FREE_ITEMS = 1
 SECTION_DEFAULT_FREE_ITEMS = 4
 SECTION_DEFAULT_PREMIUM_ITEMS = 10
 SECTION_MAX_TIER_ITEMS = SECTION_DEFAULT_FREE_ITEMS + SECTION_DEFAULT_PREMIUM_ITEMS
-SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "shamanic_practices", "water_practices"}
+SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "shamanic_practices", "water_practices", "creative_processes"}
 
 # User-approved per-section free counts override global ratio where specified.
 SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
@@ -7330,6 +7330,24 @@ async def get_creative_processes(category: Optional[str] = None) -> list[dict[st
     processes = await db.creative_processes.find(query, {"_id": 0}).to_list(length=50)
     processes = _append_earth_crafting_supplements(processes, category)
     processes = _dedupe_content_items_by_id_or_name(processes)
+
+    # Keep Earth Crafting and Sacred Tool Birthing grounded and non-repeating.
+    # Deepening cycle expansion can read as duplicates for these categories in UI.
+    if category and str(category).strip().lower() in {"earth-crafting", "sacred-tool-birthing"}:
+        ordered = sorted(processes, key=lambda item: str(item.get("id") or ""))
+        for item in ordered:
+            item.pop("is_premium", None)
+            item.pop("premium_unlock_id", None)
+            item.pop("premium_label", None)
+        enriched = [
+            _enrich_devotional_language(
+                _enrich_sacred_tool_birthing_entry(_enrich_content_integrity(process, "hybrid-curated")),
+                "creative-processes",
+            )
+            for process in ordered
+        ]
+        return enriched
+
     enriched = [
         _enrich_devotional_language(
             _enrich_sacred_tool_birthing_entry(_enrich_content_integrity(process, "hybrid-curated")),
