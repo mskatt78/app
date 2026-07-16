@@ -113,6 +113,24 @@
   - Pose image mapping: **73/75 (97%) custom emergentagent images**
   - No regressions in Healing Portals, Creative Processes, Chair Yoga, Somatic Yoga.
 
+## Latest Verification Snapshot (Iteration 252 — 2026-07-16)
+- ✅ **Global duplicate section cleanup pass completed**:
+  - Added `frontend/src/utils/practiceDisplayUtils.js` with `formatPracticeName(...)` to strip redundant trailing track suffixes in titles (e.g., `"... · Fascia Stretching"` when track already shown separately).
+  - Applied to both `FasciaStretching.jsx` and `SomaticMovement.jsx` for card titles + modal titles.
+
+- ✅ **Incorrect fascia image fixed**:
+  - Updated `backend/routers/content.py` `FASCIA_IMAGE_OVERRIDES["36"]` (Containment Hold) from unrelated mechanic image to corrected somatic/fascia image:
+    - `https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/975e126d9e0438c25ae8570c45e267d6c1f01d1793f6ee585243daa091eb33ff.png`
+
+- ✅ **Wheel of the Year unlocked throughout**:
+  - `SeasonalTempleContainer.jsx` now forces unlocked state (`seasonalTempleUnlocked=true`, `seasonalTempleLocked=false`) to remove lock banners/tab restrictions and keep full sabbat access active.
+
+- ✅ **Validation status (testing agent iteration 252)**:
+  - Backend: **100% pass**
+  - Frontend: **100% pass**
+  - Mobile + desktop checks passed for fascia/somatic title cleanup, corrected image rendering, and seasonal temple unlock.
+  - Regression checks passed for Healing Portals and Creative Processes (no duplicate regressions).
+
 
 ### P0 — Code Quality + Modularization
 - ✅ Completed for high-priority oversized pages:
