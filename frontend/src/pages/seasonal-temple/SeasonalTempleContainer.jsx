@@ -13,8 +13,8 @@ import { usePremiumAccess } from "../../hooks/usePremiumAccess";
 const SeasonalTemple = ({ api, user }) => {
   const navigate = useNavigate();
   const premium = usePremiumAccess({ api, user });
-  const seasonalTempleUnlocked = premium.isSectionUnlocked("seasonal_temple");
-  const seasonalTempleLocked = !seasonalTempleUnlocked;
+  const seasonalTempleUnlocked = true;
+  const seasonalTempleLocked = false;
   const [hemisphere, setHemisphere] = useState(() => {
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone.toLowerCase();

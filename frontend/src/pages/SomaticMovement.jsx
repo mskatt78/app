@@ -13,6 +13,7 @@ import PracticeVideos from "../components/PracticeVideos";
 import { appLogger } from "../utils/logger";
 import { resolveDurationMinutes } from "../utils/durationUtils";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import { formatPracticeName } from "../utils/practiceDisplayUtils";
 
 const movementTrackFilters = ["all", "Somatic Movement", "Tai Chi", "Chi Gong"];
 
@@ -268,7 +269,9 @@ const SomaticMovement = ({ user, api }) => {
                         )}
                       </div>
                     )}
-                    <h3 className="text-xl font-serif mb-3">{practice.name}</h3>
+                    <h3 className="text-xl font-serif mb-3" data-testid={`practice-title-${practice.id}`}>
+                      {formatPracticeName(practice.name, practice.movement_track)}
+                    </h3>
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{practice.description}</p>
                     {practice.movement_track && (
                       <p className="text-[11px] text-cyan-300/90 mb-2" data-testid={`movement-track-${practice.id}`}>
@@ -338,7 +341,9 @@ const SomaticMovement = ({ user, api }) => {
                 >
                   {selectedPractice.element} Element
                 </div>
-                <DialogTitle className="text-2xl font-serif">{selectedPractice.name}</DialogTitle>
+                <DialogTitle className="text-2xl font-serif" data-testid="somatic-practice-dialog-title">
+                  {formatPracticeName(selectedPractice.name, selectedPractice.movement_track)}
+                </DialogTitle>
                 <DialogDescription className="sr-only" data-testid="somatic-practice-dialog-description">
                   View somatic movement guidance and start the selected guided practice.
                 </DialogDescription>
