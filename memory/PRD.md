@@ -131,6 +131,21 @@
   - Mobile + desktop checks passed for fascia/somatic title cleanup, corrected image rendering, and seasonal temple unlock.
   - Regression checks passed for Healing Portals and Creative Processes (no duplicate regressions).
 
+## Latest Verification Snapshot (Iteration 253 — 2026-07-16)
+- ✅ **Creative + Earth Crafting repeat cleanup completed (River Stone and related repeats)**:
+  - Updated backend tiering behavior so `creative_processes` does not generate deepening-cycle repeat entries.
+  - Added category-safe handling in `get_creative_processes(...)` for:
+    - `earth-crafting`
+    - `sacred-tool-birthing`
+  - These categories now return canonical unique items only (no repeated River Stone/deepening clones).
+
+- ✅ **Validation status (testing agent iteration 253)**:
+  - Backend: **100% (5/5 pass)**
+  - Frontend: **100% pass**
+  - `earth-crafting` endpoint: **4 unique items** (River Stone appears once)
+  - `sacred-tool-birthing` endpoint: **10 unique items** (no duplicates)
+  - `all creative` view remains healthy and duplicate-free.
+
 
 ### P0 — Code Quality + Modularization
 - ✅ Completed for high-priority oversized pages:
