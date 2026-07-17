@@ -1882,6 +1882,16 @@ FASCIA_IMAGE_OVERRIDES: dict[str, str] = {
     "39": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/42c6edcc77557a519bff5e40533fdf4b0560cbb33a9a92d9ac3fe0dc7a5be692.png",
 }
 
+MINDFULNESS_IMAGE_OVERRIDES: dict[str, str] = {
+    "mindful-body-prayer": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/88d7f123ccb7fabaa6e8712911e9ba2c920a0702ce4df9d34a063544d1fb7301.png",
+}
+
+UNSAFE_GENERIC_IMAGE_URLS: dict[str, str] = {
+    # This URL repeatedly drifted to non-wellness visuals (user-reported drone image).
+    "https://images.unsplash.com/photo-1506947411487-a56738267384?crop=entropy&cs=srgb&fm=jpg&q=85":
+        "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/f76a8829db048c630127f37cf68ef7599525b1b0a0eb4e25187dee405f3ea77b.png",
+}
+
 PARTNER_YOGA_SUPPLEMENTS = [
     {
         "id": "partner-yoga-101",
@@ -3205,6 +3215,21 @@ def _apply_subject_image_alignment(item: dict[str, Any], default_source_type: st
             enriched["content_integrity"]["source_type"] = "subject-matched-curated"
             enriched["content_integrity"]["verified"] = True
             enriched["content_integrity"]["references_count"] = len(enriched["source_references"])
+    current_url = str(enriched.get("image_url") or "").strip()
+    unsafe_replacement = UNSAFE_GENERIC_IMAGE_URLS.get(current_url)
+    if unsafe_replacement:
+        enriched["image_url"] = unsafe_replacement
+        source_refs = list(enriched.get("source_references") or [])
+        if unsafe_replacement not in source_refs:
+            source_refs.append(unsafe_replacement)
+        enriched["source_references"] = source_refs[:8]
+        enriched["source_type"] = "subject-matched-curated"
+        enriched["review_status"] = "verified"
+        if isinstance(enriched.get("content_integrity"), dict):
+            enriched["content_integrity"]["source_type"] = "subject-matched-curated"
+            enriched["content_integrity"]["verified"] = True
+            enriched["content_integrity"]["references_count"] = len(enriched["source_references"])
+
     return enriched
 
 
@@ -7124,6 +7149,7 @@ async def get_mindfulness_practices(category: Optional[str] = None, element: Opt
         )
         for practice in practices
     ]
+    enriched = _apply_id_image_overrides(enriched, MINDFULNESS_IMAGE_OVERRIDES)
     return _apply_free_paid_tiering(enriched, "mindfulness_practices")
 
 
