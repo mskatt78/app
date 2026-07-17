@@ -146,6 +146,27 @@
   - `sacred-tool-birthing` endpoint: **10 unique items** (no duplicates)
   - `all creative` view remains healthy and duplicate-free.
 
+## Latest Verification Snapshot (Iteration 254 — 2026-07-17)
+- ✅ **Wheel of Year visual examples added (mandala / crystal grid request)**:
+  - Added `WHEEL_VISUAL_EXAMPLES` dataset in `seasonalTempleData.js` with 6 curated example images:
+    - Medicine wheel mandala overhead
+    - Four directions wheel layout
+    - Crystal grid in nature
+    - Crystal mandala top-down
+    - Stone circle altar
+    - River stone prayer pattern
+  - Added new section on `/seasonal-temple`:
+    - **"Wheel of Year Visual Examples"** (image cards with descriptions)
+  - Added contextual example gallery inside Earth Crafting modal for:
+    - `Medicine Wheel`
+    - `Crystal Grid in Nature`
+
+- ✅ **Validation status (testing agent iteration 254)**:
+  - Frontend: **100% pass** (backend skipped as not needed)
+  - Verified all 6 images load successfully.
+  - Verified modal visual-example panels render correctly for both target crafts.
+  - Verified sabbat card interaction regression check passes.
+
 
 ### P0 — Code Quality + Modularization
 - ✅ Completed for high-priority oversized pages:
