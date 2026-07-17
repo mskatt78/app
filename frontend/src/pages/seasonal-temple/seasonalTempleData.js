@@ -392,6 +392,51 @@ export const EARTH_CRAFTING = [
   },
 ];
 
+export const WHEEL_VISUAL_EXAMPLES = [
+  {
+    id: "wheel-mandala-overhead",
+    title: "Medicine Wheel Mandala (Overhead)",
+    description: "A radial stone-and-flower mandala anchored at the center point.",
+    image:
+      "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/352cddf37537893375a0a18190ce720dc5605e4672c2f5f09607e05dbd4e92ca.png",
+  },
+  {
+    id: "wheel-four-directions",
+    title: "Four Directions Layout",
+    description: "A medicine wheel marked with clear cardinal gateways.",
+    image:
+      "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/114bec23218558e2bf02453c7b99468a708331e6df33b12c718e7e53678cbaa0.png",
+  },
+  {
+    id: "crystal-grid-forest",
+    title: "Crystal Grid in Nature",
+    description: "A flower-of-life inspired crystal grid on living earth.",
+    image:
+      "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/842502179894d8b158ed5e66f238055cd69c4f8fbd73f0bfc3a09c0911f8c8b9.png",
+  },
+  {
+    id: "crystal-mandala-topdown",
+    title: "Crystal Mandala (Top Down)",
+    description: "A ceremonial altar-style crystal mandala with natural offerings.",
+    image:
+      "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/2b7fdb061d66dd000517dfcc2d8d13db58494df500a08f3935138ddd19bb0959.png",
+  },
+  {
+    id: "stone-circle-altar",
+    title: "Stone Circle Altar",
+    description: "Simple earth-centered altar ring for seasonal offerings.",
+    image:
+      "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/33b1ae50a393f8605eddbe9a991bc809d3fd99fea67dd5ef393ff8c3421a4587.png",
+  },
+  {
+    id: "river-stone-pattern",
+    title: "River Stone Prayer Pattern",
+    description: "A natural patterned stone offering arrangement for intention work.",
+    image:
+      "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/5746d83324f4626b15c95c57aba5722fd93d24340797db50e8b9616f61910792.png",
+  },
+];
+
 // ── Helper: get current Sabbat ────────────────────────────────────────────────
 export const getCurrentSabbat = (hemisphere) => {
   const now = new Date();

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Leaf, Flame, Snowflake, Sun, Moon, Star, X, ChevronRight, Gem, Wind, Mountain, TreePine, Globe } from "lucide-react";
 
-import { EARTH_CRAFTING, SABBATS, getCurrentSabbat } from "./seasonalTempleData";
+import { EARTH_CRAFTING, SABBATS, WHEEL_VISUAL_EXAMPLES, getCurrentSabbat } from "./seasonalTempleData";
 import { SeasonalTempleHeader } from "./SeasonalTempleHeader";
 import { SeasonalTempleWheelSection } from "./SeasonalTempleWheelSection";
 import { SeasonalTempleCardsSection } from "./SeasonalTempleCardsSection";
@@ -65,6 +65,35 @@ const SeasonalTemple = ({ api, user }) => {
           isLocked={seasonalTempleLocked}
           onUnlock={promptSeasonalUpgrade}
         />
+
+        <section className="mb-12" data-testid="wheel-visual-examples-section">
+          <div className="flex items-center gap-3 mb-4">
+            <Gem className="w-5 h-5 text-fuchsia-300" />
+            <div>
+              <h2 className="text-xl font-serif">Wheel of Year Visual Examples</h2>
+              <p className="text-xs text-muted-foreground">Mandala, crystal grid, and stone-circle inspiration for your own practice</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {WHEEL_VISUAL_EXAMPLES.map((example) => (
+              <article key={example.id} className="rounded-xl overflow-hidden border border-white/10 bg-card/60" data-testid={`wheel-visual-example-${example.id}`}>
+                <div className="aspect-[3/2] bg-black/40">
+                  <img
+                    src={example.image}
+                    alt={example.title}
+                    className="w-full h-full object-cover object-center"
+                    loading="lazy"
+                    data-testid={`wheel-visual-example-image-${example.id}`}
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-sm font-serif text-foreground">{example.title}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">{example.description}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
         {!seasonalTempleUnlocked && (
           <div className="mb-6 p-4 rounded-xl border border-amber-500/30 bg-amber-500/10" data-testid="seasonal-temple-lock-banner">
@@ -277,6 +306,38 @@ const SeasonalTemple = ({ api, user }) => {
                 <p className="mt-3 text-sm text-muted-foreground">{selectedCraft.description}</p>
               </div>
               <div className="p-6 space-y-4">
+                {(selectedCraft.id === "medicine-wheel" || selectedCraft.id === "crystal-grid") && (
+                  <div className="space-y-3" data-testid="seasonal-craft-visual-examples-panel">
+                    <p className="text-[11px] uppercase tracking-wider text-fuchsia-200">Visual Examples</p>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      {WHEEL_VISUAL_EXAMPLES
+                        .filter((example) => {
+                          if (selectedCraft.id === "medicine-wheel") {
+                            return ["wheel-mandala-overhead", "wheel-four-directions", "stone-circle-altar"].includes(example.id);
+                          }
+                          return ["crystal-grid-forest", "crystal-mandala-topdown", "river-stone-pattern"].includes(example.id);
+                        })
+                        .map((example) => (
+                          <article key={`${selectedCraft.id}-${example.id}`} className="rounded-xl overflow-hidden border border-white/10 bg-black/20" data-testid={`seasonal-craft-example-${example.id}`}>
+                            <div className="aspect-[3/2] bg-black/40">
+                              <img
+                                src={example.image}
+                                alt={example.title}
+                                className="w-full h-full object-cover object-center"
+                                loading="lazy"
+                                data-testid={`seasonal-craft-example-image-${example.id}`}
+                              />
+                            </div>
+                            <div className="p-2.5">
+                              <h4 className="text-xs font-medium text-foreground">{example.title}</h4>
+                              <p className="text-[11px] text-muted-foreground mt-1">{example.description}</p>
+                            </div>
+                          </article>
+                        ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="grid sm:grid-cols-2 gap-3" data-testid="seasonal-craft-depth-grid">
                   <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="seasonal-craft-why-heals-panel">
                     <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
