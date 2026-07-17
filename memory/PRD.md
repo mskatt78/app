@@ -4592,3 +4592,22 @@
 ## Updated Priorities
 - **P0 complete**: temple access restrictions enforced across Rose, Seasonal, Masculine, and Elemental temple flows.
 - **P1 backlog**: Sacred Journey Progress tracker.
+
+## Latest Verification Snapshot (Iteration 255 — 2026-07-17)
+- ✅ **Mindfulness misaligned image fixed (Body Prayer Scan)**:
+  - Added `MINDFULNESS_IMAGE_OVERRIDES` in `backend/routers/content.py` for:
+    - `mindful-body-prayer` → wellness-safe aligned image.
+- ✅ **Cross-app image drift guard added**:
+  - Added `UNSAFE_GENERIC_IMAGE_URLS` and sanitizer logic in `_apply_subject_image_alignment(...)` to auto-replace known problematic URL drift.
+  - This guards key sections from recurring mismatched visuals.
+
+- ✅ **Validation status (testing agent iteration 255)**:
+  - Backend: **100% pass**
+  - Frontend: **100% pass**
+  - Verified fixed and aligned image rendering for Body Prayer Scan.
+  - Verified no unsafe image URL in user-facing `image_url` across:
+    - `/api/mindfulness`
+    - `/api/meditations`
+    - `/api/water-practices`
+    - `/api/energy-healing`
+    - `/api/grounding`
