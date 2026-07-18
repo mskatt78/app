@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, ExternalLink, FileCheck2, FileText, HeartHandshake, Mail, ShieldCheck, Smartphone, Trash2, TriangleAlert } from "lucide-react";
+import { ArrowLeft, Download, ExternalLink, FileText, HeartHandshake, Mail, ShieldCheck, Smartphone, Trash2, TriangleAlert } from "lucide-react";
 import { Button } from "../components/ui/button";
 
 export default function SupportCenter() {
@@ -21,7 +21,7 @@ export default function SupportCenter() {
 
       <main className="max-w-5xl mx-auto px-6 py-10 space-y-6">
         <section className="rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(34,197,94,0.16),_transparent_35%),linear-gradient(135deg,rgba(8,10,14,0.96),rgba(6,8,12,0.92))] p-8" data-testid="support-center-hero">
-          <p className="text-xs uppercase tracking-[0.28em] text-white/40 mb-3">App-store-ready essentials</p>
+          <p className="text-xs uppercase tracking-[0.28em] text-white/40 mb-3">Support essentials</p>
           <h2 className="text-4xl sm:text-5xl font-serif leading-[1.05] max-w-3xl">Everything needed for support, privacy, installation, and account help in one place.</h2>
           <p className="text-sm sm:text-base text-white/70 mt-5 max-w-2xl leading-relaxed">This page gives users a clear path for support questions, privacy information, install guidance, and account management actions like data export and deletion requests.</p>
         </section>
@@ -72,7 +72,7 @@ export default function SupportCenter() {
                 <li>Confirm installation.</li>
               </ol>
             </div>
-            <Button variant="outline" onClick={() => navigate("/app-readiness")} data-testid="support-center-android-readiness-btn">Open release checklist</Button>
+            <Button variant="outline" onClick={() => navigate("/support")} data-testid="support-center-android-readiness-btn">Open support checklist</Button>
           </section>
 
           <section className="rounded-[1.75rem] border border-amber-400/20 bg-amber-500/5 p-6 md:col-span-2" data-testid="support-center-install-troubleshoot-card">
@@ -102,13 +102,6 @@ export default function SupportCenter() {
                 Reload install guide
               </Button>
             </div>
-          </section>
-
-          <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-readiness-card">
-            <FileCheck2 className="w-6 h-6 text-primary mb-4" />
-            <h3 className="text-2xl font-serif mb-3">App readiness checklist</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-4">Track final submission assets and listing prep with a dedicated launch checklist.</p>
-            <Button variant="outline" onClick={() => navigate("/app-readiness")} data-testid="support-center-readiness-btn">Open readiness center</Button>
           </section>
 
           <section className="rounded-[1.75rem] border border-white/10 bg-card/60 p-6" data-testid="support-center-privacy-card">
