@@ -4632,3 +4632,26 @@
   - Sekhem Solar Channel Purification audio verified continuous at 5s, 30s, 60s, 90s, 120s, 150s.
   - Chair Yoga guided audio regression verified continuous >65s.
   - Main menu duplicates + React key warnings: resolved.
+
+## Latest Verification Snapshot (Iteration 258 — 2026-07-18)
+- ✅ **Terminology rename completed (user choices: C / B / C)**:
+  - Updated energetic language from gender-principle framing to balanced sacred-modern polarity framing.
+  - New standardized wording:
+    - **Name:** `Inner Polarity Harmonization`
+    - **Title:** `Receptive & Projective Integration`
+
+- ✅ **Files updated for related scope (section + related labels/content)**:
+  - `frontend/src/pages/masculine-temple/constants.js`
+    - Lover archetype teaching heading updated to `Inner Polarity Harmonization`
+    - Body text updated to balanced sacred-modern language.
+  - `backend/routers/content.py`
+    - Mystery school item `mystery-emerald-007` renamed to:
+      - `name = Inner Polarity Harmonization`
+      - `title = Receptive & Projective Integration`
+
+- ✅ **Validation status (testing agent iteration 258)**:
+  - Backend: **100% pass**
+  - Frontend: **100% pass**
+  - Old terms removed from affected surfaces:
+    - `Masculine & Feminine Integration`
+    - `Gender Principle Integration`
