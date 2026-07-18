@@ -4655,3 +4655,27 @@
   - Old terms removed from affected surfaces:
     - `Masculine & Feminine Integration`
     - `Gender Principle Integration`
+
+## Latest Verification Snapshot (Iteration 259 — 2026-07-18)
+- ✅ **Mantras audio experience improved (bells-only pain fixed)**:
+  - Added explicit 3-mode audio selector in mantra player:
+    - `Spoken Chant + Natural`
+    - `Soft Drone/Chant`
+    - `Bell Tones`
+  - Default pathway now supports spoken/natural mantra practice (non-high-pitch friendly).
+
+- ✅ **Healing Portals empty-state issue fixed for guest flows**:
+  - Strengthened top-nav route matching to avoid route-identification edge cases.
+  - Added payload-shape resilience in `HealingPortals.jsx` to avoid blanking UI on transient invalid responses.
+  - Result: portal cards render consistently.
+
+- ✅ **Main menu IA regrouping + duplicate cleanup completed**:
+  - Re-grouped sections for clearer information architecture and removed repeated entries across sections.
+  - `dedupeSectionItems(...)` + normalized section mapping now enforce unique label/path entries.
+
+- ✅ **Validation status (testing agent iteration 259)**:
+  - Backend: **100% pass**
+  - Frontend: **100% pass**
+  - Mantras: all 3 audio modes visible/working.
+  - Healing Portals: **18 visible cards** (no loading/empty lock).
+  - Main menu: no duplicate labels; key repeated items now appear exactly once.
