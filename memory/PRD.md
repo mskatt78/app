@@ -4679,3 +4679,14 @@
   - Mantras: all 3 audio modes visible/working.
   - Healing Portals: **18 visible cards** (no loading/empty lock).
   - Main menu: no duplicate labels; key repeated items now appear exactly once.
+
+## Latest Verification Snapshot (Iteration 260 — 2026-07-18)
+- ✅ **User-facing “App Readiness” labels removed for publish polish**:
+  - Removed `App Readiness` footer entry from `AppFooter.jsx`.
+  - Removed readiness-focused section and wording from `SupportCenter.jsx`.
+  - Updated support wording to neutral publish-safe language (`Support essentials`, `Open support checklist`).
+
+- ✅ **Validation status (testing agent iteration 260)**:
+  - Frontend: **100% pass** (backend skipped intentionally)
+  - Verified no visible `App readiness` / `Open readiness center` text on support/footer surfaces.
+  - Regression sanity passed on `/explore` and `/mindfulness`.
