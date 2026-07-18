@@ -16,6 +16,10 @@ import { appLogger } from "../../utils/logger";
 const MIN_NARRATION_MINUTES = 7;
 const DEFAULT_QUICK_START_MINUTES = 12;
 const SCRIPT_EXPANSION_TIMEOUT_MS = 18000;
+const MAX_EXPANSION_SOURCE_SENTENCES = 32;
+const MAX_EXPANSION_STEPS = 18;
+const MAX_SEGMENT_WORDS = 170;
+const MAX_SEGMENT_CHARS = 1400;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const splitSentences = (text) => String(text || "").split(/(?<=[.!?])\s+/).map((line) => line.trim()).filter((line) => line.length > 12);
 const extractStepsFromScript = (script) => {
@@ -28,6 +32,124 @@ const estimateMinutes = (script, providedMinutes) => {
   }
   const words = String(script || "").trim().split(/\s+/).filter(Boolean).length;
   return Math.max(MIN_NARRATION_MINUTES, Math.ceil(words / 120) || MIN_NARRATION_MINUTES);
+};
+
+const countWords = (text) => String(text || "").trim().split(/\s+/).filter(Boolean).length;
+
+const limitWords = (text, maxWords = 40) => String(text || "").trim().split(/\s+/).slice(0, maxWords).join(" ").trim();
+
+const normalizeForUniq = (text) => String(text || "").toLowerCase().replace(/[^a-z0-9\s]+/g, " ").replace(/\s+/g, " ").trim();
+
+const chunkSegmentForTTS = (text) => {
+  const source = String(text || "").trim();
+  if (!source) return [];
+
+  const sentences = splitSentences(source);
+  if (!sentences.length) return [limitWords(source, MAX_SEGMENT_WORDS)];
+
+  const chunks = [];
+  let current = "";
+  for (const sentence of sentences) {
+    const candidate = current ? `${current} ${sentence}` : sentence;
+    const candidateWords = countWords(candidate);
+    if (candidate.length <= MAX_SEGMENT_CHARS && candidateWords <= MAX_SEGMENT_WORDS) {
+      current = candidate;
+      continue;
+    }
+
+    if (current) chunks.push(current.trim());
+
+    const sentenceWords = countWords(sentence);
+    if (sentence.length > MAX_SEGMENT_CHARS || sentenceWords > MAX_SEGMENT_WORDS) {
+      const tokens = sentence.split(/\s+/).filter(Boolean);
+      for (let i = 0; i < tokens.length; i += MAX_SEGMENT_WORDS) {
+        const tokenChunk = tokens.slice(i, i + MAX_SEGMENT_WORDS).join(" ").trim();
+        if (tokenChunk) chunks.push(tokenChunk);
+      }
+      current = "";
+    } else {
+      current = sentence;
+    }
+  }
+
+  if (current.trim()) chunks.push(current.trim());
+  return chunks;
+};
+
+const sanitizeSegmentsForTTS = (segments) => {
+  const normalized = Array.isArray(segments)
+    ? segments
+      .map((segment) => String(segment || "").trim())
+      .filter(Boolean)
+    : [];
+
+  const output = [];
+  for (const segment of normalized) {
+    output.push(...chunkSegmentForTTS(segment));
+  }
+  return output.filter(Boolean);
+};
+
+const buildFallbackNarrationSegments = ({ script, sourceTexts = [], steps = [], practiceName, label, element, targetMinutes }) => {
+  const title = String(practiceName || label || "Guided Practice").trim();
+  const elementName = String(element || "spirit").trim().toLowerCase();
+  const targetWords = Math.max(MIN_NARRATION_MINUTES * 120, (Math.max(MIN_NARRATION_MINUTES, Number(targetMinutes) || MIN_NARRATION_MINUTES)) * 115);
+
+  const seedSentences = [script, ...steps, ...sourceTexts]
+    .flatMap((value) => splitSentences(value))
+    .map((line) => line.replace(/\s+/g, " ").trim())
+    .filter((line) => line.length > 20);
+
+  const uniqueSeeds = [];
+  const seen = new Set();
+  for (const sentence of seedSentences) {
+    const key = normalizeForUniq(sentence);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    uniqueSeeds.push(sentence);
+  }
+
+  const breathCues = [
+    "Inhale softly through your nose and let your exhale become long and easy.",
+    "Keep your jaw relaxed and your shoulders soft while your breath settles.",
+    "Let your next breath anchor safety through your chest, belly, and pelvis.",
+    "Take your time here and allow your nervous system to downshift without force.",
+    "Stay with one breath at a time and let the pace be simple and sustainable.",
+  ];
+
+  const reflectionCues = [
+    `This ${elementName} current supports gentle repair, grounded presence, and heart coherence.`,
+    "Notice sensations first, then thoughts, and let your body set the pace.",
+    "If intensity rises, soften effort and return to slower breathing.",
+    "You are not behind. Depth comes from patience, not speed.",
+    "Allow this moment to be enough and keep following the next calm breath.",
+  ];
+
+  const paragraphs = [
+    `${title}. Welcome into this guided healing sequence. Arrive fully with one slow inhale and one longer exhale.`,
+    `Ground into your body, open your heart, and let this ${elementName} practice unfold in safe, steady rhythm.`,
+  ];
+
+  if (uniqueSeeds.length) {
+    paragraphs.push(...uniqueSeeds.slice(0, 18));
+  } else {
+    paragraphs.push("Begin gently. Keep breath smooth, body soft, and awareness anchored in sensation.");
+  }
+
+  let index = 0;
+  let wordCount = countWords(paragraphs.join(" "));
+  while (wordCount < targetWords) {
+    const breath = breathCues[index % breathCues.length];
+    const reflection = reflectionCues[index % reflectionCues.length];
+    const seed = uniqueSeeds[index % Math.max(uniqueSeeds.length, 1)] || "Remain present and trust your pacing.";
+    paragraphs.push(`${breath} ${reflection} ${seed}`);
+    index += 1;
+    wordCount = countWords(paragraphs.join(" "));
+    if (index > 120) break;
+  }
+
+  paragraphs.push(`As you close ${title}, place one hand on your heart, one on your belly, and seal this practice with gratitude.`);
+  return sanitizeSegmentsForTTS(paragraphs);
 };
 
 const buildQuickStartText = ({ script, sourceTexts = [], steps = [], label, practiceName, element }) => {
@@ -46,7 +168,7 @@ const buildQuickStartText = ({ script, sourceTexts = [], steps = [], label, prac
     sourceText,
   ].filter(Boolean).join(" ");
 
-  return quick.split(/\s+/).slice(0, 120).join(" ");
+  return quick.split(/\s+/).slice(0, 55).join(" ");
 };
 
 export const useGuidedAudioPlayback = ({
@@ -192,16 +314,23 @@ export const useGuidedAudioPlayback = ({
       durationMinutes: currentDurationMinutes,
     } = playbackConfig;
 
-    const mergedSources = [currentScript, ...currentSourceTexts].flatMap((value) => splitSentences(value)).filter(Boolean).slice(0, 80);
-    const mergedSteps = [...currentSteps, ...extractStepsFromScript(currentScript)].flatMap((value) => splitSentences(value)).filter(Boolean).slice(0, 32);
+    const mergedSources = [currentScript, ...currentSourceTexts]
+      .flatMap((value) => splitSentences(value))
+      .map((line) => limitWords(line, 38))
+      .filter(Boolean)
+      .slice(0, MAX_EXPANSION_SOURCE_SENTENCES);
+    const mergedSteps = [...currentSteps, ...extractStepsFromScript(currentScript)]
+      .flatMap((value) => splitSentences(value))
+      .map((line) => limitWords(line, 30))
+      .filter(Boolean)
+      .slice(0, MAX_EXPANSION_STEPS);
 
-    const quickStartSegments = [
-      String(currentScript || "").trim(),
-      ...mergedSteps,
-      ...mergedSources.slice(0, 6),
-    ].filter(Boolean).slice(0, 3);
+    const quickStartSegments = [...mergedSteps.slice(0, 2), ...mergedSources.slice(0, 2)]
+      .map((line) => limitWords(line, 30))
+      .filter(Boolean)
+      .slice(0, 3);
 
-      const payload = {
+    const payload = {
       practice_name: currentPracticeName || currentLabel || "Guided Practice",
       element: currentElement,
       duration_minutes: effectiveNarrationMinutes,
@@ -219,33 +348,75 @@ export const useGuidedAudioPlayback = ({
 
     const fallback = String(currentScript || "").trim();
     try {
-      let timerId;
-      const timeoutPromise = new Promise((_, reject) => {
-        timerId = window.setTimeout(() => reject(new Error("Script expansion timeout")), SCRIPT_EXPANSION_TIMEOUT_MS);
-      });
+      const expansionAttempts = [
+        payload,
+        {
+          ...payload,
+          use_ai: false,
+          include_toning: false,
+        },
+      ];
 
-      const response = await Promise.race([
-        api.post("/content/expand-script", payload, { signal: controller.signal }),
-        timeoutPromise,
-      ]);
-      if (timerId) window.clearTimeout(timerId);
+      for (const attemptPayload of expansionAttempts) {
+        let timerId;
+        try {
+          const timeoutPromise = new Promise((_, reject) => {
+            timerId = window.setTimeout(() => reject(new Error("Script expansion timeout")), SCRIPT_EXPANSION_TIMEOUT_MS);
+          });
+          const response = await Promise.race([
+            api.post("/content/expand-script", attemptPayload, { signal: controller.signal }),
+            timeoutPromise,
+          ]);
+          if (timerId) window.clearTimeout(timerId);
 
-      const segments = Array.isArray(response?.data?.segments) ? response.data.segments.filter(Boolean) : [];
-      if (segments.length > 0) {
-        if (quickStartSegments.length > 0) {
-          return [...quickStartSegments, ...segments];
+          const segments = sanitizeSegmentsForTTS(response?.data?.segments || []);
+          if (!segments.length) continue;
+
+          if (quickStartSegments.length > 0) {
+            return [...quickStartSegments, ...segments];
+          }
+          return segments;
+        } catch (attemptError) {
+          if (timerId) window.clearTimeout(timerId);
+          appLogger.warn("Guided script expansion attempt failed", attemptError);
         }
-        return segments;
       }
 
       if (fallback) {
-        return quickStartSegments.length > 0 ? [...quickStartSegments, fallback] : [fallback];
+        const fallbackSegments = buildFallbackNarrationSegments({
+          script: fallback,
+          sourceTexts: mergedSources,
+          steps: mergedSteps,
+          practiceName: currentPracticeName,
+          label: currentLabel,
+          element: currentElement,
+          targetMinutes: effectiveNarrationMinutes,
+        });
+        if (quickStartSegments.length > 0) {
+          return [...quickStartSegments, ...fallbackSegments];
+        }
+        return fallbackSegments;
       }
 
-      return [];
+      return quickStartSegments;
     } catch (error) {
       appLogger.warn("Guided script expansion fallback engaged", error);
-      return fallback ? [fallback] : [];
+      const fallbackSegments = buildFallbackNarrationSegments({
+        script: fallback,
+        sourceTexts: mergedSources,
+        steps: mergedSteps,
+        practiceName: currentPracticeName,
+        label: currentLabel,
+        element: currentElement,
+        targetMinutes: effectiveNarrationMinutes,
+      });
+      if (fallbackSegments.length > 0) {
+        if (quickStartSegments.length > 0) {
+          return [...quickStartSegments, ...fallbackSegments];
+        }
+        return fallbackSegments;
+      }
+      return quickStartSegments;
     }
   }, [api, effectiveNarrationMinutes, playbackConfig]);
 
@@ -267,7 +438,17 @@ export const useGuidedAudioPlayback = ({
         return;
       }
 
-      const audioUrl = await getSegmentAudio(segmentText, controller);
+      let audioUrl = null;
+      try {
+        audioUrl = await getSegmentAudio(segmentText, controller);
+      } catch (segmentError) {
+        appLogger.warn("Guided segment generation failed; skipping segment", {
+          index,
+          error: segmentError,
+        });
+        await playIndex(index + 1);
+        return;
+      }
       if (isStoppedRef.current || controller.signal.aborted || activeRunId !== playbackRunIdRef.current) return;
 
       const nextText = String(segments[index + 1] || "").trim();
@@ -282,8 +463,12 @@ export const useGuidedAudioPlayback = ({
       audioRef.current = audio;
       toningLayerRef.current?.setMuted?.(true, 1);
       audio.onerror = () => {
-        toast.error("Voice playback error");
-        stopPlayback();
+        appLogger.warn("Guided segment playback error; advancing", { index });
+        toningLayerRef.current?.setMuted?.(false, 0.2);
+        playIndex(index + 1).catch((error) => {
+          appLogger.warn("Guided audio recovery failed after playback error", error);
+          stopPlayback();
+        });
       };
       audio.onended = () => {
         audioRef.current = null;
