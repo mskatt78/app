@@ -43,6 +43,26 @@ const resolvePath = (primary, ...fallbacks) => {
   return primary;
 };
 
+const dedupeSectionItems = (items = []) => {
+  const seenLabel = new Set();
+  const seenPath = new Set();
+  const deduped = [];
+
+  for (const item of items) {
+    const labelKey = String(item?.label || "").trim().toLowerCase();
+    const pathKey = String(item?.path || "").trim().toLowerCase();
+    if (!labelKey || !pathKey) continue;
+
+    if (seenLabel.has(labelKey) || seenPath.has(pathKey)) continue;
+
+    seenLabel.add(labelKey);
+    seenPath.add(pathKey);
+    deduped.push(item);
+  }
+
+  return deduped;
+};
+
 const MainMenuContainer = ({ user }) => {
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -143,13 +163,13 @@ const MainMenuContainer = ({ user }) => {
         { path: resolvePath("/mystery-school-teachings"), icon: BookOpen, label: "Mystery School Teachings", color: "text-amber-200", desc: "Egyptian, Rose, Emerald Tablet, Merlin" },
         { path: "/sacred-ally-alchemy", icon: Sparkles, label: "Sacred Allies Alchemy", color: "text-fuchsia-300", desc: "Dragon, whales, wolves & expanded allies" },
         { path: resolvePath("/sacred-guardians"), icon: Feather, label: "Power Animals", color: "text-emerald-300", desc: "Instinct, courage, protection" },
-        { path: resolvePath("/sacred-guardians"), icon: Star, label: "Spirit Animals", color: "text-violet-300", desc: "Guidance through symbols & dreams" },
+        { path: resolvePath("/sacred-guardians", "/sacred-ally-alchemy"), icon: Star, label: "Spirit Animals", color: "text-violet-300", desc: "Guidance through symbols & dreams" },
         { path: resolvePath("/sacred-ally-alchemy"), icon: Globe, label: "Galactic Allies", color: "text-cyan-300", desc: "Stellar lineages & transmissions" },
         { path: "/angelic-alchemy", icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300", desc: "Dedicated Archangel section" },
         { path: "/sacred-guardians", icon: Feather, label: "Sacred Guardians", color: "text-amber-400", desc: "Animals, dragons & angels" },
         { path: "/ancient-wisdom", icon: Globe, label: "Ancient Traditions", color: "text-yellow-400", desc: "Egyptian, Celtic & Avalon" },
         { path: "/sound-frequencies", icon: Volume2, label: "Sound Healing", color: "text-cyan-400", desc: "Frequencies & vibration" },
-        { path: resolvePath("/sound-frequencies"), icon: Volume2, label: "Voice Activation", color: "text-cyan-300", desc: "Toning, resonance, expression" },
+        { path: resolvePath("/mantras", "/sound-frequencies"), icon: Volume2, label: "Voice Activation", color: "text-cyan-300", desc: "Toning, resonance, expression" },
         { path: "/creative", icon: Palette, label: "Sacred Art", color: "text-violet-400", desc: "Creative expression" },
         { path: resolvePath("/free-form-movement"), icon: Wind, label: "Ecstatic Dance", color: "text-fuchsia-400", desc: "Liberation through movement" },
         { path: resolvePath("/kundalini-consciousness", "/sacred-ally-alchemy"), icon: Dna, label: "Kundalini Consciousness", color: "text-orange-300", desc: "Living life-force · safe uncoiling" },
@@ -161,12 +181,11 @@ const MainMenuContainer = ({ user }) => {
         { path: "/tarot", icon: Star, label: "Tarot Reading", color: "text-indigo-400", desc: "Major Arcana wisdom" },
         { path: "/oracle", icon: Eye, label: "Oracle Cards", color: "text-purple-400", desc: "Spirit guidance" },
         { path: "/archangels", icon: Feather, label: "Archangel Oracle", color: "text-amber-400", desc: "Divine angelic guidance" },
-        { path: "/angelic-alchemy", icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300", desc: "Archangel rituals & protocols" },
         { path: "/rune-readings", icon: Star, label: "Rune Readings", color: "text-amber-400", desc: "Elder Futhark wisdom" },
         { path: "/i-ching", icon: Coins, label: "I Ching", color: "text-red-400", desc: "Book of Changes" },
         { path: "/numerology", icon: Hash, label: "Numerology", color: "text-amber-400", desc: "Life path numbers" },
         { path: "/astrology", icon: Moon, label: "Moon Calendar", color: "text-blue-400", desc: "Lunar cycles & phases" },
-        { path: resolvePath("/astrology"), icon: Sunrise, label: "Sun & Moon", color: "text-yellow-300", desc: "Solar-lunar integration" },
+        { path: resolvePath("/sunrise-sunset", "/astrology"), icon: Sunrise, label: "Sun & Moon", color: "text-yellow-300", desc: "Solar-lunar integration" },
         { path: "/gene-keys", icon: Dna, label: "Gene Keys", color: "text-violet-400", desc: "Shadow to Siddhi" },
         { path: "/human-design", icon: Hexagon, label: "Human Design", color: "text-indigo-400", desc: "Your energetic blueprint" },
         { path: "/profile-calculator", icon: Calculator, label: "Profile Calculator", color: "text-pink-400", desc: "Discover your type" },
@@ -189,8 +208,6 @@ const MainMenuContainer = ({ user }) => {
         { path: "/chakra-cleansing", icon: Hexagon, label: "Chakra Cleansing", color: "text-violet-400", desc: "All 13 energy centers" },
         { path: "/energy-healing", icon: Sparkles, label: "Energy Healing", color: "text-amber-400", desc: "Reiki, Sekhem & Dreamtime" },
         { path: "/somatic-yoga", icon: Leaf, label: "Somatic Yoga", color: "text-emerald-400", desc: "Trauma release & healing" },
-        { path: "/chair-yoga", icon: Users, label: "Chair Yoga", color: "text-lime-300", desc: "Seated accessible practice" },
-        { path: "/fascia-stretching", icon: Waves, label: "Fascia Stretching", color: "text-cyan-300", desc: "Connective tissue release" },
         { path: "/free-form-movement", icon: Wind, label: "Free Form Movement", color: "text-fuchsia-400", desc: "Ecstatic dance & liberation" },
       ]
     },
@@ -272,7 +289,9 @@ const MainMenuContainer = ({ user }) => {
 
         {/* Menu Sections */}
         <div className="space-y-10">
-          {menuSections.map((section, sectionIndex) => (
+          {menuSections.map((section, sectionIndex) => {
+            const uniqueItems = dedupeSectionItems(section.items);
+            return (
             <motion.div
               key={section.title}
               initial={{ opacity: 0, y: 20 }}
@@ -283,15 +302,15 @@ const MainMenuContainer = ({ user }) => {
                 {section.title}
               </h3>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                {section.items.map((item) => (
+                {uniqueItems.map((item) => (
                   <motion.button
-                    key={item.path}
+                    key={`${section.title}-${item.path}-${item.label}`}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => navigate(item.path)}
                     className="flex flex-col items-center p-4 rounded-xl bg-white/5 hover:bg-white/10 
                              border border-white/10 hover:border-primary/30 transition-all text-center"
-                    data-testid={`menu-${item.path.slice(1)}`}
+                    data-testid={`menu-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${item.path.slice(1).replace(/[^a-z0-9]+/g, '-')}`}
                   >
                     <item.icon className={`w-8 h-8 mb-2 ${item.color}`} />
                     <span className="font-medium text-sm">{item.label}</span>
@@ -300,7 +319,8 @@ const MainMenuContainer = ({ user }) => {
                 ))}
               </div>
             </motion.div>
-          ))}
+          );
+          })}
         </div>
 
         {/* Quick Access Footer */}
