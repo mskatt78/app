@@ -4611,3 +4611,24 @@
     - `/api/water-practices`
     - `/api/energy-healing`
     - `/api/grounding`
+
+## Latest Verification Snapshot (Iteration 257 — 2026-07-18)
+- ✅ **Sekhem guided audio cutoff fixed (1-minute stop issue)**:
+  - Hardened `useGuidedAudioPlayback.js` with resilient fallback pipeline:
+    - capped expansion payload size to avoid 60s proxy timeout loops
+    - deterministic local fallback narration builder when expand-script fails
+    - segment sanitization/chunking for TTS-friendly playback
+    - skip-on-failure segment continuation instead of full stop
+  - Result: Sekhem guided audio stays in active playback well beyond 1 minute.
+
+- ✅ **Main menu duplicates fixed**:
+  - Updated `MainMenuContainer.jsx` to remove duplicated menu items and eliminate duplicate-key warnings.
+  - Added `dedupeSectionItems(...)` and unique render keys (`section + path + label`).
+  - Removed redundant cross-section duplicates for Chair Yoga, Fascia Stretching, Angelic Alchemy.
+
+- ✅ **Validation status (testing agent iteration 257)**:
+  - Backend: **100% pass**
+  - Frontend: **100% pass**
+  - Sekhem Solar Channel Purification audio verified continuous at 5s, 30s, 60s, 90s, 120s, 150s.
+  - Chair Yoga guided audio regression verified continuous >65s.
+  - Main menu duplicates + React key warnings: resolved.
