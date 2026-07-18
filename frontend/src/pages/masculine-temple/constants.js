@@ -204,8 +204,8 @@ export const archetypes = [
         body: "The Lover archetype is the one who wants to taste everything — not in the sense of hedonism, but in the sense of full engagement with life. He is the one who weeps at music, is stopped in his tracks by the sunset, is genuinely curious about every person he meets. He does not live behind glass. He is moved. He allows himself to be affected. This is courage of a different kind.",
       },
       {
-        heading: "Masculine & Feminine Integration",
-        body: "True maturity in a man involves integrating the feminine — not becoming feminine, but honoring the yin within: the receptive, the intuitive, the tender, the relational. The man who can be soft without losing himself, who can receive without grasping, who can love without losing his sense of self — this man is whole. He is not less masculine for this integration. He is more.",
+        heading: "Inner Polarity Harmonization",
+        body: "True maturity in a man involves harmonizing inner polarities — honoring both receptive and projective energies in a grounded way. This is not about losing masculine presence; it is about integrating tenderness with clarity, intuition with direction, and relational openness with healthy boundaries. When these currents work together, integrity deepens and expression becomes coherent.",
       },
       {
         heading: "Presence as the Greatest Gift",
