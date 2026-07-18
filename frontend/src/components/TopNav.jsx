@@ -55,6 +55,37 @@ const resolvePath = (primary, ...fallbacks) => {
   return primary;
 };
 
+const isRouteMatch = (pathname, candidatePath) => {
+  const normalize = (value) => {
+    const v = String(value || "").split("?")[0].split("#")[0].replace(/\/+$/, "");
+    return v || "/";
+  };
+  const current = normalize(pathname);
+  const candidate = normalize(candidatePath);
+  if (current === candidate) return true;
+  return candidate !== "/" && current.startsWith(`${candidate}/`);
+};
+
+const findBestCurrentPage = (pathname, items) => {
+  const matches = items.filter((item) => isRouteMatch(pathname, item.path));
+  if (!matches.length) return null;
+  return matches.sort((a, b) => String(b.path || "").length - String(a.path || "").length)[0];
+};
+
+const dedupeNavItems = (items = []) => {
+  const seenLabel = new Set();
+  const seenPath = new Set();
+  return items.filter((item) => {
+    const labelKey = String(item?.label || "").trim().toLowerCase();
+    const pathKey = String(item?.path || "").trim().toLowerCase();
+    if (!labelKey || !pathKey) return false;
+    if (seenLabel.has(labelKey) || seenPath.has(pathKey)) return false;
+    seenLabel.add(labelKey);
+    seenPath.add(pathKey);
+    return true;
+  });
+};
+
 const TopNav = ({ user }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,7 +93,7 @@ const TopNav = ({ user }) => {
   const ADMIN_EMAILS = new Set(["mskatt78@gmail.com", "skywatersacredembodiments@gmail.com"]);
   const isAdminUser = user?.email && ADMIN_EMAILS.has(user.email.toLowerCase());
 
-  const menuItems = [
+  const menuItems = dedupeNavItems([
     { path: resolvePath("/yoga"), icon: Sparkles, label: "Yoga Library", color: "text-emerald-400" },
     { path: resolvePath("/partner-yoga"), icon: Users, label: "Partner Yoga", color: "text-teal-400" },
     { path: resolvePath("/breathwork"), icon: Wind, label: "Breathwork", color: "text-cyan-400" },
@@ -81,7 +112,7 @@ const TopNav = ({ user }) => {
     { path: resolvePath("/heart-practices"), icon: Heart, label: "Heart Practices", color: "text-pink-400" },
     { path: resolvePath("/sacred-ally-alchemy"), icon: Sparkles, label: "Sacred Allies", color: "text-fuchsia-300" },
     { path: resolvePath("/sacred-guardians"), icon: Shield, label: "Sacred Guardians", color: "text-amber-300" },
-    { path: resolvePath("/sacred-guardians"), icon: Globe, label: "Power & Spirit Animals", color: "text-emerald-300" },
+    { path: resolvePath("/sacred-guardians", "/sacred-ally-alchemy"), icon: Globe, label: "Power & Spirit Animals", color: "text-emerald-300" },
     { path: resolvePath("/alchemy-hub", "/all-alchemy"), icon: Sparkles, label: "All Alchemy Hub", color: "text-fuchsia-200" },
     { path: resolvePath("/mystery-school-teachings"), icon: Star, label: "Mystery School", color: "text-amber-200" },
     { path: resolvePath("/angelic-alchemy"), icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300" },
@@ -107,12 +138,12 @@ const TopNav = ({ user }) => {
     { path: resolvePath("/elemental-temples"), icon: Globe, label: "Elemental Temples", color: "text-teal-400" },
     { path: resolvePath("/masculine-temple"), icon: Shield, label: "Masculine Temple", color: "text-amber-400" },
     { path: resolvePath("/seasonal-temple"), icon: Leaf, label: "Wheel of the Year", color: "text-orange-400" },
-  ];
+  ]);
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) => isRouteMatch(location.pathname, path);
 
   // Get current page name
-  const currentPage = menuItems.find(item => item.path === location.pathname);
+  const currentPage = findBestCurrentPage(location.pathname, menuItems);
 
   return (
     <>

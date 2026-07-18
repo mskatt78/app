@@ -118,11 +118,14 @@ const MantrasLibrary = ({ user, api }) => {
   const tempoMultipliers = { slow: 1.5, normal: 1.0, fast: 0.7 };
   const tempoLabels = { slow: "Slow (Relaxed)", normal: "Normal", fast: "Fast (Energizing)" };
   
+  // Mantra sound modes: spoken chant, soft drone, or bell tones
+  const [mantraSoundMode, setMantraSoundMode] = useState("spoken"); // spoken | drone | bell
+
   // Generated mantra sound state
   const mantraAudioCtxRef = useRef(null);
   const mantraGainRef = useRef(null);
   const mantraIntervalRef = useRef(null);
-  const [useGeneratedSound, setUseGeneratedSound] = useState(true); // Default to generated sound
+  const useGeneratedSound = mantraSoundMode !== "spoken";
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
   const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
@@ -311,8 +314,8 @@ const MantrasLibrary = ({ user, api }) => {
               toast.success("Mantra practice complete!");
               return rep;
             }
-            // Play bell chime at each repetition transition (audible cue for eyes-closed practice)
-            if (!isMuted && mantraAudioCtxRef.current && mantraGainRef.current) {
+            // Bell mode: keep high-pitch cue only if explicitly selected
+            if (mantraSoundMode === "bell" && !isMuted && mantraAudioCtxRef.current && mantraGainRef.current) {
               playBellTone(mantraAudioCtxRef.current, mantraGainRef.current, 
                 ELEMENT_FREQUENCIES[selectedMantra.element] || 432, 2);
             }
@@ -346,35 +349,45 @@ const MantrasLibrary = ({ user, api }) => {
       gainNode.connect(ctx.destination);
       mantraGainRef.current = gainNode;
       
-      // Play initial bell - louder and longer
-      playBellTone(ctx, gainNode, ELEMENT_FREQUENCIES[mantra?.element] || 432, 2.2);
-
-      // Chant-style synthesis for every mantra (OM and non-OM)
-      playChantForMantra(
-        ctx,
-        gainNode,
-        mantra?.name,
-        mantra?.element,
-        Math.max(cycleDuration * 0.9, 3.2),
-      );
+      if (mantraSoundMode === "bell") {
+        playBellTone(ctx, gainNode, ELEMENT_FREQUENCIES[mantra?.element] || 432, 2.2);
+      } else {
+        // Soft drone/chant mode
+        playChantForMantra(
+          ctx,
+          gainNode,
+          mantra?.name,
+          mantra?.element,
+          Math.max(cycleDuration * 0.9, 3.2),
+        );
+      }
       
       // Show toast that sound is playing
       toast.success(
-        isOmMantra(selectedMantra)
-          ? "OM chant resonance playing"
-          : `${mantra?.name || "Mantra"} chant resonance playing`
+        mantraSoundMode === "bell"
+          ? "Bell mode active"
+          : `${mantra?.name || "Mantra"} chant mode active`
       );
       
-      // Set up recurring chant sounds - more frequent
+      // Set up recurring sound by mode
       mantraIntervalRef.current = setInterval(() => {
         if (mantraAudioCtxRef.current && mantraGainRef.current) {
-          playChantForMantra(
-            mantraAudioCtxRef.current,
-            mantraGainRef.current,
-            mantra?.name,
-            mantra?.element,
-            Math.max(cycleDuration * 0.8, 3),
-          );
+          if (mantraSoundMode === "bell") {
+            playBellTone(
+              mantraAudioCtxRef.current,
+              mantraGainRef.current,
+              ELEMENT_FREQUENCIES[mantra?.element] || 432,
+              1.8,
+            );
+          } else {
+            playChantForMantra(
+              mantraAudioCtxRef.current,
+              mantraGainRef.current,
+              mantra?.name,
+              mantra?.element,
+              Math.max(cycleDuration * 0.8, 3),
+            );
+          }
         }
       }, cycleDuration * 1000);
       
@@ -652,7 +665,9 @@ const MantrasLibrary = ({ user, api }) => {
         setTempo={setTempo}
         tempoLabels={tempoLabels}
         useGeneratedSound={useGeneratedSound}
-        setUseGeneratedSound={setUseGeneratedSound}
+        setUseGeneratedSound={(value) => setMantraSoundMode(value ? "drone" : "spoken")}
+        mantraSoundMode={mantraSoundMode}
+        setMantraSoundMode={setMantraSoundMode}
         resetChanting={resetChanting}
         startChanting={startChanting}
         stopChanting={stopChanting}

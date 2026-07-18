@@ -31,6 +31,11 @@ const normalizePortalList = (value) => {
   return normalized;
 };
 
+const isArrayPayloadShape = (value) => {
+  if (Array.isArray(value)) return true;
+  return Array.isArray(value?.items);
+};
+
 const sanitizeToList = (value) => {
   if (Array.isArray(value)) {
     return value.map((item) => String(item || "").trim()).filter(Boolean);
@@ -177,6 +182,12 @@ const HealingPortals = ({ user, api }) => {
       }
 
       const normalizedData = normalizePortalList(responseData);
+
+      // If public route network/auth race returns an invalid shape, don't clobber existing visible data.
+      if (!isArrayPayloadShape(responseData) && portals.length > 0) {
+        setLoading(false);
+        return;
+      }
 
       if (!normalizedData.length) {
         throw lastError || new Error("Healing portals response invalid");

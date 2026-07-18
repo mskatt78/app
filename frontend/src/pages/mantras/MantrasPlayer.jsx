@@ -36,6 +36,8 @@ export const MantrasPlayer = ({
   tempoLabels,
   useGeneratedSound,
   setUseGeneratedSound,
+  mantraSoundMode,
+  setMantraSoundMode,
   resetChanting,
   startChanting,
   stopChanting,
@@ -331,20 +333,21 @@ export const MantrasPlayer = ({
                   <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
                     <span className="text-sm flex items-center gap-2">
                       <Music className="w-4 h-4 text-primary" />
-                      <span className="font-medium">Meditation Sound</span>
+                      <span className="font-medium">Mantra Audio Mode</span>
                     </span>
-                    <Button
-                      variant={useGeneratedSound ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setUseGeneratedSound(!useGeneratedSound)}
-                      data-testid="mantra-sound-mode-toggle"
-                      className={useGeneratedSound ? "bg-primary text-primary-foreground" : "text-muted-foreground"}
-                    >
-                      {useGeneratedSound ? "ON - Bells & Om" : "ON - Natural"}
-                    </Button>
+                    <Select value={mantraSoundMode || (useGeneratedSound ? "drone" : "spoken")} onValueChange={setMantraSoundMode}>
+                      <SelectTrigger className="w-48 bg-card/60 border-white/15" data-testid="mantra-sound-mode-select-trigger">
+                        <SelectValue placeholder="Choose mode" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="spoken" data-testid="mantra-sound-mode-option-spoken">Spoken Chant + Natural</SelectItem>
+                        <SelectItem value="drone" data-testid="mantra-sound-mode-option-drone">Soft Drone/Chant</SelectItem>
+                        <SelectItem value="bell" data-testid="mantra-sound-mode-option-bell">Bell Tones</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
-                  {!useGeneratedSound && (
+                  {(!useGeneratedSound || mantraSoundMode === "spoken") && (
                     <div className="mb-4 p-3 rounded-lg bg-white/5 border border-white/10">
                       <div className="flex items-center justify-between mb-3">
                         <span className="text-xs uppercase tracking-wider text-muted-foreground">Natural Soundscape</span>
@@ -385,7 +388,9 @@ export const MantrasPlayer = ({
 
                   {useGeneratedSound && (
                     <p className="text-xs text-primary/80 text-center mb-4 p-2 rounded bg-primary/5">
-                      🔔 Bell tones & Om sounds will play during your practice. Make sure your device volume is up!
+                      {mantraSoundMode === "bell"
+                        ? "🔔 Bell mode selected. You can switch to Spoken Chant + Natural if high tones feel intense."
+                        : "🎙️ Soft drone chant mode selected. Spoken mantra remains available above."}
                     </p>
                   )}
 
@@ -435,7 +440,9 @@ export const MantrasPlayer = ({
 
                   <p className="text-xs text-muted-foreground text-center mt-4">
                     {useGeneratedSound
-                      ? `Om tones & bells accompany your ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])}s cycles.`
+                      ? mantraSoundMode === "bell"
+                        ? `Bell tones accompany your ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])}s cycles.`
+                        : `Soft chant drone accompanies your ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])}s cycles.`
                       : `${naturalSoundOptions.find((option) => option.id === selectedNaturalSound)?.label || "Natural sound"} accompanies your ${Math.round(selectedMantra.duration_seconds * tempoMultipliers[tempo])} second cycles.`}
                   </p>
                 </div>

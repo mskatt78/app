@@ -63,6 +63,11 @@ const dedupeSectionItems = (items = []) => {
   return deduped;
 };
 
+const normalizeSection = (section) => ({
+  ...section,
+  items: dedupeSectionItems(section.items || []),
+});
+
 const MainMenuContainer = ({ user }) => {
   const navigate = useNavigate();
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -132,6 +137,7 @@ const MainMenuContainer = ({ user }) => {
         { path: "/mudras", icon: Hand, label: "Mudras", color: "text-orange-400", desc: "Sacred hand gestures" },
         { path: "/somatic", icon: Flame, label: "Somatic Movement", color: "text-red-400", desc: "Tai Chi & Qigong" },
         { path: "/partner-yoga", icon: Users, label: "Partner Yoga", color: "text-teal-400", desc: "Sacred connection for two" },
+        { path: resolvePath("/free-form-movement"), icon: Wind, label: "Ecstatic Dance", color: "text-fuchsia-400", desc: "Liberation through movement" },
       ]
     },
     {
@@ -155,7 +161,7 @@ const MainMenuContainer = ({ user }) => {
       ]
     },
     {
-      title: "Shamanic Wisdom",
+      title: "Shamanic Alchemy & Allies",
       items: [
         { path: "/shamanic", icon: Moon, label: "Shamanic Practices", color: "text-indigo-400", desc: "Journey & soul retrieval" },
         { path: "/heart-practices", icon: Heart, label: "Heart Practices", color: "text-pink-400", desc: "Heart opening ceremonies" },
@@ -170,8 +176,6 @@ const MainMenuContainer = ({ user }) => {
         { path: "/ancient-wisdom", icon: Globe, label: "Ancient Traditions", color: "text-yellow-400", desc: "Egyptian, Celtic & Avalon" },
         { path: "/sound-frequencies", icon: Volume2, label: "Sound Healing", color: "text-cyan-400", desc: "Frequencies & vibration" },
         { path: resolvePath("/mantras", "/sound-frequencies"), icon: Volume2, label: "Voice Activation", color: "text-cyan-300", desc: "Toning, resonance, expression" },
-        { path: "/creative", icon: Palette, label: "Sacred Art", color: "text-violet-400", desc: "Creative expression" },
-        { path: resolvePath("/free-form-movement"), icon: Wind, label: "Ecstatic Dance", color: "text-fuchsia-400", desc: "Liberation through movement" },
         { path: resolvePath("/kundalini-consciousness", "/sacred-ally-alchemy"), icon: Dna, label: "Kundalini Consciousness", color: "text-orange-300", desc: "Living life-force · safe uncoiling" },
       ]
     },
@@ -192,23 +196,22 @@ const MainMenuContainer = ({ user }) => {
       ]
     },
     {
-      title: "Sacred Tools",
+      title: "Sacred Tools & Creative",
       items: [
         { path: "/crystals", icon: Gem, label: "Crystal Guide", color: "text-pink-400", desc: "42 healing stones" },
         { path: "/light-codes", icon: Hexagon, label: "Light Codes", color: "text-violet-400", desc: "Sacred geometry" },
+        { path: "/creative", icon: Palette, label: "Sacred Art", color: "text-violet-400", desc: "Creative expression" },
         { path: "/creative?category=earth-crafting", icon: Mountain, label: "Earth Art Sacred Tool Birthing", color: "text-emerald-300", desc: "Create sacred tools & ritual objects" },
         { path: resolvePath("/earth-altars", "/creative"), icon: Globe, label: "Earth Medicines", color: "text-emerald-300", desc: "Plant & earth altar pathways" },
-        { path: resolvePath("/alchemy-hub", "/all-alchemy", "/angelic-alchemy"), icon: Sparkles, label: "Alchemy", color: "text-violet-300", desc: "Embodied transformation practices" },
       ]
     },
     {
-      title: "Self-Healing & Energy Work",
+      title: "Self-Healing & Energy",
       items: [
         { path: "/healing-portals", icon: Orbit, label: "Healing Portals", color: "text-amber-300", desc: "Immersive premium ceremonies" },
         { path: "/chakra-cleansing", icon: Hexagon, label: "Chakra Cleansing", color: "text-violet-400", desc: "All 13 energy centers" },
         { path: "/energy-healing", icon: Sparkles, label: "Energy Healing", color: "text-amber-400", desc: "Reiki, Sekhem & Dreamtime" },
         { path: "/somatic-yoga", icon: Leaf, label: "Somatic Yoga", color: "text-emerald-400", desc: "Trauma release & healing" },
-        { path: "/free-form-movement", icon: Wind, label: "Free Form Movement", color: "text-fuchsia-400", desc: "Ecstatic dance & liberation" },
       ]
     },
     {
@@ -221,7 +224,7 @@ const MainMenuContainer = ({ user }) => {
         { path: "/progress", icon: BarChart3, label: "My Progress", color: "text-cyan-400", desc: "Track your growth" },
       ]
     }
-  ], []);
+  ].map(normalizeSection), []);
 
   const authModalTitle = isLogin ? "Welcome Back" : "Begin Your Journey";
   const authSubmitText = loading ? "Please wait..." : (isLogin ? "Sign In" : "Create Account");
