@@ -45,7 +45,7 @@ def _parse_cors_origins() -> list[str]:
     if not raw_origins:
         raise RuntimeError("CORS_ORIGINS is required")
 
-    origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+    origins = [origin.strip().strip('"').strip("'") for origin in raw_origins.split(",") if origin.strip()]
     if not origins:
         raise RuntimeError("CORS_ORIGINS must contain at least one origin")
 

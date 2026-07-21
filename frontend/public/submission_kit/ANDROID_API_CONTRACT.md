@@ -27,9 +27,9 @@ All endpoints return the same JSON contract describing auth, required public end
 - `/api/content/expand-script`
 
 ## Privacy & Account Deletion Endpoints
-- `/api/user/account/export`
-- `/api/user/account/delete-request`
-- `/api/user/account/deletion-status`
+- `/api/account/export`
+- `/api/account/delete-request`
+- `/api/account/deletion-status`
 
 ## CORS / Mobile Notes
 - Backend CORS is configured using explicit allowed origins via environment (`CORS_ORIGINS`).
