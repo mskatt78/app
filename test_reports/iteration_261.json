@@ -1,0 +1,96 @@
+{
+  "summary": "Heart Practices image alignment fix verified. All 14 practices now display semantically-matched images via deterministic HEART_IMAGE_OVERRIDES. Backend API returns correct image URLs, frontend displays images correctly with proper alt text.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {
+        "endpoint": "/api/heart-practices/{id}",
+        "issue": "Single practice endpoint does not support supplement IDs (heart-supp-*). Supplements only available via list endpoint. This is expected behavior but worth noting."
+      }
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_heart_practices.py",
+    "/app/test_reports/pytest/pytest_iteration261.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "HEART_IMAGE_OVERRIDES in content.py correctly maps all 14 practice IDs (1-10 + heart-supp-101 to heart-supp-104) to deterministic static image URLs",
+    "_apply_id_image_overrides function properly applies overrides to both database practices and supplements",
+    "Frontend HeartPracticesGrid.jsx correctly uses practice.image_url and practice.name for img src and alt attributes"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_heart_practices.py"
+  ],
+  "success_rate": {
+    "backend": "100% (11/11 tests passed)",
+    "frontend": "100% (all UI tests passed)"
+  },
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Heart Practices image alignment is now fixed. All 14 practices use deterministic image URLs from HEART_IMAGE_OVERRIDES. Images are semantically aligned with practice names (e.g., 'Heart Opening Ceremony' shows meditation pose, 'Forgiveness Fire Ritual' shows fire/candle scene). Premium locks work correctly for 10 premium practices.",
+  "tests_executed": [
+    {
+      "test": "API /api/heart-practices returns 14 practices",
+      "result": "PASS",
+      "details": "All 14 practices returned with correct IDs"
+    },
+    {
+      "test": "All practices have deterministic image URLs",
+      "result": "PASS",
+      "details": "All images use static.prod-images.emergentagent.com prefix"
+    },
+    {
+      "test": "Each practice has unique image",
+      "result": "PASS",
+      "details": "No duplicate image URLs found"
+    },
+    {
+      "test": "Image URLs are accessible",
+      "result": "PASS",
+      "details": "HEAD requests to first 3 images return 200"
+    },
+    {
+      "test": "Frontend displays 14 practice cards",
+      "result": "PASS",
+      "details": "All cards visible with images and Start Guided Practice buttons"
+    },
+    {
+      "test": "Modal displays matching image",
+      "result": "PASS",
+      "details": "Heart Opening Ceremony modal shows correct image"
+    },
+    {
+      "test": "Premium locks work",
+      "result": "PASS",
+      "details": "10 premium badges visible, lock modal appears on click"
+    },
+    {
+      "test": "Begin Guided Practice button in modal",
+      "result": "PASS",
+      "details": "Button present and clickable"
+    }
+  ],
+  "image_alignment_verification": {
+    "1_heart_opening_ceremony": "Person in meditation with hands on heart - ALIGNED",
+    "2_forgiveness_fire_ritual": "Fire/candle ritual scene - ALIGNED",
+    "3_grief_honoring_practice": "Contemplative candle scene - ALIGNED",
+    "4_compassion_expansion_meditation": "Peaceful meditation scene - ALIGNED",
+    "5_inner_child_healing_journey": "Nurturing scene - ALIGNED",
+    "6_sacred_relationship_blessing": "Two people in blessing ceremony - ALIGNED",
+    "7_meridian_therapy_flow": "Healing/therapy scene - ALIGNED",
+    "8_trauma_informed_somatic_shedding": "Somatic practice scene - ALIGNED",
+    "9_shamanic_healing_journey": "Shamanic/nature scene - ALIGNED",
+    "10_energy_sweeping_aura_cleansing": "Energy healing scene - ALIGNED",
+    "heart_supp_101_compassionate_boundary_breath": "Breathwork scene - ALIGNED",
+    "heart_supp_102_forgiveness_somatic_release": "Somatic release scene - ALIGNED",
+    "heart_supp_103_inner_child_heart_reparenting": "Nurturing/reparenting scene - ALIGNED",
+    "heart_supp_104_relational_repair_invocation": "Relationship healing scene - ALIGNED"
+  }
+}

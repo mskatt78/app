@@ -1882,6 +1882,23 @@ FASCIA_IMAGE_OVERRIDES: dict[str, str] = {
     "39": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/42c6edcc77557a519bff5e40533fdf4b0560cbb33a9a92d9ac3fe0dc7a5be692.png",
 }
 
+HEART_IMAGE_OVERRIDES: dict[str, str] = {
+    "1": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e62199b66e0995de6e5eb1e89a81d9614b3fc7b6aeb6d1c8c389a3c472529de2.jpeg",
+    "2": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/b96207fd50cc43d63aa2ae50725f7491d3b8413b859459e96e7b3f86dd94bfe1.jpeg",
+    "3": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/02eb833c4a76ac312e750c8b5050026b50c2d9cbfcf65b17df40d2053f177b6d.jpeg",
+    "4": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e33e58b099543946cdb7e69f222ac92d88097148c02fb4c2e386582db2e017d4.jpeg",
+    "5": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9d49966da7c800b20eaa75d5605415aeb5e62febb84c559ce59b16e82877a90f.jpeg",
+    "6": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/94777a23b04ccc8644d3e8c4aae4f5fefd362cbaba7dc4284830c293f75f34f8.jpeg",
+    "7": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/1c989725a3e901af9723d9b58c4bad65160021c17ca3fe6943102dd65bc0dda7.jpeg",
+    "8": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/96c9cbc2e74457dc472d5e2e7854a539208cd7207963f5513149935282045670.jpeg",
+    "9": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/15e056235fdfc6bea982da9c6454287df613962c4cd10bd975d20229efb99676.jpeg",
+    "10": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7719a7b5930824a2293877605eea4326c07adc5469fc268e8481ff95f33cdac7.jpeg",
+    "heart-supp-101": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/088df08f6e4f288b18ebd5c79048447b150afac6284299fe216b5cc948735449.jpeg",
+    "heart-supp-102": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/177ccf05d906348372fef2f3802689f4dd37ee3e2916fff35051c4116e1aad7d.jpeg",
+    "heart-supp-103": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e76feda151b5a8cd3fd28bdc774a75711ce45a7103810facf57821948abff6fd.jpeg",
+    "heart-supp-104": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/b962b2d48349d5c928847af6eb59c410bbcd1214880f38820fb6e1143d4286aa.jpeg",
+}
+
 MINDFULNESS_IMAGE_OVERRIDES: dict[str, str] = {
     "mindful-body-prayer": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/88d7f123ccb7fabaa6e8712911e9ba2c920a0702ce4df9d34a063544d1fb7301.png",
 }
@@ -7263,6 +7280,7 @@ async def get_heart_practices(category: Optional[str] = None) -> list[dict[str, 
     
     practices = await db.heart_practices.find(query, {"_id": 0}).to_list(length=50)
     practices = _append_heart_supplements(practices, category)
+    practices = _apply_id_image_overrides(practices, HEART_IMAGE_OVERRIDES)
     enriched = [_enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "heart-practices") for practice in practices]
     return _apply_free_paid_tiering(enriched, "heart_practices")
 
@@ -7274,6 +7292,8 @@ async def get_heart_practice(practice_id: str) -> dict[str, Any]:
     practice = await db.heart_practices.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Heart practice not found")
+    if str(practice.get("id") or "") in HEART_IMAGE_OVERRIDES:
+        practice["image_url"] = HEART_IMAGE_OVERRIDES[str(practice.get("id"))]
     return _enrich_devotional_language(_enrich_content_integrity(practice, "hybrid-curated"), "heart-practices")
 
 
