@@ -1,0 +1,70 @@
+{
+  "summary": "Android API contract endpoints tested. All 4 config endpoints return 200 with valid JSON containing required keys. CRITICAL BUG FOUND: Privacy/deletion endpoint paths in Android API contract are incorrect - documented as /api/user/account/* but actual endpoints are at /api/account/*.",
+  "backend_issues": {
+    "critical": [
+      {
+        "endpoint": "Android API Contract",
+        "issue": "Path mismatch: privacy_and_account_deletion in Android config documents endpoints at /api/user/account/* but actual working endpoints are at /api/account/*. This will cause 404 errors for Android clients following the documented contract.",
+        "priority": "CRITICAL",
+        "documented_paths": ["/api/user/account/export", "/api/user/account/delete-request", "/api/user/account/deletion-status"],
+        "actual_working_paths": ["/api/account/export", "/api/account/delete-request", "/api/account/deletion-status"],
+        "fix_options": [
+          "Option 1: Update _android_api_contract_payload() in user.py to return correct paths /api/account/*",
+          "Option 2: Add duplicate endpoints at /api/user/account/* paths to match documentation"
+        ]
+      }
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_android_api_contract.py",
+    "/app/test_reports/pytest/pytest_iteration262.xml"
+  ],
+  "action_items": [
+    "FIX CRITICAL: Update Android API contract to document correct endpoint paths (/api/account/* instead of /api/user/account/*) OR add endpoints at documented paths"
+  ],
+  "critical_code_review_comments": [
+    "In user.py line 52-54, _android_api_contract_payload() returns incorrect paths for privacy endpoints",
+    "The user router has no prefix, so endpoints defined as /account/* become /api/account/* not /api/user/account/*",
+    "ANDROID_API_CONTRACT.md also documents incorrect paths - needs update"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_android_api_contract.py"
+  ],
+  "success_rate": {
+    "backend": "100% (21/21 tests passed)"
+  },
+  "seed_data_creation": "",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Android API config endpoints work correctly. Privacy/deletion endpoints exist and require auth (return 401). However, the documented paths in the Android API contract are wrong - they say /api/user/account/* but actual endpoints are at /api/account/*. Main agent needs to fix this path mismatch.",
+  "tests_executed": [
+    {"test": "All 4 Android config endpoints return 200", "result": "PASS"},
+    {"test": "Config JSON has required keys (base_path, required_public_endpoints, privacy_and_account_deletion)", "result": "PASS"},
+    {"test": "base_path is /api", "result": "PASS"},
+    {"test": "mobile_platform is android", "result": "PASS"},
+    {"test": "api_version is v1", "result": "PASS"},
+    {"test": "All config endpoints return same contract structure", "result": "PASS"},
+    {"test": "Actual /api/account/export requires auth (401)", "result": "PASS"},
+    {"test": "Actual /api/account/delete-request requires auth (401)", "result": "PASS"},
+    {"test": "Actual /api/account/deletion-status requires auth (401)", "result": "PASS"},
+    {"test": "Documented /api/user/account/* paths return 404", "result": "PASS - confirms bug"},
+    {"test": "/api/health returns 200 healthy", "result": "PASS"},
+    {"test": "/api/auth/me returns 401 without auth", "result": "PASS"}
+  ],
+  "rca_of_the_issue": {
+    "root_cause": "The user router in user.py is included without a prefix in server.py (line 97: api_router.include_router(user_router)). Endpoints defined as @router.get('/account/export') become /api/account/export, not /api/user/account/export. However, _android_api_contract_payload() hardcodes paths with /api/user/ prefix.",
+    "reproduction_steps": [
+      "1. Call GET /api/android-api-config",
+      "2. Note privacy_and_account_deletion.export_endpoint = '/api/user/account/export'",
+      "3. Call GET /api/user/account/export - returns 404",
+      "4. Call GET /api/account/export - returns 401 (correct, requires auth)"
+    ],
+    "mitigation": "Update _android_api_contract_payload() in user.py lines 52-54 to return correct paths: /api/account/export, /api/account/delete-request, /api/account/deletion-status"
+  }
+}

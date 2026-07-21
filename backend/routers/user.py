@@ -1,5 +1,5 @@
 """User routes for dashboard, favorites, practice history, rituals, journal, achievements."""
-from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi import APIRouter, HTTPException, Depends, UploadFile, File, Form, Request
 from fastapi.responses import Response
 from pydantic import BaseModel
 from typing import Any, Optional, List
@@ -16,6 +16,74 @@ from services.object_storage import put_object, get_object, build_storage_path
 
 router = APIRouter(tags=["user"])
 logger = logging.getLogger(__name__)
+
+
+def _resolve_mobile_origin(request: Request) -> str:
+    origin = request.headers.get("origin") or request.headers.get("referer") or ""
+    if not origin:
+        return ""
+    parts = str(origin).split("/")
+    if "//" not in origin or len(parts) < 3:
+        return ""
+    return f"{parts[0]}//{parts[2]}"
+
+
+def _android_api_contract_payload(request: Request) -> dict[str, Any]:
+    return {
+        "mobile_platform": "android",
+        "api_version": "v1",
+        "base_path": "/api",
+        "auth": {
+            "cookie_session": True,
+            "bearer_fallback": True,
+            "required_headers": ["Content-Type", "Authorization (optional)"],
+        },
+        "required_public_endpoints": [
+            "/api/health",
+            "/api/auth/me",
+            "/api/meditations",
+            "/api/mindfulness",
+            "/api/heart-practices",
+            "/api/healing-portals",
+            "/api/energy-healing",
+            "/api/mantras",
+            "/api/tts/generate-base64",
+            "/api/content/expand-script",
+            "/api/user/account/export",
+            "/api/user/account/delete-request",
+            "/api/user/account/deletion-status",
+        ],
+        "privacy_and_account_deletion": {
+            "export_endpoint": "/api/user/account/export",
+            "deletion_request_endpoint": "/api/user/account/delete-request",
+            "deletion_status_endpoint": "/api/user/account/deletion-status",
+        },
+        "cors_origin_received": _resolve_mobile_origin(request),
+    }
+
+
+@router.get("/mobile/android-api-config")
+async def get_android_api_config(request: Request) -> dict[str, Any]:
+    """Android API integration contract for Play Store review and mobile clients."""
+    return _android_api_contract_payload(request)
+
+
+@router.get("/android-api-config")
+async def get_android_api_config_short(request: Request) -> dict[str, Any]:
+    """Backward-compatible Android API contract endpoint under /api/user/android-api-config."""
+    return _android_api_contract_payload(request)
+
+
+@router.get("/user/mobile/android-api-config")
+async def get_android_api_config_prefixed(request: Request) -> dict[str, Any]:
+    """Compatibility alias for clients expecting /api/user/mobile/android-api-config."""
+    return _android_api_contract_payload(request)
+
+
+@router.get("/user/android-api-config")
+async def get_android_api_config_prefixed_short(request: Request) -> dict[str, Any]:
+    """Compatibility alias for clients expecting /api/user/android-api-config."""
+    return _android_api_contract_payload(request)
 
 
 # ============ MODELS ============

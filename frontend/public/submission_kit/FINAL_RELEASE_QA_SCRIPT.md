@@ -37,4 +37,9 @@ Run this on a real phone and one desktop browser before final submission.
 ## H. Final Copy Check
 - [ ] No unwanted demo script on landing cover
 
+## I. Android API Contract Verification
+- [ ] Open `/api/user/mobile/android-api-config` and verify JSON contract returns 200
+- [ ] Confirm `required_public_endpoints` include core guided routes (`/api/tts/generate-base64`, `/api/content/expand-script`)
+- [ ] Confirm privacy/deletion endpoints are listed under `privacy_and_account_deletion`
+
 When all checks are complete, proceed to store submission.

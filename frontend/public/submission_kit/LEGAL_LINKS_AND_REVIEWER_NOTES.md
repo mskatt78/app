@@ -12,6 +12,19 @@ Replace `<PRODUCTION_URL>` with your non-preview deployed domain.
 ## Admin Link
 - Admin: `<PRODUCTION_URL>/admin`
 
+## Android API Compliance (Play Store reference)
+- Android API contract endpoint: `<PRODUCTION_URL>/api/user/mobile/android-api-config`
+- Base API path: `<PRODUCTION_URL>/api`
+- Privacy + deletion endpoints:
+  - `<PRODUCTION_URL>/api/user/account/export`
+  - `<PRODUCTION_URL>/api/user/account/delete-request`
+  - `<PRODUCTION_URL>/api/user/account/deletion-status`
+
+### Reviewer API Notes (optional)
+- App uses secure session cookies and supports bearer token fallback for mobile auth transport.
+- CORS is explicitly origin-controlled through backend environment configuration.
+- Privacy policy and deletion-request pathways are publicly documented and reachable in-app.
+
 ## Reviewer Notes Template (Paste into Store Review Notes)
 
 This app provides guided spiritual wellness practices (breathwork, meditation, mantra, mudra, and elemental ritual journeys).

@@ -39,6 +39,36 @@ UPLOADS_DIR.mkdir(exist_ok=True)
 
 load_dotenv(ROOT_DIR / '.env')
 
+
+def _parse_cors_origins() -> list[str]:
+    raw_origins = os.environ.get("CORS_ORIGINS")
+    if not raw_origins:
+        raise RuntimeError("CORS_ORIGINS is required")
+
+    origins = [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+    if not origins:
+        raise RuntimeError("CORS_ORIGINS must contain at least one origin")
+
+    # Browsers reject wildcard with credentials=true. Expand to explicit safe origins.
+    if "*" in origins:
+        backend_url = os.environ.get("REACT_APP_BACKEND_URL")
+        expanded = {
+            "capacitor://localhost",
+            "ionic://localhost",
+            "http://localhost",
+            "http://localhost:3000",
+            "http://127.0.0.1",
+            "http://127.0.0.1:3000",
+            "https://localhost",
+            "https://embodiment-journey.emergent.host",
+            "https://breathwork-sanctuary.preview.emergentagent.com",
+        }
+        if backend_url:
+            expanded.add(backend_url.strip().rstrip("/"))
+        origins = sorted(expanded)
+
+    return origins
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
@@ -79,9 +109,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # CORS middleware
+cors_origins = _parse_cors_origins()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
