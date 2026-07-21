@@ -4706,3 +4706,26 @@
   - Frontend: **100% pass**
   - Verified 14/14 cards render with aligned images and unique URLs.
   - Modal image match and guided-button flow verified; premium lock behavior unchanged.
+
+## Latest Verification Snapshot (Iteration 263 — 2026-07-21)
+- ✅ **Android API update completed for Google Play submission requirements**:
+  - Added Android API contract endpoints (all returning same JSON):
+    - `/api/user/mobile/android-api-config`
+    - `/api/user/android-api-config`
+    - `/api/mobile/android-api-config`
+    - `/api/android-api-config`
+  - Added Android submission docs:
+    - `frontend/public/submission_kit/ANDROID_API_CONTRACT.md`
+    - Updated `LEGAL_LINKS_AND_REVIEWER_NOTES.md`
+    - Updated `FINAL_RELEASE_QA_SCRIPT.md`
+
+- ✅ **Critical contract path mismatch fixed**:
+  - Corrected privacy/deletion paths in API contract and docs to:
+    - `/api/account/export`
+    - `/api/account/delete-request`
+    - `/api/account/deletion-status`
+
+- ✅ **Validation status (testing agent iteration 263)**:
+  - Backend: **100% (14/14 pass)**
+  - All 4 Android config endpoints return 200 with valid contract JSON.
+  - Privacy endpoints verified reachable with expected auth-required behavior (401 unauthenticated).
