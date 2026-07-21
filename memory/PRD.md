@@ -4690,3 +4690,19 @@
   - Frontend: **100% pass** (backend skipped intentionally)
   - Verified no visible `App readiness` / `Open readiness center` text on support/footer surfaces.
   - Regression sanity passed on `/explore` and `/mindfulness`.
+
+## Latest Verification Snapshot (Iteration 261 — 2026-07-21)
+- ✅ **Heart Practices full image alignment sweep completed**:
+  - Added deterministic `HEART_IMAGE_OVERRIDES` in `backend/routers/content.py` for all 14 IDs:
+    - core: `1..10`
+    - supplements: `heart-supp-101..104`
+  - Applied overrides in both:
+    - `GET /api/heart-practices`
+    - `GET /api/heart-practices/{practice_id}` (when ID exists in main collection)
+  - Result: every heart card now uses semantically matched subject imagery (no random/generic mismatch drift).
+
+- ✅ **Validation status (testing agent iteration 261)**:
+  - Backend: **100% (11/11 pass)**
+  - Frontend: **100% pass**
+  - Verified 14/14 cards render with aligned images and unique URLs.
+  - Modal image match and guided-button flow verified; premium lock behavior unchanged.
