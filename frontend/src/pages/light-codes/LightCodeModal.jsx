@@ -185,7 +185,7 @@ export const LightCodeModal = ({
                   </div>
 
                   <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-5" data-testid="light-code-ceremony-embodiment">
-                    <p className="text-xs uppercase tracking-[0.22em] text-cyan-200/70 mb-3">Ceremonial embodiment</p>
+                    <p className="text-xs uppercase tracking-[0.22em] text-cyan-200/70 mb-3">Ceremonial Embodiment Protocol</p>
                     <ul className="space-y-2">
                       {(selectedSymbol.embodiment_ritual || []).map((step, index) => (
                         <li key={`${selectedSymbol.id || selectedSymbol.name}-embodiment-${index}`} className="text-sm text-white/80 leading-relaxed flex gap-2" data-testid={`light-code-embodiment-step-${index}`}>
@@ -197,7 +197,7 @@ export const LightCodeModal = ({
                   </div>
 
                   <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5" data-testid="light-code-ceremony-sequence">
-                    <p className="text-xs uppercase tracking-[0.22em] text-amber-200/70 mb-3">Ceremony sequence</p>
+                    <p className="text-xs uppercase tracking-[0.22em] text-amber-200/70 mb-3">Ceremony Sequence & Articulation</p>
                     <ul className="space-y-2">
                       {(selectedSymbol.ceremony || []).map((line, index) => (
                         <li key={`${selectedSymbol.id || selectedSymbol.name}-ceremony-${index}`} className="text-sm text-white/80 leading-relaxed" data-testid={`light-code-ceremony-step-${index}`}>

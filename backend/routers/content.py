@@ -3997,21 +3997,29 @@ def _enrich_immersive_ritual_fields(item: dict[str, Any], domain: str) -> dict[s
         f"{practice_name} teaches relational alchemy: witness your pattern honestly, regulate your breath, and transmute reactivity into grounded presence.",
         f"In this {domain_label} transmission, embodiment outranks theory—complete one somatic action that proves your insight is lived.",
         f"Align your {element} current through devotion, pacing, and practical integrity so spiritual insight becomes daily medicine.",
+        "Your nervous system becomes the primary altar: slow down enough to perceive sensation before interpretation.",
+        "Integration is measured by behavior: repair one relationship, reset one boundary, or complete one aligned action within 24 hours.",
     ]
     default_ritual = [
         f"Opening ritual: place one hand on heart and one on lower belly, then breathe 4-in / 6-out for 12 rounds while naming your intention for {practice_name}.",
         "Somatic regulation ritual: pause every two minutes to soften jaw, shoulders, and pelvis so intensity stays within your consent window.",
+        "Orientation ritual: name five things you can see and three things you can feel to anchor present-time safety.",
+        "Embodiment ritual: let one gesture, posture, or vocal tone express the medicine moving through you.",
         "Integration ritual: drink water, journal one truth line, and complete one grounded action before the day ends.",
     ]
     default_ceremony = [
         f"Threshold ceremony: speak an invocation for {practice_name}, orient to safety in your space, and enter with reverence rather than urgency.",
+        "Consent ceremony: ask your body what pace feels workable and commit to honoring that answer.",
         "Descent ceremony: move through breath, voice, and posture in deliberate phases while tracking sensation and emotional signal changes.",
+        "Transmission ceremony: receive one clear teaching line and let it settle in the body before analysis.",
         "Closing ceremony: seal your field with gratitude, boundary clarity, and one service-aligned commitment for the next 24 hours.",
     ]
     default_guided = [
         "Guided phase 1 (arrival): orient your eyes to the room, lengthen exhale, and settle into grounded stillness.",
-        "Guided phase 2 (embodiment): alternate breath focus with one ritual step until your body feels coherent and present.",
-        "Guided phase 3 (integration): name one insight aloud and convert it into a specific, time-bound action.",
+        "Guided phase 2 (somatic listening): track one body zone and one emotional tone for three minutes without forcing change.",
+        "Guided phase 3 (embodiment): alternate breath focus with one ritual step until your body feels coherent and present.",
+        "Guided phase 4 (articulation): speak one sentence that names what is true right now.",
+        "Guided phase 5 (integration): name one insight aloud and convert it into a specific, time-bound action.",
     ]
 
     alchemy_lines = _coalesce_depth_lines(
@@ -4031,10 +4039,10 @@ def _enrich_immersive_ritual_fields(item: dict[str, Any], domain: str) -> dict[s
         ("guided_practice", "practice", "instructions", "steps", "rituals", "ceremonies"),
     )
 
-    final_alchemy = _ensure_minimum_lines(alchemy_lines, default_alchemy)
-    final_ritual = _ensure_minimum_lines(ritual_lines, default_ritual)
-    final_ceremony = _ensure_minimum_lines(ceremony_lines, default_ceremony)
-    final_guided = _ensure_minimum_lines(guided_lines, default_guided)
+    final_alchemy = _ensure_minimum_lines(alchemy_lines, default_alchemy, minimum=5, limit=10)
+    final_ritual = _ensure_minimum_lines(ritual_lines, default_ritual, minimum=5, limit=10)
+    final_ceremony = _ensure_minimum_lines(ceremony_lines, default_ceremony, minimum=5, limit=10)
+    final_guided = _ensure_minimum_lines(guided_lines, default_guided, minimum=5, limit=10)
 
     enriched.setdefault("alchemy", final_alchemy)
     enriched.setdefault("ritual", final_ritual)
@@ -4093,20 +4101,28 @@ def _enrich_light_code_payload(payload: dict[str, Any]) -> dict[str, Any]:
         {
             "id": "phoneme-harmonics",
             "title": "Phoneme Harmonics",
-            "description": "How vowel resonance and consonant impact shape felt energetic meaning in light-language style chanting.",
-            "practice": "Speak one symbol name slowly over six breaths and track vibratory shifts in chest/throat.",
+            "description": "How vowel resonance and consonant impact shape felt energetic meaning in light-language style chanting. Sound here is not decorative — it is a physiological regulator and symbolic carrier.",
+            "practice": "Speak one symbol name slowly over six breaths, track vibration in throat/chest/pelvis, then write one sentence describing what changed in perception.",
         },
         {
             "id": "glyph-semantics",
             "title": "Glyph Semantics",
-            "description": "Symbol families are interpreted through stroke direction, angle, and repetition density.",
-            "practice": "Trace a chosen glyph clockwise and write three associated felt meanings.",
+            "description": "Symbol families are interpreted through stroke direction, angle, and repetition density; each feature encodes a behavioral teaching, not only an abstract meaning.",
+            "practice": "Trace a chosen glyph clockwise and write three felt meanings plus one concrete life action it asks of you.",
+        },
+        {
+            "id": "light-code-articulation",
+            "title": "Light-Coded Articulation",
+            "description": "A light code is complete only when it can be articulated clearly: sensation language, symbolic language, and practical language unified.",
+            "practice": "After ritual, name one body sensation, one symbolic insight, and one real-world action in one coherent paragraph.",
         },
     ])
     enriched.setdefault("symbol_lineage_notes", [
         "Cross-reference symbols with geometry traditions before interpretation.",
         "Anchor interpretations in breath rhythm and body sensation logs.",
         "Use repeated symbol journaling to detect stable semantic patterns.",
+        "Do not treat symbols as ornaments; map each symbol to one relational or behavioral integration step.",
+        "Prioritize precision language over mystification: what changed in breath, posture, boundary, and action?",
     ])
 
     symbol_sections = [
@@ -4173,23 +4189,31 @@ def _enrich_light_code_payload(payload: dict[str, Any]) -> dict[str, Any]:
 
             entry.setdefault("light_coded_symbols", [
                 symbol_char,
-                f"{symbol_char}·{symbol_char}",
+                f"{symbol_char} · {symbol_char}",
                 f"⟡ {symbol_char} ⟡",
+                f"{symbol_char} ↔ ∞ ↔ {symbol_char}",
+                f"⟐ {symbol_char} ⟐",
             ])
             entry.setdefault("embodiment_ritual", [
-                "Stand or sit upright, place one hand on heart and one hand on lower belly.",
-                f"Inhale while tracing {symbol_char} in the air; exhale and feel where the symbol lands in the body.",
-                "Close by naming one grounded action to embody this code in daily life.",
+                "Stand or sit upright, one palm on sternum and one palm on lower belly; let your exhale extend naturally.",
+                f"Trace {symbol_char} slowly with breath for 12 cycles and track where activation, resistance, or emotion appears in the body.",
+                "Name the exact sensation language (pressure, heat, trembling, opening, numbness) before assigning spiritual meaning.",
+                "Speak one integration sentence aloud: what boundary, repair, or behavior shift this symbol asks for now.",
+                "Close with water, orientation to room details, and one concrete 24-hour action.",
             ])
             entry.setdefault("ceremony", [
-                "Opening: light a candle and ask for the highest good to guide interpretation.",
-                "Transmission: gaze softly at the symbol for several breaths, then journal sensation and meaning.",
-                "Integration: speak one vow aloud and anchor it with a practical action.",
+                "Opening: invoke consent, clarity, and truthful pacing before receiving symbol transmission.",
+                "Consecration: establish breath cadence (4-in / 6-out) and stabilize your visual focus without forcing interpretation.",
+                "Transmission: receive the symbol through gaze, tracing, and vocal tone while tracking body data in real time.",
+                "Articulation: journal one symbolic insight and one relational application in plain language.",
+                "Integration seal: commit one embodied action and complete it within 24 hours.",
             ])
             entry.setdefault("guided_practice", [
-                "Phase 1 — Orient: soften shoulders and lengthen exhale for one minute.",
-                "Phase 2 — Encode: trace the symbol slowly while breathing in a 4/6 rhythm.",
-                "Phase 3 — Integrate: walk slowly for 2 minutes and embody the chosen quality.",
+                "Phase 1 — Orient: soften shoulders, widen peripheral vision, and lengthen exhale for 90 seconds.",
+                "Phase 2 — Attune: gaze the symbol and synchronize breath to stroke direction (inhale rise, exhale descend).",
+                "Phase 3 — Encode: trace the geometry 12 times while noticing micro-shifts in posture and emotional tone.",
+                "Phase 4 — Articulate: speak one sentence naming body sensation, symbolic meaning, and practical relevance.",
+                "Phase 5 — Integrate: perform one grounded action that proves the code has moved from insight into embodiment.",
             ])
             section_enriched.append(entry)
 

@@ -30,11 +30,12 @@ export const LightCodesLinguisticFoundations = ({ lightCodes }) => {
       </div>
 
       <div className="rounded-3xl border border-fuchsia-500/20 bg-fuchsia-500/10 p-6" data-testid="light-codes-embodiment-principles">
-        <p className="text-xs uppercase tracking-[0.28em] text-fuchsia-100/60 mb-3">Embodiment principles</p>
+        <p className="text-xs uppercase tracking-[0.28em] text-fuchsia-100/60 mb-3">Embodiment & articulation principles</p>
         <ul className="space-y-2">
           <li className="text-sm text-white/80 flex gap-2" data-testid="light-codes-embodiment-principle-1"><span className="text-fuchsia-200">•</span><span>Never force activation — paced breath and consent are part of the method.</span></li>
-          <li className="text-sm text-white/80 flex gap-2" data-testid="light-codes-embodiment-principle-2"><span className="text-fuchsia-200">•</span><span>Pair every symbol session with a nervous-system grounding close.</span></li>
-          <li className="text-sm text-white/80 flex gap-2" data-testid="light-codes-embodiment-principle-3"><span className="text-fuchsia-200">•</span><span>Let ritual become relational: translate inner shifts into clean action.</span></li>
+          <li className="text-sm text-white/80 flex gap-2" data-testid="light-codes-embodiment-principle-2"><span className="text-fuchsia-200">•</span><span>Name body data before mystical meaning: sensation first, interpretation second.</span></li>
+          <li className="text-sm text-white/80 flex gap-2" data-testid="light-codes-embodiment-principle-3"><span className="text-fuchsia-200">•</span><span>Pair every symbol session with nervous-system grounding and one practical action.</span></li>
+          <li className="text-sm text-white/80 flex gap-2" data-testid="light-codes-embodiment-principle-4"><span className="text-fuchsia-200">•</span><span>Let ritual become relational: translate inner shifts into clear speech, repair, or boundary action.</span></li>
         </ul>
       </div>
     </div>
