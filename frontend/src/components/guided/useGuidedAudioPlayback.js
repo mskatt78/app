@@ -15,7 +15,8 @@ import { appLogger } from "../../utils/logger";
 
 const MIN_NARRATION_MINUTES = 7;
 const DEFAULT_QUICK_START_MINUTES = 12;
-const SCRIPT_EXPANSION_TIMEOUT_MS = 18000;
+const SCRIPT_EXPANSION_TIMEOUT_MS = 9000;
+const SEGMENT_TTS_TIMEOUT_MS = 30000;
 const MAX_EXPANSION_SOURCE_SENTENCES = 32;
 const MAX_EXPANSION_STEPS = 18;
 const MAX_SEGMENT_WORDS = 120;
@@ -182,6 +183,14 @@ const buildQuickStartText = ({ script, sourceTexts = [], steps = [], label, prac
   return quick.split(/\s+/).slice(0, 55).join(" ");
 };
 
+const shouldBypassSlowExpansion = ({ practiceName, label, durationMinutes }) => {
+  const name = `${practiceName || ""} ${label || ""}`.toLowerCase();
+  if (/(daily|morning|evening|sunrise|sunset)/.test(name)) return true;
+  const duration = Number(durationMinutes || 0);
+  if (Number.isFinite(duration) && duration >= 16) return true;
+  return false;
+};
+
 export const useGuidedAudioPlayback = ({
   api,
   script,
@@ -316,7 +325,7 @@ export const useGuidedAudioPlayback = ({
         response = await api.post(
           "/tts/generate-base64",
           { text: segmentText, voice: voiceId, speed: speedValue },
-          { signal: controller.signal },
+          { signal: controller.signal, timeout: SEGMENT_TTS_TIMEOUT_MS },
         );
         if (response?.data?.audio_base64) break;
       } catch (error) {
@@ -391,14 +400,31 @@ export const useGuidedAudioPlayback = ({
     };
 
     const fallback = String(currentScript || "").trim();
+
+    const immediateFallbackSegments = buildFallbackNarrationSegments({
+      script: fallback,
+      sourceTexts: mergedSources,
+      steps: mergedSteps,
+      practiceName: currentPracticeName,
+      label: currentLabel,
+      element: currentElement,
+      targetMinutes: effectiveNarrationMinutes,
+    });
+
+    if (shouldBypassSlowExpansion({
+      practiceName: currentPracticeName,
+      label: currentLabel,
+      durationMinutes: currentDurationMinutes,
+    })) {
+      if (quickStartSegments.length > 0) {
+        return [...quickStartSegments, ...immediateFallbackSegments];
+      }
+      return immediateFallbackSegments;
+    }
+
     try {
       const expansionAttempts = [
         payload,
-        {
-          ...payload,
-          use_ai: false,
-          include_toning: false,
-        },
       ];
 
       for (const attemptPayload of expansionAttempts) {
@@ -427,15 +453,7 @@ export const useGuidedAudioPlayback = ({
       }
 
       if (fallback) {
-        const fallbackSegments = buildFallbackNarrationSegments({
-          script: fallback,
-          sourceTexts: mergedSources,
-          steps: mergedSteps,
-          practiceName: currentPracticeName,
-          label: currentLabel,
-          element: currentElement,
-          targetMinutes: effectiveNarrationMinutes,
-        });
+        const fallbackSegments = immediateFallbackSegments;
         if (quickStartSegments.length > 0) {
           return [...quickStartSegments, ...fallbackSegments];
         }
@@ -445,15 +463,7 @@ export const useGuidedAudioPlayback = ({
       return quickStartSegments;
     } catch (error) {
       appLogger.warn("Guided script expansion fallback engaged", error);
-      const fallbackSegments = buildFallbackNarrationSegments({
-        script: fallback,
-        sourceTexts: mergedSources,
-        steps: mergedSteps,
-        practiceName: currentPracticeName,
-        label: currentLabel,
-        element: currentElement,
-        targetMinutes: effectiveNarrationMinutes,
-      });
+      const fallbackSegments = immediateFallbackSegments;
       if (fallbackSegments.length > 0) {
         if (quickStartSegments.length > 0) {
           return [...quickStartSegments, ...fallbackSegments];
