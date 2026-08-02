@@ -27,6 +27,8 @@ const SettingsContainer = ({ user, api }) => {
     guidedSpeedOption,
     guidedVoiceProfile,
     guidedPracticeOverrideMode,
+    guidedCustomVoiceEnabled,
+    guidedCustomVoiceProfileId,
     voiceProfiles,
     voiceProfileName,
     setVoiceProfileName,
@@ -51,6 +53,8 @@ const SettingsContainer = ({ user, api }) => {
     updateGuidedSpeedOption,
     updateGuidedVoiceProfile,
     updateGuidedPracticeOverrideMode,
+    updateGuidedCustomVoiceEnabled,
+    updateGuidedCustomVoiceProfileId,
     createVoiceProfile,
     removeVoiceProfile,
   } = useSettingsData({ api, user, navigate });
@@ -106,6 +110,10 @@ const SettingsContainer = ({ user, api }) => {
             voiceSampleFile={voiceSampleFile}
             setVoiceSampleFile={setVoiceSampleFile}
             voiceProfiles={voiceProfiles}
+            guidedCustomVoiceEnabled={guidedCustomVoiceEnabled}
+            guidedCustomVoiceProfileId={guidedCustomVoiceProfileId}
+            updateGuidedCustomVoiceEnabled={updateGuidedCustomVoiceEnabled}
+            updateGuidedCustomVoiceProfileId={updateGuidedCustomVoiceProfileId}
             createVoiceProfile={createVoiceProfile}
             removeVoiceProfile={removeVoiceProfile}
           />

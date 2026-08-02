@@ -7,6 +7,10 @@ import {
   normalizeGuidedNarrationDurationMinutes,
 } from "../../utils/guidedNarrationSettings";
 import {
+  GUIDED_CUSTOM_VOICE_ENABLED_KEY,
+  GUIDED_CUSTOM_VOICE_PROFILE_ID_KEY,
+  getGuidedCustomVoiceEnabled,
+  getGuidedCustomVoiceProfileId,
   getGuidedPracticePreference,
   resolveGuidedSpeedValue,
   resolveGuidedVoiceId,
@@ -212,6 +216,10 @@ export const useGuidedAudioPlayback = ({
   const playbackRunIdRef = useRef(0);
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [customVoiceEnabled, setCustomVoiceEnabled] = useState(() => getGuidedCustomVoiceEnabled());
+  const [customVoiceProfileId, setCustomVoiceProfileId] = useState(() => getGuidedCustomVoiceProfileId());
+  const [customVoiceSampleUrl, setCustomVoiceSampleUrl] = useState("");
+  const customVoiceActive = Boolean(customVoiceEnabled && customVoiceSampleUrl);
 
   const playbackConfig = useMemo(() => ({
     script,
@@ -309,6 +317,50 @@ export const useGuidedAudioPlayback = ({
     clearSegmentCache();
     stopToning();
   }, [clearSegmentCache, revokeObjectUrl, stopToning]);
+
+  useEffect(() => {
+    const handleStorage = (event) => {
+      if (event.key === GUIDED_CUSTOM_VOICE_ENABLED_KEY || event.key === GUIDED_CUSTOM_VOICE_PROFILE_ID_KEY) {
+        setCustomVoiceEnabled(getGuidedCustomVoiceEnabled());
+        setCustomVoiceProfileId(getGuidedCustomVoiceProfileId());
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  useEffect(() => {
+    if (!customVoiceEnabled || !customVoiceProfileId) {
+      setCustomVoiceSampleUrl("");
+      return;
+    }
+
+    let cancelled = false;
+    const loadCustomVoice = async () => {
+      try {
+        const response = await api.get("/voice-profiles");
+        if (cancelled) return;
+        const profiles = Array.isArray(response?.data) ? response.data : [];
+        const selectedProfile = profiles.find((profile) => profile.profile_id === customVoiceProfileId);
+        if (!selectedProfile?.sample_file_id) {
+          setCustomVoiceSampleUrl("");
+          return;
+        }
+        const backendUrl = process.env.REACT_APP_BACKEND_URL;
+        setCustomVoiceSampleUrl(`${backendUrl}/api/voice-files/${selectedProfile.sample_file_id}/download`);
+      } catch (error) {
+        if (!cancelled) {
+          appLogger.warn("Unable to resolve custom voice profile for guided audio button", error);
+          setCustomVoiceSampleUrl("");
+        }
+      }
+    };
+
+    loadCustomVoice();
+    return () => {
+      cancelled = true;
+    };
+  }, [api, customVoiceEnabled, customVoiceProfileId]);
 
   const getSegmentAudio = useCallback(async (segmentText, controller) => {
     const voiceId = resolveGuidedVoiceId(
@@ -663,6 +715,29 @@ export const useGuidedAudioPlayback = ({
     await setupToningContext();
 
     try {
+      if (customVoiceActive) {
+        const audio = new Audio(customVoiceSampleUrl);
+        audio.loop = true;
+        audio.preload = "auto";
+        audioRef.current = audio;
+        toningLayerRef.current?.setMuted?.(true, 1);
+        const started = await audio.play().then(() => true).catch(() => {
+          toast.info("Tap play to start custom voice");
+          return false;
+        });
+        if (started) {
+          setPlaying(true);
+        } else {
+          setPlaying(false);
+          stopToning();
+        }
+        setLoading(false);
+        return;
+      }
+
+      if (customVoiceEnabled && !customVoiceSampleUrl) {
+        toast.info("Custom voice unavailable right now — using guided AI voice.");
+      }
       const expandedSegments = await buildExpandedSegments(controller);
       const titleLedSegments = ensureTitleLedNarrationOpen(expandedSegments, playbackConfig.practiceName || playbackConfig.label);
       await playSegmentsSequentially(titleLedSegments, controller);
@@ -678,7 +753,19 @@ export const useGuidedAudioPlayback = ({
         abortRef.current = null;
       }
     }
-  }, [buildExpandedSegments, playSegmentsSequentially, playing, setupToningContext, stopPlayback]);
+  }, [
+    buildExpandedSegments,
+    customVoiceActive,
+    customVoiceEnabled,
+    customVoiceSampleUrl,
+    playSegmentsSequentially,
+    playing,
+    setupToningContext,
+    stopPlayback,
+    stopToning,
+    playbackConfig.label,
+    playbackConfig.practiceName,
+  ]);
 
   return {
     loading,

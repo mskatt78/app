@@ -6,6 +6,7 @@ import {
   Star, Moon, Heart, Eye, ChevronRight, Zap, Lock
 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion";
 import { appLogger } from "../utils/logger";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
@@ -31,6 +32,30 @@ const CATEGORY_MAP = {
   familiar: { label: "Familiar", icon: Moon, color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
   messenger: { label: "Messenger", icon: Wind, color: "text-teal-400", bg: "bg-teal-500/10", border: "border-teal-500/20" },
 };
+
+const toList = (value) => {
+  if (!value) return [];
+  if (Array.isArray(value)) {
+    return value.map((entry) => String(entry || "").trim()).filter(Boolean);
+  }
+  return [String(value).trim()].filter(Boolean);
+};
+
+const GuardianCollapsibleSection = ({ sectionId, title, icon: Icon, testId, children }) => (
+  <Accordion type="single" collapsible className="rounded-xl border border-white/10 bg-white/[0.03]" data-testid={testId}>
+    <AccordionItem value={sectionId} className="border-b-0">
+      <AccordionTrigger className="px-4 py-3 text-sm hover:no-underline" data-testid={`${testId}-trigger`}>
+        <span className="inline-flex items-center gap-2">
+          <Icon className="w-4 h-4 text-primary" />
+          {title}
+        </span>
+      </AccordionTrigger>
+      <AccordionContent className="px-4 pb-4" data-testid={`${testId}-content`}>
+        {children}
+      </AccordionContent>
+    </AccordionItem>
+  </Accordion>
+);
 
 const SacredGuardians = ({ user, api }) => {
   const navigate = useNavigate();
@@ -113,6 +138,20 @@ const SacredGuardians = ({ user, api }) => {
     if (Array.isArray(guardian?.alchemy_teachings) && guardian.alchemy_teachings.length) return guardian.alchemy_teachings;
     return [];
   };
+
+  const resolveGuardianEmbodimentPrompts = (guardian) => {
+    const direct = toList(guardian?.embodiment_prompts);
+    if (direct.length) return direct;
+    return toList(guardian?.embodiment);
+  };
+
+  const resolveGuardianIntegrationActions = (guardian) => toList(guardian?.integration_actions);
+
+  const resolveGuardianNervousSystemCues = (guardian) => toList(guardian?.nervous_system_cues);
+
+  const resolveGuardianSafetyNotes = (guardian) => toList(guardian?.safety_notes);
+
+  const resolveGuardianWhyHeals = (guardian) => toList(guardian?.why_this_heals);
 
   const handleGuardianImageError = (event) => {
     const target = event.currentTarget;
@@ -389,6 +428,44 @@ const SacredGuardians = ({ user, api }) => {
                 {/* Description */}
                 <p className="text-muted-foreground leading-relaxed">{selected.description}</p>
 
+                {(selected.devotional_invocation || selected.embodiment_prompt || selected.integration_vow) && (
+                  <div className="p-5 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/25" data-testid="guardian-devotional-panel">
+                    <h4 className="text-xs uppercase tracking-wider text-fuchsia-200 mb-3">Devotional Embodiment Arc</h4>
+                    {selected.devotional_invocation && (
+                      <p className="text-sm text-fuchsia-50/95 leading-relaxed" data-testid="guardian-devotional-invocation">
+                        <span className="text-fuchsia-200 mr-1">Invocation:</span>
+                        {selected.devotional_invocation}
+                      </p>
+                    )}
+                    {selected.embodiment_prompt && (
+                      <p className="text-sm text-fuchsia-50/90 leading-relaxed mt-2" data-testid="guardian-devotional-embodiment-prompt">
+                        <span className="text-fuchsia-200 mr-1">Embodiment prompt:</span>
+                        {selected.embodiment_prompt}
+                      </p>
+                    )}
+                    {selected.integration_vow && (
+                      <p className="text-sm text-fuchsia-50/90 leading-relaxed mt-2" data-testid="guardian-devotional-integration-vow">
+                        <span className="text-fuchsia-200 mr-1">Integration vow:</span>
+                        {selected.integration_vow}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {resolveGuardianWhyHeals(selected).length > 0 && (
+                  <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/25" data-testid="guardian-why-this-heals">
+                    <h4 className="text-[11px] uppercase tracking-wider text-cyan-200 mb-2">Why This Heals</h4>
+                    <ul className="space-y-1.5">
+                      {resolveGuardianWhyHeals(selected).slice(0, 5).map((line, index) => (
+                        <li key={`guardian-why-${index}`} className="text-sm leading-relaxed text-cyan-50/95 flex items-start gap-2">
+                          <span>✦</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
                 {/* Sacred Message */}
                 <div className="p-5 rounded-2xl bg-primary/5 border border-primary/20">
                   <h4 className="text-xs uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
@@ -400,11 +477,12 @@ const SacredGuardians = ({ user, api }) => {
 
                 {/* Symbolism */}
                 {selected.symbolism?.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                      <Eye className="w-4 h-4 text-primary" />
-                      Symbolism & Meanings
-                    </h4>
+                  <GuardianCollapsibleSection
+                    sectionId="symbolism"
+                    title="Symbolism & Meanings"
+                    icon={Eye}
+                    testId="guardian-symbolism-collapsible"
+                  >
                     <div className="flex flex-wrap gap-2">
                       {selected.symbolism.map((s, i) => (
                         <span key={`${selected.id || selected.name}-symbol-${String(s).slice(0, 24)}-${i}`} className="px-3 py-1 rounded-full bg-white/5 text-xs text-muted-foreground border border-white/10">
@@ -412,17 +490,18 @@ const SacredGuardians = ({ user, api }) => {
                         </span>
                       ))}
                     </div>
-                  </div>
+                  </GuardianCollapsibleSection>
                 )}
 
                 {/* Spiritual Gifts */}
                 {selected.spiritual_gifts?.length > 0 && (
-                  <div>
-                    <h4 className="text-sm font-semibold mb-3 flex items-center gap-2">
-                      <Star className="w-4 h-4 text-amber-400" />
-                      Spiritual Gifts
-                    </h4>
-                    <div className="grid grid-cols-2 gap-2">
+                  <GuardianCollapsibleSection
+                    sectionId="spiritual-gifts"
+                    title="Spiritual Gifts"
+                    icon={Star}
+                    testId="guardian-spiritual-gifts-collapsible"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {selected.spiritual_gifts.map((gift, i) => (
                         <div key={`${selected.id || selected.name}-gift-${String(gift).slice(0, 24)}-${i}`} className="flex items-start gap-2 p-2 rounded-lg bg-amber-500/5 border border-amber-500/10">
                           <ChevronRight className="w-3.5 h-3.5 text-amber-400 mt-0.5 flex-shrink-0" />
@@ -430,7 +509,7 @@ const SacredGuardians = ({ user, api }) => {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </GuardianCollapsibleSection>
                 )}
 
                 {/* How to Connect */}
@@ -510,6 +589,59 @@ const SacredGuardians = ({ user, api }) => {
                     >
                       Begin Guided Practice
                     </Button>
+                  </div>
+                )}
+
+                {resolveGuardianEmbodimentPrompts(selected).length > 0 && (
+                  <GuardianCollapsibleSection
+                    sectionId="embodiment-prompts"
+                    title="Embodiment Prompts"
+                    icon={Heart}
+                    testId="guardian-embodiment-prompts-collapsible"
+                  >
+                    <ul className="space-y-1.5">
+                      {resolveGuardianEmbodimentPrompts(selected).slice(0, 6).map((line, index) => (
+                        <li key={`guardian-embodiment-${index}`} className="text-sm leading-relaxed text-emerald-50/95 flex items-start gap-2">
+                          <span className="text-emerald-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </GuardianCollapsibleSection>
+                )}
+
+                {resolveGuardianIntegrationActions(selected).length > 0 && (
+                  <div className="p-4 rounded-xl bg-amber-500/12 border border-amber-500/25" data-testid="guardian-integration-actions">
+                    <h4 className="text-[11px] uppercase tracking-wider text-amber-200 mb-2">Integration Actions</h4>
+                    <ul className="space-y-1.5">
+                      {resolveGuardianIntegrationActions(selected).slice(0, 6).map((line, index) => (
+                        <li key={`guardian-integration-${index}`} className="text-sm leading-relaxed text-amber-50/95 flex items-start gap-2">
+                          <span className="text-amber-300">✓</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {(resolveGuardianNervousSystemCues(selected).length > 0 || resolveGuardianSafetyNotes(selected).length > 0) && (
+                  <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/25" data-testid="guardian-safety-regulation-panel">
+                    <h4 className="text-[11px] uppercase tracking-wider text-rose-200 mb-2">Safety & Nervous-System Guidance</h4>
+                    {resolveGuardianNervousSystemCues(selected).length > 0 && (
+                      <ul className="space-y-1.5 mb-2">
+                        {resolveGuardianNervousSystemCues(selected).slice(0, 5).map((line, index) => (
+                          <li key={`guardian-cue-${index}`} className="text-sm leading-relaxed text-rose-50/95 flex items-start gap-2">
+                            <span>•</span>
+                            <span>{line}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {resolveGuardianSafetyNotes(selected).length > 0 && (
+                      <p className="text-xs text-rose-100/90 leading-relaxed" data-testid="guardian-safety-notes">
+                        {resolveGuardianSafetyNotes(selected).join(" ")}
+                      </p>
+                    )}
                   </div>
                 )}
 

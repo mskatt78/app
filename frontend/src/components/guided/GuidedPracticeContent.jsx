@@ -37,6 +37,8 @@ export const GuidedPracticeContent = ({
   onNarrationDurationChange,
   onVoiceProfileChange,
   onSpeedOptionChange,
+  customVoiceActive,
+  customVoiceProfileName,
 }) => {
   const [showFullNarration, setShowFullNarration] = useState(false);
   const effectiveDurationMinutes = resolveDurationMinutes(
@@ -201,6 +203,11 @@ export const GuidedPracticeContent = ({
                   Audio is ready — tap play once to begin voice guidance.
                 </div>
               )}
+              {customVoiceActive && (
+                <div className={`text-center text-xs ${elColor} mb-4`} data-testid="guided-custom-voice-active-status">
+                  Custom voice active: {customVoiceProfileName || "My Custom Voice"} (AI voice is bypassed)
+                </div>
+              )}
 
               {!ttsPlaying && !ttsLoading && hasStarted && (
                 <div className="mb-4" data-testid="guided-voice-controls-hint-wrap">
@@ -251,6 +258,7 @@ export const GuidedPracticeContent = ({
                     onChange={(event) => onVoiceProfileChange?.(event.target.value)}
                     className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
                     data-testid="guided-practice-voice-override-select"
+                    disabled={customVoiceActive}
                   >
                     {Object.values(GUIDED_VOICE_PROFILES).map((profile) => (
                       <option key={profile.id} value={profile.id} className="text-black">
@@ -267,6 +275,7 @@ export const GuidedPracticeContent = ({
                     onChange={(event) => onSpeedOptionChange?.(event.target.value)}
                     className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
                     data-testid="guided-practice-speed-override-select"
+                    disabled={customVoiceActive}
                   >
                     {Object.values(GUIDED_SPEED_OPTIONS).map((speed) => (
                       <option key={speed.id} value={speed.id} className="text-black">
@@ -283,6 +292,7 @@ export const GuidedPracticeContent = ({
                     onChange={(event) => onNarrationDurationChange?.(Number(event.target.value))}
                     className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
                     data-testid="guided-practice-duration-override-select"
+                    disabled={customVoiceActive}
                   >
                     {availableNarrationDurationOptions.map((durationOption) => (
                       <option key={durationOption.id} value={durationOption.minutes} className="text-black">

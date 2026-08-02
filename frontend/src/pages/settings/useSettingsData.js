@@ -15,11 +15,15 @@ import {
   setGuidedToningIntensity,
 } from "../../utils/guidedToningSettings";
 import {
+  getGuidedCustomVoiceEnabled,
+  getGuidedCustomVoiceProfileId,
   GUIDED_SPEED_OPTIONS,
   GUIDED_VOICE_PROFILES,
   getGuidedPracticeOverrideMode,
   getGuidedSpeedOption,
   getGuidedVoiceProfile,
+  setGuidedCustomVoiceEnabled,
+  setGuidedCustomVoiceProfileId,
   setGuidedPracticeOverrideMode,
   setGuidedSpeedOption,
   setGuidedVoiceProfile,
@@ -41,6 +45,8 @@ export const useSettingsData = ({ api, user, navigate }) => {
   const [guidedSpeedOption, setGuidedSpeedOptionState] = useState(() => getGuidedSpeedOption());
   const [guidedVoiceProfile, setGuidedVoiceProfileState] = useState(() => getGuidedVoiceProfile());
   const [guidedPracticeOverrideMode, setGuidedPracticeOverrideModeState] = useState(() => getGuidedPracticeOverrideMode());
+  const [guidedCustomVoiceEnabled, setGuidedCustomVoiceEnabledState] = useState(() => getGuidedCustomVoiceEnabled());
+  const [guidedCustomVoiceProfileId, setGuidedCustomVoiceProfileIdState] = useState(() => getGuidedCustomVoiceProfileId());
   const [voiceProfiles, setVoiceProfiles] = useState([]);
   const [voiceProfileName, setVoiceProfileName] = useState("My Voice");
   const [voiceSampleFile, setVoiceSampleFile] = useState(null);
@@ -70,7 +76,15 @@ export const useSettingsData = ({ api, user, navigate }) => {
         setDeletionStatus(deletionRes.data || null);
         try {
           const voiceProfilesResponse = await api.get("/voice-profiles");
-          setVoiceProfiles(Array.isArray(voiceProfilesResponse.data) ? voiceProfilesResponse.data : []);
+          const fetchedVoiceProfiles = Array.isArray(voiceProfilesResponse.data) ? voiceProfilesResponse.data : [];
+          setVoiceProfiles(fetchedVoiceProfiles);
+          const hasSelectedProfile = fetchedVoiceProfiles.some((profile) => profile.profile_id === getGuidedCustomVoiceProfileId());
+          if (!hasSelectedProfile) {
+            setGuidedCustomVoiceProfileId("");
+            setGuidedCustomVoiceProfileIdState("");
+            setGuidedCustomVoiceEnabled(false);
+            setGuidedCustomVoiceEnabledState(false);
+          }
         } catch (voiceError) {
           appLogger.warn("Voice profiles load warning", voiceError);
         }
@@ -199,6 +213,28 @@ export const useSettingsData = ({ api, user, navigate }) => {
     toast.success(nextMode === "remember" ? "Per-practice override will be remembered" : "Per-practice override set to current session");
   }, []);
 
+  const updateGuidedCustomVoiceEnabled = useCallback((enabled) => {
+    if (enabled && !guidedCustomVoiceProfileId) {
+      toast.error("Select or create a custom voice profile first");
+      return;
+    }
+    const nextValue = setGuidedCustomVoiceEnabled(enabled);
+    setGuidedCustomVoiceEnabledState(nextValue);
+    toast.success(nextValue ? "Custom voice enabled for guided playback" : "Custom voice disabled");
+  }, [guidedCustomVoiceProfileId]);
+
+  const updateGuidedCustomVoiceProfileId = useCallback((profileId) => {
+    const selectedProfileId = setGuidedCustomVoiceProfileId(profileId);
+    setGuidedCustomVoiceProfileIdState(selectedProfileId);
+    if (!selectedProfileId) {
+      setGuidedCustomVoiceEnabled(false);
+      setGuidedCustomVoiceEnabledState(false);
+      toast.success("Custom voice profile cleared");
+      return;
+    }
+    toast.success("Custom voice profile selected");
+  }, []);
+
   const createVoiceProfile = useCallback(async () => {
     if (!voiceSampleFile) {
       toast.error("Please select an audio sample first");
@@ -234,7 +270,12 @@ export const useSettingsData = ({ api, user, navigate }) => {
 
       const createdProfile = profileResponse?.data;
       if (createdProfile?.profile_id) {
-        setVoiceProfiles((current) => [createdProfile, ...current]);
+        setVoiceProfiles((current) => {
+          const next = [createdProfile, ...current.filter((profile) => profile.profile_id !== createdProfile.profile_id)];
+          return next;
+        });
+        setGuidedCustomVoiceProfileId(createdProfile.profile_id);
+        setGuidedCustomVoiceProfileIdState(createdProfile.profile_id);
         setVoiceProfileName("My Voice");
         setVoiceSampleFile(null);
         toast.success("Custom voice profile saved");
@@ -253,7 +294,18 @@ export const useSettingsData = ({ api, user, navigate }) => {
     setDeletingVoiceProfileId(profileId);
     try {
       await api.delete(`/voice-profiles/${profileId}`);
-      setVoiceProfiles((current) => current.filter((profile) => profile.profile_id !== profileId));
+      setVoiceProfiles((current) => {
+        const next = current.filter((profile) => profile.profile_id !== profileId);
+        if (profileId === guidedCustomVoiceProfileId) {
+          const fallbackProfileId = next[0]?.profile_id || "";
+          setGuidedCustomVoiceProfileId(fallbackProfileId);
+          setGuidedCustomVoiceProfileIdState(fallbackProfileId);
+          const keepCustomVoiceEnabled = Boolean(fallbackProfileId) && getGuidedCustomVoiceEnabled();
+          setGuidedCustomVoiceEnabled(keepCustomVoiceEnabled);
+          setGuidedCustomVoiceEnabledState(keepCustomVoiceEnabled);
+        }
+        return next;
+      });
       toast.success("Voice profile removed");
     } catch (error) {
       appLogger.error("Delete voice profile failed", error);
@@ -261,7 +313,7 @@ export const useSettingsData = ({ api, user, navigate }) => {
     } finally {
       setDeletingVoiceProfileId(null);
     }
-  }, [api]);
+  }, [api, guidedCustomVoiceProfileId]);
 
   return {
     loading,
@@ -277,6 +329,8 @@ export const useSettingsData = ({ api, user, navigate }) => {
     guidedSpeedOption,
     guidedVoiceProfile,
     guidedPracticeOverrideMode,
+    guidedCustomVoiceEnabled,
+    guidedCustomVoiceProfileId,
     voiceProfiles,
     voiceProfileName,
     setVoiceProfileName,
@@ -301,6 +355,8 @@ export const useSettingsData = ({ api, user, navigate }) => {
     updateGuidedSpeedOption,
     updateGuidedVoiceProfile,
     updateGuidedPracticeOverrideMode,
+    updateGuidedCustomVoiceEnabled,
+    updateGuidedCustomVoiceProfileId,
     createVoiceProfile,
     removeVoiceProfile,
   };

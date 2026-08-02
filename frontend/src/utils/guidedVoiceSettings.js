@@ -8,10 +8,14 @@ export const GUIDED_VOICE_PROFILE_KEY = "guided_voice_profile";
 export const GUIDED_SPEED_OPTION_KEY = "guided_speed_option";
 export const GUIDED_PRACTICE_OVERRIDE_MODE_KEY = "guided_practice_override_mode";
 export const GUIDED_PRACTICE_OVERRIDES_KEY = "guided_practice_overrides";
+export const GUIDED_CUSTOM_VOICE_ENABLED_KEY = "guided_custom_voice_enabled";
+export const GUIDED_CUSTOM_VOICE_PROFILE_ID_KEY = "guided_custom_voice_profile_id";
 
 let runtimeVoiceProfile = "feminine";
 let runtimeSpeedOption = "slow";
 let runtimePracticeOverrideMode = "session";
+let runtimeCustomVoiceEnabled = "false";
+let runtimeCustomVoiceProfileId = "";
 const sessionPracticeOverrides = new Map();
 
 export const GUIDED_VOICE_PROFILES = {
@@ -70,6 +74,13 @@ const normalizeOverrideMode = (value) => {
   const candidate = String(value || "").toLowerCase();
   return candidate === "remember" ? "remember" : "session";
 };
+
+const normalizeCustomVoiceEnabled = (value) => {
+  const candidate = String(value || "").trim().toLowerCase();
+  return candidate === "true" || candidate === "1" || candidate === "yes";
+};
+
+const normalizeCustomVoiceProfileId = (value) => String(value || "").trim();
 
 const readCookie = (key) => {
   try {
@@ -239,4 +250,28 @@ export const resolveGuidedVoiceId = (explicitVoice) => {
 export const resolveGuidedSpeedValue = (explicitOption) => {
   const option = explicitOption ? normalizeSpeedOption(explicitOption) : getGuidedSpeedOption();
   return GUIDED_SPEED_OPTIONS[option].speed;
+};
+
+export const getGuidedCustomVoiceEnabled = () => {
+  return normalizeCustomVoiceEnabled(readStoredValue(GUIDED_CUSTOM_VOICE_ENABLED_KEY, runtimeCustomVoiceEnabled));
+};
+
+export const setGuidedCustomVoiceEnabled = (enabled) => {
+  const next = normalizeCustomVoiceEnabled(enabled);
+  writeStoredValue(GUIDED_CUSTOM_VOICE_ENABLED_KEY, next ? "true" : "false", (value) => {
+    runtimeCustomVoiceEnabled = value;
+  });
+  return next;
+};
+
+export const getGuidedCustomVoiceProfileId = () => {
+  return normalizeCustomVoiceProfileId(readStoredValue(GUIDED_CUSTOM_VOICE_PROFILE_ID_KEY, runtimeCustomVoiceProfileId));
+};
+
+export const setGuidedCustomVoiceProfileId = (profileId) => {
+  const next = normalizeCustomVoiceProfileId(profileId);
+  writeStoredValue(GUIDED_CUSTOM_VOICE_PROFILE_ID_KEY, next, (value) => {
+    runtimeCustomVoiceProfileId = value;
+  });
+  return next;
 };

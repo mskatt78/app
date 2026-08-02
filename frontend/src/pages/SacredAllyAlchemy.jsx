@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Sparkles, Flame, Waves, Wind, X, Feather, Star, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../components/ui/accordion";
 import { appLogger } from "../utils/logger";
 import GuidedAudioButton from "../components/GuidedAudioButton";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
@@ -658,6 +659,14 @@ const firstLine = (value, fallback = "") => {
   return text || fallback;
 };
 
+const normalizeList = (value) => {
+  if (!value) return [];
+  if (Array.isArray(value)) {
+    return value.map((entry) => String(entry || "").trim()).filter(Boolean);
+  }
+  return [String(value).trim()].filter(Boolean);
+};
+
 const deriveCeremonies = (item) => {
   if (Array.isArray(item?.ceremony) && item.ceremony.length > 0) {
     return item.ceremony;
@@ -701,6 +710,12 @@ const deriveAlchemyTeachings = (item) => {
   }
   return [];
 };
+
+const deriveSymbolism = (item) => normalizeList(item?.symbolism);
+
+const deriveSpiritualGifts = (item) => normalizeList(item?.spiritual_gifts);
+
+const deriveEmbodimentPrompts = (item) => normalizeList(item?.embodiment_prompts || item?.embodiment_prompt);
 
 const deriveRituals = (item) => {
   if (Array.isArray(item?.ritual) && item.ritual.length > 0) {
@@ -807,26 +822,37 @@ const FILTERS = [
   { id: "sacred_allies", label: "Other Sacred Allies", icon: Sparkles },
 ];
 
-const SectionList = ({ title, icon: Icon, items, testId }) => (
-  <div className="space-y-2" data-testid={testId}>
-    <h4 className="text-sm font-medium flex items-center gap-2">
-      <Icon className="w-4 h-4 text-primary" /> {title}
-    </h4>
-    <ul className="space-y-2">
-      {items?.map((item, idx) => (
-        <li key={`${title}-${idx}-${String(item).slice(0, 20)}`} className="rounded-lg border border-white/20 bg-white/[0.05] p-3">
-          <div className="flex items-start gap-2 text-sm leading-relaxed text-foreground/90">
-            <ChevronRight className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
-            <span>{item}</span>
-          </div>
-          <p className="text-sm text-muted-foreground mt-2 leading-relaxed" data-testid={`${testId}-deep-line-${idx}`}>
-            {deepLine(title, item, idx)}
-          </p>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+const SectionList = ({ title, icon: Icon, items, testId }) => {
+  const resolvedItems = normalizeList(items);
+  if (resolvedItems.length === 0) return null;
+
+  return (
+    <Accordion type="single" collapsible className="rounded-xl border border-white/10 bg-white/[0.03]" data-testid={testId}>
+      <AccordionItem value={`${testId}-item`} className="border-b-0">
+        <AccordionTrigger className="px-4 py-3 text-sm hover:no-underline" data-testid={`${testId}-trigger`}>
+          <span className="inline-flex items-center gap-2">
+            <Icon className="w-4 h-4 text-primary" /> {title}
+          </span>
+        </AccordionTrigger>
+        <AccordionContent className="px-4 pb-4" data-testid={`${testId}-content`}>
+          <ul className="space-y-2">
+            {resolvedItems.map((item, idx) => (
+              <li key={`${title}-${idx}-${String(item).slice(0, 20)}`} className="rounded-lg border border-white/20 bg-white/[0.05] p-3">
+                <div className="flex items-start gap-2 text-sm leading-relaxed text-foreground/90">
+                  <ChevronRight className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" />
+                  <span>{item}</span>
+                </div>
+                <p className="text-sm text-muted-foreground mt-2 leading-relaxed" data-testid={`${testId}-deep-line-${idx}`}>
+                  {deepLine(title, item, idx)}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};
 
 export default function SacredAllyAlchemy({ api }) {
   const navigate = useNavigate();
@@ -1185,6 +1211,75 @@ export default function SacredAllyAlchemy({ api }) {
                 )}
 
                 <p className="text-sm text-muted-foreground" data-testid="sacred-ally-modal-description">{selected.description}</p>
+
+                {(selected.devotional_invocation || selected.embodiment_prompt || selected.integration_vow) && (
+                  <div className="rounded-xl border border-fuchsia-500/25 bg-fuchsia-500/10 p-4" data-testid="sacred-ally-devotional-panel">
+                    <p className="text-[11px] uppercase tracking-wider text-fuchsia-200 mb-2">Devotional Embodiment Arc</p>
+                    {selected.devotional_invocation && (
+                      <p className="text-sm text-fuchsia-50/95 leading-relaxed" data-testid="sacred-ally-devotional-invocation">
+                        <span className="text-fuchsia-200 mr-1">Invocation:</span>
+                        {selected.devotional_invocation}
+                      </p>
+                    )}
+                    {selected.embodiment_prompt && (
+                      <p className="text-sm text-fuchsia-50/90 leading-relaxed mt-2" data-testid="sacred-ally-devotional-embodiment-prompt">
+                        <span className="text-fuchsia-200 mr-1">Embodiment prompt:</span>
+                        {selected.embodiment_prompt}
+                      </p>
+                    )}
+                    {selected.integration_vow && (
+                      <p className="text-sm text-fuchsia-50/90 leading-relaxed mt-2" data-testid="sacred-ally-devotional-integration-vow">
+                        <span className="text-fuchsia-200 mr-1">Integration vow:</span>
+                        {selected.integration_vow}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {(selected.why_this_heals || selected.nervous_system_cues || selected.safety_notes || selected.integration_actions) && (
+                  <div className="grid sm:grid-cols-2 gap-3" data-testid="sacred-ally-safety-healing-grid">
+                    {selected.why_this_heals && (
+                      <div className="rounded-xl border border-cyan-500/25 bg-cyan-500/10 p-3" data-testid="sacred-ally-why-heals">
+                        <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
+                        <ul className="space-y-1">
+                          {normalizeList(selected.why_this_heals).slice(0, 4).map((line, idx) => (
+                            <li key={`ally-why-${idx}`} className="text-xs text-cyan-50/95 leading-relaxed">✦ {line}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {Array.isArray(selected.nervous_system_cues) && selected.nervous_system_cues.length > 0 && (
+                      <div className="rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3" data-testid="sacred-ally-nervous-cues">
+                        <p className="text-[11px] uppercase tracking-wider text-emerald-200 mb-1">Nervous-System Cues</p>
+                        <ul className="space-y-1">
+                          {selected.nervous_system_cues.slice(0, 4).map((cue, idx) => (
+                            <li key={`ally-cue-${idx}`} className="text-xs text-emerald-50/95 leading-relaxed">• {cue}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {selected.safety_notes && (
+                      <div className="rounded-xl border border-rose-500/25 bg-rose-500/10 p-3" data-testid="sacred-ally-safety-notes">
+                        <p className="text-[11px] uppercase tracking-wider text-rose-200 mb-1">Safety Notes</p>
+                        <p className="text-xs text-rose-50/95 leading-relaxed">{normalizeList(selected.safety_notes).join(" ")}</p>
+                      </div>
+                    )}
+                    {Array.isArray(selected.integration_actions) && selected.integration_actions.length > 0 && (
+                      <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 p-3" data-testid="sacred-ally-integration-actions">
+                        <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Integration Actions</p>
+                        <ul className="space-y-1">
+                          {selected.integration_actions.slice(0, 4).map((action, idx) => (
+                            <li key={`ally-action-${idx}`} className="text-xs text-amber-50/95 leading-relaxed">✓ {action}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <SectionList title="Symbolism" icon={Sparkles} items={deriveSymbolism(selected)} testId="sacred-ally-symbolism" />
+                <SectionList title="Spiritual Gifts" icon={Star} items={deriveSpiritualGifts(selected)} testId="sacred-ally-spiritual-gifts" />
+                <SectionList title="Embodiment Prompts" icon={Feather} items={deriveEmbodimentPrompts(selected)} testId="sacred-ally-embodiment-prompts" />
 
                 <SectionList title="Alchemy Teachings" icon={Sparkles} items={deriveAlchemyTeachings(selected)} testId="sacred-ally-alchemy-teachings" />
                 <SectionList title="Ceremonies" icon={Flame} items={deriveCeremonies(selected)} testId="sacred-ally-ceremonies" />

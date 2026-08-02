@@ -26,6 +26,10 @@ import {
 } from "../../utils/guidedNarrationSettings";
 import { getGuidedToningMultiplier } from "../../utils/guidedToningSettings";
 import {
+  GUIDED_CUSTOM_VOICE_ENABLED_KEY,
+  GUIDED_CUSTOM_VOICE_PROFILE_ID_KEY,
+  getGuidedCustomVoiceEnabled,
+  getGuidedCustomVoiceProfileId,
   getGuidedPracticeOverrideMode,
   getGuidedPracticePreference,
   getGuidedSpeedOption,
@@ -81,6 +85,11 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const [toningActive, setToningActive] = useState(false);
   const [playbackVoiceProfile, setPlaybackVoiceProfile] = useState(() => getGuidedVoiceProfile());
   const [playbackSpeedOption, setPlaybackSpeedOption] = useState(() => getGuidedSpeedOption());
+  const [customVoiceEnabled, setCustomVoiceEnabled] = useState(() => getGuidedCustomVoiceEnabled());
+  const [customVoiceProfileId, setCustomVoiceProfileId] = useState(() => getGuidedCustomVoiceProfileId());
+  const [customVoiceProfileName, setCustomVoiceProfileName] = useState("");
+  const [customVoiceSampleUrl, setCustomVoiceSampleUrl] = useState("");
+  const [customVoiceLoading, setCustomVoiceLoading] = useState(false);
   const inferredNarrationDurationMinutes = useMemo(() => {
     const hintedMinutes = getEffectiveGuidedNarrationDurationMinutes({
       practiceName: practice?.name,
@@ -101,6 +110,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     );
     return Math.max(680, Math.ceil(targetMinutes * NARRATION_WPM_AT_SPEED_ONE * speed));
   }, [playbackNarrationDurationMinutes, playbackSpeedOption]);
+  const customVoiceActive = Boolean(customVoiceEnabled && customVoiceSampleUrl);
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
@@ -252,11 +262,63 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
           );
         }
       }
+      if (event.key === GUIDED_CUSTOM_VOICE_ENABLED_KEY || event.key === GUIDED_CUSTOM_VOICE_PROFILE_ID_KEY) {
+        setCustomVoiceEnabled(getGuidedCustomVoiceEnabled());
+        setCustomVoiceProfileId(getGuidedCustomVoiceProfileId());
+      }
     };
 
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
   }, [inferredNarrationDurationMinutes, practicePreferenceKey]);
+
+  useEffect(() => {
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    if (!backendUrl || !customVoiceEnabled || !customVoiceProfileId) {
+      setCustomVoiceSampleUrl("");
+      setCustomVoiceProfileName("");
+      setCustomVoiceLoading(false);
+      return undefined;
+    }
+
+    let cancelled = false;
+    const loadCustomVoice = async () => {
+      setCustomVoiceLoading(true);
+      try {
+        const response = await fetch(`${backendUrl}/api/voice-profiles`, {
+          credentials: "include",
+        });
+        if (!response.ok) throw new Error("Unable to load voice profiles");
+        const profiles = await response.json();
+        const profile = Array.isArray(profiles)
+          ? profiles.find((entry) => entry.profile_id === customVoiceProfileId)
+          : null;
+        if (cancelled) return;
+        if (!profile?.sample_file_id) {
+          setCustomVoiceSampleUrl("");
+          setCustomVoiceProfileName("");
+          return;
+        }
+        setCustomVoiceSampleUrl(`${backendUrl}/api/voice-files/${profile.sample_file_id}/download`);
+        setCustomVoiceProfileName(String(profile.name || "My Custom Voice"));
+      } catch (error) {
+        if (!cancelled) {
+          appLogger.warn("Unable to resolve custom voice profile for guided overlay", error);
+          setCustomVoiceSampleUrl("");
+          setCustomVoiceProfileName("");
+        }
+      } finally {
+        if (!cancelled) {
+          setCustomVoiceLoading(false);
+        }
+      }
+    };
+
+    loadCustomVoice();
+    return () => {
+      cancelled = true;
+    };
+  }, [customVoiceEnabled, customVoiceProfileId]);
 
   const handlePlaybackVoiceProfileChange = useCallback((nextProfile) => {
     setPlaybackVoiceProfile(nextProfile);
@@ -345,6 +407,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       ttsRef.current.onplay = null;
       ttsRef.current.onpause = null;
       ttsRef.current.onended = null;
+      ttsRef.current.loop = false;
       ttsRef.current.pause();
       if (resetIndex) {
         ttsRef.current.currentTime = 0;
@@ -708,6 +771,41 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     stopToning,
   ]);
 
+  const playCustomVoiceLoop = useCallback(async () => {
+    if (!customVoiceSampleUrl) return false;
+    let audio = ttsRef.current;
+    if (!audio) {
+      audio = new Audio();
+      audio.preload = "auto";
+      ttsRef.current = audio;
+    }
+
+    audio.pause();
+    audio.onplay = null;
+    audio.onpause = null;
+    audio.onended = null;
+    audio.loop = true;
+    audio.muted = muted;
+    audio.src = customVoiceSampleUrl;
+    audio.currentTime = 0;
+    audio.onplay = () => {
+      setTtsPlaying(true);
+      setAudioTapRequired(false);
+      setTtsLoading(false);
+    };
+    audio.onpause = () => {
+      setTtsPlaying(false);
+    };
+
+    const started = await audio.play().then(() => true).catch(() => false);
+    if (!started) {
+      setTtsLoading(false);
+      setAudioTapRequired(true);
+      toast.info("Tap play once to enable custom voice audio.");
+    }
+    return started;
+  }, [customVoiceSampleUrl, muted]);
+
   const startAmbientTrack = useCallback(() => {
     if (!audioCtxRef.current) {
       try {
@@ -759,8 +857,27 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     startAmbientTrack();
     setTtsLoading(true);
 
+    if (customVoiceActive) {
+      playCustomVoiceLoop();
+      return;
+    }
+
+    if (customVoiceEnabled && !customVoiceLoading && !customVoiceSampleUrl) {
+      toast.info("Custom voice unavailable right now — using guided AI voice.");
+    }
     playNarrationSegment(currentSegmentIndexRef.current);
-  }, [isPlaying, playNarrationSegment, startAmbientTrack, stopNarrationPlayback, syncRemainingFromClock]);
+  }, [
+    customVoiceActive,
+    customVoiceEnabled,
+    customVoiceLoading,
+    customVoiceSampleUrl,
+    isPlaying,
+    playCustomVoiceLoop,
+    playNarrationSegment,
+    startAmbientTrack,
+    stopNarrationPlayback,
+    syncRemainingFromClock,
+  ]);
 
   const handleStartVoiceOnly = useCallback(() => {
     if (isCompleteRef.current) return;
@@ -774,8 +891,12 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       sessionEndRef.current = Date.now() + (timeRemainingRef.current * 1000);
     }
     setTtsLoading(true);
+    if (customVoiceActive) {
+      playCustomVoiceLoop();
+      return;
+    }
     playNarrationSegment(currentSegmentIndexRef.current);
-  }, [playNarrationSegment, startAmbientTrack, stopNarrationPlayback]);
+  }, [customVoiceActive, playCustomVoiceLoop, playNarrationSegment, startAmbientTrack, stopNarrationPlayback]);
 
   useEffect(() => {
     if (practice && narrationReady && !autoStartRef.current && !isComplete) {
@@ -805,6 +926,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     narrationParagraphs,
     playbackVoiceProfile,
     playbackSpeedOption,
+    customVoiceActive,
+    customVoiceProfileName,
     playbackNarrationDurationMinutes,
     narrationDurationOptions,
     handlePlaybackVoiceProfileChange,

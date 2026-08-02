@@ -1,0 +1,63 @@
+{
+  "summary": "Tested custom voice recording UX, voice profiles CRUD, guardians/allies depth rendering with collapsible sections, and guided playback regression. All backend tests pass (13/13). Frontend UI elements verified working.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "GuidedPracticeContent",
+        "issues": ["React hydration warning: <span> cannot be child of <select>/<option> - minor console warning, does not affect functionality"]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_custom_voice_profiles.py",
+    "/app/test_reports/pytest/test_custom_voice_iter267.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Minor: GuidedPracticeContent.jsx has React hydration warnings due to <span> elements inside <select>/<option> - consider removing dynamic wrapper spans from select options"
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_custom_voice_profiles.py"
+  ],
+  "success_rate": {
+    "backend": "100%",
+    "frontend": "100%"
+  },
+  "test_credentials": "voice.sync.qa@example.com / Pass1234!",
+  "seed_data_creation": "None - used existing test user",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Custom voice features fully implemented and working. Backend accepts both .webm and .mp3 uploads. Voice profiles CRUD working. Sacred Guardians and Sacred Allies pages have collapsible sections (Symbolism, Spiritual Gifts, Embodiment Prompts) that expand/collapse correctly. Guided practice overlay regression check passed - timer UI functional with default AI voice path.",
+  "features_tested": {
+    "custom_voice_settings": {
+      "status": "PASS",
+      "details": "All UI elements present: name input, file upload, save button, toggle, profile select, start recording button, profiles list. Toggle correctly disabled when no profile selected. Description mentions both .webm and .mp3 formats."
+    },
+    "voice_files_api": {
+      "status": "PASS",
+      "details": "POST /api/voice-files accepts both audio/webm and audio/mpeg. Rejects unsupported formats with 400. Returns file_id, content_type, duration_seconds, size, download_url."
+    },
+    "voice_profiles_api": {
+      "status": "PASS",
+      "details": "GET /api/voice-profiles returns list. POST requires valid sample_file_id. DELETE returns 404 for non-existent profile. Full CRUD flow tested: upload -> create profile -> list -> delete -> verify removal."
+    },
+    "sacred_guardians_collapsible": {
+      "status": "PASS",
+      "details": "14 guardian cards displayed. Detail modal opens with collapsible sections: Symbolism & Meanings, Spiritual Gifts, Embodiment Prompts. All sections expand/collapse correctly. Additional depth content: Why This Heals, Alchemy Teachings, Ceremonial Arc, Guided Practice Arc, Safety & Regulation."
+    },
+    "sacred_allies_mobile": {
+      "status": "PASS",
+      "details": "286 ally cards displayed. Detail modal works on mobile viewport (390x844). Collapsible sections: Embodiment Prompts, Alchemy Teachings, Ceremonies, Guided Practice Arc, Embodiment Practices. Depth panels: Devotional Panel, Why This Heals, Safety Notes, Integration Actions. No layout overflow issues."
+    },
+    "guided_practice_regression": {
+      "status": "PASS",
+      "details": "Guided overlay launches correctly. Timer UI shows 10:00. Play button, mute button, voice override select, speed override select, exit button all present and functional. Default AI voice path works when custom voice disabled."
+    }
+  }
+}
