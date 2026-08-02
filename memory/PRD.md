@@ -4755,3 +4755,21 @@
   - Backend: **100% (13/13 pass)**
   - Frontend: **100% pass**
   - Verified no regressions on `/mindfulness`.
+
+## Latest Verification Snapshot (Iteration 266 — 2026-08-02)
+- ✅ **Daily Guidance cutout + startup issue resolved (global guided sections)**:
+  - Root cause addressed in `useGuidedAudioPlayback.js`:
+    - reduced script expansion timeout (`18000ms` → `9000ms`)
+    - added `shouldBypassSlowExpansion(...)` for daily/morning/evening and longer sessions
+    - removed quick-start overlap path that could create race/overlap behavior
+    - kept resilient segment stall/error recovery and cache safety
+  - Timer narration path also improved previously for fallback depth/continuity.
+
+- ✅ **Validation status (testing agent iteration 266)**:
+  - Frontend: **100% pass**
+  - Morning Daily Guidance startup: **4.1s** (target <20s)
+  - Evening Daily Guidance startup: **2.1s** (target <30s)
+  - Morning continuity: **109.1s** (no cutout)
+  - Evening continuity: **107.1s** (no cutout)
+  - Mindfulness regression check: pass (guided segments continue correctly)
+  - No repeated script-expansion timeout warnings in console during normal run.
