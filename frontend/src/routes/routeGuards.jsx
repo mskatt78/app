@@ -185,38 +185,22 @@ export const PublicRoute = ({ children, api }) => {
   const location = useLocation();
   const locationStateUser = location.state?.user || null;
   const [user, setUser] = useState(locationStateUser);
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(Boolean(locationStateUser));
   const isMountedRef = useRef(true);
-
-  const checkAuth = useCallback(async () => {
-    try {
-      const { data } = await api.get("/auth/me");
-      if (!isMountedRef.current) return;
-      setUser(data);
-    } catch (error) {
-      if (!isMountedRef.current) return;
-      appLogger.warn("Public route auth check failed", error);
-      setUser(null);
-    }
-    if (!isMountedRef.current) return;
-    setChecked(true);
-  }, [api]);
 
   useEffect(() => {
     isMountedRef.current = true;
 
     queueMicrotask(() => {
-      if (locationStateUser) {
-        setUser(locationStateUser);
-      }
-
-      checkAuth();
+      if (!isMountedRef.current) return;
+      setUser(locationStateUser || null);
+      setChecked(true);
     });
 
     return () => {
       isMountedRef.current = false;
     };
-  }, [checkAuth, locationStateUser]);
+  }, [locationStateUser]);
 
   if (!checked) {
     return (

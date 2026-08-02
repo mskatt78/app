@@ -24,18 +24,36 @@ const api = axios.create({
 function AppRouter() {
   const location = useLocation();
   const [user, setUser] = useState(null);
+  const [authProbeComplete, setAuthProbeComplete] = useState(false);
+  const hasUser = Boolean(user?.user_id || user?.email);
 
   useEffect(() => {
+    if (location.state?.user) {
+      setUser(location.state.user);
+      setAuthProbeComplete(true);
+      return;
+    }
+
+    if (authProbeComplete && !hasUser) {
+      return;
+    }
+
     const checkAuth = async () => {
       try {
-        const response = await api.get("/auth/me");
-        setUser(response.data);
+        const response = await api.get("/auth/status");
+        if (response?.data?.authenticated && response?.data?.user) {
+          setUser(response.data.user);
+        } else {
+          setUser(null);
+        }
       } catch {
         setUser(null);
+      } finally {
+        setAuthProbeComplete(true);
       }
     };
     checkAuth();
-  }, [location.pathname]);
+  }, [authProbeComplete, hasUser, location.pathname, location.state?.user]);
 
   if (location.hash?.includes("session_id=")) {
     return <AuthCallback api={api} />;

@@ -210,6 +210,35 @@ async def get_me(user: User = Depends(get_current_user)) -> User:
     """Get current user info."""
     return user
 
+
+@router.get("/status")
+async def get_auth_status(request: Request) -> dict[str, Any]:
+    """Return session status without raising 401 for public-route checks."""
+    db = get_db()
+    session_token = request.cookies.get("session_token")
+    if not session_token:
+        return {"authenticated": False, "user": None}
+
+    session = await db.sessions.find_one({"session_token": session_token}, {"_id": 0})
+    if not session:
+        return {"authenticated": False, "user": None}
+
+    expires_at = str(session.get("expires_at") or "").strip()
+    if expires_at:
+        try:
+            expiry_dt = datetime.fromisoformat(expires_at.replace("Z", "+00:00"))
+            if expiry_dt <= datetime.now(timezone.utc):
+                await db.sessions.delete_one({"session_token": session_token})
+                return {"authenticated": False, "user": None}
+        except ValueError:
+            logger.warning("Invalid session expiry format encountered for auth status check")
+
+    user_data = await db.users.find_one({"user_id": session.get("user_id")}, {"_id": 0})
+    if not user_data:
+        return {"authenticated": False, "user": None}
+
+    return {"authenticated": True, "user": _public_user_payload(user_data)}
+
 @router.post("/logout")
 async def logout(request: Request, response: Response) -> dict[str, str]:
     """Logout user and clear session."""

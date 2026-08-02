@@ -59,15 +59,24 @@ export const useMantrasData = ({ api, user }) => {
   }, [api, logError]);
 
   const fetchFavorites = useCallback(async () => {
+    if (!user) {
+      setFavorites(new Set());
+      return;
+    }
     try {
       const response = await api.get("/favorites?item_type=mantra");
       if (!isMountedRef.current) return;
       const favIds = new Set(response.data.map((f) => f.item_id));
       setFavorites(favIds);
     } catch (error) {
+      const statusCode = error?.response?.status;
+      if (statusCode === 401 || statusCode === 403) {
+        if (isMountedRef.current) setFavorites(new Set());
+        return;
+      }
       logWarn("Failed to fetch mantra favorites", error);
     }
-  }, [api, logWarn]);
+  }, [api, logWarn, user]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -164,6 +173,10 @@ export const useMantrasData = ({ api, user }) => {
 
   const toggleFavorite = async (mantraId, event) => {
     event?.stopPropagation();
+    if (!user) {
+      toast.info("Sign in to save mantra favorites");
+      return;
+    }
     try {
       if (favorites.has(mantraId)) {
         await api.delete(`/favorites/mantra/${mantraId}`);

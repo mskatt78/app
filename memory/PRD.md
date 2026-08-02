@@ -104,6 +104,25 @@
   - Testing agent `iteration_268` passed at **Frontend 100%**.
   - Guided Practice launch from both Mantras and Mudras remains functional.
 
+## Latest Verification Snapshot (Iteration 269 — 2026-08-02)
+- ✅ **Public-route 401 noise normalization completed**:
+  - Added new backend endpoint: `GET /api/auth/status` in `backend/routers/auth.py`.
+    - Returns `{ authenticated: false, user: null }` (HTTP 200) for unauthenticated visitors.
+    - Returns `{ authenticated: true, user: {...} }` when session is valid.
+    - Preserves strict `GET /api/auth/me` behavior for protected flows.
+
+- ✅ **Frontend routing/auth probes updated**:
+  - `App.js` now uses `/api/auth/status` instead of `/api/auth/me` for top-nav session probing.
+  - `PublicRoute` no longer performs redundant `/auth/me` checks on public pages.
+
+- ✅ **Expected unauthenticated favorites noise reduced**:
+  - `useMantrasData.js` now skips favorites fetch when user is unauthenticated.
+  - 401/403 responses for mantra favorites are treated as expected (no warning spam).
+
+- ✅ **Verification**:
+  - Curl: `/api/auth/status` returns correct authenticated/unauthenticated payloads.
+  - Public route smoke logs no longer show recurring `/api/auth/me` 401 noise.
+
 ## Latest Verification Snapshot (Iteration 249 — 2026-07-15)
 - ✅ **Yoga pose accuracy hotfix (targeted P0 set) completed**:
   - Updated strict pose matcher in `frontend/src/utils/yogaPoseImageMapper.js` with deterministic mappings for:
