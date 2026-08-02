@@ -81,6 +81,29 @@
     - guardians/allies collapsible sections
     - guided overlay regression safety with default AI voice path
 
+## Latest Verification Snapshot (Iteration 268 — 2026-08-02)
+- ✅ **Hydration warning fix completed and verified**:
+  - Replaced native `<select>` controls in `GuidedPracticeContent.jsx` with Shadcn `Select` components for:
+    - Voice override
+    - Speed override
+    - Narration target override
+  - QA verification confirms no hydration/react warning for `<span>` in `<option>/<select>`.
+
+- ✅ **P2 Depth Pass completed for Mantras + Mudras**:
+  - Added master-level depth sections to `MantrasPlayer.jsx`:
+    - Embodiment Prompts
+    - Integration Actions
+    - Nervous-System Cues
+  - Added master-level depth sections to `MudrasLibraryContainer.jsx`:
+    - Embodiment Prompts
+    - Integration Actions
+    - Nervous-System Cues
+  - Sections include robust fallbacks when direct content fields are missing.
+
+- ✅ **Testing status**:
+  - Testing agent `iteration_268` passed at **Frontend 100%**.
+  - Guided Practice launch from both Mantras and Mudras remains functional.
+
 ## Latest Verification Snapshot (Iteration 249 — 2026-07-15)
 - ✅ **Yoga pose accuracy hotfix (targeted P0 set) completed**:
   - Updated strict pose matcher in `frontend/src/utils/yogaPoseImageMapper.js` with deterministic mappings for:
