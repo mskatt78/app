@@ -5,6 +5,7 @@ import { resolveGuidedSpeedValue, resolveGuidedVoiceId } from "../../utils/guide
 export const useNarrationCache = () => {
   const cacheRef = useRef(new Map());
   const pendingRef = useRef(new Map());
+  const MAX_CACHE_ITEMS = 8;
 
   const clearNarrationCache = useCallback(() => {
     pendingRef.current.clear();
@@ -52,6 +53,16 @@ export const useNarrationCache = () => {
         const blob = new Blob([bytes], { type: "audio/mpeg" });
         const url = URL.createObjectURL(blob);
         cacheRef.current.set(cacheKey, url);
+
+        while (cacheRef.current.size > MAX_CACHE_ITEMS) {
+          const oldestKey = cacheRef.current.keys().next().value;
+          const oldestUrl = cacheRef.current.get(oldestKey);
+          cacheRef.current.delete(oldestKey);
+          if (typeof oldestUrl === "string" && oldestUrl.startsWith("blob:")) {
+            URL.revokeObjectURL(oldestUrl);
+          }
+        }
+
         return url;
       })
       .finally(() => {

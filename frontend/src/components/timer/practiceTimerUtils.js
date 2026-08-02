@@ -61,21 +61,49 @@ export const splitSentences = (text) =>
     .map((line) => line.trim())
     .filter((line) => line.length > 10);
 
-export const fallbackNarrationSegments = (normalizedSegments) => {
-  const sentences = normalizedSegments
+const countWords = (text) => String(text || "").trim().split(/\s+/).filter(Boolean).length;
+
+export const fallbackNarrationSegments = (normalizedSegments, targetMinutes = MIN_NARRATION_MINUTES) => {
+  const baseSentences = normalizedSegments
     .flatMap((segment) => [segment.name, segment.description])
     .flatMap((value) => splitSentences(value))
+    .map((line) => line.replace(/\s+/g, " ").trim())
     .filter(Boolean);
 
-  if (!sentences.length) return [];
+  if (!baseSentences.length) return [];
+
+  const reflectiveCues = [
+    "Let your exhale lengthen and allow your body to settle before you move forward.",
+    "Notice one sensation in your chest and one sensation in your belly without trying to change either.",
+    "Stay with the breath you have, not the breath you think you should have.",
+    "If intensity rises, slow down and return to a softer rhythm.",
+    "Choose kindness in pacing. Depth arrives through repetition and safety.",
+    "Name one small action you can complete today that reflects this guidance.",
+  ];
+
+  const targetWordCount = Math.max(MIN_NARRATION_MINUTES * 115, Math.ceil(Number(targetMinutes || MIN_NARRATION_MINUTES) * 110));
+  const expanded = [
+    "Welcome. Begin with a slow inhale and a longer, softer exhale.",
+    ...baseSentences,
+  ];
+
+  let loopIndex = 0;
+  while (countWords(expanded.join(" ")) < targetWordCount) {
+    const base = baseSentences[loopIndex % baseSentences.length];
+    const cue = reflectiveCues[loopIndex % reflectiveCues.length];
+    expanded.push(`${cue} ${base}`);
+    loopIndex += 1;
+    if (loopIndex > 220) break;
+  }
+
+  expanded.push("Close this practice by naming one grounded action you will complete in the next twenty four hours.");
 
   const chunks = [];
   let buffer = [];
   let words = 0;
-
-  sentences.forEach((sentence) => {
-    const sentenceWords = sentence.split(/\s+/).filter(Boolean).length;
-    if (words >= 160 && buffer.length) {
+  expanded.forEach((sentence) => {
+    const sentenceWords = countWords(sentence);
+    if (words >= 95 && buffer.length) {
       chunks.push(buffer.join(" "));
       buffer = [];
       words = 0;
@@ -85,5 +113,5 @@ export const fallbackNarrationSegments = (normalizedSegments) => {
   });
 
   if (buffer.length) chunks.push(buffer.join(" "));
-  return chunks;
+  return chunks.filter(Boolean);
 };

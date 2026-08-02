@@ -36,7 +36,8 @@ export const useNarrationRequest = ({
       .filter(Boolean)
       .slice(0, 96);
 
-    const fallback = fallbackNarrationSegments(normalizedSegments);
+    const targetMinutes = Math.max(MIN_NARRATION_MINUTES, Math.ceil(calculatedTotal / 60));
+    const fallback = fallbackNarrationSegments(normalizedSegments, targetMinutes);
     if (!steps.length && !sourceTexts.length && !fallback.length) {
       setNarrationSegments([]);
       setNarrationPreparing(false);
@@ -57,7 +58,7 @@ export const useNarrationRequest = ({
       body: JSON.stringify({
         practice_name: normalizedSegments[0]?.name || `${practiceType} practice`,
         element,
-        duration_minutes: Math.max(MIN_NARRATION_MINUTES, Math.ceil(calculatedTotal / 60)),
+        duration_minutes: targetMinutes,
         use_ai: false,
         include_toning: true,
         anti_repetition_mode: getEffectiveGuidedNarrationMode({

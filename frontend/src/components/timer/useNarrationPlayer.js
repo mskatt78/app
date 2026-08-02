@@ -66,14 +66,67 @@ export const useNarrationPlayer = ({
       player.src = url;
       player.playbackRate = tempoPlaybackRates[tempo] || 1;
       player.muted = isMuted;
-      player.onended = () => {
+      let advanced = false;
+      let progressTimer = null;
+      let segmentTimeout = null;
+      let lastProgress = 0;
+      let stagnantMs = 0;
+
+      const cleanupMonitors = () => {
+        if (progressTimer) {
+          window.clearInterval(progressTimer);
+          progressTimer = null;
+        }
+        if (segmentTimeout) {
+          window.clearTimeout(segmentTimeout);
+          segmentTimeout = null;
+        }
+      };
+
+      const advance = (reason) => {
+        if (advanced) return;
+        advanced = true;
+        cleanupMonitors();
         const nextIndex = narrationIndexRef.current + 1;
         narrationIndexRef.current = nextIndex;
         setNarrationSegmentIndex(nextIndex);
-        if (isRunning) playNarrationSegment(nextIndex);
+        if (isRunning) {
+          playNarrationSegment(nextIndex).catch((error) => {
+            console.error(`Narration continuation failed (${reason}):`, error);
+          });
+        }
       };
+
+      player.onended = () => advance("ended");
+      player.onerror = () => advance("error");
+      player.onstalled = () => advance("stalled");
+      player.onsuspend = () => {
+        if (!player.ended && !player.paused) return;
+        advance("suspend");
+      };
+
+      const estimatedSeconds = Math.max(20, Math.ceil(text.split(/\s+/).filter(Boolean).length / 2));
+      segmentTimeout = window.setTimeout(() => {
+        advance("timeout");
+      }, Math.min(180000, estimatedSeconds * 2600));
+
+      progressTimer = window.setInterval(() => {
+        if (advanced || player.paused || player.ended) return;
+        const ct = Number(player.currentTime || 0);
+        if (ct > lastProgress + 0.12) {
+          lastProgress = ct;
+          stagnantMs = 0;
+          return;
+        }
+        stagnantMs += 2000;
+        if (stagnantMs >= 12000) {
+          advance("progress-stall");
+        }
+      }, 2000);
+
       const started = await player.play().then(() => true).catch(() => false);
       if (!started) {
+        cleanupMonitors();
         setAudioTapRequired(true);
         toast.info("Tap play once to enable voice guidance.");
       } else {
@@ -81,6 +134,14 @@ export const useNarrationPlayer = ({
       }
     } catch (error) {
       console.error("Narration segment playback failed:", error);
+      const nextIndex = index + 1;
+      narrationIndexRef.current = nextIndex;
+      setNarrationSegmentIndex(nextIndex);
+      if (isRunning && nextIndex < narrationSegments.length) {
+        playNarrationSegment(nextIndex).catch((nextError) => {
+          console.error("Narration fallback continuation failed:", nextError);
+        });
+      }
     } finally {
       if (ttsAbortRef.current === controller) ttsAbortRef.current = null;
       setTtsLoading(false);

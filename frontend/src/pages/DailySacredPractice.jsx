@@ -268,6 +268,18 @@ export default function DailySacredPractice({ user, api: userApi }) {
                   practiceName={practice.name}
                   element={practice.element}
                   durationMinutes={resolveDurationMinutes(practice.duration_minutes, 12)}
+                  sourceTexts={[
+                    practice.description,
+                    practice.deeper_teaching,
+                    practice.extended_practice,
+                    practice.somatic_practice,
+                    practice.practice_guide,
+                    practice.cleansing_guide,
+                    practice.self_healing_guide,
+                    practice.shadow_work,
+                    practice.shadow_integration,
+                  ].filter(Boolean)}
+                  steps={buildPracticeDeepContainer(practice).flatMap((phase) => phase.steps || [])}
                   className="w-full"
                 />
               </div>

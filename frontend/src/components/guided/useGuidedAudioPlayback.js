@@ -18,8 +18,9 @@ const DEFAULT_QUICK_START_MINUTES = 12;
 const SCRIPT_EXPANSION_TIMEOUT_MS = 18000;
 const MAX_EXPANSION_SOURCE_SENTENCES = 32;
 const MAX_EXPANSION_STEPS = 18;
-const MAX_SEGMENT_WORDS = 170;
+const MAX_SEGMENT_WORDS = 120;
 const MAX_SEGMENT_CHARS = 1400;
+const MAX_SEGMENT_CACHE_SIZE = 8;
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const splitSentences = (text) => String(text || "").split(/(?<=[.!?])\s+/).map((line) => line.trim()).filter((line) => line.length > 12);
 const extractStepsFromScript = (script) => {
@@ -88,6 +89,16 @@ const sanitizeSegmentsForTTS = (segments) => {
     output.push(...chunkSegmentForTTS(segment));
   }
   return output.filter(Boolean);
+};
+
+const base64ToObjectUrl = (base64Audio) => {
+  const binary = window.atob(String(base64Audio || ""));
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  const blob = new Blob([bytes], { type: "audio/mpeg" });
+  return URL.createObjectURL(blob);
 };
 
 const buildFallbackNarrationSegments = ({ script, sourceTexts = [], steps = [], practiceName, label, element, targetMinutes }) => {
@@ -188,6 +199,7 @@ export const useGuidedAudioPlayback = ({
   const abortRef = useRef(null);
   const isStoppedRef = useRef(false);
   const segmentCacheRef = useRef(new Map());
+  const objectUrlRegistryRef = useRef(new Set());
   const playbackRunIdRef = useRef(0);
   const [loading, setLoading] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -241,33 +253,53 @@ export const useGuidedAudioPlayback = ({
     audioContextRef.current = null;
   }, []);
 
+  const revokeObjectUrl = useCallback((url) => {
+    if (!url || !objectUrlRegistryRef.current.has(url)) return;
+    try {
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      appLogger.debug("Guided audio object URL revoke warning", error);
+    }
+    objectUrlRegistryRef.current.delete(url);
+  }, []);
+
+  const clearSegmentCache = useCallback(() => {
+    segmentCacheRef.current.forEach((url) => revokeObjectUrl(url));
+    segmentCacheRef.current.clear();
+  }, [revokeObjectUrl]);
+
   const stopPlayback = useCallback(() => {
     playbackRunIdRef.current += 1;
     isStoppedRef.current = true;
     abortRef.current?.abort?.();
     abortRef.current = null;
     if (audioRef.current) {
+      const previousSrc = audioRef.current.src;
       audioRef.current.onended = null;
       audioRef.current.onerror = null;
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
       audioRef.current = null;
+      revokeObjectUrl(previousSrc);
     }
+    clearSegmentCache();
     stopToning();
     setPlaying(false);
     setLoading(false);
-  }, [stopToning]);
+  }, [clearSegmentCache, revokeObjectUrl, stopToning]);
 
   useEffect(() => () => {
     isStoppedRef.current = true;
     abortRef.current?.abort?.();
     if (audioRef.current) {
+      const previousSrc = audioRef.current.src;
       audioRef.current.pause();
       audioRef.current = null;
+      revokeObjectUrl(previousSrc);
     }
-    segmentCacheRef.current.clear();
+    clearSegmentCache();
     stopToning();
-  }, [stopToning]);
+  }, [clearSegmentCache, revokeObjectUrl, stopToning]);
 
   const getSegmentAudio = useCallback(async (segmentText, controller) => {
     const voiceId = resolveGuidedVoiceId(
@@ -298,10 +330,22 @@ export const useGuidedAudioPlayback = ({
       throw lastError || new Error("Missing audio payload");
     }
 
-    const url = `data:audio/mp3;base64,${response.data.audio_base64}`;
+    const url = base64ToObjectUrl(response.data.audio_base64);
+    objectUrlRegistryRef.current.add(url);
     segmentCacheRef.current.set(key, url);
+
+    while (segmentCacheRef.current.size > MAX_SEGMENT_CACHE_SIZE) {
+      const oldestKey = segmentCacheRef.current.keys().next().value;
+      const oldestUrl = segmentCacheRef.current.get(oldestKey);
+      segmentCacheRef.current.delete(oldestKey);
+      // Keep currently playing source alive until playback moves on.
+      if (audioRef.current?.src !== oldestUrl) {
+        revokeObjectUrl(oldestUrl);
+      }
+    }
+
     return url;
-  }, [api, practicePreference, voice]);
+  }, [api, practicePreference, revokeObjectUrl, voice]);
 
   const buildExpandedSegments = useCallback(async (controller) => {
     const {
@@ -462,22 +506,91 @@ export const useGuidedAudioPlayback = ({
       audio.preload = "auto";
       audioRef.current = audio;
       toningLayerRef.current?.setMuted?.(true, 1);
+      let advanced = false;
+      let progressTimer = null;
+      let stallTimer = null;
+      let lastProgressTime = 0;
+      let stagnantMs = 0;
+
+      const cleanupMonitors = () => {
+        if (progressTimer) {
+          window.clearInterval(progressTimer);
+          progressTimer = null;
+        }
+        if (stallTimer) {
+          window.clearTimeout(stallTimer);
+          stallTimer = null;
+        }
+      };
+
+      const advanceToNext = (reason) => {
+        if (advanced) return;
+        advanced = true;
+        cleanupMonitors();
+        audio.onerror = null;
+        audio.onended = null;
+        audio.onpause = null;
+        audio.onsuspend = null;
+        audio.onstalled = null;
+        const previousSrc = audio.src;
+        audio.pause();
+        audioRef.current = null;
+        // Do not revoke immediately if the URL is still cached for potential retry.
+        if (!segmentCacheRef.current.has(`${resolveGuidedVoiceId(practicePreference?.voiceProfile ? practicePreference.voiceProfile : voice)}:${resolveGuidedSpeedValue(practicePreference?.speedOption) || DEFAULT_GUIDED_TTS_SPEED}::${segmentText}`)) {
+          revokeObjectUrl(previousSrc);
+        }
+        toningLayerRef.current?.setMuted?.(false, 0.2);
+
+        if (isStoppedRef.current || controller.signal.aborted || activeRunId !== playbackRunIdRef.current) {
+          setPlaying(false);
+          setLoading(false);
+          return;
+        }
+
+        playIndex(index + 1).catch((error) => {
+          appLogger.warn(`Guided playback continuation failed (${reason})`, error);
+          stopPlayback();
+        });
+      };
+
       audio.onerror = () => {
         appLogger.warn("Guided segment playback error; advancing", { index });
-        toningLayerRef.current?.setMuted?.(false, 0.2);
-        playIndex(index + 1).catch((error) => {
-          appLogger.warn("Guided audio recovery failed after playback error", error);
-          stopPlayback();
-        });
+        advanceToNext("error");
       };
-      audio.onended = () => {
-        audioRef.current = null;
-        toningLayerRef.current?.setMuted?.(false, 0.2);
-        playIndex(index + 1).catch((error) => {
-          appLogger.warn("Guided sequential playback continuation failed", error);
-          stopPlayback();
-        });
+      audio.onended = () => advanceToNext("ended");
+      audio.onstalled = () => advanceToNext("stalled-event");
+      audio.onsuspend = () => {
+        // Some Android webviews suspend streams prematurely; recover forward.
+        if (!audio.ended && !audio.paused) return;
+        advanceToNext("suspend-event");
       };
+      audio.onpause = () => {
+        if (audio.ended || isStoppedRef.current) return;
+        window.setTimeout(() => {
+          if (!audio.ended && audio.paused && !isStoppedRef.current) {
+            advanceToNext("unexpected-pause");
+          }
+        }, 1200);
+      };
+
+      const expectedSeconds = Math.max(24, Math.ceil(countWords(segmentText) / 1.9));
+      stallTimer = window.setTimeout(() => {
+        advanceToNext("segment-timeout");
+      }, Math.min(180000, expectedSeconds * 2400));
+
+      progressTimer = window.setInterval(() => {
+        if (advanced || audio.paused || audio.ended) return;
+        const currentTime = Number(audio.currentTime || 0);
+        if (currentTime > lastProgressTime + 0.12) {
+          lastProgressTime = currentTime;
+          stagnantMs = 0;
+          return;
+        }
+        stagnantMs += 2000;
+        if (stagnantMs >= 12000) {
+          advanceToNext("progress-stall");
+        }
+      }, 2000);
 
       const started = await audio.play().then(() => true).catch(() => {
         toast.info("Tap play to start audio");
@@ -492,6 +605,7 @@ export const useGuidedAudioPlayback = ({
       }
 
       if (!started) {
+        cleanupMonitors();
         toningLayerRef.current?.setMuted?.(false, 0.2);
         stopToning();
         setPlaying(false);
@@ -516,7 +630,7 @@ export const useGuidedAudioPlayback = ({
 
       const elementKey = String(playbackConfig.element || "spirit").toLowerCase();
       toningLayerRef.current = startToningLayer(ctx, elementKey);
-      toningLayerRef.current?.setMuted?.(false, 0.16);
+      toningLayerRef.current?.setMuted?.(false, 0.08);
     } catch (error) {
       appLogger.warn("Guided toning context setup failed", error);
       stopToning();
@@ -539,23 +653,6 @@ export const useGuidedAudioPlayback = ({
     await setupToningContext();
 
     try {
-      // Quick-start segment so users hear audio almost immediately.
-      const quickStartText = buildQuickStartText(playbackConfig);
-      const quickStartUrl = await getSegmentAudio(quickStartText, controller);
-      if (!controller.signal.aborted && !isStoppedRef.current) {
-        const quickAudio = new Audio(quickStartUrl);
-        quickAudio.preload = "auto";
-        audioRef.current = quickAudio;
-        quickAudio.onended = null;
-        quickAudio.onerror = null;
-        await quickAudio.play().then(() => {
-          setPlaying(true);
-          setLoading(false);
-        }).catch(() => {
-          // continue to full segments flow
-        });
-      }
-
       const expandedSegments = await buildExpandedSegments(controller);
       const titleLedSegments = ensureTitleLedNarrationOpen(expandedSegments, playbackConfig.practiceName || playbackConfig.label);
       await playSegmentsSequentially(titleLedSegments, controller);

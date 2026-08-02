@@ -1,7 +1,7 @@
 import { appLogger } from "./logger";
 
 const TONING_INTENSITY_KEY = "guided_toning_intensity";
-let runtimeToningIntensity = "subtle";
+let runtimeToningIntensity = "off";
 
 export const GUIDED_TONING_INTENSITIES = {
   off: {
@@ -14,7 +14,7 @@ export const GUIDED_TONING_INTENSITIES = {
     id: "subtle",
     label: "Subtle",
     description: "Soft resonance under the voice for gentle grounding.",
-    multiplier: 1,
+    multiplier: 0.55,
   },
   immersive: {
     id: "immersive",
@@ -26,7 +26,7 @@ export const GUIDED_TONING_INTENSITIES = {
 
 const normalize = (value) => {
   const candidate = String(value || "").toLowerCase();
-  return GUIDED_TONING_INTENSITIES[candidate] ? candidate : "subtle";
+  return GUIDED_TONING_INTENSITIES[candidate] ? candidate : "off";
 };
 
 const storageKey = TONING_INTENSITY_KEY;
