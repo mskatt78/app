@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { CheckCircle2, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export const GuidedPracticeContent = ({
   practice,
@@ -253,53 +254,66 @@ export const GuidedPracticeContent = ({
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4" data-testid="guided-practice-override-controls">
                 <label className="text-xs text-white/70" data-testid="guided-practice-voice-override-control">
                   Voice
-                  <select
+                  <Select
                     value={playbackVoiceProfile}
-                    onChange={(event) => onVoiceProfileChange?.(event.target.value)}
-                    className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
-                    data-testid="guided-practice-voice-override-select"
+                    onValueChange={(value) => onVoiceProfileChange?.(value)}
                     disabled={customVoiceActive}
                   >
-                    {Object.values(GUIDED_VOICE_PROFILES).map((profile) => (
-                      <option key={profile.id} value={profile.id} className="text-black">
-                        {profile.label}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="mt-1 w-full bg-white/10 border-white/20 text-xs text-white" data-testid="guided-practice-voice-override-select">
+                      <SelectValue placeholder="Select voice" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(GUIDED_VOICE_PROFILES).map((profile) => (
+                        <SelectItem key={profile.id} value={profile.id} data-testid={`guided-practice-voice-override-option-${profile.id}`}>
+                          {profile.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </label>
 
                 <label className="text-xs text-white/70" data-testid="guided-practice-speed-override-control">
                   Speed
-                  <select
+                  <Select
                     value={playbackSpeedOption}
-                    onChange={(event) => onSpeedOptionChange?.(event.target.value)}
-                    className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
-                    data-testid="guided-practice-speed-override-select"
+                    onValueChange={(value) => onSpeedOptionChange?.(value)}
                     disabled={customVoiceActive}
                   >
-                    {Object.values(GUIDED_SPEED_OPTIONS).map((speed) => (
-                      <option key={speed.id} value={speed.id} className="text-black">
-                        {speed.label}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="mt-1 w-full bg-white/10 border-white/20 text-xs text-white" data-testid="guided-practice-speed-override-select">
+                      <SelectValue placeholder="Select speed" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.values(GUIDED_SPEED_OPTIONS).map((speed) => (
+                        <SelectItem key={speed.id} value={speed.id} data-testid={`guided-practice-speed-override-option-${speed.id}`}>
+                          {speed.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </label>
 
                 <label className="text-xs text-white/70" data-testid="guided-practice-duration-override-control">
                   Narration Target
-                  <select
+                  <Select
                     value={String(selectedNarrationOptionMinutes)}
-                    onChange={(event) => onNarrationDurationChange?.(Number(event.target.value))}
-                    className="mt-1 w-full rounded-lg bg-white/10 border border-white/20 px-2 py-1.5 text-xs text-white"
-                    data-testid="guided-practice-duration-override-select"
+                    onValueChange={(value) => onNarrationDurationChange?.(Number(value))}
                     disabled={customVoiceActive}
                   >
-                    {availableNarrationDurationOptions.map((durationOption) => (
-                      <option key={durationOption.id} value={durationOption.minutes} className="text-black">
-                        {durationOption.label}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="mt-1 w-full bg-white/10 border-white/20 text-xs text-white" data-testid="guided-practice-duration-override-select">
+                      <SelectValue placeholder="Select narration length" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableNarrationDurationOptions.map((durationOption) => (
+                        <SelectItem
+                          key={durationOption.id}
+                          value={String(durationOption.minutes)}
+                          data-testid={`guided-practice-duration-override-option-${durationOption.id}`}
+                        >
+                          {durationOption.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </label>
               </div>
 

@@ -100,6 +100,51 @@ export const MantrasPlayer = ({
     return resolveMantraRitual(mantra).slice(0, 3).map((line, index) => `Guided phase ${index + 1}: ${line}`);
   };
 
+  const toList = (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) {
+      return value.map((entry) => String(entry || "").trim()).filter(Boolean);
+    }
+    return [String(value).trim()].filter(Boolean);
+  };
+
+  const resolveMantraEmbodimentPrompts = (mantra) => {
+    const direct = toList(mantra?.embodiment_prompts || mantra?.embodiment_prompt);
+    if (direct.length > 0) return direct;
+
+    const name = String(mantra?.name || "this mantra").trim();
+    const translation = String(mantra?.translation || "steady, coherent presence").trim();
+    return [
+      `Embodiment breath set: place one hand on heart and one on lower belly, then chant ${name} for 12 coherent breaths with softened jaw and shoulders.`,
+      `Posture integration: stand and walk slowly for 90 seconds while repeating “${translation}” internally and noticing any shift in tone and body alignment.`,
+      "Somatic completion: write one sentence on how your breath, emotional intensity, or inner dialogue changed during this round.",
+    ];
+  };
+
+  const resolveMantraIntegrationActions = (mantra) => {
+    const direct = toList(mantra?.integration_actions);
+    if (direct.length > 0) return direct;
+
+    const guide = String(mantra?.integration_guide || "").trim();
+    const fromGuide = guide ? [guide] : [];
+    return [
+      ...fromGuide,
+      "Within 24 hours, complete one visible action (conversation, boundary, or task) that reflects this mantra’s medicine.",
+      "Before sleep, review whether your speech, breath pace, and posture stayed aligned with your intention.",
+    ];
+  };
+
+  const resolveMantraNervousSystemCues = (mantra) => {
+    const direct = toList(mantra?.nervous_system_cues);
+    if (direct.length > 0) return direct;
+
+    return [
+      "If activation rises, reduce volume and pace; return to long exhale breathing (4-in, 6-out).",
+      "Keep jaw, tongue, and shoulders soft between repetitions to avoid strain-locking.",
+      "If dizziness appears, pause chanting, place palms on lower ribs, and breathe until stable before continuing.",
+    ];
+  };
+
   return (
     <Dialog open={!!selectedMantra} onOpenChange={onClose}>
       <DialogContent className="bg-card border-white/10 max-w-lg max-h-[90vh] overflow-y-auto">
@@ -616,6 +661,48 @@ export const MantrasPlayer = ({
                       </li>
                     ))}
                   </ol>
+                </div>
+              )}
+
+              {resolveMantraEmbodimentPrompts(selectedMantra).length > 0 && (
+                <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30" data-testid="mantra-embodiment-prompts">
+                  <h4 className="text-[11px] uppercase tracking-wider text-emerald-200 mb-2">Embodiment Prompts</h4>
+                  <ul className="space-y-1.5">
+                    {resolveMantraEmbodimentPrompts(selectedMantra).slice(0, 6).map((line, index) => (
+                      <li key={`mantra-embodiment-${index}`} className="text-sm leading-relaxed text-emerald-50/95 flex items-start gap-2">
+                        <span className="text-emerald-300">{index + 1}.</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {resolveMantraIntegrationActions(selectedMantra).length > 0 && (
+                <div className="p-4 rounded-xl bg-amber-500/15 border border-amber-500/30" data-testid="mantra-integration-actions">
+                  <h4 className="text-[11px] uppercase tracking-wider text-amber-200 mb-2">Integration Actions</h4>
+                  <ul className="space-y-1.5">
+                    {resolveMantraIntegrationActions(selectedMantra).slice(0, 6).map((line, index) => (
+                      <li key={`mantra-integration-${index}`} className="text-sm leading-relaxed text-amber-50/95 flex items-start gap-2">
+                        <span className="text-amber-300">✓</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {resolveMantraNervousSystemCues(selectedMantra).length > 0 && (
+                <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-500/30" data-testid="mantra-nervous-system-cues">
+                  <h4 className="text-[11px] uppercase tracking-wider text-rose-200 mb-2">Nervous-System Cues</h4>
+                  <ul className="space-y-1.5">
+                    {resolveMantraNervousSystemCues(selectedMantra).slice(0, 6).map((line, index) => (
+                      <li key={`mantra-nervous-${index}`} className="text-sm leading-relaxed text-rose-50/95 flex items-start gap-2">
+                        <span className="text-rose-300">•</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
 

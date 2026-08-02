@@ -134,6 +134,46 @@ const MudrasLibrary = ({ user, api }) => {
     return [];
   };
 
+  const toList = (value) => {
+    if (!value) return [];
+    if (Array.isArray(value)) {
+      return value.map((entry) => String(entry || "").trim()).filter(Boolean);
+    }
+    return [String(value).trim()].filter(Boolean);
+  };
+
+  const resolveMudraEmbodimentPrompts = (mudra) => {
+    const direct = toList(mudra?.embodiment_prompts || mudra?.embodiment_prompt);
+    if (direct.length > 0) return direct;
+
+    const mudraName = String(mudra?.name || "this mudra").trim();
+    return [
+      `Form ${mudraName} with soft fingertip pressure and track sensations in palms, chest, and belly for 2 minutes before deepening.`,
+      "Pair the mudra with 4-in/6-out breathing to downshift arousal and stabilize attention.",
+      "After release, stand slowly and notice whether your posture, voice tone, or emotional state has shifted.",
+    ];
+  };
+
+  const resolveMudraIntegrationActions = (mudra) => {
+    const direct = toList(mudra?.integration_actions);
+    if (direct.length > 0) return direct;
+    return [
+      "Use this mudra before one real-world task where you want steadier breath and clearer communication.",
+      "Complete a 60-second hand/wrist shakeout after practice, then hydrate and record one insight.",
+      "Repeat a short 3-minute round at the same time tomorrow to reinforce embodied consistency.",
+    ];
+  };
+
+  const resolveMudraNervousSystemCues = (mudra) => {
+    const direct = toList(mudra?.nervous_system_cues);
+    if (direct.length > 0) return direct;
+    return [
+      `If fingertips tense during ${mudra?.name || "the mudra"}, reduce pressure to 30-40% and soften elbows.`,
+      "If breath becomes shallow, pause and reset with two slower exhale-led cycles before continuing.",
+      "If numbness appears, gently release hands, rotate wrists, and re-enter with shorter intervals.",
+    ];
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="mudras-library">
       {/* Header */}
@@ -410,6 +450,48 @@ const MudrasLibrary = ({ user, api }) => {
                         </li>
                       ))}
                     </ol>
+                  </div>
+                )}
+
+                {resolveMudraEmbodimentPrompts(selectedMudra).length > 0 && (
+                  <div className="p-4 rounded-xl bg-emerald-500/15 border border-emerald-500/30" data-testid="mudra-embodiment-prompts">
+                    <h4 className="text-[11px] uppercase tracking-wider text-emerald-200 mb-2">Embodiment Prompts</h4>
+                    <ul className="space-y-1.5">
+                      {resolveMudraEmbodimentPrompts(selectedMudra).slice(0, 6).map((line, index) => (
+                        <li key={`mudra-embodiment-${index}`} className="text-sm leading-relaxed text-emerald-50/95 flex items-start gap-2">
+                          <span className="text-emerald-300">{index + 1}.</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {resolveMudraIntegrationActions(selectedMudra).length > 0 && (
+                  <div className="p-4 rounded-xl bg-amber-500/15 border border-amber-500/30" data-testid="mudra-integration-actions">
+                    <h4 className="text-[11px] uppercase tracking-wider text-amber-200 mb-2">Integration Actions</h4>
+                    <ul className="space-y-1.5">
+                      {resolveMudraIntegrationActions(selectedMudra).slice(0, 6).map((line, index) => (
+                        <li key={`mudra-integration-${index}`} className="text-sm leading-relaxed text-amber-50/95 flex items-start gap-2">
+                          <span className="text-amber-300">✓</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {resolveMudraNervousSystemCues(selectedMudra).length > 0 && (
+                  <div className="p-4 rounded-xl bg-rose-500/15 border border-rose-500/30" data-testid="mudra-nervous-system-cues">
+                    <h4 className="text-[11px] uppercase tracking-wider text-rose-200 mb-2">Nervous-System Cues</h4>
+                    <ul className="space-y-1.5">
+                      {resolveMudraNervousSystemCues(selectedMudra).slice(0, 6).map((line, index) => (
+                        <li key={`mudra-nervous-${index}`} className="text-sm leading-relaxed text-rose-50/95 flex items-start gap-2">
+                          <span className="text-rose-300">•</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 )}
 
