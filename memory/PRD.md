@@ -44,6 +44,43 @@
 
 ## Functional Requirements Status
 
+## Latest Verification Snapshot (Iteration 267 — 2026-08-02)
+- ✅ **Custom Voice UX completion (P0) implemented and verified**:
+  - Finished `SettingsCustomVoiceCard.jsx` with end-to-end custom voice workflow:
+    - direct in-app microphone recording (MediaRecorder)
+    - `.webm` / `.mp3` file upload path
+    - profile save/remove management
+    - active profile selector
+    - global custom-voice enable toggle (user-controlled default behavior)
+  - Added persistent custom voice preference keys in `guidedVoiceSettings.js`:
+    - `guided_custom_voice_enabled`
+    - `guided_custom_voice_profile_id`
+
+- ✅ **Guided playback wiring for custom voice completed**:
+  - Updated `useGuidedPracticeEngine.js` and `useGuidedAudioPlayback.js` to resolve selected custom voice profile sample and use it when custom voice toggle is enabled.
+  - Added graceful fallback to existing AI guided voice path if custom sample is unavailable.
+  - Guided overlay now displays active custom-voice status and disables AI voice/speed/duration override selectors while custom voice is active.
+
+- ✅ **Sacred Guardians & Allies depth UI alignment completed (collapsible style)**:
+  - `SacredGuardians.jsx` now renders collapsible depth panels for:
+    - Symbolism & Meanings
+    - Spiritual Gifts
+    - Embodiment Prompts
+  - `SacredAllyAlchemy.jsx` now renders collapsible depth panels for:
+    - Symbolism
+    - Spiritual Gifts
+    - Embodiment Prompts
+    - Existing long-form depth lists via accordion sections for better mobile navigation.
+
+- ✅ **Validation results (testing agent iteration 267)**:
+  - Backend: **100% pass (13/13)**
+  - Frontend: **100% pass**
+  - Verified:
+    - voice-files accepts both webm and mp3
+    - voice-profiles CRUD
+    - guardians/allies collapsible sections
+    - guided overlay regression safety with default AI voice path
+
 ## Latest Verification Snapshot (Iteration 249 — 2026-07-15)
 - ✅ **Yoga pose accuracy hotfix (targeted P0 set) completed**:
   - Updated strict pose matcher in `frontend/src/utils/yogaPoseImageMapper.js` with deterministic mappings for:
