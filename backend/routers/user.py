@@ -33,6 +33,12 @@ def _android_api_contract_payload(request: Request) -> dict[str, Any]:
         "mobile_platform": "android",
         "api_version": "v1",
         "base_path": "/api",
+        "play_store_release_requirements": {
+            "required_target_sdk": 36,
+            "recommended_compile_sdk": 36,
+            "package_id_for_existing_release": "host.emergent.embodiment_journey.twa",
+            "version_code_rule": "Each release must use a strictly higher versionCode than the previous Play production release.",
+        },
         "auth": {
             "cookie_session": True,
             "bearer_fallback": True,

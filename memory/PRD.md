@@ -4852,3 +4852,29 @@
   - Evening continuity: **107.1s** (no cutout)
   - Mindfulness regression check: pass (guided segments continue correctly)
   - No repeated script-expansion timeout warnings in console during normal run.
+
+## Latest Verification Snapshot (Iteration 269 — 2026-08-23)
+- ✅ **Android API 36 compliance guidance wired into app contract + submission assets**:
+  - Updated `backend/routers/user.py` android contract payload with:
+    - `play_store_release_requirements.required_target_sdk = 36`
+    - `play_store_release_requirements.recommended_compile_sdk = 36`
+    - `play_store_release_requirements.package_id_for_existing_release = host.emergent.embodiment_journey.twa`
+    - versionCode monotonic release rule guidance
+  - Updated static TWA verification file:
+    - `frontend/public/.well-known/assetlinks.json`
+    - package name now aligned to `host.emergent.embodiment_journey.twa`
+  - Added release playbook:
+    - `/app/ANDROID_API36_UPGRADE_GUIDE.md`
+  - Updated Play submission docs:
+    - `/app/frontend/public/submission_kit/ANDROID_API_CONTRACT.md`
+    - `/app/PLAYSTORE_GUIDE.md`
+    - `/app/GOOGLE_PLAY_PUBLISHING.md`
+
+- ✅ **Validation status (testing agent iteration 269)**:
+  - Backend: **100% (13/13 pass)**
+  - Verified endpoints:
+    - `GET /api/android-api-config`
+    - `GET /api/user/mobile/android-api-config`
+    - backward-compatible aliases under `/api/user/android-api-config` and `/api/mobile/android-api-config`
+  - Verified static file:
+    - `GET /.well-known/assetlinks.json` contains `host.emergent.embodiment_journey.twa`

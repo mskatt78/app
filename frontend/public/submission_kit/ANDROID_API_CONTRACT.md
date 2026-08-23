@@ -3,7 +3,7 @@
 This document provides a reviewer-friendly API contract for Android builds.
 
 ## Base URL
-- Production: `https://embodiment-journey.emergent.host`
+- Production: `https://temple-soul-dev.emergent.host`
 - API base path: `/api`
 
 ## Android Config Endpoints
@@ -12,7 +12,13 @@ This document provides a reviewer-friendly API contract for Android builds.
 - `/api/mobile/android-api-config`
 - `/api/android-api-config`
 
-All endpoints return the same JSON contract describing auth, required public endpoints, and privacy/deletion APIs.
+All endpoints return the same JSON contract describing auth, required public endpoints, privacy/deletion APIs, and Play release requirements.
+
+## API 36 Compliance Notes
+- `play_store_release_requirements.required_target_sdk` is `36`.
+- `play_store_release_requirements.recommended_compile_sdk` is `36`.
+- Existing Play package ID expected for update flow: `host.emergent.embodiment_journey.twa`.
+- New bundles must use a strictly higher `versionCode` than the currently published production release.
 
 ## Core Public Endpoints Used by Android
 - `/api/health`

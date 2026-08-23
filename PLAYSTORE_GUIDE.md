@@ -1,5 +1,12 @@
 # Google Play Store - App Bundle Creation Guide
 
+## API 36 Upgrade Requirement (Current)
+
+- Google Play update requirement: **target Android 16 / API level 36**.
+- Keep **compileSdkVersion = 36**.
+- Existing package ID for updates: **`host.emergent.embodiment_journey.twa`**.
+- Version code must be higher than currently published production.
+
 ## Step-by-Step Instructions
 
 ### Method 1: PWABuilder (Recommended - Easiest)
@@ -35,18 +42,17 @@
 
 **Installation:**
 ```bash
-npm install -g @anthropic/anthropic
-npm install -g @nicolo-ribaudo/chokidar-cli
+npm install -g @bubblewrap/cli
 ```
 
 **Generate Project:**
 ```bash
-npx @nicolo-ribaudo/chokidar-cli init --manifest https://mindful-shamanic-app.emergent.host/manifest.json
+bubblewrap init --manifest https://temple-soul-dev.emergent.host/manifest.json
 ```
 
 **Build AAB:**
 ```bash
-npx @nicolo-ribaudo/chokidar-cli build
+bubblewrap build
 ```
 
 ---

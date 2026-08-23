@@ -1,5 +1,12 @@
 # Publishing Shamanic Elements Temple Of The Soul to Google Play Store
 
+## API Level Compliance Update
+
+- Required for next release: **targetSdkVersion 36**
+- Keep: **compileSdkVersion 36**
+- Update package must keep existing app ID: **`host.emergent.embodiment_journey.twa`**
+- Increment `versionCode` beyond currently published production
+
 ## Your App URL
 **Production URL:** `https://yoga-astrology-hub.emergent.host`
 
@@ -20,10 +27,10 @@
 5. **Configure Android Options**:
    | Setting | Value |
    |---------|-------|
-   | Package ID | `com.shamanicelement.templesoul` |
+| Package ID | `host.emergent.embodiment_journey.twa` |
    | App Name | `Shamanic Elements` |
    | App Version | `1.0.0` |
-   | Version Code | `1` |
+| Version Code | `36001` (or any higher than your current Play production) |
    | Display Mode | `Standalone` |
    | Status Bar Color | `#1a1a2e` |
    | Navigation Bar Color | `#0a0a0f` |

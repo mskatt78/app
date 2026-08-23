@@ -1,0 +1,66 @@
+{
+  "summary": "Verified Android API 36 compliance configuration endpoints and assetlinks.json static file. All 13 tests passed - endpoints return correct play_store_release_requirements with required_target_sdk=36, recommended_compile_sdk=36, and package_id_for_existing_release='host.emergent.embodiment_journey.twa'.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_android_api36_config.py",
+    "/app/test_reports/pytest/pytest_iteration269.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [
+    "/app/backend/tests/test_android_api36_config.py"
+  ],
+  "success_rate": {
+    "backend": "100% (13/13 tests passed)",
+    "frontend": "N/A (static file verification only)"
+  },
+  "test_credentials": "No auth required",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Android API 36 compliance endpoints verified. GET /api/android-api-config and GET /api/user/mobile/android-api-config both return play_store_release_requirements with required_target_sdk=36, recommended_compile_sdk=36, package_id_for_existing_release='host.emergent.embodiment_journey.twa'. Static file /.well-known/assetlinks.json accessible with correct package_name. Backward-compatible endpoints /api/user/android-api-config and /api/mobile/android-api-config also working.",
+  "features_tested": {
+    "api_android_api_config": {
+      "status": "PASS",
+      "endpoint": "GET /api/android-api-config",
+      "verified_values": {
+        "required_target_sdk": 36,
+        "recommended_compile_sdk": 36,
+        "package_id_for_existing_release": "host.emergent.embodiment_journey.twa"
+      }
+    },
+    "api_user_mobile_android_api_config": {
+      "status": "PASS",
+      "endpoint": "GET /api/user/mobile/android-api-config",
+      "verified_values": {
+        "required_target_sdk": 36,
+        "recommended_compile_sdk": 36,
+        "package_id_for_existing_release": "host.emergent.embodiment_journey.twa"
+      }
+    },
+    "assetlinks_json": {
+      "status": "PASS",
+      "endpoint": "GET /.well-known/assetlinks.json",
+      "verified_values": {
+        "package_name": "host.emergent.embodiment_journey.twa",
+        "namespace": "android_app",
+        "relation": "delegate_permission/common.handle_all_urls"
+      }
+    },
+    "backward_compat_endpoints": {
+      "status": "PASS",
+      "endpoints": [
+        "GET /api/user/android-api-config",
+        "GET /api/mobile/android-api-config"
+      ]
+    }
+  }
+}
