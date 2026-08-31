@@ -287,7 +287,7 @@ self.addEventListener('notificationclick', (event) => {
   if (event.action === 'close') return;
 
   event.waitUntil(
-    clients.matchAll({ type: 'window' }).then((clientList) => {
+    self.clients.matchAll({ type: 'window' }).then((clientList) => {
       // If a window is already open, focus it
       for (const client of clientList) {
         if (client.url === event.notification.data && 'focus' in client) {
@@ -295,8 +295,8 @@ self.addEventListener('notificationclick', (event) => {
         }
       }
       // Otherwise open a new window
-      if (clients.openWindow) {
-        return clients.openWindow(event.notification.data);
+      if (self.clients.openWindow) {
+        return self.clients.openWindow(event.notification.data);
       }
     })
   );
