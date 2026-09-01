@@ -1,0 +1,141 @@
+GOOGLE PLAY — DATA SAFETY FORM ANSWERS
+Shamanic Elements Soul Temple 2.0 (host.emergent.embodiment_journey.twa)
+Based on your published Privacy Policy (SkyWater Sacred Embodiments, Australia)
+========================================================================
+
+SECTION 1 — DATA COLLECTION AND SECURITY (overview questions)
+-------------------------------------------------------------
+Q: Does your app collect or share any of the required user data types?
+A: YES
+
+Q: Is all of the user data collected by your app encrypted in transit?
+A: YES (the app is served exclusively over HTTPS)
+
+Q: Do you provide a way for users to request that their data is deleted?
+A: YES
+   - In-app: Settings -> Account tools -> Delete account request
+   - Or by email: mskatt78@gmail.com
+   (When asked for a link, you can give your privacy policy URL:
+    https://temple-soul-dev.emergent.host/privacy-policy )
+
+SECTION 2 — DATA TYPES (tick EXACTLY these)
+--------------------------------------------
+1. PERSONAL INFO
+   [x] Name
+       - Collected: YES | Shared: NO | Processed ephemerally: NO
+       - Required or optional: OPTIONAL
+       - Purposes: App functionality, Account management
+   [x] Email address
+       - Collected: YES | Shared: NO
+       - Required or optional: REQUIRED (for account creation)
+       - Purposes: App functionality, Account management
+   [ ] Address, Phone number, Race, Political/religious beliefs, Sexual
+       orientation, Other info — NOT COLLECTED (leave unticked)
+
+2. FINANCIAL INFO
+   [x] Purchase history
+       - Collected: YES | Shared: YES (with payment processor Stripe)
+       - Required or optional: OPTIONAL (only if user buys premium)
+       - Purposes: App functionality
+   [ ] Payment info — NOT COLLECTED by the app itself.
+       Card details are entered directly on Stripe's secure checkout;
+       the app never sees or stores card numbers.
+       (If the reviewer asks: payment handled by PCI-compliant processor.)
+
+3. HEALTH AND FITNESS
+   [ ] NOT COLLECTED — the app offers wellness content but does not
+       collect health measurements or fitness data.
+
+4. MESSAGES / PHOTOS / VIDEOS
+   [ ] NOT COLLECTED
+
+5. AUDIO FILES
+   [x] Voice or sound recordings
+       - Collected: YES | Shared: NO
+       - Required or optional: OPTIONAL (only if the user records their
+         own custom guidance voice in Settings)
+       - Purposes: App functionality (personalised voice narration)
+
+6. FILES AND DOCS
+   [ ] NOT COLLECTED
+
+7. CALENDAR / CONTACTS
+   [ ] NOT COLLECTED
+
+8. APP ACTIVITY
+   [x] App interactions
+       - Collected: YES | Shared: NO
+       - Required or optional: REQUIRED (automatic)
+       - Purposes: Analytics, App functionality
+   [x] Other user-generated content
+       - Collected: YES | Shared: NO
+       - Required or optional: OPTIONAL (journal entries, reflections,
+         practice notes, custom rituals)
+       - Purposes: App functionality
+
+9. WEB BROWSING
+   [ ] NOT COLLECTED
+
+10. APP INFO AND PERFORMANCE
+   [x] Crash logs
+       - Collected: YES | Shared: NO
+       - Required or optional: REQUIRED (automatic)
+       - Purposes: Analytics (stability)
+   [x] Diagnostics
+       - Collected: YES | Shared: NO
+       - Required or optional: REQUIRED (automatic)
+       - Purposes: Analytics (performance)
+
+11. DEVICE OR OTHER IDS
+   [x] Device or other IDs
+       - Collected: YES | Shared: NO
+       - Required or optional: REQUIRED (automatic — session/device
+         identifiers for login sessions)
+       - Purposes: App functionality, Account management
+
+12. LOCATION
+   [ ] NOT COLLECTED (no precise or approximate location)
+
+SECTION 3 — DATA USAGE AND HANDLING (for every ticked type above)
+------------------------------------------------------------------
+Q: Is this data collected, shared, or both?
+A: COLLECTED only (Purchase history: also "shared" with the payment
+   processor if the form insists; otherwise collected only)
+
+Q: Is this data processed ephemerally?
+A: NO
+
+Q: Is data collection required for using the app, or optional?
+A: Use the Required/Optional value listed per item above.
+
+SECTION 4 — OTHER DECLARATIONS
+-------------------------------
+Q: Does your app allow users to create an account?
+A: YES
+
+Q: Ads: Does your app contain ads?
+A: NO
+
+Q: Is your app designed for children / target audience includes children?
+A: NO — target audience 18+ (select age groups 18 and over only)
+
+Q: Data deletion — can users request account + data deletion?
+A: YES (in-app request plus email mskatt78@gmail.com)
+
+Q: Independent security review?
+A: NO (optional badge, leave unticked)
+
+Q: Committed to Play Families Policy?
+A: NOT APPLICABLE (app is 18+)
+
+PRIVACY POLICY URL FIELD
+------------------------
+https://temple-soul-dev.emergent.host/privacy-policy
+
+NOTES FOR REVIEWER QUESTIONS (if Google asks)
+---------------------------------------------
+- Authentication: session-cookie based; passwords stored hashed.
+- Payments: processed entirely by Stripe hosted checkout.
+- Voice recordings: stored only to play back the user's own voice as
+  meditation narration; deletable by the user; never shared.
+- No third-party advertising SDKs, no data sold, no location access.

@@ -20,6 +20,7 @@ const Journal = lazy(() => import("../pages/Journal"));
 const Settings = lazy(() => import("../pages/Settings"));
 const Mindfulness = lazy(() => import("../pages/Mindfulness"));
 const Meditations = lazy(() => import("../pages/Meditations"));
+const OfflinePractices = lazy(() => import("../pages/OfflinePractices"));
 const Numerology = lazy(() => import("../pages/Numerology"));
 const AdminCMS = lazy(() => import("../pages/AdminCMS"));
 const AdminLogin = lazy(() => import("../pages/AdminLogin"));
@@ -134,6 +135,8 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/grounding" element={publicElement(GroundingPractices, PublicRoute, api)} />
       <Route path="/mindfulness" element={publicElement(Mindfulness, PublicRoute, api)} />
       <Route path="/meditations" element={publicElement(Meditations, PublicRoute, api)} />
+      <Route path="/offline-practices" element={publicElement(OfflinePractices, PublicRoute, api)} />
+      <Route path="/offline" element={publicElement(OfflinePractices, PublicRoute, api)} />
       <Route path="/earth-altars" element={publicElement(EarthAltars, PublicRoute, api)} />
       <Route path="/creative-processes" element={publicElement(CreativeProcesses, PublicRoute, api)} />
       <Route path="/heart-practices" element={publicElement(HeartPractices, PublicRoute, api)} />

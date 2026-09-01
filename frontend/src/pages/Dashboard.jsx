@@ -6,6 +6,7 @@ import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { toast } from "sonner";
 import { StreakWidget } from "./dashboard/StreakWidget";
+import { SacredJourneyWidget } from "./dashboard/SacredJourneyWidget";
 import { SacredPracticeWidget } from "./dashboard/SacredPracticeWidget";
 import { DailyGuidanceGrid } from "./dashboard/DailyGuidanceGrid";
 import { buildDeepJourneyItems, buildQuickItems, DashboardActionPanels } from "./dashboard/DashboardActionPanels";
@@ -249,6 +250,9 @@ const Dashboard = ({ user, api }) => {
 
               {/* Practice Streak Widget */}
               <StreakWidget onJournalClick={() => navigate('/journal')} />
+
+              {/* Sacred Journey Progress Tracker */}
+              <SacredJourneyWidget api={api} navigate={navigate} />
 
               {/* Today's Sacred Practice Widget */}
               <SacredPracticeWidget api={api} navigate={navigate} />

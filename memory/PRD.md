@@ -4894,3 +4894,10 @@
 - Rebuilt AAB (--rerun-tasks) and signed with the USER's keystore (not the agent-generated one). Verified: targetSdk 36, versionCode 36002, jar verified, signer CN=Soul Temple Upload / SkyWater Sacred Embodiments.
 - Confirmed Google Play App Signing SHA-256 from user's README: 7D:FB:F6:D7:C5:BF:3F:F8:6F:63:A3:F0:80:7E:5E:A5:38:D1:49:9D:78:80:82:49:71:2D:9A:6C:05:2E:5F:AF — patched into /app/frontend/public/.well-known/assetlinks.json (placeholder removed). USER MUST REDEPLOY to production.
 - Kit zip regenerated at /app/frontend/public/soul-temple-android-release-kit.zip (AAB + user keystore + pem + README v2).
+
+## Session Update (2026-06 fork, part 3): Offline Practices + Sacred Journey widget + Data Safety answers
+- ✅ Offline Practices: download button on every meditation card (Meditations.jsx handleDownloadForOffline) generates TTS segments via /api/tts/generate-base64 and stores them in IndexedDB (utils/offlineStore.js, db soul-temple-offline). New public page /offline-practices (pages/OfflinePractices.jsx) lists downloads, plays audio fully offline (0 network calls verified), delete supported. 'Offline' library button in Meditations header.
+- ✅ Sacred Journey widget (pages/dashboard/SacredJourneyWidget.jsx) on Dashboard: streak/sessions/minutes from GET /api/practice-history/stats + recent completions from GET /api/practice-history?limit=4, links to /progress.
+- ✅ Play Console Data Safety answers doc generated from user's privacy policy PDF: served at /play-data-safety-answers.txt (frontend/public).
+- Testing: iteration_270.json — 100% pass both. Known non-blocker: widget stats (practice_history only) differ from /progress page aggregate (includes user_progress data).
+- USER MUST REDEPLOY to production for these features + assetlinks.json fix to go live.

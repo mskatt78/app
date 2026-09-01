@@ -1,0 +1,44 @@
+{
+  "summary": "Tested new Offline Practices feature (download from Meditations -> IndexedDB -> playback with zero TTS network calls -> delete) and Sacred Journey widget on Dashboard. All backend endpoints (POST /api/practice-history, GET /api/practice-history, GET /api/practice-history/stats, POST /api/tts/generate-base64) pass. All frontend flows work end-to-end.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_practice_history_offline.py",
+    "/app/test_reports/pytest/pytest_iteration270.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Data-source inconsistency (not a blocker): SacredJourneyWidget reads /api/practice-history/stats (practice_history collection only) — QA user shows 6 sessions/70 min/streak=1 in widget vs 47 sessions/1420 min/streak=7 on /progress dashboard which aggregates additional user_progress data. Consider unifying data source or documenting the difference so users are not confused when clicking 'Full progress'.",
+    "OfflinePractices.jsx line 68: URL.revokeObjectURL runs on stopPlayback but object URLs are also created lazily during playIndex; when previous segment finishes and next one starts, old URL remains referenced until stopPlayback. Not a leak in practice (whole array revoked on stop/unmount), just could revoke per-segment after audio.onended for tighter memory hygiene.",
+    "Meditations.jsx handleDownloadForOffline uses sequential await inside a for-loop — for large meditations (many chunks) this is slow; acceptable for MVP but consider small concurrency (Promise.allSettled batches of 2) to speed up user perception."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_practice_history_offline.py"
+  ],
+  "success_rate": {
+    "backend": "100% (4/4 tests passed)",
+    "frontend": "100% (offline download+play+delete + Sacred Journey widget + navigation)"
+  },
+  "test_credentials": "QA user demoqa_740fefc1@example.com / DemoPass123! (cookie-based auth via POST /api/auth/login)",
+  "seed_data_creation": "Posted 1 practice-history entry ({practice_type: meditation, duration: 10, notes: 'Completed Inner Peace Journey'}) for the QA user to populate the Sacred Journey widget's recent list.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Offline Practices flow validated end-to-end. Meditation id='1' (Inner Peace Journey) is a free meditation used for the download test — ~4 TTS segments, ~15s total. Offline playback verified to make ZERO /api/tts calls (network monitor captured 0 requests). Sacred Journey widget hits GET /api/practice-history/stats + GET /api/practice-history?limit=4; QA account currently has entries so 'journey-recent-list' renders. Full progress link routes to /progress correctly. Note there's a data-source mismatch between widget and /progress page (see critical_code_review_comments) — verify if product wants them aligned.",
+  "features_tested": {
+    "offline_download_meditation": "PASS - 4 TTS calls, spinner->green Offline check, success toast",
+    "offline_library_navigation": "PASS - offline-library-btn -> /offline-practices",
+    "offline_playback": "PASS - now-playing panel visible with segment text, progress bar, 0 TTS calls during playback",
+    "offline_delete": "PASS - practice removed, offline-empty-state returned",
+    "sacred_journey_widget": "PASS - streak/sessions/minutes stats + recent-list render on Dashboard",
+    "full_progress_navigation": "PASS - journey-view-progress-btn -> /progress",
+    "backend_practice_history_stats": "PASS - returns total_sessions/total_minutes/by_type/current_streak",
+    "backend_practice_history_post": "PASS - persists and reflects in stats"
+  }
+}
