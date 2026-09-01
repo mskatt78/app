@@ -4878,3 +4878,13 @@
     - backward-compatible aliases under `/api/user/android-api-config` and `/api/mobile/android-api-config`
   - Verified static file:
     - `GET /.well-known/assetlinks.json` contains `host.emergent.embodiment_journey.twa`
+
+## Session Update (2026-06 fork): Android AAB built IN-POD (Play Console fixes applied)
+- ✅ Built complete signed Android App Bundle inside the pod (no Android Studio needed by user):
+  - Toolchain: JDK 17 (apt), Android SDK cmdline-tools at /root/android-sdk, bubblewrap CLI (project generated via `bubblewrap update` from /app/android-twa/twa-manifest.json), gradle 8.11.1 / AGP 8.9.1.
+  - ARM64 pod workaround: official x86_64 aapt2 (8.9.1-12782657) run via qemu-x86_64 user emulation with amd64 glibc/libgcc/libstdc++ extracted to /root/x86root; wrapper at /root/aapt2wrap/aapt2; gradle.properties uses android.aapt2FromMavenOverride.
+  - Fixes applied: minifyEnabled + shrinkResources + proguard-android-optimize (R8 warning), androidbrowserhelper pinned to 2.7.3 (edge-to-edge deprecation warning), targetSdk/compileSdk 36, minSdk 23 (required by 2.7.3), versionCode 36002, versionName 1.0.2, package host.emergent.embodiment_journey.twa.
+  - New upload keystore generated (upload key reset approved by Google): /app/android-twa/upload-keystore.jks, alias `upload`, pass `SoulTemple2026!`, cert SHA256 4F:2F:E4:86:...:43:FD; upload_certificate.pem exported for Google registration.
+  - AAB signed with jarsigner, verified with bundletool dump (targetSdk 36, versionCode 36002 confirmed).
+  - Deliverable zip served at /soul-temple-android-release-kit.zip (in /app/frontend/public/), contains AAB + keystore + pem + README with Play Console steps.
+- ⏳ PENDING: user must (1) send upload_certificate.pem to Google to finish key reset, (2) upload AAB to Internal testing, (3) paste Play App Signing SHA-256 so agent can fix .well-known/assetlinks.json placeholder and user redeploys.
