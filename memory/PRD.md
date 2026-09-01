@@ -4888,3 +4888,9 @@
   - AAB signed with jarsigner, verified with bundletool dump (targetSdk 36, versionCode 36002 confirmed).
   - Deliverable zip served at /soul-temple-android-release-kit.zip (in /app/frontend/public/), contains AAB + keystore + pem + README with Play Console steps.
 - ⏳ PENDING: user must (1) send upload_certificate.pem to Google to finish key reset, (2) upload AAB to Internal testing, (3) paste Play App Signing SHA-256 so agent can fix .well-known/assetlinks.json placeholder and user redeploys.
+
+## Session Update (2026-06 fork, part 2): AAB re-signed with user's REGISTERED upload key + assetlinks fixed
+- User uploaded their Aug 28 upload key backup: keystore pass/key pass = SkyWater*1978, alias upload, SHA256 74:23:90:E1:...:24:EB (this is the cert sent to Google for the approved key reset). Files at /root/user_uploads/Soul_Temple_Upload_Key/.
+- Rebuilt AAB (--rerun-tasks) and signed with the USER's keystore (not the agent-generated one). Verified: targetSdk 36, versionCode 36002, jar verified, signer CN=Soul Temple Upload / SkyWater Sacred Embodiments.
+- Confirmed Google Play App Signing SHA-256 from user's README: 7D:FB:F6:D7:C5:BF:3F:F8:6F:63:A3:F0:80:7E:5E:A5:38:D1:49:9D:78:80:82:49:71:2D:9A:6C:05:2E:5F:AF — patched into /app/frontend/public/.well-known/assetlinks.json (placeholder removed). USER MUST REDEPLOY to production.
+- Kit zip regenerated at /app/frontend/public/soul-temple-android-release-kit.zip (AAB + user keystore + pem + README v2).
