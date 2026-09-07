@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 # Define subscription plans and products
 SUBSCRIPTION_PLANS = {
     "monthly": {"name": "Monthly Membership", "price": 19.99, "interval": "month"},
+    "yearly": {"name": "Yearly Membership", "price": 189.99, "interval": "year"},
 }
 
 # Products for one-time purchase
@@ -986,6 +987,20 @@ async def get_subscription_plans() -> dict[str, Any]:
                     "Guided meditations",
                     "Shamanic practices library",
                     "Practice tracking & achievements"
+                ]
+            },
+            {
+                "id": "yearly",
+                "name": "Yearly Membership",
+                "price": 189.99,
+                "interval": "year",
+                "savings": "Save $49 vs monthly",
+                "features": [
+                    "Everything in Monthly Membership",
+                    "One payment covers the full year",
+                    "Save $49 compared to paying monthly",
+                    "Uninterrupted practice streaks & tracking",
+                    "Priority access to new premium content"
                 ]
             },
             {

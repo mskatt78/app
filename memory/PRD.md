@@ -4913,3 +4913,8 @@
   4. Removed confusing single-option pricing-mode tab.
 - Verified e2e: logged-out → hint+redirect; logged-in → Stripe checkout page loads. PayPal + full_app_unlock checkout verified via curl.
 - USER MUST REDEPLOY to production (checkout fixes affect live site; PayPal on production requires PAYPAL_CLIENT_ID/SECRET/MODE env vars there).
+
+## Session Update (2026-06 fork, part 5): Yearly plan added
+- Added "yearly" ($189.99/year, interval=year) to SUBSCRIPTION_PLANS and GET /api/payments/plans (savings badge 'Save $49 vs monthly').
+- Pricing.jsx: displayPlans order monthly/yearly/full_app_unlock, 3-column grid, CardHeader pt-12 to clear savings badge overlap.
+- Verified: /plans returns 3 plans; yearly+stripe checkout returns Stripe URL; UI shows all 3 cards. USER MUST REDEPLOY.

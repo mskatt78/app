@@ -22,7 +22,7 @@ const Pricing = ({ user, api }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   const displayPlans = useMemo(() => {
-    const order = ["monthly", "full_app_unlock"];
+    const order = ["monthly", "yearly", "full_app_unlock"];
     return [...plans]
       .filter((plan) => order.includes(plan.id))
       .sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
@@ -199,7 +199,7 @@ const Pricing = ({ user, api }) => {
             <Loader2 className="w-12 h-12 animate-spin text-primary" />
           </div>
         ) : (
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {displayPlans.map((plan, index) => (
               <motion.div
                 key={plan.id}
@@ -220,7 +220,7 @@ const Pricing = ({ user, api }) => {
                     </div>
                   )}
                   
-                  <CardHeader className="pb-4">
+                  <CardHeader className="pb-4 pt-12">
                     <div className="flex items-center gap-2 mb-2">
                       {plan.id === "full_app_unlock" ? (
                         <Crown className="w-6 h-6 text-primary" />
