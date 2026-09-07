@@ -135,6 +135,24 @@ const Pricing = ({ user, api }) => {
     }
   };
 
+  const planStyles = {
+    monthly: {
+      card: "border-cyan-500/40 bg-gradient-to-b from-cyan-500/10 to-transparent",
+      icon: <Sparkles className="w-6 h-6 text-cyan-300" />,
+      button: "bg-cyan-600 hover:bg-cyan-500 text-white",
+    },
+    yearly: {
+      card: "border-emerald-500/40 bg-gradient-to-b from-emerald-500/10 to-transparent",
+      icon: <Star className="w-6 h-6 text-emerald-300" />,
+      button: "bg-emerald-600 hover:bg-emerald-500 text-white",
+    },
+    full_app_unlock: {
+      card: "border-primary/50 bg-gradient-to-b from-primary/10 to-transparent",
+      icon: <Crown className="w-6 h-6 text-primary" />,
+      button: "bg-primary hover:bg-primary/90",
+    },
+  };
+
   return (
     <div className="min-h-screen bg-background" data-testid="pricing-page">
       {/* Header */}
@@ -208,11 +226,7 @@ const Pricing = ({ user, api }) => {
                 transition={{ delay: index * 0.1 }}
               >
                 <Card 
-                  className={`relative overflow-hidden h-full ${
-                    plan.id === "full_app_unlock" 
-                      ? "border-primary/50 bg-gradient-to-b from-primary/10 to-transparent" 
-                      : "border-white/10 bg-card/50"
-                  }`}
+                  className={`relative overflow-hidden h-full ${(planStyles[plan.id] || planStyles.full_app_unlock).card}`}
                 >
                   {plan.savings && (
                     <div className="absolute top-4 right-4">
@@ -222,11 +236,7 @@ const Pricing = ({ user, api }) => {
                   
                   <CardHeader className="pb-4 pt-12">
                     <div className="flex items-center gap-2 mb-2">
-                      {plan.id === "full_app_unlock" ? (
-                        <Crown className="w-6 h-6 text-primary" />
-                      ) : (
-                        <Sparkles className="w-6 h-6 text-primary" />
-                      )}
+                      {(planStyles[plan.id] || planStyles.full_app_unlock).icon}
                       <CardTitle className="text-xl font-serif">{plan.name}</CardTitle>
                     </div>
                     <div className="flex items-baseline gap-1">
@@ -248,11 +258,7 @@ const Pricing = ({ user, api }) => {
                     <Button
                       onClick={() => handleSubscribe(plan.id)}
                       disabled={processingPlan !== null || (plan.id !== "full_app_unlock" && subscription?.is_subscribed)}
-                      className={`w-full ${
-                        plan.id === "full_app_unlock" 
-                          ? "bg-primary hover:bg-primary/90" 
-                          : "bg-white/10 hover:bg-white/20"
-                      }`}
+                      className={`w-full ${(planStyles[plan.id] || planStyles.full_app_unlock).button}`}
                       data-testid={`subscribe-${plan.id}`}
                     >
                       {processingPlan === plan.id ? (

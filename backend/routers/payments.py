@@ -309,7 +309,9 @@ def _is_subscription_active_record(subscription: Optional[dict[str, Any]]) -> bo
 
 
 async def _has_active_subscription(db: Any, user_id: str) -> bool:
-    subscription = await db.user_subscriptions.find_one({"user_id": user_id, "status": "active"}, {"_id": 0})
+    subscription = await db.user_subscriptions.find_one(
+        {"user_id": user_id, "status": {"$in": ["active", "cancelled"]}}, {"_id": 0}
+    )
     return _is_subscription_active_record(subscription)
 
 
@@ -828,6 +830,27 @@ async def get_subscription_status(current_user: User = Depends(get_current_user)
         expires_at=expires_at,
         status=subscription.get("status", "active")
     )
+
+
+@router.post("/subscription/cancel")
+async def cancel_subscription(current_user: User = Depends(get_current_user)) -> dict[str, Any]:
+    """Cancel the user's membership. Access continues until the paid period ends."""
+    db = get_db()
+    subscription = await db.user_subscriptions.find_one({"user_id": current_user.user_id}, {"_id": 0})
+    if not _is_subscription_active_record(subscription):
+        raise HTTPException(status_code=404, detail="No active membership to cancel")
+    if subscription.get("status") == "cancelled":
+        return {"status": "cancelled", "expires_at": subscription.get("expires_at"), "message": "Membership already cancelled"}
+
+    await db.user_subscriptions.update_one(
+        {"user_id": current_user.user_id},
+        {"$set": {"status": "cancelled", "updated_at": datetime.now(timezone.utc).isoformat()}},
+    )
+    return {
+        "status": "cancelled",
+        "expires_at": subscription.get("expires_at"),
+        "message": "Membership cancelled. Your access continues until the end of the paid period.",
+    }
 
 
 @router.get("/entitlements")

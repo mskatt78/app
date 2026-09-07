@@ -4918,3 +4918,10 @@
 - Added "yearly" ($189.99/year, interval=year) to SUBSCRIPTION_PLANS and GET /api/payments/plans (savings badge 'Save $49 vs monthly').
 - Pricing.jsx: displayPlans order monthly/yearly/full_app_unlock, 3-column grid, CardHeader pt-12 to clear savings badge overlap.
 - Verified: /plans returns 3 plans; yearly+stripe checkout returns Stripe URL; UI shows all 3 cards. USER MUST REDEPLOY.
+
+## Session Update (2026-06 fork, part 6): Card highlights + Subscription mgmt + Milestone sharing
+- Pricing.jsx: planStyles map — every plan card now highlighted (monthly cyan, yearly emerald, lifetime gold) with colored buttons.
+- Backend: POST /api/payments/subscription/cancel (status→cancelled, access retained until expires_at); _has_active_subscription accepts active|cancelled.
+- Settings: new SettingsSubscriptionCard (plan, renewal/expiry, Active/Cancelled badge, inline cancel confirm, View plans when none) wired after ProfileCard.
+- MilestoneBlessing: 'Share this blessing' — canvas-generated 1080px PNG blessing card, Web Share API with download fallback.
+- Tested iteration_272: 100% backend (8/8) + 100% frontend. USER MUST REDEPLOY.

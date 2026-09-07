@@ -8,6 +8,7 @@ import { SettingsLogoutCard } from "./SettingsLogoutCard";
 import { SettingsNotificationsCard } from "./SettingsNotificationsCard";
 import { SettingsProfileCard } from "./SettingsProfileCard";
 import { SettingsRemindersCard } from "./SettingsRemindersCard";
+import { SettingsSubscriptionCard } from "./SettingsSubscriptionCard";
 import { SettingsCustomVoiceCard } from "./SettingsCustomVoiceCard";
 import { useSettingsData } from "./useSettingsData";
 
@@ -79,6 +80,8 @@ const SettingsContainer = ({ user, api }) => {
       <main className="max-w-2xl mx-auto p-6">
         <div className="space-y-8">
           <SettingsProfileCard user={user} />
+
+          <SettingsSubscriptionCard api={api} navigate={navigate} />
 
           <SettingsRemindersCard
             reminderSettings={reminderSettings}
