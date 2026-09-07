@@ -4901,3 +4901,15 @@
 - ✅ Play Console Data Safety answers doc generated from user's privacy policy PDF: served at /play-data-safety-answers.txt (frontend/public).
 - Testing: iteration_270.json — 100% pass both. Known non-blocker: widget stats (practice_history only) differ from /progress page aggregate (includes user_progress data).
 - USER MUST REDEPLOY to production for these features + assetlinks.json fix to go live.
+
+## Session Update (2026-06 fork, part 4): Offline Everywhere + Streak Reminders + Milestones + Checkout fixes
+- ✅ Offline Everywhere: shared hooks/useOfflineDownload.js + components/OfflineDownloadButton.jsx; download buttons on Breathwork (BreathworkSessionGrid, non-locked only) and Grounding (cards + dialog); offline ids prefixed meditation:/breathwork:/grounding:. Tested iteration_271 (pass).
+- ✅ Streak Reminders: components/StreakReminderWatcher.jsx mounted in App.js (logged-in only); localStorage keys streakReminderEnabled/streakReminderTime (default 19:00)/streakReminderLastShown; Settings toggle in SettingsRemindersCard 'Streak Protection'. Tested (suppression path pass).
+- ✅ Journey Milestones: pages/dashboard/MilestoneBlessing.jsx full-screen blessing for 7/21/40-day streaks, once each (journeyMilestoneCelebrated_<n>). FIXED via React portal (backdrop-filter ancestor was trapping position:fixed). Self-tested: full viewport rect, dismiss persists.
+- ✅ Checkout bug fixes (user report 'checkout fails, only one option highlighted'):
+  1. Backend: GET /api/payments/subscription-status 500'd for non-subscribed users (returned Pydantic model with dict return annotation) → annotation fixed, returns 200.
+  2. Pricing.jsx: sign-in guard now uses GET /auth/status (PublicRoute never passes user prop on direct nav); logged-out users see hint + friendly redirect.
+  3. 'Already Subscribed' no longer disables the Lifetime button (only monthly).
+  4. Removed confusing single-option pricing-mode tab.
+- Verified e2e: logged-out → hint+redirect; logged-in → Stripe checkout page loads. PayPal + full_app_unlock checkout verified via curl.
+- USER MUST REDEPLOY to production (checkout fixes affect live site; PayPal on production requires PAYPAL_CLIENT_ID/SECRET/MODE env vars there).

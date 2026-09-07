@@ -7,6 +7,8 @@ import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import PracticeTimer from "../components/PracticeTimer";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { useOfflineDownload } from "../hooks/useOfflineDownload";
+import { OfflineDownloadButton } from "../components/OfflineDownloadButton";
 import { appLogger } from "../utils/logger";
 import { resolveDurationMinutes } from "../utils/durationUtils";
 
@@ -17,6 +19,26 @@ const GroundingPractices = ({ user, api }) => {
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [isPracticing, setIsPracticing] = useState(false);
   const [guidedPractice, setGuidedPractice] = useState(null);
+  const { downloadedIds, downloadingId, downloadProgress, downloadPractice } = useOfflineDownload({ api });
+
+  const handleDownloadForOffline = async (event, exercise) => {
+    event.stopPropagation();
+    if (downloadingId) return;
+    const offlineId = `grounding:${exercise.id}`;
+    if (downloadedIds.has(offlineId)) {
+      navigate("/offline-practices");
+      return;
+    }
+    const practice = toGuidedGroundingPractice(exercise);
+    await downloadPractice({
+      id: offlineId,
+      name: exercise.name,
+      element: "Earth",
+      category: "grounding",
+      duration_minutes: practice.duration_minutes,
+      steps: practice.steps,
+    });
+  };
 
   const resolveGroundingSteps = (exercise) => {
     const base = Array.isArray(exercise.instructions)
@@ -141,6 +163,15 @@ const GroundingPractices = ({ user, api }) => {
                     <span className="absolute top-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm px-2 py-0.5 rounded-full text-xs text-white">
                       <Clock className="w-3 h-3" />{exercise.duration_minutes} min
                     </span>
+                    <OfflineDownloadButton
+                      offlineId={`grounding:${exercise.id}`}
+                      downloadedIds={downloadedIds}
+                      downloadingId={downloadingId}
+                      downloadProgress={downloadProgress}
+                      onClick={(event) => handleDownloadForOffline(event, exercise)}
+                      dataTestId={`grounding-download-btn-${exercise.id}`}
+                      className="absolute bottom-3 right-3"
+                    />
                   </div>
                 )}
                 <div className="p-6">
@@ -333,6 +364,17 @@ const GroundingPractices = ({ user, api }) => {
                       <Play className="w-4 h-4 mr-2" />
                       Begin Guided Grounding Practice
                     </Button>
+
+                    <div className="flex justify-center">
+                      <OfflineDownloadButton
+                        offlineId={`grounding:${selectedExercise.id}`}
+                        downloadedIds={downloadedIds}
+                        downloadingId={downloadingId}
+                        downloadProgress={downloadProgress}
+                        onClick={(event) => handleDownloadForOffline(event, selectedExercise)}
+                        dataTestId={`grounding-dialog-download-btn-${selectedExercise.id}`}
+                      />
+                    </div>
 
                     <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
                       <p className="text-sm text-muted-foreground">

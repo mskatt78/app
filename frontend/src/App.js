@@ -8,6 +8,7 @@ import InstallPrompt from "./components/InstallPrompt";
 import { NotificationProvider, NotificationCenter } from "./components/NotificationSystem";
 import { AppRoutes } from "./routes/AppRoutes";
 import { AdminRoute, AuthCallback, ProtectedRoute, PublicRoute } from "./routes/routeGuards";
+import { StreakReminderWatcher } from "./components/StreakReminderWatcher";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -66,6 +67,7 @@ function AppRouter() {
     <>
       {showNav && <TopNav user={user} />}
       {showNav && <div className="h-16" />}
+      {hasUser && <StreakReminderWatcher api={api} />}
 
       <AppRoutes
         api={api}

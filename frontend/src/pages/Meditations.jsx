@@ -4,14 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft, Sparkles, Filter, Clock, Lock,
   Mountain, Waves, Flame, Heart, Eye, Moon, Star,
-  Download, CheckCircle2, CloudOff, Loader2,
+  CloudOff,
 } from "lucide-react";
-import {
-  saveOfflinePractice,
-  listOfflinePracticeIds,
-  chunkTextForOfflineTts,
-} from "../utils/offlineStore";
-import { resolveGuidedVoiceId, resolveGuidedSpeedValue } from "../utils/guidedVoiceSettings";
+import { useOfflineDownload } from "../hooks/useOfflineDownload";
+import { OfflineDownloadButton } from "../components/OfflineDownloadButton";
 import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { toast } from "sonner";
@@ -109,9 +105,7 @@ const Meditations = ({ user, api }) => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [guidedPractice, setGuidedPractice] = useState(null);
   const [selectedLockedMeditation, setSelectedLockedMeditation] = useState(null);
-  const [downloadedIds, setDownloadedIds] = useState(new Set());
-  const [downloadingId, setDownloadingId] = useState(null);
-  const [downloadProgress, setDownloadProgress] = useState(0);
+  const { downloadedIds, downloadingId, downloadProgress, downloadPractice } = useOfflineDownload({ api });
 
   const meditationsUnlocked = premium.isSectionUnlocked("meditations");
   const meditationsProduct = premium.findProduct("meditations");
@@ -133,9 +127,6 @@ const Meditations = ({ user, api }) => {
     };
 
     fetchMeditations();
-    listOfflinePracticeIds()
-      .then(setDownloadedIds)
-      .catch(() => {});
   }, [api]);
 
   const handleDownloadForOffline = async (event, meditation) => {
@@ -145,43 +136,20 @@ const Meditations = ({ user, api }) => {
       setSelectedLockedMeditation(meditation);
       return;
     }
-    if (downloadedIds.has(meditation.id)) {
+    const offlineId = `meditation:${meditation.id}`;
+    if (downloadedIds.has(offlineId)) {
       navigate("/offline-practices");
       return;
     }
-
-    setDownloadingId(meditation.id);
-    setDownloadProgress(0);
-    try {
-      const practice = buildMeditationPractice(meditation);
-      const texts = practice.steps.flatMap((step) => chunkTextForOfflineTts(step));
-      const voice = resolveGuidedVoiceId();
-      const speed = resolveGuidedSpeedValue() || 0.85;
-      const segments = [];
-      for (let i = 0; i < texts.length; i += 1) {
-        const response = await api.post("/tts/generate-base64", { text: texts[i], voice, speed }, { timeout: 45000 });
-        if (!response?.data?.audio_base64) throw new Error("Missing audio payload");
-        segments.push({ text: texts[i], audio_base64: response.data.audio_base64 });
-        setDownloadProgress(Math.round(((i + 1) / texts.length) * 100));
-      }
-      await saveOfflinePractice({
-        id: meditation.id,
-        name: meditation.name,
-        element: meditation.element,
-        category: meditation.category,
-        duration_minutes: meditation.duration_minutes,
-        saved_at: new Date().toISOString(),
-        segments,
-      });
-      setDownloadedIds((prev) => new Set([...prev, meditation.id]));
-      toast.success(`${meditation.name} saved for offline practice`);
-    } catch (error) {
-      appLogger.error("Offline download failed", error);
-      toast.error("Download failed — please check your connection and try again");
-    } finally {
-      setDownloadingId(null);
-      setDownloadProgress(0);
-    }
+    const practice = buildMeditationPractice(meditation);
+    await downloadPractice({
+      id: offlineId,
+      name: meditation.name,
+      element: meditation.element,
+      category: meditation.category,
+      duration_minutes: meditation.duration_minutes,
+      steps: practice.steps,
+    });
   };
 
   useEffect(() => {
@@ -380,31 +348,15 @@ const Meditations = ({ user, api }) => {
                         <Clock className="w-3 h-3" />
                         {meditation.duration_minutes} min
                       </span>
-                      <button
+                      <OfflineDownloadButton
+                        offlineId={`meditation:${meditation.id}`}
+                        downloadedIds={downloadedIds}
+                        downloadingId={downloadingId}
+                        downloadProgress={downloadProgress}
                         onClick={(event) => handleDownloadForOffline(event, meditation)}
-                        disabled={Boolean(downloadingId) && downloadingId !== meditation.id}
-                        className={`absolute bottom-3 right-3 flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs backdrop-blur-sm border transition-colors ${
-                          downloadedIds.has(meditation.id)
-                            ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-200"
-                            : "bg-black/50 border-white/20 text-white hover:bg-black/70"
-                        }`}
-                        title={downloadedIds.has(meditation.id) ? "Available offline" : "Download for offline"}
-                        data-testid={`meditation-download-btn-${meditation.id}`}
-                      >
-                        {downloadingId === meditation.id ? (
-                          <>
-                            <Loader2 className="w-3 h-3 animate-spin" /> {downloadProgress}%
-                          </>
-                        ) : downloadedIds.has(meditation.id) ? (
-                          <>
-                            <CheckCircle2 className="w-3 h-3" /> Offline
-                          </>
-                        ) : (
-                          <>
-                            <Download className="w-3 h-3" /> Save
-                          </>
-                        )}
-                      </button>
+                        dataTestId={`meditation-download-btn-${meditation.id}`}
+                        className="absolute bottom-3 right-3"
+                      />
                     </div>
 
                     <div className={`p-4 ${colors.bg}`}>

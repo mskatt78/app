@@ -1,0 +1,70 @@
+{
+  "summary": "Tested iteration 271: Offline Everywhere (Breathwork + Grounding + Meditation regression + offline playback/delete), Streak Reminder settings + watcher suppression path, and Journey Milestone Blessing. All backend endpoints pass. All frontend flows work EXCEPT the MilestoneBlessing full-screen overlay is trapped inside the SacredJourneyWidget (not full-screen). Root cause: backdrop-filter on parent widget establishes a containing block for position:fixed descendants. Total 2 offline downloads performed (1 breathwork, 1 grounding), 11 TTS calls total.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {
+        "component": "MilestoneBlessing (pages/dashboard/MilestoneBlessing.jsx) rendered inside SacredJourneyWidget",
+        "issue": "Overlay declared as 'fixed inset-0 z-[300]' does NOT cover viewport — it is contained within the 1102x322 SacredJourneyWidget card. Root cause: SacredJourneyWidget's outer div uses `backdrop-blur-xl` (backdrop-filter: blur(24px)), which per CSS spec establishes a NEW containing block for position:fixed descendants. Measured overlay rect: {x:297, y:407, w:1102, h:322} on 1440x900 viewport; ancestors_creating_containing_block detected: [{testid:'sacred-journey-widget', backdropFilter:'blur(24px)'}]. Result: milestone visually appears inside the widget card, 'Receive the Blessing' button may sit below fold, dismiss button hit-testing works via JS but user experience is broken. Fix: render <MilestoneBlessing> either (a) as a React Portal to document.body, or (b) lift it out of SacredJourneyWidget and mount it inside Dashboard root outside any backdrop-filter ancestor.",
+        "selector": "[data-testid=milestone-blessing-overlay]",
+        "priority": "HIGH"
+      }
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {
+        "screen": "/offline-practices (empty state)",
+        "issues": ["Copy still reads 'Open Meditations and tap the download icon on any practice to keep it with you offline.' — should mention Breathwork and Grounding now that they support offline download too."]
+      }
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_practice_history_offline.py",
+    "/app/backend/tests/seed_seven_day_streak.py",
+    "/app/test_reports/pytest/pytest_iteration271.xml"
+  ],
+  "action_items": [
+    "HIGH: Move <MilestoneBlessing streak=...> out of the SacredJourneyWidget's backdrop-filtered container OR wrap it in a React portal (ReactDOM.createPortal to document.body) so its position:fixed truly covers the viewport. Currently the ancestor backdrop-filter creates a containing block per CSS spec.",
+    "LOW: Update /offline-practices empty-state copy to mention Breathwork + Grounding downloads (currently only says 'Open Meditations…')."
+  ],
+  "critical_code_review_comments": [
+    "MilestoneBlessing rendered inside a `backdrop-blur-xl` ancestor breaks its own position:fixed layout — this is a subtle CSS containing-block bug (same class of gotcha as `transform` on parents). Prefer portals for full-screen overlays.",
+    "StreakReminderWatcher good pattern: calls localStorage.setItem('streakReminderLastShown', today) BEFORE the practicedToday early-return so the reminder fires at most once per day even when suppressed — verified working.",
+    "useOfflineDownload disables all other download buttons while one is in progress via `disabled={Boolean(downloadingId) && !isDownloading}` — good UX guard, verified.",
+    "SacredJourneyWidget still uses `/api/practice-history/stats` while the top 'Practice Streak' widget on Dashboard uses a different (user_progress) source — with 7 seeded practice_history entries this iteration, Journey correctly shows 7-day streak / 14 practices but the top strip still shows '0 days'. Data-source mismatch remains from iteration_270 — worth unifying."
+  ],
+  "updated_files": [
+    "/app/backend/tests/seed_seven_day_streak.py (new — one-shot seeder to insert 7 consecutive daily practice_history docs for the QA user, then verify /api/practice-history/stats returns current_streak>=7)"
+  ],
+  "success_rate": {
+    "backend": "100% (4/4 pytest passed; streak calc verified with seeded 7-day data returning current_streak=7)",
+    "frontend": "~92% (all offline flows pass; settings streak protection pass; streak reminder suppression pass; MilestoneBlessing renders and dismiss handler works when clicked but visual overlay is broken — not full-screen)"
+  },
+  "test_credentials": "QA user demoqa_740fefc1@example.com / DemoPass123! (POST /api/auth/login sets session_token cookie). No admin required.",
+  "seed_data_creation": "Inserted 7 practice_history docs for QA user (user_id=0bf4a7b2-03de-44a0-9e42-99cbf67679b5) with practice_id prefix 'TEST_STREAK_day0..day6', practice_type=meditation, duration_minutes=5, completed_at=UTC 12:00 for each of the last 7 days ending today. Confirmed via GET /api/practice-history/stats -> current_streak=7. Idempotent: script deletes prior TEST_STREAK_* rows before insert.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "MilestoneBlessing fix: after main agent moves the component to a React portal or out of the backdrop-blur widget, re-run: (1) login QA user, (2) clear localStorage.journeyMilestoneCelebrated_7, (3) reload /dashboard, (4) verify overlay bounding rect equals viewport (1440x900) with position:fixed and top/left/right/bottom=0, (5) click [data-testid=milestone-blessing-dismiss], (6) verify overlay unmounts AND localStorage.journeyMilestoneCelebrated_7=='1', (7) reload → overlay does NOT reappear. QA user already has 7-day seeded streak so no reseed needed. Also verify GroundingPractices lock/premium logic is not present (all grounding cards show download btn — matches current design; no locked ones).",
+  "features_tested": {
+    "breathwork_download_button_visibility": "PASS - 14 cards total, 10 locked (no download button), 4 unlocked (with breathwork-download-btn-<id>)",
+    "breathwork_offline_download": "PASS - 1 free breathwork session downloaded, 4 TTS calls, button turned green 'Offline'",
+    "grounding_card_download_button": "PASS - 14 grounding-download-btn-<id> render on cards with images",
+    "grounding_dialog_download_button": "PASS - grounding-dialog-download-btn-1 renders below 'Begin Guided Grounding Practice'",
+    "grounding_offline_download": "PASS - grounding:1 (5-4-3-2-1 Senses) downloaded successfully, 7 TTS calls, turned green 'Offline'",
+    "offline_practices_listing": "PASS - '5-4-3-2-1 Senses | Earth | 5 min | 5 audio segments' shown",
+    "offline_playback_zero_tts": "PASS - 0 /api/tts calls during playback",
+    "offline_delete": "PASS - 'Removed from offline library' toast, returns to empty state",
+    "meditations_regression": "PASS - 14 meditation-download-btn-<id> render; offline-library-btn navigates to /offline-practices",
+    "settings_streak_protection_section": "PASS - settings-streak-protection, settings-streak-protection-switch, settings-streak-protection-time-input (default 19:00) all render",
+    "settings_streak_toggle_persistence": "PASS - toggling switch writes streakReminderEnabled=true/false to localStorage; time input change writes streakReminderTime",
+    "streak_reminder_suppression": "PASS - with practice logged today (seeded), toast does NOT fire but streakReminderLastShown IS set to today's date",
+    "milestone_blessing_conditional_render": "PASS - overlay + title '7-Day Guardian' render only when current_streak>=7 AND journeyMilestoneCelebrated_7 is unset",
+    "milestone_blessing_fullscreen_layout": "FAIL - overlay confined to 1102x322 inside SacredJourneyWidget instead of full 1440x900 viewport; caused by parent backdrop-filter creating a containing block",
+    "milestone_blessing_dismiss_persistence": "PARTIAL PASS - JS-invoked click sets journeyMilestoneCelebrated_7='1' and prevents re-fire on reload; playwright force click did not fire the handler (likely because visual layout misalignment)",
+    "backend_practice_history_stats_streak": "PASS - after seeding 7 consecutive daily entries via direct Mongo insert, GET /api/practice-history/stats returns current_streak=7"
+  },
+  "rca_of_the_issue": "MilestoneBlessing overlay is not full-screen. It uses className='fixed inset-0 z-[300]…' correctly. However, its containing block is NOT the viewport because its closest ancestor (SacredJourneyWidget's outer div, data-testid='sacred-journey-widget') has `backdrop-filter: blur(24px)` (Tailwind `backdrop-blur-xl`). Per CSS Containment / Backdrop-filter spec, any non-none `filter`, `backdrop-filter`, `transform`, `perspective`, `contain: paint`, or `will-change: transform` on an ancestor establishes a NEW containing block for fixed-positioned descendants, effectively turning `position: fixed` into `position: absolute` relative to that ancestor. Reproduction: login QA user, clear localStorage.journeyMilestoneCelebrated_7, visit /dashboard with current_streak>=7. Overlay measures ~1102x322 anchored at top-left (297,407) of the widget, not the viewport. Mitigation options: (a) React portal — createPortal(<MilestoneBlessing/>, document.body) — cleanest; (b) render <MilestoneBlessing streak={stats.current_streak}/> from Dashboard.jsx directly (outside any backdrop-blur wrapper) instead of from inside SacredJourneyWidget; (c) remove `backdrop-blur-xl` from SacredJourneyWidget's outer div (loses visual effect)."
+}

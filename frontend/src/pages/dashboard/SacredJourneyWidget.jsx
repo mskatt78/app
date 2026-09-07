@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Compass, Flame, Sparkles, Timer, Trophy, ChevronRight } from "lucide-react";
+import { MilestoneBlessing } from "./MilestoneBlessing";
 import { appLogger } from "../../utils/logger";
 
 const typeLabels = {
@@ -52,6 +53,7 @@ export const SacredJourneyWidget = ({ api, navigate }) => {
       className="rounded-2xl border border-white/10 bg-card/50 backdrop-blur-xl p-5"
       data-testid="sacred-journey-widget"
     >
+      <MilestoneBlessing streak={stats.current_streak} />
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Compass className="w-5 h-5 text-primary" strokeWidth={1.5} />

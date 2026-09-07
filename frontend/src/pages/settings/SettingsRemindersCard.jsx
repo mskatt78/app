@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Bell, Calendar, Clock } from "lucide-react";
+import { Bell, Calendar, Clock, Flame } from "lucide-react";
 import { Input } from "../../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select";
 import { Switch } from "../../components/ui/switch";
@@ -11,6 +12,25 @@ const CARD_TRANSITION = { delay: 0.1 };
 
 export const SettingsRemindersCard = ({ reminderSettings, setReminderSettings, rituals, toggleDay }) => {
   const reminderDays = reminderSettings.days || [];
+  const [streakEnabled, setStreakEnabled] = useState(() => localStorage.getItem("streakReminderEnabled") !== "false");
+  const [streakTime, setStreakTime] = useState(() => localStorage.getItem("streakReminderTime") || "19:00");
+
+  const handleStreakToggle = async (checked) => {
+    setStreakEnabled(checked);
+    localStorage.setItem("streakReminderEnabled", checked ? "true" : "false");
+    if (checked && "Notification" in window && Notification.permission === "default") {
+      try {
+        await Notification.requestPermission();
+      } catch {
+        // in-app toast reminder still works without OS permission
+      }
+    }
+  };
+
+  const handleStreakTimeChange = (event) => {
+    setStreakTime(event.target.value);
+    localStorage.setItem("streakReminderTime", event.target.value);
+  };
 
   return (
     <motion.div
@@ -110,6 +130,39 @@ export const SettingsRemindersCard = ({ reminderSettings, setReminderSettings, r
             </div>
           </>
         )}
+
+        <div className="pt-6 border-t border-white/10 space-y-4" data-testid="settings-streak-protection">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium flex items-center gap-2">
+                <Flame className="w-4 h-4 text-amber-400" />
+                Streak Protection
+              </p>
+              <p className="text-sm text-muted-foreground">A gentle evening nudge if you haven't practiced today</p>
+            </div>
+            <Switch
+              checked={streakEnabled}
+              onCheckedChange={handleStreakToggle}
+              data-testid="settings-streak-protection-switch"
+            />
+          </div>
+
+          {streakEnabled && (
+            <div>
+              <label className="block text-sm text-muted-foreground mb-2">
+                <Clock className="w-4 h-4 inline mr-1" />
+                Remind me after
+              </label>
+              <Input
+                type="time"
+                value={streakTime}
+                onChange={handleStreakTimeChange}
+                className="bg-card/50 border-white/10 w-40"
+                data-testid="settings-streak-protection-time-input"
+              />
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

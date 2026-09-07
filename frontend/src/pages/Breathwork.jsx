@@ -10,6 +10,18 @@ import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import { useEffect, useMemo, useState } from "react";
 import { getBreathworkImage } from "../utils/shamanicImageTheme";
+import { useOfflineDownload } from "../hooks/useOfflineDownload";
+
+const buildBreathworkSteps = (session) => {
+  const pattern = session.pattern || {};
+  const patternLine = `Inhale for ${pattern.inhale || 4} counts${pattern.hold ? `, hold for ${pattern.hold}` : ""}, exhale for ${pattern.exhale || 4}${pattern.hold_empty ? `, and rest empty for ${pattern.hold_empty}` : ""}.`;
+  return [
+    `Welcome to ${session.name}. ${session.description || ""} Find a comfortable seat, lengthen your spine, and soften your shoulders and jaw.`,
+    `The rhythm is: ${patternLine} Keep the counts gentle — never strain. Begin now, following the rhythm at your own natural pace.`,
+    `Continue the cycle. ${patternLine} With every exhale, release tension down and out. With every inhale, receive fresh life force. Stay with several more rounds, letting the breath become smooth and effortless.`,
+    `Slowly release the pattern and let your breath return to its natural flow. Notice what has shifted: ${(session.benefits || []).slice(0, 3).join(", ") || "calm, clarity, presence"}. Carry this state with you. When you are ready, gently open your eyes.`,
+  ];
+};
 
 const Breathwork = ({ api, user }) => {
   const navigate = useNavigate();
@@ -17,6 +29,25 @@ const Breathwork = ({ api, user }) => {
   const [catalogMode, setCatalogMode] = useState("all");
   const [selectedLockedSession, setSelectedLockedSession] = useState(null);
   const premium = usePremiumAccess({ api, user });
+  const offline = useOfflineDownload({ api });
+
+  const handleDownloadForOffline = async (event, session) => {
+    event.stopPropagation();
+    if (offline.downloadingId) return;
+    const offlineId = `breathwork:${session.id}`;
+    if (offline.downloadedIds.has(offlineId)) {
+      navigate("/offline-practices");
+      return;
+    }
+    await offline.downloadPractice({
+      id: offlineId,
+      name: session.name,
+      element: session.element || "Air",
+      category: "breathwork",
+      duration_minutes: session.duration_minutes,
+      steps: buildBreathworkSteps(session),
+    });
+  };
   const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
   const setPremiumFilter = engine.setPremiumFilter;
 
@@ -182,6 +213,10 @@ const Breathwork = ({ api, user }) => {
             startSession={engine.startSession}
             canAccessSession={canAccessSession}
             onLockedSessionSelect={setSelectedLockedSession}
+            offlineDownloadedIds={offline.downloadedIds}
+            offlineDownloadingId={offline.downloadingId}
+            offlineDownloadProgress={offline.downloadProgress}
+            onOfflineDownload={handleDownloadForOffline}
           />
         )}
 

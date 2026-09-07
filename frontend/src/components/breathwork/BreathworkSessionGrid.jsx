@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Crown, Lock, Wind } from "lucide-react";
 import { getBreathworkImage } from "../../utils/shamanicImageTheme";
+import { OfflineDownloadButton } from "../OfflineDownloadButton";
 
 export const BreathworkSessionGrid = ({
   filteredSessions,
@@ -8,6 +9,10 @@ export const BreathworkSessionGrid = ({
   startSession,
   canAccessSession,
   onLockedSessionSelect,
+  offlineDownloadedIds,
+  offlineDownloadingId,
+  offlineDownloadProgress,
+  onOfflineDownload,
 }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-6" data-testid="breathwork-session-grid">
     {filteredSessions.map((session, index) => {
@@ -41,6 +46,17 @@ export const BreathworkSessionGrid = ({
                 <Crown className="w-3 h-3" />
                 {session.premium_label || "Premium"}
               </span>
+            )}
+            {!locked && onOfflineDownload && (
+              <OfflineDownloadButton
+                offlineId={`breathwork:${session.id}`}
+                downloadedIds={offlineDownloadedIds}
+                downloadingId={offlineDownloadingId}
+                downloadProgress={offlineDownloadProgress}
+                onClick={(event) => onOfflineDownload(event, session)}
+                dataTestId={`breathwork-download-btn-${session.id}`}
+                className="absolute bottom-3 right-3"
+              />
             )}
           </div>
           <div className="p-6">

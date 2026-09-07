@@ -183,7 +183,7 @@ const OfflinePractices = () => {
             <Moon className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
             <p className="font-serif text-lg mb-1">No practices downloaded yet</p>
             <p className="text-sm text-muted-foreground mb-4">
-              Open Meditations and tap the download icon on any practice to keep it with you offline.
+              Open Meditations, Breathwork, or Grounding and tap the Save button on any practice to keep it with you offline.
             </p>
             <Button onClick={() => navigate("/meditations")} data-testid="offline-browse-meditations-btn">
               Browse Meditations

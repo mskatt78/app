@@ -10,7 +10,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
 import { appLogger } from "../utils/logger";
-import { Tabs, TabsList, TabsTrigger } from "../components/ui/tabs";
 
 const Pricing = ({ user, api }) => {
   const navigate = useNavigate();
@@ -20,7 +19,7 @@ const Pricing = ({ user, api }) => {
   const [loading, setLoading] = useState(true);
   const [processingPlan, setProcessingPlan] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("stripe");
-  const [pricingMode, setPricingMode] = useState("sacred-access");
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
 
   const displayPlans = useMemo(() => {
     const order = ["monthly", "full_app_unlock"];
@@ -37,7 +36,15 @@ const Pricing = ({ user, api }) => {
     } catch (error) {
       appLogger.error("Failed to fetch pricing plans", error);
     }
-    
+
+    // Determine auth state (public endpoint)
+    try {
+      const authRes = await api.get("/auth/status");
+      setIsAuthenticated(Boolean(authRes.data?.authenticated));
+    } catch (error) {
+      appLogger.warn("Auth status check failed", error);
+    }
+
     // Fetch subscription status (requires auth - may fail for unauthenticated users)
     try {
       const subRes = await api.get("/payments/subscription-status");
@@ -93,6 +100,12 @@ const Pricing = ({ user, api }) => {
   }, [capturePayPalOrder, checkPaymentStatus, fetchData, searchParams]);
 
   const handleSubscribe = async (planId) => {
+    if (processingPlan !== null) return;
+    if (isAuthenticated === false) {
+      toast.error("Please sign in first to begin your membership");
+      navigate("/");
+      return;
+    }
     setProcessingPlan(planId);
     try {
       const isLifetime = planId === "full_app_unlock";
@@ -107,11 +120,17 @@ const Pricing = ({ user, api }) => {
       
       if (response.data.checkout_url) {
         window.location.href = response.data.checkout_url;
+        return;
       }
+      throw new Error("No checkout URL returned");
     } catch (error) {
       appLogger.error("Checkout error", error);
-      const errorMsg = error.response?.data?.detail || "Failed to start checkout. Please try again.";
+      const status = error?.response?.status;
+      const errorMsg = status === 401
+        ? "Please sign in first to begin your membership"
+        : error.response?.data?.detail || "Failed to start checkout. Please try again.";
       toast.error(errorMsg);
+      if (status === 401) navigate("/");
       setProcessingPlan(null);
     }
   };
@@ -164,13 +183,14 @@ const Pricing = ({ user, api }) => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             One place for membership and lifetime access. Choose what fits your sacred journey.
           </p>
-          <div className="flex items-center justify-center" data-testid="pricing-mode-tabs-wrap">
-            <Tabs value={pricingMode} onValueChange={setPricingMode}>
-              <TabsList className="bg-white/5 border border-white/10" data-testid="pricing-mode-tabs">
-                <TabsTrigger value="sacred-access" data-testid="pricing-mode-sacred-access">Subscription + Lifetime</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
+          {isAuthenticated === false && (
+            <p className="text-sm text-amber-300/90" data-testid="pricing-signin-hint">
+              You'll need to sign in before starting checkout —{" "}
+              <button onClick={() => navigate("/")} className="underline underline-offset-2 hover:text-amber-200" data-testid="pricing-signin-link">
+                sign in here
+              </button>
+            </p>
+          )}
         </div>
 
         {/* Plans Grid */}
@@ -227,7 +247,7 @@ const Pricing = ({ user, api }) => {
                     
                     <Button
                       onClick={() => handleSubscribe(plan.id)}
-                      disabled={processingPlan !== null || subscription?.is_subscribed}
+                      disabled={processingPlan !== null || (plan.id !== "full_app_unlock" && subscription?.is_subscribed)}
                       className={`w-full ${
                         plan.id === "full_app_unlock" 
                           ? "bg-primary hover:bg-primary/90" 
@@ -240,7 +260,7 @@ const Pricing = ({ user, api }) => {
                           <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                           Processing...
                         </>
-                      ) : subscription?.is_subscribed ? (
+                      ) : plan.id !== "full_app_unlock" && subscription?.is_subscribed ? (
                         "Already Subscribed"
                       ) : (
                         <>
@@ -255,7 +275,7 @@ const Pricing = ({ user, api }) => {
             ))}
           </div>
         )}
-
+ 
         {/* Features Section */}
         <div className="grid md:grid-cols-3 gap-6 pt-12">
           <div className="text-center p-6 rounded-2xl bg-white/5">

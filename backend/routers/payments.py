@@ -798,7 +798,7 @@ async def get_paypal_order_status(order_id: str, current_user: User) -> dict[str
 # ============ SUBSCRIPTION & PURCHASE ROUTES ============
 
 @router.get("/subscription-status")
-async def get_subscription_status(current_user: User = Depends(get_current_user)) -> dict[str, Any]:
+async def get_subscription_status(current_user: User = Depends(get_current_user)) -> SubscriptionStatusResponse:
     """Check user's subscription status."""
     db = get_db()
     subscription = await db.user_subscriptions.find_one(
