@@ -31,6 +31,7 @@ from routers.gifts import router as gifts_router
 from routers.tts import router as tts_router
 from routers.audio import router as audio_router
 from routers.reviews import router as reviews_router
+from routers.playbilling import router as playbilling_router
 from services.object_storage import ensure_storage_initialized
 
 ROOT_DIR = Path(__file__).parent
@@ -90,6 +91,7 @@ api_router = APIRouter(prefix="/api")
 # Include all modular routers
 api_router.include_router(auth_router)
 api_router.include_router(payments_router)
+api_router.include_router(playbilling_router)
 api_router.include_router(birth_chart_router)
 api_router.include_router(content_router)
 api_router.include_router(oracle_router)

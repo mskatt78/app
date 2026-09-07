@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 # Define subscription plans and products
 SUBSCRIPTION_PLANS = {
-    "monthly": {"name": "Monthly Membership", "price": 19.99, "interval": "month"},
+    "monthly": {"name": "Monthly Membership", "price": 24.99, "interval": "month"},
     "yearly": {"name": "Yearly Membership", "price": 189.99, "interval": "year"},
 }
 
@@ -240,7 +240,7 @@ def _build_paypal_order_payload(product_name: str, amount: float, origin_url: st
             "reference_id": str(uuid.uuid4())[:8],
             "description": product_name,
             "amount": {
-                "currency_code": "USD",
+                "currency_code": "AUD",
                 "value": f"{amount:.2f}",
             },
         }],
@@ -277,7 +277,7 @@ def _build_payment_transaction(
         "user_id": current_user.user_id,
         "user_email": current_user.email,
         "amount": amount,
-        "currency": "usd",
+        "currency": "aud",
         "product_type": payment_request.product_type,
         "product_id": payment_request.product_id,
         "plan_id": payment_request.plan_id,
@@ -620,7 +620,7 @@ def _build_checkout_request(
         cancel_url = f"{origin_url}/payment/cancel"
     return CheckoutSessionRequest(
         amount=amount,
-        currency="usd",
+        currency="aud",
         success_url=success_url,
         cancel_url=cancel_url,
         metadata=metadata,
@@ -817,6 +817,16 @@ async def get_subscription_status(current_user: User = Depends(get_current_user)
     
     expires_at = subscription.get("expires_at")
     if not _is_subscription_active_record(subscription):
+        if subscription.get("provider") == "google_play":
+            from .playbilling import refresh_google_play_subscription
+            refreshed = await refresh_google_play_subscription(db, subscription)
+            if refreshed and _is_subscription_active_record(refreshed):
+                return SubscriptionStatusResponse(
+                    is_subscribed=True,
+                    plan=refreshed.get("plan_id"),
+                    expires_at=refreshed.get("expires_at"),
+                    status=refreshed.get("status", "active")
+                )
         return SubscriptionStatusResponse(
             is_subscribed=False,
             plan=subscription.get("plan_id"),
@@ -987,7 +997,7 @@ async def get_premium_products() -> dict[str, Any]:
                 "name": product_data["name"],
                 "description": product_data["description"],
                 "price": float(str(product_data["price"])),
-                "currency": "usd",
+                "currency": "aud",
                 "unlock_scope": product_data.get("unlock_scope", "section"),
             }
         )
@@ -997,11 +1007,12 @@ async def get_premium_products() -> dict[str, Any]:
 async def get_subscription_plans() -> dict[str, Any]:
     """Get available subscription plans."""
     return {
+        "currency": "AUD",
         "plans": [
             {
                 "id": "monthly",
                 "name": "Monthly Membership",
-                "price": 19.99,
+                "price": 24.99,
                 "interval": "month",
                 "features": [
                     "Access to all yoga poses & sequences",

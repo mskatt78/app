@@ -10,6 +10,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card"
 import { Badge } from "../components/ui/badge";
 import { toast } from "sonner";
 import { appLogger } from "../utils/logger";
+import {
+  isPlayBillingAvailable,
+  getPlayPrices,
+  purchaseViaPlay,
+  restorePlayPurchases,
+} from "../utils/playBilling";
 
 const Pricing = ({ user, api }) => {
   const navigate = useNavigate();
@@ -20,6 +26,10 @@ const Pricing = ({ user, api }) => {
   const [processingPlan, setProcessingPlan] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("stripe");
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [playBilling, setPlayBilling] = useState(false);
+  const [playConfig, setPlayConfig] = useState(null);
+  const [playPrices, setPlayPrices] = useState({});
+  const [restoring, setRestoring] = useState(false);
 
   const displayPlans = useMemo(() => {
     const order = ["monthly", "yearly", "full_app_unlock"];
@@ -55,6 +65,103 @@ const Pricing = ({ user, api }) => {
     
     setLoading(false);
   }, [api]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const initPlayBilling = async () => {
+      const available = await isPlayBillingAvailable();
+      if (cancelled || !available) return;
+      setPlayBilling(true);
+      try {
+        const { data: config } = await api.get("/playbilling/config");
+        if (cancelled) return;
+        setPlayConfig(config);
+        const sub = config.subscription_product_id;
+        const skus = [`${sub}:monthly`, `${sub}:yearly`, sub];
+        if (config.lifetime_product_id) skus.push(config.lifetime_product_id);
+        const prices = await getPlayPrices(skus);
+        if (!cancelled) setPlayPrices(prices);
+      } catch (error) {
+        appLogger.warn("Play billing config fetch failed", error);
+      }
+    };
+    initPlayBilling();
+    return () => {
+      cancelled = true;
+    };
+  }, [api]);
+
+  const playSkuForPlan = useCallback((planId) => {
+    if (!playConfig) return null;
+    if (planId === "full_app_unlock") return playConfig.lifetime_product_id || null;
+    const sub = playConfig.subscription_product_id;
+    const basePlanSku = `${sub}:${planId}`;
+    return playPrices[basePlanSku] ? basePlanSku : sub;
+  }, [playConfig, playPrices]);
+
+  const playPriceForPlan = useCallback((planId) => {
+    const sku = playSkuForPlan(planId);
+    return sku ? playPrices[sku]?.formatted || null : null;
+  }, [playSkuForPlan, playPrices]);
+
+  const handlePlaySubscribe = async (planId) => {
+    const isLifetime = planId === "full_app_unlock";
+    if (isLifetime && !playConfig?.lifetime_product_id) {
+      toast.info("Lifetime access inside the Android app is coming soon — you can purchase it on our website meanwhile.");
+      return;
+    }
+    const sku = playSkuForPlan(planId);
+    if (!sku) {
+      toast.error("Google Play product unavailable. Please try again later.");
+      return;
+    }
+    setProcessingPlan(planId);
+    try {
+      const { response, purchaseToken } = await purchaseViaPlay(sku);
+      if (!purchaseToken) {
+        await response.complete("fail");
+        throw new Error("Missing purchase token");
+      }
+      try {
+        await api.post("/playbilling/verify", {
+          product_id: isLifetime ? playConfig.lifetime_product_id : playConfig.subscription_product_id,
+          purchase_token: purchaseToken,
+          kind: isLifetime ? "onetime" : "subscription",
+        });
+        await response.complete("success");
+        toast.success("Purchase confirmed — welcome to your membership");
+        fetchData();
+      } catch (verifyError) {
+        await response.complete("fail");
+        throw verifyError;
+      }
+    } catch (error) {
+      if (error?.name !== "AbortError") {
+        appLogger.error("Play billing purchase failed", error);
+        toast.error(error?.response?.data?.detail || "Purchase could not be completed. Please try again.");
+      }
+    } finally {
+      setProcessingPlan(null);
+    }
+  };
+
+  const handleRestorePurchases = async () => {
+    if (restoring) return;
+    setRestoring(true);
+    try {
+      const result = await restorePlayPurchases(api, playConfig);
+      if (result.restored > 0) {
+        toast.success("Your purchases have been restored");
+        fetchData();
+      } else if (result.found === 0) {
+        toast.info("No previous Google Play purchases found for this account");
+      } else {
+        toast.error("Could not restore purchases. Please try again.");
+      }
+    } finally {
+      setRestoring(false);
+    }
+  };
 
   const checkPaymentStatus = useCallback(async (sessionId) => {
     try {
@@ -104,6 +211,10 @@ const Pricing = ({ user, api }) => {
     if (isAuthenticated === false) {
       toast.error("Please sign in first to begin your membership");
       navigate("/");
+      return;
+    }
+    if (playBilling) {
+      await handlePlaySubscribe(planId);
       return;
     }
     setProcessingPlan(planId);
@@ -240,7 +351,13 @@ const Pricing = ({ user, api }) => {
                       <CardTitle className="text-xl font-serif">{plan.name}</CardTitle>
                     </div>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-4xl font-bold">${plan.price}</span>
+                      {playBilling && playPriceForPlan(plan.id) ? (
+                        <span className="text-4xl font-bold" data-testid={`plan-price-${plan.id}`}>{playPriceForPlan(plan.id)}</span>
+                      ) : (
+                        <span className="text-4xl font-bold" data-testid={`plan-price-${plan.id}`}>
+                          <span className="text-lg font-medium text-muted-foreground mr-1">AUD</span>${plan.price}
+                        </span>
+                      )}
                       <span className="text-muted-foreground">{plan.interval === "lifetime" ? "one-time" : `/${plan.interval}`}</span>
                     </div>
                   </CardHeader>
@@ -303,6 +420,29 @@ const Pricing = ({ user, api }) => {
 
         {/* Payment Methods */}
         <div className="text-center pt-8 border-t border-white/10">
+          {playBilling ? (
+            <div className="space-y-4" data-testid="play-billing-section">
+              <p className="text-sm text-muted-foreground">
+                Purchases in the Android app are billed securely through <span className="text-foreground font-medium">Google Play</span>.
+              </p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleRestorePurchases}
+                disabled={restoring}
+                data-testid="play-restore-purchases-btn"
+              >
+                {restoring ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" /> Restoring...
+                  </>
+                ) : (
+                  "Restore purchases"
+                )}
+              </Button>
+            </div>
+          ) : (
+            <>
           <p className="text-sm text-muted-foreground mb-4">Choose your payment method</p>
           <div className="flex items-center justify-center gap-4 mb-6">
             <button
@@ -334,6 +474,8 @@ const Pricing = ({ user, api }) => {
               ? "Credit/Debit cards accepted via Stripe" 
               : "Pay securely with your PayPal account"}
           </p>
+            </>
+          )}
         </div>
       </main>
     </div>

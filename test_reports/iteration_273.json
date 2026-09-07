@@ -1,0 +1,22 @@
+{
+  "summary": "Verified iteration 273 changes: admin auth on all /api/admin/* data endpoints, AUD $24.99 / $189.99 / $369 pricing, Google Play Billing scaffolding (config + verify), web checkout still creates Stripe sessions, web /pricing UI unaffected by Play Billing, settings membership renders for non-subscribed QA user. 14/14 backend tests passed; frontend flows verified via Playwright.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_iteration_273_playbilling_pricing_admin.py",
+    "/app/test_reports/pytest/iteration_273.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "playbilling.py _access_token() imports/creds are validated but every request re-loads credentials from env (fine for now, but consider caching once GOOGLE_PLAY_SERVICE_ACCOUNT_JSON is populated).",
+    "admin.py: /api/admin/files/{path} is public and returns raw bytes from Emergent object storage. Confirmed intentional per spec (image serving). No auth bypass concerns for other admin routes — every mutation and listing route uses Depends(_verify_admin)."
+  ],
+  "updated_files": ["/app/backend/tests/test_iteration_273_playbilling_pricing_admin.py"],
+  "success_rate": {"backend": "100% (14/14)", "frontend": "100% (5/5 checks)"},
+  "test_credentials": "QA: demoqa_740fefc1@example.com / DemoPass123!",
+  "seed_data_creation": "none",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Verified endpoints: GET /api/admin/collections (401 unauth, 403 non-admin), POST /api/admin/{c}/items (403 non-admin), POST /api/admin/login (401 wrong pw), GET /api/admin/files/{path} (public), GET /api/payments/plans (currency=AUD, monthly 24.99, yearly 189.99, full_app_unlock 369), POST /api/payments/create-checkout monthly & yearly with product_type=subscription + origin_url required, GET /api/playbilling/config (public, verification_configured=false, lifetime_available=false), POST /api/playbilling/verify (401 unauth, 503 configured+known product, 400 unknown product). Frontend /pricing correctly falls back to Stripe/PayPal in non-TWA browsers (play-billing-section hidden). /admin route guard redirects non-admin users to /dashboard. settings-no-subscription rendered for QA user.",
+  "rca of the issue": "n/a — no issues found."
+}

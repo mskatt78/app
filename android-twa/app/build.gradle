@@ -57,7 +57,7 @@ android {
         applicationId "host.emergent.embodiment_journey.twa"
         minSdkVersion 23
         targetSdkVersion 36
-        versionCode 36002
+        versionCode 36003
         versionName "1.0.2"
 
         // The name for the application
@@ -209,6 +209,8 @@ repositories {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    
+        implementation 'com.google.androidbrowserhelper:billing:1.2.0'
     
         implementation 'com.google.androidbrowserhelper:androidbrowserhelper:2.7.3'
     

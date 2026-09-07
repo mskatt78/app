@@ -20,13 +20,17 @@
     "path": "./upload-keystore.jks",
     "alias": "upload"
   },
-  "appVersionName": "1.0.2",
-  "appVersionCode": 36002,
+  "appVersionName": "1.1.0",
+  "appVersionCode": 36003,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
   "webManifestUrl": "https://temple-soul-dev.emergent.host/manifest.json",
   "fallbackType": "customtabs",
-  "features": {},
+  "features": {
+    "playBilling": {
+      "enabled": true
+    }
+  },
   "alphaDependencies": {
     "enabled": true
   },

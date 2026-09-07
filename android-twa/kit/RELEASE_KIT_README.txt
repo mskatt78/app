@@ -1,47 +1,57 @@
-SOUL TEMPLE — ANDROID RELEASE KIT v2 (v1.0.2, API 36)
-======================================================
-This build is signed with YOUR registered upload key
-(the one you created Aug 28 and sent to Google for the key reset).
+SOUL TEMPLE — ANDROID RELEASE KIT v3 (v1.1.0, API 36, GOOGLE PLAY BILLING)
+===========================================================================
+Signed with YOUR registered upload key (SHA-256 74:23:90:E1...:24:EB).
 
 WHAT'S IN THIS KIT
 ------------------
-1. SoulTemple-v1.0.2-upload.aab   -> Ready-to-upload Android App Bundle (signed with your upload key)
-2. upload-keystore.jks            -> Your upload keystore (same as your Aug 28 backup — keep safe)
-3. upload_certificate.pem         -> The public certificate registered with Google
+1. SoulTemple-v1.1.0-playbilling-upload.aab  -> Ready-to-upload bundle (versionCode 36003)
+2. upload-keystore.jks                        -> Your upload keystore (keep safe)
+3. upload_certificate.pem                     -> Certificate registered with Google
 
 KEYSTORE CREDENTIALS
 --------------------
 Keystore password:  SkyWater*1978
 Key alias:          upload
 Key password:       SkyWater*1978
-Upload key SHA-256:
-74:23:90:E1:01:8F:6E:15:11:95:9D:FF:E5:C5:43:F1:8D:6D:45:8E:B0:85:4C:DE:DB:B2:BF:84:F4:C8:24:EB
 
-WHAT WAS FIXED IN THIS BUILD (Play Console warnings)
-----------------------------------------------------
-- R8 code optimization ENABLED (minifyEnabled + shrinkResources + proguard-android-optimize)
-- Edge-to-edge deprecated API warning FIXED (androidbrowserhelper upgraded to 2.7.3)
-- targetSdkVersion 36 / compileSdkVersion 36 (API 36 compliant)
-- versionCode 36002, versionName 1.0.2 (higher than current production)
-- Package ID unchanged: host.emergent.embodiment_journey.twa
+WHAT'S NEW IN v1.1.0 (versionCode 36003)
+-----------------------------------------
+- GOOGLE PLAY BILLING support (Digital Goods API): users who install from
+  Google Play now purchase Monthly/Yearly membership through Google Play
+  checkout instead of Stripe/PayPal.
+- Keeps all previous fixes: R8 optimization, edge-to-edge fix, API 36.
 
-UPLOAD STEPS
-------------
-1. Make sure Google confirmed your upload key reset is ACTIVE
-   (their email states the effective date — usually within 48h of approval).
-2. Play Console -> Your app -> Test and release -> Internal testing
-3. Create new release -> upload SoulTemple-v1.0.2-upload.aab
-4. The R8 and edge-to-edge warnings should be gone. Save -> Send for review.
-5. Test the internal build on your phone, then promote to Production.
+PLAY CONSOLE SETUP STILL NEEDED (one-time)
+-------------------------------------------
+1. Monetize -> Subscriptions -> create subscription with EXACT id:
+     soul_temple_membership
+   with two base plans (EXACT ids): monthly  and  yearly
+   Set your AUD prices ($24.99/mo, $189.99/yr) there.
+2. (Optional, for Lifetime on Android) Monetize -> In-app products -> create a
+   one-time NON-CONSUMABLE product, e.g. id: soul_temple_lifetime ($369).
+   Then tell the developer/agent the id so it can be switched on server-side
+   (env var PLAY_LIFETIME_PRODUCT_ID). Until then, the Android app politely
+   directs Lifetime buyers to the website.
+3. Server verification credentials:
+   - Play Console -> Setup -> API access -> link a Google Cloud project
+   - In Google Cloud: enable "Google Play Android Developer API", create a
+     service account, download its JSON key
+   - In Play Console -> Users & permissions: invite the service account email
+     with "View financial data" + "Manage orders and subscriptions"
+   - Give the JSON to the agent to set as GOOGLE_PLAY_SERVICE_ACCOUNT_JSON
+     on the backend. Until this is set, Play purchases cannot be verified
+     server-side (the app will show a clear error).
+4. Upload SoulTemple-v1.1.0-playbilling-upload.aab to Internal testing.
 
-WEBSITE STEP (already done for you)
------------------------------------
-Your website's .well-known/assetlinks.json has been updated with the
-Google Play App Signing certificate (7D:FB:F6:D7:...:5F:AF).
-IMPORTANT: Redeploy your web app to production so the live site serves it.
-This is what removes the browser address bar inside the Android app.
-
-IF UPLOAD IS REJECTED WITH "wrong key" ERROR
---------------------------------------------
-The key reset is not active yet. Wait for Google's confirmation email,
-then re-upload the SAME .aab — no rebuild needed.
+HOW TO TEST SAFELY (no real charges)
+-------------------------------------
+1. Play Console -> Settings -> License testing: add your Gmail as a license
+   tester. License testers see test payment methods and are NOT charged.
+2. Install the app on a phone from the Internal testing link.
+3. Open the app -> Pricing: prices shown come from Google Play (AUD localized).
+4. Buy Monthly with the test card ("Test card, always approves").
+5. Verify membership unlocks in the app; check Settings -> Membership.
+6. Test subscriptions renew rapidly in test mode (monthly = 5 minutes),
+   so you can watch renewal/expiry behaviour quickly.
+7. Repeat for Yearly. Cancel from the Play Store subscription screen and
+   confirm access remains until the (accelerated) period end.
