@@ -53,7 +53,7 @@ const BottomNav = ({ user }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   const mainNavItems = [
-    { path: "/", icon: Home, label: "Home" },
+    { path: "/dashboard", icon: Home, label: "Home" },
     { path: "/yoga", icon: Sparkles, label: "Yoga" },
     { path: "/breathwork", icon: Wind, label: "Breathwork" },
     { path: "/meditations", icon: Brain, label: "Meditations" },
@@ -77,8 +77,7 @@ const BottomNav = ({ user }) => {
     { path: resolvePath("/elemental", "/elemental-practices"), icon: Sparkles, label: "Elemental", color: "text-teal-400" },
     { path: resolvePath("/elemental-temples"), icon: Sparkles, label: "All Temples", color: "text-teal-300" },
     { path: resolvePath("/heart-practices"), icon: Heart, label: "Heart Practices", color: "text-pink-400" },
-    { path: resolvePath("/sacred-guardians"), icon: Star, label: "Sacred Guardians", color: "text-amber-300" },
-    { path: resolvePath("/sacred-ally-alchemy"), icon: Sparkles, label: "Sacred Allies", color: "text-fuchsia-300" },
+    { path: resolvePath("/sacred-ally-alchemy", "/sacred-guardians"), icon: Star, label: "Sacred Allies", color: "text-amber-300" },
     { path: resolvePath("/creative", "/creative-processes"), icon: Palette, label: "Creative Expression", color: "text-violet-400" },
     { path: resolvePath("/free-form-movement"), icon: Flame, label: "Ecstatic Dance", color: "text-fuchsia-400" },
     { path: resolvePath("/kundalini-consciousness", "/sacred-ally-alchemy"), icon: Wind, label: "Kundalini Consciousness", color: "text-orange-300" },

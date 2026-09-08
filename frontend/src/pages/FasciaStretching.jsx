@@ -190,13 +190,10 @@ const FasciaStretching = ({ user, api }) => {
           <section className="mb-8 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="fascia-premium-banner">
             <p className="text-xs uppercase tracking-wider text-amber-200/80">Fascia Stretching Premium Track</p>
             <p className="text-sm text-muted-foreground mt-1" data-testid="fascia-premium-banner-description">
-              First fascia foundations are free. Advanced connective tissue sequences unlock with subscription or full app access.
+              First fascia foundations are free. Advanced connective tissue sequences unlock with Sacred Access membership.
             </p>
             <div className="flex gap-2 mt-3">
-              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="fascia-premium-banner-subscription-button">View Subscription Plans</Button>
-              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="fascia-premium-banner-fullapp-button">
-                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-              </Button>
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="fascia-premium-banner-subscription-button">Sacred Access</Button>
             </div>
           </section>
         )}
@@ -479,12 +476,9 @@ const FasciaStretching = ({ user, api }) => {
           <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
             <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Fascia Practice</p></div>
             <h3 className="text-2xl font-serif mb-2" data-testid="fascia-premium-lock-title">{selectedLockedPractice.name}</h3>
-            <p className="text-sm text-muted-foreground mb-4" data-testid="fascia-premium-lock-description">This advanced fascia stretching practice is premium. Continue with subscription or full app access.</p>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="fascia-premium-lock-description">This advanced fascia stretching practice is premium. Continue with Sacred Access membership.</p>
             <div className="grid sm:grid-cols-2 gap-2">
-              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="fascia-premium-lock-subscription-button">View Subscription Plans</Button>
-              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="fascia-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
-                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-              </Button>
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="fascia-premium-lock-subscription-button">Sacred Access</Button>
             </div>
             <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPractice(null)} data-testid="fascia-premium-lock-close-button">Close</Button>
           </div>

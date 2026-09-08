@@ -82,7 +82,7 @@ export default function FreeFormMovement() {
           <div className="text-center py-20">
             <Wind className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
             <h2 className="text-2xl font-serif mb-2">Movement Practices Coming Soon</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">Sacred movement teachings are being prepared. Add practices through the Admin CMS.</p>
+            <p className="text-muted-foreground max-w-md mx-auto">Sacred movement teachings are being prepared and will appear here soon.</p>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

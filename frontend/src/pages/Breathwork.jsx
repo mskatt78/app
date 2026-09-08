@@ -166,16 +166,7 @@ const Breathwork = ({ api, user }) => {
                       onClick={() => navigate("/pricing")}
                       data-testid="breathwork-view-subscription-button"
                     >
-                      View Subscription
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={handleUnlockFullApp}
-                      className="border-amber-500/30 text-amber-200"
-                      data-testid="breathwork-unlock-fullapp-button"
-                      disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
-                    >
-                      {premium.purchaseLoadingId === "full_app_unlock" ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening checkout...</> : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}</>}
+                      Sacred Access
                     </Button>
                   </div>
                 )}
@@ -229,7 +220,7 @@ const Breathwork = ({ api, user }) => {
             >
               <h3 className="text-2xl font-serif mb-2" data-testid="breathwork-premium-lock-title">{selectedLockedSession.name}</h3>
               <p className="text-sm text-muted-foreground mb-4" data-testid="breathwork-premium-lock-description">
-                This is a Premium Breathlove ritual. Continue with subscription or full app access.
+                This is a Premium Breathlove ritual. Continue with Sacred Access membership.
               </p>
               <div className="flex gap-2">
                 <Button
@@ -239,15 +230,6 @@ const Breathwork = ({ api, user }) => {
                   data-testid="breathwork-premium-lock-subscription-button"
                 >
                   Subscription
-                </Button>
-                <Button
-                  onClick={handleUnlockFullApp}
-                  variant="outline"
-                  className="flex-1 border-amber-500/30 text-amber-200"
-                  data-testid="breathwork-premium-lock-fullapp-button"
-                  disabled={premium.purchaseLoadingId === "full_app_unlock"}
-                >
-                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
                 </Button>
                 <Button variant="outline" onClick={() => setSelectedLockedSession(null)} className="flex-1" data-testid="breathwork-premium-lock-close-button">
                   Not now

@@ -1,0 +1,48 @@
+{
+  "summary": "Frontend audit pass for Shamanic Elements Soul Temple. Logged in as QA user demoqa_740fefc1@example.com. Verified navigation, menu labels, Sacred Access consolidation, admin-text removal, All Alchemy Hub partition (84=14+14+56), Solar Cycle panel on /sun-moon, sound-frequencies (no Nature Sounds), pricing (3 AUD plans), admin API 401 for non-admin, Dashboard 'Sacred Journey' widget. Meditations premium lock modal shows ONLY 'Sacred Access' + 'Close' (single-button consolidation confirmed). Healing Portals header and portal-modal show a single Sacred Access CTA. Two menu regressions found: 'Sacred Guardians' entry still appears in the main /menu (MainMenuContainer.jsx:174) and in LinksPage.jsx:55; BottomNav.jsx has TWO 'Sacred Allies' entries (label duplicate at lines 80-81 — second should be 'Power & Spirit Animals'). Mantras audio functional test could not be fully executed via <audio> element because (a) only Om carries an audio_url (Wikipedia .ogg) which triggers audioError in Chromium and flips the modal to the chanting-timer fallback UI, hiding the audio-play-btn; (b) 'Voice Mantra' uses window.speechSynthesis, not an <audio> element, so paused/playbackRate/muted cannot be observed on any DOM audio node. Tempo Fast/Normal/Slow buttons only reprogram the internal chanting interval — they don't drive playbackRate on any audio element in this state. Recommend either always rendering a single controllable <audio>/TTS proxy per selected mantra, or hardening hasPlayableAudio to fall back to a working sample so QA can verify Play/Pause/Rate/Mute functionally.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "MainMenuContainer", "issue": "'Sacred Guardians' entry still rendered in /menu (should be removed per spec)", "selector": "/app/frontend/src/pages/main-menu/MainMenuContainer.jsx:174", "priority": "HIGH"},
+      {"component": "LinksPage", "issue": "'Sacred Guardians' menu entry still present pointing to /sacred-guardians", "selector": "/app/frontend/src/pages/LinksPage.jsx:55", "priority": "MEDIUM"},
+      {"component": "BottomNav", "issue": "Two entries labeled 'Sacred Allies' (duplicate label). Line 80 points to /sacred-ally-alchemy fallback /sacred-guardians; line 81 also labels 'Sacred Allies'. TopNav uses 'Power & Spirit Animals' for the equivalent entry — BottomNav second entry likely should be 'Power & Spirit Animals'.", "selector": "/app/frontend/src/components/BottomNav.jsx:80-81", "priority": "MEDIUM"},
+      {"component": "MantrasPlayer", "issue": "For Om (only mantra with audio_url — Wikipedia .ogg) hasPlayableAudio resolves false in Chromium (audioError). Result: audio-play-btn never rendered, so functional Play/Pause/rate/mute cannot be exercised on any <audio> element. Consider hosting a compatible mp3/wav or provide a persistent audio element wrapper for TTS to enable QA & UX.", "selector": "MantrasPlayer.jsx line 216 branch", "priority": "MEDIUM"},
+      {"component": "MantrasPlayer", "issue": "Voice Mantra button uses window.speechSynthesis rather than an <audio> tag, so playbackRate/muted/paused cannot be inspected via DOM. This also means the Slow/Normal/Fast tempo control changes the JS chanting interval only — it does NOT alter TTS or any audio.playbackRate. Consider wiring tempo -> utterance.rate for consistency.", "selector": "MantrasPlayer.jsx 51-73 & tempo buttons 351/361/371", "priority": "MEDIUM"},
+      {"component": "SoundFrequencies", "issue": "Header 'View Subscription' and 'Full App 369.00' buttons are still visible for non-subscribed users. Not in scope of this pass but similar consolidation to Healing Portals/Meditations may be desired for consistency.", "selector": "SoundFrequencies.jsx premium banner", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "verified_passing": [
+    "Login flow via /api/auth/login works with QA credentials",
+    "topnav-home-btn navigates to /dashboard when logged in and / when logged out",
+    "/sacred-ally-alchemy loads content (h1 'Sacred Allies Alchemy')",
+    "/sacred-guardians still renders (deep link preserved)",
+    "Healing Portals header shows single healing-portals-sacred-access-button (Sacred Access -> /pricing)",
+    "Healing Portal modal shows single healing-portal-sacred-access-button (no Unlock Full App / price buttons)",
+    "Meditations premium lock modal has ONLY 'Sacred Access' (meditations-premium-lock-sacred-access-button) + Close buttons",
+    "No 'Admin CMS' / 'admin collection' text on /somatic-yoga, /free-form-movement, /healing-portals",
+    "Somatic Yoga API returns 5 practices; Free-Form Movement 14; not 'Coming Soon'",
+    "Sound Frequencies has no 'Nature Sounds' category chip; Shamanic Drums exists (5 items in API)",
+    "All Alchemy Hub tiles: Total 84 = Allies 14 + Angelic 14 + Mystery 56 (exact partition)",
+    "/sun-moon renders data-testid=solar-cycle-panel with sun sign (Virgo), season, and countdown 'September Equinox — in 14 days'. No horizontal overflow at 390px (scrollWidth==390).",
+    "Pricing renders 3 plans (monthly, yearly, full_app_unlock) in AUD, no overflow at 390px",
+    "GET /api/admin/seed-status returns 401 for anonymous and QA (non-admin) user",
+    "/dashboard renders 'Sacred Journey' content"
+  ],
+  "critical_code_review_comments": [
+    "MainMenuContainer.jsx:174 still ships a 'Sacred Guardians' tile pointing to /sacred-guardians — contradicts stated consolidation goal.",
+    "LinksPage.jsx:55 lists 'Sacred Guardians' with '37 spirit guides & totems' — remove or rename to Sacred Allies to match new IA.",
+    "BottomNav.jsx:80-81 has two consecutive items labeled 'Sacred Allies' — the second is likely intended to be 'Power & Spirit Animals' (matches TopNav.jsx:114).",
+    "MantrasPlayer.jsx branches on hasPlayableAudio which fails silently when audio_url points to .ogg (unsupported in some browsers) — consider format fallback or better error surface, otherwise the entire Audio-driven Play/Pause/Rate/Mute UX is unreachable for every mantra in production.",
+    "Speed/tempo controls (mantra-tempo-*-btn) do not propagate to speechSynthesis utterance.rate nor to any <audio>.playbackRate — they only change the setInterval used by the chanting timer. This makes the 'Speed' functional requirement effectively unmet."
+  ],
+  "test_report_links": [],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a (frontend-only)", "frontend": "~85% (15/17 explicit checks pass; 2 nav regressions + mantra audio unreachable)"},
+  "test_credentials": "QA: demoqa_740fefc1@example.com / DemoPass123! (login via LandingPage 'Sign in to save your progress' — NOT via /login route which does not exist).",
+  "seed_data_creation": "None",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Login is only reachable by opening https://<host>/ and clicking the 'Sign in to save your progress' ghost button which opens the auth Dialog. testids: auth-email-input / auth-password-input / auth-submit-btn. Sacred-Guardians label test must include /menu (MainMenuContainer) and /links (LinksPage), not only TopNav overlay. To exercise mantra audio, use a mantra with a supported audio_url (mp3/wav) or host a fallback in the app; currently Om's .ogg fails in Chromium and hides audio-play-btn."
+}

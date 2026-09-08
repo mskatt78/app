@@ -116,7 +116,7 @@ export default function SomaticYoga() {
           <div className="text-center py-20">
             <Leaf className="w-16 h-16 mx-auto mb-4 text-muted-foreground/30" />
             <h2 className="text-2xl font-serif mb-2">Somatic Yoga Practices Coming Soon</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">Body-centered healing sequences are being prepared. Add practices through the Admin CMS.</p>
+            <p className="text-muted-foreground max-w-md mx-auto">Body-centered healing sequences are being prepared and will appear here soon.</p>
             
             {/* Helpful content while empty */}
             <div className="mt-8 max-w-xl mx-auto text-left p-6 rounded-2xl bg-white/[0.02] border border-white/10">

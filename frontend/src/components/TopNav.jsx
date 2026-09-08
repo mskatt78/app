@@ -111,8 +111,7 @@ const TopNav = ({ user }) => {
     { path: resolvePath("/elemental", "/elemental-practices"), icon: Sparkles, label: "Elemental", color: "text-teal-400" },
     { path: resolvePath("/heart-practices"), icon: Heart, label: "Heart Practices", color: "text-pink-400" },
     { path: resolvePath("/sacred-ally-alchemy"), icon: Sparkles, label: "Sacred Allies", color: "text-fuchsia-300" },
-    { path: resolvePath("/sacred-guardians"), icon: Shield, label: "Sacred Guardians", color: "text-amber-300" },
-    { path: resolvePath("/sacred-guardians", "/sacred-ally-alchemy"), icon: Globe, label: "Power & Spirit Animals", color: "text-emerald-300" },
+    { path: resolvePath("/sacred-ally-alchemy", "/sacred-guardians"), icon: Globe, label: "Power & Spirit Animals", color: "text-emerald-300" },
     { path: resolvePath("/alchemy-hub", "/all-alchemy"), icon: Sparkles, label: "All Alchemy Hub", color: "text-fuchsia-200" },
     { path: resolvePath("/mystery-school-teachings"), icon: Star, label: "Mystery School", color: "text-amber-200" },
     { path: resolvePath("/angelic-alchemy"), icon: Shield, label: "Angelic Alchemy", color: "text-cyan-300" },
@@ -152,7 +151,7 @@ const TopNav = ({ user }) => {
         <div className="flex items-center justify-between py-3 px-4 max-w-6xl mx-auto">
           {/* Home Button */}
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate(user ? "/dashboard" : "/")}
             className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
             data-testid="topnav-home-btn"
           >

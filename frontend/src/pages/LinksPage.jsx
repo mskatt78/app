@@ -52,7 +52,7 @@ const LINK_SECTIONS = [
     links: [
       { name: "Retreats & Healing Work", desc: "Elemental & womb healing retreats", path: "/retreats", icon: MapPin, accent: "from-rose-500/20 to-amber-500/20 border-rose-500/30" },
       { name: "Ancient Wisdom", desc: "108 teachings from sacred traditions", path: "/ancient-wisdom", icon: BookOpen, accent: "from-amber-500/20 to-yellow-500/20 border-amber-500/30" },
-      { name: "Sacred Guardians", desc: "37 spirit guides & totems", path: "/sacred-guardians", icon: Users, accent: "from-teal-500/20 to-emerald-500/20 border-teal-500/30" },
+      { name: "Sacred Allies", desc: "Spirit guides, totems & guardians", path: "/sacred-ally-alchemy", icon: Users, accent: "from-teal-500/20 to-emerald-500/20 border-teal-500/30" },
     ]
   },
 ];

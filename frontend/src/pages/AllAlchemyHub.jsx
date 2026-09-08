@@ -73,13 +73,10 @@ export default function AllAlchemyHub({ user, api }) {
 
   const featuredStats = useMemo(() => {
     const total = items.length;
-    const dragonCount = items.filter((item) => String(item?.typeLabel || "").toLowerCase().includes("dragon")).length;
-    const starLineageCount = items.filter((item) => {
-      const name = String(item?.name || "").toLowerCase();
-      return name.includes("pleiadian") || name.includes("andromedan") || name.includes("sirian") || name.includes("star");
-    }).length;
     const mysteryCount = items.filter((item) => item.source === "mystery-school").length;
-    return { total, dragonCount, starLineageCount, mysteryCount };
+    const angelicCount = items.filter((item) => item.source === "angelic").length;
+    const alliesCount = total - mysteryCount - angelicCount;
+    return { total, alliesCount, angelicCount, mysteryCount };
   }, [items]);
 
   const handleCardClick = (item) => {
@@ -146,12 +143,12 @@ export default function AllAlchemyHub({ user, api }) {
                 <p className="text-lg font-semibold text-cyan-100" data-testid="all-alchemy-hub-total-count">{featuredStats.total}</p>
               </div>
               <div className="rounded-xl bg-black/20 border border-white/10 px-3 py-2">
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">Dragon</p>
-                <p className="text-lg font-semibold text-orange-100" data-testid="all-alchemy-hub-dragon-count">{featuredStats.dragonCount}</p>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">Allies</p>
+                <p className="text-lg font-semibold text-orange-100" data-testid="all-alchemy-hub-dragon-count">{featuredStats.alliesCount}</p>
               </div>
               <div className="rounded-xl bg-black/20 border border-white/10 px-3 py-2">
-                <p className="text-xs uppercase tracking-wider text-muted-foreground">Star</p>
-                <p className="text-lg font-semibold text-fuchsia-100" data-testid="all-alchemy-hub-starlineage-count">{featuredStats.starLineageCount}</p>
+                <p className="text-xs uppercase tracking-wider text-muted-foreground">Angelic</p>
+                <p className="text-lg font-semibold text-fuchsia-100" data-testid="all-alchemy-hub-starlineage-count">{featuredStats.angelicCount}</p>
               </div>
               <div className="rounded-xl bg-black/20 border border-white/10 px-3 py-2">
                 <p className="text-xs uppercase tracking-wider text-muted-foreground">Mystery</p>

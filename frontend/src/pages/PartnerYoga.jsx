@@ -490,7 +490,7 @@ const PartnerYoga = ({ user, api }) => {
   const launchGuidedPractice = useCallback((pose) => {
     if (!pose) return;
     if (pose.is_premium && !partnerUnlocked) {
-      toast.info("This partner practice is premium. Unlock with subscription or full app access.");
+      toast.info("This partner practice is premium. Unlock with Sacred Access membership.");
       return;
     }
     const payload = buildGuidedPosePractice(pose);
@@ -579,12 +579,9 @@ const PartnerYoga = ({ user, api }) => {
         {!partnerUnlocked && (
           <section className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="partner-yoga-premium-banner">
             <p className="text-xs uppercase tracking-wider text-amber-200/80">Partner Yoga Premium Track</p>
-            <p className="text-sm text-muted-foreground mt-1">First 4 partnered practices are open. Remaining partnered sequences unlock with subscription or full app access.</p>
+            <p className="text-sm text-muted-foreground mt-1">First 4 partnered practices are open. Remaining partnered sequences unlock with Sacred Access membership.</p>
             <div className="flex gap-2 mt-3">
-              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="partner-yoga-premium-banner-subscription-button">View Subscription Plans</Button>
-              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="partner-yoga-premium-banner-fullapp-button">
-                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-              </Button>
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="partner-yoga-premium-banner-subscription-button">Sacred Access</Button>
             </div>
           </section>
         )}
@@ -803,10 +800,7 @@ const PartnerYoga = ({ user, api }) => {
 
                 {selectedPose.is_premium && !partnerUnlocked && (
                   <div className="grid sm:grid-cols-2 gap-2" data-testid="partner-yoga-premium-lock-actions">
-                    <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="partner-yoga-premium-lock-subscription-button">View Subscription Plans</Button>
-                    <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="partner-yoga-premium-lock-fullapp-button">
-                      {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-                    </Button>
+                    <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="partner-yoga-premium-lock-subscription-button">Sacred Access</Button>
                   </div>
                 )}
               </div>

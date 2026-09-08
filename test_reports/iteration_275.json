@@ -1,0 +1,20 @@
+{
+  "summary": "Frontend render-regression + banner consolidation audit across 19 practice routes + /menu. All 20 routes returned HTTP 200 and rendered non-empty content. Zero occurrences of 'Full App 369' or 'View Subscription' anywhere. Premium banners consistently expose a single 'Sacred Access' CTA that navigates to /pricing (AUD plans confirmed). 'Sacred Guardians' label removed from /menu (only remaining occurrence is the /sacred-guardians page itself, which is expected). Mantras Om card opens a working player modal with 'Voice Mantra' / 'Stop Voice' controls, no broken audio error.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [],
+  "updated_files": [],
+  "success_rate": {"backend": "n/a", "frontend": "100%"},
+  "test_credentials": "QA account provided but not needed — all routes are public and verifiable without login.",
+  "seed_data_creation": "",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Route render matrix (status,length,sacred_access_count): breathwork(200,10439,1 after render / 706 pre-hydrate), yoga-library(200,26404,2), mindfulness(200,5768,0), energy-healing(200,5681,2), rose-temple(200,3733,3), chakra-cleansing(200,6738,0), heart-practices(200,5802,0), shamanic-practices(200,13070,0), fascia-stretching(200,20236,2), partner-yoga(200,4600,2), light-codes(200,12525,2), elemental-practices(200,7189,0), elemental-temples(200,2158,1), creative-processes(200,7462,2), somatic-movement(200,22690,2), water-practices(200,4809,0), sacred-guardians(200,1254,2 — page title expected), sound-frequencies(200,9347,2), mantras(200,2621,2), menu(200,3383,0). No Full-App-369 / View-Subscription strings anywhere. Sacred Access from /mantras -> /pricing (AUD confirmed). Om modal renders Voice Mantra / Stop Voice controls, no error.",
+  "rca of the issue": "N/A — audit passed."
+}

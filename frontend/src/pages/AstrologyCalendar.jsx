@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ChevronDown, ChevronLeft, ChevronRight, Clock, Globe, Moon, Star } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { AstrologyMonthDialog } from "../components/astrology/AstrologyMonthDialog";
+import { SolarCyclePanel } from "./astrology/SolarCyclePanel";
 import {
   TIMEZONES,
   elementColors,
@@ -186,8 +187,8 @@ const AstrologyCalendar = ({ api }) => {
               <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </button>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Lunar Wisdom</p>
-              <h1 className="text-xl font-serif">13-Moon <span className="italic text-primary">Calendar</span></h1>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Solar & Lunar Wisdom</p>
+              <h1 className="text-xl font-serif">Sun & Moon <span className="italic text-primary">Calendar</span></h1>
             </div>
           </div>
 
@@ -272,6 +273,7 @@ const AstrologyCalendar = ({ api }) => {
           </div>
         ) : (
           <>
+            <SolarCyclePanel />
             {currentMonth && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`p-8 rounded-2xl border backdrop-blur-xl mb-12 bg-gradient-to-br ${elementColors[currentMonth.element]?.gradient} ${elementColors[currentMonth.element]?.border}`}>
                 <div className="flex flex-col md:flex-row gap-6">

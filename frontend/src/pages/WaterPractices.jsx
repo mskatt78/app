@@ -810,12 +810,9 @@ const WaterPractices = ({ user, api }) => {
         <div className="fixed inset-0 z-[220] bg-black/70 backdrop-blur-sm p-4 flex items-center justify-center" data-testid="water-practices-premium-lock-modal">
           <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
             <h3 className="text-2xl font-serif mb-2" data-testid="water-practices-premium-lock-title">{selectedLockedPractice.name}</h3>
-            <p className="text-sm text-muted-foreground mb-4" data-testid="water-practices-premium-lock-description">This water ritual is premium. Continue with subscription or full app access.</p>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="water-practices-premium-lock-description">This water ritual is premium. Continue with Sacred Access membership.</p>
             <div className="grid sm:grid-cols-2 gap-2">
-              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="water-practices-premium-lock-subscription-button">View Subscription Plans</Button>
-              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="water-practices-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
-                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-              </Button>
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="water-practices-premium-lock-subscription-button">Sacred Access</Button>
             </div>
             <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedPractice(null)} data-testid="water-practices-premium-lock-close-button">Close</Button>
           </div>

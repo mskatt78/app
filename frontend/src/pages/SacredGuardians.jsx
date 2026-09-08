@@ -257,12 +257,9 @@ const SacredGuardians = ({ user, api }) => {
         {!guardiansUnlocked && (
           <section className="mb-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4" data-testid="guardians-premium-banner">
             <p className="text-xs uppercase tracking-wider text-amber-200/80">Sacred Guardians Premium</p>
-            <p className="text-sm text-muted-foreground mt-1" data-testid="guardians-premium-banner-description">First guardians are free. Advanced guardians unlock with subscription or full app access.</p>
+            <p className="text-sm text-muted-foreground mt-1" data-testid="guardians-premium-banner-description">First guardians are free. Advanced guardians unlock with Sacred Access membership.</p>
             <div className="flex gap-2 mt-3">
-              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="guardians-premium-banner-subscription-button">View Subscription Plans</Button>
-              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="guardians-premium-banner-fullapp-button">
-                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-              </Button>
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="guardians-premium-banner-subscription-button">Sacred Access</Button>
             </div>
           </section>
         )}
@@ -663,12 +660,9 @@ const SacredGuardians = ({ user, api }) => {
           <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
             <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Guardian</p></div>
             <h3 className="text-2xl font-serif mb-2" data-testid="guardians-premium-lock-title">{selectedLockedGuardian.name}</h3>
-            <p className="text-sm text-muted-foreground mb-4" data-testid="guardians-premium-lock-description">This guardian transmission is premium. Continue with subscription or full app access.</p>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="guardians-premium-lock-description">This guardian transmission is premium. Continue with Sacred Access membership.</p>
             <div className="grid sm:grid-cols-2 gap-2">
-              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="guardians-premium-lock-subscription-button">View Subscription Plans</Button>
-              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="guardians-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
-                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-              </Button>
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="guardians-premium-lock-subscription-button">Sacred Access</Button>
             </div>
             <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedGuardian(null)} data-testid="guardians-premium-lock-close-button">Close</Button>
           </div>

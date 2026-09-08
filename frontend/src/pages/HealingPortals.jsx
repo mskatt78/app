@@ -314,23 +314,14 @@ const HealingPortals = ({ user, api }) => {
               Enter each portal as ceremony: slow breath, body consent, and one grounded integration action.
             </p>
             {!premium.isSectionUnlocked("healing_portals") && (
-              <div className="mt-3 flex flex-wrap gap-2" data-testid="healing-portals-unlock-actions">
-                <Button
-                  variant="outline"
-                  className="border-cyan-400/40 text-cyan-100"
-                  onClick={() => navigate("/pricing")}
-                  data-testid="healing-portals-view-subscription-button"
-                >
-                  View Subscription
-                </Button>
+              <div className="mt-3" data-testid="healing-portals-unlock-actions">
                 <Button
                   variant="outline"
                   className="border-amber-400/40 text-amber-100"
-                  onClick={handleUnlockFullApp}
-                  data-testid="healing-portals-unlock-fullapp-button"
-                  disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
+                  onClick={() => navigate("/pricing")}
+                  data-testid="healing-portals-sacred-access-button"
                 >
-                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : <><Crown className="w-4 h-4 mr-2" />Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}</>}
+                  <Crown className="w-4 h-4 mr-2" /> Sacred Access
                 </Button>
               </div>
             )}
@@ -347,7 +338,7 @@ const HealingPortals = ({ user, api }) => {
           <div className="text-center py-20" data-testid="healing-portals-empty-state">
             <Sparkles className="w-14 h-14 mx-auto mb-3 text-muted-foreground/40" />
             <h2 className="text-2xl font-serif mb-2">Portals are being prepared</h2>
-            <p className="text-muted-foreground">Admin can add more portals from the admin collections.</p>
+            <p className="text-muted-foreground">New ceremonial journeys are on their way. Please check back soon.</p>
             <Button
               variant="outline"
               className="mt-4 border-white/20"
@@ -530,14 +521,11 @@ const HealingPortals = ({ user, api }) => {
                     <div className="flex flex-wrap gap-2">
                       <Button
                         variant="outline"
-                        className="border-cyan-400/40 text-cyan-100"
+                        className="border-amber-400/40 text-amber-100"
                         onClick={() => navigate("/pricing")}
-                        data-testid="healing-portal-subscription-button"
+                        data-testid="healing-portal-sacred-access-button"
                       >
-                        View Subscription Plans
-                      </Button>
-                      <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="healing-portal-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
-                        {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : "Unlock Full App"}
+                        <Crown className="w-4 h-4 mr-2" /> Sacred Access
                       </Button>
                       {!user ? (
                         <Button variant="outline" onClick={() => navigate("/")} data-testid="healing-portal-signin-button">

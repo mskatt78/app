@@ -55,7 +55,7 @@ const LightCodesContainer = ({ user, api }) => {
               <p className="text-xs uppercase tracking-wider">Light Codes Tiering Active</p>
             </div>
             <p className="text-sm text-white/75 mt-1" data-testid="light-codes-premium-banner-text">
-              Each Light Code stream now holds 4 free + 10 premium transmissions, including the new Encoded Frequency collection. Unlock premium symbols through subscription or full app access.
+              Each Light Code stream now holds 4 free + 10 premium transmissions, including the new Encoded Frequency collection. Unlock premium symbols through Sacred Access membership.
             </p>
             {activeCategory === "sacred_geometry" && (
               <p className="text-xs text-emerald-100/90 mt-2" data-testid="light-codes-geometry-accuracy-note">
@@ -63,10 +63,7 @@ const LightCodesContainer = ({ user, api }) => {
               </p>
             )}
             <div className="mt-3 flex flex-wrap gap-2">
-              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="light-codes-premium-banner-pricing-button">View Subscription</Button>
-              <Button variant="outline" onClick={handleUnlockFullApp} disabled={premium.purchaseLoadingId === "full_app_unlock"} data-testid="light-codes-premium-banner-fullapp-button">
-                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-              </Button>
+              <Button variant="outline" onClick={() => navigate("/pricing")} data-testid="light-codes-premium-banner-pricing-button">Sacred Access</Button>
             </div>
           </section>
         )}
@@ -122,12 +119,9 @@ const LightCodesContainer = ({ user, api }) => {
           <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
             <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Light Code</p></div>
             <h3 className="text-2xl font-serif mb-2" data-testid="light-codes-premium-lock-title">{selectedLockedSymbol.name}</h3>
-            <p className="text-sm text-muted-foreground mb-4" data-testid="light-codes-premium-lock-description">This symbol transmission is premium. Continue with subscription or full app access.</p>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="light-codes-premium-lock-description">This symbol transmission is premium. Continue with Sacred Access membership.</p>
             <div className="grid sm:grid-cols-2 gap-2">
-              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="light-codes-premium-lock-subscription-button">View Subscription Plans</Button>
-              <Button onClick={handleUnlockFullApp} variant="outline" className="border-amber-400/40 text-amber-100" data-testid="light-codes-premium-lock-fullapp-button" disabled={premium.purchaseLoadingId === "full_app_unlock"}>
-                {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
-              </Button>
+              <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="light-codes-premium-lock-subscription-button">Sacred Access</Button>
             </div>
             <Button variant="ghost" className="w-full mt-3" onClick={() => setSelectedLockedSymbol(null)} data-testid="light-codes-premium-lock-close-button">Close</Button>
           </div>

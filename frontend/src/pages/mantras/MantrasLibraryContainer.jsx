@@ -43,10 +43,12 @@ const isOmMantra = (mantra) => String(mantra?.name || "").trim().toLowerCase() =
 
 const resolveMantraAudioUrl = (mantra) => {
   if (!mantra) return "";
-  // Keep OM fallback stream for users preferring direct external loop,
-  // but in-app chanting now runs from generated chant audio for ALL mantras.
-  if (isOmMantra(mantra)) return OM_CHANT_LOOP_URL;
-  return mantra.audio_url || "";
+  const url = String(mantra.audio_url || "");
+  // .ogg external streams (e.g. Wikimedia) fail to decode in several mobile browsers —
+  // skip them so the reliable generated Voice Mantra player is used instead.
+  if (isOmMantra(mantra)) return "";
+  if (url.toLowerCase().endsWith(".ogg")) return "";
+  return url;
 };
 
 const ELEMENT_NATURAL_DEFAULT = {
@@ -606,7 +608,7 @@ const MantrasLibrary = ({ user, api }) => {
                 Mantra library open first • deeper layers premium
               </h2>
               <p className="text-sm text-muted-foreground mt-1" data-testid="mantras-premium-banner-description">
-                Continue freely, then choose subscription or full app if you want advanced tracks.
+                Continue freely — advanced tracks open with Sacred Access.
               </p>
             </div>
             {!mantraSectionUnlocked && (
@@ -614,19 +616,10 @@ const MantrasLibrary = ({ user, api }) => {
                 <Button
                   onClick={() => navigate("/pricing")}
                   variant="outline"
-                  className="border-cyan-400/40 text-cyan-100"
-                  data-testid="mantras-view-subscription-button"
-                >
-                  View Subscription
-                </Button>
-                <Button
-                  onClick={handleUnlockFullApp}
-                  variant="outline"
                   className="border-amber-400/40 text-amber-100"
-                  data-testid="mantras-unlock-fullapp-button"
-                  disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
+                  data-testid="mantras-sacred-access-button"
                 >
-                  {premium.purchaseLoadingId === "full_app_unlock" ? "Opening checkout..." : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+                  Sacred Access
                 </Button>
               </div>
             )}
@@ -694,34 +687,16 @@ const MantrasLibrary = ({ user, api }) => {
             </div>
             <h3 className="text-2xl font-serif mb-2" data-testid="mantra-premium-lock-title">{selectedLockedMantra.name}</h3>
             <p className="text-sm text-muted-foreground mb-4" data-testid="mantra-premium-lock-description">
-              This mantra is part of premium ritual libraries. Continue with subscription or full app access.
+              This mantra is part of Sacred Access membership.
             </p>
-            <div className="grid sm:grid-cols-2 gap-2">
-              <Button
-                onClick={() => navigate("/pricing")}
-                variant="outline"
-                className="border-cyan-400/40 text-cyan-100 sm:col-span-2"
-                data-testid="mantra-premium-lock-subscription-button"
-              >
-                View Subscription Plans
-              </Button>
-              <Button
-                onClick={handleUnlockFullApp}
-                variant="outline"
-                className="border-amber-400/40 text-amber-100"
-                data-testid="mantra-premium-lock-fullapp-button"
-                disabled={premium.purchaseLoadingId === "full_app_unlock"}
-              >
-                {premium.purchaseLoadingId === "full_app_unlock" ? (
-                  "Opening checkout..."
-                ) : (
-                  <>
-                    <Crown className="w-4 h-4 mr-2" />
-                    Full App {fullAppProduct?.price?.toFixed(2) || "369.00"}
-                  </>
-                )}
-              </Button>
-            </div>
+            <Button
+              onClick={() => navigate("/pricing")}
+              variant="outline"
+              className="w-full border-amber-400/40 text-amber-100"
+              data-testid="mantra-premium-lock-sacred-access-button"
+            >
+              <Crown className="w-4 h-4 mr-2" /> Sacred Access
+            </Button>
             <Button
               variant="ghost"
               className="w-full mt-3"

@@ -197,18 +197,7 @@ const ElementalTemples = ({ user, api }) => {
                   onClick={() => navigate("/pricing")}
                   data-testid="elemental-temples-view-subscription-button"
                 >
-                  View Subscription
-                </Button>
-                <Button
-                  onClick={handleUnlockFullApp}
-                  variant="outline"
-                  className="border-amber-400/40 text-amber-100"
-                  data-testid="elemental-temples-unlock-fullapp-button"
-                  disabled={premium.purchaseLoadingId === "full_app_unlock" || premium.loading}
-                >
-                  {premium.purchaseLoadingId === "full_app_unlock"
-                    ? "Opening checkout..."
-                    : `Full App ${fullAppProduct?.price?.toFixed(2) || "369.00"}`}
+                  Sacred Access
                 </Button>
               </div>
             </div>
@@ -250,7 +239,7 @@ const ElementalTemples = ({ user, api }) => {
             </div>
             <h3 className="text-2xl font-serif mb-2" data-testid="elemental-temples-premium-lock-title">{selectedLockedTemple?.name || "Elemental Temples"}</h3>
             <p className="text-sm text-muted-foreground mb-4" data-testid="elemental-temples-premium-lock-description">
-              This advanced temple pathway is premium. Continue with subscription or full app access.
+              This advanced temple pathway is premium. Continue with Sacred Access membership.
             </p>
             <div className="grid sm:grid-cols-2 gap-2">
               <Button
@@ -259,23 +248,7 @@ const ElementalTemples = ({ user, api }) => {
                 className="border-cyan-400/40 text-cyan-100 sm:col-span-2"
                 data-testid="elemental-temples-premium-lock-subscription-button"
               >
-                View Subscription Plans
-              </Button>
-              <Button
-                onClick={handleUnlockFullApp}
-                variant="outline"
-                className="border-amber-400/40 text-amber-100"
-                data-testid="elemental-temples-premium-lock-fullapp-button"
-                disabled={premium.purchaseLoadingId === "full_app_unlock"}
-              >
-                {premium.purchaseLoadingId === "full_app_unlock" ? (
-                  "Opening checkout..."
-                ) : (
-                  <>
-                    <Crown className="w-4 h-4 mr-2" />
-                    Full App {fullAppProduct?.price?.toFixed(2) || "369.00"}
-                  </>
-                )}
+                Sacred Access
               </Button>
             </div>
             <Button
