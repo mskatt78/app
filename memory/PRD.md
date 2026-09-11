@@ -4956,3 +4956,11 @@
 - WELCOME JOURNEY: pages/dashboard/WelcomeJourney.jsx (mounted in Dashboard) — full-screen arrival overlay for users with 0 practice sessions (localStorage welcomeJourneyDone guard), 'Breath of Arrival' 4-step guided practice via GuidedPracticeOverlay, logs practice-history on completion. Tested 100% by iteration_276 (begin/skip/no-reappear/log all pass).
 - User uploaded old PASS31 source zip — NOT applied (would roll back all recent work). User clarified they meant Redeploy: they just press Deploy/Redeploy in Emergent UI.
 - PLAY BILLING still pending user: lifetime product id + service account JSON.
+
+## Pass 31 Privacy Policy Port (2026-06 fork)
+- Ported Play Store privacy fix from user's PASS31 zip into current codebase (kept all Play Billing/offline/audio work).
+- Added standalone `frontend/public/privacy-policy.html` (canonical Play Console URL: https://temple-soul-dev.emergent.host/privacy-policy.html).
+- Rewrote in-app `/privacy` page (`PrivacyPolicy.jsx`): SkyWater Sacred Embodiments, 18+ wording, Google Play payments section, data-deletion contact.
+- Contact emails shown per user choice: mskatt78@gmail.com AND skywatersacredembodiments@gmail.com.
+- Verified: static HTML fetchable via preview URL; /privacy renders correctly on mobile viewport.
+- User to hit Redeploy in Emergent dashboard, then set the URL in Play Console → App content → Privacy policy.
