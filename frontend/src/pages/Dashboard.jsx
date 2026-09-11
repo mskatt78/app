@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { toast } from "sonner";
 import { StreakWidget } from "./dashboard/StreakWidget";
 import { SacredJourneyWidget } from "./dashboard/SacredJourneyWidget";
+import { WelcomeJourney } from "./dashboard/WelcomeJourney";
 import { SacredPracticeWidget } from "./dashboard/SacredPracticeWidget";
 import { DailyGuidanceGrid } from "./dashboard/DailyGuidanceGrid";
 import { buildDeepJourneyItems, buildQuickItems, DashboardActionPanels } from "./dashboard/DashboardActionPanels";
@@ -247,6 +248,9 @@ const Dashboard = ({ user, api }) => {
                   </div>
                 </motion.div>
               )}
+
+              {/* First-visit Welcome Journey */}
+              <WelcomeJourney api={api} />
 
               {/* Practice Streak Widget */}
               <StreakWidget onJournalClick={() => navigate('/journal')} />

@@ -287,5 +287,37 @@ SOUND_FREQUENCIES = [
         "crystals": ["Smoky quartz", "Black tourmaline", "Hematite", "Obsidian"],
         "duration_recommendation": "5-10 minutes (at end of practice)",
         "image_url": _DRUM
+    },
+    {
+        "id": "freq-rain", "ambient_type": "rain",
+        "name": "Sacred Rain",
+        "category": "nature",
+        "element": "Water",
+        "frequency_range": "Natural rainfall (broadband)",
+        "description": "A genuine rainfall recording. Rain carries natural white-noise frequencies that soften mental chatter, mask distracting sounds, and invite the nervous system into deep rest. Let the water wash the day away.",
+        "healing_properties": ["Calms the nervous system", "Masks distracting noise", "Invites deep rest", "Supports sleep and reverie"],
+        "how_to_use": ["Play softly in the background during rest or journaling", "Combine with slow breathing — inhale 4, exhale 6", "Use before sleep to soften the mind"],
+        "best_for": ["Evening wind-down", "Rest and sleep", "Gentle background for practice"],
+        "frequency_hz": 0,
+        "chakra": "Sacral",
+        "crystals": ["Aquamarine", "Moonstone"],
+        "duration_recommendation": "5-20 minutes",
+        "image_url": _WATER
+    },
+    {
+        "id": "freq-forest-birds", "ambient_type": "forest_birds",
+        "name": "Forest Birdsong",
+        "category": "nature",
+        "element": "Air",
+        "frequency_range": "Dawn chorus (2 - 8 kHz)",
+        "description": "Authentic forest birdsong. To the ancient brain, birdsong is the sound of safety — when the birds sing, no predator is near. Listening eases vigilance, lifts mood, and reconnects the senses to the living world.",
+        "healing_properties": ["Signals safety to the body", "Uplifts mood", "Eases vigilance and anxiety", "Reconnects to nature"],
+        "how_to_use": ["Play in the morning to greet the day", "Listen with eyes closed and name each distinct voice you hear", "Pair with gratitude practice"],
+        "best_for": ["Morning practice", "Mood lifting", "Nature connection indoors"],
+        "frequency_hz": 0,
+        "chakra": "Heart",
+        "crystals": ["Green aventurine", "Amazonite"],
+        "duration_recommendation": "3-10 minutes",
+        "image_url": _WATER
     }
 ]

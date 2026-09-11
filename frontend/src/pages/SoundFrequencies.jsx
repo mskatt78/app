@@ -19,6 +19,7 @@ const CATEGORIES = [
   { id: "cetacean", label: "Dolphin & Whale", icon: Waves, color: "text-cyan-400", bg: "bg-cyan-500/10" },
   { id: "instrument", label: "Instruments", icon: Music, color: "text-violet-400", bg: "bg-violet-500/10" },
   { id: "frequency", label: "Pure Frequencies", icon: Volume2, color: "text-emerald-400", bg: "bg-emerald-500/10" },
+  { id: "nature", label: "Nature Sounds", icon: Droplets, color: "text-blue-400", bg: "bg-blue-500/10" },
 ];
 
 const ELEMENT_COLORS = {
@@ -524,7 +525,7 @@ const SoundFrequencies = ({ user, api }) => {
                   </h4>
                   {selectedFreq.audio_url ? (
                     <div>
-                      <p className="text-xs text-muted-foreground mb-3">Custom audio recording</p>
+                      <p className="text-xs text-muted-foreground mb-3">{selectedFreq.audio_credit || "Authentic audio recording"}</p>
                       <audio controls src={selectedFreq.audio_url} className="w-full" data-testid="custom-audio-player">
                         Your browser does not support audio.
                       </audio>

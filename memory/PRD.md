@@ -4945,3 +4945,14 @@
 - Om mantra audio: external hosts broken (Pixabay 403, Wikimedia .ogg undecodable) → resolveMantraAudioUrl drops .ogg/Om external URLs; generated Voice Mantra (speechSynthesis, tempo affects utterance.rate line 60 MantrasPlayer) is the playback path.
 - IMPORTANT ROOT CAUSE: 'Coming Soon'/'Unable to load' on production for Somatic Yoga (5 items), FreeFormMovement (14), HealingPortals, Shamanic Drums = PRODUCTION RUNS OLD CODE; preview APIs all 200 with data. REDEPLOY FIXES.
 - NOT DONE (needs assets/user input): authentic licensed whale/dolphin/drum/nature recordings (current: synthesized tones — flagged, do not mislabel), TTS echo source-audio quality, full app-wide perf profiling. Play Console still pending: lifetime product id + service account JSON.
+
+## Session Update (2026-06 fork, part 9): Genuine audio + Welcome Journey (iteration_276 fixes applied)
+- GENUINE AUDIO (root-cause fixed at seed level — server.py _refresh_collection overwrites DB on startup, so DB-only edits don't survive):
+  - Downloaded genuine recordings → /app/frontend/public/audio/: whale.mp3 (NOAA humpback, Public Domain), drums.mp3 (hand-drum, CC BY-SA 3.0), ocean.mp3 (CC BY 3.0), rain.mp3 (CC BY-SA 3.0), birds.mp3 (PD). Sources: Wikimedia Commons, licenses verified via API. Originals kept at /root/pd_audio.
+  - content.py PUBLIC_DOMAIN_AUDIO_BY_AMBIENT_TYPE now maps whale/gentle_water/rain/forest_birds/drums* → local /audio/*.mp3; LOCAL_AUDIO_CREDITS adds audio_credit; _is_reliable_public_audio_url allows /audio/ paths; dolphin mapping REMOVED (no genuine recording found — do not mislabel).
+  - data/sound_frequencies.py seed: added freq-rain + freq-forest-birds (nature category).
+  - sound_frequencies added to SECTION_UNCAPPED_UNLOCK_IDS (was capped at 14 visible, hiding whale/rain). Now 19 items, all categories populated; free tier includes 2 genuine drum journeys.
+  - Frontend SoundFrequencies: nature category restored; modal shows audio_credit line.
+- WELCOME JOURNEY: pages/dashboard/WelcomeJourney.jsx (mounted in Dashboard) — full-screen arrival overlay for users with 0 practice sessions (localStorage welcomeJourneyDone guard), 'Breath of Arrival' 4-step guided practice via GuidedPracticeOverlay, logs practice-history on completion. Tested 100% by iteration_276 (begin/skip/no-reappear/log all pass).
+- User uploaded old PASS31 source zip — NOT applied (would roll back all recent work). User clarified they meant Redeploy: they just press Deploy/Redeploy in Emergent UI.
+- PLAY BILLING still pending user: lifetime product id + service account JSON.

@@ -1,0 +1,47 @@
+{
+  "summary": "Iteration 276 test: (A) GENUINE AUDIO feature is PARTIALLY BROKEN on backend: only the 5 static /audio/*.mp3 files are correctly served (whale, drums, rain, birds, ocean — all 200/audio/mpeg). However the backend seed (/app/backend/data/sound_frequencies.py) does NOT include the new nature entries freq-rain and freq-forest-birds, and does NOT set audio_url to /audio/*.mp3 on freq-whale, freq-drum, freq-drum-journey, or freq-water. Because _refresh_collection() drops-and-replaces sound_frequencies on every backend boot, any DB-only content is wiped on restart. Additionally, _enrich_sound_frequency_entry falls back to wikimedia .ogg via PUBLIC_DOMAIN_AUDIO_BY_AMBIENT_TYPE, but wikimedia is in UNRELIABLE_AUDIO_HOST_TOKENS, so audio_url is popped for whale/drums entirely — the API returns entries WITHOUT audio_url. Result: /api/sound-frequencies?category=nature returns 14 entries (freq-water + 13 water-deepening) with audio_url=None; /api/sound-frequencies/freq-whale has no audio_url; frontend modal cannot render <audio data-testid=custom-audio-player>. UI test also confirms 'Nature Sounds' category filter has no rain/birds tiles and clicking 'Shamanic Drumming' opens a premium-lock modal (frequency is premium-gated) instead of an audio player. (B) WELCOME JOURNEY feature works end-to-end: fresh signup on / shows welcome-journey-overlay on /dashboard with begin+skip test IDs; Begin path opens GuidedPracticeOverlay 'Breath of Arrival' with steps/voice/timer; guided-exit-btn triggers practice-history POST (verified /api/practice-history returned an entry with practice_id='welcome-arrival' and notes 'Completed Breath of Arrival — first practice') and sets localStorage welcomeJourneyDone=1; reload keeps overlay hidden. Skip path also sets flag and prevents re-appearance. QA user demoqa_740fefc1@example.com (7 sessions) correctly does NOT see the overlay and Sacred Journey widget renders normally.",
+  "backend_issues": {
+    "critical": [
+      {"endpoint": "/api/sound-frequencies?category=nature", "issue": "Missing new nature entries freq-rain and freq-forest-birds. Only freq-water (+13 auto-generated deepening variants) is returned. Seed file /app/backend/data/sound_frequencies.py does not define these two entries.", "priority": "HIGH"},
+      {"endpoint": "/api/sound-frequencies/freq-whale", "issue": "Response has no audio_url. Seed doesn't set audio_url, and ambient_type='whale' fallback resolves to a wikimedia .ogg URL which is stripped by UNRELIABLE_AUDIO_HOST_TOKENS. Should be wired to /audio/whale.mp3 with audio_credit 'NOAA humpback'.", "priority": "HIGH"},
+      {"endpoint": "/api/sound-frequencies/freq-drum & freq-drum-journey", "issue": "Same as whale — no audio_url returned. Should point to /audio/drums.mp3.", "priority": "HIGH"},
+      {"endpoint": "/api/sound-frequencies (freq-water)", "issue": "audio_url is popped (wikimedia gentle_water .ogg blocked). Should point to /audio/ocean.mp3 per spec.", "priority": "HIGH"}
+    ],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "SoundFrequencies", "issue": "Because backend does not send audio_url on whale/drum/nature entries, the modal's <audio data-testid=custom-audio-player> is never rendered — the entire genuine-audio feature is unreachable from the UI.", "selector": "[data-testid=\"custom-audio-player\"]", "priority": "HIGH"},
+      {"component": "SoundFrequencies", "issue": "Shamanic Drumming (freq-drum) is premium-gated so anonymous / free users see a 'PREMIUM SOUND JOURNEY' lock modal even when clicked — not the audio player. Consider making at least one drum sample audible without premium so the feature can be experienced (and QA'd).", "selector": "SoundFrequencies premium lock modal", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [
+      {"flow": "Sound frequencies audio playback", "issue": "audio_url wiring not present end-to-end. UI cannot demo the /audio/*.mp3 assets because the API does not include the URL.", "affected_selectors": ["[data-testid=\"custom-audio-player\"]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration276_audio_welcome.py",
+    "/app/test_reports/pytest/iteration276.xml"
+  ],
+  "action_items": [
+    "Update /app/backend/data/sound_frequencies.py to add new entries freq-rain and freq-forest-birds (category='nature', audio_url='/audio/rain.mp3' and '/audio/birds.mp3', audio_credit with license) — OR seed them through a code-managed extension that survives _refresh_collection.",
+    "Set audio_url and audio_credit directly in the seed on freq-whale ('/audio/whale.mp3', NOAA credit), freq-drum + freq-drum-journey ('/audio/drums.mp3'), and freq-water ('/audio/ocean.mp3').",
+    "Alternatively, update _enrich_sound_frequency_entry / PUBLIC_DOMAIN_AUDIO_BY_AMBIENT_TYPE so ambient_type -> /audio/*.mp3 (local, reliable) instead of wikimedia .ogg — that way UNRELIABLE_AUDIO_HOST_TOKENS filter no longer strips them and existing seed entries auto-inherit the URL.",
+    "Verify freq-drum is not premium-locked for anonymous demonstration, OR add an unlocked nature entry so users can hear the new audio without Sacred Access."
+  ],
+  "critical_code_review_comments": [
+    "Startup seed uses _refresh_collection which drops/replaces sound_frequencies from SOUND_FREQUENCIES on every boot. Any DB-only content (e.g. from admin CMS) is silently wiped — future feature entries must live in the code seed.",
+    "_enrich_sound_frequency_entry pops audio_url when it resolves to wikimedia (unreliable-host list), and there is no local fallback to /audio/*.mp3 — the net effect is that whale and drums entries expose no audio_url at all, despite the mp3 assets being served correctly.",
+    "The task description claims backend already implements audio_url wiring for the 5 entries — code inspection and API responses show this is NOT the case."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration276_audio_welcome.py (new)"
+  ],
+  "success_rate": {"backend": "50% (5/10 backend assertions pass — all static /audio/*.mp3 files pass; DB / enrichment assertions fail)", "frontend": "Welcome Journey 100%, Sound Frequencies audio feature 0%"},
+  "test_credentials": "QA existing: demoqa_740fefc1@example.com / DemoPass123!. Fresh accounts created during test (all password TestPass123!): welcome_ui_f3ba0d6e@example.com, welui_866fd223@example.com (skip flow), welbegin_d4567a25@example.com (begin flow — practice-history contains welcome-arrival entry).",
+  "seed_data_creation": "3 fresh signup users used to exercise welcome overlay (skip + begin paths). No cleanup performed.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend static audio (/audio/whale.mp3, drums.mp3, rain.mp3, birds.mp3, ocean.mp3) all return 200 audio/mpeg — the problem is only the wiring on sound_frequencies entries + missing rain/forest-birds in the seed. Welcome journey (WelcomeJourney.jsx + GuidedPracticeOverlay) is fully working; guided-exit-btn is the exit selector; /api/practice-history correctly records a welcome-arrival entry after Begin -> Exit. QA regression: demoqa_740fefc1 already has 7 sessions so overlay never appears.",
+  "rca of the issue": "Missing seed data + audio-URL enrichment bypass. Seed file lacks freq-rain and freq-forest-birds entries, and does not populate audio_url on freq-whale/freq-drum/freq-drum-journey/freq-water. Enrichment function's ambient_type fallback map still points to wikimedia .ogg URLs that are then filtered out by UNRELIABLE_AUDIO_HOST_TOKENS, so no audio_url survives to the API response. Fix: add audio_url + audio_credit directly in the seed for the 5 target entries, and add the 2 new nature entries. Reproduction: GET /api/sound-frequencies/freq-whale — expect audio_url '/audio/whale.mp3', actual response has no audio_url key. Mitigation: edit /app/backend/data/sound_frequencies.py (or the ambient-type map to local paths) and restart backend."
+}

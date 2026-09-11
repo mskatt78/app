@@ -2106,7 +2106,7 @@ SECTION_MIN_FREE_ITEMS = 1
 SECTION_DEFAULT_FREE_ITEMS = 4
 SECTION_DEFAULT_PREMIUM_ITEMS = 10
 SECTION_MAX_TIER_ITEMS = SECTION_DEFAULT_FREE_ITEMS + SECTION_DEFAULT_PREMIUM_ITEMS
-SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "shamanic_practices", "water_practices", "creative_processes"}
+SECTION_UNCAPPED_UNLOCK_IDS = {"yoga_poses", "somatic_practices", "shamanic_practices", "water_practices", "creative_processes", "sound_frequencies"}
 
 # User-approved per-section free counts override global ratio where specified.
 SECTION_FREE_COUNT_OVERRIDES: dict[str, int] = {
@@ -3625,23 +3625,32 @@ def _enrich_mudra_entry(mudra: dict[str, Any]) -> dict[str, Any]:
 
 
 PUBLIC_DOMAIN_AUDIO_BY_AMBIENT_TYPE: dict[str, str] = {
-    "dolphin": "https://upload.wikimedia.org/wikipedia/commons/8/87/Whales_and_Dolphins_whale_nature_sounds_songs_nueva_esparta.ogg",
-    "whale": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Humpbackwhale2.ogg",
+    "whale": "/audio/whale.mp3",
     "crystal_bowls": "https://upload.wikimedia.org/wikipedia/commons/f/fd/Small_tibetan_singing_bowl.ogg",
     "singing_bowls": "https://upload.wikimedia.org/wikipedia/commons/9/95/Singing_bowl.ogg",
-    "gentle_water": "https://upload.wikimedia.org/wikipedia/commons/9/97/Waves.ogg",
+    "gentle_water": "/audio/ocean.mp3",
+    "rain": "/audio/rain.mp3",
+    "forest_birds": "/audio/birds.mp3",
     "tuning_fork": "https://upload.wikimedia.org/wikipedia/commons/1/14/Tuning-fork-440Hz.ogg",
     "gong": "https://upload.wikimedia.org/wikipedia/commons/8/88/Gong_or_bell_vibrant.ogg",
-    "drums": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
+    "drums": "/audio/drums.mp3",
     "solfeggio_528": "https://upload.wikimedia.org/wikipedia/commons/1/14/Tuning-fork-440Hz.ogg",
     "didgeridoo": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Didgeridoo_sound.ogg",
     "chimes": "https://upload.wikimedia.org/wikipedia/commons/3/35/Windchimes.ogg",
     "harp": "https://upload.wikimedia.org/wikipedia/commons/9/95/Singing_bowl.ogg",
-    "drums_gentle": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
-    "drums_journey": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
-    "drums_awakening": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
-    "drums_fire": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
-    "drums_return": "https://upload.wikimedia.org/wikipedia/commons/f/f7/Drum_beat.ogg",
+    "drums_gentle": "/audio/drums.mp3",
+    "drums_journey": "/audio/drums.mp3",
+    "drums_awakening": "/audio/drums.mp3",
+    "drums_fire": "/audio/drums.mp3",
+    "drums_return": "/audio/drums.mp3",
+}
+
+LOCAL_AUDIO_CREDITS: dict[str, str] = {
+    "/audio/whale.mp3": "Genuine humpback whale song — NOAA recording (Public Domain)",
+    "/audio/drums.mp3": "Genuine hand-drum recording — Wikimedia Commons (CC BY-SA 3.0)",
+    "/audio/ocean.mp3": "Genuine ocean waves recording — Wikimedia Commons (CC BY 3.0)",
+    "/audio/rain.mp3": "Genuine rainfall recording — Wikimedia Commons (CC BY-SA 3.0)",
+    "/audio/birds.mp3": "Genuine forest birdsong recording — Wikimedia Commons (Public Domain)",
 }
 
 
@@ -3657,6 +3666,9 @@ def _is_reliable_public_audio_url(value: str) -> bool:
     candidate = str(value or "").strip()
     if not candidate:
         return False
+
+    if candidate.startswith("/audio/"):
+        return True
 
     parsed = urlparse(candidate)
     if parsed.scheme not in {"http", "https"}:
@@ -3684,6 +3696,9 @@ def _enrich_sound_frequency_entry(entry: dict[str, Any]) -> dict[str, Any]:
 
     if str(enriched.get("audio_url") or "").strip():
         enriched.setdefault("audio_source", "public-domain")
+        credit = LOCAL_AUDIO_CREDITS.get(str(enriched.get("audio_url") or "").strip())
+        if credit:
+            enriched.setdefault("audio_credit", credit)
         enriched.setdefault(
             "audio_license",
             "Public-domain / free-use audio source. Verify attribution needs before commercial redistribution.",
