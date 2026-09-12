@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
 import { SleepTimerAudio } from "../components/SleepTimerAudio";
+import { SoundMixer } from "../components/SoundMixer";
 import { appLogger } from "../utils/logger";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { getSoundFrequencyImage } from "../utils/shamanicImageTheme";
@@ -200,6 +201,14 @@ const SoundFrequencies = ({ user, api }) => {
             of vibration and resonance.
           </p>
         </motion.div>
+
+        {!loading && (
+          <SoundMixer
+            sounds={frequencies
+              .filter((f) => f.audio_url)
+              .map((f) => ({ id: f.id, name: f.name, audio_url: f.audio_url, locked: !canAccessFrequency(f) }))}
+          />
+        )}
 
         {/* Category Tabs */}
         <div className="flex flex-wrap gap-2 justify-center mb-8">
