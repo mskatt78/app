@@ -4964,3 +4964,9 @@
 - Contact emails shown per user choice: mskatt78@gmail.com AND skywatersacredembodiments@gmail.com.
 - Verified: static HTML fetchable via preview URL; /privacy renders correctly on mobile viewport.
 - User to hit Redeploy in Emergent dashboard, then set the URL in Play Console → App content → Privacy policy.
+
+## Home/Back Sign-in Bounce Fix (2026-06 fork)
+- Bug: pressing Home or Android back navigated to "/" which always rendered the sign-in LandingPage even for signed-in members.
+- Fix: LandingPage now checks /api/auth/me on mount and redirects authenticated users to /dashboard (replace). TopNav overlay Home button now goes to /dashboard when signed in.
+- Verified via Playwright: "/" while logged in -> /dashboard; browser back to "/" -> /dashboard; signed-out users still see landing.
+- Production requires Redeploy from Emergent dashboard to pick up the fix.

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
@@ -27,6 +27,16 @@ const LandingPage = ({ onLoginSuccess }) => {
     password: "",
     name: ""
   });
+
+  useEffect(() => {
+    let active = true;
+    axios.get(`${API_URL}/api/auth/me`, { withCredentials: true })
+      .then(({ data }) => {
+        if (active && data?.email) navigate("/dashboard", { replace: true });
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [navigate]);
 
   // Google OAuth login
   const handleGoogleLogin = () => {

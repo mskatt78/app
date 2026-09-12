@@ -317,7 +317,7 @@ const TopNav = ({ user }) => {
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <button
                       onClick={() => {
-                        navigate("/");
+                        navigate(user ? "/dashboard" : "/");
                         setShowMenu(false);
                       }}
                       className="flex items-center justify-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
