@@ -9,6 +9,7 @@ import { Button } from "../components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import AmbientSoundPlayer, { AMBIENT_SOUNDS } from "../components/AmbientSoundPlayer";
+import { SleepTimerAudio } from "../components/SleepTimerAudio";
 import { appLogger } from "../utils/logger";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { getSoundFrequencyImage } from "../utils/shamanicImageTheme";
@@ -524,12 +525,7 @@ const SoundFrequencies = ({ user, api }) => {
                     Play {selectedFreq.name}
                   </h4>
                   {selectedFreq.audio_url ? (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-3">{selectedFreq.audio_credit || "Authentic audio recording"}</p>
-                      <audio controls src={selectedFreq.audio_url} className="w-full" data-testid="custom-audio-player">
-                        Your browser does not support audio.
-                      </audio>
-                    </div>
+                    <SleepTimerAudio src={selectedFreq.audio_url} credit={selectedFreq.audio_credit || "Authentic audio recording"} />
                   ) : (
                     <div>
                       <p className="text-xs text-muted-foreground mb-3">

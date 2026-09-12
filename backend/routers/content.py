@@ -3634,6 +3634,7 @@ PUBLIC_DOMAIN_AUDIO_BY_AMBIENT_TYPE: dict[str, str] = {
     "tuning_fork": "https://upload.wikimedia.org/wikipedia/commons/1/14/Tuning-fork-440Hz.ogg",
     "gong": "https://upload.wikimedia.org/wikipedia/commons/8/88/Gong_or_bell_vibrant.ogg",
     "drums": "/audio/drums.mp3",
+    "dolphin": "/audio/dolphin.mp3",
     "solfeggio_528": "https://upload.wikimedia.org/wikipedia/commons/1/14/Tuning-fork-440Hz.ogg",
     "didgeridoo": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Didgeridoo_sound.ogg",
     "chimes": "https://upload.wikimedia.org/wikipedia/commons/3/35/Windchimes.ogg",
@@ -3651,6 +3652,7 @@ LOCAL_AUDIO_CREDITS: dict[str, str] = {
     "/audio/ocean.mp3": "Genuine ocean waves recording — Wikimedia Commons (CC BY 3.0)",
     "/audio/rain.mp3": "Genuine rainfall recording — Wikimedia Commons (CC BY-SA 3.0)",
     "/audio/birds.mp3": "Genuine forest birdsong recording — Wikimedia Commons (Public Domain)",
+    "/audio/dolphin.mp3": "Genuine dolphin vocalisations — NOAA Passive Acoustics recordings over genuine ocean waves (Public Domain)",
 }
 
 

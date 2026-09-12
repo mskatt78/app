@@ -4970,3 +4970,8 @@
 - Fix: LandingPage now checks /api/auth/me on mount and redirects authenticated users to /dashboard (replace). TopNav overlay Home button now goes to /dashboard when signed in.
 - Verified via Playwright: "/" while logged in -> /dashboard; browser back to "/" -> /dashboard; signed-out users still see landing.
 - Production requires Redeploy from Emergent dashboard to pick up the fix.
+
+## Dolphin Audio + Sleep Timer (2026-06 fork)
+- Added genuine dolphin audio: NOAA Passive Acoustics recordings (bottlenose multisound, common dolphin whistles, Atlantic spotted) crossfaded and layered over the existing genuine ocean recording -> /app/frontend/public/audio/dolphin.mp3 (67s, public domain). Wired via PUBLIC_DOMAIN_AUDIO_BY_AMBIENT_TYPE["dolphin"] + LOCAL_AUDIO_CREDITS in content.py. Verified via API: freq-dolphin now returns /audio/dolphin.mp3 with NOAA credit.
+- Added SleepTimerAudio.jsx: 15/30/60-min sleep timer with 30s gentle fade-out then pause; audio loops; used for all sound-frequency entries with audio_url in SoundFrequencies.jsx. Verified via Playwright (countdown runs, audio plays, controls render).
+- Play Billing Live: user declined to provide service-account JSON for now ("leave it"). Backend playbilling.py remains ready; needs GOOGLE_PLAY_SERVICE_ACCOUNT_JSON + PLAY_LIFETIME_PRODUCT_ID env vars when user is ready.
