@@ -58,12 +58,15 @@ export const SacredPracticeWidget = ({ api, navigate }) => {
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wider mb-0.5">Today&apos;s Sacred Practice</p>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <Moon className="w-4 h-4 text-indigo-400" />
             <span className="text-sm font-medium text-indigo-300">{practice.moon_phase}</span>
             <span className="text-muted-foreground/40">·</span>
-            <span className="text-sm text-muted-foreground">{practice.day_theme}</span>
+            <span className="text-sm text-amber-200" data-testid="daily-lens-title">{practice.daily_lens?.title || practice.day_theme}</span>
           </div>
+          {practice.daily_lens?.guidance && (
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed" data-testid="daily-lens-guidance">{practice.daily_lens.guidance}</p>
+          )}
         </div>
       </div>
 

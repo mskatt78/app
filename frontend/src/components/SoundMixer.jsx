@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Layers, Lock, MoonStar, Pause, Play, TimerOff } from "lucide-react";
+import { BookmarkPlus, Layers, Lock, MoonStar, Pause, Play, TimerOff, X } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Slider } from "./ui/slider";
 
@@ -35,7 +37,7 @@ const MixerLayer = ({ label, sounds, value, onChange, volume, onVolume, testPref
   </div>
 );
 
-export const SoundMixer = ({ sounds }) => {
+export const SoundMixer = ({ sounds, user, api }) => {
   const audioA = useRef(null);
   const audioB = useRef(null);
   const fadeFactor = useRef(1);
@@ -46,6 +48,58 @@ export const SoundMixer = ({ sounds }) => {
   const [playing, setPlaying] = useState(false);
   const [activeMinutes, setActiveMinutes] = useState(null);
   const [remaining, setRemaining] = useState(0);
+  const [saved, setSaved] = useState([]);
+  const [mixName, setMixName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [signedIn, setSignedIn] = useState(Boolean(user));
+
+  useEffect(() => {
+    if (!api) return;
+    api.get("/soundscapes")
+      .then(({ data }) => { setSaved(data); setSignedIn(true); })
+      .catch(() => setSignedIn(Boolean(user)));
+  }, [user, api]);
+
+  const saveMix = async () => {
+    if (!mixName.trim()) { toast.error("Give your soundscape a name first"); return; }
+    setSaving(true);
+    try {
+      const { data } = await api.post("/soundscapes", {
+        name: mixName.trim(),
+        layer_a: layerA !== NONE ? layerA : null,
+        layer_b: layerB !== NONE ? layerB : null,
+        vol_a: volA,
+        vol_b: volB,
+      });
+      setSaved((prev) => [data, ...prev]);
+      setMixName("");
+      toast.success(`"${data.name}" saved to your soundscapes`);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Could not save soundscape");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const replayMix = (mix) => {
+    fadeFactor.current = 1;
+    setActiveMinutes(null);
+    setRemaining(0);
+    setLayerA(mix.layer_a || NONE);
+    setLayerB(mix.layer_b || NONE);
+    setVolA(mix.vol_a ?? 80);
+    setVolB(mix.vol_b ?? 50);
+    setPlaying(true);
+  };
+
+  const deleteMix = async (mix) => {
+    try {
+      await api.delete(`/soundscapes/${mix.id}`);
+      setSaved((prev) => prev.filter((m) => m.id !== mix.id));
+    } catch {
+      toast.error("Could not delete soundscape");
+    }
+  };
 
   const soundById = (id) => sounds.find((s) => s.id === id);
   const srcA = soundById(layerA)?.audio_url || "";
@@ -152,6 +206,56 @@ export const SoundMixer = ({ sounds }) => {
           </button>
         )}
       </div>
+      {signedIn ? (
+        <div className="mt-5 pt-4 border-t border-white/10" data-testid="saved-soundscapes">
+          <div className="flex flex-wrap items-center gap-2">
+            <Input
+              value={mixName}
+              onChange={(e) => setMixName(e.target.value)}
+              placeholder="Name this mix — e.g. Rain Over Drums"
+              maxLength={60}
+              className="max-w-xs bg-card border-white/10"
+              data-testid="soundscape-name-input"
+            />
+            <Button
+              variant="outline"
+              className="border-cyan-400/40 text-cyan-100"
+              disabled={!hasSound || saving}
+              onClick={saveMix}
+              data-testid="soundscape-save-btn"
+            >
+              <BookmarkPlus className="w-4 h-4 mr-2" /> Save Mix
+            </Button>
+          </div>
+          {saved.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2" data-testid="saved-soundscapes-list">
+              {saved.map((mix) => (
+                <div key={mix.id} className="flex items-center rounded-full bg-white/5 border border-white/10 overflow-hidden">
+                  <button
+                    onClick={() => replayMix(mix)}
+                    className="pl-3 pr-2 py-1.5 text-xs text-cyan-100 hover:bg-cyan-500/10 flex items-center gap-1.5 transition-colors"
+                    data-testid={`soundscape-play-${mix.id}`}
+                  >
+                    <Play className="w-3 h-3 text-cyan-300" /> {mix.name}
+                  </button>
+                  <button
+                    onClick={() => deleteMix(mix)}
+                    className="px-2 py-1.5 text-muted-foreground hover:text-red-300 transition-colors"
+                    aria-label={`Delete ${mix.name}`}
+                    data-testid={`soundscape-delete-${mix.id}`}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="mt-4 text-xs text-muted-foreground" data-testid="soundscape-signin-hint">
+          Sign in to name and save your favourite mixes for one-tap replay.
+        </p>
+      )}
     </section>
   );
 };

@@ -407,12 +407,14 @@ const Mindfulness = ({ user, api }) => {
                         <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Linked Practices</h4>
                         <div className="flex flex-wrap gap-2">
                           {selectedPractice.linked_practices.map((link) => (
-                            <span
+                            <button
                               key={stableMindfulKey(`linked-${selectedPractice.id}`, `${link.type}-${link.route}`)}
-                              className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 text-xs"
+                              onClick={() => navigate(link.route)}
+                              className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 text-xs hover:bg-cyan-500/25 border border-transparent hover:border-cyan-400/40 transition-colors"
+                              data-testid={`linked-practice-${link.type}`}
                             >
                               {link.label}
-                            </span>
+                            </button>
                           ))}
                         </div>
                       </div>

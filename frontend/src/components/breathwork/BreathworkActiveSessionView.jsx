@@ -2,6 +2,12 @@ import { motion } from "framer-motion";
 import { Progress } from "../ui/progress";
 import { BreathworkControls } from "./BreathworkControls";
 import { BreathworkSoundSelector } from "./BreathworkSoundSelector";
+import { BREATH_PACE_OPTIONS } from "./useBreathworkEngine";
+
+const scaleSeconds = (seconds, multiplier) => {
+  const scaled = (seconds || 0) * (multiplier || 1);
+  return Number.isInteger(scaled) ? scaled : scaled.toFixed(1);
+};
 
 export const BreathworkActiveSessionView = ({
   activeSession,
@@ -19,6 +25,9 @@ export const BreathworkActiveSessionView = ({
   phaseLabels,
   elementColors,
   availableSoundOptions,
+  pace,
+  setPace,
+  paceMultiplier,
 }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center min-h-[70vh]" data-testid="breathwork-active-session-view">
     <div className="text-center mb-8">
@@ -35,13 +44,34 @@ export const BreathworkActiveSessionView = ({
       >
         <div className="text-center">
           <p className={`text-2xl font-serif ${elementColors[activeSession.element]?.text}`}>{phaseLabels[breathPhase]}</p>
-          <p className="text-sm text-muted-foreground mt-1">{activeSession.pattern[breathPhase]}s</p>
+          <p className="text-sm text-muted-foreground mt-1">{scaleSeconds(activeSession.pattern[breathPhase], paceMultiplier)}s</p>
         </div>
       </motion.div>
     </div>
 
     <div className="w-64 mb-8">
       <Progress value={phaseProgress} className="h-2" />
+    </div>
+
+    <div className="mb-6 text-center" data-testid="breath-pace-selector">
+      <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-3">Breath pace</p>
+      <div className="flex flex-wrap justify-center gap-2">
+        {BREATH_PACE_OPTIONS.map((option) => (
+          <button
+            key={option.id}
+            onClick={() => setPace(option.id)}
+            className={`px-4 py-1.5 rounded-full text-xs border transition-colors ${
+              pace === option.id
+                ? "bg-primary/25 border-primary/50 text-primary"
+                : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10"
+            }`}
+            data-testid={`breath-pace-${option.id}-btn`}
+          >
+            {option.label}
+            <span className="block text-[10px] opacity-70">{option.hint}</span>
+          </button>
+        ))}
+      </div>
     </div>
 
     <BreathworkControls
@@ -66,10 +96,10 @@ export const BreathworkActiveSessionView = ({
     <p className="text-muted-foreground">Cycles completed: <span className="text-primary font-medium">{cycleCount}</span></p>
 
     <div className="mt-8 flex gap-4 text-sm text-muted-foreground">
-      <span>Inhale: {activeSession.pattern.inhale}s</span>
-      {activeSession.pattern.hold > 0 && <span>Hold: {activeSession.pattern.hold}s</span>}
-      <span>Exhale: {activeSession.pattern.exhale}s</span>
-      {activeSession.pattern.hold_empty > 0 && <span>Hold Empty: {activeSession.pattern.hold_empty}s</span>}
+      <span>Inhale: {scaleSeconds(activeSession.pattern.inhale, paceMultiplier)}s</span>
+      {activeSession.pattern.hold > 0 && <span>Hold: {scaleSeconds(activeSession.pattern.hold, paceMultiplier)}s</span>}
+      <span>Exhale: {scaleSeconds(activeSession.pattern.exhale, paceMultiplier)}s</span>
+      {activeSession.pattern.hold_empty > 0 && <span>Hold Empty: {scaleSeconds(activeSession.pattern.hold_empty, paceMultiplier)}s</span>}
     </div>
 
     {(activeSession.frequency || activeSession.instructions || activeSession.why_this_heals || activeSession.full_instructions) && (

@@ -10,8 +10,8 @@ import { SacredJourneyWidget } from "./dashboard/SacredJourneyWidget";
 import { WelcomeJourney } from "./dashboard/WelcomeJourney";
 import { SacredPracticeWidget } from "./dashboard/SacredPracticeWidget";
 import { DailyGuidanceGrid } from "./dashboard/DailyGuidanceGrid";
-import { buildDeepJourneyItems, buildQuickItems, DashboardActionPanels } from "./dashboard/DashboardActionPanels";
-import { ADMIN_EMAILS, elementBg, elementColors, getNavItems } from "./dashboard/dashboardConfig";
+import { DashboardActionPanels } from "./dashboard/DashboardActionPanels";
+import { ADMIN_EMAILS, elementBg, elementColors, getNavItems, SUBJECT_SECTIONS } from "./dashboard/dashboardConfig";
 import { appLogger } from "../utils/logger";
 
 const Dashboard = ({ user, api }) => {
@@ -39,8 +39,7 @@ const Dashboard = ({ user, api }) => {
     fetchDailyData();
   }, [fetchDailyData]);
 
-  const quickPracticeItems = useMemo(() => buildQuickItems(navItems, isAdminUser), [isAdminUser, navItems]);
-  const deepJourneyItems = useMemo(() => buildDeepJourneyItems(navItems), [navItems]);
+  const subjectSections = useMemo(() => SUBJECT_SECTIONS, []);
 
   const handleLogout = async () => {
     try {
@@ -63,12 +62,12 @@ const Dashboard = ({ user, api }) => {
   return (
     <div className="min-h-screen bg-background flex" data-testid="dashboard">
       {/* Sidebar - Desktop */}
-      <aside className="hidden lg:flex flex-col w-64 border-r border-white/5 bg-card/30 backdrop-blur-xl">
+      <aside className="hidden lg:flex flex-col w-64 border-r border-white/5 bg-card/30 backdrop-blur-xl h-screen sticky top-0">
         <div className="p-6 border-b border-white/5">
           <h1 className="text-xl font-serif italic text-primary">Soul Temple 2.0</h1>
         </div>
         
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {navItems.map((item) => (
             <button
               key={item.path}
@@ -132,16 +131,17 @@ const Dashboard = ({ user, api }) => {
           <motion.aside
             initial={{ x: -300 }}
             animate={{ x: 0 }}
-            className="absolute left-0 top-0 bottom-0 w-64 bg-card border-r border-white/5"
+            className="absolute left-0 top-0 bottom-0 w-64 bg-card border-r border-white/5 flex flex-col"
+            data-testid="dashboard-mobile-drawer"
           >
-            <div className="p-6 border-b border-white/5 flex items-center justify-between">
+            <div className="p-6 border-b border-white/5 flex items-center justify-between flex-shrink-0">
               <h1 className="text-xl font-serif italic text-primary">Soul Temple 2.0</h1>
-              <button onClick={() => setSidebarOpen(false)}>
+              <button onClick={() => setSidebarOpen(false)} data-testid="dashboard-drawer-close-btn">
                 <X className="w-5 h-5 text-muted-foreground" />
               </button>
             </div>
             
-            <nav className="p-4 space-y-2">
+            <nav className="p-4 space-y-2 flex-1 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]" data-testid="dashboard-drawer-nav">
               {navItems.map((item) => (
                 <button
                   key={item.path}
@@ -149,6 +149,7 @@ const Dashboard = ({ user, api }) => {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl 
                              text-muted-foreground hover:text-foreground
                              hover:bg-white/5 transition-all duration-300`}
+                  data-testid={`drawer-nav-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
                 >
                   <item.icon className={`w-5 h-5 ${elementColors[item.element]}`} strokeWidth={1.5} />
                   <span className="text-sm">{item.label}</span>
@@ -156,7 +157,7 @@ const Dashboard = ({ user, api }) => {
               ))}
             </nav>
 
-            <div className="p-4 border-t border-white/5">
+            <div className="p-4 border-t border-white/5 flex-shrink-0">
               <button
                 onClick={handleLogout}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl 
@@ -264,8 +265,7 @@ const Dashboard = ({ user, api }) => {
               <DailyGuidanceGrid dailyData={dailyData} navigate={navigate} />
 
               <DashboardActionPanels
-                quickPracticeItems={quickPracticeItems}
-                deepJourneyItems={deepJourneyItems}
+                subjectSections={subjectSections}
                 navigate={navigate}
               />
             </>

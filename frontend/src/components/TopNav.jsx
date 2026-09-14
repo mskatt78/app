@@ -193,12 +193,12 @@ const TopNav = ({ user }) => {
               <span className="text-sm">Install</span>
             </button>
             <button
-              onClick={() => navigate("/demo")}
+              onClick={() => navigate("/dashboard")}
               className="hidden sm:flex items-center gap-2 text-primary/80 hover:text-primary transition-colors"
-              data-testid="topnav-demo-btn"
+              data-testid="topnav-my-temple-btn"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="text-sm">Demo</span>
+              <span className="text-sm">My Temple</span>
             </button>
             {user ? (
               <div className="flex items-center gap-2">
@@ -353,14 +353,14 @@ const TopNav = ({ user }) => {
                     )}
                     <button
                       onClick={() => {
-                        navigate("/demo");
+                        navigate("/settings");
                         setShowMenu(false);
                       }}
                       className="flex items-center justify-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 transition-all"
-                      data-testid="topnav-demo-menu-btn"
+                      data-testid="topnav-settings-menu-btn"
                     >
                       <Sparkles className="w-5 h-5 text-primary" />
-                      <span className="font-medium">Demo</span>
+                      <span className="font-medium">Settings</span>
                     </button>
                   </div>
                 </div>

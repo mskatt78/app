@@ -305,6 +305,14 @@ export const useGuidedAudioPlayback = ({
     setLoading(false);
   }, [clearSegmentCache, revokeObjectUrl, stopToning]);
 
+  useEffect(() => {
+    const handleOverlayOpen = () => {
+      stopPlayback();
+    };
+    window.addEventListener("soul-temple:guided-overlay-open", handleOverlayOpen);
+    return () => window.removeEventListener("soul-temple:guided-overlay-open", handleOverlayOpen);
+  }, [stopPlayback]);
+
   useEffect(() => () => {
     isStoppedRef.current = true;
     abortRef.current?.abort?.();

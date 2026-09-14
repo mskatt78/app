@@ -9,51 +9,32 @@ const journeyAnimate = { opacity: 1, y: 0 };
 const progressInitial = { opacity: 0, y: 20 };
 const progressAnimate = { opacity: 1, y: 0 };
 
-export const DashboardActionPanels = ({ quickPracticeItems, deepJourneyItems, navigate }) => (
+export const DashboardActionPanels = ({ subjectSections, navigate }) => (
   <>
-    <div>
-      <h3 className="text-2xl font-serif mb-6">Sacred <span className="italic text-primary">Practices</span></h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {quickPracticeItems.map((item, index) => (
-          <motion.button
-            key={item.path}
-            initial={practiceInitial}
-            animate={practiceAnimate}
-            transition={{ delay: index * 0.05 }}
-            onClick={() => navigate(item.path)}
-            className={`p-6 rounded-2xl border backdrop-blur-xl text-center hover:scale-105 transition-all duration-300 ${elementBg[item.element]}`}
-            data-testid={`dashboard-practice-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
-          >
-            <item.icon className={`w-8 h-8 mx-auto mb-3 ${elementColors[item.element]}`} strokeWidth={1.5} />
-            <p className="text-sm font-medium">{item.label}</p>
-          </motion.button>
-        ))}
-      </div>
-    </div>
-
-    <div>
-      <div className="flex items-center gap-3 mb-6">
-        <h3 className="text-2xl font-serif">Deeper <span className="italic text-primary">Journeys</span></h3>
-        <span className="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-medium">New</span>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {deepJourneyItems.map((item, index) => (
-          <motion.button
-            key={item.path}
-            initial={journeyInitial}
-            animate={journeyAnimate}
-            transition={{ delay: 0.5 + index * 0.1 }}
-            onClick={() => navigate(item.path)}
-            className={`p-5 rounded-2xl border backdrop-blur-xl text-center hover:scale-105 transition-all duration-300 relative overflow-hidden ${elementBg[item.element]}`}
-            data-testid={`dashboard-journey-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
-          >
-            <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <item.icon className={`w-7 h-7 mx-auto mb-2 ${elementColors[item.element]}`} strokeWidth={1.5} />
-            <p className="text-sm font-medium">{item.label}</p>
-          </motion.button>
-        ))}
-      </div>
-    </div>
+    {subjectSections.map((section, sectionIndex) => {
+      const [first, ...rest] = section.title.split(" ");
+      return (
+        <div key={section.title} data-testid={`dashboard-section-${section.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}>
+          <h3 className="text-2xl font-serif mb-6">{first} <span className="italic text-primary">{rest.join(" ")}</span></h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {section.items.map((item, index) => (
+              <motion.button
+                key={item.path + item.label}
+                initial={practiceInitial}
+                animate={practiceAnimate}
+                transition={{ delay: Math.min(sectionIndex * 0.1 + index * 0.04, 0.6) }}
+                onClick={() => navigate(item.path)}
+                className={`p-6 rounded-2xl border backdrop-blur-xl text-center hover:scale-105 transition-all duration-300 ${elementBg[item.element]}`}
+                data-testid={`dashboard-practice-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+              >
+                <item.icon className={`w-8 h-8 mx-auto mb-3 ${elementColors[item.element]}`} strokeWidth={1.5} />
+                <p className="text-sm font-medium">{item.label}</p>
+              </motion.button>
+            ))}
+          </div>
+        </div>
+      );
+    })}
 
     <div>
       <h3 className="text-2xl font-serif mb-6">Your <span className="italic text-primary">Progress</span></h3>
@@ -103,7 +84,6 @@ export const DashboardActionPanels = ({ quickPracticeItems, deepJourneyItems, na
 
 export const buildQuickItems = (navItems, isAdminUser) => ([
   ...navItems.slice(0, 7),
-  { path: "/demo", label: "Demo", icon: Sparkles, element: "spirit" },
   ...(isAdminUser ? [{ path: "/admin", label: "Admin", icon: Shield, element: "spirit" }] : []),
 ]);
 

@@ -185,6 +185,9 @@ const Breathwork = ({ api, user }) => {
             soundEnabled={engine.soundEnabled}
             selectedSound={engine.selectedSound}
             setSelectedSound={engine.setSelectedSound}
+            pace={engine.pace}
+            setPace={engine.setPace}
+            paceMultiplier={engine.paceMultiplier}
             togglePlay={engine.togglePlay}
             resetSession={engine.resetSession}
             toggleSound={engine.toggleSound}

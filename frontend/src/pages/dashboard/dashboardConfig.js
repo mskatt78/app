@@ -64,3 +64,76 @@ export const getNavItems = (isAdmin) => [
   ...BASE_NAV_ITEMS,
   ...(isAdmin ? [{ icon: Shield, label: "Admin CMS", path: "/admin", element: "spirit" }] : []),
 ];
+
+export const SUBJECT_SECTIONS = [
+  {
+    title: "Sacred Practices",
+    items: [
+      { icon: Leaf, label: "Yoga", path: "/yoga", element: "earth" },
+      { icon: Wind, label: "Breathwork", path: "/breathwork", element: "air" },
+      { icon: Compass, label: "Meditations", path: "/meditations", element: "spirit" },
+      { icon: Brain, label: "Mindfulness", path: "/mindfulness", element: "air" },
+      { icon: Mountain, label: "Grounding", path: "/grounding", element: "earth" },
+      { icon: Heart, label: "Mantras", path: "/mantras", element: "fire" },
+      { icon: Sun, label: "Mudras", path: "/mudras", element: "fire" },
+      { icon: Waves, label: "Somatic", path: "/somatic", element: "water" },
+    ],
+  },
+  {
+    title: "Deeper Journeys",
+    items: [
+      { icon: Feather, label: "Shamanic", path: "/shamanic-practices", element: "spirit" },
+      { icon: Zap, label: "Elemental", path: "/elemental-practices", element: "spirit" },
+      { icon: Heart, label: "Heart Practices", path: "/heart-practices", element: "water" },
+      { icon: Orbit, label: "Healing Portals", path: "/healing-portals", element: "spirit" },
+      { icon: Zap, label: "Kundalini", path: "/kundalini-consciousness", element: "fire" },
+      { icon: Radio, label: "Sound Healing", path: "/sound-frequencies", element: "air" },
+    ],
+  },
+  {
+    title: "Earth Medicines",
+    items: [
+      { icon: Mountain, label: "Earth Altars", path: "/earth-altars", element: "earth" },
+      { icon: Palette, label: "Creative Expression", path: "/creative-processes", element: "spirit" },
+      { icon: Waves, label: "Water Practices", path: "/water-practices", element: "water" },
+      { icon: Leaf, label: "Wheel of the Year", path: "/seasonal-temple", element: "earth" },
+      { icon: Sun, label: "Sunrise & Sunset", path: "/sunrise-sunset", element: "fire" },
+      { icon: Sparkles, label: "Crystals", path: "/crystals", element: "spirit" },
+    ],
+  },
+  {
+    title: "Mystery & Initiatory Teachings",
+    items: [
+      { icon: BookOpen, label: "Mystery School", path: "/mystery-school-teachings", element: "spirit" },
+      { icon: Star, label: "Ancient Traditions", path: "/ancient-wisdom", element: "earth" },
+      { icon: Heart, label: "Rose Temple", path: "/rose-temple", element: "water" },
+      { icon: Shield, label: "Masculine Temple", path: "/masculine-temple", element: "fire" },
+      { icon: Sparkles, label: "Elemental Temples", path: "/elemental-temples", element: "spirit" },
+    ],
+  },
+  {
+    title: "Sacred Guardians & Allies",
+    items: [
+      { icon: Feather, label: "Power & Spirit Animals", path: "/sacred-guardians", element: "earth" },
+      { icon: Sparkles, label: "Sacred Allies Alchemy", path: "/sacred-ally-alchemy", element: "spirit" },
+      { icon: Shield, label: "Angelic Alchemy", path: "/angelic-alchemy", element: "air" },
+      { icon: Feather, label: "Archangels", path: "/archangels", element: "spirit" },
+      { icon: Sparkles, label: "All Alchemy Hub", path: "/alchemy-hub", element: "spirit" },
+    ],
+  },
+  {
+    title: "Divination & Guidance",
+    items: [
+      { icon: Eye, label: "Oracle", path: "/oracle", element: "spirit" },
+      { icon: Star, label: "Tarot", path: "/tarot", element: "spirit" },
+      { icon: Star, label: "Runes", path: "/rune-readings", element: "fire" },
+      { icon: BookOpen, label: "I Ching", path: "/i-ching", element: "water" },
+      { icon: Moon, label: "Astrology", path: "/astrology", element: "water" },
+      { icon: Star, label: "Astrology Charts", path: "/astrology/charts", element: "spirit" },
+      { icon: Star, label: "Birth Chart", path: "/birth-chart", element: "spirit" },
+      { icon: Hash, label: "Numerology", path: "/numerology", element: "fire" },
+      { icon: Orbit, label: "Gene Keys", path: "/gene-keys", element: "spirit" },
+      { icon: Compass, label: "Human Design", path: "/human-design", element: "air" },
+    ],
+  },
+];

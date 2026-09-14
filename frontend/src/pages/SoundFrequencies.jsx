@@ -204,6 +204,8 @@ const SoundFrequencies = ({ user, api }) => {
 
         {!loading && (
           <SoundMixer
+            user={user}
+            api={api}
             sounds={frequencies
               .filter((f) => f.audio_url)
               .map((f) => ({ id: f.id, name: f.name, audio_url: f.audio_url, locked: !canAccessFrequency(f) }))}

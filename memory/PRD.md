@@ -4980,3 +4980,10 @@
 - New SoundMixer.jsx on /sound-frequencies: layer two sounds (e.g., rain over shamanic drums) with per-layer volume sliders, master play/pause, and 15/30/60-min sleep timer with 30s fade applied across both layers.
 - Premium-gated: locked sounds appear disabled with a lock icon for non-Sacred-Access users (uses canAccessFrequency).
 - Verified via Playwright: both layers play simultaneously, timer counts down, locked options disabled for anonymous users.
+
+## Final Refinement Pass (2026-06 fork, post-iteration-277)
+- New main/home image: user-supplied "Shamanic Elements Soul Temple 2.0" artwork saved as /images/hero-main.jpg (text-free crop to avoid doubled titles) and set as LandingPage hero background; verified desktop + mobile.
+- Dashboard mobile drawer bug FOUND AND FIXED: sidebar nav (31 items) had no scroll container; now flex-col + overflow-y-auto (data-testid dashboard-drawer-nav). Verified: scrolls 937px, last item (Membership) reachable and navigates to /pricing on 390x844.
+- Desktop sidebar also made sticky + scrollable.
+- Shamanic deepening "skip" in iter277 explained: shamanic_practices is in SECTION_UNCAPPED_UNLOCK_IDS (27 real items, no padding by design). Elemental temples verified: 9 progressive deepening entries with distinct stage content.
+- Credits concern answered via support agent (usage breakdown at Profile -> Account settings -> Credit usage).

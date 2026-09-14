@@ -72,6 +72,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const [ttsLoading, setTtsLoading] = useState(false);
   const [ttsPlaying, setTtsPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [voiceVolume, setVoiceVolume] = useState(1);
+  const [ambientVolume, setAmbientVolume] = useState(1);
   const [hasStarted, setHasStarted] = useState(false);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
   const [narrationParagraphs, setNarrationParagraphs] = useState(narrationPlan.paragraphs);
@@ -114,6 +116,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
+  const voiceVolumeRef = useRef(1);
+  const ambientVolumeRef = useRef(1);
   const audioCtxRef = useRef(null);
   const ambientRef = useRef(null);
   const toningRef = useRef(null);
@@ -584,18 +588,24 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [isPlaying, isComplete, syncRemainingFromClock]);
 
   useEffect(() => {
+    voiceVolumeRef.current = voiceVolume;
+    ambientVolumeRef.current = ambientVolume;
+    if (ttsRef.current) ttsRef.current.volume = voiceVolume;
+  }, [voiceVolume, ambientVolume]);
+
+  useEffect(() => {
     const baseAmbientGain = (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).gain;
     const narrationDuckMultiplier = ttsPlaying ? 0.22 : 1;
 
     if (ambientRef.current) {
-      ambientRef.current.gain.gain.value = muted ? 0 : baseAmbientGain * narrationDuckMultiplier;
+      ambientRef.current.gain.gain.value = muted ? 0 : baseAmbientGain * narrationDuckMultiplier * ambientVolume;
     }
 
     if (toningRef.current) {
       if (muted) {
         toningRef.current.setMuted?.(true, 1);
       } else {
-        const toningMix = ttsPlaying ? 0 : 0.16;
+        const toningMix = ttsPlaying ? 0 : 0.16 * ambientVolume;
         toningRef.current.setMuted?.(false, toningMix);
       }
     }
@@ -604,7 +614,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     const hasToningLayer = Boolean(toningRef.current);
     const toningEnabled = getGuidedToningMultiplier() > 0;
     setToningActive(hasToningLayer && !muted && isPlaying && toningEnabled);
-  }, [muted, element, ttsPlaying, isPlaying]);
+  }, [muted, element, ttsPlaying, isPlaying, ambientVolume]);
 
   useEffect(() => () => {
     clearInterval(timerRef.current);
@@ -717,6 +727,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       currentSegmentIndexRef.current = segmentIndex;
       setCurrentSegmentIndex(segmentIndex);
       audio.muted = muted;
+      audio.volume = voiceVolumeRef.current;
       audio.src = url;
       audio.currentTime = 0;
       audio.onplay = () => {
@@ -823,7 +834,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     const narrationDuckMultiplier = ttsPlaying ? 0.22 : 1;
 
     if (ambientRef.current) {
-      ambientRef.current.gain.gain.value = muted ? 0 : baseAmbientGain * narrationDuckMultiplier;
+      ambientRef.current.gain.gain.value = muted ? 0 : baseAmbientGain * narrationDuckMultiplier * ambientVolumeRef.current;
     }
     if (!toningRef.current && audioCtxRef.current) {
       toningRef.current = startToningLayer(audioCtxRef.current, element);
@@ -832,7 +843,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       if (muted) {
         toningRef.current.setMuted?.(true, 1);
       } else {
-        toningRef.current.setMuted?.(false, ttsPlaying ? 0 : 0.16);
+        toningRef.current.setMuted?.(false, ttsPlaying ? 0 : 0.16 * ambientVolumeRef.current);
       }
     }
   }, [element, muted, ttsPlaying]);
@@ -913,6 +924,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     elColor,
     muted,
     setMuted,
+    voiceVolume,
+    setVoiceVolume,
+    ambientVolume,
+    setAmbientVolume,
     isComplete,
     timeRemaining,
     hasStarted,

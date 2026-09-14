@@ -1860,9 +1860,9 @@ SOMATIC_IMAGE_OVERRIDES: dict[str, str] = {
 }
 
 SHAMANIC_IMAGE_OVERRIDES: dict[str, str] = {
-    "1": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e2187dc925022591a07767fa4fe66f7f0da2e1c4ef036f9e62c2854d8d7582e8.png",
+    "1": "/images/power-animal-journey.jpg",
     "2": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3f017c9ce6a7733752d54dd7b20f81703b717f22cdc95f4b2bc27e7791e1307e.png",
-    "3": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/90d1be94049f7a56540de35f579a149e42b1754de16dfd2438f83590d34e6ca9.png",
+    "3": "/images/ancestral-healing-ritual.jpg",
     "6": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0c836c759c8b9722b7d9ce8ea87b47911cdaad713c808cca7faf036edc27fb8e.png",
     "16": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/71553fe6b5a258a4c1441b648b0680f05490ad55a83efd67e7bda88d56c3cc90.png",
     "shamanic-advanced-soul-retrieval": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3f017c9ce6a7733752d54dd7b20f81703b717f22cdc95f4b2bc27e7791e1307e.png",
@@ -2854,6 +2854,79 @@ def _merge_source_references(*ref_groups: Any) -> list[str]:
     return merged
 
 
+def _build_yoga_pose_protocol(pose: dict[str, Any]) -> dict[str, Any]:
+    name = str(pose.get("name") or "Yoga Pose").strip()
+    sanskrit = str(pose.get("sanskrit_name") or "").strip()
+    title = f"{name} ({sanskrit})" if sanskrit else name
+    instructions = [str(i).strip() for i in (pose.get("instructions") or []) if str(i).strip()]
+    benefits = [str(b).strip() for b in (pose.get("benefits") or []) if str(b).strip()]
+    chakras = [str(c).strip() for c in (pose.get("chakras") or []) if str(c).strip()]
+    contraindications = [str(c).strip() for c in (pose.get("contraindications") or []) if str(c).strip()]
+    difficulty = str(pose.get("difficulty") or "Beginner").strip().lower()
+    duration = int(pose.get("duration_minutes") or 3)
+    fascia = str(pose.get("somatic_fascia_focus") or "").strip()
+    breath_cue = str(pose.get("breath_hybrid_cue") or "").strip()
+    energetic = str(pose.get("energetic_effects") or "").strip()
+    spiritual = str(pose.get("spiritual_purpose") or "").strip()
+
+    warmups = {
+        "beginner": "Gentle joint circles for ankles, hips, and shoulders (1-2 min) — no strain needed before this accessible pose.",
+        "intermediate": "Warm the spine and hips with 3-4 rounds of cat-cow and a low lunge on each side before entering.",
+        "advanced": "Complete a full warm-up sequence (sun salutations or equivalent) — this pose asks for open, prepared tissue.",
+    }
+    modifications = {
+        "beginner": f"Use a wall, chair, or folded blanket for support; shorten the hold well below {duration} minutes while learning the shape.",
+        "intermediate": "Use a block or strap to keep length in the spine rather than collapsing toward the full expression.",
+        "advanced": "Return to the foundational variation on low-energy days; depth is earned each session, never assumed.",
+    }
+
+    preparation = [warmups.get(difficulty, warmups["beginner"])]
+    if contraindications:
+        preparation.append(f"Contraindication check: approach with care or consult a professional if you have {', '.join(contraindications[:3]).lower()}.")
+    preparation.append(f"Set your space for {title}: clear floor, steady surface, and one clear intention for the hold.")
+
+    anatomy = instructions[:3] if instructions else [f"Establish the foundational shape of {title} with even weight and a long spine."]
+    if fascia:
+        anatomy.append(fascia)
+
+    breath = [breath_cue or "Inhale through the nose for 4 counts, exhale for 6, letting the exhale settle you deeper into the shape."]
+    breath.append(f"Sustain the hold for up to {duration} minute{'s' if duration != 1 else ''}, letting breath — not willpower — set the pace.")
+
+    embodiment = instructions[3:6] or [f"Refine {name} from the inside: soften what is gripping, engage what is sleeping."]
+    if benefits:
+        embodiment.append(f"Notice the pose working: {benefits[0].rstrip('.').lower()}.")
+
+    modification_list = [modifications.get(difficulty, modifications["beginner"])]
+    if contraindications:
+        modification_list.append("If any listed contraindication applies, practice the supported variation only, or choose a different pose today.")
+
+    energetics = []
+    if energetic:
+        energetics.append(energetic)
+    if chakras:
+        energetics.append(f"Chakra focus: {', '.join(chakras)} — breathe attention into this centre while holding.")
+    if spiritual:
+        energetics.append(spiritual)
+
+    integration = [
+        f"Release {name} slowly and take a neutral counter-shape (rest, gentle twist, or forward fold) for 3-5 breaths.",
+        f"Name one effect you can actually feel{f' — such as {benefits[1].rstrip(chr(46)).lower()}' if len(benefits) > 1 else ''} — before moving on.",
+        "Carry the pose's quality into your next daily action: stand, walk, or speak from this alignment.",
+    ]
+
+    protocol: dict[str, Any] = {
+        "preparation_phase": preparation,
+        "anatomy_awareness": anatomy,
+        "breath_guidance": breath,
+        "embodiment_phase": embodiment,
+        "modifications": modification_list,
+        "integration_phase": integration,
+    }
+    if energetics:
+        protocol["energetic_layer"] = energetics
+    return protocol
+
+
 def _enrich_yoga_pose(pose: dict[str, Any]) -> dict[str, Any]:
     enriched = dict(pose)
     pose_name_key = _normalize_label_key(enriched.get("name", ""))
@@ -2904,14 +2977,7 @@ def _enrich_yoga_pose(pose: dict[str, Any]) -> dict[str, Any]:
         "mindfulness_prompt",
         "Track one sensation, one emotion, and one breath shift while holding the posture.",
     )
-    enriched.setdefault(
-        "master_embodiment_protocol",
-        _build_modality_master_protocol(
-            str(enriched.get("name") or "Yoga Pose"),
-            "yoga",
-            str(enriched.get("somatic_fascia_focus") or "stable posture and slow breath"),
-        ),
-    )
+    enriched["master_embodiment_protocol"] = _build_yoga_pose_protocol(enriched)
     pose_name = str(enriched.get("name") or "Yoga Pose")
     override_tutorials = _build_admin_override_tutorials(pose_name, enriched.get("youtube_tutorial_override_urls"))
     if override_tutorials:
@@ -3464,9 +3530,16 @@ def _build_mantra_master_protocol(mantra: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+LIBRARY_MANTRA_AUDIO_IDS = {str(i) for i in range(1, 15)}
+
+
 def _enrich_mantra_entry(mantra: dict[str, Any]) -> dict[str, Any]:
     enriched = _enrich_devotional_language(dict(mantra), "mantra")
     name = str(enriched.get("name") or "Mantra").strip()
+    mantra_id = str(enriched.get("id") or "").strip()
+    if mantra_id in LIBRARY_MANTRA_AUDIO_IDS:
+        enriched["audio_url"] = f"/audio/mantras/{mantra_id}.mp3"
+        enriched["audio_credit"] = "Spoken mantra pronunciation — studio voice recording"
     translation = str(enriched.get("translation") or "").strip()
     meaning = str(enriched.get("meaning") or "").strip()
     if meaning and not translation:
@@ -3780,7 +3853,16 @@ def _enrich_practice_links(item: dict[str, Any], domain: str) -> dict[str, Any]:
     if element in {"fire", "air", "water", "earth", "spirit"}:
         links.append({"type": "yoga", "route": "/yoga", "label": f"{element.title()} yoga sequence"})
     links.append({"type": domain, "route": f"/{domain}", "label": "Explore related teachings"})
-    enriched["linked_practices"] = links
+    self_route = f"/{domain}".rstrip("/")
+    seen_routes: set[str] = set()
+    filtered: list[dict[str, str]] = []
+    for link in links:
+        route = str(link["route"]).rstrip("/")
+        if route == self_route or route in seen_routes:
+            continue
+        seen_routes.add(route)
+        filtered.append(link)
+    enriched["linked_practices"] = filtered
     return enriched
 
 
@@ -4894,56 +4976,106 @@ def _expand_section_items_to_target(items: list[dict[str, Any]], unlock_id: str)
     default_domain_focus = (
         "Hold this as a devotional practice: regulate pace, deepen embodiment, and complete with grounded integration."
     )
+
+    deepening_arcs = [
+        {
+            "stage": "Subtle Body Attunement",
+            "description": "Return to {name} with the outer form already familiar — this cycle turns attention inward. Slow every transition to half speed and track the subtle currents beneath the technique: temperature shifts, micro-tension, the pull of breath through the body. {focus}",
+            "alchemy": [
+                "Where the first pass taught the shape, this cycle teaches the listening: sense before you act.",
+                "Let the practice become 30% smaller and 100% more precise — refinement is the medicine now.",
+            ],
+            "guided": [
+                "Phase 1 (Descent): enter the familiar form, then close the eyes and drop attention below the skin.",
+                "Phase 2 (Listening): follow one subtle sensation for a full minute without changing anything.",
+                "Phase 3 (Response): let the body adjust itself from the inside — you follow, it leads.",
+            ],
+        },
+        {
+            "stage": "Shadow Integration",
+            "description": "This cycle of {name} works with what the first pass stirred up but did not resolve. Notice the moment you want to quit, rush, or check out — that threshold is the doorway. Stay one breath longer than comfortable, then release with full consent. {focus}",
+            "alchemy": [
+                "Meet resistance as information, not failure: what does this edge protect?",
+                "Transmute avoidance into presence by shortening the practice but refusing to leave it early.",
+            ],
+            "guided": [
+                "Phase 1 (Approach): begin gently and name the first place of resistance out loud.",
+                "Phase 2 (Threshold): stay at the edge one slow breath longer than habit allows, without forcing.",
+                "Phase 3 (Release): step back deliberately, honouring the boundary you chose rather than fled.",
+            ],
+        },
+        {
+            "stage": "Elemental Communion",
+            "description": "Practice {name} as a dialogue rather than a technique. Bring one natural element into the space — water, stone, flame, or open air — and let its quality set your rhythm. The aim is relationship: the practice becomes a meeting place, not a performance. {focus}",
+            "alchemy": [
+                "Ask the element one question before beginning and listen for the answer in the body, not the mind.",
+                "Match the element's tempo: stone-slow, water-fluid, flame-bright, or air-light.",
+            ],
+            "guided": [
+                "Phase 1 (Invitation): place the element where you can see or touch it and offer one breath of greeting.",
+                "Phase 2 (Communion): practice while borrowing the element's quality — its patience, flow, heat, or lightness.",
+                "Phase 3 (Gratitude): close by returning something — a word of thanks, a moment of stillness, a drop of water to the earth.",
+            ],
+        },
+        {
+            "stage": "Ceremonial Depth",
+            "description": "Hold {name} as full ceremony: threshold, heart, and return. Prepare the space as if a beloved teacher were arriving, because one is — the deeper self that only appears when the container is worthy. Extend the practice by a third and let silence carry the extra time. {focus}",
+            "alchemy": [
+                "Ceremony is attention made visible: every object placed with care changes the nervous system before you begin.",
+                "The return matters as much as the peak — leave slowly enough to bring the state with you.",
+            ],
+            "guided": [
+                "Phase 1 (Threshold): mark the beginning clearly — a bell, a bow, a spoken line — so the body knows ordinary time has paused.",
+                "Phase 2 (Heart): move through the full practice unhurried, letting silence stretch between each stage.",
+                "Phase 3 (Return): close the ceremony formally and step out changed, carrying one vow into daily life.",
+            ],
+        },
+        {
+            "stage": "Silent Transmission",
+            "description": "The final deepening of {name} removes all scaffolding: no counting, no cues, no self-narration. Enter the practice and let twenty or more minutes pass in wordless attention. What remains when instruction falls away is the teaching itself — received directly, body to body, silence to silence. {focus}",
+            "alchemy": [
+                "Mastery is measured by how little you need: release the cues and trust what the body has memorised.",
+                "In silence, the practice practices you — allow it.",
+            ],
+            "guided": [
+                "Phase 1 (Emptying): set no timer beyond a minimum; release every technique into simple presence.",
+                "Phase 2 (Transmission): remain in wordless attention, meeting whatever arises without commentary.",
+                "Phase 3 (Sealing): end only when the body signals completion, then sit one extra minute in gratitude.",
+            ],
+        },
+    ]
+
     extension_index = 1
 
     while len(expanded_items) < SECTION_MAX_TIER_ITEMS:
         base_item = source_items[(len(expanded_items) - len(items)) % len(source_items)]
         base_id = str(base_item.get("id") or f"{unlock_id}-practice")
         base_name = str(base_item.get("name") or base_item.get("title") or section_title)
-        base_description = str(
-            base_item.get("description")
-            or base_item.get("summary")
-            or base_item.get("message")
-            or ""
-        ).strip()
+
+        arc = deepening_arcs[(extension_index - 1) % len(deepening_arcs)]
+        domain_focus = domain_focus_map.get(domain_seed, default_domain_focus)
 
         extension_item = dict(base_item)
         extension_item["id"] = f"{base_id}-deepening-{extension_index}"
 
-        extension_title = f"{base_name} · Deepening Cycle {extension_index}"
+        extension_title = f"{base_name} · {arc['stage']}"
         extension_item["name"] = extension_title
         if "title" in extension_item:
             extension_item["title"] = extension_title
 
-        ceremonial_line = ceremonial_templates[(extension_index - 1) % len(ceremonial_templates)]
-        domain_focus = domain_focus_map.get(domain_seed, default_domain_focus)
-        deepening_suffix = f"{ceremonial_line} {domain_focus}"
-        extension_item["description"] = (
-            f"{base_description} {deepening_suffix}".strip()
-            if base_description
-            else f"{section_title} deepening sequence {extension_index}. {deepening_suffix}"
-        )
-
-        extension_item["alchemy"] = [
-            f"{section_title} deepening {extension_index}: breathe into your center and choose coherence over urgency.",
-            "Witness the pattern kindly, then transmute it through paced breath and aligned action.",
-            domain_focus,
-        ]
+        extension_item["description"] = arc["description"].format(name=base_name, focus=domain_focus)
+        extension_item["alchemy"] = [line.format(name=base_name) for line in arc["alchemy"]] + [domain_focus]
         extension_item["ritual"] = [
-            "Light a candle or set a simple anchor object before beginning.",
-            "Speak one sentence of intention out loud, then begin with three slow exhales.",
-            "Close by journaling one practical integration step for the next 24 hours.",
+            f"Prepare one anchor object that represents your history with {base_name} — the same practice, met at new depth.",
+            f"Speak the stage aloud — '{arc['stage']}' — as the intention for this cycle, then begin with three slow exhales.",
+            "Close by journaling what this cycle revealed that the first pass could not.",
         ]
         extension_item["ceremony"] = [
-            "Opening: orient to the room, feel your feet, and invite sacred presence.",
-            "Middle: complete the core sequence at a sustainable pace with devotional attention.",
-            "Closing: gratitude breath, integration touchpoint, and conscious return.",
+            f"Opening: acknowledge the ground already covered with {base_name} before asking it to open further.",
+            f"Middle: hold the {arc['stage'].lower()} focus as the organising thread of the whole session.",
+            "Closing: seal the deepening with one embodied gesture and a named integration step.",
         ]
-        extension_item["guided_practice"] = [
-            "Phase 1 (Arrival): soften jaw, shoulders, and breath without forcing.",
-            "Phase 2 (Embodiment): continue slowly while tracking sensation and emotional movement.",
-            "Phase 3 (Integration): lengthen exhale and complete with grounded reflection.",
-        ]
+        extension_item["guided_practice"] = list(arc["guided"])
 
         expanded_items.append(extension_item)
         extension_index += 1
@@ -8981,6 +9113,71 @@ def _daily_unified_ceremonial_flow(
     }
 
 
+DAILY_TEACHING_LENSES = [
+    {
+        "id": "moon",
+        "title": "Moon Wisdom",
+        "guidance": "Let the {moon} moon set today's tempo: practice in rhythm with its {moon_energy} rather than against it.",
+    },
+    {
+        "id": "astrology",
+        "title": "Celestial Currents",
+        "guidance": "{day_ruler} governs this day — work with its signature: {day_theme}. Time one important action to this current.",
+    },
+    {
+        "id": "spiritual_anatomy",
+        "title": "Spiritual Anatomy",
+        "guidance": "Today, treat the spine as the temple's central pillar: three times today, pause and feel breath travel its full length from root to crown.",
+    },
+    {
+        "id": "elements",
+        "title": "Elemental Medicine",
+        "guidance": "Choose one element to serve you today — earth to steady, water to soften, fire to ignite, air to clarify — and touch it physically at least once.",
+    },
+    {
+        "id": "chakras",
+        "title": "Chakra Focus",
+        "guidance": "Scan the seven centres slowly this morning and let the one that calls loudest choose today's practice, colour, and food.",
+    },
+    {
+        "id": "embodiment",
+        "title": "Embodiment Path",
+        "guidance": "Today's teaching lives below the neck: whenever you notice thinking-loops, drop attention to your feet and finish the thought from there.",
+    },
+    {
+        "id": "earth_medicine",
+        "title": "Earth Medicine",
+        "guidance": "Take one practice outdoors today, even for five minutes — bare feet, open sky, or a hand on living wood counts as ceremony.",
+    },
+    {
+        "id": "reflection",
+        "title": "Sacred Reflection",
+        "guidance": "Carry one question through the whole day and journal the answer tonight: what is asking to be released, and what is asking to be built?",
+    },
+    {
+        "id": "ritual",
+        "title": "Living Ritual",
+        "guidance": "Turn one ordinary act — tea, washing, doorway crossings — into deliberate ritual today: same act, full presence, clear beginning and end.",
+    },
+    {
+        "id": "sound",
+        "title": "Sound & Vibration",
+        "guidance": "Use your own voice as medicine today: three long exhaled hums before any difficult conversation or task.",
+    },
+]
+
+
+def _daily_teaching_lens(now: datetime, moon_phase: str, current_moon: dict[str, Any], current_day: dict[str, Any]) -> dict[str, str]:
+    lens = DAILY_TEACHING_LENSES[now.timetuple().tm_yday % len(DAILY_TEACHING_LENSES)]
+    guidance = lens["guidance"].format(
+        moon=moon_phase.replace("_", " "),
+        moon_energy=str(current_moon.get("energy") or "current energy").lower(),
+        day_ruler=str(current_day.get("ruler") or "Today's ruler"),
+        day_theme=str(current_day.get("theme") or "presence").lower(),
+    )
+    return {"id": lens["id"], "title": lens["title"], "guidance": guidance}
+
+
 def _build_daily_practice_response(
     now: datetime,
     day_of_week: str,
@@ -9004,6 +9201,7 @@ def _build_daily_practice_response(
         "moon_phase": moon_phase.replace("_", " ").title(),
         "moon_theme": current_moon["theme"],
         "moon_energy": current_moon["energy"],
+        "daily_lens": _daily_teaching_lens(now, moon_phase, current_moon, current_day),
         "guidance": _daily_guidance_text(day_of_week, current_day, moon_phase, current_moon),
         "morning_practice": morning_practice,
         "evening_practice": evening_practice,

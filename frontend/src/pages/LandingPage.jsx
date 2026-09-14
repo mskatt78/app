@@ -89,12 +89,12 @@ const LandingPage = ({ onLoginSuccess }) => {
       <section className="relative min-h-screen flex items-center justify-center">
         {/* Background */}
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-top"
           style={{ 
-            backgroundImage: `url('https://static.prod-images.emergentagent.com/jobs/30743729-c71b-4ef6-9e6e-aecb9cd4b3a8/images/662567cd330fc281bb3d5078d4cf60eb9a2fff9d8ffc9f441d949f94145901ba.png')` 
+            backgroundImage: `url('/images/hero-main.jpg')` 
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/50 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/25 via-background/70 to-background" />
         </div>
 
         {/* Floating Elements */}

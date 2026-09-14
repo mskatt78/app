@@ -2007,3 +2007,54 @@ async def delete_user_mantra(mantra_id: str, user: User = Depends(get_current_us
         raise HTTPException(status_code=404, detail="Mantra not found")
     
     return {"message": "Mantra deleted successfully"}
+
+
+class SoundscapeCreate(BaseModel):
+    name: str
+    layer_a: Optional[str] = None
+    layer_b: Optional[str] = None
+    vol_a: int = 80
+    vol_b: int = 50
+
+
+@router.get("/soundscapes")
+async def list_soundscapes(user: User = Depends(get_current_user)) -> list[dict[str, Any]]:
+    """List the user's saved sound mixes."""
+    db = get_db()
+    return await db.user_soundscapes.find({"user_id": user.user_id}, {"_id": 0}).sort("created_at", -1).to_list(length=20)
+
+
+@router.post("/soundscapes")
+async def create_soundscape(body: SoundscapeCreate, user: User = Depends(get_current_user)) -> dict[str, Any]:
+    """Save a named sound mix (two layers with volumes)."""
+    name = body.name.strip()
+    if not name:
+        raise HTTPException(status_code=400, detail="Please give your soundscape a name")
+    if not body.layer_a and not body.layer_b:
+        raise HTTPException(status_code=400, detail="Choose at least one sound layer before saving")
+    db = get_db()
+    count = await db.user_soundscapes.count_documents({"user_id": user.user_id})
+    if count >= 20:
+        raise HTTPException(status_code=400, detail="You can keep up to 20 soundscapes — delete one to save a new mix")
+    doc = {
+        "id": str(uuid.uuid4()),
+        "user_id": user.user_id,
+        "name": name[:60],
+        "layer_a": body.layer_a,
+        "layer_b": body.layer_b,
+        "vol_a": max(0, min(100, body.vol_a)),
+        "vol_b": max(0, min(100, body.vol_b)),
+        "created_at": datetime.now(timezone.utc).isoformat(),
+    }
+    await db.user_soundscapes.insert_one(dict(doc))
+    return doc
+
+
+@router.delete("/soundscapes/{soundscape_id}")
+async def delete_soundscape(soundscape_id: str, user: User = Depends(get_current_user)) -> dict[str, str]:
+    """Delete a saved soundscape."""
+    db = get_db()
+    result = await db.user_soundscapes.delete_one({"id": soundscape_id, "user_id": user.user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Soundscape not found")
+    return {"message": "Soundscape deleted"}

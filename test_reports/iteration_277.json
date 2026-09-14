@@ -1,0 +1,35 @@
+{
+  "summary": "Iteration 277 audit-pass verification (both backend + mobile frontend). Backend: 10/11 passed, 1 skipped (shamanic deepening items not present at top level in API - non-blocking). Frontend on mobile 390x844: all critical flows verified — dashboard shows 6 grouped sections with correct testids, no Demo/Admin tile for QA user, / redirects to /dashboard when logged in, TopNav overlay opens/scrolls/no-Demo/Home navigates to /dashboard, daily lens 'Earth Medicine' widget renders, breathwork Slow&Soft doubles seconds (4/4/6/2 -> 8/8/12/4), mindfulness linked-practice-water navigates to /water-practices, mantra pronunciation audio plays (audio-play-btn advances timer), yoga pose Master Embodiment Protocol shows pose-specific Preparation/Anatomy/Breath/Modifications sections referencing 'accessible pose' for Mountain Pose, guided practice overlay exposes Voice/Speed/Duration selectors and volume panel with independent Voice+Ambient sliders, sound-frequencies renders sound-mixer.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/shamanic-practices", "issue": "Deepening arc items (id containing '-deepening-') were not surfaced at any depth of the response; test was skipped. Elemental deepening arcs on /api/elemental-practices verified fine (no verbatim base repetition)."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dashboard header", "issues": ["Greeting 'Good morning, Demo' shows the QA account's display name literally as 'Demo' — cosmetically ambiguous but not the 'Demo tile' the audit removed. Confirm intentional or update QA user display name."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iteration277_audit.py",
+    "/app/test_reports/pytest/iter277.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "TopNav renders on non-dashboard routes only (App.js noNavPages excludes /dashboard). The dashboard's own header hamburger opens a separate legacy 'Soul Temple 2.0' drawer (Yoga/Oracle etc.) — verify that drawer also has no Demo entry and is scrollable per the audit intent; current audit changes to TopNav.jsx don't affect the dashboard drawer.",
+    "test_soundscapes_crud initially failed with a stale payload shape; API expects layer_a/layer_b flat keys, not an array. Consider documenting the SoundscapeCreate schema in an API contract."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iteration277_audit.py"
+  ],
+  "success_rate": {"backend": "91%", "frontend": "100%"},
+  "test_credentials": "QA user demoqa_740fefc1@example.com / DemoPass123! (login via POST /api/auth/login sets httpOnly cookie).",
+  "seed_data_creation": "Test created and deleted one soundscape named TEST_iter277 via authenticated CRUD; cleaned up in-test.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "TopNav (topnav-open-menu-btn, topnav-overlay-home-btn) only mounts on non-dashboard routes; test hamburger flow on /yoga or similar. Dashboard has its own drawer component. QA user 'Demo' display name is real; not a Demo tile.",
+  "rca of the issue": "N/A — all audit items verified passing."
+}

@@ -572,9 +572,13 @@ const YogaLibrary = ({ user, api }) => {
                     <div className="space-y-3">
                       {[
                         { key: "preparation_phase", label: "Preparation" },
+                        { key: "anatomy_awareness", label: "Anatomy & Body Awareness" },
+                        { key: "breath_guidance", label: "Breath" },
                         { key: "embodiment_phase", label: "Embodiment" },
+                        { key: "modifications", label: "Modifications" },
+                        { key: "energetic_layer", label: "Energetic & Spiritual Layer" },
                         { key: "integration_phase", label: "Integration" },
-                      ].map((section) => (
+                      ].filter((section) => (selectedPose.master_embodiment_protocol?.[section.key] || []).length > 0).map((section) => (
                         <div key={section.key} className="p-3 rounded-lg bg-black/20 border border-white/10" data-testid={`selected-pose-master-${section.key}`}>
                           <p className="text-xs text-amber-200 font-medium mb-2">{section.label}</p>
                           <ul className="space-y-1.5">

@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useState } from "react";
-import { CheckCircle2, Pause, Play, Volume2, VolumeX, X } from "lucide-react";
+import { CheckCircle2, Pause, Play, SlidersHorizontal, Volume2, VolumeX, X } from "lucide-react";
 import { resolveDurationMinutes } from "../../utils/durationUtils";
 import { GUIDED_SPEED_OPTIONS, GUIDED_VOICE_PROFILES } from "../../utils/guidedVoiceSettings";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
@@ -40,8 +40,13 @@ export const GuidedPracticeContent = ({
   onSpeedOptionChange,
   customVoiceActive,
   customVoiceProfileName,
+  voiceVolume,
+  setVoiceVolume,
+  ambientVolume,
+  setAmbientVolume,
 }) => {
   const [showFullNarration, setShowFullNarration] = useState(false);
+  const [showVolumePanel, setShowVolumePanel] = useState(false);
   const effectiveDurationMinutes = resolveDurationMinutes(
     practice.duration_minutes ?? practice.duration,
     minimumNarrationMinutes,
@@ -111,6 +116,14 @@ export const GuidedPracticeContent = ({
         </div>
         <div className="flex items-center gap-2 ml-3 flex-shrink-0">
           <button
+            onClick={() => setShowVolumePanel((current) => !current)}
+            className={`p-2 rounded-full transition-colors ${showVolumePanel ? "bg-white/25" : "bg-white/10 hover:bg-white/20"}`}
+            aria-label="Volume mixer"
+            data-testid="guided-volume-panel-btn"
+          >
+            <SlidersHorizontal className="w-4 h-4 text-white/80" />
+          </button>
+          <button
             onClick={() => setMuted((current) => !current)}
             className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
             aria-label={muted ? "Unmute" : "Mute"}
@@ -128,6 +141,41 @@ export const GuidedPracticeContent = ({
           </button>
         </div>
       </div>
+
+      {showVolumePanel && (
+        <div className="px-5 pb-3 flex-shrink-0" data-testid="guided-volume-panel">
+          <div className="rounded-xl bg-black/30 border border-white/10 p-4 space-y-3 max-w-sm">
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-white/70 w-16">Voice</span>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                value={Math.round((voiceVolume ?? 1) * 100)}
+                onChange={(event) => setVoiceVolume?.(Number(event.target.value) / 100)}
+                className="flex-1 accent-amber-300"
+                data-testid="guided-voice-volume-slider"
+              />
+              <span className="text-xs text-white/60 w-9 text-right">{Math.round((voiceVolume ?? 1) * 100)}%</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-white/70 w-16">Ambient</span>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                step="5"
+                value={Math.round((ambientVolume ?? 1) * 100)}
+                onChange={(event) => setAmbientVolume?.(Number(event.target.value) / 100)}
+                className="flex-1 accent-cyan-300"
+                data-testid="guided-ambient-volume-slider"
+              />
+              <span className="text-xs text-white/60 w-9 text-right">{Math.round((ambientVolume ?? 1) * 100)}%</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex-1 min-h-0 px-5 flex flex-col pb-4 overflow-y-auto overscroll-contain touch-pan-y [touch-action:pan-y] [-webkit-overflow-scrolling:touch]" data-testid="guided-practice-scroll-container">
         <AnimatePresence mode="wait">

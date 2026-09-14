@@ -39,14 +39,12 @@ const NATURAL_SOUND_OPTIONS = [
 
 const OM_CHANT_LOOP_URL = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_6f95e7f9e0.mp3?filename=om-chant-loop-ambient-10274.mp3";
 
-const isOmMantra = (mantra) => String(mantra?.name || "").trim().toLowerCase() === "om";
 
 const resolveMantraAudioUrl = (mantra) => {
   if (!mantra) return "";
   const url = String(mantra.audio_url || "");
   // .ogg external streams (e.g. Wikimedia) fail to decode in several mobile browsers —
   // skip them so the reliable generated Voice Mantra player is used instead.
-  if (isOmMantra(mantra)) return "";
   if (url.toLowerCase().endsWith(".ogg")) return "";
   return url;
 };

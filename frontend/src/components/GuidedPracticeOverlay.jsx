@@ -1,9 +1,14 @@
 import { GuidedPracticeContent } from "./guided/GuidedPracticeContent";
 import { formatTime } from "./guided/guidedNarrationUtils";
 import { useGuidedPracticeEngine } from "./guided/useGuidedPracticeEngine";
+import { useEffect } from "react";
 
 export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit }) {
   const engine = useGuidedPracticeEngine({ practice, stepsOverride });
+
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("soul-temple:guided-overlay-open"));
+  }, []);
 
   if (!practice) return null;
 
@@ -13,6 +18,10 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       onExit={onExit}
       muted={engine.muted}
       setMuted={engine.setMuted}
+      voiceVolume={engine.voiceVolume}
+      setVoiceVolume={engine.setVoiceVolume}
+      ambientVolume={engine.ambientVolume}
+      setAmbientVolume={engine.setAmbientVolume}
       isComplete={engine.isComplete}
       bgGradient={engine.bgGradient}
       elColor={engine.elColor}

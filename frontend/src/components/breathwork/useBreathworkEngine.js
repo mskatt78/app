@@ -31,6 +31,13 @@ const createFilteredNoise = (audioContext, frequency, Q = 1) => {
   return { source: noise, output: filter };
 };
 
+const PACE_MULTIPLIERS = { classic: 1, gentle: 1.5, slow: 2 };
+export const BREATH_PACE_OPTIONS = [
+  { id: "classic", label: "Classic", hint: "As designed" },
+  { id: "gentle", label: "Gentle", hint: "1.5× slower" },
+  { id: "slow", label: "Slow & Soft", hint: "2× slower" },
+];
+
 const createManagedTimeout = (callback, delayRange = [1000, 2000]) => {
   let timeoutId = null;
   let active = true;
@@ -67,8 +74,10 @@ export const useBreathworkEngine = ({ api }) => {
   const [cycleCount, setCycleCount] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [selectedSound, setSelectedSound] = useState("tone");
+  const [pace, setPace] = useState("classic");
 
   const intervalRef = useRef(null);
+  const paceRef = useRef(1);
   const phaseRef = useRef(breathPhase);
   const activeSessionRef = useRef(activeSession);
   const isPlayingRef = useRef(isPlaying);
@@ -397,6 +406,10 @@ export const useBreathworkEngine = ({ api }) => {
   }, [breathPhase]);
 
   useEffect(() => {
+    paceRef.current = PACE_MULTIPLIERS[pace] || 1;
+  }, [pace]);
+
+  useEffect(() => {
     activeSessionRef.current = activeSession;
     isPlayingRef.current = isPlaying;
     selectedSoundRef.current = selectedSound;
@@ -451,7 +464,7 @@ export const useBreathworkEngine = ({ api }) => {
           return 0;
         }
 
-        const increment = 100 / (phaseDuration * 10);
+        const increment = 100 / (phaseDuration * paceRef.current * 10);
         const nextProgress = prev + increment;
         if (nextProgress >= 100) {
           const currentIndex = phases.indexOf(currentPhase);
@@ -544,6 +557,9 @@ export const useBreathworkEngine = ({ api }) => {
     closeSession,
     startSession,
     getBreathCircleSize,
+    pace,
+    setPace,
     availableSoundOptions: BREATHWORK_SOUND_OPTIONS,
+    paceMultiplier: PACE_MULTIPLIERS[pace] || 1,
   };
 };
