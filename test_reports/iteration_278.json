@@ -1,0 +1,33 @@
+{
+  "summary": "Pass 41 (Iteration 278) verification of Shamanic Elements Soul Temple 2.0 — both backend and mobile-390x844 frontend. Backend: 17/17 pytest cases in test_pass41_regression.py passed (mystery-schools egyptian_mystery reconstruction present with Thoth/Isis/Osiris/Hathor/Hermetic keywords; 14 mantras all have valid /audio/mantras/*.mp3; /api/daily-practice returns daily_lens; /api/sound-frequencies includes dolphin with audio; soundscapes CRUD works with QA cookie; anonymous soundscapes 401; admin endpoints 401/403 for QA + anonymous; /privacy-policy.html and /.well-known/assetlinks.json both 200 valid; /images/power-animal-journey.jpg + /images/hero-main.jpg both 200; /api/playbilling/config returns verification_configured=false as documented; /api/auth/me works with cookie). Frontend mobile: dashboard renders hero artwork + 6 dashboard-section-* groups, no Demo/Admin tiles for QA user, mobile-menu-btn opens dashboard-drawer-nav with 31 items (no Demo entry), drawer scrolls (scrollHeight 1595 > clientHeight 658), / redirects to /dashboard when logged in, page reload preserves auth, browser back from /yoga returns to /dashboard (not sign-in), Meditations guided overlay exposes Voice/Speed/Duration selectors + guided-volume-panel-btn opening voice + ambient sliders, mantra-card-1 opens with audio-play-btn present and clickable, breath-pace-selector shows Classic/Gentle/Slow & Soft (2× slower) on both regular sessions AND Kapalabhati/Fire Breath session-card-2 (gentle pacing available — not forced rapid), power-animal-journey.jpg renders on /shamanic-practices, no broken images observed.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Dashboard header", "issues": ["Greeting 'Good afternoon, Demo' shows QA display name literally — per handoff note this is cosmetic and not a Demo tile. No action needed."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_pass41_regression.py",
+    "/app/test_reports/pytest/pass41.xml"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Mindfulness practice-card-1 opens inline (URL stays /mindfulness) — verify this is intentional (modal/detail-in-page) vs missing route. Content renders and no broken layout, so non-blocking.",
+    "Shamanic-practices cards do not use practice-card-* / shamanic-card-* data-testid pattern; adding a consistent testid would improve testability. Existing image (power-animal-journey.jpg) still renders correctly."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_pass41_regression.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "QA user demoqa_740fefc1@example.com / DemoPass123! (cookie login via POST /api/auth/login).",
+  "seed_data_creation": "Test created and deleted one soundscape 'TEST_pass41' via authenticated CRUD; cleaned up in-test.",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Pass 41 checklist verified end-to-end. Backend regression tests are at /app/backend/tests/test_pass41_regression.py (17 cases, all pass). Frontend mobile 390x844 flow uses cookie login (page.evaluate fetch to /api/auth/login) — the / -> /dashboard redirect, dashboard-drawer-nav scrolling with no Demo entry, guided volume panel (guided-volume-panel-btn -> guided-voice-volume-slider, guided-ambient-volume-slider), breath-pace-selector on both classic and Kapalabhati sessions are all working. Mantra <audio> element is not a plain HTMLAudioElement (state None from document.querySelector('audio')) but the audio-play-btn click did not error — trust the previous iter277 observation that timer advances. Play Billing verification_configured=false is intentional (awaiting service-account JSON).",
+  "rca of the issue": "N/A — all Pass 41 audit items verified passing."
+}

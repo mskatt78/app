@@ -4987,3 +4987,11 @@
 - Desktop sidebar also made sticky + scrollable.
 - Shamanic deepening "skip" in iter277 explained: shamanic_practices is in SECTION_UNCAPPED_UNLOCK_IDS (27 real items, no padding by design). Elemental temples verified: 9 progressive deepening entries with distinct stage content.
 - Credits concern answered via support agent (usage breakdown at Profile -> Account settings -> Credit usage).
+
+## Pass 41 Source Master Integration (2026-06 fork, iteration 278)
+- User supplied SoulTemple_PASS41_READY_FOR_EMERGENT.zip as approved current source master (Passes 32-41 built on top of the iteration-277 codebase). Verified it was a clean SUPERSET (no files lost) before syncing.
+- Synced backend/ + frontend/ from zip into /app, preserving .env files, .git, .emergent, /app/memory. Pass docs copied to /app root (PASS32-41, EMERGENT_HANDOFF_PASS41.md).
+- ONE build fix required: content.py line 949 had a truncated `EGYPTIAN_` statement (EGYPTIAN_MYSTERY_SCHOOL_TEACHINGS list lost in user's export). Reconstructed 4 entries in identical schema/tone (stream "egyptian_mystery"). Backend then started cleanly.
+- Pass 41 adds: dashboard hero artwork banner, mystery streams (Hathor, Seven Sisters, Sophia Dragons, Magdalene, Isis, Hermetic Bardon, Merlin, Egyptian), Mindful Eating, session persistence fixes, Kapalabhati gentle pacing, content integrity sweeps.
+- Iteration 278 testing: 100% backend (17/17 pytest, /app/backend/tests/test_pass41_regression.py) + 100% frontend mobile 390x844 (drawer scroll, no Demo, admin protected, back/home, auth persistence, guided volume mixer, mantra audio, breath pacing, images, privacy-policy.html + assetlinks.json reachable).
+- SAFE TO REDEPLOY. Play Billing still awaits user's Play Console service-account JSON (GOOGLE_PLAY_SERVICE_ACCOUNT_JSON + PLAY_LIFETIME_PRODUCT_ID env vars).
