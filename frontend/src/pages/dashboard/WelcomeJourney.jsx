@@ -15,7 +15,7 @@ const WELCOME_PRACTICE = {
   category: "welcome",
   steps: [
     "Welcome, sacred traveller. You have just crossed the threshold into the Soul Temple. Find a comfortable seat, soften your shoulders, and let your eyes gently close. There is nowhere else you need to be.",
-    "Place one hand on your heart and one on your belly. Breathe in slowly through the nose for four counts... hold softly... and release through the mouth for six. With each exhale, feel yourself arriving more fully into this moment, into this body, into this temple.",
+    "Place one hand on your heart and one on your belly. Breathe in slowly through the nose for four counts... hold softly... and breathe out through the mouth for six. With each exhale, feel yourself arriving more fully into this moment, into this body, into this temple.",
     "Silently offer an intention for your journey here — one word is enough. Peace. Healing. Remembering. Whatever rises, let it settle into your heart like a seed into rich earth. This temple will help it grow.",
     "Slowly return your awareness to the room. Wiggle your fingers, take one deeper breath, and when you are ready, open your eyes. Your journey has begun — the temple doors are open, and every practice inside is a homecoming.",
   ],

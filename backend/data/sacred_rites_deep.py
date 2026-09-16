@@ -6,7 +6,7 @@ Adds: rites[], rituals[], embodiment_practices[], preparation, integration_guida
 MUNAY_KI_DEEP = {
     "id": "munay-ki",
     "title": "Munay Ki — The 9 Great Rites of Initiation",
-    "description": "A profound lineage transmission from the Q'ero shamans of Peru. Receive the 9 sacred rites that transform the luminous energy field, awaken dormant gifts, and connect you to a living lineage of healers across time.",
+    "description": "A contemporary presentation of Munay-Ki rites associated with teachings attributed to Q'ero/Andean traditions. This Temple approaches them respectfully as ceremonial and spiritual practices, without claiming that ritual literally transforms a measurable energy field or guarantees healing.",
     "price": 197.00,
     "category": "sacred_rites",
     "level": "All Levels",
@@ -45,7 +45,7 @@ MUNAY_KI_DEEP = {
                 "After receiving this rite, you may notice you feel less energetically affected by difficult people or places. "
                 "The bands continue to strengthen over time as you tend to them through practice."
             ),
-            "what_it_heals": "Protection from psychic intrusion. Transforms and metabolises heavy energies. Builds energetic resilience and sovereignty.",
+            "what_it_heals": "Traditionally framed around protection and working with heavy energy; here it can be used as a symbolic practice for boundaries, discernment and steadiness.",
             "embodiment_practice": {
                 "name": "Activating the Bands",
                 "steps": [
@@ -987,13 +987,13 @@ WOMB_RITE_DEEP = {
                 "Unlike other lineage rites, the 13th Rite of the Womb is a single, complete transmission. It is passed woman to woman "
                 "(or healer to recipient), through the hands, and carries a single, world-changing message:\n\n"
                 "'The womb is not a place to store fear and pain. The womb is to create and give birth to life.'\n\n"
-                "When these words are spoken during the transmission, something shifts. Not just conceptually — in the body. "
+                "When these words are spoken in ceremony, pause and notice whether anything shifts for you—in meaning, sensation, emotion, or not at all. "
                 "The womb (and the corresponding sacral space in those without a womb) releases its grip on what it has been holding. "
                 "Fear. Grief. Ancestral memory. Collective wound.\n\n"
                 "The rite was given by a spirit known as the Ñust'a of the Womb to the women of the Amazonian lineage, and then to "
                 "Marcela Lobos, who received the blessing to share it worldwide. It has now been passed to millions of women across the globe."
             ),
-            "what_it_heals": "Ancestral feminine wounding stored in the womb. Fear, grief, shame, and trauma held in the sacral centre across generations.",
+            "what_it_heals": "A symbolic container for reflecting on grief, shame, inherited stories and feminine-lineage patterns without assuming trauma is physically stored in the womb.",
             "embodiment_practice": {
                 "name": "Womb Breathing",
                 "steps": [
@@ -1012,7 +1012,7 @@ WOMB_RITE_DEEP = {
             "name": "The Lineage Healing",
             "type": "Ancestral Clearing",
             "description": (
-                "The 13th Rite heals not only you but every woman in your maternal lineage, extending three generations forward and back "
+                "Some contemporary teachings describe the 13th Rite as reaching through the maternal lineage. In this Temple, treat that as spiritual symbolism rather than a guaranteed effect on other people or generations. The rite may invite you to reflect on patterns extending forward and back "
                 "as far as the lineage goes. When you receive this rite, you become a healer of your ancestral line.\n\n"
                 "This understanding brings enormous responsibility and also enormous liberation. Much of what we carry in our wombs — "
                 "the grief, the exhaustion, the sense that love is dangerous or that our bodies are objects — is not originally ours. "
@@ -1020,7 +1020,7 @@ WOMB_RITE_DEEP = {
                 "The healing practice that accompanies this understanding is ancestral: calling the women of your lineage into your prayer, "
                 "releasing them, forgiving them, and freeing the entire lineage to evolve."
             ),
-            "what_it_heals": "Intergenerational trauma. Inherited feminine wounds. Frees the maternal lineage across time.",
+            "what_it_heals": "Reflection on intergenerational patterns, inherited stories and the choices you wish to carry forward or change.",
             "embodiment_practice": {
                 "name": "Ancestral Feminine Release",
                 "steps": [
@@ -1047,7 +1047,7 @@ WOMB_RITE_DEEP = {
                 "The Womb Rite ultimately invites every woman into her full creative power — not just in reproduction but in every act of "
                 "bringing life, meaning, and beauty into the world."
             ),
-            "what_it_heals": "Creative blocks, suppressed life force, disconnection from the body's pleasures. Restores generative vitality.",
+            "what_it_heals": "Creative blocks, disconnection from pleasure or generative expression; invites renewed relationship with creativity and embodied choice.",
             "embodiment_practice": {
                 "name": "Womb Awakening Spiral",
                 "steps": [

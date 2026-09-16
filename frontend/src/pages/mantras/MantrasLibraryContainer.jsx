@@ -119,13 +119,13 @@ const MantrasLibrary = ({ user, api }) => {
   const tempoLabels = { slow: "Slow (Relaxed)", normal: "Normal", fast: "Fast (Energizing)" };
   
   // Mantra sound modes: spoken chant, soft drone, or bell tones
-  const [mantraSoundMode, setMantraSoundMode] = useState("spoken"); // spoken | drone | bell
+  const [mantraSoundMode, setMantraSoundMode] = useState("spoken"); // authentic practice: pronunciation/natural sound only
 
   // Generated mantra sound state
   const mantraAudioCtxRef = useRef(null);
   const mantraGainRef = useRef(null);
   const mantraIntervalRef = useRef(null);
-  const useGeneratedSound = mantraSoundMode !== "spoken";
+  const useGeneratedSound = false; // Never synthesize a fake mantra chant. Use real source audio when available, otherwise pronunciation + self-chanting.
 
   const elements = ["all", "Earth", "Water", "Fire", "Air", "Spirit"];
   const finalizeCheckoutIfPresent = premium.finalizeCheckoutIfPresent;
@@ -658,7 +658,7 @@ const MantrasLibrary = ({ user, api }) => {
         useGeneratedSound={useGeneratedSound}
         setUseGeneratedSound={(value) => setMantraSoundMode(value ? "drone" : "spoken")}
         mantraSoundMode={mantraSoundMode}
-        setMantraSoundMode={setMantraSoundMode}
+        setMantraSoundMode={() => setMantraSoundMode("spoken")}
         resetChanting={resetChanting}
         startChanting={startChanting}
         stopChanting={stopChanting}

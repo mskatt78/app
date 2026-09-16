@@ -1,5 +1,5 @@
-// Mantra Chanting Audio Generator using Web Audio API
-// Generates meditation bell sounds and om chanting tones
+// Optional non-vocal practice tones.
+// IMPORTANT: oscillator output is never presented as an authentic mantra chant or healing frequency.
 
 export const createMantraAudioContext = () => {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -49,7 +49,7 @@ export const playBellTone = (ctx, gainNode, frequency = 528, duration = 4) => {
 export const playOmTone = (ctx, gainNode, baseFreq = 136.1, duration = 6) => {
   const now = ctx.currentTime;
   
-  // Om is traditionally at 136.1 Hz (ॐ frequency)
+  // A low drone used only as an optional non-vocal tone; no traditional frequency claim is made.
   const frequencies = [
     baseFreq,        // Root
     baseFreq * 2,    // Octave
@@ -106,7 +106,7 @@ const resolveMantraBaseFreq = (mantraText = "", element = "Spirit") => {
   return ELEMENT_FREQUENCIES[element] ? ELEMENT_FREQUENCIES[element] / 2 : 144;
 };
 
-// Chant-style mantra rendering for ALL mantras
+// Legacy synthetic drone renderer. Do not expose this as a mantra voice/chant in the member UI.
 export const playChantForMantra = (ctx, gainNode, mantraText = "", element = "Spirit", duration = 5) => {
   const now = ctx.currentTime;
   const baseFreq = resolveMantraBaseFreq(mantraText, element);
@@ -189,7 +189,7 @@ export const createMantraChantPattern = (ctx, gainNode, mantraLength = 5, tempo 
     // Bell at start
     playBellTone(ctx, gainNode, 528, 2);
     
-    // Om tone midway
+    // Low drone midway
     setTimeout(() => {
       if (isRunning) {
         playOmTone(ctx, gainNode, 136.1, cycleDuration * 0.6 * 1000);
@@ -222,7 +222,7 @@ export const createMantraChantPattern = (ctx, gainNode, mantraLength = 5, tempo 
   };
 };
 
-// Chakra frequencies for different mantras
+// Legacy tone mappings for optional non-vocal sound design; not physiological or traditional claims
 export const CHAKRA_FREQUENCIES = {
   root: 256,      // C - LAM
   sacral: 288,    // D - VAM
@@ -239,7 +239,7 @@ export const ELEMENT_FREQUENCIES = {
   Water: 288,   // Sacral
   Fire: 320,    // Solar plexus
   Air: 384,     // Throat
-  Spirit: 432,  // Universal frequency
+  Spirit: 432,  // neutral sound-design default
 };
 
 // Create a mantra-specific sound based on element

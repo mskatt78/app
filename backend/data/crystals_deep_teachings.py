@@ -1,6 +1,6 @@
 """
 Deep Teachings for all 27 Crystals in Shamanic Elements Soul Temple.
-Each crystal receives: why_this_heals, extended_teachings, practice_guide.
+Each crystal receives legacy API field `why_this_heals`, extended_teachings, practice_guide. The field name is retained for compatibility; content is spiritual/reflective, not medical treatment.
 Applied via update_one during startup seeding to db.crystals_deep.
 """
 
@@ -11,7 +11,7 @@ CRYSTAL_DEEP_TEACHINGS = {
 
 On the energetic level, Clear Quartz is the only crystal that resonates with all seven chakras simultaneously. It does not impose its own frequency — it amplifies and clarifies whatever is already present. This makes it the greatest tool for intention work: it does not override your will, it magnifies it. Whatever you are working with — whether healing grief, building confidence, or opening to spirit — Clear Quartz makes your intention louder, clearer, and more sustained.
 
-The 'Master Healer' title is not metaphor. Indigenous healing traditions on six continents have independently arrived at clear quartz as a sacred tool. The common thread is always the same: this crystal clears confusion, brings light where there was darkness, and creates a bridge between the human and the divine. It heals by restoring clarity — and when we are clear, we know what we need and our bodies can heal themselves.""",
+The 'Master Healer' title belongs to modern crystal-healing language rather than a medical classification. Indigenous healing traditions on six continents have independently arrived at clear quartz as a sacred tool. The common thread is always the same: this crystal clears confusion, brings light where there was darkness, and creates a bridge between the human and the divine. It heals by restoring clarity — and when we are clear, we know what we need and our bodies can heal themselves.""",
 
         "extended_teachings": """In ancient Egypt, clear quartz crystal balls were placed in the hands of the dead to light their journey through the underworld. The Egyptians believed quartz was frozen light — divine radiance crystallized into matter. Priests and priestesses of Isis carried quartz wands in healing ceremonies, using them to channel the light of Ra into the bodies of the sick.
 
@@ -31,17 +31,17 @@ Sit comfortably with your spine tall. Place the crystal in your dominant (giving
 
 Now speak to the crystal — aloud or in your heart: 'Thank you for your service. Thank you for your clarity and your light. I ask you now to amplify my healing intention.' Name your intention clearly and specifically. Not 'I want to be healthier' but 'I am releasing the pattern of self-abandonment and reclaiming my vitality.'
 
-Hold the intention in your mind as a bright, clear image. Feel what it will feel like when this is your reality. The quartz is now amplifying this vision, broadcasting it like a radio transmitter into your energy field and beyond.
+Hold the intention in your mind as a bright, clear image. Feel what it will feel like when this is your reality. Imagine the quartz as a symbolic anchor for this vision, returning your attention to the intention whenever you see or hold it.
 
 Place the crystal on your heart or third eye. Rest for 10-20 minutes. Simply receive. You may see colors, feel warmth, or experience profound peace. Trust whatever comes.
 
-After your practice, thank the crystal and place it somewhere visible — on your altar, beside your bed, on your desk — so it continues broadcasting your intention into your environment. Cleanse and re-program weekly.""",
+After your practice, thank the crystal and place it somewhere visible — on your altar, beside your bed, on your desk — as a visible reminder of your intention. Cleanse and re-program weekly.""",
     },
 
     "amethyst": {
         "why_this_heals": """Amethyst is the stone of the spiritual bridge — the archetype of the one who stands between the worlds of the ordinary and the divine. Its violet color is itself significant: violet occupies the threshold where visible light meets the ultraviolet spectrum that human eyes cannot see. Working with amethyst teaches us to perceive what lies just beyond ordinary perception.
 
-Neurologically, the violet wavelength has been shown to slow brainwave activity from beta (anxious, active thinking) toward alpha and theta (relaxed, meditative, dreaming). This is why amethyst placed on the third eye during meditation deepens the experience — it literally entrains the brain toward receptive states where healing, insight, and spiritual contact become possible.
+Violet sits near the edge of the visible spectrum and has long carried threshold symbolism in spiritual practice. Placing amethyst near the brow can serve as a tactile and visual focus for meditation; the stone itself is not established to entrain brainwaves or produce a particular neurological state.
 
 The Greek root 'amethystos' — 'not intoxicated' — points to its deepest medicine: sobriety of spirit. Not sobriety in the moralistic sense, but in the sense of seeing clearly without the intoxication of fear, ego, or compulsive thought. Amethyst helps us step back from the obsessive mind and see the larger pattern. In this clarity, addiction, anxiety, and spiritual confusion all begin to dissolve — not because the crystal is magic, but because it supports the quality of awareness in which healing naturally occurs.""",
 
@@ -855,7 +855,7 @@ Lie down comfortably. Place your kyanite blade on your throat — the alignment 
 
 Begin with the Kyanite Breath: Breathe in through the nose to a slow count of 6. As you breathe in, visualize silver-blue light entering through the crown of your head and flowing down through the center of your body — through the third eye, throat (where the crystal rests), heart, solar plexus, sacral, and root — anchoring in the earth beneath you. Hold briefly at the bottom. Exhale slowly, feeling your whole system settle, align, and integrate.
 
-Repeat 7 times. With each cycle, you may feel increasing calm, clarity, or a subtle sense of 'clicking into place.' This is the chakra alignment occurring naturally in response to kyanite's frequency.
+Repeat 7 times. With each cycle, you may feel increasing calm, clarity, or a subtle sense of 'clicking into place.' If you notice a sense of alignment, receive it as your own embodied experience rather than proof of a crystal frequency acting on the body.
 
 After your breath cycles, rest in stillness for 10-15 minutes. Allow the alignment to integrate. You may experience: warmth at specific chakra points, tingling, spontaneous emotional release, or simply a profound sense of peace.
 

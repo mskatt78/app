@@ -851,7 +851,7 @@ LIGHT_CODES = {
             "image_url": "https://images.pexels.com/photos/6931975/pexels-photo-6931975.jpeg?auto=compress&cs=tinysrgb&w=400"
         },
         {
-            "id": "ll3", "name": "DNA Activation Helix",
+            "id": "ll3", "name": "DNA Helix · Ancestry & Living Pattern",
             "symbol": "🧬",
             "description": "Double helix spiraling upward with light codes embedded.",
             "activation": "Visualize your DNA strands glowing and activating dormant codes.",
@@ -1050,7 +1050,7 @@ LIGHT_CODES = {
             "symbol": "💙",
             "description": "Sirius — the brightest star in Earth's sky — is the spiritual sun behind our physical sun. Ancient Egyptians oriented entire temples to Sirius, celebrating its heliacal rising as the source of the Nile's flooding. Sirian consciousness carries advanced healing codes, dolphin and whale intelligence, and the wisdom of Atlantis.",
             "activation": "Visualize electric blue-white light streaming from Sirius through your crown and into your entire energy body. Feel old wounds dissolving at the cellular level. Say: 'Sirian healing light restores my original divine blueprint.'",
-            "purpose": "Advanced healing, DNA activation, dolphin-whale consciousness connection, accessing Atlantean and ancient Egyptian wisdom",
+            "purpose": "Symbolic dolphin-whale contemplation, oceanic listening, and contemporary Atlantean/Egyptian esoteric imagery",
             "practice": "Research Sirius's role in ancient Egypt. Meditate facing the direction of Sirius (southeast in the northern hemisphere) at dawn. Listen for cetacean (dolphin/whale) songs in your inner hearing.",
             "image_url": "https://images.unsplash.com/photo-1597366812780-bc0f837f6ca6?auto=format&w=400"
         },
@@ -1131,7 +1131,7 @@ LIGHT_CODES = {
             "symbol": "☸",
             "description": "The center of the Milky Way galaxy — 26,000 light years away — emits massive pulses of gamma rays and cosmic information. The Maya tracked the galactic center alignment that occurs every 26,000 years. These pulses carry evolutionary upgrade codes for all life in the galaxy.",
             "activation": "Stand under the open sky, ideally at night. Feel the center of the galaxy — in the direction of Sagittarius — sending pulses of evolutionary energy through you. Your DNA is an antenna receiving these cosmic transmissions.",
-            "purpose": "Evolutionary upgrades, galactic consciousness, DNA activation at the highest level, receiving cosmic intelligence",
+            "purpose": "Contemporary galactic contemplation, awe, symbolic evolution, and reflective cosmic imagery",
             "practice": "Study the Mayan Long Count calendar and galactic center alignment. On solstices and equinoxes, meditate facing the galactic center direction (Sagittarius) as the galactic transmissions are strongest.",
             "image_url": "https://images.unsplash.com/photo-1762429121350-6c3dec288cbf?auto=format&w=400"
         },
@@ -1311,14 +1311,14 @@ LIGHT_CODE_CATEGORY_CONTEXT = {
     },
     "light_language_symbols": {
         "lineage": "Visionary art, ecstatic prayer, sigil traditions, kundalini imagery, shamanic songlines, and modern energy-healing transmissions",
-        "healing_lens": "Symbolic activation, imagination, subtle-body entrainment, and emotional release",
+        "healing_lens": "Symbolic contemplation, imagination, subtle-body language, and emotional expression",
         "category_name": "light language",
         "extended_frame": "Light language works through felt resonance more than literal translation. The symbol gives the psyche permission to move beyond linear thought and into intuition, image, and embodied knowing.",
         "practice_frame": "Ground first, then work with one symbol at a time. Let breath, sensation, and imagery unfold naturally so the body can integrate the activation without strain.",
     },
     "galactic_codes": {
         "lineage": "Ancient star lore, Egyptian and Mayan sky temple alignments, Polynesian navigation, Hermetic cosmology, and contemporary starseed metaphysics",
-        "healing_lens": "Cosmic orientation, mythic remembrance, and soul-scale meaning",
+        "healing_lens": "Cosmic orientation, mythic remembrance, awe, and soul-scale meaning",
         "category_name": "galactic codes",
         "extended_frame": "Star teachings heal by widening identity. They remind the seeker that life is part of a greater order and that personal suffering can be re-held inside a larger cosmology of purpose, timing, and becoming.",
         "practice_frame": "Work with the sky slowly and reverently. Let awe expand your field, but return every experience back into the body, breath, and Earth so the transmission becomes lived wisdom.",
@@ -1336,54 +1336,54 @@ LIGHT_CODE_CATEGORY_CONTEXT = {
 LIGHT_CODE_DEEP_TEACHINGS = {
     "sg1": {
         "lineage": "Temple geometry · Hermetic schools · Vedic cosmology",
-        "why_this_heals": "The Flower of Life heals by restoring the psyche's memory of belonging. Trauma often leaves the nervous system feeling isolated, random, and cut off from any larger order. This pattern counters that fragmentation. Its repeating circles reveal that life grows through relationship, not separation. When the eyes rest on the form, the mind begins to move from chaos into coherence; the body receives the message that it is part of a living whole. This is why the Flower of Life is so regulating: it does not merely symbolize unity — it entrains awareness toward it.",
+        "why_this_heals": "The Flower of Life may support contemplation of belonging through its repeating circles and relationships between part and whole. Rather than treating the geometry as a nervous-system treatment, use the pattern as an attention anchor and ask what connection, boundary and interdependence mean in your lived experience.",
         "ancient_traditions": "Versions of this motif appear in Egyptian temple carving, medieval esoteric manuscripts, and Islamic geometric art. In modern sacred-geometry schools it is read as a map of emergence: the One becoming the many without ever ceasing to be One. The pattern has also become central to contemporary healing modalities because it resembles how life replicates itself cell by cell, sphere by sphere, from a shared source.",
         "extended_teachings": "The Flower of Life is a philosophy disguised as a pattern. Every circle retains its own boundary while remaining inseparable from the field. This is profound medicine for people healing attachment wounds: intimacy does not require collapse, and individuality does not require exile. The symbol teaches relational wholeness — a form of consciousness in which self and cosmos mirror one another.",
         "practice_guide": "Sit with the image at heart level. Breathe in for six, out for six. On each inhale, imagine one circle filling with light; on each exhale, feel that light shared with the surrounding circles. After several breaths, place a hand on your heart and quietly ask: 'Where have I believed myself separate from life?' Let the answer arise without forcing it.",
     },
     "sg2": {
         "lineage": "Kabbalistic angelology · Platonic geometry · ceremonial protection arts",
-        "why_this_heals": "Metatron's Cube heals by giving structure to overwhelming energy. Many seekers feel spiritually open but poorly contained. This pattern offers containment without shutting the heart. Because it holds all five Platonic solids in potential, it symbolizes the harmonizing of elemental forces inside one field. Working with it can feel like spiritual boundaries being re-drawn from the inside.",
+        "why_this_heals": "Metatron’s Cube may support reflection on structure, boundaries and relationship. In contemporary sacred-geometry practice it can symbolize elemental balance and containment; any felt response belongs to the practitioner’s experience rather than a guaranteed energetic effect.",
         "ancient_traditions": "Its modern name comes from the angel Metatron of Jewish mystical literature, yet the underlying geometry belongs to older streams of number mysticism and temple proportion. Contemporary energy workers use it in clearing and protection work because the pattern implies ordered relationship between all elemental forms.",
         "extended_teachings": "Protection in authentic spiritual traditions is not an anxious wall; it is right relationship. Metatron's Cube points toward that higher form of protection — a field so coherent that distortion naturally loses its hold. This is why it is loved in ceremonial practice: it teaches order, not fear.",
     },
     "sg3": {
         "lineage": "Sri Vidya tantra · yantra worship · goddess mysticism",
-        "why_this_heals": "Sri Yantra heals by reconciling ascent and descent — spirit moving toward matter and matter returning toward spirit. Many people suffer because they split transcendence from embodiment. Sri Yantra refuses that split. Its interlocking triangles reveal that awakening is not escape from life but intimate participation in it.",
+        "why_this_heals": "Sri Yantra offers a profound contemplative map of ascent, descent and the relationship of consciousness with manifestation within Sri Vidya traditions. Approach it respectfully as a sacred yantra, not a generic healing device; let the practice invite embodiment rather than escape from ordinary life.",
         "ancient_traditions": "In the Sri Vidya tradition of India, this yantra is not decoration but living deity-body. The bindu at the center is the womb-point of consciousness from which all manifestation unfolds. Practitioners meditate through its triangles, lotus rings, and outer square as stages of return to the Divine Mother.",
         "extended_teachings": "The power of Sri Yantra lies in its paradox: the closer you move toward the center, the more the outer world is included rather than denied. This makes it medicine for spiritual bypassing. The symbol teaches that liberation and incarnation are two movements of the same love.",
     },
     "sg19": {
         "lineage": "Hermetic geometry · I Ching correspondences · contemplative science",
-        "why_this_heals": "The 64 Tetrahedron Grid heals by mirroring one of the deepest intuitions in both mysticism and science: life is patterned intelligence. The link to the 64 codons of DNA gives the mind a bridge between esoteric symbol and biological reality, helping the seeker feel that spirit and matter need not be enemies.",
+        "why_this_heals": "The 64 Tetrahedron Grid is a modern sacred-geometry motif. The number 64 can invite symbolic comparison with systems that also contain 64 units, including the genetic code’s 64 codons, but this numerical resemblance does not establish a biological mechanism or DNA activation. Use it as contemplation of pattern and complexity.",
         "extended_teachings": "This pattern is powerful for those who feel alienated from the body or from science. It invites reconciliation. Rather than imagining spirituality as vague transcendence, it proposes that the universe may be intelligible all the way down — and that your own body carries that intelligibility within it.",
     },
     "aa1": {
         "lineage": "Vedic mantra · Upanishadic cosmology · yogic sound practice",
-        "why_this_heals": "Om heals by returning attention to the primordial fact of vibration. Before the mind forms stories, the body already knows life as pulse, breath, resonance, and sound. Chanting Om regulates the breath, lengthens the exhale, and gives scattered awareness a single current to travel along.",
+        "why_this_heals": "Om is a sacred syllable with deep roots in Indian religious and philosophical traditions. Chanting can gather attention around breath, resonance and sound; approach it as a mantra practice with respect for its lineage rather than as a universal frequency treatment.",
         "ancient_traditions": "In the Upanishads, Om is described as the syllable that contains waking, dreaming, deep sleep, and the silence beyond them. It is not just a sound but a map of consciousness. Yogic traditions use it to tune the practitioner to the deeper field underlying all forms.",
     },
     "ll3": {
         "lineage": "Kundalini serpent imagery · caduceus medicine symbolism · modern genetics contemplations",
         "healing_lens": "DNA memory, evolution, embodiment, and sacred biology",
-        "why_this_heals": "The DNA Activation Helix heals because it reframes the body as an intelligent manuscript rather than a broken machine. Many people carry shame, fatigue, and ancestral burden in the tissues. Contemplating the helix invites a different experience: that life is always spiraling toward greater complexity, learning, and remembrance. This symbol can be especially regulating for seekers who feel split between spirituality and biology. It says: your cells are not obstacles to awakening; they are one of its altars.",
+        "why_this_heals": "The helix can be contemplated as a symbol of ancestry, inheritance and living complexity. This practice does not activate dormant DNA or alter genes. Let the biological form inspire reflection on what you have inherited, what you cultivate through your choices, and how you honour the body without turning genetics into a spiritual promise.",
         "ancient_traditions": "Long before the modern discovery of DNA, traditions used twin-serpent and spiraling-axis imagery to describe life force rising through the human form. The caduceus, the entwined serpents of kundalini, the world tree with ascending currents, and the double-spiral carvings of ancient cultures all point toward a recurring intuition: life evolves through paired currents moving around a central channel.",
         "extended_teachings": "Working with the helix can soften inherited fatalism. The symbol reminds us that ancestry is real, but so is emergence. DNA is memory, yes — but it is also possibility. In contemplative work, this becomes a profound healing insight: you may carry ancestral stories, yet you are not condemned to repeat them. Consciousness can participate in what is expressed, healed, and re-authored in this lineage.",
         "practice_guide": "Sit upright with one hand on your lower belly and one on your heart. Imagine two luminous currents spiraling around your spine from pelvis to crown. Inhale as they rise; exhale as they settle back into the body. After nine breaths, speak aloud: 'What is ready to be remembered, and what is ready to be released from my line?' Journal whatever comes.",
     },
     "ll17": {
         "lineage": "Tantra · serpent mysteries · spinal awakening practices",
-        "why_this_heals": "Kundalini imagery heals by honoring energy as intelligent rather than chaotic. For many people, power has become associated with danger because intense emotion, sexuality, or spiritual opening once felt overwhelming. This code offers a new relationship: power can rise with devotion, preparation, and grounding.",
+        "why_this_heals": "Kundalini imagery can invite reflection on vitality, power, devotion and grounded spiritual practice. Kundalini belongs to specific Indian yogic and tantric traditions with varied teachings; this symbol is not a promise of activation and intense experiences should never be forced.",
         "ancient_traditions": "Across India and other initiatory cultures, serpent symbolism marks transformation, shedding, and awakened life force. The serpent is not merely sexual or mystical; it is the archetype of embodied wisdom that knows when to coil, when to strike, and when to ascend.",
     },
     "gc11": {
         "lineage": "Mayan sky timing · temple astronomy · galactic cosmology",
-        "why_this_heals": "The Galactic Center Pulse heals by widening the scale of identity. Personal suffering often becomes unbearable when it is held only inside the personal story. This symbol does not erase the personal; it places it inside a vast evolutionary movement. Awe can be therapeutic because it interrupts contraction and returns the psyche to perspective.",
+        "why_this_heals": "The Galactic Center Pulse uses the real night sky as a doorway into awe and scale, alongside contemporary symbolic spirituality. Let it widen perspective without treating the galaxy as a source of coded transmissions or prescribed personal destiny.",
         "extended_teachings": "To contemplate the galactic center is to remember that human life unfolds inside a living cosmos. The value here is not escapism but re-contextualization. You are not insignificant because you are small; you are meaningful because you participate in something immeasurably large.",
     },
     "cc12": {
         "lineage": "Subtle-body synthesis · tantric chakra ascent · integral energy work",
-        "why_this_heals": "Unified Field Activation heals by ending the inner civil war between different parts of the self. Many people over-develop one center — spirituality without grounding, sexuality without heart, intellect without embodiment. This code is restorative because it asks every center to come into relationship. Coherence, not intensity, is the medicine.",
+        "why_this_heals": "Unified Field is used here as a spiritual metaphor for bringing different parts of experience into relationship. It is not a claim about a physical unified field. Use the symbol to contemplate grounding, feeling, agency, heart, voice and insight as parts of one lived whole.",
         "extended_teachings": "When the whole system is addressed, healing becomes less dramatic and more trustworthy. The practitioner learns to feel energy as continuity rather than spikes. This is mature spiritual development: less obsession with peak states, more devotion to integrated presence.",
     },
 }
@@ -1415,7 +1415,7 @@ def _enrich_light_code_entry(category_id: str, entry: dict) -> dict:
         "healing_lens": override.get("healing_lens", context["healing_lens"]),
         "why_this_heals": override.get(
             "why_this_heals",
-            f"{entry['name']} heals through coherent attention. In the stream of {context['category_name']}, symbol, breath, and focused imagination teach the nervous system that pattern exists beneath chaos. Its medicine revolves around {core_meaning}. When the mind rests with a meaningful form long enough, fragmentation softens and a steadier inner order begins to return.",
+            f"{entry['name']} may support reflective attention through symbol, breath, and focused imagination. In the stream of {context['category_name']}, its central theme is {core_meaning}. Notice what the form evokes without requiring a particular energetic, emotional, or bodily result.",
         ),
         "ancient_traditions": override.get(
             "ancient_traditions",

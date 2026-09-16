@@ -67,6 +67,15 @@ export const SacredPracticeWidget = ({ api, navigate }) => {
           {practice.daily_lens?.guidance && (
             <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed" data-testid="daily-lens-guidance">{practice.daily_lens.guidance}</p>
           )}
+          {practice.daily_lens?.companion_guidance && (
+            <p className="text-xs text-muted-foreground/80 mt-1 leading-relaxed" data-testid="daily-lens-companion">{practice.daily_lens.companion_guidance}</p>
+          )}
+          {(practice.daily_lens?.element_focus || practice.daily_lens?.spiritual_anatomy_focus) && (
+            <div className="flex flex-wrap gap-1.5 mt-2 text-[10px]">
+              {practice.daily_lens?.element_focus && <span className="px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-200">Element · {practice.daily_lens.element_focus}</span>}
+              {practice.daily_lens?.spiritual_anatomy_focus && <span className="px-2 py-1 rounded-full bg-violet-500/10 text-violet-200">Body · {practice.daily_lens.spiritual_anatomy_focus}</span>}
+            </div>
+          )}
         </div>
       </div>
 

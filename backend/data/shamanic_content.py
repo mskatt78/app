@@ -7,11 +7,11 @@ EARTH_ALTARS = [
         "name": "Earth Element Altar",
         "element": "Earth",
         "description": "A grounding altar connecting to the stability and abundance of Mother Earth. Place in the North direction.",
-        "purpose": "Grounding, stability, abundance, physical healing, connecting with ancestors",
+        "purpose": "Grounding, stability, abundance symbolism, and connection with ancestors",
         "therapeutic_applications": [
-            {"condition": "Anxiety & Overwhelm", "how_it_helps": "Earth energy grounds scattered thoughts and calms the nervous system", "practice": "Sit before altar, place hands on earth element, breathe slowly for 10 minutes"},
-            {"condition": "Financial Stress", "how_it_helps": "Earth represents abundance and material manifestation", "practice": "Offer seeds while stating money intentions, visualize roots of prosperity"},
-            {"condition": "Physical Illness", "how_it_helps": "Earth holds healing frequencies for the physical body", "practice": "Place item representing ailment on altar, ask earth spirits for healing"},
+            {"condition": "Overwhelm", "how_it_helps": "Earth symbolism can offer a steady focus for attention and grounding", "practice": "Sit before the altar, touch an earth element if you wish, and breathe comfortably while noticing weight and support"},
+            {"condition": "Material Concerns", "how_it_helps": "Earth can symbolize resources, foundations and practical stewardship", "practice": "Offer seeds while naming one practical intention and one resource already available to you"},
+            {"condition": "Times of Physical Difficulty", "how_it_helps": "The altar can provide a contemplative place for steadiness alongside appropriate healthcare", "practice": "Place a meaningful natural object on the altar and offer a prayer for support, patience or wise care"},
             {"condition": "Feeling Unrooted", "how_it_helps": "Reconnects to sense of home, belonging, and stability", "practice": "Add soil from meaningful places, meditate on your roots"}
         ],
         "items": [
@@ -41,9 +41,9 @@ EARTH_ALTARS = [
         "name": "Water Element Altar",
         "element": "Water",
         "description": "A flowing altar honoring emotions, intuition, and the sacred feminine. Place in the West direction.",
-        "purpose": "Emotional healing, intuition, dreams, feminine energy, purification",
+        "purpose": "Emotional reflection, intuition, dreams, feminine symbolism, and purification ritual",
         "therapeutic_applications": [
-            {"condition": "Grief & Loss", "how_it_helps": "Water holds and transforms emotional pain", "practice": "Let tears fall into altar water, then pour outside as release"},
+            {"condition": "Grief & Loss", "how_it_helps": "Water holds and transforms emotional pain", "practice": "If tears arise naturally, let them be present; later pour the altar water onto earth as a symbol of letting go"},
             {"condition": "Blocked Intuition", "how_it_helps": "Water element opens psychic channels", "practice": "Gaze into water vessel before sleep, ask for dream guidance"},
             {"condition": "Relationship Wounds", "how_it_helps": "Water cleanses emotional attachments and cords", "practice": "Write name of person on paper, submerge in water with forgiveness prayer"},
             {"condition": "Creative Blocks", "how_it_helps": "Water represents flow and creative juice", "practice": "Stir water clockwise while visualizing creative energy flowing"}
@@ -65,7 +65,7 @@ EARTH_ALTARS = [
             "Add blue crystals",
             "Whisper intentions into the water"
         ],
-        "activation_prayer": "Sacred waters of life, I honor your flow and wisdom. Help me release what no longer serves, trust my intuition, and move with grace through life's changes. So mote it be.",
+        "activation_prayer": "Sacred waters of life, I honor your flow and wisdom. Help me let go of what no longer serves, trust my intuition, and move with grace through life's changes. So mote it be.",
         "best_time": "During full moon, autumn, or when processing emotions",
         "weekly_practice": "Refresh altar water weekly on the same day, speak gratitude as you pour old water to plants",
         "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/3c731376069fd1b01b73d7d8cac37726ffaac9e5a54ec79085b6f93596a31bc8.png"
@@ -383,15 +383,15 @@ CREATIVE_PROCESSES = [
         "name": "Forest Bathing (Shinrin-Yoku)",
         "category": "nature",
         "element": "Earth",
-        "description": "A Japanese practice of immersing in the forest atmosphere for healing. No hiking - just presence with trees.",
+        "description": "A Japanese nature-connection practice centered on slow, sensory presence in a forest atmosphere. This version emphasizes relationship and attention rather than exercise or promised health outcomes.",
         "duration_minutes": 90,
         "materials": ["Comfortable clothes", "Optional: journal", "Water", "No phone or minimal use"],
         "therapeutic_benefits": [
-            "Reduces cortisol and blood pressure",
-            "Boosts immune system (phytoncides from trees)",
-            "Improves mood and reduces anxiety",
-            "Enhances creativity and focus",
-            "Deepens connection to nature spirits"
+            "Invites unhurried sensory attention",
+            "Creates space to notice breath, body, sound, scent and texture",
+            "Supports personal reflection and nature connection",
+            "May inspire creativity or a sense of spaciousness",
+            "Can be approached spiritually, symbolically or simply as time with trees"
         ],
         "process": [
             "Find a forest or area with mature trees",
@@ -411,15 +411,15 @@ CREATIVE_PROCESSES = [
         "name": "Earth Acupuncture (Grounding)",
         "category": "healing",
         "element": "Earth",
-        "description": "A practice of lying directly on the earth to receive her healing frequencies and discharge excess energy.",
+        "description": "A grounding ritual of resting directly on grass, sand or soil and noticing contact, weight, temperature, breath and relationship with the land.",
         "duration_minutes": 30,
         "materials": ["Blanket (optional)", "Earth/grass/sand location", "Comfortable clothes"],
         "therapeutic_benefits": [
-            "Grounds excess electromagnetic energy",
-            "Reduces inflammation through electron transfer",
-            "Balances circadian rhythms",
-            "Calms nervous system",
-            "Reconnects to Earth's Schumann resonance"
+            "Direct sensory contact with the ground",
+            "Embodied awareness of weight and support",
+            "A simple pause outdoors",
+            "Earth-centered visualization and reflection",
+            "Relationship with place and land"
         ],
         "process": [
             "Find a natural spot - grass, sand, or soil",
@@ -427,11 +427,11 @@ CREATIVE_PROCESSES = [
             "Place palms down, spread fingers into earth",
             "Breathe deeply and feel earth supporting you",
             "Visualize roots growing from your spine into earth",
-            "Release tension, pain, worry into the ground",
-            "Receive earth's healing energy rising into you",
-            "Stay for minimum 20 minutes"
+            "Notice whether any tension softens without forcing it",
+            "If it suits your spiritual practice, imagine steadiness rising from the earth",
+            "Stay only as long as is comfortable and appropriate for the conditions"
         ],
-        "integration": "Practice 2-3 times weekly. Morning is best for energy, evening for releasing.",
+        "integration": "Return when it feels supportive. Notice how different places, weather and times of day change the experience.",
         "image_url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800"
     },
     {
@@ -439,22 +439,22 @@ CREATIVE_PROCESSES = [
         "name": "Stone People Medicine",
         "category": "healing",
         "element": "Earth",
-        "description": "Working with stones as conscious beings for healing, divination, and energy work.",
+        "description": "A relational stone practice for contemplation, symbolism, divination and earth-centered ritual. You may understand stones spiritually, symbolically or simply as ancient material companions.",
         "duration_minutes": 40,
         "materials": ["Collection of stones you've gathered", "Cloth to lay them on", "Bowl of salt water"],
         "therapeutic_benefits": [
-            "Each stone carries unique medicine/frequency",
-            "Stones hold and transform energy",
-            "Ancient wisdom keepers",
-            "Grounding and stabilizing",
-            "Connection to mineral kingdom"
+            "Explore the symbolism and felt qualities you associate with different stones",
+            "Use weight, texture and temperature as sensory anchors",
+            "Contemplate deep time and the mineral world",
+            "Create a grounding ritual through attentive handling",
+            "Build respectful relationship with place and material"
         ],
         "process": [
             "Gather stones that call to you over time",
             "Cleanse in salt water under moonlight",
             "Hold each stone and ask its name/medicine",
             "Create a relationship through regular holding",
-            "Place stones on body for healing work",
+            "Place stones nearby or hold them during contemplative practice",
             "Ask stones questions for divination",
             "Return stones to earth when complete",
             "Always ask permission before taking a stone"
@@ -794,15 +794,15 @@ HEART_PRACTICES = [
         "category": "healing",
         "element": "Earth",
         "tradition": "Somatic Experiencing & Indigenous Healing Practices",
-        "description": "A gentle, body-centered approach to releasing stored trauma. This practice honors that the body holds memory and wisdom, allowing trauma to release at its own pace through somatic awareness and titration.",
+        "description": "A gentle body-centered practice for noticing guarding, sensation, body memory and protective patterns without forcing a story or catharsis. The body can communicate through sensation and movement; each person decides what their experience means.",
         "duration_minutes": 40,
-        "benefits": ["Trauma release", "Nervous system regulation", "Embodiment", "Safety restoration", "Emotional processing", "Resilience building"],
+        "benefits": ["Embodied noticing", "Grounding choices", "Gentle movement", "Emotional awareness", "Pacing and agency", "Integration"],
         "preparation": ["Safe, private space", "Blanket or comfort items", "Option to stop at any time", "Grounding objects nearby"],
         "safety_guidelines": [
             "You are always in control - stop or pause whenever needed",
             "Stay within your 'window of tolerance' - don't push into overwhelm",
             "Use grounding techniques if activation becomes too intense",
-            "This is not about re-experiencing trauma, but releasing it gently",
+            "This is not about re-experiencing trauma or forcing it to leave; stay with present-moment sensation and choice",
             "Consider working with a practitioner for deep trauma"
         ],
         "steps": [
@@ -813,9 +813,9 @@ HEART_PRACTICES = [
             "Place a hand there and breathe gently into that space",
             "Ask the body: 'What do you need me to know?'",
             "Allow any micro-movements that want to happen - trembling, twitching, stretching",
-            "If emotions arise, let them flow without story - just sensation",
+            "If emotions arise, notice them without requiring an explanation, expression or outcome",
             "Practice 'pendulation' - move attention between the tight area and a calm area",
-            "When the area softens, rest and integrate",
+            "If the area changes, notice how; if it does not, let that be information too, then rest and integrate",
             "Complete with self-compassion: 'I honor what my body has carried'"
         ],
         "grounding_techniques": [
@@ -825,7 +825,7 @@ HEART_PRACTICES = [
             "Hum or make 'voo' sound to activate vagus nerve",
             "Wrap yourself tightly in a blanket for containment"
         ],
-        "affirmation": "My body knows how to heal. I trust its wisdom and timing. I am safe now.",
+        "affirmation": "I listen to my body with curiosity. I can pause, choose, move gently, and meet this moment as it is.",
         "image_url": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800"
     },
     {
@@ -834,10 +834,10 @@ HEART_PRACTICES = [
         "category": "healing",
         "element": "Spirit",
         "tradition": "Core Shamanism & Global Indigenous Traditions",
-        "description": "A deep healing journey working with spirit allies, power animals, and ancestral helpers to address illness, imbalance, or wounds at the soul level. This practice accesses non-ordinary reality for healing.",
+        "description": "A symbolic and spiritual journey with allies, animals or ancestral figures for reflection around imbalance, difficulty or a question you are carrying. Journey imagery can be meaningful without being treated as a diagnosis or medical treatment.",
         "duration_minutes": 45,
-        "benefits": ["Soul-level healing", "Power restoration", "Spiritual cleansing", "Guidance for illness", "Energetic extraction", "Connection to helping spirits"],
-        "preparation": ["Drumming track (4-7 beats per second)", "Eye mask or dark room", "Lying position", "Clear healing intention", "Rattle (optional)"],
+        "benefits": ["Spiritual reflection", "Symbolic reconnection", "Imaginal exploration", "Ritual support", "Questions for integration", "Relationship with helping figures"],
+        "preparation": ["Steady journey drumming or a quiet soundscape", "Eye mask or dark room", "Lying position", "Clear healing intention", "Rattle (optional)"],
         "types_of_shamanic_healing": [
             {"type": "Power Retrieval", "description": "Restoring lost vitality and life force through reconnection with power animals"},
             {"type": "Soul Retrieval", "description": "Calling back soul parts lost through trauma or shock"},
@@ -853,7 +853,7 @@ HEART_PRACTICES = [
             "Call your power animal and ask them to guide you to healing",
             "Follow where they lead - trust the journey",
             "You may be taken to a healing place, a helper, or shown what needs attention",
-            "Allow the healing to occur - you may see, feel, or just know",
+            "Notice what unfolds without requiring a healing event - you may see, feel, imagine, remember, or simply rest",
             "Receive any gifts, messages, or medicine offered",
             "Thank all helpers and return through your portal",
             "Rest and integrate - journal your experience"
@@ -865,7 +865,7 @@ HEART_PRACTICES = [
             "Honor your power animal with a small offering",
             "Notice dreams and synchronicities in coming days"
         ],
-        "affirmation": "I am supported by loving spirits who guide my healing. I am never alone on this path.",
+        "affirmation": "I meet this journey with discernment, curiosity and choice, carrying forward only what feels grounded and useful.",
         "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800"
     },
     {
@@ -926,24 +926,24 @@ SHAMANIC_PRACTICES = [
         "name": "Power Animal Journey",
         "category": "power_animal",
         "element": "Spirit",
-        "description": "Journey to the Lower World to meet and connect with your power animal - a spirit ally who offers protection and guidance.",
+        "description": "A shamanic-style imaginal journey into a Lower World landscape to encounter an animal ally and explore the qualities, symbols, and guidance it may represent for you.",
         "duration_minutes": 30,
         "preparation": ["Drumming track or live drum", "Eye mask or dark room", "Comfortable lying position", "Blanket"],
         "journey_steps": [
             "Lie down and cover eyes",
-            "Begin drumming at 4-7 beats per second",
+            "Begin a steady repetitive drum rhythm that feels supportive rather than overwhelming",
             "Visualize an opening in the earth - cave, tree root, well",
             "Enter and travel downward through a tunnel",
             "Emerge into the Lower World - a natural landscape",
             "Call out: 'Power animal, please show yourself'",
             "Notice what animal appears (may not be expected)",
-            "If animal shows itself four times, it's your ally",
+            "Notice whether an animal returns or feels significant; repetition can be meaningful within some teachings, but you do not need to force certainty",
             "Spend time with the animal, ask questions",
             "Thank the animal and return through tunnel",
             "When drumming speeds up, return fully"
         ],
         "working_with_power_animal": [
-            "Dance as your power animal to embody its energy",
+            "Explore the animal's qualities through gentle movement or posture",
             "Research the animal's natural qualities",
             "Keep images of your power animal nearby",
             "Call on it in times of need",
@@ -956,18 +956,18 @@ SHAMANIC_PRACTICES = [
         "name": "Soul Retrieval Visualization",
         "category": "ancestral",
         "element": "Water",
-        "description": "A gentle visualization for calling back parts of yourself that may have fragmented due to trauma or difficult experiences.",
+        "description": "A symbolic visualization for reconnecting with qualities, needs, or parts of self that may feel distant after difficult experiences. This is a spiritual reflective practice, not trauma treatment.",
         "duration_minutes": 35,
         "preparation": ["Safe, private space", "Soft lighting", "Journal nearby", "Comfort item"],
         "visualization_steps": [
             "Create safe container with protection prayer",
             "Close eyes and ground into earth",
             "Visualize a golden thread connecting to your soul",
-            "Say: 'I call back all parts of myself lost to trauma'",
-            "See golden light traveling out, gathering fragments",
+            "Say: 'I welcome back the qualities and parts of myself that are ready to feel close again'",
+            "Imagine golden light extending outward as a symbol of reconnection",
             "Watch as pieces of your soul return on the thread",
             "Welcome each piece: 'I see you, I welcome you home'",
-            "Feel fragments integrating into your heart",
+            "Notice what it is like to welcome these qualities toward your heart and present-day self",
             "See yourself whole and complete",
             "Say: 'I am whole. All parts of me are welcome here.'"
         ],
@@ -976,7 +976,7 @@ SHAMANIC_PRACTICES = [
             "Journal about what you felt return",
             "Do gentle, nurturing activities for 3 days",
             "Avoid harsh situations while integrating",
-            "Welcome emotions that arise as parts resettle"
+            "Meet any emotions that arise gently; pause and seek appropriate support if the practice becomes overwhelming"
         ],
         "image_url": "https://static.prod-images.emergentagent.com/jobs/ecb5c296-6c15-497d-bfcb-c0023af43578/images/5ee9d8a0cb084c662bbb08b32f053b13c5a7de7c7f2370ef91f2111b020de8af.png"
     },
@@ -985,7 +985,7 @@ SHAMANIC_PRACTICES = [
         "name": "Ancestral Healing Ritual",
         "category": "shadow",
         "element": "Earth",
-        "description": "Heal patterns passed down through generations by working with ancestral spirits and releasing inherited trauma.",
+        "description": "A symbolic ancestral ritual for reflecting on family patterns, inherited stories, and what you consciously choose to carry forward or let go.",
         "duration_minutes": 45,
         "preparation": ["Ancestor altar", "White candle", "Bowl of water", "Tobacco or cornmeal offering"],
         "ritual_steps": [
@@ -994,7 +994,7 @@ SHAMANIC_PRACTICES = [
             "Speak: 'I honor all who came before me'",
             "Ask ancestors to show you a pattern needing healing",
             "Visualize the pattern as a cord or chain",
-            "Speak: 'I release this pattern with love. It ends with me.'",
+            "Speak: 'I honour what came before, and I choose a different pattern where I am able.'",
             "Visualize cutting or transforming the cord",
             "Pour water as offering: 'I cleanse this lineage'",
             "Offer tobacco: 'I honor you with gratitude'",
@@ -1005,7 +1005,7 @@ SHAMANIC_PRACTICES = [
             "Poverty consciousness",
             "Relationship trauma",
             "Addiction patterns",
-            "Health issues",
+            "Family stories about health and care",
             "Fear and anxiety",
             "Unworthiness beliefs"
         ],
@@ -1379,7 +1379,7 @@ SHAMANIC_PRACTICES = [
         "name": "Womb/Hara Healing Ceremony",
         "category": "healing",
         "element": "Water",
-        "description": "A healing ceremony for the sacred womb space (or hara/sacral center for all genders) - releasing trauma and restoring creative power.",
+        "description": "A sacred womb/hara ceremony for listening to the lower-belly center through breath, touch, imagery and choice. It may support reflection around creativity, boundaries, lineage and what you are ready to let go of, without requiring trauma catharsis.",
         "duration_minutes": 45,
         "preparation": ["Orange candle", "Rose water or flower essence", "Warm blanket", "Moonstone or carnelian crystal"],
         "ceremony_steps": [
@@ -1388,17 +1388,17 @@ SHAMANIC_PRACTICES = [
             "Lie down and place hands on lower belly",
             "Breathe deeply into this sacred center",
             "Speak to your womb/hara: 'I honor you'",
-            "Ask what needs to be released or healed",
-            "Allow any emotions, sounds, or movements",
+            "Ask what wants to be heard, honoured, softened or let go of",
+            "Allow emotions, sounds or movements only if they arise naturally; stillness is equally welcome",
             "Visualize orange-golden light filling this space",
             "Call back any creative energy given away",
             "Anoint the area with rose water",
             "Place crystal on sacral area for sealing",
-            "Rest in the healing for as long as needed"
+            "Rest and integrate for as long as feels comfortable"
         ],
         "healing_affirmations": [
             "My creative center is sacred and whole",
-            "I release all that was planted without my consent",
+            "I let go, in my own time, of what no longer belongs in my present",
             "I reclaim my creative power",
             "My womb/hara is a source of infinite wisdom",
             "I am safe in my body"

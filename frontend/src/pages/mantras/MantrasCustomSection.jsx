@@ -33,7 +33,7 @@ export const MantrasCustomSection = ({
           <Sparkles className="w-10 h-10 mx-auto mb-3 text-purple-400" />
           <p className="text-lg font-serif mb-2">Sign in to create your own mantras</p>
           <p className="text-sm text-muted-foreground mb-4">Save and organize your personal sacred words</p>
-          <Button onClick={() => navigate("/auth")} className="bg-purple-600 hover:bg-purple-700" data-testid="custom-mantras-signin-btn">
+          <Button onClick={() => navigate("/")} className="bg-purple-600 hover:bg-purple-700" data-testid="custom-mantras-signin-btn">
             Sign In
           </Button>
         </div>

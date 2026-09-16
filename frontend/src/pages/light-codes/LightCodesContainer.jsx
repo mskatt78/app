@@ -55,7 +55,7 @@ const LightCodesContainer = ({ user, api }) => {
               <p className="text-xs uppercase tracking-wider">Light Codes Tiering Active</p>
             </div>
             <p className="text-sm text-white/75 mt-1" data-testid="light-codes-premium-banner-text">
-              Each Light Code stream now holds 4 free + 10 premium transmissions, including the new Encoded Frequency collection. Unlock premium symbols through Sacred Access membership.
+              Each Light Code stream holds 4 free + 10 premium symbolic practices, including the Encoded Frequency collection. Unlock premium symbols through Sacred Access membership.
             </p>
             {activeCategory === "sacred_geometry" && (
               <p className="text-xs text-emerald-100/90 mt-2" data-testid="light-codes-geometry-accuracy-note">
@@ -84,7 +84,7 @@ const LightCodesContainer = ({ user, api }) => {
             </div>
             <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4" data-testid="light-codes-depth-framework-integration">
               <p className="text-[11px] uppercase tracking-[0.18em] text-emerald-100/80 mb-2">3 · Integration action</p>
-              <p className="text-sm text-white/75 leading-relaxed">Close every transmission with one practical behavior shift in relationship, work, or self-regulation.</p>
+              <p className="text-sm text-white/75 leading-relaxed">Close every symbolic practice with one practical integration action in relationship, work, creativity, or daily life.</p>
             </div>
           </div>
         </section>
@@ -119,7 +119,7 @@ const LightCodesContainer = ({ user, api }) => {
           <div className="w-full max-w-lg rounded-2xl border border-fuchsia-500/30 bg-[#130f1f] p-6">
             <div className="flex items-center gap-2 text-fuchsia-200 mb-2"><Lock className="w-4 h-4" /><p className="text-xs uppercase tracking-wider">Premium Light Code</p></div>
             <h3 className="text-2xl font-serif mb-2" data-testid="light-codes-premium-lock-title">{selectedLockedSymbol.name}</h3>
-            <p className="text-sm text-muted-foreground mb-4" data-testid="light-codes-premium-lock-description">This symbol transmission is premium. Continue with Sacred Access membership.</p>
+            <p className="text-sm text-muted-foreground mb-4" data-testid="light-codes-premium-lock-description">This symbolic practice is premium. Continue with Sacred Access membership.</p>
             <div className="grid sm:grid-cols-2 gap-2">
               <Button variant="outline" className="border-cyan-400/40 text-cyan-100 sm:col-span-2" onClick={() => navigate("/pricing")} data-testid="light-codes-premium-lock-subscription-button">Sacred Access</Button>
             </div>

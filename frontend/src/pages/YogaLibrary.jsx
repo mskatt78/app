@@ -568,7 +568,7 @@ const YogaLibrary = ({ user, api }) => {
 
                 {selectedPose.master_embodiment_protocol && (
                   <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20" data-testid="selected-pose-master-embodiment-protocol">
-                    <h3 className="text-sm uppercase tracking-wider text-amber-300 mb-3">Master Embodiment Protocol</h3>
+                    <h3 className="text-sm uppercase tracking-wider text-amber-300 mb-3">Pose-Specific Embodiment Guide</h3>
                     <div className="space-y-3">
                       {[
                         { key: "preparation_phase", label: "Preparation" },

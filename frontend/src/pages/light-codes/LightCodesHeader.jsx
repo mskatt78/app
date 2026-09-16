@@ -17,7 +17,7 @@ export const LightCodesHeader = ({ navigate, currentSymbolsCount, activeCategory
         </div>
       </div>
       <div className="hidden sm:flex items-center gap-3 text-xs text-muted-foreground" data-testid="light-codes-count-badge">
-        <span>{currentSymbolsCount} transmissions</span>
+        <span>{currentSymbolsCount} symbols</span>
         <span className="w-1 h-1 rounded-full bg-white/20" />
         <span>{activeCategoryName}</span>
       </div>

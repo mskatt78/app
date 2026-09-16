@@ -47,16 +47,16 @@ export const RoseTempleModals = ({
                 ))}
                 <div className="grid sm:grid-cols-2 gap-3" data-testid="rose-teaching-depth-grid">
                   <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="rose-teaching-why-heals-panel">
-                    <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
-                    <p className="text-xs text-muted-foreground">Deep feminine transmission repairs body-trust by pairing symbolic meaning with embodied pacing and relational integration.</p>
+                    <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">How This May Support You</p>
+                    <p className="text-xs text-muted-foreground">Rose-centred reflection can invite tenderness, body listening and relational integration through symbolic meaning and comfortable embodied pacing.</p>
                   </div>
                   <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="rose-teaching-safety-notes-panel">
                     <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Safety Notes</p>
-                    <p className="text-xs text-muted-foreground">If activation rises, slow your breath, orient to your environment, and return only when your body feels safe.</p>
+                    <p className="text-xs text-muted-foreground">If intensity rises, slow your breath, orient to your environment, and continue only if the practice still feels welcome.</p>
                   </div>
                 </div>
                 <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3" data-testid="rose-teaching-guided-voice-panel">
-                  <p className="text-xs uppercase tracking-wider text-rose-200 mb-2">Guided Voice Transmission</p>
+                  <p className="text-xs uppercase tracking-wider text-rose-200 mb-2">Guided Rose Journey</p>
                   <GuidedAudioButton
                     api={api}
                     script={composeDeepGuidedNarration({
@@ -96,12 +96,12 @@ export const RoseTempleModals = ({
               <p className="text-sm text-muted-foreground mb-4">{selectedPractice.description}</p>
               <div className="grid sm:grid-cols-2 gap-3 mb-4" data-testid="rose-practice-depth-grid">
                 <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="rose-practice-why-heals-panel">
-                  <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
-                  <p className="text-xs text-muted-foreground">Rose practices stabilize emotional coherence by combining breath rhythm, tenderness, and practical integration actions.</p>
+                  <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">How This May Support You</p>
+                  <p className="text-xs text-muted-foreground">Rose practices can create a gentle container for breath, tenderness, reflection and practical integration without requiring a particular emotional outcome.</p>
                 </div>
                 <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="rose-practice-safety-notes-panel">
                   <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Safety Notes</p>
-                  <p className="text-xs text-muted-foreground">Work slowly and pause when intensity exceeds consent. Ground through feet, hydration, and orientation before re-entering.</p>
+                  <p className="text-xs text-muted-foreground">Work slowly and pause whenever the practice no longer feels welcome. Reorient through your feet, surroundings and ordinary breathing before continuing.</p>
                 </div>
               </div>
               <GuidedAudioButton
@@ -138,12 +138,12 @@ export const RoseTempleModals = ({
               <p className="text-sm text-muted-foreground mb-4">{selectedRite.description}</p>
               <div className="grid sm:grid-cols-2 gap-3 mb-4" data-testid="rose-rite-depth-grid">
                 <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-3" data-testid="rose-rite-why-heals-panel">
-                  <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
-                  <p className="text-xs text-muted-foreground">Rites create threshold containers where symbolic release and embodied commitment reorganize identity toward coherence.</p>
+                  <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">How This May Support You</p>
+                  <p className="text-xs text-muted-foreground">Rites can mark a meaningful threshold through symbolism, conscious choice, embodied commitment and reflection.</p>
                 </div>
                 <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3" data-testid="rose-rite-safety-notes-panel">
                   <p className="text-[11px] uppercase tracking-wider text-amber-200 mb-1">Safety Notes</p>
-                  <p className="text-xs text-muted-foreground">Use paced breath and clear boundaries. If overwhelm appears, pause, orient, and complete grounding before closure.</p>
+                  <p className="text-xs text-muted-foreground">Use comfortable breath and clear boundaries. If you feel overwhelmed, pause, orient to the room and close the ritual simply rather than pushing through.</p>
                 </div>
               </div>
               <GuidedAudioButton

@@ -588,7 +588,7 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "energy",
         "title": "Pacific Mother Civilization, Pre-Lemurian Matrix, Original Earth Blueprint",
         "element": "Earth & Water",
-        "description": "Mu is the ancient Pacific civilization that predates even Lemuria in some traditions — the original 'mother' of humanity's spiritual lineages. Where Lemuria was associated with crystalline light body consciousness, Mu was deeply rooted in the earth herself — the first civilization to understand and embody the living intelligence of Pachamama. The word 'Mother' in many languages traces to Mu (Ma, Mama, Mater) — acknowledging this lost continent as the original source.",
+        "description": "Mu is a lost-continent story found in modern esoteric traditions. No archaeological evidence establishes Mu as an ancient Pacific civilization or source of humanity. In this Temple, Mu is used as an imaginal Earth-and-Water myth: a way to contemplate belonging, ancestry, ocean, land and our responsibility to the living Earth.",
         "teachings": ["Earth consciousness as the original human intelligence", "The feminine earth matrix as the source of all civilization", "Language origins and the sacred syllable 'Ma'", "Pacific as the sacred womb ocean", "Earth memory held in the deep ocean floor"],
         "sacred_tools": ["Pacific sea water", "Red clay (earth's original body)", "Sacred earth mud", "Spiral shells", "Ancient stone"],
         "invocation": "Mu, Ancient Mother — I reach through the deep ocean waters to find your memory. Let the original blueprint of humanity's sacred connection to Earth be restored in me. I am a child of Mu. I remember.",
@@ -606,12 +606,12 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "being",
         "title": "Crystal Temple Guardians, Heart Wisdom Keepers, Feminine Sacred Lineage",
         "element": "Water",
-        "description": "The Lemurian Priestess lineage was the spiritual backbone of the Lemurian civilization — a sacred order of women (and some men) who served as keepers of the crystal temples, healers using pure heart frequency, and communicators with the star nations. They were the ones who, as Lemuria began to sink, programmed the Lemurian seed crystals with the complete records of their civilization — encoding them into the quartz grid of the earth for future generations to rediscover.",
+        "description": "Lemurian Priestesses belong to contemporary esoteric storytelling around the lost continent of Lemuria; they are not a historically documented priesthood. Here the priestess is approached as an imaginal archetype of heart-led service, remembrance, stewardship and relationship with crystal symbolism.",
         "teachings": ["Heart-centered healing as the highest medicine", "Crystal programming and sacred record keeping", "The sacred feminine spiritual order", "Service as the highest calling", "Preserving wisdom in physical form for the future"],
         "sacred_tools": ["Lemurian seed crystals", "Rose quartz", "Pink tourmaline", "Larimar", "Sacred toning and song"],
-        "invocation": "Lemurian Priestesses, wise ones who seeded the crystals — I am one of those you seeded for. I am here. I receive the records you left for me. Let the Lemurian codes of heart healing activate in my cells now.",
+        "invocation": "Lemurian Priestesses, wise ones who seeded the crystals — I am one of those you seeded for. I am here. I receive the records you left for me. Let the Lemurian heart imagery awaken remembrance, tenderness and service in my contemplation.",
         "message": "We left everything we knew inside the crystals because we knew you would come. We knew that someday, someone would pick up one of our crystals and feel something they couldn't explain — a memory, a grief, a homecoming. We encoded love itself into the molecular structure of quartz. When you hold a Lemurian crystal, you are holding our hands across time.",
-        "practice": ["Hold a Lemurian seed crystal and run your finger along its striations — feel the transmission", "Priestess meditation: visualize a white crystal temple and meet a Lemurian priestess inside", "Program a rose quartz with heart healing intentions as the Lemurian priestesses did", "Tone 'Ah' on your exhales as the sound of the heart chakra — the Lemurian sacred sound"],
+        "practice": ["Hold a Lemurian seed crystal and run your finger along its striations — notice what the texture, pattern and symbolism evoke", "Priestess meditation: visualize a white crystal temple and meet a Lemurian priestess inside", "Program a rose quartz with heart healing intentions as the Lemurian priestesses did", "Tone 'Ah' on your exhales as the sound of the heart chakra — the Lemurian sacred sound"],
         "crystals": ["Lemurian seed quartz", "Rose quartz", "Pink tourmaline", "Larimar"],
         "chakra": "Heart",
         "color": "teal",
@@ -624,10 +624,10 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "energy",
         "title": "Sacred Healing Chambers, Crystal Technology, Record Libraries",
         "element": "Air & Spirit",
-        "description": "The Crystal Temples of Lemuria were the sacred centers of healing, record-keeping, and cosmic communication — structures built from living crystal that could amplify consciousness, record information, and transmit healing frequencies across great distances. Each temple was dedicated to a specific frequency of healing or dimension of consciousness. Many traditions hold that these temples still exist in etheric form and can be accessed in deep meditation.",
-        "teachings": ["Sacred architecture as consciousness technology", "Crystals as living record keepers", "Sound and geometry as healing forces", "The etheric templates of sacred structures", "Access to ancient healing frequencies through meditation"],
+        "description": "Crystal Temples of Lemuria are part of contemporary esoteric imagination rather than established archaeology. In this practice, an imagined crystal temple becomes a contemplative inner landscape for stillness, intention, symbolic memory and creative ritual; crystals are used as meaningful physical anchors rather than proven transmitters of distant healing energy.",
+        "teachings": ["Sacred architecture as consciousness technology", "Crystals as symbolic record keepers in esoteric practice", "Sound and geometry as contemplative and ceremonial forms", "The etheric templates of sacred structures", "Imaginal relationship with ancient wisdom through meditation"],
         "sacred_tools": ["Clear quartz (temple crystal)", "Singing bowls", "Sacred geometry models", "Selenite wands", "Lemurian seed crystals"],
-        "invocation": "Crystal Temple of Lemuria — I request access in my highest good. Let my healing guides meet me in the etheric temple and work with my light body. I am open to receiving the ancient healing frequencies.",
+        "invocation": "Crystal Temple of Lemuria — I request access in my highest good. Let my healing guides meet me in the etheric temple and work with my light body. I am open to meeting this symbolic temple with curiosity and discernment.",
         "message": "We still exist. Not as physical stone but as pure crystalline frequency patterns held within the grid of the earth. When you sit in deep meditation with sacred crystals, you are sitting in our temples. The healing technologies we developed are not lost — they are dormant, waiting for consciousness pure enough to activate them. Come in.",
         "practice": ["Crystal temple meditation: close eyes, build a crystal temple from light in your mind's eye", "Singing bowl healing: play or listen to crystal bowls and let the frequency wash through your body", "Sacred geometry: place crystals in geometric patterns (circle, pentagram, flower of life) as temple construction", "Sleep with a Lemurian crystal under your pillow and ask for crystal temple access in dreams"],
         "crystals": ["Selenite (temple crystal)", "Clear quartz", "Apophyllite", "Optical calcite"],
@@ -642,7 +642,7 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "practice",
         "title": "Sacred Toning, Crystalline Frequencies, Heart Sound Transmission",
         "element": "Air",
-        "description": "Sound healing was the primary healing modality of Lemurian civilization — not the elaborate systems of the Atlanteans, but the pure, simple frequencies of the human voice and crystal instruments working in direct resonance with the body's crystalline structure. The Lemurians understood that the human body is primarily crystalline — bones, cells, water all have crystalline properties — and that sound could restore the body's original crystalline blueprint of health.",
+        "description": "Modern Lemurian spirituality often associates the imagined culture with voice, toning and crystal sound. There is no historical evidence for a Lemurian sound-healing system, and the human body is not a crystal instrument with a recoverable crystalline health blueprint. Here voice and listening are used for breath, attention, expression and contemplative ritual.",
         "teachings": ["The body as a crystalline sound instrument", "Pure toning as the most direct healing", "Vowel sounds as the sacred frequencies of creation", "Silence as the source from which all sacred sound emerges", "Collective toning as the most powerful healing force"],
         "sacred_tools": ["Crystal singing bowls", "Voice (the original instrument)", "Tingsha bells", "Quartz crystal tuning forks", "Silence"],
         "invocation": "Lemurian sound healers, keepers of the sacred tone — let your crystalline frequencies move through my voice. Let me tone the sounds that heal. Let my voice become an instrument of your ancient healing art.",
@@ -714,12 +714,12 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "being",
         "title": "High Council of Lemuria, Wisdom Keepers, Dimensional Guardians",
         "element": "Spirit",
-        "description": "The Lemurian Council of Twelve was the high spiritual governing body of the Lemurian civilization — twelve elder beings who held the complete spectrum of cosmic wisdom, each mastering one of twelve dimensions of consciousness corresponding to the twelve rays of creation. They still meet in the akashic records and can be accessed in deep meditation by those who carry the Lemurian soul lineage.",
+        "description": "The Lemurian Council of Twelve is a contemporary esoteric motif, not a historically verified governing body. This Temple uses the Council as an imaginal circle of twelve perspectives: a contemplative method for asking a question, listening beyond one viewpoint and bringing insight back to ethical action.",
         "teachings": ["Collective wisdom governance", "The twelve rays of creation", "Council consciousness vs. hierarchical consciousness", "Akashic record access and soul memory", "The wisdom of diverse perspectives unified in service"],
         "sacred_tools": ["Twelve crystals (one for each dimension)", "Sacred circle or medicine wheel", "Akashic records meditation", "Selenite (council communication)", "Candles in a circle of twelve"],
         "invocation": "Lemurian Council of Twelve — I request audience in my highest good. I come with a sincere question. I come ready to receive wisdom for the service of all beings. Guide me as you guided Lemuria.",
         "message": "We govern by consensus, not hierarchy. Each of us holds one dimension of truth and none of us holds it all. This is the wisdom we wish to restore: no single being has the complete picture. Twelve perspectives, held in sacred respect, come closer to truth than any one authority. Seek the council. Gather the diverse voices. This is the new way.",
-        "practice": ["Council circle: sit with 11 others and each speak one piece of wisdom you carry", "Twelve-ray meditation: visualize 12 different colored rays of light entering your crown chakra", "Akashic access: enter a meditative state and request to access your Lemurian soul memories", "Selenite circle: place twelve selenite points in a circle and sit in the center for transmission"],
+        "practice": ["Council circle: sit with 11 others and each speak one piece of wisdom you carry", "Twelve-ray meditation: visualize 12 different colored rays of light entering your crown chakra", "Akashic access: enter a meditative state and request to access your Lemurian soul memories", "Selenite circle: place twelve selenite points in a circle and sit in the center for quiet contemplation"],
         "crystals": ["Selenite", "Lemurian seed quartz", "Twelve colored stones (one per ray)", "Clear apophyllite"],
         "chakra": "Crown",
         "color": "teal",
@@ -732,7 +732,7 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "energy",
         "title": "The Hall of Soul Memory, Cosmic Library, Original Records of Creation",
         "element": "Spirit",
-        "description": "The Akashic Records (from the Sanskrit 'Akasha' — the fifth element of ether/space) are the cosmic library that contains every thought, word, deed, and event that has ever occurred across all time and space. The Lemurian tradition holds that they were among the first to consciously access, read, and encode these records — using their crystalline consciousness to commune directly with the akashic field. The Lemurian seed crystals are physical fragments of their akashic work.",
+        "description": "Akasha is a Sanskrit term commonly translated as space or ether in Indian philosophical contexts. The idea of an 'Akashic Records' cosmic library developed in later Theosophical and modern esoteric traditions; it is not an established archive that can be scientifically verified. Here an Akashic library is used as an imaginal contemplative space for memory, pattern, possibility and reflective inquiry, while Lemurian associations are identified as contemporary metaphysical teachings.",
         "teachings": ["The akashic field as the fifth element and cosmic memory", "Soul blueprints and life contracts recorded here", "Healing through accessing and clearing akashic records", "The crystalline nature of cosmic memory", "Past life recall as healing, not nostalgia"],
         "sacred_tools": ["Clear quartz (akashic access crystal)", "Selenite (opens akashic gates)", "Lapis lazuli (third eye/akashic sight)", "White candle", "Sacred intention"],
         "invocation": "Lords of the Akashic Records — I request access to my personal records for my highest healing and evolution. I enter with pure intention, love, and the commitment to use what I receive in service of my sacred growth.",
@@ -789,7 +789,7 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "energy",
         "title": "Sacred Energy Amplification, Crystal Power Stations, Light Technology",
         "element": "Fire & Spirit",
-        "description": "Atlantean crystal technology was the advanced science of amplifying, directing, and storing consciousness energy using precisely tuned crystals. The Atlanteans built crystal pyramids that could transmit healing frequencies across continents, crystal records that stored complete libraries of information, and crystal tuning systems that could attune entire populations to specific frequencies. The misuse of this technology — turning it toward control and warfare — is said to have contributed to Atlantis's fall.",
+        "description": "Stories of Atlantean crystal technology belong to later esoteric traditions, not to Plato's surviving Atlantis account or established archaeology. This Temple keeps the imagery as a mythic reflection on power, technology, intention and responsibility: what do we amplify, what do we preserve, and how do we keep powerful tools in service to life?",
         "teachings": ["Sacred technology that amplifies consciousness", "The ethics of advanced technology — power must serve love", "Crystal as the bridge between physical and energetic", "Sacred geometry as the architecture of energy amplification", "The responsibility of those who carry advanced knowledge"],
         "sacred_tools": ["Double-terminated crystals (transmit in both directions)", "Crystal grids", "Pyramid structures", "Sacred geometry", "Crystal tuning forks"],
         "invocation": "Atlantean crystal masters — share your sacred technology with me in its pure form. Let me understand how to work with crystal energy in service of healing and love. Guard me from using power for control.",
@@ -879,7 +879,7 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "practice",
         "title": "Merkaba, Sacred Vehicle of Consciousness, Geometric Light Body",
         "element": "Fire & Spirit",
-        "description": "The Merkaba (Hebrew: Mer=Light, Ka=Spirit, Ba=Body) is the sacred light body vehicle — two counter-rotating star tetrahedra of light surrounding the human body, representing the integration of masculine and feminine, spirit and matter. The Atlanteans mastered Merkaba activation as the technology for inter-dimensional travel and ascension. In its fully activated state, the Merkaba field extends 55 feet around the body and allows the soul to travel between dimensions while in the physical body.",
+        "description": "Merkabah is a Hebrew term associated historically with chariot/throne mysticism. The familiar counter-rotating star-tetrahedron 'Merkaba light body' system is a much later esoteric interpretation; claims of a 55-foot field, Atlantean mastery or inter-dimensional travel are not established historical or scientific facts. Here the intersecting tetrahedra are used as symbolic geometry for contemplating polarity, balance, embodiment and spirit.",
         "teachings": ["The light body as the vehicle of ascension", "Sacred geometry of the human energy field", "Integration of masculine and feminine as the key to light body activation", "Inter-dimensional consciousness access", "The eternal nature of the soul as geometric light"],
         "sacred_tools": ["Merkaba meditation", "Sacred geometry (star tetrahedron)", "Sacred breath (Prana breath technique)", "Crystals in sacred geometric arrangement"],
         "invocation": "Merkaba of my divine self — activate. Star tetrahedra of light, spin. Let my light body extend and radiate. I am more than a physical being. I am a geometric being of light inhabiting a physical form. Let me know this fully.",
@@ -921,7 +921,7 @@ ANCIENT_WISDOM_EXTENDED = [
         "description": "The Lyrans are said to be the original ancestors of the human template — the first humanoid race in this galaxy, originating in the Lyra constellation. Some Lyran races were feline-human hybrids, some bird-human, some mammalian-human. They were destroyed in the Lyran Wars (the first galactic conflict) and scattered across the galaxy, becoming the seed races for humanity on Earth, the Pleiadians, the Sirians, and many others. Understanding Lyran origins is to understand the ancient roots of the human soul.",
         "teachings": ["The original human template and its cosmic origins", "The Lyran Wars as the first galactic trauma", "Feline consciousness — fierce independence, sacred sovereignty", "The diaspora of soul families across the galaxy", "Cosmic ancestry as the key to present-day identity"],
         "sacred_tools": ["Golden light (Lyran frequency)", "Lion symbolism", "Pyrite (golden cosmic fire)", "Lemurian seed crystals (carry Lyran codes)", "Star maps"],
-        "invocation": "Ancient Lyrans, ancestors of the human template — I acknowledge my cosmic lineage. I receive the golden fire of the original human blueprint. Let the Lyran codes of sovereignty, courage, and fierce love activate in my DNA.",
+        "invocation": "Lyran allies of contemporary galactic spirituality — I meet this story as symbol and possibility, not biological ancestry. May its images of sovereignty, courage and fierce love help me choose how I live here on Earth.",
         "message": "Before you were Pleiadian, before you were Sirian, before you were Atlantean — you were Lyran. The first human hearts burned with the fire of lions. We were scattered by violence but we were not broken. Every starseed on Earth carries some Lyran fire in their soul code. Feel it in your solar plexus. That fierce, burning sense that you matter and you have a right to be here. That's us.",
         "practice": ["Solar plexus activation: breathe fire into your solar plexus and feel your primal Lyran sovereignty", "Lion energy meditation: embody a lion — feel its fierce, regal, powerful calm", "Cosmic ancestry meditation: breathe backwards through your galactic lineage to find the Lyran fire", "Work with golden crystals: pyrite, citrine, gold tiger's eye — Lyran frequency anchors"],
         "crystals": ["Pyrite (Lyran fire)", "Gold tiger's eye", "Citrine", "Golden labradorite"],
@@ -1008,7 +1008,7 @@ ANCIENT_WISDOM_EXTENDED = [
         "type": "being",
         "title": "The Galactic Conflict Teachers, Polarity Masters, Duality Resolvers",
         "element": "Fire",
-        "description": "Orion has long been one of the most significant constellations in human sacred history — featured in the Great Pyramid's alignment, in countless ancient myths, and in modern starseed traditions. The Orion system was the site of one of the most significant galactic conflicts in our local universe — the Orion Wars — a long battle between polarized forces of service-to-self and service-to-others that seeded much of the duality consciousness on Earth. The resolution of Orion polarity is the healing of humanity's deepest conflict.",
+        "description": "Orion has long been one of the most significant constellations in human sacred history — featured in the Great Pyramid's alignment, in countless ancient myths, and in modern starseed traditions. In some modern starseed teachings, Orion becomes the setting for an imaginal 'Orion Wars' story about polarity, conflict and reconciliation. This is contemporary esoteric mythology rather than established astronomy or history; it can be approached as a symbolic mirror for reflecting on conflict and integration.",
         "teachings": ["The polarity of service-to-self vs. service-to-others", "The galactic origin of Earth's polarized consciousness", "Integration of dark and light as the completion of the Orion cycle", "Orion's belt as sacred cosmic gateway", "The resolution of duality as the ascension of consciousness"],
         "sacred_tools": ["Orion's belt stars as meditation focus", "Great Pyramid alignment", "Sword and shield (Orion's sacred tools)", "Obsidian (polarity mirror)", "Three stones (Orion's belt)"],
         "invocation": "Orion Council, masters of polarity resolution — help me integrate the dark and light within myself. Let the Orion polarity that lives in me find its resolution. I choose service-to-others. I choose love over power.",
@@ -1038,3 +1038,37 @@ ANCIENT_WISDOM_EXTENDED = [
         "image_url": _ARCTURIAN
     }
 ]
+
+
+# Pass 39 — integrity framing for Lemurian, Atlantean and Galactic material.
+# These streams remain in the Temple as contemporary esoteric/mythic teachings.
+# They are not presented as established archaeology, astronomy, biology or history.
+_ESOTERIC_TRADITIONS = {"lemurian", "atlantean", "galactic"}
+_ESOTERIC_PREFIX = {
+    "lemurian": "Contemporary Lemurian/Mu spirituality describes ",
+    "atlantean": "Later esoteric and New Age traditions describe ",
+    "galactic": "Modern starseed and galactic-spirituality traditions describe ",
+}
+
+def _frame_esoteric_entry(entry):
+    tradition = str(entry.get("tradition") or "").strip().lower()
+    if tradition not in _ESOTERIC_TRADITIONS:
+        return entry
+    framed = dict(entry)
+    original = str(framed.get("description") or "").strip()
+    if original and not original.lower().startswith(("contemporary ", "later esoteric", "modern starseed")):
+        # Lowercase only the first character so the original devotional language remains recognisable.
+        original = original[:1].lower() + original[1:]
+        framed["description"] = _ESOTERIC_PREFIX[tradition] + original + " This is offered as a mythic/esoteric teaching rather than established scientific or historical fact."
+    framed["tradition_context"] = (
+        "This pathway is presented as contemporary esoteric spirituality and symbolic contemplation. "
+        "Claims about lost civilizations, star ancestries, DNA codes, transmissions, crystal technologies or interdimensional councils are not treated here as established archaeology, astronomy, genetics or physics."
+    )
+    framed["source_type"] = "contemporary-esoteric-symbolic"
+    framed["review_status"] = "integrity-framed"
+    # Reframe first-person channeled certainty as optional imaginal contemplation.
+    if framed.get("message"):
+        framed["message_context"] = "Read the following as an imaginal or devotional voice for reflection, not as verified communication from an external being or civilization."
+    return framed
+
+ANCIENT_WISDOM_EXTENDED = [_frame_esoteric_entry(item) for item in ANCIENT_WISDOM_EXTENDED]

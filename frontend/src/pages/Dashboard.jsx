@@ -131,7 +131,7 @@ const Dashboard = ({ user, api }) => {
           <motion.aside
             initial={{ x: -300 }}
             animate={{ x: 0 }}
-            className="absolute left-0 top-0 bottom-0 w-64 bg-card border-r border-white/5 flex flex-col"
+            className="absolute left-0 top-0 w-64 bg-card border-r border-white/5 flex flex-col h-[100dvh] max-h-[100dvh] overflow-hidden"
             data-testid="dashboard-mobile-drawer"
           >
             <div className="p-6 border-b border-white/5 flex items-center justify-between flex-shrink-0">
@@ -141,7 +141,7 @@ const Dashboard = ({ user, api }) => {
               </button>
             </div>
             
-            <nav className="p-4 space-y-2 flex-1 overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]" data-testid="dashboard-drawer-nav">
+            <nav className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] space-y-2 flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y [-webkit-overflow-scrolling:touch]" data-testid="dashboard-drawer-nav">
               {navItems.map((item) => (
                 <button
                   key={item.path}
@@ -218,6 +218,21 @@ const Dashboard = ({ user, api }) => {
             </div>
           ) : (
             <>
+              {/* Soul Temple home artwork — mobile-safe, subject-specific hero */}
+              <motion.section
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card/40 shadow-2xl"
+                data-testid="soul-temple-home-hero"
+              >
+                <img
+                  src="/images/shamanic-elements-soul-temple-2-home.png"
+                  alt="Shamanic Elements Soul Temple 2.0 — SkyWater Sacred Embodiments"
+                  className="w-full h-auto max-h-[78dvh] object-contain bg-black"
+                  loading="eager"
+                />
+              </motion.section>
+
               {/* Current Moon Card */}
               {dailyData?.current_moon && (
                 <motion.div

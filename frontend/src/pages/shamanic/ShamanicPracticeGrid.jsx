@@ -109,8 +109,12 @@ export const ShamanicPracticeGrid = ({
               {practice.image_url && (
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={practice.image_url}
+                    src={practice.name === "Power Animal Journey" ? "/images/power-animal-journey.jpg" : practice.image_url}
                     alt={practice.name}
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = "/images/power-animal-journey.jpg";
+                    }}
                     className={`w-full h-full object-cover transition-transform duration-500 ${locked ? "" : "group-hover:scale-105"}`}
                     data-testid={`shamanic-practice-image-${practice.id}`}
                   />

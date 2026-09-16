@@ -19,7 +19,7 @@ const ALLY_FALLBACK_DATA = [
     category: "dragon",
     ally_type: "dragon",
     element: "fire",
-    description: "Sophia dragon medicine awakens sovereign wisdom, sacred courage, and transmutation through conscious golden fire.",
+    description: "Sophia Dragon symbolism invites sovereign wisdom, sacred courage and conscious transformation through the image of golden fire.",
     alchemy_teachings: [
       "Power with wisdom creates benevolent leadership.",
       "Golden dragon fire transmutes fear into precise compassionate action.",
@@ -74,7 +74,7 @@ const ALLY_FALLBACK_DATA = [
     category: "whales",
     ally_type: "whale",
     element: "water",
-    description: "Whale alchemy carries ancestral memory and deep coherence through sacred song lines.",
+    description: "Whale alchemy invites deep listening, spaciousness and relationship with oceanic song and ancestral symbolism.",
     image_url: "https://images.pexels.com/photos/2422915/pexels-photo-2422915.jpeg",
     diagram_image_url: "/diagrams/whale-songline-diagram.svg",
   },
@@ -84,7 +84,7 @@ const ALLY_FALLBACK_DATA = [
     category: "dolphins",
     ally_type: "dolphin",
     element: "water",
-    description: "Dolphin alchemy harmonizes joy, play, communication, and social healing.",
+    description: "Dolphin alchemy explores joy, play, communication and relational connection.",
     image_url: "https://images.pexels.com/photos/2258696/pexels-photo-2258696.jpeg",
     diagram_image_url: "/diagrams/dolphin-alchemy-diagram.svg",
   },
@@ -120,7 +120,7 @@ const SACRED_ALLY_EXPANSION_PACK = [
     description: "Serpent alchemy supports embodied life-force, spinal intelligence, and sacred renewal through conscious uncoiling and shedding.",
     alchemy_teachings: [
       "Shedding identity layers is required for authentic rebirth.",
-      "Kundalini is living energy in all beings and responds to regulation and grounded pacing.",
+      "In yogic traditions, Kundalini is described as life-force or spiritual energy; approach the symbolism and practices with grounded pacing and discernment.",
       "Embodiment converts uncoiling energy into relational integrity.",
     ],
     rituals: [
@@ -130,7 +130,7 @@ const SACRED_ALLY_EXPANSION_PACK = [
     ],
     ceremonies: [
       "Coiled Light Ceremony: circulate living life-force through breath and intention.",
-      "Sacred Shedding Ceremony: release old vows, contracts, and identities.",
+      "Sacred Shedding Ceremony: name old vows, stories or identities you consciously choose to let go of.",
       "Embodiment Seal Ceremony: anchor uncoiling energy into one practical life action.",
     ],
     journal_prompts: [
@@ -156,7 +156,7 @@ const SACRED_ALLY_EXPANSION_PACK = [
     description: "Phoenix alchemy guides total renewal, grief transmutation, and rebirth after collapse.",
     alchemy_teachings: [
       "Rebirth requires honoring endings, not bypassing them.",
-      "Grief metabolized becomes clean life-force.",
+      "Making room for grief can coexist with renewed energy, meaning and forward movement.",
       "True renewal pairs vision with disciplined action.",
     ],
     rituals: [
@@ -191,7 +191,7 @@ const SACRED_ALLY_EXPANSION_PACK = [
     element: "earth",
     description: "Bear alchemy restores strength through rest, boundary intelligence, and embodied protection.",
     alchemy_teachings: [
-      "Rest is medicine and a strategic discipline.",
+      "Rest can be a sacred practice and a practical discipline.",
       "Boundaries preserve life-force for sacred priorities.",
       "Power matures through pacing, not force.",
     ],
@@ -229,7 +229,7 @@ const SACRED_ALLY_EXPANSION_PACK = [
     alchemy_teachings: [
       "Night vision is the ability to perceive what others miss.",
       "Silence refines intuition and symbolic literacy.",
-      "Discernment protects destiny pathways.",
+      "Discernment supports clearer choices about the path you are consciously creating.",
     ],
     rituals: [
       "Twilight silence sit for 9 minutes with soft gaze awareness.",
@@ -297,9 +297,9 @@ const SACRED_ALLY_EXPANSION_PACK = [
     ally_type: "spider",
     category: "sacred_allies",
     element: "earth",
-    description: "Spider alchemy teaches destiny weaving, relational architecture, and intentional creation.",
+    description: "Spider alchemy uses the web as a symbol for relationship, pattern awareness and intentional creation.",
     alchemy_teachings: [
-      "What you weave daily becomes your lived destiny.",
+      "What you practise and choose repeatedly helps shape the life you are creating.",
       "Structure and artistry belong together.",
       "Intentional patterns create resilient outcomes.",
     ],
@@ -335,7 +335,7 @@ const SACRED_ALLY_EXPANSION_PACK = [
     element: "water",
     description: "Panther alchemy guides elegant shadow power, stealth discernment, and embodied courage.",
     alchemy_teachings: [
-      "Shadow power becomes medicine through conscious accountability.",
+      "Shadow work can become a source of insight when met with conscious accountability.",
       "Stealth is timing wisdom, not fear.",
       "Elegant strength protects your sacred mission.",
     ],
@@ -404,7 +404,7 @@ const SACRED_ALLY_EXPANSION_PACK = [
 const VISUAL_OVERRIDES_BY_ID = {
   "ally-dragon-sovereign-flame": {
     name: "Sophia Dragon Alchemy · Sovereign Flame",
-    description: "Sophia dragon medicine awakens sovereign wisdom, sacred courage, and transmutation through the Cosmic Womb of conscious golden fire.",
+    description: "Sophia Dragon symbolism invites sovereign wisdom, sacred courage and transformation through the imaginal Cosmic Womb and golden fire.",
     image_url: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/212855693ad33b5cc2d9428fc7c4f110428011f892af99f0e690eeecd787374d.png",
     diagram_image_url: "/diagrams/dragon-alchemy-diagram.svg",
     ceremonies: [
@@ -763,7 +763,7 @@ const buildMasterHealingProtocol = (item) => {
       steps: [
         `Opening Invocation: ${item?.description || "I enter this work with clarity, consent, and compassion."}`,
         `Set body safety: orient to five stable points in your environment and lengthen the exhale for 7 rounds.`,
-        `Name today's healing intention in one sentence and speak it aloud three times.`,
+        `Name today's intention in one sentence and speak it aloud three times.`,
       ],
     },
     {
@@ -958,7 +958,7 @@ export default function SacredAllyAlchemy({ api }) {
       element: item?.element || "Spirit",
       duration_minutes: 24,
       steps: steps.length > 0 ? steps : [
-        item?.description || "Arrive and breathe into your chosen ally medicine.",
+        item?.description || "Arrive, breathe naturally, and contemplate the qualities of your chosen ally.",
         "Receive one teaching and anchor it into your body through breath and posture.",
         "Close with gratitude and one embodied commitment.",
       ],
@@ -1024,7 +1024,7 @@ export default function SacredAllyAlchemy({ api }) {
           {isKundaliniRoute && (
             <>
               <p className="text-sm text-orange-200/90 mt-3" data-testid="kundalini-consciousness-route-note">
-                Kundalini Consciousness view is active: showing serpent life-force allies and pathways for safe uncoiling.
+                Kundalini Consciousness view is active: exploring serpent and life-force symbolism with grounded, choice-led practices.
               </p>
               {kundaliniCards.length === 0 && (
                 <p className="text-xs text-orange-100/80 mt-2" data-testid="kundalini-consciousness-fallback-note">
@@ -1240,7 +1240,7 @@ export default function SacredAllyAlchemy({ api }) {
                   <div className="grid sm:grid-cols-2 gap-3" data-testid="sacred-ally-safety-healing-grid">
                     {selected.why_this_heals && (
                       <div className="rounded-xl border border-cyan-500/25 bg-cyan-500/10 p-3" data-testid="sacred-ally-why-heals">
-                        <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">Why This Heals</p>
+                        <p className="text-[11px] uppercase tracking-wider text-cyan-200 mb-1">How This May Support You</p>
                         <ul className="space-y-1">
                           {normalizeList(selected.why_this_heals).slice(0, 4).map((line, idx) => (
                             <li key={`ally-why-${idx}`} className="text-xs text-cyan-50/95 leading-relaxed">✦ {line}</li>

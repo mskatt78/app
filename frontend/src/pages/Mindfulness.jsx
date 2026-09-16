@@ -391,8 +391,22 @@ const Mindfulness = ({ user, api }) => {
                       <span>{selectedPractice.duration_minutes} minutes</span>
                     </div>
 
+                    {selectedPractice.instructions?.length > 0 && (
+                      <div data-testid="mindfulness-full-practice-steps">
+                        <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Your Practice · Step by Step</h4>
+                        <ol className="space-y-3">
+                          {selectedPractice.instructions.map((instruction, index) => (
+                            <li key={stableMindfulKey(`mindful-step-${selectedPractice.id}`, `${index}-${instruction}`)} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
+                              <span className="shrink-0 w-6 h-6 rounded-full bg-cyan-500/10 text-cyan-200 flex items-center justify-center text-xs">{index + 1}</span>
+                              <span>{instruction}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    )}
+
                     <div>
-                      <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">Benefits</h4>
+                      <h4 className="text-sm uppercase tracking-wider text-muted-foreground mb-3">What this practice may support</h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedPractice.benefits?.map((benefit) => (
                           <span key={benefit} className="px-3 py-1 rounded-full bg-white/5 text-sm">

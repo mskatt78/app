@@ -1,8 +1,47 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Compass, Flame, Sparkles, Timer, Trophy, ChevronRight } from "lucide-react";
+import { Compass, Flame, Loader2, Send, Sparkles, Timer, Trophy, ChevronRight } from "lucide-react";
+import { toast } from "sonner";
 import { MilestoneBlessing } from "./MilestoneBlessing";
+import { JOURNEY_MILESTONES, shareJourneyPostcard } from "../../utils/journeyPostcard";
 import { appLogger } from "../../utils/logger";
+
+const JourneyPostcards = ({ streak }) => {
+  const [sharingDays, setSharingDays] = useState(null);
+  const earned = JOURNEY_MILESTONES.filter((m) => streak >= m.days);
+  if (earned.length === 0) return null;
+
+  const share = async (milestone) => {
+    setSharingDays(milestone.days);
+    try {
+      await shareJourneyPostcard(milestone, streak);
+    } catch (error) {
+      if (error?.name !== "AbortError") toast.error("Could not create the postcard");
+    } finally {
+      setSharingDays(null);
+    }
+  };
+
+  return (
+    <div className="mb-4" data-testid="journey-postcards">
+      <p className="text-[10px] text-muted-foreground uppercase tracking-wider mb-2">Journey postcards — invite a friend</p>
+      <div className="flex flex-wrap gap-2">
+        {earned.map((milestone) => (
+          <button
+            key={milestone.days}
+            onClick={() => share(milestone)}
+            disabled={sharingDays !== null}
+            className="px-3 py-1.5 rounded-full text-xs border border-amber-400/30 bg-amber-500/10 text-amber-200 hover:bg-amber-500/20 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+            data-testid={`journey-postcard-${milestone.days}-btn`}
+          >
+            {sharingDays === milestone.days ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
+            {milestone.title}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const typeLabels = {
   meditation: "Meditations",
@@ -97,6 +136,8 @@ export const SacredJourneyWidget = ({ api, navigate }) => {
           ))}
         </div>
       )}
+
+      <JourneyPostcards streak={stats.current_streak} />
 
       {recent.length > 0 ? (
         <div className="space-y-2" data-testid="journey-recent-list">

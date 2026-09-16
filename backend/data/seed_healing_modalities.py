@@ -153,30 +153,30 @@ ENERGY_HEALING_DATA = [
         "id": "quantum-healing-hypnosis",
         "name": "Quantum Healing",
         "modality": "Quantum",
-        "description": "Working at the quantum field level where consciousness and matter meet, accessing the infinite possibilities inherent in the unified field for healing and transformation.",
+        "description": "A contemporary spiritual visualization practice using the word ‘quantum’ metaphorically for possibility and imagination. It is not a treatment derived from quantum physics.",
         "image_url": IMAGES["quantum_healing"],
         "duration_minutes": 45,
         "element": "Spirit",
-        "self_healing_guide": """1. Enter the Field: Close your eyes. Take 10 slow breaths, each one expanding your awareness beyond your body.
+        "self_healing_guide": """1. Arrive with comfortable breaths and notice the support beneath you.
 
-2. Dissolve Boundaries: Sense yourself as energy, not solid matter. Imagine your atoms vibrating with space between them.
+2. Widen awareness and imagine spaciousness around the body.
 
-3. Access the Quantum Field: Visualize yourself floating in an infinite field of potential—pure consciousness before form.
+3. Picture an open field as a metaphor for possibility.
 
-4. Find the Blueprint: In this field exists your perfect energetic blueprint. Sense or see your body in perfect health.
+4. Imagine yourself living with greater steadiness, care and vitality; this is reflective imagery, not a medical blueprint.
 
-5. Collapse the Wave: Focus your intention and emotion on this healthy version. Feel it as real. Quantum physics shows observation affects reality.
+5. Choose one quality and one practical action that supports it.
 
-6. Merkaba Activation: Visualize a star tetrahedron (two interlocking pyramids) around your body, spinning with light.
+6. If meaningful, visualize interlocking tetrahedra as symbolic balance and protection.
 
-7. DNA Light Activation: Imagine your DNA strands lighting up, activating dormant codes for health and evolution.
+7. Picture the DNA helix as a symbol of ancestry and living complexity; no genetic activation is required.
 
-8. Return with Change: Bring this quantum healing back into your physical body. Trust the change has occurred at the deepest level.
+8. Return attention to your body and surroundings.
 
-9. Ground: Feel your body solid again. Know that healing continues beyond this session.""",
-        "how_it_works": "Quantum healing works with the understanding that at the subatomic level, all possibilities exist simultaneously until observed. By shifting consciousness to a state of coherent intention, we can influence which possibility manifests in physical reality.",
+9. Ground and name the action you will carry into your day.""",
+        "how_it_works": "This practice uses imagery, attention and intention as contemplative tools. ‘Quantum field’ is metaphorical spiritual language here, not a claim that observation can heal the body, shift timelines or alter DNA.",
         "history": "Quantum healing emerged from the intersection of quantum physics and consciousness studies. Influenced by Deepak Chopra, Dr. Joe Dispenza, and QHHT (Quantum Healing Hypnosis Technique) developed by Dolores Cannon.",
-        "benefits": ["Reality shifting", "DNA activation", "Timeline healing", "Manifestation", "Consciousness expansion"]
+        "benefits": ["Focused intention", "Reflective imagery", "Sense of possibility", "Grounded integration"]
     },
 ]
 

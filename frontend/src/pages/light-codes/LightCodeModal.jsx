@@ -150,7 +150,7 @@ export const LightCodeModal = ({
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-5" data-testid="light-code-tab-why-practical-anchor">
                     <p className="text-xs uppercase tracking-[0.22em] text-white/40 mb-3">Practical anchor</p>
                     <p className="text-sm text-white/75 leading-relaxed">
-                      Healing is validated by behavior. After this transmission, choose one concrete action you can complete in under 24 hours.
+                      Integration becomes visible in how you live. After this practice, choose one concrete action you can complete within 24 hours.
                     </p>
                   </div>
                 </TabsContent>

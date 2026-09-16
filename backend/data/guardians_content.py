@@ -415,7 +415,7 @@ SACRED_GUARDIANS = [
         "name": "Archangel Raphael",
         "category": "angel",
         "element": "Air",
-        "description": "Archangel Raphael is the great divine healer, the Angel of wholeness, and the guide of all who travel — both on physical journeys and on the healing path. Raphael's emerald green light carries the sacred healing frequencies of heaven and guides all healers, travelers, and seekers of wholeness.",
+        "description": "Within Jewish and Christian angelic traditions and later devotional practice, Raphael is associated with healing and safe journeying. In this contemplative practice, emerald-green light is used as sacred imagery for wholeness, care and guidance rather than as a measurable healing frequency.",
         "symbolism": ["Divine healing and wholeness", "Guidance for travelers and seekers", "Emerald healing light", "Guardian of healers", "The staff of Hermes and medicine"],
         "spiritual_gifts": ["Physical and emotional healing", "Safe travel and guidance", "Support for healers", "Wholeness and integration"],
         "message": "Bring me your wounds. All of them. There is no pain too great for the healing frequency I carry. You are already whole in the eyes of the Divine — I am here to help you remember what you have always been.",

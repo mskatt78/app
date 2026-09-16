@@ -16,7 +16,7 @@ CRYSTALS_DEEP = [
         "color": "Clear, White",
         "rarity": "Common",
         "origin": ["Brazil", "Madagascar", "USA", "Alps"],
-        "description": "Clear Quartz is the most powerful healing and energy amplifying crystal on Earth. Known as the 'Master Healer,' it absorbs, stores, releases, and regulates energy. It works on all levels of being - physical, emotional, mental, and spiritual. Clear Quartz is programmable, meaning you can set intentions into it that it will amplify and broadcast.",
+        "description": "In contemporary crystal practice, Clear Quartz is often called the 'Master Healer' and used as a symbol of clarity, amplification and intention. Its piezoelectric properties are scientifically useful in technology; spiritual claims about amplifying intentions or energy belong to crystal-healing tradition rather than established medical science.",
         "healing_properties": {
             "physical": [
                 "Stimulates the immune system and brings the body into balance",
@@ -957,7 +957,7 @@ CRYSTALS_DEEP = [
         "color": "Blue-Green, Robin's Egg Blue",
         "rarity": "Uncommon (high-quality increasingly rare)",
         "origin": ["Iran", "USA (Arizona, New Mexico)", "Tibet", "Egypt"],
-        "description": "Turquoise is one of the oldest stones in human history, treasured by virtually every ancient culture. The Egyptians, Persians, Native Americans, and Tibetans all considered it sacred. It is a master healer, uniting heaven and earth, and is considered a stone of wholeness, truth, and protection. Turquoise changes color based on the wearer's health, serving as an early warning system.",
+        "description": "Turquoise is one of the oldest stones in human history, treasured by virtually every ancient culture. The Egyptians, Persians, Native Americans, and Tibetans all considered it sacred. It is a master healer, uniting heaven and earth, and is considered a stone of wholeness, truth, and protection. Traditional lore sometimes links turquoise colour changes with the wearer; in practice colour can change because of oils, moisture, light, treatment and wear, and should not be used as a health warning system.",
         "healing_properties": {
             "physical": ["Master healer for entire body", "Supports immune system", "Anti-inflammatory properties", "Aids in nutrient absorption", "Supports eyes and respiratory system", "Detoxifies the body"],
             "emotional": ["Brings inner calm and peace", "Dispels negative energy", "Promotes honest communication", "Balances mood swings", "Instills sense of serenity"],
@@ -1009,7 +1009,7 @@ CRYSTALS_DEEP = [
             {"crystal": "Coral", "purpose": "Traditional protection combination"},
             {"crystal": "Clear Quartz", "purpose": "Amplified healing"}
         ],
-        "warnings": ["Porous stone - avoid water, oils, perfumes, chemicals", "Color may change with wearer's health (this is a feature, not a flaw)", "Much commercial turquoise is dyed howlite - seek authentic stone"],
+        "warnings": ["Porous stone - avoid water, oils, perfumes, chemicals", "Colour can change with oils, moisture, light, treatment or wear; do not use colour change to assess health", "Much commercial turquoise is dyed howlite - seek authentic stone"],
         "affirmation": "I am protected and whole. Truth flows through me. Heaven and earth unite in my being.",
         "image_url": "https://images.unsplash.com/photo-1589739900875-52cebd9e5731?w=800"
     },
@@ -1852,7 +1852,7 @@ CRYSTALS_DEEP = [
         "cleansing_methods": [
             {"method": "Moonlight", "description": "Full moon under a clear sky — Kunzite is deeply lunar", "duration": "Overnight"},
             {"method": "Rose Quartz", "description": "Place with rose quartz cluster to hold its vibration high", "duration": "8 hours"},
-            {"method": "Sound", "description": "432Hz music or crystal singing bowls (love frequency)", "duration": "10 minutes"},
+            {"method": "Sound", "description": "432Hz music or crystal singing bowls, if that sound feels supportive to your practice", "duration": "10 minutes"},
             {"method": "Smudging", "description": "Rose petal incense, sandalwood, or rose essential oil diffusion", "duration": "5 minutes"},
             {"method": "Visualization", "description": "Hold and visualize divine pink light flooding the crystal", "duration": "5 minutes"}
         ],
@@ -2188,6 +2188,19 @@ CRYSTALS_DEEP = [
         "image_url": "https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800"
     }
 ]
+
+# Shared integrity framing: crystal correspondences are offered as spiritual, symbolic
+# and contemplative traditions. Mineral/geological facts do not establish medical effects.
+# Keep the legacy `healing_properties` key for API compatibility, while giving every
+# member-facing record an explicit evidence boundary.
+for _crystal in CRYSTALS_DEEP:
+    _crystal["practice_context"] = (
+        "Crystal correspondences in Soul Temple are offered as traditional, spiritual and "
+        "symbolic practices for reflection and ritual. They are not medical treatments, and "
+        "a crystal's physical mineral properties do not demonstrate effects on organs, "
+        "hormones, immunity, trauma, DNA or disease. Notice your own experience without "
+        "requiring a particular sensation or outcome."
+    )
 
 # Helper function to get crystal by ID
 def get_crystal_by_id(crystal_id: str) -> dict | None:

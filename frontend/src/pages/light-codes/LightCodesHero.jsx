@@ -40,7 +40,7 @@ export const LightCodesHero = ({ activeCategoryInfo }) => (
           </h2>
         </div>
         <p className="text-sm sm:text-base text-white/70 max-w-2xl leading-relaxed" data-testid="light-codes-hero-description">
-          This temple gathers sacred geometry, temple alphabets, DNA helix transmissions, galactic remembrance, and chakra activations into one ceremonial library. Each symbol now carries embodied ritual steps, light-coded glyph sequences, lineage context, and practice guidance.
+          This temple gathers sacred geometry, sacred scripts, helix symbolism, star-inspired contemplation and chakra maps into one ceremonial library. Each symbol carries embodied ritual steps, lineage or contemporary-context notes, and practice guidance. Spiritual interpretations are offered as invitations for contemplation rather than biological or scientific claims.
         </p>
       </div>
 

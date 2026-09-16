@@ -199,7 +199,7 @@ export const MantrasPlayer = ({
                   disabled={!canUseSpeechSynthesis}
                 >
                   <Volume2 className="w-4 h-4 mr-2" />
-                  Voice Mantra
+                  Hear Pronunciation
                 </Button>
                 <Button
                   onClick={stopMantraVoice}
@@ -378,16 +378,14 @@ export const MantrasPlayer = ({
                   <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-primary/10 border border-primary/20">
                     <span className="text-sm flex items-center gap-2">
                       <Music className="w-4 h-4 text-primary" />
-                      <span className="font-medium">Mantra Audio Mode</span>
+                      <span className="font-medium">Practice Sound</span>
                     </span>
                     <Select value={mantraSoundMode || (useGeneratedSound ? "drone" : "spoken")} onValueChange={setMantraSoundMode}>
                       <SelectTrigger className="w-48 bg-card/60 border-white/15" data-testid="mantra-sound-mode-select-trigger">
                         <SelectValue placeholder="Choose mode" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="spoken" data-testid="mantra-sound-mode-option-spoken">Spoken Chant + Natural</SelectItem>
-                        <SelectItem value="drone" data-testid="mantra-sound-mode-option-drone">Soft Drone/Chant</SelectItem>
-                        <SelectItem value="bell" data-testid="mantra-sound-mode-option-bell">Bell Tones</SelectItem>
+                        <SelectItem value="spoken" data-testid="mantra-sound-mode-option-spoken">Voice Pronunciation + Natural</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -425,7 +423,7 @@ export const MantrasPlayer = ({
 
                       {selectedNaturalSound === "silence" && (
                         <p className="text-xs text-muted-foreground mt-2 text-center" data-testid="mantra-natural-sound-silence-note">
-                          Silence selected — chants run without background nature audio.
+                          Silence selected — practise the mantra in your own voice without background audio.
                         </p>
                       )}
                     </div>
@@ -434,7 +432,7 @@ export const MantrasPlayer = ({
                   {useGeneratedSound && (
                     <p className="text-xs text-primary/80 text-center mb-4 p-2 rounded bg-primary/5">
                       {mantraSoundMode === "bell"
-                        ? "🔔 Bell mode selected. You can switch to Spoken Chant + Natural if high tones feel intense."
+                        ? "🔔 Bell mode selected. You can switch to Voice Pronunciation + Natural if high tones feel intense."
                         : "🎙️ Soft drone chant mode selected. Spoken mantra remains available above."}
                     </p>
                   )}

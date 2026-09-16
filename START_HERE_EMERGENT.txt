@@ -1,0 +1,6 @@
+START HERE — SHAMANIC ELEMENTS SOUL TEMPLE 2.0
+
+Use EMERGENT_HANDOFF_PASS41.md as the deployment brief.
+This is the approved Pass 41 source baseline. Preserve existing working features and do not roll back to an older Emergent snapshot.
+
+Primary task: build/test this source, make only necessary runtime/build fixes, verify mobile/TWA behavior, then redeploy to the existing production host.

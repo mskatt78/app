@@ -28,7 +28,7 @@ export const teachings = [
     icon: Flower2,
     image: "https://images.pexels.com/photos/827106/pexels-photo-827106.jpeg?auto=compress&cs=tinysrgb&w=800",
     color: { text: "text-rose-300", bg: "bg-rose-500/10", border: "border-rose-500/20", glow: "shadow-rose-500/20" },
-    description: "The Rose Lineage carries the unbroken thread of feminine wisdom through time — from Isis of ancient Egypt, the High Priestesses of Avalon, Mary Magdalene and the Essene communities, to the Cathars, the troubadours, and beyond.",
+    description: "The Rose Temple brings several devotional and esoteric streams into conversation through the symbol of the rose. Isis, Mary Magdalene, Avalon, Christian mysticism and later Rose traditions each have their own histories; here their differences are honoured rather than presented as one proven unbroken lineage.",
     content: [
       {
         heading: "Origins of the Rose",
@@ -36,7 +36,7 @@ export const teachings = [
       },
       {
         heading: "Mary Magdalene & the Bridal Chamber",
-        body: "The Gnostic Gospels reveal Mary Magdalene as the Apostle to the Apostles — the beloved who understood Christ's teachings most fully. The 'Bridal Chamber' was not a physical union but a sacred alchemical marriage of the inner masculine and feminine — the hieros gamos. She carried the Rose teachings to the south of France, where they lived on in the troubadour traditions and later, the Cathars.",
+        body: "Mary Magdalene is honoured as a disciple and spiritual teacher whose importance is especially visible in early Christian texts including the Gospel of Mary. Later mystical traditions have associated her with sacred union, anointing and Rose symbolism. The south-of-France, troubadour and Cathar connections belong to later devotional and esoteric traditions rather than established early-Christian history.",
       },
       {
         heading: "Sophia & Divine Feminine Wisdom",

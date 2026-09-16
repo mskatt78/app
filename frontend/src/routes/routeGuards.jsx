@@ -25,7 +25,7 @@ export const AuthCallback = ({ api }) => {
       appLogger.error("Auth callback processing failed", error);
       navigate("/", { replace: true });
     }
-  }, [api, navigate]);
+  }, [api, navigate, locationStateUser]);
 
   useEffect(() => {
     if (hasProcessed.current) return;
@@ -51,6 +51,7 @@ export const ProtectedRoute = ({ children, api }) => {
   const [user, setUser] = useState(locationStateUser);
   const [hasAuthError, setHasAuthError] = useState(false);
   const isMountedRef = useRef(true);
+  const lastKnownAuthRef = useRef(Boolean(locationStateUser));
 
   const checkAuth = useCallback(async () => {
     try {
@@ -58,15 +59,32 @@ export const ProtectedRoute = ({ children, api }) => {
       if (!isMountedRef.current) return;
       setUser(data);
       setHasAuthError(false);
+      lastKnownAuthRef.current = true;
       setIsAuthenticated(true);
     } catch (error) {
       if (!isMountedRef.current) return;
       appLogger.warn("Protected route auth check failed", error);
+      const status = error?.response?.status;
+      const sessionRejected = status === 401 || status === 403;
       setHasAuthError(true);
-      setIsAuthenticated(false);
-      navigate("/", { replace: true });
+
+      // Only a confirmed authentication rejection should send someone back to sign-in.
+      // Mobile/TWA network hand-offs and brief backend outages must not masquerade as logout.
+      if (sessionRejected) {
+        setIsAuthenticated(false);
+        navigate("/", { replace: true });
+        return;
+      }
+
+      if (locationStateUser || lastKnownAuthRef.current) {
+        setIsAuthenticated(true);
+        return;
+      }
+
+      // Keep the protected shell in a recoverable state rather than bouncing to login.
+      setIsAuthenticated(null);
     }
-  }, [api, navigate]);
+  }, [api, navigate, locationStateUser]);
 
   useEffect(() => {
     isMountedRef.current = true;

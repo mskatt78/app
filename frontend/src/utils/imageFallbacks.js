@@ -1,9 +1,8 @@
 const FALLBACK_LIBRARY = {
   generic: "/assets_images_beautiful/beauty_main_menu.jpeg",
-  sacred: "/assets_images_beautiful/beauty_landing_hero.jpeg",
+  sacred: "/images/power-animal-journey.jpg",
   healing: "/assets_images_beautiful/beauty_breathwork.jpeg",
   crystal: "/assets_images_beautiful/beauty_crystal_guide.jpeg",
-  demo: "/assets_images_beautiful/beauty_demo_experience.jpeg",
 };
 
 const ROUTE_FALLBACKS = [
@@ -20,10 +19,6 @@ const ROUTE_FALLBACKS = [
     image: FALLBACK_LIBRARY.crystal,
   },
   {
-    pattern: /(demo|app-readiness|app-store-readiness)/,
-    image: FALLBACK_LIBRARY.demo,
-  },
-  {
     pattern: /(menu|dashboard|community|courses|retreats|reviews)/,
     image: FALLBACK_LIBRARY.generic,
   },
@@ -33,7 +28,6 @@ const KEYWORD_FALLBACKS = [
   { pattern: /(guardian|dragon|angel|ally|mystery|oracle|ritual|ceremony)/, image: FALLBACK_LIBRARY.sacred },
   { pattern: /(breath|fascia|somatic|healing|meditat|yoga|chakra|sound|water)/, image: FALLBACK_LIBRARY.healing },
   { pattern: /(crystal|gem|stone|mineral)/, image: FALLBACK_LIBRARY.crystal },
-  { pattern: /(demo|preview|experience)/, image: FALLBACK_LIBRARY.demo },
 ];
 
 const SKIP_PATTERNS = /(favicon|icon-|logo192|logo512|apple-touch-icon|browserconfig|manifest)/;

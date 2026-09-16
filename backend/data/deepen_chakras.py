@@ -24,15 +24,15 @@ The ancient priestesses of moon temples understood this center well. They knew t
 
 THE AKASHIC LIBRARY
 
-Perhaps the most profound function of the Causal Chakra is its connection to the Akashic Records—the cosmic library containing the memory of every soul's journey across all lifetimes. When this chakra is activated and clear, we can access our own soul records: memories of past lives, karmic contracts, soul agreements, and the lessons we incarnated to learn.
+In contemporary extended-chakra systems, the Causal Chakra is sometimes associated with Akashic memory. The 'Akashic Records' cosmic-library idea belongs to later esoteric traditions and is not a scientifically verified archive. Here it can be approached as imaginal language for reflecting on memory, recurring patterns, ancestry and the stories we carry.
 
-This is not mere imagination or fantasy. Those who have developed this center describe consistent experiences: sudden knowing of places they've never visited, recognition of souls they've never met in this lifetime, and clear insight into the recurring patterns that have followed them across incarnations.
+Some practitioners interpret vivid images, familiarity or intuitive impressions through a past-life or Akashic lens; others understand them psychologically or symbolically. Hold such experiences with curiosity and discernment rather than treating them as proof of another lifetime.
 
 LUNAR ATTUNEMENT
 
 The Causal Chakra pulses with the rhythm of the moon. Ancient peoples knew that the menstrual cycle was connected to lunar phases, but this connection extends far beyond biology. All humans, regardless of physical body, can attune to lunar consciousness through this center.
 
-When the Causal Chakra is balanced, you naturally feel the phases of the moon in your energy, creativity, and emotional tides. New moons call you inward; full moons illuminate what was hidden. This isn't superstition—it's physiological attunement to cosmic rhythms that our ancestors knew intimately.
+When the Causal Chakra is balanced, you naturally feel the phases of the moon in your energy, creativity, and emotional tides. New moons call you inward; full moons illuminate what was hidden. People may find lunar phases meaningful as a reflective rhythm, but individual mood, hormones and physiology should not be assumed to track the Moon in a prescribed way.
 
 HEALING THE CAUSAL CHAKRA
 

@@ -134,7 +134,7 @@ const buildFallbackNarrationSegments = ({ script, sourceTexts = [], steps = [], 
   ];
 
   const reflectionCues = [
-    `This ${elementName} current supports gentle repair, grounded presence, and heart coherence.`,
+    `This ${elementName} current invites grounded presence, steady attention, and a softer pace.`,
     "Notice sensations first, then thoughts, and let your body set the pace.",
     "If intensity rises, soften effort and return to slower breathing.",
     "You are not behind. Depth comes from patience, not speed.",
@@ -142,8 +142,8 @@ const buildFallbackNarrationSegments = ({ script, sourceTexts = [], steps = [], 
   ];
 
   const paragraphs = [
-    `${title}. Welcome into this guided healing sequence. Arrive fully with one slow inhale and one longer exhale.`,
-    `Ground into your body, open your heart, and let this ${elementName} practice unfold in safe, steady rhythm.`,
+    `${title}. Welcome into this guided practice. Arrive fully with one slow inhale and one longer exhale.`,
+    `Ground into your body and let this ${elementName} practice unfold in a steady rhythm that feels comfortable for you.`,
   ];
 
   if (uniqueSeeds.length) {

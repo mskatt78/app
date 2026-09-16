@@ -12,6 +12,12 @@ const STREAM_OPTIONS = [
   { id: "priestess_rose", label: "Priestess & Rose Lineage", accent: "text-rose-200" },
   { id: "emerald_tablet", label: "Emerald Tablet Alchemy", accent: "text-emerald-200" },
   { id: "merlin_alchemy", label: "Merlin Teachings & Alchemy", accent: "text-cyan-200" },
+  { id: "hathor_mystery", label: "Hathor Mystery School", accent: "text-yellow-200" },
+  { id: "seven_sisters", label: "Seven Sisters · Pleiades", accent: "text-sky-200" },
+  { id: "sophia_dragons", label: "Sophia Dragons · Cosmic Womb", accent: "text-violet-200" },
+  { id: "magdalene_initiations", label: "Mary Magdalene Initiations", accent: "text-rose-200" },
+  { id: "isis_priestess", label: "Isis Egyptian Priestess Path", accent: "text-amber-200" },
+  { id: "hermetic_bardon", label: "Hermeticism · Bardon-inspired", accent: "text-emerald-200" },
 ];
 
 const toList = (value) => {
@@ -99,7 +105,7 @@ export default function MysterySchoolTeachings({ api, user }) {
           </button>
           <div className="text-center flex-1" data-testid="mystery-school-header-copy">
             <p className="text-[11px] uppercase tracking-[0.22em] text-amber-300/80">Mystery School Temple</p>
-            <h1 className="text-2xl md:text-3xl font-serif">Priestess, Emerald, and Merlin Teachings</h1>
+            <h1 className="text-2xl md:text-3xl font-serif">Distinct Mystery Schools & Sacred Lineage Paths</h1>
           </div>
           <Button
             variant="outline"
@@ -113,7 +119,7 @@ export default function MysterySchoolTeachings({ api, user }) {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8 space-y-6">
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2" data-testid="mystery-school-stream-tabs">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-2" data-testid="mystery-school-stream-tabs">
           {STREAM_OPTIONS.map((stream) => {
             const isActive = activeStream === stream.id;
             return (
@@ -128,7 +134,7 @@ export default function MysterySchoolTeachings({ api, user }) {
                 data-testid={`mystery-school-stream-tab-${stream.id}`}
               >
                 <p className={`text-sm font-medium ${stream.accent}`}>{stream.label}</p>
-                <p className="text-xs text-muted-foreground mt-1">21 teachings (tiered access)</p>
+                <p className="text-xs text-muted-foreground mt-1">A distinct pathway · tiered access</p>
               </button>
             );
           })}
@@ -171,7 +177,7 @@ export default function MysterySchoolTeachings({ api, user }) {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
                     <p className="absolute bottom-2 left-2 text-[11px] px-2 py-1 rounded-full border border-yellow-200/30 bg-black/45 text-yellow-100/90" data-testid={`mystery-school-card-encoded-badge-${item.id}`}>
-                      Encoded Field
+                      Symbolic Visual
                     </p>
                   </div>
                   <div className="flex items-center justify-between gap-2 mb-3">
@@ -229,7 +235,7 @@ export default function MysterySchoolTeachings({ api, user }) {
 
               {getWombActivationText(selected) && (
                 <div className="p-4 rounded-xl border border-rose-300/30 bg-rose-500/10" data-testid="mystery-school-modal-womb-activation">
-                  <h4 className="text-[11px] uppercase tracking-wider text-rose-200 mb-2">13th Rite Of The Womb Activation</h4>
+                  <h4 className="text-[11px] uppercase tracking-wider text-rose-200 mb-2">13th Rite Of The Womb · Words of Intention</h4>
                   <p className="text-sm leading-relaxed text-rose-100/95">“{getWombActivationText(selected)}”</p>
                 </div>
               )}

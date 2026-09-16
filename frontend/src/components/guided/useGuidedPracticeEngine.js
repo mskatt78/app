@@ -134,6 +134,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const narrationPlanRef = useRef(narrationPlan);
   const practiceIdentityRef = useRef({ id: practice?.id, name: practice?.name });
   const narrationRunIdRef = useRef(0);
+  const playNarrationSegmentRef = useRef(null);
   const practicePreferenceKey = useMemo(() => String(practice?.id || practice?.name || "guided-practice"), [practice?.id, practice?.name]);
   const narrationSegmentCount = narrationSegments.length;
 
@@ -422,6 +423,27 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       setCurrentSegmentIndex(0);
     }
   }, []);
+
+  // Voice and speed changes must affect the session the person is actually hearing,
+  // not merely update a selector label. Stop the current narration, invalidate cached
+  // TTS made with the previous settings, and resume from the same segment if playing.
+  const playbackAudioSettingsRef = useRef({ voice: playbackVoiceProfile, speed: playbackSpeedOption });
+  useEffect(() => {
+    const previous = playbackAudioSettingsRef.current;
+    const changed = previous.voice !== playbackVoiceProfile || previous.speed !== playbackSpeedOption;
+    playbackAudioSettingsRef.current = { voice: playbackVoiceProfile, speed: playbackSpeedOption };
+    if (!changed) return;
+
+    const shouldResume = isPlayingRef.current && hasStartedRef.current;
+    const resumeIndex = Math.max(0, currentSegmentIndexRef.current);
+    stopNarrationPlayback(false);
+    clearNarrationCache();
+    if (shouldResume) {
+      window.setTimeout(() => {
+        if (isPlayingRef.current) playNarrationSegmentRef.current?.(resumeIndex);
+      }, 0);
+    }
+  }, [playbackVoiceProfile, playbackSpeedOption, clearNarrationCache, stopNarrationPlayback]);
 
   const syncRemainingFromClock = useCallback(() => {
     if (!sessionEndRef.current) return;
@@ -781,6 +803,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     stopAmbient,
     stopToning,
   ]);
+
+  playNarrationSegmentRef.current = playNarrationSegment;
 
   const playCustomVoiceLoop = useCallback(async () => {
     if (!customVoiceSampleUrl) return false;

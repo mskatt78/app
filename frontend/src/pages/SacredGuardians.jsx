@@ -167,7 +167,7 @@ const SacredGuardians = ({ user, api }) => {
 
     setGuidedPractice({
       id: `guardian-guided-${guardian.id || guardian.name || "practice"}`,
-      name: `${guardian.name} · Guided Guardian Transmission`,
+      name: `${guardian.name} · Guided Guardian Journey`,
       category: "sacred_guardians",
       element: guardian.element || "Spirit",
       duration_minutes: 15,
@@ -187,7 +187,7 @@ const SacredGuardians = ({ user, api }) => {
       practice_id: completed.id,
       duration_minutes: completed.duration_minutes || 15,
       element: completed.element || "Spirit",
-      notes: `Completed guided guardian transmission: ${completed.name}`,
+      notes: `Completed guided guardian journey: ${completed.name}`,
     }).catch(() => {
       // silent tracking failure
     });
@@ -425,6 +425,12 @@ const SacredGuardians = ({ user, api }) => {
                 {/* Description */}
                 <p className="text-muted-foreground leading-relaxed">{selected.description}</p>
 
+                <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20" data-testid="guardian-discernment-note">
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Meet this guardian as a spiritual, symbolic or imaginal ally. Keep what feels meaningful, stay curious rather than forcing a message, and distinguish personal intuition from factual claims about an animal, culture or tradition.
+                  </p>
+                </div>
+
                 {(selected.devotional_invocation || selected.embodiment_prompt || selected.integration_vow) && (
                   <div className="p-5 rounded-2xl bg-fuchsia-500/10 border border-fuchsia-500/25" data-testid="guardian-devotional-panel">
                     <h4 className="text-xs uppercase tracking-wider text-fuchsia-200 mb-3">Devotional Embodiment Arc</h4>
@@ -451,7 +457,7 @@ const SacredGuardians = ({ user, api }) => {
 
                 {resolveGuardianWhyHeals(selected).length > 0 && (
                   <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/25" data-testid="guardian-why-this-heals">
-                    <h4 className="text-[11px] uppercase tracking-wider text-cyan-200 mb-2">Why This Heals</h4>
+                    <h4 className="text-[11px] uppercase tracking-wider text-cyan-200 mb-2">How This May Support You</h4>
                     <ul className="space-y-1.5">
                       {resolveGuardianWhyHeals(selected).slice(0, 5).map((line, index) => (
                         <li key={`guardian-why-${index}`} className="text-sm leading-relaxed text-cyan-50/95 flex items-start gap-2">
@@ -463,11 +469,11 @@ const SacredGuardians = ({ user, api }) => {
                   </div>
                 )}
 
-                {/* Sacred Message */}
+                {/* Contemplative Message */}
                 <div className="p-5 rounded-2xl bg-primary/5 border border-primary/20">
                   <h4 className="text-xs uppercase tracking-wider text-primary mb-3 flex items-center gap-2">
                     <Sparkles className="w-3.5 h-3.5" />
-                    Sacred Message
+                    Contemplative Message
                   </h4>
                   <p className="text-foreground italic leading-relaxed">&ldquo;{selected.message}&rdquo;</p>
                 </div>

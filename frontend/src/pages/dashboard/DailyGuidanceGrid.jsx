@@ -148,7 +148,7 @@ export const DailyGuidanceGrid = ({ dailyData, navigate }) => (
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           className="p-6 rounded-2xl bg-card/50 border border-white/5 hover:border-amber-400/30 transition-all duration-500 cursor-pointer group"
-          onClick={() => navigate("/sunrise-sunset-practices")}
+          onClick={() => navigate("/sunrise-sunset")}
           data-testid="daily-sunrise-sunset-card"
         >
           <div className="flex items-start gap-4">

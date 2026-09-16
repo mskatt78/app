@@ -696,7 +696,7 @@ WATER_PRACTICES = [
     {
         "id": "solfeggio-water",
         "name": "Solfeggio Frequency Water Infusion",
-        "description": "Play Solfeggio healing frequencies near your water to charge it with specific healing vibrations. Each frequency carries distinct healing properties.",
+        "description": "Use Solfeggio tones near your water as a symbolic sound-and-intention ritual. Different tones can provide different listening experiences; claims that they physically charge water with specific healing properties are not established.",
         "duration_minutes": 15,
         "benefits": [
             "Frequency-specific healing",
@@ -722,7 +722,7 @@ WATER_PRACTICES = [
             "Hold your crystal over the water during charging if using one",
             "Drink the frequency-infused water with full conscious awareness"
         ],
-        "affirmation": "I drink healing frequencies. Every cell resonates with sacred sound.",
+        "affirmation": "I receive this water with gratitude. I listen for the meaning sacred sound holds for me.",
         "category": "frequency"
     },
     {

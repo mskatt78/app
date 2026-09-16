@@ -42,7 +42,7 @@ ANCIENT_WISDOM_AVALON = [
         "title": "Keeper of Excalibur, Guardian of the Sacred Waters, Faerie Queen",
         "element": "Water",
         "description": "The Lady of the Lake is the mysterious water goddess who dwells beneath the sacred lake surrounding Avalon. She is the keeper of Excalibur, which she gives to Arthur and receives back at his death. She represents the deep feminine mysteries — the power that lies beneath the surface, the gifts that come from the unconscious depths, and the sovereignty that must be earned, not claimed.",
-        "teachings": ["True power is given, not taken", "The depths hold treasures for those who can receive", "Sovereignty comes from alignment with the sacred feminine", "Water holds memory and magic", "Return what you have borrowed when the time comes"],
+        "teachings": ["True power is given, not taken", "The depths hold treasures for those who can receive", "Sovereignty comes from alignment with the sacred feminine", "Water carries memory and magic in story, ritual and imagination", "Return what you have borrowed when the time comes"],
         "sacred_tools": ["Sacred sword (Excalibur)", "Lake water", "Water lilies", "Silver mirror", "Moon-charged water"],
         "invocation": "Lady of the Lake, Keeper of the Sacred Sword, She Who Dwells in the Depths — I approach your waters with reverence. Grant me the gifts I am ready to receive. Help me remember that all power is borrowed and must be returned with honor.",
         "message": "I rise from depths you cannot fathom to offer you gifts you have not yet earned. Will you receive them with humility? Will you return them when your time is done? The sword I give cuts through illusion, but it can also wound the one who wields it without wisdom.",

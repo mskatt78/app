@@ -232,70 +232,46 @@ Throughout your day, remember: you have this goddess within. When you need her q
     },
 
     "rose-lineage-meditation": {
-        "deeper_teaching": """The Rose Lineage: Ancient Mysteries of the Sacred Feminine
+        "deeper_teaching": """The Rose Lineage: A Living Symbol of Sacred Feminine Remembrance
 
-The rose has been the symbol of the sacred feminine mysteries for millennia. From the temples of ancient Egypt where Isis was associated with the rose, to the hidden knowledge carried by Mary Magdalene, to the secret rose gardens of Persian mystics, the rose encodes profound spiritual truths.
+Across devotional, mystical and artistic traditions, the rose has carried many meanings: love, beauty, devotion, secrecy, grief, courage and the unfolding heart. Within this Temple, the Rose Lineage is approached as a spiritual and symbolic stream rather than a claim of one provable unbroken historical lineage.
 
-THE ROSE AS SPIRITUAL SYMBOL
+MARY MAGDALENE, ISIS & THE ROSE
 
-The rose blooms from bud to flower in a spiral pattern—the same spiral of galaxies, DNA, and spiritual evolution. Its petals form a perfect mathematical sequence. Its fragrance opens the heart chakra. Its thorns remind us that the path of love requires courage. Every aspect of the rose teaches.
+Mary Magdalene is honoured here as a disciple and spiritual teacher whose importance is especially visible in early Christian texts such as the Gospel of Mary. Later devotional and esoteric traditions have connected her with the rose and sacred feminine teachings. Isis belongs to an older Egyptian religious world with her own distinct history; when both figures are contemplated in Rose work, they are not treated as historically interchangeable. Instead, notice the different qualities each awakens in your own practice.
 
-In the Christian mystical tradition, the rose window of Gothic cathedrals represented divine light entering the human realm. The five-petaled rose was sacred to Venus and Aphrodite. The red rose represents passionate love, the white rose purity, the pink rose the union of both.
+THE ROSE AS TEACHER
 
-MARY MAGDALENE AND THE ROSE
-
-Mary Magdalene, far from the "repentant prostitute" of medieval church propaganda, was a spiritual master and likely the closest disciple of Jesus. The Gnostic gospels reveal her as a teacher of profound wisdom. She has been called "the Apostle to the Apostles."
-
-The lineage of the Rose that flows through Mary Magdalene carries teachings of sacred union—the hieros gamos, the divine marriage of masculine and feminine, heaven and earth, spirit and matter. These were dangerous teachings in a world that split spirit from body, God from Goddess.
-
-Those who carry the Rose lineage today hold codes for the return of the sacred feminine to Earth. These aren't just metaphors—they're actual frequencies of consciousness that can be received and transmitted.
+A rose can be met directly: fragrance, thorn, stem, colour, softness, decay and bloom. Its spiral can become a contemplative image of gradual unfolding without needing to turn the flower into a scientific code. Let the rose teach through relationship and attention.
 
 THE ROSE IN YOUR HEART
 
-When you meditate on the rose, you're not just visualizing a flower. You're connecting to an ancient stream of feminine wisdom that has been carried through priestesses, mystics, and everyday women for thousands of years.
+If heart-centred imagery resonates, imagine a rose opening at the centre of the chest. This is an imaginal practice: a way to listen for devotion, boundaries, tenderness and courage. You do not need to receive a message or feel an activation. Simply notice what is present.
 
-The rose blooms in your heart chakra. You are part of this lineage. You carry these codes. The rose is remembering through you.""",
+You may choose to understand yourself as a keeper of Rose wisdom: someone committed to embodying love with discernment, devotion with boundaries, and beauty with truth.""",
 
-        "somatic_practice": """ROSE LINEAGE TRANSMISSION (25 minutes)
+        "somatic_practice": """ROSE REMEMBRANCE PRACTICE (25 minutes)
 
 PREPARATION:
-If possible, have a fresh rose. Otherwise, rose essential oil or rose water. Sit before a candle. This is sacred work.
+If you wish, bring a fresh rose, rose water, or another flower that feels meaningful. Avoid scented products if they irritate you. Sit comfortably with a candle only if it can be used safely.
 
-THE TRANSMISSION:
+1. SENSORY ROSE CONNECTION (5 minutes)
+Look closely at the flower: colour, edges, stem, thorn, texture. If scent is comfortable for you, notice it gently rather than taking repeated deep inhalations. Feel your feet or seat supported by the Earth.
 
-1. ROSE BREATH (5 minutes)
-Hold the rose or inhale rose scent.
-Let the fragrance enter your heart with each breath.
-Feel your heart softening, opening.
-The rose is key; it opens what was closed.
+2. HEART-ROSE IMAGERY (5 minutes)
+Close or soften your eyes. Imagine a rose bud at the heart centre if that image feels welcome. With ordinary breathing, allow the petals to unfold at their own pace. Nothing needs to happen.
 
-2. ROSE VISUALIZATION (5 minutes)
-Close your eyes. Visualize a rose bud in your heart center.
-With each breath, watch one petal unfold.
-The rose slowly, slowly opens—as you open.
-See the rose become full, radiant, alive.
-Feel its fragrance filling your chest.
+3. CONTEMPLATING THE LINEAGE (5 minutes)
+Bring to mind Mary Magdalene, Isis, a beloved ancestor, teacher, or simply generations of people who have tended sacred practice. Keep each tradition distinct. Ask: What quality of devotion or wisdom am I choosing to cultivate?
 
-3. LINEAGE CONNECTION (5 minutes)
-Feel the presence of Mary Magdalene, Isis, and all rose priestesses through time.
-You are not alone. You are part of an unbroken lineage.
-Feel them surrounding you with love.
-Receive their blessing. They have waited for you to remember.
-
-4. CODE DOWNLOAD (5 minutes)
-In the center of your heart-rose is a light.
-This light contains codes—frequencies of sacred feminine wisdom.
-You don't need to understand them intellectually.
-Simply receive. Let the light enter your cells, your DNA.
-You are being activated.
+4. LISTENING (5 minutes)
+Rest one or both hands where comfortable. Rather than downloading codes or forcing an activation, listen for sensation, emotion, image, memory, silence, or no particular response. All are valid.
 
 5. DEDICATION (5 minutes)
-Place your hands on your heart.
-Speak: "I am a keeper of the Rose. I remember the sacred feminine. I carry these codes for the healing of the world. I am part of the lineage. The Rose blooms through me."
-Bow to the rose. Bow to the lineage. Bow to yourself.
+Choose words that are true for you, such as: 'I tend the Rose through devotion, discernment and embodied love. May what I practise become visible in how I live.' Name one ordinary action that will carry this intention into your day.
 
 DAILY ROSE PRACTICE:
-Each day, place your hands on your heart and feel the rose blooming there. Say: "I remember." The more you do this, the more the codes activate."""
+Meet the rose for a few breaths. Notice. Listen. Choose one quality to embody. The practice deepens through relationship and repetition, not through proving that hidden codes have activated."""
     },
 
     "sacred-body-blessing": {
