@@ -726,6 +726,20 @@ const wireAmbientSoundType = ({ ctx, gainNode, soundType, sourcesRef, intervalsR
   }
 };
 
+const REAL_AMBIENT_AUDIO = {
+  ocean: "/audio/ocean.mp3", water: "/audio/ocean.mp3", gentle_water: "/audio/ocean.mp3",
+  rain: "/audio/rain.mp3",
+  birds: "/audio/birds.mp3", nature: "/audio/birds.mp3",
+  whale: "/audio/whale.mp3", dolphin: "/audio/dolphin.mp3",
+  drums: "/audio/drums.mp3", drums_gentle: "/audio/drums.mp3", drums_journey: "/audio/drums.mp3",
+  drums_earth: "/audio/drums.mp3", drums_water: "/audio/drums.mp3", drums_fire: "/audio/drums.mp3",
+  drums_air: "/audio/drums.mp3", drums_spirit: "/audio/drums.mp3", drums_return: "/audio/drums.mp3",
+};
+
+const INTENTIONAL_REFERENCE_TONES = new Set([
+  "solfeggio_396", "solfeggio_432", "solfeggio_528", "solfeggio_741", "solfeggio_852", "tuning_fork"
+]);
+
 const AmbientSoundPlayer = ({
   soundType = "silence", 
   autoPlay = false,
@@ -741,8 +755,14 @@ const AmbientSoundPlayer = ({
   const gainNodeRef = useRef(null);
   const sourcesRef = useRef([]);
   const intervalsRef = useRef([]);
+  const recordingRef = useRef(null);
 
   const cleanup = useCallback(() => {
+    if (recordingRef.current) {
+      recordingRef.current.pause();
+      recordingRef.current.currentTime = 0;
+      recordingRef.current = null;
+    }
     // Clear intervals
     intervalsRef.current.forEach(clearInterval);
     intervalsRef.current = [];
@@ -768,6 +788,7 @@ const AmbientSoundPlayer = ({
 
   // Handle volume changes
   useEffect(() => {
+    if (recordingRef.current) recordingRef.current.volume = isMuted ? 0 : Math.min(volume, 1);
     if (gainNodeRef.current) {
       gainNodeRef.current.gain.value = isMuted ? 0 : Math.max(volume * 1.5, 0.6);
     }
@@ -775,6 +796,27 @@ const AmbientSoundPlayer = ({
 
   const startSound = useCallback(() => {
     if (soundType === "silence") {
+      setIsPlaying(true);
+      onPlayStateChange(true);
+      return;
+    }
+
+    const recordingSrc = REAL_AMBIENT_AUDIO[soundType];
+    if (recordingSrc) {
+      const audio = new Audio(recordingSrc);
+      audio.loop = true;
+      audio.preload = "auto";
+      audio.volume = Math.min(volume, 1);
+      recordingRef.current = audio;
+      audio.play().catch((error) => appLogger.warn("Ambient recording playback needs user interaction", error));
+      setIsPlaying(true);
+      onPlayStateChange(true);
+      return;
+    }
+
+    // Do not synthesize fake nature, animals or instruments. Generated audio is reserved
+    // only for practices explicitly presented as reference-frequency tones.
+    if (!INTENTIONAL_REFERENCE_TONES.has(soundType)) {
       setIsPlaying(true);
       onPlayStateChange(true);
       return;
@@ -859,7 +901,7 @@ const AmbientSoundPlayer = ({
       
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">{soundName}</p>
-        <p className="text-xs text-muted-foreground">Web Audio Generated</p>
+        <p className="text-xs text-muted-foreground">{REAL_AMBIENT_AUDIO[soundType] ? "Real recording" : INTENTIONAL_REFERENCE_TONES.has(soundType) ? "Generated reference tone" : "Quiet practice · authentic audio not yet available"}</p>
       </div>
       
       <div className="flex items-center gap-2">

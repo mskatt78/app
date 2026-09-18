@@ -25,7 +25,7 @@ export const AuthCallback = ({ api }) => {
       appLogger.error("Auth callback processing failed", error);
       navigate("/", { replace: true });
     }
-  }, [api, navigate, locationStateUser]);
+  }, [api, navigate]);
 
   useEffect(() => {
     if (hasProcessed.current) return;

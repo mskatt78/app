@@ -1,24 +1,18 @@
-import { AMBIENT_SOUNDS } from "../AmbientSoundPlayer";
-
 export const BREATHWORK_SOUND_OPTIONS = [
-  { id: "tone", label: "Healing Frequency Tone" },
-  { id: "ocean", label: AMBIENT_SOUNDS.ocean.name },
-  { id: "rain", label: AMBIENT_SOUNDS.rain.name },
-  { id: "nature", label: AMBIENT_SOUNDS.nature.name },
-  { id: "whale", label: AMBIENT_SOUNDS.whale.name },
-  { id: "dolphin", label: AMBIENT_SOUNDS.dolphin.name },
-  { id: "wind", label: AMBIENT_SOUNDS.wind.name },
-  { id: "fire", label: AMBIENT_SOUNDS.fire.name },
-  { id: "chimes", label: AMBIENT_SOUNDS.chimes.name },
-  { id: "drums_gentle", label: AMBIENT_SOUNDS.drums_gentle.name },
-  { id: "silence", label: "Silence" },
+  { id: "silence", label: "Quiet Practice" },
+  { id: "ocean", label: "Ocean Waves · Real Recording" },
+  { id: "rain", label: "Gentle Rain · Real Recording" },
+  { id: "birds", label: "Birdsong · Real Recording" },
+  { id: "whale", label: "Whale Song · Real Recording" },
+  { id: "dolphin", label: "Dolphin Song · Real Recording" },
+  { id: "drums_gentle", label: "Shamanic Drum · Real Recording" },
 ];
 
 export const ELEMENT_DEFAULT_SOUNDS = {
-  Earth: "nature",
+  Earth: "birds",
   Water: "ocean",
-  Fire: "fire",
-  Air: "wind",
+  Fire: "silence",
+  Air: "silence",
   Spirit: "rain",
 };
 

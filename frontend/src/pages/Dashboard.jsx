@@ -60,7 +60,13 @@ const Dashboard = ({ user, api }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex" data-testid="dashboard">
+    <div className="min-h-screen bg-background flex relative overflow-hidden" data-testid="dashboard">
+      <div
+        className="fixed inset-0 pointer-events-none opacity-[0.14] bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/shamanic-elements-soul-temple-2-home.png')" }}
+        aria-hidden="true"
+        data-testid="soul-temple-global-background"
+      />
       {/* Sidebar - Desktop */}
       <aside className="hidden lg:flex flex-col w-64 border-r border-white/5 bg-card/30 backdrop-blur-xl h-screen sticky top-0">
         <div className="p-6 border-b border-white/5">
@@ -172,7 +178,7 @@ const Dashboard = ({ user, api }) => {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto relative z-10">
         {/* Top Bar */}
         <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5 p-4">
           <div className="flex items-center justify-between max-w-6xl mx-auto">

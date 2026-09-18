@@ -4995,3 +4995,9 @@
 - Pass 41 adds: dashboard hero artwork banner, mystery streams (Hathor, Seven Sisters, Sophia Dragons, Magdalene, Isis, Hermetic Bardon, Merlin, Egyptian), Mindful Eating, session persistence fixes, Kapalabhati gentle pacing, content integrity sweeps.
 - Iteration 278 testing: 100% backend (17/17 pytest, /app/backend/tests/test_pass41_regression.py) + 100% frontend mobile 390x844 (drawer scroll, no Demo, admin protected, back/home, auth persistence, guided volume mixer, mantra audio, breath pacing, images, privacy-policy.html + assetlinks.json reachable).
 - SAFE TO REDEPLOY. Play Billing still awaits user's Play Console service-account JSON (GOOGLE_PLAY_SERVICE_ACCOUNT_JSON + PLAY_LIFETIME_PRODUCT_ID env vars).
+
+## Pass 42 Live Master Integration (2026-06 fork)
+- User supplied SoulTemple_LIVE_MASTER_PASS42.zip ("do not change anything"). Verified superset; synced preserving .env/.git/memory.
+- Pass 42 changes (theirs): breathwork defaults to quiet (no synthetic oscillator), bundled real MP3s only for nature/animal/drum ambience, AmbientSoundPlayer uses real recordings, dashboard artwork also applied as subtle fixed background.
+- ONE unavoidable runtime fix re-applied: their export again truncates EGYPTIAN_MYSTERY_SCHOOL_TEACHINGS to a dangling `EGYPTIAN_` name (NameError at boot). Re-inserted the previously reconstructed 4-entry block. NOTE FOR FUTURE PASSES: check line ~949 of content.py in every user zip export for this truncation.
+- Smoke verified: backend boots, /api/mantras + /api/mystery-schools (14) + /api/sound-frequencies (19, dolphin ok), frontend compiles, dashboard 6 sections, breathwork 14 sessions. No other changes made.

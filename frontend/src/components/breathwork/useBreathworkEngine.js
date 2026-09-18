@@ -2,35 +2,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { appLogger } from "../../utils/logger";
 import { BREATHWORK_SOUND_OPTIONS, ELEMENT_DEFAULT_SOUNDS } from "./breathworkConfig";
 
-const createBrownNoise = (audioContext) => {
-  const bufferSize = 2 * audioContext.sampleRate;
-  const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-  const output = noiseBuffer.getChannelData(0);
-
-  let lastOut = 0;
-  for (let i = 0; i < bufferSize; i += 1) {
-    const white = Math.random() * 2 - 1;
-    output[i] = (lastOut + (0.02 * white)) / 1.02;
-    lastOut = output[i];
-    output[i] *= 3.5;
-  }
-
-  const source = audioContext.createBufferSource();
-  source.buffer = noiseBuffer;
-  source.loop = true;
-  return source;
-};
-
-const createFilteredNoise = (audioContext, frequency, Q = 1) => {
-  const noise = createBrownNoise(audioContext);
-  const filter = audioContext.createBiquadFilter();
-  filter.type = "lowpass";
-  filter.frequency.value = frequency;
-  filter.Q.value = Q;
-  noise.connect(filter);
-  return { source: noise, output: filter };
-};
-
 const PACE_MULTIPLIERS = { classic: 1, gentle: 1.5, slow: 2 };
 export const BREATH_PACE_OPTIONS = [
   { id: "classic", label: "Classic", hint: "As designed" },
@@ -72,8 +43,8 @@ export const useBreathworkEngine = ({ api }) => {
   const [breathPhase, setBreathPhase] = useState("inhale");
   const [phaseProgress, setPhaseProgress] = useState(0);
   const [cycleCount, setCycleCount] = useState(0);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [selectedSound, setSelectedSound] = useState("tone");
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [selectedSound, setSelectedSound] = useState("silence");
   const [pace, setPace] = useState("classic");
 
   const intervalRef = useRef(null);
@@ -83,296 +54,49 @@ export const useBreathworkEngine = ({ api }) => {
   const isPlayingRef = useRef(isPlaying);
   const selectedSoundRef = useRef(selectedSound);
   const soundEnabledRef = useRef(soundEnabled);
-  const audioContextRef = useRef(null);
-  const oscillatorRef = useRef(null);
-  const gainNodeRef = useRef(null);
-  const ambientSourcesRef = useRef([]);
-
-  const extractFrequency = useCallback((session) => {
-    if (!session?.frequency) return 432;
-    const match = session.frequency.match(/(\d+)\s*[Hh]z/);
-    return match ? parseInt(match[1], 10) : 432;
-  }, []);
+  const recordingRef = useRef(null);
 
   const stopSound = useCallback(() => {
     try {
-      if (oscillatorRef.current) {
-        oscillatorRef.current.stop();
-        oscillatorRef.current.disconnect();
-        oscillatorRef.current = null;
+      if (recordingRef.current) {
+        recordingRef.current.pause();
+        recordingRef.current.currentTime = 0;
+        recordingRef.current = null;
       }
-      if (gainNodeRef.current) {
-        gainNodeRef.current.disconnect();
-        gainNodeRef.current = null;
-      }
-      ambientSourcesRef.current.forEach((source) => {
-        try { source.stop?.(); } catch (error) { appLogger.warn("Failed stopping ambient source", error); }
-        try { source.disconnect?.(); } catch (error) { appLogger.warn("Failed disconnecting ambient source", error); }
-      });
-      ambientSourcesRef.current = [];
     } catch (error) {
       appLogger.error("Breathwork stopAudio failed", error);
     }
   }, []);
 
-  const initAudio = useCallback((frequency) => {
-    try {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioContextRef.current.state === "suspended") {
-        audioContextRef.current.resume();
-      }
-
-      oscillatorRef.current = audioContextRef.current.createOscillator();
-      oscillatorRef.current.type = "sine";
-      oscillatorRef.current.frequency.setValueAtTime(frequency, audioContextRef.current.currentTime);
-
-      gainNodeRef.current = audioContextRef.current.createGain();
-      gainNodeRef.current.gain.setValueAtTime(0.15, audioContextRef.current.currentTime);
-
-      oscillatorRef.current.connect(gainNodeRef.current);
-      gainNodeRef.current.connect(audioContextRef.current.destination);
-      oscillatorRef.current.start();
-    } catch (error) {
-      appLogger.error("Breathwork tone init failed", error);
-    }
-  }, []);
+  const REAL_BREATHWORK_AUDIO = {
+    ocean: "/audio/ocean.mp3",
+    rain: "/audio/rain.mp3",
+    birds: "/audio/birds.mp3",
+    whale: "/audio/whale.mp3",
+    dolphin: "/audio/dolphin.mp3",
+    drums_gentle: "/audio/drums.mp3",
+  };
 
   const initAmbientSound = useCallback((soundId) => {
+    const src = REAL_BREATHWORK_AUDIO[soundId];
+    if (!src) return; // silence is preferable to synthetic filler
     try {
-      if (!audioContextRef.current) {
-        audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioContextRef.current.state === "suspended") {
-        audioContextRef.current.resume();
-      }
-
-      gainNodeRef.current = audioContextRef.current.createGain();
-      gainNodeRef.current.gain.setValueAtTime(0.22, audioContextRef.current.currentTime);
-      gainNodeRef.current.connect(audioContextRef.current.destination);
-
-      const ctx = audioContextRef.current;
-      const sources = [];
-      const setMasterGain = (value) => {
-        gainNodeRef.current.gain.setValueAtTime(value, audioContextRef.current.currentTime);
-      };
-
-      if (soundId === "ocean") {
-        setMasterGain(0.24);
-        const { source: low, output: lowOut } = createFilteredNoise(ctx, 200, 1);
-        const { source: mid, output: midOut } = createFilteredNoise(ctx, 800, 0.5);
-        lowOut.connect(gainNodeRef.current);
-        midOut.connect(gainNodeRef.current);
-        low.start();
-        mid.start();
-        sources.push(low, mid);
-      } else if (soundId === "rain") {
-        setMasterGain(0.2);
-        const { source, output } = createFilteredNoise(ctx, 400, 2);
-        output.connect(gainNodeRef.current);
-        source.start();
-        sources.push(source);
-      } else if (soundId === "nature") {
-        setMasterGain(0.26);
-        const { source, output } = createFilteredNoise(ctx, 500, 0.5);
-        output.connect(gainNodeRef.current);
-        source.start();
-        sources.push(source);
-
-        const birdsLayer = createManagedTimeout(() => {
-          const chirp = ctx.createOscillator();
-          const chirpGain = ctx.createGain();
-          chirp.type = "triangle";
-          const start = 1400 + Math.random() * 1200;
-          const end = 900 + Math.random() * 700;
-          chirp.frequency.setValueAtTime(start, ctx.currentTime);
-          chirp.frequency.exponentialRampToValueAtTime(end, ctx.currentTime + 0.22);
-          chirpGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          chirpGain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 0.02);
-          chirpGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.24);
-          chirp.connect(chirpGain);
-          chirpGain.connect(gainNodeRef.current);
-          chirp.start(ctx.currentTime);
-          chirp.stop(ctx.currentTime + 0.24);
-        }, [900, 2400]);
-        sources.push(birdsLayer);
-      } else if (soundId === "fire") {
-        setMasterGain(0.31);
-        const { source, output } = createFilteredNoise(ctx, 1000, 1);
-        output.connect(gainNodeRef.current);
-        source.start();
-        sources.push(source);
-
-        const crackleLayer = createManagedTimeout(() => {
-          const burstDuration = 0.045 + Math.random() * 0.05;
-          const bufferSize = Math.max(32, Math.floor(ctx.sampleRate * burstDuration));
-          const crackleBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-          const channel = crackleBuffer.getChannelData(0);
-          for (let i = 0; i < bufferSize; i += 1) {
-            channel[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
-          }
-          const crackle = ctx.createBufferSource();
-          crackle.buffer = crackleBuffer;
-          const highpass = ctx.createBiquadFilter();
-          highpass.type = "highpass";
-          highpass.frequency.value = 1300 + Math.random() * 1200;
-          const crackleGain = ctx.createGain();
-          crackleGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          crackleGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.01);
-          crackleGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + burstDuration);
-          crackle.connect(highpass);
-          highpass.connect(crackleGain);
-          crackleGain.connect(gainNodeRef.current);
-          crackle.start(ctx.currentTime);
-        }, [120, 360]);
-        sources.push(crackleLayer);
-      } else if (soundId === "wind") {
-        setMasterGain(0.22);
-        const { source, output } = createFilteredNoise(ctx, 650, 3);
-        output.connect(gainNodeRef.current);
-        source.start();
-        sources.push(source);
-      } else if (soundId === "whale") {
-        setMasterGain(0.27);
-        const whaleOsc = ctx.createOscillator();
-        const whaleGain = ctx.createGain();
-        const whaleOvertone = ctx.createOscillator();
-        const whaleOvertoneGain = ctx.createGain();
-        const whaleLfo = ctx.createOscillator();
-        const whaleLfoGain = ctx.createGain();
-
-        whaleOsc.type = "sine";
-        whaleOsc.frequency.value = 88;
-        whaleGain.gain.value = 0.12;
-
-        whaleOvertone.type = "triangle";
-        whaleOvertone.frequency.value = 176;
-        whaleOvertoneGain.gain.value = 0.022;
-
-        whaleLfo.type = "sine";
-        whaleLfo.frequency.value = 0.048;
-        whaleLfoGain.gain.value = 32;
-
-        whaleLfo.connect(whaleLfoGain);
-        whaleLfoGain.connect(whaleOsc.frequency);
-        whaleLfoGain.connect(whaleOvertone.frequency);
-        whaleOsc.connect(whaleGain);
-        whaleGain.connect(gainNodeRef.current);
-        whaleOvertone.connect(whaleOvertoneGain);
-        whaleOvertoneGain.connect(gainNodeRef.current);
-
-        whaleOsc.start();
-        whaleOvertone.start();
-        whaleLfo.start();
-
-        sources.push({
-          stop: () => {
-            whaleOsc.stop();
-            whaleOvertone.stop();
-            whaleLfo.stop();
-          },
-          disconnect: () => {
-            whaleLfo.disconnect();
-            whaleLfoGain.disconnect();
-            whaleOsc.disconnect();
-            whaleGain.disconnect();
-            whaleOvertone.disconnect();
-            whaleOvertoneGain.disconnect();
-          },
-        });
-      } else if (soundId === "dolphin") {
-        setMasterGain(0.25);
-        const dolphinLayer = createManagedTimeout(() => {
-          const call = ctx.createOscillator();
-          const callGain = ctx.createGain();
-          call.type = "sine";
-          const start = 1100 + Math.random() * 700;
-          const peak = start + 900 + Math.random() * 700;
-          call.frequency.setValueAtTime(start, ctx.currentTime);
-          call.frequency.exponentialRampToValueAtTime(peak, ctx.currentTime + 0.12);
-          call.frequency.exponentialRampToValueAtTime(start * 0.7, ctx.currentTime + 0.34);
-          callGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          callGain.gain.linearRampToValueAtTime(0.11, ctx.currentTime + 0.03);
-          callGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.36);
-          call.connect(callGain);
-          callGain.connect(gainNodeRef.current);
-          call.start(ctx.currentTime);
-          call.stop(ctx.currentTime + 0.38);
-        }, [700, 2200]);
-        sources.push(dolphinLayer);
-      } else if (soundId === "birds") {
-        setMasterGain(0.27);
-        const birdsOnlyLayer = createManagedTimeout(() => {
-          const chirp = ctx.createOscillator();
-          const chirpGain = ctx.createGain();
-          chirp.type = "triangle";
-          const start = 1700 + Math.random() * 1800;
-          const end = 1100 + Math.random() * 900;
-          chirp.frequency.setValueAtTime(start, ctx.currentTime);
-          chirp.frequency.exponentialRampToValueAtTime(end, ctx.currentTime + 0.2);
-          chirpGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          chirpGain.gain.linearRampToValueAtTime(0.13, ctx.currentTime + 0.02);
-          chirpGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
-          chirp.connect(chirpGain);
-          chirpGain.connect(gainNodeRef.current);
-          chirp.start(ctx.currentTime);
-          chirp.stop(ctx.currentTime + 0.24);
-        }, [600, 1600]);
-        sources.push(birdsOnlyLayer);
-      } else if (soundId === "chimes") {
-        setMasterGain(0.21);
-        const chimeLayer = createManagedTimeout(() => {
-          [0, 7, 12].forEach((semi, index) => {
-            const osc = ctx.createOscillator();
-            const g = ctx.createGain();
-            const freq = 528 * Math.pow(2, semi / 12);
-            osc.type = "sine";
-            osc.frequency.value = freq;
-            g.gain.setValueAtTime(0.0001, ctx.currentTime);
-            g.gain.linearRampToValueAtTime(0.05 / (index + 1), ctx.currentTime + 0.03 + index * 0.01);
-            g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 1.8 + index * 0.3);
-            osc.connect(g);
-            g.connect(gainNodeRef.current);
-            osc.start(ctx.currentTime + index * 0.01);
-            osc.stop(ctx.currentTime + 2.4 + index * 0.3);
-          });
-        }, [4800, 9000]);
-        sources.push(chimeLayer);
-      } else if (soundId === "drums_gentle") {
-        setMasterGain(0.3);
-        const drumsLayer = createManagedTimeout(() => {
-          const body = ctx.createOscillator();
-          const bodyGain = ctx.createGain();
-          body.type = "sine";
-          body.frequency.setValueAtTime(120, ctx.currentTime);
-          body.frequency.exponentialRampToValueAtTime(70, ctx.currentTime + 0.22);
-          bodyGain.gain.setValueAtTime(0.0001, ctx.currentTime);
-          bodyGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.01);
-          bodyGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.28);
-          body.connect(bodyGain);
-          bodyGain.connect(gainNodeRef.current);
-          body.start(ctx.currentTime);
-          body.stop(ctx.currentTime + 0.3);
-        }, [680, 980]);
-        sources.push(drumsLayer);
-      }
-
-      ambientSourcesRef.current = sources;
+      const audio = new Audio(src);
+      audio.loop = true;
+      audio.preload = "auto";
+      audio.volume = 0.32;
+      recordingRef.current = audio;
+      audio.play().catch((error) => appLogger.warn("Breathwork recording playback needs user interaction", error));
     } catch (error) {
-      appLogger.error("Breathwork ambient init failed", error);
+      appLogger.error("Breathwork recording init failed", error);
     }
   }, []);
 
-  const playSelectedSound = useCallback((session, soundId, enabled = soundEnabled) => {
-    if (!enabled || soundId === "silence") return;
+  const playSelectedSound = useCallback((_session, soundId, enabled = soundEnabled) => {
     stopSound();
-    if (soundId === "tone" && session?.frequency) {
-      initAudio(extractFrequency(session));
-      return;
-    }
+    if (!enabled || soundId === "silence") return;
     initAmbientSound(soundId);
-  }, [extractFrequency, initAmbientSound, initAudio, soundEnabled, stopSound]);
+  }, [initAmbientSound, soundEnabled, stopSound]);
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -392,12 +116,6 @@ export const useBreathworkEngine = ({ api }) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       stopSound();
-      if (audioContextRef.current) {
-        audioContextRef.current.close().catch((error) => {
-          appLogger.warn("Failed closing breathwork audio context", error);
-        });
-        audioContextRef.current = null;
-      }
     };
   }, [fetchSessions, stopSound]);
 
@@ -506,7 +224,7 @@ export const useBreathworkEngine = ({ api }) => {
 
   const toggleSound = useCallback(() => {
     const currentlyEnabled = soundEnabledRef.current;
-    if (currentlyEnabled && (oscillatorRef.current || ambientSourcesRef.current.length > 0)) {
+    if (currentlyEnabled && recordingRef.current) {
       stopSound();
     } else if (!currentlyEnabled && isPlayingRef.current && activeSessionRef.current) {
       playSelectedSound(activeSessionRef.current, selectedSoundRef.current, true);

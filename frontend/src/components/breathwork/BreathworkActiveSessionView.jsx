@@ -113,12 +113,12 @@ export const BreathworkActiveSessionView = ({
         {activeSession.frequency && (
           <p className="text-sm text-primary">
             Frequency: {activeSession.frequency}
-            {soundEnabled && isPlaying && selectedSound === "tone" && <span className="ml-2 text-xs text-emerald-400">(Playing)</span>}
+            
           </p>
         )}
         <p className="text-xs text-muted-foreground">
           Selected sound: <span className="text-primary">{availableSoundOptions.find((option) => option.id === selectedSound)?.label || "Silence"}</span>
-          {soundEnabled && isPlaying && selectedSound !== "tone" && selectedSound !== "silence" && <span className="ml-2 text-xs text-emerald-400">(Playing)</span>}
+          {soundEnabled && isPlaying && selectedSound !== "silence" && <span className="ml-2 text-xs text-emerald-400">(Playing)</span>}
         </p>
         {activeSession.full_instructions && (
           <div>
