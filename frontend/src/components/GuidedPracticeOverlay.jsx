@@ -22,6 +22,8 @@ export default function GuidedPracticeOverlay({ practice, stepsOverride, onExit 
       setVoiceVolume={engine.setVoiceVolume}
       ambientVolume={engine.ambientVolume}
       setAmbientVolume={engine.setAmbientVolume}
+      resumedBookmark={engine.resumedBookmark}
+      onStartOver={engine.handleStartOver}
       isComplete={engine.isComplete}
       bgGradient={engine.bgGradient}
       elColor={engine.elColor}

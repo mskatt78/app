@@ -5006,3 +5006,10 @@
 - Added "Begin Guided Journey" to every Mystery School teaching modal (MysterySchoolTeachings.jsx): builds narration steps from teaching description + ceremony opening + guided_practice arc + ritual seal, launches the full GuidedPracticeOverlay (voice/speed/duration, TTS, ambient, volume mixer).
 - Completion logged to /api/practice-history as practice_type "mystery_school" (counts toward streaks).
 - Premium gating respected (locked teachings route to /pricing). Verified e2e on mobile 390x844: Egyptian "Temple of the Dawn Threshold" opens as 14-min Sacred Fire guided session with all controls.
+
+## Lineage Progress Paths + Journey Bookmarks (2026-06 fork)
+- Backend: GET /api/mystery-journey/progress (auth) in user.py — per-stream {total, completed, completed_ids, unlocked_count (strict sequential), order} derived from practice_history practice_type=mystery_school. (Path avoids /mystery-schools/{id} route conflict.)
+- Frontend MysterySchoolTeachings.jsx: lineage progress panel per stream (bar + "Initiation N is open to you"), card badges (Initiation position, CheckCircle2 complete, amber sequence-lock), modal button gates journeys in order ("Complete the previous initiation first"), "Journey Again" for completed. Progress refetched after each completed journey.
+- Journey Bookmarks in useGuidedPracticeEngine.js: localStorage guided-bookmark:{id}:{name} saved on segment change/pause/unmount (only if started, segment>=1, >60s left); restored on overlay open (segment + time remaining); cleared on completion; resume banner + Start Over button (GuidedPracticeContent.jsx).
+- Verified e2e mobile 390x844: progress advances 0->1 after logging journey, unlocked_count 1->2, sequence-locked teaching refuses to start with toast, injected bookmark resumes at step 4 with 8:00 remaining, Start Over resets to 14:00.
+- Play Billing STILL awaiting user's service-account JSON + lifetime product ID.

@@ -44,6 +44,8 @@ export const GuidedPracticeContent = ({
   setVoiceVolume,
   ambientVolume,
   setAmbientVolume,
+  resumedBookmark,
+  onStartOver,
 }) => {
   const [showFullNarration, setShowFullNarration] = useState(false);
   const [showVolumePanel, setShowVolumePanel] = useState(false);
@@ -141,6 +143,23 @@ export const GuidedPracticeContent = ({
           </button>
         </div>
       </div>
+
+      {resumedBookmark && !isComplete && (
+        <div className="px-5 pb-3 flex-shrink-0" data-testid="journey-resume-banner">
+          <div className="rounded-xl bg-amber-500/10 border border-amber-400/30 px-4 py-3 flex items-center justify-between gap-3 max-w-sm">
+            <p className="text-xs text-amber-100/90 leading-snug">
+              Resuming your journey from step {resumedBookmark.segmentIndex + 1} — press play to continue.
+            </p>
+            <button
+              onClick={onStartOver}
+              className="text-xs text-amber-200 underline underline-offset-2 whitespace-nowrap hover:text-amber-100"
+              data-testid="journey-start-over-btn"
+            >
+              Start over
+            </button>
+          </div>
+        </div>
+      )}
 
       {showVolumePanel && (
         <div className="px-5 pb-3 flex-shrink-0" data-testid="guided-volume-panel">

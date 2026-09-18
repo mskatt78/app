@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Lock, Play, Sparkles } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Lock, Play, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
@@ -48,6 +49,21 @@ export default function MysterySchoolTeachings({ api, user }) {
   const [teachings, setTeachings] = useState([]);
   const [selected, setSelected] = useState(null);
   const [guidedJourney, setGuidedJourney] = useState(null);
+  const [journeyProgress, setJourneyProgress] = useState(null);
+
+  const fetchJourneyProgress = useCallback(async () => {
+    if (!api) return;
+    try {
+      const { data } = await api.get("/mystery-journey/progress");
+      setJourneyProgress(data?.streams || null);
+    } catch {
+      setJourneyProgress(null);
+    }
+  }, [api]);
+
+  useEffect(() => {
+    fetchJourneyProgress();
+  }, [fetchJourneyProgress]);
 
   const activeStream = useMemo(() => {
     const queryStream = (searchParams.get("stream") || "").trim().toLowerCase();
@@ -87,6 +103,20 @@ export default function MysterySchoolTeachings({ api, user }) {
     return premium.isSectionUnlocked(item?.premium_unlock_id || "mystery_school");
   };
 
+  const streamProgress = journeyProgress?.[activeStream] || null;
+
+  const getJourneyState = (item) => {
+    if (!streamProgress) return { completed: false, sequenceLocked: false, position: null, total: null };
+    const index = streamProgress.order.indexOf(item.id);
+    const completed = streamProgress.completed_ids.includes(item.id);
+    return {
+      completed,
+      sequenceLocked: index >= 0 && index >= streamProgress.unlocked_count && !completed,
+      position: index >= 0 ? index + 1 : null,
+      total: streamProgress.total,
+    };
+  };
+
   const handleOpenTeaching = (item) => {
     if (!canAccess(item)) {
       navigate("/pricing");
@@ -121,6 +151,11 @@ export default function MysterySchoolTeachings({ api, user }) {
       navigate("/pricing");
       return;
     }
+    const state = getJourneyState(item);
+    if (state.sequenceLocked) {
+      toast.info("The initiation path opens in order — complete the previous journey on this stream first.");
+      return;
+    }
     setSelected(null);
     setGuidedJourney(buildGuidedJourney(item));
   };
@@ -136,6 +171,7 @@ export default function MysterySchoolTeachings({ api, user }) {
         duration_minutes: completed.duration_minutes,
         notes: `Completed ${completed.name} guided journey`,
       });
+      fetchJourneyProgress();
     } catch (error) {
       appLogger.warn("Could not log mystery journey completion", error);
     }
@@ -189,6 +225,28 @@ export default function MysterySchoolTeachings({ api, user }) {
           })}
         </section>
 
+        {streamProgress && (
+          <section className="mt-4 p-4 rounded-2xl border border-amber-400/25 bg-amber-500/5" data-testid="lineage-progress-panel">
+            <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+              <p className="text-sm text-amber-100/90">
+                Initiation path: <span className="font-medium text-amber-200">{streamProgress.completed} of {streamProgress.total}</span> journeys completed
+              </p>
+              <p className="text-xs text-muted-foreground" data-testid="lineage-progress-next">
+                {streamProgress.completed >= streamProgress.total
+                  ? "Path complete — every initiation walked"
+                  : `Initiation ${Math.min(streamProgress.unlocked_count, streamProgress.total)} is open to you`}
+              </p>
+            </div>
+            <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-amber-500/70 to-yellow-300/80 transition-all duration-700"
+                style={{ width: `${streamProgress.total ? Math.round((streamProgress.completed / streamProgress.total) * 100) : 0}%` }}
+                data-testid="lineage-progress-bar"
+              />
+            </div>
+          </section>
+        )}
+
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="mystery-school-loading-grid">
             {Array.from({ length: 6 }).map((_, idx) => (
@@ -199,6 +257,7 @@ export default function MysterySchoolTeachings({ api, user }) {
           <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" data-testid="mystery-school-card-grid">
             {teachings.map((item) => {
               const locked = !canAccess(item);
+              const journeyState = getJourneyState(item);
               return (
                 <button
                   key={item.id}
@@ -231,9 +290,13 @@ export default function MysterySchoolTeachings({ api, user }) {
                   </div>
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="text-[11px] uppercase tracking-[0.18em] text-amber-200/80" data-testid={`mystery-school-stream-${item.id}`}>
-                      {item.stream_label || "Mystery School"}
+                      {journeyState.position ? `Initiation ${journeyState.position} · ` : ""}{item.stream_label || "Mystery School"}
                     </span>
-                    {locked ? <Lock className="w-4 h-4 text-rose-300" /> : <Sparkles className="w-4 h-4 text-amber-300" />}
+                    <span className="flex items-center gap-1.5">
+                      {journeyState.completed && <CheckCircle2 className="w-4 h-4 text-emerald-300" data-testid={`journey-complete-badge-${item.id}`} />}
+                      {journeyState.sequenceLocked && <Lock className="w-4 h-4 text-amber-300/70" data-testid={`journey-sequence-lock-${item.id}`} />}
+                      {locked ? <Lock className="w-4 h-4 text-rose-300" /> : (!journeyState.completed && !journeyState.sequenceLocked && <Sparkles className="w-4 h-4 text-amber-300" />)}
+                    </span>
                   </div>
                   <h3 className="text-lg font-serif leading-snug" data-testid={`mystery-school-name-${item.id}`}>{item.name}</h3>
                   <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1">{item.title}</p>
@@ -262,11 +325,24 @@ export default function MysterySchoolTeachings({ api, user }) {
 
               <Button
                 onClick={() => startGuidedJourney(selected)}
-                className="w-full sm:w-auto bg-amber-500/20 hover:bg-amber-500/30 text-amber-100 border border-amber-400/40"
+                className={`w-full sm:w-auto border ${
+                  getJourneyState(selected).sequenceLocked
+                    ? "bg-white/5 text-muted-foreground border-white/15 hover:bg-white/10"
+                    : "bg-amber-500/20 hover:bg-amber-500/30 text-amber-100 border-amber-400/40"
+                }`}
                 data-testid="mystery-school-begin-journey-btn"
               >
-                <Play className="w-4 h-4 mr-2" />
-                Begin Guided Journey
+                {getJourneyState(selected).sequenceLocked ? (
+                  <>
+                    <Lock className="w-4 h-4 mr-2" />
+                    Complete the previous initiation first
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-4 h-4 mr-2" />
+                    {getJourneyState(selected).completed ? "Journey Again" : "Begin Guided Journey"}
+                  </>
+                )}
               </Button>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

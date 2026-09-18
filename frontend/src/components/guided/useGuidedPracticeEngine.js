@@ -45,6 +45,30 @@ const PREFETCH_SEGMENT_COUNT = 2;
 const MINIMUM_SPOKEN_MINUTES_FLOOR = 7;
 const NARRATION_WPM_AT_SPEED_ONE = 145;
 
+const BOOKMARK_PREFIX = "guided-bookmark:";
+const readJourneyBookmark = (key) => {
+  try {
+    const raw = localStorage.getItem(BOOKMARK_PREFIX + key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+const writeJourneyBookmark = (key, data) => {
+  try {
+    localStorage.setItem(BOOKMARK_PREFIX + key, JSON.stringify(data));
+  } catch {
+    // storage unavailable (private mode) — bookmarks silently disabled
+  }
+};
+const clearJourneyBookmark = (key) => {
+  try {
+    localStorage.removeItem(BOOKMARK_PREFIX + key);
+  } catch {
+    // ignore
+  }
+};
+
 export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const narrationPlan = useMemo(() => buildNarrationPlan(practice || {}, stepsOverride), [practice, stepsOverride]);
   const defaultDurationMinutes = practice?.category === "shamanic" ? 30 : 20;
@@ -491,8 +515,44 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [clearNarrationCache, stopAmbient, stopNarrationPlayback, stopToning, totalDuration]);
 
   const practiceKey = `${practice?.id || ""}:${practice?.name || ""}`;
+  const [resumedBookmark, setResumedBookmark] = useState(null);
 
   useEffect(() => {
+    resetPracticeState();
+    const bookmark = readJourneyBookmark(practiceKey);
+    if (bookmark && bookmark.segmentIndex >= 1 && bookmark.timeRemaining > 60) {
+      currentSegmentIndexRef.current = bookmark.segmentIndex;
+      setCurrentSegmentIndex(bookmark.segmentIndex);
+      const remaining = Math.min(totalDuration, Math.max(60, Math.round(bookmark.timeRemaining)));
+      setTimeRemaining(remaining);
+      timeRemainingRef.current = remaining;
+      setResumedBookmark({ ...bookmark, timeRemaining: remaining });
+    } else {
+      setResumedBookmark(null);
+    }
+  }, [practiceKey, resetPracticeState, totalDuration]);
+
+  useEffect(() => {
+    if (!hasStartedRef.current || isCompleteRef.current) return;
+    if (currentSegmentIndexRef.current < 1) return;
+    writeJourneyBookmark(practiceKey, {
+      segmentIndex: currentSegmentIndexRef.current,
+      timeRemaining: timeRemainingRef.current,
+      practiceName: practiceIdentityRef.current.name,
+      savedAt: Date.now(),
+    });
+  }, [currentSegmentIndex, isPlaying, practiceKey]);
+
+  useEffect(() => {
+    if (isComplete) {
+      clearJourneyBookmark(practiceKey);
+      setResumedBookmark(null);
+    }
+  }, [isComplete, practiceKey]);
+
+  const handleStartOver = useCallback(() => {
+    clearJourneyBookmark(practiceKey);
+    setResumedBookmark(null);
     resetPracticeState();
   }, [practiceKey, resetPracticeState]);
 
@@ -639,6 +699,14 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   }, [muted, element, ttsPlaying, isPlaying, ambientVolume]);
 
   useEffect(() => () => {
+    if (hasStartedRef.current && !isCompleteRef.current && currentSegmentIndexRef.current >= 1 && timeRemainingRef.current > 60) {
+      writeJourneyBookmark(`${practiceIdentityRef.current.id || ""}:${practiceIdentityRef.current.name || ""}`, {
+        segmentIndex: currentSegmentIndexRef.current,
+        timeRemaining: timeRemainingRef.current,
+        practiceName: practiceIdentityRef.current.name,
+        savedAt: Date.now(),
+      });
+    }
     clearInterval(timerRef.current);
     stopNarrationPlayback(false);
     scriptAbortRef.current?.abort?.();
@@ -974,6 +1042,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     handlePlaybackNarrationDurationMinutesChange,
     handlePlay,
     handleStartVoiceOnly,
+    resumedBookmark,
+    handleStartOver,
     isPlaying,
     ambientLabel: (ELEMENT_AMBIENT[element] || ELEMENT_AMBIENT.spirit).label,
     toningLabel: ttsPlaying ? "Toning layer ducked during voice" : "Toning layer active",

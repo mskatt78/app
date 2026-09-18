@@ -2058,3 +2058,38 @@ async def delete_soundscape(soundscape_id: str, user: User = Depends(get_current
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Soundscape not found")
     return {"message": "Soundscape deleted"}
+
+
+@router.get("/mystery-journey/progress")
+async def get_mystery_journey_progress(user: User = Depends(get_current_user)) -> dict[str, Any]:
+    """Per-stream initiation path: which teachings this member has journeyed through, in order."""
+    from .content import MYSTERY_SCHOOL_TEACHINGS
+
+    db = get_db()
+    history = await db.practice_history.find(
+        {"user_id": user.user_id, "practice_type": "mystery_school"},
+        {"_id": 0, "practice_id": 1},
+    ).to_list(3000)
+    completed = {str(h.get("practice_id")) for h in history}
+
+    streams: dict[str, list[str]] = {}
+    for item in MYSTERY_SCHOOL_TEACHINGS:
+        streams.setdefault(str(item.get("stream") or "other"), []).append(str(item.get("id")))
+
+    progress: dict[str, Any] = {}
+    for stream, ids in streams.items():
+        sequential = 0
+        for teaching_id in ids:
+            if teaching_id in completed:
+                sequential += 1
+            else:
+                break
+        done = [teaching_id for teaching_id in ids if teaching_id in completed]
+        progress[stream] = {
+            "total": len(ids),
+            "completed": len(done),
+            "completed_ids": done,
+            "unlocked_count": min(len(ids), sequential + 1),
+            "order": ids,
+        }
+    return {"streams": progress}
