@@ -2093,3 +2093,66 @@ async def get_mystery_journey_progress(user: User = Depends(get_current_user)) -
             "order": ids,
         }
     return {"streams": progress}
+
+
+MYSTERY_STREAM_LABELS = {
+    "egyptian_mystery": "Egyptian Mystery School",
+    "priestess_rose": "Priestess & Rose Lineage",
+    "emerald_tablet": "Emerald Tablet Alchemy",
+    "merlin_alchemy": "Merlin Teachings & Alchemy",
+    "hathor_mystery": "Hathor Mystery School",
+    "seven_sisters": "Seven Sisters · Pleiades",
+    "sophia_dragons": "Sophia Dragons · Cosmic Womb",
+    "magdalene_initiations": "Mary Magdalene Initiations",
+    "isis_priestess": "Isis Egyptian Priestess Path",
+    "hermetic_bardon": "Hermeticism · Bardon-inspired",
+}
+
+
+@router.get("/mystery-journey/next")
+async def get_next_initiation(user: User = Depends(get_current_user)) -> dict[str, Any]:
+    """Recommend the member's next initiation: continue the stream with the most momentum."""
+    from .content import MYSTERY_SCHOOL_TEACHINGS
+
+    db = get_db()
+    history = await db.practice_history.find(
+        {"user_id": user.user_id, "practice_type": "mystery_school"},
+        {"_id": 0, "practice_id": 1},
+    ).to_list(3000)
+    completed = {str(h.get("practice_id")) for h in history}
+
+    streams: dict[str, list[dict[str, Any]]] = {}
+    for item in MYSTERY_SCHOOL_TEACHINGS:
+        streams.setdefault(str(item.get("stream") or "other"), []).append(item)
+
+    best = None
+    for stream, items in streams.items():
+        ids = [str(i.get("id")) for i in items]
+        sequential = 0
+        for teaching_id in ids:
+            if teaching_id in completed:
+                sequential += 1
+            else:
+                break
+        if sequential >= len(ids):
+            continue
+        ratio = sequential / len(ids)
+        if best is None or ratio > best["ratio"]:
+            next_item = items[sequential]
+            best = {
+                "ratio": ratio,
+                "stream": stream,
+                "stream_label": MYSTERY_STREAM_LABELS.get(stream, stream.replace("_", " ").title()),
+                "teaching": {
+                    "id": str(next_item.get("id")),
+                    "name": next_item.get("name"),
+                    "title": next_item.get("title"),
+                    "position": sequential + 1,
+                    "total": len(ids),
+                },
+                "completed_in_stream": sequential,
+            }
+    if best is None:
+        return {"next": None, "all_complete": True}
+    best.pop("ratio", None)
+    return {"next": best, "all_complete": False}

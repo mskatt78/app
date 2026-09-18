@@ -9,6 +9,7 @@ import { StreakWidget } from "./dashboard/StreakWidget";
 import { SacredJourneyWidget } from "./dashboard/SacredJourneyWidget";
 import { WelcomeJourney } from "./dashboard/WelcomeJourney";
 import { SacredPracticeWidget } from "./dashboard/SacredPracticeWidget";
+import { NextInitiationCard } from "./dashboard/NextInitiationCard";
 import { DailyGuidanceGrid } from "./dashboard/DailyGuidanceGrid";
 import { DashboardActionPanels } from "./dashboard/DashboardActionPanels";
 import { ADMIN_EMAILS, elementBg, elementColors, getNavItems, SUBJECT_SECTIONS } from "./dashboard/dashboardConfig";
@@ -282,6 +283,8 @@ const Dashboard = ({ user, api }) => {
 
               {/* Today's Sacred Practice Widget */}
               <SacredPracticeWidget api={api} navigate={navigate} />
+
+              <NextInitiationCard api={api} />
 
               <DailyGuidanceGrid dailyData={dailyData} navigate={navigate} />
 

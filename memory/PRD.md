@@ -5013,3 +5013,10 @@
 - Journey Bookmarks in useGuidedPracticeEngine.js: localStorage guided-bookmark:{id}:{name} saved on segment change/pause/unmount (only if started, segment>=1, >60s left); restored on overlay open (segment + time remaining); cleared on completion; resume banner + Start Over button (GuidedPracticeContent.jsx).
 - Verified e2e mobile 390x844: progress advances 0->1 after logging journey, unlocked_count 1->2, sequence-locked teaching refuses to start with toast, injected bookmark resumes at step 4 with 8:00 remaining, Start Over resets to 14:00.
 - Play Billing STILL awaiting user's service-account JSON + lifetime product ID.
+
+## Initiation Certificates + Path Recommendations (2026-06 fork)
+- initiationCertificate.js: canvas Certificate of Initiation scroll (hero artwork wash, gold double border, member name via /auth/me, stream label, journey count, sealed date, invite line); shared via Web Share API with download fallback.
+- MysterySchoolTeachings.jsx: "Path Complete" dialog auto-opens when a member finishes the final initiation of a stream; "View Certificate" button lives in the lineage progress panel for completed paths.
+- Backend GET /api/mystery-journey/next (user.py): recommends the next initiation by stream momentum (highest sequential-completion ratio among incomplete streams); returns all_complete when every path is walked. MYSTERY_STREAM_LABELS map added.
+- Dashboard NextInitiationCard.jsx (below SacredPracticeWidget): shows "Your Next Initiation — {name}, Initiation N of M · {stream}" with Continue button deep-linking to the stream; hidden for anonymous users.
+- Verified e2e mobile 390x844: card showed correct next teaching, momentum switched streams after Egyptian path completed, certificate dialog + scroll download toast confirmed. QA account now has egyptian_mystery path fully complete (test data).

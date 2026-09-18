@@ -4,6 +4,8 @@ import { Button } from "../components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, CheckCircle2, Lock, Play, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { shareInitiationCertificate } from "../utils/initiationCertificate";
+import { ScrollText, Loader2 } from "lucide-react";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
 import { appLogger } from "../utils/logger";
@@ -50,6 +52,8 @@ export default function MysterySchoolTeachings({ api, user }) {
   const [selected, setSelected] = useState(null);
   const [guidedJourney, setGuidedJourney] = useState(null);
   const [journeyProgress, setJourneyProgress] = useState(null);
+  const [certificateOpen, setCertificateOpen] = useState(false);
+  const [certSharing, setCertSharing] = useState(false);
 
   const fetchJourneyProgress = useCallback(async () => {
     if (!api) return;
@@ -163,7 +167,7 @@ export default function MysterySchoolTeachings({ api, user }) {
   const exitGuidedJourney = async () => {
     const completed = guidedJourney;
     setGuidedJourney(null);
-    if (!completed || !user) return;
+    if (!completed) return;
     try {
       await api.post("/practice-history", {
         practice_type: "mystery_school",
@@ -171,9 +175,42 @@ export default function MysterySchoolTeachings({ api, user }) {
         duration_minutes: completed.duration_minutes,
         notes: `Completed ${completed.name} guided journey`,
       });
-      fetchJourneyProgress();
+      const { data } = await api.get("/mystery-journey/progress");
+      const streams = data?.streams || null;
+      setJourneyProgress(streams);
+      const stream = streams?.[activeStream];
+      const wasCompleteBefore = streamProgress && streamProgress.completed >= streamProgress.total;
+      if (stream && stream.completed >= stream.total && !wasCompleteBefore) {
+        setCertificateOpen(true);
+      }
     } catch (error) {
       appLogger.warn("Could not log mystery journey completion", error);
+    }
+  };
+
+  const activeStreamLabel = STREAM_OPTIONS.find((s) => s.id === activeStream)?.label || "Mystery School";
+
+  const handleShareCertificate = async () => {
+    setCertSharing(true);
+    try {
+      let memberName = user?.name || "";
+      if (!memberName) {
+        try {
+          const { data } = await api.get("/auth/me");
+          memberName = data?.name || "";
+        } catch {
+          memberName = "";
+        }
+      }
+      await shareInitiationCertificate({
+        streamLabel: activeStreamLabel,
+        total: streamProgress?.total || 0,
+        memberName,
+      });
+    } catch (error) {
+      if (error?.name !== "AbortError") toast.error("Could not create the certificate");
+    } finally {
+      setCertSharing(false);
     }
   };
 
@@ -236,6 +273,15 @@ export default function MysterySchoolTeachings({ api, user }) {
                   ? "Path complete — every initiation walked"
                   : `Initiation ${Math.min(streamProgress.unlocked_count, streamProgress.total)} is open to you`}
               </p>
+              {streamProgress.completed >= streamProgress.total && (
+                <button
+                  onClick={() => setCertificateOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs bg-amber-500/20 border border-amber-400/40 text-amber-100 hover:bg-amber-500/30 transition-colors"
+                  data-testid="view-certificate-btn"
+                >
+                  <ScrollText className="w-3.5 h-3.5" /> View Certificate
+                </button>
+              )}
             </div>
             <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
               <div
@@ -375,6 +421,31 @@ export default function MysterySchoolTeachings({ api, user }) {
               )}
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={certificateOpen} onOpenChange={setCertificateOpen}>
+        <DialogContent className="max-w-md bg-slate-950/98 border-amber-400/30" data-testid="certificate-dialog">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-serif text-amber-100 text-center">Path Complete</DialogTitle>
+          </DialogHeader>
+          <div className="text-center space-y-4 py-2">
+            <ScrollText className="w-14 h-14 mx-auto text-amber-300" strokeWidth={1.2} />
+            <p className="text-sm text-foreground/85 leading-relaxed">
+              You have walked <span className="text-amber-200">every initiation</span> of the{" "}
+              <span className="italic text-amber-200">{activeStreamLabel}</span> — all {streamProgress?.total || 0} guided journeys, completed in full presence.
+            </p>
+            <p className="text-xs text-muted-foreground">Your Certificate of Initiation is ready to keep or share.</p>
+            <Button
+              onClick={handleShareCertificate}
+              disabled={certSharing}
+              className="bg-amber-500/25 hover:bg-amber-500/35 text-amber-100 border border-amber-400/50"
+              data-testid="share-certificate-btn"
+            >
+              {certSharing ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <ScrollText className="w-4 h-4 mr-2" />}
+              Receive Your Scroll
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
