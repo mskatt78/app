@@ -5001,3 +5001,8 @@
 - Pass 42 changes (theirs): breathwork defaults to quiet (no synthetic oscillator), bundled real MP3s only for nature/animal/drum ambience, AmbientSoundPlayer uses real recordings, dashboard artwork also applied as subtle fixed background.
 - ONE unavoidable runtime fix re-applied: their export again truncates EGYPTIAN_MYSTERY_SCHOOL_TEACHINGS to a dangling `EGYPTIAN_` name (NameError at boot). Re-inserted the previously reconstructed 4-entry block. NOTE FOR FUTURE PASSES: check line ~949 of content.py in every user zip export for this truncation.
 - Smoke verified: backend boots, /api/mantras + /api/mystery-schools (14) + /api/sound-frequencies (19, dolphin ok), frontend compiles, dashboard 6 sections, breathwork 14 sessions. No other changes made.
+
+## Mystery School Guided Journeys (2026-06 fork)
+- Added "Begin Guided Journey" to every Mystery School teaching modal (MysterySchoolTeachings.jsx): builds narration steps from teaching description + ceremony opening + guided_practice arc + ritual seal, launches the full GuidedPracticeOverlay (voice/speed/duration, TTS, ambient, volume mixer).
+- Completion logged to /api/practice-history as practice_type "mystery_school" (counts toward streaks).
+- Premium gating respected (locked teachings route to /pricing). Verified e2e on mobile 390x844: Egyptian "Temple of the Dawn Threshold" opens as 14-min Sacred Fire guided session with all controls.

@@ -2,8 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { Button } from "../components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Lock, Sparkles } from "lucide-react";
+import { ArrowLeft, Lock, Play, Sparkles } from "lucide-react";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
+import GuidedPracticeOverlay from "../components/GuidedPracticeOverlay";
+import { appLogger } from "../utils/logger";
 import { getEncodedFrequencyImage } from "../utils/lightCodeVisualTheme";
 import { getMysterySchoolImage } from "../utils/shamanicImageTheme";
 
@@ -45,6 +47,7 @@ export default function MysterySchoolTeachings({ api, user }) {
   const [loading, setLoading] = useState(true);
   const [teachings, setTeachings] = useState([]);
   const [selected, setSelected] = useState(null);
+  const [guidedJourney, setGuidedJourney] = useState(null);
 
   const activeStream = useMemo(() => {
     const queryStream = (searchParams.get("stream") || "").trim().toLowerCase();
@@ -90,6 +93,52 @@ export default function MysterySchoolTeachings({ api, user }) {
       return;
     }
     setSelected(item);
+  };
+
+  const buildGuidedJourney = (item) => {
+    const arc = toList(item.guided_practice);
+    const ritual = toList(item.ritual);
+    const ceremony = toList(item.ceremony);
+    const steps = [
+      `Welcome to ${item.name}, a guided journey from the ${item.stream_label || "Mystery School"} lineage stream. Settle your body, soften your breath, and arrive fully before we begin.`,
+      item.description,
+      ...(ceremony.length ? [`We open in ceremony: ${ceremony[0]}.`] : []),
+      ...arc,
+      ...(ritual.length ? [`To seal this journey: ${ritual[ritual.length - 1]}`] : []),
+      "Return gently now. Carry one insight from this lineage into the rest of your day.",
+    ].filter(Boolean);
+    return {
+      ...item,
+      category: "mystery_school",
+      element: String(item.element || "spirit").toLowerCase(),
+      duration_minutes: item.duration_minutes || 14,
+      steps,
+    };
+  };
+
+  const startGuidedJourney = (item) => {
+    if (!canAccess(item)) {
+      navigate("/pricing");
+      return;
+    }
+    setSelected(null);
+    setGuidedJourney(buildGuidedJourney(item));
+  };
+
+  const exitGuidedJourney = async () => {
+    const completed = guidedJourney;
+    setGuidedJourney(null);
+    if (!completed || !user) return;
+    try {
+      await api.post("/practice-history", {
+        practice_type: "mystery_school",
+        practice_id: completed.id,
+        duration_minutes: completed.duration_minutes,
+        notes: `Completed ${completed.name} guided journey`,
+      });
+    } catch (error) {
+      appLogger.warn("Could not log mystery journey completion", error);
+    }
   };
 
   return (
@@ -211,6 +260,15 @@ export default function MysterySchoolTeachings({ api, user }) {
 
               <p className="text-foreground/85 leading-relaxed" data-testid="mystery-school-modal-description">{selected.description}</p>
 
+              <Button
+                onClick={() => startGuidedJourney(selected)}
+                className="w-full sm:w-auto bg-amber-500/20 hover:bg-amber-500/30 text-amber-100 border border-amber-400/40"
+                data-testid="mystery-school-begin-journey-btn"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                Begin Guided Journey
+              </Button>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {[
                   { key: "alchemy", label: "Alchemy Teachings" },
@@ -243,6 +301,12 @@ export default function MysterySchoolTeachings({ api, user }) {
           )}
         </DialogContent>
       </Dialog>
+
+      <GuidedPracticeOverlay
+        practice={guidedJourney}
+        stepsOverride={guidedJourney?.steps}
+        onExit={exitGuidedJourney}
+      />
     </div>
   );
 }
