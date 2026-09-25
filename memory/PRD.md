@@ -5020,3 +5020,12 @@
 - Backend GET /api/mystery-journey/next (user.py): recommends the next initiation by stream momentum (highest sequential-completion ratio among incomplete streams); returns all_complete when every path is walked. MYSTERY_STREAM_LABELS map added.
 - Dashboard NextInitiationCard.jsx (below SacredPracticeWidget): shows "Your Next Initiation — {name}, Initiation N of M · {stream}" with Continue button deep-linking to the stream; hidden for anonymous users.
 - Verified e2e mobile 390x844: card showed correct next teaching, momentum switched streams after Egyptian path completed, certificate dialog + scroll download toast confirmed. QA account now has egyptian_mystery path fully complete (test data).
+
+## Play Billing Prod Debugging + Billing Health Alert (2026-06 fork)
+- Prod RCA #1 (deployer): GOOGLE_PLAY_SERVICE_ACCOUNT_JSON secret contained the literal key name; user fixed via Secrets tab -> verification_configured now true in prod.
+- Prod RCA #2 (deployer): /playbilling/verify 502 was NOT a crash — Google Android Publisher API returns 401 (service account authenticates but not authorized for package host.emergent.embodiment_journey.twa). User must grant app-level access in Play Console Users & permissions (propagation up to 24h; editing+saving a product flushes it).
+- Code hardening: _play_get now maps upstream 401/403 to a clear 503 "Play API authorization failed" message instead of opaque 502.
+- NEW: GET /api/playbilling/health (admin-gated via _verify_admin) — live probe: loads creds, refreshes token, calls inappproducts list; states: not_configured / auth_failed / unauthorized / ok / error.
+- NEW: AdminDashboard billing health banner (red for unauthorized/auth_failed, amber not_configured, green ok) — verified in preview showing amber not_configured.
+- PENDING USER: grant app access in Play Console, then re-verify prod (dummy-token verify should return 400 Purchase not found = full success); then license-tester purchase test.
+- Prod test account created for checks: billing_qa_check@example.com / BillingQA2026!

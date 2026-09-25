@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Settings, LogOut, ChevronRight, Database, Upload, CalendarDays, Sparkles, BookOpen, Radio } from "lucide-react";
+import { Settings, LogOut, ChevronRight, Database, Upload, CalendarDays, Sparkles, BookOpen, Radio, AlertTriangle, ShieldCheck } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { ensureAdminToken, logoutAdminSession } from "../components/admin/adminSession";
@@ -50,6 +50,7 @@ export default function AdminDashboard({ api: providedApi }) {
   const navigate = useNavigate();
   const [collections, setCollections] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [billingHealth, setBillingHealth] = useState(null);
   const api = providedApi?.defaults?.baseURL?.replace(/\/api$/, "") || process.env.REACT_APP_BACKEND_URL;
   const loadingPlaceholders = useMemo(() => Array.from({ length: 9 }, (_, idx) => `placeholder-${idx}`), []);
   const visibleCollections = useMemo(
@@ -73,11 +74,21 @@ export default function AdminDashboard({ api: providedApi }) {
     }
   }, [api]);
 
+  const fetchBillingHealth = useCallback(async () => {
+    try {
+      const res = await fetch(`${api}/api/playbilling/health`, { credentials: "include" });
+      if (res.ok) setBillingHealth(await res.json());
+    } catch (error) {
+      appLogger.warn("Billing health check failed", error);
+    }
+  }, [api]);
+
   const bootstrapAdminAccess = useCallback(async () => {
     setLoading(true);
     try {
       await ensureAdminToken(api);
       await fetchCollections();
+      fetchBillingHealth();
     } catch (error) {
       appLogger.warn("Admin access bootstrap failed", error);
       toast.error("Admin session required. Please sign in via admin login.");
@@ -85,7 +96,7 @@ export default function AdminDashboard({ api: providedApi }) {
     } finally {
       setLoading(false);
     }
-  }, [api, fetchCollections, navigate]);
+  }, [api, fetchCollections, fetchBillingHealth, navigate]);
 
   useEffect(() => {
     bootstrapAdminAccess();
@@ -129,6 +140,29 @@ export default function AdminDashboard({ api: providedApi }) {
           <h2 className="text-3xl font-serif mb-2">Content Manager</h2>
           <p className="text-muted-foreground" data-testid="admin-dashboard-description">Manage the whole temple from one place — courses, 13 moon paths, yoga, live events, media, and sacred content collections.</p>
         </div>
+
+        {billingHealth && billingHealth.status !== "ok" && (
+          <div
+            className={`mb-8 p-4 rounded-xl border flex items-start gap-3 ${
+              billingHealth.status === "unauthorized" || billingHealth.status === "auth_failed"
+                ? "border-red-500/40 bg-red-500/10"
+                : "border-amber-400/40 bg-amber-500/10"
+            }`}
+            data-testid="billing-health-alert"
+          >
+            <AlertTriangle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${billingHealth.status === "unauthorized" || billingHealth.status === "auth_failed" ? "text-red-400" : "text-amber-300"}`} />
+            <div>
+              <p className="text-sm font-medium mb-0.5">Google Play Billing needs attention</p>
+              <p className="text-xs text-muted-foreground" data-testid="billing-health-message">{billingHealth.message}</p>
+            </div>
+          </div>
+        )}
+        {billingHealth?.status === "ok" && (
+          <div className="mb-8 p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 flex items-center gap-2" data-testid="billing-health-ok">
+            <ShieldCheck className="w-4 h-4 text-emerald-300" />
+            <p className="text-xs text-emerald-100/90">{billingHealth.message}</p>
+          </div>
+        )}
 
         <div className="grid gap-4 md:grid-cols-2 mb-8" data-testid="admin-dashboard-quick-actions">
           {quickActions.map((action, index) => {

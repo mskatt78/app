@@ -17,6 +17,7 @@ from google.oauth2 import service_account
 from google.auth.transport.requests import Request as GoogleAuthRequest
 
 from .dependencies import User, get_current_user, get_db
+from .admin import _verify_admin
 
 router = APIRouter(prefix="/playbilling", tags=["playbilling"])
 logger = logging.getLogger(__name__)
@@ -264,3 +265,39 @@ async def refresh_google_play_subscription(db: Any, subscription: dict[str, Any]
     except Exception as exc:
         logger.warning(f"Play subscription refresh failed: {exc}")
         return None
+
+
+@router.get("/health")
+async def get_play_billing_health(_: dict[str, Any] = Depends(_verify_admin)) -> dict[str, Any]:
+    """Admin-only live probe of Google Play API authorization for this app."""
+    creds = _load_credentials()
+    if creds is None:
+        return {
+            "status": "not_configured",
+            "message": "GOOGLE_PLAY_SERVICE_ACCOUNT_JSON is missing or invalid — Android purchases cannot be verified.",
+        }
+    try:
+        creds.refresh(GoogleAuthRequest())
+    except Exception as exc:
+        return {
+            "status": "auth_failed",
+            "message": f"Service account could not authenticate with Google: {str(exc)[:180]}",
+        }
+    package = _package_name()
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            response = await client.get(
+                f"{API_BASE}/applications/{package}/inappproducts",
+                params={"maxResults": 1},
+                headers={"Authorization": f"Bearer {creds.token}"},
+            )
+    except Exception as exc:
+        return {"status": "error", "message": f"Could not reach Google Play API: {str(exc)[:180]}"}
+    if response.status_code == 200:
+        return {"status": "ok", "message": "Google Play verification is healthy — authentication and app authorization both confirmed."}
+    if response.status_code in (401, 403):
+        return {
+            "status": "unauthorized",
+            "message": "AUTHORIZATION LOST — the service account authenticates but is not authorized for this app in Play Console (Users & permissions). Android purchases cannot be verified until access is restored.",
+        }
+    return {"status": "error", "message": f"Google Play API returned {response.status_code}."}
