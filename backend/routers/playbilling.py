@@ -81,6 +81,12 @@ async def _play_get(path: str) -> dict[str, Any]:
         response = await client.get(f"{API_BASE}{path}", headers={"Authorization": f"Bearer {token}"})
     if response.status_code == 404 or response.status_code == 400:
         raise HTTPException(status_code=400, detail="Purchase not found — the purchase token is invalid")
+    if response.status_code in (401, 403):
+        logger.error(f"Play API GET {path} unauthorized: {response.status_code} {response.text[:300]}")
+        raise HTTPException(
+            status_code=503,
+            detail="Google Play API authorization failed — the service account is not yet authorized for this app in Play Console (Users & permissions). Grant it app access and try again.",
+        )
     if response.status_code != 200:
         logger.error(f"Play API GET {path} failed: {response.status_code} {response.text[:300]}")
         raise HTTPException(status_code=502, detail=f"Google verification failed ({response.status_code})")
