@@ -32,6 +32,10 @@ export const MantrasPlayer = ({
   handleNaturalSoundChange,
   naturalSoundOptions,
   isChanting,
+  voiceGender,
+  setVoiceGender,
+  voiceSpeed,
+  setVoiceSpeed,
   tempo,
   setTempo,
   tempoLabels,
@@ -53,8 +57,6 @@ export const MantrasPlayer = ({
 
   const VOICE_GENDER_IDS = { feminine: "nova", masculine: "onyx" };
   const VOICE_SPEED_VALUES = { slow: 0.8, regular: 1.0, fast: 1.2 };
-  const [voiceGender, setVoiceGender] = useState("feminine");
-  const [voiceSpeed, setVoiceSpeed] = useState("regular");
   const [voiceStatus, setVoiceStatus] = useState("idle");
   const voiceAudioRef = useRef(null);
   const [ambientActive, setAmbientActive] = useState(false);
@@ -358,7 +360,7 @@ export const MantrasPlayer = ({
                   </Button>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  Voice controls only affect the spoken pronunciation — the mantra audio and soundscape keep flowing.
+                  Voice &amp; speed shape both the chanted mantra and the spoken pronunciation — the soundscape keeps flowing on its own.
                 </p>
               </div>
 

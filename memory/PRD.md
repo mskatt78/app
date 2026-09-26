@@ -5093,3 +5093,11 @@ Root cause: NOT the backend (verified: nova/onyx differ; speed 0.8→5.2s vs 1.2
 Fix in MantrasPlayer.jsx: play a silent WAV synchronously inside the tap (unlocks the audio element), then swap src to the TTS blob (same element = allowed). Fallback browser voice now honors gender (pitch 1.35 fem / 0.6 masc + wider name matching) and speed (rate = 0.8/1.0/1.2).
 Verified via automation: play → pause → "Resume" state transitions all working.
 NOTE: if this recurs ONLY in production, check EMERGENT_LLM_KEY exists in prod env (TTS 500 → fallback path).
+
+## June 2026 — "Both voices masculine" ROOT CAUSE + Fix
+Pitch-verified: preview AND prod TTS endpoints produce correct voices (nova 162-182Hz fem, onyx 86-103Hz masc). Real cause: the looping CHANT audio files (/audio/mantras/{id}.mp3) were all pre-generated with voice="onyx" — voice select only affected pronunciation, so users heard masculine chanting regardless. Speed complaint: chant playbackRate never wired.
+Fixes:
+- generate_mantra_audio.py: now generates both variants ({id}.mp3 onyx + {id}_f.mp3 nova, tts-1-hd speed .75). All 14 feminine files generated (pitch-verified 165Hz vs 89Hz).
+- MantrasLibraryContainer.jsx: voiceGender/voiceSpeed state lifted here; resolveMantraAudioUrl(mantra, gender) swaps _f suffix; setupAudio sets playbackRate (VOICE_SPEED_PLAYBACK .8/1/1.2); live playbackRate effect; audio re-setup on gender change with auto-resume; props passed to MantrasPlayer (local state removed).
+- Verified E2E: default loads 1_f.mp3, switching Masculine loads 1.mp3, speed select live.
+- Chant files must be committed (they're in frontend/public — included in deploy build).

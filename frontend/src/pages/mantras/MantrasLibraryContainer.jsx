@@ -40,14 +40,19 @@ const NATURAL_SOUND_OPTIONS = [
 const OM_CHANT_LOOP_URL = "https://cdn.pixabay.com/download/audio/2022/03/15/audio_6f95e7f9e0.mp3?filename=om-chant-loop-ambient-10274.mp3";
 
 
-const resolveMantraAudioUrl = (mantra) => {
+const resolveMantraAudioUrl = (mantra, voiceGender = "feminine") => {
   if (!mantra) return "";
-  const url = String(mantra.audio_url || "");
+  let url = String(mantra.audio_url || "");
   // .ogg external streams (e.g. Wikimedia) fail to decode in several mobile browsers —
   // skip them so the reliable generated Voice Mantra player is used instead.
   if (url.toLowerCase().endsWith(".ogg")) return "";
+  if (voiceGender === "feminine" && url.startsWith("/audio/mantras/") && url.endsWith(".mp3") && !url.endsWith("_f.mp3")) {
+    url = url.replace(/\.mp3$/, "_f.mp3");
+  }
   return url;
 };
+
+const VOICE_SPEED_PLAYBACK = { slow: 0.8, regular: 1.0, fast: 1.2 };
 
 const ELEMENT_NATURAL_DEFAULT = {
   Earth: "nature",
@@ -115,6 +120,8 @@ const MantrasLibrary = ({ user, api }) => {
   
   // Speed/Tempo control for health reasons
   const [tempo, setTempo] = useState("normal"); // slow, normal, fast
+  const [voiceGender, setVoiceGender] = useState("feminine");
+  const [voiceSpeed, setVoiceSpeed] = useState("regular");
   const tempoMultipliers = { slow: 1.5, normal: 1.0, fast: 0.7 };
   const tempoLabels = { slow: "Slow (Relaxed)", normal: "Normal", fast: "Fast (Energizing)" };
   
@@ -171,6 +178,7 @@ const MantrasLibrary = ({ user, api }) => {
     const audio = new Audio(url);
     audio.volume = volume;
     audio.loop = isLooping;
+    audio.playbackRate = VOICE_SPEED_PLAYBACK[voiceSpeed] || 1.0;
     
     audio.addEventListener('loadedmetadata', () => {
       setAudioDuration(audio.duration);
@@ -213,18 +221,31 @@ const MantrasLibrary = ({ user, api }) => {
     };
   }, [audioRef, intervalRef, mantraAudioCtxRef, mantraIntervalRef]);
 
-  // Audio setup when mantra is selected
+  // Audio setup when mantra or chant voice is selected
   useEffect(() => {
-    const resolvedUrl = resolveMantraAudioUrl(selectedMantra);
+    const resolvedUrl = resolveMantraAudioUrl(selectedMantra, voiceGender);
     if (resolvedUrl) {
+      const wasPlaying = isPlaying;
       setupAudio(resolvedUrl);
+      if (wasPlaying && audioRef.current) {
+        audioRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      }
     }
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
       }
     };
-  }, [audioRef, selectedMantra, setupAudio]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [audioRef, selectedMantra, voiceGender, setupAudio]);
+
+  // Voice speed changes apply live to the chant audio
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = VOICE_SPEED_PLAYBACK[voiceSpeed] || 1.0;
+    }
+  }, [audioRef, voiceSpeed]);
 
   // Audio controls
   const toggleAudio = () => {
@@ -652,6 +673,10 @@ const MantrasLibrary = ({ user, api }) => {
         handleNaturalSoundChange={handleNaturalSoundChange}
         naturalSoundOptions={NATURAL_SOUND_OPTIONS}
         isChanting={isChanting}
+        voiceGender={voiceGender}
+        setVoiceGender={setVoiceGender}
+        voiceSpeed={voiceSpeed}
+        setVoiceSpeed={setVoiceSpeed}
         tempo={tempo}
         setTempo={setTempo}
         tempoLabels={tempoLabels}

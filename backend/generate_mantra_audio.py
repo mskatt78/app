@@ -28,18 +28,22 @@ MANTRAS = {
 }
 
 
+VOICE_VARIANTS = {"": "onyx", "_f": "nova"}
+
+
 async def main():
     api_key = os.environ.get("EMERGENT_LLM_KEY")
     tts = OpenAITextToSpeech(api_key=api_key)
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for mantra_id, (name, text) in MANTRAS.items():
-        out = OUT_DIR / f"{mantra_id}.mp3"
-        if out.exists() and out.stat().st_size > 10000:
-            print("skip", name)
-            continue
-        audio = await tts.generate_speech(text=text, model="tts-1-hd", voice="onyx", speed=0.75, response_format="mp3")
-        out.write_bytes(audio)
-        print("done", name, len(audio))
+        for suffix, voice in VOICE_VARIANTS.items():
+            out = OUT_DIR / f"{mantra_id}{suffix}.mp3"
+            if out.exists() and out.stat().st_size > 10000:
+                print("skip", name, voice)
+                continue
+            audio = await tts.generate_speech(text=text, model="tts-1-hd", voice=voice, speed=0.75, response_format="mp3")
+            out.write_bytes(audio)
+            print("done", name, voice, len(audio))
 
 
 if __name__ == "__main__":
