@@ -5064,3 +5064,12 @@ User demanded strict VISUAL audit (not URL uniqueness). Method: extract rendered
 - Yoga Library 75: 73 resolve to pose-specific curated images; fixed matcher-order bugs (Wheel→was Bow image, Half Split→was full split, Seated Side Stretch→was sukhasana); replaced 2 stock mismatches: Wide-Legged Forward Fold (was toe-balance squat) → prasarita_wide_fold, Cat-Cow Flow (was lizard lunge) → cat_cow_flow.
 - Breathwork: page shows only hero bg (25% opacity) from pool breathworkStable A/B/C — all verified appropriate seated breathing/meditation imagery. No per-card images.
 - PENDING: user visual approval of Chair Yoga preview, then REDEPLOY (prod still has old images). Backlog: replace hardcoded ?v=2 cache-buster with build-wide asset versioning (user approved for later). Also pending from earlier: "release"→"let go/shed" language pass (user paused text changes during image audit).
+
+## June 2026 — CMS De-duplication + Qi Gong & Tai Chi Library + Restore Plan
+Root causes confirmed: (a) /somatic & /fascia-stretching both served ALL of somatic_practices (display duplication); (b) legacy script add_tai_chi_qigong.py inserted 13 extra records into PROD only (10 actual dups, 3 unique: Single Whip, Five Element Qigong, Six Healing Sounds); (c) prod seeds only when DB empty → missing newer collections (Support-confirmed).
+Fixes (per user decisions — new dedicated section + tag-based single records, NO record duplication):
+- data/somatic_practices.py: added rescued ids 40-42 with accurate generated images (42 total records).
+- content.py: QIGONG_TAICHI_CATEGORIES={"Tai Chi","Qigong","Closing"}; FASCIA_PRACTICE_IDS={4,6,17,27,28,29,31,32}; /somatic excludes qigong (18); /fascia-stretching filters fascia ids + removed "· Fascia Stretching" title suffix (8); NEW /qigong-tai-chi endpoint (24).
+- Frontend: QiGongTaiChi.jsx page (clone of SomaticMovement, endpoint/title swapped), route /qigong-tai-chi, entries in MainMenu + TopNav + BottomNav. SomaticMovement filters trimmed.
+- Preview somatic_practices reseeded (42). Verified endpoints + screenshots (correct images, clean titles).
+RESTORE PROD (pending user approval → redeploy → then): POST /api/admin/seed-database {"force":true} as admin on prod (content-only collections, removes 10 stale dup records, preserves rescued 3 via seed), verify GET /api/admin/seed-status counts. DO NOT delete anything else. Duplicate-audit classification stored here per user's 🗝️ rule.

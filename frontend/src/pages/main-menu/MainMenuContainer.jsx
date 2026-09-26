@@ -135,7 +135,8 @@ const MainMenuContainer = ({ user }) => {
         { path: resolvePath("/fascia-stretching", "/somatic"), icon: Waves, label: "Fascia Stretching", color: "text-cyan-300", desc: "Myofascial release + embodiment" },
         { path: "/breathwork", icon: Wind, label: "Breathwork", color: "text-cyan-400", desc: "Pranayama practices" },
         { path: "/mudras", icon: Hand, label: "Mudras", color: "text-orange-400", desc: "Sacred hand gestures" },
-        { path: "/somatic", icon: Flame, label: "Somatic Movement", color: "text-red-400", desc: "Tai Chi & Qigong" },
+        { path: "/somatic", icon: Flame, label: "Somatic Movement", color: "text-red-400", desc: "Nervous-system release" },
+        { path: "/qigong-tai-chi", icon: Wind, label: "Qi Gong & Tai Chi", color: "text-amber-300", desc: "Energy forms & meditative flow" },
         { path: "/partner-yoga", icon: Users, label: "Partner Yoga", color: "text-teal-400", desc: "Sacred connection for two" },
         { path: resolvePath("/free-form-movement"), icon: Wind, label: "Ecstatic Dance", color: "text-fuchsia-400", desc: "Liberation through movement" },
       ]

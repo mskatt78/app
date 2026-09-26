@@ -2089,6 +2089,11 @@ MOVEMENT_FORM_IMAGE_OVERRIDES: dict[str, str] = {
 }
 FASCIA_IMAGE_OVERRIDES.update(MOVEMENT_FORM_IMAGE_OVERRIDES)
 
+# Distinct libraries served from ONE underlying CMS record set (no duplicate records).
+QIGONG_TAICHI_CATEGORIES = {"Tai Chi", "Qigong", "Closing"}
+# Practices genuinely relevant to fascia work (intentional crossover tags)
+FASCIA_PRACTICE_IDS = {"4", "6", "17", "27", "28", "29", "31", "32"}
+
 HEART_IMAGE_OVERRIDES: dict[str, str] = {
     "1": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e62199b66e0995de6e5eb1e89a81d9614b3fc7b6aeb6d1c8c389a3c472529de2.jpeg",
     "2": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/b96207fd50cc43d63aa2ae50725f7491d3b8413b859459e96e7b3f86dd94bfe1.jpeg",
@@ -7630,6 +7635,7 @@ async def get_somatic_practices(element: Optional[str] = None) -> list[dict[str,
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
     
     practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=100)
+    practices = [p for p in practices if str(p.get("category")) not in QIGONG_TAICHI_CATEGORIES]
     enriched_practices = [_enrich_devotional_language(_enrich_somatic_practice(practice), "somatic") for practice in practices]
     enriched_practices = _apply_id_image_overrides(enriched_practices, MOVEMENT_FORM_IMAGE_OVERRIDES)
     sorted_practices = sorted(
@@ -9046,6 +9052,20 @@ async def get_chair_yoga(style: Optional[str] = None) -> list[dict[str, Any]]:
     return _apply_free_paid_tiering(enriched, "somatic_practices")
 
 
+@router.get("/qigong-tai-chi")
+async def get_qigong_tai_chi(element: Optional[str] = None) -> list[dict[str, Any]]:
+    """Dedicated Qi Gong & Tai Chi library (energy forms), served from the shared somatic_practices records."""
+    db = get_db()
+    query = {}
+    if element:
+        query["element"] = {"$regex": f"^{element}$", "$options": "i"}
+    practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=100)
+    practices = [p for p in practices if str(p.get("category")) in QIGONG_TAICHI_CATEGORIES]
+    enriched = [_enrich_devotional_language(_enrich_somatic_practice(p), "somatic") for p in practices]
+    enriched = _apply_id_image_overrides(enriched, MOVEMENT_FORM_IMAGE_OVERRIDES)
+    return _apply_free_paid_tiering(enriched, "somatic_practices")
+
+
 @router.get("/fascia-stretching")
 async def get_fascia_stretching(element: Optional[str] = None) -> list[dict[str, Any]]:
     """Get fascia-focused stretching practices as a dedicated route."""
@@ -9055,13 +9075,10 @@ async def get_fascia_stretching(element: Optional[str] = None) -> list[dict[str,
         query["element"] = {"$regex": f"^{element}$", "$options": "i"}
 
     practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=100)
+    practices = [p for p in practices if str(p.get("id")) in FASCIA_PRACTICE_IDS]
     adapted: list[dict[str, Any]] = []
     for practice in practices:
         entry = dict(practice)
-        base_name = str(entry.get("name") or "Fascia Stretching").strip()
-        if "fascia" not in base_name.lower():
-            entry["name"] = f"{base_name} · Fascia Stretching"
-
         fascia_focus = str(entry.get("somatic_fascia_focus") or "whole-body myofascial release and nervous-system regulation")
         base_description = str(entry.get("description") or "")
         entry["description"] = (

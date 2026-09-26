@@ -15,7 +15,7 @@ import { resolveDurationMinutes } from "../utils/durationUtils";
 import { usePremiumAccess } from "../hooks/usePremiumAccess";
 import { formatPracticeName } from "../utils/practiceDisplayUtils";
 
-const movementTrackFilters = ["all", "Somatic Movement"];
+const movementTrackFilters = ["all", "Tai Chi", "Chi Gong"];
 
 const elementColors = {
   Earth: { text: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
@@ -25,7 +25,7 @@ const elementColors = {
   Spirit: { text: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
 };
 
-const SomaticMovement = ({ user, api }) => {
+const QiGongTaiChi = ({ user, api }) => {
   const navigate = useNavigate();
   const [practices, setPractices] = useState([]);
   const [filteredPractices, setFilteredPractices] = useState([]);
@@ -44,7 +44,7 @@ const SomaticMovement = ({ user, api }) => {
   useEffect(() => {
     const fetchPractices = async () => {
       try {
-        const response = await api.get("/somatic");
+        const response = await api.get("/qigong-tai-chi");
         setPractices(response.data);
         setFilteredPractices(response.data);
       } catch (error) {
@@ -80,7 +80,7 @@ const SomaticMovement = ({ user, api }) => {
   const handleUnlockFullApp = async () => {
     await premium.startPurchase({
       productId: "full_app_unlock",
-      returnPath: "/somatic",
+      returnPath: "/qigong-tai-chi",
     });
   };
 
@@ -108,7 +108,7 @@ const SomaticMovement = ({ user, api }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background" data-testid="somatic-movement">
+    <div className="min-h-screen bg-background" data-testid="qigong-tai-chi">
       {/* Full-screen Guided Practice Overlay */}
       <AnimatePresence>
         {guidedPractice && (
@@ -132,9 +132,9 @@ const SomaticMovement = ({ user, api }) => {
               <ArrowLeft className="w-5 h-5 text-muted-foreground" />
             </button>
             <div>
-              <p className="text-xs text-muted-foreground uppercase tracking-wider">Body Wisdom</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Energy Arts</p>
               <h1 className="text-xl font-serif">
-                Somatic <span className="italic text-primary">Movement</span>
+                Qi Gong <span className="italic text-primary">& Tai Chi</span>
               </h1>
             </div>
           </div>
@@ -177,12 +177,11 @@ const SomaticMovement = ({ user, api }) => {
           className="text-center mb-12"
         >
           <h2 className="text-3xl font-serif mb-4">
-            Move with <span className="italic text-primary">Intention</span>
+            Flow with <span className="italic text-primary">Living Energy</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Somatic & Fascia Breath Hybrid practices support trauma shedding through mindful movement,
-            longer exhales, and interoceptive tracking. Tai Chi and Chi Gong now live in their own
-            dedicated movement tracks.
+            Ancient Tai Chi forms and Qi Gong energy practices cultivate chi, rooted balance,
+            and meditative flow — from Cloud Hands to the Six Healing Sounds.
           </p>
         </motion.div>
 
@@ -480,4 +479,4 @@ const SomaticMovement = ({ user, api }) => {
   );
 };
 
-export default SomaticMovement;
+export default QiGongTaiChi;

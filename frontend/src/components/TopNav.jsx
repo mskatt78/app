@@ -104,6 +104,7 @@ const TopNav = ({ user }) => {
     { path: resolvePath("/mindfulness"), icon: Heart, label: "Mindfulness", color: "text-rose-400" },
     { path: resolvePath("/grounding"), icon: TreePine, label: "Grounding", color: "text-green-400" },
     { path: resolvePath("/somatic"), icon: Flame, label: "Somatic Movement", color: "text-red-400" },
+    { path: resolvePath("/qigong-tai-chi"), icon: Wind, label: "Qi Gong & Tai Chi", color: "text-amber-300" },
     { path: resolvePath("/somatic-yoga"), icon: Leaf, label: "Somatic Yoga", color: "text-emerald-300" },
     { path: resolvePath("/chair-yoga"), icon: Users, label: "Chair Yoga", color: "text-lime-300" },
     { path: resolvePath("/fascia-stretching", "/somatic"), icon: Wind, label: "Fascia Stretching", color: "text-cyan-300" },

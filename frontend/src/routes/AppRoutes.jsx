@@ -12,6 +12,7 @@ const CrystalGuide = lazy(() => import("../pages/CrystalGuide"));
 const MantrasLibrary = lazy(() => import("../pages/MantrasLibrary"));
 const MudrasLibrary = lazy(() => import("../pages/MudrasLibrary"));
 const SomaticMovement = lazy(() => import("../pages/SomaticMovement"));
+const QiGongTaiChi = lazy(() => import("../pages/QiGongTaiChi"));
 const GroundingPractices = lazy(() => import("../pages/GroundingPractices"));
 const Favorites = lazy(() => import("../pages/Favorites"));
 const RitualBuilder = lazy(() => import("../pages/RitualBuilder"));
@@ -161,6 +162,7 @@ export const AppRoutes = ({ api, PublicRoute, ProtectedRoute, AdminRoute, adminE
       <Route path="/astrology/charts" element={publicElement(AstrologyChartsHub, PublicRoute, api)} />
       <Route path="/somatic" element={publicElement(SomaticMovement, PublicRoute, api)} />
       <Route path="/somatic-movement" element={publicElement(SomaticMovement, PublicRoute, api)} />
+      <Route path="/qigong-tai-chi" element={publicElement(QiGongTaiChi, PublicRoute, api)} />
       <Route path="/favorites" element={protectedElement(Favorites, ProtectedRoute, api)} />
       <Route path="/rituals" element={protectedElement(RitualBuilder, ProtectedRoute, api)} />
       <Route path="/achievements" element={protectedElement(Achievements, ProtectedRoute, api)} />

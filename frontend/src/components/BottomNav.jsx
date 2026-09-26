@@ -70,6 +70,7 @@ const BottomNav = ({ user }) => {
     { path: resolvePath("/mindfulness"), icon: Heart, label: "Mindfulness", color: "text-rose-400" },
     { path: resolvePath("/grounding"), icon: TreePine, label: "Grounding", color: "text-green-400" },
     { path: resolvePath("/somatic"), icon: Flame, label: "Somatic Movement", color: "text-red-400" },
+    { path: resolvePath("/qigong-tai-chi"), icon: Wind, label: "Qi Gong & Tai Chi", color: "text-amber-300" },
     { path: resolvePath("/chair-yoga", "/somatic-yoga"), icon: Sparkles, label: "Chair Yoga", color: "text-lime-300" },
     { path: resolvePath("/fascia-stretching", "/somatic"), icon: Wind, label: "Fascia Stretching", color: "text-cyan-300" },
     { path: resolvePath("/sound-frequencies"), icon: Music2, label: "Sound Healing", color: "text-cyan-300" },
