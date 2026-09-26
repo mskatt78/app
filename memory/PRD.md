@@ -5029,3 +5029,12 @@
 - NEW: AdminDashboard billing health banner (red for unauthorized/auth_failed, amber not_configured, green ok) — verified in preview showing amber not_configured.
 - PENDING USER: grant app access in Play Console, then re-verify prod (dummy-token verify should return 400 Purchase not found = full success); then license-tester purchase test.
 - Prod test account created for checks: billing_qa_check@example.com / BillingQA2026!
+
+## June 2026 — Entitlement Structure Verification & Fix (membership vs separately-sold offerings)
+User-confirmed structure: Monthly ($24.99), Yearly ($189.99), Lifetime "Keys to the Universe" $369 AUD one-time (Stripe full_app_unlock / Play product keys_to_the_universe). Membership/Lifetime unlock ALL 21 premium sections (no double charge). Separately-sold courses/retreats/live_sessions/books are NOT included in membership/lifetime.
+- FIXED payments.py check_product_access: removed subscription + full_app_unlock grants for course/retreat/live_session/book — only direct purchase grants access now.
+- FIXED payments.py /course-access: no longer ORs full_app_unlock into has_subscription; added membership_includes_courses:false.
+- FIXED useCoursePayments.js hasAccess: courses unlocked only via purchasedCourses (membership no longer unlocks courses UI).
+- VERIFIED via live API tests (temp membership + lifetime + direct purchase records, then cleaned up): sections all unlock with either tier; courses stay locked unless directly purchased.
+- Deployer prod diagnosis: env vars OK, config OK (verification_configured=true, lifetime keys_to_the_universe), BUT /api/playbilling/health 404 in prod (stale build). Redeploy initiated by user — awaiting completion, then re-run health probe.
+- Backlog: user mentioned a "visual/background issue" as separate task (no details yet).

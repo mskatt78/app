@@ -945,22 +945,17 @@ async def check_product_access(
         )
         return {"has_access": bool(purchase), "access_type": "purchased" if purchase else None}
 
-    if await _has_full_app_unlock(db, current_user.user_id):
-        return {"has_access": True, "access_type": "full_app_unlock"}
-    
-    # Check for direct purchase
+    # Separately sold offerings (courses, retreats, live sessions, books) are NOT
+    # included in membership or lifetime access — only a direct purchase grants them.
     purchase = await db.user_purchases.find_one({
         "user_id": current_user.user_id,
         "product_type": product_type,
         "product_id": product_id
     })
-    
+
     if purchase:
         return {"has_access": True, "access_type": "purchased"}
-    
-    if await _has_active_subscription(db, current_user.user_id):
-        return {"has_access": True, "access_type": "subscription"}
-    
+
     return {"has_access": False, "access_type": None}
 
 @router.get("/course-access")
@@ -981,8 +976,9 @@ async def get_all_course_access(current_user: User = Depends(get_current_user)) 
     
     return {
         "purchased_courses": purchased_courses,
-        "has_subscription": has_subscription or has_full_app_unlock,
+        "has_subscription": has_subscription,
         "has_full_app_unlock": has_full_app_unlock,
+        "membership_includes_courses": False,
     }
 
 

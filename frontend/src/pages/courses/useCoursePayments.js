@@ -24,7 +24,8 @@ export const useCoursePayments = ({ api, navigate, searchParams }) => {
     }
   }, [api, setHasSubscription, setPurchasedCourses]);
 
-  const hasAccess = (courseId) => hasSubscription || purchasedCourses.includes(courseId);
+  // Courses are separately sold offerings — membership/lifetime does NOT include them.
+  const hasAccess = (courseId) => purchasedCourses.includes(courseId);
 
   const pollPaymentStatus = useCallback(async (sessionId) => {
     const maxAttempts = 10;
