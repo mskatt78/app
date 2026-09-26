@@ -22,10 +22,10 @@ const STYLE_COLORS = {
 };
 
 const CHAIR_YOGA_SHAMANIC_IMAGES = [
-  "https://images.unsplash.com/photo-1562088287-6d37803aca2f?crop=entropy&cs=srgb&fm=jpg&q=85",
-  "https://images.unsplash.com/photo-1562088287-bde35a1ea917?crop=entropy&cs=srgb&fm=jpg&q=85",
-  "https://images.unsplash.com/photo-1506126613408-eca07ce68773?crop=entropy&cs=srgb&fm=jpg&q=85",
-  "https://images.unsplash.com/photo-1610295272575-7376b67b3e96?crop=entropy&cs=srgb&fm=jpg&q=85",
+  "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/f44477de61dc301bd327149c66afd2d6f68f09166232cb79e43a783cfc760b8c.jpeg",
+  "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7f35069275b05232f37f04f7b5089a8250aacee714256e43047fb61c65f3034d.jpeg",
+  "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6e92e2ac16a1514e9a80ad563694c9f2a2326705b74a01f9ca303d9f2bdd450d.jpeg",
+  "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/4941ce88b2a392d92886311131ad2220c23c28217811cc398fafe91ee62d68a6.jpeg",
 ];
 
 export default function ChairYoga() {

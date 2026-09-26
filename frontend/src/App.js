@@ -9,6 +9,7 @@ import { NotificationProvider, NotificationCenter } from "./components/Notificat
 import { AppRoutes } from "./routes/AppRoutes";
 import { AdminRoute, AuthCallback, ProtectedRoute, PublicRoute } from "./routes/routeGuards";
 import { StreakReminderWatcher } from "./components/StreakReminderWatcher";
+import { TempleAmbientBackground } from "./components/TempleAmbientBackground";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -96,13 +97,8 @@ function App() {
   return (
     <NotificationProvider>
       <div className="App grain-overlay min-h-screen flex flex-col">
-        <div
-          aria-hidden="true"
-          className="temple-ambient-bg"
-          data-testid="temple-ambient-bg"
-          style={{ backgroundImage: "url('/images/hero-main.jpg?v=2')" }}
-        />
         <BrowserRouter>
+          <TempleAmbientBackground />
           <RouteScrollManager />
           <div className="flex-1">
             <AppRouter />

@@ -2019,7 +2019,7 @@ CHAIR_YOGA_IMAGE_OVERRIDES: dict[str, str] = {
 SOMATIC_IMAGE_OVERRIDES: dict[str, str] = {
     "grounding-somatic-flow": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
     "hip-release-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
-    "chair-hip-release-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
+    "chair-hip-release-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/d178bc0748ddb594742bd5c4b3693b8b270efb5ce9fb63f7260978d0f3d7f5f8.jpeg",
     "neck-shoulder-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7460d2d56b7ffd7dafdbf4c40237fa996f5f52dd7c03eda7bcf09522402c962d.png",
     "restorative-somatic-yoga": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
     "trauma-release-somatic": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
@@ -2047,6 +2047,40 @@ FASCIA_IMAGE_OVERRIDES: dict[str, str] = {
     "31": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/843111a63f9c77eeb358a19b903234735e0099ca6e0f42513248b12d39f8c070.png",
     "39": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/42c6edcc77557a519bff5e40533fdf4b0560cbb33a9a92d9ac3fe0dc7a5be692.png",
 }
+
+# Accurate per-form imagery for tai chi / qi gong / fascia practices (applied to /somatic and /fascia-stretching)
+MOVEMENT_FORM_IMAGE_OVERRIDES: dict[str, str] = {
+    "3": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a4099a7beb7ca999abb340c6280aa68ee254f9afd239285ca6cf2d4231cba3b2.jpeg",
+    "4": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/5194b38aec6eeb188a3ddaf20eed2fb68301adae3a771fff7c6d1f1f25f3c0a5.jpeg",
+    "7": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ca7d95748f5c54953a37f6cc7dd8cf19a1752978ff7c6849073f6f8989ea622b.jpeg",
+    "8": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/084a7986d0dc4b3055e86e997eda17364a1c5d6828e285955c9be6f58732dd7f.jpeg",
+    "9": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/58e5fadabf9d79ca205d5035274b785718b7ffb7959958c76e3d210f9f78bae1.jpeg",
+    "10": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a06542d458f7a5a8a844488411ad88608fa37cc391663b19b7b11a5bfad614cb.jpeg",
+    "11": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a9f03394b649314c09560f27de75d369c24cb353b4cc8a06584e12d188405179.jpeg",
+    "12": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/4dcddc91f1ba263da0178d20410e121572d54b0a6f1b0e372c7566d16e5c064c.jpeg",
+    "13": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/91c6b45d45e113872e2721eabb28e26c68b8bc777081ae6bb33a79ccf0d9fde5.jpeg",
+    "14": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6512fe8efef37c221d8cc4971e70231d1d677ac5bf34994ce7a9f3466c9532f7.jpeg",
+    "15": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a1eeb991d7bac76ab32992f30635ef913642372a75b9adda99eef26adf8c7d73.jpeg",
+    "16": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/51802578f9852cd2e0b6f204766dae942f4af5dae7b74afdd5fb60673da8a1d6.jpeg",
+    "17": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/680d21371524567b0facf257f6b57258516e04c3ecf59ea23f78e60e92c16511.jpeg",
+    "18": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/00ec032d58b8446ee283d536b5d467be0aa25cd6eb9e96d4c8a1147465535bd9.jpeg",
+    "19": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c3dc368070c948ed1837f7473f970db8c93c6262a93f25cfb69751c504929eed.jpeg",
+    "20": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/416488af6ab733a79e90dcb85454d829d029f009d3e4d64ca67db5e0d4a1d919.jpeg",
+    "21": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3112793455b85f9f631e4fb454b352e878f980ba642c049c0f96d27782a03f72.jpeg",
+    "22": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/501c6f344b39dbaf5b6305c7de53ab2d433f7a0796d01c34bf514df1f4ea78ec.jpeg",
+    "23": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/8bf386cf82e90751ce94a0ac01cac0a73dce2ab1f254da94422f9686bd687620.jpeg",
+    "24": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9433a944b2a1fbc6a7574092ff2c371333d71a78afc9eaa91ed0dd19b3fdc1da.jpeg",
+    "25": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/74f83e73c613a84a311256c4d17e0e08890d317162dcebfbe2210c8b11654189.jpeg",
+    "26": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3b9ec19e5bb6d623cd1bb8b1b54d1b17d55d1d49a82b928c1c42ce69b49cb955.jpeg",
+    "28": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/eea1689a252077f9ca29e29ce5fd6ef8b167e7ad55b23eccb1b2b2dad8241757.jpeg",
+    "29": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/886d66e2d76078bff616228212f0caece08521c55c2cc30ef8b4f85586868666.jpeg",
+    "30": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7fc39dc87a7b59cef0340349aa90b46ad688635ff5d5b15cd0cec7b3f3caefe4.jpeg",
+    "33": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0f06936331b9ecf1aae15dc3d2b8bbb847b9ecad9d4530caaef0754a3120f354.jpeg",
+    "34": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6c275c336592f30ad6c837a58b4d103b25a484cd87caa53ea996a40d47273c3d.jpeg",
+    "35": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7b2d705e71c621a0220cae30692ce944b1889bb8e9ae0f44689ab45a4e823a14.jpeg",
+    "38": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/bae343379216e223dbc128a6247c26fb7dcb4b002207bdef4643ef89ba3e3071.jpeg",
+}
+FASCIA_IMAGE_OVERRIDES.update(MOVEMENT_FORM_IMAGE_OVERRIDES)
 
 HEART_IMAGE_OVERRIDES: dict[str, str] = {
     "1": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e62199b66e0995de6e5eb1e89a81d9614b3fc7b6aeb6d1c8c389a3c472529de2.jpeg",
@@ -7590,6 +7624,7 @@ async def get_somatic_practices(element: Optional[str] = None) -> list[dict[str,
     
     practices = await db.somatic_practices.find(query, {"_id": 0}).to_list(length=100)
     enriched_practices = [_enrich_devotional_language(_enrich_somatic_practice(practice), "somatic") for practice in practices]
+    enriched_practices = _apply_id_image_overrides(enriched_practices, MOVEMENT_FORM_IMAGE_OVERRIDES)
     sorted_practices = sorted(
         enriched_practices,
         key=lambda practice: (
