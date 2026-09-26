@@ -319,7 +319,7 @@ export const GuidedPracticeContent = ({
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4" data-testid="guided-practice-override-controls">
-                <label className="text-xs text-white/70" data-testid="guided-practice-voice-override-control">
+                <div className="text-xs text-white/70" data-testid="guided-practice-voice-override-control">
                   Voice
                   <Select
                     value={playbackVoiceProfile}
@@ -329,7 +329,7 @@ export const GuidedPracticeContent = ({
                     <SelectTrigger className="mt-1 w-full bg-white/10 border-white/20 text-xs text-white" data-testid="guided-practice-voice-override-select">
                       <SelectValue placeholder="Select voice" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[300]">
                       {Object.values(GUIDED_VOICE_PROFILES).map((profile) => (
                         <SelectItem key={profile.id} value={profile.id} data-testid={`guided-practice-voice-override-option-${profile.id}`}>
                           {profile.label}
@@ -337,9 +337,9 @@ export const GuidedPracticeContent = ({
                       ))}
                     </SelectContent>
                   </Select>
-                </label>
+                </div>
 
-                <label className="text-xs text-white/70" data-testid="guided-practice-speed-override-control">
+                <div className="text-xs text-white/70" data-testid="guided-practice-speed-override-control">
                   Speed
                   <Select
                     value={playbackSpeedOption}
@@ -349,7 +349,7 @@ export const GuidedPracticeContent = ({
                     <SelectTrigger className="mt-1 w-full bg-white/10 border-white/20 text-xs text-white" data-testid="guided-practice-speed-override-select">
                       <SelectValue placeholder="Select speed" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[300]">
                       {Object.values(GUIDED_SPEED_OPTIONS).map((speed) => (
                         <SelectItem key={speed.id} value={speed.id} data-testid={`guided-practice-speed-override-option-${speed.id}`}>
                           {speed.label}
@@ -357,9 +357,9 @@ export const GuidedPracticeContent = ({
                       ))}
                     </SelectContent>
                   </Select>
-                </label>
+                </div>
 
-                <label className="text-xs text-white/70" data-testid="guided-practice-duration-override-control">
+                <div className="text-xs text-white/70" data-testid="guided-practice-duration-override-control">
                   Narration Target
                   <Select
                     value={String(selectedNarrationOptionMinutes)}
@@ -369,7 +369,7 @@ export const GuidedPracticeContent = ({
                     <SelectTrigger className="mt-1 w-full bg-white/10 border-white/20 text-xs text-white" data-testid="guided-practice-duration-override-select">
                       <SelectValue placeholder="Select narration length" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-[300]">
                       {availableNarrationDurationOptions.map((durationOption) => (
                         <SelectItem
                           key={durationOption.id}
@@ -381,7 +381,7 @@ export const GuidedPracticeContent = ({
                       ))}
                     </SelectContent>
                   </Select>
-                </label>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4" data-testid="guided-voice-controls-panel">

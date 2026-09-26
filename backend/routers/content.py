@@ -2094,6 +2094,29 @@ QIGONG_TAICHI_CATEGORIES = {"Tai Chi", "Qigong", "Closing"}
 # Practices genuinely relevant to fascia work (intentional crossover tags)
 FASCIA_PRACTICE_IDS = {"4", "6", "17", "27", "28", "29", "31", "32"}
 
+_MUDRA_IMG_BASE = "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images"
+# Photorealistic, anatomically-verified hand images for every mudra card
+MUDRA_IMAGE_OVERRIDES: dict[str, str] = {
+    "1": f"{_MUDRA_IMG_BASE}/2945c98b0eb87ed19f1eb187e0b2d9e3e37f8a6a78e11521721f2106fe2d5f7e.jpeg",
+    "2": f"{_MUDRA_IMG_BASE}/dd87ad9f53e2fc35d5cddcaa9e3266c888f6508b2d94effa35ec31444436aea7.jpeg",
+    "3": f"{_MUDRA_IMG_BASE}/c4889855e1abefe7e8b46c199964c006684abd6db9606bfb6217abca1d9acfb2.jpeg",
+    "4": f"{_MUDRA_IMG_BASE}/70c20d0e391f1d66fbdb8d0876c49e517e4b7d9623e5b9829e98b10b310de755.jpeg",
+    "5": f"{_MUDRA_IMG_BASE}/d23bc4e990ef08e85684f917366ce9f8e3614a1082284b5599af0983b2dead5b.jpeg",
+    "6": f"{_MUDRA_IMG_BASE}/92c9f57b814ec99c421cdb7b7d81b4300b2c628372d869ac81fc9395d6f4a29a.jpeg",
+    "7": f"{_MUDRA_IMG_BASE}/fbbbd48da1b9fc428fa27a5574c4f0be263350b137e0e2528a1731a7d644b8c8.jpeg",
+    "8": f"{_MUDRA_IMG_BASE}/f4856d13197d38c217c8ddb285e22ca5939cce7e0fe6b4922116eb20d5de52fd.jpeg",
+    "9": f"{_MUDRA_IMG_BASE}/61090e63193f726fb63faedaacb03418405ea9d8d4c3045a51d0a794aef8e1e2.jpeg",
+    "10": f"{_MUDRA_IMG_BASE}/db03bbebc32ab8b2749555486f24af0d9300aebedbdd561f8269edfc2f3bf97f.jpeg",
+    "11": f"{_MUDRA_IMG_BASE}/c57443a1298d1a75aaacbc537fcd683bc69740b418f0b6fc398a9ab0d2f12b68.jpeg",
+    "12": f"{_MUDRA_IMG_BASE}/0446c82446fb80907344ae3e53293c5822d349a1832389baffe138a91a5640cc.jpeg",
+    "mudra-supp-301": f"{_MUDRA_IMG_BASE}/1cb8fb8607227319af86e629e889ed5989a981c6b0930a3b2416b4c3b93f303b.jpeg",
+    "mudra-supp-302": f"{_MUDRA_IMG_BASE}/3bdf435d5e9fa99eb4feb2c558fe44ca520744d24182c8974b8669ad312d04e0.jpeg",
+    "mudra-supp-303": f"{_MUDRA_IMG_BASE}/2abd340b7d2f3aa644a371f19994cef6e9de1c45272719e5858983d5b5bc4f68.jpeg",
+    "mudra-supp-304": f"{_MUDRA_IMG_BASE}/a033e5542c5a545e064edb8699d60e6a949728619b354b7ec0cf039eb292f9d3.jpeg",
+    "mudra-supp-305": f"{_MUDRA_IMG_BASE}/2e2c5c69811cb058e48212297bab252bfedbce60accef4755a6c5d4d0484fc1c.jpeg",
+    "mudra-supp-306": f"{_MUDRA_IMG_BASE}/f19594580a5f60be9baec8b1ebdb6893f1e8254c068a177626a23d1090adc064.jpeg",
+}
+
 HEART_IMAGE_OVERRIDES: dict[str, str] = {
     "1": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e62199b66e0995de6e5eb1e89a81d9614b3fc7b6aeb6d1c8c389a3c472529de2.jpeg",
     "2": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/b96207fd50cc43d63aa2ae50725f7491d3b8413b859459e96e7b3f86dd94bfe1.jpeg",
@@ -7539,7 +7562,8 @@ async def get_mudras(element: Optional[str] = None) -> list[dict[str, Any]]:
         unique_by_name[key] = mudra
 
     enriched_mudras = [_enrich_content_integrity(mudra, "hybrid-curated") for mudra in unique_by_name.values()]
-    return [_enrich_mudra_entry(mudra) for mudra in enriched_mudras]
+    final_mudras = [_enrich_mudra_entry(mudra) for mudra in enriched_mudras]
+    return _apply_id_image_overrides(final_mudras, MUDRA_IMAGE_OVERRIDES)
 
 
 # ============ MINDFULNESS PRACTICES ============

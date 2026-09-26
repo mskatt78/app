@@ -5073,3 +5073,8 @@ Fixes (per user decisions — new dedicated section + tag-based single records, 
 - Frontend: QiGongTaiChi.jsx page (clone of SomaticMovement, endpoint/title swapped), route /qigong-tai-chi, entries in MainMenu + TopNav + BottomNav. SomaticMovement filters trimmed.
 - Preview somatic_practices reseeded (42). Verified endpoints + screenshots (correct images, clean titles).
 RESTORE PROD (pending user approval → redeploy → then): POST /api/admin/seed-database {"force":true} as admin on prod (content-only collections, removes 10 stale dup records, preserves rescued 3 via seed), verify GET /api/admin/seed-status counts. DO NOT delete anything else. Duplicate-audit classification stored here per user's 🗝️ rule.
+
+## June 2026 — Guided Controls Fix + Mudra Image Audit
+- FIXED guided practice controls (user: "numerous taps, no options opening"): GuidedPracticeContent.jsx player overlay is z-[200] but Radix SelectContent portals at z-50 → dropdowns opened BEHIND overlay; plus Selects wrapped in <label> double-fired toggle. Fix: SelectContent className="z-[300]" (voice/speed/duration) + <label>→<div>. Verified via automation: one tap → 3 voice options visible.
+- MUDRAS 18/18: replaced all card images (12 wikimedia charts/statues + 6 missing) with generated anatomically-precise hand photos (uniform dark temple style). Wiring: MUDRA_IMAGE_OVERRIDES in content.py applied AFTER _enrich_mudra_entry (which otherwise overwrites image_url from MUDRA_VERIFIED_IMAGE_MAP — gotcha!). Verified 18/18 via API + screenshot.
+- STILL PENDING: production restore flow (user approval → redeploy latest → POST /api/admin/seed-database force → verify seed-status). Note: user-initiated deploy earlier today predates qigong restructure + mudra + guided fixes.
