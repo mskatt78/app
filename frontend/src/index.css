@@ -136,6 +136,32 @@
 }
 
 /* Grain texture overlay */
+/* Temple artwork ambient background — visible on every page */
+.temple-ambient-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-position: center 22%;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.temple-ambient-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        hsl(var(--background) / 0.68),
+        hsl(var(--background) / 0.78) 45%,
+        hsl(var(--background) / 0.9)
+    );
+}
+/* Let page roots reveal the ambient artwork behind them */
+.App .min-h-screen.bg-background {
+    background-color: transparent;
+}
+
 .grain-overlay::after {
     content: '';
     position: fixed;

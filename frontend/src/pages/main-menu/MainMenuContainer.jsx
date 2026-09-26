@@ -232,15 +232,7 @@ const MainMenuContainer = ({ user }) => {
   const quickAccessButtonText = user ? "Go to Dashboard" : "Sign In";
 
   return (
-    <div className="min-h-screen bg-background relative" data-testid="main-menu">
-      {/* Temple artwork ambient background */}
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-25 pointer-events-none"
-        style={{ backgroundImage: "url('/images/hero-main.jpg?v=2')" }}
-      />
-      <div aria-hidden="true" className="fixed inset-0 z-0 bg-gradient-to-b from-background/60 via-background/80 to-background pointer-events-none" />
-      <div className="relative z-10">
+    <div className="min-h-screen bg-background" data-testid="main-menu">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
@@ -460,7 +452,6 @@ const MainMenuContainer = ({ user }) => {
           </div>
         </DialogContent>
       </Dialog>
-      </div>
     </div>
   );
 };

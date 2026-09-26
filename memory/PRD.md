@@ -5046,3 +5046,13 @@ Source: user-uploaded composite brand sheet (kt8td0yy_file_...png, 1024x1536). C
 - Play Console downloadables added to public/: play-feature-graphic-1024x500.png, app-icon-1024.png, app-background-fullscreen.png.
 - NOTE: Android TWA launcher icon is baked into the .aab at build time — needs a new Bubblewrap build to update the Play Store launcher icon. PWA/web icons + install splash update immediately.
 - Screenshot tool learning: script body runs directly inside async fn — do NOT wrap in `async def run(page)` (it silently never executes). Use page.request for API calls (urllib gets 403 from ingress).
+
+## June 2026 — App-Wide Ambient Artwork Background + Landing Fix
+User reported "only the home screen changed". Root causes: (a) earlier prod deploy predated branding commit; (b) landing used separate old /images/hero-main.jpg; (c) menu bg was too subtle; (d) artwork wasn't applied across sections.
+- hero-main.jpg replaced with text-free goddess crop from new poster (1008x1340 JPEG q88).
+- LandingPage.jsx: cache-busted url ?v=2.
+- GLOBAL: App.js renders <div class="temple-ambient-bg"> (fixed, z -1, inline backgroundImage — CSS url() breaks CRA build for public paths!) + index.css gradient overlay via ::after using hsl(var(--background)/alpha); rule `.App .min-h-screen.bg-background { background-color: transparent }` reveals artwork on every page.
+- MainMenu per-page bg layer removed (superseded by global).
+- playbilling.py /health ENHANCED: now probes subscriptionsv2 + products dummy-token endpoints (400/404 = authorized, 401/403 = not) + inappproducts, returns service_account_email + per-check results; status ok if purchase checks pass even if app-info visibility missing. AdminDashboard alert shows SA email.
+- Verified preview: mobile 390 + desktop 1920, no overflow, menu/breathwork/crystals all show artwork; health endpoint returns new shape (not_configured in preview — real credential prod-only).
+- Redeploy dispatched with all changes. AFTER DEPLOY: re-run prod /api/playbilling/health (admin login cookie POST /api/admin/login {"password":"ShamanicAdmin2026!"}) to settle Play authorization + get SA email for user to cross-check in Play Console.

@@ -96,6 +96,12 @@ function App() {
   return (
     <NotificationProvider>
       <div className="App grain-overlay min-h-screen flex flex-col">
+        <div
+          aria-hidden="true"
+          className="temple-ambient-bg"
+          data-testid="temple-ambient-bg"
+          style={{ backgroundImage: "url('/images/hero-main.jpg?v=2')" }}
+        />
         <BrowserRouter>
           <RouteScrollManager />
           <div className="flex-1">
