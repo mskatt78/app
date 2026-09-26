@@ -78,14 +78,15 @@ export const MantrasPlayer = ({
       const utterance = new window.SpeechSynthesisUtterance(text);
       const voices = window.speechSynthesis.getVoices() || [];
       const wantMale = voiceGender === "masculine";
-      const preferred = voices.find((v) =>
-        wantMale
-          ? /male|daniel|david|george|james|fred|alex/i.test(`${v.name}`) && !/female/i.test(`${v.name}`)
-          : /female|samantha|victoria|karen|moira|zira|google uk english female/i.test(`${v.name}`)
-      );
+      const preferred = voices.find((v) => {
+        const label = `${v.name} ${v.voiceURI}`.toLowerCase();
+        return wantMale
+          ? /male|man|daniel|david|george|james|fred|alex|onyx/.test(label) && !/female|woman/.test(label)
+          : /female|woman|samantha|victoria|karen|moira|zira|tessa|serena|nova/.test(label);
+      });
       if (preferred) utterance.voice = preferred;
-      utterance.rate = VOICE_SPEED_VALUES[voiceSpeed] * 0.85;
-      utterance.pitch = wantMale ? 0.85 : 1.05;
+      utterance.rate = VOICE_SPEED_VALUES[voiceSpeed];
+      utterance.pitch = wantMale ? 0.6 : 1.35;
       utterance.volume = isMuted ? 0 : volume;
       utterance.onend = () => setVoiceStatus("idle");
       setVoiceStatus("playing");
@@ -94,6 +95,9 @@ export const MantrasPlayer = ({
       setVoiceStatus("idle");
     }
   };
+
+  // Tiny silent wav — played synchronously inside the tap to keep mobile audio permission alive
+  const SILENT_AUDIO = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=";
 
   const speakMantra = async () => {
     if (!selectedMantra) return;
@@ -104,6 +108,14 @@ export const MantrasPlayer = ({
     }
     const text = [selectedMantra.sanskrit, selectedMantra.translation, selectedMantra.description].filter(Boolean).join(". ");
     if (!text.trim()) return;
+    if (voiceAudioRef.current) {
+      voiceAudioRef.current.pause();
+    }
+    // Unlock audio playback within the user gesture before the network round-trip
+    const audio = new Audio(SILENT_AUDIO);
+    audio.volume = isMuted ? 0 : volume;
+    audio.play().catch(() => {});
+    voiceAudioRef.current = audio;
     setVoiceStatus("loading");
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/tts/generate`, {
@@ -113,17 +125,13 @@ export const MantrasPlayer = ({
       });
       if (!response.ok) throw new Error("tts failed");
       const blob = await response.blob();
-      if (voiceAudioRef.current) {
-        voiceAudioRef.current.pause();
-        voiceAudioRef.current = null;
-      }
-      const audio = new Audio(URL.createObjectURL(blob));
-      audio.volume = isMuted ? 0 : volume;
+      if (voiceAudioRef.current !== audio) return;
+      audio.src = URL.createObjectURL(blob);
       audio.onended = () => setVoiceStatus("idle");
-      voiceAudioRef.current = audio;
       await audio.play();
       setVoiceStatus("playing");
     } catch (_error) {
+      voiceAudioRef.current = null;
       speakWithBrowserVoice();
     }
   };

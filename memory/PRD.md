@@ -5087,3 +5087,9 @@ User issues: only one voice, top "Stop Voice" unreliable (speechSynthesis on And
 - Guided practice engine already offers Feminine/Masculine/Balanced voices + speed (verified earlier this session).
 - Verified via automation: gender options open in one tap; TTS returns 200 for nova + onyx.
 - NOT yet deployed to production (multiple deploys initiated by user today; latest fixes still preview-only).
+
+## June 2026 — Mantra Voice Bug 2 (feminine sounded masculine / speed ignored)
+Root cause: NOT the backend (verified: nova/onyx differ; speed 0.8→5.2s vs 1.2→3.6s). On mobile, first TTS generation exceeds the browser's transient-activation window → audio.play() blocked → silent fallback to default browser voice (masculine, fixed speed).
+Fix in MantrasPlayer.jsx: play a silent WAV synchronously inside the tap (unlocks the audio element), then swap src to the TTS blob (same element = allowed). Fallback browser voice now honors gender (pitch 1.35 fem / 0.6 masc + wider name matching) and speed (rate = 0.8/1.0/1.2).
+Verified via automation: play → pause → "Resume" state transitions all working.
+NOTE: if this recurs ONLY in production, check EMERGENT_LLM_KEY exists in prod env (TTS 500 → fallback path).
