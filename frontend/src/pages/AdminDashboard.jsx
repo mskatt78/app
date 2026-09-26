@@ -154,6 +154,9 @@ export default function AdminDashboard({ api: providedApi }) {
             <div>
               <p className="text-sm font-medium mb-0.5">Google Play Billing needs attention</p>
               <p className="text-xs text-muted-foreground" data-testid="billing-health-message">{billingHealth.message}</p>
+              {billingHealth.service_account_email && (
+                <p className="text-xs text-muted-foreground/80 mt-1" data-testid="billing-health-sa-email">Service account: <span className="font-mono">{billingHealth.service_account_email}</span></p>
+              )}
             </div>
           </div>
         )}

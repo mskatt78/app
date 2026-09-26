@@ -274,30 +274,51 @@ async def get_play_billing_health(_: dict[str, Any] = Depends(_verify_admin)) ->
     if creds is None:
         return {
             "status": "not_configured",
+            "service_account_email": None,
             "message": "GOOGLE_PLAY_SERVICE_ACCOUNT_JSON is missing or invalid — Android purchases cannot be verified.",
         }
+    email = getattr(creds, "service_account_email", None)
     try:
         creds.refresh(GoogleAuthRequest())
     except Exception as exc:
         return {
             "status": "auth_failed",
+            "service_account_email": email,
             "message": f"Service account could not authenticate with Google: {str(exc)[:180]}",
         }
     package = _package_name()
+    headers = {"Authorization": f"Bearer {creds.token}"}
+    lifetime_id = _lifetime_product_id() or "keys_to_the_universe"
+    urls = {
+        "subscription_verification": f"{API_BASE}/applications/{package}/purchases/subscriptionsv2/tokens/health-authcheck",
+        "lifetime_verification": f"{API_BASE}/applications/{package}/purchases/products/{lifetime_id}/tokens/health-authcheck",
+        "app_info_visibility": f"{API_BASE}/applications/{package}/inappproducts?maxResults=1",
+    }
+    checks: dict[str, Any] = {}
     try:
         async with httpx.AsyncClient(timeout=15) as client:
-            response = await client.get(
-                f"{API_BASE}/applications/{package}/inappproducts",
-                params={"maxResults": 1},
-                headers={"Authorization": f"Bearer {creds.token}"},
-            )
+            for name, url in urls.items():
+                response = await client.get(url, headers=headers)
+                # 400/404 = fake token rejected AFTER authorization passed; 401/403 = not authorized
+                checks[name] = {"authorized": response.status_code in (200, 400, 404), "http_status": response.status_code}
     except Exception as exc:
-        return {"status": "error", "message": f"Could not reach Google Play API: {str(exc)[:180]}"}
-    if response.status_code == 200:
-        return {"status": "ok", "message": "Google Play verification is healthy — authentication and app authorization both confirmed."}
-    if response.status_code in (401, 403):
         return {
-            "status": "unauthorized",
-            "message": "AUTHORIZATION LOST — the service account authenticates but is not authorized for this app in Play Console (Users & permissions). Android purchases cannot be verified until access is restored.",
+            "status": "error",
+            "service_account_email": email,
+            "message": f"Could not reach Google Play API: {str(exc)[:180]}",
         }
-    return {"status": "error", "message": f"Google Play API returned {response.status_code}."}
+    purchases_ok = checks["subscription_verification"]["authorized"] and checks["lifetime_verification"]["authorized"]
+    if purchases_ok:
+        note = "" if checks["app_info_visibility"]["authorized"] else " (Note: 'View app information' permission is still missing — this only affects catalog visibility, not purchase verification.)"
+        return {
+            "status": "ok",
+            "service_account_email": email,
+            "checks": checks,
+            "message": f"Google Play purchase verification is AUTHORIZED — subscriptions and lifetime purchases can be verified.{note}",
+        }
+    return {
+        "status": "unauthorized",
+        "service_account_email": email,
+        "checks": checks,
+        "message": "AUTHORIZATION MISSING — the service account authenticates but Google denies purchase verification for this app. In Play Console → Users & permissions, grant this exact service account email app access with 'Manage orders and subscriptions'. New grants can take time to propagate.",
+    }

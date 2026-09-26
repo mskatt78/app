@@ -91,7 +91,7 @@ const LandingPage = ({ onLoginSuccess }) => {
         <div 
           className="absolute inset-0 bg-cover bg-top"
           style={{ 
-            backgroundImage: `url('/images/hero-main.jpg')` 
+            backgroundImage: `url('/images/hero-main.jpg?v=2')` 
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-background/25 via-background/70 to-background" />
