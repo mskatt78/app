@@ -1,0 +1,23 @@
+{
+  "summary": "Iteration 279 — Frontend-only regression for image/background PR on Shamanic Elements Soul Temple. Verified: (1) TempleAmbientBackground data-testid='temple-ambient-bg' renders on ALL tested routes with correct backgroundImage URL — /chair-yoga, /fascia-stretching, /somatic-movement, /yoga-library, /menu use /images/hero-main.jpg?v=2; /masculine-temple uses /images/masculine-temple-bg.jpg (center 35%); /astrology uses /images/bg-cosmic.jpg (center top); /breathwork and /meditations use /images/bg-water.jpg (center 40%). (2) /chair-yoga loads without runtime error, renders 15 practice cards (chair-yoga-card-image-* testids: 10 with chair-yoga-20X ids + 5 somatic/grounding entries) — all 15 images resolve to distinct static.prod-images.emergentagent.com URLs; 'Chair Shoulder Gate Opener' and 'Chair Core Stability Spiral' cards present in DOM. (3) /fascia-stretching loads 53 image cards; Swimming Dragon, Crane Stands on One Leg, Turtle Breathing each map to DISTINCT image URLs (verified via evaluate — 3/3 unique srcs) — no repeated garden photo. (4) /somatic-movement renders 53 images, no runtime error. (5) /yoga-library — Wheel Pose card found with alt='Wheel Pose' and its OWN image URL (8a502068...png), distinct from Bow Pose (Dhanurasana). (6) /menu shows main-menu testid and ambient background layer sits behind cards (readable dark card surfaces on top). (7) Only console errors observed are unrelated 401s from /api/auth/me and /api/entitlements (expected for anonymous session) and one 404 (favicon-like) — no ReferenceError / TypeError / 'TempleAmbientBackground is not defined' seen on any tested route.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "Chair Yoga detail modal image could not be scraped from role='dialog' selector when clicking the first card — either the modal uses a non-standard role/class or clicking a chair-yoga card navigates in-page. Non-blocking (images verified at card level) but consider adding role='dialog' + data-testid='chair-yoga-modal-image' for testability.",
+    "TempleAmbientBackground uses a hardcoded ?v=2 cache-buster only on the default hero image — consider a consistent asset-versioning strategy (env / build hash) rather than per-image query strings."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100%"},
+  "test_credentials": "Not required — all tested routes are public.",
+  "seed_data_creation": "None",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "temple-ambient-bg route map (TempleAmbientBackground.jsx) verified correct for masculine-temple, astrology (+ birth-chart/numerology/i-ching/oracle/human-design/mystery), breathwork/meditations (+ water/sound/frequencies/sleep/dream), and default hero-main.jpg on everything else. Chair Yoga renders 15 cards via chair-yoga-card-image-* testids; all image URLs distinct. Fascia Swimming Dragon/Crane/Turtle images verified distinct. No runtime errors on any of the 9 audited routes.",
+  "rca of the issue": "N/A — regression pass, all audit items green."
+}

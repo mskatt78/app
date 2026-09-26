@@ -89,6 +89,8 @@ const CUSTOM_POSE_IMAGES = {
   chair_hip_release_figure4: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/d178bc0748ddb594742bd5c4b3693b8b270efb5ce9fb63f7260978d0f3d7f5f8.jpeg",
   chair_restorative_somatic: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a2c346bc486eb32812d6a2f39c02bd438505a04b541b96f015e9e72767af43a6.jpeg",
   chair_trauma_release_somatic: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/1cf13e39e4f678ac844532a6bcc5a414a7180b285e9041aee689d1e94edf6de9.jpeg",
+  prasarita_wide_fold: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6a01aad0177e54af50539594e06e865180956784a8fa689ba7240190d3f765bb.jpeg",
+  cat_cow_flow: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/85675ba142436920cd046bfbe7c35814567bd666792ece00477526c44b26c152.jpeg",
   chair_spinal_twist: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ffd8fda6fac5f647d31663b76104e8d5b3e836c449edc080ee554dc817757199.png",
 
   somatic_floor_release: "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/719f5d5f5dc8eb5f56f9e1e8edb358c2c5de1772914f1530d2826490ed424534.png",
@@ -132,6 +134,8 @@ const POSE_MATCHERS = [
   { match: /chair neck|chair.*jaw/, key: "chair_neck_jaw_unwinding" },
   { match: /chair spine|chair spinal|chair twist/, key: "chair_spinal_twist" },
   { match: /\bchair\b(?! pose)/, key: "chair_nervous_system_reset" },
+  { match: /wide.legged forward fold|prasarita/, key: "prasarita_wide_fold" },
+  { match: /cat.cow|cat cow|marjaryasana|bitilasana/, key: "cat_cow_flow" },
   { match: /standing forward fold|uttanasana/, key: "uttanasana_standing_forward_fold" },
   { match: /upward facing dog|urdhva mukha svanasana|urdhva mukha/, key: "urdhva_mukha_svanasana" },
   { match: /boat pose|\bnavasana\b/, key: "navasana" },

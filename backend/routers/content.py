@@ -2050,8 +2050,12 @@ FASCIA_IMAGE_OVERRIDES: dict[str, str] = {
 
 # Accurate per-form imagery for tai chi / qi gong / fascia practices (applied to /somatic and /fascia-stretching)
 MOVEMENT_FORM_IMAGE_OVERRIDES: dict[str, str] = {
+    "1": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/265e2083baf7f9091f4d5f8c0251585ac5d59957caac711ebc94aaa3aa89d9f4.jpeg",
+    "2": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/4875c0420d73cad6660df98d589a0a6fd0f8a473ceb2bdd30a68350225de5400.jpeg",
     "3": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a4099a7beb7ca999abb340c6280aa68ee254f9afd239285ca6cf2d4231cba3b2.jpeg",
     "4": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/5194b38aec6eeb188a3ddaf20eed2fb68301adae3a771fff7c6d1f1f25f3c0a5.jpeg",
+    "5": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/e3e1ef0e8d50615734fe68d146d501833903523314119f56801ca3dbe6027a35.jpeg",
+    "6": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/24fe0f09d5febf1784123635aec41947238c81bc012db53b72bd841049e339a5.jpeg",
     "7": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ca7d95748f5c54953a37f6cc7dd8cf19a1752978ff7c6849073f6f8989ea622b.jpeg",
     "8": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/084a7986d0dc4b3055e86e997eda17364a1c5d6828e285955c9be6f58732dd7f.jpeg",
     "9": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/58e5fadabf9d79ca205d5035274b785718b7ffb7959958c76e3d210f9f78bae1.jpeg",
@@ -2072,12 +2076,15 @@ MOVEMENT_FORM_IMAGE_OVERRIDES: dict[str, str] = {
     "24": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9433a944b2a1fbc6a7574092ff2c371333d71a78afc9eaa91ed0dd19b3fdc1da.jpeg",
     "25": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/74f83e73c613a84a311256c4d17e0e08890d317162dcebfbe2210c8b11654189.jpeg",
     "26": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3b9ec19e5bb6d623cd1bb8b1b54d1b17d55d1d49a82b928c1c42ce69b49cb955.jpeg",
+    "27": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/29f530afe2750ebd4efc29aa28eb6fa1d685d31d378e3359f3a952781c23605d.jpeg",
     "28": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/eea1689a252077f9ca29e29ce5fd6ef8b167e7ad55b23eccb1b2b2dad8241757.jpeg",
     "29": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/886d66e2d76078bff616228212f0caece08521c55c2cc30ef8b4f85586868666.jpeg",
     "30": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7fc39dc87a7b59cef0340349aa90b46ad688635ff5d5b15cd0cec7b3f3caefe4.jpeg",
+    "32": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/49eabaeca1ec827b20157dfbb6edafcf26b8ca2ed167345bf766f05026257089.jpeg",
     "33": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/0f06936331b9ecf1aae15dc3d2b8bbb847b9ecad9d4530caaef0754a3120f354.jpeg",
     "34": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6c275c336592f30ad6c837a58b4d103b25a484cd87caa53ea996a40d47273c3d.jpeg",
     "35": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/7b2d705e71c621a0220cae30692ce944b1889bb8e9ae0f44689ab45a4e823a14.jpeg",
+    "37": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/16a27310d6653c8b924b7c4ca817465ece1075df1b5db03b405415010430fdee.jpeg",
     "38": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/bae343379216e223dbc128a6247c26fb7dcb4b002207bdef4643ef89ba3e3071.jpeg",
 }
 FASCIA_IMAGE_OVERRIDES.update(MOVEMENT_FORM_IMAGE_OVERRIDES)
