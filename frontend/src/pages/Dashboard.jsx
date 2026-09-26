@@ -14,6 +14,7 @@ import { DailyGuidanceGrid } from "./dashboard/DailyGuidanceGrid";
 import { DashboardActionPanels } from "./dashboard/DashboardActionPanels";
 import { ADMIN_EMAILS, elementBg, elementColors, getNavItems, SUBJECT_SECTIONS } from "./dashboard/dashboardConfig";
 import { appLogger } from "../utils/logger";
+import { versioned } from "../lib/assetVersion";
 
 const Dashboard = ({ user, api }) => {
   const navigate = useNavigate();
@@ -233,7 +234,7 @@ const Dashboard = ({ user, api }) => {
                 data-testid="soul-temple-home-hero"
               >
                 <img
-                  src="/images/shamanic-elements-soul-temple-2-home.png?v=2"
+                  src={versioned("/images/shamanic-elements-soul-temple-2-home.png")}
                   alt="Shamanic Elements Soul Temple 2.0 — SkyWater Sacred Embodiments"
                   className="w-full h-auto max-h-[78dvh] object-contain bg-black"
                   loading="eager"

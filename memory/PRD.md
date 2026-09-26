@@ -5101,3 +5101,9 @@ Fixes:
 - MantrasLibraryContainer.jsx: voiceGender/voiceSpeed state lifted here; resolveMantraAudioUrl(mantra, gender) swaps _f suffix; setupAudio sets playbackRate (VOICE_SPEED_PLAYBACK .8/1/1.2); live playbackRate effect; audio re-setup on gender change with auto-resume; props passed to MantrasPlayer (local state removed).
 - Verified E2E: default loads 1_f.mp3, switching Masculine loads 1.mp3, speed select live.
 - Chant files must be committed (they're in frontend/public — included in deploy build).
+
+## June 2026 — Asset Versioning (P1) DONE
+- Build-wide asset versioning implemented: git-hash-based REACT_APP_ASSET_VERSION injected via craco.config.js; `src/lib/assetVersion.js` exports `versioned(path)` helper.
+- Replaced all hardcoded `?v=2` cache-busters (TempleAmbientBackground, Dashboard, LandingPage).
+- `scripts/stamp-sw-version.js` auto-stamps sw.js CACHE_VERSION on every `yarn build` (prebuild step in package.json).
+- Verified in preview: hero image serves with `?v=<git-hash>`, SW cache version matches.

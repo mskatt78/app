@@ -9,6 +9,7 @@ import { Input } from "../components/ui/input";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../components/ui/dialog";
 import { toast } from "sonner";
 import axios from "axios";
+import { versioned } from "../lib/assetVersion";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 const AUTH_PROVIDER_URL = process.env.REACT_APP_AUTH_PROVIDER_URL;
@@ -91,7 +92,7 @@ const LandingPage = ({ onLoginSuccess }) => {
         <div 
           className="absolute inset-0 bg-cover bg-top"
           style={{ 
-            backgroundImage: `url('/images/hero-main.jpg?v=2')` 
+            backgroundImage: `url('${versioned("/images/hero-main.jpg")}')` 
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-b from-background/25 via-background/70 to-background" />

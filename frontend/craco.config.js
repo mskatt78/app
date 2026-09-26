@@ -2,6 +2,18 @@
 const path = require("path");
 require("dotenv").config();
 
+// Build-wide asset version (git commit hash, falls back to timestamp)
+if (!process.env.REACT_APP_ASSET_VERSION) {
+  try {
+    process.env.REACT_APP_ASSET_VERSION = require("child_process")
+      .execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] })
+      .toString()
+      .trim();
+  } catch (e) {
+    process.env.REACT_APP_ASSET_VERSION = String(Date.now());
+  }
+}
+
 // Check if we're in development/preview mode (not production build)
 // Craco sets NODE_ENV=development for start, NODE_ENV=production for build
 const isDevServer = process.env.NODE_ENV !== "production";
