@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Gauge, Heart, Minus, Music, Pause, Play, Plus, Repeat, RotateCcw, SkipForward, Sparkles, Volume2, VolumeX } from "lucide-react";
+import { Gauge, Heart, Minus, Music, Pause, Play, Plus, Repeat, RotateCcw, SkipForward, Sparkles, Square, Volume2, VolumeX } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { Progress } from "../../components/ui/progress";
@@ -50,29 +51,127 @@ export const MantrasPlayer = ({
 }) => {
   const canUseSpeechSynthesis = typeof window !== "undefined" && "speechSynthesis" in window;
 
-  const speakMantra = () => {
+  const VOICE_GENDER_IDS = { feminine: "nova", masculine: "onyx" };
+  const VOICE_SPEED_VALUES = { slow: 0.8, regular: 1.0, fast: 1.2 };
+  const [voiceGender, setVoiceGender] = useState("feminine");
+  const [voiceSpeed, setVoiceSpeed] = useState("regular");
+  const [voiceStatus, setVoiceStatus] = useState("idle");
+  const voiceAudioRef = useRef(null);
+  const [ambientActive, setAmbientActive] = useState(false);
+
+  useEffect(() => {
+    if (isPlaying || isChanting) setAmbientActive(true);
+  }, [isPlaying, isChanting]);
+
+  useEffect(() => {
+    setAmbientActive(false);
+    stopMantraVoice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMantra?.id]);
+
+  const speakWithBrowserVoice = () => {
     if (!selectedMantra || !canUseSpeechSynthesis) return;
     try {
       window.speechSynthesis.cancel();
       const text = [selectedMantra.sanskrit, selectedMantra.translation, selectedMantra.description].filter(Boolean).join(". ");
       if (!text.trim()) return;
       const utterance = new window.SpeechSynthesisUtterance(text);
-      utterance.rate = Math.max(0.6, Math.min(1.1, tempoMultipliers?.[tempo] || 0.85));
-      utterance.pitch = 1;
+      const voices = window.speechSynthesis.getVoices() || [];
+      const wantMale = voiceGender === "masculine";
+      const preferred = voices.find((v) =>
+        wantMale
+          ? /male|daniel|david|george|james|fred|alex/i.test(`${v.name}`) && !/female/i.test(`${v.name}`)
+          : /female|samantha|victoria|karen|moira|zira|google uk english female/i.test(`${v.name}`)
+      );
+      if (preferred) utterance.voice = preferred;
+      utterance.rate = VOICE_SPEED_VALUES[voiceSpeed] * 0.85;
+      utterance.pitch = wantMale ? 0.85 : 1.05;
       utterance.volume = isMuted ? 0 : volume;
+      utterance.onend = () => setVoiceStatus("idle");
+      setVoiceStatus("playing");
       window.speechSynthesis.speak(utterance);
     } catch (_error) {
-      // no-op
+      setVoiceStatus("idle");
+    }
+  };
+
+  const speakMantra = async () => {
+    if (!selectedMantra) return;
+    if (voiceStatus === "paused" && voiceAudioRef.current) {
+      voiceAudioRef.current.play();
+      setVoiceStatus("playing");
+      return;
+    }
+    const text = [selectedMantra.sanskrit, selectedMantra.translation, selectedMantra.description].filter(Boolean).join(". ");
+    if (!text.trim()) return;
+    setVoiceStatus("loading");
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/tts/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text, voice: VOICE_GENDER_IDS[voiceGender], speed: VOICE_SPEED_VALUES[voiceSpeed] }),
+      });
+      if (!response.ok) throw new Error("tts failed");
+      const blob = await response.blob();
+      if (voiceAudioRef.current) {
+        voiceAudioRef.current.pause();
+        voiceAudioRef.current = null;
+      }
+      const audio = new Audio(URL.createObjectURL(blob));
+      audio.volume = isMuted ? 0 : volume;
+      audio.onended = () => setVoiceStatus("idle");
+      voiceAudioRef.current = audio;
+      await audio.play();
+      setVoiceStatus("playing");
+    } catch (_error) {
+      speakWithBrowserVoice();
+    }
+  };
+
+  const pauseMantraVoice = () => {
+    if (voiceAudioRef.current && voiceStatus === "playing") {
+      voiceAudioRef.current.pause();
+      setVoiceStatus("paused");
+      return;
+    }
+    if (canUseSpeechSynthesis && window.speechSynthesis.speaking) {
+      try {
+        window.speechSynthesis.pause();
+        setVoiceStatus("paused");
+      } catch (_error) {
+        // no-op
+      }
+      return;
+    }
+    if (voiceStatus === "paused") {
+      if (voiceAudioRef.current) {
+        voiceAudioRef.current.play();
+        setVoiceStatus("playing");
+      } else if (canUseSpeechSynthesis) {
+        try {
+          window.speechSynthesis.resume();
+          setVoiceStatus("playing");
+        } catch (_error) {
+          // no-op
+        }
+      }
     }
   };
 
   const stopMantraVoice = () => {
-    if (!canUseSpeechSynthesis) return;
-    try {
-      window.speechSynthesis.cancel();
-    } catch (_error) {
-      // no-op
+    if (voiceAudioRef.current) {
+      voiceAudioRef.current.pause();
+      voiceAudioRef.current.currentTime = 0;
+      voiceAudioRef.current = null;
     }
+    if (canUseSpeechSynthesis) {
+      try {
+        window.speechSynthesis.cancel();
+      } catch (_error) {
+        // no-op
+      }
+    }
+    setVoiceStatus("idle");
   };
 
   const resolveMantraAlchemy = (mantra) => {
@@ -190,27 +289,69 @@ export const MantrasPlayer = ({
                 <p className="text-lg italic text-foreground/90">&ldquo;{selectedMantra.translation}&rdquo;</p>
               </div>
 
-              <div className="flex flex-wrap gap-2" data-testid="mantra-voice-controls">
-                <Button
-                  onClick={speakMantra}
-                  variant="outline"
-                  className="border-primary/40"
-                  data-testid="mantra-voice-play-button"
-                  disabled={!canUseSpeechSynthesis}
-                >
-                  <Volume2 className="w-4 h-4 mr-2" />
-                  Hear Pronunciation
-                </Button>
-                <Button
-                  onClick={stopMantraVoice}
-                  variant="ghost"
-                  className="border border-white/10"
-                  data-testid="mantra-voice-stop-button"
-                  disabled={!canUseSpeechSynthesis}
-                >
-                  <Pause className="w-4 h-4 mr-2" />
-                  Stop Voice
-                </Button>
+              <div className="space-y-3" data-testid="mantra-voice-controls">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Voice</span>
+                    <Select value={voiceGender} onValueChange={setVoiceGender}>
+                      <SelectTrigger className="bg-card/50 border-white/10 mt-1" data-testid="mantra-voice-gender-select">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="z-[300]">
+                        <SelectItem value="feminine" data-testid="mantra-voice-gender-feminine">Feminine</SelectItem>
+                        <SelectItem value="masculine" data-testid="mantra-voice-gender-masculine">Masculine</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <span className="text-[11px] uppercase tracking-wider text-muted-foreground">Speed</span>
+                    <Select value={voiceSpeed} onValueChange={setVoiceSpeed}>
+                      <SelectTrigger className="bg-card/50 border-white/10 mt-1" data-testid="mantra-voice-speed-select">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="z-[300]">
+                        <SelectItem value="slow" data-testid="mantra-voice-speed-slow">Slow</SelectItem>
+                        <SelectItem value="regular" data-testid="mantra-voice-speed-regular">Regular</SelectItem>
+                        <SelectItem value="fast" data-testid="mantra-voice-speed-fast">Fast</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    onClick={speakMantra}
+                    variant="outline"
+                    className="border-primary/40"
+                    data-testid="mantra-voice-play-button"
+                    disabled={voiceStatus === "loading" || voiceStatus === "playing"}
+                  >
+                    <Volume2 className="w-4 h-4 mr-2" />
+                    {voiceStatus === "loading" ? "Preparing…" : voiceStatus === "paused" ? "Resume Voice" : "Hear Pronunciation"}
+                  </Button>
+                  <Button
+                    onClick={pauseMantraVoice}
+                    variant="ghost"
+                    className="border border-white/10"
+                    data-testid="mantra-voice-pause-button"
+                    disabled={voiceStatus === "idle" || voiceStatus === "loading"}
+                  >
+                    <Pause className="w-4 h-4 mr-2" />
+                    {voiceStatus === "paused" ? "Resume" : "Pause Voice"}
+                  </Button>
+                  <Button
+                    onClick={stopMantraVoice}
+                    variant="ghost"
+                    className="border border-white/10"
+                    data-testid="mantra-voice-stop-button"
+                    disabled={voiceStatus === "idle"}
+                  >
+                    <Square className="w-4 h-4 mr-2" />
+                    Stop Voice
+                  </Button>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  Voice controls only affect the spoken pronunciation — the mantra audio and soundscape keep flowing.
+                </p>
               </div>
 
               {hasPlayableAudio && !audioError ? (
@@ -303,12 +444,12 @@ export const MantrasPlayer = ({
                       </SelectContent>
                     </Select>
 
-                    {selectedNaturalSound !== "silence" && isPlaying && (
+                    {selectedNaturalSound !== "silence" && ambientActive && (
                       <div className="mt-3" data-testid="mantra-natural-sound-player">
                         <AmbientSoundPlayer
-                          key={`mantra-audio-ambient-${selectedNaturalSound}-${isPlaying ? "on" : "off"}`}
+                          key={`mantra-audio-ambient-${selectedNaturalSound}`}
                           soundType={selectedNaturalSound}
-                          autoPlay={isPlaying}
+                          autoPlay
                           showControls
                           volume={Math.max(volume, 0.45)}
                         />
@@ -409,12 +550,12 @@ export const MantrasPlayer = ({
                         </SelectContent>
                       </Select>
 
-                      {selectedNaturalSound !== "silence" && isChanting && (
+                      {selectedNaturalSound !== "silence" && ambientActive && (
                         <div className="mt-3" data-testid="mantra-natural-sound-player">
                           <AmbientSoundPlayer
-                            key={`mantra-timer-ambient-${selectedNaturalSound}-${isChanting ? "on" : "off"}`}
+                            key={`mantra-timer-ambient-${selectedNaturalSound}`}
                             soundType={selectedNaturalSound}
-                            autoPlay={isChanting}
+                            autoPlay
                             showControls
                             volume={Math.max(volume, 0.45)}
                           />

@@ -5078,3 +5078,12 @@ RESTORE PROD (pending user approval → redeploy → then): POST /api/admin/seed
 - FIXED guided practice controls (user: "numerous taps, no options opening"): GuidedPracticeContent.jsx player overlay is z-[200] but Radix SelectContent portals at z-50 → dropdowns opened BEHIND overlay; plus Selects wrapped in <label> double-fired toggle. Fix: SelectContent className="z-[300]" (voice/speed/duration) + <label>→<div>. Verified via automation: one tap → 3 voice options visible.
 - MUDRAS 18/18: replaced all card images (12 wikimedia charts/statues + 6 missing) with generated anatomically-precise hand photos (uniform dark temple style). Wiring: MUDRA_IMAGE_OVERRIDES in content.py applied AFTER _enrich_mudra_entry (which otherwise overwrites image_url from MUDRA_VERIFIED_IMAGE_MAP — gotcha!). Verified 18/18 via API + screenshot.
 - STILL PENDING: production restore flow (user approval → redeploy latest → POST /api/admin/seed-database force → verify seed-status). Note: user-initiated deploy earlier today predates qigong restructure + mudra + guided fixes.
+
+## June 2026 — Mantra Voice Controls Overhaul
+User issues: only one voice, top "Stop Voice" unreliable (speechSynthesis on Android), middle pause killed the soundscape.
+- MantrasPlayer.jsx: pronunciation now uses POST /api/tts/generate (OpenAI voices: feminine=nova, masculine=onyx; speeds slow 0.8 / regular 1.0 / fast 1.2) played via HTMLAudio (reliable pause/resume/stop). Browser speechSynthesis kept as fallback with gender heuristic.
+- Added Voice + Speed selects (SelectContent z-[300]) and Pause Voice / Stop Voice buttons that ONLY affect the spoken voice.
+- Ambient soundscape decoupled: ambientActive state stays on once practice starts — pausing mantra audio or voice no longer unmounts AmbientSoundPlayer. Keys no longer include on/off (no remount).
+- Guided practice engine already offers Feminine/Masculine/Balanced voices + speed (verified earlier this session).
+- Verified via automation: gender options open in one tap; TTS returns 200 for nova + onyx.
+- NOT yet deployed to production (multiple deploys initiated by user today; latest fixes still preview-only).
