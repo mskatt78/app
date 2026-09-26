@@ -233,7 +233,7 @@ const Dashboard = ({ user, api }) => {
                 data-testid="soul-temple-home-hero"
               >
                 <img
-                  src="/images/shamanic-elements-soul-temple-2-home.png"
+                  src="/images/shamanic-elements-soul-temple-2-home.png?v=2"
                   alt="Shamanic Elements Soul Temple 2.0 — SkyWater Sacred Embodiments"
                   className="w-full h-auto max-h-[78dvh] object-contain bg-black"
                   loading="eager"

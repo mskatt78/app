@@ -5038,3 +5038,11 @@ User-confirmed structure: Monthly ($24.99), Yearly ($189.99), Lifetime "Keys to 
 - VERIFIED via live API tests (temp membership + lifetime + direct purchase records, then cleaned up): sections all unlock with either tier; courses stay locked unless directly purchased.
 - Deployer prod diagnosis: env vars OK, config OK (verification_configured=true, lifetime keys_to_the_universe), BUT /api/playbilling/health 404 in prod (stale build). Redeploy initiated by user — awaiting completion, then re-run health probe.
 - Backlog: user mentioned a "visual/background issue" as separate task (no details yet).
+
+## June 2026 — New "Shamanic Elements Soul Temple 2.0" Branding Applied
+Source: user-uploaded composite brand sheet (kt8td0yy_file_...png, 1024x1536). Cropped programmatically (PIL):
+- App icons: all sizes regenerated (favicon 16/32, icon-72..1024, apple-touch-icon, logo192/512, favicon.ico) from icon crop (595,15,923,359) with 5.5% inset to remove rounded dark corners. Same filenames — manifest/index.html untouched. sw.js CACHE_VERSION bumped v9→v10 for cache bust.
+- Dashboard hero replaced: /images/shamanic-elements-soul-temple-2-home.png (now 1008x3004 poster crop), Dashboard.jsx src cache-busted with ?v=2. Verified live at 390px viewport.
+- Play Console downloadables added to public/: play-feature-graphic-1024x500.png, app-icon-1024.png, app-background-fullscreen.png.
+- NOTE: Android TWA launcher icon is baked into the .aab at build time — needs a new Bubblewrap build to update the Play Store launcher icon. PWA/web icons + install splash update immediately.
+- Screenshot tool learning: script body runs directly inside async fn — do NOT wrap in `async def run(page)` (it silently never executes). Use page.request for API calls (urllib gets 403 from ingress).
