@@ -117,6 +117,7 @@ const MantrasLibrary = ({ user, api }) => {
   const [audioDuration, setAudioDuration] = useState(0);
   const [isLooping, setIsLooping] = useState(true);
   const [audioError, setAudioError] = useState(false);
+  const [chantVoicePaused, setChantVoicePaused] = useState(false);
   
   // Speed/Tempo control for health reasons
   const [tempo, setTempo] = useState("normal"); // slow, normal, fast
@@ -170,6 +171,7 @@ const MantrasLibrary = ({ user, api }) => {
     setAudioError(false);
     setAudioProgress(0);
     setIsPlaying(false);
+    setChantVoicePaused(false);
     
     if (audioRef.current) {
       audioRef.current.pause();
@@ -266,16 +268,27 @@ const MantrasLibrary = ({ user, api }) => {
   const handleVolumeChange = (value) => {
     const newVolume = value[0];
     setVolume(newVolume);
-    if (audioRef.current) {
+    if (audioRef.current && !chantVoicePaused) {
       audioRef.current.volume = newVolume;
     }
     setIsMuted(newVolume === 0);
   };
 
+  // Silence the chant voice while the audio loop (timer/reps/progress) keeps running
+  const pauseChantVoice = () => {
+    if (audioRef.current) audioRef.current.volume = 0;
+    setChantVoicePaused(true);
+  };
+
+  const resumeChantVoice = () => {
+    if (audioRef.current) audioRef.current.volume = isMuted ? 0 : volume;
+    setChantVoicePaused(false);
+  };
+
   const toggleMute = () => {
     if (audioRef.current) {
       if (isMuted) {
-        audioRef.current.volume = volume || 0.7;
+        audioRef.current.volume = chantVoicePaused ? 0 : (volume || 0.7);
         setIsMuted(false);
         if (mantraGainRef.current) {
           mantraGainRef.current.gain.value = volume || 0.7;
@@ -692,6 +705,9 @@ const MantrasLibrary = ({ user, api }) => {
         setIsMuted={setIsMuted}
         setGuidedPractice={setGuidedPractice}
         createGuidedMantraPractice={createGuidedMantraPractice}
+        chantVoicePaused={chantVoicePaused}
+        pauseChantVoice={pauseChantVoice}
+        resumeChantVoice={resumeChantVoice}
       />
 
       {guidedPractice && (

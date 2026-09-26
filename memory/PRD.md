@@ -5107,3 +5107,9 @@ Fixes:
 - Replaced all hardcoded `?v=2` cache-busters (TempleAmbientBackground, Dashboard, LandingPage).
 - `scripts/stamp-sw-version.js` auto-stamps sw.js CACHE_VERSION on every `yarn build` (prebuild step in package.json).
 - Verified in preview: hero image serves with `?v=<git-hash>`, SW cache version matches.
+
+## June 2026 — Mantra Voice/Timer Decoupling (DONE)
+- "Pause Voice" / "Stop Voice" now also control the chant loop: they silence the chant voice (volume 0) while the audio loop keeps running, so timer/progress/repetitions continue.
+- Added chantVoicePaused state in MantrasLibraryContainer with pauseChantVoice/resumeChantVoice; volume slider & mute respect the silenced state.
+- Player shows "Voice silenced — timer keeps going" indicator; Pause button flips to "Resume Voice".
+- Verified via preview automation (button states, silenced note, timer continuing).

@@ -52,6 +52,9 @@ export const MantrasPlayer = ({
   setGuidedPractice,
   createGuidedMantraPractice,
   hasPlayableAudio,
+  chantVoicePaused,
+  pauseChantVoice,
+  resumeChantVoice,
 }) => {
   const canUseSpeechSynthesis = typeof window !== "undefined" && "speechSynthesis" in window;
 
@@ -144,7 +147,7 @@ export const MantrasPlayer = ({
       setVoiceStatus("paused");
       return;
     }
-    if (canUseSpeechSynthesis && window.speechSynthesis.speaking) {
+    if (canUseSpeechSynthesis && voiceStatus === "playing" && window.speechSynthesis.speaking) {
       try {
         window.speechSynthesis.pause();
         setVoiceStatus("paused");
@@ -165,6 +168,15 @@ export const MantrasPlayer = ({
           // no-op
         }
       }
+      return;
+    }
+    // Chant voice: silence/restore it while the timer keeps running
+    if (chantVoicePaused) {
+      resumeChantVoice();
+      return;
+    }
+    if (isPlaying) {
+      pauseChantVoice();
     }
   };
 
@@ -182,6 +194,13 @@ export const MantrasPlayer = ({
       }
     }
     setVoiceStatus("idle");
+  };
+
+  const stopAllVoice = () => {
+    stopMantraVoice();
+    if (isPlaying && !chantVoicePaused) {
+      pauseChantVoice();
+    }
   };
 
   const resolveMantraAlchemy = (mantra) => {
@@ -343,24 +362,24 @@ export const MantrasPlayer = ({
                     variant="ghost"
                     className="border border-white/10"
                     data-testid="mantra-voice-pause-button"
-                    disabled={voiceStatus === "idle" || voiceStatus === "loading"}
+                    disabled={(voiceStatus === "idle" || voiceStatus === "loading") && !isPlaying && !chantVoicePaused}
                   >
                     <Pause className="w-4 h-4 mr-2" />
-                    {voiceStatus === "paused" ? "Resume" : "Pause Voice"}
+                    {voiceStatus === "paused" || chantVoicePaused ? "Resume Voice" : "Pause Voice"}
                   </Button>
                   <Button
-                    onClick={stopMantraVoice}
+                    onClick={stopAllVoice}
                     variant="ghost"
                     className="border border-white/10"
                     data-testid="mantra-voice-stop-button"
-                    disabled={voiceStatus === "idle"}
+                    disabled={voiceStatus === "idle" && !isPlaying && !chantVoicePaused}
                   >
                     <Square className="w-4 h-4 mr-2" />
                     Stop Voice
                   </Button>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  Voice &amp; speed shape both the chanted mantra and the spoken pronunciation — the soundscape keeps flowing on its own.
+                  Pause or stop the voice anytime — your timer, repetitions and soundscape keep flowing on their own.
                 </p>
               </div>
 
@@ -374,6 +393,11 @@ export const MantrasPlayer = ({
                   <div className="text-center mb-4">
                     <p className="text-4xl font-serif text-primary">{currentRep}</p>
                     <p className="text-sm text-muted-foreground">repetitions completed</p>
+                    {chantVoicePaused && isPlaying && (
+                      <p className="text-xs text-amber-300 mt-1" data-testid="mantra-voice-silenced-note">
+                        Voice silenced — timer keeps going
+                      </p>
+                    )}
                   </div>
 
                   <div className="mb-4">
