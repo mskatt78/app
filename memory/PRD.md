@@ -5113,3 +5113,9 @@ Fixes:
 - Added chantVoicePaused state in MantrasLibraryContainer with pauseChantVoice/resumeChantVoice; volume slider & mute respect the silenced state.
 - Player shows "Voice silenced — timer keeps going" indicator; Pause button flips to "Resume Voice".
 - Verified via preview automation (button states, silenced note, timer continuing).
+
+## June 2026 — Voice Everywhere + Completion Chime (DONE)
+- Guided overlay (meditations + all guided practices): new "Pause Voice"/"Resume Voice" button silences narration while session timer keeps running (voicePaused state in useGuidedPracticeEngine; guards in playNarrationSegment/handlePlay).
+- Breathwork: sound toggle already kept timer running; added "Sound off — your breath timer keeps going" note.
+- Completion chime: new utils/completionChime.js (soft 528/396Hz bells) rings on mantra repetition completion (timer + audio player modes) and guided session completion, even when voice is silenced.
+- Verified via preview automation on /meditations (timer continued during voice pause, resume works).

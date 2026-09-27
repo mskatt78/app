@@ -26,6 +26,8 @@ export const GuidedPracticeContent = ({
   narrationParagraphs,
   handlePlay,
   handleStartVoiceOnly,
+  voicePaused,
+  toggleVoicePause,
   isPlaying,
   formatTime,
   minimumNarrationMinutes,
@@ -280,7 +282,9 @@ export const GuidedPracticeContent = ({
               {!ttsPlaying && !ttsLoading && hasStarted && (
                 <div className="mb-4" data-testid="guided-voice-controls-hint-wrap">
                   <p className="text-xs text-white/60 sm:col-span-2 text-center" data-testid="guided-voice-controls-hint">
-                    Voice is paused. Use Play Voice Guidance to resume narration.
+                    {voicePaused && isPlaying
+                      ? "Voice paused — your timer keeps going."
+                      : "Voice is paused. Use Play Voice Guidance to resume narration."}
                   </p>
                 </div>
               )}
@@ -393,6 +397,16 @@ export const GuidedPracticeContent = ({
                 >
                   <Play className="w-3.5 h-3.5" />
                   {ttsPlaying ? "Restart Voice Guidance" : "Play Voice Guidance"}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleVoicePause}
+                  disabled={!hasStarted && !voicePaused}
+                  className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/20 bg-white/10 hover:bg-white/15 text-white text-xs disabled:opacity-40"
+                  data-testid="guided-pause-voice-btn"
+                >
+                  {voicePaused ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+                  {voicePaused ? "Resume Voice" : "Pause Voice"}
                 </button>
               </div>
 

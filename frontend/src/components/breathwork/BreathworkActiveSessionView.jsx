@@ -82,6 +82,12 @@ export const BreathworkActiveSessionView = ({
       toggleSound={toggleSound}
     />
 
+    {!soundEnabled && isPlaying && (
+      <p className="text-xs text-amber-300/90 mt-2 mb-4" data-testid="breathwork-sound-off-note">
+        Sound off — your breath timer keeps going
+      </p>
+    )}
+
     <div className="w-full max-w-sm mb-8">
       <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground mb-3 text-center">Breath soundscape</p>
       <BreathworkSoundSelector

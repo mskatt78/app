@@ -39,6 +39,7 @@ import {
   setGuidedPracticePreference,
 } from "../../utils/guidedVoiceSettings";
 import { appLogger } from "../../utils/logger";
+import { playCompletionChime } from "../../utils/completionChime";
 
 const OVERLAY_TIMER_TICK_MS = 1000;
 const PREFETCH_SEGMENT_COUNT = 2;
@@ -107,6 +108,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const [narrationReady, setNarrationReady] = useState(false);
   const [scriptLoading, setScriptLoading] = useState(false);
   const [audioTapRequired, setAudioTapRequired] = useState(false);
+  const [voicePaused, setVoicePaused] = useState(false);
   const [selectedNarrationMode, setSelectedNarrationMode] = useState(() => getGuidedNarrationMode());
   const [toningActive, setToningActive] = useState(false);
   const [playbackVoiceProfile, setPlaybackVoiceProfile] = useState(() => getGuidedVoiceProfile());
@@ -140,6 +142,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
 
   const timerRef = useRef(null);
   const ttsRef = useRef(null);
+  const voicePausedRef = useRef(false);
   const voiceVolumeRef = useRef(1);
   const ambientVolumeRef = useRef(1);
   const audioCtxRef = useRef(null);
@@ -485,6 +488,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
       stopNarrationPlayback(false);
       stopAmbient();
       stopToning();
+      playCompletionChime();
     }
   }, [narrationSegmentCount, stopAmbient, stopNarrationPlayback, stopToning]);
 
@@ -494,6 +498,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     autoStartRef.current = false;
     currentSegmentIndexRef.current = 0;
     setCurrentSegmentIndex(0);
+    voicePausedRef.current = false;
+    setVoicePaused(false);
     stopNarrationPlayback(true);
     clearNarrationCache();
     scriptAbortRef.current?.abort?.();
@@ -780,6 +786,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const playNarrationSegment = useCallback(async (segmentIndex) => {
     const activeRunId = narrationRunIdRef.current;
     if (!narrationSegments[segmentIndex]) return;
+    if (voicePausedRef.current) {
+      setTtsLoading(false);
+      return;
+    }
 
     const cacheKey = getSegmentCacheKey(segmentIndex);
     setTtsLoading(!ttsCacheRef.current.has(cacheKey));
@@ -796,7 +806,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
         }
         return;
       }
-      if (!isPlayingRef.current || activeRunId !== narrationRunIdRef.current) return;
+      if (!isPlayingRef.current || activeRunId !== narrationRunIdRef.current || voicePausedRef.current) return;
 
       generateSegmentUrl(segmentIndex + 1).catch((error) => {
         appLogger.debug("Guided segment prefetch warmup failed", error);
@@ -847,6 +857,7 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
           stopToning();
           sessionEndRef.current = null;
           clearInterval(timerRef.current);
+          playCompletionChime();
         }
       };
       const started = await audio.play().then(() => true).catch(() => false);
@@ -873,6 +884,24 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   ]);
 
   playNarrationSegmentRef.current = playNarrationSegment;
+
+  // Silence/restore the narration voice while the session timer keeps running
+  const toggleVoicePause = useCallback(() => {
+    if (voicePausedRef.current) {
+      voicePausedRef.current = false;
+      setVoicePaused(false);
+      if (ttsRef.current?.src) {
+        ttsRef.current.play().catch(() => {});
+      } else if (isPlayingRef.current) {
+        playNarrationSegmentRef.current?.(currentSegmentIndexRef.current);
+      }
+      return;
+    }
+    voicePausedRef.current = true;
+    setVoicePaused(true);
+    setTtsLoading(false);
+    if (ttsRef.current) ttsRef.current.pause();
+  }, []);
 
   const playCustomVoiceLoop = useCallback(async () => {
     if (!customVoiceSampleUrl) return false;
@@ -958,6 +987,10 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     setIsPlaying(true);
     setHasStarted(true);
     startAmbientTrack();
+    if (voicePausedRef.current) {
+      setTtsLoading(false);
+      return;
+    }
     setTtsLoading(true);
 
     if (customVoiceActive) {
@@ -985,6 +1018,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
   const handleStartVoiceOnly = useCallback(() => {
     if (isCompleteRef.current) return;
 
+    voicePausedRef.current = false;
+    setVoicePaused(false);
     narrationRunIdRef.current += 1;
     stopNarrationPlayback(false);
     startAmbientTrack();
@@ -1042,6 +1077,8 @@ export const useGuidedPracticeEngine = ({ practice, stepsOverride }) => {
     handlePlaybackNarrationDurationMinutesChange,
     handlePlay,
     handleStartVoiceOnly,
+    voicePaused,
+    toggleVoicePause,
     resumedBookmark,
     handleStartOver,
     isPlaying,

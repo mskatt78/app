@@ -22,6 +22,7 @@ import {
   ELEMENT_FREQUENCIES 
 } from "../../components/audio/MantraAudio";
 import { appLogger } from "../../utils/logger";
+import { playCompletionChime } from "../../utils/completionChime";
 import { MantrasFilters } from "./MantrasFilters";
 import { MantrasLibraryGrid } from "./MantrasLibraryGrid";
 import { MantrasCustomSection } from "./MantrasCustomSection";
@@ -317,6 +318,17 @@ const MantrasLibrary = ({ user, api }) => {
     }
   };
 
+  // Completion chime — rings even when the chant voice is silenced
+  useEffect(() => {
+    const target = Number(selectedMantra?.repetitions || 0);
+    if (!selectedMantra || currentRep === 0 || target === 0) return;
+    if (currentRep === target) {
+      playCompletionChime();
+      toast.success("Repetitions complete — beautiful work!");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentRep]);
+
   // Timer-based chanting (with optional generated sound)
   const startChanting = () => {
     if (!selectedMantra) return;
@@ -340,6 +352,7 @@ const MantrasLibrary = ({ user, api }) => {
             const newRep = rep + 1;
             if (newRep >= totalReps) {
               // Play completion bells
+              playCompletionChime();
               if (!isMuted && mantraAudioCtxRef.current && mantraGainRef.current) {
                 playBellTone(mantraAudioCtxRef.current, mantraGainRef.current, 528, 5);
               }
