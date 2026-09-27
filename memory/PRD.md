@@ -5119,3 +5119,10 @@ Fixes:
 - Breathwork: sound toggle already kept timer running; added "Sound off — your breath timer keeps going" note.
 - Completion chime: new utils/completionChime.js (soft 528/396Hz bells) rings on mantra repetition completion (timer + audio player modes) and guided session completion, even when voice is silenced.
 - Verified via preview automation on /meditations (timer continued during voice pause, resume works).
+
+## June 2026 — Practice Image Audit Fix (DONE)
+- User uploads moved to /app/backend/uploads/practice-images/ (served at /api/uploads/practice-images/...): f2_pendulation→Somatic "Pendulation"(2), f5_boundary→"Boundary Setting"(5), f6_heart→"Heart Opening Stretch"(6), y_catcow→Yoga "Cat-Cow Flow"(32), y_widelegged→"Wide-Legged Forward Fold"(6), bw_B→Breathwork "Earth Grounding Breath"(1), bw_C→"Wind Clearing Breath"(4), bw_A→"Spirit Journey Breath"(5).
+- FASCIA_IMAGE_OVERRIDES rebuilt as fascia-only 8-image set (removed MOVEMENT_FORM merge) — zero overlap with Somatic verified.
+- Chair Yoga 208/209/210 + hip-release/restorative/trauma somatic-yoga entries got unique generated chair-accurate images; dead chair-hip-release-somatic key removed.
+- Qi Gong images were already correct & unique in build; live app was stale (needs redeploy).
+- FLAGGED (not fixed, no accurate image available): Breathwork "Heart Coherence Soft Pulse" & "Inner Child Comfort Breath" share one unsplash image; ~48 yoga poses use the shared generic fallback photo-3822906 (pre-existing, out of scope).
