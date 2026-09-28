@@ -1,5 +1,5 @@
 // Service Worker for Shamanic Elements Soul Temple - Offline Support
-const CACHE_VERSION = 'v-b511270';
+const CACHE_VERSION = 'v-df0b055';
 const STATIC_CACHE = `temple-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `temple-dynamic-${CACHE_VERSION}`;
 

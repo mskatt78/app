@@ -2092,6 +2092,44 @@ MOVEMENT_FORM_IMAGE_OVERRIDES: dict[str, str] = {
     "38": "https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/bae343379216e223dbc128a6247c26fb7dcb4b002207bdef4643ef89ba3e3071.jpeg",
 }
 
+# Live (published) Qi Gong & Tai Chi records use slug ids, not the numeric preview ids above.
+# One true, unique image per live practice (added by Emergent Support).
+MOVEMENT_FORM_IMAGE_OVERRIDES.update({
+    'qigong-5-elements': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/61dfc49e9afc44d1f813086cde8f4c2cc2874bb0ec9979d8fb677b0bf853e7b6.jpeg',
+    'qigong-bear-exercise': '/api/uploads/practice-images/qg_bear.jpg',
+    'qigong-bone-marrow-washing': '/api/uploads/practice-images/qg_bone-marrow-washing.jpg',
+    'qigong-cloud-hands': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3b9ec19e5bb6d623cd1bb8b1b54d1b17d55d1d49a82b928c1c42ce69b49cb955.jpeg',
+    'qigong-crane-exercise': '/api/uploads/practice-images/qg_crane.jpg',
+    'qigong-deer-exercise': '/api/uploads/practice-images/qg_deer.jpg',
+    'qigong-dragon-spirals': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/680d21371524567b0facf257f6b57258516e04c3ecf59ea23f78e60e92c16511.jpeg',
+    'qigong-eight-brocades': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/91c6b45d45e113872e2721eabb28e26c68b8bc777081ae6bb33a79ccf0d9fde5.jpeg',
+    'qigong-gathering-heaven-earth': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/501c6f344b39dbaf5b6305c7de53ab2d433f7a0796d01c34bf514df1f4ea78ec.jpeg',
+    'qigong-inner-smile': '/api/uploads/practice-images/qg_inner-smile.jpg',
+    'qigong-kidney-breathing': '/api/uploads/practice-images/qg_kidney-breathing.jpg',
+    'qigong-lifting-sky': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/00ec032d58b8446ee283d536b5d467be0aa25cd6eb9e96d4c8a1147465535bd9.jpeg',
+    'qigong-microcosmic-orbit': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/51802578f9852cd2e0b6f204766dae942f4af5dae7b74afdd5fb60673da8a1d6.jpeg',
+    'qigong-monkey-exercise': '/api/uploads/practice-images/qg_monkey.jpg',
+    'qigong-shaking': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/8bf386cf82e90751ce94a0ac01cac0a73dce2ab1f254da94422f9686bd687620.jpeg',
+    'qigong-six-healing-sounds': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/1ce17340035350b83a51956c7f3dd5e20700ff177f6912f8360ad5ea08b8ed0d.jpeg',
+    'qigong-standing': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/6512fe8efef37c221d8cc4971e70231d1d677ac5bf34994ce7a9f3466c9532f7.jpeg',
+    'qigong-swimming-dragon': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/416488af6ab733a79e90dcb85454d829d029f009d3e4d64ca67db5e0d4a1d919.jpeg',
+    'qigong-tiger-exercise': '/api/uploads/practice-images/qg_tiger.jpg',
+    'qigong-turtle-breathing': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/9433a944b2a1fbc6a7574092ff2c371333d71a78afc9eaa91ed0dd19b3fdc1da.jpeg',
+    'tai-chi-brush-knee': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/58e5fadabf9d79ca205d5035274b785718b7ffb7959958c76e3d210f9f78bae1.jpeg',
+    'tai-chi-closing': 'https://images.unsplash.com/photo-1767611103831-d93568c9215b?crop=entropy&cs=srgb&fm=jpg&q=85',
+    'tai-chi-cloud-hands': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/084a7986d0dc4b3055e86e997eda17364a1c5d6828e285955c9be6f58732dd7f.jpeg',
+    'tai-chi-fair-lady': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/3112793455b85f9f631e4fb454b352e878f980ba642c049c0f96d27782a03f72.jpeg',
+    'tai-chi-golden-rooster': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a9f03394b649314c09560f27de75d369c24cb353b4cc8a06584e12d188405179.jpeg',
+    'tai-chi-grasp-sparrow': '/api/uploads/practice-images/qg_grasp-sparrow.jpg',
+    'tai-chi-opening': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/ca7d95748f5c54953a37f6cc7dd8cf19a1752978ff7c6849073f6f8989ea622b.jpeg',
+    'tai-chi-parting-horses-mane': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/4dcddc91f1ba263da0178d20410e121572d54b0a6f1b0e372c7566d16e5c064c.jpeg',
+    'tai-chi-repulse-monkey': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/c3dc368070c948ed1837f7473f970db8c93c6262a93f25cfb69751c504929eed.jpeg',
+    'tai-chi-single-whip': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/b90341f2f0f0afb69362e8dd356f3b48db7d7114a5d4d692f6f91f655cf0d441.jpeg',
+    'tai-chi-snake-creeps': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a1eeb991d7bac76ab32992f30635ef913642372a75b9adda99eef26adf8c7d73.jpeg',
+    'tai-chi-wave-hands': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/a06542d458f7a5a8a844488411ad88608fa37cc391663b19b7b11a5bfad614cb.jpeg',
+    'tai-chi-white-crane': 'https://static.prod-images.emergentagent.com/jobs/8d08d00f-8bb0-4b9c-85b6-c8a2d5f11a8a/images/74f83e73c613a84a311256c4d17e0e08890d317162dcebfbe2210c8b11654189.jpeg',
+})
+
 # Distinct libraries served from ONE underlying CMS record set (no duplicate records).
 QIGONG_TAICHI_CATEGORIES = {"Tai Chi", "Qigong", "Closing"}
 # Practices genuinely relevant to fascia work (intentional crossover tags)
