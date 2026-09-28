@@ -5222,6 +5222,66 @@ def _apply_id_image_overrides(items: list[dict[str, Any]], overrides: dict[str, 
     return patched
 
 
+# True, unique images per item (added by Emergent Support). Keyed by item id; only image_url changes.
+SUPPORT_SECTION_IMAGE_OVERRIDES: dict[str, dict[str, str]] = {
+    'crystals': {
+        '1': 'https://images.unsplash.com/photo-1767131543309-be0996beb61e?w=800&q=80&auto=format&fit=crop',
+        '2': 'https://images.unsplash.com/photo-1632980205460-e490e885e848?w=800&q=80&auto=format&fit=crop',
+        '3': 'https://images.unsplash.com/photo-1593259213062-57b0ce5906cf?w=800&q=80&auto=format&fit=crop',
+        '4': 'https://images.unsplash.com/photo-1780432036139-fe0a751ef0a6?w=800&q=80&auto=format&fit=crop',
+        '5': 'https://images.unsplash.com/photo-1780432035181-012cf1fbef69?w=800&q=80&auto=format&fit=crop',
+        '6': 'https://images.unsplash.com/photo-1772911421293-362c64541490?w=800&q=80&auto=format&fit=crop',
+        '7': 'https://images.unsplash.com/photo-1764022402353-1c5266df8952?w=800&q=80&auto=format&fit=crop',
+        '8': 'https://images.unsplash.com/photo-1780619692305-133bfacda226?w=800&q=80&auto=format&fit=crop',
+        '9': 'https://images.unsplash.com/photo-1659468550840-602345a513d9?w=800&q=80&auto=format&fit=crop',
+        '10': 'https://images.unsplash.com/photo-1781977968359-42e406d8ffa6?w=800&q=80&auto=format&fit=crop',
+        '11': 'https://images.unsplash.com/photo-1626471240086-c4313f0b71cc?w=800&q=80&auto=format&fit=crop',
+        '12': 'https://images.unsplash.com/photo-1687017896948-316a27a12919?w=800&q=80&auto=format&fit=crop',
+        'amazonite': 'https://images.unsplash.com/photo-1660912111290-7d13eb1ee5b8?w=800&q=80&auto=format&fit=crop',
+    },
+    'energy_healing': {
+        'energy-healing-supp-101': 'https://images.unsplash.com/photo-1757066033647-366cc10e0de2?w=800&q=80&auto=format&fit=crop',
+        'energy-healing-supp-104': 'https://images.unsplash.com/photo-1618601208267-baa5b780b70e?w=800&q=80&auto=format&fit=crop',
+        'energy-healing-supp-105': 'https://images.unsplash.com/photo-1726946998884-8d8443fe9c73?w=800&q=80&auto=format&fit=crop',
+        'energy-healing-supp-108': 'https://images.unsplash.com/photo-1641058592241-4a4301c4ddcb?w=800&q=80&auto=format&fit=crop',
+        'energy-healing-supp-109': 'https://images.unsplash.com/photo-1787857162711-8e1badf97b32?w=800&q=80&auto=format&fit=crop',
+        'energy-healing-supp-110': 'https://images.unsplash.com/photo-1741338565168-b57349a504f1?w=800&q=80&auto=format&fit=crop',
+        'energy-healing-supp-112': 'https://images.unsplash.com/photo-1532655262016-203ca87c7e91?w=800&q=80&auto=format&fit=crop',
+        'energy-healing-supp-114': 'https://images.unsplash.com/photo-1604423203943-54721eff418a?w=800&q=80&auto=format&fit=crop',
+    },
+    'ancient_wisdom': {
+        'ancient-wisdom-supp-103': 'https://images.unsplash.com/photo-1753284602440-544fe399e550?w=800&q=80&auto=format&fit=crop',
+        'ancient-wisdom-supp-104': 'https://images.unsplash.com/photo-1779231913794-ff973fe40adf?w=800&q=80&auto=format&fit=crop',
+        'ancient-wisdom-supp-106': 'https://images.unsplash.com/photo-1546608135-e5de34abc308?w=800&q=80&auto=format&fit=crop',
+        'ancient-wisdom-supp-107': 'https://images.unsplash.com/photo-1548296404-93c7694b2f91?w=800&q=80&auto=format&fit=crop',
+        'ancient-wisdom-supp-110': 'https://images.unsplash.com/photo-1674244988698-0bfc39dad0d0?w=800&q=80&auto=format&fit=crop',
+        'ancient-wisdom-supp-111': 'https://images.unsplash.com/photo-1749316039071-a8502ec4e547?w=800&q=80&auto=format&fit=crop',
+        'ancient-wisdom-supp-112': 'https://images.unsplash.com/photo-1487304632076-ccc208b58d84?w=800&q=80&auto=format&fit=crop',
+        'ancient-wisdom-supp-113': 'https://images.unsplash.com/photo-1779715048599-dfd2487d0ea8?w=800&q=80&auto=format&fit=crop',
+        'ancient-wisdom-supp-114': 'https://images.unsplash.com/photo-1768573489658-3e7d0bf5aae9?w=800&q=80&auto=format&fit=crop',
+    },
+    'sacred_allies': {
+        'sacred-ally-supp-104': 'https://images.unsplash.com/photo-1580250642511-1660fe42ad58?w=800&q=80&auto=format&fit=crop',
+        'sacred-ally-supp-110': 'https://images.unsplash.com/photo-1604038706886-0befcbbb273c?w=800&q=80&auto=format&fit=crop',
+        'sacred-ally-supp-111': 'https://images.unsplash.com/photo-1474557157379-8aa74a6ef541?w=800&q=80&auto=format&fit=crop',
+        'sacred-ally-supp-112': 'https://images.unsplash.com/photo-1638538043008-41980056cbbe?w=800&q=80&auto=format&fit=crop',
+        'sacred-ally-supp-113': 'https://images.unsplash.com/photo-1706800696671-570820e7ff39?w=800&q=80&auto=format&fit=crop',
+        'sacred-ally-supp-114': 'https://images.unsplash.com/photo-1630358276501-f10b9da0892b?w=800&q=80&auto=format&fit=crop',
+    },
+}
+
+
+def _support_section_images(result: Any, unlock_id: str) -> Any:
+    overrides = SUPPORT_SECTION_IMAGE_OVERRIDES.get(unlock_id)
+    if not overrides:
+        return result
+    if isinstance(result, list):
+        return _apply_id_image_overrides(result, overrides)
+    if isinstance(result, dict):
+        return _apply_id_image_overrides([result], overrides)[0]
+    return result
+
+
 def _expand_section_items_to_target(items: list[dict[str, Any]], unlock_id: str) -> list[dict[str, Any]]:
     if not items:
         return []
@@ -7523,7 +7583,7 @@ async def get_crystals(element: Optional[str] = None, chakra: Optional[str] = No
     
     crystals = await db.crystals.find(query, {"_id": 0}).to_list(length=100)
     enriched = [_enrich_devotional_language(_enrich_content_integrity(crystal, "hybrid-curated"), "elemental-practices") for crystal in crystals]
-    return _apply_free_paid_tiering(enriched, "crystals")
+    return _support_section_images(_apply_free_paid_tiering(enriched, "crystals"), "crystals")
 
 
 @router.get("/crystals/deep")
@@ -7536,7 +7596,7 @@ async def get_deep_crystals() -> list[dict[str, Any]]:
         crystals = CRYSTALS_DEEP
     enriched = await _enrich_crystals_with_verified_images(crystals, db)
     devotional = [_enrich_devotional_language(_enrich_content_integrity(item, "hybrid-curated"), "elemental-practices") for item in enriched]
-    return _apply_free_paid_tiering(devotional, "crystals")
+    return _support_section_images(_apply_free_paid_tiering(devotional, "crystals"), "crystals")
 
 
 @router.get("/crystals/deep/{crystal_id}")
@@ -7560,7 +7620,7 @@ async def get_crystal(crystal_id: str) -> dict[str, Any]:
     crystal = await db.crystals.find_one({"id": crystal_id}, {"_id": 0})
     if not crystal:
         raise HTTPException(status_code=404, detail="Crystal not found")
-    return crystal
+    return _support_section_images(crystal, "crystals")
 
 
 # ============ MANTRAS ROUTES ============
@@ -8296,7 +8356,7 @@ async def get_sacred_ally_alchemy(category: Optional[str] = None, ally_type: Opt
         _enrich_devotional_language(_apply_subject_image_alignment(item, "hybrid-curated"), "sacred-allies")
         for item in items
     ]
-    return _apply_free_paid_tiering(enriched, "sacred_allies")
+    return _support_section_images(_apply_free_paid_tiering(enriched, "sacred_allies"), "sacred_allies")
 
 
 @router.get("/sacred-ally-alchemy/{item_id}")
@@ -8306,7 +8366,7 @@ async def get_sacred_ally_alchemy_item(item_id: str) -> dict[str, Any]:
     item = await db.sacred_ally_alchemy.find_one({"id": item_id}, {"_id": 0})
     if not item:
         raise HTTPException(status_code=404, detail="Sacred ally alchemy entry not found")
-    return _enrich_devotional_language(_apply_subject_image_alignment(item, "hybrid-curated"), "sacred-allies")
+    return _support_section_images(_enrich_devotional_language(_apply_subject_image_alignment(item, "hybrid-curated"), "sacred-allies"), "sacred_allies")
 
 
 # ============ ANGELIC ALCHEMY ==========
@@ -8538,7 +8598,7 @@ async def get_ancient_wisdom(tradition: Optional[str] = None) -> list[dict[str, 
     entries = _append_ancient_wisdom_supplements(entries, tradition)
     entries = _append_mystery_school_to_ancient(entries, tradition)
     enriched_entries = [_enrich_ancient_wisdom_entry(entry) for entry in entries]
-    return _apply_free_paid_tiering(enriched_entries, "ancient_wisdom")
+    return _support_section_images(_apply_free_paid_tiering(enriched_entries, "ancient_wisdom"), "ancient_wisdom")
 
 
 @router.get("/ancient-wisdom/{entry_id}")
@@ -8548,7 +8608,7 @@ async def get_ancient_wisdom_entry(entry_id: str) -> dict[str, Any]:
     entry = await db.ancient_wisdom.find_one({"id": entry_id}, {"_id": 0})
     if not entry:
         raise HTTPException(status_code=404, detail="Entry not found")
-    return _enrich_ancient_wisdom_entry(entry)
+    return _support_section_images(_enrich_ancient_wisdom_entry(entry), "ancient_wisdom")
 
 
 @router.get("/mystery-school")
@@ -9001,7 +9061,7 @@ async def get_energy_healing(modality: Optional[str] = None) -> list[dict[str, A
         )
         for practice in practices
     ]
-    return _apply_free_paid_tiering(enriched, "energy_healing")
+    return _support_section_images(_apply_free_paid_tiering(enriched, "energy_healing"), "energy_healing")
 
 
 @router.get("/energy-healing/{practice_id}")
@@ -9010,9 +9070,12 @@ async def get_energy_healing_practice(practice_id: str) -> dict[str, Any]:
     practice = await db.energy_healing.find_one({"id": practice_id}, {"_id": 0})
     if not practice:
         raise HTTPException(status_code=404, detail="Practice not found")
-    return _enrich_devotional_language(
-        _enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated"),
-        "healing-portals",
+    return _support_section_images(
+        _enrich_devotional_language(
+            _enrich_content_integrity(_enrich_energy_healing_entry(practice), "hybrid-curated"),
+            "healing-portals",
+        ),
+        "energy_healing",
     )
 
 
